@@ -615,7 +615,7 @@ function runUSPayroll(){
 				        	$("#payrollDataDiv").show();
 				        	$("#payrollDataDiv").empty();
 				        	$("#totalNoPayroll").html(data.noOfGeneratedPayroll);
-				        	$("#totalPayrollAmount").html(data.totalGeneratedAmount);
+				        	$("#totalPayrollAmount").html('<span>$ ' + data.totalGeneratedAmount + '</span>');
 				        	$("#payrollDataDiv").append(result);
 				        	$("#initiateLoading").removeAttr('style');
 		        	    

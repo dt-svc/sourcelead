@@ -354,14 +354,14 @@
           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
            <label class="clearfix">Account Number<span class="text-danger">&nbsp;*</span></label>
            <div class="clearfix">
-                <input type="text" id="paymentAccountNumber" data-min='9' data-max='15' placeholder="Account Number" name="paymentAccountNumber" class="form-control" data-required="required"/>
+                <input type="number" id="paymentAccountNumber" data-min='9' data-max='15' placeholder="Account Number" name="paymentAccountNumber" class="form-control" data-required="required"/>
            </div>
            </div>
         
         <div data-fieldtype="account" data-fieldfor="1,2" class="col-md-5">
               <label class="clearfix">Routing Number <span class="text-danger">&nbsp;*</span></label>
            <div class="clearfix">
-                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="Routing Number" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
+                <input type="number" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="Routing Number" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
            </div>
            </div>
            <div data-fieldtype="account" data-fieldfor="3" class="col-md-5">

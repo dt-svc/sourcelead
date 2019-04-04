@@ -1,5 +1,5 @@
- <jsp:include page="../masterHeader.jsp" />
-<jsp:include page="../masterSideNav.jsp" />
+<jsp:include page="masterHeader.jsp" />
+<jsp:include page="masterSideNav.jsp" />
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -25,25 +25,25 @@
           <h2>Candidates</h2>
           <div class="clearfix mt5"></div>
           <a href="javascript:void(0)" class="fontSmall">Configure</a> </div>
-      </div>
+      </div> --%>
       <div class="repDashCta"> <span class="navIcons leaveIcon svgReport margin-top0"></span>
         <div class="repDashCtaWrap ml">
           <h2>Leaves</h2>
           <div class="clearfix mt5"></div>
-          <a href="javascript:void(0)" class="fontSmall">Configure</a> </div>
+          <a href="<c:url value='${appPath}/emailReminderLeaveConfiguration'/>" class="fontSmall">Configure</a> </div>
       </div>
-      <div class="repDashCta"> <span class="navIcons contIcon svgReport margin-top0"></span>
+       <div class="repDashCta"> <span class="navIcons contIcon svgReport margin-top0"></span>
         <div class="repDashCtaWrap ml">
           <h2>Contracts</h2>
           <div class="clearfix mt5"></div>
-          <a href="contractsConfigure_Emails.html" class="fontSmall">Configure</a> </div>
-      </div>
-      <div class="repDashCta"> <span class="navIcons finIcon svgReport margin-top0"></span>
+          <a href="<c:url value='${appPath}/contractConfigureEmails'/>" class="fontSmall">Configure</a> </div>
+      </div> 
+      <%-- <div class="repDashCta"> <span class="navIcons finIcon svgReport margin-top0"></span>
         <div class="repDashCtaWrap ml">
           <h2>Finance</h2>
           <div class="clearfix mt5"></div>
           <a href="<c:url value='${appPath}/financeConfigureEmails'/>" class="fontSmall">Configure</a> </div>
-      </div>
+      </div> 
       <div class="repDashCta"> <span class="navIcons cliIcon svgReport margin-top0"></span>
         <div class="repDashCtaWrap ml">
           <h2>Associates</h2>
@@ -59,5 +59,4 @@
       <div class="clearfix"></div>
     </div>
   </section>
-  
-   <jsp:include page="../masterFooter.jsp" />
+   <jsp:include page="masterFooter.jsp" />

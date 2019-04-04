@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -77,6 +78,7 @@ import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UploadFileService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -169,6 +171,9 @@ public class DumpPublicRestCalls {
 	@Autowired
 	AssetService assetService;
 	
+	@Autowired
+	private UserService userService;
+	
 	@Value("${static.path}")
 	private String staticPath;
 	
@@ -215,7 +220,19 @@ public class DumpPublicRestCalls {
 		}
 		return  count+" Records updated SuccessFully";
 	}
-	
+	@RequestMapping(value = "/ws/updateAllExpensesSubmittedDate", method = RequestMethod.GET)
+	@ResponseBody
+	public String updateAllExpensesSubmittedDate() throws Exception {
+		List<Expenses> expensesList = expensesService.getAllExpenses();
+		int count =0;
+		if(expensesList != null && !expensesList.isEmpty()) {
+			for(Expenses expenses :expensesList) {
+					expenses.setSubmittedDate(expenses.getUpdatedDate());
+					addExpensesDao.storeAddExpensesData(expenses);
+			}
+		} 
+		return  count+" Records updated SuccessFully";
+	}
 	/*Expenses expenses = expensesDao.getExpenseById(expenseId);
 	List<String> expenseStatus = new ArrayList<>();
 	expenseStatus =   expenses.getApproverHierarchyList().stream().map(hierarchy -> hierarchy.getExpenseApprovalStatus().getValue()).collect(Collectors.toList());
@@ -702,6 +719,27 @@ public class DumpPublicRestCalls {
 			return "Exception occured while changing document name(s), please check error log";
 		}
 		return "Successfully changed document names in 'slead-static' folder";
+	}
+	
+	@RequestMapping(value="/ws/updateDashboardItemCandidateForInvoice")
+	@ResponseBody
+	public String updateDashboardItemCandidateForInvoice(HttpServletRequest request) {
+		int result = 0;
+		try {
+			System.out.println("-------- Initiated dashboard items updation --------");
+			String itemName = "Candidates for Invoice";
+			String itemSize = "4:1";
+			List<String> rolesList = new LinkedList<>();
+			rolesList.add("ROLE_ADD_INVOICE");
+			rolesList.add("ROLE_VIEW_REQUIREMENT");
+
+			result = userService.addItemToDashboard(itemName, itemSize, rolesList);
+			System.out.println("-------- Completed dashboard items updation --------");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Exception occured while updating dashboard items";
+		}
+		return "Successfully updated " + result + " records for 'Candidate For Invoice' in dashboard items";
 	}
 	
 }

@@ -153,7 +153,9 @@ function getAppliantJoinedListByRecruiter(){
 		 var url = sourceleadUrl+"/getAllApplicantJoinedListByOrgLocationsId?timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&clients="+clients+"&searchValue="+searchValue;
 // 		 usersListPagination(url,sourceleadUrl);
 			prepareAllDaywiseLeaveReportList(url);
-
+			if(timePeriod == 'custom'){
+				 $("#customSearch").hide();
+			}
 	 }
 }
 </script>	

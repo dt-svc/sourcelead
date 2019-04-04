@@ -45,29 +45,47 @@ var uploadflag= true;
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates List</a> &raquo; Import Associates </div>
     </section>
 	<div id="loading"></div>
-	<div class="content-area clearfix" id="dataFileImportDiv">
+	<!--  New div with dropdown -->
+	
+	<div class="content-area clearfix backgroundWhite">
+		
+	<!-- 	<div class="clearfix width215px" style="position: absolute; top:15px; left: 15px; z-index: 1;">
+			<select class="sel" id="importassociteSel" onChange="importassociteSel();">
+			    <option value="addAssociate">Add Associate</option>
+			    <option value="associateBnkdet">Associate Banking Details</option>
+			    <option value="associateInfo">Associate Information</option>
+			    <option value="associateSalary">Associate Salary</option>
+			</select>
+		</div> -->
+
+		<!--         Dropdown div for import associate           -->
+		
+		<div id="addAssociate" style="display:block;">
+			<div class="clearfix"></div>
+		<div class="clearfix" id="dataFileImportDiv">
 		<form:form id="upload_job_form" name="upload_job_form" method="post" enctype="multipart/form-data">
 			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
 			<div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
 				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 					<!-- Download File button -->
 					<div class="clearfix mb row">
-					<div class="col-xs-3 col-md-3">
+					<div class="col-xs-2 col-md-3">
 						<input type="text" class="form-control" placeholder="Header Index" id="headerPosition" name="headerPosition"  field-name="Header index" data-validation="required validate_Space validate_length length1-6 validate_int">
-					</div>
-					
-						<div class="col-xs-5 col-md-5">
+					</div>			
+						<div class="col-xs-2 col-md-2">
 							<a href="<c:url value='${appPath}/downloadDataImportTemplateForAssociate'/>"
-								class="btn btn-success btn-block" title="Download Associate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Associate Template
+								class="btn btn-success btn-block" title="Download Associate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Template
 							</a>
-						</div>
-						<div class="col-xs-4 col-md-4">
+						</div>				
+						
+						<div class="col-xs-2 col-md-5">
 							<div class="btn-group btn-group-justified">
-								<div class="btn-group">
+								<div class="btn-group" id="import">
 									<input type="button" class="btn btn-primary" id="upload_button"
 										name="upload_button" onclick="fetchFieldsWithMatchedColumn();"
 										value="Import">
 								</div>
+								
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
 										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadForm'/>'">
@@ -106,7 +124,6 @@ var uploadflag= true;
 						</div>
 						<!--  Downloaded File show here -->
 					</div>
-					
 					<div id="errorDownloadDiv" style="display: none"></div>
 				</div>
 				<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -114,9 +131,8 @@ var uploadflag= true;
 						<span><i class="fa fa-question" aria-hidden="true"></i></span> <span
 							class="info-msg clearfix mt">
 							<p class="clearfix mt">
-								According to this template, the Users need to <span
-									class="text-danger"><strong>Import Required
-										Fields</strong></span>
+								According to this template, the Users need to
+								<span class="text-danger"><strong>Import Required Fields</strong></span>
 							</p>
 							<p>
 							  <label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
@@ -132,9 +148,38 @@ var uploadflag= true;
 					</div>
 				</div>
 			</div>
-		</div>
+		</div>		<div class="clearfix"></div>
 		</form:form>
 	</div>
+	</div>
+	
+	
+
+<!--         Dropdown div for Associate banking details  -->
+	
+	
+		<div id="associateBnkdet" style="display:none;">
+			Associate banking details        
+			</div>
+	
+			
+	<!--      Dropdown div for Associate information      -->		
+			
+		<div id="associateInfo" style="display:none;">
+			 Associate information    
+	
+	</div>
+		
+	<!--      Dropdown div for Associate salary      -->			
+		
+		<div id="associateSalary" style="display:none;">
+		Associate salary
+	</div>
+
+		
+	<!--  new div with dropdown ends here -->
+	
+	
 	<div id="dataFieldsDiv" style="display: none"></div>
 <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
 	<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
@@ -154,7 +199,17 @@ document.getElementById("uploadBtn").onchange = function () {
 	$('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
 	fileUpload("uploadBtn", "dataMigration");
 };
+
 </script>
+
+<script type="text/javascript">
+document.getElementById("uploadBtn1").onchange = function () {
+	$('#newUploadFile1').text($(this).val().replace(/C:\\fakepath\\/i, ''));
+	fileUpload("uploadBtn1", "dataMigration");
+};
+
+</script>
+
 
 <script type="text/javascript">
 function fetchFieldsWithMatchedColumn(){
@@ -196,6 +251,57 @@ function cancelFileImport(){
 </script>
 
 
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				})
+			
+ 		</script>
+ 		
+	<script>
+	//import Associate dropdown script
+	function importassociteSel(){
+		var impassValue = $("#importassociteSel option:selected").val();
+		if(impassValue == "associateBnkdet") {
+			$("#associateBnkdet").show();
+			$("#addAssociate, #associateInfo, #associateSalary").hide();
+			
+		}else if(impassValue == "associateInfo"){
+			$("#associateInfo").show();
+			$("#addAssociate, #associateBnkdet, #associateSalary").hide();
+		
+		}else if(impassValue == "associateSalary"){
+			$("#associateSalary").show();
+			$("#addAssociate, #associateBnkdet, #associateInfo").hide();
+		
+		}else if(impassValue == "addAssociate"){
+			$("#addAssociate").show();
+			$("#associateSalary, #associateBnkdet, #associateInfo").hide();
+		} else {
+			$("#addAssociate").show();
+		}
+
+	}
+	</script>
+	
+	<script>
+	function msgFadein() {
+		$("#msgDiv").fadeIn(200);
+        $('#msgDiv').delay(2000).fadeOut('slow');
+	}
+    </script> 
+	
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

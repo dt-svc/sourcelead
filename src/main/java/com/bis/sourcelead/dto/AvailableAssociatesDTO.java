@@ -42,6 +42,18 @@ import java.util.List;
 	
 	private String type;
 	
+	private int orgWorkingHours;
+	
+	
+	
+	public int getOrgWorkingHours() {
+		return orgWorkingHours;
+	}
+
+	public void setOrgWorkingHours(int orgWorkingHours) {
+		this.orgWorkingHours = orgWorkingHours;
+	}
+
 	public String getType() {
 		return type;
 	}

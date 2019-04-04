@@ -36,6 +36,14 @@
 		                       <input type="text" class="form-control" name="pfNumber"  id="pfNumber" field-name="PF Number" field-name="PF Number">
 		                    </div>
 		                  </div>
+		                  
+		                   <div class="col-md-5">
+		                    <label>Aadhar Number<span class="text-danger">&nbsp;*</span></label>
+		                    <div>
+		                       <input type="text" class="form-control" name="aadharNumber"  id="aadharNumber" field-name="Aadhar Number">
+		                    </div>
+		                  </div>
+		                  
 		                  <div class="col-md-5">
 		                    <label>Enrolled Date</label>
 		                    <div>
@@ -344,7 +352,6 @@ function validateMinor(){
 			    	type: "POST",
 			    	url: sourceleadUrl+"/getIndAssociatePFESIAccountDetails?userId="+userId,
 			        success: function(json) {
-			        	
 			        	if(json != null){
 			        		$("#pfesiId").val(json.pfesiId);
 			        		if(json.eligibleForPf == 'Y'){
@@ -353,9 +360,11 @@ function validateMinor(){
 			        			  $("#pf").val('Y');
 			        			  $("#pfUan").val(json.firstName);
 			        			  $("#pfNumber").val(json.firstName);
+			        			  $("#aadharNumber").val(json.aadharNumber);
 			        			  $("input[name=enroleDate]").val(json.enroleDate);
 			        			  $("#pfUan").attr("data-validation", "required validate_int validate_length length1-12");
-			        		      $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length1-19");
+			        		      $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length10-25");
+			        		      $("#aadharNumber").attr("data-validation", "required validate_int validate_length length12-12");
 			        			 
 			        		}else{
 			        			  pfel.style.display = "none";
@@ -363,9 +372,11 @@ function validateMinor(){
 			        			  $("#pf").val('');
 			        			  $("#pfUan").val('');
 			        			  $("#pfNumber").val('');
+			        			  $("#aadharNumber").val('');
 			        			  $("input[name=enroleDate]").val('');
 			        			  $('#pfUan').removeAttr('data-validation');
 		        		    	  $('#pfNumber').removeAttr('data-validation');
+		        		    	  $('#aadharNumber').removeAttr('data-validation');
 		        		    	  $("#uanError").find("p.jquery_form_error_message").remove();
 		        		    	  $("#pfError").find("p.jquery_form_error_message").remove();
 			        			 
@@ -403,16 +414,19 @@ function pfFunction() {
     if (checkBox.checked == true){
         pfel.style.display = "block";
         $("#pfUan").attr("data-validation", "required validate_int validate_length length1-12");
-        $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length1-19");
+        $("#pfNumber").attr("data-validation", "required validate_AlphaNumber validate_length length10-25");
+        $("#aadharNumber").attr("data-validation", "required validate_int validate_length length12-12");
         $("#pf").val('Y');
     } else {
        pfel.style.display = "none";
     	$('#pfUan').removeAttr('data-validation');
     	$('#pfNumber').removeAttr('data-validation');
+    	$('#aadharNumber').removeAttr('data-validation');
     	$("#uanError").find("p.jquery_form_error_message").remove();
     	$("#pfError").find("p.jquery_form_error_message").remove();
     	$("#pfUan").val('');
     	$("#pfNumber").val('');
+    	$("#aadharNumber").val('');
     	$("#enrolledDate").val('');
     }
 }

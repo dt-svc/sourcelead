@@ -94,6 +94,10 @@ private static final long serialVersionUID = 1L;
 	@JsonBackReference
 	private Date updatedDate;
 	
+	@Column(name = "SUBMITTED_DATE")
+	@JsonBackReference
+	private Date submittedDate;
+	
 	@Column(name = "UPDATED_BY")
 	 @JsonBackReference
 	private String updatedBy;
@@ -554,7 +558,13 @@ private static final long serialVersionUID = 1L;
 		this.billingStatus = billingStatus;
 	}
 
-	
+	public Date getSubmittedDate() {
+		return submittedDate;
+	}
+
+	public void setSubmittedDate(Date submittedDate) {
+		this.submittedDate = submittedDate;
+	}
 	
 	
 

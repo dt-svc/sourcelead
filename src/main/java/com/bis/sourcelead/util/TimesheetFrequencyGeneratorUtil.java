@@ -540,7 +540,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 								  /**
 								   * checking whether previousmoth start date is greaterthan employee month startdate or not
 							       */
-								   if(empMonthStartDate.after(previousMonthStartDate)){
+								   if(empMonthStartDate.before(previousMonthStartDate)){
 									   empMonthStartDate = previousMonthStartDate;
 								   }
 								   

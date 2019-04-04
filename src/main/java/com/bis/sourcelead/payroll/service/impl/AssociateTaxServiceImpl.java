@@ -334,4 +334,5 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 		return associateTaxDao.findUserTaxDeatails(candidateId,orgLocation);
 	}
 
+
 }

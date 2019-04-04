@@ -50,7 +50,7 @@ public interface ImmigrationTemplateService {
     
     void reactiveImmigrationTemplateById(Long templateId);
 
-    void deleteImmigrationTaskList(String id);
+    void deleteImmigrationTaskList(String id, String taskName);
 
     int savePetitionTemplateDetailsValues(String templateId);
 

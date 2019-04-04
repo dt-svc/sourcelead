@@ -1036,7 +1036,8 @@ public class PdfUtil {
 	        document.add(orderedList);
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        int[] columnWidths = new int[]{5, 5, 3,3, 3,3,3,3,3};
-            PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
+            PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString());
+            table.completeRow();
             java.util.List<String[]> assignedEmpList = new ArrayList<>();
             for(ProjectMembers projectMembers : employeeList){
             	assignedEmpList.add(prepareEmployeeArray(projectMembers,headers));
@@ -1049,8 +1050,8 @@ public class PdfUtil {
                     cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
                     table.addCell(cell);
                 }
+                table.completeRow();
 	        }
-	        table.completeRow();
 	        
 	        document.addTitle("Project Employee Table");
 	        table.setSpacingBefore(15f);
@@ -3545,7 +3546,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 						}
 						
 						if (report.getAvailableHours() != null) {
-							reportArray[4] = report.getAvailableHours();
+							reportArray[4] = report.getAvailableHours().substring(0, 5);
 						} else {
 							reportArray[4] = "--";
 						}

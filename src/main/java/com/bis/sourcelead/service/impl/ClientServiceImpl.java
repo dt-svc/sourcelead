@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -2371,6 +2372,28 @@ public class ClientServiceImpl implements ClientService {
 				releasedJobsSize = (Integer) vendorReleasedJobsList.size();
 			}
 				 return releasedJobsSize;
+	}
+
+
+
+	@Override
+	public List<Requirement> getReleasedJobsByOrgRelationId(long orgRelationId, long spocId, String userRole) {
+		List<Requirement> requirementList = new LinkedList<>();
+		try {
+			OrgRelations orgRelation = orgRelationsService.getOrRelationsById(orgRelationId);
+			List<Requirement> vendorReleasedJobsList = null;
+			if (spocId == 0 && Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)) {
+				if (orgRelation != null) {
+					vendorReleasedJobsList = requirementService.getAllReleasedJobsForVendorBasedOnOrgRelationId(orgRelation.getLocationId().getId(), orgRelation.getId());
+				}
+			} else if(spocId > 0) {
+				vendorReleasedJobsList = requirementService.getAllReleasedJobsBasedOnSpocId(spocId);
+			}
+			return vendorReleasedJobsList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return requirementList;
 	}
 
 }

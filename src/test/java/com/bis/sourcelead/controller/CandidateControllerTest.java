@@ -146,9 +146,9 @@ mockHttpServletRequest.setAttribute("SourceLeadWeb_orgLocations",orgLocation);
 PowerMockito.mockStatic(SourceLeadSessionManager.class);
 PowerMockito.when(SourceLeadSessionManager.getSessionAttribute(mockHttpServletRequest, "orgLocations"))
 .thenReturn(orgLocation);
-when(mockCandidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocation, candidateLocation, searchValue)).thenReturn(candidateMarketPlace);
+//when(mockCandidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocation, candidateLocation, searchValue)).thenReturn(candidateMarketPlace);
 //System.out.println(controller);
-candidateMarketPlaces =  controller.getGlobalMarketplaceCandListGridCard(searchValue, candidateLocation, searchCandidateIds, mockHttpServletRequest);
+//candidateMarketPlaces =  controller.getGlobalMarketplaceCandListGridCard(searchValue, candidateLocation, searchCandidateIds, mockHttpServletRequest);
 Assert.assertEquals(candidateMarketPlaces.size(),1);
  }catch(Exception e){
 		e.printStackTrace();

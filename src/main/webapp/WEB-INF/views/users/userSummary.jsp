@@ -498,7 +498,7 @@ window.onload = function () {
 				
 				if(json.user.fileUrl != null && json.user.fileUrl != "" && json.user.fileUrl !="undefiend"){
 					result = result + '<div class="user_change_img">';
-					result = result +"<img data-id= 'userProfileImage' src='"+json.user.fileUrl+"' alt='image'>";
+					result = result +"<img data-id= 'userProfileImage' src=\""+json.user.fileUrl+"\" alt='image'>";
 					result = result + '</div>';
 					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
 					result=result + '<div class="btn-group uploadfile uploadfile-candidate">';
@@ -611,6 +611,13 @@ window.onload = function () {
 					if(json.panNumber != null && json.panNumber !='' && json.panNumber !='undefined'){
 						result = result + '			<div class="project_details_cta">';
 						result = result + '				 <strong>PAN Number:</strong><span class="fix">'+json.panNumber+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+						result = result + '<div class="clearfix"></div>';
+					}
+					
+					if(json.aadharNumber != null && json.aadharNumber !='' && json.aadharNumber !='undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				 <strong>Aadhar Number:</strong><span class="fix">'+json.aadharNumber+'</span><div class="clearfix"></div>';
 						result = result + ' 		</div>';
 						result = result + '<div class="clearfix"></div>';
 					}
@@ -982,7 +989,7 @@ function deleteAssociateImage(userId){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure you want to delete this image ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteAssociateProfileImage("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteAssociateProfileImage("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPic();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -2069,6 +2076,11 @@ $("#editRoleDetailsList").empty();
 						result = result + ' <div class="user_summary_edit_cta" >';
 						result = result + ' <label>PAN Number<span class="text-danger">&nbsp;*</span></label>';
 						result = result + ' <input type="text" value="'+json.panNumber+'"  id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space fixed_length length10"/>';
+						result = result + ' </div>';
+						
+						result = result + ' <div class="user_summary_edit_cta" >';
+						result = result + ' <label>Aadhar Number<span class="text-danger">&nbsp;*</span></label>';
+						result = result + ' <input type="text" value="'+json.aadharNumber+'"  id="aadharNumber" name="aadharNumber" field-name="Aadhar Number" data-validation="required validate_int fixed_length length12"/>';
 						result = result + ' </div>';
 					}
 					
@@ -4619,6 +4631,13 @@ function cancel(candidateId){
 }
 </script>
 
+
+<script type="text/javascript">
+function cancelPic(){ 
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 <script>
 function showComment(candidateId){

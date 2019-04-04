@@ -32,6 +32,9 @@ public class IndAssociatePaymentAccountDTO {
     private String micrCode;
     private boolean disabled;
     private String paymentAccountId;
+    private String email;
+    private String ifscCode;
+    private String reason;
 
     /**
      * @return the id
@@ -289,6 +292,30 @@ public class IndAssociatePaymentAccountDTO {
 
 	public void setPaymentAccountId(String paymentAccountId) {
 		this.paymentAccountId = paymentAccountId;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getIfscCode() {
+		return ifscCode;
+	}
+
+	public void setIfscCode(String ifscCode) {
+		this.ifscCode = ifscCode;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
 	}
      
 }

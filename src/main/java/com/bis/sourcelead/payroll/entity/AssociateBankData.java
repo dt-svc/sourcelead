@@ -54,6 +54,8 @@ public class AssociateBankData implements Serializable{
 	@Column(name = "STATUS")
 	private Integer status;
 	
+	@Column(name="DEFAULT_ACCOUNT")
+	private Boolean  defaultAccount;
 	
 	@Column(name = "ASSOCIATE_BANK_UUID")
 	private String associateBankUuid;
@@ -207,6 +209,16 @@ public class AssociateBankData implements Serializable{
 	public void setAssociateBankUuid(String associateBankUuid)
 	{
 		this.associateBankUuid = associateBankUuid;
+	}
+
+	public Boolean getDefaultAccount()
+	{
+		return defaultAccount;
+	}
+
+	public void setDefaultAccount(Boolean defaultAccount)
+	{
+		this.defaultAccount = defaultAccount;
 	}
 	
 	

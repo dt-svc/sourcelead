@@ -1,7 +1,8 @@
 package com.bis.sourcelead.service;
-
 import java.util.Date;
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dto.AssociatePayItemDTO;
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
@@ -12,8 +13,10 @@ import com.bis.sourcelead.dto.SalaryDTO;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 
 public interface AssociateSalaryService {
 
@@ -43,5 +46,6 @@ public interface AssociateSalaryService {
 
 	SalaryDTO getSalaryByGroupId(OrgLocations orgLocation, Long candidateId, Date freqStartDate, Date freqEndDate);
 
-	AssociateSalary getAssociateSalaryBySalaryId(Long salaryId);
+	AssociateSalary getAssociateSalaryBySalaryId(Long salaryId);	
+	
 }

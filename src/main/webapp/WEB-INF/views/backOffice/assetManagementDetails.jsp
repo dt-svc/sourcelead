@@ -408,7 +408,7 @@ function assetDetails(assetUUID) {
 							result = result + ' <td><div class="tbldata-dotdot" title="'+report.shift.shiftName+'">'+report.shift.shiftName+'</div></td>';
 							result = result + ' <td><div class="tbldata-dotdot" title="'+report.userRole.user.fullName+'">'+report.userRole.user.fullName+'</div></td>';
 							if(report.fileName != null && report.fileName != "" && report.fileName != "undefined"){
-								result = result + ' <td><div class="pull-left"><div class="tbldata-dotdot">'+report.fileName+'</div></div><ul class="ml list-unstyled list-inline pull-left" ><li><a class="fa fa-download paddingRight cursorPointer" href="'+report.fileURL+'"></a><a class="fa fa-eye paddingLeft cursorPointer" onClick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\',\''+report.fileType+'\');"></a></li></ul></td>';
+								result = result + ' <td><div class="pull-left"><div class="tbldata-dotdot">'+report.fileName+'</div></div><ul class="ml list-unstyled list-inline pull-left" ><li><a download class="fa fa-download paddingRight cursorPointer" href="'+report.fileURL+'"></a><a class="fa fa-eye paddingLeft cursorPointer" onClick="viewFile(\''+report.fileURL+'\',\''+report.fileName+'\',\''+report.fileType+'\');"></a></li></ul></td>';
 							}else{
 								result = result + ' <td><div class="pull-left">--</div></td>';
 							}

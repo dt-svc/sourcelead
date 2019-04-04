@@ -770,8 +770,8 @@ public class CandidateServiceTest {
 				
 				List<CandidateMarketPlace> candidateMarketPlaces = new ArrayList<>();
 				List<CandidateMarketPlace> candidateMarketPlaces1 = null;
-				when(mockCandidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue)).thenReturn(candidateMarketPlaces);
-				candidateMarketPlaces1 = mockCandidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue);
+//				when(mockCandidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue)).thenReturn(candidateMarketPlaces);
+//				candidateMarketPlaces1 = mockCandidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue);
 				assertNotNull(candidateMarketPlaces1);
 				//candidateDao.getMarketCartStatusByMarketIdOrgId(spyMarketPlace.getId(), spyMarketPlace.getOrgLocationId().getId());
 			

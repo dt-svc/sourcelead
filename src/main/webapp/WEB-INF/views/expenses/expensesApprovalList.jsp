@@ -662,9 +662,9 @@ function newActions(){
 	$(".action-pop").slideUp(200);
 	$(".approved_pop").hide();	
 }
-$("html").click(function(){
-	$(".newActPop").slideUp(200);
-});
+
+
+
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });	
@@ -673,8 +673,15 @@ $(".overIcon, .newActPop").click(function(e){
 $("#appro-pop").click(function(){
 	$(".newActPop").hide();
 	$(".approved_pop").toggle();
-	
 });
+
+ $("html").click(function(){
+	$(".approved_pop").hide();
+}); 
+
+$("#appro-pop").click(function(e){
+	e.stopPropagation();
+});	
 
 $(document).ready(function() {
 	$("#SearchExpensesData").keyup(function(event) {

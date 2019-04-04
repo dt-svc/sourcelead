@@ -36,4 +36,8 @@ public interface TaskDao {
 	Long taskCountByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId,Long userId,String status)throws Exception;
 
 	List<Tasks> getTasksListByImmigrationIdAndCandidateId(String immigrationId, User user, String taskStatus, String searchVal);
+	
+	Tasks getTaskByTaskName(String taskName)throws Exception;
+	
+	void updateTaskStatus(Tasks task)throws Exception;
 }

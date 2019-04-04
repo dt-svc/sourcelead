@@ -25,8 +25,8 @@ public class PaymentAccount extends Record implements Serializable {
     private Long id;
 
     private String email;
-    @Column(name = "FIRST_NAME")
     
+    @Column(name = "FIRST_NAME")    
     private String firstName;
     
     @Column(name = "LAST_NAME")

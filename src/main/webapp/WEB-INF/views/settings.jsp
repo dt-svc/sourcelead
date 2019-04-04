@@ -218,6 +218,16 @@
 						</ul>
 						<div class="noDate noDateSm" style="display: none;"></div>
 					</div>
+					
+					<sec:authorize access="hasRole('ROLE_TICKET_CONFIGURATION')">
+						<div class="col-md-2">
+							<h5>Ticket Management</h5>
+							<ul class="repSearchList list-unstyled">
+								<li><a href="/app/ticketManagementTypeList" title="Tags">Ticket Management</a></li>
+							</ul>
+							<div class="noDate noDateSm" style="display: none;"></div>
+						</div>
+					</sec:authorize>
 
 					<sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
 						<div class="col-md-2">
@@ -369,7 +379,7 @@
 						<!-- DropDown -->
 						<a href="/app/bankAccountDetails">
 							<div class="clearfix text-center mb10">
-								<i class="bankacountsSVG"></i>
+								<i class="ind_bankacountSVG"></i>
 							</div>
 							<div class="clearfix text-center">
 								<h4>Bank Accounts</h4>
@@ -479,7 +489,7 @@
 							<a href="${appPath}/indPayrollConfiguration">
 								 <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
 									<div class="clearfix text-center mb10">
-										<i class="payrollSVG"></i>
+										<i class="ind_payrollSVG"></i>
 									</div>
 									<div class="clearfix text-center">
 										<h4>Ind Payroll Configuration</h4>
@@ -511,7 +521,18 @@
 							</div>
 						</a>
 					</div>
-
+					<sec:authorize access="hasRole('ROLE_TICKET_CONFIGURATION')">
+						<div class="col-md-2 reportNewCta">
+							<a href="/app/ticketManagementTypeList">
+								<div class="clearfix text-center mb10">
+									<i class="ticketManagementSVG"></i>
+								</div>
+								<div class="clearfix text-center">
+									<h4>Ticket Management</h4>
+								</div>
+							</a>
+						</div>
+					</sec:authorize>
 
 					<sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
 						<div class="col-md-2 reportNewCta">

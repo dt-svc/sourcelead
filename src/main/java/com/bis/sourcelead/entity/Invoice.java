@@ -406,6 +406,10 @@ public class Invoice {
 	@Transient
 	@JsonProperty
 	private String customInvoiceName;
+	
+	@Transient
+	@JsonProperty
+	private long dataResponderLocationId;
 
 	
 	public Long getId()
@@ -1284,6 +1288,16 @@ public class Invoice {
 	public void setCustomInvoiceName(String customInvoiceName) {
 		this.customInvoiceName = customInvoiceName;
 	}
+
+	public long getDataResponderLocationId() {
+		return dataResponderLocationId;
+	}
+
+	public void setDataResponderLocationId(long dataResponderLocationId) {
+		this.dataResponderLocationId = dataResponderLocationId;
+	}
+
+	
 
 	
 }

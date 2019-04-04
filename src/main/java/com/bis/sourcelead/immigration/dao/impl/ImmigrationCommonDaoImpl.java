@@ -2463,68 +2463,21 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	public List<LcaDetailsDTO> getEmployeeByLcaId(Long lcaId,OrgLocations orgLocations) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<LcaDetailsDTO> empList = new ArrayList<LcaDetailsDTO>();
-		String queryString = "SELECT " + 
-				"IMM.GENERATED_ID AS petitionId, " + 
-				"IMM.IMMIGRATION_UUID AS immigrationUUID,"+
-				                                 "(SELECT " + 
-			                      	                       "CONCAT(FIRST_NAME, ' ', IFNULL(LAST_NAME, '')) " + 
-				                                           "FROM " + 
-				                                               " CANDIDATE " + 
-				                                                          " WHERE " + 
-				                                                               "ID = LH.CANDIDATE_ID) AS empName, " + 
-				                                                               "(SELECT "+
-				                                                                    "CANDIDATE_UUID "+
-				                                                                  "FROM "+
-				                                                                       "CANDIDATE " + 
-				                                                                   "WHERE "+
-				                                                                       "CANDIDATE_UUID = LH.CANDIDATE_ID) AS candidateUUID, "+        
-				                                       "(SELECT " + 
-				                                                    "NAME " + 
-				                                                         "FROM " + 
-				                                                             "LOOKUP_DATA " + 
-				                                                                       "WHERE " + 
-				                                                                         "ID = IMM.PETITION_TYPE) AS petitionType, " + 
-				                                        "(SELECT " + 
-				                                                      "NAME " + 
-				                                                              "FROM " + 
-				                                                                  "LOOKUP_DATA " + 
-				                                                                                "WHERE " + 
-				                                                                                         "ID = IMM.CURRENT_USCIS_STATUS) AS status, " + 
-				                                                                                         " DATE_FORMAT(IMM.OPEN_DATE ,'%Y-%m-%d') AS filedOn, " + 
-				                                      "(SELECT " + 
-				                                             "O.ORG_NAME " + 
-				                                                         "FROM " + 
-				                                                             "ORG_LOCATIONS OL, " + 
-				                                                                                 "ORG O " + 
-				                                                                                      "WHERE " + 
-				                                                                                         "OL.ORG_ID = O.ID " + 
-				                                                                                              "AND OL.ID = IMM.ORG_LOCATION_ID) AS client, " + 
-				                                       "(SELECT " + 
-				                                                    "O.ORG_NAME " + 
-				                                                                  "FROM " + 
-				                                                                            "ORG_LOCATIONS OL, " + 
-				                                                                                 " ORG O " + 
-				                                                                                     "WHERE " + 
-				                                                                                        " OL.ORG_ID = O.ID " + 
-				                                                                                           " AND OL.ID = IMM.ATTORNEY_LOCATION_ID) AS vendor, " + 
-				                                         "(SELECT " +
-			                                                         "CONVERT(ORG_LOCATION_ID,CHAR) "+
-			                                                                                    "FROM "+
-			                                                                                          "LCA "+
-			                                                                                               "WHERE "+
-			                                                                                                   "ID= LH.LCA_ID) AS orgLocationId, "+
-			                                           "(SELECT  "+
-			                                             "IT.UUID "+
-			                                                   "FROM "+
-			                                                         "IMMIGRATION_TEMPLATE IT "+
-			                                                                  "WHERE "+
-			                                                                        "IT.ID = IMM.IMMIGRATION_TEMPLATE_ID) AS immiTemplateUUID "+
-				                                                  "FROM " + 
-				                                                          "IMMIGRATION IMM, " + 
-				                                                              "LCA_HISTORY LH " + 
-				                                                                   "WHERE " + 
-				                                                                        "IMM.ID = LH.IMMIGRATION_ID " +
-				                                                                            "AND LH.LCA_ID =:lcaId";
+		String queryString = "SELECT " + "IMM.GENERATED_ID AS petitionId, " + "IMM.IMMIGRATION_UUID AS immigrationUUID,"
+				+ "(SELECT " + "CONCAT(FIRST_NAME, ' ', IFNULL(LAST_NAME, '')) " + "FROM " + " CANDIDATE " + " WHERE "
+				+ "ID = LH.CANDIDATE_ID) AS empName, " + "(SELECT " + "CANDIDATE_UUID " + "FROM " + "CANDIDATE "
+				+ "WHERE " + "ID = LH.CANDIDATE_ID) AS candidateUUID, " + "(SELECT " + "NAME " + "FROM "
+				+ "LOOKUP_DATA " + "WHERE " + "ID = IMM.PETITION_TYPE) AS petitionType, " + "(SELECT " + "NAME "
+				+ "FROM " + "LOOKUP_DATA " + "WHERE " + "ID = IMM.CURRENT_USCIS_STATUS) AS status, "
+				+ " DATE_FORMAT(IMM.OPEN_DATE ,'%Y-%m-%d') AS filedOn, " + "(SELECT " + "O.ORG_NAME " + "FROM "
+				+ "ORG_LOCATIONS OL, " + "ORG O " + "WHERE " + "OL.ORG_ID = O.ID "
+				+ "AND OL.ID = IMM.ORG_LOCATION_ID) AS client, " + "(SELECT " + "O.ORG_NAME " + "FROM "
+				+ "ORG_LOCATIONS OL, " + " ORG O " + "WHERE " + " OL.ORG_ID = O.ID "
+				+ " AND OL.ID = IMM.ATTORNEY_LOCATION_ID) AS vendor, " + "(SELECT " + "CONVERT(ORG_LOCATION_ID,CHAR) "
+				+ "FROM " + "LCA " + "WHERE " + "ID= LH.LCA_ID) AS orgLocationId, " + "(SELECT  " + "IT.UUID " + "FROM "
+				+ "IMMIGRATION_TEMPLATE IT " + "WHERE " + "IT.ID = IMM.IMMIGRATION_TEMPLATE_ID) AS immiTemplateUUID "
+				+ "FROM " + "IMMIGRATION IMM, " + "LCA_HISTORY LH " + "WHERE " + "IMM.ID = LH.IMMIGRATION_ID "
+				+ "AND LH.LCA_ID =:lcaId";
 		empList = session.createSQLQuery(queryString).setParameter("lcaId", lcaId).setResultTransformer(Transformers.aliasToBean(LcaDetailsDTO.class)).list();
 		for(LcaDetailsDTO obj : empList) {
 			if(orgLocations.getId().equals(obj.getOrgLocationId())) {
@@ -3300,5 +3253,33 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	    query.setLong("visaId", visaId);  
 	    int result = query.executeUpdate();
 	    return result;
+	}
+	
+	@Override
+	@Transactional
+	public Lca updateLcaAvailablePositionsById(Lca lca)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		if(lca.getId() != null ) {
+			session.saveOrUpdate(lca);
+	   }
+	    return lca;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Lca getLcaNumber(String lcaNo) throws Exception {
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Lca lca where lca.lcaNo = :lcaNo and lca.status = 1";
+		List<Lca> lcaNumbersList =  session.createQuery(query) .setString("lcaNo", lcaNo).list();
+		Lca lca = null;
+		if(lcaNumbersList != null && !lcaNumbersList.isEmpty())
+		{
+			lca = (Lca) lcaNumbersList.iterator().next();
+		}
+		return lca;
+		
+		
 	}
 }	

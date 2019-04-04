@@ -150,35 +150,33 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	@Async
 	public void sendEmail(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray, List<EmailAttachment> attachmentList) throws Exception
 	{
-		if(!environment.equalsIgnoreCase("local")) {
-			if (emailMessage != null) {
-				String tabDivGroup = "";
-				// the pattern we want to search for
-				Pattern p = Pattern.compile("<tabIdDiv>(\\S+)</tabIdDiv>");
-				Matcher m = p.matcher(emailMessage.getMessageBody());
-				// if we find a match, get the group
-				if (m.find()) {
-					// get the matching group
-					tabDivGroup = m.group(1);
-				}
-				
-				for (InternetAddress toAddressEmail : iAdressArray) {
-					UserMailUnsubscribe unsubscriptionUser = userMailUnsubscribeService.getUserMailUnsubscriptionByUserEmail(toAddressEmail.getAddress());
-					if (unsubscriptionUser != null && StringUtils.isNotEmpty(unsubscriptionUser.getTabIds())) {
-						String[] tabIdsArray = unsubscriptionUser.getTabIds().split(",");
-						if (StringUtils.isNotEmpty(tabDivGroup)) {
-							if(ArrayUtils.contains( tabIdsArray, tabDivGroup)) {
-								iAdressArray = (InternetAddress[]) ArrayUtils.removeElement(iAdressArray, toAddressEmail);
-							}else if(ArrayUtils.contains( tabIdsArray, "0") && !ArrayUtils.contains( Constants.UNSUBSCRIPTION_TABID_LISTED, tabDivGroup)) {
-								iAdressArray = (InternetAddress[]) ArrayUtils.removeElement(iAdressArray, toAddressEmail);
-							}
-						}else if(ArrayUtils.contains( tabIdsArray, "0")) {
+		if (emailMessage != null) {
+			String tabDivGroup = "";
+			// the pattern we want to search for
+			Pattern p = Pattern.compile("<tabIdDiv>(\\S+)</tabIdDiv>");
+			Matcher m = p.matcher(emailMessage.getMessageBody());
+			// if we find a match, get the group
+			if (m.find()) {
+				// get the matching group
+				tabDivGroup = m.group(1);
+			}
+			
+			for (InternetAddress toAddressEmail : iAdressArray) {
+				UserMailUnsubscribe unsubscriptionUser = userMailUnsubscribeService.getUserMailUnsubscriptionByUserEmail(toAddressEmail.getAddress());
+				if (unsubscriptionUser != null && StringUtils.isNotEmpty(unsubscriptionUser.getTabIds())) {
+					String[] tabIdsArray = unsubscriptionUser.getTabIds().split(",");
+					if (StringUtils.isNotEmpty(tabDivGroup)) {
+						if(ArrayUtils.contains( tabIdsArray, tabDivGroup)) {
+							iAdressArray = (InternetAddress[]) ArrayUtils.removeElement(iAdressArray, toAddressEmail);
+						}else if(ArrayUtils.contains( tabIdsArray, "0") && !ArrayUtils.contains( Constants.UNSUBSCRIPTION_TABID_LISTED, tabDivGroup)) {
 							iAdressArray = (InternetAddress[]) ArrayUtils.removeElement(iAdressArray, toAddressEmail);
 						}
+					}else if(ArrayUtils.contains( tabIdsArray, "0")) {
+						iAdressArray = (InternetAddress[]) ArrayUtils.removeElement(iAdressArray, toAddressEmail);
 					}
 				}
-				sendEmailCommon(emailMessage, locationsId, iAdressArray, attachmentList);
 			}
+			sendEmailCommon(emailMessage, locationsId, iAdressArray, attachmentList);
 		}
 	}
 	

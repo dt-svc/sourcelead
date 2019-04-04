@@ -600,6 +600,7 @@ function viewHolidaysTable(){
     $('#viewHolidaysTable').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"columnDefs": [ { orderable: false, targets: [2]}],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,

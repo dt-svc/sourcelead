@@ -18,6 +18,8 @@ public interface PayrollPayheadDao {
 	
 	List<PayrollPayhead> getPayrollPayheadList(OrgLocations orgLocations) throws Exception;
 	
+	List<PayrollPayhead> getAllPayrollPayheadListByOrgLocationId(Long orgLocationId) throws Exception;
+	
 	List<PayrollPayhead> getPayrollPayheadListByPayheadComponentType(OrgLocations orgLocations, String component) throws Exception;
 	
 	ResponseList<PayrollPayheadDTO>  getPayrollPayheadListWithPagination(PayrollPayheadDTO payrollPayheadDTO,OrgLocations orgLocations) throws Exception;
@@ -41,4 +43,6 @@ public interface PayrollPayheadDao {
 	PayrollPayhead getPayrollPayheadByShortCodeAndOrglocation(String shortCode, Long orgLocationId);
 
 	AssociateSalaryHistoryInd saveAssociateSalaryHistoryInd(AssociateSalaryHistoryInd associateSalaryHistoryInd) throws Exception;
+	
+	List<AssociateSalaryInd> getAssociateSalaryIndListByOrgLocationsId(Long orgLocationId) throws Exception;
 }

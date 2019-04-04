@@ -24,8 +24,10 @@ import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryHistory;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.impl.AssociateBankDataDaoImpl;
+import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 
 @Repository
@@ -404,16 +406,15 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(fqStartDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(fqEndDate.getTime());
-		String subqry = " and ass.candidate.designationType <> '"+PayrollConstant.C2C+"' and ass.candidate.id NOT IN( select empPayroll.candidate.id from IndEmployeePayroll empPayroll where "
-				          + " empPayroll.indPaysheetFrequency.userGroup.id =:groupId and empPayroll.indPaysheetFrequency.orgLocation.id = :orgLocationId and "
-			  	          + " empPayroll.indPaysheetFrequency.frequencyStartDate = :startDate and empPayroll.indPaysheetFrequency.frequencyEndDate = :endDate and empPayroll.status = '1' )";
+		String subqry = " AND ass.candidate.designationType <> '"+PayrollConstant.C2C+"' AND ass.candidate.id NOT IN( select empPayroll.candidate.id from IndEmployeePayroll empPayroll WHERE "
+		          + " empPayroll.indPaysheetFrequency.userGroup.id =:groupId  AND empPayroll.indPaysheetFrequency.orgLocation.id = :orgLocationId  AND "
+	  	          + " empPayroll.indPaysheetFrequency.frequencyStartDate = :startDate  AND empPayroll.indPaysheetFrequency.frequencyEndDate = :endDate  AND empPayroll.status = '1' )";
 		if(Constants.ALL_RECORDS.equalsIgnoreCase(payType)) {
-			qry = "from AssociateSalaryInd ass where (ass.stopSalary is null or ass.stopSalary = 'NO') and ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.status = '1' "
-					+subqry;
+			qry = "from AssociateSalaryInd ass WHERE (ass.stopSalary IS NULL OR ass.stopSalary = 'NO')  AND ass.orgLocations.id = :orgLocationId  AND ass.groupId = :groupId  AND ass.status = '1' "+subqry;
 			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).setDate("startDate", sqlStartDate)
 						.setDate("endDate", sqlEndDate).list();
 		}else {
-			qry = "from AssociateSalaryInd ass where (ass.stopSalary is null or ass.stopSalary = 'NO') and ass.orgLocations.id = :orgLocationId and ass.groupId = :groupId and ass.payType = :payType and ass.status = '1'"+subqry;;
+			qry = "from AssociateSalaryInd ass WHERE (ass.stopSalary IS NULL OR ass.stopSalary = 'NO')  AND ass.orgLocations.id = :orgLocationId  AND ass.groupId = :groupId  AND ass.payType = :payType  AND ass.status = '1'"+subqry;
 			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).setLong("groupId", groupId).setParameter("payType", payType).list();
 		}
 		 
@@ -432,4 +433,5 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		AssociateSalary assSalary = (AssociateSalary) session.createQuery(qry).setLong("salaryId", salaryId).uniqueResult();
 		return assSalary;
 	}
+
 }

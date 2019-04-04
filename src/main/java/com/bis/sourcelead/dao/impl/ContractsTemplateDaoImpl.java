@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -434,9 +435,9 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		}*/
 		
 		String subquery1 = "";
-		if("WAITING_FOR_APPROVER".equalsIgnoreCase(contractStatus)){
+		if("WAITING_FOR_APPROVER".equalsIgnoreCase(contractStatus) || "WAITING_TO_SEND".equalsIgnoreCase(contractStatus)){
 			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_FOR_APPROVER' or contracts.templateSubmissionStatus = 'WAITING_TO_SEND') ";
-		}else if("WAITING_TO_BE_SIGNED".equalsIgnoreCase(contractStatus)){
+		}else if("WAITING_TO_BE_SIGNED".equalsIgnoreCase(contractStatus) || "PENDING".equalsIgnoreCase(contractStatus)){
 			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_TO_BE_SIGNED' or contracts.templateSubmissionStatus = 'PENDING') ";
 		}else{
 			subquery1 += " contracts.templateSubmissionStatus = '"+contractStatus+"'";
@@ -494,7 +495,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Contracts  contracts =  null;
-		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.id =:contractId").setLong("contractId", contractId).list();
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.parentContractId where ct.id =:contractId").setLong("contractId", contractId).list();
 		if(null != contractsList && contractsList.size() >0){
 			contracts = contractsList.get(0);
 		}
@@ -529,11 +530,17 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId) throws Exception {
+	public ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId, String templateUUID) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
 			List<ContractsTemplate> contractsTemp = new ArrayList<ContractsTemplate>();
+			if(StringUtils.isNotBlank(templateUUID)) {
+				contractsTemp = session.createQuery("from ContractsTemplate conTemp where conTemp.templateName=:templateName and conTemp.templateType=:contractType and conTemp.orgLocationId.id = :orgLocationId and conTemp.templateUUID != :templateUUID" )
+						.setString( "templateName", templateName ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).setString("templateUUID", templateUUID ).list();
+			}else {
 				contractsTemp = session.createQuery("from ContractsTemplate conTemp where conTemp.templateName=:templateName and conTemp.templateType=:contractType and conTemp.orgLocationId.id = :orgLocationId" )
 						.setString( "templateName", templateName ).setString("contractType", contractType).setLong("orgLocationId", orgLocationId ).list();
+			}
+				
 				if (contractsTemp.size() > 0) {
 					return contractsTemp.get(0);
 				} else {
@@ -883,4 +890,21 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		status = q.executeUpdate();
 		return status;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Contracts> getAllContractsBasedOnConfigureDate(Date updatedDate) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		Calendar c = Calendar.getInstance(); 
+		c.setTime(updatedDate); 
+		c.add(Calendar.DATE, 1);
+		Date nextUpdatedDate = c.getTime();
+		
+		@SuppressWarnings("unchecked")
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.contactUser where ct.endDate BETWEEN :updatedDate and :nextUpdatedDate ").setParameter("updatedDate", updatedDate).setParameter("nextUpdatedDate", nextUpdatedDate).list();
+		return contractsList;
+	}
 }
+

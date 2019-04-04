@@ -30,9 +30,11 @@ import com.bis.sourcelead.entity.ImmigrationTemplateForms;
 import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
+import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -49,6 +51,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 
     @Autowired
     CandidateDao candidateDao;
+    
+    @Autowired
+    TaskService taskService;
     
     @Autowired
     private CommonUtil commonUtil;
@@ -354,11 +359,18 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         immigrationTemplateDao.reactiveImmigrationTemplateById(templateId);
     }
 
-    @Override
-    public void deleteImmigrationTaskList(String id) {
-        immigrationTemplateDao.deleteImmigrationTaskList(id);
-
-    }
+	@Override
+	public void deleteImmigrationTaskList(String id, String taskName) {
+		try {
+			Tasks task = taskService.getTaskByTaskName(taskName);
+			if (task != null) {
+				taskService.updateTaskStatus(task);
+			}
+			immigrationTemplateDao.deleteImmigrationTaskList(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
     @Override
     public int savePetitionTemplateDetailsValues(String templateId) {

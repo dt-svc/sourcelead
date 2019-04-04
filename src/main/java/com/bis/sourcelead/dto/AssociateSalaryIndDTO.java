@@ -65,6 +65,12 @@ public class AssociateSalaryIndDTO extends CommonDTO {
   	private String updatedDate;
     
     private List<AssociateSalaryPayheadIndDTO> associateSalaryPayheadIndList;
+    
+    private Integer recordUpdatedCount;
+    
+    private String associateEmail;
+    
+    private String errorMessage;
 
 	public Long getId() {
 		return id;
@@ -288,6 +294,30 @@ public class AssociateSalaryIndDTO extends CommonDTO {
 
 	public void setAssociateSalaryPayheadIndList(List<AssociateSalaryPayheadIndDTO> associateSalaryPayheadIndList) {
 		this.associateSalaryPayheadIndList = associateSalaryPayheadIndList;
+	}
+
+	public Integer getRecordUpdatedCount() {
+		return recordUpdatedCount;
+	}
+
+	public void setRecordUpdatedCount(Integer recordUpdatedCount) {
+		this.recordUpdatedCount = recordUpdatedCount;
+	}
+
+	public String getAssociateEmail() {
+		return associateEmail;
+	}
+
+	public void setAssociateEmail(String associateEmail) {
+		this.associateEmail = associateEmail;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
 }

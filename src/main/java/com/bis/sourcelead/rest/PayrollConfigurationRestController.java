@@ -140,10 +140,8 @@ public class PayrollConfigurationRestController {
 	AssociateNomineeService associateNomineeService;
 	
 	@Autowired
-	EmailReminderService emailReminderService;
-	
-	@Autowired
 	INDPayrollCommonUtil payrollCommonUtil;
+	
 	
 	@RequestMapping(value = "/saveBonus" , method = RequestMethod.POST)
 	public Response<String> saveBonus(PayrollBonusDTO payrollBonusDTO, HttpServletRequest request)
@@ -1096,39 +1094,8 @@ public class PayrollConfigurationRestController {
 	    return model;  
 	}
 	
-	
-	
-	 @RequestMapping(value = "/storeJobConfigureEmail" , method = RequestMethod.POST)
-		public Response<String> storeJobConfigureEmail(EmailReminderDTO emailreminderDTO, HttpServletRequest request)
-				throws Exception {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Response<String> response = new Response<>();
-			if (user != null) {
-				if (Validator.validate(emailreminderDTO)) {
-					try {
-						EmailReminder emailReminder = emailReminderService.saveEmailReminderDetails(emailreminderDTO, user, orgLocations);
-						response.setResponse(Result.SUCCESS.name());
-						response.setResponseMessage(Result.SUCCESS.getValue());
-					} catch (Exception e) {
-						response.setResponse(Result.AWKWARD.name());
-						response.setResponseMessage(Result.AWKWARD.getValue());
-						logger.error(ExceptionUtils.getFullStackTrace(e));
-					}
-				}else {
-					response.setObject("DataMissing");
-					response.setResponse(Result.INVALID_DATA.name());
-					response.setResponseMessage(Result.INVALID_DATA.getValue());
-				}
-			}else {
-				response.setResponse(Result.SESSION_TIMEDOUT.name());
-				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-			}
-			return response;
-		}
-	 
-	 
-	 @RequestMapping(value = { "/stopSalaryProcessingForEmployee","/rest/stopSalaryProcessingForEmployee" } , method = RequestMethod.POST)
+		
+		@RequestMapping(value = { "/stopSalaryProcessingForEmployee","/rest/stopSalaryProcessingForEmployee" } , method = RequestMethod.POST)
 	 public Response<String> stopSalaryProcessingForEmployee(AssociateSalaryIndDTO associateSalaryIndDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
 	    	Response<String> resObj = new Response<>();
@@ -1167,4 +1134,12 @@ public class PayrollConfigurationRestController {
 			return resObj;
 			
 		}
+		
+		@RequestMapping(value = { "/refreshPayheadsForOrg", "rest/refreshPayheadsForOrg" })
+		public Response<String> refreshPayheadsForOrg(HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Response<String> response =  payrollPayheadService.refreshPayheadsForOrg(orgLocations.getId());
+			return response;
+		}
+	
 }

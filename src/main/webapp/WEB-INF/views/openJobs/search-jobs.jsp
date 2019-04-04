@@ -176,7 +176,7 @@ function getPostValueDetails(){
 	<div class="clearfix">
 			<div class="container">
 			<h2 class="text-center mb">Best Places to Work</h2>
-			<div class="row contnetarea">
+			<div class="contnetarea">
 				<p class="text-center" style="text-align: center !important;">
 					If you're looking for a job change or a career change, you can find it on Sourcelead.<br>You can take a look at our Popular Job Locations and Job Titles. Find your perfect career fit for today.<br>Whatever type of job you're looking for, you can find it on SourceLead.
 				</p>
@@ -219,10 +219,16 @@ function getPostValueDetails(){
  			<h2>Benefits of SourceLead</h2>
  			<p>Integration which provides a one-stop solution to entire recruitment life cycle with a single login to Clients, Vendors and Candidates.</p>
  		</div>
-  		<div class="col-md-12 clearfix">
+  		<div class="clearfix">
+  			<div class="col-xs-12 col-sm-12 col-md-3 col-md-offset-1 col-lg-2 col-lg-offset-3">
   			<a href="/register" class="btn btn-custom mr" target="_blank">Register with Us</a>
-  			<span class="mr ml">--- OR ---</span>
+  			</div>
+  			<div class="col-xs-12 col-sm-12 col-md-3 col-lg-2 text-center">
+  				<span class="mt">--- OR ---</span>
+  				</div>
+  				<div class="col-xs-12 col-sm-12 col-md-3 col-lg-2 text-center">
   			<a href="/register" class="btn btn-custom mr" target="_blank">Upload your CV</a>
+  			</div>
   		</div>
   </div>
 </section>

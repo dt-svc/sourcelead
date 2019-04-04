@@ -2,6 +2,7 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -69,9 +70,11 @@ public class AssociatePfEsiServiceImpl implements AssociatePfEsiService{
 					associatePfEpf.setEligibleForPf(Constants.YES);
 					associatePfEpf.setUanNumber(associatePfEsiDetailsDTO.getUanNumber());
 					associatePfEpf.setPfNumber(associatePfEsiDetailsDTO.getPfNumber());
+					//associatePfEpf.setAadharNumber(associatePfEsiDetailsDTO.getAadharNumber());
 					associatePfEpf.setEnroleDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), associatePfEsiDetailsDTO.getEnroleDate()) );
 				}else {
 					associatePfEpf.setEligibleForPf(null);
+					//associatePfEpf.setAadharNumber(null);
 					associatePfEpf.setUanNumber(null);
 					associatePfEpf.setPfNumber(null);
 					associatePfEpf.setEnroleDate(null);
@@ -102,6 +105,7 @@ public class AssociatePfEsiServiceImpl implements AssociatePfEsiService{
 						associatePfEpf.setEligibleForPf(null);
 						associatePfEpf.setUanNumber(null);
 						associatePfEpf.setPfNumber(null);
+						//associatePfEpf.setAadharNumber(null);
 						associatePfEpf.setEnroleDate(null);
 						associatePfEpf.setEligibleForEsi(null);
 						associatePfEpf.setEsinumber(null);
@@ -144,6 +148,7 @@ public class AssociatePfEsiServiceImpl implements AssociatePfEsiService{
 			efesiDTO.setEligibleForPf(aped.getEligibleForPf());
 			efesiDTO.setUanNumber(aped.getUanNumber());
 			efesiDTO.setPfNumber(aped.getPfNumber());
+			//efesiDTO.setAadharNumber(aped.getAadharNumber());
 			if(aped.getEnroleDate() != null) {
 				SimpleDateFormat dateFormat = null;
 				if(StringUtils.isNotBlank(orgLocation.getDateFormat())) {
@@ -158,6 +163,11 @@ public class AssociatePfEsiServiceImpl implements AssociatePfEsiService{
 			
 		}
 		return efesiDTO;
+	}
+
+	@Override
+	public List<AssociatePfEsiDetails> getAllPfEsiDetailsByOrgLocationid(Long id) throws Exception {
+		return associatePfEsiDao.getAllPfEsiDetailsByOrgLocationid(id);
 	}
 
 }

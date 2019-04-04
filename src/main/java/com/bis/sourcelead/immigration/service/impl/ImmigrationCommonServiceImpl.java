@@ -232,7 +232,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				// This block of code for no of positions available for LCA Number once LCA Assigned To candidate
 				    Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 				    Lca updateLca=	immigrationCommonDao.getLcaByLcaId(Long.parseLong(immigrationDTO.getLcaId()));
-				    updateLca.setAvailablePositions(updateLca.getNoOfPositions()-1);
+				    updateLca.setAvailablePositions(updateLca.getAvailablePositions()-1);
 				    updateLca.setUpdatedDate(currentDate);
 					immigrationCommonDao.saveLcaDetails(updateLca, null, null);
 				
@@ -360,6 +360,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				tasks.setTaskRepeat(templateTasks.getTaskRepeat());
 				tasks.setDescription(templateTasks.getDescription());
 				tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
+				tasks.setStatus(Constants.RECORD_ACTIVE);
 				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 				tasks.setCreatedDate(currentDate);
 				tasks.setCreatedBy(user.getUserUUID());
@@ -386,6 +387,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					tasks.setTaskRepeat(templateTasks.getTaskRepeat());
 					tasks.setDescription(templateTasks.getDescription());
 					tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
+					tasks.setStatus(Constants.RECORD_ACTIVE);
 					Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 					tasks.setCreatedDate(currentDate);
 					tasks.setCreatedBy(user.getUserUUID());
@@ -3190,5 +3192,15 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		return immigrationCommonDao.getCandidateActiveVisaDetailsByVisaNumberAndCountry(candidateId, visaNumber, country);
 	}
 
-
+	@Override
+	public Lca updateLcaAvailablePositionsById(Lca lca) {
+		
+		return immigrationCommonDao.updateLcaAvailablePositionsById(lca);
+	}
+	
+	@Override
+	public Lca getLcaNumber(String lcaNo) throws Exception{
+		
+		return immigrationCommonDao.getLcaNumber(lcaNo);
+	}
 }

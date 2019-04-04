@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementIncentive;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
@@ -139,6 +140,7 @@ public interface RequirementDao {
 	public List<Requirement> getAllReleasedJobsBasedOnParetRequirementIdAndVendorLocationId(List<Long> parentreqIds,
 			Long relationId)throws Exception;
 	
+	
 	public List<Requirement> getAllClientJobsBasedonRelationId(Long locationId,Long relationId,String userRoleName,User user,String status)throws Exception;
 
 	public Requirement checkRequirementIdNumberInDatebase(Long orgLocationId);
@@ -245,5 +247,14 @@ public interface RequirementDao {
 	
 	public List<Requirement> getJobsListByOrgRelationAndLocation(Long orglocationId,String orgRelationIds,Date startDateUTC,Date endDateUTC) throws Exception;
 
+	public List<Requirement> getAllReleasedJobsForVendorBasedOnOrgRelationId(Long orgLocationId, Long orgRelationId);
+	
+	public List<Requirement> getAllReleasedJobsBasedOnSpocId(long spocId);
+
+	public long getQualityCandidatesForVendors(List<Long> requirementIdList, long orgRelationId, long spocId, String status);
+	
+	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId, String status);
+
+	public List<RequirementSubmission> getApplicantDeclineCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId, String submissionStatus);
 
 }

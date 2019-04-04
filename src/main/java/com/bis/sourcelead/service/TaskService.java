@@ -44,4 +44,8 @@ public interface TaskService {
 	Long taskCountByIdAndOrgLocationIdAssignedUserId(Long orgLocationId,Long userId,String Status)throws Exception;
 
 	List<TaskDTO> getTasksListByImmigrationIdAndCandidateId(String immigrationId, User user, String taskStatus, String searchVal) throws ParseException;
+	
+	public Tasks getTaskByTaskName(String taskName)throws Exception;
+	
+	public void updateTaskStatus(Tasks task)throws Exception;
 }

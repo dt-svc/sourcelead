@@ -848,9 +848,7 @@ public class UserDaoImpl implements UserDao {
      for(Roles roles : rolesList){
     	 if(null != roles.getActionId()){
     		 List<Long> roleActionsList = new ArrayList<Long>();
-    		 /*for (String s : roles.getActionId().split(",")){
-        		 roleActionsList.add(Long.parseLong(s));
-        	 }*/
+    		
     		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
     			 roleActionsList.add(Long.parseLong(s));
         	 }
@@ -863,7 +861,7 @@ public class UserDaoImpl implements UserDao {
     	 
      }
 	 
-     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList))  ";
+     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))  ";
      List<User> userRoleList = session.createQuery(query.toString()).setParameterList("ownerRolesList", ownerRolesList).list();
      return userRoleList;
         
@@ -2380,6 +2378,21 @@ public class UserDaoImpl implements UserDao {
 			e.printStackTrace();
 		}
 		return -1;
+	}
+	
+	
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public List<DashboardItems> getAllDashboardItems() {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from DashboardItems d where d.user != null and d.orgLocations != null";
+			return session.createQuery(query).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override

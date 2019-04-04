@@ -863,9 +863,9 @@ function validate_fileupload(fileName)
 }
 </script>
  <script type="text/javascript">
- function validateUploadFile(id,entityId)
+ function validateUploadFile(id, entityId)
 	{
-	      var selectedFile = $('#'+id+'docFile'+entityId).val();
+		  var selectedFile = $('#'+id+'docFile'+entityId).val();
 		  if(validate_fileupload(selectedFile)){
 			      var docSize = $('#'+id+'docFile'+entityId)[0].files[0].size;
 		           $("#"+id+"docFileuploadFileGroup"+entityId).find('p.jquery_form_error_message').remove();

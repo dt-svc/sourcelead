@@ -55,7 +55,7 @@ public interface ContractsTemplateService {
 
 	ContractsTemplate saveContractTemplate(ContractsTemplate contractsTemplate) throws Exception;
 
-	ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId) throws Exception;
+	ContractsTemplate findByContractTemplateName(String templateName,String contractType, Long orgLocationId, String templateUUID) throws Exception;
 
 	List<Contracts> getListOfContractsEnvId();
 	
@@ -105,4 +105,6 @@ public interface ContractsTemplateService {
 	Integer deleteContractOwnerHierarchyListByContractId(Long Id);
 
 	Contracts getAllVendorClientAndApplicantCountByLocationIdAndStatus(OrgLocations orgLocation, String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception;
+	
+	List<Contracts> getAllContractsBasedOnConfigureDate(Date updatedDate) throws Exception;
 }

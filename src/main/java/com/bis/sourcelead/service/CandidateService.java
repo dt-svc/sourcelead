@@ -270,7 +270,7 @@ public interface CandidateService {
 	
 	public void addCandidateToMarketCart(User user, CandidateMarketPlace marketplace, OrgLocations orgLocations)throws Exception;
 	
-	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, OrgLocations orgLocations, String candidateLocation, String searchValue);
+	public List<CandidateMarketPlaceDTO> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, OrgLocations orgLocations, String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO);
 
 	public void deleteCandidateMarketCartByMarketUUID(String candidatgeMarketUUID);
 	
@@ -336,5 +336,7 @@ public interface CandidateService {
 	public void updateMarketWalletAmount(Double balanceAmountValue, Long id);
 	
 	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid)throws Exception;
+	
+	public List<Candidate> getAllAssociateByLocation(Long orgLocationId)throws Exception;
 
 }

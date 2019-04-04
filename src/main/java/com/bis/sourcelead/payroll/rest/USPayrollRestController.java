@@ -90,6 +90,7 @@ import com.bis.sourcelead.payroll.dto.USPayrollAssociateTaxHistoryDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.dto.USPaysheetDTO;
 import com.bis.sourcelead.payroll.dto.VendorRecruitersDTO;
+import com.bis.sourcelead.payroll.entity.AssociateBankData;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.BankDataHistory;
@@ -498,6 +499,22 @@ public class USPayrollRestController {
 		return resObj;
 	}
 	
+	
+	/**
+	 * save associate tax
+	 * @param associateTaxDTO
+	 * @param request
+	 * @param response
+	 * @return Response<AssociateTaxDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/changeActiveAccount","/rest/changeActiveAccount" }, method = RequestMethod.GET)
+	@ResponseBody
+	public boolean changeActiveAccount(@RequestParam(value = "associateBankId", required = false) Long associateBankId ,@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		return associateBankDataService.changeActiveAccount(associateBankId,candidateId);	
+	}
+	
 	/**
 	 * check state has Local tax or not
 	 * @param associateTaxDTO
@@ -614,14 +631,31 @@ public class USPayrollRestController {
 		 */
 		@RequestMapping(value = { "/findAssociateBankDataByUserId","/rest/findAssociateBankDataByUserId" }, method = RequestMethod.GET)
 		@ResponseBody
-		public AssociateBankDataDTO findAssociateBankDataByUserId(@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request, HttpServletResponse response) throws Exception
+		public List<AssociateBankData> findAssociateBankDataByUserId(@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			AssociateBankDataDTO  associateBankDataDTO = associateBankDataService.findAssociateBankDataByUserId(userId,orgLocation);	
-			return associateBankDataDTO;
+			Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocation.getId());
+			List<AssociateBankData> associateBankDataList =  associateBankDataService.findAllAssociateBankDataByCandidateId(candidate.getId(),orgLocation.getId());
+			return associateBankDataList;
 		}
 		
 		
+		/**
+		 * find Associate bank Data By UUID
+		 * @param associateDeductionDTO
+		 * @param request
+		 * @param response
+		 * @return Response<AssociateDeductionDTO>
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/findAssociateBankDataByUUID","/rest/findAssociateBankDataByUUID" }, method = RequestMethod.GET)
+		@ResponseBody
+		public AssociateBankData findAssociateBankDataByUUID(@RequestParam(value = "associateBankUUID", required = false) String associateBankUUID,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			return  associateBankDataService.findAssociateBankDataByUUID(associateBankUUID,orgLocation.getId());
+		}
+
 		/**
 		 * find Associate Tax Summary By User Id
 		 * @param associateDeductionDTO
@@ -2038,7 +2072,7 @@ public class USPayrollRestController {
 		public ResponseList<FilteredClientDTO>getFilteredClientList(HttpServletRequest request,HttpServletResponse response) 
 		{
 			ResponseList<FilteredClientDTO> res = new ResponseList<>();
-			String DEST = "/home/rajasekhar/confidential/clients_filtered.json";
+			String DEST = "/home/confidential/clients_filtered.json";
 			try (FileReader reader = new FileReader(DEST))
 			{
 				res = payrollUtil.getFilteredClientListData(reader);
@@ -2056,7 +2090,8 @@ public class USPayrollRestController {
 		public Response<Map<String,String>> getCategoriesForStaffingFiltered(HttpServletRequest request,HttpServletResponse response) 
 		{
 			Response<Map<String,String>> res = new Response<>();
-			String DEST = "/home/rajasekhar/confidential/staffing_filtered.json";
+			
+			String DEST = "/home/confidential/staffing_filtered.json";
 			try (FileReader reader = new FileReader(DEST))
 			{
 				res = payrollUtil.getCategoriesForStaffingFilteredData(reader);
@@ -2074,7 +2109,7 @@ public class USPayrollRestController {
 		{
 			ResponseList<StaffingFilteredDTO> res = new ResponseList<>();
 			JSONParser jsonParser = new JSONParser();
-			String DEST = "/home/rajasekhar/confidential/staffing_filtered.json";
+			String DEST = "/home/confidential/staffing_filtered.json";
 			try (FileReader reader = new FileReader(DEST))
 			{
 				res = payrollUtil.getStaffingFilteredListByCategoryIdData(reader,categoryId);
@@ -2092,7 +2127,7 @@ public class USPayrollRestController {
 		{
 			ResponseList<VendorRecruitersDTO> res = new ResponseList<>();
 			JSONParser jsonParser = new JSONParser();
-			String DEST = "/home/rajasekhar/confidential/vendor_recruiters.json";
+			String DEST = "/home/confidential/vendor_recruiters.json";
 			try (FileReader reader = new FileReader(DEST))
 			{
 				res = payrollUtil.getVendorRecruiterData(reader);

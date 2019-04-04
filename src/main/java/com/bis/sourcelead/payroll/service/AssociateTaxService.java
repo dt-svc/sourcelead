@@ -17,4 +17,5 @@ public interface AssociateTaxService {
 
 	AssociateTaxDedContriView findUserTaxDeatails(Long candidateId, OrgLocations orgLocation);
 
+
 }

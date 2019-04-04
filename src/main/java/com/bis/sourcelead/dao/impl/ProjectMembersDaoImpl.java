@@ -1901,8 +1901,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectClientsId left join fetch pm.employee emp left join fetch pm.projectMemberCandidteId "
 				+ " where pm.projectMemberCandidteId.id IN(select cand.id from Candidate cand where cand.consultantUser.id = :userId and cand.orgLocationId.id = :orgLocationId ) and pm.status <> '0' " ;
 		
-		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId",orgLocationId) 
-			    .list();
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId",orgLocationId)  .list();
 		return allProjectsList;
 	}
 
@@ -1916,8 +1915,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String query = " from ProjectMembers pm left join fetch pm.projectMemberCandidteId left join fetch pm.projects where  "
 				+ "pm.projectClientsId.id IN (:projectClientsId) and pm.projectMemberCandidteId.id = :candidateId and pm.status = '1' " ;
 		
-		List<ProjectMembers> allProjectsList =session.createQuery(query).setParameterList("projectClientsId", projectClientsId).setLong("candidateId",candidateId) 
-			    .list();
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setParameterList("projectClientsId", projectClientsId).setLong("candidateId",candidateId) .list();
 		return allProjectsList;
 	}
 
@@ -2011,7 +2009,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			  mts.setEmployeeName(mm[3].toString());
 			  mts.setProjectName(mm[1].toString());
 			  mts.setPayRate((double)mm[4]);
-			  mts.setEmployeeId(mm[2].toString());
+			  if (mm[2] != null) {
+				  mts.setEmployeeId(mm[2].toString());
+			  } else {
+				  mts.setEmployeeId("--");
+			  }
 			  mts.setPayRateType(mm[5].toString());
 			  mts.setPayRateCurrency(mm[6].toString());
 			  mts.setBillRate((double)mm[7]);
@@ -2060,6 +2062,14 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			pm  = pmList.iterator().next();
 		}
 		return pm;  
+	}
+	@Override
+	@Transactional
+	public List<Candidate> getAllAvailableAssociates( Long orgLocationId) {
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = "from Candidate candidate where candidate.orgLocationId = :orgLocationId";
+	List<Candidate> list = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+	return list;
 	}
 	
 }

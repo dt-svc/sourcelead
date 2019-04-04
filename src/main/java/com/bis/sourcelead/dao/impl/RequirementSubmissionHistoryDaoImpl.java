@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RequirementLocationsDao;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
 import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
@@ -28,6 +29,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OfferAcceptanceRateView;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RecruiterJobsReportView;
 import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.RequirementLocations;
@@ -49,6 +51,9 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 	
 	@Autowired
 	private RequirementLocationsDao requirementLocationsDao;
+	
+	@Autowired
+	private OrgSpocDao orgSpocDao;
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -416,6 +421,54 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 			Query queryObj = session.createQuery(query);
 			queryObj.setString("userCode", userCode);
 			queryObj.setLong("orgLocationId", orgLocationId);
+			
+			List<OfferAcceptanceRateView> offerAcceptanceRateViewList = queryObj.list();
+			if(offerAcceptanceRateViewList != null && !offerAcceptanceRateViewList.isEmpty()) {
+				return offerAcceptanceRateViewList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<OfferAcceptanceRateView> getOfferAcceptanceRateListForVendor(long orgRelationId, long orgSpocId, int month, int year, boolean compare) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from OfferAcceptanceRateView oarView where oarView.orgRelationId=:orgRelationId";
+			String userCode = "";
+			if (orgSpocId > 0) {
+				OrgSpoc orgSpoc = orgSpocDao.getOrgSpocById(orgSpocId);
+				if (orgSpoc != null) {
+					userCode = orgSpoc.getVendorUser().getUserCode();
+				}
+			}
+			if(userCode != null && !userCode.isEmpty()) {
+				query += " and oarView.userCode=:userCode and oarView.orgSpocId=:orgSpocId";
+			}
+			if (month > 0 || year > 0) {
+				Calendar c = Calendar.getInstance();
+				if (month > 0) {
+					c.set(Calendar.MONTH, month - 1);
+					SimpleDateFormat YYYY_MM = new SimpleDateFormat("yyyy-MM");
+					query += " and oarView.createdYearMonth='" + YYYY_MM.format(c.getTime()) + "'";
+				} else if (year > 0) {
+					c.set(Calendar.YEAR, year);
+					SimpleDateFormat YYYY = new SimpleDateFormat("yyyy");
+					query += " and oarView.createdYear='" + YYYY.format(c.getTime()) + "'";
+				}
+			}
+//			query += " group by oarView.orgRelationId, oarView.OFFERMADE_COUNT, oarView.OFFERACCEPTED_COUNT, oarView.OFFERREJECTED_COUNT";
+			query += " order by oarView.createdYearMonthDate";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("orgRelationId", orgRelationId);
+			if(userCode != null && !userCode.isEmpty()) {
+				queryObj.setString("userCode", userCode);
+				queryObj.setLong("orgSpocId", orgSpocId);
+			}
 			
 			List<OfferAcceptanceRateView> offerAcceptanceRateViewList = queryObj.list();
 			if(offerAcceptanceRateViewList != null && !offerAcceptanceRateViewList.isEmpty()) {

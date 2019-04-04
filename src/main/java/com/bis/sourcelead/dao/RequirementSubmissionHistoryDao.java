@@ -45,4 +45,6 @@ public interface RequirementSubmissionHistoryDao {
 	public List<RecruiterJobsReportView> getSubmissionApplicantCountsForRecruiterJobreports(Long orgLocationId, User user,Date[] searchDates,Long requirementId) throws Exception;
 	
 	public List<OfferAcceptanceRateView> getOfferAcceptanceRateList(String userCode, long orgLocationId, String selectedClients, int month, int year, boolean compare);
+	
+	public List<OfferAcceptanceRateView> getOfferAcceptanceRateListForVendor(long orgRelationId, long orgSpocId, int month, int year, boolean compare);
 }
