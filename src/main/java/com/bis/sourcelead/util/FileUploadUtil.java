@@ -239,6 +239,23 @@ public class FileUploadUtil {
 		}
 		return "";
 	}
+	
+	
+	public static String moveBulkImportFailureFile(String staticPath, long orgId, long orgLocationId, String type, File file)
+			throws IOException {
+		String url = staticPath.substring(staticPath.lastIndexOf("/")) + "/" + orgId + "/" + orgLocationId + "/" + type + "/" + file.getName();
+		File saveFileFolder = new File(staticPath, "/" + orgId + "/" + orgLocationId + "/" + type);
+		if (!saveFileFolder.exists())
+			saveFileFolder.mkdirs();
+		try {
+			Files.move(file.toPath(), new File(saveFileFolder, file.getName()).toPath());
+			System.out.println("File moved to : " + url);
+			return url;
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
 
 	public static void fillUploadedFileInfo(Object object, List<Map<String, String>> fileInfo) throws Exception {
 		List<FileInfo> uploadedFileInfo = new ArrayList<>();
