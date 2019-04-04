@@ -605,31 +605,35 @@ function editExpensesDetailsEdit(data){
 
 
 <script>
-function getExpenses(projectMemberId,expensesFrequency){
+function getExpenses(projectMemberId,expensesFrequency,expId){
 	var memberId = $("#projectMemberId").val();
 	if(projectMemberId !=null && projectMemberId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
-		memberId = projectMemberId
+	memberId = projectMemberId;
+	}
+	var expenseId = 0;
+	if(expId !=null && expId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
+	expenseId = expId;
 	}
 	$.ajax({
-		type : "GET",
-		url: sourceleadUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&invoiceType=Receivable",
-		success :function(json) {
-			var output = "";
-			output = output + "<option value=''>--Select Expenses--</option>";
-			for (var i=0; i<json.data.length; i++)
-			{
-			var opt = json.data[i];
-			var selected = "";
-			 if(expensesFrequency = opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
-				selected = 'selected';
-			} 
-			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.dateFrequency+"</option>";
-			}
-			$("#expensesId").empty();
-			$("#expensesId").append(output);
-			$('#expensesId').trigger("chosen:updated");
-		},
-		});	
+	type : "GET",
+	url: sourceleadUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&expenseId="+expenseId+"&invoiceType=Receivable",
+	success :function(json) {
+	var output = "";
+	output = output + "<option value=''>--Select Expenses--</option>";
+	for (var i=0; i<json.data.length; i++)
+	{
+	var opt = json.data[i];
+	var selected = "";
+	if(expensesFrequency == opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
+	selected = 'selected';
+	} 
+	output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.dateFrequency+"</option>";
+	}
+	$("#expensesId").empty();
+	$("#expensesId").append(output);
+	$('#expensesId').trigger("chosen:updated");
+	},
+	}); 
 }
 </script>
 
@@ -651,7 +655,7 @@ function getProjectAssignMembers(pid,projectMemberName){
 			{
 			var opt = json.data[i];
 			var selected = "";
-			 if(projectMemberName = opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
+			 if(projectMemberName == opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
 				 selected = 'selected';
 			} 
 			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.empName+"</option>";
@@ -1478,7 +1482,7 @@ function toDate(selector) {
 		           		getProjectsList(json['projectName']);
 		           		checkedvalue(json['expensesInvoices']);
 		           		getProjectAssignMembers(json['projectId'],json['projectMemberName']);
-		           		getExpenses(json['memberId'],json['expensesFrequency']);
+		           		getExpenses(json['memberId'],json['expensesFrequency'],json['expId']);
 		           		editExpensesDetailsEdit(json['invoiceLineItemsList']); 
 		           	}else{
 		           	 	editExpensesInlineItems(json['invoiceLineItemsList']);
