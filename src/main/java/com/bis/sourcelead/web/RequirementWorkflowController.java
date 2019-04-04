@@ -17,12 +17,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.RequirementDefaultWorkFlowStagesDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -31,6 +29,7 @@ import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 
 @Controller
@@ -384,5 +383,37 @@ public class RequirementWorkflowController {
 				}
 			
 			return response;
+		}
+		
+		@RequestMapping(value = "/getRequirementWorkflowStage")
+		public @ResponseBody List<RequirementWorkFlowStagesDTO> getRequirementWorkflowStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO){
+			List<RequirementWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
+			try {
+				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(requirementWorkFlowStagesDTO.getUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return requirementDefaultWorkFlowStagesDTO;
+		}
+		
+		@RequestMapping(value = { "/deleteWorkflowStage" })
+		public String deleteWorkflowStage(
+				@RequestParam(value = "uuid", required = false) String uuid,
+				HttpServletRequest request) throws Exception {
+		
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			requirementWorkFlowService.deleteRequirementWorkFlowStagesByuuid(uuid);
+			
+			
+			List<RequirementWorkFlowStages> stagesList = requirementWorkFlowService.getRequirementWorkFlowStagesListByOrgLocationId(orgLocationId);
+			int stageCount = 1;
+			for(RequirementWorkFlowStages stage:stagesList) {
+				stage.setSeqOrder(stageCount);
+				stageCount++;
+				requirementWorkFlowService.saveRequirementWorkFlowStages(stage);
+				
+			}
+			return "success";
 		}
 }

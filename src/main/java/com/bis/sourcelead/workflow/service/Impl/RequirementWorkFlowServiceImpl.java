@@ -240,6 +240,60 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		//requirementWorkFlowDao.saveRequirementWorkflowStageByWorkflowId()
 		}
 	}
+
+
+	@Override
+	public List<RequirementWorkFlowStagesDTO> getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(String uuid, String workflowUuid) throws Exception {
+		
+		RequirementWorkFlowStages requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkFlowStageByUuidAndWorkflowUuid(uuid, workflowUuid);
+		RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO = new RequirementWorkFlowStagesDTO();
+		if(requirementWorkFlowStages != null) {
+		requirementWorkFlowStagesDTO.setSeqOrder(requirementWorkFlowStages.getSeqOrder());
+		}
+		List<RequirementWorkFlowStages> workFlowStagesbySeqOrder = requirementWorkFlowDao.getRequirementWorkflowStagesBySeqOrderAndWorkflowUuid(workflowUuid, requirementWorkFlowStagesDTO.getSeqOrder());
+		List<RequirementWorkFlowStagesDTO> workFlowStagesDTO = new ArrayList<>();
+		
+		for(RequirementWorkFlowStages workFlowStages : workFlowStagesbySeqOrder) {
+			requirementWorkFlowStagesDTO = new RequirementWorkFlowStagesDTO();
+			requirementWorkFlowStagesDTO.setStageName(workFlowStages.getStageName());
+			requirementWorkFlowStagesDTO.setEditable(workFlowStages.getEditable());
+			requirementWorkFlowStagesDTO.setUuid(workFlowStages.getUuid());
+			workFlowStagesDTO.add(requirementWorkFlowStagesDTO);
+		}	
+		
+		return workFlowStagesDTO;
+	}
+	
+	//delete workflow stage 
+	
+	@Override
+	public RequirementWorkFlowStages getRequirementWorkFlowStagesByUuid(String uuid) throws Exception {
+		return requirementWorkFlowDao.getRequirementWorkFlowStagesByUuid(uuid);
+	}
+
+	@Override
+	public String deleteRequirementWorkFlowStagesByOrgLocationIdAndUuid(String uuid) {
+		return requirementWorkFlowDao.deleteRequirementWorkFlowStagesByOrgLocationIdAndUuid(uuid);
+	}
+
+
+	@Override
+	public RequirementWorkFlowStages saveRequirementWorkFlowStages(RequirementWorkFlowStages requirementWorkFlowStages)
+			throws Exception {
+		return requirementWorkFlowDao.saveRequirementWorkFlowStages(requirementWorkFlowStages);
+	}
+
+
+	@Override
+	public List<RequirementWorkFlowStages> getRequirementWorkFlowStagesListByOrgLocationId(Long orgLocationId) {
+		return requirementWorkFlowDao.getRequirementWorkFlowStagesListByOrgLocationId(orgLocationId);
+	}
+
+
+	@Override
+	public void deleteRequirementWorkFlowStagesByuuid(String uuid) {
+		requirementWorkFlowDao.deleteRequirementWorkFlowStagesByuuid(uuid);
+	}
 	
 }
 

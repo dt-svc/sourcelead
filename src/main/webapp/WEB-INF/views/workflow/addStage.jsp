@@ -157,7 +157,7 @@
         <div class="col-md-9">
         
           <c:if test="${not empty requirementWorkFlowStagesDTO}">  
-         <select class="sel form-control" id = "workflowStageUuid" onchange = "getNextWorkflowStage();">
+         <select class="sel form-control" id = "workflowStageUuid" onchange = 'getNextWorkflowStage(this,"+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+")'>
          <option selected>Select</option>
         	<c:forEach var="requirementWorkFlowStages" items="${requirementWorkFlowStagesDTO}">	
          		<option value="${requirementWorkFlowStages.uuid}">${requirementWorkFlowStages.stageName}</option>
@@ -169,17 +169,17 @@
 			</div>
 			<div class="form-group">
 			  <label class="col-md-3">Next Stage</label>
-			  <div class="col-md-9">
-			  
-				<select class="sel form-control" >
+			  <div class="col-md-9" id = "nextStages">		
+			  	
+			  	 <!-- dynamic stage content starts here -->
+			 	<select class="sel form-control" >
 				  <option selected>Select</option>
-				  <option>Urget</option>
-				  <option>High</option>
-				  <option>Normal</option>
-				  <option>Low</option>
-				</select>
-				
+				 
+				</select>				
+			  <!-- dynamic stage content ends here -->
+			 	
 			  </div>
+			  
 			</div>
 		  </div>
     </div>
@@ -222,15 +222,26 @@ function saveRequirementWorkflowStage(){
 		});
 }
 
-function getNextWorkflowStage(){
-	$.ajax({
+function getNextWorkflowStage(select, worflowUuid){
+	var stageUuid = select.value;
+ 	$.ajax({
 		type : "GET",
-		url : sourceleadUrl + "/saveRequirementWorkflowStage?stageName="+stageName+"&description="+description+"&stageUuid="+stageUuid,
-		success : function(dataList) {
-			
+		url : sourceleadUrl + "/getRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+worflowUuid,
+		success : function(dataList){
+			var result = "";
+			result = result + "<select class='sel form-control'>";
+			 result = result + "<option selected>Select</option>";
+			if(dataList != null && dataList.length > 0){
+				 for(var i = 0 ; i < dataList.length; i++){
+					 result = result + "<option value="+dataList[i].uuid+">"+dataList[i].stageName+"</option>";
+				 }
+			}
+			result = result + "</select>";
+			$("#nextStages").empty().append(result);
 		}
 		});
-}
+ }
+
 
 </script>
 <jsp:include page="../masterFooter.jsp" /> 
