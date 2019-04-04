@@ -56,6 +56,8 @@ public class PerformanceGoalsDTO implements Serializable{
 	private String goalUUID;
 	
 	private String goalType;
+	
+	private String createdDate;
 
 	public Long getGoalId() {
 		return goalId;
@@ -223,6 +225,14 @@ public class PerformanceGoalsDTO implements Serializable{
 
 	public void setGoalUUID(String goalUUID) {
 		this.goalUUID = goalUUID;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
 	}
 
 	
