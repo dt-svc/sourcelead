@@ -28,5 +28,10 @@ public interface DataMigrationService {
 	
 	Map<String, String> getCandidateMappingFileData(String filePath, String headerPosition) throws Exception;
 	
-	String storeCandidateBulkUploads(CandidateBulkUploadDTO candidateBulkUploadDTO,UploadEntriesDTO uploadEntriesDTO, HttpServletRequest request) throws Exception;
+	String storeCandidateBulkUploadToCouchbase(CandidateBulkUploadDTO candidateBulkUploadDTO,UploadEntriesDTO uploadEntriesDTO, HttpServletRequest request) throws Exception;
+	
+	void saveCandidateBulkImports(String couchbaseQueueKey, HttpServletRequest request) throws Exception;
+	
+	void bulkUploadEmails(String couchbaseQueueKey, String uploadedSize, String type, HttpServletRequest request) throws Exception;
+	
 }

@@ -48,6 +48,9 @@ public class CandidateBulkUploadDTO implements Serializable{
 	    
 	    private String dateFormat;
 	    
+	    private String docFile;
+	    
+	    private String staticPath;
 	    
 	    
 		public String getFirstName() {
@@ -216,6 +219,22 @@ public class CandidateBulkUploadDTO implements Serializable{
 
 		public void setDateFormat(String dateFormat) {
 			this.dateFormat = dateFormat;
+		}
+
+		public String getDocFile() {
+			return docFile;
+		}
+
+		public void setDocFile(String docFile) {
+			this.docFile = docFile;
+		}
+
+		public String getStaticPath() {
+			return staticPath;
+		}
+
+		public void setStaticPath(String staticPath) {
+			this.staticPath = staticPath;
 		}
 	    
 }

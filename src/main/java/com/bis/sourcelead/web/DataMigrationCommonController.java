@@ -4,9 +4,14 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,9 +23,14 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +44,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.entity.AssetCategory;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.XlsBulkUploadHistroy;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CountriesService;
@@ -44,7 +57,9 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
+import com.bis.sourcelead.service.XlsBulkUploadHistroyService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -83,6 +98,15 @@ public class DataMigrationCommonController {
 	
 	@Autowired
 	LookUpDataService lookUpDataService;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Value("${static.path}")
+	private String staticPath;
+	
+	@Autowired
+	XlsBulkUploadHistroyService xlsBulkUploadHistroyService;
 	
 	 /*
 	  * author Venkat Kesav
@@ -563,4 +587,139 @@ public class DataMigrationCommonController {
 			dataValidation.setSuppressDropDownArrow(false);
 			return dataValidation;
 		}
+		
+		
+		@RequestMapping(value = "/orgBulkUploads")
+		public ModelAndView orgBulkUploads(HttpServletRequest request) {
+		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			if(sessionData == null)
+			{
+				sessionData = new SessionMaintainanceData();
+			}
+			sessionData.setNav(Constants.Dashboard);
+			request.getSession().setAttribute("sessionData",sessionData);
+			ModelAndView model = new ModelAndView();
+			model.setViewName("upload/orgBulkUploads");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+
+		}
+	
+	
+	@RequestMapping(value = "/dumpBulkImportsFailureList", method = RequestMethod.GET)
+	public void dumpBulkImportsFailureList(@RequestParam(value = "documentKey", required = true) String documentKey, 
+			HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+		
+		JSONObject jsonObject = userStatsCacheHelper.getBulkImportsFailureList(documentKey);
+		Map<String,String> columnsMap = commonUtil.getCandidateBulkImportHeaderMap();
+		File file = null;
+		Workbook createExcelworkbook =  new XSSFWorkbook();
+		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		 StringBuilder excelSheet = new StringBuilder();
+		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSheet.append(orgLocations.getOrgName()).append("_BULK_UPLOAD_").append(dateFormat.format(new Date())).toString());	
+		 Row writeRow = null;
+		 int column=0;
+		for (Object key : jsonObject.keySet()) {
+	        String keyStr = (String)key;
+	        if(keyStr.equalsIgnoreCase("failureList")) {
+	        	String jsonString = jsonObject.get(keyStr).toString();
+	    		JSONArray jsonArray = new JSONArray(jsonString);
+	    		
+	   		 for (int i = 0; i < jsonArray.length(); i++) {
+	   			writeRow = createExcelsheet.createRow(column+1);
+	   			 JSONParser parser = new JSONParser();
+	   			 JSONObject jsonObjVal = (JSONObject) parser.parse(jsonArray.get(i).toString());
+	   			 int j=0;
+	   			 for (Object okey : jsonObjVal.keySet()) {
+	   				 String failurekeyStr = (String) okey;
+	   				 if(!failurekeyStr.equalsIgnoreCase("errorMsg")) {
+	   					 String keyvalue = jsonObjVal.get(failurekeyStr).toString();
+	   					 JSONObject errorJson = userStatsCacheHelper.getCandidateDocument(keyvalue);
+	   					
+	   					 for (Object errdockey : errorJson.keySet()) {
+	   						 String docKeyStr = (String) errdockey;
+	   						StringBuilder uploadedkeyvalue = new StringBuilder();
+	   							 
+	   						if(columnsMap.containsKey(docKeyStr)) {
+	   							String headerColumn = columnsMap.get(docKeyStr);
+	   							if(errorJson.get(docKeyStr) != null) {
+	   								Object dockeyvalue = errorJson.get(docKeyStr);
+	   								uploadedkeyvalue = uploadedkeyvalue.append(headerColumn).append(": ").append(dockeyvalue.toString());
+			   						writeRow.createCell(j).setCellValue(uploadedkeyvalue.toString()); 
+			   						j++;
+	   							 }else {
+	   								uploadedkeyvalue = uploadedkeyvalue.append(headerColumn).append(": ").append("");
+	   								writeRow.createCell(j).setCellValue(uploadedkeyvalue.toString()); 
+			   						j++;
+	   							 }
+	   						}
+	   				
+	   					 }
+	   					 
+	   				 }else {
+	   					 String keyvalue = jsonObjVal.get(failurekeyStr).toString();
+	   					 JSONObject jsonObjErrorVal = (JSONObject) parser.parse(keyvalue);
+	   					 StringBuilder errorList = new StringBuilder();
+	   					 for (Object errorkey : jsonObjErrorVal.keySet()) {
+	   						 String errkeyStr = (String) errorkey;
+	   						 String errkeyvalue = jsonObjErrorVal.get(errkeyStr).toString();
+	   						 errorList = errorList.append(errkeyvalue).append(",");
+	   					 }
+	   					 
+	   					String errorMassages = errorList.deleteCharAt(errorList.length()-1).toString();
+	   					StringBuilder failureReasons = new StringBuilder();
+	   					failureReasons = failureReasons.append("Failure Reasons : ").append(errorMassages);
+	   					writeRow.createCell(j).setCellValue(failureReasons.toString());
+	   				 }
+	   				
+	   			 }
+	   			 column++;
+	            }
+	        }
+	        
+	    }
+		 StringBuilder orgNameSB = new StringBuilder();
+		 file = File.createTempFile(orgNameSB.append(orgLocations.getOrgLocationName()).append("_BULK_UPLOAD_").append(dateFormat.format(new Date())).toString(),".xlsx");
+		 file.setReadable(true);
+			 FileOutputStream fos = new FileOutputStream(file);
+			 try {
+				 createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}	
+			 
+			 
+			 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+
+				StringBuilder filename = new StringBuilder();
+				response.setHeader("Content-Disposition",
+						filename.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				
+				System.out.println(file.getName());
+				String failureFileUrl = FileUploadUtil.moveBulkImportFailureFile(staticPath, org.getId(), orgLocations.getId(), "dataMigration", file);
+				XlsBulkUploadHistroy failureHistory = xlsBulkUploadHistroyService.getXlsBulkUploadHistroyByDocumentKey(documentKey);
+				failureHistory.setFailureFileUrl(failureFileUrl);
+				xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(failureHistory);
+				
+				 
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();
+				createExcelworkbook.close();
+				if (file != null) {
+					file.delete();
+				}
+				
+	}
 }
