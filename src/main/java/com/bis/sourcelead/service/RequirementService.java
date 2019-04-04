@@ -263,6 +263,8 @@ public interface RequirementService {
 	public List<Requirement> getAllReleasedJobsBasedOnSpocId(long spocId);
 
 	public long getQualityCandidatesForVendors(List<Long> requirementIdList, long orgRelationId, long spocId, String staus);
+	
+	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId, String status);
 
 	public ApplicantDeclineDTO getApplicantDeclineCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId);
 	
