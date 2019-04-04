@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -32,6 +30,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.OfferLetterTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -46,6 +45,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.service.OfferLetterTemplateService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
@@ -112,6 +112,8 @@ public class RequirementOfferRestController {
     @Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 
+    @Autowired
+    OfferLetterTemplateService offerLetterTemplateService;
 	
 	@PreAuthorize("hasRole('ROLE_CREAE_OFFER')")
 	@RequestMapping(value = "/saveOffer" , method = RequestMethod.POST)
@@ -584,5 +586,14 @@ public class RequirementOfferRestController {
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
 		return response;
+	}
+	
+	@RequestMapping(value = "/getOfferLetterTemplateList", method = RequestMethod.POST)
+	public @ResponseBody List<OfferLetterTemplate> getOfferLetterTemplateList(HttpServletRequest request) throws Exception
+	{
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OfferLetterTemplate> offerLetterTemplateList = offerLetterTemplateService.getOfferLetterTemplateListByOrgLocationId(loginOrgLocation.getId());
+		return offerLetterTemplateList;
+		
 	}
 }
