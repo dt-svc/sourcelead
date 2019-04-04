@@ -351,7 +351,7 @@ public class RequirementWorkflowController {
 		}*/
 		
 		@RequestMapping(value = "/saveRequirementWorkflowStage")
-		public Response<String> saveRequirementWorkflowStage(HttpServletRequest request,
+		public @ResponseBody Response<String> saveRequirementWorkflowStage(HttpServletRequest request,
 				RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO) {
 			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
 			OrgLocations orgLocations = new OrgLocations();
@@ -363,7 +363,7 @@ public class RequirementWorkflowController {
 				try {
 					if (user != null) {
 					if (null != requirementWorkFlowStagesDTO) {
-						requirementWorkFlowService.saveRequirementWorkflowStageByWorkflowId(requirementWorkFlowStagesDTO, orgLocations.getId());
+						requirementWorkFlowService.saveRequirementWorkflowStageByWorkflowId(requirementWorkFlowStagesDTO, orgLocations.getId(), user);
 						response.setResponse(Result.SUCCESS.name());
 						response.setResponseMessage(Result.SUCCESS.getValue());
 					}
@@ -384,8 +384,8 @@ public class RequirementWorkflowController {
 		}
 		
 		@RequestMapping(value = "/getRequirementWorkflowStage")
-		public @ResponseBody List<RequirementWorkFlowStagesDTO> getRequirementWorkflowStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO){
-			List<RequirementWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
+		public @ResponseBody RequirementWorkFlowStagesDTO getRequirementWorkflowStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO){
+			RequirementWorkFlowStagesDTO requirementDefaultWorkFlowStagesDTO = null;
 			try {
 				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(requirementWorkFlowStagesDTO.getUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim());
 			} catch (Exception e) {
@@ -414,4 +414,20 @@ public class RequirementWorkflowController {
 			}
 			return "success";
 		}
+		
+		@RequestMapping(value = "/getRequirementQuestionnaireTemplates")
+		public @ResponseBody List<RequirementQuestionnaireTemplateDTO> getRequirementQuestionnaireTemplates(HttpServletRequest request){
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			OrgLocations orgLocations = new OrgLocations();
+			orgLocations.setId(orgLocationId);
+			List<RequirementQuestionnaireTemplateDTO> requirementQuestionnaireTemplateDTO = null;
+			try {
+				requirementQuestionnaireTemplateDTO = requirementWorkFlowService.getRequirementQuestionnaireTemplates(orgLocations.getId());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return requirementQuestionnaireTemplateDTO;
+		}
+		
 }

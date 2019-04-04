@@ -59,6 +59,7 @@ public interface RequirementWorkFlowDao {
 
 	void deleteRequirementWorkFlowStagesByuuid(String uuid);
 	
-	
+	List<RequirementQuestionnaireTemplate> getRequirementQuestionnaireTemplates(Long id)throws Exception;
 
+	
 }

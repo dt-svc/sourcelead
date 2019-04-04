@@ -13,6 +13,7 @@
     Add Stage</div>
   </section>
   <div class="project_wrap clearfix">
+  
     <div class="clearfix mt col-md-6">
       <div class="clearfix row">
         <div class="form-group clearfix">
@@ -31,6 +32,7 @@
         </div>
       </div>
     </div>
+    
     <div class="clearfix">
       <h4 class="col-md-9">Assign Taks</h4>
       <div class="col-md-3"> <a href="javascript:void(0)" class="btn btn-primary pull-right btn-sm" onClick="createNewtask();">Create New Taks</a> </div>
@@ -123,13 +125,19 @@
 				<label class="col-md-3 paddingRight">Assign Questionare</label>
 				<div class="col-md-9">
 				  <div class="row">
-					<div class="col-md-11">
-					  <select class="sel form-control">
+					
+					 <!-- dynamic stage content starts here -->
+					<div class="col-md-11" id = "questionnaireList">
+					<select class="sel form-control" id = "questionnaireTemplateId">
 						<option selected>Select</option>
+					  <!-- 
 						<option>Question1</option>
 						<option>Question2</option>
-					  </select>
+					   -->
+					   </select>
 					</div>
+					 <!-- dynamic stage content ends here -->
+					
 					<div class="col-md-1"> <a class="fa fa-plus btn btn-default" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire"></a> </div>
 				  </div>
 				</div>
@@ -156,18 +164,21 @@
           <label class="col-md-3">Previous Stage</label>
         <div class="col-md-9">
         
-          <c:if test="${not empty requirementWorkFlowStagesDTO}">  
-         <select class="sel form-control" id = "workflowStageUuid" onchange = 'getNextWorkflowStage(this,"+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+")'>
+          
+         <select class="sel form-control" id = "previousStageUuid"
+         onchange = 'getNextWorkflowStage(this,"+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+")'>
          <option selected>Select</option>
+         <c:if test="${not empty requirementWorkFlowStagesDTO}">  
         	<c:forEach var="requirementWorkFlowStages" items="${requirementWorkFlowStagesDTO}">	
          		<option value="${requirementWorkFlowStages.uuid}">${requirementWorkFlowStages.stageName}</option>
      		</c:forEach>
-     		</select>
-     		   </c:if>  
+     		
+     		   </c:if> 
+     		   </select> 
 			  </div>
 			  
 			</div>
-			<div class="form-group">
+			<div class="form-group" id = "nextStageDiv">
 			  <label class="col-md-3">Next Stage</label>
 			  <div class="col-md-9" id = "nextStages">		
 			  	
@@ -193,7 +204,8 @@
           <div class="pull-right mr">
           
           <c:if test="${not empty requirementWorkFlowStagesDTO}">  
-            <input value="Save" class="btn btn-primary" type="button" onclick = "saveRequirementWorkflowStage(<c:out value="${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}"/>);">
+            <input value="Save" class="btn btn-primary" type="button" 
+            onclick = "saveRequirementWorkflowStage('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');">
 		  </c:if>  
           
             <input value="Cancel" class="btn btn-default ml" type="button">
@@ -204,44 +216,78 @@
 </section>
 </div>
 <script>
+$(document).ready(function() {
+	getRequirementQuestionnaireTemplates();
+	
+});
+</script>
+<script>
 function createNewtask() {
 	document.getElementById("createNewtask").style.display = "block";
 }
 </script>
 <script>
-function saveRequirementWorkflowStage(){
+function saveRequirementWorkflowStage(workflowUuid){
 	var stageName = $("#stageName").val();
 	var description = $("textarea#description").val();
 	var stageUuid = $("#workflowStageUuid").val();
+	if(stageUuid == null){
+		stageUuid = $("#previousStageUuid").val();
+	}
+	alert(stageUuid);
+	var qTemplateId = $("#questionnaireTemplateId").val();
 	$.ajax({
 		type : "GET",
-		url : sourceleadUrl + "/saveRequirementWorkflowStage?stageName="+stageName+"&description="+description+"&stageUuid="+stageUuid,
+		url : sourceleadUrl + "/saveRequirementWorkflowStage?stageName="+stageName+"&description="+description+"&uuid="+stageUuid+
+				"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId,
 		success : function(dataList) {
-			
+					window.location.replace("${SourceLeadWeb_sourceleadUrl}/workflowList");
 		}
 		});
 }
 
 function getNextWorkflowStage(select, worflowUuid){
+	
 	var stageUuid = select.value;
- 	$.ajax({
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/getRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+worflowUuid,
+			success : function(dataList){
+				var result = "";
+				result = result + "<select class='sel form-control' id = 'workflowStageUuid'>";
+				 result = result + "<option selected>Select</option>";
+				if(dataList != null){
+						$("#nextStageDiv").show();
+						 result = result + "<option value="+dataList.uuid+">"+dataList.stageName+"</option>";
+				}
+				else{
+					$("#nextStageDiv").hide();
+					result = "";
+				}
+				result = result + "</select>";
+				$("#nextStages").empty().append(result);
+			}
+			});
+ }
+
+function getRequirementQuestionnaireTemplates(){
+	$.ajax({
 		type : "GET",
-		url : sourceleadUrl + "/getRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+worflowUuid,
+		url : sourceleadUrl + "/getRequirementQuestionnaireTemplates",
 		success : function(dataList){
 			var result = "";
-			result = result + "<select class='sel form-control'>";
-			 result = result + "<option selected>Select</option>";
+			result = result + "<select class='sel form-control' id = 'questionnaireTemplateId'>";
+			result = result + "<option selected>Select</option>";
 			if(dataList != null && dataList.length > 0){
 				 for(var i = 0 ; i < dataList.length; i++){
-					 result = result + "<option value="+dataList[i].uuid+">"+dataList[i].stageName+"</option>";
+					 result = result + "<option value="+dataList[i].id+">"+dataList[i].name+"</option>";
 				 }
 			}
 			result = result + "</select>";
-			$("#nextStages").empty().append(result);
+			$("#questionnaireList").empty().append(result);
 		}
 		});
- }
-
-
+}
+//questionnaireList
 </script>
 <jsp:include page="../masterFooter.jsp" /> 

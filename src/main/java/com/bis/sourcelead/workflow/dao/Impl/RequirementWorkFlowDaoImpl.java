@@ -204,7 +204,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesByUuid(String uuid) throws Exception {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:uuid";
+			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:uuid ORDER BY requirementWorkFlowStages.seqOrder ASC";
 			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("uuid", uuid).list();
 			return requirementWorkFlowStages;
 		} catch (Exception e) {
@@ -357,7 +357,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:workflowUuid "
-					+ "and  requirementWorkFlowStages.seqOrder > "+id+" order by requirementWorkFlowStages.seqOrder ASC "; 
+					+ "and  requirementWorkFlowStages.seqOrder >= "+id+" order by requirementWorkFlowStages.seqOrder ASC "; 
 			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("workflowUuid", workflowUuid).list();
 			return requirementWorkFlowStages;
 		} catch (Exception e) {
@@ -429,5 +429,18 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public List<RequirementQuestionnaireTemplate> getRequirementQuestionnaireTemplates(Long id)  {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementQuestionnaireTemplate requirementQuestionnaireTemplate where requirementQuestionnaireTemplate.orgLocationId.id =:id and requirementQuestionnaireTemplate.status = 1 ";
+			List<RequirementQuestionnaireTemplate> requirementQuestionnaireTemplate = session.createQuery(query).setParameter("id", id).list();
+			return requirementQuestionnaireTemplate;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 	
+	}
+	}	
 }
