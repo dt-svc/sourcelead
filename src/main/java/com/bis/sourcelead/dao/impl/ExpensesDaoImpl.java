@@ -294,26 +294,35 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	
 	@Override
 	@Transactional
-	public List getExpensesByProjectMemberId(Long projectMemberId,String invoiceType) {
+	public List getExpensesByProjectMemberId(Long projectMemberId, String invoiceType, Long expenseId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Long masterCandidateId = 0l;
 		Long projectId = 0l;
-		if(projectMemberId != null) {
+		if (projectMemberId != null) {
 			try {
 				ProjectMembers pm = projectMembersDao.getProjectMemberById(projectMemberId);
 				masterCandidateId = pm.getMasterCandidateId().getId();
 				projectId = pm.getProjects().getId();
-			} catch (Exception e) {}
-			
+			} catch (Exception e) {
+			}
+
 		}
-		String subQuery ="";
-		if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-			subQuery = "expenses.billingRecievableStatus IS NULL";
-		}else {
-			subQuery = "expenses.billingPayableStatus IS NULL";  
+		String subQuery = "";
+		if (expenseId > 0) {
+			if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+				subQuery = "expenses.billingRecievableStatus IS NULL OR expenses.billingRecievableStatus = 'SENT'";
+			} else {
+				subQuery = "expenses.billingPayableStatus IS NULL OR expenses.billingPayableStatus = 'SENT'";
+			}
+		} else {
+			if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+				subQuery = "expenses.billingRecievableStatus IS NULL";
+			} else {
+				subQuery = "expenses.billingPayableStatus IS NULL";
+			}
 		}
-		List<Expenses>  expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projects project left join fetch expenses.masterCandidateId mc left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where project.id =:projectId and mc.id = :masterCandidateId and "+subQuery).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).list();
-		
+		List<Expenses> expensesList = session.createQuery("from Expenses expenses left join fetch expenses.orgLocationId orglocId left join fetch expenses.projects project left join fetch expenses.masterCandidateId mc left join fetch expenses.projectMembers pm left join fetch pm.employee emp left join fetch emp.user user where project.id =:projectId and mc.id = :masterCandidateId and"	+ subQuery).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).list();
+
 		return expensesList;
 	}
 
