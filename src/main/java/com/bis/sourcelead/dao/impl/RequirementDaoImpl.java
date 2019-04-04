@@ -3951,9 +3951,7 @@ public class RequirementDaoImpl implements RequirementDao {
 			}
 			query += ")";
 			OrgRelations orgRelations = orgRelationsDao.getOrgRelationById(orgRelationId);
-			if(orgRelations !=null){
 			query += " and rs.vendorLocationId.id = " + orgRelations.getResponderLocationId().getId();
-			}
 			query += " and rs.submissionStatus='" + submissionStatus + "'";
 			// queryObj.setParameterList("reqIds", requirementIdList);
 			list = session.createQuery(query).list();
