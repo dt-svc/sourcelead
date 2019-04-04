@@ -29,7 +29,7 @@ public interface RequirementWorkFlowService {
 	
 	List<RequirementWorkFlowStagesDTO> getRequirementWorkflowStagesByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO)throws Exception;
 
-	ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(RequirementQuestionnaireTemplateDTO questionnaireDTO , Long orgLocationId);
+	ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(RequirementQuestionnaireTemplateDTO questionnaireDTO , String searchValue,  Long orgLocationId);
 
 	RequirementQuestionnaireTemplate getQuestionnaireTemplateByLabelName(Long orgLocationId,  String questinnaireName);
 

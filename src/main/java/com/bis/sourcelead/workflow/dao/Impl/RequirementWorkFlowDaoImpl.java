@@ -227,22 +227,23 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(RequirementQuestionnaireTemplateDTO questionnaireDto 
-			                                                ,Long orgLocationId) {
+			                                                ,String searchValue, Long orgLocationId) {
 		try{
 			Session session = this.sessionFactory.getCurrentSession();
 			List<Long> countlist = null;
 			Integer filterCount = 0;
-			StringBuilder queryEndBuilder = new StringBuilder("");
+		
 			List<RequirementQuestionnaireTemplateDTO> dtoList = new ArrayList<>();
 			ResponseList<RequirementQuestionnaireTemplateDTO> responseList = new ResponseList<>();
-	/*		if(questionnaireDto != null){
-				if (StringUtils.isNotBlank(questionnaireDto.getSortColumn())) {
-					String sortColumnName = questionnaireDto.getSortColumn();
-					if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
-						queryEndBuilder.append(" order by requirementWorkFlow.updatedDate "+questionnaireDto.getSortOrder());
-					}
-				}
-				}*/
+			
+			StringBuilder queryEndBuilder = new StringBuilder("");
+	        if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+	        	queryEndBuilder.append(" and ((rq.name like '%" + searchValue + "%' )");
+	        	queryEndBuilder.append(" or (rq.description like '%" + searchValue + "%' )");
+	        	queryEndBuilder.append(" or (rq.createdBy.lastName like '%" + searchValue + "%' ))");
+	        	queryEndBuilder.append(" or (rq.createdBy.firstName like '%" + searchValue + "%' ))");
+	            //query1.append(" or (tempView.status like '%" + searchValue + "%' )");
+	        }
 			String query = " from RequirementQuestionnaireTemplate rq where rq.orgLocationId.id=:orgLocationId";
 			String countQuery = "select count(*)  from RequirementQuestionnaireTemplate rq where rq.orgLocationId.id=:orgLocationId";
 			Query query1 = session.createQuery(query + queryEndBuilder).setLong("orgLocationId", orgLocationId);
