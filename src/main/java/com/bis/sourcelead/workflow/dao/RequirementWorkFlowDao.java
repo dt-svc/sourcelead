@@ -8,10 +8,12 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
 import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlowTasks;
 
 
 public interface RequirementWorkFlowDao {
@@ -60,6 +62,10 @@ public interface RequirementWorkFlowDao {
 	void deleteRequirementWorkFlowStagesByuuid(String uuid);
 	
 	List<RequirementQuestionnaireTemplate> getRequirementQuestionnaireTemplates(Long id)throws Exception;
+	
+	void saveRequirementWorkFlowTask(RequirementWorkFlowTasks requirementWorkFlowTasks)throws Exception;
+	
+	ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations)throws Exception;
 
 	
 }
