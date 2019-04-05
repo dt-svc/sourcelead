@@ -512,17 +512,17 @@
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 													}
 													
-													if(opt.submissionStatus == 'SELECTED_ON_INTERVIEW'){
+													if(opt.previousSubmissionStatus != 'CLIENT_INTERVIEW' && opt.submissionStatus == 'SELECTED_ON_INTERVIEW'){
 														result = result + "<option value='On Hold'>On Hold</option>";
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 													}
 													
-													if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW' && opt.submissionStatus != 'SUBMIT_TO_CLIENT' && opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'NORESPONSE'){	
+													 if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW' && opt.submissionStatus != 'SUBMIT_TO_CLIENT' && opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'NORESPONSE'){	
 														result = result + "<option value='On Hold'>On Hold</option>";
 														}
 													if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW' && opt.submissionStatus != 'SUBMIT_TO_CLIENT' && opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'ONHOLD'){	
 														result = result + "<option value='NoResponse'>NoResponse</option>";
-														}
+														} 
 													result = result + "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED' || opt.submissionStatus == 'JOINED'
 														 || opt.submissionStatus == 'CLIENT_OFFERMADE' || opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
