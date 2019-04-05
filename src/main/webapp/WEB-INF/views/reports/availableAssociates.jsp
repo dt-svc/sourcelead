@@ -21,7 +21,7 @@
 <div class="form-group row">
 <label class="col-md-12 paddingRight">Associate Name</label>
 <div class="col-md-12">
-<select class="chosen-select form-control" data-placeholder="Select Associate" autocomplete="off" onchange="getProjects();" id="associatesId" name="id" field-name="Associate" data-validation="required">
+<select class="chosen-select form-control" data-placeholder="Select Associate" autocomplete="off" onchange="getProjects();" id="associatesId" name="userIds" field-name="Associate" data-validation="required">
 <option selected="selected" disabled>Select Associate</option>
 <c:forEach var="option" items="${empList}">
 <option value="${option.id}">${option.firstName}</option>

@@ -152,15 +152,15 @@ public class ConnectionsRestController {
 					ReferContacts refercontacts1 = referContactsService.getReferContactsByFromUserIdAndToUserId(
 							connections.getFromUser().getId(), connections.getToUser().getId());
 					if (refercontacts1 == null) {
-						referContactsService.saveuserContactsFromConnections(connections.getFromUser(),
-								connections.getToUser());
+						/*referContactsService.saveuserContactsFromConnections(connections.getFromUser(),
+								connections.getToUser());*/
 					}
 
 					ReferContacts refercontacts2 = referContactsService.getReferContactsByFromUserIdAndToUserId(
 							connections.getToUser().getId(), connections.getFromUser().getId());
 					if (refercontacts2 == null) {
-						referContactsService.saveuserContactsFromConnections(connections.getToUser(),
-								connections.getFromUser());
+						/*referContactsService.saveuserContactsFromConnections(connections.getToUser(),
+								connections.getFromUser());*/
 					}
 					result = "success";
 				}
@@ -207,7 +207,6 @@ public class ConnectionsRestController {
 		return result;
 	}
 	
-	
 	@RequestMapping(value = "/acceptAllValues")
 	public String acceptAllValues(
 			@RequestParam(value = "connectionsUerIdList[]", required = false) String[] connectionsUerIdList, HttpServletRequest request)
@@ -226,15 +225,15 @@ public class ConnectionsRestController {
 						ReferContacts refercontacts1 = referContactsService.getReferContactsByFromUserIdAndToUserId(
 								connections.getFromUser().getId(), connections.getToUser().getId());
 						if (refercontacts1 == null) {
-							referContactsService.saveuserContactsFromConnections(connections.getFromUser(),
-									connections.getToUser());
+						/*	referContactsService.saveuserContactsFromConnections(connections.getFromUser(),
+									connections.getToUser());*/
 						}
 	
 						ReferContacts refercontacts2 = referContactsService.getReferContactsByFromUserIdAndToUserId(
 								connections.getToUser().getId(), connections.getFromUser().getId());
 						if (refercontacts2 == null) {
-							referContactsService.saveuserContactsFromConnections(connections.getToUser(),
-									connections.getFromUser());
+							/*referContactsService.saveuserContactsFromConnections(connections.getToUser(),
+									connections.getFromUser());*/
 						}
 					}
 				}
