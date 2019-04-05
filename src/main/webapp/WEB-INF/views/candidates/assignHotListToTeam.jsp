@@ -16,7 +16,7 @@
     <div class="pull-left">
       <h2>Hot List</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="<c:url value='/associatesList'/>">Associates List </a>&raquo; Hot List</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="${SourceLeadWeb_atsUrl}/associatesList">Associates List </a>&raquo; Hot List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">

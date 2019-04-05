@@ -9,7 +9,7 @@
       <div class="pull-left">
         <h2>Sales Order</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="<c:url value='/SalesOrderList'/>">Sales Order List</a> &raquo; Sales Order</div>
+     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/SalesOrderList">Sales Order List</a> &raquo; Sales Order</div>
     
     </section>
     <div class="clearfix backgroundWhite">
