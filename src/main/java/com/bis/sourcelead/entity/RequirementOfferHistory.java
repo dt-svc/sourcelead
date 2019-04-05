@@ -94,9 +94,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Transient
 	@Lob
-   private  byte[] docFile;
+    private  byte[] docFile;
+	
 	@Transient
-   private String fileContentType;
+    private String fileContentType;
+	
+	@Transient
+    private String templateUUID;
+	
+	@Transient
+    private String templateName;
+	
+	@Transient
+    private String offerExpireDate;
+	
+	@Transient
+    private String offerUUID;
 
 	public Long getId() {
 		return id;
@@ -263,5 +276,36 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	{
 		this.fileContentType = fileContentType;
 	}
-	
+
+	public String getTemplateUUID() {
+		return templateUUID;
+	}
+
+	public void setTemplateUUID(String templateUUID) {
+		this.templateUUID = templateUUID;
+	}
+
+	public String getTemplateName() {
+		return templateName;
+	}
+
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
+	}
+
+	public String getOfferExpireDate() {
+		return offerExpireDate;
+	}
+
+	public void setOfferExpireDate(String offerExpireDate) {
+		this.offerExpireDate = offerExpireDate;
+	}
+
+	public String getOfferUUID() {
+		return offerUUID;
+	}
+
+	public void setOfferUUID(String offerUUID) {
+		this.offerUUID = offerUUID;
+	}
 }

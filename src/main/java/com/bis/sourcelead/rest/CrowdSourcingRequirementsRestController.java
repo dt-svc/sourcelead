@@ -569,6 +569,8 @@ public class CrowdSourcingRequirementsRestController {
     					
     					 requirementIndex.setRateType(savedJobs.getRequirementId().getRateType());
     					 requirementIndex.setCurrentRateCurrency(savedJobs.getRequirementId().getCurrencyCode());
+    					 requirementIndex.setVisaTypes(savedJobs.getRequirementId().getVisaType().split(","));
+    					 requirementIndex.setIndustryName(savedJobs.getRequirementId().getIndustryName());
     					 
     					 if(!isNullOrEmpty(savedJobs.getRequirementId().getSkills())){
     						 String[] skills = savedJobs.getRequirementId().getSkills().split(",");

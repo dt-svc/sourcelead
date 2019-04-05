@@ -9458,7 +9458,10 @@ background: url("../images/candidates.svg"); background-repeat: no-repeat; backg
 }
 .ticketManagementSVG {
 	background: url("../images/ticketManagement.svg"); background-repeat: no-repeat; background-size: 42px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
-	}
+}
+.bulkUploadSVG {
+background: url("../images/bulk-upload.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
 .settingConfigure .btn {
 	padding: 1px 8px; background: #fbfbfb;
 }
