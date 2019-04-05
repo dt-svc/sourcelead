@@ -60,15 +60,6 @@ public class PerformanceAppraisalTemplate implements Serializable{
 	@Column(name = "APPROVING_FROM_END_DATE")
 	private Date approvingFromEndDate;
 	
-	@Column(name = "APPRAISAL_APPLICABLE_FOR")
-	private String appraisalApplicableFor;
-	
-	@Column(name = "EXPERIENCE_YEARS ")
-	private Integer experienceYears;
-	
-	@Column(name = "EXPERIENCE_MONTHS ")
-	private Integer experienceMonths;
-	
 	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
 	private String description ;
 	
@@ -217,30 +208,6 @@ public class PerformanceAppraisalTemplate implements Serializable{
 
 	public void setApprovingFromEndDate(Date approvingFromEndDate) {
 		this.approvingFromEndDate = approvingFromEndDate;
-	}
-
-	public String getAppraisalApplicableFor() {
-		return appraisalApplicableFor;
-	}
-
-	public void setAppraisalApplicableFor(String appraisalApplicableFor) {
-		this.appraisalApplicableFor = appraisalApplicableFor;
-	}
-
-	public Integer getExperienceYears() {
-		return experienceYears;
-	}
-
-	public void setExperienceYears(Integer experienceYears) {
-		this.experienceYears = experienceYears;
-	}
-
-	public Integer getExperienceMonths() {
-		return experienceMonths;
-	}
-
-	public void setExperienceMonths(Integer experienceMonths) {
-		this.experienceMonths = experienceMonths;
 	}
 
 	public String getDescription() {
