@@ -54,9 +54,9 @@ public class EmailTemplateController {
 	}
 	
 	@RequestMapping(value = "/editEmailTemplate")
-	public ModelAndView editEmailTemplate(@RequestParam(value="templateUUID",required = false) String templateUUID,HttpServletRequest request) throws Exception {
+	public ModelAndView editEmailTemplate(@RequestParam(value="templateID",required = false) long templateID,HttpServletRequest request) throws Exception {
 		
-		EmailScenario emailScenario=emailScenarioService.getEmailTemplateByUUID(templateUUID);
+		EmailScenario emailScenario=emailScenarioService.getEmailTemplateById(templateID);
 		List<String> classFieldList=null;
 		ModelAndView model = new ModelAndView();
 		if(emailScenario != null){
