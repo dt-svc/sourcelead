@@ -44,7 +44,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.DataMigrationDao;
 import com.bis.sourcelead.dto.AssetAssignDTO;
 import com.bis.sourcelead.dto.AssetDTO;
@@ -68,6 +67,7 @@ import com.bis.sourcelead.entity.CandidateVisa;
 import com.bis.sourcelead.entity.CandidateVisaHistory;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
@@ -1182,6 +1182,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			// immDto.setOpenDate(dataMigrationDTOJsonCopy.getString("lawFirmClient"));
 			// for lca details need to push lca table.
 			// CandidateLcaI94Summary lcaCurrSummary = new CandidateLcaI94Summary();
+			
+			Lca lca = immigrationCommonService.getLcaNumber(dataMigrationDTOJsonCopy.getString("lcaNumber"));
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaStartDate"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaStartDate"))) {
 				immDto.setLcaStartDate(dataMigrationDTOJsonCopy.getString("lcaStartDate"));
@@ -1195,6 +1198,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaNumber"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaNumber"))) {
 				immDto.setLcaNumber(dataMigrationDTOJsonCopy.getString("lcaNumber"));
+				
+				immDto.setLcaId(lca.getId().toString());
 			}
 			
 			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaRate")) 
