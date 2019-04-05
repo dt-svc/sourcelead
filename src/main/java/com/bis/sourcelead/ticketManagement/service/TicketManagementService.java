@@ -68,7 +68,7 @@ public interface TicketManagementService {
 
 	public List<TicketCommentDTO> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId, String dateFormat);
 
-	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user);
+	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user, OrgLocations orgLocations);
 
 	public TicketCommentDTO getTicketComment(long ticketCommentId, String dateFormat);
 

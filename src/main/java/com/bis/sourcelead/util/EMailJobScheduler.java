@@ -2793,7 +2793,9 @@ public class EMailJobScheduler {
 		/*
 		 * OrgLocations orgLocations = orgLocationsList.get(1);..for single org
 		 */
+		List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByEmailScenarioName(Constants.HOLIDAY_REMAINDER);
 		for (OrgLocations orgLocations : orgLocationsList) {
+			if(emailReminderList.stream().filter(e -> e.getOrgLocationsId().getId() == orgLocations.getId()).collect(Collectors.toList()).size() == 0) {
 			List<Holiday> holidayList = holidayService.getHolidaybyLocationIdAndFromdate(holidayStartDate, holidayEndDate, orgLocations.getId());
 			String holidayNames = "";
 			int i = 0;
@@ -2916,6 +2918,7 @@ public class EMailJobScheduler {
 					}
 					
 				}
+			}
 			}
 		}
 	}
