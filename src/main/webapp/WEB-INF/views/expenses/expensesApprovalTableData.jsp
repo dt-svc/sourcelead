@@ -125,7 +125,7 @@
 
       	</c:if>
       	<c:if test="${not empty expApproverHierarchy.actionPerformedBy}">
-      		 <div class='sm text-center' title="Approved"> <h3>Approved</h3><br>By : ${expApproverHierarchy.actionPerformedBy}</div> 
+      		 <div class='sm text-center' title="${expApproverHierarchy.actionPerformedBy}"> <h3>Approved</h3><br>By : ${expApproverHierarchy.actionPerformedBy}</div> 
       	</c:if>
       </c:if>
       <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus == 'REOPEN'}">

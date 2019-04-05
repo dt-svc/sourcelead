@@ -2044,7 +2044,7 @@ $('#jobDropDownDiv').trigger("chosen:updated");
 <script>
 function getAssignedProjects(obj){
 $.ajax({
-url: sourceleadUrl + "/getProjectsByStatusAndClient",
+url: sourceleadUrl + "/getAllProjectsForClockInOut",
 type: 'GET',
 success: function (json) {
 var output = "";
