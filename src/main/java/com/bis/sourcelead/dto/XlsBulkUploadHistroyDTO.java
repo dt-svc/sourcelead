@@ -19,6 +19,8 @@ public class XlsBulkUploadHistroyDTO {
 	private String uploadEntityType;
 	
 	private String orgName;
+	
+	private String uploadStatus;
 
 	public int getFailureCount() {
 		return failureCount;
@@ -90,6 +92,14 @@ public class XlsBulkUploadHistroyDTO {
 
 	public void setFailureFileUrl(String failureFileUrl) {
 		this.failureFileUrl = failureFileUrl;
+	}
+
+	public String getUploadStatus() {
+		return uploadStatus;
+	}
+
+	public void setUploadStatus(String uploadStatus) {
+		this.uploadStatus = uploadStatus;
 	}
 	
 	
