@@ -37,7 +37,6 @@
 <script>
 function vendorJobsApplicantsDeclineList(){
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 
 	 var orgRelationId = '${orgRelationId}';
 	 var searchValue = $("#jobsDataTableSearch").val();
 	 var spocId = '${spocId}';
