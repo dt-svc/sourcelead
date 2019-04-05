@@ -291,7 +291,7 @@ associates = '';
 if(projects == null || projects == ''|| projects == 'undefined'){
 projects = '';
 }
-window.location.href = sourceleadUrl+"/availableAssociatereportExport?&type="+type+"&userIds="+associates+"&projects="+projects+"&fromDate="+fromDate+"&toDate="+toDate;
+window.location.href = sourceleadUrl+"/availableAssociatereportExport?&type="+type+"&userIds="+associates+"&projectsIds="+projects+"&fromDate="+fromDate+"&toDate="+toDate;
 }
 
 </script>
