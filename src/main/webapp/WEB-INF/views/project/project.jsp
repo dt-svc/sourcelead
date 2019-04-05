@@ -541,7 +541,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </section>
 <!-- Content Area Ends-->
 
-<script type="text/javascript" src="/pms/resources/js/projects.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/projects.js"></script>
 
 
 <script type="text/javascript">
