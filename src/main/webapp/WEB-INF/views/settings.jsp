@@ -558,6 +558,19 @@
 								</div>
 							</a>
 						</div>
+						
+						
+						<div class="col-md-2 reportNewCta">
+							<a href="${sourceleadUrl}/orgBulkUploads">
+								<div class="clearfix text-center mb10">
+									<i class="bulkUploadSVG"></i>
+								</div>
+								<div class="clearfix text-center">
+									<h4>Bulk Uploads</h4>
+								</div>
+							</a>
+						</div>
+						
 					</sec:authorize>
 
 				</div>
