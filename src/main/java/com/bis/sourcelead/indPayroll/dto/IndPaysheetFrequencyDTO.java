@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.bis.sourcelead.dto.SearchDTO;
+import com.bis.sourcelead.payroll.dto.PreCheckINDPayrollDTO;
 
 public class IndPaysheetFrequencyDTO  extends SearchDTO{
 	
@@ -49,6 +50,8 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 	private String updatedDate;
 	
 	private String createdDate;
+	
+	private PreCheckINDPayrollDTO preCheckINDPayrollDTO;
 
 	public Long getId() {
 		return id;
@@ -241,5 +244,12 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 	public void setActionPerformedBy(String actionPerformedBy) {
 		this.actionPerformedBy = actionPerformedBy;
 	}
-	
+
+	public PreCheckINDPayrollDTO getPreCheckINDPayrollDTO() {
+		return preCheckINDPayrollDTO;
+	}
+
+	public void setPreCheckINDPayrollDTO(PreCheckINDPayrollDTO preCheckINDPayrollDTO) {
+		this.preCheckINDPayrollDTO = preCheckINDPayrollDTO;
+	}
 }
