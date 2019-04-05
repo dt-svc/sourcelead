@@ -865,6 +865,20 @@ public class CrowdSourcingRequirementsRestController {
 		    			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementId", refer.getRequirementId().getId()));
 		    		 }
 		    	 }
+		     }else if(requirementType.equalsIgnoreCase("allJobs")){
+		    	 BoolQueryBuilder allJobsBoolQueryBuilder = QueryBuilders.boolQuery();
+		    		  allJobsBoolQueryBuilder.should(QueryBuilders.matchQuery("isPublicJob", "Y"));
+		    	 
+		    	 allJobsBoolQueryBuilder.should(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+		    	 boolQueryBuilder.must(allJobsBoolQueryBuilder);
+		    	 
+		    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
+		    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
+		    	 if(null != referList && referList.size() > 0){
+		    		 for(RequirementRefer refer : referList){
+		    			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementId", refer.getRequirementId().getId()));
+		    		 }
+		    	 }
 		     }
 		     
 		     boolQueryBuilder = getSearchRequirementsResults(boolQueryBuilder,jsonObj);   
