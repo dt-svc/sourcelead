@@ -69,6 +69,7 @@ function releasedToVendorJobsList(){
                 result = result +"<th><div>No of Applicants</div></th>";
                 result = result +"<th><div>Owner</div></th>"; 
                 result = result +"<th><div>Joined</div></th>"; 
+                result = result +"<th><div>Released On</div></th>"; 
                 result = result +"<th><div>Status</div></th>"; 
                 result = result +"  </tr>"; 
                 result = result +"</thead>";
@@ -113,7 +114,8 @@ function releasedToVendorJobsList(){
                  }else{
                  result  = result + '<td><div><span>0</span></div></td>'; 
                  }
-               	 
+               	 result  = result + ' <td><div><span title="'+opt.releasedDate+'">'+opt.releasedDate+'</span></div></td>';
+
                	 result  = result + ' <td><div><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span></div></td>';
                	 
                	 result  = result + '</tr>';
