@@ -23,10 +23,12 @@ import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
 import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlowTasks;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 
 @Service
@@ -348,6 +350,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		OrgLocations orglocations = new OrgLocations();
 		orglocations.setId(id);
 		
+		System.out.println("d > "+requirementWorkFlowStagesDTO.getDescription());
+		
 		RequirementWorkFlowStages workFlowStage = new RequirementWorkFlowStages();
 		workFlowStage.setId(newStages.getId());
 		workFlowStage.setRequirementWorkFlowId(requirementWorkFlowStages.getRequirementWorkFlowId());
@@ -366,6 +370,39 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		workFlowStage.setUpdatedBy(user);
 		
 		requirementWorkFlowDao.saveRequirementWorkFlowStagesByOrgLocationId(workFlowStage);		
+	}
+
+
+	@Override
+	public void saveRequirementWorkFlowTask(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, User user,
+			OrgLocations orgLocations) throws Exception {
+		
+		RequirementWorkFlowStages newStages = new RequirementWorkFlowStages();
+		newStages.setId(Long.parseLong(Constants.RECORD_ACTIVE.toString()));
+		
+		RequirementWorkFlowTasks requirementWorkFlowTasks = new RequirementWorkFlowTasks();
+		requirementWorkFlowTasks.setId(requirementWorkFlowTasks.getId());
+		requirementWorkFlowTasks.setRequirementWorkFlowStagesId(newStages);
+		requirementWorkFlowTasks.setOrgLocationId(orgLocations);
+		requirementWorkFlowTasks.setWorkFlowTaskName(requirementWorkFlowTasksDTO.getWorkFlowTaskName());
+		//requirementWorkFlowTasks.setAssignTo(requirementWorkFlowTasksDTO.getAssignToUserId());
+		requirementWorkFlowTasks.setPriority(requirementWorkFlowTasksDTO.getPriority());
+		requirementWorkFlowTasks.setDescription(requirementWorkFlowTasksDTO.getDescription());
+		requirementWorkFlowTasks.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		requirementWorkFlowTasks.setStatus(Constants.RECORD_ACTIVE);
+		requirementWorkFlowTasks.setCreatedDate(new Date());
+		requirementWorkFlowTasks.setCreatedBy(user);
+		requirementWorkFlowTasks.setUpdatedDate(new Date());
+		requirementWorkFlowTasks.setUpdatedBy(user);
+		
+		requirementWorkFlowDao.saveRequirementWorkFlowTask(requirementWorkFlowTasks);		
+	}
+
+
+	@Override
+	public ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(
+			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations) throws Exception {
+		return requirementWorkFlowDao.getRequirementWorkFlowTaskList(requirementWorkFlowTasksDTO, orgLocations);
 	}
 }
 

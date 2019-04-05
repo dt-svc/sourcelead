@@ -1,28 +1,29 @@
 package com.bis.sourcelead.workflow.dto;
 
+import com.bis.sourcelead.dto.SearchDTO;
 
-
-public class RequirementWorkFlowTasksDTO {
+public class RequirementWorkFlowTasksDTO extends SearchDTO {
 
 	private long id;
 	
-	private String requirementWorkFlowStageId;
+	private String requirementWorkFlowStagesId;
 	
 	private String orgLocationId;
 
+	private String workFlowTaskName;
+	
 	private String assignToUserId;
 
 	private String priority;
 	
 	private String 	description;
-	
-	private String questionnaireName;
-	
-	private String 	questionnaireDese;
+
 	
 	private String uuid;
 	
 	private Integer status;
+	
+	private String requirementWorkFlowUuid;
 
 	public long getId() {
 		return id;
@@ -33,11 +34,11 @@ public class RequirementWorkFlowTasksDTO {
 	}
 
 	public String getRequirementWorkFlowStageId() {
-		return requirementWorkFlowStageId;
+		return requirementWorkFlowStagesId;
 	}
 
-	public void setRequirementWorkFlowStageId(String requirementWorkFlowStageId) {
-		this.requirementWorkFlowStageId = requirementWorkFlowStageId;
+	public void setRequirementWorkFlowStageId(String requirementWorkFlowStagesId) {
+		this.requirementWorkFlowStagesId = requirementWorkFlowStagesId;
 	}
 
 	public String getOrgLocationId() {
@@ -46,6 +47,15 @@ public class RequirementWorkFlowTasksDTO {
 
 	public void setOrgLocationId(String orgLocationId) {
 		this.orgLocationId = orgLocationId;
+	}
+
+	
+	public String getWorkFlowTaskName() {
+		return workFlowTaskName;
+	}
+
+	public void setWorkFlowTaskName(String workFlowTaskName) {
+		this.workFlowTaskName = workFlowTaskName;
 	}
 
 	public String getAssignToUserId() {
@@ -72,21 +82,7 @@ public class RequirementWorkFlowTasksDTO {
 		this.description = description;
 	}
 
-	public String getQuestionnaireName() {
-		return questionnaireName;
-	}
-
-	public void setQuestionnaireName(String questionnaireName) {
-		this.questionnaireName = questionnaireName;
-	}
-
-	public String getQuestionnaireDese() {
-		return questionnaireDese;
-	}
-
-	public void setQuestionnaireDese(String questionnaireDese) {
-		this.questionnaireDese = questionnaireDese;
-	}
+	
 
 	public String getUuid() {
 		return uuid;
@@ -102,6 +98,22 @@ public class RequirementWorkFlowTasksDTO {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getRequirementWorkFlowStagesId() {
+		return requirementWorkFlowStagesId;
+	}
+
+	public void setRequirementWorkFlowStagesId(String requirementWorkFlowStagesId) {
+		this.requirementWorkFlowStagesId = requirementWorkFlowStagesId;
+	}
+
+	public String getRequirementWorkFlowUuid() {
+		return requirementWorkFlowUuid;
+	}
+
+	public void setRequirementWorkFlowUuid(String requirementWorkFlowUuid) {
+		this.requirementWorkFlowUuid = requirementWorkFlowUuid;
 	}
 
 

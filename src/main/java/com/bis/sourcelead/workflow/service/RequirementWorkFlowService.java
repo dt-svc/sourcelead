@@ -10,6 +10,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
@@ -56,4 +57,8 @@ public interface RequirementWorkFlowService {
 	List<RequirementQuestionnaireTemplateDTO> getRequirementQuestionnaireTemplates(Long id)throws Exception;
 	
 	void saveRequirementWorkflowStageByWorkflowIdAndOrgLocationId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, RequirementWorkFlowStages requirementWorkFlowStages, Long id, User user)throws Exception;
+
+	void saveRequirementWorkFlowTask(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, User user, OrgLocations orgLocations)throws Exception;
+	
+	ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations)throws Exception;
 }

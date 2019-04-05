@@ -43,7 +43,7 @@ import com.bis.sourcelead.entity.User;
 	@Column(name = "NO_OF_STAGES")
 	private Integer noOfStages;
 	
-	@Column(name = "UUID ")
+	@Column(name = "UUID")
 	private String uuid;
 	
 	@Column(name = "STATUS")
