@@ -90,6 +90,8 @@
 </div>
 <div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
 <div id="releasedJobsResultDiv"></div>
+<div id="releasedApplicantsDeclineDiv"></div>
+<div id="releasedApplicantsBackOutDiv"></div>
 </section>   
  
       

@@ -5,14 +5,14 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
-<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
-<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
-<script type="text/javascript" src="/resources/js/performance/performanceManagement.js"></script>
-<script type="text/javascript" src="/resources/js/performance/performanceFeedbackTemplate.js"></script>
-<script src="/resources/js/performanceFeedbackFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/performanceFeedbackForm-html-generator.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/performance/performanceManagement.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/performance/performanceFeedbackTemplate.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/performanceFeedbackFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/performanceFeedbackForm-html-generator.js" type="text/javascript" ></script> <!-- form builder -->
 
 <script>
 var locationDateFormat = '${SourceLeadWeb_dateFormat}'; 
@@ -24,7 +24,9 @@ var locationDateFormat = '${SourceLeadWeb_dateFormat}';
 	      <!-- <h2>Submission Templates</h2> -->
 	      <h2 class="pull-left">Performance Management Configuration</h2>
 	    </div>
-	    <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Performance Management Configuration</div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
+	    <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/settings'/>">Settings</a> &raquo;
+	    Performance Management Configuration</div>
 	 	<div class="clearfix"></div>
     </section>
     
@@ -45,7 +47,7 @@ var locationDateFormat = '${SourceLeadWeb_dateFormat}';
 				</div>
 				<div class="col-md-3 perfDashCta">
 					<img src="/resources/images/competenceA.svg" alt=""/>
-					<h3>Competence</h3>
+					<h3>Competency</h3>
 					<span><a onclick="performanceManagement.addNewCompetence();" class="colB">Add</a><a onclick="performanceManagement.performanceCompetenceList();" class="">View</a></span>
 				</div>
 				<div class="col-md-3 perfDashCta">
