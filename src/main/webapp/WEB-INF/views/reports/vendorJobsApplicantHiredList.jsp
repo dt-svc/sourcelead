@@ -59,7 +59,7 @@ function vendorJobsApplicantsHiredList(){
 		        	  }
            	 $("#releaseApplicantsHiredList").empty();
            	 var result = "";
-           	 result = result +"<table id='releasedApplicantsPaginationId' class='display' cellspacing='0' width='100%' >"; 
+           	 result = result +"<table id='releasedApplicantsHiredPaginationId' class='display' cellspacing='0' width='100%' >"; 
                 result = result +"<thead>"; 
                 result = result +"  <tr>"; 
                 result = result +"<th><div>Applicant Name</div></th>";
@@ -104,7 +104,7 @@ function vendorJobsApplicantsHiredList(){
 <script>
 
 function releasedJobsPagination(){  
-    $('#releasedApplicantsPaginationId').DataTable( { 
+    $('#releasedApplicantsHiredPaginationId').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
