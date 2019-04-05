@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.AssociateDeductionDao;
+import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
 import com.bis.sourcelead.payroll.entity.AssociateBankData;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
@@ -22,7 +23,7 @@ import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 public class AssociateDeductionDaoImpl implements AssociateDeductionDao {
 
 	
-private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl.class);
+private static final Logger logger = LoggerFactory.getLogger(AssociateDeductionDaoImpl.class);
 	
 	@Autowired
 	SessionFactory sessionFactory;
@@ -107,5 +108,12 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		} catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+
+
+	@Override
+	public List<AssociateDeductionDTO> getAssociateContriDataListByOrgLocationId(Long id) {
+		
+		return null;
 	}
 }

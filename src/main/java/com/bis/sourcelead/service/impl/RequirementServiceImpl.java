@@ -4808,6 +4808,12 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		return applicantBackoutDTO;
 	}
+
+	@Override
+	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId, String status) {
+		return requirementDao.getVendorSubmittedCandidates(requirementId, orgRelationId, spocId, status);
+	}
+	
 	
 }
 

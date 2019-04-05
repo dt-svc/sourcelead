@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -14,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.AssociateContributionDao;
+import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
+import com.bis.sourcelead.payroll.dto.AssociateContributionDTO;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 
@@ -109,6 +112,18 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateContributi
 		} catch (Exception e) {
 			e.printStackTrace();;
 		}
+	}
+
+	@Override
+	public int saveAssociateDedAndContriDetails(Long id, List<AssociateBankDataDTO> list, Map<String, Long> canMap) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<AssociateContributionDTO> getAssociateDedDataListByOrgLocationId(Long id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -1699,7 +1699,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 				+ "  pm.percentageOfWork as availableHours,"
 				+ "  (( pm.percentageOfWork)/100) * " + noOfHours + " as hoursperWeek"
 				+ " from ProjectMembers pm"
-				+ " where pm.projects.orgLocationsId=:orgLocations";
+				+ " where ";
 			
 			
 		/*	query += " and (case when pm.projectEndDate is null and pm.projects.endDate is null"
@@ -1711,7 +1711,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 							+ "			else pm.projectAssignedDate like '%" + fromDate + "%' and pm.projectEndDate like '%" + toDate + "%' end) "
 					+ "end)";*/
 			
-			query += " and '" + fromDate + "' >= (case when pm.projectEndDate is null and pm.projects.endDate is null"
+			query += " '" + fromDate + "' >= (case when pm.projectEndDate is null and pm.projects.endDate is null"
 					+ "		then pm.projectAssignedDate"
 							+ " else (case when pm.projectEndDate is null "
 							+ "			then pm.projectAssignedDate "
@@ -1739,7 +1739,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			for (long id : availableAssociatesDTO.getUserIds()) {
 				userIds += (userIds.isEmpty() ? "" : ", ") + id;
 			}
-			query += " and pm.employee.user.id in (" + userIds + ")";
+			query += " and pm.projectMemberCandidteId.id in (" + userIds + ")";
 		}
 		
 		System.out.println(query);
@@ -1748,7 +1748,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		java.sql.Date toDate = new java.sql.Date(availableAssociatesDTO.getToDate().getTime());*/
 		
 		Query queryObj = session.createQuery(query);
-		queryObj.setLong("orgLocations", orgLocations.getId());
+//		queryObj.setLong("orgLocations", orgLocations.getId());
 		/*queryObj.setString("fromDate", fromDate);
 		queryObj.setString("toDate", toDate);*/
 		
@@ -1765,7 +1765,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		try {
 			Long candidateId = Long.valueOf(associatesId);
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select pm.projects from ProjectMembers pm  where pm.projectMemberCandidteId.id  In(:candidateId) ";
+		String query = "select pm.projects from ProjectMembers pm  where pm.status = '1' and pm.projectMemberCandidteId.id  In(:candidateId) ";
 		List<Projects> projectsList = session.createQuery(query.toString()).setParameter("candidateId", candidateId).list();
 		return projectsList;
 

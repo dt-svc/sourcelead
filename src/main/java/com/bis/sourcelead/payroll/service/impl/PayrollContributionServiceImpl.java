@@ -172,4 +172,9 @@ public class PayrollContributionServiceImpl implements PayrollContributionServic
 		return PayrollContributionDTO;
 	}
 
+	@Override
+	public PayrollContribution getContributionByDeductionTypeAndLocationId(String deductionType, Long locationId) {
+		return payrollContributionDao.getContributionByDeductionTypeAndLocationId(deductionType,locationId);
+	}
+
 }
