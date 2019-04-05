@@ -205,6 +205,9 @@ public class Constants {
 	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
 	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
 	
+	public static final String CANDIDATE_BULK_IMPORT_EMAIL = "CandidateBulkImport";
+	public static final String CANDIDATE_BULK_IMPORT_SUPPORT_EMAIL = "CandidateBulkImportSupport";
+	
 	public static final String PROFILES_ADDED_TO_CART_MAIL= "ProfilesAddedToCartMail";
 	public static final String PROFILES_ADDED_TO_CART_NOTIFICATION = "ProfilesAddedToCartNotification";
 	public static final String ENTITY_TYPE_EMAIL = "Email";
@@ -1410,6 +1413,10 @@ public class Constants {
 	
 	public static final String EMAIL_REMAINDER_INVOICE =  "Applicants Invoice";
 	
+	public static final String COUCH_DOCUMENT_UPLOAD_TYPE = "Import";
+	
+	public static final String COUCH_DOCUMENT_UPLOAD_FAILURE_TYPE = "Failure";
+	
 	public static final String APPLICANT_JOINING = "ApplicantJoining";
 	public static final String EMPLOYEE_ON_LEAVE = "EmployeeOnLeave";
 	public static final String APPROVE_PENDING_LEAVES="approvePendingLeaves";
@@ -1429,8 +1436,14 @@ public class Constants {
 	
 	public static final String PAYMENT_MODE_SAVINGS = "Savings";
 	
-
 	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number","PF Number","ESI Number"};						
 
+	public static final String TICKET_COMMENT_EMAIL = "NewTicketCommentEmail";
+	public static final String TICKET_COMMENT_NOTIFICATION ="NewTicketCommentNotification";
+	
+	public static final String CLOCK_IN = "ClockIn";
+	public static final String CLOCK_OUT = "ClockOut";
+	public static final String PLAY = "play";
+	public static final String PAUSE = "pause";
 	
 }

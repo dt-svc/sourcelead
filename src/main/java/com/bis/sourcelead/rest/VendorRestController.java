@@ -10,14 +10,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -44,6 +42,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.beans.RequirementStagesReport;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
@@ -78,9 +77,6 @@ import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
 import com.bis.sourcelead.reportsDTO.ApplicantsBackoutDTO;
-import com.bis.sourcelead.reportsDTO.JobFilterDTO;
-import com.bis.sourcelead.reportsDTO.JobPipelineDTO;
-import com.bis.sourcelead.rest.reportsRestController.JobPipelineReoprtsRestController;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
@@ -166,6 +162,9 @@ public class VendorRestController {
 	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
+	
+	@Autowired
+	private RequirementDao requirementDao;
 	
 	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
 	@RequestMapping(value = { "/saveVendor", "/rest/saveVendor" }, method = RequestMethod.POST)
@@ -2124,6 +2123,97 @@ public class VendorRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/getApplicantDeclineListForVendor")
+	@SuppressWarnings("unchecked")
+	public ResponseList<RequirementSubmission> getApplicantDeclineListForVendor(
+			@RequestParam(defaultValue = "0") long orgRelationId, @RequestParam(defaultValue = "0") long spocId,
+			@RequestParam(value = "status", required = false) String status, HttpServletRequest request) {
+
+		ResponseList<RequirementSubmission> responseList = new ResponseList<>();
+		List<RequirementSubmission> list = new ArrayList<RequirementSubmission>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Long> requirementIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request,"requirementIdsList");
+		List<RequirementSubmission> requirementSubmissionList = requirementDao.getApplicantDeclineCountsForVendor(requirementIdList, orgRelationId, spocId, status);
+		requirementSubmissionList.forEach(submission -> {
+			submission.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), submission.getCreatedDate()));
+			if (submission.getJoinedDate() != null) {
+				submission.setJoinedDateStr(
+						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), submission.getJoinedDate()));
+			}
+			list.add(submission);
+		});
+
+		responseList.setData(list);
+		responseList.setResponse(Result.SUCCESS.name());
+		responseList.setResponseMessage(Result.SUCCESS.getValue());
+
+		return responseList;
+
+	}
+	
+	 
+
+	 
+
+	@RequestMapping(value = "/getVendorJobsForReleasedJobReportForList", method = RequestMethod.GET)
+	public ResponseList<Requirement> getVendorJobsForReleasedJobReportForList(HttpServletRequest request,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
+			@RequestParam(defaultValue = "0") long orgRelationId, @RequestParam(defaultValue = "0") long spocId) {
+		ResponseList<Requirement> response = new ResponseList<>();
+		List<Requirement> requirementList = new LinkedList<>();
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		List<Requirement> reqList = clientService.getReleasedJobsByOrgRelationId(orgRelationId, spocId, userRole);
+		if (reqList != null && !reqList.isEmpty()) {
+			Long tempId = 0L;
+
+			for (Requirement requirement : reqList) {
+				List<RequirementLocations> locationsList;
+				String location = "";
+				StringBuilder requirementBuilder = new StringBuilder();
+				if (tempId != requirement.getParentRequirement().getId()) {
+					try {
+						Requirement parentRequirement = requirementService
+								.getRequirementDetailsById(requirement.getParentRequirement().getId());
+						requirement.setRequirementSubmissionStatus(parentRequirement.getRequirementSubmissionStatus());
+						User user = userService.getUserById(parentRequirement.getManagerUserId().getId());
+						// For Applicants Count
+						long allCount = requirementService.getVendorSubmittedCandidates(parentRequirement.getId(),
+								orgRelationId, spocId, "ALL");
+						requirement.setTotalApplicants((int) allCount);
+						long joinedCount = requirementService.getVendorSubmittedCandidates(parentRequirement.getId(),
+								orgRelationId, spocId, "JOINED");
+						requirement.setJoinedCount(String.valueOf(joinedCount));
+						// for requirement location
+						List<String> requirementLocationsList = new ArrayList<>();
+						StringBuilder sb = new StringBuilder();
+						List<RequirementLocations> locationList = requirementLocationsService
+								.getRequirementLocationsListByRequirementId(parentRequirement.getId());
+						locationList.forEach(loclist -> {
+							requirementLocationsList.add(loclist.getLocation());
+							if (sb.length() > 0)
+								sb.append(",");
+							sb.append(loclist.getLocation()).toString();
+						});
+						requirement.setLocation(sb.toString());
+						requirement.setLocationsList(requirementLocationsList);
+						requirement.setJobOwner(user.getFullName());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					requirementList.add(requirement);
+					tempId = requirement.getParentRequirement().getId();
+				}
+			}
+		}
+		response.setData(requirementList);
+		response.setResponse(Result.SUCCESS.name());
+		response.setResponseMessage(Result.SUCCESS.getValue());
 		return response;
 	}
 	

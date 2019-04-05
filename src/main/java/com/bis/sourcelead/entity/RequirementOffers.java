@@ -91,6 +91,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "OFFER_EXPIRE_DATE")
+	private Date offerExpireDate;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="OFFER_LETTER_TEMPLATE", nullable=false )        
+    private OfferLetterTemplate offerLetterTemplate;
+	
+	
 	@Transient
 	@JsonProperty
     private String dateOfJoiningStr;
@@ -406,5 +415,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.spocId = spocId;
 	}
 
-	
+	public Date getOfferExpireDate() {
+		return offerExpireDate;
+	}
+
+	public void setOfferExpireDate(Date offerExpireDate) {
+		this.offerExpireDate = offerExpireDate;
+	}
+
+	public OfferLetterTemplate getOfferLetterTemplate() {
+		return offerLetterTemplate;
+	}
+
+	public void setOfferLetterTemplate(OfferLetterTemplate offerLetterTemplate) {
+		this.offerLetterTemplate = offerLetterTemplate;
+	}
 }

@@ -15,11 +15,13 @@ public class TicketCommentDTO implements Serializable {
 	private Integer status;
 	private long createdById;
 	private String createdByName;
+	private String createdByImageURL;
 	private String createdDate;
 	private String createdDateString;
 	private long updatedById;
 	private String updatedByName;
 	private String updatedDate;
+	private String mentionedUserIds;
 
 	public long getId() {
 		return id;
@@ -69,6 +71,14 @@ public class TicketCommentDTO implements Serializable {
 		this.createdByName = createdByName;
 	}
 
+	public String getCreatedByImageURL() {
+		return createdByImageURL;
+	}
+
+	public void setCreatedByImageURL(String createdByImageURL) {
+		this.createdByImageURL = createdByImageURL;
+	}
+
 	public String getCreatedDate() {
 		return createdDate;
 	}
@@ -107,6 +117,14 @@ public class TicketCommentDTO implements Serializable {
 
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getMentionedUserIds() {
+		return mentionedUserIds;
+	}
+
+	public void setMentionedUserIds(String mentionedUserIds) {
+		this.mentionedUserIds = mentionedUserIds;
 	}
 
 	public static long getSerialversionuid() {

@@ -385,7 +385,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					// Calculating LOP
 					BigDecimal lopAmount = BigDecimal.ZERO;
 					Set<PayrollLopHis> lopList = iNDPayrollCommonUtil.getLOPAmountInd(employee,assoSal,freqStartDate,freqEndDate,orgLocation,amount,employeePayroll);
-					if(lopList != null) {
+					if(lopList != null && lopList.size() > 0) {
 						Double lopAmont = lopList.stream().mapToDouble(lop->lop.getLopAmount().doubleValue()).sum();
 						lopAmount = new BigDecimal(lopAmont);
 						employeePayroll.setPayrollLopHis(lopList);
