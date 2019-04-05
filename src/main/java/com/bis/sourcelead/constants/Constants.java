@@ -1434,4 +1434,9 @@ public class Constants {
 	public static final String TICKET_COMMENT_EMAIL = "NewTicketCommentEmail";
 	public static final String TICKET_COMMENT_NOTIFICATION ="NewTicketCommentNotification";
 	
+	public static final String CLOCK_IN = "ClockIn";
+	public static final String CLOCK_OUT = "ClockOut";
+	public static final String PLAY = "play";
+	public static final String PAUSE = "pause";
+	
 }
