@@ -2,6 +2,7 @@ package com.bis.sourcelead.indPayroll.utill;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.PayrollPayhead;
+import com.bis.sourcelead.entity.Tds;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.indPayroll.dto.INDPayrollDTO;
@@ -54,6 +56,7 @@ import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.indPayroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
+import com.bis.sourcelead.payroll.dto.PreCheckINDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
@@ -941,27 +944,13 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	
 	
 	@SuppressWarnings("static-access")
-	public Double calculatePTforAssociate(AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate) {
+	public Double calculatePTforAssociate(AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate) throws ParseException {
 		Double ptAmount = 0.0;
 		if(assoSal != null && assoSal.getAssociateSalaryPayheadIndList() != null && assoSal.getAssociateSalaryPayheadIndList().size()>0) {
 			AssociateSalaryPayheadInd asph = assoSal.getAssociateSalaryPayheadIndList().stream().filter(h -> h.getPayrollPayhead().getShortCode().equalsIgnoreCase("BA")).findAny().get();
 			if(asph != null) {
-				String financialYear = "";
-				Calendar c = Calendar.getInstance();
-				c.setTime(freqEndDate);
-				String fromYear = "";
-				String toYear = "";
-				if(c.get(Calendar.MONTH) <= 3) {
-					toYear = c.get(Calendar.YEAR) + "";
-					c.roll(Calendar.YEAR, -1);
-					fromYear = c.get(Calendar.YEAR) + "";
-				}else {
-					fromYear = c.get(Calendar.YEAR) + "";
-					c.roll(Calendar.YEAR, 1);
-					toYear = c.get(Calendar.YEAR) + "";
-				}
-				financialYear = fromYear + "-" + toYear;
-				
+				List<String> financialYearStr = getFinancialYearByOrgLocationAndDate(asph.getPayrollPayhead().getOrgLocationId(), freqStartDate);
+				String financialYear = financialYearStr.get(0) + "-" + financialYearStr.get(1);
 				StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
 				try {
 					if(taxDTO != null && taxDTO.getProfessionalTaxList().size()>0) {
@@ -1076,10 +1065,15 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			emailMessage.setFirstName(loginUser.getLastName());
 			emailMessage.setToEmail(payrollApprover.getUser().getEmail());
 			emailMessage.setFromEmail(loginUser.getEmail());
+			
 
 			emailMessage.setFromName(loginUser.getFullName());
 
-			// setting the class field values...............
+			//redirection uRl
+			String redirectURL ="/employeePayrollList-params-paySheetFrequencyUUID=" + frequency.getPaySheetFrequencyUUID();
+			Long redirectOrgLocationId = orgLocation.getId();
+			
+			// setting the class field values...............gfgfgfgf
 
 			Map<String, String> globalVarsMap = new HashMap<String, String>();
 			globalVarsMap.put("loginUser", loginUser.getFullName());
@@ -1110,8 +1104,8 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			// sourcelead login page..
 
 			StringBuilder loginLinkBuild = new StringBuilder();
-			globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl).append(
-					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+			globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Approve Payroll</div></a>")
 					.toString());
 
 			// Set the notification link when user click this link the page goes to
@@ -1139,6 +1133,33 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		}
 	}
 	
+	@SuppressWarnings("unused")
+	public PreCheckINDPayrollDTO payrollPrerequisiteCheck(OrgLocations orgLocation, String payPeriod) throws ParseException{
+		
+		String dates[] = payPeriod.split(",");
+		Date freqStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
+		Date freqEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
+		PreCheckINDPayrollDTO preCheckINDPayrollDTO = new PreCheckINDPayrollDTO();
+		
+		List<String> financialYearStr = getFinancialYearByOrgLocationAndDate(orgLocation, freqStartDate);
+		
+		StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(orgLocation.getState(), financialYearStr.get(0) + "-" + financialYearStr.get(1));
+		if(taxDTO != null && taxDTO.getId() > 0) {
+			preCheckINDPayrollDTO.setIsPTConfigured(true);
+		}else {
+			preCheckINDPayrollDTO.setIsPTConfigured(false);
+		}
+		
+		List<Tds> tdsList = taxService.getTDSListByFinancialYear(financialYearStr.get(0) + "-" + financialYearStr.get(1));
+		if(tdsList != null && tdsList.size() > 0) {
+			preCheckINDPayrollDTO.setIsTDSConfigured(true);
+		}else {
+			preCheckINDPayrollDTO.setIsTDSConfigured(false);
+		}
+		
+		return preCheckINDPayrollDTO;
+	}
+	
 	
 	public void generatePdfForEmployeeInd(Set<IndEmployeePayroll> approvedPayrollList, OrgLocations orgLocation) {
 		for (IndEmployeePayroll payroll : approvedPayrollList) {
@@ -1161,6 +1182,10 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			emailMessage.setFromEmail(loginUser.getEmail());
 			emailMessage.setFromName(loginUser.getFullName());
 
+			//redirection uRl
+			String redirectURL ="/employeePayrollList-params-paySheetFrequencyUUID=" + frequency.getPaySheetFrequencyUUID();
+			Long redirectOrgLocationId = orgLocation.getId();
+			
 			// setting the class field values...............
 			Map<String, String> globalVarsMap = new HashMap<String, String>();
 				globalVarsMap.put("RequestUsername", user.getFullName());
@@ -1185,8 +1210,8 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			// Set the login link when user click this link the page goes to redirect the sourcelead login page..
 
 			StringBuilder loginLinkBuild = new StringBuilder();
-			globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl).append(
-			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+			globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Payroll Approved</div></a>")
 			.toString());
 
 			// Set the notification link when user click this link the page goes to respective payroll summary.......
@@ -1391,6 +1416,41 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			e.printStackTrace();
 		}
 		return finYearDates;
+	}
+	
+	
+	@SuppressWarnings("unused")
+	public List<String> getFinancialYearByOrgLocationAndDate(OrgLocations orgLocation, Date freqStartDate) {
+		List<String> finYearList = new ArrayList<>();
+		try {
+			String fromYear = null;
+			String toYear = null;
+			Calendar c = Calendar.getInstance();
+			c.setTime(freqStartDate);
+			int fYear = c.get(Calendar.YEAR);
+			int fMonth = c.get(Calendar.MONTH);
+			if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
+				Calendar cal = Calendar.getInstance();
+				Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
+				cal.setTime(date);
+				int startFinMonth = cal.get(Calendar.MONTH);
+				if (fMonth >= startFinMonth && fMonth < 12) {
+					fromYear = Integer.toString(fYear);
+					toYear = Integer.toString(fYear + 1);
+				} else {
+					fromYear = Integer.toString(fYear - 1);
+					toYear = Integer.toString(fYear);
+				}
+			} else {
+				fromYear = Integer.toString(fYear);
+				toYear = Integer.toString(fYear);
+			}
+			finYearList.add(fromYear);
+			finYearList.add(toYear);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return finYearList;
 	}
 	
 }

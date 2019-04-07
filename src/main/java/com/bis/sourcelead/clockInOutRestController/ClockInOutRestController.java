@@ -130,19 +130,23 @@ public class ClockInOutRestController {
 	}
 
 	
-	@RequestMapping(value = {"/getProjectsByStatusAndClient","/rest/getProjectsByStatusAndClient"})
+	@RequestMapping(value = {"/getAllProjectsForClockInOut","/rest/getAllProjectsForClockInOut"})
 	public ResponseList<Projects> getProjectsByStatusAndClient(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
-	    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
-	    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
-		projectsDTO.setIsGlobalAccess(isGlobalAccess);
-		projectsDTO.setOrgId(org.getId());
-		ResponseList<Projects> projectsList = clockInOutConfigService.getProjectsListByUserId(projectsDTO,user.getId(), clients, values,orgLocationId,userRole,candidateId);
-	   
+		ResponseList<Projects> projectsList = null;
+		try {
+			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+				projectsDTO.setIsGlobalAccess(isGlobalAccess);
+				projectsDTO.setOrgId(org.getId());
+				projectsList = clockInOutConfigService.getProjectsListByUserId(projectsDTO,user.getId(), clients, values,orgLocationId,userRole,candidateId);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		return projectsList;
 	}
 	
