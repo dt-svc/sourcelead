@@ -1337,6 +1337,8 @@ public class Constants {
 	
 	public static final String JOB_PARSING = "job_parsing";
 	
+	public static final String RESUME_PARSING = "resume_parsing";
+	
 	public static final String REGULAR = "Regular";
 	
 	public static final String[] DIRECT_DEPOSIT_HEADER = { "Employee\nNumber", "Employee Name", "Department", "Transit\nNumber", "Account\nNumber", "Deposit\nAmount", "Description" };
@@ -1436,6 +1438,8 @@ public class Constants {
 	
 	public static final String PAYMENT_MODE_SAVINGS = "Savings";
 	
+	public static final String ASSOCIATE_DEDUCTION_CONTRIBUTION_DETAIL_HEADERS [] = {"Associate Id",	"Associate Email*",	"Deduction Type","Deduct Amount","Contribute Amount"};
+
 	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number","PF Number","ESI Number"};						
 
 	public static final String TICKET_COMMENT_EMAIL = "NewTicketCommentEmail";
@@ -1445,5 +1449,11 @@ public class Constants {
 	public static final String CLOCK_OUT = "ClockOut";
 	public static final String PLAY = "play";
 	public static final String PAUSE = "pause";
+	
+	public static final String ASSOCIATE_ID= "Associate Id";
+	public static final String ASSOCIATE_EMAIL= "Associate Email*";
+	public static final String DEDUCTION_TYPE = "Deduction Type";
+	public static final String DEDUCT_AMOUNT= "Deduct Amount";
+	public static final String CONTRIBUTE_AMOUNT = "Contribute Amount";
 	
 }

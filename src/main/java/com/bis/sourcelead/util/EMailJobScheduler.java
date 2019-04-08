@@ -491,7 +491,7 @@ public class EMailJobScheduler {
 					OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLoc.getId());
 
 					Long orgLocationId = loginOrgLocation.getId();
-					List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.JOB_PARSING);
+					List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.RESUME_PARSING);
 						File tempfolder = null;
 					for(EmailScenarioConfiguration email :  emailsList) {
 						//System.out.println(" Email id is :" + email.getEmailId());
