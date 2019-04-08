@@ -805,7 +805,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		    		 vendorCandidate.setCountry(vendorOrgLocations.getCountry());
 		    		 vendorCandidate.setIsAssociate(Constants.YES);
 		    		 vendorCandidate.setEmail(user.getEmail());
-		    		 vendorCandidate.setWorkLocation(vendorOrgLocations);
+		    		 vendorCandidate.setWorkLocation(candidate.getWorkLocation());
 		    		 vendorCandidate.setStatus(Constants.RECORD_ACTIVE);
 		    		 vendorCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		    		 vendorCandidate.setCreatedDate(commonUtil.currentDate());
