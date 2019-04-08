@@ -32,12 +32,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.AssociateBankErrorData;
 import com.bis.sourcelead.payroll.service.AssociateBankDataService;
+import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -59,6 +61,9 @@ public class UploadController {
 	
 	@Autowired
 	AssociateBankDataService associateBankDataService;
+	
+	@Autowired
+	AssociateContributionService associateContributionService;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -187,6 +192,27 @@ public class UploadController {
 		response.getOutputStream().flush();
 	}
 	
+	@RequestMapping(value = "/downloadAssociateDeductionContribitionDetailsTemplate", method = RequestMethod.GET)
+	public void  downloadAssociateDeductionContribitionDetailsTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
+		File file = uploadFileService.getAssociateDedAndContriDetailsTemplate(orgLocations);
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+	}
+	
+
 	
 	/**
 	 * Returns File upload jsp
@@ -212,6 +238,25 @@ public class UploadController {
 
 	}
 	
+	
+	@PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
+	@RequestMapping(value = "/uploadAssociateDeductionContributionDetails")
+	public ModelAndView fileUploadFor(HttpServletRequest request) {
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
+				.getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Users);
+
+		request.getSession().setAttribute("sessionData", sessionData);
+		ModelAndView model = new ModelAndView();
+		model.setViewName("upload/uploadAssociateDeductionContributionDetails");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+
+	}
+	
 	@RequestMapping(value = {"/saveAssociateBankDetailTemplate","/rest/saveAssociateBankDetailTemplate"}, method = RequestMethod.POST)
 	@ResponseBody
 	public AssociateBankErrorData saveAssociateBankDetailTemplate(MultipartHttpServletRequest request) throws Exception
@@ -224,6 +269,22 @@ public class UploadController {
 			}
 			AssociateBankErrorData associateBankData = associateBankDataService.saveAssociateBankData(multipartFile, orgLocations);
 		    return associateBankData;
+	}
+	
+	@RequestMapping(value = {"/saveAssociateDedAndContriDetailTemplate",
+			"/rest/saveAssociateDedAndContriDetailTemplate"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<String> saveAssociateDedAndContriDetailTemplate(MultipartHttpServletRequest request) throws Exception
+	{
+		Response<String> res = new Response<>();
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    MultipartFile multipartFile = null;
+			Iterator<String> itrator = request.getFileNames();
+			if (itrator.hasNext()) {
+				multipartFile = request.getFile(itrator.next());
+			}
+			String str = associateContributionService.saveAssociateDedAndContriData(multipartFile, orgLocations);
+		    return res;
 	}
 	
 }
