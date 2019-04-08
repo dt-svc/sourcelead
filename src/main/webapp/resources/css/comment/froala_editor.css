@@ -1409,3 +1409,6 @@ span.fr-sr-only {
 	height: 150px;
 	overflow: auto;
 }
+.tkt_comment_div.tkt_comment_custom {
+	border: 1px solid #ddd; padding: 10px;
+}

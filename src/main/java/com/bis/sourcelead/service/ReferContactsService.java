@@ -20,7 +20,7 @@ public interface ReferContactsService {
 
 	public void saveuserContacts(User user,ReferContactsDTO referContactsDTO) throws Exception;
 	
-	public void saveuserContactsFromConnections(User fromUser,User toUser) throws Exception;
+	public void saveuserContactsFromConnections(User fromUser, User toUser,OrgLocations loginOrgLocation, String sourceleadUrl, String sourceleadLoginUrl) throws Exception;
 	
 	 void saveAllReferContacts(List<ReferContacts> referContactsList) throws Exception;
 	
@@ -35,5 +35,7 @@ public interface ReferContactsService {
 	ReferContacts getReferContactsByFromUserIdAndToUserId(Long fromUserId, Long toUserId) throws Exception;
 	
 	boolean deleteContactById(Long id) throws Exception;
+
+	
 
 }

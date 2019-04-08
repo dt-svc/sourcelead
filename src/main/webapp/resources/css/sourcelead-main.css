@@ -9295,6 +9295,22 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	background-image: url("../images/joinedIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
 	background-position: top; background-size: 100%; display: inline-block;
 }
+.noResponseIC {
+	background-image: url("../images/noresponseSVG.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.onHoldIC {
+	background-image: url("../images/onholdSVG.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.rejectIC {
+	background-image: url("../images/rejectedCandidateSVG.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.backoutIC {
+	background-image: url("../images/backoutSVG.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
 .jobSucces_list a {
 	position: relative; right:0px; top:0px; color: #f60;
 }
@@ -9458,10 +9474,7 @@ background: url("../images/candidates.svg"); background-repeat: no-repeat; backg
 }
 .ticketManagementSVG {
 	background: url("../images/ticketManagement.svg"); background-repeat: no-repeat; background-size: 42px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
-}
-.bulkUploadSVG {
-background: url("../images/bulk-upload.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
-}
+	}
 .settingConfigure .btn {
 	padding: 1px 8px; background: #fbfbfb;
 }
@@ -9945,12 +9958,15 @@ ul.goalsList-list li {
 }
 .workflowSVG {
 	background: url("../images/workflowSVG.svg"); background-repeat: no-repeat; background-size: 42px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
-	}
+}
+.helpDeskSVG {
+	background: url("../images/helpDesksvg.svg"); background-repeat: no-repeat; background-size: 75px; background-position: center; width: 80px; text-align: center; display: block; height: 90px; margin: 8px auto 2px; opacity:0.9;
+}
 .positionRelativeTop10 {
 position: relative; top: 10px;
 }
 .answerQuestionaire {
-	padding-left: 35px;
+	padding-left: 30px;
 }
 .answerQuestionaire ul li {
 	list-style-position: inside;
@@ -9964,11 +9980,17 @@ ul.goalscomments-list li:hover {
 .goals-list:hover .goalsEditDelete {
 	display: block;
 }
+.top-12 {
+	top:-12px;
+}
+.viewEyeicon {
+	position: absolute; right:50px; top:0px; color: #fff; cursor: pointer; z-index: 9999; padding: 11.74px 4px;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
 }
-    .universalSrch {
+.universalSrch {
     margin-top: 0px; width: 52% !important;
 }
 .hidden-xs {
@@ -10404,6 +10426,3 @@ display: block;
  .progressCount {
  font-size: 12px; font-weight: 500; color: #368ee0; display: block; padding: 2px 0px 0px 0px;
  }
-.chartDashboard .amcharts-main-div a {
-	display: block !important;
-}
