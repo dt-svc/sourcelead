@@ -187,5 +187,10 @@ public class PayrollDeductionServiceImpl  implements PayrollDeductionService{
 		PayrollDeduction payrollDeduction = payrollDeductionDao.getPayrollDeductionTypeById(deductionId);
 		return payrollDeduction;
 	}
+	
+	@Override
+	public PayrollDeduction getDeductionByDeductionTypeAndLocationId(String deductionType, Long orgLocationId) {
+		return payrollDeductionDao.getDeductionByDeductionTypeAndLocationId(deductionType,orgLocationId);
+	}
 
 }
