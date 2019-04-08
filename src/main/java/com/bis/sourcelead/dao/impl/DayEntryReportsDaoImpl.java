@@ -150,14 +150,13 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    + "   LEFT JOIN EMPLOYEE EMP ON EMP.USER_ID = U.ID AND EMP.ORG_LOCATIONS_ID = UR.ORG_LOCATIONS_ID "
 			    + "   LEFT JOIN DEPARTMENT DEPART ON DEPART.ID = EMP.DEPARTMENT_ID ";
             
-			   /* //To get current  orglocation details 
+			    //To get current  orglocation details 
 			    if(StringUtils.isNotEmpty(isGlobalAccess)) {
-			    	query = query+ " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"'";
+			    	query = query+ " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_ID = '"+orgloc.getOrg().getId()+"'";
 			    }else {
 			    	query = query+ " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"'";
 			    			
-			    }*/
-	       	    query = query+ " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"'";
+			    }
                 query = query+ " LEFT JOIN ORG_LOCATIONS ORGLOC ON ORGLOC.ID =  PC.ORG_LOCATIONS_ID "
                 + " WHERE "+subQuery+" AND SAH.SUBMISSION_ID =  TS.ID  " 
 				+ " AND SAH.ID IN (SELECT SUBSAH.ID FROM SUBMISSION_APPROVER_HIERARCHY SUBSAH WHERE "
