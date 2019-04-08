@@ -2202,6 +2202,7 @@ public class VendorRestController {
 						requirement.setLocation(sb.toString());
 						requirement.setLocationsList(requirementLocationsList);
 						requirement.setJobOwner(user.getFullName());
+						requirement.setReleasedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), requirement.getCreatedDate()));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
