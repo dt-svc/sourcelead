@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.beans.RequirementStagesReport;
+import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
@@ -23,6 +24,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
@@ -34,6 +36,7 @@ import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -60,6 +63,12 @@ public class VendorPerformanceReportRestController {
 	
 	@Autowired
 	private RequirementLocationsService requirementLocationsService;
+	
+	@Autowired
+	private RequirementDao requirementDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@RequestMapping(value = "/getOrgRelationList", method = RequestMethod.POST)
 	public ResponseList<OrgRelationDTO> getVendorList(HttpServletRequest request) {
@@ -240,10 +249,10 @@ public class VendorPerformanceReportRestController {
 								requirement.setRequirementSubmissionStatus(parentRequirement.getRequirementSubmissionStatus());
 								User user = userService.getUserById(parentRequirement.getManagerUserId().getId());
 								//For Applicants Count
-							     RequirementSubmissionsCountDTO totalCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(parentRequirement.getId(), user, orgLocations, "ALL");
-							     requirement.setTotalApplicants(totalCount.getApplicantsCount());
-							     RequirementSubmissionsCountDTO joinedCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(parentRequirement.getId(), user, orgLocations, "JOINED");
-							     requirement.setJoinedCount(joinedCount.getJoinedCount().toString());
+								long allCount = requirementService.getVendorSubmittedCandidates(parentRequirement.getId(), orgRelationId, spocId, "ALL");
+							     requirement.setTotalApplicants((int)allCount);
+								long joinedCount = requirementService.getVendorSubmittedCandidates(parentRequirement.getId(), orgRelationId, spocId, "JOINED");
+							     requirement.setJoinedCount(String.valueOf(joinedCount));
 							     // for requirement location
 							     List<String> requirementLocationsList = new ArrayList<>();
 									StringBuilder sb = new StringBuilder();
@@ -333,6 +342,34 @@ public class VendorPerformanceReportRestController {
 			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		return response;
+	}
+	
+	@RequestMapping(value = "/getApplicantDeclineListForVendor")
+	@SuppressWarnings("unchecked")
+	public ResponseList<RequirementSubmission>getApplicantDeclineListForVendor(@RequestParam(defaultValue = "0") long orgRelationId, 
+			@RequestParam(defaultValue = "0") long spocId,
+			@RequestParam(value = "status", required = false) String status,
+			HttpServletRequest request){
+				
+		ResponseList<RequirementSubmission> responseList = new ResponseList<>();
+		List<RequirementSubmission> list = new ArrayList<RequirementSubmission>();
+		String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+		List<Long> requirementIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
+	 	List<RequirementSubmission> requirementSubmissionList = requirementDao.getApplicantDeclineCountsForVendor(requirementIdList, orgRelationId, spocId, status);
+	 	requirementSubmissionList.forEach(submission->{
+	 		submission.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(dateFormat, submission.getCreatedDate()));
+	 		if(submission.getJoinedDate() !=null){
+	 		submission.setJoinedDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, submission.getJoinedDate()));	
+	 		}
+	 		list.add(submission);
+	 	});
+	 	
+	 	responseList.setData(list);
+	 	responseList.setResponse(Result.SUCCESS.name());
+	 	responseList.setResponseMessage(Result.SUCCESS.getValue());
+		
+		return responseList;
+		
 	}
 
 	@RequestMapping(value = "/getApplicantBackoutCountsForVendor")
