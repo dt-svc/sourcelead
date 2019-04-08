@@ -40,7 +40,6 @@ $(document).ready(function(){
         </div>
         <div class="col-md-2 dropdown-select positionRelative">
           <select class="form-control" id="filterType" name="filterType" onchange="getMissingBillCustomDates();">
-            <option value="">Select Date</option>
           <option value="last_7days">Last 7 days</option> 
           <option value="last_15days">Last 15 days</option>
           <option value="1month">1 month</option>
