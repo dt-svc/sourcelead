@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
@@ -458,7 +459,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 
 	@Override
 	public ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(
-			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations) throws Exception {
+			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user) throws Exception {
 		try{
 			Session session = this.sessionFactory.getCurrentSession();
 			List<Long> countlist = null;
@@ -491,9 +492,11 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 			List<RequirementWorkFlowTasks> requirementWorkFlow = query1.list();
 			if(requirementWorkFlow != null){
 				for(RequirementWorkFlowTasks workFlow : requirementWorkFlow){
+					StringBuilder userName = new StringBuilder("");
+					userName.append(workFlow.getAssignTo().getFirstName()+" "+workFlow.getAssignTo().getLastName());
 					workFlowTasksDTO = new RequirementWorkFlowTasksDTO();
 					workFlowTasksDTO.setWorkFlowTaskName(workFlow.getWorkFlowTaskName());
-					//workFlowTasksDTO.setAssignToUserId(workFlow.getAssignTo());
+					workFlowTasksDTO.setAssignToUserId(userName.toString());
 					workFlowTasksDTO.setPriority(workFlow.getPriority());
 					workFlowTasksDTO.setDescription(workFlow.getDescription());
 					requirementWorkFlowTasksDTOList.add(workFlowTasksDTO);

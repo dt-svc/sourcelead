@@ -137,7 +137,7 @@
         <div class="form-group clearfix">
           <label class="col-md-3">Description</label>
           <div class="col-md-9">
-            <textarea rows="2"  class="form-control" id="description" placeholder="Description" field-name="Description"
+            <textarea rows="2"  class="form-control" id="stageDescription" placeholder="Description" field-name="Description"
 								data-validation="validate_length length1-500" data-validation-optional="true"></textarea>
           </div>
         </div>
@@ -184,7 +184,7 @@
 			  <div class="form-group">
 				<label class="col-md-3">Priority</label>
 				<div class="col-md-9">
-				  <select class="sel form-control" id ="priority">
+				  <select class="sel form-control" id ="taskPriority">
 					<option selected>Select</option>
 					<option value = "Urgent">Urgent</option>
 					<option value = "High">High</option>
@@ -343,8 +343,7 @@ function saveRequirementWorkflowStage(workflowUuid){
 	           dateFormat: 'yyyy/mm/dd'
 	 };
 	var stageName = $("#stageName").val();
-	var description = $("textarea#description").val();
-	//var description = $.trim($("#description").val())
+	var description = $("textarea#stageDescription").val();
 	var stageUuid = $("#workflowStageUuid").val();
 	var qTemplateId = $("#questionnaireTemplateId").val();
 	if(stageUuid == null){
@@ -356,7 +355,6 @@ function saveRequirementWorkflowStage(workflowUuid){
 		  var formData = getFormData("addStageForm");
 		   $("#saveStageButton").attr("disabled", "disabled");
          $("#saveStageButton").addClass('button').val('Processing..'); 
-         alert();
 	$.ajax({
 		type : "GET",
 		url : sourceleadUrl + "/saveRequirementWorkflowStage?stageName="+stageName+"&description="+description+"&uuid="+stageUuid+
@@ -428,10 +426,9 @@ function getRequirementQuestionnaireTemplates(){
 
 function saveWorkflowTask(worflowUuid){
 	var workFlowTaskName = $("#workFlowTaskName").val();
-	var priority = $("#priority").val();
+	var priority = $("#taskPriority").val();
 	var description = $("#summerNote").val();
 	var userList = $("#userList").val();
-	alert(priority);
 	$.ajax({
 		type : "GET",
 		url : sourceleadUrl + "/saveWorkflowTask?requirementWorkFlowUuid="+worflowUuid+"&workFlowTaskName="+workFlowTaskName+"&priority="+priority+
