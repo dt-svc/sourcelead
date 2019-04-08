@@ -1,13 +1,8 @@
 package com.bis.sourcelead.rest;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,25 +18,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.entity.Connections;
-import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ConnectionStatus;
 import com.bis.sourcelead.service.ConnectionsService;
-import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ReferContactsService;
 import com.bis.sourcelead.service.UserRoleService;
-import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -153,14 +139,14 @@ public class ConnectionsRestController {
 							connections.getFromUser().getId(), connections.getToUser().getId());
 					if (refercontacts1 == null) {
 						referContactsService.saveuserContactsFromConnections(connections.getFromUser(),
-								connections.getToUser());
+								connections.getToUser(),null,null,null);
 					}
 
 					ReferContacts refercontacts2 = referContactsService.getReferContactsByFromUserIdAndToUserId(
 							connections.getToUser().getId(), connections.getFromUser().getId());
 					if (refercontacts2 == null) {
 						referContactsService.saveuserContactsFromConnections(connections.getToUser(),
-								connections.getFromUser());
+								connections.getFromUser(),null,null,null);
 					}
 					result = "success";
 				}
@@ -227,14 +213,14 @@ public class ConnectionsRestController {
 								connections.getFromUser().getId(), connections.getToUser().getId());
 						if (refercontacts1 == null) {
 							referContactsService.saveuserContactsFromConnections(connections.getFromUser(),
-									connections.getToUser());
+									connections.getToUser(),null,null,null);
 						}
 	
 						ReferContacts refercontacts2 = referContactsService.getReferContactsByFromUserIdAndToUserId(
 								connections.getToUser().getId(), connections.getFromUser().getId());
 						if (refercontacts2 == null) {
 							referContactsService.saveuserContactsFromConnections(connections.getToUser(),
-									connections.getFromUser());
+									connections.getFromUser(),null,null,null);
 						}
 					}
 				}
