@@ -2896,5 +2896,31 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		pps.setCreatedBy(user);
 		payrollPaySlipIndService.savePayrollPaySlipInd(pps);
 	}
+	
+	public Map<String,String> getCandidateBulkImportHeaderMap() {
+		Map<String,String> headerMap = new HashMap<>();
+		headerMap.put("summary", "summary");
+		headerMap.put("lastName", "Last Name");
+		headerMap.put("vendorcontact", "Vendor Contact");
+		headerMap.put("alternateMobilePhone", "Alternate Mobile Number");
+		headerMap.put("address", "Address");
+		headerMap.put("primarySkill", "Primary Skill");
+		headerMap.put("expectedRate", "Expected Rate");
+		headerMap.put("experienceYears", "Experience");
+		headerMap.put("currentRate", "Current Rate");
+		headerMap.put("candidateSkills", "Skills");
+		headerMap.put("firstName", "First Name");
+		headerMap.put("candidateEmployers", "Employers");
+		headerMap.put("mobilePhone", "Phone");
+		headerMap.put("vendor", "Vendor");
+		headerMap.put("designationType", "Designation Type");
+		headerMap.put("docFile", "Resume");
+		headerMap.put("middleName", "middleName");
+		headerMap.put("designation", "Designation");
+		headerMap.put("candidateEducation", "Education");
+		headerMap.put("email", "Email");
+		return headerMap;
+		
+	}
 }
 

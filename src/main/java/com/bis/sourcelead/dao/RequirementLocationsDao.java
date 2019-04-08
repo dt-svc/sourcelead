@@ -19,5 +19,7 @@ public interface RequirementLocationsDao {
 	List<Object[]> getRequirementLocationsListByRequirementIdMap(List<Long> reqIdsList) throws Exception;
 	
 	public List<RequirementLocations> getAllRequirementByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	List<String> getRequirementLocationsStringListByRequirementId(Long requirementId) throws Exception;
 
 }

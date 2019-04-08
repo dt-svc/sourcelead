@@ -2134,14 +2134,14 @@ public class VendorRestController {
 
 		ResponseList<RequirementSubmission> responseList = new ResponseList<>();
 		List<RequirementSubmission> list = new ArrayList<RequirementSubmission>();
-		String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<Long> requirementIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request,"requirementIdsList");
 		List<RequirementSubmission> requirementSubmissionList = requirementDao.getApplicantDeclineCountsForVendor(requirementIdList, orgRelationId, spocId, status);
 		requirementSubmissionList.forEach(submission -> {
-			submission.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(dateFormat, submission.getCreatedDate()));
+			submission.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), submission.getCreatedDate()));
 			if (submission.getJoinedDate() != null) {
 				submission.setJoinedDateStr(
-						commonUtil.dateStrFromOrgDateFormatter(dateFormat, submission.getJoinedDate()));
+						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), submission.getJoinedDate()));
 			}
 			list.add(submission);
 		});
@@ -2202,6 +2202,7 @@ public class VendorRestController {
 						requirement.setLocation(sb.toString());
 						requirement.setLocationsList(requirementLocationsList);
 						requirement.setJobOwner(user.getFullName());
+						requirement.setReleasedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), requirement.getCreatedDate()));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -19,5 +21,7 @@ public interface AssociateContributionService {
 	AssociateContribution getValidateContribution(Long candidateId,Long contriTypId, OrgLocations orgLocation);
 
 	AssociateContribution findContributionByUserIdContributionId(Long userId, Long contributionId);
+
+	String saveAssociateDedAndContriData(MultipartFile multipartFile, OrgLocations orgLocations) throws Exception;
 	
 }

@@ -38,7 +38,7 @@
 </section>
 
 
-    <div class="vendor_wrap positionRelative">
+    <div class="positionRelative">
     
     
 <div class="reportHead">
@@ -92,6 +92,7 @@
 <div id="releasedJobsResultDiv"></div>
 <div id="releasedApplicantsDeclineDiv"></div>
 <div id="releasedApplicantsBackOutDiv"></div>
+<div id="releasedApplicantsHiredListDiv"></div>
 </section>   
  
       
