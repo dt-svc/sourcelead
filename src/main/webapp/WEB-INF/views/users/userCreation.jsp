@@ -1786,11 +1786,3 @@ function calculateConfirmationDate(){
 }
 
 </script>
-
-
-
-
-
-
-
-
