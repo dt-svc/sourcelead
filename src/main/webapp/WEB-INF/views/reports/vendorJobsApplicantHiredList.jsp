@@ -26,9 +26,9 @@
     <div class="reportHead">
     
     	<div class="clearfix"></div>
-    	 	<div class="candidate_wrap_table recruiterReports_table fixedColumntable minHeight positionRelative datatable_filter dashboard-widget clearfix">
-              <b>Vendor Hired Candidates</b>
-              <div id="releaseApplicantsHiredList" class="filter_position positionRelative"></div> 
+    	 	<div class="candidate_wrap_table positionRelative datatable_filter clearfix">
+              <b class="col-md-12 mb10 mt10">Vendor Hired Candidates</b>
+              <div id="releaseApplicantsHiredList" class="positionRelative"></div> 
           </div> 
     </div>
   </section>
@@ -59,7 +59,7 @@ function vendorJobsApplicantsHiredList(){
 		        	  }
            	 $("#releaseApplicantsHiredList").empty();
            	 var result = "";
-           	 result = result +"<table id='releasedApplicantsPaginationId' class='display' cellspacing='0' width='100%' >"; 
+           	 result = result +"<table id='releasedApplicantsHiredPaginationId' class='display' cellspacing='0' width='100%' >"; 
                 result = result +"<thead>"; 
                 result = result +"  <tr>"; 
                 result = result +"<th><div>Applicant Name</div></th>";
@@ -104,7 +104,7 @@ function vendorJobsApplicantsHiredList(){
 <script>
 
 function releasedJobsPagination(){  
-    $('#releasedApplicantsPaginationId').DataTable( { 
+    $('#releasedApplicantsHiredPaginationId').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,

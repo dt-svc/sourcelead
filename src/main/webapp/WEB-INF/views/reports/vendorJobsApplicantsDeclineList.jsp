@@ -26,9 +26,9 @@
     <div class="reportHead">
     
     	<div class="clearfix"></div>
-    	 	<div class="candidate_wrap_table recruiterReports_table fixedColumntable minHeight positionRelative datatable_filter dashboard-widget clearfix">
-              <b>Vendor Decline Candidates</b>
-              <div id="releasedApplicantsList" class="filter_position positionRelative"></div> 
+    	 	<div class="candidate_wrap_table positionRelative datatable_filter clearfix">
+              <b class='col-md-12 mb10 mt10'>Vendor Decline Candidates</b>
+              <div id="releasedApplicantsList" class="positionRelative"></div> 
           </div> 
     </div>
   </section>
