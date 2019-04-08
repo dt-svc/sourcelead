@@ -34,9 +34,12 @@ window.onload = function () {
 	</section>
 	 <div id="goalsDetailsLoading"></div>
 	<div class="goalssummar_widget">
-				<div class="clearfix editBtn-position">
-					<span id="goaledit"></span>
+				<div class="clearfix col-md-3 pull-right">
+				    <span id="markAsComplete"></span>
+				    <span id="goaledit"></span>
+				    <span id="goalDelete"></span>
 				</div>
+				
 				<div class="clearfix">
 					<div class='col-md-5'>
 						<a href="javascript:void(0)">
@@ -46,7 +49,7 @@ window.onload = function () {
 					</div>
 					<div class='col-md-7'>
 						<div class="row">
-							<div class="col-md-10">
+							<div class="col-md-7">
 								<div class="clearfix">
 									<div class="progress mb0 progressGoals">
 										<span id="progressBar"></span>
@@ -55,11 +58,11 @@ window.onload = function () {
 								</div>
 							</div>
 							<div class="clearfix mt mb"></div>
-							<div class="col-md-5">
+							<div class="col-md-3">
 								<div class="mb0"><span class="mr10 text-muted">Start Date:</span><span
 										class="textBold" id="goalStartDate"></span></div>
 							</div>
-							<div class="col-md-5">
+							<div class="col-md-3">
 								<div class="mb0"><span class="mr10 text-muted ">End Date:</span><span
 										class="textBold" id="goalEndDate"></span></div>
 							</div>

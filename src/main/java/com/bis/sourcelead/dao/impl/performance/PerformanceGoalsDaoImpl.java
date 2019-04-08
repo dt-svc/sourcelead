@@ -598,7 +598,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				  		"USER U,"+
 				  		"PERFORMANCE_GOALS_ASSIGN_TO GA WHERE "+
 				  		"PG.ID = GA.GOAL_ID and U.ID = GA.ASSIGNED_USER_ID "+
-						"AND PG.GOAL_ID IN (SELECT ID  FROM PERFORMANCE_GOALS  WHERE UUID = :goalUUID ) "+
+						"AND PG.GOAL_ID IN (SELECT ID  FROM PERFORMANCE_GOALS  WHERE UUID = :goalUUID ) AND GA.STATUS = '1' "+
 				  
 				  		"UNION "+
 				  
@@ -609,7 +609,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				        "USER U, "+
 				       	"PERFORMANCE_GOALS_ASSIGN_TO GA WHERE "+
 				       	"PG.id = GA.GOAL_ID  and PG.UUID = :goalUUID "+
-				       	"AND U.id = GA.ASSIGNED_USER_ID)Q1 "+
+				       	"AND U.id = GA.ASSIGNED_USER_ID AND GA.STATUS = '1')Q1 "+
 				  		"GROUP BY Q1.ASSIGNED_USER_ID ";
 		
 		queryObj = session.createSQLQuery(query);

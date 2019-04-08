@@ -365,10 +365,10 @@ function PerformanceGoals(){
 						        		 if(response.object.percentageDone != null 
 						        				 && response.object.percentageDone != ''
 						        					 && response.object.percentageDone != 'undefined'){
-						        			 $("#goalPercentage").html(response.object.percentageDone+" Complete (info)");
+						        			 $("#goalPercentage").html(response.object.percentageDone+"% Complete (info)");
 						        			 percentage = response.object.percentageDone;
 						        		 }else{
-						        			 $("#goalPercentage").html("0 Complete (info)");
+						        			 $("#goalPercentage").html("0% Complete (info)");
 						        		 }
 						        		
 						        		 var result = "";
@@ -377,12 +377,27 @@ function PerformanceGoals(){
 						        		 $("#progressBar").empty();
 								         $("#progressBar").html(result);
 								         
+								        
+								         
+								         var markAsComplete = "";
+								         markAsComplete = markAsComplete+'<a class="text-primary textBold" href="javascript:void(0)">Mark As Complete</a>&nbsp;&nbsp;&nbsp;';
+								         
+								         $("#markAsComplete").empty();
+								         $("#markAsComplete").html(markAsComplete);
+								         
+								         
 								         var goalEdit = "";
-								         goalEdit = goalEdit+'<a href='+pmsUrl+'/addNewGoal?goalUUID='+goalUUID+'><i class="fa fa-pencil paddingRight"></i>Edit</a>';
+								         goalEdit = goalEdit+'<a class="text-primary textBold" href='+pmsUrl+'/addNewGoal?goalUUID='+goalUUID+'><i class="fa fa-pencil paddingRight"></i></a>&nbsp;&nbsp;&nbsp;';
 						        		
 								         $("#goaledit").empty();
 								         $("#goaledit").html(goalEdit);
 								         
+								         
+								         var goalDelete = "";
+								         goalDelete = goalDelete+'<a class="text-primary textBold" href="javascript:void(0)"><i class="fa fa-trash  cursorPointer paddingRight"></i></a>';
+								         
+								         $("#goalDelete").empty();
+								         $("#goalDelete").html(goalDelete);
 						        		 
 						        		$("#goalsDetailsLoading").removeAttr('style');
 						        	}
@@ -428,10 +443,20 @@ function PerformanceGoals(){
 								        		 result = result+'<p class="fontSmall mt5 mb0">'+percentage+'% Complete (info)</p>' ;
 								        		 result = result+'<div class="clearfix"></div>' ;
 								        		 result = result+'</div>' ;
+								        		
+								        		 
+								        		 result = result+'<div class="col-md-6 mt">' ;
+								        		 result = result+'<div class="mb0"><span class="mr10 text-muted" >Start Date:</span><span class="textBold">'+opt.goalStartDate+'</span></div>' ;
 								        		 result = result+'</div>' ;
+								        		 result = result+'<div class="col-md-6 mt">' ;
+								        		 result = result+'<div class="mb0"><span class="mr10 text-muted ">End Date:</span><span class="textBold">'+opt.goalEndDate+'</span></div>' ;
+								        		 result = result+'</div>' ;
+								        		 
+								        		 result = result+'</div>' ;
+								        		 
 								        		 result = result+'<div class="clearfix col-md-3">' ;
 								        		 result = result+'<a class="text-primary textBold cursorPointer">Mark as completed</a>&nbsp;&nbsp;&nbsp;' ;
-								        		 result = result+'<a><i class="fa fa-pencil cursorPointer" title="Edit"></i></a>&nbsp;&nbsp;&nbsp;' ;
+								        		 result = result+'<a href='+pmsUrl+'/addNewGoal?goalUUID='+goalUUID+'><i class="fa fa-pencil cursorPointer" title="Edit"></i></a>&nbsp;&nbsp;&nbsp;' ;
 								        		 result = result+'<a><i class="fa fa-trash cursorPointer" title="Delete"></i></a>&nbsp;&nbsp;&nbsp;' ;
 								        		 result = result+'</div>' ;
 								        		 result = result+'</div>' ;
@@ -441,9 +466,13 @@ function PerformanceGoals(){
 								        		  
 								        	 }
 								        	 
-								        	 $("#subGoalsList").empty();
-									         $("#subGoalsList").html(result);
-								         }
+								         }else{
+								        	 
+								        	 result = result + '<div class="dataTables_empty"></div>' ;
+							        	 }
+								         
+								         $("#subGoalsList").empty();
+								         $("#subGoalsList").html(result);
 						        		 
 						        		$("#goalsDetailsLoading").removeAttr('style');
 						        	}
