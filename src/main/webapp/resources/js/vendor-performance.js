@@ -37,6 +37,7 @@ $(document).ready(function() {
 		$("#releasedJobsResultDiv").hide();
 		$('#releasedApplicantsDeclineDiv').hide();
 		$('#releasedApplicantsBackOutDiv').hide();
+		$('#releasedApplicantsHiredListDiv').hide();
 		getVendorsReportList();
 	});
 	$("#graphView").click(function() {
@@ -49,6 +50,7 @@ $(document).ready(function() {
 		$('#releasedApplicantsBackOutDiv').hide();
 		$("#vendorReportsChartDiv").show();
 		$("#vendorReportsDiv").hide();
+		$('#releasedApplicantsHiredListDiv').hide();
 		
 		getVendorsReportGraphData();
 	});
@@ -581,9 +583,14 @@ function getQualityCandidatesGraph() {
 	            		]
 	            	});
 	            	$("#totalReceivedCandidates").html(parseInt(joinedCount) + parseInt(rejectedCount));
+	            	$("#hiredReceivedCandidates").html(parseInt(joinedCount));
+	            	$("#rejectedReceivedCandidates").html(parseInt(rejectedCount));
 	            	$("#qualityCandidatesChartDiv").show();
             	} else {
             		$("#qualityCandidatesNoRecordsDiv").show();
+            		$("#totalReceivedCandidates").html(0);
+	            	$("#hiredReceivedCandidates").html(0);
+	            	$("#rejectedReceivedCandidates").html(0);
             	}
             	$("#qualityCandidatesloadingDiv").hide();  
             } else if (response.response === "SESSION_TIMEDOUT" || response.indexOf('Sign In') !== -1) {
@@ -688,6 +695,7 @@ function getApplicantDeclineGraph() {
                 	$("#applicantDeclineChartDiv").show();
             	} else {
             		$("#applicantDeclineNoRecordsDiv").show();
+            		$("#applicantsDeclineCount").html(0);
             	}
             	$("#applicantDeclineloadingDiv").hide();
             } else if (response.response === "SESSION_TIMEDOUT" || response.indexOf('Sign In') !== -1) {
@@ -712,6 +720,24 @@ function releasedJobsToVendorsApplicantDecline() {
 	       		$('#releasedApplicantsDeclineDiv').empty();
 	       		$('#releasedApplicantsDeclineDiv').append(result);
 	       		vendorJobsApplicantsDeclineList();
+	        }
+		});	
+	}
+}
+
+//Applicant Hired List
+function releasedJobsToVendorsApplicantHired() {
+	if($("#hiredReceivedCandidates").html() != "" && parseInt($("#hiredReceivedCandidates").html()) > 0) {
+		$("#releasedApplicantsHiredListDiv").show();
+		$("#vendorReportsChartDiv").hide();
+		$("#vendorReportsDiv").hide();
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/releasedJobsApplicantsHiredListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
+			success :function(result) {
+	       		$('#releasedApplicantsHiredListDiv').empty();
+	       		$('#releasedApplicantsHiredListDiv').append(result);
+	       		vendorJobsApplicantsHiredList();
 	        }
 		});	
 	}
@@ -828,6 +854,7 @@ function getApplicantBackoutGraph() {
                 	$("#backoutCandidatesChartDiv").show();
             	} else {
             		$("#backoutCandidatesNoRecordsDiv").show();
+            		$("#backoutCandidatesCount").html(0);
             	}
             	$("#backoutCandidatesloadingDiv").hide();
             } else if (response.response === "SESSION_TIMEDOUT" || response.indexOf('Sign In') !== -1) {
