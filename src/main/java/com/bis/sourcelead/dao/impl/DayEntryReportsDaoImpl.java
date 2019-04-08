@@ -137,14 +137,29 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ " INNER JOIN PROJECTS PROJ ON PROJ.ID =  PT.PROJECT_ID "
                 + " INNER JOIN TIMESHEET_SUBMISSIONS TS ON TS.ID =  TDE.SUBMISSION_ID "
 				+ " LEFT JOIN PROJECT_MEMBERS PM ON PM.ID =  TS.PROJECT_MEMBER_ID "
-                + " LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
-            	+ " LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
-                + " LEFT JOIN EMPLOYEE EMP ON EMP.USER_ID =  U.ID AND EMP.ORG_LOCATIONS_ID = CAN.WORK_LOCATION "
-                + " LEFT JOIN DEPARTMENT DEPART ON DEPART.ID =  EMP.DEPARTMENT_ID "
-                + " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"' "
-                + " LEFT JOIN ORG_LOCATIONS ORGLOC ON ORGLOC.ID =  PC.ORG_LOCATIONS_ID "
-                + " LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
-				+ " WHERE "+subQuery+" AND SAH.SUBMISSION_ID =  TS.ID  " 
+                
+				//To get candidate work location
+				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
+			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
+			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
+			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND ACANLOC.IS_ASSOCIATE = 'Y' AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
+			    			       
+			    //To get Employee and department details
+				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
+			    + "   LEFT JOIN USER_ROLE UR ON UR.USER_ID = U.ID AND UR.ORG_LOCATIONS_ID = ACANLOC.ORG_LOCATION_ID "
+			    + "   LEFT JOIN EMPLOYEE EMP ON EMP.USER_ID = U.ID AND EMP.ORG_LOCATIONS_ID = UR.ORG_LOCATIONS_ID "
+			    + "   LEFT JOIN DEPARTMENT DEPART ON DEPART.ID = EMP.DEPARTMENT_ID ";
+            
+			   /* //To get current  orglocation details 
+			    if(StringUtils.isNotEmpty(isGlobalAccess)) {
+			    	query = query+ " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"'";
+			    }else {
+			    	query = query+ " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"'";
+			    			
+			    }*/
+                
+                query = query+ " LEFT JOIN ORG_LOCATIONS ORGLOC ON ORGLOC.ID =  PC.ORG_LOCATIONS_ID "
+                + " WHERE "+subQuery+" AND SAH.SUBMISSION_ID =  TS.ID  " 
 				+ " AND SAH.ID IN (SELECT SUBSAH.ID FROM SUBMISSION_APPROVER_HIERARCHY SUBSAH WHERE "
 				+ "                  SUBSAH.SUBMISSION_ID = TS.ID "
 				+ "                  AND  "
@@ -203,15 +218,27 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "     ) AS  candidateLocation "
 				+ "   FROM PROJECT_MEMBERS PM "
 				+ "   INNER JOIN PROJECTS PROJ ON PROJ.ID = PM.PROJECT_ID "
-			    + "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
+								
+				 //To get candidate work location
+				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
+			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
+			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
+			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND ACANLOC.IS_ASSOCIATE = 'Y' AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
+			    			       
+			    //To get Employee and department details
 				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
+			    + "   LEFT JOIN USER_ROLE UR ON UR.USER_ID = U.ID AND UR.ORG_LOCATIONS_ID = ACANLOC.ORG_LOCATION_ID "
+			    + "   LEFT JOIN EMPLOYEE EMP ON EMP.USER_ID = U.ID AND EMP.ORG_LOCATIONS_ID = UR.ORG_LOCATIONS_ID "
+			    + "   LEFT JOIN DEPARTMENT DEP ON DEP.ID = EMP.DEPARTMENT_ID "
+				
+			    //To get user leave details
 				+ "   LEFT JOIN USER_LEAVE LV ON LV.USER_ID = U.ID "
 			    + "   LEFT JOIN LEAVE_TYPE LT ON LT.ID = LV.LEAVE_TYPE_ID"
 			    + "   LEFT JOIN APPLIED_LEAVE_DATE AL ON AL.LEAVE_ID = LV.ID "
-			    + "   LEFT JOIN USER_ROLE UR ON UR.USER_ID = U.ID AND UR.ORG_LOCATIONS_ID = CAN.WORK_LOCATION "
+			    
 			    + "   LEFT JOIN ORG_LOCATIONS LOC ON LOC.ID = UR.ORG_LOCATIONS_ID "
-			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
-			    + "   LEFT JOIN DEPARTMENT DEP ON DEP.ID = LT.DEPARTMENT_ID"
+			   
+			    
 				+ "   WHERE "+subQuery
 				+ "   AND LT.TIMESHEET_AUTOFILL = 'Y' AND (LV.STATUS = 'APPROVED' OR LV.STATUS = 'PENDING')AND AL.APPLY_LEAVE_DATE IS NOT NULL AND AL.APPLY_LEAVE_DATE BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' group by CONCAT(U.ID,AL.APPLY_LEAVE_DATE)"
 				+ ") "
@@ -239,6 +266,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   NULL AS comments,"
 				+ "   HD.HOLIDAY_NAME AS task, "
 				+ "   NULL AS status,"
+				
 				+ "   DEP.DEPARTMENT_NAME AS departmentName,"
 				+ "   NULL AS projectId,"
 				+ "   PM.MASTER_CANDIDATE_ID AS masterCandidateId,"
@@ -257,17 +285,23 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "     ) AS  candidateLocation "
 				+ "   FROM PROJECT_MEMBERS PM "
 				+ "   INNER JOIN PROJECTS PROJ ON PROJ.ID = PM.PROJECT_ID "
-			    + "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
-				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
-				+ "   LEFT JOIN USER_ROLE UR ON UR.USER_ID = U.ID AND UR.ORG_LOCATIONS_ID = CAN.WORK_LOCATION "
-			    + "   LEFT JOIN HOLIDAY_RESTRICT_DAYS HRD ON HRD.ORGLOCATION_ID = UR.ORG_LOCATIONS_ID "
-			    + "   LEFT JOIN HOLIDAY HD ON HD.ID = HRD.HOLIDAY_ID "
-			    + "   LEFT JOIN ORG_LOCATIONS LOC ON LOC.ID = UR.ORG_LOCATIONS_ID "
+			   
+			    //To get candidate work location
+				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
 			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
-			    + "   LEFT JOIN EMPLOYEE EMP ON EMP.USER_ID = U.ID AND EMP.ORG_LOCATIONS_ID = CAN.WORK_LOCATION "
+			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
+			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND ACANLOC.IS_ASSOCIATE = 'Y' AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
+			    			       
+			    //To get Employee and department details
+				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
+			    + "   LEFT JOIN USER_ROLE UR ON UR.USER_ID = U.ID AND UR.ORG_LOCATIONS_ID = ACANLOC.ORG_LOCATION_ID "
+			    + "   LEFT JOIN EMPLOYEE EMP ON EMP.USER_ID = U.ID AND EMP.ORG_LOCATIONS_ID = UR.ORG_LOCATIONS_ID "
 			    + "   LEFT JOIN DEPARTMENT DEP ON DEP.ID = EMP.DEPARTMENT_ID "
+			    
+			    + "   LEFT JOIN HOLIDAY_RESTRICT_DAYS HRD ON HRD.ORGLOCATION_ID = CAN.WORK_LOCATION "
+			    + "   LEFT JOIN HOLIDAY HD ON HD.ID = HRD.HOLIDAY_ID "
 				+ "   WHERE "+subQuery
-				+ "    AND HRD.DAY IS NOT NULL AND HRD.DAY BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' AND HD.ID NOT IN(SELECT UDH.HOLIDAY_ID FROM USER_DROPPED_HOLIDAYS UDH WHERE UDH.USER_ID = U.ID AND UDH.STATUS = '1') group by CONCAT(UR.ID,HRD.DAY)"
+				+ "    AND HRD.DAY IS NOT NULL AND HRD.DAY BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' AND HD.ID NOT IN(SELECT UDH.HOLIDAY_ID FROM USER_DROPPED_HOLIDAYS UDH WHERE UDH.USER_ID = U.ID AND UDH.STATUS = '1') group by CONCAT(U.ID,HRD.DAY)"
 				+ ") "
 				+ " )Q1 ORDER BY Q1.timesheetDate ASC  "; 
 		
