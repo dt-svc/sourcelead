@@ -167,7 +167,7 @@ function getTicketCommetList(ticketId) {
 }
 
 function saveTicketComment(ticketId) {
-	if ($("#ticketComment").html() !== ""){
+	if ($("#ticketComment").html() !== "" && $("#ticketComment").html() !== "<br>"){
 		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, {id: $("#ticketCommentId").val(), comment : $("#ticketComment").html(), mentionedUserIds : selectedUsers.toString()}, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
@@ -175,6 +175,11 @@ function saveTicketComment(ticketId) {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				if(response.object === true) {
+					$(".success_pop span").html("Ticket " + ($("#ticketCommentId").val() > 0 ? "edited" : "added") + " successfully...");
+					$(".success_pop").show();
+					setTimeout(function() {
+						$(".success_pop").hide();
+			 		}, 1000);
 					getTicketCommetList(ticketId);
 					closeTicketComment();
 				}
@@ -189,13 +194,17 @@ function saveTicketComment(ticketId) {
 	}
 }
 function closeTicketComment() {
-	$("#add-comment").fadeOut();
-	document.getElementById("ticketComment_form").reset();
-	$("ticketComment_form").validate().resetForm();
+	$("#add-comment").fadeOut();	
+	$("#ticketCommentId").val(0);
+	$("#ticketComment").html("");
 	selectedUsers = [];
+	$('.fr-element.fr-view').html("");
+	$("#ticketCommentPopup, .mask").hide();
+	
 }
 
 function editTicketComment(id) {
+	selectedUsers = [];
 	$.post(sourceleadUrl + "/getTicketComment?ticketCommentId="+id, {}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
@@ -230,7 +239,11 @@ function deleteTicketComment() {
 		} else if (response.response === "AWKWARD") {
 			location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {
-			alert(response.responseMessage);
+			$(".success_pop span").html("Ticket comment deleted successfully...");
+			$(".success_pop").show();
+			setTimeout(function() {
+				$(".success_pop").hide();
+	 		}, 1000);
 			getTicketCommetList(ticketId);
 			closeDeleteCommentPopup();
 		} else if (response.indexOf('Sign In') !== -1) {
