@@ -547,7 +547,7 @@
 														result = result + "<option value='On Hold'>On Hold</option>";
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 													}
-													if(opt.submissionStatus == 'OFFERMADE'){
+													if(opt.submissionStatus == 'OFFERMADE' && opt.previousSubmissionStatus != 'CLIENT_INTERVIEW'){
 														result = result + "<option value='On Hold'>On Hold</option>";
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 													}
