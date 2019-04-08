@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,9 +20,12 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
@@ -39,6 +43,9 @@ public class RequirementWorkflowController {
 	
 	@Autowired
 	private RequirementWorkFlowService requirementWorkFlowService;
+	
+	@Autowired
+	private UserRoleService userRoleService;
 
 	@RequestMapping(value = "/workflowDashboard")
 	public ModelAndView workflowDashboard(HttpServletRequest request) throws Exception{
@@ -83,9 +90,27 @@ public class RequirementWorkflowController {
 	public ModelAndView addStage(HttpServletRequest request,
 			RequirementWorkFlowDTO requirementWorkFlowDTO) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
+		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(orgLocationId);
 		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO);
+		List<UserRole> userRoleList = userRoleService.getAllActiveUsersListByOrgLocationId(orgLocations.getId());
+		List<UserRoleDTO> userRoleListDTO = new ArrayList<>();
+		for (UserRole ur : userRoleList) {
+			UserRoleDTO userRoleDTO = new UserRoleDTO();
+			StringBuilder userName = new StringBuilder();
+			userRoleDTO.setUserId(ur.getUser().getId());
+			if (null != ur.getUser().getLastName()) {
+				userRoleDTO.setUserName(
+						userName.append(ur.getUser().getFirstName()).append("").append(ur.getUser().getLastName()).toString());
+			} else {
+				userRoleDTO.setUserName(userName.append(ur.getUser().getFirstName()).toString());
+			}
+			userRoleListDTO.add(userRoleDTO);
+		}
 		modelandview.setViewName("workflow/addStage");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
+		modelandview.addObject("userRoleListDTO", userRoleListDTO);
 		return modelandview;
 	}
 	
@@ -441,7 +466,7 @@ public class RequirementWorkflowController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			try {
 				
-				String[] tableColumns = { "workFlowName", "noOfStages", "status"};
+				String[] tableColumns = { "workFlowTaskName", "assignToUserId", "priority", "description"};
 			  	int sortColumnIndex = -1; 
 		  		String sortColumnOrder = "desc"; 
 		  		if (requirementWorkFlowTasksDTO.getOrder() != null && !requirementWorkFlowTasksDTO.getOrder().isEmpty()) {
