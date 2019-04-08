@@ -511,7 +511,7 @@ public class ExpensesApprovalRestController {
 		 StringBuilder loginURLSB = new StringBuilder();
 		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
-		 if("APPROVED".equalsIgnoreCase(status)){
+		/* if("APPROVED".equalsIgnoreCase(status)){
 			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TO_LEVELTWO_APPROVER_WHILE_LEVENONE_APPROVEEXPENSES_INSEQUENTIALMECHANISM,new ArrayList<EmailAttachment>());
 		 }
 		
@@ -526,7 +526,7 @@ public class ExpensesApprovalRestController {
 		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
-		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());  
+		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());  */
     }
     
     @RequestMapping(value="/getExpenseAttachmentStatus")

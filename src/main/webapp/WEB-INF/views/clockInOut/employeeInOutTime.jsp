@@ -23,7 +23,7 @@ $('document').ready(function () {
       <div class="pull-left">
         <h2>Clock in List</h2>
       </div>
-      <div class="pull-right brud-crum">Home  &raquo; Clock in list</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; Clock in list</div>
     </section>
 
     <div class="clockListWrap clearfix">
@@ -42,16 +42,11 @@ $('document').ready(function () {
                 <i class="fa fa-chevron-right"></i>
               </div>            
 
-   
-
-    <div class="repclo" id="graphId"  style="display: none;">
-        <div id="jobsAdded" class="amchartAnchor-Hide timRep"></div>
-    </div>
 
   </div>    
 				<div id="listDivId">
                     <ul class="pull-right list-unstyled list-inline">
-                      <li><a class="filtIcon" id="filPop"></a>
+                      <li id="filterId"><a class="filtIcon" id="filPop"></a>
                         <div class="approved_pop">
                             <ul>
                                 <li><input type="radio" name="a" value="today" checked id="a" onclick="getUserTimeEntries();"><label for="a">Today</label></li> 
@@ -61,19 +56,17 @@ $('document').ready(function () {
                             </ul>
                           </div>                      
                       </li>
-                      <li><a href="javascript:void(0)" class="overIcon" title="Actions" id="exPop"></a>
-                        <div class="newActPop">
-                            <span>
-                               <a href="javascript:void(0)" onclick="exportToPdf('pdf');" title="PDF">Export PDF</a>
-                              <a href="javascript:void(0)" onclick="exportToPdf('excel');" title="Excel">Export Excel</a>
-                            </span>
-                          </div>                      
-                      </li>
-                      <li class="">
+                  
+                      <li class="" id="searchId">
                         <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
                         <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
                     </ul>
                     </div>
+                    
+                     <div class="repclo" id="graphId"  style="display: none;">
+        <div id="jobsAdded" class="amchartAnchor-Hide timRep"></div>
+    </div>
+                    
                   </div>
                </div>
                
@@ -182,7 +175,7 @@ $('document').ready(function () {
 	  $("#graphicalId").addClass("act");
 	  document.getElementById("graphId").style.display="block";
 	  document.getElementById("userTimeEntriesDiv").style.display="none";
-	  document.getElementById("listDivId").style.display="none";
+	  document.getElementById("searchId").style.display="none";
   }
   
   
@@ -192,6 +185,7 @@ $('document').ready(function () {
 	  document.getElementById("userTimeEntriesDiv").style.display="block";
 	  document.getElementById("listDivId").style.display="block";
 	  document.getElementById("graphId").style.display="none";
+	  document.getElementById("searchId").style.display="block";
   }
   
 //clock list pop 
@@ -434,8 +428,15 @@ function getUserTimeEntriesPagination(url){
    		    	
    		    	$("#userTimeEntriesDiv").empty();  
    	    	    $("#userTimeEntriesDiv").append(result);
-   	    	 	$("#frequencyId").html(frequency);
+   	    	    
+   	    	    if(dayWisetype == 'today'){
+   	    	    	var freqSplit = frequency.split(" To ");
+   	    	    	$("#frequencyId").html(freqSplit[0]);
+   	    	    }else{
+   	    	    	$("#frequencyId").html(frequency);
+   	    	    }
    	    	 userTimeEntriesPagination();
+   	    	 setTimeout('refresh()', 1000);
 			},
 		});
  }
@@ -458,21 +459,16 @@ function userTimeEntriesPagination(){
 </script>
 
 <script>
-$(function() {
-	alert(1)
-    $('tr.parent td span.click').on("click", function(){
-            var idOfParent = $(this).parents('tr').attr('id');
-            $('tr.child-'+idOfParent).toggle(100);
-        });
-    $('tr[class^=child-]').hide().children('td');
-});
+
+function refresh(){
+	$('tr.parent td span.click').on("click", function(){
+        var idOfParent = $(this).parents('tr').attr('id');
+        $('tr.child-'+idOfParent).toggle(100);
+    });
+$('tr[class^=child-]').hide().children('td');
+}
 </script> 
 
-<!-- <script>
-function clickTab(){ 
-	$(".subTab").toggle();
-}
-</script> -->
 
 
   

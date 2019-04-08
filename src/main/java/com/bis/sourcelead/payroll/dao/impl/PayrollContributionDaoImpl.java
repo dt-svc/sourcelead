@@ -182,6 +182,19 @@ private static final Logger logger = LoggerFactory.getLogger(PayrollContribution
 			List<PayrollContribution> payrollContributionList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).list();
 			return payrollContributionList;
 	}
+	
+	@Override
+	@Transactional
+	public PayrollContribution getContributionByDeductionTypeAndLocationId(String deductionType, Long locationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from PayrollContribution pc where pc.deductionTypeId IN (Select pd.id from PayrollDeduction pd where pd.payrollDeductionType =:deductionType and pd.orgLocationId.id =:orgLocationId) and pc.status = 1";
+		List<PayrollContribution> payrollContributionList = session.createQuery(query).setString("deductionType", deductionType).setLong("orgLocationId", locationId).list();
+		if (!payrollContributionList.isEmpty() && payrollContributionList.size() != 0) {
+			return payrollContributionList.get(0);
+		}else{
+			return null;
+		}
+	}
 
 
 }

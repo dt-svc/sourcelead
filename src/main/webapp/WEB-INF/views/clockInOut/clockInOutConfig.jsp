@@ -24,7 +24,8 @@
       <div class="pull-left">
         <h2>Clock in & Clock out</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Settings &raquo; Clock in & Clock out</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/settings">Settings</a> &raquo;Clock In & Clock Out</div>
+
     </section>
     
     <form name="clock_InOut_form" id="clock_InOut_form">

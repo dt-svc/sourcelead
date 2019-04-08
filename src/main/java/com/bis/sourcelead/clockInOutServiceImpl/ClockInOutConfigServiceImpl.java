@@ -304,7 +304,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		    		main.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockInDate()));
 		    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockOutDate()));
 				}
-		    	main.setFrequency(dates[0]+ " - "+dates[1]);
+		    	main.setFrequency(commonUtil.dateStrFromOrgDateFormatter(dateFormat, dates[0])+" To "+commonUtil.dateStrFromOrgDateFormatter(dateFormat, dates[1]));
 		    	main.setSubList(subListDto);
 		    	mainList.add(main);
 				
