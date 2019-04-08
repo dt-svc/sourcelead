@@ -81,26 +81,37 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 	@Transactional
 	public ClockInOutConfig getClockInOutConfigBasedOnOrgLocationId(Long orgLocationId) {
 		
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ClockInOutConfig clockInOut where clockInOut.orgLocationId.id = :orgLocationId";
-		ClockInOutConfig clockInOut = (ClockInOutConfig) session.createQuery(query).setLong("orgLocationId", orgLocationId).uniqueResult();
-		if(clockInOut != null) {
-			return clockInOut;
+		List<ClockInOutConfig> clkList = new ArrayList<>();
+		ClockInOutConfig clk = new ClockInOutConfig();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from ClockInOutConfig clockInOut where clockInOut.orgLocationId.id = :orgLocationId";
+			clkList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return null;
+		if(clkList != null && clkList.size() > 0) {
+			clk = clkList.get(0);
+		}
+		
+		return clk;
 	}
 	
 	@Override
 	@Transactional
 	public ClockInOutConfig getClockInOutConfigBasedOnId(Long clockInOutId) {
 		
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ClockInOutConfig clockInOut where clockInOut.id = :clockInOutId";
-		ClockInOutConfig clockInOut = (ClockInOutConfig) session.createQuery(query).setLong("clockInOutId", clockInOutId).uniqueResult();
-		if(clockInOut != null) {
-			return clockInOut;
+		ClockInOutConfig clockInOut = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from ClockInOutConfig clockInOut where clockInOut.id = :clockInOutId";
+			 clockInOut = (ClockInOutConfig) session.createQuery(query).setLong("clockInOutId", clockInOutId).uniqueResult();
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return null;
+		return clockInOut;
 	}
 
 	@Override

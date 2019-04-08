@@ -8764,11 +8764,93 @@ width:100%; font-size:14px; font-weight:400; border-bottom:1px solid #CCC; borde
 
 .clockTable table tr th {
 background-color:#6C7686 !important; font-weight:500; color:#FFF; text-align:center; padding:0px 15px; height:40px;
-border-right:1px solid #989898 !important; -moz-border-right:1px solid #989898; font-size: 13px;} 
+border-right:1px solid #989898 !important; -moz-border-right:1px solid #989898; font-size: 13px;}
 .clockTable table tr td {
 color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-border-left:1px solid #eae6e6; height:42px; font-weight:400;}
 
-
+.bulkUploadSVG {
+    background: url("../images/bulk-upload.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+    }
+    .blink {
+        animation: blinkAnimation 1s infinite;
+        -webkit-animation: blinkAnimation 1s infinite;
+        -moz-animation: blinkAnimation 1s infinite;
+        -ms-animation: blinkAnimation 1s infinite;
+      }
+      
+      
+      @keyframes blinkAnimation {
+          0 {
+              opacity: 1
+          }
+      
+          50% {
+              opacity: 0
+          }
+      
+          100% {
+              opacity: 1
+          }
+      }
+      
+      @-webkit-keyframes blinkAnimation {
+          0 {
+              opacity: 1
+          }
+      
+          50% {
+              opacity: 0
+          }
+      
+          100% {
+              opacity: 1
+          }
+      }
+      
+      @-moz-keyframes blinkAnimation {
+          0 {
+              opacity: 1
+          }
+      
+          50% {
+              opacity: 0
+          }
+      
+          100% {
+              opacity: 1
+          }
+      }
+      
+      @-o-keyframes blinkAnimation {
+          0 {
+              opacity: 1
+          }
+      
+          50% {
+              opacity: 0
+          }
+      
+          100% {
+              opacity: 1
+          }
+      }
+      
+      @keyframes blinkAnimation {
+          0 {
+              opacity: 1
+          }
+      
+          50% {
+              opacity: 0
+          }
+      
+          100% {
+              opacity: 1
+          }
+      }
+      .tbldata-dotdot-large {
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 500px; display: block; margin: 0 auto;
+        }
 
 
 
