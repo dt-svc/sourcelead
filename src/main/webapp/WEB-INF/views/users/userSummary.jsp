@@ -39,6 +39,7 @@
 
 <script> 
 $(document).ready(function(){
+// 	savedCommentAndCount(candidateId);
 	 var userId = '${userId}';
 	 
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -4694,6 +4695,7 @@ function closeComment(){
 		    		    location.href = "/errorPage";
 		    		} else if (result.response === "SUCCESS") {
 		    			savedCommentAndCount(candidateId);
+		    			candidateCommentsList(candidateId);
 		    		} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
