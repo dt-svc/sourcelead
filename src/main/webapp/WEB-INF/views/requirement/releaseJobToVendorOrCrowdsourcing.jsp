@@ -301,7 +301,6 @@ $(document).ready(function(){
 	var referLink = "${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"
 			
 	$("#referralLink").val(referLink);
-	alert("oooooooo"+'${SourceLeadWeb_vms}')
 	if('${SourceLeadWeb_vms}'  == 'Y'){
 		openVendors();
 	}else{
