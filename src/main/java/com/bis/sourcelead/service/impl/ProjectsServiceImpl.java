@@ -982,6 +982,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			OrgLocations clientOrgLoc = new OrgLocations();
 			clientOrgLoc.setId(clientOrgLocation);
 			projectClients.setOrgLocationsId(clientOrgLoc);
+			projectClients.setOrgId(clientOrgLoc.getOrg());
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setLevel(1);
 			projectClients.setStatus(1);
@@ -1028,6 +1029,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectClients = new ProjectClients();
 			projectClients.setProjectId(projects);
 			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setOrgId(orglocations.getOrg());
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setOrgRelationId(orgRelations);
 			projectClients.setLevel(2);
@@ -1062,6 +1064,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectClients = new ProjectClients();
 			projectClients.setProjectId(projects);
 			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setOrgId(orglocations.getOrg());
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setLevel(1);
 			projectClients.setStatus(1);
@@ -2643,7 +2646,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ").append(pm.getProjectMemberCandidteId().getLastName()).toString());	 
 				 }else {
 					 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).toString());	 
-
+				 }
+				 if(pm.getProjectMemberCandidteId().getEmail() != null) {
+					 pm.setEmpEmail(pm.getProjectMemberCandidteId().getEmail());
 				 }
 				 if(pm.getProjectMemberCandidteId().getConsultantUser() != null){
 					 UserRole userRole = null;
@@ -3054,6 +3059,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 							projectClients = new ProjectClients();
 							projectClients.setProjectId(projects);
 							projectClients.setOrgLocationsId(orglocations);
+							projectClients.setOrgId(orglocations.getOrg());
 							projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 							projectClients.setStatus(1);
 							projectClients.setLevel(2);
@@ -3173,6 +3179,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					OrgSpoc orgSpoc = orgSpocDao.getGusetClientOrgSpocByOrgRelationId(orgRelationId);
 					projectClients.setProjectId(projects);
 					projectClients.setOrgLocationsId(clientOrgLocations);
+					projectClients.setOrgId(clientOrgLocations.getOrg());
 					projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 					projectClients.setStatus(1);
 					projectClients.setLevel(1);

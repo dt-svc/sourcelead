@@ -30,16 +30,6 @@
                   <div class="col-md-6 paddingLeft">${endDate}</div>
                 </div>
               </div>
-              <%-- <div class="col-md-6">
-                <div class="row">
-                  <label class="col-md-5 paddingRight">Billable Hrs</label>
-                  <div class="col-md-6 paddingLeft">${totalBillable}</div>
-                </div>
-                <div class="row mt2">
-                  <label class="col-md-5 paddingRight">No-Billable Hrs</label>
-                  <div class="col-md-6 paddingLeft">${totalNonBillable}</div>
-                </div>
-              </div> --%>
             </div>
           </div>
           <div class="pull-right mt10">
@@ -48,9 +38,6 @@
               <li><a href="javascript:void(0)" class="text-danger" title="Download PDF" onclick="runExport('pdf');"><i class="fa fa-file-pdf-o"></i></a></li>
               <li><a href="javascript:void(0)" class="text-success" title="Download Excel" onclick="runExport('excel');"><i class="fa fa-file-excel-o"></i></a></li>
               <li>
-                <!-- <div class="dynamic_search mr10">
-                 		 <input type='text' placeholder="Search" value="" id='searchEntryData'/>
-                  <i class="fa fa-search"></i> </div> -->
               </li>
             </ul>
           </div>

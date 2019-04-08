@@ -53,7 +53,7 @@
 						
 						<c:if test="${freqResponse.approverStatus != 'APPROVED'}">
 							<div class="col-md-4">
-								<a class="pull-right" onClick="bulkAdjustment('${freqResponse.paySheetFrequencyUUID}');" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk</a>
+								<a class="pull-right" onClick="bulkAdjustment('${freqResponse.paySheetFrequencyUUID}');" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk Actions</a>
 							</div>
 						</c:if>
 					</div>

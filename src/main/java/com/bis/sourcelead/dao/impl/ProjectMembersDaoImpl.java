@@ -1781,7 +1781,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					  +groupByCandidateId;
 		}
 		try {
-			System.out.println(query);
 			Query queryObj = session.createQuery(query);
 			if(StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate())&&StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
 				queryObj.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
@@ -2067,7 +2066,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional
 	public List<Candidate> getAllAvailableAssociates( Long orgLocationId) {
 	Session session = this.sessionFactory.getCurrentSession();
-	String query = "from Candidate candidate where candidate.orgLocationId = :orgLocationId";
+	String query = "from Candidate candidate where candidate.orgLocationId = :orgLocationId and candidate.designationType = 'Offshore C2C'";
 	List<Candidate> list = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	return list;
 	}

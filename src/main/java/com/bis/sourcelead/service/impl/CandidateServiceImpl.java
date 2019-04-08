@@ -1463,7 +1463,15 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setDesignation(null);
 			}
 			
+			 if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+				    OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+					candidate.setWorkLocation(workLocation);
+			 }else {
+			    	candidate.setWorkLocation(orgLocations);
+			 }
+			
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
+				candidateDTO.setWorkLocation(candidate.getWorkLocation());
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
 				candidate.setOrgRelationId(orgRelation);
 				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, candidateUser);
@@ -1506,14 +1514,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(StringUtils.isNotBlank(candidateUser.getMaritalStatus())) {
 			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
 		}
-		
-	    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
-		    OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
-			candidate.setWorkLocation(workLocation);
-	    }else {
-	    	candidate.setWorkLocation(orgLocations);
-	    }
-		
 		  
 	    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
 	    	candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
@@ -1734,7 +1734,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate = new Candidate();
 							MasterCandidate masterCandidate = new MasterCandidate();
 							masterCandidate.setId(candidate.getMasterCandidateId().getId());
-							vendorCandidate.setWorkLocation(orgLocations);
+							vendorCandidate.setWorkLocation(candidate.getWorkLocation());
 							vendorCandidate.setMasterCandidateId(masterCandidate);
 							vendorCandidate.setParentCandidateId(candidate);
 							vendorCandidate.setConsultantUser(candidate.getConsultantUser());
@@ -1864,7 +1864,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public Candidate saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user) throws Exception {
+	public Candidate saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user,List<OrgRelations> vendorsList) throws Exception {
 		
 		StringBuffer activitySummary = new StringBuffer();
 		HashSet<CandidateResumes> candidateResumesList = null;
@@ -1932,7 +1932,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				
 				if ("India".equals(orgLocations.getCountry())) {
 					
-					//jsonObj.put("expectedRateCurrencey", "INR");
 					candidateDTO.setExpectedRateCurrencey("INR");
 				}
 				else if ("Australia".equals(orgLocations.getCountry())) {
@@ -1985,7 +1984,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				String countryCheck = orgLocations.getCountry();
 				switch (countryCheck) {
 					case "India":
-						//jsonObj.put("rateType", "Monthly");
 						candidateDTO.setRateType("Monthly");
 						break;
 					default:
@@ -2031,7 +2029,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		
 		// Vendor and Vendor Contact
 		if(candidateDTO.getVendor() != null && !candidateDTO.getVendor().equals("") && candidateDTO.getVendorcontact() != null && !candidateDTO.getVendorcontact().equals("")) {
-			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 			Long vendorId = 0l;
 			for(OrgRelations rel : vendorsList) {
 				if((candidateDTO.getVendor().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (candidateDTO.getVendor().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
@@ -2167,9 +2164,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(savedCandidate);
 		
-	    if(StringUtils.isNotBlank(candidateDTO.getInviteEmail()) && Constants.YES.equalsIgnoreCase(candidateDTO.getInviteEmail())){
+	    /*if(StringUtils.isNotBlank(candidateDTO.getInviteEmail()) && Constants.YES.equalsIgnoreCase(candidateDTO.getInviteEmail())){
 			inviteCandidateToSourceLead(user,savedCandidate,orgLocations);
-	    }
+	    }*/
 		
 	    return candidate;
 		

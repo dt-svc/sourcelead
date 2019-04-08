@@ -743,6 +743,7 @@ public class ProjectPlanningRestController {
 										projectClients.setProjectId(projectPlanningRequest.getProjectId());
 										projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
 										projectClients.setOrgLocationsId(cand.getOrgLocationId());
+										projectClients.setOrgId(cand.getOrgLocationId().getOrg());
 										projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 										projectClients.setStatus(1);
 										
@@ -838,6 +839,7 @@ public class ProjectPlanningRestController {
 		    		 projectMembersDTO.setBillRate(projectPlanningResourceRequest.getBillRate());
 		    		 projectMembersDTO.setBillRateCurrency(projectPlanningResourceRequest.getBillRateCurrency());
 		    		 projectMembersDTO.setBillRateRateType(projectPlanningResourceRequest.getBillRateType());
+		    		 projectMembersDTO.setPercentageOfWork(projectPlanningResourceRequest.getPercentageOfWork());
 		    		
 		    		 if(projectPlanningResourceRequest.getStartDate() != null) {
 		    			 projectMembersDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projectPlanningResourceRequest.getStartDate()));
@@ -1165,6 +1167,9 @@ public class ProjectPlanningRestController {
 				
 				if(projectPlanningResourceRequest.getEstimatedBudget() != null){
 					projectMembers.setEstimatedBudget(projectPlanningResourceRequest.getEstimatedBudget());
+				}
+				if(projectPlanningResourceRequest.getPercentageOfWork() != null) {
+					projectMembers.setPercentageOfWork(projectPlanningResourceRequest.getPercentageOfWork());
 				}
 				
 				projectMembers.setProjects(projects);
