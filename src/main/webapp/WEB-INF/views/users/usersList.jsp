@@ -358,7 +358,7 @@ function getUsersSearchResult(searchValue){
 							</li>
 				<%-- </c:if> --%>
 				
-				<%-- <c:if test="${orgLocationsCount == 1}">
+			<%-- <c:if test="${orgLocationsCount == 1}">
 				           <sec:authorize access="hasRole('ROLE_USER_BULK_IMPORTS')"> 
 				           <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
@@ -368,7 +368,7 @@ function getUsersSearchResult(searchValue){
 									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
 									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-										<%-- <a href="<c:url value='${appPath}/uploadForm'/>">Import</a> --%>
+										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
 										<div class="immSub">
 											<a href="#">Import</a>
 											<div class="immSubMenu">
@@ -387,12 +387,12 @@ function getUsersSearchResult(searchValue){
 										
 									</sec:authorize>									
 									</span>
-									<%-- <span> 
+								 <span> 
 									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
 										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
 									</sec:authorize>									
-									</span> --%>
+									</span> 
 								</div>
 							</li>
 							</sec:authorize>
@@ -401,7 +401,7 @@ function getUsersSearchResult(searchValue){
 						<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
 				</sec:authorize>
 							
-				</c:if> --%>	
+				</c:if>  --%>
 	           
 						
 	       </sec:authorize>
