@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -62,27 +63,24 @@ public class ClockInOutUtil {
 	}
 	
 	/**
-	 * Get from and to date of last 7 days
+	 * Get from and to date of current week
 	 * @return Date[] Date[0] = start date ,Date[1] = End date
 	 * @throws Exception 
 	 */
 	public Date[] currentWeek(OrgLocations orgLocations) throws Exception {
 		
 		Calendar c = Calendar.getInstance(); // this takes current date
-		c.set(Calendar.DAY_OF_WEEK, 1);
+		c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		
-		//System.out.println(c.getTime());
-		DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
-		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
-		String startDate = outputFormatter.print(zoned);
-		Date startDateUTC = TZ_DF_TS.parse(startDate);
 		Date oneWeekDateUTC = c.getTime();
+		c.add(Calendar.DATE, 6);
+		Date startDateUTC = c.getTime();
 		Date[] dates = new Date[2];
 		dates[0] = oneWeekDateUTC;
 		dates[1] = startDateUTC;
-		
 		return dates;
+		
+		
 	}
 
 	
@@ -93,19 +91,17 @@ public class ClockInOutUtil {
 	 */
 	public Date[] currentMonthDates(OrgLocations orgLocations) throws Exception {
 		
-		Calendar c = Calendar.getInstance(); // this takes current date
-		c.set(Calendar.DAY_OF_MONTH, 1);
+		Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH,
+                calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
 		
-		//System.out.println(c.getTime());
-		DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
-		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
-		String startDate = outputFormatter.print(zoned);
-		Date startDateUTC = TZ_DF_TS.parse(startDate);
-		Date oneMonthDateUTC = c.getTime();
+		Date startDate = calendar.getTime();
+		calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+		Date toDate = calendar.getTime();
+		
 		Date[] dates = new Date[2];
-		dates[0] = oneMonthDateUTC;
-		dates[1] = startDateUTC;
+		dates[0] = startDate;
+		dates[1] = toDate;
 		
 		return dates;
 	}

@@ -2405,15 +2405,22 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("openOn"))) {
 				errorSet.put("openOn", "openOn is invalid date");
 				}
-
-
-				if (!dataMigrationDTOJsonCopy.getString("lcaStartDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("lcaStartDate"))) {
-				errorSet.put("lcaStartDate", "lcaStartDate is invalid date");
-				}
-
-				if (!dataMigrationDTOJsonCopy.getString("lcaEndDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("lcaEndDate"))) {
-				errorSet.put("lcaEndDate", "lcaEndDate is invalid date");
-				}
+ 
+               if(!dataMigrationDTOJsonCopy.getString("lcaNumber").equals("null")) {
+            	   
+            	   Lca lca = immigrationCommonService.getLcaNumber(dataMigrationDTOJsonCopy.getString("lcaNumber"));
+            	 if(lca == null) errorSet.put("lcaNumber", "LCA Number does not exist");
+            	   
+	   				if (!dataMigrationDTOJsonCopy.getString("lcaStartDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("lcaStartDate"))) {
+	   				errorSet.put("lcaStartDate", "lcaStartDate is invalid date");
+	   				}
+	
+	   				if (!dataMigrationDTOJsonCopy.getString("lcaEndDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("lcaEndDate"))) {
+	   				errorSet.put("lcaEndDate", "lcaEndDate is invalid date");
+	   				} 
+   				
+                }
+			
 
 				if (!dataMigrationDTOJsonCopy.getString("prevLcaStartDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("prevLcaStartDate"))) {
 				errorSet.put("prevLcaStartDate", "prevLcaStartDate is invalid date");
