@@ -114,6 +114,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
+	@Value("${pmsUrl}")
+	private String pmsUrl;
+	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
@@ -248,7 +251,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		StringBuilder stringBuildforLink = new StringBuilder();
 		
 		
-		globalVarsMap.put("payrollLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("payrollLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Approve Payroll</div></a>").toString());
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUEST_FOR_APPROVING_PAYROLL,Constants.ENTITY_TYPE_EMAIL);
