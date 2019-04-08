@@ -295,7 +295,6 @@ public class RequirementWorkflowController {
 			template.setUpdatedDate(new Date());
 		 	requirementWorkFlowService.saveQuestionnaireTemplate(template);
 			result = Result.SUCCESS.name();
-			System.out.println("result >>>>>>> "+result);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -463,7 +462,9 @@ public class RequirementWorkflowController {
 				HttpServletRequest request){
 			ResponseList<RequirementWorkFlowTasksDTO> responseList = new ResponseList<>();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = new User();
+			user.setId(userId);
 			try {
 				
 				String[] tableColumns = { "workFlowTaskName", "assignToUserId", "priority", "description"};
@@ -477,7 +478,7 @@ public class RequirementWorkflowController {
 		  		if (sortColumnIndex != -1){
 		  			requirementWorkFlowTasksDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		  		}
-				responseList = requirementWorkFlowService.getRequirementWorkFlowTaskList(requirementWorkFlowTasksDTO, orgLocations);
+				responseList = requirementWorkFlowService.getRequirementWorkFlowTaskList(requirementWorkFlowTasksDTO, orgLocations, user);
 			}catch(Exception e) {
 				e.printStackTrace();
 			}

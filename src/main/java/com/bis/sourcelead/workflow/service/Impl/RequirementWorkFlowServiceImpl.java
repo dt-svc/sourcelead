@@ -350,7 +350,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		OrgLocations orglocations = new OrgLocations();
 		orglocations.setId(id);
 		
-		System.out.println("d > "+requirementWorkFlowStagesDTO.getDescription());
 		
 		RequirementWorkFlowStages workFlowStage = new RequirementWorkFlowStages();
 		workFlowStage.setId(newStages.getId());
@@ -404,8 +403,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 	@Override
 	public ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(
-			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations) throws Exception {
-		return requirementWorkFlowDao.getRequirementWorkFlowTaskList(requirementWorkFlowTasksDTO, orgLocations);
+			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user) throws Exception {
+		return requirementWorkFlowDao.getRequirementWorkFlowTaskList(requirementWorkFlowTasksDTO, orgLocations, user);
 	}
 }
 
