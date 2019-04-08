@@ -45,7 +45,7 @@ window.onload = function () {
 						<a href="javascript:void(0)">
 							<h4 class="media-heading" id="goalName"></h4>
 						</a>
-						<p class="text-muted mb0 fontSmall"><span class="paddingRight">Created Date:&nbsp;&nbsp;<span id="createdDate" class="textBold"></span></span></p>
+						<p class="text-muted mb0 fontSmall"><span class="paddingRight">Created Date (<small class="custom-small" id="createdDateFormat"></small>) :&nbsp;&nbsp;<span id="createdDate" class="textBold"></span></span></p>
 					</div>
 					<div class='col-md-7'>
 						<div class="row">

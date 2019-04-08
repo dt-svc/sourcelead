@@ -381,7 +381,7 @@ function PerformanceGoals(){
 								        
 								         
 								         var markAsComplete = "";
-								         markAsComplete = markAsComplete+'<a class="text-primary textBold" href="javascript:void(0)">Mark As Complete</a>&nbsp;&nbsp;&nbsp;';
+								         markAsComplete = markAsComplete+'<a class="text-primary textBold" href="javascript:void(0)">Mark as completed</a>&nbsp;&nbsp;&nbsp;';
 								         
 								         $("#markAsComplete").empty();
 								         $("#markAsComplete").html(markAsComplete);
@@ -413,6 +413,8 @@ function PerformanceGoals(){
 
 								   		  $("#startDateFormat").html(dateFormatStr)
 								   		  $("#endDateFormat").html(dateFormatStr)
+								   		  $("#createdDateFormat").html(dateFormatStr)
+								   		  
 						        		 
 						        		$("#goalsDetailsLoading").removeAttr('style');
 						        	}
@@ -519,6 +521,17 @@ function PerformanceGoals(){
 						        		location.href = "/errorPage";
 						        	} else if (response.response === "SUCCESS") {
 						        		 var result = '';
+						        		 
+						        		 if(dateFormat.match("yyyy-MM-dd")){
+						        			  dateFormatStr = 'YYYY-MM-DD';
+						    	   		  }if(dateFormat.match("dd-MM-yyyy")){
+						    	   			  dateFormatStr = 'DD-MM-YYYY'; 
+						    	   		  }if(dateFormat.match("MM-dd-yyyy")){
+						    	   			  dateFormatStr = 'MM-DD-YYYY'; 
+						    	   		  }if(dateFormat.match("yyyy-dd-MM")){
+						    	   			  dateFormatStr = 'YYYY-DD-MM'; 
+						    	   		  }
+						    	   		  
 								         if(response.data.length > 0){
 								        	 for(var i=0; i<response.data.length; i++){
 								        		 var opt = response.data[i];
@@ -537,7 +550,7 @@ function PerformanceGoals(){
 								        		 result = result+'</div>' ;
 								        		 result = result+'</div>' ;
 								        		 result = result+'<div class="col-md-3">' ;
-								        		 result = result+'<label class="text-muted paddingRight">Assigned on:</label>' ;
+								        		 result = result+'<label class="text-muted paddingRight">Assigned on (<small class="custom-small">'+dateFormatStr+'</small>) :</label>' ;
 								        		 result = result+'<span class="textBold">'+opt.assignedDate+'</span>' ;
 								        		 result = result+'</div>' ;
 								        		 result = result+'<div class="col-md-3">' ;
