@@ -16,6 +16,7 @@ import com.bis.sourcelead.dao.performance.PerformanceGoalsAssignToDao;
 import com.bis.sourcelead.dao.performance.PerformanceGoalsDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -232,6 +233,18 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 	@Override
 	public PerformanceGoals getPerformanceGoalsByUUID(String goalUUID) throws Exception {
 		return performanceGoalsDao.getPerformanceGoalsByUUID(goalUUID);
+	}
+
+	@Override
+	public List<PerformanceGoalsDTO> getPerformanceSubGoalsList(Long goalId, String dateFormat)
+			throws Exception {
+		return performanceGoalsDao.getPerformanceSubGoalsList(goalId, dateFormat);
+	}
+
+	@Override
+	public List<PerformanceGoalsAssignToDTO> getPerformanceGoalsAssignedUsersList(String goalUUID, String dateFormat)
+			throws Exception {
+		return performanceGoalsDao.getPerformanceGoalsAssignedUsersList(goalUUID, dateFormat);
 	}
 
 }

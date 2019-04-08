@@ -1,10 +1,12 @@
 package com.bis.sourcelead.dao.performance;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
-import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
 
 public interface PerformanceGoalsDao {
 	
@@ -25,5 +27,9 @@ public interface PerformanceGoalsDao {
 	ResponseList<PerformanceGoalsDTO> getPerformanceGoalsList(PerformanceGoalsDTO performanceGoalsDTO,Long userId,Long orgLocationId,String dateFormat) throws Exception;
 	
 	PerformanceGoals getPerformanceGoalsByUUID(String goalUUID) throws Exception;
+	
+	List<PerformanceGoalsDTO> getPerformanceSubGoalsList(Long goalId,String dateFormat) throws Exception;
+	
+	List<PerformanceGoalsAssignToDTO> getPerformanceGoalsAssignedUsersList(String goalUUID,String dateFormat) throws Exception;
 	
 }

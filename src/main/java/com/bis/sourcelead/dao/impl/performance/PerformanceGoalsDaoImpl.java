@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.performance.PerformanceGoalsDao;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
@@ -511,6 +512,116 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public List<PerformanceGoalsDTO> getPerformanceSubGoalsList(Long goalId, String dateFormat)
+			throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceGoalsDTO> goalsList = null;
+		
+		try {
+			
+			String goalDateFormat =  "";
+			
+			if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
+				goalDateFormat = "\"%y-%m-%d\"";
+			}else if("dd-MM-yyyy".equalsIgnoreCase(dateFormat)) {
+				goalDateFormat = "\"%d-%m-%y\"";
+			}else if("MM-dd-yyyy".equalsIgnoreCase(dateFormat)) {
+				goalDateFormat = "\"%m-%d-%y\"";
+			}else if("yyyy-dd-MM".equalsIgnoreCase(dateFormat)) {
+				goalDateFormat = "\"%y-%d-%m\"";
+			}
+			
+			Query queryObj = null;
+			
+			String query = 	 "SELECT " + 
+					"GOALS.ID AS id, " +
+					"GOALS.GOAL_NAME AS goalName," + 
+					"DATE_FORMAT(GOALS.START_DATE ,"+goalDateFormat+") AS goalStartDate, " + 
+					"DATE_FORMAT(GOALS.END_DATE ,"+goalDateFormat+") AS goalEndDate, " + 
+					"GOALS.PERCENTAGE_DONE AS percentageDone, " +
+					"GOALS.UUID AS uuid " +
+					"FROM " + 
+					"PERFORMANCE_GOALS GOALS WHERE " + 
+					"GOALS.GOAL_ID = :goalId AND GOALS.STATUS = '1' " ;
+		
+			queryObj = session.createSQLQuery(query);
+			queryObj.setParameter("goalId", goalId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceGoalsDTO.class));
+			goalsList = queryObj.list();
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return goalsList;
+	}
+
+	@Override
+	public List<PerformanceGoalsAssignToDTO> getPerformanceGoalsAssignedUsersList(String goalUUID, String dateFormat)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceGoalsAssignToDTO> goalsAssignToList = null;
+		
+		try {
+			
+			String goalDateFormat =  "";
+			
+			if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
+				goalDateFormat = "\"%y-%m-%d\"";
+			}else if("dd-MM-yyyy".equalsIgnoreCase(dateFormat)) {
+				goalDateFormat = "\"%d-%m-%y\"";
+			}else if("MM-dd-yyyy".equalsIgnoreCase(dateFormat)) {
+				goalDateFormat = "\"%m-%d-%y\"";
+			}else if("yyyy-dd-MM".equalsIgnoreCase(dateFormat)) {
+				goalDateFormat = "\"%y-%d-%m\"";
+			}
+			
+			Query queryObj = null;
+			
+		String query =  "SELECT GROUP_CONCAT(Q1.GOAL_NAME) as goalName, " +
+						"CONCAT(Q1.FIRST_NAME,' ',IFNULL(Q1.LAST_NAME,'')) as assignedUser, " +
+						"Q1.FILE_URL as userImgUrl, " +
+						"DATE_FORMAT(Q1.CREATED_DATE,"+goalDateFormat+") as assignedDate "+
+						"FROM(" +
+						"SELECT PG.GOAL_NAME, "+
+				        "GA.ASSIGNED_USER_ID, "+
+				        "U.FIRST_NAME, "+
+						"U.LAST_NAME, "+
+				        "U.FILE_URL,ga.CREATED_DATE "+
+				        "FROM "+
+				  		"PERFORMANCE_GOALS PG, "+ 
+				  		"USER U,"+
+				  		"PERFORMANCE_GOALS_ASSIGN_TO GA WHERE "+
+				  		"PG.ID = GA.GOAL_ID and U.ID = GA.ASSIGNED_USER_ID "+
+						"AND PG.GOAL_ID IN (SELECT ID  FROM PERFORMANCE_GOALS  WHERE UUID = :goalUUID ) "+
+				  
+				  		"UNION "+
+				  
+						"SELECT PG.GOAL_NAME, "+
+				        "GA.ASSIGNED_USER_ID, "+
+				        "U.FIRST_NAME,U.LAST_NAME,U.FILE_URL,GA.CREATED_DATE FROM "+
+				        "PERFORMANCE_GOALS PG, "+
+				        "USER U, "+
+				       	"PERFORMANCE_GOALS_ASSIGN_TO GA WHERE "+
+				       	"PG.id = GA.GOAL_ID  and PG.UUID = :goalUUID "+
+				       	"AND U.id = GA.ASSIGNED_USER_ID)Q1 "+
+				  		"GROUP BY Q1.ASSIGNED_USER_ID ";
+		
+		queryObj = session.createSQLQuery(query);
+		queryObj.setParameter("goalUUID", goalUUID);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceGoalsAssignToDTO.class));
+		goalsAssignToList = queryObj.list();
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+  
+		return goalsAssignToList;
 	}
 
 }

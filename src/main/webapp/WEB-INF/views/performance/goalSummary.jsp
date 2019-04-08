@@ -14,6 +14,8 @@ var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 window.onload = function () {
 	var goalUUID = '${goalUUID}';
 	performanceGoals.getPerformanceGoalsSummaryDetails(goalUUID);
+	performanceGoals.getPerformanceSubGoalsList(goalUUID);
+	performanceGoals.getPerformanceGoalsAssignToList(goalUUID);
 	
  };
  
@@ -22,7 +24,7 @@ window.onload = function () {
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Goals</h2>
+			<h2>Goal Summary</h2>
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}"> Home</a>
@@ -67,6 +69,36 @@ window.onload = function () {
 				</div>
 				<div class="clearfix"></div>
 	</div>
+	
+	
+	
+	<div class="goalssummar_widget mt">
+
+				<div class="clearfix">
+
+					<div class="clearfix mb5">
+						<div class="col-md-9">
+							<h4 class="media-heading text-muted">Sub Goals</h4>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+
+					<div id="subGoalsList"></div>
+					
+				</div>
+	 </div>
+	 
+	 <div class="goalssummar_widget mt">
+				<div class="clearfix">
+					<div class="clearfix mb5">
+						<div class="col-md-12">
+							<h4 class="media-heading text-muted">Assign to</h4>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					<div id="goalsAssignToList"></div>
+				</div>
+	 </div>
 			
 </section>
 

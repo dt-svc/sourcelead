@@ -16,10 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.PerformanceBadgesDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.performance.PerformanceCompetenciesDTO;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAttachmentsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
@@ -323,4 +322,47 @@ public class PerformanceGoalsRestController {
 				 return resObj;
 		    }
 			 
+		 
+	 	@RequestMapping(value = { "/getPerformanceSubGoalsList", "/rest/getPerformanceSubGoalsList" }, method = RequestMethod.GET)
+		public ResponseList<PerformanceGoalsDTO> getPerformanceSubGoalsList(@RequestParam(value="goalUUID", required=true) String goalUUID,HttpServletRequest request) throws Exception {
+	 		
+	 		ResponseList<PerformanceGoalsDTO> resObj = new ResponseList<>();
+			String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+			 try {
+					 PerformanceGoals performanceGoals = performanceGoalsService.getPerformanceGoalsByUUID(goalUUID);
+					 List<PerformanceGoalsDTO> performanceGoalsList = performanceGoalsService.getPerformanceSubGoalsList(performanceGoals.getId(),dateFormat);
+					 resObj.setData(performanceGoalsList);
+					
+					 resObj.setResponse(Result.SUCCESS.name());
+					 resObj.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+				 	resObj.setResponse(Result.AWKWARD.name());
+				 	resObj.setResponseMessage(Result.AWKWARD.getValue());
+			 }
+			
+			return resObj;
+		}
+	 	
+	 	
+	 	@RequestMapping(value = { "/getPerformanceGoalsAssignToList", "/rest/getPerformanceGoalsAssignToList" }, method = RequestMethod.GET)
+		public ResponseList<PerformanceGoalsAssignToDTO> getPerformanceGoalsAssignToList(@RequestParam(value="goalUUID", required=true) String goalUUID,HttpServletRequest request) throws Exception {
+	 		
+	 		ResponseList<PerformanceGoalsAssignToDTO> resObj = new ResponseList<>();
+			String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+			 try {
+					 List<PerformanceGoalsAssignToDTO> performanceGoalsAssignToList = performanceGoalsService.getPerformanceGoalsAssignedUsersList(goalUUID,dateFormat);
+					 resObj.setData(performanceGoalsAssignToList);
+					
+					 resObj.setResponse(Result.SUCCESS.name());
+					 resObj.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+				 	resObj.setResponse(Result.AWKWARD.name());
+				 	resObj.setResponseMessage(Result.AWKWARD.getValue());
+			 }
+			
+			return resObj;
+		}
+	 
 }

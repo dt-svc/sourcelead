@@ -389,5 +389,125 @@ function PerformanceGoals(){
 						        },
 						    });
 					  }
+					 
+					 
+					 
+					 this.getPerformanceSubGoalsList = function(goalUUID){
+						  $("#goalsDetailsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+						  $.ajax({
+						    	type: "GET",
+						        url: pmsUrl+"/getPerformanceSubGoalsList?goalUUID="+goalUUID, 
+						        success: function(response) {
+						        	if (response.response === "AWKWARD") {
+						        		location.href = "/errorPage";
+						        	} else if (response.response === "SUCCESS") {
+						        		 var result = '';
+								         if(response.data.length > 0){
+								        	 for(var i=0; i<response.data.length; i++){
+								        		 var opt = response.data[i];
+								        		 var percentage = 0;
+								        		 if(opt.percentageDone != null){
+								        			 percentage = opt.percentageDone;
+								        		 }
+								        		 result = result+'<ul class="list-unstyled mb0 goalsList-list">' ;
+								        		 result = result+'<li>' ;
+								        		 result = result+'<div class="clearfix">' ;
+								        		 result = result+'<div class="col-md-5">' ;
+								        		 result = result+'<a href="javascript:void(0) mt5">' ;
+								        		 result = result+'<h5 class="media-heading">'+opt.goalName+'</h5>' ;
+								        		 result = result+'</a>' ;
+								        		 result = result+'</div>' ;
+								        		 result = result+'<div class="col-md-4">' ;
+								        		 result = result+'<div class="clearfix mt5">' ;
+								        		 result = result+'<div class="progress mb0 progressGoals">' ;
+								        		 result = result+'<div class="progress-bar progress-bar-warning" role="progressbar"' ;
+								        		 result = result+'aria-valuenow="'+percentage+'" aria-valuemin="0" aria-valuemax="100"' ;
+								        		 result = result+'style="width:'+percentage+'%">' ;
+								        		 result = result+'</div>' ;
+								        		 result = result+'</div>' ;
+								        		 result = result+'<p class="fontSmall mt5 mb0">'+percentage+'% Complete (info)</p>' ;
+								        		 result = result+'<div class="clearfix"></div>' ;
+								        		 result = result+'</div>' ;
+								        		 result = result+'</div>' ;
+								        		 result = result+'<div class="clearfix col-md-3">' ;
+								        		 result = result+'<a class="text-primary textBold cursorPointer">Mark as completed</a>&nbsp;&nbsp;&nbsp;' ;
+								        		 result = result+'<a><i class="fa fa-pencil cursorPointer" title="Edit"></i></a>&nbsp;&nbsp;&nbsp;' ;
+								        		 result = result+'<a><i class="fa fa-trash cursorPointer" title="Delete"></i></a>&nbsp;&nbsp;&nbsp;' ;
+								        		 result = result+'</div>' ;
+								        		 result = result+'</div>' ;
+								        		 result = result+'<div class="clearfix"></div>' ;
+								        		 result = result+'</li>' ;
+								        		 result = result+'</ul>' ;
+								        		  
+								        	 }
+								        	 
+								        	 $("#subGoalsList").empty();
+									         $("#subGoalsList").html(result);
+								         }
+						        		 
+						        		$("#goalsDetailsLoading").removeAttr('style');
+						        	}
+						        },
+						    });
+					  }
+					 
+					 
+					 
+					 
+					 this.getPerformanceGoalsAssignToList = function(goalUUID){
+						  $("#goalsDetailsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+						  $.ajax({
+						    	type: "GET",
+						        url: pmsUrl+"/getPerformanceGoalsAssignToList?goalUUID="+goalUUID, 
+						        success: function(response) {
+						        	if (response.response === "AWKWARD") {
+						        		location.href = "/errorPage";
+						        	} else if (response.response === "SUCCESS") {
+						        		 var result = '';
+								         if(response.data.length > 0){
+								        	 for(var i=0; i<response.data.length; i++){
+								        		 var opt = response.data[i];
+								        		 
+								        		 result = result+'<ul class="list-unstyled mb0 goalsList-list">' ;
+								        		 result = result+'<li>' ;
+								        		 result = result+'<div class="clearfix">' ;
+								        		 result = result+'<div class="col-md-5">' ;
+								        		 result = result+'<div class="media-left goalsImg mr">' ;
+								        		 result = result+'<img data-id= "userProfileImage" onerror="performanceGoals.predefineGoalUserImage(this);" src="'+opt.userImgUrl+'" class="media-object">' ;
+								        		 result = result+'</div>' ;
+								        		 result = result+'<div class="media-body">' ;
+								        		 result = result+'<a href="javascript:void(0)">' ;
+								        		 result = result+'<h5>'+opt.assignedUser+'</h5>' ;
+								        		 result = result+'</a>' ;
+								        		 result = result+'</div>' ;
+								        		 result = result+'</div>' ;
+								        		 result = result+'<div class="col-md-3">' ;
+								        		 result = result+'<label class="text-muted paddingRight">Assigned on:</label>' ;
+								        		 result = result+'<span class="textBold">'+opt.assignedDate+'</span>' ;
+								        		 result = result+'</div>' ;
+								        		 result = result+'<div class="col-md-3">' ;
+								        		 result = result+'<label class="text-muted paddingRight">Goals:</label>' ;
+								        		 result = result+'<span class="textBold">'+opt.goalName+'</span>' ;
+								        		 result = result+'</div>' ;
+								        		 result = result+'<div class="clearfix"></div>' ;
+								        		 result = result+'</li>' ;
+								        		 result = result+'</ul>' ;
+								        		  
+								        	 }
+								        	 
+								        	 $("#goalsAssignToList").empty();
+									         $("#goalsAssignToList").html(result);
+								         }
+						        		 
+						        		$("#goalsDetailsLoading").removeAttr('style');
+						        	}
+						        },
+						    });
+					  }
+					 
+					 
+					 this.predefineGoalUserImage = function(imageId){
+						 $(imageId).attr('src','/resources/images/userprofileImg.jpg');
+					 }
 		
 }
