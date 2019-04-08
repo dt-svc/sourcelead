@@ -533,11 +533,11 @@ function calculateSum(){
 	    		
 	    	 } 
 	 }  
-	  $("#inoviceTotal").val(sum.toFixed(2));
-	  $("#subTotal").val(sum.toFixed(2));
-	  $("#grandTotal").val(sum.toFixed(2));
-	  $("#conversionFrom").val(sum.toFixed(2));
-	  $("#afterDiscountTotal").val(sum.toFixed(2));
+	  $("#inoviceTotal").val(sum.toFixed(3));
+	  $("#subTotal").val(sum.toFixed(3));
+	  $("#grandTotal").val(sum.toFixed(3));
+	  $("#conversionFrom").val(sum.toFixed(3));
+	  $("#afterDiscountTotal").val(sum.toFixed(3));
 	  calculateDisCount();
 	  calculateTaxDiscount();
 }
@@ -557,9 +557,9 @@ function calculateDisCount(){
 			$("#discountTotal").val(discountValue);
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -570,12 +570,12 @@ function calculateDisCount(){
 		if(discountValue && subTotal > 0){
 			var perCentValue = (subTotal * discountValue)/100;
 			total = subTotal - perCentValue;
-			$("#discountTotal").val(perCentValue.toFixed(2));
+			$("#discountTotal").val(perCentValue.toFixed(3));
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
@@ -722,9 +722,9 @@ function singleRowTaxDiscount(){
     }
     if(taxType == 'percentage'){
         var perCentValue = (afterDiscountTotal * taxValue)/100;
-        var first=parseFloat(perCentValue.toFixed(2));
+        var first=parseFloat(perCentValue.toFixed(3));
         var second=parseFloat(afterDiscountTotal);
-        total = (first+second).toFixed(2);
+        total = (first+second).toFixed(3);
         $("#0taxTotal").val(first);
         $("#grandTotal").val(total);
         $("#conversionFrom").val(total);
@@ -755,7 +755,7 @@ function calculateTaxDiscount(){
 		    else if(taxType == 'percentage'){
 		        var perCentValue = (afterDiscountTotal * taxValue)/100;
 		        first = parseFloat(perCentValue);
-		        $("#"+i+"taxTotal").val(first.toFixed(2));
+		        $("#"+i+"taxTotal").val(first.toFixed(3));
 		    }   
 		}
 	}
@@ -768,8 +768,8 @@ function calculateTaxDiscount(){
 	}
 	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
-	 $("#grandTotal").val(grandTotal.toFixed(2));
-   	 $("#conversionFrom").val(grandTotal.toFixed(2)); 
+	 $("#grandTotal").val(grandTotal.toFixed(3));
+   	 $("#conversionFrom").val(grandTotal.toFixed(3)); 
    	conversion();
 }
 </script>
