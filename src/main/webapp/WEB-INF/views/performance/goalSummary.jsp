@@ -11,12 +11,12 @@
 
 <script>
 var pmsUrl = '${SourceLeadWeb_pmsUrl}';
+var dateFormat ='${SourceLeadWeb_dateFormat}';	
 window.onload = function () {
 	var goalUUID = '${goalUUID}';
 	performanceGoals.getPerformanceGoalsSummaryDetails(goalUUID);
 	performanceGoals.getPerformanceSubGoalsList(goalUUID);
 	performanceGoals.getPerformanceGoalsAssignToList(goalUUID);
-	
  };
  
 </script>
@@ -58,12 +58,12 @@ window.onload = function () {
 								</div>
 							</div>
 							<div class="clearfix mt mb"></div>
-							<div class="col-md-3">
-								<div class="mb0"><span class="mr10 text-muted">Start Date:</span><span
+							<div class="col-md-8 mt">
+								<div class="mb0"><span class="mr10 text-muted">Start Date (<small class="custom-small" id="startDateFormat"></small>) :</span><span
 										class="textBold" id="goalStartDate"></span></div>
 							</div>
-							<div class="col-md-3">
-								<div class="mb0"><span class="mr10 text-muted ">End Date:</span><span
+							<div class="col-md-8 mt">
+								<div class="mb0"><span class="mr10 text-muted ">End Date (<small class="custom-small" id="endDateFormat"></small>) :</span><span
 										class="textBold" id="goalEndDate"></span></div>
 							</div>
 

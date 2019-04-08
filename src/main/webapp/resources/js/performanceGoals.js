@@ -341,6 +341,7 @@ function PerformanceGoals(){
 						        	if (response.response === "AWKWARD") {
 						        		location.href = "/errorPage";
 						        	} else if (response.response === "SUCCESS") {
+						        		
 						        		$("#goalName").html(response.object.goalName);
 						        		
 						        		if(response.object.goalStartDate != null 
@@ -387,7 +388,7 @@ function PerformanceGoals(){
 								         
 								         
 								         var goalEdit = "";
-								         goalEdit = goalEdit+'<a class="text-primary textBold" href='+pmsUrl+'/addNewGoal?goalUUID='+goalUUID+'><i class="fa fa-pencil paddingRight"></i></a>&nbsp;&nbsp;&nbsp;';
+								         goalEdit = goalEdit+'<a class="text-primary textBold" href='+pmsUrl+'/addNewGoal?goalUUID='+goalUUID+'><i class="fa fa-pencil paddingRight"></i></a>&nbsp;';
 						        		
 								         $("#goaledit").empty();
 								         $("#goaledit").html(goalEdit);
@@ -398,6 +399,20 @@ function PerformanceGoals(){
 								         
 								         $("#goalDelete").empty();
 								         $("#goalDelete").html(goalDelete);
+								         
+								         var dateFormatStr = '';
+								         if(dateFormat.match("yyyy-MM-dd")){
+								   		     dateFormatStr = 'YYYY-MM-DD';
+								   		  }if(dateFormat.match("dd-MM-yyyy")){
+								   			  dateFormatStr = 'DD-MM-YYYY'; 
+								   		  }if(dateFormat.match("MM-dd-yyyy")){
+								   			  dateFormatStr = 'MM-DD-YYYY'; 
+								   		  }if(dateFormat.match("yyyy-dd-MM")){
+								   			  dateFormatStr = 'YYYY-DD-MM'; 
+								   		  }
+
+								   		  $("#startDateFormat").html(dateFormatStr)
+								   		  $("#endDateFormat").html(dateFormatStr)
 						        		 
 						        		$("#goalsDetailsLoading").removeAttr('style');
 						        	}
@@ -417,6 +432,17 @@ function PerformanceGoals(){
 						        		location.href = "/errorPage";
 						        	} else if (response.response === "SUCCESS") {
 						        		 var result = '';
+						        		 
+						        		  if(dateFormat.match("yyyy-MM-dd")){
+						        			  dateFormatStr = 'YYYY-MM-DD';
+						    	   		  }if(dateFormat.match("dd-MM-yyyy")){
+						    	   			  dateFormatStr = 'DD-MM-YYYY'; 
+						    	   		  }if(dateFormat.match("MM-dd-yyyy")){
+						    	   			  dateFormatStr = 'MM-DD-YYYY'; 
+						    	   		  }if(dateFormat.match("yyyy-dd-MM")){
+						    	   			  dateFormatStr = 'YYYY-DD-MM'; 
+						    	   		  }
+						    	   		  
 								         if(response.data.length > 0){
 								        	 for(var i=0; i<response.data.length; i++){
 								        		 var opt = response.data[i];
@@ -445,11 +471,11 @@ function PerformanceGoals(){
 								        		 result = result+'</div>' ;
 								        		
 								        		 
-								        		 result = result+'<div class="col-md-6 mt">' ;
-								        		 result = result+'<div class="mb0"><span class="mr10 text-muted" >Start Date:</span><span class="textBold">'+opt.goalStartDate+'</span></div>' ;
+								        		 result = result+'<div class="col-md-8 mt">' ;
+								        		 result = result+'<div class="mb0"><span class="mr10 text-muted" >Start Date (<small class="custom-small">'+dateFormatStr+'</small>) :</span><span class="textBold">'+opt.goalStartDate+'</span></div>' ;
 								        		 result = result+'</div>' ;
-								        		 result = result+'<div class="col-md-6 mt">' ;
-								        		 result = result+'<div class="mb0"><span class="mr10 text-muted ">End Date:</span><span class="textBold">'+opt.goalEndDate+'</span></div>' ;
+								        		 result = result+'<div class="col-md-8 mt">' ;
+								        		 result = result+'<div class="mb0"><span class="mr10 text-muted ">End Date (<small class="custom-small">'+dateFormatStr+'</small>) : </span><span class="textBold">'+opt.goalEndDate+'</span></div>' ;
 								        		 result = result+'</div>' ;
 								        		 
 								        		 result = result+'</div>' ;
