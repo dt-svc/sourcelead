@@ -304,7 +304,6 @@
 		          </select>          
 <!-- 				<div class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getAssociatesJoinedList();" style="display: none;">Run</button></div>  -->
 	      	  </li>
-					<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
 					
 					<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="exportReportOptions();"></a>
 						<div class="newActPop" style="display: none;">
