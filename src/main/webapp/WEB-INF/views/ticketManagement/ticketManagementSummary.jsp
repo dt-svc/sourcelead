@@ -203,11 +203,5 @@ $(document).ready(function(){
 $("#addComment").click(function(){
 	$("#ticketCommentPopup, .mask").show();
 });
-function closeTicketComment(){
-	$("#ticketCommentId").val(0);
-	$("#ticketComment").val("");
-	$('.fr-element.fr-view').html("");
-	$("#ticketCommentPopup, .mask").hide();
-}
 </script>
    <jsp:include page="../masterFooter.jsp" />
