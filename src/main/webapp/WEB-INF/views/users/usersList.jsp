@@ -345,6 +345,7 @@ function getUsersSearchResult(searchValue){
 												<a href="<c:url value='${sourceleadUrl}/uploadAssociateDeductionContributionDetails'/>">Associate Deduction Contribution Import</a>
 													</c:if>
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+												    <a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
 												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateBankingDetailsForm'/>">Associate Bank Detail</a>
 												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateInformation'/>">Associate Information</a> 
 													<a href="<c:url value='${sourceleadUrl}/uploadAssociateSalary'/>">Associate Salary Import</a>
