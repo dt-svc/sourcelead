@@ -156,13 +156,15 @@ public interface ProjectsService {
 
 		File getProjectReportListOfExcel(List<ProjectReportDTO> projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess) throws Exception;
 
-		List<Projects> getProjectsListByUserIDAndOrgId(String[] associates,Long orglocationId);
 
 		List<AvailableAssociatesDTO> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations);
 
 		File availableAssociatereportReportListOfExcel(List<AvailableAssociatesDTO> data, User user,
 				OrgLocations orgLocations) throws FileNotFoundException;
 		
+		List<Projects> getProjectsListByCanddateIdAndOrgId(String associates, Long orgLocatonId);
+
+
 //		public String getProjectId(OrgLocations orgLocations);
 		
 }

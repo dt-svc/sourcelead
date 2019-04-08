@@ -44,6 +44,10 @@
  #remove_user_pop {
  z-index: 170000;
  }
+ .viewEyeicon {
+position: absolute; right:50px; top:0px; color: #fff; cursor: pointer; z-index: 9999;
+padding: 11.74px 4px;
+}
  </style>
  
  
@@ -1141,6 +1145,9 @@ function getOfferDetails(submissionId){
 	   					     result = result + '<div class="content clearfix" style="display: block;">';
 	   					  	 result = result + '<div id="offerLoading"></div>';
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
+		   					  if(report.templateUUID != null && report.templateUUID != "" && report.templateUUID != "undefined"){
+		   						 result = result + '<i class="fa fa-eye pull-right viewEyeicon" style="color:#fff !important;" onclick="viewOfferLetter(\''+report.offerUUID+'\');"></i>';	
+		   					 }
 	                    	 result = result + '<h2  class="active">Offer: <span>'+report.offerSourceType+'</span></h2>';
 	                    	 result = result + '<div class="content clearfix">';
 	                    	 result = result + '<div class="interview-type">';
@@ -1257,6 +1264,15 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<strong>Attachment</strong>';
 	                        	 result = result + '</label>';
 	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">No Document</p>';
+	                        	 result = result + '</div>';
+	                    	 }
+	                    	 
+	                    	 if(report.offerExpireDate != null && report.offerExpireDate != "" && report.offerExpireDate  != "undefined"){
+		                    	 result = result + '<div class="row clearfix">';
+	                        	 result = result + '<label class="col-md-5">';
+	                        	 result = result + '<strong>Expire Offer Date</strong>';
+	                        	 result = result + '</label>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerExpireDate+'</p>';
 	                        	 result = result + '</div>';
 	                    	 }
                     		 
@@ -2779,6 +2795,13 @@ function acceptProposeTime(id,proposeDate,proposeTime,submissionId){
 	 }else{ 
 			return false;
 	 } 
+}
+
+</script>
+ <script>
+function viewOfferLetter(offerUUID){
+	var sourceleadUrl ='${sourceleadUrl}';
+	window.open(sourceleadUrl+'/candidateOfferLetterTempleateView?offerUUID='+offerUUID+'','_newtab');
 }
 
 </script>

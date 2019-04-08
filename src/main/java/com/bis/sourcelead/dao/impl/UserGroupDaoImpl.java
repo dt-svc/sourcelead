@@ -211,7 +211,6 @@ public class UserGroupDaoImpl implements UserGroupDao{
 			.append(" ts.ID as submissinId,")
 			.append(" REPLACE ( tde.BILLABLE_HOURS , ':' , '.' )  as billableHours,")
 			.append(" ts.TOTAL_HOURS as totalHours,")
-			.append(" ts.ESTIMATED_HOURS as estimatedHours,")
 			.append(" REPLACE ( tde.NONBILLABLE_HOURS , ':' , '.' ) as nonBillableHours")
 			.append(" from ")
 			.append(" USER user,")

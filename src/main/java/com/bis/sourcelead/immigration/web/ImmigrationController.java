@@ -1,4 +1,4 @@
-package com.bis.sourcelead.rest;
+package com.bis.sourcelead.immigration.web;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -110,9 +110,9 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @RequestMapping("/app/immigration")
-public class ImmigrationRestController {
+public class ImmigrationController {
 
-	private static final Logger logger = LoggerFactory.getLogger(ImmigrationRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ImmigrationController.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;

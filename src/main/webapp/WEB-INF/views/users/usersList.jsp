@@ -327,7 +327,7 @@ function getUsersSearchResult(searchValue){
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
 	                    
-                  <c:if test="${orgLocationsCount > 1}">
+                 <%--  <c:if test="${orgLocationsCount > 1}"> --%>
 		                    <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
@@ -346,7 +346,7 @@ function getUsersSearchResult(searchValue){
 													</c:if>
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
 												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateBankingDetailsForm'/>">Associate Bank Detail</a>
-												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateInformationForm'/>">Associate Information</a> 
+												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateInformation'/>">Associate Information</a> 
 													<a href="<c:url value='${sourceleadUrl}/uploadAssociateSalary'/>">Associate Salary Import</a>
 												</c:if>
 											</div>
@@ -356,9 +356,9 @@ function getUsersSearchResult(searchValue){
 									</span>
 								</div>
 							</li>
-				</c:if>
+				<%-- </c:if> --%>
 				
-				<c:if test="${orgLocationsCount == 1}">
+				<%-- <c:if test="${orgLocationsCount == 1}">
 				           <sec:authorize access="hasRole('ROLE_USER_BULK_IMPORTS')"> 
 				           <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
@@ -401,7 +401,7 @@ function getUsersSearchResult(searchValue){
 						<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
 				</sec:authorize>
 							
-				</c:if>	
+				</c:if> --%>	
 	           
 						
 	       </sec:authorize>
@@ -879,7 +879,8 @@ var validationSettings = {
 		    var form = $('#user_forms')[0];
       		var formData = new FormData(form);  
 			$("#search_user").attr("disabled", "disabled");
-			 $.ajax({
+		
+			$.ajax({
 						 type : "POST",
 		        	     data: formData,
 		        	     processData: false,

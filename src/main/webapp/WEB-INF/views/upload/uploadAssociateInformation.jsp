@@ -40,13 +40,14 @@ var uploadflag= true;
 <section class="content-wraper">
 	<section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Import Associates</h2>
+        <h2>Import Associates Information</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates List</a> &raquo; Import Associates </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates List</a> &raquo; Import Associates Information </div>
     </section>
 	<div id="loading"></div>
 	<div class="content-area clearfix" id="dataFileImportDiv">
-		<form:form id="upload_job_form" name="upload_job_form" method="post" enctype="multipart/form-data">
+	 <div class="success_pop" id="msgDiv" style="display: none;"></div>
+		<form:form id="upload_asso_info_form" name="upload_asso_info_form" method="post" enctype="multipart/form-data">
 			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
 			<div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
 				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
@@ -55,7 +56,7 @@ var uploadflag= true;
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="<c:url value='${appPath}/downloadTemplateForAssociateInfomation'/>"
-								class="btn btn-success btn-block" title="Download Associate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Associate Bank Detail Template
+								class="btn btn-success btn-block" title="Download Associate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Associate Info Template
 							</a>
 						</div>
 						<div class="col-xs-5 col-md-5">
@@ -67,7 +68,7 @@ var uploadflag= true;
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadAssociateInformationForm'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadAssociateInformation'/>'">
 								</div>
 							</div>
 						</div>
@@ -126,11 +127,13 @@ var uploadflag= true;
 		</form:form>
 	</div>
 	<div class="require_wrap_table datatable_filter">
+	<h5 id="uploadXlsHistoryDivTitle" style="display: none;">Failed Records</h5>
 		<div id="errorDataDIV"></div>
         </div>
-	<div id="dataFieldsDiv" style="display: none"></div>
-<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
-	<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
+        
+        
+    <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop" id="recentHistoryDiv">
+	<h5 id="uploadXlsHistoryDivTitle"  style="display: block;">Recent Uploads History</h5>
 	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
 	    	<input type="hidden"  id="uploadedPercentage" value="0">
 		</div>	 	
@@ -149,35 +152,6 @@ document.getElementById("uploadBtn").onchange = function () {
 };
 </script>
 
-<script type="text/javascript">
-function saveAssociateBankDetailTemplate(){
-	var fileUrl = $("#dataFilePath").val();
-	var uploadType = "associateUpload";
-	var headerPosition = $("#headerPosition").val();
-        if (($('#upload_job_form').validate(false, validationSettings))){
-      	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-          	$.ajax({
-    			type: "POST",
-    		    url: sourceleadUrl+"/saveAssociateBankDetailTemplate?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 
-    		    success: function(data) {
-    		    	$("#dataFileImportDiv").attr("style","display:none");
-    		    	$('#dataFieldsDiv').removeAttr("style");
-    		    	$('#dataFieldsDiv').append(data);
-    		    },
-    		});
-          	$('#loading').removeAttr("style");
-        }
-        else{
-      	  return false;	
-        }
-}
-
-$('body').on('blur', '#upload_job_form', function() {
-	$("#upload_job_form").showHelpOnFocus();
-	$("#upload_job_form").validateOnBlur(false, validationSettings);
-	
-});
-</script>
 
 <script type="text/javascript">
 function importAssociateBankDetail(){
@@ -191,14 +165,14 @@ function importAssociateBankDetail(){
 	var uploadType = "associateUpload";
 	var headerPosition = $("#headerPosition").val();
 
-	var frm = $('#upload_job_form').serializeFormJSON();
+	var frm = $('#upload_asso_info_form').serializeFormJSON();
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
 	
 	
 	//It will escape all the special characters
 	var jsonData = encodeURIComponent(con);
-	var form = $('#upload_job_form')[0];
+	var form = $('#upload_asso_info_form')[0];
 	var formData = new FormData(form); 
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
@@ -209,15 +183,17 @@ function importAssociateBankDetail(){
 	        processData: false,
 	        contentType:false,
     	    dataType : 'json',
-    	    url: sourceleadUrl+"/saveAssociateBankDetailTemplate?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 	   
+    	    url: sourceleadUrl+"/uploadAssociateInfomation?",	   
  		    success : function(json) {
  		    		$("#loading").removeAttr("style");
- 		    	    if(json.updateCount != null && json.updateCount != '')
+ 		    	    if(json.insertedCount != null && json.insertedCount != '')
  		    	    $("#msgDiv").removeAttr("style");
- 		 			$("#msgDiv").css({ display: "block" });
- 		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
- 		 			if(json.errorData != null && json.errorData.length >0){
+ 		    	   $("#msgDiv").css({ "display" : "block", "text-align" :"center" });
+ 		 			$("#msgDiv").html(json.insertedCount+ " Associates are updated");
+ 		 			msgFadein();
+ 		 			if(json.pfErrorData != null && json.pfErrorData.length >0){
  		 				showFailedExcelData(json);
+ 		 				importassociteSel(json);
  		 			}
  			    	},
 		 		   error: function(e){
@@ -246,25 +222,23 @@ function cancelFileImport(){
 	         result += '  <tr>';
 	         result += '    <th>Assoicate Id</th>';
 	         result += '    <th>Associate Email*</th>';
-	         result += '    <th>Account Type</th>';
-	         result += '    <th>Bank Name</th>';
-	         result += '    <th>Account Number</th>';
-	         result += '    <th>Routing Number</th>';
+	         result += '    <th>UAN Number</th>';
+	         result += '    <th>PF Number</th>';
+	         result += '    <th>ESI Number</th>'; 
 	         result += '    <th>Reson</th>';
 	         result += '  </tr>';
 	         result += '</thead>';
 	         result += '<tbody>';
-	         var data = json.errorData;
+	         var data = json.pfErrorData;
 	    	 for(i=0;i < data.length;i++){
 	    		 var report = data[i];
 	    		 result += '<tr>';
-		         result += '<td>'+report.associateId+'</td>';
-		         result += '<td>'+report.emailId+'</td>';
-		         result += '<td>'+report.accountType+'</td>';
-		         result += '<td>'+report.bankName+'</td>';
-		         result += '<td>'+report.accountNumber+'</td>';
-		         result += '<td>'+report.routingNumber+'</td>';
-		         result += '<td>'+report.reason+'</td>';
+		         result += '<td><div class="tblminwidth-100">'+report.userId+'</div></td>';
+		         result += '<td><div class="tblminwidth-175">'+report.email+'</div></td>';
+		         result += '<td><div class="tblminwidth-175">'+report.uanNumber+'</div></td>';
+		         result += '<td><div class="tblminwidth-175">'+report.pfNumber+'</div></td>';
+		         result += '<td><div class="tblminwidth-175">'+report.esinumber+'</div></td>';
+		         result += '<td><div class="tbldata-dotdot-me">'+report.reason+'</div></td>';
 		         result += '  </tr>';
 	    	 }
 	    	
@@ -293,8 +267,18 @@ function cancelFileImport(){
 
 	}
   </script>
-
-
+<script>
+function importassociteSel(json){			
+			$("#recentHistoryDiv").hide();
+			$("#uploadXlsHistoryDivTitle").show();
+		}
+</script>
+<script>
+	function msgFadein() {
+		$("#msgDiv").fadeIn(200);
+        $('#msgDiv').delay(2000).fadeOut('slow');
+	}
+    </script> 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

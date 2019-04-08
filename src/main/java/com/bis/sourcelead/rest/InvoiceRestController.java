@@ -2623,10 +2623,12 @@ return responseList;
 	 */
 	@RequestMapping(value = "/getExpensesByProjectMemberId", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseList<Expenses> getExpensesByProjectMemberId(@RequestParam(value = "memberId", required = false) Long projectMemberId, @RequestParam(value = "invoiceType", required = false) String invoiceType) throws Exception
+	public ResponseList<Expenses> getExpensesByProjectMemberId(@RequestParam(value = "memberId", required = false) Long projectMemberId,
+			@RequestParam(value = "expenseId", required = false) Long expenseId,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType) throws Exception
 	{
 		ResponseList<Expenses> responseList = new ResponseList<>();
-		List<Expenses> expensesList = expensesService.getExpensesByProjectMemberId(projectMemberId, invoiceType);
+		List<Expenses> expensesList = expensesService.getExpensesByProjectMemberId(projectMemberId, invoiceType,expenseId);
 		responseList.setData(expensesList);
 		return responseList;
 	}

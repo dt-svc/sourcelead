@@ -34,7 +34,7 @@ public class IndAssociatePaymentAccountDTO {
     private String paymentAccountId;
     private String email;
     private String ifscCode;
-    private String recordCount;
+    private String reason;
 
     /**
      * @return the id
@@ -310,12 +310,12 @@ public class IndAssociatePaymentAccountDTO {
 		this.ifscCode = ifscCode;
 	}
 
-	public String getRecordCount() {
-		return recordCount;
+	public String getReason() {
+		return reason;
 	}
 
-	public void setRecordCount(String recordCount) {
-		this.recordCount = recordCount;
+	public void setReason(String reason) {
+		this.reason = reason;
 	}
      
 }

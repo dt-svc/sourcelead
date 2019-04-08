@@ -244,43 +244,49 @@ window.onload = function () {
 				 </div>
                 </div>
                 <div class="col-md-8">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <label>Rate</label>
-                      <div class="input-group">
-                        <div class="input-group-btn selp-custom-min custommin">
-                          <select class="selectpicker" id="currencyCode" name="currencyCode" >
-                            <option selected disabled>INR</option>
-                            <option>AUD</option>
-                            <option>USD</option>
-                            <option>GBP</option>
-                            <option>SGD</option>
-                            <option>EUR</option>
-                          </select>
-                        </div>
-                        <input type="text" class="form-control input-sm" name="minRate" id="minRate" value="" placeholder="Min Rate">
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <label>&nbsp;</label>
-                      <div class="input-group">
-                        <input type="text" class="form-control input-sm" value="" name="maxRate" id="maxRate" placeholder="Max Rate">
-                        <div class="input-group-btn selp-custom-min custommin">
-                          <select class="selectpicker">
-                            <option selected disabled>Rate Per</option>
-                            <option>Hourly</option>
-                            <option>Weekly</option>
-                            <option>Bi-weekly</option>
-                            <option>Semi-Monthly</option>
-                            <option>Monthly</option>
-                            <option>Bi-Monthly</option>
-                            <option>Yearly</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+				<div class="row">
+									<div class="col-md-6">
+										<label>Rate</label>
+										<div class="row">
+											<div class="col-md-5 padding_right">
+												<select class="sel" id="currencyCode" name="currencyCode">
+													<option selected disabled>INR</option>
+													<option>AUD</option>
+													<option>USD</option>
+													<option>GBP</option>
+													<option>SGD</option>
+													<option>EUR</option>
+												</select>
+											</div>
+											<div class="col-md-7 padding_left">
+												<input type="text" class="form-control" name="minRate"
+													id="minRate" value="" placeholder="Min Rate">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<label>&nbsp;</label>
+										<div class="row">
+											<div class="col-md-6 padding_right">
+												<input type="text" class="form-control" value=""
+													name="maxRate" id="maxRate" placeholder="Max Rate">
+											</div>
+											<div class="col-md-6 padding_left">
+												<select class="sel">
+													<option selected disabled>Rate Per</option>
+													<option>Hourly</option>
+													<option>Weekly</option>
+													<option>Bi-weekly</option>
+													<option>Semi-Monthly</option>
+													<option>Monthly</option>
+													<option>Bi-Monthly</option>
+													<option>Yearly</option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+			</div>
               </div>
               <div class="clearfix">
                 <div class="col-md-4">
@@ -418,7 +424,7 @@ window.onload = function () {
             <div class="row form-footer">
               <div class="pull-right mr"> 
               <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement('0');" class="btn btn-sm btn-success"/>
-               <input type="button" value="Clear" onClick="loadChosenRequirementScripts();" class="btn btn-sm btn-primary ml10"/> 
+               <input type="button" value="Reset" onClick="loadChosenRequirementScripts();" class="btn btn-sm btn-primary ml10"/> 
               </div>
             </div>
           </div>
@@ -935,7 +941,6 @@ function requirementsList(offset){
 			 				}else{
 			 					industryName = '--';
 			 				}
-			 				
 			 				if(requirements.visaTypes != null && requirements.visaTypes != '' && requirements.visaTypes != 'undefined'){
 			 					visaType = requirements.visaTypes;
 			 				}else{
@@ -958,14 +963,15 @@ function requirementsList(offset){
 			 				result = result +'<input type="hidden" id="'+i+'locationId" value="'+requirements.orgLocationId+'"/>';
 			 				result = result +'<h4 onClick="getPostedOrgJobs('+i+');" class="orgLink" title="'+requirements.postedOrg+'">'+requirements.postedOrg+'</h4>';
 			 				result = result +'<div class="clearfix"></div>';
-			 				result = result +'<span>';
+			 				result = result +'<div class="row">';
+			 				result = result +'<span class="col-md-11">';
 			 				result = result +'<b><i class="fa fa-clock-o" title="Job Type"></i>'+jobType+'</b>';
 			 				result = result +'<b><i class="fa fa-briefcase" title="Experience"></i>'+experience+'</b>';
 			 				/* result = result +'<b><i class="fa fa-map-marker" Title="Location"></i>'+location+'</b>'; */
 			 				result = result +'<b><i class="fa fa-rupee" title="Rate"></i>'+rate+'</b>';
 			 				result = result +'<b><i class="fa fa-industry" title="Industry"></i>'+industryName+'</b>';
 			 				result = result +'<b><i class="fa fa-plane" title="Immigration Status"></i>'+visaType+'</b>';
-			 				result = result +'</span>';
+			 				result = result +'</div>';
 			 				result = result +'<h5>';
 							result = result +'<strong>Locations : </strong>';
 			 				
@@ -1039,7 +1045,7 @@ function requirementsList(offset){
 				 					result = result +'  <a href="#" title="Save Job" href="javascript:void(0)" id="saveJob'+requirements.requirementUUID+'" class="alertBtn" onclick="saveJob(\''+requirements.jobTitle+'\',\''+requirements.requirementUUID+'\','+requirements.referId+')" ><i class="fa fa-floppy-o"></i></a>';
 				 				}else{
 				 					if(requirementType == "SavedJobs"){
-				 						result = result +'  <a href="#" title="Delete Job" href="javascript:void(0)" class="alertBtn bg-red" onclick="deleteSavedJob(\''+requirements.jobTitle+'\',\''+requirements.savedJobUUID+'\',\''+requirements.requirementUUID+'\')" ><i class="fa fa-trash"></i></a>';
+				 						result = result +'  <a href="#" title="Delete Job" href="javascript:void(0)" class="alertBtn bg-red" onclick="deleteSavedJob(\''+requirements.jobTitle+'\',\''+requirements.savedJobUUID+'\',\''+requirements.requirementUUID+'\')" ><i class="fa fa-trash" style="color:#fff !important"></i></a>';
 				 					}else{
 				 						result = result +'  <a href="#" title="Saved Job" href="javascript:void(0)" class="alertBtn bg-green"  ><i class="fa fa-floppy-o"></i></a>';
 				 					}
@@ -1702,25 +1708,24 @@ $(function(){
 
 <script>
 function loadChosenRequirementScripts(){
-	 $('#country').val('${loginCountryName}'); 
-     $('#state').val(''); 
-     $('#city').val('');
-     $("#anyKeyWord").val('').trigger("chosen:updated");
-	 $("#allReqKeyWord").val('').trigger("chosen:updated");
-	 $("#excludeReqKeyWord").val('').trigger("chosen:updated");
-	 $("#requirementTitle").val('').trigger("chosen:updated");
-	 $("#rate").val('').trigger("chosen:updated");
-	 $("#minExp").val('').trigger("chosen:updated");
-	 $("#maxExp").val('').trigger("chosen:updated");
-	 $("#skills").val('').trigger("chosen:updated"); 
-	 $("#noticePeriod").val('').trigger("chosen:updated"); 
-	 $("#organizations").val('').trigger("chosen:updated");
-	 
-	 $("#anyKeyWord").empty();
-	 $("#allReqKeyWord").empty();
-	 $("#excludeReqKeyWord").empty();
-	 $('#experienceId').find('p.jquery_form_error_message').remove(); 
-	 
+$('#country').val('${loginCountryName}'); 
+$('#state').val(''); 
+$('#city').val('').trigger("chosen:updated");
+$("#anyKeyWord").val('').trigger("chosen:updated");
+$("#allReqKeyWord").val('').trigger("chosen:updated");
+$("#excludeReqKeyWord").val('').trigger("chosen:updated");
+$("#requirementTitle").val('').trigger("chosen:updated");
+$("#rate").val('').trigger("chosen:updated");
+$("#minExp").val('').trigger("chosen:updated");
+$("#maxExp").val('').trigger("chosen:updated");
+$("#skills").val('').trigger("chosen:updated"); 
+$("#noticePeriod").val('').trigger("chosen:updated"); 
+$("#organizations").val('').trigger("chosen:updated");
+$("#minRate").val('');
+$("#maxRate").val('');
+$("#apiLocation").val('');
+$('#experienceId').find('p.jquery_form_error_message').remove(); 
+
 }
 </script>
 
