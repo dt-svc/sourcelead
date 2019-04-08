@@ -210,6 +210,7 @@
 														&& opt.proposedSubmissionRate != ''
 														&& opt.proposedSubmissionRate != 'undefined') {
 													'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													if(opt.submissionStatus != 'JOINED'){
 													result = result
 															+ '         <td><div><span class="showRate '
 															+ colorHint
@@ -220,6 +221,15 @@
 															+ ');">'
 															+ opt.proposedSubmissionRate
 															+ '</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+													}else{
+														var expexted = (opt.proposedSubmissionRate != ''
+															&& opt.proposedSubmissionRate != 'undefined' && opt.proposedSubmissionRate != null) ? opt.proposedSubmissionRate
+															: '<i class="glyphicon fa fa-money"></i>';
+														result = result
+														+ '         <td><div><span class="showRate">'
+														+ expexted
+														+ '</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+													}
 													'</sec:authorize>';
 													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
 													result = result
@@ -232,6 +242,7 @@
 															&& opt.expectedCTC != 'undefined' && opt.expectedCTC != null) ? opt.expectedCTC
 															: '<i class="glyphicon fa fa-money"></i>';
 													'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													if(opt.submissionStatus != 'JOINED'){
 													result = result
 															+ '         <td><div><span class="showRate '
 															+ colorHint
@@ -242,6 +253,15 @@
 															+ ');">'
 															+ expexted
 															+ '</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+													}else{
+														var expexted = (opt.proposedSubmissionRate != ''
+															&& opt.proposedSubmissionRate != 'undefined' && opt.proposedSubmissionRate != null) ? opt.proposedSubmissionRate
+															: '<i class="glyphicon fa fa-money"></i>';
+														result = result
+														+ '         <td><div><span class="showRate">'
+														+ expexted
+														+ '</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+													}
 													'</sec:authorize>';
 													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
 													result = result
@@ -255,6 +275,7 @@
 														&& opt.expectedRate != ''
 														&& opt.expectedRate != 'undefined') {
 													'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													if(opt.submissionStatus != 'JOINED'){
 													result = result
 															+ '         <td><div><span class="showRate '
 															+ colorHint
@@ -265,6 +286,15 @@
 															+ ');">'
 															+ opt.expectedRate
 															+ '</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+													}else{
+														var expexted = (opt.proposedSubmissionRate != ''
+															&& opt.proposedSubmissionRate != 'undefined' && opt.proposedSubmissionRate != null) ? opt.proposedSubmissionRate
+															: '<i class="glyphicon fa fa-money"></i>';
+														result = result
+														+ '         <td><div><span class="showRate">'
+														+ expexted
+														+ '</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+													}
 													'</sec:authorize>';
 													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
 													result = result
@@ -277,6 +307,7 @@
 															&& opt.expectedCTC != 'undefined' && opt.expectedCTC != null) ? opt.expectedCTC
 															: '<i class="glyphicon fa fa-money"></i>';
 													'<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+													if(opt.submissionStatus != 'JOINED'){
 													result = result
 															+ '         <td><div><span class="showRate '
 															+ colorHint
@@ -287,6 +318,15 @@
 															+ ');">'
 															+ expexted
 															+ '</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+													}else{
+														var expexted = (opt.proposedSubmissionRate != ''
+															&& opt.proposedSubmissionRate != 'undefined' && opt.proposedSubmissionRate != null) ? opt.proposedSubmissionRate
+															: '<i class="glyphicon fa fa-money"></i>';
+														result = result
+														+ '         <td><div><span class="showRate">'
+														+ expexted
+														+ '</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
+													}
 													'</sec:authorize>';
 													'<sec:authorize access="!hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
 													result = result
@@ -512,17 +552,17 @@
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 													}
 													
-													if(opt.submissionStatus == 'SELECTED_ON_INTERVIEW'){
+													if(opt.previousSubmissionStatus != 'CLIENT_INTERVIEW' && opt.submissionStatus == 'SELECTED_ON_INTERVIEW'){
 														result = result + "<option value='On Hold'>On Hold</option>";
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 													}
 													
-													if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW' && opt.submissionStatus != 'SUBMIT_TO_CLIENT' && opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'NORESPONSE'){	
+													 if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW' && opt.submissionStatus != 'SUBMIT_TO_CLIENT' && opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'NORESPONSE'){	
 														result = result + "<option value='On Hold'>On Hold</option>";
 														}
 													if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW' && opt.submissionStatus != 'SUBMIT_TO_CLIENT' && opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'ONHOLD'){	
 														result = result + "<option value='NoResponse'>NoResponse</option>";
-														}
+														} 
 													result = result + "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED' || opt.submissionStatus == 'JOINED'
 														 || opt.submissionStatus == 'CLIENT_OFFERMADE' || opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {

@@ -318,14 +318,6 @@
 						</a>
 					</div>
 					
-							<div class="col-md-2 reportNewCta">
-								<a href="${SourceLeadWeb_sourceleadUrl}/clockInOutConfig">
-								<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
-								<div class="clearfix text-center">
-								<h4>Clock In - Clock Out</h4>
-								</div>
-								</div>
-
 					<sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')">
 						<div class="col-md-2 reportNewCta">
 							<a href="/app/orgRolesList">
@@ -529,6 +521,15 @@
 							</div>
 						</a>
 					</div>
+					
+							<div class="col-md-2 reportNewCta">
+								<a href="${SourceLeadWeb_sourceleadUrl}/clockInOutConfig">
+								<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+								<div class="clearfix text-center">
+								<h4>Clock In - Clock Out</h4>
+								</div>
+								</div>
+								
 					<sec:authorize access="hasRole('ROLE_TICKET_CONFIGURATION')">
 						<div class="col-md-2 reportNewCta">
 							<a href="/app/ticketManagementTypeList">

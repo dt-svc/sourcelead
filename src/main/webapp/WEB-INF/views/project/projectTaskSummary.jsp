@@ -6,8 +6,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
-<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+
+<link type="text/css" rel="stylesheet" href="/resources/css/comment/froala_editor.css"/>
+<link type="text/css" rel="stylesheet" href="/resources/css/comment/jquery.atwho.css"/>
+
+<script type="text/javascript" src="/resources/js/editor.js"></script>
+<link href="/resources/css/editor.css" type="text/css" rel="stylesheet" />
+
+<script type="text/javascript" src="/resources/js/comment/jquery.atwho.js"></script>
+<script type="text/javascript" src="/resources/js/comment/jquery.caret.min.js"></script>
+<script type="text/javascript" src="/resources/js/comment/task_comment.js"></script>
 
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
@@ -1961,6 +1969,8 @@ function subTasksAssignList(projectId){
 	         }
 	 });
  }
+ 
+ 
  </script>
  <script>
 function saveTasks(){
@@ -2179,19 +2189,22 @@ function closeComment(){
 	$(".commentPopUp").fadeOut();
 }
 function addComment(){
+	var projectId = "${projectId}";
 	 result = "";
 	result  = result + '	<div class="clearfix">';
-	result  = result + '   <button type="button" class="close" onclick="closeComment()">&times;</button>';
-	result  = result + '   <p><strong>Add Comment</strong></p>';
+	result  = result + '   <button type="button" class="close mr5 mt5" onclick="closeComment()">&times;</button>';
+	result  = result + '   <p class="ml5 mt10 mb0"><strong>Add Comment</strong></p>';
 	result  = result + ' </div>';
 	result = result + '    <form id="addComment_form" name="addComment_form">';
 	result = result + ' <input type="hidden" name="tabType" value="comment">';
 	result  = result + ' <div class="row clearfix">';
-	result  = result + '   <div class="col-md-12 mb10">';
-	result  = result + '     <textarea class="form-control" rows="3" id="taskComment" name="taskComment" placeholder="Comment here ..." data-validation="required validate_length length2-500" field-name="Task Comment" ></textarea>';
-	result  = result + '   </div>';
+	result  = result + '	<div class="ticketCommentCont">';
+	result  = result + '	<div class="clearfix">';
+	result  = result + '		<div contenteditable="true" id="taskComment" class="tkt_comment_div tkt_comment_custom"></div>';
+	result  = result + '	</div>';
 	result  = result + '</div>';
-	result  = result + ' <div class="modalFooter mt5">';
+	result  = result + '</div>';
+	result  = result + ' <div class="modalFooter  mb10 clearfix">';
 	result  = result + '   <div class="pull-right">';
 	result  = result + '     <button type="button" class="btn btn-primary btn-sm" id="save_comment" data-dismiss="modal" onclick="saveComment();">Add</button>';
 	result  = result + '     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="closeComment()">Cancel</button>';
@@ -2201,34 +2214,8 @@ function addComment(){
 	$("#commnetPopUpDivId").empty();  
 	$("#commnetPopUpDivId").append(result); 
 	 
+	commentMembers(projectId);
 }
-/* function commentMembers(event){
-// 	onkeypress="commentMembers(event)"
-var value = $("#taskComment").val();
-	if(event.keyCode === 64){
-		var projectId = "${projectId}";
-		var values = "Active";
-		$.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
-	        success: function(json) {
-	        	var output = "";
-	        	output = output + "<ul>";
-	        	for (var i=0; i<json.length; i++)
-				{
-	        		var opt = json[i];
-	        		output = output + "<li value='" +opt.id+ "'>"+opt.empName+"</li>";
-				}
-	        	output = output + "</ul>";
-	        	$("#taskComment").val(value + output)
-	        	alert(value)
-	        	alert(output)
-	        }
-		});	
-		
-		
-	}
-} */
 </script>
 <script>
 function saveComment(){
@@ -2250,13 +2237,21 @@ function saveComment(){
  			var projectTaskId = '${projectTask.id}';
 		  	var sourceleadUrl = '${sourceleadUrl}';
 		  	var userId = '${SourceLeadWeb_userId}';
-			var formData = getFormData("addComment_form");
+			var formData = {};
+			var mentionedUserIds = selectedUsers.toString();
+			formData["taskComment"] =  $("#taskComment").html();
+			formData["projectTaskId"] =  projectTaskId;
+			formData["loginUserId"] =  userId;
+			formData["projectClientUUID"] =  projectClientUUID;
+			formData["editOwnerId"] =  editOwnerId;
+			formData["mentionedUserIds"] =  mentionedUserIds;
+			
 		  	$("#save_comment").attr("disabled", "disabled");
 			$("#save_comment").addClass('button').val('Processing..');
 			$.ajax({
 				 type : "POST",
 				 data: formData,
-				 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskComment?${_csrf.parameterName}=${_csrf.token}&projectTaskId="+projectTaskId+"&loginUserId="+userId+"&projectClientUUID="+projectClientUUID+"&editOwnerId="+editOwnerId+"&assignValue="+assignValue,
+				 url : sourceleadUrl + "/ProjectTasks/saveProjectTaskComment?${_csrf.parameterName}=${_csrf.token}&assignValue="+assignValue,
 				  success : function(result) {
 					  if (result && result.response === "INVALID_DATA") {
 		                    showError(result.responseMessage);

@@ -475,12 +475,10 @@ function preventTabkey(e){
 <div class="headNav">
 	<ul>
 	
-	
-<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-
-			<li id="clPop" class="clPop">
+	<li id="clPop" class="clPop">
 			<label class="clheadtime" id="stopwatch">00:00:00</label><a href="javascript:void(0)" title="Clock In"><i class="clockAni"><div class="clockAniAct"></div></i></a>
-			</li>
+	</li>
+<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
 
             <li><a id="orgPopId" href="javascript:void(0)" title="Locations"><i class="headNavIcon"></i></a>
             
@@ -1974,103 +1972,103 @@ $(".mask, .popupWrap2").fadeOut();
 
 <script>
 function getClockInOutConfiguration(){
-$.ajax({
-url: sourceleadUrl + "/getClockInOutConfigData",
-type: 'GET',
-success: function (json) {
-if(json != null){
-getExistedClockTime();
-if(!json.isJobChecked){
-$("#jobDIV").hide();
-}else{
-$("#jobDIV").show();
-getAssignedJobTasks();
-}
-if(!json.isProjectTasksChecked){
-$("#projectTaskDIV").hide();
-}else{
-$("#projectTaskDIV").show();
-getAssignedProjects();
-}
-if(!json.isGeneralTaskChecked){
-$("#generalTaskDIV").hide();
-} else{
-$("#generalTaskDIV").show();
-getGeneralTasks();
-}
-if(!json.isClockInComment){
-$("#commentsDIV").hide();
-}else{
-$("#commentsDIV").show();
-}
-}
-}
-});
+	$.ajax({
+	url: sourceleadUrl + "/getClockInOutConfigData",
+	type: 'GET',
+	success: function (json) {
+	if(json != null){
+	getExistedClockTime();
+	if(!json.isJobChecked){
+	$("#jobDIV").hide();
+	}else{
+	$("#jobDIV").show();
+	getAssignedJobTasks();
+	}
+	if(!json.isProjectTasksChecked){
+	$("#projectTaskDIV").hide();
+	}else{
+	$("#projectTaskDIV").show();
+	getAssignedProjects();
+	}
+	if(!json.isGeneralTaskChecked){
+	$("#generalTaskDIV").hide();
+	} else{
+	$("#generalTaskDIV").show();
+	getGeneralTasks();
+	}
+	if(!json.isClockInComment){
+	$("#commentsDIV").hide();
+	}else{
+	$("#commentsDIV").show();
+	}
+	}
+	}
+	});
 
 }
 </script>
 
 <script>
 function getAssignedJobTasks(obj){
-$.ajax({
-url: sourceleadUrl + "/getAssignedJobs",
-type: 'GET',
-success: function (json) {
-var output = "";
-output = output + "<option value=''>Select Job</option>";
-if(json.data != null){
-for (var i=0; i<json.data.length; i++)
-{
-var opt = json.data[i];
-if(obj != null && obj != '' && obj != 'undefined'){
-if(obj.jobsTaskId == opt.id){
-output = output + "<option value='" +opt.id+ "' selected>"+opt.jobTitle+"</option>";
-}else{
-output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
-}
-}else{
-output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
-}
-}
-}
-$("#jobDropDownDiv").empty();
-$("#jobDropDownDiv").append(output);
-$('#jobDropDownDiv').trigger("chosen:updated");
-}
-});
+	$.ajax({
+	url: sourceleadUrl + "/getAssignedJobs",
+	type: 'GET',
+	success: function (json) {
+	var output = "";
+	output = output + "<option value=''>Select Job</option>";
+	if(json.data != null){
+	for (var i=0; i<json.data.length; i++)
+	{
+	var opt = json.data[i];
+	if(obj != null && obj != '' && obj != 'undefined'){
+	if(obj.jobsTaskId == opt.id){
+	output = output + "<option value='" +opt.id+ "' selected>"+opt.jobTitle+"</option>";
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
+	}
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
+	}
+	}
+	}
+	$("#jobDropDownDiv").empty();
+	$("#jobDropDownDiv").append(output);
+	$('#jobDropDownDiv').trigger("chosen:updated");
+	}
+	});
 }
 </script>
 
 <script>
 function getAssignedProjects(obj){
-$.ajax({
-url: sourceleadUrl + "/getProjectsByStatusAndClient",
-type: 'GET',
-success: function (json) {
-var output = "";
-output = output + "<option value=''>Select Project</option>";
-if(json.data != null){
-for (var i=0; i<json.data.length; i++)
-{
-var opt = json.data[i];
-if(obj != null && obj != '' && obj != 'undefined'){
-if(obj.projectId == opt.id){
-output = output + "<option value='" +opt.id+ "' selected>"+opt.projectName+"</option>";
-}else{
-output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
-}
-}else{
-output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
-}
-}
-}
-
-$("#projectDropDownDiv").empty();
-$("#projectDropDownDiv").append(output);
-$('#projectDropDownDiv').trigger("chosen:updated"); 
-}
-});
-getProjectTasksByProject(obj);
+	$.ajax({
+	url: sourceleadUrl + "/getAllProjectsForClockInOut",
+	type: 'GET',
+	success: function (json) {
+	var output = "";
+	output = output + "<option value=''>Select Project</option>";
+	if(json.data != null){
+	for (var i=0; i<json.data.length; i++)
+	{
+	var opt = json.data[i];
+	if(obj != null && obj != '' && obj != 'undefined'){
+	if(obj.projectId == opt.id){
+	output = output + "<option value='" +opt.id+ "' selected>"+opt.projectName+"</option>";
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+	}
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+	}
+	}
+	}
+	
+	$("#projectDropDownDiv").empty();
+	$("#projectDropDownDiv").append(output);
+	$('#projectDropDownDiv').trigger("chosen:updated"); 
+	}
+	});
+	getProjectTasksByProject(obj);
 }
 </script>
 
@@ -2078,90 +2076,90 @@ getProjectTasksByProject(obj);
 <script>
 function getProjectTasksByProject(obj){
 
-var projectId = $("#projectDropDownDiv").val();
-$.ajax({
-url: sourceleadUrl + "/getProjectsTasksByProjectId?&projectId="+projectId,
-type: 'GET',
-success: function (json) {
-var output = "";
-output = output + "<option value=''>Select Project Task</option>";
-if(json != null){
-for (var i=0; i<json.length; i++)
-{
-var opt = json[i];
-if(obj != null && obj != '' && obj != 'undefined'){
-if(obj.projectsTaskId == opt.id){
-output = output + "<option value='" +opt.id+ "' selected>"+opt.taskName+"</option>";
-}else{
-output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
-}
-}else{
-output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
-}
-
-}
-}
-$("#projectTaskDropDownDiv").empty();
-$("#projectTaskDropDownDiv").append(output);
-$('#projectTaskDropDownDiv').trigger("chosen:updated"); 
-}
-});
+	var projectId = $("#projectDropDownDiv").val();
+	$.ajax({
+	url: sourceleadUrl + "/getProjectsTasksByProjectId?&projectId="+projectId,
+	type: 'GET',
+	success: function (json) {
+	var output = "";
+	output = output + "<option value=''>Select Project Task</option>";
+	if(json != null){
+	for (var i=0; i<json.length; i++)
+	{
+	var opt = json[i];
+	if(obj != null && obj != '' && obj != 'undefined'){
+	if(obj.projectsTaskId == opt.id){
+	output = output + "<option value='" +opt.id+ "' selected>"+opt.taskName+"</option>";
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+	}
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+	}
+	
+	}
+	}
+	$("#projectTaskDropDownDiv").empty();
+	$("#projectTaskDropDownDiv").append(output);
+	$('#projectTaskDropDownDiv').trigger("chosen:updated"); 
+	}
+	});
 }
 </script>
 
 <script>
 function getGeneralTasks(data){
 
-$.ajax({
-url: sourceleadUrl + "/getGeneralTasks",
-type: 'GET',
-success: function (json) {
-var output = "";
-output = output + "<option value=''>Select Task</option>";
-if(json != null){
-for (var i=0; i<json.length; i++)
-{
-var opt = json[i];
-if(obj != null && obj != '' && obj != 'undefined'){
-if(obj.generalTaskId == opt.id){
-output = output + "<option value='" +opt.id+ "' selected>"+opt.subject+"</option>";
-}else{
-output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
-}
-}else{
-output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
-}
-
-}
-}
-$("#generalTaskDropDownDiv").empty();
-$("#generalTaskDropDownDiv").append(output);
-$('#generalTaskDropDownDiv').trigger("chosen:updated"); 
-}
-});
+	$.ajax({
+	url: sourceleadUrl + "/getGeneralTasks",
+	type: 'GET',
+	success: function (json) {
+	var output = "";
+	output = output + "<option value=''>Select Task</option>";
+	if(json != null){
+	for (var i=0; i<json.length; i++)
+	{
+	var opt = json[i];
+	if(obj != null && obj != '' && obj != 'undefined'){
+	if(obj.generalTaskId == opt.id){
+	output = output + "<option value='" +opt.id+ "' selected>"+opt.subject+"</option>";
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
+	}
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
+	}
+	
+	}
+	}
+	$("#generalTaskDropDownDiv").empty();
+	$("#generalTaskDropDownDiv").append(output);
+	$('#generalTaskDropDownDiv').trigger("chosen:updated"); 
+	}
+	});
 }
 </script>
 
 <script>
 function saveClockInOutTime(type,totalTime){
-var formData = getFormData("clock_inout_form");
-$.ajax({
-type : "POST",
-data : formData,
-url: sourceleadUrl+"/saveClockInOutTime?&type="+type+"&totalTime="+totalTime, 
-success :function(data) {
-
-if(type == 'ClockIn'){
-$("#clockInOutId").val(data.id);
-$('#reset,#pause').attr("disabled",false);
-$('#start,#play').attr("disabled",true);
-}else{
-$("#clockInOutId").val('');
-$('#reset,#play,#pause').attr("disabled",true);
-$('#start').attr("disabled",false);
-}
-},	
-}); 
+	var formData = getFormData("clock_inout_form");
+	$.ajax({
+	type : "POST",
+	data : formData,
+	url: sourceleadUrl+"/saveClockInOutTime?&type="+type+"&totalTime="+totalTime, 
+	success :function(data) {
+	
+	if(type == 'ClockIn'){
+	$("#clockInOutId").val(data.id);
+	$('#reset,#pause').attr("disabled",false);
+	$('#start,#play').attr("disabled",true);
+	}else{
+	$("#clockInOutId").val('');
+	$('#reset,#play,#pause').attr("disabled",true);
+	$('#start').attr("disabled",false);
+	}
+	},	
+	}); 
 
 }
 </script>
@@ -2177,8 +2175,8 @@ function getExistedClockTime(){
 		getAssignedJobTasks(data);
 		getAssignedProjects(data);
 		getGeneralTasks(data);
-		$('#start').attr("disabled",true);
-		$('#reset,#play, #pause').attr("disabled",false);
+		$('#start,#play').attr("disabled",true);
+		$('#reset, #pause').attr("disabled",false);
 		
 		getExistedBreakTime(data.id);
 		}else{
@@ -2198,9 +2196,7 @@ function getExistedBreakTime(clockInOutId){
 	type : "GET",
 	url: sourceleadUrl+"/getExistedBreakTime?&clockInOutId="+clockInOutId, 
 	success :function(data) {
-		alert(data)
 	$("#breakId").val(data.id);
-	alert("in break")
 	$('#start,#pause').attr("disabled",true);
 	$('#reset,#play').attr("disabled",false);
 	},	
@@ -2211,111 +2207,100 @@ function getExistedBreakTime(clockInOutId){
 
 <script type="text/javascript">
 obj = {
-element : '',
-currentSec: 0,
-refreshInterval:0,
-init: function () {
-// $('#reset,#play, #pause').attr("disabled",true);
-
-obj.element = $('#stopwatch, #stopwatchPop');
-// localStorage.setItem('stopwatch_sec', 0);
-
-var currTime = new Date().getTime() / 1000;
-currTime = parseInt(currTime);
-var storedTime = localStorage.getItem('stopwatch_time');
-var sleepedSec = storedTime==null ? 0 : currTime - parseInt(storedTime);
-obj.currentSec = localStorage.getItem('stopwatch_sec');
-obj.currentSec = obj.currentSec ? parseInt(obj.currentSec) + sleepedSec : 0;
-var pauseValue = localStorage.getItem('pauseValue');
-if(obj.currentSec && pauseValue != 'pause') {
-obj.refresh();
-$('#reset').attr("disabled",true);
-}
-
-if(pauseValue == 'pause') {
-var pauseData = localStorage.getItem('pauseData');
-obj.element.addClass('blink');
-obj.refresh(pauseValue,pauseData);
-}
+	element : '',
+	currentSec: 0,
+	refreshInterval:0,
+	init: function () {
+	
+	obj.element = $('#stopwatch, #stopwatchPop');
+	
+	var currTime = new Date().getTime() / 1000;
+	currTime = parseInt(currTime);
+	var storedTime = localStorage.getItem('stopwatch_time');
+	var sleepedSec = storedTime==null ? 0 : currTime - parseInt(storedTime);
+	obj.currentSec = localStorage.getItem('stopwatch_sec');
+	obj.currentSec = obj.currentSec ? parseInt(obj.currentSec) + sleepedSec : 0;
+	var pauseValue = localStorage.getItem('pauseValue');
+	if(obj.currentSec && pauseValue != 'pause') {
+		obj.refresh();
+		$('#reset').attr("disabled",true);
+	}else if(pauseValue == 'pause'){
+		var pauseData = localStorage.getItem('pauseData');
+		obj.element.html(pauseData);
+	}
+	
 
 },
 event: function (type) {
-switch(type) {
-case 'start':
-obj.element.removeClass('blink');
-obj.currentSec = 0;
-obj.refresh();
-localStorage.setItem('pauseValue', null);
-localStorage.setItem('pauseData', null);
-saveClockInOutTime('ClockIn');
-break;
-case 'play':
-obj.element.removeClass('blink');
-localStorage.setItem('pauseValue', null);
-localStorage.setItem('pauseData', null);
-
-var pauseTime = localStorage.getItem('total_Time');
-var stringArray = pauseTime.split(":");
-obj.currentSec = stringArray[2]; 
-obj.refresh('play');
-saveBreakTime('play');
-break;
-case 'pause':
-obj.element.addClass('blink');
-localStorage.setItem('pauseValue', 'pause');
-var totalTime = localStorage.getItem('total_Time');
-localStorage.setItem('pauseData', totalTime);
-clearTimeout(obj.refreshInterval);
-saveBreakTime('pause');
-break;
-case 'reset':
-clearTimeout(obj.refreshInterval);
-var totalTime = localStorage.getItem('total_Time');
-localStorage.setItem('stopwatch_time', null);
-localStorage.setItem('stopwatch_sec', 0);
-obj.currentSec = 0;
-obj.element.html('00:00:00');
-localStorage.setItem('pauseValue', null);
-localStorage.setItem('pauseData', null);
-localStorage.setItem('playValue', null);
-obj.element.removeClass('blink');
-
-// $('div > input').attr("disabled",false);
-saveClockInOutTime('ClockOut',totalTime);
-break;
-
-}
+	switch(type) {
+	case 'start':
+	obj.element.removeClass('blink');
+	obj.currentSec = 0;
+	obj.refresh();
+	localStorage.setItem('pauseValue', null);
+	localStorage.setItem('pauseData', null);
+	saveClockInOutTime('ClockIn');
+	break;
+	case 'play':
+	obj.element.removeClass('blink');
+	localStorage.setItem('pauseValue', null);
+	localStorage.setItem('pauseData', null);
+	var pauseSec = localStorage.getItem('pause_sec');
+	obj.currentSec = pauseSec; 
+	obj.refresh();
+	saveBreakTime('play');
+	break;
+	case 'pause':
+	obj.element.addClass('blink');
+	localStorage.setItem('pauseValue', 'pause');
+	var totalTime = localStorage.getItem('total_Time');
+	localStorage.setItem('pauseData', totalTime);
+	clearTimeout(obj.refreshInterval);
+	saveBreakTime('pause');
+	break;
+	case 'reset':
+	clearTimeout(obj.refreshInterval);
+	var totalTime = localStorage.getItem('total_Time');
+	localStorage.setItem('stopwatch_time', null);
+	localStorage.setItem('stopwatch_sec', 0);
+	obj.currentSec = 0;
+	obj.element.html('00:00:00');
+	localStorage.setItem('pauseValue', null);
+	localStorage.setItem('pauseData', null);
+	localStorage.setItem('pause_sec',0);
+	obj.element.removeClass('blink');
+	
+	// $('div > input').attr("disabled",false);
+	saveClockInOutTime('ClockOut',totalTime);
+	break;
+	
+	}
 },
 refresh: function(pauseValue,pauseData) {
 
-var sec = '';
-sec = obj.currentSec++;
-var hour = parseInt(sec/3600);
-sec = sec % 3600;
-var min = parseInt(sec/60);
-sec = sec % 60;
-
-
-if(pauseValue == 'pause'){
-obj.element.html(pauseData);
-localStorage.setItem('total_Time',pauseData);
-}else{
-localStorage.setItem('stopwatch_sec', obj.currentSec);
-obj.element.html((hour > 9 ? hour : '0' + hour) + ':' + (min > 9 ? min : '0' + min) + ':' + (sec > 9 ? sec : '0' + sec));
-localStorage.setItem('total_Time',(hour > 9 ? hour : '0' + hour) + ':' + (min > 9 ? min : '0' + min) + ':' + (sec > 9 ? sec : '0' + sec));
-var currTime = new Date().getTime() / 1000;
-currTime = parseInt(currTime);
-localStorage.setItem('stopwatch_time', currTime);
-
-obj.refreshInterval = setTimeout('obj.refresh()', 1000);
-}
+	var sec = '';
+	sec = obj.currentSec++;
+	var hour = parseInt(sec/3600);
+	sec = sec % 3600;
+	var min = parseInt(sec/60);
+	sec = sec % 60;
+	localStorage.setItem('pause_sec',obj.currentSec);
+	
+	localStorage.setItem('stopwatch_sec', obj.currentSec);
+	obj.element.html((hour > 9 ? hour : '0' + hour) + ':' + (min > 9 ? min : '0' + min) + ':' + (sec > 9 ? sec : '0' + sec));
+	localStorage.setItem('total_Time',(hour > 9 ? hour : '0' + hour) + ':' + (min > 9 ? min : '0' + min) + ':' + (sec > 9 ? sec : '0' + sec));
+	var currTime = new Date().getTime() / 1000;
+	currTime = parseInt(currTime);
+	localStorage.setItem('stopwatch_time', currTime);
+	
+	obj.refreshInterval = setTimeout('obj.refresh()', 1000);
 
 }
 }
 
 
 $('document').ready(function () {
-obj.init();
+		obj.init();
 });
 
 
@@ -2324,37 +2309,37 @@ obj.init();
 <script>
 
 function updateClockInOutTime(){
-var formData = getFormData("clock_inout_form");
-$.ajax({
-type : "POST",
-data : formData,
-url: sourceleadUrl+"/updateClockInOutTime", 
-success :function(data) {
-// $("#clockInOutId").val(data.id);
-},	
-}); 
+		var formData = getFormData("clock_inout_form");
+		$.ajax({
+		type : "POST",
+		data : formData,
+		url: sourceleadUrl+"/updateClockInOutTime", 
+		success :function(data) {
+		// $("#clockInOutId").val(data.id);
+		},	
+		}); 
 }
 </script>
 
 <script>
 function saveBreakTime(type){
-var formData = getFormData("clock_inout_form");
-$.ajax({
-type : "POST",
-data : formData,
-url: sourceleadUrl+"/saveBreakTime?&type="+type, 
-success :function(data) {
-if(type == 'pause'){
-$("#breakId").val(data.id);
-$('#start,#pause').attr("disabled",true);
-$('#reset,#play').attr("disabled",false);
-}else{
-$("#breakId").val('');
-$('#start,#play').attr("disabled",true);
-$('#reset,#pause').attr("disabled",false);
-}
-},	
-}); 
+		var formData = getFormData("clock_inout_form");
+		$.ajax({
+		type : "POST",
+		data : formData,
+		url: sourceleadUrl+"/saveBreakTime?&type="+type, 
+		success :function(data) {
+		if(type == 'pause'){
+		$("#breakId").val(data.id);
+		$('#start,#pause').attr("disabled",true);
+		$('#reset,#play').attr("disabled",false);
+		}else{
+		$("#breakId").val('');
+		$('#start,#play').attr("disabled",true);
+		$('#reset,#pause').attr("disabled",false);
+		}
+		},	
+		}); 
 }
 </script>
 

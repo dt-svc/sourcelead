@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.PayrollDeductionDao;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
@@ -111,16 +112,11 @@ public class PayrollDeductionDaoImpl implements PayrollDeductionDao{
 	@Transactional
 	public List<PayrollDeduction> getAllDeductionTypeByLocationId(OrgLocations orgLocation)
 	{
-		List<PayrollDeduction> res = null;
-		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from PayrollDeduction payrollDed where payrollDed.orgLocationId.id =:orgLocationId and payrollDed.status = 1";
-			res =  session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).list();
-			return res;
-		} catch (Exception e) {
-			logger.error(ExceptionUtils.getFullStackTrace(e));
-		}
-		return res;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from PayrollDeduction payrollDed where payrollDed.orgLocationId.id =:orgLocationId and payrollDed.status = '1' "; 
+		List<PayrollDeduction> payrollDeductionList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).list();
+		return payrollDeductionList;
+			 
 	}
 
 	@Override
@@ -168,6 +164,23 @@ public class PayrollDeductionDaoImpl implements PayrollDeductionDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from PayrollDeduction payrollDed where payrollDed.id =:deductionId";
 			List<PayrollDeduction> payrollDeductionList = session.createQuery(query).setLong("deductionId", deductionId).list();
+			if (payrollDeductionList != null && payrollDeductionList.size() > 0) {
+				payrollDeduction = payrollDeductionList.get(0);
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return payrollDeduction;
+	}
+	
+	@Override
+	@Transactional
+	public PayrollDeduction getDeductionByDeductionTypeAndLocationId(String deductionType, Long orgLocationId) {
+		PayrollDeduction payrollDeduction = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from PayrollDeduction payrollDed where payrollDed.payrollDeductionType =:deductionType and payrollDed.orgLocationId.id =:orgLocationId";
+			List<PayrollDeduction> payrollDeductionList = session.createQuery(query).setString("deductionType", deductionType).setLong("orgLocationId", orgLocationId).list();
 			if (payrollDeductionList != null && payrollDeductionList.size() > 0) {
 				payrollDeduction = payrollDeductionList.get(0);
 			}

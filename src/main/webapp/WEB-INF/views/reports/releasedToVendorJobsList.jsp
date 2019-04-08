@@ -15,7 +15,7 @@
 #billing_chartdiv {
   	width:100%; height:300px;
 }
-/* Ensure that the demo table scrolls */
+/* Ensure that the demo table scrolls fixedColumntable */
 </style>
 <script type="text/javascript">
 	window.onload = function () {
@@ -27,8 +27,8 @@
     	
     
     	<div class="clearfix"></div>
-    	 	<div class="candidate_wrap_table recruiterReports_table fixedColumntable minHeight positionRelative datatable_filter dashboard-widget clearfix">
-              <div id="releasedJobsList" class="filter_position positionRelative"></div> 
+    	 	<div class="candidate_wrap_table positionRelative datatable_filter clearfix">
+              <div id="releasedJobsList" class="positionRelative"></div> 
           </div> 
     </div>
   </section>
@@ -69,6 +69,7 @@ function releasedToVendorJobsList(){
                 result = result +"<th><div>No of Applicants</div></th>";
                 result = result +"<th><div>Owner</div></th>"; 
                 result = result +"<th><div>Joined</div></th>"; 
+                result = result +"<th><div>Released On</div></th>"; 
                 result = result +"<th><div>Status</div></th>"; 
                 result = result +"  </tr>"; 
                 result = result +"</thead>";
@@ -92,13 +93,15 @@ function releasedToVendorJobsList(){
 	   		        result = result +'<div class="show_Empdetails showjoblist">';
  		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
 
- 		        	result = result +'<div class="emailvalues emailvaluesNew">';
+ 		        	result = result +'<div class="emailvalues">';
  		        	
 						for(var k=0; k<opt.locationsList.length; k++){
 							result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
 		   		        	
  		    	 	}
  		        	result = result +'</div>';
+ 		        	result = result +'</div>';
+   		        	result = result +'</div>';
  		        	result  = result + ' </td>';
                	 
                	 if(opt.totalApplicants != null && opt.totalApplicants != '' && opt.totalApplicants != 'undefined'){ 
@@ -113,7 +116,8 @@ function releasedToVendorJobsList(){
                  }else{
                  result  = result + '<td><div><span>0</span></div></td>'; 
                  }
-               	 
+               	 result  = result + ' <td><div><span title="'+opt.releasedDate+'">'+opt.releasedDate+'</span></div></td>';
+
                	 result  = result + ' <td><div><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span></div></td>';
                	 
                	 result  = result + '</tr>';
