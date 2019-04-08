@@ -1375,7 +1375,7 @@ function getAssociateUserDetails(){
  
  
 <!-- start script for datepicker -->
-<script>
+<!-- <script>
   $( function() {
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  // written common method in slead-common.js for date formats start
@@ -1402,7 +1402,25 @@ function getAssociateUserDetails(){
 	  }); */
 	  
   } );
+</script> -->
+
+<script>
+var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}';
+var finalDateFormat = getJSDateFormat(locationDate);
+
+$('#DateofJoin').datepicker({
+	 dateFormat: finalDateFormat,
+     changeMonth: true,
+ 	  changeYear: true, 
+ 	  maxDate:0,
+ 	  onSelect : function(selected) {
+ 		calculateConfirmationDate();
+ 		removeDateofJoinValid();
+	  }
+	});
+	
 </script>
+
 <!-- end script for datepicker -->
 <script>
 function removeDateofJoinValid(){
@@ -1786,11 +1804,3 @@ function calculateConfirmationDate(){
 }
 
 </script>
-
-
-
-
-
-
-
-
