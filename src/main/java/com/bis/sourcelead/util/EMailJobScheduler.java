@@ -209,6 +209,9 @@ public class EMailJobScheduler {
 	@Value("${defaultFromEmailAddressForProd}")
 	private String defaultFromEmailAddressForProd;	
 	
+	 @Value("${env}")
+	 private String environment;
+	
 	@Autowired
 	JobSchedulerTestService jobSchedulerTestService;
 	
@@ -471,14 +474,17 @@ public class EMailJobScheduler {
 	 * @Reason as this schedule job is blocking IPAddress in QA server, and anyhow we aren't using this functionality.
 	 *  	   So, commented for now. If needed will open later
 	 **/
-    /*@Scheduled(cron = "0 0/30 * 1/1 * ?") // Scheduled for every 30 Minutes.
+   // 
+	//@Scheduled(cron = "0/30 * * * * *")// Scheduled for every 30 seconds for testing need to comment after testing.
+	@Scheduled(cron = "0 0/30 * 1/1 * ?") // Scheduled for every 30 Minutes.
 	@Async
 	public void runJobSchedulerEmailJobParsingAtOrgLevel() { // reads the email configured at org level and parse the
 																// Jobs(attachments)in inbox folder.
 		// Saves the resumes at org level specific folder and updates the org level
 		// candidates table with parsed information.
-		logger.info("******************  Parsing resumes is Started each org level ! **********");
+		logger.info("******************  Parsing resumes is Started each org level environment value is ::: "+environment);
 		//System.out.println("****************** Parsing resumes is Started..!..! **********");
+		if(environment != null && !environment.trim().equalsIgnoreCase("local")) {
 		try {
 			List<Org> orgList = orgService.getOrgs();
 			User user = null;
@@ -519,7 +525,8 @@ public class EMailJobScheduler {
 			logger.error("*****************Exception caught while Job parsing shceduler *************"+e.getMessage());
 			e.printStackTrace();
 		}
-	}*/
+       }
+	}
 	
    @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
    //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
