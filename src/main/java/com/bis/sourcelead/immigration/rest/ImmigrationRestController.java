@@ -590,7 +590,7 @@ public class ImmigrationRestController {
 		
 		// Employers List for mobile
 		@RequestMapping(value = { "/getCandidateEmployerList" })
-		public ResponseList<CandidateEmployers> getCandidateEmployerList(@RequestParam(value = "candidateId", required = true) Long candidateId,
+		public @ResponseBody ResponseList<CandidateEmployers> getCandidateEmployerList(@RequestParam(value = "candidateId", required = true) Long candidateId,
 				@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
 				throws Exception {
 			 ResponseList<CandidateEmployers> responseList = new ResponseList<CandidateEmployers>();
@@ -676,7 +676,7 @@ public class ImmigrationRestController {
 		// candidate education list for mobile
 		
 		@RequestMapping(value = { "/getCandidateEducationList" })
-		public ResponseList<CandidateEducation> getCandidateEducationList(
+		public @ResponseBody ResponseList<CandidateEducation> getCandidateEducationList(
 				@RequestParam(value = "candidateId", required = true) Long candidateId,
 				@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
 				throws Exception {
@@ -785,7 +785,7 @@ public class ImmigrationRestController {
 		// candidate residence list for mobile
 		
 		@RequestMapping(value = { "/getCandidateResidenceList" })
-		public ResponseList<CandidateResidence> getCandidateResidenceList(
+		public @ResponseBody ResponseList<CandidateResidence> getCandidateResidenceList(
 				@RequestParam(value = "candidateId", required = true) Long candidateId,
 				@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
 				throws Exception {
@@ -913,7 +913,7 @@ public class ImmigrationRestController {
 		//Candidate Family list for mobile
 		
 		@RequestMapping(value = { "/getCandidateFamilyDetails" })
-		public ResponseList<CandidateFamilyDetails> getCandidateFamilyDetails(
+		public @ResponseBody ResponseList<CandidateFamilyDetails> getCandidateFamilyDetails(
 				@RequestParam(value = "candidateId", required = true) Long candidateId,
 				@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request) {
 			ResponseList<CandidateFamilyDetails> responseList = new  ResponseList<CandidateFamilyDetails>();
@@ -1041,7 +1041,7 @@ public class ImmigrationRestController {
 		
 		// candidate forms list for mobile
 		@RequestMapping(value = { "/getCandidateImmigrationFormsList" })
-		public ResponseList<ImmigrationCandidateForms> getCandidateImmigrationForms(HttpServletRequest request,
+		public @ResponseBody ResponseList<ImmigrationCandidateForms> getCandidateImmigrationForms(HttpServletRequest request,
 				@RequestParam(value = "candidateId", required = false) Long candidateId,
 				@RequestParam(value = "templateId", defaultValue = "0") Long templateId,
 				@RequestParam(value = "immigrationId", required = false) Long immigrationId,
@@ -1126,7 +1126,7 @@ public class ImmigrationRestController {
 	// immigration candidate documents(show only candidate documents not show petitionerDocs,attorneyDocs ) for mobile 
 	
 	@RequestMapping(value = { "/getCandidateImmigrationCandidateDocsList" })
-	public ResponseList<ImmigrationCandidateDocuments> getCandidateImmigrationCandidateDocsList(
+	public @ResponseBody ResponseList<ImmigrationCandidateDocuments> getCandidateImmigrationCandidateDocsList(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "templateid", required = true) Long templateid,
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
@@ -1218,7 +1218,7 @@ public class ImmigrationRestController {
 	
 	//Task List for mobile
 	@RequestMapping(value = { "/getImmigrationTasksList" })
-	public ResponseList<TaskDTO> getImmigrationTasksList(
+	public @ResponseBody ResponseList<TaskDTO> getImmigrationTasksList(
 			@RequestParam(value = "immigrationId", required = false) String immigrationId,
 			@RequestParam(value = "taskStatus", required = false) String taskStatus,
 			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
@@ -1241,7 +1241,7 @@ public class ImmigrationRestController {
 	// Notes list for immigration candidate for mobile
 	
 	@RequestMapping(value = { "/getNotesListByImmigrationId" })
-	public ResponseList<SourceleadNotes> getNotesListByImmigrationId(
+	public @ResponseBody ResponseList<SourceleadNotes> getNotesListByImmigrationId(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId, HttpServletRequest request)
 			throws Exception {
