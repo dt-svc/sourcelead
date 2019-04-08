@@ -19,6 +19,7 @@ import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.util.CalendarUtil;
 
 @Repository
@@ -150,14 +151,13 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    + "   LEFT JOIN EMPLOYEE EMP ON EMP.USER_ID = U.ID AND EMP.ORG_LOCATIONS_ID = UR.ORG_LOCATIONS_ID "
 			    + "   LEFT JOIN DEPARTMENT DEPART ON DEPART.ID = EMP.DEPARTMENT_ID ";
             
-			   /* //To get current  orglocation details 
+			    //To get current  orglocation details 
 			    if(StringUtils.isNotEmpty(isGlobalAccess)) {
-			    	query = query+ " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"'";
+			    	query = query+ " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_ID = '"+orgloc.getOrg().getId()+"'";
 			    }else {
 			    	query = query+ " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"'";
 			    			
-			    }*/
-	       	    query = query+ " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"'";
+			    }
                 query = query+ " LEFT JOIN ORG_LOCATIONS ORGLOC ON ORGLOC.ID =  PC.ORG_LOCATIONS_ID "
                 + " WHERE "+subQuery+" AND SAH.SUBMISSION_ID =  TS.ID  " 
 				+ " AND SAH.ID IN (SELECT SUBSAH.ID FROM SUBMISSION_APPROVER_HIERARCHY SUBSAH WHERE "
@@ -176,7 +176,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "                     SUBSAH.HIERARCHY_ID IN(SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH where APPROVER_USER_ID IN("+userHierarchyIdString+") "
 				+ "                        AND  PAH.PROJECT_ID = PROJ.ID  AND  PAH.LEVEL IN(select MIN(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0'))             "
 				+ "                    )"
-			    + "              ) AND SAH.ID IS NOT NULL "
+			    + "              ) AND SAH.ID IS NOT NULL AND ( SAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR SAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.REJECTED+"' OR SAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.APPROVED+"')"
 				+ " AND ((TDE.BILLABLE_HOURS IS NOT NULL AND TDE.BILLABLE_HOURS != '00:00')  OR (TDE.NONBILLABLE_HOURS IS NOT NULL AND TDE.NONBILLABLE_HOURS != '00:00' )) AND TDE.TIMESHEET_DATE BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' group by TDE.ID)"
 				+ "  UNION ALL "
 				+ " ( "
