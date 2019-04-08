@@ -106,7 +106,7 @@
 					<div class="project_details_cta">
 						<strong>Submitted Amount:</strong><span>${expenses.totalsubmittedAmount}</span><div class="clearfix"></div>
 					</div>
-					  <c:if test="${submissionStatus == 'DRAFT'}">
+					  <c:if test="${expenses.submittedDate != null}">
 					<div class="project_details_cta">
 						<strong>Submitted On:</strong><span>${expenses.submittedDate}</span><div class="clearfix"></div>
 					</div>
