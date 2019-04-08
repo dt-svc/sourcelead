@@ -2,6 +2,7 @@ package com.bis.sourcelead.indPayroll.utill;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,11 +42,13 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.PayrollPayhead;
+import com.bis.sourcelead.entity.Tds;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.indPayroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.indPayroll.dto.PreCheckINDPayrollDTO;
 import com.bis.sourcelead.indPayroll.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.indPayroll.entity.AssociateSalaryHistoryInd;
 import com.bis.sourcelead.indPayroll.entity.AssociateSalaryPayheadHistoryInd;
@@ -941,7 +944,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	
 	
 	@SuppressWarnings("static-access")
-	public Double calculatePTforAssociate(AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate) {
+	public Double calculatePTforAssociate(AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate) throws ParseException {
 		Double ptAmount = 0.0;
 		
 		if(assoSal != null && assoSal.getAssociateSalaryPayheadIndList() != null && assoSal.getAssociateSalaryPayheadIndList().size()>0) {
@@ -950,41 +953,11 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 
 			if (asph != null) {
 
-				String financialYear = "";
-
-				Calendar c = Calendar.getInstance();
-
-				c.setTime(freqEndDate);
-
-				String fromYear = "";
-
-				String toYear = "";
-
-				if (c.get(Calendar.MONTH) <= 3) {
-
-					toYear = c.get(Calendar.YEAR) + "";
-
-					c.roll(Calendar.YEAR, -1);
-
-					fromYear = c.get(Calendar.YEAR) + "";
-
-				} else {
-
-					fromYear = c.get(Calendar.YEAR) + "";
-
-					c.roll(Calendar.YEAR, 1);
-
-					toYear = c.get(Calendar.YEAR) + "";
-
-				}
-
-				financialYear = fromYear + "-" + toYear;
-
+				List<String> financialYearStr = getFinancialYearByOrgLocationAndDate(asph.getPayrollPayhead().getOrgLocationId(), freqStartDate);
+				String financialYear = financialYearStr.get(0) + "-" + financialYearStr.get(1);
 				StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(
 						asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
-
 				try {
-
 					if (taxDTO != null && taxDTO.getProfessionalTaxList().size() > 0) {
 
 						ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream()
@@ -993,9 +966,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 								.findAny().get();
 
 						if (ptDTO != null)
-
 							ptAmount = Double.valueOf(ptDTO.getAmount());
-
 					}
 
 				} catch (Exception e) {
@@ -1006,7 +977,6 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		}
 		return ptAmount;
 	}
-	
 	
 	
 	private BigDecimal getProjectInvoiceFrequency(String invoiceFrequency)
@@ -1168,6 +1138,32 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		}
 	}
 	
+	@SuppressWarnings("unused")
+	public PreCheckINDPayrollDTO payrollPrerequisiteCheck(OrgLocations orgLocation, String payPeriod) throws ParseException{
+		
+		String dates[] = payPeriod.split(",");
+		Date freqStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
+		Date freqEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
+		PreCheckINDPayrollDTO preCheckINDPayrollDTO = new PreCheckINDPayrollDTO();
+		
+		List<String> financialYearStr = getFinancialYearByOrgLocationAndDate(orgLocation, freqStartDate);
+		
+		StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(orgLocation.getState(), financialYearStr.get(0) + "-" + financialYearStr.get(1));
+		if(taxDTO != null && taxDTO.getId() > 0) {
+			preCheckINDPayrollDTO.setIsPTConfigured(true);
+		}else {
+			preCheckINDPayrollDTO.setIsPTConfigured(false);
+		}
+		
+		List<Tds> tdsList = taxService.getTDSListByFinancialYear(financialYearStr.get(0) + "-" + financialYearStr.get(1));
+		if(tdsList != null && tdsList.size() > 0) {
+			preCheckINDPayrollDTO.setIsTDSConfigured(true);
+		}else {
+			preCheckINDPayrollDTO.setIsTDSConfigured(false);
+		}
+		
+		return preCheckINDPayrollDTO;
+	}
 	
 	public void generatePdfForEmployeeInd(Set<IndEmployeePayroll> approvedPayrollList, OrgLocations orgLocation) {
 		for (IndEmployeePayroll payroll : approvedPayrollList) {
@@ -1420,6 +1416,40 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			e.printStackTrace();
 		}
 		return finYearDates;
+	}
+	
+	@SuppressWarnings("unused")
+	public List<String> getFinancialYearByOrgLocationAndDate(OrgLocations orgLocation, Date freqStartDate) {
+		List<String> finYearList = new ArrayList<>();
+		try {
+			String fromYear = null;
+			String toYear = null;
+			Calendar c = Calendar.getInstance();
+			c.setTime(freqStartDate);
+			int fYear = c.get(Calendar.YEAR);
+			int fMonth = c.get(Calendar.MONTH);
+			if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
+				Calendar cal = Calendar.getInstance();
+				Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
+				cal.setTime(date);
+				int startFinMonth = cal.get(Calendar.MONTH);
+				if (fMonth >= startFinMonth && fMonth < 12) {
+					fromYear = Integer.toString(fYear);
+					toYear = Integer.toString(fYear + 1);
+				} else {
+					fromYear = Integer.toString(fYear - 1);
+					toYear = Integer.toString(fYear);
+				}
+			} else {
+				fromYear = Integer.toString(fYear);
+				toYear = Integer.toString(fYear);
+			}
+			finYearList.add(fromYear);
+			finYearList.add(toYear);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return finYearList;
 	}
 	
 }
