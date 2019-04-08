@@ -161,6 +161,7 @@ function getUsersSearchResult(searchValue){
       </div>
       </section>
 	    
+	       <div id="resetDiv">
 				<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
 				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
@@ -318,11 +319,12 @@ function getUsersSearchResult(searchValue){
 						</div>
 					</div>
 				</div>
+			</div>
       
       <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
       
       <div class="positionRelative reportHead clearfix">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+<!--       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
@@ -548,7 +550,7 @@ $(document).keyup(function(e) {
 
 </script>
 
-<script>
+<!-- <script>
 function resetFilter(){
 	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
@@ -564,7 +566,7 @@ function resetFilter(){
 	
 	getDynamciUserList();
 }
-</script>
+</script> -->
 
 
 <script>
@@ -1519,5 +1521,23 @@ $(".overIcon, .newActPop").click(function(e){
 });	
 
 
+</script>
+
+<script>
+	$("#clear_search").click(function(){
+		$("ul#myRolesUL > li input:checkbox").prop("checked",false);
+		$("ul#statusFilter > li input:checkbox").prop("checked",false);
+		$("ul#myClientsUL > li input:checkbox").prop("checked",false);
+		$("ul#myManagersUL > li input:checkbox").prop("checked",false);
+		$("ul#myTeamsUL > li input:checkbox").prop("checked",false);
+		$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
+		$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
+		$("#dynamicUserDataTableSearch").val('');
+		
+		document.getElementById("activeStatus").checked = true;
+		document.getElementById("notloggedInStatus").checked = true;
+		
+// 		getDynamciUserList();
+	});
 </script>
     
