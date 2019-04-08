@@ -146,7 +146,7 @@
     </form>
     <div class="clearfix">
       <h4 class="col-md-9">Assign Task</h4>
-      <div class="col-md-3"> <a href="javascript:void(0)" class="btn btn-primary pull-right btn-sm" onClick="createNewtask();">Create New Taks</a> </div>
+      <div class="col-md-3"> <a href="javascript:void(0)" class="btn btn-primary pull-right btn-sm" onClick="createNewtask();">Create New Task</a> </div>
     </div>
     
      
@@ -165,12 +165,20 @@
 			  <div class="form-group">
 				<label class="col-md-3">Assign To</label>
 				<div class="col-md-9">
-				  <select class="sel form-control">
+				 
+				  <select class="sel form-control" id = "userList">
 					<option selected>Select</option>
-					<option value = "">Applicant Owner</option>
+					 <c:if test="${not empty userRoleListDTO}">  
+        		<c:forEach var="userRoleList" items="${userRoleListDTO}">	
+         			<option value="${userRoleList.userId}">${userRoleList.userName}</option>
+     			</c:forEach>
+     		
+     		   </c:if> 
+					<!-- <option value = "">Applicant Owner</option>
 					<option value = "">Job Owner</option>
-					<option value = "">Primary Recruiter</option>
+					<option value = "">Primary Recruiter</option> -->
 				  </select>
+
 				</div>
 			  </div>
 			  <div class="form-group">
@@ -422,10 +430,12 @@ function saveWorkflowTask(worflowUuid){
 	var workFlowTaskName = $("#workFlowTaskName").val();
 	var priority = $("#priority").val();
 	var description = $("#summerNote").val();
+	var userList = $("#userList").val();
 	alert(priority);
 	$.ajax({
 		type : "GET",
-		url : sourceleadUrl + "/saveWorkflowTask?requirementWorkFlowUuid="+worflowUuid+"&workFlowTaskName="+workFlowTaskName+"&priority="+priority+"&description="+description,
+		url : sourceleadUrl + "/saveWorkflowTask?requirementWorkFlowUuid="+worflowUuid+"&workFlowTaskName="+workFlowTaskName+"&priority="+priority+
+				"&description="+description+"&assignToUserId="+userList,
 		success : function(dataList){
 			if (dataList.response === "AWKWARD") {
        	    location.href = "/errorPage";

@@ -380,12 +380,15 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		RequirementWorkFlowStages newStages = new RequirementWorkFlowStages();
 		newStages.setId(Long.parseLong(Constants.RECORD_ACTIVE.toString()));
 		
+		User assignedUser = new User();
+		assignedUser.setId(Long.parseLong(requirementWorkFlowTasksDTO.getAssignToUserId()));
+		
 		RequirementWorkFlowTasks requirementWorkFlowTasks = new RequirementWorkFlowTasks();
 		requirementWorkFlowTasks.setId(requirementWorkFlowTasks.getId());
 		requirementWorkFlowTasks.setRequirementWorkFlowStagesId(newStages);
 		requirementWorkFlowTasks.setOrgLocationId(orgLocations);
 		requirementWorkFlowTasks.setWorkFlowTaskName(requirementWorkFlowTasksDTO.getWorkFlowTaskName());
-		//requirementWorkFlowTasks.setAssignTo(requirementWorkFlowTasksDTO.getAssignToUserId());
+		requirementWorkFlowTasks.setAssignTo(assignedUser);
 		requirementWorkFlowTasks.setPriority(requirementWorkFlowTasksDTO.getPriority());
 		requirementWorkFlowTasks.setDescription(requirementWorkFlowTasksDTO.getDescription());
 		requirementWorkFlowTasks.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
