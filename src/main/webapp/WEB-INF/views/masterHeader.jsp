@@ -879,19 +879,19 @@ function preventTabkey(e){
 <div class="subClock clearfix">
 <div class="subClockCta">
 <p>Current</p>
-<div class="sclock">04 : 45</div>
+<div class="sclock">00 : 00</div>
 </div>
 <div class="subClockCta">
 <p>Day</p>
-<div class="sclock">04 : 45</div>
+<div class="sclock">00 : 00</div>
 </div>
 <div class="subClockCta">
 <p>Week</p>
-<div class="sclock">04 : 45</div>
+<div class="sclock">00 : 00</div>
 </div>
 <div class="subClockCta">
 <p>Month</p>
-<div class="sclock">04 : 45</div>
+<div class="sclock">00 : 00</div>
 </div> 
 </div>
 <div class="clockinn">
