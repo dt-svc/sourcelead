@@ -553,6 +553,7 @@ public class IndianPayrollRestController {
 		try {
 			PreCheckINDPayrollDTO preCheckINDPayrollDTO = iNDPayrollCommonUtil.payrollPrerequisiteCheck(orgLocation, generateINDPayrollDTO.getPayPeriod());
 			if(preCheckINDPayrollDTO.getIsPTConfigured() && preCheckINDPayrollDTO.getIsTDSConfigured()) {
+				generateINDPayrollDTO.setPreCheckINDPayrollDTO(preCheckINDPayrollDTO);
 				indPaysheetFrequencyDTO =  generateINDPayrollService.generateINDPayroll(orgLocation, generateINDPayrollDTO, loginUser);
 				SourceLeadSessionManager.setSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID(), indPaysheetFrequencyDTO);
 				return indPaysheetFrequencyDTO;
@@ -637,10 +638,9 @@ public class IndianPayrollRestController {
 	    		ipDTOList.add(ipDTO);
 	    	}
 	    }
-	    indPaysheetFrequencyDTO.setIndPayrollDTO(ipDTOList);
+	    //indPaysheetFrequencyDTO.setIndPayrollDTO(ipDTOList);
    		model.addObject("freqResponse",indPaysheetFrequencyDTO);
-   		
-   		List<AssociatePayrollPayheadHistoryDTO> allAssociatesPayrollPayheadList =indPaysheetFrequencyDTO.getIndPayrollDTO().stream().map(empPayrollDTO->empPayrollDTO.getPayHeadHistoryDTOList()).flatMap(List::stream).collect(Collectors.toList());
+   		List<AssociatePayrollPayheadHistoryDTO> allAssociatesPayrollPayheadList =ipDTOList.stream().map(empPayrollDTO->empPayrollDTO.getPayHeadHistoryDTOList()).flatMap(List::stream).collect(Collectors.toList());
    		
    		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		List<AssociatePayrollPayheadHistoryDTO> dupAssociatePayrollPayheadDTOList = allAssociatesPayrollPayheadList;
