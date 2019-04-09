@@ -299,9 +299,13 @@ function goToWalletList(){
     location.href = "${appPath}/walletList";
 }
 
+
 function getCandidateDetailsFromMarketcart(){
 	var candidateLength = 0;
 	var checkedDate = $('input[name=MarketCartDate]:checked').val();
+	if(checkedDate == null){
+		checkedDate = "";
+	}
 	var creationStartDate = $("#creationStartDate").val();
 	var creationEndDate = $("#creationEndDate").val(); 
 	var searchValue = $("#dynamicUserDataTableSearch").val();

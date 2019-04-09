@@ -2649,7 +2649,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole,
-			OrgLocations orgLocation, String creationStartDate, String creationEndDate, Map<String, Date> dateValue, String searchValue) {
+			OrgLocations orgLocation, String creationStartDate, String creationEndDate, Date[] checkedDateArray, String searchValue) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "";
@@ -2663,27 +2663,34 @@ public class CandidateDaoImpl implements CandidateDao {
 				query1.append(" or (marketCartview.skillsName like '%" + searchValue + "%' ))");
 			}
 			StringBuilder dateQuery = new StringBuilder("");
-			if(!dateValue.isEmpty()){
-				dateQuery.append(" and (marketCartview.createdDate BETWEEN :endDate AND :startDate) "
-						+ "OR (marketCartview.createdDate = :endDate) OR (marketCartview.createdDate = :startDate) ");
+			if (creationStartDate != null && creationEndDate != null && !"".equalsIgnoreCase(creationStartDate)
+					&& !"".equalsIgnoreCase(creationEndDate)) {
+				if (creationStartDate.contains("/") || creationEndDate.contains("/")) {
+					creationStartDate = creationStartDate.replaceAll("/", "-");
+					creationEndDate = creationEndDate.replaceAll("/", "-");
+				}
+				Date formattedStartdate = new ConversionUtil().getDateFromString(creationStartDate);
+				Date formattedEnddate = new ConversionUtil().getDateFromString(creationEndDate);
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(formattedStartdate);
+				String customEnddate = dateFormat.format(formattedEnddate);
+				dateQuery.append(" and ( DATE_FORMAT(marketCartview.createdDate, '%Y-%m-%d') between '" + customStartdate
+						+ "' and '" + customEnddate + "') ");
+			}
+			StringBuilder checkBoxQuery = new StringBuilder("");
+			if (checkedDateArray != null && checkedDateArray.length > 0) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(checkedDateArray[0]);
+				String customEnddate = dateFormat.format(checkedDateArray[1]);
+				checkBoxQuery.append("and ( DATE_FORMAT(marketCartview.createdDate, '%Y-%m-%d') between '"
+						+ customStartdate + "' and '" + customEnddate + "') ");
 			}
 			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId and marketCartview.cartStatus = 'In_Cart'";
-			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + query1)
+			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + checkBoxQuery + query1)
 					.setLong("orgLocationId", orgLocation.getId());
+			//System.out.println(query + createdByQuery + dateQuery + checkBoxQuery);
 			if (!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
 				queryObj.setLong("createdByuser", user.getId());
-			}
-			if(!dateValue.isEmpty()){
-				Iterator it = dateValue.entrySet().iterator();
-			    while (it.hasNext()) {
-			        Map.Entry pair = (Map.Entry)it.next();
-			        if(pair.getKey().equals("fromDate")){
-			        	queryObj.setDate("startDate", dateValue.get("fromDate"));
-			        }
-			        if(pair.getKey().equals("toDate")){
-			        	queryObj.setDate("endDate", dateValue.get("toDate"));
-			        }
-			    }
 			}
 			@SuppressWarnings("unchecked")
 			List<CandidateMarketPlaceCartView> candidatesList = queryObj.list();
@@ -2693,6 +2700,7 @@ public class CandidateDaoImpl implements CandidateDao {
 							source.getCreatedDate()));
 				}
 			}
+			System.out.println(queryObj);
 			return candidatesList;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -2700,6 +2708,8 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 	}
 
+	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) {
@@ -3046,10 +3056,12 @@ public class CandidateDaoImpl implements CandidateDao {
 						        if(pair.getKey().equals("fromDate")){
 						        	qeury.setDate("startDate", dateValue.get("fromDate"));
 						        	q.setDate("startDate", dateValue.get("fromDate"));
+						        	System.out.println(dateValue.get("fromDate"));
 						        }
 						        if(pair.getKey().equals("toDate")){
 						        	qeury.setDate("endDate", dateValue.get("toDate"));
 						        	q.setDate("endDate", dateValue.get("toDate"));
+						        	System.out.println(dateValue.get("toDate"));
 						        }
 						    }
 						}
@@ -3077,6 +3089,7 @@ public class CandidateDaoImpl implements CandidateDao {
 					purchaseOrderDtoList.add(purchaseOrderDto);
 					}
 				}
+			System.out.println(qeury);
 			responseList.setData(purchaseOrderDtoList);
 			return responseList;
 		}
