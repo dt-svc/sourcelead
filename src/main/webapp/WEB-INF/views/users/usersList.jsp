@@ -161,6 +161,7 @@ function getUsersSearchResult(searchValue){
       </div>
       </section>
 	    
+	       <div id="resetDiv">
 				<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
 				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
@@ -318,11 +319,12 @@ function getUsersSearchResult(searchValue){
 						</div>
 					</div>
 				</div>
+			</div>
       
       <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
       
       <div class="positionRelative reportHead clearfix">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+<!--       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
@@ -345,6 +347,7 @@ function getUsersSearchResult(searchValue){
 												<a href="<c:url value='${sourceleadUrl}/uploadAssociateDeductionContributionDetails'/>">Associate Deduction Contribution Import</a>
 													</c:if>
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+												    <a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
 												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateBankingDetailsForm'/>">Associate Bank Detail</a>
 												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateInformation'/>">Associate Information</a> 
 													<a href="<c:url value='${sourceleadUrl}/uploadAssociateSalary'/>">Associate Salary Import</a>
@@ -558,10 +561,20 @@ function resetFilter(){
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
 	$("#dynamicUserDataTableSearch").val('');
+	$("#myManagersInput").val('');
+	$("#myRolesInput").val('');
+	$("#myClientsInput").val('');
+	$("#myTeamsInput").val('');
+	$("#myDepartmentInput").val('');
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
 	
+	myManagersFunction();
+	myRolesFunction();
+	myClientsFunction();
+	myTeamsFunction();
+	myDepartmentFunction();
 	getDynamciUserList();
 }
 </script>

@@ -849,6 +849,7 @@ public class ClientServiceImpl implements ClientService {
 			ProjectClients projectClients = new ProjectClients();
 			projectClients.setProjectId(projects);
 			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setOrgId(orglocations.getOrg());
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setStatus(1);
 			projectClients.setLevel(1);

@@ -2664,7 +2664,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
 			StringBuilder dateQuery = new StringBuilder("");
 			if(!dateValue.isEmpty()){
-				dateQuery.append(" and (marketCartview.createdDate >= :endDate and marketCartview.createdDate <= :startDate) ");
+				dateQuery.append(" and (marketCartview.createdDate BETWEEN :endDate AND :startDate) "
+						+ "OR (marketCartview.createdDate = :endDate) OR (marketCartview.createdDate = :startDate) ");
 			}
 			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId and marketCartview.cartStatus = 'In_Cart'";
 			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + query1)
