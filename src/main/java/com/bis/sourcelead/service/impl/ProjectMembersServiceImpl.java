@@ -993,6 +993,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 									projectClients.setProjectId(projects);
 									projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
 									projectClients.setOrgLocationsId(cand.getOrgLocationId());
+									projectClients.setOrgId(cand.getOrgLocationId().getOrg());
 									projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 									projectClients.setStatus(1);
 									
@@ -1631,6 +1632,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 					pc.setProjectId(projects);
 					pc.setOrgRelationId(clildCandidate.getOrgRelationId());
 					pc.setOrgLocationsId(cand.getOrgLocationId());
+					pc.setOrgId(cand.getOrgLocationId().getOrg());
 					pc.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 					pc.setStatus(1);
 					pc.setCreatedDate(new Date());
@@ -2065,6 +2067,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 									projectClients.setProjectId(projects);
 									projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
 									projectClients.setOrgLocationsId(cand.getOrgLocationId());
+									projectClients.setOrgId(cand.getOrgLocationId().getOrg());
 									projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 									projectClients.setStatus(1);
 									

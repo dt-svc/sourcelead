@@ -23,4 +23,6 @@ public interface PayrollDeductionDao {
 
 	PayrollDeduction getPayrollDeductionTypeById(long deductionId);
 
+	PayrollDeduction getDeductionByDeductionTypeAndLocationId(String deductionType, Long orgLocationId);
+
 }

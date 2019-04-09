@@ -193,7 +193,7 @@
 			<input class="form-control input-sm" type="text"
 				id="REPLACEROWIDbillRate" name="associateResources[REPLACEROWID].billRate"
 				data-validation-optional="true"
-				data-validation="validate_Space validate_int validate_length length1-15">
+				data-validation="validate_Space validate_float validate_length length1-15">
 		</div>
 		<div class="pull-left drpdownMonthly dropdown-select">
 			<select id="REPLACEROWIDbillRateRateType"
