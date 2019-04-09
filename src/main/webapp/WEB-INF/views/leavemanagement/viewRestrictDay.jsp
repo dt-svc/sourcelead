@@ -143,6 +143,9 @@ function restrictDayPagination(){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	"targets": 'no-sort',
+	    	"bSort": false,
+	    	"order": [],
 	    	"oLanguage": {
 	            "sSearch": "",
 	            "sZeroRecords": "", "sEmptyTable": ""

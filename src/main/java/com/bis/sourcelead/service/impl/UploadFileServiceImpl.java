@@ -73,6 +73,8 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.payroll.dao.PayrollDeductionDao;
+import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -149,6 +151,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 	@Autowired
 	DepartmentService departmentService;
 	
+	@Autowired
+	PayrollDeductionDao payrollDeductionDao;
+		
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -800,7 +805,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		    		 vendorCandidate.setCountry(vendorOrgLocations.getCountry());
 		    		 vendorCandidate.setIsAssociate(Constants.YES);
 		    		 vendorCandidate.setEmail(user.getEmail());
-		    		 vendorCandidate.setWorkLocation(vendorOrgLocations);
+		    		 vendorCandidate.setWorkLocation(candidate.getWorkLocation());
 		    		 vendorCandidate.setStatus(Constants.RECORD_ACTIVE);
 		    		 vendorCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		    		 vendorCandidate.setCreatedDate(commonUtil.currentDate());
@@ -2124,6 +2129,33 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		}
 		return sheet;
 	}
-	
-	
+
+	@Override
+	public File getAssociateDedAndContriDetailsTemplate(OrgLocations orgLocations) {
+		
+		File file = new File("associatesDeductionAndContributionDetails.xls");
+		try {
+			Workbook wb = (Workbook) new HSSFWorkbook();
+			Sheet sheet = wb.createSheet("createAssociates");
+			sheet = setAssociateTemplateHeader(sheet,Constants.ASSOCIATE_DEDUCTION_CONTRIBUTION_DETAIL_HEADERS);
+			
+			List<PayrollDeduction> deductionList = 	payrollDeductionDao.getAllDeductionTypeByLocationId(orgLocations);
+			String[] list = new String[deductionList.size()];
+			int count = 0;
+			for(PayrollDeduction pd: deductionList) {
+				list[count] = pd.getPayrollDeductionType();
+				count++;
+			}
+			sheet.addValidationData(getDropDownListForCell(list,2,"xls"));
+			FileOutputStream fos = new FileOutputStream(file);
+				wb.write(fos);
+				fos.close();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return file;	
+	}
 }
+	
+	
+

@@ -40,7 +40,7 @@
              <label class="noPad">Type<b class="valStar">*</b></label>
            <select id="usageType" name="usageType" field-name="Type" data-validation="required" class="sel">
 				<option value=''  selected>Select</option>
-				<option value='job_parsing' >Job Parsing</option>
+				<option value='resume_parsing' >Resume Parsing</option>
 			</select>
           </div>
           
@@ -82,8 +82,8 @@ function saveEmailParsers(){
 			  			getParserEmailList();
 			  		}else if(result=="failure"){
 			  			$("#ConfigLoading").removeAttr("style");
-			  			closeEmailNotifications();
-			  			alert("configured mail is wrong.please update the right email")
+			  			//closeEmailNotifications();
+			  			alert("Please check your configuration details.")
 			  			//$("#msgConfigDiv").html("Configured Mail is wrong.Please update the correct Mail");
 			  		}
 		    		

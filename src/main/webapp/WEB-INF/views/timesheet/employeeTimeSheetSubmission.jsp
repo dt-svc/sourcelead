@@ -487,10 +487,10 @@
 				                                                             <div id="attachmentInnerDiv${attCount.index}Id">
 							                                                          <div id="${attCount.index}AttchmentDiv${attNumber}Id" class="addRowBtn">
 																						  <div class="input-group col-md-12" style="margin:0 auto">
-																							<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+																							<label class="input-group-btn pull-left"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
 																							  <input style="display: none;"  id="${attCount.index}docFile${attNumber}" multiple  onchange="validateUploadFile('${attCount.index}','${attNumber}',this);" class="upload" type="file">
 																							  </span></label>
-																							<input class="form-control input-sm" id="${attCount.index}uploadFile${attNumber}"   placeholder="Attachment" type="text">
+																							<input class="form-control input-sm pull-left" style="width:130px;" id="${attCount.index}uploadFile${attNumber}"   placeholder="Attachment" type="text">
 																						  </div>
 																						  <input type="button" value="" onclick="addAttachmentRow('${attCount.index}');" class="addRowIcon"/>
 																						  <input type="hidden" id="timesheetAttValidationInput${attCount.index}" field-name="Attachment"/>
@@ -541,10 +541,10 @@
 														                      <div id="attachmentInnerDiv${attCount}Id">
 							                                                          <div id="${attCount}AttchmentDiv0Id" class="addRowBtn">
 																						  <div class="input-group col-md-12" style="margin:0 auto">
-																							<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+																							<label class="input-group-btn pull-left"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
 																							  <input style="display: none;"  id="${attCount}docFile0" multiple  onchange="validateUploadFile('${attCount}','0',this);" class="upload" type="file">
 																							  </span></label>
-																							<input class="form-control input-sm" id="${attCount}uploadFile0"   placeholder="Attachment" type="text">
+																							<input class="form-control input-sm pull-left"  style="width:130px;" id="${attCount}uploadFile0"   placeholder="Attachment" type="text">
 																						  </div>
 																						  <input type="button" value="" onclick="addAttachmentRow('${attCount}');" class="addRowIcon"/>
 																						  <input type="hidden" id="timesheetAttValidationInput${attCount}" field-name="Attachment"/>
@@ -777,10 +777,10 @@
 	                    <input type='hidden' name='REPLACEROWIDmaxAttDivRowNumber' disabled id='REPLACEROWIDmaxAttDivRowNumber'  value='1' />
 	                     <div id="REPLACEROWIDAttchmentDiv0Id" class="addRowBtn">
 						  <div class="input-group col-md-12" style="margin:0 auto">
-							<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+							<label class="input-group-btn pull-left"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
 							  <input style="display: none;" multiple  id="REPLACEROWIDdocFile0"  onchange="validateUploadFile('REPLACEROWID','0',this);"  class="upload" type="file">
 							  </span></label>
-							<input class="form-control input-sm" id="REPLACEROWIDuploadFile0" placeholder="Attachment" type="text">
+							<input class="form-control input-sm pull-left" style="width:130px;" id="REPLACEROWIDuploadFile0" placeholder="Attachment" type="text">
 						  </div>
 						  <input type="button" value="" onclick="addAttachmentRow('REPLACEROWID');" class="addRowIcon"/>
 						   <input type="hidden" disabled id="timesheetAttValidationInputREPLACEROWID" field-name="Attachment"/>
@@ -795,10 +795,10 @@
 	          <div id="divAttachmentTd0" style="display:none;">
 		           <div id="COMMENTROWIDAttchmentDivREPLACEROWIDId" class="addRowBtn">
 						   <div class="input-group col-md-12" style="margin:0 auto">
-							<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+							<label class="input-group-btn pull-left"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
 							  <input style="display: none;" multiple  id="COMMENTROWIDdocFileREPLACEROWID"  onchange="validateUploadFile('COMMENTROWID','REPLACEROWID',this);"  class="upload" type="file">
 							  </span></label>
-							<input class="form-control input-sm" id="COMMENTROWIDuploadFileREPLACEROWID" placeholder="Attachment" type="text">
+							<input class="form-control input-sm pull-left" style="width:130px;" id="COMMENTROWIDuploadFileREPLACEROWID" placeholder="Attachment" type="text">
 						   </div>
 						   <input type="button" value="" onclick="removeAttRow('COMMENTROWID','REPLACEROWID');" class="addRowIcon removeIcon"/>
 					</div>	
@@ -1932,24 +1932,24 @@ function validateUploadFile(rowId,attNumber,item)
 	  var selectedFile = $('#'+rowId+'docFile'+attNumber).val();
 	  if(validate_fileupload(selectedFile)){
 		   var docSize = $('#'+rowId+'docFile'+attNumber)[0].files[0].size;
-	       $("#attachmentInnerDiv"+rowId+"Id").find('p.jquery_form_error_message').remove();
+	      /*  $("#attachmentInnerDiv"+rowId+"Id").find('p.jquery_form_error_message').remove(); */
 	      if(docSize > 2097152){
-	    	  $("#attachmentInnerDiv"+rowId+"Id").find('p.jquery_form_error_message').remove();
-	    	  $('#timesheetAttValidationInput'+rowId).after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-			  $('#timesheetAttValidationInput'+rowId).attr('record-exist','yes');
-			  $('#timesheetAttValidationInput'+rowId).attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	    	  $("#"+rowId+"AttchmentDiv"+attNumber+"Id").find('p.jquery_form_error_message').remove();
+	    	  $('#'+rowId+'uploadFile'+attNumber).after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+	    	  $('#'+rowId+'uploadFile'+attNumber).attr('record-exist','yes');
+	    	  $('#'+rowId+'uploadFile'+attNumber).attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
 	      }else{
 	    	 $('#timesheetAttValidationInput'+rowId).removeAttr( "record-exist record-exist-errormsg");
-	    	 $("#attachmentInnerDiv"+rowId+"Id").find('p.jquery_form_error_message').remove();
+	    	 $("#"+rowId+"AttchmentDiv"+attNumber+"Id").find('p.jquery_form_error_message').remove();
 	    	 $('#timesheetAttValidationInput'+rowId).val('1');
 	    	 fileUpload(''+rowId+'docFile'+attNumber, "timesheetDocuments", "timesheet_form","timsheetAttachments["+rowId+"].fileInfo","","");
 	      }
 	  }
 	  else{
-		      $("#attachmentInnerDiv"+rowId+"Id").find('p.jquery_form_error_message').remove();
-		      $('#timesheetAttValidationInput'+rowId).after("<p class='jquery_form_error_message'>Invalid Format</p>");  
-		      $('#timesheetAttValidationInput'+rowId).attr('record-exist','yes');
-		      $('#timesheetAttValidationInput'+rowId).attr('record-exist-errorMsg','Invalid Format'); 
+		      $("#"+rowId+"AttchmentDiv"+attNumber+"Id").find('p.jquery_form_error_message').remove();
+		      $('#'+rowId+'uploadFile'+attNumber).after("<p class='jquery_form_error_message' >Invalid Format</p>");  
+		      $('#'+rowId+'uploadFile'+attNumber).attr('record-exist','yes');
+		      $('#'+rowId+'uploadFile'+attNumber).attr('record-exist-errorMsg','Invalid Format'); 
 	  }
 }
 </script>
@@ -2112,6 +2112,8 @@ function validateTimesheetHours(status){
 <script type="text/javascript">
 function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMembersId,from){
 	    $('#notifyLink').val('');
+	    $('#hedderAcceptRejectButton').hide();
+	    $('#selectAllTimeSheetCheckBoxForSubmitForApproval').removeProp('checked');
 		 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
 	    	 $(".side_mask").fadeOut(200); 
