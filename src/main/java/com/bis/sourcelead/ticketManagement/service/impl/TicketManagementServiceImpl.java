@@ -4,9 +4,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.dto.TicketAssignToDTO;
 import com.bis.sourcelead.dto.TicketAttachmentDTO;
 import com.bis.sourcelead.dto.TicketCategoryDTO;
@@ -77,9 +80,9 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	private String sourceleadUrl;
 
 	@Override
-	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations() {
+	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations(long orgLocationId) {
 		try {
-			return ticketManagementDao.dumpTicketManagementPreDefinedValuesToAllOrgLocations();
+			return ticketManagementDao.dumpTicketManagementPreDefinedValuesToAllOrgLocations(orgLocationId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -87,10 +90,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
+	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, SearchDTO searchDTO) {
 		List<TicketTypeDTO> ticketTypeDTOList = new LinkedList<>();
 		try {
-			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status, searchValue);
+			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status, searchDTO);
 			if (ticketTypeList != null && !ticketTypeList.isEmpty()) {
 				for (TicketType ticketType : ticketTypeList) {
 					TicketTypeDTO ticketTypeDTO = new TicketTypeDTO();
@@ -171,10 +174,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
+	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, SearchDTO searchDTO) {
 		List<TicketCategoryDTO> ticketCategoryDTOList = new LinkedList<>();
 		try {
-			List<TicketCategory> ticketCategoryList = ticketManagementDao.getTicketCategoryListByOrgLocationId(orgLocationId, status, searchValue);
+			List<TicketCategory> ticketCategoryList = ticketManagementDao.getTicketCategoryListByOrgLocationId(orgLocationId, status, searchDTO);
 			if (ticketCategoryList != null && !ticketCategoryList.isEmpty()) {
 				for (TicketCategory ticketCategory : ticketCategoryList) {
 					TicketCategoryDTO ticketCategoryDTO = new TicketCategoryDTO();
@@ -307,10 +310,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status, String searchValue) {
+	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status, SearchDTO searchDTO) {
 		List<TicketPriorityDTO> ticketPriorityDTOList = new LinkedList<>();
 		try {
-			List<TicketPriority> ticketPriorityList = ticketManagementDao.getTicketPriorityListByOrgLocationId(orgLocationId, status, searchValue);
+			List<TicketPriority> ticketPriorityList = ticketManagementDao.getTicketPriorityListByOrgLocationId(orgLocationId, status, searchDTO);
 			if (ticketPriorityList != null && !ticketPriorityList.isEmpty()) {
 				for (TicketPriority ticketpriority : ticketPriorityList) {
 					TicketPriorityDTO ticketPriorityDTO = new TicketPriorityDTO();
@@ -411,10 +414,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketStatusDTO> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
+	public List<TicketStatusDTO> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, SearchDTO searchDTO) {
 		List<TicketStatusDTO> ticketStatusDTOList = new LinkedList<>();
 		try {
-			List<TicketStatus> ticketStatusList = ticketManagementDao.getTicketStatusListByOrgLocationId(orgLocationId, status, searchValue);
+			List<TicketStatus> ticketStatusList = ticketManagementDao.getTicketStatusListByOrgLocationId(orgLocationId, status, searchDTO);
 			if (ticketStatusList != null && !ticketStatusList.isEmpty()) {
 				for (TicketStatus ticketStatus : ticketStatusList) {
 					TicketStatusDTO ticketStatusDTO = new TicketStatusDTO();
@@ -826,11 +829,18 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			ticketComment.setCommentMentionedUsers(ticketCommentDTO.getMentionedUserIds());
 			boolean result = ticketManagementDao.saveTicketComment(ticketComment);
 			if(result) {
-				for(String userId : ticketCommentDTO.getMentionedUserIds().split(",")) {
-					//send comment email to userId
-					User toUser = userDao.getUserById(Long.parseLong(userId));
-					if(userId != null)
-						sendTicketCommentEmailToUser(user, ticketComment, toUser, orgLocations);
+				if (ticketCommentDTO.getMentionedUserIds() != null && !ticketCommentDTO.getMentionedUserIds().isEmpty()) {
+					Set<Long> userIdSet = new HashSet<>();
+					for (String userId : ticketCommentDTO.getMentionedUserIds().split(",")) {
+						// send comment email to userId
+						if (ticketComment.getCreatedBy().getId() != Long.parseLong(userId)) {
+							if (userId != null && !userIdSet.contains(Long.parseLong(userId))) {
+								User toUser = userDao.getUserById(Long.parseLong(userId));
+								userIdSet.add(Long.parseLong(userId));
+								sendTicketCommentEmailToUser(user, ticketComment, toUser, orgLocations);
+							}
+						}
+					}
 				}
 			}
 			return result;

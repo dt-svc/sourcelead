@@ -15,7 +15,7 @@ public class USPayrollDTO {
 	
 	private String empName;
 	
-	private double regularHours;	
+	private String regularHours;	
 	
 	private double overtimeHours;
 	
@@ -205,7 +205,7 @@ public class USPayrollDTO {
 		this.empName = empName;
 	}
 	
-	public void setRegularHours(float regularHours)
+	public void setRegularHours(String regularHours)
 	{
 		this.regularHours = regularHours;
 	}
@@ -466,14 +466,11 @@ public class USPayrollDTO {
 	{
 		this.totalDeduction = totalDeduction;
 	}
-	public double getRegularHours()
+	public String getRegularHours()
 	{
 		return regularHours;
 	}
-	public void setRegularHours(double regularHours)
-	{
-		this.regularHours = regularHours;
-	}
+	
 	public String getAssSalType()
 	{
 		return assSalType;

@@ -1731,10 +1731,13 @@ ul.dropdownmenucustom_defualt li a.slactive:hover {
 	margin: 0 auto; max-width: 80%;
 }
 .homebanner_parent {
-	height: 100%; margin-top: 80px;
+	height: 100%; margin-top: 80px; background: #fafafa;
 }
 .homebanner_desktop {
 	display: block;
+}
+.homebanner_desktop img {
+	text-align:  center; margin: 0 auto;
 }
 .homebanner_mobile {
 	display: none;

@@ -2500,6 +2500,7 @@ public class UsersListRestController {
 			pclients.setProjectId(projectMembers.getProjects());
 			pclients.setOrgRelationId(orgRelation);
 			pclients.setOrgLocationsId(vendorCandidate.getOrgLocationId());
+			pclients.setOrgId(vendorCandidate.getOrgLocationId().getOrg());
 			pclients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			pclients.setStatus(1);
 			
