@@ -177,10 +177,10 @@
                 <input class="dateCheckBox" name="MarketCartDate" value="YTD" type="radio">
                 <label>This Year</label>
               </li>
-              <li class="positionRelative">
+              <!-- <li class="positionRelative">
                 <input class="dateCheckBox" name="MarketCartDate" value="custom" type="radio" id = "customDateCheckBox">
                 <label>Custom</label>
-              </li>
+              </li> -->
             </ul>
           </div>
         </div>
@@ -248,7 +248,6 @@
 
 $(document).ready(function () {
 	getCandidateDetailsFromMarketcart();
-	updateInvoiceDetails();
 
 });
 
@@ -299,11 +298,18 @@ function goToWalletList(){
     location.href = "${appPath}/walletList";
 }
 
+
 function getCandidateDetailsFromMarketcart(){
 	var candidateLength = 0;
 	var checkedDate = $('input[name=MarketCartDate]:checked').val();
 	var creationStartDate = $("#creationStartDate").val();
 	var creationEndDate = $("#creationEndDate").val(); 
+	if(checkedDate != null){
+		creationStartDate = "";
+		creationEndDate = "";
+	}else{
+		checkedDate = "";
+	}	
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	$.ajax({
@@ -365,6 +371,7 @@ function getCandidateDetailsFromMarketcart(){
 				result = result + "</div></div></div></div></div>";
          		}
 			candidateLength =  object.length;
+			updateInvoiceDetails();
 			}
 			else{
 				$(".ulliBorder > li").first().hide();
