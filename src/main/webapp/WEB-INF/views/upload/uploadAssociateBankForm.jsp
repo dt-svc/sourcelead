@@ -261,13 +261,43 @@ function cancelFileImport(){
 	    	 for(i=0;i < data.length;i++){
 	    		 var report = data[i];
 	    		 result += '<tr>';
-		         result += '<td>'+report.associateId+'</td>';
-		         result += '<td>'+report.emailId+'</td>';
-		         result += '<td>'+report.accountType+'</td>';
-		         result += '<td>'+report.bankName+'</td>';
-		         result += '<td>'+report.accountNumber+'</td>';
-		         result += '<td>'+report.routingNumber+'</td>';
-		         result += '<td>'+report.reason+'</td>';
+	    		 
+	    		 if(report.associateId != null && report.associateId != '' && report.associateId != 'undefined'){
+	    			 result += '<td>'+report.associateId+'</td>';
+	    		 }else{
+	    			 result += '<td>--</td>';
+	    		 }
+		         if(report.emailId != null && report.emailId != '' && report.emailId != 'undefined'){
+		        	 result += '<td>'+report.emailId+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.accountType != null && report.accountType != '' && report.accountType != 'undefined'){
+		        	 result += '<td>'+report.accountType+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.bankName != null && report.bankName != '' && report.bankName != 'undefined'){
+		        	 result += '<td>'+report.bankName+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.accountNumber != null && report.accountNumber != '' && report.accountNumber != 'undefined'){
+		        	 result += '<td>'+report.accountNumber+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.routingNumber != null && report.routingNumber != '' && report.routingNumber != 'undefined'){
+		        	 result += '<td>'+report.routingNumber+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.reason != null && report.reason != '' && report.reason != 'undefined'){
+		        	 result += '<td>'+report.reason+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         
 		         result += '  </tr>';
 	    	 }
 	    	
