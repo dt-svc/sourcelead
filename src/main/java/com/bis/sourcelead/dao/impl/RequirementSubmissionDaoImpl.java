@@ -155,10 +155,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 }
 		 
 		 
-		 List<RequirementSubmission> shortListCandidatesList;
 		 if(existingApplicantsIds != null && !existingApplicantsIds.isEmpty()){
-			 String query = "from RequirementSubmission rs left join fetch rs.requirement where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.id NOT IN (:existingApplicantsIds) "+subQuery+" "+subQuery2+" ";
-			 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).setParameterList("existingApplicantsIds", existingApplicantsIds).list();
+			 String query = "select rs.id, rs.createdUser, rs.requirement.isClientJob from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.id NOT IN (:existingApplicantsIds) "+subQuery+" "+subQuery2+" ";
+			 objList = session.createQuery(query).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).setParameterList("existingApplicantsIds", existingApplicantsIds).list();
+		 
 		 }else{
 			 String testQuery = "select rs.id, rs.createdUser, rs.requirement.isClientJob from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId "+subQuery+" "+subQuery2+" ";
 			 objList = session.createQuery(testQuery).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).list();
