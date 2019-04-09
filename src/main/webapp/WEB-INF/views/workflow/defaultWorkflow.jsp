@@ -17,7 +17,7 @@
     </section>
     <div class="clearfix">
 		
-       <div class="positionRelative reportHead clearfix mb">
+      <%--  <div class="positionRelative reportHead clearfix mb">
         <ul class="pull-right list-unstyled list-inline">
           <li><a class="newAdBtn mr5" href="${SourceLeadWeb_sourceleadUrl}/addStage" title="Add">+ Add</a></li>
         <li class="">
@@ -26,7 +26,7 @@
 		</li>
         </ul>
         <div class="clearfix"></div>
-      </div>
+      </div> --%>
     </div>
     
     <form id="requirementWorkFlowForm" name="requirementWorkFlowForm">
@@ -62,7 +62,7 @@
 		
 	<div class="footerstyelsNew">
 	<div class="clearfix">
-		<div class="pull-right">
+		<div class="pull-right" >
 		 <input type="button" value="Save" id="saveReqWorkFlow" onclick="saveRequirementWorkFlow();" class="btn btn-primary">
 		 <input type="button" value="Cancel"
 							onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/workflowList'"
@@ -77,14 +77,13 @@
 <script>
 
 $(document).ready(function() {
-	//getDefaultWorkflowNameAndDescription();
+	/* getDefaultWorkflowNameAndDescription(); */
 	getDefaultWorkflowStages();
 	
 });
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 <script>
-var workflowId;
 function getDefaultWorkflowNameAndDescription(){
 	$.ajax({
 		type : "GET",
