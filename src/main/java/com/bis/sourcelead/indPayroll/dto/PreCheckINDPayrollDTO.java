@@ -1,6 +1,10 @@
 package com.bis.sourcelead.indPayroll.dto;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.SearchDTO;
+import com.bis.sourcelead.dto.StateTaxDTO;
+import com.bis.sourcelead.entity.Tds;
 
 public class PreCheckINDPayrollDTO extends SearchDTO {
 
@@ -13,7 +17,10 @@ public class PreCheckINDPayrollDTO extends SearchDTO {
 
 	private Boolean isTDSConfigured;
 	
-
+	private StateTaxDTO stateTaxDTO;
+	
+	private List<Tds> tdsList;
+	
 	public Boolean getIsPTConfigured() {
 		return isPTConfigured;
 	}
@@ -28,5 +35,21 @@ public class PreCheckINDPayrollDTO extends SearchDTO {
 
 	public void setIsTDSConfigured(Boolean isTDSConfigured) {
 		this.isTDSConfigured = isTDSConfigured;
+	}
+
+	public StateTaxDTO getStateTaxDTO() {
+		return stateTaxDTO;
+	}
+
+	public void setStateTaxDTO(StateTaxDTO stateTaxDTO) {
+		this.stateTaxDTO = stateTaxDTO;
+	}
+
+	public List<Tds> getTdsList() {
+		return tdsList;
+	}
+
+	public void setTdsList(List<Tds> tdsList) {
+		this.tdsList = tdsList;
 	}
 }
