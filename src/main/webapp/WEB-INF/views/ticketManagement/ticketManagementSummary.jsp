@@ -124,7 +124,7 @@
 			                    			<div class="col-md-8 tbldata-dotdot-200 inlineBlock">${attachment.fileName}</div>
 			                    			<ul class="list-unstyled list-inline col-md-4 text-center">
 			                    				<li><a href="javascript:void(0)" onclick="viewFile('${attachment.fileUrl}','${attachment.fileName}','${attachment.fileType}');"><i class="fa fa-eye cursorPointer" title="View"></i></a></li>
-			                    				<li><a href="${attachment.fileUrl}" target="_blank"><i class="fa fa-download cursorPointer" title="Download"></i></a></li>
+			                    				<li><a href="${attachment.fileUrl}" download="" class="glyphicon glyphicon-download-alt" title="Download"></a></li>
 			                    			</ul>
 			                    		</div>
 		                    		</div>

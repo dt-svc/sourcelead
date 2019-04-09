@@ -43,6 +43,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -52,7 +53,6 @@ import com.bis.sourcelead.service.TimesheetReportService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -88,6 +88,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	
 	@Autowired
 	private OrgLocationService orgLocationService;
+	
+	
+	@Autowired
+	private AppliedLeaveDateService appliedLeaveDateService;
 	
 	@Value("${sourceleadUrl}")
     String sourceleadUrl;
@@ -675,10 +679,15 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	
 	private String[] prepareTimesheetReportData(ProjectMembers projectMember,Long locationId, String[] header, LinkedHashMap<Date, Date> displayWeeksList, User loginUser, Date startDate, Date endDate) throws Exception {
 		String timeSheetReportsArray[] = new String[header.length];
-		
-		StringBuilder nameAndId = new StringBuilder();
+		 User consultantUser = null;
+		 Long workLocationId = 0l;
+		 StringBuilder nameAndId = new StringBuilder();
+		    if(projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getWorkLocation() != null && projectMember.getProjectMemberCandidteId().getWorkLocation().getId() != null) {
+				workLocationId = projectMember.getProjectMemberCandidteId().getWorkLocation().getId();
+			 }
 			if(null != projectMember.getProjectMemberCandidteId()){
 				        nameAndId.append(projectMember.getProjectMemberCandidteId().getFullName());
+				        consultantUser = projectMember.getProjectMemberCandidteId().getConsultantUser();
 						if(projectMember.getEmployee() != null && projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotBlank(projectMember.getEmployee().getEmployeeId())){
 							nameAndId.append("-").append(projectMember.getEmployee().getEmployeeId()).toString();
 						}
@@ -808,8 +817,29 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    	        		combinedApprovalStatus = Submission_ApprovalStatus.ACTIONREQUIRED;
 	    	        	}
 	 					
-	 				}
+	 				 }
 	    	    	
+	    	    	Float leaveTotal = 0f;
+	    	    	Float leaveBillableTotal = 0f;
+	    	    	Float leaveNonBillableTotal = 0f;
+		    	    if(consultantUser != null) {
+		    	    	 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(consultantUser.getId(), entry.getKey(), entry.getValue(),workLocationId);
+			    	     if(leaveTotalMap != null && !leaveTotalMap.isEmpty()) {
+			    	    	 leaveTotal = leaveTotalMap.get("TOTAL");
+			    	    	 leaveBillableTotal = leaveTotalMap.get("BILLABLE");
+			    	    	 leaveNonBillableTotal = leaveTotalMap.get("NONBILLABLE");
+			    	     }
+			    	     
+		    	    }
+		    	    if(leaveTotal != 0) {
+		    	    	weekTotalHours = CommonUtil.getCombinedHours(weekTotalHours, leaveTotal);
+	   	    	     }
+		    	     if(leaveBillableTotal != 0) {
+		    	    	 weekBillableHours = CommonUtil.getCombinedHours(weekBillableHours, leaveBillableTotal);
+		    	     }
+	                 if(leaveNonBillableTotal != 0) {
+	                	 weekNonBillableHours = CommonUtil.getCombinedHours(weekNonBillableHours, leaveNonBillableTotal);
+		    	     }
 	    	    	 monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours, weekTotalHours);
 		    	     monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours, weekBillableHours);
 		    	     monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
@@ -957,10 +987,15 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		createExcelsheet.getDefaultRowHeight();
 		
 		ProjectMembers  consultantProjectMembers = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
-		
+		User consultantUser = null;
 		StringBuilder sbid = new StringBuilder();
+		Long workLocationId = 0l;
+		if(projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getWorkLocation() != null && projectMember.getProjectMemberCandidteId().getWorkLocation().getId() != null) {
+			workLocationId = projectMember.getProjectMemberCandidteId().getWorkLocation().getId();
+		 }
 		if(projectMember.getProjectMemberCandidteId()!= null) {
 		if(consultantProjectMembers.getEmployee() != null && consultantProjectMembers.getEmployee().getEmployeeId() != null && StringUtils.isNotBlank(consultantProjectMembers.getEmployee().getEmployeeId())){
+			 consultantUser = consultantProjectMembers.getProjectMemberCandidteId().getConsultantUser(); 
 			 writeRow.createCell(0).setCellValue(sbid.append(consultantProjectMembers.getEmployee().getEmployeeId()).toString());
 			 createExcelsheet.autoSizeColumn(0);
 		}
@@ -1094,9 +1129,33 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     	        	}
  					
  				}
+    	    	
+    	    	Float leaveTotal = 0f;
+    	    	Float leaveBillableTotal = 0f;
+    	    	Float leaveNonBillableTotal = 0f;
+	    	    if(consultantUser != null) {
+	    	    	 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(consultantUser.getId(), entry.getKey(), entry.getValue(),workLocationId);
+		    	     if(leaveTotalMap != null && !leaveTotalMap.isEmpty()) {
+		    	    	 leaveTotal = leaveTotalMap.get("TOTAL");
+		    	    	 leaveBillableTotal = leaveTotalMap.get("BILLABLE");
+		    	    	 leaveNonBillableTotal = leaveTotalMap.get("NONBILLABLE");
+		    	     }
+		    	     
+	    	    }
+	    	     if(leaveTotal != 0) {
+	    	    	weekTotalHours = CommonUtil.getCombinedHours(weekTotalHours, leaveTotal);
+   	    	     }
+	    	     if(leaveBillableTotal != 0) {
+	    	    	 weekBillableHours = CommonUtil.getCombinedHours(weekBillableHours, leaveBillableTotal);
+	    	     }
+                 if(leaveNonBillableTotal != 0) {
+                	 weekNonBillableHours = CommonUtil.getCombinedHours(weekNonBillableHours, leaveNonBillableTotal);
+	    	     }
+
     	    	 monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours, weekTotalHours);
 	    	     monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours, weekBillableHours);
 	    	     monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
+	    	     
     	    	
     	    	 StringBuilder listSb = new StringBuilder();
     	    	 writeRow.createCell(count).setCellValue(listSb.append(CommonUtil.getHoursDisplayFormat(weekTotalHours,null)).toString());

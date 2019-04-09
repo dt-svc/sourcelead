@@ -221,30 +221,32 @@
 		  	type: "GET",
 		        url: sourceleadUrl+"/getEmployeePayroll?payrollUUID="+payrollUUID+"&status="+status,                 
 		        success: function(data) {
+		        	
 		            var json = data.object;
 		            if(json.empId != null){
 		            	$("#empId").text(json.empId);
 		            }else{
 		            	$("#empId").text("--");
 		            }
+		            
 		            $("#empName").text(json.empName);
 		            $("#empAddress").text(json.employeeAddress);
 		            $("#depositType").val(json.depositType);
-		            if(json.assSalType == "Salary" || json.assSalType == "LcaWage"){
+		            //$("#hoursAndEarningsTable").show();
+		             if(json.assSalType == "Salary" || json.assSalType == "LcaWage"){
 		            	$("#hoursAndEarningsTable").hide();
 		            	$("#assSalaryTable").show();
 		            	$("#assSalaryAmount").val(json.grossPay);
 		            }else{
 		            	$("#hoursAndEarningsTable").show();
 		            	$("#assSalaryTable").hide();
-		            	$("#regularHoursView").val(json.regularHours.toFixed(2));
+		            	$("#regularHoursView").val(json.regularHours);
 			            $("#regularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
-			            $("#overTimeHoursView").val(json.overtimeHours.toFixed(2));
+			            $("#overTimeHoursView").val(json.overtimeHours);
 			            $("#overTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
 			            $("#totalHours").text(json.totalHours.toFixed(2));
 			            $("#totalEarnings").text(json.totalEarnings.toFixed(2));
-		            }
-		        	
+		            } 
 		            var taxes = "";
 			        taxes = taxes + '<tr>';
 			        taxes = taxes + '<th>Description</th>';
@@ -267,7 +269,6 @@
 		            $("#stateWithHoldingWT").text(json.stateWithHolding);
 		            $("#aeic").text(json.aeic); */
 		            $("#taxes").text(json.taxes);
-		            
 		            $("#gross").text(json.grossPay);
 		            $("#federalGross").text(json.federal);
 		            $("#ficaGross").text(json.fica);

@@ -1279,11 +1279,17 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			}else {
 				payrollDTO.setDepositType("");
 			}
+			payrollDTO.setPayType(payroll.getPayType());
 			payrollDTO.setEmpPayrollId(payroll.getId());
 			payrollDTO.setEmpPayrollUUID(payroll.getUsEmpPayrollUUID());
 			payrollDTO.setGrossPay(payroll.getGrossPay());
 			payrollDTO.setNetPay(payroll.getNetPay());
-			payrollDTO.setRegularHrsTotalAmt(payroll.getRegularHoursAmount());
+			if(payroll.getRegularHoursAmount() != null) {
+				payrollDTO.setRegularHrsTotalAmt(payroll.getRegularHoursAmount());	
+			}else {
+				payrollDTO.setRegularHrsTotalAmt(BigDecimal.ZERO);
+			}
+			
 			payrollDTO.setPayRate(payroll.getEmpPayRate());
 			payrollDTO.setPostTaxDeduction(payroll.getPostTaxDeduction());
 			payrollDTO.setPreTaxDeduction(payroll.getPreTaxDeduction());
