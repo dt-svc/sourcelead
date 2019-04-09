@@ -70,6 +70,12 @@ public class Constants {
 	public static final String INVOICE_PAYABLES = "Payables";
 	public static final String FINANCE_TYPE_INDIVIDUAL = "Individual";
 	public static final String FINANCE_TYPE_BULK = "Bulk";
+	
+	public static final String ASSOCIATE_ID= "Associate Id";
+	public static final String ASSOCIATE_EMAIL= "Associate Email*";
+	public static final String DEDUCTION_TYPE = "Deduction Type";
+	public static final String DEDUCT_AMOUNT= "Deduct Amount";
+	public static final String CONTRIBUTE_AMOUNT = "Contribute Amount";
 
 	public static final String country = "Country";
 	public static final String TASK_BILLABLE = "Billable";
@@ -211,6 +217,9 @@ public class Constants {
 	
 	public static final String TICKET_MANAGEMENT_EMAIL = "NewTicketEmail";
 	public static final String TICKET_MANAGEMENT_NOTIFICATION ="NewTicketNotification";
+	
+	public static final String TICKET_COMMENT_EMAIL = "NewTicketCommentEmail";
+	public static final String TICKET_COMMENT_NOTIFICATION ="NewTicketCommentNotification";
 	
 	public static final String TICKET_UPDATE_EMAIL = "ChangeTicketStatusEmail";
 	public static final String TICKET_UPDATE_NOTIFICATION = "ChangeTicketStatusNotification";
@@ -1439,6 +1448,11 @@ public class Constants {
 	
 	public static final String[] BANK_TYPE_DROPDOWN = {"Cheque","Direct Deposit"};
 	
+
+	public static final String ASSOCIATE_DEDUCTION_CONTRIBUTION_DETAIL_HEADERS [] = {"Associate Id",	"Associate Email*",	"Deduction Type","Deduct Amount","Contribute Amount"};
+	
+	public static final String PAYROLLDEDUCTION_TYPE_DROPDOWN = "Payroll_Deduction";
+
 	public static final String PAYMENT_MODE_SAVINGS = "Savings";
 	
 	public static final String GOAL_TYPE_NEW  = "New_Goal";

@@ -57,11 +57,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.dao.MasterCandidateDao;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -73,6 +75,9 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.payroll.dao.PayrollDeductionDao;
+import com.bis.sourcelead.payroll.entity.PayrollDeduction;
+import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -89,6 +94,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * 
@@ -126,6 +132,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 	CommonUtil commonUtil;
 	
 	@Autowired
+	PayrollDeductionService payrollDeductionService;
+	
+	@Autowired
 	OrgLocationService orgLocationService;
 	
 	@Autowired
@@ -148,6 +157,12 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	@Autowired
 	DepartmentService departmentService;
+	
+	@Autowired
+	LookUpDataDao lookUpDataDao;
+	
+	@Autowired
+	PayrollDeductionDao payrollDeductionDao;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -2122,4 +2137,39 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			e.printStackTrace();
 		}
 	}
+    
+    @Override
+	public File getAssociateDedAndContriDetailsTemplate(OrgLocations orgLocations)
+	{
+		File file = new File("associatesDeductionAndContributionDetails.xls");
+		try {
+			Workbook wb = (Workbook) new HSSFWorkbook();
+			Sheet sheet = wb.createSheet("createAssociates");
+			sheet = setAssociateTemplateHeader(sheet,Constants.ASSOCIATE_DEDUCTION_CONTRIBUTION_DETAIL_HEADERS);
+			
+			List<PayrollDeduction> deductionList = 	payrollDeductionDao.getAllDeductionTypeByLocationId(orgLocations);
+			String[] list = new String[deductionList.size()];
+			int count = 0;
+			for(PayrollDeduction pd: deductionList) {
+				list[count] = pd.getPayrollDeductionType();
+				count++;
+			}
+			sheet.addValidationData(getDropDownListForCell(list,2,"xls"));
+			FileOutputStream fos = new FileOutputStream(file);
+				wb.write(fos);
+				fos.close();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return file;	
+	}
+    
+   /* private Sheet setAssociateTemplateHeader1(Sheet sheet, String[] headers)
+	{
+		Row headerSheet = sheet.createRow(0);
+		for(int i=0;i<headers.length;i++) {
+			headerSheet.createCell(i).setCellValue(headers[i]);
+		}
+		return sheet;
+	}*/
 }
