@@ -174,8 +174,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 	@Override
 	public ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(
-			RequirementQuestionnaireTemplateDTO questionnaireDto, Long orgLocationId) {
-		return requirementWorkFlowDao.getQuestionnaireTemplateListByOrgLocationId(questionnaireDto, orgLocationId);
+			RequirementQuestionnaireTemplateDTO questionnaireDto,  String searchValue, Long orgLocationId) {
+		return requirementWorkFlowDao.getQuestionnaireTemplateListByOrgLocationId(questionnaireDto, searchValue, orgLocationId);
     }
 	
 	

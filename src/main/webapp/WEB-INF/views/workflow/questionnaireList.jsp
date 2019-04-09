@@ -24,7 +24,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				</li>
               <li class="">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                <span class="repSearchIcon" onclick="getWorkflowQuestionnnaireList();"></span></li>
             </ul>
           </div>
            <div id ="questionnaireList" class="project_wrap_table datatable_filter"></div>
@@ -63,13 +63,15 @@ function getWorkflowQuestionnnaireList(){
 
 function getDynamicWorkflowQuestionnnaireList(){
 	   var colIndex = 0;
+	   var searchValue = $("#dynamicUserDataTableSearch").val();
+	   console.log(searchValue);
 	    $('#questionnaireListTable').DataTable( { 
 	    	"processing": true,
 	        "serverSide": true,
 	        "searching": false,
 	        "searchHighlight": true,
 	        "ajax": $.fn.dataTable.pipeline( {
-	            url: sourceleadUrl + "/getQuestionnaireList",
+	            url: sourceleadUrl + "/getQuestionnaireList?searchVal="+searchValue,
 	            method: 'GET',
 	            pages: 10
 	        }),
@@ -148,7 +150,12 @@ function getDynamicWorkflowQuestionnnaireList(){
 	        
 	    } );
 	  $("#questionnaireListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
-	  
+	  $("#dynamicUserDataTableSearch").keyup(function (e) {
+	         if (e.which == 13) {
+	        	 getWorkflowQuestionnnaireList();
+	        
+	         }
+	     });
 	        
 }
 </script>

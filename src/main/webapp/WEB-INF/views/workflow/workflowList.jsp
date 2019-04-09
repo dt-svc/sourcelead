@@ -25,7 +25,7 @@
 				</li>
               <li class="">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                <span class="repSearchIcon" onclick="getWorkflowList();"></span></li>
             </ul>
           </div>
           
@@ -71,6 +71,7 @@ function getWorkflowList(){
 }
 
 function getDynamicWorkflowList(){
+	   var searchValue = $("#dynamicUserDataTableSearch").val();
 	   var colIndex = 0;
 	    $('#workflowListTable').DataTable( { 
 	    	"processing": true,
@@ -78,7 +79,7 @@ function getDynamicWorkflowList(){
 	        "searching": false,
 	        "searchHighlight": true,
 	        "ajax": $.fn.dataTable.pipeline( {
-	            url: sourceleadUrl + "/getWorkflowList",
+	            url: sourceleadUrl + "/getWorkflowList?searchValue="+searchValue,
 	            method: 'GET',
 	            pages: 10
 	        }),
@@ -165,7 +166,12 @@ function getDynamicWorkflowList(){
 	        
 	    } );
 	     $("#workflowListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
-	  
+		  $("#dynamicUserDataTableSearch").keyup(function (e) {
+		         if (e.which == 13) {
+		        	 getWorkflowList();
+		        
+		         }
+		     });
 	        
 }
 

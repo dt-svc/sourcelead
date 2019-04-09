@@ -33,7 +33,7 @@ public interface RequirementWorkFlowDao {
 
 	RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate template) throws Exception;
 
-	ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(RequirementQuestionnaireTemplateDTO questionnaireDto, Long orgLocationId);
+	ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(RequirementQuestionnaireTemplateDTO questionnaireDto, String searchValue, Long orgLocationId);
 	
 	RequirementWorkFlow getRequirementWorkFlowByUuid(String Uuid)throws Exception;
 	

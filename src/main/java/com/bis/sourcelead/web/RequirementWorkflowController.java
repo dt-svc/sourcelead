@@ -125,6 +125,7 @@ public class RequirementWorkflowController {
 	@RequestMapping(value = "/getQuestionnaireList" , method = RequestMethod.GET)
 	public @ResponseBody ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireList(
 			RequirementQuestionnaireTemplateDTO requirementQuestionnaireTemplateDTO,
+			@RequestParam(value="searchVal", required=false) String searchVal,
 																	HttpServletRequest request) throws Exception{
 		 ResponseList<RequirementQuestionnaireTemplateDTO>responseList = null;
 		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
@@ -141,7 +142,8 @@ public class RequirementWorkflowController {
 	  		if (sortColumnIndex != -1){
 	  			requirementQuestionnaireTemplateDTO.setSortColumn(tableColumns[sortColumnIndex]);
 	  		}
-			responseList = requirementWorkFlowService.getQuestionnaireTemplateListByOrgLocationId(requirementQuestionnaireTemplateDTO, orgLocationId);
+			responseList = requirementWorkFlowService.getQuestionnaireTemplateListByOrgLocationId(requirementQuestionnaireTemplateDTO, 
+					searchVal, orgLocationId);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
