@@ -44,6 +44,11 @@ $("#rejectedMessage"+localId).removeClass('app_error_mes_active');
 </script> 
 <script>
 function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from,requestFrom){
+	 $('#hedderAcceptRejectButton').hide();
+	 $('#selectAllTimeSheetCheckBoxForSubmitForApproval').removeProp('checked');
+     $(".checkBoxForSubmitForApproval").each(function () {
+    	$(this).removeProp('checked');
+     }); 
 	if(requestFrom == "notifyLink"){
 		  tableFor = from;
 	 }else{
@@ -178,7 +183,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	 }
 	 var tableFor = $("#tableFor").val();
 	 var encodeMsg = msg;
-	 if(encodeMsg !== ""){
+	 if(encodeMsg != null && encodeMsg != '' && encodeMsg != 'undefined'){
 		 var encodeMsg = encodeURIComponent(msg);
 		 $("#rejectReasonDiv").empty();
 		 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';

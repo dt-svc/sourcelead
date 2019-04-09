@@ -1471,7 +1471,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			 }
 			
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
-				candidateDTO.setWorkLocation(candidate.getWorkLocation());
+				candidateDTO.setWorkLocation(candidate.getWorkLocation().getId());
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
 				candidate.setOrgRelationId(orgRelation);
 				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, candidateUser);
