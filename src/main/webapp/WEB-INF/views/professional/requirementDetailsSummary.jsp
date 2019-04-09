@@ -165,7 +165,7 @@ function publicRequirementProfile(requirementUUID){
 	
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/ws/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&contactUUID="+contactUUID, 	   
+	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&contactUUID="+contactUUID, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var result = "";
