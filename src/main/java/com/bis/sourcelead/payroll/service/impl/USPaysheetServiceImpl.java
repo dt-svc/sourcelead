@@ -356,9 +356,9 @@ public class USPaysheetServiceImpl implements USPaysheetService{
 					payrollDTO.setPayPerSal(pay.getPayPerSalary());
 					payrollDTO.setPostTaxDeduction(pay.getPostTaxDeduction());
 					payrollDTO.setPreTaxDeduction(pay.getPreTaxDeduction());
-					float regHours = 0;
+					String regHours = "0";
 					if(StringUtils.isNotBlank(pay.getRegularHours())) {
-						regHours = Float.parseFloat(pay.getRegularHours());
+						regHours = pay.getRegularHours();
 					}
 					payrollDTO.setRegularHours(regHours);
 					payrollDTO.setTaxes(pay.getTaxes());

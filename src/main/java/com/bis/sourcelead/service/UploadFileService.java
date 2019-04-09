@@ -21,4 +21,6 @@ public interface UploadFileService {
 	public void changeDocumentNamesWithWhiteSpacesToUnderScore(String staticPath);
 
 	public File getAssociateBankDetailsTemplate();
+
+	public File getAssociateDedAndContriDetailsTemplate(OrgLocations orgLocations);
 }

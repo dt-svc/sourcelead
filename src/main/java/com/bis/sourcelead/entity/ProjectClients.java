@@ -37,24 +37,25 @@ public class ProjectClients implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
-	
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PROJECT_ID")
 	@JsonBackReference
     private Projects projectId;
-	
-    
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_RELATION_ID")
     private OrgRelations orgRelationId;
    
     
-    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
+    
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ORG_ID")
+    private Org orgId;
     
     @Column(name = "UUID")
     private String uuid;
@@ -276,6 +277,14 @@ public class ProjectClients implements Serializable{
 	public void setSharedClientProjectExpenseApproverHierarchyList(
 			Set<ExpenseProjectApproverHierarchy> sharedClientProjectExpenseApproverHierarchyList) {
 		this.sharedClientProjectExpenseApproverHierarchyList = sharedClientProjectExpenseApproverHierarchyList;
+	}
+
+	public Org getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Org orgId) {
+		this.orgId = orgId;
 	}
 
 }

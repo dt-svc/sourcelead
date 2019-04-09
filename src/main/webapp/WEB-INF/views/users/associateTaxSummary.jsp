@@ -350,7 +350,7 @@ function getAssociateTaxHistory(userId){
 							}
 						}
 						
-						if(opt.previousLocalTax != null && opt.previousLocalTax != '' && opt.previousLocalTax != 'undefined'
+						/* if(opt.previousLocalTax != null && opt.previousLocalTax != '' && opt.previousLocalTax != 'undefined'
 							&& opt.localTax != null && opt.localTax != '' && opt.localTax != 'undefined'){
 							if(opt.previousLocalTax != opt.localTax){
 								result += '		<div class="clearfix">';
@@ -368,7 +368,7 @@ function getAssociateTaxHistory(userId){
 								result += '			<span class="col-md-10">'+opt.previousLocalTaxState+' to '+opt.localTaxState+'</span>';
 								result += '		</div>  ';
 							}
-						}
+						} */
 						result += '</div>';
 						result += '</div>';
 						result += '</div>';
@@ -549,10 +549,10 @@ function backToSummary(){
               result = result + '    </select>';
               result = result + '    </div>';
               result = result + '   </div>';
-              result = result + '   <div class="col-md-5">';
-              result = result + '    <label>Local tax</label>';
-              result = result + '   <div>';
-              result = result + '  <select class="sel" id="localTax" name="localTax" data-validation="required" field-name="State Tax" onchange="isLocalTaxYes();"> ';
+//               result = result + '   <div class="col-md-5">';
+//               result = result + '    <label>Local tax</label>';
+//               result = result + '   <div>';
+//               result = result + '  <select class="sel" id="localTax" name="localTax" data-validation="required" field-name="State Tax" onchange="isLocalTaxYes();"> ';
 //               result = result + '     <option value="">--Select--</option>';
 //               var noSelected = "";
 //               var yesSelected = "";
@@ -569,10 +569,10 @@ function backToSummary(){
 //               }else{
 //             	  result = result + '     <option selected value='+json.location+'>'+json.location+'</option>';
 //               }
-              result = result + ' </select>';
-              result = result + '  </div>';
-              result = result + ' <p class="text-success form-control-static clearfix" id="localTaxMessageDiv"> </p>';
-              result = result + ' </div>';
+//               result = result + ' </select>';
+//               result = result + '  </div>';
+//               result = result + ' <p class="text-success form-control-static clearfix" id="localTaxMessageDiv"> </p>';
+//               result = result + ' </div>';
                    
               result = result + ' <div class="clearfix"></div>';
               result = result + '  <h4 class="col-md-12">Additional</h4>';
