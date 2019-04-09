@@ -26,7 +26,19 @@ public class MyPayrollDTO {
 
 	private String paySlipFileURL;
 	
+	private boolean enablePayslip;
 	
+	
+
+	public boolean getEnablePayslip()
+	{
+		return enablePayslip;
+	}
+
+	public void setEnablePayslip(boolean enablePayslip)
+	{
+		this.enablePayslip = enablePayslip;
+	}
 
 	public String getPaySlipFileURL()
 	{
