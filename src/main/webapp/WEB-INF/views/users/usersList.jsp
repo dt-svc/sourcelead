@@ -341,11 +341,13 @@ function getUsersSearchResult(searchValue){
 										<div class="immSub">
 											<a href="#">Import</a>
 											<div class="immSubMenu">
-												<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+												<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
 												<a href="<c:url value='${sourceleadUrl}/uploadAssociateBankForm'/>">Associate Bank Details Import</a>
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateDeductionContributionDetails'/>">Associate Deduction Contribution Import</a>
 													</c:if>
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+												    <a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
 												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateBankingDetailsForm'/>">Associate Bank Detail</a>
 												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateInformation'/>">Associate Information</a> 
 													<a href="<c:url value='${sourceleadUrl}/uploadAssociateSalary'/>">Associate Salary Import</a>
@@ -359,17 +361,41 @@ function getUsersSearchResult(searchValue){
 							</li>
 				<%-- </c:if> --%>
 				
-				<%-- <c:if test="${orgLocationsCount == 1}">
+			<%-- <c:if test="${orgLocationsCount == 1}">
 				           <sec:authorize access="hasRole('ROLE_USER_BULK_IMPORTS')"> 
 				           <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
-									<span> 
+								
+								<span class="ovrShow"> 
+									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
+									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
+									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+										<div class="immSub">
+											<a href="#">Import</a>
+											<div class="immSubMenu">
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+												<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateBankForm'/>">Associate Bank Details Import</a>
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateDeductionContributionDetails'/>">Associate Deduction Contribution Import</a>
+													</c:if>
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateBankingDetailsForm'/>">Associate Bank Detail</a>
+												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateInformationForm'/>">Associate Information</a> 
+													<a href="<c:url value='${sourceleadUrl}/uploadAssociateSalary'/>">Associate Salary Import</a>
+												</c:if>
+											</div>
+										</div>
+										
+									</sec:authorize>									
+									</span>
+								 <span> 
 									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
 										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
 									</sec:authorize>									
-									</span>
+									</span> 
 								</div>
 							</li>
 							</sec:authorize>
@@ -378,7 +404,7 @@ function getUsersSearchResult(searchValue){
 						<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
 				</sec:authorize>
 							
-				</c:if> --%>	
+				</c:if>  --%>
 	           
 						
 	       </sec:authorize>
@@ -525,7 +551,7 @@ $(document).keyup(function(e) {
 
 </script>
 
-<!-- <script>
+<script>
 function resetFilter(){
 	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
@@ -535,13 +561,23 @@ function resetFilter(){
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
 	$("#dynamicUserDataTableSearch").val('');
+	$("#myManagersInput").val('');
+	$("#myRolesInput").val('');
+	$("#myClientsInput").val('');
+	$("#myTeamsInput").val('');
+	$("#myDepartmentInput").val('');
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
 	
+	myManagersFunction();
+	myRolesFunction();
+	myClientsFunction();
+	myTeamsFunction();
+	myDepartmentFunction();
 	getDynamciUserList();
 }
-</script> -->
+</script>
 
 
 <script>
@@ -1496,23 +1532,5 @@ $(".overIcon, .newActPop").click(function(e){
 });	
 
 
-</script>
-
-<script>
-	$("#clear_search").click(function(){
-		$("ul#myRolesUL > li input:checkbox").prop("checked",false);
-		$("ul#statusFilter > li input:checkbox").prop("checked",false);
-		$("ul#myClientsUL > li input:checkbox").prop("checked",false);
-		$("ul#myManagersUL > li input:checkbox").prop("checked",false);
-		$("ul#myTeamsUL > li input:checkbox").prop("checked",false);
-		$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
-		$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
-		$("#dynamicUserDataTableSearch").val('');
-		
-		document.getElementById("activeStatus").checked = true;
-		document.getElementById("notloggedInStatus").checked = true;
-		
-// 		getDynamciUserList();
-	});
 </script>
     

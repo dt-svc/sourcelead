@@ -23,4 +23,6 @@ public interface PayrollDeductionService {
 
 	PayrollDeduction getPayrollDeductionTypeById(long parseLong);
 
+	PayrollDeduction getDeductionByDeductionTypeAndLocationId(String cellValueAsString, Long id);
+
 }

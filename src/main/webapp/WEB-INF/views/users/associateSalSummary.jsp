@@ -430,7 +430,7 @@ function refreshPayItems(i){
                 <div>
                  <input class="form-control" name="previousPayType" id="previousPayType" type="hidden">
                  <input class="form-control" name="salaryType" id="salaryType" type="hidden">
-                  <input class="form-control" name="id" id="id" type="hidden">
+                  <input class="form-control" name="id" id="updateId" type="hidden">
                    <input class="form-control" name="userId" id="userId" type="hidden">
                   <select class="sel" id="payType" name="payType" data-validation="required" onchange="showHideSalaryDIV();" field-name="Pay Type">
                     <option value="">--Select--</option>
@@ -691,7 +691,7 @@ function closeupdateSalaryDetails() {
 
 <script>
 function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,perPaySal,hourlyRate,userId,groupUUID,effectiveDate,increasePer) {
-	 document.getElementById("update_associate_salary_form").reset(); 
+	document.getElementById("update_associate_salary_form").reset(); 
 	 
 	 if(id != null && id != '' && id != 'undefined'){
 
@@ -706,7 +706,7 @@ function updateSalaryDetails(id,payType,payFrequency,standardHours,annualSal,per
 //		 	$("#payGroupId").val(groupName);
 //		 	$('#payGroupId').trigger("chosen:updated");
 			
-			$("#id").val(id);
+			$("#updateId").val(id);
 			$("#previousPayType").val(payType);
 			$("#previousPayFrequency").val(payFrequency);
 			$("#previousStandardHours").val(standardHours);
