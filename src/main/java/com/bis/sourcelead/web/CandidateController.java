@@ -94,9 +94,6 @@ public class CandidateController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
-	@Autowired
-	ReportsUtil reportsUtil;
-		
 	
 	@Autowired
 	private RolesService roleService;
@@ -779,7 +776,6 @@ public class CandidateController {
 			List<CandidateMarketPlaceCartView> candidatesFromMarketplace = null;
 			if(user != null){
 				if(StringUtils.isNotBlank(userRoleName)) {
-					
 					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDate, searchValue);
 			}}
 			return candidatesFromMarketplace;

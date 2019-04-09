@@ -2969,6 +2969,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		endDate.setMinutes(59);
 		endDate.setSeconds(59);
 		
+		System.out.println("startDate > "+startDate+" & endDate > "+endDate);
+		
 		List<Long> countlist = null;
 		List<String> petitionTypeList = immigrationReportDTO.getPetitionType();
 		List<String> statusList = immigrationReportDTO.getPetitionStatus();
