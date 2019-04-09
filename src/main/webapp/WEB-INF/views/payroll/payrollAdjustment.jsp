@@ -250,9 +250,9 @@
 		            }else{
 		            	$("#hoursAndEarningsTable").show();
 		            	$("#assSalaryTable").hide();
-		            	$("#regularHours").val(json.regularHours.toFixed(2));
+		            	$("#regularHours").val(json.regularHours);
 			            $("#regularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
-			            $("#overTimeHours").val(json.overtimeHours.toFixed(2));
+			            $("#overTimeHours").val(json.overtimeHours);
 			            $("#overTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
 			            $("#totalHours").text(json.totalHours.toFixed(2));
 			            $("#totalEarnings").text(json.totalEarnings.toFixed(2));
