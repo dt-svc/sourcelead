@@ -201,8 +201,8 @@
 	   	        		 }
 		        		 if(!shareflag)
 	   	        			$("#sharedcheckbox").removeAttr('checked');
-		        		   result = result +"<div class='tblminwidth-30 pull-left ml'>";
-		        			result = result +'<div class="pull-left mt3"><td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+opt.id+'" data-id="'+opt.id+'" value="'+opt.id+'" onchange="checkShareCandidates(this)"/></td></div>';
+		        		   result = result +"<div class='tblminwidth-30'>";
+		        			result = result +'<div class="mt3"><td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+opt.id+'" data-id="'+opt.id+'" value="'+opt.id+'" onchange="checkShareCandidates(this)"/></td></div>';
 	    	  		
 		        			if(opt.isAssociate == 'Y'){
 				            	  result = result +"<i class='fa fa-black-tie pull-right mt2' title='Added as Associate'></i> ";  

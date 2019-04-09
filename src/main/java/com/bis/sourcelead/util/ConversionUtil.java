@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
@@ -46,10 +47,17 @@ public class ConversionUtil {
 	@Autowired
 	private TimeZoneService timeZoneService;
 	
+	@Value("${currencyConversionAPIKey}")
+	private  String currencyConversionAPIKey;
+	
 	private static final Logger logger = LoggerFactory.getLogger(ConversionUtil.class);
 	
     //private static final String API_PROVDIER = "http://api.fixer.io/";  this is deprecated from March 6th 2018, 
-    private static final String API_PROVDIER = "http://free.currencyconverterapi.com/api/v5/convert?"; // new Api url added.
+	// new Api url added on 8th April 2019 By Ajith (this free apikey limited valid period).
+		// for more info visit https://free.currencyconverterapi.com/
+	private static final String API_PROVDIER = "http://free.currencyconverterapi.com/api/v6/convert?"; 
+    // new Api url added.
+	
 	
 	/**
 	 * converting rate into per hour
@@ -57,6 +65,7 @@ public class ConversionUtil {
 	 * @param ratePer
 	 * @return float
 	 */
+	
 	public float getHourlyRate(String rate, String ratePer)
 	{
 		switch (ratePer) {
@@ -77,6 +86,12 @@ public class ConversionUtil {
 		}
 	}
 	
+
+
+	
+
+
+
 	/**
 	 * convert currency from one type to another
 	 * @param fromCurrencyCode
@@ -99,7 +114,8 @@ public class ConversionUtil {
 			}
 		}
 		return 0;*/
-			String strUrl =API_PROVDIER + "q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=y";
+			
+			String strUrl = API_PROVDIER + "q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=ultra&apiKey="+currencyConversionAPIKey;
 			URL url;
 			try {
 				url = new URL(strUrl);
@@ -121,8 +137,8 @@ public class ConversionUtil {
 					  Iterator<String> keys = json.keys();
 					  String str_Name=keys.next(); 
 					  String value = json.optString(str_Name);
-					  json=new JSONObject(value);
-					  double convertedValue= json.getDouble("val");
+					 // json=new JSONObject(value);
+					  double convertedValue= Double.valueOf(value);
 				    
 					  return (float) convertedValue;
 				} catch (JSONException e) {
@@ -154,8 +170,8 @@ public class ConversionUtil {
 			}
 		}
 		return 0;*/
-			
-			String strUrl =API_PROVDIER + "q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=y";
+			System.out.println("<<url>>"+currencyConversionAPIKey);
+			String strUrl =API_PROVDIER + "q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=ultra&apiKey="+currencyConversionAPIKey;
 			URL url;
 			try {
 				url = new URL(strUrl);
@@ -177,8 +193,8 @@ public class ConversionUtil {
 					  Iterator<String> keys = json.keys();
 					  String str_Name=keys.next(); 
 					  String value = json.optString(str_Name);
-					  json=new JSONObject(value);
-					  double convertedValue= json.getDouble("val");
+					  //json=new JSONObject(value);
+					  double convertedValue= Double.valueOf(value);
 				    
 					  return (float) convertedValue;
 				} catch (JSONException e) {
@@ -197,10 +213,10 @@ public class ConversionUtil {
 	
 	public  Double currencyConvert(String fromCurrencyCode, String toCurrencyCode, double amount)
 	{
-		
+		System.out.println("<<url>>"+currencyConversionAPIKey);
 		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty()) && (toCurrencyCode != null && !toCurrencyCode.isEmpty())) {
 			
-			String strUrl =API_PROVDIER + "q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=y";
+			String strUrl =API_PROVDIER + "q="+fromCurrencyCode+"_"+toCurrencyCode+"&compact=ultra&apiKey="+currencyConversionAPIKey;
 			URL url;
 			try {
 				url = new URL(strUrl);
@@ -222,8 +238,8 @@ public class ConversionUtil {
 					  Iterator<String> keys = json.keys();
 					  String str_Name=keys.next(); 
 					  String value = json.optString(str_Name);
-					  json=new JSONObject(value);
-					  double convertedValue= json.getDouble("val");
+					  //json=new JSONObject(value);
+					  double convertedValue= Double.valueOf(value);
 				    
 					  return (double) convertedValue;
 				} catch (JSONException e) {
