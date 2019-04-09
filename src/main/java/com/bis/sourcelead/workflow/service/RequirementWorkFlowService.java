@@ -10,6 +10,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
@@ -39,9 +40,9 @@ public interface RequirementWorkFlowService {
 
 	RequirementQuestionnaireTemplate getQuestionnaireTemplateById(String templateUuid);
 	
-	void saveRequirementWorkflowStageByWorkflowId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, Long id)throws Exception;
+	void saveRequirementWorkflowStageByWorkflowId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, Long id, User user)throws Exception;
 	
-	List<RequirementWorkFlowStagesDTO> getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(String uuid, String workflowUuid)throws Exception;
+	RequirementWorkFlowStagesDTO getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(String uuid, String workflowUuid)throws Exception;
 	
     RequirementWorkFlowStages getRequirementWorkFlowStagesByUuid(String uuid)throws Exception;
 	
@@ -52,4 +53,12 @@ public interface RequirementWorkFlowService {
 	List<RequirementWorkFlowStages> getRequirementWorkFlowStagesListByOrgLocationId(Long orgLocationId);
 	
 	void deleteRequirementWorkFlowStagesByuuid(String uuid);
+	
+	List<RequirementQuestionnaireTemplateDTO> getRequirementQuestionnaireTemplates(Long id)throws Exception;
+	
+	void saveRequirementWorkflowStageByWorkflowIdAndOrgLocationId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, RequirementWorkFlowStages requirementWorkFlowStages, Long id, User user)throws Exception;
+
+	void saveRequirementWorkFlowTask(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, User user, OrgLocations orgLocations)throws Exception;
+	
+	ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user)throws Exception;
 }

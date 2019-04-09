@@ -20,14 +20,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
 import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlowTasks;
 
 
 @Repository
@@ -204,7 +207,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesByUuid(String uuid) throws Exception {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:uuid";
+			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:uuid ORDER BY requirementWorkFlowStages.seqOrder ASC";
 			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("uuid", uuid).list();
 			return requirementWorkFlowStages;
 		} catch (Exception e) {
@@ -358,7 +361,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:workflowUuid "
-					+ "and  requirementWorkFlowStages.seqOrder > "+id+" order by requirementWorkFlowStages.seqOrder ASC "; 
+					+ "and  requirementWorkFlowStages.seqOrder >= "+id+" order by requirementWorkFlowStages.seqOrder ASC "; 
 			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("workflowUuid", workflowUuid).list();
 			return requirementWorkFlowStages;
 		} catch (Exception e) {
@@ -430,5 +433,81 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public List<RequirementQuestionnaireTemplate> getRequirementQuestionnaireTemplates(Long id)  {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementQuestionnaireTemplate requirementQuestionnaireTemplate where requirementQuestionnaireTemplate.orgLocationId.id =:id and requirementQuestionnaireTemplate.status = 1 ";
+			List<RequirementQuestionnaireTemplate> requirementQuestionnaireTemplate = session.createQuery(query).setParameter("id", id).list();
+			return requirementQuestionnaireTemplate;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 	
+	}
+	}
+
+	@Override
+	public void saveRequirementWorkFlowTask(RequirementWorkFlowTasks requirementWorkFlowTasks) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(requirementWorkFlowTasks);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+	}
+
+	@Override
+	public ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(
+			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user) throws Exception {
+		try{
+			Session session = this.sessionFactory.getCurrentSession();
+			List<Long> countlist = null;
+			Integer filterCount = 0;
+			StringBuilder queryEndBuilder = new StringBuilder("");
+			RequirementWorkFlowTasksDTO workFlowTasksDTO = null;
+			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTOList = new ArrayList<>();
+			ResponseList<RequirementWorkFlowTasksDTO> responseList = new ResponseList<>();
+			if(requirementWorkFlowTasksDTO != null){
+				queryEndBuilder.append(" order by requirementWorkFlowTasks.updatedDate "+requirementWorkFlowTasksDTO.getSortOrder());
+				}
+			String query = "from RequirementWorkFlowTasks requirementWorkFlowTasks where requirementWorkFlowTasks.orgLocationId.id = :orgLocationId and requirementWorkFlowTasks.status= 1";
+			String countQuery = "select count(*) from RequirementWorkFlowTasks requirementWorkFlowTasks  where  requirementWorkFlowTasks.orgLocationId.id =:orgLocationId and requirementWorkFlowTasks.status= 1";
+			Query query1 = session.createQuery(query + queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
+			Query query2 = session.createQuery(countQuery + queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
+			countlist = query2.list();
+			int totalCount = 0;
+			if (requirementWorkFlowTasksDTO != null) {
+				if (countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+					filterCount = totalCount;
+				}
+			}
+			responseList.setRecordsTotal(totalCount);
+			if (query.toString() != null && !query.toString().isEmpty()) {
+				responseList.setRecordsFiltered(filterCount);
+			} else {
+				responseList.setRecordsFiltered(totalCount);
+			}
+			List<RequirementWorkFlowTasks> requirementWorkFlow = query1.list();
+			if(requirementWorkFlow != null){
+				for(RequirementWorkFlowTasks workFlow : requirementWorkFlow){
+					StringBuilder userName = new StringBuilder("");
+					userName.append(workFlow.getAssignTo().getFirstName()+" "+workFlow.getAssignTo().getLastName());
+					workFlowTasksDTO = new RequirementWorkFlowTasksDTO();
+					workFlowTasksDTO.setWorkFlowTaskName(workFlow.getWorkFlowTaskName());
+					workFlowTasksDTO.setAssignToUserId(userName.toString());
+					workFlowTasksDTO.setPriority(workFlow.getPriority());
+					workFlowTasksDTO.setDescription(workFlow.getDescription());
+					requirementWorkFlowTasksDTOList.add(workFlowTasksDTO);
+					}
+				}
+			responseList.setData(requirementWorkFlowTasksDTOList);
+			return responseList;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}	
 }
