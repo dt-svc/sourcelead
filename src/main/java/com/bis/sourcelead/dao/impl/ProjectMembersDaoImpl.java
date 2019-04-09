@@ -2066,7 +2066,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Transactional
 	public List<Candidate> getAllAvailableAssociates( Long orgLocationId) {
 	Session session = this.sessionFactory.getCurrentSession();
-	String query = "from Candidate candidate where candidate.orgLocationId = :orgLocationId and candidate.designationType = 'Offshore C2C'";
+	String query = "from Candidate candidate where candidate.orgLocationId = :orgLocationId";
 	List<Candidate> list = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	return list;
 	}
