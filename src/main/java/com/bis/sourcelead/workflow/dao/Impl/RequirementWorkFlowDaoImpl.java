@@ -124,22 +124,23 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 			Session session = this.sessionFactory.getCurrentSession();
 			List<Long> countlist = null;
 			Integer filterCount = 0;
-			StringBuilder queryEndBuilder = new StringBuilder("");
 			RequirementWorkFlowDTO requirementWorkFlowDTO = null;
 			List<RequirementWorkFlowDTO> requirementWorkFlowDTOList = new ArrayList<>();
 			ResponseList<RequirementWorkFlowDTO> responseList = new ResponseList<>();
-			if(workFlowDTO != null){
-				if (StringUtils.isNotBlank(workFlowDTO.getSortColumn())) {
-					String sortColumnName = workFlowDTO.getSortColumn();
-					if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
-						queryEndBuilder.append(" order by requirementWorkFlow.updatedDate "+workFlowDTO.getSortOrder());
-					}
-				}
-				}
-			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id = :orgLocationId and requirementWorkFlow.status= 1 ORDER BY requirementWorkFlow.id DESC";
+			
+			StringBuilder searchQuery = new StringBuilder("");
+			String searchValue = workFlowDTO.getSearchValue();
+	        if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
+	        	searchQuery.append(" and ((requirementWorkFlow.workFlowName like '%" + searchValue + "%' )");
+	        	//queryEndBuilder.append(" or (requirementWorkFlow.noOfStages like '%" + searchValue + "%' )");
+	        	searchQuery.append(" or (requirementWorkFlow.noOfStages like '%" + searchValue + "%' ))");
+	        }
+	        StringBuilder queryEndBuilder = new StringBuilder("");
+	        queryEndBuilder.append(" ORDER BY requirementWorkFlow.id DESC");
+			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id = :orgLocationId";
 			String countQuery = "select count(*) from RequirementWorkFlow requirementWorkFlow  where  requirementWorkFlow.orgLocationId.id =:orgLocationId";
-			Query query1 = session.createQuery(query + queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
-			Query query2 = session.createQuery(countQuery + queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
+			Query query1 = session.createQuery(query +searchQuery+ queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
+			Query query2 = session.createQuery(countQuery +searchQuery+ queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
 			countlist = query2.list();
 			int totalCount = 0;
 			if (workFlowDTO != null) {
