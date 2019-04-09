@@ -2005,6 +2005,11 @@ function newSaveTimesheet(status){
 <script type="text/javascript">
 function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMembersId,from){
 	    $('#notifyLink').val('');
+	    $('#hedderAcceptRejectButton').hide();
+	    $(".checkBoxForSubmitForApproval").each(function () {
+	    	$(this).removeProp('checked');
+ 	    }); 
+	    $('#selectAllTimeSheetCheckBoxForSubmitForApproval').removeProp('checked');
 		 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
 	    	 $(".side_mask").fadeOut(200); 
