@@ -144,7 +144,7 @@ function getDynamicWorkflowList(){
 	    	  		result = result +"<input type='checkbox' name='' "+ (workflow.status == 1 ?'checked':'')+" >";
 	    	  		result = result +"<div class='slider round' onclick = 'changeWorkflowStatus(\""+workflow.uuid+"\", \""+workflow.status+"\");'></div>";
 	    	  		result = result +"</label></li>";
-	    	  		result = result +"<li><a href='${SourceLeadWeb_sourceleadUrl}/defaultWorkflow'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
+	    	  		result = result +"<li><a onclick='viewWorkFlow(\""+workflow.uuid+"\")'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
 	    	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete'></i></li>";
 	    	  		result = result +"<li><i class='fa fa fa-clone cursorPointer text-primary' title='Clone'></i></li>";
 	    	  		result = result +"</ul></div>";

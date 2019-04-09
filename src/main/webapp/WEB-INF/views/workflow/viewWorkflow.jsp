@@ -39,6 +39,36 @@
         <div class="clearfix"></div>
       </div>
     </div>
+    
+    <c:if test="${not empty requirementWorkFlowStagesDTO}">
+    <div class="clearfix backgroundWhite mb">
+  <div class="row">
+      <div class="clearfix mt col-md-6">
+          <div class="form-group clearfix">
+            <label class="col-md-3">Name<span class="text-danger paddingLeft">*</span></label>
+            <div class="col-md-9">
+              <input type="text" 
+              value='<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}"/>'
+              class="form-control" id="workFlowName" name="workFlowName" placeholder="WorkFlow Name" field-name="WorkFlow Name"
+								data-validation="required validate_length length1-100">
+            </div>
+          </div>
+        </div>
+        <div class="clearfix mt col-md-6">
+          <div class="form-group clearfix">
+            <label class="col-md-3">Description</label>
+            <div class="col-md-9">
+              <textarea rows="2" 
+              value = '<c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/>'
+              class="form-control" name="description" id="description" placeholder="Description" field-name="Description"
+								data-validation="validate_length length1-500" data-validation-optional="true"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </c:if>
+    
   <div class="clearfix"></div>
   
   <!-- dynamic content starts here -->
