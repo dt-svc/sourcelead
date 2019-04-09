@@ -158,7 +158,6 @@ window.onload = function () {
 
 <script>
 function publicRequirementProfile(requirementUUID){
-	
 	var sourceleadLoginUrl = '${sourceleadLoginUrl}';
 	var contactUUID = '${contactUUID}';
 	var requirementUUID = '${requirementUUID}';
@@ -166,7 +165,7 @@ function publicRequirementProfile(requirementUUID){
 	
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&contactUUID="+contactUUID, 	   
+	    url: sourceleadUrl+"/ws/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&contactUUID="+contactUUID, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var result = "";

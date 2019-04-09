@@ -362,7 +362,7 @@ public class ProfessionalRequirementsController {
 
 		}
 	 
-	    @RequestMapping(value = "/app/getRequirementProfessionalProfileDetails" , method = RequestMethod.GET)
+	    @RequestMapping(value = "/app/ws/getRequirementProfessionalProfileDetails" , method = RequestMethod.GET)
 		public  @ResponseBody String getRequirementProfessionalProfileDetails(@RequestParam(value="requirementUUID", required=false) String  requirementUUID,
 				@RequestParam(value="referUUID", required=false) String  referUUID,HttpServletRequest request) throws Exception {
 		        String resultJson;
@@ -421,7 +421,7 @@ public class ProfessionalRequirementsController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/app/referRequirementToProfessional")
+	 @RequestMapping(value = "/app/ws/referRequirementToProfessional")
 		public ModelAndView referRequirementToProfessional(@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 				@RequestParam(value = "contactUUID", required = false) String contactUUID,
 				@RequestParam(value = "referUUID", required = false) String referUUID) {
