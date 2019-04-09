@@ -6750,28 +6750,3 @@ function genarateInvoiceFromDashboard(orgRelationId,submissionId,candidateId){
    });  
 }
 // Invoice end here>>>>>>>>>>>>.
-function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId,addressId){
-	$("#"+locationId).val('');
-	$("#"+stateId).val('');
-	$("#"+cityId).val('');
-	$("#"+zipCodeId).val('');
-	$("#"+addressId).val('');
-	$("#"+countryId).val('');
-	$("#"+countryId).trigger("chosen:updated");
-}
-
-function zipcodeMask(country,zipCodeId){
-	
-	if(country == "India" || country == "Singapore"){
-		 $("#"+zipCodeId).mask("999999");
-	}else if(country == "United States" || country == "France"){
-		$("#"+zipCodeId).mask("99999");
-	}else if(country == "Australia"){
-		$("#"+zipCodeId).mask("9999");
-	}else if(country == "United Kingdom"){
-		$("#"+zipCodeId).mask("aa99");
-	}else{
-		$("#"+zipCodeId).mask("999999");
-	}
-		     
-}

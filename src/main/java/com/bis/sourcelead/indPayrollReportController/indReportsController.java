@@ -46,6 +46,7 @@ import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.indPayroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -93,6 +94,10 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 	
 	@Autowired
 	private EmployeesService employeesService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 		
 		 @RequestMapping(value = "/indPayrollReportList")
 			public ModelAndView indPayrollReportList(HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -567,7 +572,8 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		    
 		    @RequestMapping(value ="/indPayrollSaleryStatementReport")
 			public @ResponseBody List<IndEmployeePayrollDTO> indPayrollSaleryStatementReport(IndEmployeePayrollDTO indEmployeePayrollDTO,HttpServletRequest request)throws Exception{
-					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			        OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			    	List<IndEmployeePayrollDTO> salareyStatementReportList = indPaysheetFrequencyService.getPayrollSalaryStatementReportList(indEmployeePayrollDTO, orgLocations);
 			    	Map<String, List<IndEmployeePayrollDTO>> map = salareyStatementReportList.stream().collect(Collectors.groupingBy(IndEmployeePayrollDTO :: getPayHeadName,Collectors.toList()));
 			    	Map<BigInteger, List<IndEmployeePayrollDTO>> canMap = salareyStatementReportList.stream().collect(Collectors.groupingBy(IndEmployeePayrollDTO::getCanId,Collectors.toList()));
@@ -850,9 +856,10 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		    
 		    
 		    @RequestMapping(value = "/getFromMonthNames", method = RequestMethod.POST)
-		   	public List<String> getMonthNames(@RequestParam(value="financialYear", required=false) String financialYear , HttpServletRequest request, HttpServletResponse response) throws Exception
+		   	public @ResponseBody List<String> getMonthNames(@RequestParam(value="financialYear", required=false) String financialYear , HttpServletRequest request, HttpServletResponse response) throws Exception
 		   	{
-		        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		        Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		        OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 			     List<Date> finYearList = iNDPayrollCommonUtil.getFinancialYearStartAndEndDateByOrgLocations(orgLocation, financialYear);
 			     java.sql.Date freqStartDate = new java.sql.Date(finYearList.get(0).getTime());
 			     java.sql.Date freqEndDate = new java.sql.Date(finYearList.get(1).getTime());
@@ -874,10 +881,11 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		    
 		    
 		    @RequestMapping(value = "/getToMonthNames", method = RequestMethod.POST)
-		   	public List<String> getToMonthNames(@RequestParam(value="financialYear", required=false) String financialYear,
+		   	public @ResponseBody List<String> getToMonthNames(@RequestParam(value="financialYear", required=false) String financialYear,
 		   			@RequestParam(value="fromMonth", required=false) String fromMonth,HttpServletRequest request, HttpServletResponse response) throws Exception
 		   	{
-		        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    	Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		        OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		        
 		        String[] selectMonth = fromMonth.split("-");
 		        //Start Year
