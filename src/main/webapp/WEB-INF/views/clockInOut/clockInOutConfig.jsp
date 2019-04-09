@@ -24,7 +24,7 @@
       <div class="pull-left">
         <h2>Clock in & Clock out</h2>
       </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/settings">Settings</a> &raquo;Clock In & Clock Out</div>
+          <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${appPath}/settings">Settings</a> &raquo;Clock In & Clock Out</div>
 
     </section>
     
