@@ -227,7 +227,7 @@ function changeActiveAccount(associateBankId,candidateId,userId) {
   function addAssociateBankPopUp(){
 	  $("#adEdBankingDetails, .mask").fadeIn();
 	  $("#save_associate_bank_data_button").removeAttr("disabled");
-	  resetValues();
+	  resetValuesWhileAdd();
   }
   
   	function closeadEdBankingDetailsPop(){
@@ -250,6 +250,7 @@ function changeActiveAccount(associateBankId,candidateId,userId) {
         	   $("#accountNumber").val(json.accountNumber);
         	   $("#routingNumber").val(json.routingNumber);
         	   editAssociateBankPopUp();
+        	   showHideAccountTypes();
            },
 	  });
   }
@@ -293,6 +294,16 @@ function showHideAccountTypes(){
 
 <script>
 function resetValues(){
+	$("#bankName").val('');
+	$("#accountNumber").val('');
+	$("#routingNumber").val('');
+// 	$("#id").val('');
+}
+</script>
+
+<script>
+function resetValuesWhileAdd(){
+	$("#accountType").val('');
 	$("#bankName").val('');
 	$("#accountNumber").val('');
 	$("#routingNumber").val('');
