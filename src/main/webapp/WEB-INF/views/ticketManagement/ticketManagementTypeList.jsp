@@ -145,7 +145,9 @@
 		            "render": function ( data, type, opt, meta ) {
 		            		var result = "";
 	           		   if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
+
 		     	        	result = result + '<td><div  class="tbldata-dotdot-large" title=\'' + opt.description + '\'>'+opt.description+'</div></td>';
+
 	           		   } else {
 							result = result +"<td><div>-----</div></td>";
 	           	       }

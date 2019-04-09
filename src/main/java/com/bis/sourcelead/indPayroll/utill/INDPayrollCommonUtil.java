@@ -1041,7 +1041,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	    					    }else if(res1 == -1) {
 	    					    	  dyHours = (avgHrs * leaves);
 	    					    }
-	    						lopAmt = payrollUtil.getTotalAmount(dyHours, hourlyRate);
+	    						lopAmt = payrollUtil.getTotalAmountForDouble(dyHours, hourlyRate);
 	    				 }
 	    			 }
 	    			 payrollLopHis.setLopAmount(lopAmt);

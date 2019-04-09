@@ -295,7 +295,9 @@ var Signer = (function() {
     	            }
         	  });
         }else{
-        	 $("#signatoryNameDiv").append("<p class='jquery_form_error_message'>Signatory Name Is Required</p>");
+       	 $("#signatoryNameDiv").find('p.jquery_form_error_message').remove();
+         $("#signatoryNameDiv").append("<p class='jquery_form_error_message'>Signatory Name Is Required</p>");
+         $("#signPreview").hide();
         }
        
     }
