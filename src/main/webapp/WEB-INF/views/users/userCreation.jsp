@@ -31,7 +31,7 @@
 <script>	
 	$(document).ready(function() {
 		var location = "${location}";
-		document.getElementById("").reset();
+		document.getElementById("createUser_form").reset();
 			<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	   		  <c:if test="${sectionOrder.index == 0}">
 				  var sectionId = '${section.id}';
@@ -1786,11 +1786,3 @@ function calculateConfirmationDate(){
 }
 
 </script>
-
-
-
-
-
-
-
-

@@ -254,7 +254,7 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 				
 				for (EmployeePayroll payroll : list1) {
 					USPayrollDTO usPayroll = new USPayrollDTO();
-					usPayroll.setRegularHours(Float.parseFloat(payroll.getRegularHours()));
+					usPayroll.setRegularHours(payroll.getRegularHours());
 					if(payroll.getOverTimeHours() != null)
 					usPayroll.setOvertimeHours(Double.parseDouble(payroll.getOverTimeHours()));
 					usPayroll.setGrossPay(payroll.getGrossPay());
@@ -334,7 +334,7 @@ public class PayrollReportServiceImpl implements PayrollReportService{
 				}
 		
 				
-				double totalRegularHours = employeePayList.stream().mapToDouble(reg ->reg.getRegularHours()).sum();
+				double totalRegularHours = employeePayList.stream().mapToDouble(reg ->Double.parseDouble(reg.getRegularHours())).sum();
 				double totalOvertimeHours = employeePayList.stream().mapToDouble(reg ->reg.getOvertimeHours()).sum();
 				BigDecimal totalGrossPay = employeePayList.stream().map(USPayrollDTO::getGrossPay).reduce(BigDecimal.ZERO, BigDecimal::add);
 				BigDecimal totalNetPay = employeePayList.stream().map(USPayrollDTO::getNetPay).reduce(BigDecimal.ZERO, BigDecimal::add);

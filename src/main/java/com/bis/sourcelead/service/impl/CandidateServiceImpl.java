@@ -1463,7 +1463,15 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setDesignation(null);
 			}
 			
+			 if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+				    OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+					candidate.setWorkLocation(workLocation);
+			 }else {
+			    	candidate.setWorkLocation(orgLocations);
+			 }
+			
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
+				candidateDTO.setWorkLocation(candidate.getWorkLocation().getId());
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
 				candidate.setOrgRelationId(orgRelation);
 				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, candidateUser);
@@ -1506,14 +1514,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(StringUtils.isNotBlank(candidateUser.getMaritalStatus())) {
 			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
 		}
-		
-	    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
-		    OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
-			candidate.setWorkLocation(workLocation);
-	    }else {
-	    	candidate.setWorkLocation(orgLocations);
-	    }
-		
 		  
 	    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
 	    	candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
@@ -1734,7 +1734,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate = new Candidate();
 							MasterCandidate masterCandidate = new MasterCandidate();
 							masterCandidate.setId(candidate.getMasterCandidateId().getId());
-							vendorCandidate.setWorkLocation(orgLocations);
+							vendorCandidate.setWorkLocation(candidate.getWorkLocation());
 							vendorCandidate.setMasterCandidateId(masterCandidate);
 							vendorCandidate.setParentCandidateId(candidate);
 							vendorCandidate.setConsultantUser(candidate.getConsultantUser());

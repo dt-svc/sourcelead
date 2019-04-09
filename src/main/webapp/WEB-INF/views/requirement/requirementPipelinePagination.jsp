@@ -254,8 +254,8 @@
 															+ expexted
 															+ '</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 													}else{
-														var expexted = (opt.proposedSubmissionRate != ''
-															&& opt.proposedSubmissionRate != 'undefined' && opt.proposedSubmissionRate != null) ? opt.proposedSubmissionRate
+														var expexted = (opt.expectedCTC != ''
+															&& opt.expectedCTC != 'undefined' && opt.expectedCTC != null) ? opt.expectedCTC
 															: '<i class="glyphicon fa fa-money"></i>';
 														result = result
 														+ '         <td><div><span class="showRate">'
@@ -287,8 +287,8 @@
 															+ opt.expectedRate
 															+ '</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 													}else{
-														var expexted = (opt.proposedSubmissionRate != ''
-															&& opt.proposedSubmissionRate != 'undefined' && opt.proposedSubmissionRate != null) ? opt.proposedSubmissionRate
+														var expexted = (opt.expectedRate != ''
+															&& opt.expectedRate != 'undefined' && opt.expectedRate != null) ? opt.expectedRate
 															: '<i class="glyphicon fa fa-money"></i>';
 														result = result
 														+ '         <td><div><span class="showRate">'
@@ -319,8 +319,8 @@
 															+ expexted
 															+ '</span><i class="ratepop rate_pop" id="ratepop"></div></td>';
 													}else{
-														var expexted = (opt.proposedSubmissionRate != ''
-															&& opt.proposedSubmissionRate != 'undefined' && opt.proposedSubmissionRate != null) ? opt.proposedSubmissionRate
+														var expexted = (opt.expectedCTC != ''
+															&& opt.expectedCTC != 'undefined' && opt.expectedCTC != null) ? opt.expectedCTC
 															: '<i class="glyphicon fa fa-money"></i>';
 														result = result
 														+ '         <td><div><span class="showRate">'
@@ -547,7 +547,7 @@
 														result = result + "<option value='On Hold'>On Hold</option>";
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 													}
-													if(opt.submissionStatus == 'OFFERMADE'){
+													if(opt.submissionStatus == 'OFFERMADE' && opt.previousSubmissionStatus != 'CLIENT_INTERVIEW'){
 														result = result + "<option value='On Hold'>On Hold</option>";
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 													}
