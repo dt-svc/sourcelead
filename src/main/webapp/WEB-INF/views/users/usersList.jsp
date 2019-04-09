@@ -552,7 +552,7 @@ $(document).keyup(function(e) {
 
 </script>
 
-<!-- <script>
+<script>
 function resetFilter(){
 	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
@@ -562,13 +562,23 @@ function resetFilter(){
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
 	$("#dynamicUserDataTableSearch").val('');
+	$("#myManagersInput").val('');
+	$("#myRolesInput").val('');
+	$("#myClientsInput").val('');
+	$("#myTeamsInput").val('');
+	$("#myDepartmentInput").val('');
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
 	
+	myManagersFunction();
+	myRolesFunction();
+	myClientsFunction();
+	myTeamsFunction();
+	myDepartmentFunction();
 	getDynamciUserList();
 }
-</script> -->
+</script>
 
 
 <script>
@@ -1523,23 +1533,5 @@ $(".overIcon, .newActPop").click(function(e){
 });	
 
 
-</script>
-
-<script>
-	$("#clear_search").click(function(){
-		$("ul#myRolesUL > li input:checkbox").prop("checked",false);
-		$("ul#statusFilter > li input:checkbox").prop("checked",false);
-		$("ul#myClientsUL > li input:checkbox").prop("checked",false);
-		$("ul#myManagersUL > li input:checkbox").prop("checked",false);
-		$("ul#myTeamsUL > li input:checkbox").prop("checked",false);
-		$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
-		$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
-		$("#dynamicUserDataTableSearch").val('');
-		
-		document.getElementById("activeStatus").checked = true;
-		document.getElementById("notloggedInStatus").checked = true;
-		
-// 		getDynamciUserList();
-	});
 </script>
     
