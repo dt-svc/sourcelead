@@ -12,7 +12,7 @@ public interface AppliedLeaveDateDao {
 	
 	public List<AppliedLeaveDate> getAppliedLeaveDateByUserId(Long userId,Date sDate,Date eDate);
 	
-	public Map<String,Float> getAppliedLeaveDateAndHolidayHoursByUserId(Long userId,Date sDate,Date eDate);
+	public Map<String,Float> getAppliedLeaveDateAndHolidayHoursByUserId(Long userId,Date sDate,Date eDate,Long worklocationId);
 
 	int deleteAppliedLeaveDatesByLeaveId(Long leaveId);
 

@@ -430,7 +430,12 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 						otTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(payroll.getOverTimeHours()),otTotalHours);
 						otTotalAmount = otTotalAmount.add(payroll.getOverTimeAmount());
 					}
-					
+					Date todayDate = new Date();
+					 if (todayDate.after(payroll.getPayCheckDate())) {
+						 myPayrollDTO.setEnablePayslip(true); 
+					 }else {
+						 myPayrollDTO.setEnablePayslip(false);
+					 }
 					
 					list.add(myPayrollDTO);
 				}
