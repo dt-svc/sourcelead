@@ -421,7 +421,7 @@ public class ProfessionalRequirementsController {
 	 
 	 
 	 
-	 @RequestMapping(value = "/app/referRequirementToProfessional")
+	 @RequestMapping(value = "/app/ws/referRequirementToProfessional")
 		public ModelAndView referRequirementToProfessional(@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 				@RequestParam(value = "contactUUID", required = false) String contactUUID,
 				@RequestParam(value = "referUUID", required = false) String referUUID) {
