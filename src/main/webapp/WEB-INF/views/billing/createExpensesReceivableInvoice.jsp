@@ -860,7 +860,7 @@ function populateInlineItemsGrid(){
 		 var subTotal = $("#inoviceTotal").val();
 		 if(quantity != ''){
 		     var totlalAmount = parseFloat(rate) * parseFloat(quantity);
-		     var subtractTotal = subTotal - totlalAmount.toFixed(2)
+		     var subtractTotal = subTotal - totlalAmount.toFixed(3)
 		     $('#inoviceTotal').val(subtractTotal);
 		     $("#hiddenTotal").val(subtractTotal);
 		     
@@ -1006,11 +1006,11 @@ function calculateSum(){
 	    		
 	    	 } 
 	 }  
-	  $("#inoviceTotal").val(sum.toFixed(2));
-	  $("#subTotal").val(sum.toFixed(2));
-	  $("#grandTotal").val(sum.toFixed(2));
-	  $("#conversionFrom").val(sum.toFixed(2));
-	  $("#afterDiscountTotal").val(sum.toFixed(2));
+	  $("#inoviceTotal").val(sum.toFixed(3));
+	  $("#subTotal").val(sum.toFixed(3));
+	  $("#grandTotal").val(sum.toFixed(3));
+	  $("#conversionFrom").val(sum.toFixed(3));
+	  $("#afterDiscountTotal").val(sum.toFixed(3));
 	  calculateDisCount();
 	  calculateTaxDiscount();
 }
@@ -1030,9 +1030,9 @@ function calculateDisCount(){
 			$("#discountTotal").val(discountValue);
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -1043,12 +1043,12 @@ function calculateDisCount(){
 		if(discountValue && subTotal > 0){
 			var perCentValue = (subTotal * discountValue)/100;
 			total = subTotal - perCentValue;
-			$("#discountTotal").val(perCentValue.toFixed(2));
+			$("#discountTotal").val(perCentValue.toFixed(3));
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
@@ -1242,8 +1242,8 @@ function calculateTaxDiscount(){
 	}
 	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
-	 $("#grandTotal").val(grandTotal.toFixed(2));
-	$("#conversionFrom").val(grandTotal.toFixed(2));
+	 $("#grandTotal").val(grandTotal.toFixed(3));
+	$("#conversionFrom").val(grandTotal.toFixed(3));
 	/* conversion(); */
 }
 </script>

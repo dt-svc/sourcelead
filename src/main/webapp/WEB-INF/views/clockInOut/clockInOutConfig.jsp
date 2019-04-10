@@ -24,11 +24,12 @@
       <div class="pull-left">
         <h2>Clock in & Clock out</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Settings &raquo; Clock in & Clock out</div>
+          <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${appPath}/settings">Settings</a> &raquo;Clock In & Clock Out</div>
+
     </section>
     
     <form name="clock_InOut_form" id="clock_InOut_form">
-    <input type="hidden" id="clockInOutId" name="clockInOutId"/>
+    <input type="hidden" id="configId" name="clockInOutId"/>
     <div class="content-area clearfix timesheet_out pad20">
 		<div id="clockInOutLoading"></div>
         <div class="clockCta">
@@ -183,8 +184,8 @@ $(".popClose").click(function() {
  	      type: "GET",
        	  url:sourceleadUrl+"/getClockInOutConfigData",
          	success: function(data) {
+         		$("#configId").val(data.id);
          		displayAlreadyConfiguredData(data);
-         		$("#clockInOutId").val(data.id);
 	        },  
      });
  }
@@ -199,41 +200,42 @@ $(".popClose").click(function() {
 	 }
 	 
 	 if(data.isTrackTaskAssigned == true){
+		 
+		 if(data.isJobChecked == true){
+			 $("#a").prop("checked", true);
+		 }else{
+			 $("#a").prop("checked", false);
+		 }
+		 
+		 if(data.isProjectTasksChecked == true){
+			 $("#b").prop("checked", true);
+		 }else{
+			 $("#b").prop("checked", false);
+		 }
+		 
+		 if(data.isGeneralTaskChecked == true){
+			 $("#c").prop("checked", true);
+		 }else{
+			 $("#c").prop("checked", false);
+		 }
+		 
+		 if(data.isGoalChecked == true){
+			 $("#d").prop("checked", true);
+		 }else{
+			 $("#d").prop("checked", false);
+		 }
+		 
+		 if(data.isOtherChecked == true){
+			 $("#e").prop("checked", true);
+		 }else{
+			 $("#e").prop("checked", false);
+		 }
+		 
 		 $("#radio-4").prop("checked", true);
 		 $(".clockSub").show();
 	 }else{
 		 $("#radio-3").prop("checked", true);
 		 $(".clockSub").hide();
-	 }
-	 
-	 if(data.isJobChecked == true){
-		 $("#a").prop("checked", true);
-	 }else{
-		 $("#a").prop("checked", false);
-	 }
-	 
-	 if(data.isProjectTasksChecked == true){
-		 $("#b").prop("checked", true);
-	 }else{
-		 $("#b").prop("checked", false);
-	 }
-	 
-	 if(data.isGeneralTaskChecked == true){
-		 $("#c").prop("checked", true);
-	 }else{
-		 $("#c").prop("checked", false);
-	 }
-	 
-	 if(data.isGoalChecked == true){
-		 $("#d").prop("checked", true);
-	 }else{
-		 $("#d").prop("checked", false);
-	 }
-	 
-	 if(data.isOtherChecked == true){
-		 $("#e").prop("checked", true);
-	 }else{
-		 $("#e").prop("checked", false);
 	 }
 	 
 	 if(data.isClockInComment == true){

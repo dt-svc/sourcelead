@@ -625,6 +625,11 @@ public class TimesheetApprovalRestController {
 			if(conPM != null) {
 				 consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
 			}
+			
+			Long workLocationId = 0l;
+			if(conPM.getProjectMemberCandidteId() != null && conPM.getProjectMemberCandidteId().getWorkLocation() != null && conPM.getProjectMemberCandidteId().getWorkLocation().getId() != null) {
+				workLocationId = conPM.getProjectMemberCandidteId().getWorkLocation().getId();
+			}
 			Float totalHours = 0f;
 			Float estimatedTotalHours = 0f;
 			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(loginUser.getId(),projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId(),orgLocations.getId(),actualStartDate,actualEndDate,isglobalUser);
@@ -653,7 +658,7 @@ public class TimesheetApprovalRestController {
 				    	 }
 				    	 float leaveTotal = 0f;
 				    	 if(consultantUser != null) {
-				    		 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(consultantUser.getId(), entry.getKey(), entry.getValue());
+				    		 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(consultantUser.getId(), entry.getKey(), entry.getValue(),workLocationId);
 				    	     if(leaveTotalMap != null && !leaveTotalMap.isEmpty()) {
 				    	    	 leaveTotal = leaveTotalMap.get("TOTAL");
 				    	     }

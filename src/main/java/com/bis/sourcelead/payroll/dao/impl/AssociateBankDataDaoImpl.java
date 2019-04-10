@@ -127,7 +127,7 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 					connection.setAutoCommit(false);
 					CallableStatement stmt = connection.prepareCall("{call associateBankDataProcedure(?,?,?,?,?,?,?,?)}");
 					for (AssociateBankDataDTO bankDto : list) {
-						if(bankDto.getEmailId() !=null && !"".equalsIgnoreCase(bankDto.getEmailId())) {
+						if(bankDto.getEmailId() !=null && !"".equalsIgnoreCase(bankDto.getEmailId()) && map.get(bankDto.getEmailId()) != null) {
 							stmt.setLong(1, map.get(bankDto.getEmailId()));
 						}else {
 							stmt.setLong(1, 0);							

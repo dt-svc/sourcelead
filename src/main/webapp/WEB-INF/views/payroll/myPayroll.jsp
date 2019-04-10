@@ -567,7 +567,11 @@ function getMyPayrollList(){
 	 	        result = result +'<td>';
 	 	        result = result +'<div class="tblminwidth-30">';
 	 	        result = result +'<a href="#" class="anchorBlack" title="View"><i class="fa fa-eye" onclick="payAdjustment(\''+json.payrollUUID+'\',\'APPROVED\');"></i></a>';
-	 	        result = result +'<a download href="'+json.paySlipFileURL+'" class="anchorBlack ml5" title="Download"><i class="fa fa-download"></i></a>';
+	 	        if(json.enablePayslip == true){
+		 	        result = result +'<a download href="'+json.paySlipFileURL+'" class="anchorBlack ml5" title="Download"><i class="fa fa-download"></i></a>';
+	
+	 	        }
+	 	        
 	 	        result = result +'</div>';
 	 	        result = result +'</td>';
 	 	        result = result +'</tr>';

@@ -38,7 +38,7 @@
 </section>
 
 
-    <div class="vendor_wrap positionRelative">
+    <div class="positionRelative">
     
     
 <div class="reportHead">

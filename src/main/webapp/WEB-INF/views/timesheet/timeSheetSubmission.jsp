@@ -221,7 +221,7 @@
 					<a href="#" onclick="timesheetDivByFrequency('${tsf.key}');">${tsf.value}</a>
 				</li>
 		   </c:forEach>
-		   <c:if 	test="${timesheetSubmissionDTO.timesheetStatus != 'NEW'}">
+		  <%--  <c:if 	test="${timesheetSubmissionDTO.timesheetStatus != 'NEW'}">
 					<div class="export dropdown">
 				<p class="dropdown-toggle" data-toggle="dropdown">
 					<i class="glyphicon glyphicon-export"></i>Export <i
@@ -237,7 +237,8 @@
 				</ul>
 			</div>
 			<div class="clearfix"></div>
-		</c:if>
+		</c:if> 
+		   <div class="clearfix"></div>--%>
 		   <div class="clearfix"></div>
 		</ul>
 			<div id="timesheetDivByTab">
@@ -2005,6 +2006,11 @@ function newSaveTimesheet(status){
 <script type="text/javascript">
 function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMembersId,from){
 	    $('#notifyLink').val('');
+	    $('#hedderAcceptRejectButton').hide();
+	    $(".checkBoxForSubmitForApproval").each(function () {
+	    	$(this).removeProp('checked');
+ 	    }); 
+	    $('#selectAllTimeSheetCheckBoxForSubmitForApproval').removeProp('checked');
 		 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
 	    	 $(".side_mask").fadeOut(200); 
