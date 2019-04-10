@@ -161,6 +161,7 @@ function getUsersSearchResult(searchValue){
       </div>
       </section>
 	    
+	       <div id="resetDiv">
 				<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
 				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
@@ -318,11 +319,12 @@ function getUsersSearchResult(searchValue){
 						</div>
 					</div>
 				</div>
+			</div>
       
       <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
       
       <div class="positionRelative reportHead clearfix">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+<!--       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
@@ -559,10 +561,20 @@ function resetFilter(){
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
 	$("#dynamicUserDataTableSearch").val('');
+	$("#myManagersInput").val('');
+	$("#myRolesInput").val('');
+	$("#myClientsInput").val('');
+	$("#myTeamsInput").val('');
+	$("#myDepartmentInput").val('');
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
 	
+	myManagersFunction();
+	myRolesFunction();
+	myClientsFunction();
+	myTeamsFunction();
+	myDepartmentFunction();
 	getDynamciUserList();
 }
 </script>

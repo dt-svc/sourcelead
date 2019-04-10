@@ -285,7 +285,7 @@ public class EmailScenarioConfigurationRestController {
 				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    		if (user != null) {
-		    			List<EmailScenarioConfiguration> parserMailList=emailScenarioconService.getConfParserMailList(orgLocation.getId(),Constants.JOB_PARSING);
+		    			List<EmailScenarioConfiguration> parserMailList=emailScenarioconService.getConfParserMailList(orgLocation.getId(),Constants.RESUME_PARSING);
 		    			if(parserMailList != null){
 		    				response.setData(parserMailList);
 		    				response.setResponse(Result.SUCCESS.name());

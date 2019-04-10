@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.dto.TicketCategoryDTO;
 import com.bis.sourcelead.dto.TicketCommentDTO;
 import com.bis.sourcelead.dto.TicketDTO;
@@ -65,13 +66,13 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = "/dumpTicketManagementData")
 	@ResponseBody
-	public String dumpTicketManagementPreDefinedValuesToAllOrgLocations(HttpServletRequest request) {
+	public String dumpTicketManagementPreDefinedValuesToAllOrgLocations(HttpServletRequest request, @RequestParam(defaultValue="") long orgLocationId) {
 		int count = 0;
 		try {
 			if(request.getSession().getAttribute("dumpTicketManagementData") == null || (!(Boolean) request.getSession().getAttribute("dumpTicketManagementData"))) {
 				request.getSession().setAttribute("dumpTicketManagementData", true);
 				System.out.println("-------- Stated Dump of pre-defined Ticket Management values to all OrgLocations --------");
-				count = ticketManagementService.dumpTicketManagementPreDefinedValuesToAllOrgLocations();
+				count = ticketManagementService.dumpTicketManagementPreDefinedValuesToAllOrgLocations(orgLocationId);
 				System.out.println("-------- Completed Dump of pre-defined Ticket Management values to all OrgLocations --------");
 			}
 		} catch (Exception e) {
@@ -82,14 +83,25 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = {"/getTicketTypeList", "/rest/getTicketTypeList"}, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketTypeDTO> getTicketTypeList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
+	public ResponseList<TicketTypeDTO> getTicketTypeList(HttpServletRequest request, SearchDTO searchDTO) {
 		ResponseList<TicketTypeDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
+				String[] tableColumns = {"id","name", "description"};
+				int sortColumnIndex = 0; //by default sorting using id
+				boolean sortColumnOrder = false; //by default descending order
+				if(searchDTO.getOrder() != null && !searchDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(searchDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = !searchDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");					
+				}
+				searchDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				searchDTO.setSortOrder(sortColumnOrder ? "asc" : "desc");
+				
+				
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<TicketTypeDTO> ticketTypeDTOList = ticketManagementService.getTicketTypeListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue);
+				List<TicketTypeDTO> ticketTypeDTOList = ticketManagementService.getTicketTypeListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchDTO);
 				responseList.setData(ticketTypeDTOList);
 				responseList.setRecordsTotal(ticketTypeDTOList.size());
 				responseList.setRecordsFiltered(ticketTypeDTOList.size());
@@ -207,14 +219,24 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = {"/getTicketCategoryList", "/rest/getTicketCategoryList"}, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketCategoryDTO> getTicketCategoryList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
+	public ResponseList<TicketCategoryDTO> getTicketCategoryList(HttpServletRequest request, SearchDTO searchDTO) {
 		ResponseList<TicketCategoryDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
+				String[] tableColumns = {"id","name", "description"};
+				int sortColumnIndex = 0; //by default sorting using id
+				boolean sortColumnOrder = false; //by default descending order
+				if(searchDTO.getOrder() != null && !searchDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(searchDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = !searchDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");					
+				}
+				searchDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				searchDTO.setSortOrder(sortColumnOrder ? "asc" : "desc");
+				
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<TicketCategoryDTO> ticketCategoryDTOList = ticketManagementService.getTicketCategoryListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue); 
+				List<TicketCategoryDTO> ticketCategoryDTOList = ticketManagementService.getTicketCategoryListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchDTO); 
 				responseList.setData(ticketCategoryDTOList);
 				responseList.setRecordsTotal(ticketCategoryDTOList.size());
 				responseList.setRecordsFiltered(ticketCategoryDTOList.size());
@@ -333,14 +355,24 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = {"/getTicketPriorityList", "/rest/getTicketPriorityList"}, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketPriorityDTO> getTicketPriorityList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
+	public ResponseList<TicketPriorityDTO> getTicketPriorityList(HttpServletRequest request, SearchDTO searchDTO) {
 		ResponseList<TicketPriorityDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
+				String[] tableColumns = {"id", "", "name", "description"};
+				int sortColumnIndex = 0; //by default sorting using id
+				boolean sortColumnOrder = false; //by default descending order
+				if(searchDTO.getOrder() != null && !searchDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(searchDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = !searchDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");					
+				}
+				searchDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				searchDTO.setSortOrder(sortColumnOrder ? "asc" : "desc");
+				
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<TicketPriorityDTO> ticketPriorityDTOList = ticketManagementService.getTicketPriorityListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue);
+				List<TicketPriorityDTO> ticketPriorityDTOList = ticketManagementService.getTicketPriorityListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchDTO);
 				responseList.setData(ticketPriorityDTOList);
 				responseList.setRecordsTotal(ticketPriorityDTOList.size());
 				responseList.setRecordsFiltered(ticketPriorityDTOList.size());
@@ -460,14 +492,24 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = {"/getTicketStatusList", "/rest/getTicketStatusList"}, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketStatusDTO> getTicketStatusList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
+	public ResponseList<TicketStatusDTO> getTicketStatusList(HttpServletRequest request, SearchDTO searchDTO) {
 		ResponseList<TicketStatusDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
+				String[] tableColumns = {"id","name", "description", "isCommentRequired"};
+				int sortColumnIndex = 0; //by default sorting using id
+				boolean sortColumnOrder = false; //by default descending order
+				if(searchDTO.getOrder() != null && !searchDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(searchDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = !searchDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");					
+				}
+				searchDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				searchDTO.setSortOrder(sortColumnOrder ? "asc" : "desc");
+				
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<TicketStatusDTO> ticketStatusDTOList = ticketManagementService.getTicketStatusListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue); 
+				List<TicketStatusDTO> ticketStatusDTOList = ticketManagementService.getTicketStatusListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchDTO); 
 				responseList.setData(ticketStatusDTOList);
 				responseList.setRecordsTotal(ticketStatusDTOList.size());
 				responseList.setRecordsFiltered(ticketStatusDTOList.size());
@@ -712,7 +754,12 @@ public class TicketManagementRestController {
 		}
 		return response;
 	}
-
+	
+	@RequestMapping(value = {"/rest/changeTicketManagementStatus"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> deleteTicketForMobile(HttpServletRequest request, @RequestParam(defaultValue = "0") long ticketId, @RequestParam(defaultValue = "1") int status) {
+		return deleteTicket(request, ticketId, status);
+	}
 
 	@RequestMapping(value = "/rest/ticketSummary")
 	public Response<TicketDTO> getTicketSummary(HttpServletRequest request, @RequestParam(defaultValue = "") String uuid) {
@@ -866,7 +913,7 @@ public class TicketManagementRestController {
 		return false;
 	}
 	
-	@RequestMapping(value = "/getCategoryAssignToListByTicketCategoryId", method = RequestMethod.POST)
+	@RequestMapping(value = {"/getCategoryAssignToListByTicketCategoryId", "/rest/getCategoryAssignToListByTicketCategoryId"}, method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<UserDTO> getAssignToListByCategoryId(HttpServletRequest request,@RequestParam(defaultValue = "0") long ticketCategoryId) {
 		ResponseList<UserDTO> responseList = new ResponseList<>();

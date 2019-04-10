@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -89,10 +90,10 @@ public class TicketManagementController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(user != null) {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			model.addObject("ticketTypeList", ticketManagementService.getTicketTypeListByOrgLocationId(orgLocations.getId(), 1, null));
-			model.addObject("ticketCategoryList", ticketManagementService.getTicketCategoryListByOrgLocationId(orgLocations.getId(),1, null));
-			model.addObject("ticketPriorityList", ticketManagementService.getTicketPriorityListByOrgLocationId(orgLocations.getId(),1, null));
-			model.addObject("ticketStatusList", ticketManagementService.getTicketStatusListByOrgLocationId(orgLocations.getId(),1, null));
+			model.addObject("ticketTypeList", ticketManagementService.getTicketTypeListByOrgLocationId(orgLocations.getId(), 1, new SearchDTO()));
+			model.addObject("ticketCategoryList", ticketManagementService.getTicketCategoryListByOrgLocationId(orgLocations.getId(),1, new SearchDTO()));
+			model.addObject("ticketPriorityList", ticketManagementService.getTicketPriorityListByOrgLocationId(orgLocations.getId(),1, new SearchDTO()));
+			model.addObject("ticketStatusList", ticketManagementService.getTicketStatusListByOrgLocationId(orgLocations.getId(),1, new SearchDTO()));
 			if(uuid != null && !uuid.isEmpty()) {
 				model.addObject("ticketSummary", ticketManagementService.getTicketSummaryByUUID(uuid, orgLocations.getId(), orgLocations.getDateFormat(), true));
 			}
@@ -110,7 +111,7 @@ public class TicketManagementController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(user != null) {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			model.addObject("statusList", ticketManagementService.getTicketStatusListByOrgLocationId(orgLocations.getId(), -1, null));
+			model.addObject("statusList", ticketManagementService.getTicketStatusListByOrgLocationId(orgLocations.getId(), -1, new SearchDTO()));
 			model.addObject("ticketSummary", ticketManagementService.getTicketSummaryByUUID(uuid, orgLocations.getId(), orgLocations.getDateFormat(), true));
 			//model.addObject("ticketComment", ticketManagementService.getTicketCommentByTicketId(ticketCommentDTO,ticketId,user.getId(),orgLocations.getId()));
 			model.addObject("loggedInUserId", user.getId());

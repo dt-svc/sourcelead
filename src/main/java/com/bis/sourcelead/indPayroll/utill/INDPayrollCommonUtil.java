@@ -50,13 +50,13 @@ import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.indPayroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.indPayroll.dto.PreCheckINDPayrollDTO;
 import com.bis.sourcelead.indPayroll.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.indPayroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
-import com.bis.sourcelead.payroll.dto.PreCheckINDPayrollDTO;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
@@ -944,14 +944,14 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	
 	
 	@SuppressWarnings("static-access")
-	public Double calculatePTforAssociate(AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate) throws ParseException {
+	public Double calculatePTforAssociate(AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate, StateTaxDTO taxDTO) throws ParseException {
 		Double ptAmount = 0.0;
 		if(assoSal != null && assoSal.getAssociateSalaryPayheadIndList() != null && assoSal.getAssociateSalaryPayheadIndList().size()>0) {
 			AssociateSalaryPayheadInd asph = assoSal.getAssociateSalaryPayheadIndList().stream().filter(h -> h.getPayrollPayhead().getShortCode().equalsIgnoreCase("BA")).findAny().get();
 			if(asph != null) {
-				List<String> financialYearStr = getFinancialYearByOrgLocationAndDate(asph.getPayrollPayhead().getOrgLocationId(), freqStartDate);
-				String financialYear = financialYearStr.get(0) + "-" + financialYearStr.get(1);
-				StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
+				//List<String> financialYearStr = getFinancialYearByOrgLocationAndDate(asph.getPayrollPayhead().getOrgLocationId(), freqStartDate);
+				//String financialYear = financialYearStr.get(0) + "-" + financialYearStr.get(1);
+				//StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
 				try {
 					if(taxDTO != null && taxDTO.getProfessionalTaxList().size()>0) {
 						ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(assoSal.getAnnualSalary()) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(assoSal.getAnnualSalary()) >= 0 ).findAny().get();
@@ -1041,7 +1041,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	    					    }else if(res1 == -1) {
 	    					    	  dyHours = (avgHrs * leaves);
 	    					    }
-	    						lopAmt = payrollUtil.getTotalAmount(dyHours, hourlyRate);
+	    						lopAmt = payrollUtil.getTotalAmountForDouble(dyHours, hourlyRate);
 	    				 }
 	    			 }
 	    			 payrollLopHis.setLopAmount(lopAmt);
@@ -1143,14 +1143,16 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		
 		List<String> financialYearStr = getFinancialYearByOrgLocationAndDate(orgLocation, freqStartDate);
 		
-		StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(orgLocation.getState(), financialYearStr.get(0) + "-" + financialYearStr.get(1));
-		if(taxDTO != null && taxDTO.getId() > 0) {
+		StateTaxDTO stateTaxDTO = taxService.getStateTaxByStateNameAndFinancialYear(orgLocation.getState(), financialYearStr.get(0) + "-" + financialYearStr.get(1));
+		preCheckINDPayrollDTO.setStateTaxDTO(stateTaxDTO);
+		if(stateTaxDTO != null && stateTaxDTO.getId() > 0) {
 			preCheckINDPayrollDTO.setIsPTConfigured(true);
 		}else {
 			preCheckINDPayrollDTO.setIsPTConfigured(false);
 		}
 		
 		List<Tds> tdsList = taxService.getTDSListByFinancialYear(financialYearStr.get(0) + "-" + financialYearStr.get(1));
+		preCheckINDPayrollDTO.setTdsList(tdsList);
 		if(tdsList != null && tdsList.size() > 0) {
 			preCheckINDPayrollDTO.setIsTDSConfigured(true);
 		}else {

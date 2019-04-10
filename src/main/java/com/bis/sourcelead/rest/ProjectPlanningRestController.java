@@ -743,6 +743,7 @@ public class ProjectPlanningRestController {
 										projectClients.setProjectId(projectPlanningRequest.getProjectId());
 										projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
 										projectClients.setOrgLocationsId(cand.getOrgLocationId());
+										projectClients.setOrgId(cand.getOrgLocationId().getOrg());
 										projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 										projectClients.setStatus(1);
 										
