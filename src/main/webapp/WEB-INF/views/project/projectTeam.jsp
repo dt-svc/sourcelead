@@ -976,7 +976,7 @@ function loadProjectMembersDetails(data,candidateName){
 	result = result + '	    <div class="clearfix mb10 col-md-6">';
 	result = result + '	      <label class="clearfix">%Of Work</label>';
 	result = result + '	      <div class="">';
-	result = result + '	        <input type="text" class="form-control inlineField"  id="percentageOfWork" value="'+percentageOfWork+'"  name="percentageOfWork" field-name="%Of Work"  data-validation-optional="true"  data-validation="validate_Space validate_int" onkeyup = "checkValue(this);">';
+	result = result + '	        <input type="text" class="form-control inlineField"  id="percentageOfWork" value="'+percentageOfWork+'"  name="percentageOfWork" field-name="%Of Work"  data-validation-optional="true"  data-validation="validate_Space validate_percentage_of_work" >';
 	result = result + '	      </div>';
 	result = result + '	    </div>';
 	result = result + '	    </div>';
@@ -1715,16 +1715,5 @@ function myTeamFunction() {
 
         }
     }
-}
-</script>
-<script>
-function checkValue(ele){
-	var work = $(ele).val();
-	if(work >= 100){
-		if($(ele).next('p.jquery_form_error_message').length === 0) 
-			$(ele).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'>% of work should not be more than 100");
-	}else{
-		$(ele).next('p.jquery_form_error_message').remove();
-	}
 }
 </script>
