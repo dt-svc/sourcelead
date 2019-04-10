@@ -333,7 +333,13 @@ function projectTaskPaginations(url){
 						taskStaus = "--"
 					}
                 	var result = "";
-                	result = result	+ '<td><div class="tbldata-dotdot_80" title="'+opt.taskStaus+'">'+taskStaus+'</div></td>';
+                	result = result	+ '<td><div class="tbldata-dotdot_100" title="'+opt.taskStaus+'">';
+                	result = result	+ '             <select class="form-control sel" id="taskStatusId'+opt.id+'" onchange="changeTaskStatus('+opt.id+');">';
+        			result = result	+ '              <c:forEach var="Status" items="${taskStatusList}">    ';   
+        			result = result	+ '		             <option value="${Status.id}" ' + (parseInt("${Status.id}") === opt.taskStausId ? "selected='selected'" : "") + '>${Status.name}</option>';   
+        			result = result	+ ' 			 </c:forEach>';  
+        			result = result	+ '             </select>'; 
+        			result = result	+ '             </div></td>';  
     	              return result;
                 }
           },
@@ -420,6 +426,18 @@ function deleteProjectTask(projectTaskId){
 function cancelTermination(){
 	$("#taskDeletePopUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
+}
+function changeTaskStatus(projectTaskId){
+	var sourceleadUrl = '${sourceleadUrl}';
+	var projectClientUUID = '${projectClientUUID}';
+	var taskStatusId = $("#taskStatusId"+projectTaskId+"").val();
+	  $.ajax({
+		type : "POST",
+		url : sourceleadUrl	+ "/ProjectTasks/changeTaskStatusByList?${_csrf.parameterName}=${_csrf.token}&taskId="+projectTaskId+"&taskStatusId="+taskStatusId+"&projectClientUUID="+projectClientUUID,
+		success : function(json) {
+			projectTaskList();
+		}
+	});  
 }
 </script>
  
