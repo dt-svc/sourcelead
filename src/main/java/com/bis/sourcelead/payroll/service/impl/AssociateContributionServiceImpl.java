@@ -217,49 +217,64 @@ public class AssociateContributionServiceImpl implements AssociateContributionSe
 				boolean isValid = isValidTemplate(rowIterator);
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
-					AssociateContribution assContribution = new AssociateContribution();
-					AssociateDeduction assDeduction = new AssociateDeduction();
+				
 					
 					if (row.getRowNum() > 0 && row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) { // Excluding column names
-//						isValidated = validateAssociateDedAndContriExeclData(row,fileName,contriDataDTO,canMap,contriMap,dedMap);
 						if(isValid) {
-							
+							PayrollContribution pc = null;
+							AssociateContribution assContribution = null;
+							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()) && row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString())) {
+								pc = payrollContributionDao.getContributionByDeductionTypeAndLocationId(getCellValueAsString(row.getCell(2), fileName), orgLocations.getId());
+								assContribution = associateContributionDao.findAssociateContributionById(pc.getId());
+								if(assContribution == null) {
+									assContribution = new AssociateContribution();
+								}
 							if(row.getCell(1) != null  && !"".equalsIgnoreCase(row.getCell(1).toString())) {
 								if(!canMap.isEmpty()) {
 									if(canMap.get(getCellValueAsString(row.getCell(1), fileName)) != null) {
 										assContribution.setCandidate(canMap.get(getCellValueAsString(row.getCell(1), fileName)).get(0));
-										assDeduction.setCandidate(canMap.get(getCellValueAsString(row.getCell(1), fileName)).get(0));
+										
 									}
 								}
 							}
 							if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())   ) {
-							PayrollContribution pc = null;
-							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()) && row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString())) {
-								pc = payrollContributionDao.getContributionByDeductionTypeAndLocationId(getCellValueAsString(row.getCell(2), fileName), orgLocations.getId());
+							
+							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()) && row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString()))
+							{
 								if(assContribution.getCandidate() != null) {
 									assContribution.setContributionTypeId(pc);
 									assContribution.setContributionAmount(new BigDecimal(getCellValueAsString(row.getCell(4), fileName)));
 									assContribution.setStatus(Constants.RECORD_ACTIVE);
 									assContribution.setContributionMethod(pc.getPayrollContributionMethod());
-									assContribution.setAssociateContributionUuid(RandomStringUtils.random(8));
 									assContribution.setCreatedDate(new Date());
+									assContribution.setOrgLocationId(orgLocations);
+									assContribution.setAssociateContributionUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 									assContribution.setUpdatedDate(new Date());
 									associateContributionDao.saveAssociateContribution(assContribution);
 								}
 							}
 							}
+							}
+							
 							
 							if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()))
 							{
 							PayrollDeduction pd = null;
+							AssociateDeduction assDeduction = null;
 							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()) && row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString())) {
 								pd = payrollDeductionService.getDeductionByDeductionTypeAndLocationId(getCellValueAsString(row.getCell(2), fileName), orgLocations.getId());
+								 assDeduction = associateDeductionDao.findAssociateDeductionById(pd.getId());
+								if(assDeduction == null) {
+									assDeduction = new AssociateDeduction();
+								}
+								assDeduction.setCandidate(canMap.get(getCellValueAsString(row.getCell(1), fileName)).get(0));
 								if(assDeduction.getCandidate() != null) {
 									assDeduction.setDeductionTypeId(pd);
 									assDeduction.setDeductionAmount(new BigDecimal(getCellValueAsString(row.getCell(3), fileName)));
 									assDeduction.setStatus(Constants.RECORD_ACTIVE);
 									assDeduction.setDeductionMethod(pd.getPayrollDeductionMethod());
-									assDeduction.setAssociateDeductionUuid(RandomStringUtils.random(8));
+									assDeduction.setOrgLocationId(orgLocations);
+									assDeduction.setAssociateDeductionUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 									assDeduction.setCreatedDate(new Date());
 									assDeduction.setUpdatedDate(new Date());
 									associateDeductionDao.saveAssociateDeduction(assDeduction);
