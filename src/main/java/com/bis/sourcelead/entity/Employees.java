@@ -137,7 +137,18 @@ public class Employees implements Serializable{
 	@Transient
     private String userType;
 	
+	@Transient
+	private String panNumber;
 	
+	
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
 	public Long getId() {
 		return id;
 	}
