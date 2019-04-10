@@ -2665,8 +2665,8 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						String lcaStatus = dataMigrationDTOJsonCopy.getString("lcaStatus").trim().toLowerCase();
 						if(lcaStatus.equalsIgnoreCase("Initiated")) {
 							dataMigrationDTOJsonCopy.put("lcaStatus", "Initiated");
-						}else if(lcaStatus.equalsIgnoreCase("In-progress")) {
-							dataMigrationDTOJsonCopy.put("lcaStatus", "In-progress");
+						 }else if(lcaStatus.equals("in progress") || lcaStatus.equalsIgnoreCase("In-progress") || lcaStatus.equalsIgnoreCase("In progress") || lcaStatus.equalsIgnoreCase("inprogress") || lcaStatus.equalsIgnoreCase("Inprogress")) {
+							 dataMigrationDTOJsonCopy.put("lcaStatus", "In progress");
 						}else if(lcaStatus.equalsIgnoreCase("Certified")) {
 							dataMigrationDTOJsonCopy.put("lcaStatus", "Certified");
 						}else if(lcaStatus.equalsIgnoreCase("Denied")) {
