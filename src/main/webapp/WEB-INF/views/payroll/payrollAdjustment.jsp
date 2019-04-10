@@ -258,9 +258,9 @@
 			            $("#totalEarnings").text(json.totalEarnings.toFixed(2));
 		            }
 		            
-		            $("#preRegularHours").val(json.regularHours.toFixed(2));
+		            $("#preRegularHours").val(json.regularHours);
 		            $("#preRegularHoursAmt").val(json.regularHrsTotalAmt.toFixed(2));
-		            $("#preOverTimeHours").val(json.overtimeHours.toFixed(2));
+		            $("#preOverTimeHours").val(json.overtimeHours);
 		            $("#preOverTimeHoursAmt").val(json.otHoursTotalAmt.toFixed(2));
 		            
 		            $("#totLopAmount").val(json.lopAmount);

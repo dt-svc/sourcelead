@@ -311,6 +311,11 @@ public class TimesheetReportsRestController {
 			 if(conPM != null) {
 				 pmUser = conPM.getProjectMemberCandidteId().getConsultantUser();
 			 }
+			 
+			 Long workLocationId = 0l;
+			 if(conPM.getProjectMemberCandidteId() != null && conPM.getProjectMemberCandidteId().getWorkLocation() != null && conPM.getProjectMemberCandidteId().getWorkLocation().getId() != null) {
+				workLocationId = conPM.getProjectMemberCandidteId().getWorkLocation().getId();
+			 }
 		     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate,isGlobalAccess);
 	    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
 		     float monthTotalHours            = 0f;
@@ -334,7 +339,7 @@ public class TimesheetReportsRestController {
 		    	    	Float leaveBillableTotal = 0f;
 		    	    	Float leaveNonBillableTotal = 0f;
 			    	    if(consultantUser != null) {
-			    	    	 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(pmUser.getId(), entry.getKey(), entry.getValue());
+			    	    	 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(pmUser.getId(), entry.getKey(), entry.getValue(),workLocationId);
 				    	     if(leaveTotalMap != null && !leaveTotalMap.isEmpty()) {
 				    	    	 leaveTotal = leaveTotalMap.get("TOTAL");
 				    	    	 leaveBillableTotal = leaveTotalMap.get("BILLABLE");
