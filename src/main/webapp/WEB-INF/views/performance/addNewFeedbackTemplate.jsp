@@ -15,9 +15,9 @@
 
     <section class="content-header clearfix">
 	    <div class="pull-left">
-	      <h2 class="pull-left">Feedback Template</h2>
+	      <h2 class="pull-left">Feedback Category</h2>
 	    </div>
-	    <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration'/>">Configuration</a> &raquo; <a onclick="performanceManagement.getFeedbackList();">Feddback List</a> &raquo; Feedback Template</div>
+	    <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration'/>">Configuration</a> &raquo; <a onclick="performanceManagement.getFeedbackList();">Feedback List</a> &raquo; Feedback Template</div>
 	 	<div class="clearfix"></div>
     </section>
     
@@ -30,7 +30,7 @@
 	           <input type="hidden" id="templateId">
      		      <div class="row mb">
 		            <div class="col-xs-12 col-md-6" id="templateNameDiv">
-		           <label>Template Name<span class="text-danger">&nbsp;*</label>
+		           <label>Category Name<span class="text-danger">&nbsp;*</label>
 			    	<div class="mt10">
 			    			<input type="text" class="form-control input-sm"  onblur="validateTemplateName()" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">
 			    	</div>
@@ -77,7 +77,7 @@
 	           
 	           
 	           <button type="submit" class="slBtn md colorBtn" id="save_button"  onclick="">Save</button>
-	           <button type="button" class="slBtn md popClose"  onClick="javascript:window.location.href = '<c:url value='${appPath}/performanceManagementConfiguration'/>'"  onclick="" >Cancel</button>
+	           <button type="button" class="slBtn md popClose"  onClick="performanceManagement.getFeedbackList();"  onclick="" >Cancel</button>
 	           
 	           </div>
 
