@@ -3473,6 +3473,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public String getCandidatePanNumberByUserId(long userId) {
 		return candidateDao.getCandidatePanNumberByUserId(userId);
 	}
+
+	@Override
+	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
+		return candidateDao.getOffshoreCandidatesByParentCandidateId(candidateId);
+	}
 	
 	
 }

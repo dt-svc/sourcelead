@@ -268,4 +268,6 @@ public interface CandidateDao {
 
 	public String getCandidatePanNumberByUserId(long userId);
 	
+	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception;
+	
 }
