@@ -123,7 +123,9 @@
 							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
-							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
+							<a title="Delete" 
+							onclick = 'deleteRequirementWorkflowStage("${requirementWorkFlowStages.uuid}","${requirementWorkFlowStages.requirementWorkFlowUuid}")'>
+							<i class="fa fa-trash"></i></a>
 						</li>
 						</c:if>	
 						<c:if test = "${requirementWorkFlowStages.editable == 'N'}">	
@@ -140,16 +142,40 @@
 		</c:if>
 		
 		<!-- dynamic content ends here -->
-		
+		<c:if test="${not empty requirementWorkFlowStagesDTO}">
+		<div style="display: none;" id = "stagesDto" value = "{requirementWorkFlowStagesDTO}"></div>
+		</c:if>
 		<div class="footerstyelsNew">
 	<div class="clearfix">
 		<div class="pull-right">
 		<input value="Save" class="btn btn-primary" type="button">
-		<input value="Cancel" class="btn btn-default ml" type="button">
+		<input value="Cancel" class="btn btn-default ml" type="button" onclick = "cancelViewWorkflow();">
 		</div>
 	</div>
 	</div>
     </div>
   </section>
 </div>
+<script>
+function deleteRequirementWorkflowStage(stageUuid, workflowUuid){
+	var stageDto = $("#stagesDto").val();
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl + "/deleteRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid,
+		success : function(dataList){
+			if(dataList == "Success"){
+				location.reload();
+			}else{
+				 showError("Operation failed, please try again");
+			}
+			}
+		});
+		
+}
+
+function cancelViewWorkflow(){
+	
+}
+
+</script>
 <jsp:include page="../masterFooter.jsp" /> 

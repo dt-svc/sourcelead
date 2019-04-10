@@ -345,7 +345,17 @@ function saveRequirementWorkflowStage(workflowUuid){
 	var stageName = $("#stageName").val();
 	var description = $("textarea#stageDescription").val();
 	var stageUuid = $("#workflowStageUuid").val();
-	var qTemplateId = $("#questionnaireTemplateId").val();
+	var qTemplateId = "";
+	
+	$('#questionnaireTemplateId option').each(function() {
+	    if($(this).is(':selected')) {
+	    	qTemplateId = $("#questionnaireTemplateId").val();
+	    }
+	    else{
+	    	qTemplateId = "";
+	    }
+	});
+
 	if(stageUuid == null){
 		stageUuid = $("#previousStageUuid").val();
 	}

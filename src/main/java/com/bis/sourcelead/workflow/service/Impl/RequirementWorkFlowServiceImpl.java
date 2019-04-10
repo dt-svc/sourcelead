@@ -351,7 +351,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		
 		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = new RequirementQuestionnaireTemplate(); 
 		RequirementWorkFlowStages newStages = new RequirementWorkFlowStages();
-		requirementQuestionnaireTemplate.setId(requirementWorkFlowStagesDTO.getRequirementQuestionnaireTemplateId());
+		
 		
 		OrgLocations orglocations = new OrgLocations();
 		orglocations.setId(id);
@@ -360,7 +360,12 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		RequirementWorkFlowStages workFlowStage = new RequirementWorkFlowStages();
 		workFlowStage.setId(newStages.getId());
 		workFlowStage.setRequirementWorkFlowId(requirementWorkFlowStages.getRequirementWorkFlowId());
+		
+		if(requirementWorkFlowStagesDTO.getRequirementQuestionnaireTemplateId() != null) {
+		requirementQuestionnaireTemplate.setId(requirementWorkFlowStagesDTO.getRequirementQuestionnaireTemplateId());
 		workFlowStage.setRequirementQuestionnaireTemplateId(requirementQuestionnaireTemplate);
+		}
+		
 		workFlowStage.setOrgLocationId(orglocations);
 		workFlowStage.setStageName(requirementWorkFlowStagesDTO.getStageName());
 		workFlowStage.setDescription(requirementWorkFlowStagesDTO.getDescription());
@@ -437,6 +442,37 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			}
 		}
 	}
+
+
+	@Override
+	public Boolean saveRequirementWorkFlowStagesBySeqOrder(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
+			OrgLocations orgLocations, User user) throws Exception {
+
+		List<RequirementWorkFlowStages> workFlowStages = null;
+		RequirementWorkFlowStages requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkFlowStageByUuidAndWorkflowUuid(requirementWorkFlowStagesDTO.getUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim());
+		RequirementWorkFlow workflow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim());
+		if(requirementWorkFlowStages != null && !requirementWorkFlowStagesDTO.getUuid().equalsIgnoreCase("Select")) {
+			
+			requirementWorkFlowStagesDTO.setSeqOrder(requirementWorkFlowStages.getSeqOrder());
+			
+			List<RequirementWorkFlowStages> workFlowStagesbySeqOrder = requirementWorkFlowDao.getRequirementWorkflowStagesBySeqOrderAndWorkflowUuid(requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), requirementWorkFlowStagesDTO.getSeqOrder());
+			
+			if(workFlowStagesbySeqOrder.size() > 1) {
+			for(RequirementWorkFlowStages stages : workFlowStagesbySeqOrder) {
+				int stageSeqorder = stages.getSeqOrder();
+				stageSeqorder--;
+				stages.setSeqOrder(stageSeqorder);
+				requirementWorkFlowDao.saveRequirementWorkFlowStages(stages);
+			}
+			}
+			deleteRequirementWorkFlowStagesByuuid(requirementWorkFlowStagesDTO.getUuid());
+	}
+		 workFlowStages = requirementWorkFlowDao.getRequirementWorkflowStagesByUuid(requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim());
+		 workflow.setNoOfStages(workFlowStages.size());
+		 requirementWorkFlowDao.saveRequirementWorkFlowDetails(workflow, orgLocations);
+		 return true;
+}
+
 }
 
 

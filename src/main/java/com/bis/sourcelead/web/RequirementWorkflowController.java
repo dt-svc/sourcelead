@@ -72,6 +72,13 @@ public class RequirementWorkflowController {
 	public ModelAndView workflowList(HttpServletRequest request) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
 		modelandview.setViewName("workflow/workflowList");
+		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(orgLocationId);
+		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = new User();
+		user.setId(userId);
+		requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		return modelandview;
 	}
 	
@@ -487,5 +494,22 @@ public class RequirementWorkflowController {
 			return responseList;
 		
 }
+		
+		@RequestMapping(value = { "/deleteRequirementWorkflowStage" })
+		public @ResponseBody String deleteRequirementWorkflowStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
+				HttpServletRequest request) throws Exception {
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			OrgLocations orgLocations = new OrgLocations();
+			orgLocations.setId(orgLocationId);
+			Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = new User();
+			user.setId(userId);
+			Boolean flag;
+			flag = requirementWorkFlowService.saveRequirementWorkFlowStagesBySeqOrder(requirementWorkFlowStagesDTO, orgLocations, user);
+			if(flag == true) {
+				return Constants.SUCCESS;
+			}
+			return Constants.FAILED;
+		}
 
 }
