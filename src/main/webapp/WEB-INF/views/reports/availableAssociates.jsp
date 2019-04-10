@@ -24,7 +24,7 @@
 <select class="chosen-select form-control" data-placeholder="Select Associate" autocomplete="off" onchange="getProjects();" id="associatesId" name="userIds" field-name="Associate" data-validation="required">
 <option selected="selected" disabled>Select Associate</option>
 <c:forEach var="option" items="${empList}">
-<option value="${option.id}">${option.firstName}</option>
+<option value="${option.id}">${option.fullName}</option>
 </c:forEach>
 </select>
 </div>
@@ -73,14 +73,14 @@
 
 <div class="positionRelative reportHead clearfix"> 
 <ul class="pull-right list-unstyled list-inline">
-<li><a href="javascript:void(0)" class="overIcon" id="exportOptions" title="Actions" onclick="newActions();"></a>
+<!-- <li><a href="javascript:void(0)" class="overIcon" id="exportOptions" title="Actions" onclick="newActions();"></a>
 <div class="newActPop">
 <span>
 <a href="javascript:void(0)" onclick="reportExport('Pdf');" title="PDF">Export PDF</a>
 <a href="javascript:void(0)" onclick="reportExport('Excel');" title="Excel">Export Excel</a> 
 </span>
 </div>
-</li>
+</li> -->
 </ul>
 </div>
 <div class="tableNoborder clerfix">
@@ -244,7 +244,7 @@ orgWorkingHours = report.orgWorkingHours;
 }
 
 total = (totalavailable >= 100 ? 0 : 100 - totalavailable);
-hours = (totalHours >= orgWorkingHours ? 0 : orgWorkingHours - totalHours);
+hours = (totalHours >= orgWorkingHours ? 0 : (orgWorkingHours - totalHours).toFixed(2));
 
 text += " </tbody>";
 text += " <tfoot>";
