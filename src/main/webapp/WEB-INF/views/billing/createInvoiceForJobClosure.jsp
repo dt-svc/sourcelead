@@ -1262,7 +1262,7 @@ function pagination(){
 	  
 	  var hiddenTotal = +document.getElementById("hiddenTotal").value;
 	    var grandTotal = parseFloat(hiddenTotal) + parseFloat(totlalAmount);
-	    var arroundGrand = grandTotal.toFixed(2)
+	    var arroundGrand = grandTotal.toFixed(3)
 	    
 	    
 	    //--------------------------------
@@ -1280,11 +1280,11 @@ function pagination(){
 	 	    }
 	    //-------------------------------------
 	    
-	    $("#inoviceTotal").val(sum.toFixed(2));
-	    $("#hiddenTotal").val(sum.toFixed(2));
-	    $("#grandTotal").val(sum.toFixed(2));
-	    $("#conversionFrom").val(sum.toFixed(2));
-	    $("#afterDiscountTotal").val(sum.toFixed(2));
+	    $("#inoviceTotal").val(sum.toFixed(3));
+	    $("#hiddenTotal").val(sum.toFixed(3));
+	    $("#grandTotal").val(sum.toFixed(3));
+	    $("#conversionFrom").val(sum.toFixed(3));
+	    $("#afterDiscountTotal").val(sum.toFixed(3));
 	    
 /*  After adding the rows calculate the discount start  */
    calculateDiscount();
@@ -1307,9 +1307,9 @@ function calculateDiscount(){
 			$("#discountTotal").val(discountValue);
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -1320,12 +1320,12 @@ function calculateDiscount(){
 		if(discountValue && subTotal > 0){
 			var perCentValue = (subTotal * discountValue)/100;
 			total = subTotal - perCentValue;
-			$("#discountTotal").val(perCentValue.toFixed(2));
+			$("#discountTotal").val(perCentValue.toFixed(3));
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 // 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -1539,8 +1539,8 @@ function calculateTaxDiscount(){
 		
 	}
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
-	 $("#grandTotal").val(grandTotal.toFixed(2));
-	 $("#conversionFrom").val(grandTotal.toFixed(2));
+	 $("#grandTotal").val(grandTotal.toFixed(3));
+	 $("#conversionFrom").val(grandTotal.toFixed(3));
 	 conversion();
 }
 </script>
