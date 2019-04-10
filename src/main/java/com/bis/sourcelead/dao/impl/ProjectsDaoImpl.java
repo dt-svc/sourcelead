@@ -914,7 +914,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 								 if(clientProjectClients == null) {
 									 clientProjectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getSharedLocationId().getId());
 								 }
-								 if(!clientProjectClients.getOrgRelationId().getResponderLocationId().getId().equals(orglo.getId())) {
+								 if(clientProjectClients != null && clientProjectClients.getOrgRelationId() != null && !clientProjectClients.getOrgRelationId().getResponderLocationId().getId().equals(orglo.getId())) {
 									 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProjectClients.getOrgRelationId().getLocationId().getId());
 								 }else {
 									 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProjectClients.getOrgRelationId().getResponderLocationId().getId());

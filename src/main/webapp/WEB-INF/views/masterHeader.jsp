@@ -879,19 +879,19 @@ function preventTabkey(e){
 <div class="subClock clearfix">
 <div class="subClockCta">
 <p>Current</p>
-<div class="sclock">04 : 45</div>
+<div class="sclock">00 : 00</div>
 </div>
 <div class="subClockCta">
 <p>Day</p>
-<div class="sclock">04 : 45</div>
+<div class="sclock">00 : 00</div>
 </div>
 <div class="subClockCta">
 <p>Week</p>
-<div class="sclock">04 : 45</div>
+<div class="sclock">00 : 00</div>
 </div>
 <div class="subClockCta">
 <p>Month</p>
-<div class="sclock">04 : 45</div>
+<div class="sclock">00 : 00</div>
 </div> 
 </div>
 <div class="clockinn">
@@ -931,7 +931,7 @@ function preventTabkey(e){
 <textarea rows="3" class="form-control" name="comments" onblur="updateClockInOutTime();"></textarea>
 </div>
 </div> 
-<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Time Entry</a></div> 
+<%-- <div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Time Entry</a></div>  --%>
 </div>
 </div>
 
@@ -1749,9 +1749,9 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
     	 var input = (document.getElementById(locationId));
     	    var options = {
     	    		types: ['geocode'],
-    	        componentRestrictions: {
+    	        /* componentRestrictions: {
     	        	country: ["IN","US","AU","SG","GB","FR"]
-    	        }
+    	        } */
     	    };
     	    autocomplete = new google.maps.places.Autocomplete(input, options);
     }else{

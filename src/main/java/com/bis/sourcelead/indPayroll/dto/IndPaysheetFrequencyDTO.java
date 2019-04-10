@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.bis.sourcelead.dto.SearchDTO;
-import com.bis.sourcelead.payroll.dto.PreCheckINDPayrollDTO;
 
 public class IndPaysheetFrequencyDTO  extends SearchDTO{
 	

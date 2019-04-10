@@ -117,6 +117,7 @@ public class USPayrollDTO {
     
     private BigDecimal lopAmount;
     
+    
 	
 	public Map<String, BigDecimal> getTax()
 	{
