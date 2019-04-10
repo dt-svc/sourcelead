@@ -63,4 +63,6 @@ public interface RequirementWorkFlowService {
 	ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user)throws Exception;
 
 	void saveRequirementWorkflowStagesByWorkflowId(RequirementWorkFlow requirementWorkFlow, OrgLocations orgLocations, User user)throws Exception;
+	
+	Boolean saveRequirementWorkFlowStagesBySeqOrder(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, OrgLocations orgLocations, User user)throws Exception;
 }
