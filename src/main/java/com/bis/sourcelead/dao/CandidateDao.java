@@ -265,5 +265,7 @@ public interface CandidateDao {
 	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid)throws Exception;
 	
 	public List<Candidate> getAllAssociateByLocation(Long orgLocationId);
+
+	public String getCandidatePanNumberByUserId(long userId);
 	
 }

@@ -3517,5 +3517,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getAllAssociateByLocation(Long orgLocationId) throws Exception {		
 		return candidateDao.getAllAssociateByLocation(orgLocationId);
 	}
+
+	@Override
+	public String getCandidatePanNumberByUserId(long userId) {
+		return candidateDao.getCandidatePanNumberByUserId(userId);
+	}
+	
+	
 }
 
