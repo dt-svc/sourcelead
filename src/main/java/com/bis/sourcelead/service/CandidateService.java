@@ -340,6 +340,8 @@ public interface CandidateService {
 	
 	public List<Candidate> getAllAssociateByLocation(Long orgLocationId)throws Exception;
 	
+	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId)throws Exception;
+	
 	public String getCandidatePanNumberByUserId(long userId);
 
 }

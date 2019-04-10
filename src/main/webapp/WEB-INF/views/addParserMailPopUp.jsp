@@ -131,7 +131,7 @@ function getParserEmailList(){
      			result  = result + '	<ul class="list-unstyled list-inline noMar">                                                               ';
      			result  = result + '	<li>                                                                                                 ';
 				result  = result + '	<label class="switch" style="position:relative; top:5px;">                                                                          ';
-				result  = result + '	<input onclick="changeDefaultemailConfig(this, '+mailrow.id+')" type="checkbox" '+(mailrow.status =="Y" ? 'checked' : '')+'/>                                                                    ';
+				result  = result + '	<input onclick="changeDefaultParserEmailConfig(this, \''+mailrow.email_UUID+'\')" type="checkbox" '+(mailrow.isActive =="Y" ? 'checked' : '')+'/>                                                                    ';
 				result  = result + '	 <span class="slider round"></span>                                                                  ';
 				result  = result + '	</label>                                                                                             ';
      			result  = result + '	</li>                                                                                                ';
@@ -242,6 +242,13 @@ function validateParserEmail(){
 	 	        });
 	 	   
 	 	
+}
+
+function changeDefaultParserEmailConfig(ele, id) {
+    $.post(sourceleadUrl+"/changeDefaultParserEmailConfig", {uuid: id, activeFlag: $(ele).is(":checked")}, function(data) {
+      console.log(" check box value is: "+$(ele).is(":checked"))
+    	getParserEmailList();
+    });
 }
 </script>
 
