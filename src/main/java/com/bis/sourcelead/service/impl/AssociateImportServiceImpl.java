@@ -429,7 +429,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				logger.debug("File Extension is: " + multipartFile.getOriginalFilename());
 				
 				
-				List<Candidate> candidateList =  candidateService.getAllCandidatesByLocation(orgLocation.getId());
+				List<Candidate> candidateList =  candidateService.getAllActiveAssociatesByLocation(orgLocation.getId());
 				Map<String, Long> mapEmailAndId = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
 				Map<String, String> mapEmailAndAssId = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getGeneratedId));
 				
