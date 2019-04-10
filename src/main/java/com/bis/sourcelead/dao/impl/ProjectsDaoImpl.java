@@ -1706,8 +1706,10 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		int noOfHours =((orgLocations.getAverageWorkingHours())*(orgLocations.getWorkingDaysPerWeek()));
 		 
 		String query = "select pm.id as id,"
-				+ " pm.employee.employeeId as empId,"
-				+ " pm.employee.user.firstName as empName,"
+				/*+ " pm.employee.employeeId as empId,"
+				+ " pm.employee.user.firstName as empName,"*/
+				+ " pm.id as empId,"
+				+ " pm.id as empName,"
 				+ " pm.projects.projectName as projectName,"
 				+ " pm.projects.startDate as projectStartDate,"
 				+ " pm.projects.endDate as projectEndDate ,"
@@ -1716,7 +1718,8 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 				+ "  pm.percentageOfWork as availableHours,"
 				+ "  (( pm.percentageOfWork)/100) * " + noOfHours + " as hoursperWeek"
 				+ " from ProjectMembers pm"
-				+ " where pm.projects.orgLocationsId=:orgLocations";
+//				+ " where pm.projects.orgLocationsId=:orgLocations"
+				+ "";
 			
 			
 		/*	query += " and (case when pm.projectEndDate is null and pm.projects.endDate is null"
@@ -1728,7 +1731,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 							+ "			else pm.projectAssignedDate like '%" + fromDate + "%' and pm.projectEndDate like '%" + toDate + "%' end) "
 					+ "end)";*/
 			
-			query += " and '" + fromDate + "' >= (case when pm.projectEndDate is null and pm.projects.endDate is null"
+			query += " where '" + fromDate + "' >= (case when pm.projectEndDate is null and pm.projects.endDate is null"
 					+ "		then pm.projectAssignedDate"
 							+ " else (case when pm.projectEndDate is null "
 							+ "			then pm.projectAssignedDate "
@@ -1765,7 +1768,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		java.sql.Date toDate = new java.sql.Date(availableAssociatesDTO.getToDate().getTime());*/
 		
 		Query queryObj = session.createQuery(query);
-		queryObj.setLong("orgLocations", orgLocations.getId());
+//		queryObj.setLong("orgLocations", orgLocations.getId());
 		/*queryObj.setString("fromDate", fromDate);
 		queryObj.setString("toDate", toDate);*/
 		
