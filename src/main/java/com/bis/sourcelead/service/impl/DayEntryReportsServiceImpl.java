@@ -120,7 +120,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		private Sheet createXlsSheet(Workbook workbook,Sheet createExcelsheet,DateFormat DF_YMD,SimpleDateFormat WEEK_DAY,String weekDayName,String status, Row writeRow, DayWiseTimesheetReoprtsListDTO dayEntries, OrgLocations orgloc, Long totalBillable, Long totalNonbillable) throws Exception {
 				weekDayName = WEEK_DAY.format(dayEntries.getTimesheetDate());
 				if (dayEntries.getTimesheetDate() != null) {
-					String timesheetDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getTimesheetDate());
+					String timesheetDate = dayEntries.getTimesheetDate();
 					writeRow.createCell(0).setCellValue(timesheetDate);
 				}
 				if (weekDayName != null && !"".equalsIgnoreCase(weekDayName)) {
@@ -379,7 +379,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
 				weekDayName = dayFormat.format(dayEntries.getTimesheetDate());
 				if (dayEntries.getTimesheetDate() != null) {
-					dayArray[0] = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getTimesheetDate());
+					dayArray[0] = dayEntries.getTimesheetDate();
 				}
 				if (weekDayName != null && !"".equalsIgnoreCase(weekDayName)) {
 					dayArray[1]=(weekDayName);
