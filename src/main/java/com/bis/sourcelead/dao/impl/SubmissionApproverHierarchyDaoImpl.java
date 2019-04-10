@@ -1908,11 +1908,15 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				}
 				ProjectMembers projectMember = sah.getSubmissionId().getProjectMembers();
 			    User consultantUser = null;
+			    Long workLocationId = 0l;
 				if(projectMember != null) {
 					 ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
 					  if(conPM != null) {
 							 consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
 					  }
+					  if(conPM.getProjectMemberCandidteId() != null && conPM.getProjectMemberCandidteId().getWorkLocation() != null && conPM.getProjectMemberCandidteId().getWorkLocation().getId() != null) {
+						workLocationId = conPM.getProjectMemberCandidteId().getWorkLocation().getId();
+					 }
 			    }
 				float weekTotalHours = 0f;
 				float weekBillableTotalHours = 0f;
@@ -1921,7 +1925,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
     	    	Float leaveBillableTotal = 0f;
     	    	Float leaveNonBillableTotal = 0f;
 	    	    if(consultantUser != null) {
-	    	    	 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(consultantUser.getId(), actualStartDate, actualEndDate);
+	    	    	 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(consultantUser.getId(), actualStartDate, actualEndDate,workLocationId);
 		    	     if(leaveTotalMap != null && !leaveTotalMap.isEmpty()) {
 		    	    	 leaveTotal = leaveTotalMap.get("TOTAL");
 		    	    	 leaveBillableTotal = leaveTotalMap.get("BILLABLE");

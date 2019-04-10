@@ -34,7 +34,20 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public ResponseList<DayWiseTimesheetReoprtsListDTO> getDayWiseReportListBasedOnProjectListIdStartDateEndDate(List<Long> projectId,Date startDate, Date endDate,String searchValue,int start,int length,OrgLocations orgloc , User loginUser,String isGlobalAccess,List<Long> projectMemberIds) throws Exception {
+	public ResponseList<DayWiseTimesheetReoprtsListDTO> getDayWiseReportListBasedOnProjectListIdStartDateEndDate(List<Long> projectId,Date startDate, Date endDate,String searchValue,int start,int length,OrgLocations orgloc , User loginUser,String isGlobalAccess,List<Long> mastercandidateIds,String dateFormat) throws Exception {
+		
+		String orgDateFormat = "";
+		if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
+			orgDateFormat = "\"%Y-%m-%d\"";
+		}else if("dd-MM-yyyy".equalsIgnoreCase(dateFormat)) {
+			orgDateFormat = "\"%d-%m-%Y\"";
+		}else if("MM-dd-yyyy".equalsIgnoreCase(dateFormat)) {
+			orgDateFormat = "\"%m-%d-%Y\"";
+		}else if("yyyy-dd-MM".equalsIgnoreCase(dateFormat)) {
+			orgDateFormat = "\"%Y-%d-%m\"";
+		}
+
+		
 		List<BigInteger> countlist = null;  
 		
 		Integer filterCount = 0;
@@ -47,7 +60,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		if(userHierarchyIds != null && !userHierarchyIds.isEmpty()) {
 			userHierarchyIdString = StringUtils.join(userHierarchyIds, ',');
 		}
-		if((projectId!= null && !projectId.isEmpty()) || (projectMemberIds != null && !projectMemberIds.isEmpty())) {
+		if((projectId!= null && !projectId.isEmpty()) || (mastercandidateIds != null && !mastercandidateIds.isEmpty())) {
 		java.sql.Date startDateSql = new java.sql.Date(startDate.getTime());
 		java.sql.Date endDateSql = new java.sql.Date(endDate.getTime());
 		String weekOffs ="(";
@@ -92,8 +105,8 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		
 		
 		String pmSubQuery = "";
-		if(projectMemberIds != null && !projectMemberIds.isEmpty()) {
-			for(Long pId : projectMemberIds) {
+		if(mastercandidateIds != null && !mastercandidateIds.isEmpty()) {
+			for(Long pId : mastercandidateIds) {
 				pmSubQuery = pmSubQuery+" (PM.MASTER_CANDIDATE_ID = '"+pId+"' AND PM.PROJECT_ID = PROJ.ID) OR ";
 			}
 			pmSubQuery = "("+pmSubQuery.substring(0,pmSubQuery.length()-3)+")";
@@ -106,7 +119,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		}
 		String query = "SELECT Q1.*  "
 				+"FROM ( "
-				+ "(SELECT TDE.TIMESHEET_DATE as timesheetDate,"
+				+ "(SELECT DATE_FORMAT(TDE.TIMESHEET_DATE,"+orgDateFormat+") as timesheetDate,"
 				+ " TDE.ID as timeEntryId,"
 				+ " TDE.BILLABLE_HOURS as billableHrs,"
 				+ " TDE.TICKET_NUMBER as ticketNo,"
@@ -152,8 +165,8 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    + "   LEFT JOIN DEPARTMENT DEPART ON DEPART.ID = EMP.DEPARTMENT_ID ";
             
 			    //To get current  orglocation details 
-			    if(StringUtils.isNotEmpty(isGlobalAccess)) {
-			    	query = query+ " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_ID = '"+orgloc.getOrg().getId()+"'";
+			    if(StringUtils.isNotEmpty(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase("Y")) {
+			    	query = query+ " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND (PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"' OR  (PC.ORG_LOCATIONS_ID != '"+orgloc.getId()+"' AND PC.ORG_ID = '"+orgloc.getOrg().getId()+"'))";
 			    }else {
 			    	query = query+ " LEFT JOIN PROJECT_CLIENTS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+orgloc.getId()+"'";
 			    			
@@ -168,20 +181,20 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "                              OR "
 				+ "                     SUBSAH.HIERARCHY_ID IN(SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH where '"+loginUser.getId()+"' IN "
 				+ "                                               ( SELECT UR.USER_ID FROM USER_ROLE UR LEFT JOIN  ROLES R  ON R.ID = UR.ROLE_ID   WHERE R.ROLE_NAME = 'ROLE_ADMIN' AND UR.USER_STATE = 'ACTIVE' AND UR.ORG_LOCATIONS_ID = PC.ORG_LOCATIONS_ID) "
-				+ "                                                    AND  PAH.LEVEL IN(select MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0') )                    "
+				+ "                                                    AND  PAH.LEVEL IN(select MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND SUBPAH.STATUS != '0') )                    "
 				+ "                              OR "
 				+ "                     SUBSAH.HIERARCHY_ID IN(SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH where '"+loginUser.getId()+"' IN(SELECT UR.REPORTING_MANAGER_ID FROM USER_ROLE UR WHERE UR.USER_ID = CAN.CONSULTANT_USER_ID) "
-				+ "                        AND  PAH.PROJECT_ID = PROJ.ID  AND  PAH.LEVEL IN(select MIN(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0'))             "
+				+ "                        AND  PAH.PROJECT_ID = PROJ.ID  AND  PAH.LEVEL IN(select MIN(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND SUBPAH.STATUS != '0'))             "
 				+ "                              OR "
 				+ "                     SUBSAH.HIERARCHY_ID IN(SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH where APPROVER_USER_ID IN("+userHierarchyIdString+") "
-				+ "                        AND  PAH.PROJECT_ID = PROJ.ID  AND  PAH.LEVEL IN(select MIN(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0'))             "
+				+ "                        AND  PAH.PROJECT_ID = PROJ.ID  AND  PAH.LEVEL IN(select MIN(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND SUBPAH.STATUS != '0'))             "
 				+ "                    )"
 			    + "              ) AND SAH.ID IS NOT NULL AND ( SAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR SAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.REJECTED+"' OR SAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.APPROVED+"')"
 				+ " AND ((TDE.BILLABLE_HOURS IS NOT NULL AND TDE.BILLABLE_HOURS != '00:00')  OR (TDE.NONBILLABLE_HOURS IS NOT NULL AND TDE.NONBILLABLE_HOURS != '00:00' )) AND TDE.TIMESHEET_DATE BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' group by TDE.ID)"
 				+ "  UNION ALL "
 				+ " ( "
 				+ "   SELECT "
-				+ "   AL.APPLY_LEAVE_DATE AS timesheetDate,"
+				+ "   DATE_FORMAT(AL.APPLY_LEAVE_DATE,"+orgDateFormat+") AS timesheetDate,"
 				+ "   NULL AS timeEntryId,"
 				+ "   (  CASE" 
 				+ "        WHEN LT.LEAVE_TYPE ='Billable'  THEN AL.APPLIED_HOURS " 
@@ -197,7 +210,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   CONCAT(IF(CAN.FIRST_NAME IS NOT NULL, CONCAT(CAN.FIRST_NAME,' '),'') ,IF(CAN.LAST_NAME IS NOT NULL, CONCAT(CAN.LAST_NAME),'')) as employeeName,"
 				+ "   CAN.EMAIL AS employeeEmail, "
 				+ "   NULL AS projectName,"
-				+ "   NULL AS comments,"
+				+ "   LV.REASON AS comments,"
 				+ "   LT.NAME AS task, "
 				+ "   NULL AS status,"
 				+ "   DEP.DEPARTMENT_NAME AS departmentName,"
@@ -245,7 +258,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "  UNION ALL "
 				+ " ( "
 				+ "   SELECT "
-				+ "   HRD.DAY AS timesheetDate,"
+				+ "   DATE_FORMAT(HRD.DAY,"+orgDateFormat+") AS timesheetDate,"
 				+ "   NULL AS timeEntryId,"
 				+ "   (  CASE" 
 				/*+ "        WHEN HD.BILLABLE_TYPE ='Billable'  THEN HD.ORG_AVG_HRS " */
@@ -263,7 +276,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   CONCAT(IF(CAN.FIRST_NAME IS NOT NULL, CONCAT(CAN.FIRST_NAME,' '),'') ,IF(CAN.LAST_NAME IS NOT NULL, CONCAT(CAN.LAST_NAME),'')) as employeeName,"
 				+ "   CAN.EMAIL AS employeeEmail, "
 				+ "   NULL AS projectName,"
-				+ "   NULL AS comments,"
+				+ "   HD.DESCRIPTION AS comments,"
 				+ "   HD.HOLIDAY_NAME AS task, "
 				+ "   NULL AS status,"
 				

@@ -2,13 +2,13 @@
 <jsp:include page="../masterSideNav.jsp" />
 
   
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src="../js/moment.min.js"></script>
 <script src="../js/bootstrap-datetimepicker.min.js"></script>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="../js/masterHeaderAction.js"></script>
 <script src="../js/bootstrap-select.min.js"></script>
-<script src="../js/chosen.jquery.min.js"></script>
+<script src="../js/chosen.jquery.min.js"></script> -->
 
 
 <script>
@@ -24,7 +24,7 @@
       <div class="pull-left">
         <h2>Clock in & Clock out</h2>
       </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/settings">Settings</a> &raquo;Clock In & Clock Out</div>
+          <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${appPath}/settings">Settings</a> &raquo;Clock In & Clock Out</div>
 
     </section>
     
@@ -58,8 +58,8 @@
               <div class="clockcheck"><input type="checkbox" id="a" name="isJobChecked" value="YES"> <label for="a">Jobs</label></div>
               <div class="clockcheck"><input type="checkbox" id="b" name="isProjectTasksChecked" value="YES"> <label for="b">Project Tasks</label></div>
               <div class="clockcheck"><input type="checkbox" id="c" name="isGeneralTaskChecked" value="YES"> <label for="c">General Tasks</label></div>
-              <div class="clockcheck"><input type="checkbox" id="d" name="isGoalChecked" value="YES"> <label for="d">Goals</label></div>
-              <div class="clockcheck"><input type="checkbox" id="e" name="isOtherChecked" value="YES"> <label for="e">Other</label></div>
+<!--               <div class="clockcheck"><input type="checkbox" id="d" name="isGoalChecked" value="YES"> <label for="d">Goals</label></div> -->
+<!--               <div class="clockcheck"><input type="checkbox" id="e" name="isOtherChecked" value="YES"> <label for="e">Other</label></div> -->
           </div>
         </div>
 

@@ -97,7 +97,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				Sheet createExcelsheet = createExcelworkbook.createSheet("Day wise Project wise Time sheet Report");
 				 Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 				 Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
-							 ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId());
+							 ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
 							 if(dayEntryList != null && !dayEntryList.getData().isEmpty()) {
 								 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
 								    	 writeRow = createExcelsheet.createRow(rowCount+6);
@@ -339,7 +339,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		        java.util.List<String[]> dayList = new ArrayList<>();
 		        Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 				Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
-		        ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId());
+		        ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
 							 if(dayEntryList != null && !dayEntryList.getData().isEmpty()) {
 								 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
 									 			dayList.add(prepareDaywiseReportPdfData(headers,dayEntries,orgloc,totalBillable,totalNonbillable));
@@ -464,7 +464,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 		Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
 		ResponseList<DayWiseTimesheetReoprtsListDTO> timeEntryDataMap = new ResponseList<DayWiseTimesheetReoprtsListDTO>();
-			timeEntryDataMap = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId());
+			timeEntryDataMap = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
 	   return timeEntryDataMap;
     }
 
