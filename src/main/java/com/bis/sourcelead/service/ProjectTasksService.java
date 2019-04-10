@@ -105,5 +105,7 @@ public interface ProjectTasksService {
 	
 	public ResponseList<ProjectTasks> getOverdueTaskReportListByOrglocationId(ProjectTasksDTO  projectTasksDTO, Date[] searchDates)throws Exception;
 
+	public void updateTaskStatusList(TaskDTO taskDTO, OrgLocations loginOrgLocation)throws Exception;
+
  	 
 }
