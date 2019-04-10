@@ -5373,7 +5373,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 				//Aplicant Status
-				writeRow.createCell(7).setCellValue(rsh.getToStage());
+				writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
 				
 				//Job Rating
 				 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {
