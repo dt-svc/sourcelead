@@ -41,6 +41,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.indPayroll.dao.GenerateINDPayrollDao;
 import com.bis.sourcelead.indPayroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.indPayroll.dto.PreCheckINDPayrollDTO;
 import com.bis.sourcelead.indPayroll.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
@@ -166,7 +167,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 			paySheetFreq.setPaySheetFrequencyUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			
 			
-			Set<IndEmployeePayroll> payrollList = calculatePayroll(paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup);
+			Set<IndEmployeePayroll> payrollList = calculatePayroll(paySheetFreq, loginUser, orgLocation,assSallist,freqStartDate, freqEndDate,userGroup, generateINDPayrollDTO.getPreCheckINDPayrollDTO());
 			if(payrollList !=null && payrollList.size() > 0) {
 				paySheetFreq.setIndEmployeepayroll(payrollList);
 			}
@@ -191,9 +192,8 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 	}
 	
 	@SuppressWarnings({ "static-access", "null" })
-	private Set<IndEmployeePayroll> calculatePayroll(IndPaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalaryInd> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup)
+	private Set<IndEmployeePayroll> calculatePayroll(IndPaysheetFrequency paySheetFreq, User loginUser, OrgLocations orgLocation, List<AssociateSalaryInd> assoSalList, Date freqStartDate, Date freqEndDate, UserGroup userGroup, PreCheckINDPayrollDTO preCheckINDPayrollDTO)
 	{
-		
 		Set<IndEmployeePayroll> set = new HashSet<>();
 		try {
 			for (AssociateSalaryInd assoSal : assoSalList) {
@@ -316,7 +316,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 							utilDTO.getAssociatePayrollPayheadHistory().forEach(ph -> {
 								if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("PT")) {
 									try {
-										ptAmount[0] = iNDPayrollCommonUtil.calculatePTforAssociate(assoSal, paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate());
+										ptAmount[0] = iNDPayrollCommonUtil.calculatePTforAssociate(assoSal, paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate(), preCheckINDPayrollDTO.getStateTaxDTO());
 									} catch (ParseException e) {
 										ptAmount[0] = 0.0;
 									}
@@ -359,7 +359,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					
 					//if PT not found in Associate Payroll Payheads
 					if(!isPT[0]) {
-						ptAmount[0] = iNDPayrollCommonUtil.calculatePTforAssociate(assoSal, paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate());
+						ptAmount[0] = iNDPayrollCommonUtil.calculatePTforAssociate(assoSal, paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate(), preCheckINDPayrollDTO.getStateTaxDTO());
 						AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
 						ph.setIndEmployeePayrollId(employeePayroll);
 						ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("PT", orgLocation.getId()));
@@ -421,9 +421,9 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						}
 						
 						Double taxPercent = 0d;
-						List<Tds> tdsList = taxService.getTDSListByFinancialYear(fromYear + "-" + toYear);
-						if(tdsList != null && tdsList.size() > 0) {
-							for(Tds tds : tdsList) {
+						//List<Tds> tdsList = taxService.getTDSListByFinancialYear(fromYear + "-" + toYear);
+						if(preCheckINDPayrollDTO != null && preCheckINDPayrollDTO.getTdsList() != null && preCheckINDPayrollDTO.getTdsList().size() > 0) {
+							for(Tds tds : preCheckINDPayrollDTO.getTdsList()) {
 								if(age <= 60 && tds.getAge().equalsIgnoreCase("0 - 60 Years") && assoSal.getAnnualSalary().compareTo(new BigDecimal(tds.getFromamount())) > -1  && assoSal.getAnnualSalary().compareTo(new BigDecimal(tds.getToamount())) < 1) {
 									taxPercent = tds.getPercentage();
 								}else if(age > 60 && age <= 80 && tds.getAge().equalsIgnoreCase("60 - 80 Years") && assoSal.getAnnualSalary().compareTo(new BigDecimal(tds.getFromamount())) > -1  && assoSal.getAnnualSalary().compareTo(new BigDecimal(tds.getToamount())) < 1) {
