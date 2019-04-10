@@ -1050,9 +1050,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			List<PayrollReportDTO> payrollReportList = new ArrayList<>();
 			Map<Long,PayrollReportDTO> userMap = new HashMap<>();
 			for(InvoicePayment invoicePayment : invoicePayItemList) {
-				PayrollReportDTO dto = new PayrollReportDTO();
 				Invoice invoice = invoicePayment.getInvoiceId();
 				for(InvoiceLineItems invLine : invoice.getInvoiceLineItems()) {
+					PayrollReportDTO dto = new PayrollReportDTO();
 					StringBuilder nameSb = new StringBuilder();
 					if(StringUtils.isNotBlank(invLine.getCandidate().getLastName()))
 						nameSb.append(invLine.getCandidate().getFirstName()).append(" ").append(invLine.getCandidate().getLastName());
