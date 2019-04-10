@@ -3420,4 +3420,22 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return null;	
       }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String getCandidatePanNumberByUserId(long userId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select c.panNumber from Candidate c where c.consultantUser.id=" + userId;
+			List<String> panList = session.createQuery(query).list();
+			if(panList != null && !panList.isEmpty()) {
+				return panList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 }

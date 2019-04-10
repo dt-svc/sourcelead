@@ -133,9 +133,9 @@ var uploadflag= true;
         
         
     <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop" id="recentHistoryDiv">
-	<h5 id="uploadXlsHistoryDivTitle"  style="display: block;">Recent Uploads History</h5>
+	<!-- <h5 id="uploadXlsHistoryDivTitle"  style="display: block;">Recent Uploads History</h5>
 	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
-	    	<input type="hidden"  id="uploadedPercentage" value="0">
+	    	<input type="hidden"  id="uploadedPercentage" value="0"> -->
 		</div>	 	
 </section>
 
