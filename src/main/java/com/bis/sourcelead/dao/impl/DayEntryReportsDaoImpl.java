@@ -263,7 +263,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   CONCAT(IF(CAN.FIRST_NAME IS NOT NULL, CONCAT(CAN.FIRST_NAME,' '),'') ,IF(CAN.LAST_NAME IS NOT NULL, CONCAT(CAN.LAST_NAME),'')) as employeeName,"
 				+ "   CAN.EMAIL AS employeeEmail, "
 				+ "   NULL AS projectName,"
-				+ "   NULL AS comments,"
+				+ "   HD.DESCRIPTION AS comments,"
 				+ "   HD.HOLIDAY_NAME AS task, "
 				+ "   NULL AS status,"
 				
