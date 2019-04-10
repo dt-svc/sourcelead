@@ -24,7 +24,7 @@ public interface PayrollContributionDao {
 
 	List<PayrollContribution> getAllContributionTypeByLocationId(OrgLocations orgLocation);
 
-	PayrollContribution getContributionByDeductionTypeAndLocationId(String cellValueAsString, Long id);
+	PayrollContribution getContributionByDeductionTypeAndLocationId(String contributionTypeName, Long id);
 
 
 }
