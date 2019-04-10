@@ -238,7 +238,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		
 		Map<String,  List<String>> accGroupByEmailList = new HashMap<String, List<String>>();
 		canMap.forEach((k, v) -> {
-			   accGroupByEmailList.put(k, paymentDetailsList.stream().filter(t -> t.getEmail().equals(k) && t.getAccountNumber() != null).map(PaymentAccount::getAccountNumber).collect(Collectors.toList()));  });
+			   accGroupByEmailList.put(k, paymentDetailsList.stream().filter(t -> t.getEmail() != null && t.getEmail().equals(k) && t.getAccountNumber() != null).map(PaymentAccount::getAccountNumber).collect(Collectors.toList()));  });
 		
 		int insertedCount = 0;
 		try {
