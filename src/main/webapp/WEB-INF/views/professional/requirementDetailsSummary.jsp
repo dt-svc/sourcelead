@@ -158,7 +158,6 @@ window.onload = function () {
 
 <script>
 function publicRequirementProfile(requirementUUID){
-	
 	var sourceleadLoginUrl = '${sourceleadLoginUrl}';
 	var contactUUID = '${contactUUID}';
 	var requirementUUID = '${requirementUUID}';

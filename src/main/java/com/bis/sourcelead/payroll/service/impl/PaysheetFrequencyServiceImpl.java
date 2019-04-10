@@ -430,7 +430,12 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 						otTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(payroll.getOverTimeHours()),otTotalHours);
 						otTotalAmount = otTotalAmount.add(payroll.getOverTimeAmount());
 					}
-					
+					Date todayDate = new Date();
+					 if (todayDate.after(payroll.getPayCheckDate())) {
+						 myPayrollDTO.setEnablePayslip(true); 
+					 }else {
+						 myPayrollDTO.setEnablePayslip(false);
+					 }
 					
 					list.add(myPayrollDTO);
 				}
@@ -1045,9 +1050,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			List<PayrollReportDTO> payrollReportList = new ArrayList<>();
 			Map<Long,PayrollReportDTO> userMap = new HashMap<>();
 			for(InvoicePayment invoicePayment : invoicePayItemList) {
-				PayrollReportDTO dto = new PayrollReportDTO();
 				Invoice invoice = invoicePayment.getInvoiceId();
 				for(InvoiceLineItems invLine : invoice.getInvoiceLineItems()) {
+					PayrollReportDTO dto = new PayrollReportDTO();
 					StringBuilder nameSb = new StringBuilder();
 					if(StringUtils.isNotBlank(invLine.getCandidate().getLastName()))
 						nameSb.append(invLine.getCandidate().getFirstName()).append(" ").append(invLine.getCandidate().getLastName());
