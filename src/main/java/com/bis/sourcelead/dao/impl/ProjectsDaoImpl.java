@@ -1731,6 +1731,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 							+ "			else pm.projectAssignedDate like '%" + fromDate + "%' and pm.projectEndDate like '%" + toDate + "%' end) "
 					+ "end)";*/
 			
+		
 			query += " where '" + fromDate + "' >= (case when pm.projectEndDate is null and pm.projects.endDate is null"
 					+ "		then pm.projectAssignedDate"
 							+ " else (case when pm.projectEndDate is null "
@@ -1746,6 +1747,9 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 							+ "					else pm.projectEndDate end)"
 							+ "			else pm.projectEndDate end) "
 					+ "end)";
+
+			
+			
 			
 		if (availableAssociatesDTO.getProjectsIds() != null && !availableAssociatesDTO.getProjectsIds().isEmpty()) {
 			String projectIds = "";
@@ -1753,6 +1757,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 				projectIds += (projectIds.isEmpty() ? "" : ", ") + id;
 			}
  			query += " and pm.projects.id in (" + projectIds + ")";
+ 			
 		}
 		if(availableAssociatesDTO.getUserIds() != null && !availableAssociatesDTO.getUserIds().isEmpty()) {
 			String userIds = "";
@@ -1760,6 +1765,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 				userIds += (userIds.isEmpty() ? "" : ", ") + id;
 			}
 			query += " and pm.projectMemberCandidteId.id in (" + userIds + ")";
+			
 		}
 		
 		System.out.println(query);
@@ -1771,6 +1777,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 //		queryObj.setLong("orgLocations", orgLocations.getId());
 		/*queryObj.setString("fromDate", fromDate);
 		queryObj.setString("toDate", toDate);*/
+		
 		
 		return queryObj.list();
 	} catch (Exception e) {
