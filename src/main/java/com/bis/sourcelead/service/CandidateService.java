@@ -339,5 +339,7 @@ public interface CandidateService {
 	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid)throws Exception;
 	
 	public List<Candidate> getAllAssociateByLocation(Long orgLocationId)throws Exception;
+	
+	public String getCandidatePanNumberByUserId(long userId);
 
 }
