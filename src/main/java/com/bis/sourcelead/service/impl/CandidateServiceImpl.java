@@ -2874,7 +2874,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, String checkedDate, String searchValue)throws Exception {
 		Date[] checkedDateArray = new Date[0];
-		if(checkedDate != null && !"".equalsIgnoreCase(checkedDate)){
+		if(checkedDate != null && !"".equalsIgnoreCase(checkedDate) && !checkedDate.equalsIgnoreCase("custom")){
 			 checkedDateArray = reportsUtil.getJobFilterDate(checkedDate, orgLocations);
 			 }
 		return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, checkedDateArray, searchValue);	
