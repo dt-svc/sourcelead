@@ -26,6 +26,8 @@ public class RequirementWorkFlowStagesDTO {
 
 	private String requirementWorkFlowUuid;
 	
+	private String workflowDescription;
+	
 	private Integer seqOrder;
 	
 	public long getId() {
@@ -122,6 +124,14 @@ public class RequirementWorkFlowStagesDTO {
 
 	public void setSeqOrder(Integer seqOrder) {
 		this.seqOrder = seqOrder;
+	}
+
+	public String getWorkflowDescription() {
+		return workflowDescription;
+	}
+
+	public void setWorkflowDescription(String workflowDescription) {
+		this.workflowDescription = workflowDescription;
 	}
 	
 	
