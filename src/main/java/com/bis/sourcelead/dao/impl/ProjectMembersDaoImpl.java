@@ -2062,12 +2062,18 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		return pm;  
 	}
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<Candidate> getAllAvailableAssociates( Long orgLocationId) {
+	public List<Object[]> getAllAvailableAssociates( Long orgLocationId) {
 	Session session = this.sessionFactory.getCurrentSession();
-	String query = "from Candidate candidate where candidate.orgLocationId = :orgLocationId and candidate.designationType = 'Offshore C2C'";
-	List<Candidate> list = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+	/*String query = "select * from Candidate candidate where candidate.orgLocationId = :orgLocationId";
+	query += " and (case when candidate.parentCandidateId is null then (candidate.isAssociate) else (candidate.parentCandidateId.isAssociate) end) = 'Y'";*/
+	
+	String query = "SELECT c.ID, c.FIRST_NAME, c.MIDDLE_NAME, c.LAST_NAME FROM CANDIDATE c where c.ORG_LOCATION_ID = :orgLocationId and case when c.PARENT_CANDIDATE_ID is null then c.IS_ASSOCIATE else (select c1.IS_ASSOCIATE from CANDIDATE c1 where c1.ID=c.PARENT_CANDIDATE_ID) end = 'Y';";
+	
+	List<Object[]> list = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
 	return list;
 	}
 	

@@ -221,7 +221,7 @@
 					<a href="#" onclick="timesheetDivByFrequency('${tsf.key}');">${tsf.value}</a>
 				</li>
 		   </c:forEach>
-		   <c:if 	test="${timesheetSubmissionDTO.timesheetStatus != 'NEW'}">
+		  <%--  <c:if 	test="${timesheetSubmissionDTO.timesheetStatus != 'NEW'}">
 					<div class="export dropdown">
 				<p class="dropdown-toggle" data-toggle="dropdown">
 					<i class="glyphicon glyphicon-export"></i>Export <i
@@ -237,7 +237,8 @@
 				</ul>
 			</div>
 			<div class="clearfix"></div>
-		</c:if>
+		</c:if> 
+		   <div class="clearfix"></div>--%>
 		   <div class="clearfix"></div>
 		</ul>
 			<div id="timesheetDivByTab">
