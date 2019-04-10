@@ -742,8 +742,8 @@ public class CandidateServiceTest {
 				Map<String, Date> dateValue = new HashMap<>();
 				List<CandidateMarketPlaceCartView> candidateMarketPlaceCartView = new ArrayList<>();
 				List<CandidateMarketPlaceCartView> candidateMarketPlaceCartView1 = null;
-				when(mockCandidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, dateValue, searchValue)).thenReturn(candidateMarketPlaceCartView);
-				candidateMarketPlaceCartView1 = mockCandidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, dateValue, searchValue);
+				when(mockCandidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, null, searchValue)).thenReturn(candidateMarketPlaceCartView);
+				candidateMarketPlaceCartView1 = mockCandidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, null, searchValue);
 				assertNotNull(candidateMarketPlaceCartView1);
 				
 		}
