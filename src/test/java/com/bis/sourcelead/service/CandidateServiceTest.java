@@ -743,8 +743,10 @@ public class CandidateServiceTest {
 				Date[] checkedDateArray = new Date[0];
 				List<CandidateMarketPlaceCartView> candidateMarketPlaceCartView = new ArrayList<>();
 				List<CandidateMarketPlaceCartView> candidateMarketPlaceCartView1 = null;
+
 				when(mockCandidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, checkedDateArray, searchValue)).thenReturn(candidateMarketPlaceCartView);
 				candidateMarketPlaceCartView1 = mockCandidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, checkedDateArray, searchValue);
+
 				assertNotNull(candidateMarketPlaceCartView1);
 				
 		}

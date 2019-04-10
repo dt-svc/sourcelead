@@ -6,8 +6,8 @@ var uploadCount = 1;
 $(document).ready(function() {
 	$("#employeeSelect").change(function() {
 		$("#associateName").val($("#employeeSelect :selected").data("name"));
-		$("#associateId").val($(this).val());
-		$("#associatePAN").val("");
+		$("#associateId").val($("#employeeSelect :selected").data("associate_id"));
+		$("#associatePAN").val($("#employeeSelect :selected").data("pan"));
 	});
 	$("#saveBtn, #submitBtn").click(function() {
 		if ($('#itDeclarationForm').validate(false, validationSettings)) {
