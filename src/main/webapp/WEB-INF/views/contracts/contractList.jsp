@@ -798,7 +798,7 @@ function preparedContractVendorListDraftPagination(url,tabType){
 				    	    	    	    			     			result = result + ' <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 				    	    	    	    			     		}
 				    	    	    	    			     		'</sec:authorize>';
-		    	    	    	    	    	    	}else if(report.templateSubmissionStatus == "Finalized"){
+		    	    	    	    	    	    	}else if(report.templateSubmissionStatus == "FINALIZED"){
 		    	    	    	    	    	    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		    	    	    	    	   		         if(report.typeOfContract == "New" || report.typeOfContract == "Custom"){
 		    	    	    	    	   		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye mr10" onClick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></i></a></div>';
