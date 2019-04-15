@@ -95,7 +95,7 @@ function getDynamicWorkflowList(){
 	    	  	"render": function(data, type, workflow, meta) {
 	    	  		var result = "";
               		if(workflow.workFlowName != null && workflow.workFlowName != '' && workflow.workFlowName != "undefined"){
-              			result = result +"<div class='tbldata-dotdot-verybig'><a onclick='viewWorkFlow(\""+workflow.uuid+"\")' title='view'>"+workflow.workFlowName+"</a></div>";
+              			result = checkDefaultWorkflow(workflow.configureType, workflow.uuid, workflow.workFlowName); 
   	              	}else{
   	            	  		result = result +"<div>---</div>";
   	             	}
@@ -165,6 +165,16 @@ function getDynamicWorkflowList(){
 		         }
 		     });
 	        
+}
+
+function checkDefaultWorkflow(configureType, uuid, workFlowName){
+	var result = "";
+	if(configureType != "Default"){
+		result = result +"<div class='tbldata-dotdot-verybig'><a onclick='viewWorkFlow(\""+uuid+"\")' title='view'>"+workFlowName+"</a></div>";
+	}else{
+		result = result +"<div class='tbldata-dotdot-verybig'>"+workFlowName+"</div>";
+	}
+	return result;
 }
 
 function checkConfigureType(configureType, status, uuid){
