@@ -24,6 +24,7 @@ import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 @Transactional
+@SuppressWarnings("unchecked")
 public class HolidayDaoImpl  implements HolidayDAO{
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -56,14 +57,26 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).list();
 		return holidayList;
 	}
+	 
 	
 	@Override
-	public List<Holiday> getAllHolidaysListBasedOnYear(Long id,Long reportYear) {
+	public List<Holiday> getAllHolidaysListBasedOnYear(Long id,Long reportYear,String shiftIds) {
 		String status = "1";
 		Session session = this.sessionFactory.getCurrentSession();
-        String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and (year(holiday.fromDate)='"+reportYear+"'  OR year(holiday.toDate)= '"+reportYear+"') ORDER BY holiday.fromDate ASC";
-		//String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and holiday.fromDate >= '"+satrtDate+"' AND holiday.toDate <= '"+endDate+"'";
-		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).list();
+		String subQuery = "";
+		String from = null;
+		List<Holiday> holidayList = null;
+		if(StringUtils.isNotBlank(shiftIds)) {
+			subQuery = " and holiday.id IN (select hs.holiday.id from HolidayShift hs where hs.shift.id IN("+shiftIds+"))";
+		}
+		if(shiftIds != null && shiftIds != "") {
+			from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and (year(holiday.fromDate)='"+reportYear+"'  OR year(holiday.toDate)= '"+reportYear+"') "+subQuery+" ORDER BY holiday.fromDate ASC";
+			holidayList = session.createQuery(from).setLong("id", id).setString("status", status).list();
+		}else {
+			from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and (year(holiday.fromDate)='"+reportYear+"'  OR year(holiday.toDate)= '"+reportYear+"') ORDER BY holiday.fromDate ASC";
+			holidayList = session.createQuery(from).setLong("id", id).setString("status", status).list();
+		}
+         
 		return holidayList;
 	}
 	
@@ -146,7 +159,6 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		return holidayList;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Holiday> getAllHolidaysListByOrgloationIdAndShiftId(Long locationId, String shiftIds) {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -167,7 +179,6 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		return holidayList;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Long> getHolidayShiftCout(Long holidayId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -176,7 +187,6 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		return holidayShiftList;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<HolidayShift> getHolidayShiftListByHolidayId(Long holidayId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -185,7 +195,6 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		return holidayShiftList;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void removeHolidayShiftList(List<Long> shiftIds,Long holidayId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -198,7 +207,6 @@ public class HolidayDaoImpl  implements HolidayDAO{
        }
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void deleteHolidayByHolidayId(Long holidayId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
