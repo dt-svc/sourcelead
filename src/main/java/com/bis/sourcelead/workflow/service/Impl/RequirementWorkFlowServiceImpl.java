@@ -473,6 +473,21 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		 return true;
 }
 
+
+	@Override
+	public void saveRequirementWorkFlowDetailsByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO,
+			OrgLocations orgLocations, User user) throws Exception {
+
+		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(requirementWorkFlowDTO.getUuid().trim());
+		
+		requirementWorkFlow.setWorkFlowName(requirementWorkFlowDTO.getWorkFlowName());
+		requirementWorkFlow.setDescription(requirementWorkFlowDTO.getDescription());
+		requirementWorkFlow.setUpdatedBy(user);
+		requirementWorkFlow.setUpdatedDate(new Date());
+		
+		requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
+	}
+
 }
 
 

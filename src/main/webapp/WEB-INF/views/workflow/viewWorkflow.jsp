@@ -3,6 +3,7 @@
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <div class="wraper"> 
+<form id="requirementWorkFlowForm" name="requirementWorkFlowForm">
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -148,11 +149,15 @@
 		<div class="footerstyelsNew">
 	<div class="clearfix">
 		<div class="pull-right">
-		<input value="Save" class="btn btn-primary" type="button">
+		<input value="Save" id="saveReqWorkFlow" 
+		onclick="saveRequirementWorkFlow('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');"
+		 class="btn btn-primary" type="button">
 		<input value="Cancel" class="btn btn-default ml" type="button" onclick = "cancelViewWorkflow();">
 		</div>
 	</div>
 	</div>
+	</section>
+	</form>
     </div>
   </section>
 </div>
@@ -177,5 +182,45 @@ function cancelViewWorkflow(){
 	
 }
 
+
+function saveRequirementWorkFlow(workflowUuid){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+      var validationSettings = {
+           errorMessagePosition: 'element',
+           borderColorOnError: '',
+           scrollToTopOnError: true,
+           dateFormat: 'yyyy/mm/dd'
+       };
+     
+	  if ($('#requirementWorkFlowForm').validate(false, validationSettings)) {
+		  var formData = getFormData("requirementWorkFlowForm");
+		   $("#saveReqWorkFlow").attr("disabled", "disabled");
+           $("#saveReqWorkFlow").addClass('button').val('Processing..'); 
+	 $.ajax({
+           type: "POST",
+           data : formData,
+           url:sourceleadUrl+"/saveWorkFlowDetails?uuid="+workflowUuid,
+           success: function (result) {
+				if (result.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (result.response === "SUCCESS") {
+	        		if(result.object === "DataMissing") {
+						$("#saveReqWorkFlow").removeAttr("disabled");
+						$("#saveReqWorkFlow").removeAttr('button').val('Save');	
+						showError("Invalid data");
+					}else{
+						
+						location.replace(sourceleadUrl+"/workflowList");	
+						
+					}
+	        	} else if (result.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+           },
+       });
+     } 
+}
 </script>
 <jsp:include page="../masterFooter.jsp" /> 
