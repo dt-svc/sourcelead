@@ -1567,5 +1567,15 @@ public class ProjectTasksRestController {
 		
 	}
 	
-
+	@RequestMapping(value = "/changeTaskStatusByList", method = RequestMethod.POST)
+	public @ResponseBody void changeTaskStatusByList(TaskDTO taskDTO, HttpServletRequest request) throws Exception {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"candidateId");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		taskDTO.setUserId(user.getId());
+		taskDTO.setCandidateId(candidateId);
+		tasksService.updateTaskStatusList(taskDTO,loginOrgLocation);
+		 
+	}
+	
 }

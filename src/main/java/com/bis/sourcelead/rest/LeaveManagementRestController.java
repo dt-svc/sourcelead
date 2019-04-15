@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,7 +54,6 @@ import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dao.OptionsDao;
-import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.dao.ShiftDao;
 import com.bis.sourcelead.dto.HolidayDTO;
@@ -105,12 +102,10 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
-import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectTasksService;
-import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RestrictDayService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
@@ -1018,16 +1013,14 @@ public class LeaveManagementRestController {
 
 				
 				if (StringUtils.isNotBlank(reportYear)) {
-					holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,
-							Long.parseLong(reportYear));
+					holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,Long.parseLong(reportYear),shiftIds);
 				} else {
 					int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 					if(StringUtils.isNotBlank(reportYear) ) {
 						holiodaysDTOList = holidayService.getAllHolidaysListByOrgloationIdAndShiftId(orgLocationId,shiftIds);
 					}else {
 						reportYear = String.valueOf(currentYear);
-						holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,
-								Long.parseLong(reportYear));
+						holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId, Long.parseLong(reportYear),shiftIds);
 					}
 				}
 				
