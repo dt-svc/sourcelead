@@ -1440,7 +1440,7 @@ function setHours(finalmin,rowId){
   function  calTotalamount(rowId,totlalAmount){
 	  var hiddenTotal = +document.getElementById("hiddenTotal").value;
 	    var grandTotal = parseFloat(hiddenTotal) + parseFloat(totlalAmount);
-	    var arroundGrand = grandTotal.toFixed(2)
+	    var arroundGrand = grandTotal.toFixed(3)
 	    
 	    
 	    //--------------------------------
@@ -1458,11 +1458,11 @@ function setHours(finalmin,rowId){
 	 	    }
 	    //-------------------------------------
 	    
-	    $("#inoviceTotal").val(sum.toFixed(2));
-	    $("#hiddenTotal").val(sum.toFixed(2));
-	    $("#grandTotal").val(sum.toFixed(2));
-	    $("#conversionFrom").val(sum.toFixed(2));
-	    $("#afterDiscountTotal").val(sum.toFixed(2));
+	    $("#inoviceTotal").val(sum.toFixed(3));
+	    $("#hiddenTotal").val(sum.toFixed(3));
+	    $("#grandTotal").val(sum.toFixed(3));
+	    $("#conversionFrom").val(sum.toFixed(3));
+	    $("#afterDiscountTotal").val(sum.toFixed(3));
 	    
 /*  After adding the rows calculate the discount start*/
     calculateDiscount();
@@ -1488,7 +1488,7 @@ function calculateDiscount(){
 			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total);
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -1503,9 +1503,9 @@ function calculateDiscount(){
 			$("#discountTotal").val(perCentValue);
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -1714,8 +1714,8 @@ function calculateTaxDiscount(){
 	}
 	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
-	 $("#grandTotal").val(grandTotal.toFixed(2));
-	$("#conversionFrom").val(grandTotal.toFixed(2));
+	 $("#grandTotal").val(grandTotal.toFixed(3));
+	$("#conversionFrom").val(grandTotal.toFixed(3));
 	conversion();
 }
 </script>

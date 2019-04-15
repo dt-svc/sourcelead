@@ -499,11 +499,11 @@ function calculateSum(){
 	    		
 	    	 } 
 	 }  
-	  $("#inoviceTotal").val(sum.toFixed(2));
-	  $("#subTotal").val(sum.toFixed(2));
-	  $("#grandTotal").val(sum.toFixed(2));
-	  $("#conversionFrom").val(sum.toFixed(2));
-	  $("#afterDiscountTotal").val(sum.toFixed(2));
+	  $("#inoviceTotal").val(sum.toFixed(3));
+	  $("#subTotal").val(sum.toFixed(3));
+	  $("#grandTotal").val(sum.toFixed(3));
+	  $("#conversionFrom").val(sum.toFixed(3));
+	  $("#afterDiscountTotal").val(sum.toFixed(3));
 	  calculateDisCount();
 	  calculateTaxDiscount();
 }
