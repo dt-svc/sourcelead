@@ -1,7 +1,6 @@
 package com.bis.sourcelead.indPayroll.rest;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -642,7 +641,7 @@ public class IndianPayrollRestController {
    		model.addObject("freqResponse",indPaysheetFrequencyDTO);
    		List<AssociatePayrollPayheadHistoryDTO> allAssociatesPayrollPayheadList =ipDTOList.stream().map(empPayrollDTO->empPayrollDTO.getPayHeadHistoryDTOList()).flatMap(List::stream).collect(Collectors.toList());
    		
-   		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+   		/*DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		List<AssociatePayrollPayheadHistoryDTO> dupAssociatePayrollPayheadDTOList = allAssociatesPayrollPayheadList;
 		allAssociatesPayrollPayheadList = allAssociatesPayrollPayheadList.stream().filter(ml -> (dupAssociatePayrollPayheadDTOList.stream().filter(sl -> {
 			try {
@@ -651,7 +650,7 @@ public class IndianPayrollRestController {
 				e.printStackTrace();
 			}
 			return false;
-		}).count())<1).collect(Collectors.toList());
+		}).count())<1).collect(Collectors.toList());*/
    		
    		/*Response<IndApprovePayrollDTO> approveResponse = indPaysheetFrequencyService.getApproveInfoIndPayroll(indApprovePayrollDTO, orgLocation,loginUser);
    		model.addObject("approveResponse", approveResponse.getObject());*/
