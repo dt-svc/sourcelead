@@ -126,7 +126,7 @@
 <div class="changeRate_div estRate_div">
 
 <div class="pull-left inputRate">
-<input class="form-control input-sm" type="text" id="REPLACEROWIDpercentageOfWork" name="projectMembers[REPLACEROWID].percentageOfWork" data-validation-optional="true" data-validation="validate_int validate_Space validate_length length1-15" field-name="%Of Work" onkeyup = "checkValue(this);">
+<input class="form-control input-sm" type="text" id="REPLACEROWIDpercentageOfWork" name="projectMembers[REPLACEROWID].percentageOfWork" data-validation-optional="true" data-validation="validate_Space validate_percentage_of_work" field-name="PercentageOfWork">
 </div>
 
 </div>
