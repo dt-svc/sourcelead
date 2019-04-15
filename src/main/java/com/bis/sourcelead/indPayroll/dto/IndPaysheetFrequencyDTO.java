@@ -251,5 +251,4 @@ public class IndPaysheetFrequencyDTO  extends SearchDTO{
 	public void setPreCheckINDPayrollDTO(PreCheckINDPayrollDTO preCheckINDPayrollDTO) {
 		this.preCheckINDPayrollDTO = preCheckINDPayrollDTO;
 	}
-	
 }

@@ -525,24 +525,24 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 						&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getShortCode())
 						&& payHead.getPayrollPayhead().getShortCode().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_TDS)) {
 						
-						if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+						/*if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
 							tds = payHead.getAnnualy();
 						}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
 							tds = payHead.getMonthly();
 						}else  {
 							tds = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
-						}
+						}*/
 						   
 					}else if(payHead.getPayrollPayhead() != null 
 							&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getShortCode())
 							&& payHead.getPayrollPayhead().getShortCode().equalsIgnoreCase(Constants.IND_PAYROLL_PROFESSIONAL_TAX)) {
-							if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+							/*if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
 								pt = payHead.getAnnualy();
 							}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
 								pt = payHead.getMonthly();
 							}else  {
 								pt = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
-							}
+							}*/
 							
 					}
 					
@@ -944,33 +944,22 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	
 	
 	@SuppressWarnings("static-access")
-	public Double calculatePTforAssociate(AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate) throws ParseException {
+	public Double calculatePTforAssociate(AssociateSalaryInd assoSal, Date freqStartDate, Date freqEndDate, StateTaxDTO taxDTO) throws ParseException {
 		Double ptAmount = 0.0;
-		
 		if(assoSal != null && assoSal.getAssociateSalaryPayheadIndList() != null && assoSal.getAssociateSalaryPayheadIndList().size()>0) {
-
 			AssociateSalaryPayheadInd asph = assoSal.getAssociateSalaryPayheadIndList().stream().filter(h -> h.getPayrollPayhead().getShortCode().equalsIgnoreCase("BA")).findAny().get();
-
-			if (asph != null) {
-
-				List<String> financialYearStr = getFinancialYearByOrgLocationAndDate(asph.getPayrollPayhead().getOrgLocationId(), freqStartDate);
-				String financialYear = financialYearStr.get(0) + "-" + financialYearStr.get(1);
-				StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(
-						asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
+			if(asph != null) {
+				//List<String> financialYearStr = getFinancialYearByOrgLocationAndDate(asph.getPayrollPayhead().getOrgLocationId(), freqStartDate);
+				//String financialYear = financialYearStr.get(0) + "-" + financialYearStr.get(1);
+				//StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
 				try {
-					if (taxDTO != null && taxDTO.getProfessionalTaxList().size() > 0) {
-
-						ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream()
-								.filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(assoSal.getAnnualSalary()) <= 0
-										&& new BigDecimal(t.getAmountTo()).compareTo(assoSal.getAnnualSalary()) >= 0)
-								.findAny().get();
-
-						if (ptDTO != null)
+					if(taxDTO != null && taxDTO.getProfessionalTaxList().size()>0) {
+						ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(assoSal.getAnnualSalary()) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(assoSal.getAnnualSalary()) >= 0 ).findAny().get();
+						if(ptDTO != null)
 							ptAmount = Double.valueOf(ptDTO.getAmount());
 					}
-
-				} catch (Exception e) {
-					// e.printStackTrace();
+				}catch (Exception e) {
+					//e.printStackTrace();
 					return ptAmount;
 				}
 			}
@@ -1148,14 +1137,16 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		
 		List<String> financialYearStr = getFinancialYearByOrgLocationAndDate(orgLocation, freqStartDate);
 		
-		StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(orgLocation.getState(), financialYearStr.get(0) + "-" + financialYearStr.get(1));
-		if(taxDTO != null && taxDTO.getId() > 0) {
+		StateTaxDTO stateTaxDTO = taxService.getStateTaxByStateNameAndFinancialYear(orgLocation.getState(), financialYearStr.get(0) + "-" + financialYearStr.get(1));
+		preCheckINDPayrollDTO.setStateTaxDTO(stateTaxDTO);
+		if(stateTaxDTO != null && stateTaxDTO.getId() > 0) {
 			preCheckINDPayrollDTO.setIsPTConfigured(true);
 		}else {
 			preCheckINDPayrollDTO.setIsPTConfigured(false);
 		}
 		
 		List<Tds> tdsList = taxService.getTDSListByFinancialYear(financialYearStr.get(0) + "-" + financialYearStr.get(1));
+		preCheckINDPayrollDTO.setTdsList(tdsList);
 		if(tdsList != null && tdsList.size() > 0) {
 			preCheckINDPayrollDTO.setIsTDSConfigured(true);
 		}else {
@@ -1334,45 +1325,32 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
             Calendar orgCal = Calendar.getInstance();
             orgCal.setTime(orgLocation.getCreatedDate());
 			 int orgRegisteredYear = orgCal.get(Calendar.YEAR);
-             
-			String fromYear = null;
-			String toYear = null;
+             int orgRegisteredMonth = orgCal.get(Calendar.MONTH);
+			 int fromYear = 0;
+			 int toYear = 0;
 			Calendar c = Calendar.getInstance();
-			int fYear = c.get(Calendar.YEAR);
-			int fMonth = c.get(Calendar.MONTH);
+			int cYear = c.get(Calendar.YEAR);
+			int cMonth = c.get(Calendar.MONTH);
 			if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
 				Calendar cal = Calendar.getInstance();
 				Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
 				cal.setTime(date);
 				int startFinMonth = cal.get(Calendar.MONTH);
-				if (fMonth >= startFinMonth && fMonth < 12) {
-					fromYear = Integer.toString(fYear);
-					if(startFinMonth != 0) {
-						toYear = Integer.toString(fYear + 1);
-					}
-					
-				} else {
-					fromYear = Integer.toString(fYear - 1);
-					toYear = Integer.toString(fYear);
+				
+				if(orgRegisteredMonth < startFinMonth) {
+					fromYear = orgRegisteredYear - 1;
+					toYear = orgRegisteredYear;
+				}else {
+					fromYear = orgRegisteredYear;
+					toYear = orgRegisteredYear + 1;
 				}
-			} else {
-				fromYear = Integer.toString(fYear);
-				toYear = Integer.toString(fYear);
+				
+				while(fromYear < (startFinMonth <= cMonth ? cYear+1 : cYear )) {
+					String finYear = fromYear+"-"+String.valueOf(fromYear+1);
+					finYearList.add(finYear);
+					fromYear++;
+				}
 			}
-			 
-			 if(toYear != null) {
-				 while(orgRegisteredYear < Integer.parseInt(toYear)) {
-					 String finYear = String.valueOf(orgRegisteredYear)+"-"+String.valueOf(orgRegisteredYear+1);
-					 finYearList.add(finYear);
-					 orgRegisteredYear++;
-				 }
-			 }else {
-				 while(orgRegisteredYear < Integer.parseInt(fromYear)+1) {
-					 String finYear = String.valueOf(orgRegisteredYear);
-					 finYearList.add(finYear);
-					 orgRegisteredYear++;
-				 }
-			 }
 			 
 		}catch (Exception e) {
 			e.printStackTrace();
