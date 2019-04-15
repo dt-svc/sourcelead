@@ -347,15 +347,19 @@ function saveRequirementWorkflowStage(workflowUuid){
 	var stageUuid = $("#workflowStageUuid").val();
 	var qTemplateId = "";
 	
-	$('#questionnaireTemplateId option').each(function() {
+	/* $('#questionnaireTemplateId option').each(function() {
 	    if($(this).is(':selected')) {
 	    	qTemplateId = $("#questionnaireTemplateId").val();
 	    }
 	    else{
 	    	qTemplateId = "";
 	    }
-	});
-
+	}); */
+	
+	if(qTemplateId == "Select"){
+		qTemplateId = "";
+	}
+	
 	if(stageUuid == null){
 		stageUuid = $("#previousStageUuid").val();
 	}
