@@ -737,8 +737,6 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 				 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"createdByEmail");
 		   }
 	   }
-	   
-	
 		
 	}
 
