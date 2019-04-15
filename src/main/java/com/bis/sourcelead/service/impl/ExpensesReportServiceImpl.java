@@ -368,7 +368,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 				 for(Expenses exp:expenses){
 					 if(projectMember!=  null && null != projectMember.getProjectMemberCandidteId()){
 							if(projectMember.getEmployee()!= null && null != projectMember.getEmployee().getEmployeeId()){
-								expensesArray[0] = (exp.getProjectMembers().getEmployee().getEmployeeId());
+								expensesArray[0] = (projectMember.getEmployee().getEmployeeId());
 							}else {
 								expensesArray[0] = ("--");
 							}
