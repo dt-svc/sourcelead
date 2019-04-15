@@ -399,17 +399,17 @@ function getNextWorkflowStage(select, worflowUuid){
 			url : sourceleadUrl + "/getRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+worflowUuid,
 			success : function(dataList){
 				var result = "";
-				result = result + "<select class='sel form-control' id = 'workflowStageUuid'>";
-				 result = result + "<option selected>Select</option>";
+				 result = result + "<select class='sel form-control' id = 'workflowStageUuid'>";
+				 /*result = result + "<option selected>Select</option>"; */
 				if(dataList != null){
 						$("#nextStageDiv").show();
 						 result = result + "<option value="+dataList.uuid+">"+dataList.stageName+"</option>";
 				}
 				else{
-					$("#nextStageDiv").hide();
+					//$("#nextStageDiv").hide();
 					result = "";
 				}
-				result = result + "</select>";
+				 result = result + "</select>"; 
 				$("#nextStages").empty().append(result);
 			}
 			});
