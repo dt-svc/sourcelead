@@ -2939,7 +2939,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 					} else {
 						globalVarsMap.put("clientName", contactUser.getFirstName());
 					}
-					globalVarsMap.put("grandTotal", invoice.getTotal());
+					globalVarsMap.put("grandTotal", invoice.getDueAmount());
 					globalVarsMap.put("dueDate", date);
 					globalVarsMap.put("orgName", orgLocation.getOrgLocationName());
 					// globalVarsMap.put("address",invoice.getBillingAddress());
