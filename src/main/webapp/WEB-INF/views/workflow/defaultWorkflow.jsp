@@ -110,7 +110,6 @@ function getDefaultWorkflowNameAndDescription(){
 						
 					//changing dynamic spans based on stage names and anchors for stages based on editable. 
 					iconSpan = dynamicSpan(dataList[i].stageName);
-					editAndDeleteAnchor = dynamicAnchor(dataList[i].editable, dataList[i].uuid);
 					
 					result = result + "<li class='widgetDiv mb clearfix'>";
 					result = result + "<div class='row'>";
@@ -120,7 +119,6 @@ function getDefaultWorkflowNameAndDescription(){
 					result = result + "</div>";
 					result = result + "<div class='col-md-2'>";
 					result = result + "<ul class='list-inline list-unstyled pull-right mb0'>";
-					result = result + editAndDeleteAnchor
 					result = result + "</ul></div></div></li>";
 					}
 					 result = result + "</ul>"; 
@@ -165,18 +163,6 @@ function getDefaultWorkflowNameAndDescription(){
 			}
 		}
 		
-	function dynamicAnchor(editable, uuid){
-		if(editable != null){
-			if(editable == "Y"){
-				 /* "<li><a title='Edit' href='${SourceLeadWeb_sourceleadUrl}/addStage'><i class='fa fa-pencil'></i></a></li>" + */
-				return	"<li><a title='Delete' onclick ='deleteWorkflowStage(\""+uuid+"\");'><i class='fa fa-trash'></i></a></li>"
-			}
-			if(editable == "N"){
-				return "<li></li>";
-			}
-		}
-	}
-	
 	function deleteWorkflowStage(uuid){
 		$.ajax({
 			type : "GET",

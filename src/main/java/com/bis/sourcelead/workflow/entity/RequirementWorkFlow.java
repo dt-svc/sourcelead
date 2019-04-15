@@ -49,6 +49,9 @@ import com.bis.sourcelead.entity.User;
 	@Column(name = "STATUS")
 	private Integer status;
 	
+	@Column(name = "CONFIGURE_TYPE")
+	private String configureType;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -113,6 +116,15 @@ import com.bis.sourcelead.entity.User;
 
 	public Integer getStatus() {
 		return status;
+	}
+
+	
+	public String getConfigureType() {
+		return configureType;
+	}
+
+	public void setConfigureType(String configureType) {
+		this.configureType = configureType;
 	}
 
 	public void setStatus(Integer status) {
