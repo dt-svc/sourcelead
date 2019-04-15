@@ -3,6 +3,8 @@
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <div class="wraper"> 
+<div id="popUp"></div>
+<form id="requirementWorkFlowForm" name="requirementWorkFlowForm">
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -123,7 +125,11 @@
 							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
-							<a title="Delete" href="addWorkflow.html"><i class="fa fa-trash"></i></a>
+							<a title="Delete" 
+							onclick = 'deletepoup("${requirementWorkFlowStages.uuid}",
+							"${requirementWorkFlowStages.stageName}",
+							"${requirementWorkFlowStages.requirementWorkFlowUuid}")'>
+							<i class="fa fa-trash"></i></a>
 						</li>
 						</c:if>	
 						<c:if test = "${requirementWorkFlowStages.editable == 'N'}">	
@@ -140,16 +146,105 @@
 		</c:if>
 		
 		<!-- dynamic content ends here -->
-		
+		<c:if test="${not empty requirementWorkFlowStagesDTO}">
+		<div style="display: none;" id = "stagesDto" value = "{requirementWorkFlowStagesDTO}"></div>
+		</c:if>
 		<div class="footerstyelsNew">
 	<div class="clearfix">
 		<div class="pull-right">
-		<input value="Save" class="btn btn-primary" type="button">
-		<input value="Cancel" class="btn btn-default ml" type="button">
+		<input value="Save" id="saveReqWorkFlow" 
+		onclick="saveRequirementWorkFlow('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');"
+		 class="btn btn-primary" type="button">
+		<input value="Cancel" class="btn btn-default ml" type="button" onclick = "cancelViewWorkflow();">
 		</div>
 	</div>
 	</div>
+	</section>
+	</form>
     </div>
   </section>
 </div>
+<script>
+
+function cancelViewWorkflow(){
+	window.location.href = "${SourceLeadWeb_sourceleadUrl}/workflowList";
+}
+
+
+function saveRequirementWorkFlow(workflowUuid){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+      var validationSettings = {
+           errorMessagePosition: 'element',
+           borderColorOnError: '',
+           scrollToTopOnError: true,
+           dateFormat: 'yyyy/mm/dd'
+       };
+     
+	  if ($('#requirementWorkFlowForm').validate(false, validationSettings)) {
+		  var formData = getFormData("requirementWorkFlowForm");
+		   $("#saveReqWorkFlow").attr("disabled", "disabled");
+           $("#saveReqWorkFlow").addClass('button').val('Processing..'); 
+	 $.ajax({
+           type: "POST",
+           data : formData,
+           url:sourceleadUrl+"/saveWorkFlowDetails?uuid="+workflowUuid,
+           success: function (result) {
+				if (result.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (result.response === "SUCCESS") {
+	        		if(result.object === "DataMissing") {
+						$("#saveReqWorkFlow").removeAttr("disabled");
+						$("#saveReqWorkFlow").removeAttr('button').val('Save');	
+						showError("Invalid data");
+					}else{
+						
+						location.replace(sourceleadUrl+"/workflowList");	
+						
+					}
+	        	} else if (result.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+           },
+       });
+     } 
+}
+
+function deletepoup(stageUuid, stageName, workflowUuid){
+	var result = "";
+	$("#popUp").empty();
+	result = result +" <div class='project_inn_mask'></div>"; 
+	result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +" <p>Are you sure you want to delete "+stageName+"?</p>";
+	result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteRequirementWorkflowStage(\''+stageUuid+'\', \''+workflowUuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +" </div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	}
+	</script>
+	<script>
+	function deleteRequirementWorkflowStage(stageUuid, workflowUuid){
+		var stageDto = $("#stagesDto").val();
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl + "/deleteRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid,
+			success : function(dataList){
+				if(dataList == "Success"){
+					location.reload();
+				}else{
+					 showError("Operation failed, please try again");
+				}
+				}
+			});
+			
+	}
+	
+	function cancelTermination(){
+		 $("#popUp").empty();
+	     $(".project_inn_mask").fadeOut(200);
+	}
+
+</script>
 <jsp:include page="../masterFooter.jsp" /> 

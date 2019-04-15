@@ -3,6 +3,7 @@
 <script>
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/requirementQuestionnaireFormBuilder.js"></script>
 <div class="wraper"> 
    <section class="content-wraper">
     <section class="content-header clearfix">
@@ -33,6 +34,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
     </div>
   </section>
 </div>
+<div id="popUp"></div>
+    <div id="choicepopUp"></div>
 <script>
 $(document).ready(function() {
 	getWorkflowQuestionnnaireList();
@@ -130,7 +133,7 @@ function getDynamicWorkflowQuestionnnaireList(){
 	    	    	result = result +"<div class='width90px'>";
 	    	  		result = result +"<ul class='list-inline list-unstyled'>";
 	    	  		result = result +"<li><a href= "+sourceleadUrl+"/editQuestionnaire?templateUuid="+workflow.uuid+"><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
-	    	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick= deleteQuestionnaire('"+workflow.uuid+"')></i></li>"
+	    	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick=  deletepoup('"+workflow.uuid+"','"+workflow.name+"')></i></li>"
 	    	  		result = result +"</ul>	";
 	    	  		result = result +"</div>";
   	             	return result;
@@ -160,6 +163,22 @@ function getDynamicWorkflowQuestionnnaireList(){
 }
 </script>
 <script>
+function deletepoup(uuid,name){
+var result = "";
+$("#popUp").empty();
+result = result +" <div class='project_inn_mask'></div>"; 
+result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+
+result = result +" <p>Are you sure you want to delete "+name+"?</p>";
+result = result + ' <div id="voidInvoiceId"/>';
+result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteQuestionnaire(\''+uuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
+result = result +" </div>";
+$("#popUp").append(result);
+$("#remove_user_pop").slideDown(200);
+$(".project_inn_mask").fadeIn(200);
+}
+</script>
+<script>
 
 function deleteQuestionnaire(uuid){
 	console.log("delete uuid "+uuid);
@@ -175,8 +194,16 @@ function deleteQuestionnaire(uuid){
 	        	} else {
 	        	    showError("Operation failed, please try again");
 	        	}
+	           $("#popUp").empty();
+	           $("#remove_user_pop").fadeOut(200);
+	           $(".project_inn_mask").fadeOut(200);
 	        },
 	    });
 }
+function cancelTermination(){
+	 $("#popUp").empty();
+     $(".project_inn_mask").fadeOut(200);
+}
+
 </script>
 <jsp:include page="../masterFooter.jsp" /> 

@@ -22,6 +22,8 @@ public class RequirementWorkFlowDTO extends SearchDTO{
 	
 	private String reqWorkFlowId;
 
+	private String configureType;
+	
 	public long getId() {
 		return id;
 	}
@@ -85,5 +87,14 @@ public class RequirementWorkFlowDTO extends SearchDTO{
 	public void setReqWorkFlowId(String reqWorkFlowId) {
 		this.reqWorkFlowId = reqWorkFlowId;
 	}
+
+	public String getConfigureType() {
+		return configureType;
+	}
+
+	public void setConfigureType(String configureType) {
+		this.configureType = configureType;
+	}
+	
 	
 }

@@ -315,7 +315,7 @@
             onclick = "saveRequirementWorkflowStage('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');">
 		  </c:if>  
           
-            <input value="Cancel" class="btn btn-default ml" type="button">
+            <input value="Cancel" class="btn btn-default ml" type="button" onclick = "cancelAddStage();">
           </div>
         </div>
       </div>
@@ -345,7 +345,21 @@ function saveRequirementWorkflowStage(workflowUuid){
 	var stageName = $("#stageName").val();
 	var description = $("textarea#stageDescription").val();
 	var stageUuid = $("#workflowStageUuid").val();
-	var qTemplateId = $("#questionnaireTemplateId").val();
+	var qTemplateId = "";
+	
+	/* $('#questionnaireTemplateId option').each(function() {
+	    if($(this).is(':selected')) {
+	    	qTemplateId = $("#questionnaireTemplateId").val();
+	    }
+	    else{
+	    	qTemplateId = "";
+	    }
+	}); */
+	
+	if(qTemplateId == "Select"){
+		qTemplateId = "";
+	}
+	
 	if(stageUuid == null){
 		stageUuid = $("#previousStageUuid").val();
 	}
@@ -389,17 +403,17 @@ function getNextWorkflowStage(select, worflowUuid){
 			url : sourceleadUrl + "/getRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+worflowUuid,
 			success : function(dataList){
 				var result = "";
-				result = result + "<select class='sel form-control' id = 'workflowStageUuid'>";
-				 result = result + "<option selected>Select</option>";
+				 result = result + "<select class='sel form-control' id = 'workflowStageUuid'>";
+				 /*result = result + "<option selected>Select</option>"; */
 				if(dataList != null){
 						$("#nextStageDiv").show();
 						 result = result + "<option value="+dataList.uuid+">"+dataList.stageName+"</option>";
 				}
 				else{
-					$("#nextStageDiv").hide();
+					//$("#nextStageDiv").hide();
 					result = "";
 				}
-				result = result + "</select>";
+				 result = result + "</select>"; 
 				$("#nextStages").empty().append(result);
 			}
 			});
@@ -463,5 +477,8 @@ function saveWorkflowTask(worflowUuid){
 			$("#summerNote").val("");
 	 }
 
+	 function cancelAddStage(){
+		 window.location.href = "${SourceLeadWeb_sourceleadUrl}/workflowList";
+	 }
 </script>
 <jsp:include page="../masterFooter.jsp" /> 

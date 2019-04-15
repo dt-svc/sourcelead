@@ -1,8 +1,8 @@
 package com.bis.sourcelead.workflow.dto;
 
+import java.io.Serializable;
 
-
-public class RequirementWorkFlowStagesDTO {
+public class RequirementWorkFlowStagesDTO implements Serializable{
 
 	private long id;
 	
