@@ -172,6 +172,6 @@ public interface ProjectMembersService {
 	
 	ProjectMembers getProjectMembersByMasterCandiateIdAndProjectClientId(Long masterCandidateId,Long projectClientsId) throws Exception;
 
-	public List<CandidateDTO> getAllAvailableAssociates( Long orgLocation);
+	public List<Candidate> getAllAvailableAssociates( Long orgLocation);
 	
 }
