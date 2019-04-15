@@ -1892,12 +1892,20 @@ public class CommonUtil {
 				
 				candidate.setIsAssociate(Constants.NO);
 				candidate.setDesignationType("W-2");
-				candidate.setWorkLocation(candidateDTO.getWorkLocation());
+				if(candidateDTO.getWorkLocation() != null) {
+					OrgLocations workLocation = new OrgLocations();
+					workLocation.setId(candidateDTO.getWorkLocation());
+					candidate.setWorkLocation(workLocation);
+				}
 				candidate.setStatus(1);
 	  			Candidate savedCandidate = candidateService.saveOrUpdateCandidate(candidate);
 	  			candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
 			  }else {
-				  candidate.setWorkLocation(candidateDTO.getWorkLocation());
+				  if(candidateDTO.getWorkLocation() != null) {
+						OrgLocations workLocation = new OrgLocations();
+						workLocation.setId(candidateDTO.getWorkLocation());
+						candidate.setWorkLocation(workLocation);
+					}
 				  candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			  }
 			  
