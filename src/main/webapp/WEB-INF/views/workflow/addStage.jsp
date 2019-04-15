@@ -315,7 +315,7 @@
             onclick = "saveRequirementWorkflowStage('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');">
 		  </c:if>  
           
-            <input value="Cancel" class="btn btn-default ml" type="button">
+            <input value="Cancel" class="btn btn-default ml" type="button" onclick = "cancelAddStage();">
           </div>
         </div>
       </div>
@@ -473,5 +473,8 @@ function saveWorkflowTask(worflowUuid){
 			$("#summerNote").val("");
 	 }
 
+	 function cancelAddStage(){
+		 window.location.href = "${SourceLeadWeb_sourceleadUrl}/workflowList";
+	 }
 </script>
 <jsp:include page="../masterFooter.jsp" /> 
