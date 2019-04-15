@@ -1271,7 +1271,7 @@ function getOfferDetails(submissionId){
 	                    	 if(report.offerExpireDate != null && report.offerExpireDate != "" && report.offerExpireDate  != "undefined"){
 		                    	 result = result + '<div class="row clearfix">';
 	                        	 result = result + '<label class="col-md-5">';
-	                        	 result = result + '<strong>Expire Offer Date</strong>';
+	                        	 result = result + '<strong>Offer Expire Date</strong>';
 	                        	 result = result + '</label>';
 	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerExpireDate+'</p>';
 	                        	 result = result + '</div>';
