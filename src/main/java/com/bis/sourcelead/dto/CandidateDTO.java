@@ -25,7 +25,7 @@ public class CandidateDTO extends SearchDTO{
 	
 	private List<FileInfo> uploadedFileInfo;
 
-	private OrgLocations workLocation;
+	private Long workLocation;
 
 	private String consultantUser;
 
@@ -1290,11 +1290,11 @@ public class CandidateDTO extends SearchDTO{
 		this.marketPrice = marketPrice;
 	}
 
-	public OrgLocations getWorkLocation() {
+	public Long getWorkLocation() {
 		return workLocation;
 	}
 
-	public void setWorkLocation(OrgLocations workLocation) {
+	public void setWorkLocation(Long workLocation) {
 		this.workLocation = workLocation;
 	}
 

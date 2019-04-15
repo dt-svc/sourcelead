@@ -525,24 +525,24 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 						&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getShortCode())
 						&& payHead.getPayrollPayhead().getShortCode().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_TDS)) {
 						
-						if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+						/*if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
 							tds = payHead.getAnnualy();
 						}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
 							tds = payHead.getMonthly();
 						}else  {
 							tds = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
-						}
+						}*/
 						   
 					}else if(payHead.getPayrollPayhead() != null 
 							&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getShortCode())
 							&& payHead.getPayrollPayhead().getShortCode().equalsIgnoreCase(Constants.IND_PAYROLL_PROFESSIONAL_TAX)) {
-							if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
+							/*if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
 								pt = payHead.getAnnualy();
 							}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
 								pt = payHead.getMonthly();
 							}else  {
 								pt = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
-							}
+							}*/
 							
 					}
 					
