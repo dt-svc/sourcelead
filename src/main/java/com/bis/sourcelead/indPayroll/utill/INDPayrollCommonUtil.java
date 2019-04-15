@@ -97,6 +97,9 @@ public class INDPayrollCommonUtil {
 	@Value("${static.path}")
     private String staticPath;
 	
+	@Value("${pmsUrl}")
+	private String pmsUrl;
+	
 	@Autowired
 	PayrollPayheadDao payrollPayheadDao;
 	
@@ -1067,8 +1070,11 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 
 			emailMessage.setFromName(loginUser.getFullName());
 
+			//redirection uRl
+			String redirectURL ="/employeePayrollList-params-paySheetFrequencyUUID=" + frequency.getPaySheetFrequencyUUID();
+			Long redirectOrgLocationId = orgLocation.getId();
+			
 			// setting the class field values...............
-
 			Map<String, String> globalVarsMap = new HashMap<String, String>();
 			globalVarsMap.put("loginUser", loginUser.getFullName());
 			if (orgLocation.getOrgLocationName() != null && !"".equalsIgnoreCase(orgLocation.getOrgLocationName())) {
@@ -1098,10 +1104,9 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			// sourcelead login page..
 
 			StringBuilder loginLinkBuild = new StringBuilder();
-			globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl).append(
-					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+			globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Approve Payroll</div></a>")
 					.toString());
-
 			// Set the notification link when user click this link the page goes to
 			// respective payroll summary.......
 
@@ -1176,6 +1181,9 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			emailMessage.setToEmail(user.getEmail());
 			emailMessage.setFromEmail(loginUser.getEmail());
 			emailMessage.setFromName(loginUser.getFullName());
+			//redirection uRl
+			String redirectURL ="/employeePayrollList-params-paySheetFrequencyUUID=" + frequency.getPaySheetFrequencyUUID();
+			Long redirectOrgLocationId = orgLocation.getId();
 
 			// setting the class field values...............
 			Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1200,10 +1208,12 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			globalVarsMap.put("GetTheTotalAmount", totAmount.toString());
 			// Set the login link when user click this link the page goes to redirect the sourcelead login page..
 
+
 			StringBuilder loginLinkBuild = new StringBuilder();
-			globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl).append(
-			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+			globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Payroll Approved</div></a>")
 			.toString());
+
 
 			// Set the notification link when user click this link the page goes to respective payroll summary.......
 
