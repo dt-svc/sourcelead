@@ -702,6 +702,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@JsonProperty
 	private String noResponseCount;
 	
+	@Transient
+	@JsonProperty
+	private String releasedDate;
+	
 	public String getJobFairDates() {
 		return jobFairDates;
 	}
@@ -2255,6 +2259,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setJobOwner(String jobOwner) {
 		this.jobOwner = jobOwner;
+	}
+
+	public String getReleasedDate() {
+		return releasedDate;
+	}
+
+	public void setReleasedDate(String releasedDate) {
+		this.releasedDate = releasedDate;
 	}
 	
 	
