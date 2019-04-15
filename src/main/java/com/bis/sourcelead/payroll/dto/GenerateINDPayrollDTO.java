@@ -1,6 +1,7 @@
 package com.bis.sourcelead.payroll.dto;
 
 import com.bis.sourcelead.dto.SearchDTO;
+import com.bis.sourcelead.indPayroll.dto.PreCheckINDPayrollDTO;
 
 public class GenerateINDPayrollDTO extends SearchDTO {
 
@@ -17,7 +18,7 @@ public class GenerateINDPayrollDTO extends SearchDTO {
 	
 	private String paytype;
 	
-	
+	private PreCheckINDPayrollDTO preCheckINDPayrollDTO;
 
 	public String getPaytype() {
 		return paytype;
@@ -49,6 +50,14 @@ public class GenerateINDPayrollDTO extends SearchDTO {
 
 	public void setPayrollPayDate(String payrollPayDate) {
 		this.payrollPayDate = payrollPayDate;
+	}
+
+	public PreCheckINDPayrollDTO getPreCheckINDPayrollDTO() {
+		return preCheckINDPayrollDTO;
+	}
+
+	public void setPreCheckINDPayrollDTO(PreCheckINDPayrollDTO preCheckINDPayrollDTO) {
+		this.preCheckINDPayrollDTO = preCheckINDPayrollDTO;
 	}
 
 }

@@ -83,6 +83,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Projects;
@@ -1200,6 +1201,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			// immDto.setOpenDate(dataMigrationDTOJsonCopy.getString("lawFirmClient"));
 			// for lca details need to push lca table.
 			// CandidateLcaI94Summary lcaCurrSummary = new CandidateLcaI94Summary();
+			Lca lca = immigrationCommonService.getLcaNumber(dataMigrationDTOJsonCopy.getString("lcaNumber"));
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaStartDate"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaStartDate"))) {
 				immDto.setLcaStartDate(dataMigrationDTOJsonCopy.getString("lcaStartDate"));
@@ -1213,6 +1215,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaNumber"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaNumber"))) {
 				immDto.setLcaNumber(dataMigrationDTOJsonCopy.getString("lcaNumber"));
+				immDto.setLcaId(lca.getId().toString());
 			}
 			
 			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaRate")) 
