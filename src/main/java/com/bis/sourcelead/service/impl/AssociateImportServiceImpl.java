@@ -238,7 +238,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		
 		Map<String,  List<String>> accGroupByEmailList = new HashMap<String, List<String>>();
 		canMap.forEach((k, v) -> {
-			   accGroupByEmailList.put(k, paymentDetailsList.stream().filter(t -> t.getEmail().equals(k) && t.getAccountNumber() != null).map(PaymentAccount::getAccountNumber).collect(Collectors.toList()));  });
+			   accGroupByEmailList.put(k, paymentDetailsList.stream().filter(t -> t.getEmail() != null && t.getEmail().equals(k) && t.getAccountNumber() != null).map(PaymentAccount::getAccountNumber).collect(Collectors.toList()));  });
 		
 		int insertedCount = 0;
 		try {
@@ -429,9 +429,9 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				logger.debug("File Extension is: " + multipartFile.getOriginalFilename());
 				
 				
-				List<Candidate> candidateList =  candidateService.getAllCandidatesByLocation(orgLocation.getId());
+				List<Candidate> candidateList =  candidateService.getAllActiveAssociatesByLocation(orgLocation.getId());
 				Map<String, Long> mapEmailAndId = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
-				Map<String, String> mapEmailAndAssId = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getGeneratedId));
+				//Map<String, String> mapEmailAndAssId = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getGeneratedId));
 				
 				List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
 				Map<String, String> userGroupNameAndUUID = userGroupList.stream().collect(Collectors.toMap(UserGroup::getGroupName, UserGroup::getGroupUUID));

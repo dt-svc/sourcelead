@@ -1135,6 +1135,11 @@ jQueryFormUtils.validateName = function(val) {
  jQueryFormUtils.validateTax = function(val) {
 	 return val.trim().match(/^[A-Za-z0-9][\s\w-](.*[a-zA-Z0-9])?$/) !== null;
 };
+
+//Below is validting percentage of work field
+jQueryFormUtils.validatePercentageOfWork = function(val) {
+	 return val <= 100;
+};
 //************************************************************************************************************************
 //------------------------------->END New Validation  Entries for Peopleaxis.com by HariKrishna	
 
@@ -1420,6 +1425,9 @@ else if (validationRules.indexOf('validate_Name') > -1 && !jQueryFormUtils.valid
 	return validationErrorMsg || language.badName;
 }
         
+else if (validationRules.indexOf('validate_percentage_of_work') > -1 && !jQueryFormUtils.validatePercentageOfWork(value)) {
+	return validationErrorMsg || language.pecentageOfWork;
+}         
 
 //---------------------------Hari-------------------------
 
@@ -1522,7 +1530,8 @@ jQueryFormUtils.LANG =  {
 	badOrgname: 'Only Alphanumeric Ampersand period and Hyphen Allowed',
 	badSpecialChar: 'Only -_.,&() are allowed',
 	badTax: 'Only - and Alpha Numerics Allowed',
-	badName: 'Muststart with Alphabet & Only \+&$@#!.,*-_?:;" allowed.'
+	badName: 'Muststart with Alphabet & Only \+&$@#!.,*-_?:;" allowed.',
+	pecentageOfWork	: '% of work should not be more than 100'
 };
 /**
  * Validate url

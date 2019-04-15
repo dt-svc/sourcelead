@@ -602,7 +602,7 @@ public class TicketManagementRestController {
 	 * response.setResponseMessage(Result.AWKWARD.getValue()); } return response; }
 	 */
 
-	@RequestMapping(value = "/changeTicketStatusType", method = RequestMethod.POST)
+	@RequestMapping(value = {"/changeTicketStatusType", "/rest/changeTicketStatusType"}, method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> changeTicketStatusType(HttpServletRequest request, TicketStatusHistoryDTO ticketStatusHistoryDTO) {
 		Response<Boolean> response = new Response<>();

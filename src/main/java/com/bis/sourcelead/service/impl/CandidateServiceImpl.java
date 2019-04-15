@@ -1474,7 +1474,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			 }
 			
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
-				candidateDTO.setWorkLocation(candidate.getWorkLocation().getId());
+				if(candidate.getWorkLocation() != null) {
+					candidateDTO.setWorkLocation(candidate.getWorkLocation().getId());
+				}
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
 				candidate.setOrgRelationId(orgRelation);
 				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, candidateUser);
@@ -1737,7 +1739,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate = new Candidate();
 							MasterCandidate masterCandidate = new MasterCandidate();
 							masterCandidate.setId(candidate.getMasterCandidateId().getId());
-							vendorCandidate.setWorkLocation(candidate.getWorkLocation());
+							if(candidate.getWorkLocation() != null) {
+								vendorCandidate.setWorkLocation(candidate.getWorkLocation());
+							}
 							vendorCandidate.setMasterCandidateId(masterCandidate);
 							vendorCandidate.setParentCandidateId(candidate);
 							vendorCandidate.setConsultantUser(candidate.getConsultantUser());
@@ -3464,5 +3468,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getAllAssociateByLocation(Long orgLocationId) throws Exception {		
 		return candidateDao.getAllAssociateByLocation(orgLocationId);
 	}
+
+	@Override
+	public String getCandidatePanNumberByUserId(long userId) {
+		return candidateDao.getCandidatePanNumberByUserId(userId);
+	}
+
+	@Override
+	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
+		return candidateDao.getOffshoreCandidatesByParentCandidateId(candidateId);
+	}
+	
+	
 }
 
