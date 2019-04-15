@@ -179,6 +179,7 @@ function cancelTicketCategory() {
 	$("#ticketCategoryId").val(0);
 	if(document.getElementById("addTicketCategoryForm") !== null) {
 		document.getElementById("addTicketCategoryForm").reset();
+		$("#notifyTo").val("");
 		$("#assignedTo option").removeAttr("selected");
 		$("#assignedTo").chosen();
 		$("#assignedTo").trigger("chosen:updated");
