@@ -283,7 +283,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 
 <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon" id="advanceSearchDiv">
-      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetVendorFilter();"></a>
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetAdvSearchFilter();"></a>
       		<a href="javascript:void(0)" class="refeIcon" id="resetVendorContact" style="display: none;" title="Refresh" onclick="resetVendorContactFilter();"></a>
       		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
       </span>
@@ -1790,8 +1790,31 @@ function vendorFileterPopUp(){
 function resetVendorFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
 	getVendorList();
-// 	$(".mask").fadeOut();
 	
+}
+
+
+function resetAdvSearchFilter(){
+	
+    $('#country').val('').trigger("chosen:updated"); 
+    $('#state').val('').trigger("chosen:updated");
+    $('#city').val('').trigger("chosen:updated");
+    
+    $("#tierAdvanced").val('').trigger("chosen:updated");
+    $("#ownerAdvanced").empty();
+	$("#ownerAdvanced").val('').trigger("chosen:updated");
+    
+    $("#orgAdvanced").val('').trigger("chosen:updated");
+    $("#orgNameAdvanced").val('').trigger("chosen:updated");
+    $("#anyOfKeyword").val('').trigger("chosen:updated");
+    $("#allKeywords").val('').trigger("chosen:updated");
+    $("#excludeKeyWord").val('').trigger("chosen:updated");
+
+    $("#anyOfKeyword").empty();
+    $("#allKeywords").empty();
+    $("#excludeKeyWord").empty();
+    getVendorList();
+ 
 }
 
 
