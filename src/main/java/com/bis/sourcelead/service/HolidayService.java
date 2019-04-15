@@ -17,7 +17,7 @@ public interface HolidayService {
 
 	public List<HolidayDTO> getAllHolidaysList(Long orgLocationId) throws Exception;
 	
-	public List<HolidayDTO> getAllHolidaysListBasedOnYear(Long orgLocationId,Long reportYear) throws Exception;
+	public List<HolidayDTO> getAllHolidaysListBasedOnYear(Long orgLocationId,Long reportYear,String shiftIds) throws Exception;
 	
 	Holiday getHolidaysById(String holidayId)throws Exception;
 
