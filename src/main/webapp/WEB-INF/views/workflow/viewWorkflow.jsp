@@ -179,7 +179,7 @@ function deleteRequirementWorkflowStage(stageUuid, workflowUuid){
 }
 
 function cancelViewWorkflow(){
-	
+	window.location.href = "${SourceLeadWeb_sourceleadUrl}/workflowList";
 }
 
 
