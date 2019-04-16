@@ -29,7 +29,7 @@ public interface EmailScenarioConfigurationDao {
 	
 	EmailScenarioConfiguration getVerifiedConfMail(Long orgLocId ) throws Exception;
 
-	List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId,String parsingType);
+	List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId,String parsingType, boolean isActive);
 
 	EmailScenarioConfiguration getParserEmailsDetailsByUUID(String UUID);
 
@@ -38,5 +38,7 @@ public interface EmailScenarioConfigurationDao {
 	EmailScenarioConfiguration validateParserByEmail(String parserEmailId, String emailUUID,Long orgLocId);
 
 	Boolean validateParser(String parserEmailId,Long orgLocId);
+
+	int changeDefaultParserEmailConfig(String uuid, Long orgLocationId, boolean activeFlag);
 
 }
