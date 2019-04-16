@@ -731,9 +731,11 @@ return responseList;
 			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(invoice.getOrgRelationID().getId());
 			if (orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
 				billingDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
+				billingDto.setOrgType(orgRelations.getResponderLocationId().getOrg().getOrgType());
 			}
 			if (orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
 				billingDto.setClientName(orgRelations.getLocationId().getOrgLocationName());
+				billingDto.setOrgType(orgRelations.getLocationId().getOrg().getOrgType());
 			}
 			if (null != invoice.getProjectID()) {
 				billingDto.setProjectName(invoice.getProjectID().getProjectName());
