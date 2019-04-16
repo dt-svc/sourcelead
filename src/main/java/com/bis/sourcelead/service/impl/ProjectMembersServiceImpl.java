@@ -7,12 +7,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,7 +29,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
-import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
@@ -42,7 +41,6 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
@@ -2335,8 +2333,21 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	}
 
 	@Override
-	public List<CandidateDTO> getAllAvailableAssociates(Long orgLocationId) {
-		return projectMembersDao.getAllAvailableAssociates( orgLocationId);
+
+	public List<Candidate> getAllAvailableAssociates(Long orgLocationId) {
+	List<Candidate> candidateList = new LinkedList<>();
+	List<Object[]> objList = projectMembersDao.getAllAvailableAssociates( orgLocationId);
+	if(objList != null && !objList.isEmpty()) {
+	for(Object[] obj : objList) {
+	Candidate candidate = new Candidate();
+	candidate.setId(Long.parseLong(String.valueOf(obj[0])));
+	candidate.setFirstName(obj[1] != null ? String.valueOf(obj[1]) : null);
+	candidate.setMiddelName(obj[2] != null ? String.valueOf(obj[2]) : null);
+	candidate.setLastName(obj[3] != null ? String.valueOf(obj[3]) : null);
+	candidateList.add(candidate);
+	}
+	}
+	return candidateList;
 	}
 
 
