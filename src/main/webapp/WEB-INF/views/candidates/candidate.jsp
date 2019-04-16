@@ -185,12 +185,12 @@
         </div>
         
         <c:if test="${loginCountryName == 'India' }">
-						<div class="form-group">
+						<div class="form-group" id="errPanNoDiv">
 							<label class="col-md-3">Pan Number</label>
 							<div class="col-md-9">
 								<input class="form-control" id="panNumber" name="panNumber"
 									placeholder="Pan Number" type="text"field-name="Pan Number" data-validation="validate_Space validate_length length10"
-									data-validation-optional="true"></input>
+									data-validation-optional="true" onkeyup="validatePanNumber();" onblur="validatePanNumber();"></input>
 							</div>
 						</div>
 						
@@ -1017,6 +1017,31 @@ function candidateEmptyVendorContact(){
         document.getElementById("candidate_form").reset();
    
     });
+</script>
+
+<script type="text/javascript">
+function validatePanNumber() {
+	
+	  var panNumber = document.getElementById("panNumber").value;
+	 
+	  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:sourceleadUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#panNumber").after("<p class='jquery_form_error_message'>"+panNumber+" is Already Existed</span>");
+						  $("#store_candidate").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#panNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errPanNoDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#store_candidate").removeAttr("disabled");
+		        	}
+		        }
+		    });
+};
 </script>
 <!-- <script>
 	$(".clearUpload").click(function(){

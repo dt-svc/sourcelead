@@ -358,12 +358,12 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							if(json.country == 'India'){
-							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="clearfix mb10" id="errPanNoDiv">';
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input class="form-control" id="panNumber" name="panNumber" value="'+panNumber+'" placeholder="Pan Number" type="text"></input>';
+							result = result + '<input class="form-control" id="panNumber" name="panNumber" value="'+panNumber+'" placeholder="Pan Number" type="text" onblur="validatePanNumber();" field-name="Pan Number" data-validation="validate_Space validate_length length10"data-validation-optional="true" ></input>';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-6 custom-fields">';
+							result = result + '<div class="col-md-6 custom-fields" id="errAadharNoDiv">';
 							result = result + '<input class="form-control" id="aadharNumber" name="aadharNumber" value="'+aadharNumber+'" placeholder="Aadhar Number" type="text"></input>';
 							result = result + '</div>';
 							result = result + '</div>';
@@ -2175,5 +2175,28 @@ function showSuccessStatusPopup(status) {
 </script>
 
 
- 
+ <script type="text/javascript">
+function validatePanNumber() {
+	
+	  var panNumber = document.getElementById("panNumber").value;
+	 
+	  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:sourceleadUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#panNumber").after("<p class='jquery_form_error_message'>"+panNumber+" is Already Existed</span>");
+						  $("#store_candidate").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#panNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errPanNoDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#store_candidate").removeAttr("disabled");
+		        	}
+		        }
+		    });
+};
+</script>
 

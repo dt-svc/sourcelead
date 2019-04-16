@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.MasterCandidate;
@@ -343,5 +344,9 @@ public interface CandidateService {
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId)throws Exception;
 	
 	public String getCandidatePanNumberByUserId(long userId);
+	
+	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception;
+	
+	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception;
 
 }
