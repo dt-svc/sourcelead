@@ -1100,6 +1100,7 @@ return responseList;
 			//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (invoice.getOrgRelationID().getLocationId().getId().equals(LoginOrgLocations.getId())) {
 				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+				invoice.setOrgType(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgType());
 				//StringBuilder contactName = new StringBuilder();
 				if(null != invoice.getContactUsers()){
 					String[] contactUsers = invoice.getContactUsers().split(",");
@@ -1139,6 +1140,7 @@ return responseList;
 		    	StringBuilder contactName = new StringBuilder();
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().equals(LoginOrgLocations.getId())){
 					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+					invoice.setOrgType(invoice.getOrgRelationID().getLocationId().getOrg().getOrgType());
 					if(null != invoice.getOwnerUsers()){
 						String[] ownerUsers = invoice.getOwnerUsers().split(",");
 						if(ownerUsers.length != 0){
