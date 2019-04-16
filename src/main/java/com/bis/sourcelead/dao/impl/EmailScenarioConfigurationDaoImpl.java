@@ -225,7 +225,7 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 		logger.debug("In EmailScenarioConfigurationDaoImpl class getFromMailById method");
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailScenarioConfiguration es where  es.orgLocationId.id = :orgLocId and es.status='Y' and es.usageType is null";
+		String query = "from EmailScenarioConfiguration es where  es.orgLocationId.id = :orgLocId and es.verifiedStatus='Y' and es.usageType is null";
 		List<EmailScenarioConfiguration> emailScenariosList =  session.createQuery(query.toString()) .setLong("orgLocId", orgLocId).list();
 		EmailScenarioConfiguration emailScenario = null;
 		if(emailScenariosList != null && !emailScenariosList.isEmpty())
@@ -238,10 +238,14 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId, String parsingType) {
+	public List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId, String parsingType, boolean isactive) {
 		logger.debug("In EmailScenarioConfigurationDaoImpl class getEmailscenarioConByOrgLocId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailScenarioConfiguration es where es.orgLocationId.id = :orgLocId and es.usageType =:parsingType";
+		String query = "from EmailScenarioConfiguration es where es.orgLocationId.id = :orgLocId and es.verifiedStatus = 'Y' and es.usageType =:parsingType ";
+		
+		String query2 = " and  es.isActive ='Y'";
+		if(isactive) query = query +query2;
+		
 		List<EmailScenarioConfiguration> emailParserList =  session.createQuery(query.toString())
 				                                                             .setLong("orgLocId", orgLocId)
 				                                                             .setString("parsingType", parsingType).list();
@@ -303,6 +307,27 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 			flag =true;
 		}
 		return flag;
-		}	
-	
+		}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int changeDefaultParserEmailConfig(String uuid, Long orgLocationId, boolean activeFlag) {
+		int count = -1;
+	    try {
+		Session  session = this.sessionFactory.getCurrentSession();
+		String activeIndicator = null;
+		if(activeFlag) {
+			activeIndicator ="Y";
+		}
+		else {
+			activeIndicator ="N";
+		}
+		String sqlQuery = "UPDATE EMAIL_SCENARIO_CONFIGURATION SET IS_ACTIVE =:activeIndicator WHERE EMAIL_UUID =:uuid and ORG_lOCATION_ID =:orgLocationId";
+		count = session.createSQLQuery(sqlQuery).setLong("orgLocationId",orgLocationId).setString("uuid",uuid).setString("activeIndicator",activeIndicator).executeUpdate();
+		 return count;
+	}catch(Exception e) {
+		logger.error(" Exception caught while updating the EmailScenarioConfiguration "+e.getMessage() );
+		 return count;
+	}
+	}
 }
