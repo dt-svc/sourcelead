@@ -119,6 +119,9 @@ public class USPayrollServiceImpl  implements USPayrollService{
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Autowired
 	private UserService userService;
 	
@@ -433,6 +436,12 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		emailMessage.setFromEmail(loginUser.getEmail());
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		
+		//Redirection URl
+		String redirectURL = "/viewPaySheetFrequencyData-params-approverStatus=SENT-and-paySheetFrequencyUUID="
+				+ savedPF.getPaySheetFrequencyUUID() + "-and-payPeriodNum=" + uSPayPeriodw.getPayPeriodNum();
+		Long redirectOrgLocationId = orgLocation.getId();
+		
 		StringBuilder msgBuild = new StringBuilder();
 		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		
@@ -465,7 +474,10 @@ public class USPayrollServiceImpl  implements USPayrollService{
 		StringBuilder stringBuilderLoginname = new StringBuilder();
 		globalVarsMap.put("approveLoginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		StringBuilder stringBuildforLink = new StringBuilder();
-		globalVarsMap.put("payrollLink", stringBuildforLink.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		//globalVarsMap.put("payrollLink", stringBuildforLink.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("payrollLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Payroll Approved</div></a>")
+				.toString());
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVE_MAIL_TO_REQUEST_USER,Constants.ENTITY_TYPE_EMAIL);
