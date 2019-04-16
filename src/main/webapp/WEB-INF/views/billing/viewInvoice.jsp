@@ -653,7 +653,22 @@ function getViewInvoice(){
 	        		
 					result = result +'<div class="invoiceview_area clearfix">';
 					result = result +'<div class="form-horizontal row">';
-					result = result +'<div class="col-md-4"> ';
+					
+					if(report.orgType == 'Guest'){
+						if(invoiceType === "Receivable"){
+						result = result +'<div class="col-md-3 col-md-offset-9">';
+						result = result +'<a href="'+vmsUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'"><i title="Edit details" class="fa fa-pencil cursorPointer pull-right mr"></i></a>';
+						result = result +'</div>';
+						}else if(invoiceType === "Payables"){
+						result = result +'<div class="col-md-3 col-md-offset-9">';
+						result = result +'<a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'"><i title="Edit details" class="fa fa-pencil cursorPointer pull-right mr"></i></a>';
+						result = result +'</div>';
+						}
+						}
+						result = result +'<div class="clearfix"></div>';
+
+						result = result +'<div class="col-md-4"> ';
+					
 					result = result +'<div class="col-md-12"> ';
 					result = result +'<div class="row"> ';
 					if(invoiceType == "Receivable"){
@@ -692,7 +707,7 @@ function getViewInvoice(){
 					result = result +'              </div>';
 					result = result +'            </div>';
 					}
-					result = result +'<div class="col-md-12">                                                 ';
+					result = result +'<div class="col-md-12 mt5">                                                 ';
 					result = result +'            <div class="row">';
 					result = result +'<label class="col-md-4 control-label">Contact :</label>         ';
 					result = result +'<div class="col-md-8">                                               ';
@@ -709,7 +724,7 @@ function getViewInvoice(){
 					result = result +'            </div>                                                                 '; */
 					result = result +'            <div class="col-md-4">';
 					if(invoiceType == "Payables"){
-						result = result +'            <div class="row">';
+						result = result +'            <div class="row mt5 mb5">';
 						result = result +'              <label class="col-md-4 control-label">Bill Id :</label>             ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
@@ -728,7 +743,7 @@ function getViewInvoice(){
 						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
-						result = result +'            <div class="row">                                                 ';
+						result = result +'            <div class="row mt5 mb5">                                                 ';
 						result = result +'              <label class="col-md-4 control-label">Invoice Date :</label>           ';
 						result = result +'              <div class="col-md-8">                                               ';
 						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
@@ -747,7 +762,7 @@ function getViewInvoice(){
 					
 					result = result +'            <div class="col-md-4">';
 					
-					result = result +'            <div class="row">';
+					result = result +'            <div class="row mt5 mb5">';
 					result = result +'              <label class="col-md-5 control-label">Due Date :</label>               ';
 					result = result +'              <div class="col-md-7">                                               ';
 					result = result +'                <label>'+dueDateStr+'</label>                                          ';
@@ -763,14 +778,14 @@ function getViewInvoice(){
                                             result = result +'            </div>';
                                         }
 					if(invoiceType == "Payables"){
-						result = result +'            <div class="row">                                                 ';
+						result = result +'            <div class="row clearfix mt5 mb5">                                                 ';
 						result = result +'              <label class="col-md-5 control-label">Billing Address :</label>        ';
 						result = result +'              <div class="col-md-7 addressInvoice">                                ';
 						result = result +'                <p>'+billingAddress+'</p>';
 						result = result +'              </div>';
 						result = result +'            </div>';
 					}else{
-						result = result +'            <div class="row">';
+						result = result +'            <div class="row clearfix mt5 mb5">';
 						result = result +'              <label class="col-md-5 control-label">Invoice Address :</label>        ';
 						result = result +'              <div class="col-md-7 addressInvoice">                                ';
 						result = result +'                <p>'+billingAddress+'</p>';

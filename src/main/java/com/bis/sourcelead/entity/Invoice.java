@@ -410,6 +410,10 @@ public class Invoice {
 	@Transient
 	@JsonProperty
 	private long dataResponderLocationId;
+	
+	@Transient
+	@JsonProperty
+	private String orgType;
 
 	
 	public Long getId()
@@ -1295,6 +1299,14 @@ public class Invoice {
 
 	public void setDataResponderLocationId(long dataResponderLocationId) {
 		this.dataResponderLocationId = dataResponderLocationId;
+	}
+
+	public String getOrgType() {
+		return orgType;
+	}
+
+	public void setOrgType(String orgType) {
+		this.orgType = orgType;
 	}
 
 	
