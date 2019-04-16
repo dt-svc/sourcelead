@@ -546,4 +546,18 @@ public class RequirementWorkflowController {
 			
 			return response;
 		}
+		
+		@RequestMapping(value="/removeWorkFlowEntry" , method = RequestMethod.POST)
+		public @ResponseBody String removeWorkFlowEntry(@RequestParam(value = "workflowuuid", required = false) String workflowuuid, HttpServletRequest request) throws Exception {
+			
+			@SuppressWarnings("unused")
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			Boolean flag = requirementWorkFlowService.deleteApplicationWorkFlowByuuid(workflowuuid);
+			if(flag == true) {
+				return Constants.SUCCESS;
+			}
+			return Constants.FAILED;
+			
+			
+		}
 }

@@ -111,7 +111,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		RequirementWorkFlow workFlow = null;
 		//setting default value to display in jsp.
 		Integer workflowSize = requirementDefaultWorkFlowStages.size();
-		StringBuilder jobWorkflow = new StringBuilder(Constants.DEFAULT+" Job "+Constants.WORKFLOW);
+		StringBuilder jobWorkflow = new StringBuilder(Constants.DEFAULT_JOB_WORKFLOW);
 		requirementWorkFlowDTO.setWorkFlowName(jobWorkflow.toString());
 		requirementWorkFlowDTO.setDescription(jobWorkflow.toString());
 		requirementWorkFlowDTO.setNoOfStages(workflowSize.toString());
@@ -476,6 +476,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		requirementWorkFlow.setUpdatedDate(new Date());
 		
 		requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
+	}
+	
+	@Override
+	public Boolean deleteApplicationWorkFlowByuuid(String workflowuuid) {
+		return requirementWorkFlowDao.deleteApplicationWorkFlowByuuid(workflowuuid);
 	}
 
 }

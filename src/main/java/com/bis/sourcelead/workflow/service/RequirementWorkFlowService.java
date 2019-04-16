@@ -67,4 +67,6 @@ public interface RequirementWorkFlowService {
 	Boolean saveRequirementWorkFlowStagesBySeqOrder(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, OrgLocations orgLocations, User user)throws Exception;
 	
 	void saveRequirementWorkFlowDetailsByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations, User user)throws Exception;
+	
+	Boolean deleteApplicationWorkFlowByuuid(String workflowuuid);
 }
