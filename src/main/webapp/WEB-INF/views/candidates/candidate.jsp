@@ -184,6 +184,37 @@
           </div>
         </div>
         
+        <c:if test="${loginCountryName == 'India' }">
+						<div class="form-group">
+							<label class="col-md-3">Pan Number</label>
+							<div class="col-md-9">
+								<input class="form-control" id="panNumber" name="panNumber"
+									placeholder="Pan Number" type="text"field-name="Pan Number" data-validation="validate_Space validate_length length10"
+									data-validation-optional="true"></input>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3">Aadhar Number</label>
+							<div class="col-md-9">
+								<input class="form-control" id="aadharNumber" name="aadharNumber"
+									placeholder="Aadhar Number" type="text" field-name="Aadhar Number" data-validation="validate_Space validate_length length12-20"
+									data-validation-optional="true"></input>
+							</div>
+						</div>
+					</c:if>
+					<c:if test="${loginCountryName == 'United States' }">
+						<div class="form-group">
+							<label class="col-md-3">SSN Number</label>
+							<div class="col-md-9">
+								<input class="form-control" id="ssnNumber" name="ssnNumber"
+									placeholder="SSN Number" type="text"field-name="SSN Number" data-validation="validate_Space validate_length length9"
+									data-validation-optional="true"></input>
+							</div>
+						</div>
+						
+					</c:if>
+        
         <div class="form-group">
                       <label class="col-md-3">Date of Birth</label>
                          <div class="col-md-9">

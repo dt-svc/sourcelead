@@ -873,6 +873,9 @@ public class Constants {
 	public static final String CANDIDATE_EDUCATION = "Education";
 	public static final String CANDIDATE_EMPLOERS = "Employer's";
 	public static final String CANDIDATE_PRIMARY_SKILL = "Primary Skill";
+	public static final String CANDIDATE_PAN_NUMBER = "Pan Number";
+	public static final String CANDIDATE_AADHAR_NUMBER = "Aadhar Number";
+	public static final String CANDIDATE_SSN_NUMBER = "SSN Number";
 	public static final String CANDIDATE_INVITATION = "CandidateInvitation";
 	public static final String EMPLOYEE = "Employee";
 	public static final String CUSTOM_REPORTS = "custom";
