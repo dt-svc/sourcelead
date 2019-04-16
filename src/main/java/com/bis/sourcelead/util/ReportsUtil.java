@@ -1166,16 +1166,10 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 					Paragraph p1 = new Paragraph(letterHead.getFooterText(),new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD));
 					if("Left".equalsIgnoreCase(letterHead.getAlignFooterText())) {
 				    	p1.setAlignment(Element.ALIGN_LEFT);
-						/*footerCell.setPaddingRight(476);
-						footerCell.setPaddingLeft(0);*/
 				    }else if("Right".equalsIgnoreCase(letterHead.getAlignFooterText())){
 				    	p1.setAlignment(Element.ALIGN_RIGHT);
-				    	/*footerCell.setPaddingRight(0);
-				    	footerCell.setPaddingLeft(476);*/
 				    }else {
 				    	p1.setAlignment(Element.ALIGN_CENTER);
-				    	/*footerCell.setPaddingRight(233);
-				    	footerCell.setPaddingLeft(233);*/
 				    }
 							
 					if(letterHead.getFooterBgColor() != null && letterHead.getFooterBgColor() != "") {
@@ -1187,7 +1181,6 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 					
 		   	
 				   	// add placeholder for total page count
-				   	//    PdfPCell totalPageCount = new PdfPCell(total);
 				   	PdfPCell totalPageCount = new PdfPCell();
 				   	totalPageCount.setBorder(Rectangle.TOP);
 				   	totalPageCount.setBorderColor(BaseColor.LIGHT_GRAY);
