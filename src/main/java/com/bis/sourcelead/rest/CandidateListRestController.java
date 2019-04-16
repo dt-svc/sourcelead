@@ -1028,6 +1028,18 @@ public class CandidateListRestController {
 				candidateDTO.setExperienceMonths(can.getExperienceMonths());
 				candidateDTO.setExperienceYears(can.getExperienceYears());
 				candidateDTO.setZipcode(can.getZipCode());
+				
+				if(can.getPanNumber() != null) {
+ 				candidateDTO.setPanNumber(can.getPanNumber());
+				}
+				if(can.getAadharNumber() != null) {
+				candidateDTO.setAadharNumber(can.getAadharNumber());
+				}
+				
+				if(can.getSsnNumber() != null) {
+					candidateDTO.setSsnNumber(can.getSsnNumber());
+					}
+				
 				candidateDTO.setCandidateType(can.getCandidateType());
 				candidateDTO.setStatus(can.getStatus().toString());
 				candidateDTO.setTerminateReason(can.getTerminateReason());

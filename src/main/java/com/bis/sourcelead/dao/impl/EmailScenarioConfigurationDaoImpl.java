@@ -245,6 +245,8 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 		
 		String query2 = " and  es.isActive ='Y'";
 		if(isactive) query = query +query2;
+	
+		query = query +" order by es.updatedDate desc";
 		
 		List<EmailScenarioConfiguration> emailParserList =  session.createQuery(query.toString())
 				                                                             .setLong("orgLocId", orgLocId)

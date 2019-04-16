@@ -1336,45 +1336,32 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
             Calendar orgCal = Calendar.getInstance();
             orgCal.setTime(orgLocation.getCreatedDate());
 			 int orgRegisteredYear = orgCal.get(Calendar.YEAR);
-             
-			String fromYear = null;
-			String toYear = null;
+             int orgRegisteredMonth = orgCal.get(Calendar.MONTH);
+			 int fromYear = 0;
+			 int toYear = 0;
 			Calendar c = Calendar.getInstance();
-			int fYear = c.get(Calendar.YEAR);
-			int fMonth = c.get(Calendar.MONTH);
+			int cYear = c.get(Calendar.YEAR);
+			int cMonth = c.get(Calendar.MONTH);
 			if (StringUtils.isNotBlank(orgLocation.getStartMonth())) {
 				Calendar cal = Calendar.getInstance();
 				Date date = new SimpleDateFormat("MMMM").parse(orgLocation.getStartMonth());
 				cal.setTime(date);
 				int startFinMonth = cal.get(Calendar.MONTH);
-				if (fMonth >= startFinMonth && fMonth < 12) {
-					fromYear = Integer.toString(fYear);
-					if(startFinMonth != 0) {
-						toYear = Integer.toString(fYear + 1);
-					}
-					
-				} else {
-					fromYear = Integer.toString(fYear - 1);
-					toYear = Integer.toString(fYear);
+				
+				if(orgRegisteredMonth < startFinMonth) {
+					fromYear = orgRegisteredYear - 1;
+					toYear = orgRegisteredYear;
+				}else {
+					fromYear = orgRegisteredYear;
+					toYear = orgRegisteredYear + 1;
 				}
-			} else {
-				fromYear = Integer.toString(fYear);
-				toYear = Integer.toString(fYear);
+				
+				while(fromYear < (startFinMonth <= cMonth ? cYear+1 : cYear )) {
+					String finYear = fromYear+"-"+String.valueOf(fromYear+1);
+					finYearList.add(finYear);
+					fromYear++;
+				}
 			}
-			 
-			 if(toYear != null) {
-				 while(orgRegisteredYear < Integer.parseInt(toYear)) {
-					 String finYear = String.valueOf(orgRegisteredYear)+"-"+String.valueOf(orgRegisteredYear+1);
-					 finYearList.add(finYear);
-					 orgRegisteredYear++;
-				 }
-			 }else {
-				 while(orgRegisteredYear < Integer.parseInt(fromYear)+1) {
-					 String finYear = String.valueOf(orgRegisteredYear);
-					 finYearList.add(finYear);
-					 orgRegisteredYear++;
-				 }
-			 }
 			 
 		}catch (Exception e) {
 			e.printStackTrace();

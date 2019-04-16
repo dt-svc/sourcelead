@@ -184,6 +184,37 @@
           </div>
         </div>
         
+        <c:if test="${loginCountryName == 'India' }">
+						<div class="form-group" id="errPanNoDiv">
+							<label class="col-md-3">Pan Number</label>
+							<div class="col-md-9">
+								<input class="form-control" id="panNumber" name="panNumber"
+									placeholder="Pan Number" type="text"field-name="Pan Number" data-validation="validate_Space validate_length length10"
+									data-validation-optional="true" onkeyup="validatePanNumber();" onblur="validatePanNumber();"></input>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-3">Aadhar Number</label>
+							<div class="col-md-9">
+								<input class="form-control" id="aadharNumber" name="aadharNumber"
+									placeholder="Aadhar Number" type="text" field-name="Aadhar Number" data-validation="validate_Space validate_length length12-20"
+									data-validation-optional="true"></input>
+							</div>
+						</div>
+					</c:if>
+					<c:if test="${loginCountryName == 'United States' }">
+						<div class="form-group" id="ssnNumberDiv">
+							<label class="col-md-3">SSN Number</label>
+							<div class="col-md-9">
+								<input class="form-control" id="ssnNumber" name="ssnNumber"
+									placeholder="SSN Number" type="text"field-name="SSN Number" data-validation="validate_Space validate_length length9"
+									data-validation-optional="true" onblur="validateSSNNumber();"></input>
+							</div>
+						</div>
+						
+					</c:if>
+        
         <div class="form-group">
                       <label class="col-md-3">Date of Birth</label>
                          <div class="col-md-9">
@@ -769,7 +800,47 @@ function getDesignationType(designationType){
 
 <!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
 <script>
-
+function validateSSNNumber(){
+	var ssnNumber = $("#ssnNumber").val();
+	var length  = $("#ssnNumber").val().length;
+	if(ssnNumber.search("-") > 0){
+		ssnNumber = ssnNumber.replace(/-/g, "");
+		length = ssnNumber.length;
+		calculateSSNLength(length,ssnNumber);
+	}else{
+		calculateSSNLength(length,ssnNumber);
+	}
+	
+}
+function calculateSSNLength(length,ssnNumber){
+	$('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
+	$("#ssnNumber").removeAttr("data-validation");
+	if(length == 0){
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number is required</span>");
+	}else if(length != 9){
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>SSN number should be 9 digits</span>");
+	}else{
+		$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		var value = "";
+		var ssn = ssnNumber.substring(0,3);
+		value += ssn+"-";
+		ssn = ssnNumber.substring(3,5);
+		value += ssn+"-";
+		ssn = ssnNumber.substring(5,9);
+		value += ssn;
+		$("#ssnNumber").val(value);
+		if(value.match(/^(?!000|666)[0-8][0-9]{2}-(?!00)[0-9]{2}-(?!0000)[0-9]{4}$/) === null){
+			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+			$("#ssnNumber").after("<span class='ssn_errmsg' style='color:red'>Invalid SSN number</span>");
+		}else{
+			$("#ssnNumberDiv").find('span.ssn_errmsg').remove();
+		}
+		
+	}
+	validateSSNDuplicate($("#ssnNumber").val());
+}
 function rateValidations(){
 var rateType = document.getElementById("rateType").value; 
 	if(rateType != null && rateType != ""){
@@ -946,6 +1017,31 @@ function candidateEmptyVendorContact(){
         document.getElementById("candidate_form").reset();
    
     });
+</script>
+
+<script type="text/javascript">
+function validatePanNumber() {
+	
+	  var panNumber = document.getElementById("panNumber").value;
+	 
+	  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:sourceleadUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#panNumber").after("<p class='jquery_form_error_message'>"+panNumber+" is Already Existed</span>");
+						  $("#store_candidate").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#panNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errPanNoDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#store_candidate").removeAttr("disabled");
+		        	}
+		        }
+		    });
+};
 </script>
 <!-- <script>
 	$(".clearUpload").click(function(){
