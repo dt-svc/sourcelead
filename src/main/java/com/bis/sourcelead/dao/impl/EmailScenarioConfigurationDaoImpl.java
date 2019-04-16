@@ -225,7 +225,7 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 		logger.debug("In EmailScenarioConfigurationDaoImpl class getFromMailById method");
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailScenarioConfiguration es where  es.orgLocationId.id = :orgLocId and es.status='Y' and es.usageType is null";
+		String query = "from EmailScenarioConfiguration es where  es.orgLocationId.id = :orgLocId and es.verifiedStatus='Y' and es.usageType is null";
 		List<EmailScenarioConfiguration> emailScenariosList =  session.createQuery(query.toString()) .setLong("orgLocId", orgLocId).list();
 		EmailScenarioConfiguration emailScenario = null;
 		if(emailScenariosList != null && !emailScenariosList.isEmpty())
@@ -245,6 +245,8 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 		
 		String query2 = " and  es.isActive ='Y'";
 		if(isactive) query = query +query2;
+	
+		query = query +" order by es.updatedDate desc";
 		
 		List<EmailScenarioConfiguration> emailParserList =  session.createQuery(query.toString())
 				                                                             .setLong("orgLocId", orgLocId)
