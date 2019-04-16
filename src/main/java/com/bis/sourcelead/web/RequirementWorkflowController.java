@@ -546,4 +546,39 @@ public class RequirementWorkflowController {
 			
 			return response;
 		}
+		
+		@RequestMapping(value = "/cloneWorkFlow", method = RequestMethod.POST)
+		public @ResponseBody ResponseList<String> cloneWorkFlowDetails(
+				RequirementWorkFlowDTO requirementWorkFlowDTO, 
+				HttpServletRequest request) {
+			
+			ResponseList<String> response = new ResponseList<String>();
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			OrgLocations orgLocations = new OrgLocations();
+			orgLocations.setId(orgLocationId);
+			Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = new User();
+			user.setId(userId);		
+			try {
+				if (user != null && Validator.validate(requirementWorkFlowDTO)) {
+					
+					requirementWorkFlowService.cloneRequirementWorkFlowDetailsByWorkflowUuid(requirementWorkFlowDTO, orgLocations, user);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
+			}
+			
+			return response;
+		}
+		
 }
