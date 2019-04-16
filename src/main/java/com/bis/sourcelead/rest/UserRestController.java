@@ -307,6 +307,18 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			candidate.setDateofBirthString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidate.getDateOfBirth()));
 		}
 		
+		if(candidate.getPanNumber() != null) {
+			candidate.setPanNumber(candidate.getPanNumber());
+		}
+		
+		if(candidate.getAadharNumber() != null) {
+			candidate.setAadharNumber(candidate.getAadharNumber());
+		}
+		
+		if(candidate.getSsnNumber() != null) {
+			candidate.setSsnNumber(candidate.getSsnNumber());
+		}
+		
 		return commonUtil.toJSON(candidate);
 		}
 		return "success";

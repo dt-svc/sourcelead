@@ -401,6 +401,15 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setIsFavourite(0);
 			candidate.setIsFavouriteAssociate(0);
 			
+			if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+				candidate.setAadharNumber(candidateDto.getAadharNumber());
+				candidate.setPanNumber(candidateDto.getPanNumber());
+				}
+			
+			if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
+				candidate.setSsnNumber(candidateDto.getSsnNumber());;
+				}
+			
 			MasterCandidate masterCandidate = null;
 			masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDto);
 			if(null == masterCandidate){
@@ -2578,6 +2587,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}else{
 			candidate.setIsAssociate(Constants.NO);
 		}
+		
+		if(StringUtils.isNotBlank(candidateDto.getPanNumber())) {
+			candidate.setPanNumber(candidateDto.getPanNumber());
+		}
+		
+		if(StringUtils.isNotBlank(candidateDto.getAadharNumber())) {
+			candidate.setAadharNumber(candidateDto.getAadharNumber());
+		}
+		
+		if(StringUtils.isNotBlank(candidateDto.getSsnNumber())) {
+			candidate.setSsnNumber(candidateDto.getSsnNumber());
+		}
+		
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
