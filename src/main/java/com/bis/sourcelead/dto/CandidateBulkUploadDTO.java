@@ -50,7 +50,13 @@ public class CandidateBulkUploadDTO implements Serializable{
 	    
 	    private String docFile;
 	    
-	    private String staticPath;
+	    private String staticPath; 
+	    
+	    private String panNumber;
+	    
+	    private String aadharNumber;
+	    
+	    private String ssnNumber;
 	    
 	    
 		public String getFirstName() {
@@ -235,6 +241,30 @@ public class CandidateBulkUploadDTO implements Serializable{
 
 		public void setStaticPath(String staticPath) {
 			this.staticPath = staticPath;
+		}
+
+		public String getPanNumber() {
+			return panNumber;
+		}
+
+		public void setPanNumber(String panNumber) {
+			this.panNumber = panNumber;
+		}
+
+		public String getAadharNumber() {
+			return aadharNumber;
+		}
+
+		public void setAadharNumber(String aadharNumber) {
+			this.aadharNumber = aadharNumber;
+		}
+
+		public String getSsnNumber() {
+			return ssnNumber;
+		}
+
+		public void setSsnNumber(String ssnNumber) {
+			this.ssnNumber = ssnNumber;
 		}
 	    
 }
