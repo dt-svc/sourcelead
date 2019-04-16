@@ -931,7 +931,7 @@ function preventTabkey(e){
 <textarea rows="3" class="form-control" name="comments" onblur="updateClockInOutTime();"></textarea>
 </div>
 </div> 
-<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Time Entry</a></div> 
+<%-- <div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Time Entry</a></div>  --%>
 </div>
 </div>
 

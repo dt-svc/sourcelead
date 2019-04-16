@@ -247,6 +247,10 @@ public class ProjectTasks implements Serializable{
 	@JsonProperty
     private Set<String> tagsList;
 	
+	@JsonProperty
+	@Transient
+	private Long taskStausId;
+	
 	public Long getId() {
 		return Id;
 	}
@@ -704,4 +708,19 @@ public class ProjectTasks implements Serializable{
 	public void setAssignedTaskUsers(List<String> assignedTaskUsers) {
 		this.assignedTaskUsers = assignedTaskUsers;
 	}
+
+	@SuppressWarnings("unused")
+	public Long getTaskStausId() {
+		Long  taskStausId = null;
+		if(taskStatus != null) {
+			taskStausId = taskStatus.getId();
+		}
+		return taskStausId;
+	}
+
+	public void setTaskStausId(Long taskStausId) {
+		this.taskStausId = taskStausId;
+	}
+	
+	
 }
