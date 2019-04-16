@@ -141,12 +141,13 @@ function getDynamicWorkflowList(){
 	    	  		result = result +"<ul class='list-inline list-unstyled'>";
 	    	  		result = result +"<li>";
 	    	  		result = result +"<label class='switch mr positionRelativeTop10' title='Default'>"
+// 	    	  		result = result +"<input type= "hidden" value="workflow.description" name="description">";
 	    	  		result = result +"<input type='checkbox' name='' "+ (workflow.status == 1 ?'checked':'')+" >";
 	    	  		result = result +"<div class='slider round' onclick = 'changeWorkflowStatus(\""+workflow.uuid+"\", \""+workflow.status+"\");'></div>";
 	    	  		result = result +"</label></li>";
 	    	  		result = result +"<li><a onclick='viewWorkFlow(\""+workflow.uuid+"\")'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
 	    	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete'></i></li>";
-	    	  		result = result +"<li><i class='fa fa fa-clone cursorPointer text-primary' title='Clone'></i></li>";
+	    	  		result = result +"<li><i onclick='saveWorkFlow(\""+workflow.uuid+"\",\""+workflow.workFlowName+"\",\""+workflow.description+"\");'class='fa fa fa-clone cursorPointer text-primary' title='Clone'></i></li>";
 	    	  		result = result +"</ul></div>";
   	             	return result;
 	    	  	}
@@ -186,7 +187,17 @@ function changeWorkflowStatus(uuid, status){
 		});
 			
 }
-
+function saveWorkFlow(uuid,workFlowName,description){
+	alert(""+description);
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl + "/saveWorkFlowDetailsPage?workFlowName="+workFlowName+"&description="+description,
+		success : function(dataList) {
+			getDynamicWorkflowList();
+		}
+		});
+			
+}
 function viewWorkFlow(uuid){
 	location.href = sourceleadUrl+ "/viewWorkflow?uuid="+uuid
 }

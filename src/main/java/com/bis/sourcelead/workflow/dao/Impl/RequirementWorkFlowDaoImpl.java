@@ -163,6 +163,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 					requirementWorkFlowDTO.setNoOfStages(workFlow.getNoOfStages().toString());
 					requirementWorkFlowDTO.setStatus(workFlow.getStatus());
 					requirementWorkFlowDTO.setUuid(workFlow.getUuid());
+					requirementWorkFlowDTO.setDescription(workFlow.getDescription());
 					requirementWorkFlowDTOList.add(requirementWorkFlowDTO);
 					}
 				}
