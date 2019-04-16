@@ -1962,9 +1962,19 @@ function validateDiscount() {
 				return false; 
 		 	 }
 	  }if(selectedTextInvoice =='flat'){
-			  $("#saveButtonId").removeAttr("disabled", "disabled");
-			  $("#sendButtonId").removeAttr("disabled", "disabled");
-		  }		  
+		  var numaricNum = /^[0-9]*$/
+			  if(enteredValue.match(numaricNum)){
+				  $("#saveButtonId").removeAttr("disabled", "disabled");
+				  $("#sendButtonId").removeAttr("disabled", "disabled");
+				  return true;
+			  }else{
+				  $("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Discount</span>");
+					$("#saveButtonId").attr("disabled", "disabled");
+					$("#sendButtonId").attr("disabled", "disabled");
+					return false;  
+			  }
+				  
+			  }	  
 }
 </script>
 
