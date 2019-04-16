@@ -1703,14 +1703,3 @@ function myTeamFunction() {
     }
 }
 </script>
-<script>
-function checkValue(ele){
-	var work = $(ele).val();
-	if(work >= 100){
-		if($(ele).next('p.jquery_form_error_message').length === 0) 
-			$(ele).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'>% of work should not be more than 100");
-	}else{
-		$(ele).next('p.jquery_form_error_message').remove();
-	}
-}
-</script>
