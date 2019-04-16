@@ -262,15 +262,13 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </div>
 
   <div id="divTaskTd9" style="display: none; float: left;">
-	<div class="changeRate_div estRate_div">
-         <div class="pull-left inputRate">
-         	<input class="form-control input-sm" type="number"  id="REPLACEROWIDpercentageOfWork" name="associateResources[REPLACEROWID].percentageOfWork" 
-         	data-validation-optional="true"   data-validation="validate_int validate_Space validate_length length1-10" 
-         	field-name="%Of Work" onblur="calculatePercentageOfWork();" onkeyup = "checkValue(this);">
-         </div>
-	</div>
+<div class="changeRate_div estRate_div">
+<div class="pull-left inputRate">
+<input class="form-control input-sm" type="text" id="REPLACEROWIDpercentageOfWork" name="associateResources[REPLACEROWID].percentageOfWork" 
+data-validation-optional="true" data-validation="validate_Space validate_percentage_of_work" field-name="percentageOfWork" onblur="calculatePercentageOfWork();">
 </div>
-
+</div>
+</div>
 
 
 <div id="divTaskTd10" style="display: none; float: left;">
@@ -1725,14 +1723,3 @@ $(document).ready(function() {
 		}
 	</script>
 	
-<script>
-function checkValue(ele){
-	var work = $(ele).val();
-	if(work >= 100){
-		if($(ele).next('p.jquery_form_error_message').length === 0) 
-			$(ele).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'>% of work should not be more than 100");
-	}else{
-		$(ele).next('p.jquery_form_error_message').remove();
-	}
-}
-</script>
