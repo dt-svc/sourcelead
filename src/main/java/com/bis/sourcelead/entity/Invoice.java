@@ -328,6 +328,10 @@ public class Invoice {
 	
 	@Transient
 	@JsonProperty
+	private String orgType;
+	
+	@Transient
+	@JsonProperty
 	private List<String> submissionApproverHierarchyIds;
 	
 //	  
@@ -1296,6 +1300,14 @@ public class Invoice {
 
 	public void setDataResponderLocationId(long dataResponderLocationId) {
 		this.dataResponderLocationId = dataResponderLocationId;
+	}
+
+	public String getOrgType() {
+		return orgType;
+	}
+
+	public void setOrgType(String orgType) {
+		this.orgType = orgType;
 	}
 
 	
