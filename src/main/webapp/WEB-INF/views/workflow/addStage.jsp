@@ -315,7 +315,7 @@
             onclick = "saveRequirementWorkflowStage('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');">
 		  </c:if>  
           
-            <input value="Cancel" class="btn btn-default ml" type="button">
+            <input value="Cancel" class="btn btn-default ml" type="button" onclick = "cancelAddStage();">
           </div>
         </div>
       </div>
@@ -347,15 +347,19 @@ function saveRequirementWorkflowStage(workflowUuid){
 	var stageUuid = $("#workflowStageUuid").val();
 	var qTemplateId = "";
 	
-	$('#questionnaireTemplateId option').each(function() {
+	/* $('#questionnaireTemplateId option').each(function() {
 	    if($(this).is(':selected')) {
 	    	qTemplateId = $("#questionnaireTemplateId").val();
 	    }
 	    else{
 	    	qTemplateId = "";
 	    }
-	});
-
+	}); */
+	
+	if(qTemplateId == "Select"){
+		qTemplateId = "";
+	}
+	
 	if(stageUuid == null){
 		stageUuid = $("#previousStageUuid").val();
 	}
@@ -473,5 +477,8 @@ function saveWorkflowTask(worflowUuid){
 			$("#summerNote").val("");
 	 }
 
+	 function cancelAddStage(){
+		 window.location.href = "${SourceLeadWeb_sourceleadUrl}/workflowList";
+	 }
 </script>
 <jsp:include page="../masterFooter.jsp" /> 
