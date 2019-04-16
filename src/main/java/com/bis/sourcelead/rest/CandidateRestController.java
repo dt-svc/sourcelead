@@ -64,6 +64,7 @@ import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
@@ -1537,7 +1538,22 @@ public class CandidateRestController {
 			return marketWalletDTOList;
 		}
 	    
-	    
+	    @RequestMapping(value = { "/app/validatePanNumber" })
+		public Boolean validateLcaNumber(
+				@RequestParam(value = "panNumber", required = false) String panNumber,@RequestParam(value = "candidateId", required = false) Long candidateId,
+				HttpServletRequest request)
+				throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate can = null;
+			if (null != candidateId) {
+				can = candidateService.getCandidateDetailsByPanNumberAndId(panNumber, orgLocations.getId());
+			}
+			Boolean flag = false;
+			if (can == null) {
+				flag = candidateService.validatePanNumber(panNumber, orgLocations.getId());
+			}
+			return flag;
+		}  
 
 }
 
