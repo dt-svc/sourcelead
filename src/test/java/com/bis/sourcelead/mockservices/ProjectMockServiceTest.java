@@ -28,8 +28,8 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.impl.ProjectMembersServiceImpl;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectMockServiceTest {
