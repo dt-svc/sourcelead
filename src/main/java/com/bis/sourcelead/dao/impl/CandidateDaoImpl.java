@@ -2688,7 +2688,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId and marketCartview.cartStatus = 'In_Cart'";
 			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + checkBoxQuery + query1)
 					.setLong("orgLocationId", orgLocation.getId());
-			//System.out.println(query + createdByQuery + dateQuery + checkBoxQuery);
 			if (!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
 				queryObj.setLong("createdByuser", user.getId());
 			}
@@ -2700,7 +2699,6 @@ public class CandidateDaoImpl implements CandidateDao {
 							source.getCreatedDate()));
 				}
 			}
-			System.out.println(queryObj);
 			return candidatesList;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -3056,12 +3054,10 @@ public class CandidateDaoImpl implements CandidateDao {
 						        if(pair.getKey().equals("fromDate")){
 						        	qeury.setDate("startDate", dateValue.get("fromDate"));
 						        	q.setDate("startDate", dateValue.get("fromDate"));
-						        	System.out.println(dateValue.get("fromDate"));
 						        }
 						        if(pair.getKey().equals("toDate")){
 						        	qeury.setDate("endDate", dateValue.get("toDate"));
 						        	q.setDate("endDate", dateValue.get("toDate"));
-						        	System.out.println(dateValue.get("toDate"));
 						        }
 						    }
 						}
@@ -3089,7 +3085,6 @@ public class CandidateDaoImpl implements CandidateDao {
 					purchaseOrderDtoList.add(purchaseOrderDto);
 					}
 				}
-			System.out.println(qeury);
 			responseList.setData(purchaseOrderDtoList);
 			return responseList;
 		}
