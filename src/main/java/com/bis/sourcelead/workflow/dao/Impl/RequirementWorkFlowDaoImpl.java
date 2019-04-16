@@ -512,5 +512,26 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 			e.printStackTrace();
 			return null;
 		}
-	}	
+	}
+	
+	@Override
+	@Transactional
+	public Boolean deleteApplicationWorkFlowByuuid(String workflowuuid) {
+		Boolean istrue = false;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			RequirementWorkFlow req = getRequirementWorkFlowByUuid(workflowuuid);
+			String query = "delete from REQUIREMENT_WORKFLOW_STAGES where REQUIREMENT_WORKFLOW_STAGES.REQUIREMENT_WORKFLOW_ID =:workflowid";
+			int res = session.createSQLQuery(query).setLong("workflowid", req.getId()).executeUpdate();
+			if(res > 0) {
+				String query1 = "delete from REQUIREMENT_WORKFLOW where REQUIREMENT_WORKFLOW.UUID =:workflowuuid";
+				int res1 = session.createSQLQuery(query1).setString("workflowuuid", workflowuuid).executeUpdate();
+				istrue =true;
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return istrue;
+	}
 }
