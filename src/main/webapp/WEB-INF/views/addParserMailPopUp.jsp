@@ -246,7 +246,6 @@ function validateParserEmail(){
 
 function changeDefaultParserEmailConfig(ele, id) {
     $.post(sourceleadUrl+"/changeDefaultParserEmailConfig", {uuid: id, activeFlag: $(ele).is(":checked")}, function(data) {
-      console.log(" check box value is: "+$(ele).is(":checked"))
     	getParserEmailList();
     });
 }
