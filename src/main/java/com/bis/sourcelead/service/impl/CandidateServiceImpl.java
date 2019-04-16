@@ -3500,6 +3500,16 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
 		return candidateDao.getOffshoreCandidatesByParentCandidateId(candidateId);
 	}
+
+	@Override
+	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateDetailsByPanNumberAndId(panNumber, orgLocationId);
+	}
+
+	@Override
+	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception {
+		return candidateDao.validatePanNumber(panNumber, orgLocationId);
+	}
 	
 	
 }

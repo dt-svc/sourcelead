@@ -1211,6 +1211,10 @@ function getAssociateUserDetails(){
 				    	 if(json['aadharNumber'] != null && json['aadharNumber'] != "" && json['aadharNumber'] != "undefined"){
 				    		 $("#aadharNumber").val(json['aadharNumber']); 
 				    	 }
+				    	 
+				    	 if(json['ssnNumber'] != null && json['ssnNumber'] != "" && json['ssnNumber'] != "undefined"){
+				    		 $("#ssnNumber").val(json['ssnNumber']); 
+				    	 }
 	        		  
 	        		  $("#designationType").selectpicker('refresh');
 	        		  employementType(json['designationType']);
