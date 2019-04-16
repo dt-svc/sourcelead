@@ -158,7 +158,7 @@ public class EmailScenarioConfigurationRestController {
 			 emailConfig.setEmail_UUID(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 			 emailConfig.setCreatedBy(user.getFirstName());
 			 emailConfig.setCreatedDate(new Date());
-		 
+			 emailConfig.setUpdatedDate(new Date());
 		
 		
 		 if(emailConfig != null){
