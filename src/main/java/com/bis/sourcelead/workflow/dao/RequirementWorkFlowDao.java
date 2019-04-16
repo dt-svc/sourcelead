@@ -68,5 +68,7 @@ public interface RequirementWorkFlowDao {
 	
 	ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user)throws Exception;
 
+	Boolean deleteApplicationWorkFlowByuuid(String workflowuuid);
 	
+
 }

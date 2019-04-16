@@ -138,7 +138,7 @@ function getDynamicWorkflowList(){
 	    	  	"render": function(data, type, workflow, meta) {
 	    	  		var result = "";
 	    	  		
-	    	  		result = result + checkConfigureType(workflow.configureType, workflow.status, workflow.uuid);
+	    	  		result = result + checkConfigureType(workflow.configureType, workflow.status, workflow.uuid, workflow.workFlowName);
 	    	  		
   	             	return result;
 	    	  	}
@@ -177,7 +177,7 @@ function checkDefaultWorkflow(configureType, uuid, workFlowName){
 	return result;
 }
 
-function checkConfigureType(configureType, status, uuid){
+function checkConfigureType(configureType, status, uuid, workFlowName){
 	var result = "";
 	if(configureType != "Default"){
   		result = result +"<div class='width215px'>";
@@ -188,7 +188,7 @@ function checkConfigureType(configureType, status, uuid){
   		result = result +"<div class='slider round' onclick = 'changeWorkflowStatus(\""+uuid+"\", \""+status+"\");'></div>";
   		result = result +"</label></li>";
   		result = result +"<li><a onclick='viewWorkFlow(\""+uuid+"\")'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
-  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete'></i></li>";
+  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick='deleteWorkflowEntry(\""+uuid+"\", \""+workFlowName+"\")'></i></li>";
   		result = result +"<li><i class='fa fa fa-clone cursorPointer text-primary' title='Clone'></i></li>";
   		result = result +"</ul></div>";
   		}
@@ -209,6 +209,52 @@ function changeWorkflowStatus(uuid, status){
 function viewWorkFlow(uuid){
 	location.href = sourceleadUrl+ "/viewWorkflow?uuid="+uuid
 }
+</script>
+
+<div id="popUp"></div>
+<script>
+	function deleteWorkflowEntry(workflowuuid, workFlowName){ 
+		 var uid = workflowuuid; 
+		var result ="";
+		result = result +"	<div class='project_inn_mask'></div>"; 
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Do you want to delete "+workFlowName+"</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"	<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeWorkFlowEntry(\""+workflowuuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+</script>	
+	
+<script>	
+	function cancel(){
+		$('.mask').hide();
+		$("#popUp").empty();
+		$(".project_inn_mask").fadeOut(200);
+		}	
+</script>
+
+<script>	
+	function removeWorkFlowEntry(workflowuuid){
+		$("#popUp").empty();
+		 $(".project_inn_mask").fadeOut(200);
+		 
+		 $("#workFlow"+workflowuuid).empty();
+		 $("#workFlow"+workflowuuid).html("<td colspan='7'  id='loading"+workflowuuid+"'></td>");
+		 $("#loading"+workflowuuid).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		 
+		 	$.ajax({
+		 		type : "POST",
+		 		url : sourceleadUrl + "/removeWorkFlowEntry?workflowuuid="+workflowuuid,
+		 		success: function(result) {
+ 		  			if(result = "Success"){
+ 		  				getWorkflowList();
+ 		  			}
+			    }		
+		 	})
+	}
 </script>
 
 <jsp:include page="../masterFooter.jsp" /> 	

@@ -477,6 +477,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		
 		requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
 	}
+	
+	@Override
+	public Boolean deleteApplicationWorkFlowByuuid(String workflowuuid) {
+		return requirementWorkFlowDao.deleteApplicationWorkFlowByuuid(workflowuuid);
+	}
 
 }
 
