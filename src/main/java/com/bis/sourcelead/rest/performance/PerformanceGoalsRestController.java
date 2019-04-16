@@ -18,6 +18,7 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAttachmentsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
@@ -364,5 +365,25 @@ public class PerformanceGoalsRestController {
 			
 			return resObj;
 		}
+	 	
+	 	@RequestMapping(value = { "/getAllUserListForGoals", "/rest/getAllUserListForGoals" }, method = RequestMethod.GET)
+			public ResponseList<UserDTO> getAllUserListForGoals(HttpServletRequest request) throws Exception {
+		 		
+	 		   Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 		ResponseList<UserDTO> resObj = new ResponseList<>();
+				 try {
+						 List<UserDTO> usersList = userRoleService.getAllActiveUsersList(orgLocationId);
+						 resObj.setData(usersList);
+						
+						 resObj.setResponse(Result.SUCCESS.name());
+						 resObj.setResponseMessage(Result.SUCCESS.getValue());
+						 
+				 }catch (Exception e) {
+					 	resObj.setResponse(Result.AWKWARD.name());
+					 	resObj.setResponseMessage(Result.AWKWARD.getValue());
+				 }
+				
+				return resObj;
+			}
 	 
 }

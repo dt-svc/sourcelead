@@ -6,6 +6,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<link type="text/css" rel="stylesheet" href="/resources/css/comment/froala_editor.css"/>
+<link type="text/css" rel="stylesheet" href="/resources/css/comment/jquery.atwho.css"/>
+
+<script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/editor.js"></script>
+<link href="${SourceLeadWeb_pmsUrl}/resources/css/editor.css" type="text/css" rel="stylesheet" />
+
+<script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/comment/jquery.atwho.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/comment/jquery.caret.min.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/comment/task_comment.js"></script>
+
 <script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/performanceGoals.js"></script>
 
 
@@ -101,6 +111,23 @@ window.onload = function () {
 					</div>
 					<div id="goalsAssignToList"></div>
 				</div>
+	 </div>
+	 
+	 <div class="goalssummar_widget mt">
+						<div class="clearfix mt mb">
+						  <div class="clearfix mr">
+						    <button type="button" class="btn btn-primary btn-sm pull-right" onclick="performanceGoals.addGoalsCommentsPopUp()">Add Comment</button>
+						  </div>
+						</div>
+						<!-- TimeEntry Modal Pop -->
+						<div class="modal-Time commentPopUp clearfix"> 
+						<div id="commnetPopUpDivId"></div>						  
+						</div>
+						
+						<div class="clearfix project_wrap_table taskComments projecttask-div">
+						<div id="taskCommentsListDivId"></div>
+						</div>
+						
 	 </div>
 			
 </section>

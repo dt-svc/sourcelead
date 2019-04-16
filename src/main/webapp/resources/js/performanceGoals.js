@@ -473,10 +473,10 @@ function PerformanceGoals(){
 								        		 result = result+'</div>' ;
 								        		
 								        		 
-								        		 result = result+'<div class="col-md-8 mt">' ;
+								        		 result = result+'<div class="col-md-10 mt">' ;
 								        		 result = result+'<div class="mb0"><span class="mr10 text-muted" >Start Date (<small class="custom-small">'+dateFormatStr+'</small>) :</span><span class="textBold">'+opt.goalStartDate+'</span></div>' ;
 								        		 result = result+'</div>' ;
-								        		 result = result+'<div class="col-md-8 mt">' ;
+								        		 result = result+'<div class="col-md-10 mt">' ;
 								        		 result = result+'<div class="mb0"><span class="mr10 text-muted ">End Date (<small class="custom-small">'+dateFormatStr+'</small>) : </span><span class="textBold">'+opt.goalEndDate+'</span></div>' ;
 								        		 result = result+'</div>' ;
 								        		 
@@ -577,5 +577,92 @@ function PerformanceGoals(){
 					 this.predefineGoalUserImage = function(imageId){
 						 $(imageId).attr('src','/resources/images/userprofileImg.jpg');
 					 }
+					 
+					 
+					 
+					 this.addGoalsCommentsPopUp = function(){
+							$(".commentPopUp").fadeIn();
+							performanceGoals.addComment();
+						}
+					 this.closeComment = function(){
+							$(".commentPopUp").fadeOut();
+						}
+					 this.addComment = function(){
+							result = "";
+							result  = result + '	<div class="clearfix">';
+							result  = result + '   <button type="button" class="close mr5 mt5" onclick="performanceGoals.closeComment()">&times;</button>';
+							result  = result + '   <p class="ml5 mt10 mb0"><strong>Add Comment</strong></p>';
+							result  = result + ' </div>';
+							result = result + '    <form id="addComment_form" name="addComment_form">';
+							result = result + ' <input type="hidden" name="tabType" value="comment">';
+							result  = result + ' <div class="row clearfix">';
+							result  = result + '	<div class="ticketCommentCont">';
+							result  = result + '	<div class="clearfix">';
+							result  = result + '		<div contenteditable="true" id="taskComment" class="tkt_comment_div tkt_comment_custom"></div>';
+							result  = result + '	</div>';
+							result  = result + '</div>';
+							result  = result + '</div>';
+							result  = result + ' <div class="modalFooter  mb10 clearfix">';
+							result  = result + '   <div class="pull-right">';
+							result  = result + '     <button type="button" class="btn btn-primary btn-sm" id="save_comment" data-dismiss="modal" onclick="performanceGoals.saveComment();">Add</button>';
+							result  = result + '     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="performanceGoals.closeComment()">Cancel</button>';
+							result  = result + '   </div>';
+							result  = result + ' </div>';
+							result = result + ' </form>';
+							$("#commnetPopUpDivId").empty();  
+							$("#commnetPopUpDivId").append(result); 
+							
+							performanceGoals.commentMembers();
+						}
+					
+					 var commentUsers = [], selectedUsers = [], commentConfig = {}; 
+					 
+					 this.commentMembers = function(){
+						   commentUsers = [];
+						   selectedUsers = [];
+						   commentConfig = {};
+								
+								 $.ajax({
+								    	type: "GET",
+								        url: pmsUrl+"/getAllUserListForGoals?", 
+								        success: function(response) {
+								        	if (response.response === "AWKWARD") {
+								        		location.href = "/errorPage";
+								        	} else if (response.response === "SUCCESS") {
+								        		
+										         if(response.data.length > 0){
+										        	 for(var i=0; i<response.data.length; i++){
+										        		 var opt = response.data[i];
+										        		 commentUsers.push({"id": opt.userId, "fullName": opt.fullName, "email": opt.email});
+										        	 }
+										        	 performanceGoals.initializeFroalaEditor();
+										         }
+								        	}
+								        },
+								    });
+								
+						} 
+
+
+						this.initializeFroalaEditor = function() {
+							
+						    commentConfig = {
+						      at: "@",
+						      data: commentUsers,
+						      displayTpl: '<li data-id="${id}">${fullName} <small>${email}</small></li>',
+						      limit: 200
+						    }
+						    
+						    $('#taskComment').atwho(commentConfig);
+						    $('#taskComment').on('inserted.atwho', function (event, $li, bEvent) {
+						        selectedUsers.push($($li).data("id"));
+						      }).on('reposition.atwho', function (event, offset) {
+						    	  var removeUser = $("#taskComment").find("span[class='atwho-query']").data("id");
+						    	  if(removeUser) {
+							    	  selectedUsers.splice($.inArray(removeUser, selectedUsers), 1);
+						    	  }
+						        })
+						}
+					 
 		
 }

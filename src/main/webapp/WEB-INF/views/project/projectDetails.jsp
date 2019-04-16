@@ -479,6 +479,14 @@ function editClientProjectDetails(projectId){
 				expenseApprovalType = json.expenseApprovalType
 			}
 			
+			if(json.manager2 != null && json.manager2 != '' && json.manager2 != 'undefined'){
+				getApproversLevel2(json.manager1,json.manager2)
+			}
+			
+			if(json.expenseApprover2 != null && json.expenseApprover2 != '' && json.expenseApprover2 != 'undefined'){
+				getExpenseApproversLevel2(json.expenseApprover1,json.expenseApprover2)
+			}
+			
 			var result = "";
 			result = result	+ '<div id="projectEditDetailsLoading"></div>';
 			result = result	+ ' <form id="editClientProject_form"  name="editClientProject_form" method="post">';
@@ -542,7 +550,7 @@ function editClientProjectDetails(projectId){
 				result = result + '<label> Manager 2 </label>';
 				result = result	+ '<select class="form-control chosen-select" class="form-control chosen-select"  id="level2Manager" name="level2Manager">';
 				result = result    +'<option value="">-Select Manager-</option>';
-				if(json.managersListwithoutManager1 != null){
+		/* 		if(json.managersListwithoutManager1 != null){
 				for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
 					var manager = json.managersListwithoutManager1[j];
 					var managerName2 = manager.name;
@@ -554,7 +562,7 @@ function editClientProjectDetails(projectId){
 						result = result	+ "<option value="+manager.id+" >"+ managerName2 + "  ("+manager.userType+")</option>";									 
 					}
 				}
-				}
+				} */
 				result = result + '</select>';
 				result = result + '</div>';
 				
@@ -620,7 +628,7 @@ function editClientProjectDetails(projectId){
 					result = result + '<label> Expense Approver 2 </label>';
 					result = result	+ '<select class="form-control chosen-select" class="form-control chosen-select"  id="level2ExpenseApprover" name="level2ExpenseApprover">';
 					result = result    +'<option value="">-Select Manager-</option>';
-					if(json.expensesApproversListwithoutApprover1 != null){
+		/* 			if(json.expensesApproversListwithoutApprover1 != null){
 					for (var j = 0; j < json.expensesApproversListwithoutApprover1.length; j++) {
 						var manager = json.expensesApproversListwithoutApprover1[j];
 						var managerName2 = manager.name;
@@ -632,7 +640,7 @@ function editClientProjectDetails(projectId){
 							result = result	+ "<option value="+manager.id+" >"+ managerName2 + "  ("+manager.userType+")</option>";									 
 						}
 					}
-					}
+					} */
 					result = result + '</select>';
 					result = result + '</div>';
 		
@@ -716,6 +724,15 @@ function editClientProjectDetails(projectId){
 						var projectShortCodeDisabled = "";
 						var projectApprovalType = '';
 						var expenseApprovalType = '';
+						
+						
+						if(json.manager2 != null && json.manager2 != '' && json.manager2 != 'undefined'){
+							getApproversLevel2(json.manager1,json.manager2)
+						}
+						
+						if(json.expenseApprover2 != null && json.expenseApprover2 != '' && json.expenseApprover2 != 'undefined'){
+							getExpenseApproversLevel2(json.expenseApprover1,json.expenseApprover2)
+						}
 						
 						
 						if(json.projectApprovalType != 'null' && json.projectApprovalType != '' && json.projectApprovalType != 'undefined'){
@@ -942,7 +959,7 @@ function editClientProjectDetails(projectId){
 							result = result + '<label> Manager 2 </label>';
 							result = result	+ '<select class="form-control chosen-select" id="level2Manager" name="level2Manager" onChange="manager2()">';
 							result = result    +'<option value="">-Select Manager-</option>';
-							if(json.managersListwithoutManager1 != null){
+				/* 			if(json.managersListwithoutManager1 != null){
 							for (var j = 0; j < json.managersListwithoutManager1.length; j++) {
 								var manager = json.managersListwithoutManager1[j];
 								var managerName2 = manager.name;
@@ -954,7 +971,7 @@ function editClientProjectDetails(projectId){
 									result = result	+ "<option value="+manager.id+" >"+ managerName2 + "  ("+manager.userType+")</option>";									 
 								}
 							}
-							}
+							} */
 							result = result + '</select>';
 							result = result + '</div>';
 							
@@ -1021,7 +1038,7 @@ function editClientProjectDetails(projectId){
 								result = result + '<label> Expense Approver 2  </label>';
 								result = result	+ '<select class="form-control chosen-select" id="level2ExpenseApprover" name="level2ExpenseApprover">';
 								result = result    +'<option value="">-Select Approver-</option>';
-								if(json.expensesApproversListwithoutApprover1 != null){
+						/* 		if(json.expensesApproversListwithoutApprover1 != null){
 								for (var j = 0; j < json.expensesApproversListwithoutApprover1.length; j++) {
 									var manager = json.expensesApproversListwithoutApprover1[j];
 									var managerName2 = manager.name;
@@ -1033,7 +1050,7 @@ function editClientProjectDetails(projectId){
 										result = result	+ "<option value="+manager.id+" >"+ managerName2 + "  ("+manager.userType+")</option>";									 
 									}
 								}
-								}
+								} */
 								result = result + '</select>';
 								result = result + '</div>';
 							
@@ -1616,16 +1633,17 @@ function validateShortCode(){
 						output = output + "<option value=''>-Select Manager-</option>";
 						for (var i = 0; i < json.length; i++) {
 							var opt = json[i];
-							/* if (manager2 == opt.id) {
+							 if (manager2 == opt.id) {
 								selected = 'selected';
 								output = output + "<option "+selected+" value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + "  ("+opt.userType+")</option>";
-							} else { */
+							} else { 
 								output = output + "<option value='" +opt.id+ "'>" + opt.firstName + " " + opt.lastName + "  ("+opt.userType+")</option>";
-// 							}
+							}
 
 						}
 						$("#level2Manager").empty();
 						$("#level2Manager").append(output);
+						$('#level2Manager').trigger("chosen:updated");
 					},
 				});
 
@@ -1651,6 +1669,7 @@ function validateShortCode(){
 						}
 						$("#level2ExpenseApprover").empty();
 						$("#level2ExpenseApprover").append(output);
+						$('#level2ExpenseApprover').trigger("chosen:updated");
 					},
 				});
 
@@ -1728,6 +1747,7 @@ function showExpenseLevel2Div(){
 						}
 						$("#level2Manager").empty();
 						$("#level2Manager").append(output);
+						$('#level2Manager').trigger("chosen:updated");
 					},
 				});
 			}
@@ -1784,6 +1804,7 @@ function showExpenseLevel2Div(){
 						}
 						$("#level2ExpenseApprover").empty();
 						$("#level2ExpenseApprover").append(output);
+						$('#level2ExpenseApprover').trigger("chosen:updated");
 					},
 				});
 			}
