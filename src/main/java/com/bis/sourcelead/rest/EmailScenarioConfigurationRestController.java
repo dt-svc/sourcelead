@@ -112,10 +112,12 @@ public class EmailScenarioConfigurationRestController {
 			 String fromMail=emailScenarioconService.verifyConfgFromMail(orgLocation.getId(),emailconfigur);
 			 if(Constants.EMAIL_SUCCESS.equalsIgnoreCase(fromMail)){
 				 emailconfigur.setVerifiedStatus(Constants.YES);
+				 emailconfigur.setIsActive(Constants.YES);
 				 emailScenarioConfigurationDao.save(emailconfigur);
 				 returnValue= "success";
 			 }else{
 				 emailconfigur.setVerifiedStatus(Constants.NO);
+				 emailconfigur.setIsActive(Constants.NO);
 				 emailScenarioConfigurationDao.save(emailconfigur);
 				 returnValue= "failure";
 			 }
@@ -163,6 +165,7 @@ public class EmailScenarioConfigurationRestController {
 			 String fromMail=emailScenarioconService.verifyConfgParserMail(orgLocation.getId(),emailConfig);
 			 if(Constants.EMAIL_SUCCESS.equalsIgnoreCase(fromMail)){
 				 emailConfig.setVerifiedStatus(Constants.YES);
+				 emailConfig.setIsActive(Constants.YES);
 				 emailConfig.setEmailPassword(new PasswordSecurity().encrypt(emailConfig.getEmailPassword()));
 				 emailConfig.setUsageType(emailConfigurationDTO.getUsageType());
 				 emailScenarioconService.save(emailConfig); // Saving record when successfully validated.
