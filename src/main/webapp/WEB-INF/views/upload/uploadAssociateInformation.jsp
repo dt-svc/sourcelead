@@ -155,16 +155,17 @@ document.getElementById("uploadBtn").onchange = function () {
 
 <script type="text/javascript">
 function importAssociateBankDetail(){
-	var validationSettings = {
+	/* var validationSettings = {
             errorMessagePosition : 'element',
             borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-            };
+            }; */
 	var fileUrl = $("#dataFilePath").val();
 	var uploadType = "associateUpload";
 	var headerPosition = $("#headerPosition").val();
 
+	if ($('#upload_asso_info_form').validate(false, validationSettings)){
 	var frm = $('#upload_asso_info_form').serializeFormJSON();
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
@@ -199,7 +200,12 @@ function importAssociateBankDetail(){
 		 		   error: function(e){
 			        }
 			 });
-}
+}}
+$('body').on('blur', '#upload_asso_info_form', function() {
+	$("#upload_asso_info_form").showHelpOnFocus();
+	$("#upload_asso_info_form").validateOnBlur(false, validationSettings);
+});
+
 </script>
 
 
