@@ -1711,19 +1711,10 @@ public class OrgSettingsRestController {
 		OfferLetterTemplate offerLetterTemplate = offerLetterTemplateService.getOfferLetterTemplateDetailsByTemplateUUID(templateUUID);
 			String header = "<div style='text-align: center;'>"+offerLetterTemplate.getTemplateName()+"<br></br></div><br></br><br></br><br></br>";
 			String totalBody = header+ offerLetterTemplate.getTemplateContent();
-			if(offerLetterTemplate.getLetterHeadId() != null)
-			reportsUtil.viewOfferLetterHeadData(totalBody, offerLetterTemplate.getLetterHeadId(), response);
+			reportsUtil.viewOfferLetterHeadData(totalBody, offerLetterTemplate, response);
 	}
 	
-	@RequestMapping(value = "/app/ws/viewOfferLetter")
-	public @ResponseBody  void viewOfferLetter(@RequestParam("templateUUID") String templateUUID,@RequestParam("tempName") String tempName,HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		OfferLetterTemplate offerLetterTemplate = offerLetterTemplateService.getOfferLetterTemplateDetailsByTemplateUUID(templateUUID);
-			String header = "<div style='text-align: center;'>"+offerLetterTemplate.getTemplateName()+"<br></br></div><br></br><br></br><br></br>";
-			String totalBody = header+ offerLetterTemplate.getTemplateContent();
-			if(offerLetterTemplate.getLetterHeadId() != null)
-			reportsUtil.viewOfferLetterHeadData(totalBody, offerLetterTemplate.getLetterHeadId(), response);
-	}
+	 
 	
 	
 	@RequestMapping(value = "/app/deleteOfferLetterTemplateByTemplateUUID", method = RequestMethod.POST)
