@@ -148,6 +148,21 @@ function editCandidate(candidateId){
             			 		city = json.city;            			 		
             			 	}
             			 	
+            			 	var panNumber = '';
+            			 	if(json.panNumber != null && json.panNumber != '' && json.panNumber != 'undefined'){
+            			 		panNumber = json.panNumber;            			 		
+            			 	}
+            			 	
+            			 	var aadharNumber = '';
+            			 	if(json.aadharNumber != null && json.aadharNumber != '' && json.aadharNumber != 'undefined'){
+            			 		aadharNumber = json.aadharNumber;            			 		
+            			 	}
+            			 	
+            			 	var ssnNumber = '';
+            			 	if(json.ssnNumber != null && json.ssnNumber != '' && json.ssnNumber != 'undefined'){
+            			 		ssnNumber = json.ssnNumber;            			 		
+            			 	}
+            			 	
             			 	
 							var result ='';
 							result  = result + '<div class="success_pop" id="selector11" style="display: none;">';
@@ -341,6 +356,26 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '</div>';
+							
+							if(json.country == 'India'){
+							result = result + '<div class="clearfix mb10">';
+							result = result + '<div class="col-md-6 custom-fields">';
+							result = result + '<input class="form-control" id="panNumber" name="panNumber" value="'+panNumber+'" placeholder="Pan Number" type="text"></input>';
+							result = result + '</div>';
+							
+							result = result + '<div class="col-md-6 custom-fields">';
+							result = result + '<input class="form-control" id="aadharNumber" name="aadharNumber" value="'+aadharNumber+'" placeholder="Aadhar Number" type="text"></input>';
+							result = result + '</div>';
+							result = result + '</div>';
+              		        }
+							
+							if(json.country == 'United States'){
+								result = result + '<div class="clearfix mb10">';
+								result = result + '<div class="col-md-6 custom-fields">';
+								result = result + '<input class="form-control" id="ssnNumber" name="ssnNumber" value="'+ssnNumber+'" placeholder="SSN Number" type="text"></input>';
+								result = result + '</div>';
+								result = result + '</div>';
+	              		        }
 							
 							result = result + '<div class="clearfix mb10">';
 							
