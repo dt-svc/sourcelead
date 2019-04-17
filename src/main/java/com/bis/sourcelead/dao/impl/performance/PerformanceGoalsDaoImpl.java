@@ -542,6 +542,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 					"GOALS.GOAL_NAME AS goalName," + 
 					"DATE_FORMAT(GOALS.START_DATE ,"+goalDateFormat+") AS goalStartDate, " + 
 					"DATE_FORMAT(GOALS.END_DATE ,"+goalDateFormat+") AS goalEndDate, " + 
+					"DATE_FORMAT(GOALS.CREATED_DATE ,"+goalDateFormat+") AS createdDate, " + 
 					"GOALS.PERCENTAGE_DONE AS percentageDone, " +
 					"GOALS.UUID AS uuid " +
 					"FROM " + 

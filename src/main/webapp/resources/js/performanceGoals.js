@@ -458,6 +458,7 @@ function PerformanceGoals(){
 								        		 result = result+'<div class="col-md-5">' ;
 								        		 result = result+'<a href="javascript:void(0) mt5">' ;
 								        		 result = result+'<h5 class="media-heading">'+opt.goalName+'</h5>' ;
+								        		 result = result+'<p class="text-muted mb0 fontSmall"><span class="paddingRight">Created Date (<small class="custom-small">'+dateFormatStr+'</small>) :&nbsp;&nbsp;<span id="createdDate" class="textBold">'+opt.createdDate+'</span></span></p>' ;
 								        		 result = result+'</a>' ;
 								        		 result = result+'</div>' ;
 								        		 result = result+'<div class="col-md-4">' ;
@@ -473,10 +474,10 @@ function PerformanceGoals(){
 								        		 result = result+'</div>' ;
 								        		
 								        		 
-								        		 result = result+'<div class="col-md-10 mt">' ;
+								        		 result = result+'<div class="col-md-10 mt paddingLeft">' ;
 								        		 result = result+'<div class="mb0"><span class="mr10 text-muted" >Start Date (<small class="custom-small">'+dateFormatStr+'</small>) :</span><span class="textBold">'+opt.goalStartDate+'</span></div>' ;
 								        		 result = result+'</div>' ;
-								        		 result = result+'<div class="col-md-10 mt">' ;
+								        		 result = result+'<div class="col-md-10 mt paddingLeft">' ;
 								        		 result = result+'<div class="mb0"><span class="mr10 text-muted ">End Date (<small class="custom-small">'+dateFormatStr+'</small>) : </span><span class="textBold">'+opt.goalEndDate+'</span></div>' ;
 								        		 result = result+'</div>' ;
 								        		 
