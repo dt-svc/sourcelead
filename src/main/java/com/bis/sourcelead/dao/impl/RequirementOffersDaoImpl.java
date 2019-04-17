@@ -78,7 +78,7 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 	public RequirementOffers getRequirementOfferId(Long offerId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementOffers rs where rs.id = :offerId ";
+		String query = "from RequirementOffers rs left join fetch rs.offerLetterTemplate where rs.id = :offerId ";
 		List<RequirementOffers> requirementOffersList =  session.createQuery(query.toString()).setLong("offerId", offerId).list();
 		
 		RequirementOffers requirementOffers = null;
@@ -120,7 +120,7 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 	public RequirementOffers getRequirementOffersByUUID(String offerUUID) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementOffers rs left join fetch rs.submissionId submission left join fetch submission.requirement where rs.offerUUID = :offerUUID ";
+		String query = "from RequirementOffers rs left join fetch rs.offerLetterTemplate left join fetch rs.submissionId submission left join fetch submission.requirement where rs.offerUUID = :offerUUID ";
 		List<RequirementOffers> requirementOffersList =  session.createQuery(query.toString()).setString("offerUUID", offerUUID).list();
 		
 		RequirementOffers requirementOffers = null;

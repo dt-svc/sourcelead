@@ -49,6 +49,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -3439,6 +3440,33 @@ public class CandidateDaoImpl implements CandidateDao {
 		String query = "from Candidate can where can.parentCandidateId.id=:candidateId and can.designationType = '"+Constants.OFFSHORE_C2C+"'";
 		List<Candidate> list = session.createQuery(query).setLong("candidateId", candidateId).list();
 		return list;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		List<Candidate> panNumberList =  session.createQuery(query) .setString("panNumber", panNumber).setLong("orgLocationId", orgLocationId).list();
+		Candidate can = null;
+		if(panNumberList != null && !panNumberList.isEmpty())
+		{
+			can = (Candidate) panNumberList.iterator().next();
+		}
+		return can;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId";
+		List<Candidate> panNumbersList = session.createQuery(query).setString("panNumber", panNumber).setLong("orgLocationId", orgLocationId).list();
+		if (panNumbersList != null && panNumbersList.size() > 0) {
+			flag = true;
+		}
+		return flag;
 	}
 	
 	

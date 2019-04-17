@@ -264,6 +264,37 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 							else {
 								candidateImport.setPrimarySkill("");
 							}
+							
+							//only India location
+							if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+							if (row.getCell(19) != null) {
+								String panNumber = getCellValueAsString(row.getCell(19), fileName);
+								candidateImport.setPanNumber(panNumber);
+							}
+							else {
+								candidateImport.setPanNumber("");
+							}
+							
+							//only India location
+							if (row.getCell(20) != null) {
+								String aadharNumber = getCellValueAsString(row.getCell(20), fileName);
+								candidateImport.setAadharNumber(aadharNumber);
+							}
+							else {
+								candidateImport.setAadharNumber("");
+							}
+							}
+							
+							//only United States location
+							if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
+							if (row.getCell(21) != null) {
+								String ssnNumber = getCellValueAsString(row.getCell(21), fileName);
+								candidateImport.setSsnNumber(ssnNumber);
+							}
+							else {
+								candidateImport.setSsnNumber("");
+							}
+							}
 							saveBulkCandidates(candidateImport, orgLocations, user, isMailChecked);
 						}
 					}
@@ -472,7 +503,31 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 			writeRow.createCell(18).setCellValue("");
 		}
 		
-		writeRow.createCell(19).setCellValue(candidateImport.getReason());
+		if (row.getCell(19) != null && !"".equalsIgnoreCase(row.getCell(19).toString())) {
+			String panNumber = getCellValueAsString(row.getCell(19), fileName);
+			writeRow.createCell(19).setCellValue(panNumber);
+		}
+		else {
+			writeRow.createCell(19).setCellValue("");
+		}
+		
+		if (row.getCell(20) != null && !"".equalsIgnoreCase(row.getCell(20).toString())) {
+			String aadharNumber = getCellValueAsString(row.getCell(20), fileName);
+			writeRow.createCell(20).setCellValue(aadharNumber);
+		}
+		else {
+			writeRow.createCell(20).setCellValue("");
+		}
+		
+		if (row.getCell(21) != null && !"".equalsIgnoreCase(row.getCell(21).toString())) {
+			String ssnNumber = getCellValueAsString(row.getCell(21), fileName);
+			writeRow.createCell(21).setCellValue(ssnNumber);
+		}
+		else {
+			writeRow.createCell(21).setCellValue("");
+		}
+		
+		writeRow.createCell(22).setCellValue(candidateImport.getReason());
 	}
 	
 	private boolean validateCandidateExeclData(Row row, CandidatesImport candidateImport, String fileName, OrgLocations orgLocations) throws Exception
@@ -916,7 +971,15 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		excelHeader.createCell(16).setCellValue(Constants.CANDIDATE_EDUCATION);
 		excelHeader.createCell(17).setCellValue(Constants.CANDIDATE_EMPLOERS);
 		excelHeader.createCell(18).setCellValue(Constants.CANDIDATE_PRIMARY_SKILL);
-		excelHeader.createCell(19).setCellValue(Constants.FAILED_REASON);
+		
+		//India location only
+		excelHeader.createCell(19).setCellValue(Constants.CANDIDATE_PAN_NUMBER);
+		excelHeader.createCell(20).setCellValue(Constants.CANDIDATE_AADHAR_NUMBER);
+		
+		//United States location only
+		excelHeader.createCell(21).setCellValue(Constants.CANDIDATE_SSN_NUMBER);
+		
+		excelHeader.createCell(22).setCellValue(Constants.FAILED_REASON);
 		return createExcelsheet;
 	}
 	

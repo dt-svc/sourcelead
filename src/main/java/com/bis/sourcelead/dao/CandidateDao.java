@@ -270,4 +270,8 @@ public interface CandidateDao {
 	
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception;
 	
+	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception;
+	
+	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception;
+	
 }
