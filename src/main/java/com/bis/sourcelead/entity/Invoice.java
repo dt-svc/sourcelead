@@ -233,6 +233,9 @@ public class Invoice {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "invoice")
 	private Set<InvoiceDocument> invoiceDocumentSet;
 	
+	@Column(name = "NOTIFY_TO_OTHERS", columnDefinition = "LONGTEXT default NULL")
+	private String notifyToOthers;
+	
 	@Transient
 	@JsonProperty
 	private String clientName;
@@ -1308,6 +1311,14 @@ public class Invoice {
 
 	public void setOrgType(String orgType) {
 		this.orgType = orgType;
+	}
+
+	public String getNotifyToOthers() {
+		return notifyToOthers;
+	}
+
+	public void setNotifyToOthers(String notifyToOthers) {
+		this.notifyToOthers = notifyToOthers;
 	}
 
 	

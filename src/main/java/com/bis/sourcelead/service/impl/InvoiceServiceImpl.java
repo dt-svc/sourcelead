@@ -357,7 +357,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 		 * if(StringUtils.isNotBlank(invoiceDTO.getAccountDetails())){
 		 * invoice.setAccountDetails(invoiceDTO.getAccountDetails()); }
 		 */
-
+		if(StringUtils.isNotBlank(invoiceDTO.getNotifyToOthers())){
+			invoice.setNotifyToOthers(invoiceDTO.getNotifyToOthers());	
+		}
 		if (StringUtils.isNotBlank(invoiceDTO.getPaymentAccount())) {
 			PaymentAccount paymentaccount = new PaymentAccount();
 			paymentaccount.setId(Long.valueOf(invoiceDTO.getPaymentAccount()));
@@ -3197,6 +3199,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 			invoice.setPaymentFrequency(null);
 		}
 
+		if(StringUtils.isNotBlank(invoiceDTO.getNotifyToOthers())){
+			invoice.setNotifyToOthers(invoiceDTO.getNotifyToOthers());	
+		}
 		if (StringUtils.isNotBlank(invoiceDTO.getPaymentAccount())) {
 			PaymentAccount paymentaccount = new PaymentAccount();
 			paymentaccount.setId(Long.valueOf(invoiceDTO.getPaymentAccount()));
