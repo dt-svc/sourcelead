@@ -1,5 +1,6 @@
 package com.bis.sourcelead.clockInOutServiceImpl;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -276,7 +277,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			if("previous".equalsIgnoreCase(type)) {
 				 dates = clockInOutUtil.getClockFilterPreviousDates(currentDate,null,location,dayWisetype);
 			}else if("next".equalsIgnoreCase(type)) {
-				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,null,location);
+				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,null,location,dayWisetype);
 			}else {
 				 dates = clockInOutUtil.getClockFilterDate(dayWisetype, location);
 			}
@@ -292,6 +293,11 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		    	List<ClockInOutSubDTO> subListDto = new ArrayList<>();
 		    	ClockInOutUserTimeEntryDTO main = new ClockInOutUserTimeEntryDTO();
 		    	
+		    	int sec = 0;
+		    	int min = 0;
+		    	int hr = 0;
+		    	Time sum = null;
+		    	
 		    	for (ClockInOutUserTimeEntryDTO data : uniqueData.getValue()) {
 		    		
 		    		ClockInOutSubDTO subDto = new ClockInOutSubDTO();
@@ -306,7 +312,13 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		    		
 		    		main.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockInDate()));
 		    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockOutDate()));
-				}
+				
+		    		sec += data.getTotalTime().getSeconds();
+		    		min += data.getTotalTime().getMinutes();
+		    		hr += data.getTotalTime().getHours();
+		    		sum = new Time(hr, min, sec);
+		    	}
+		    	main.setTotalTime(sum);
 		    	main.setSubList(subListDto);
 		    	mainList.add(main);
 				
