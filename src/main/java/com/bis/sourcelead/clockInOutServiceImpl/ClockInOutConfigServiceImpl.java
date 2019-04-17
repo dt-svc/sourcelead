@@ -276,7 +276,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			if("previous".equalsIgnoreCase(type)) {
 				 dates = clockInOutUtil.getClockFilterPreviousDates(currentDate,null,location,dayWisetype);
 			}else if("next".equalsIgnoreCase(type)) {
-				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,null,location);
+				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,null,location,dayWisetype);
 			}else {
 				 dates = clockInOutUtil.getClockFilterDate(dayWisetype, location);
 			}

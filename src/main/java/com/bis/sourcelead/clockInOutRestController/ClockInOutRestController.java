@@ -238,6 +238,7 @@ public class ClockInOutRestController {
 	@RequestMapping(value = "/getCurrentDates")
 	public String getCurrentDates(@RequestParam(value="currentDate", required=false) String currentDate,
 			@RequestParam(value="type", required=false) String type,
+			@RequestParam(value="filterType", required=false) String dayWiseType,
 			HttpServletRequest request) {
 		
 		StringBuilder dateStr = new StringBuilder();
@@ -248,17 +249,20 @@ public class ClockInOutRestController {
 			Date[] dates = null;
 			
 			if("previous".equalsIgnoreCase(type)) {
-				 dates = clockInOutUtil.getClockFilterPreviousDates(currentDate,empJoiningDate,loginOrgLocation,type);
+				 dates = clockInOutUtil.getClockFilterPreviousDates(currentDate,empJoiningDate,loginOrgLocation,dayWiseType);
 			}else if("next".equalsIgnoreCase(type)) {
-				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,empJoiningDate,loginOrgLocation);
+				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,empJoiningDate,loginOrgLocation,dayWiseType);
 			}else {
 				 dates = clockInOutUtil.getClockFilterDate(type, loginOrgLocation);
 			}
-			if(dates != null && !"today".equalsIgnoreCase(type)) {
-				return dateStr.append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), dates[0]))
-						.append(" To ").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), dates[1])).toString();
-			}else {
-				return dateStr.append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), dates[0])).toString();
+			if(dates != null) {
+				if(!"today".equalsIgnoreCase(dayWiseType)) {
+					return dateStr.append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), dates[0]))
+							.append(" To ").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), dates[1])).toString();
+				}else {
+					return dateStr.append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), dates[0])).toString();
+
+				}
 
 			}
 		} catch (Exception e) {

@@ -47,7 +47,7 @@ $('document').ready(function () {
 
   </div>    
 				<div id="listDivId">
-                    <ul class="pull-right list-unstyled list-inline">
+                    <ul class="pull-right list-unstyled list-inline dataTabPad">
                       <li id="filterId"><a class="filtIcon" id="filPop"></a>
                         <div class="approved_pop">
                             <ul>
@@ -59,9 +59,6 @@ $('document').ready(function () {
                           </div>                      
                       </li>
                   
-                      <li class="" id="searchId">
-                        <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                        <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
                     </ul>
                     </div>
                     
