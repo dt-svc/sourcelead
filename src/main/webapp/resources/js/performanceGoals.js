@@ -633,7 +633,7 @@ function PerformanceGoals(){
 										         if(response.data.length > 0){
 										        	 for(var i=0; i<response.data.length; i++){
 										        		 var opt = response.data[i];
-										        		 commentUsers.push({"id": opt.userId, "fullName": opt.fullName, "email": opt.email});
+										        		 commentUsers.push({"id": opt.userId, "fullName": opt.fullName, "email": opt.email, "fileUrl" : opt.fileURL});
 										        	 }
 										        	 performanceGoals.initializeFroalaEditor();
 										         }
@@ -649,7 +649,7 @@ function PerformanceGoals(){
 						    commentConfig = {
 						      at: "@",
 						      data: commentUsers,
-						      displayTpl: '<li data-id="${id}">${fullName} <small>${email}</small></li>',
+						      displayTpl: '<li class="clearfix" data-id="${id}"><div class="goalsImg pull-left mr"><img data-id= "userProfileImage" onerror="performanceGoals.predefineGoalUserImage(this);" src="${fileUrl}" class="media-object"></div><div class="pull-left" style="paddding:5px 0px 0px 15px;"> ${fullName} <small style="display:block;">${email}</small></div></li>',
 						      limit: 200
 						    }
 						    
