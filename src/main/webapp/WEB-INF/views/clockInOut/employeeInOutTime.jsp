@@ -12,7 +12,8 @@
 var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 
 $('document').ready(function () {
-	 getUserTimeEntries();
+	 getCurrentDates('today');
+	 
 });
 </script>
 
@@ -24,6 +25,7 @@ $('document').ready(function () {
         <h2>Clock in List</h2>
       </div>
       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; Clock in list</div>
+    <div id="clockLoading"></div>
     </section>
 
     <div class="clockListWrap clearfix">
@@ -37,9 +39,9 @@ $('document').ready(function () {
                          <div id="graphViewId">
 
             <div class="clDate">
-                <i class="fa fa-chevron-left"></i>
+                <i class="fa fa-chevron-left" id="previousId" onclick="getCurrentDates('previous');"></i>
                 <p id="frequencyId"></p>
-                <i class="fa fa-chevron-right"></i>
+                <i class="fa fa-chevron-right" id="nextId" onclick="getCurrentDates('next');"></i>
               </div>            
 
 
@@ -49,10 +51,10 @@ $('document').ready(function () {
                       <li id="filterId"><a class="filtIcon" id="filPop"></a>
                         <div class="approved_pop">
                             <ul>
-                                <li><input type="radio" name="a" value="today" checked id="a" onclick="getUserTimeEntries();"><label for="a">Today</label></li> 
-                                <li><input type="radio" name="a" value="Last_7_days" id="b" onclick="getUserTimeEntries();"><label for="b">This Week</label></li> 
-                                <li><input type="radio" name="a" value="current_month" id="c" onclick="getUserTimeEntries();"><label for="c">This Month</label></li> 
-                                <li><input type="radio" name="a" value="Current_Year" id="d" onclick="getUserTimeEntries();"><label for="d">This Year</label></li> 
+                                <li><input type="radio" name="a" value="today" checked id="a" onclick="getCurrentDates('today');"><label for="a">Today</label></li> 
+                                <li><input type="radio" name="a" value="Last_7_days" id="b" onclick="getCurrentDates('Last_7_days');"><label for="b">This Week</label></li> 
+                                <li><input type="radio" name="a" value="current_month" id="c" onclick="getCurrentDates('current_month');"><label for="c">This Month</label></li> 
+                                <li><input type="radio" name="a" value="Current_Year" id="d" onclick="getCurrentDates('Current_Year');"><label for="d">This Year</label></li> 
                             </ul>
                           </div>                      
                       </li>
@@ -354,18 +356,19 @@ function getUserTimeEntriesPagination(url){
 
 
 <script>
- function getUserTimeEntries(){
+ function getUserTimeEntries(type){
+	 var currentDate = $("#frequencyId").html();
 	 var dayWisetype = null;
 	 $('input:radio[name=a]:checked').each(function() {
 		 dayWisetype = $(this).val();
 	 });
-		
+		$("#clockLoading").attr('style','position:absolute; width:100%; height:250%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl+ "/getUserTimeEntries?${_csrf.parameterName}=${_csrf.token}&dayWisetype="+dayWisetype,
+			url : sourceleadUrl+ "/getUserTimeEntries?${_csrf.parameterName}=${_csrf.token}&dayWisetype="+dayWisetype+"&type="+type+"&currentDate="+currentDate,
 			success : function(json) {
    	        	var result = "";
-   	        	var frequency = "";
+//    	        	var frequency = "";
    	        	result = result +'<table id="userTimePagination">';
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
@@ -381,7 +384,7 @@ function getUserTimeEntriesPagination(url){
    		    	for (var i=0; i<json.data.length; i++)
    				{
    		    		var report = json.data[i];
-   		    		frequency = report.frequency;
+//    		    		frequency = report.frequency;
    		    		result = result +'<tbody>';
    		    		
    		    		result = result +'<tr class="parent" id="2479'+i+'">';
@@ -429,14 +432,15 @@ function getUserTimeEntriesPagination(url){
    		    	$("#userTimeEntriesDiv").empty();  
    	    	    $("#userTimeEntriesDiv").append(result);
    	    	    
-   	    	    if(dayWisetype == 'today'){
-   	    	    	var freqSplit = frequency.split(" To ");
+   	    	 /*    if(dayWisetype == 'today'){
+   	    	    	var freqSplit = json.frequency.split(" To ");
    	    	    	$("#frequencyId").html(freqSplit[0]);
    	    	    }else{
-   	    	    	$("#frequencyId").html(frequency);
-   	    	    }
+   	    	    	$("#frequencyId").html(json.frequency);
+   	    	    } */
    	    	 userTimeEntriesPagination();
-   	    	 setTimeout('refresh()', 1000);
+   	    	 $("#clockLoading").removeAttr('style');
+   	    	 setTimeout('refresh()', 500);
 			},
 		});
  }
@@ -469,7 +473,42 @@ $('tr[class^=child-]').hide().children('td');
 }
 </script> 
 
+<script>
+function getCurrentDates(type){
+	
+	var currentDate = $("#frequencyId").html();
+	
+	 var dayWisetype = null;
+	 $('input:radio[name=a]:checked').each(function() {
+		 dayWisetype = $(this).val();
+	 });
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+ "/getCurrentDates?${_csrf.parameterName}=${_csrf.token}&type="+type+"&currentDate="+currentDate+"&filterType="+dayWisetype,
+		success : function(dates) {
+			
+			if(dates != null && dates != "" && dates != "undefined"){
+				$("#frequencyId").html(dates);
+				getUserTimeEntries(type);
+				$("#previousId").show();
+				$("#nextId").show();
+			}else{
+				if(type == 'previous'){
+					$("#previousId").hide();
+					$("#nextId").show();
+				}else if(type == 'next'){
+					$("#nextId").hide();
+					$("#previousId").show();
+				}
+				
+			}
+			
+		}
+	
+});
+}
 
+</script>
 
   
   <jsp:include page="../masterFooter.jsp" />

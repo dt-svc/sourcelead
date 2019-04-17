@@ -931,7 +931,7 @@ function preventTabkey(e){
 <textarea rows="3" class="form-control" name="comments" onblur="updateClockInOutTime();"></textarea>
 </div>
 </div> 
-<%-- <div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Time Entry</a></div>  --%>
+<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Time Entry</a></div> 
 </div>
 </div>
 
@@ -2066,9 +2066,11 @@ function getAssignedProjects(obj){
 	$("#projectDropDownDiv").empty();
 	$("#projectDropDownDiv").append(output);
 	$('#projectDropDownDiv').trigger("chosen:updated"); 
+	
 	}
 	});
 	getProjectTasksByProject(obj);
+	
 }
 </script>
 
@@ -2077,33 +2079,35 @@ function getAssignedProjects(obj){
 function getProjectTasksByProject(obj){
 
 	var projectId = $("#projectDropDownDiv").val();
-	$.ajax({
-	url: sourceleadUrl + "/getProjectsTasksByProjectId?&projectId="+projectId,
-	type: 'GET',
-	success: function (json) {
-	var output = "";
-	output = output + "<option value=''>Select Project Task</option>";
-	if(json != null){
-	for (var i=0; i<json.length; i++)
-	{
-	var opt = json[i];
-	if(obj != null && obj != '' && obj != 'undefined'){
-	if(obj.projectsTaskId == opt.id){
-	output = output + "<option value='" +opt.id+ "' selected>"+opt.taskName+"</option>";
-	}else{
-	output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+	if(projectId != null && projectId != "" && projectId != "undefined"){
+		$.ajax({
+			url: sourceleadUrl + "/getProjectsTasksByProjectId?&projectId="+projectId,
+			type: 'GET',
+			success: function (json) {
+			var output = "";
+			output = output + "<option value=''>Select Project Task</option>";
+			if(json != null){
+			for (var i=0; i<json.length; i++)
+			{
+			var opt = json[i];
+			if(obj != null && obj != '' && obj != 'undefined'){
+			if(obj.projectsTaskId == opt.id){
+			output = output + "<option value='" +opt.id+ "' selected>"+opt.taskName+"</option>";
+			}else{
+			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			}
+			}else{
+			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			}
+			
+			}
+			}
+			$("#projectTaskDropDownDiv").empty();
+			$("#projectTaskDropDownDiv").append(output);
+			$('#projectTaskDropDownDiv').trigger("chosen:updated"); 
+			}
+			});
 	}
-	}else{
-	output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
-	}
-	
-	}
-	}
-	$("#projectTaskDropDownDiv").empty();
-	$("#projectTaskDropDownDiv").append(output);
-	$('#projectTaskDropDownDiv').trigger("chosen:updated"); 
-	}
-	});
 }
 </script>
 

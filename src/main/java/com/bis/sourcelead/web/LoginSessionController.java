@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.DashboardItems;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
@@ -102,6 +103,9 @@ public class LoginSessionController {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	private EmployeesService employeeService;
 
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
@@ -251,6 +255,12 @@ public class LoginSessionController {
 		if (userLoginSession != null) {
 			SourceLeadSessionManager.setSessionAttribute(request, "isAuthenticated",
 					userLoginSession.getAuthenticated());
+		}
+		
+		Employees emp = employeeService.getEmployeeByUserId(user.getId());
+		if(emp != null) {
+			SourceLeadSessionManager.setSessionAttribute(request, "joiningDate",
+					emp.getHireDate());
 		}
 
 		/*
