@@ -110,14 +110,14 @@ function EmployeeLoansAndAdvances(type){
 		        result = result +'<th>Due Amount</th>';
 		        result = result +'<th>Next Due Date</th>';
 		        result = result +'<th>No. of Schedule</th>';
-		        result = result +'<th>Action</th>';
+// 		        result = result +'<th>Action</th>';
 	        }else if(type == "completed"){
 	        	result = result +'<th>Name</th>';
 		        result = result +'<th>Type</th>';
 		        result = result +'<th>Total Amount</th>';
 		        result = result +'<th>Last Paid On</th>';
 		        result = result +'<th>No. of Schedule</th>';
-		        result = result +'<th>Action</th>';
+// 		        result = result +'<th>Action</th>';
 	        }else if(type == "requested"){
 	        	result = result +'<th>Name</th>';
 		        result = result +'<th>Type</th>';
@@ -212,11 +212,11 @@ function EmployeeLoansAndAdvances(type){
 		 	        result = result +'<div>'+json.noOfSchedules+'</div>';
 		 	        result = result +'</div>';
 		 	        result = result +'</td>';
-		 	        result = result +'<td>';
+		 	        /* result = result +'<td>';
 		 	        result = result +'<div class="tblminwidth-30">';
 		 	        result = result +'<a href="javascript:void(0)" class="anchorBlack"><i class="fa fa-eye"></i></a>';
 		 	        result = result +'</div>';
-		 	        result = result +'</td>';
+		 	        result = result +'</td>'; */
 	 	         }
 	 	       
 	 	            result = result +'</tr>';
