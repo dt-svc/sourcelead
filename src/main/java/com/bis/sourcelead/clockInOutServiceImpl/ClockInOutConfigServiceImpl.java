@@ -1,9 +1,7 @@
 package com.bis.sourcelead.clockInOutServiceImpl;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,7 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +32,6 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.dto.DeductionDTO;
-import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -272,11 +267,19 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	}
 
 	@Override
-	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId,String dateFormat,String dayWisetype) {
+	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId,String dateFormat,String dayWisetype,String currentDate,String type) {
 		
 		try {
 			OrgLocations location = orgLocationService.getOrgLocations(orgLocationId);
-			Date[] dates = clockInOutUtil.getClockFilterDate(dayWisetype, location);
+			Date[] dates = null;
+			
+			if("previous".equalsIgnoreCase(type)) {
+				 dates = clockInOutUtil.getClockFilterPreviousDates(currentDate,null,location,dayWisetype);
+			}else if("next".equalsIgnoreCase(type)) {
+				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,null,location);
+			}else {
+				 dates = clockInOutUtil.getClockFilterDate(dayWisetype, location);
+			}
 			
 			ResponseList<ClockInOutUserTimeEntryDTO> resList = clockInOutConfigDao.getUserTimeEntries(orgLocationId,userId,dates);
 			
@@ -304,7 +307,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		    		main.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockInDate()));
 		    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockOutDate()));
 				}
-		    	main.setFrequency(commonUtil.dateStrFromOrgDateFormatter(dateFormat, dates[0])+" To "+commonUtil.dateStrFromOrgDateFormatter(dateFormat, dates[1]));
 		    	main.setSubList(subListDto);
 		    	mainList.add(main);
 				

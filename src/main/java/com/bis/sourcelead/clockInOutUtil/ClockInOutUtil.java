@@ -10,13 +10,19 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.clockInOutDTO.PreviousNextDTO;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Component
 public class ClockInOutUtil {
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	
 	public Date[] getClockFilterDate(String dateSelection,OrgLocations orgLocations) throws Exception {
@@ -32,8 +38,6 @@ public class ClockInOutUtil {
 			searchDates = currentMonthDates(orgLocations);
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_YEAR)) {
 			searchDates = currentYearDates();
-		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_YESTERDAY)) {
-			searchDates = yesterdayDates(orgLocations);
 		}
 		
 		
@@ -145,5 +149,103 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		dates[1] = oneDateUTC;
 		return dates;
 	}
+
+public Date[] getClockFilterPreviousDates(String currentDate, Date empJoiningDate, OrgLocations location, String dayWisetype) {
+	
+	Date[] searchDates = null;
+	String[] str = currentDate.split(" To ");
+	
+	try {
+	    	  if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+	  			searchDates = previousDays(currentDate,location,empJoiningDate);
+	  		}else if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_7_DAYS)) {
+	  			searchDates = previousWeeks(str[0],location);
+	  		}else if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_MONTH)) {
+//	  			searchDates = previousMonthDates(orgLocations);
+	  		}else if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_YEAR)) {
+//	  			searchDates = previousYearDates();
+	  		}
+	    	  
+	      
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return searchDates;
+}
+
+private Date[] previousWeeks(String startDate, OrgLocations location) {
+	Date[] dates = null;
+	
+	Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), startDate);
+    Calendar c = Calendar.getInstance();
+    c.setTime(current);
+    int i = c.get(Calendar.DAY_OF_WEEK) - c.getFirstDayOfWeek();
+    c.add(Calendar.DATE, -i - 7);
+    Date start = c.getTime();
+    c.add(Calendar.DATE, 6);
+    Date end = c.getTime();
+    
+    dates = new Date[2];
+    dates[0] = start;
+    dates[1] = end;
+	return dates;
+}
+
+private Date[] previousDays(String currentDate, OrgLocations location, Date empJoiningDate) {
+	
+	  Date[] dates = null;
+	  Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+	  if(empJoiningDate != null) {
+		  
+		  Calendar calendar = Calendar.getInstance();
+		  calendar.setTime(current);
+		  calendar.add(Calendar.DAY_OF_YEAR, -1);
+		 Date prevoiusDate = calendar.getTime();
+		  if(prevoiusDate.after(empJoiningDate) || prevoiusDate.equals(empJoiningDate)) {
+	  	    	dates = new Date[2];
+	  	   		dates[0] = prevoiusDate;
+	  	   		dates[1] = prevoiusDate;
+	  	       }
+	  }else {
+		  dates = new Date[2];
+  	  	   dates[0] = current;
+  	  	   dates[1] = current;
+	  }
+	return dates;
+}
+
+public Date[] getClockFilterNextDates(String currentDate, Date empJoiningDate, OrgLocations location) {
+	Date[] dates = null;
+	try {
+		  Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+		  Calendar calendar = Calendar.getInstance();
+		  Date curDate = calendar.getTime();
+		  Date nextDate = null;
+		  if(empJoiningDate != null) {
+//			  empJoiningDate = commonUtil.getOrgLocationCurrentDate(location.getDateFormat(), empJoiningDate);
+			  calendar.setTime(current);
+			  calendar.add(Calendar.DAY_OF_YEAR, 1);
+			  nextDate = calendar.getTime();
+			  
+			  if(nextDate.before(curDate)) {
+			    	dates = new Date[2];
+			   		dates[0] = nextDate;
+			   		dates[1] = nextDate;
+			   }
+		  }else {
+			  if(current.before(curDate)) {
+				  dates = new Date[2];
+		  	  	   dates[0] = current;
+		  	  	   dates[1] = current;
+			  }
+   	  }
+		
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	
+	return dates;
+}
+
 	
 }
