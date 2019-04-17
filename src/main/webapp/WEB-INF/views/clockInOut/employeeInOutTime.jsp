@@ -77,90 +77,7 @@ $('document').ready(function () {
   
 
 
-<script>
-    // Jobs added Column Chart
-      AmCharts.makeChart("jobsAdded",
-      {
-      "type": "serial",
-      "categoryField": "category",
-      "dataDateFormat": "YYYY-MM-DD",
-      "colors": [],
-      "startDuration": 1,
-      "categoryAxis": {
-        "equalSpacing": true,
-        "gridPosition": "start",
-        "parseDates": true,
-        "axisColor": "#ACACAC",
-        "gridThickness": 0,
-        "markPeriodChange": false,
-        "minHorizontalGap": 35,
-        "minVerticalGap": 25
-      },
-      "trendLines": [],
-      "graphs": [
-        {
-          "balloonText": "[[title]] : [[value]]",
-          "bulletField": "category",
-          "fillAlphas": 1,
-          "fillColors": "#6AB7F3",
-          "fixedColumnWidth": 30,
-          "id": "jobsAdded",
-          "lineColor": "#6AB7F3",
-          "title": "Jobs Added",
-          "type": "column",
-          "valueField": "column-1"
-        }
-      ],
-      "guides": [],
-      "valueAxes": [
-        {
-          "id": "ValueAxis-1",
-          "axisColor": "#ACACAC",
-          "firstDayOfWeek": 0,
-          "gridThickness": 0,
-          "title": ""
-        }
-      ],
-      "allLabels": [],
-      "balloon": {
-        "fixedPosition": false,
-        "horizontalPadding": 10,
-        "textAlign": "left",
-        "verticalPadding": 10
-      },
-      "titles": [],
-      "dataProvider": [
-        {
-          "category": "2019-03-11",
-          "column-1": "10"
-        },
-        {
-          "category": "2019-03-12",
-          "column-1": "6"
-        },
-        {
-          "category": "2019-03-13",
-          "column-1": "16"
-        },
-        {
-          "category": "2019-03-14",
-          "column-1": "6"
-        },
-        {
-          "category": "2019-03-15",
-          "column-1": "2"
-        },
-        {
-          "category": "2019-03-16",
-          "column-1": "4"
-        },
-        {
-          "category": "2019-03-17",
-          "column-1": "8"
-        }                                                
-      ]
-    });
-    </script>
+
     
     
     
@@ -428,16 +345,10 @@ function getUserTimeEntriesPagination(url){
    		    	
    		    	$("#userTimeEntriesDiv").empty();  
    	    	    $("#userTimeEntriesDiv").append(result);
-   	    	    
-   	    	 /*    if(dayWisetype == 'today'){
-   	    	    	var freqSplit = json.frequency.split(" To ");
-   	    	    	$("#frequencyId").html(freqSplit[0]);
-   	    	    }else{
-   	    	    	$("#frequencyId").html(json.frequency);
-   	    	    } */
    	    	 userTimeEntriesPagination();
    	    	 $("#clockLoading").removeAttr('style');
    	    	 setTimeout('refresh()', 500);
+   	    	showClockInClockOutGraph(json);
 			},
 		});
  }
@@ -472,9 +383,7 @@ $('tr[class^=child-]').hide().children('td');
 
 <script>
 function getCurrentDates(type){
-	
 	var currentDate = $("#frequencyId").html();
-	
 	 var dayWisetype = null;
 	 $('input:radio[name=a]:checked').each(function() {
 		 dayWisetype = $(this).val();
@@ -497,15 +406,79 @@ function getCurrentDates(type){
 					$("#nextId").hide();
 					$("#previousId").show();
 				}
-				
 			}
-			
 		}
-	
 });
 }
 
 </script>
+
+<script>
+function showClockInClockOutGraph(json){
+	
+	 var chartData = [];
+	   for (var i = 0; i < json.data.length; i++) { 
+	 		 var opt = json.data[i]; 
+	         chartData.push({
+	        		"category": "2019-03-13",
+			         "column-1": "16"
+	       });
+	   }
+	   
+	AmCharts.makeChart("jobsAdded",
+		      {
+		      "type": "serial",
+		      "categoryField": "category",
+		      "dataDateFormat": "YYYY-MM-DD",
+		      "colors": [],
+		      "startDuration": 1,
+		      "categoryAxis": {
+		        "equalSpacing": true,
+		        "gridPosition": "start",
+		        "parseDates": true,
+		        "axisColor": "#ACACAC",
+		        "gridThickness": 0,
+		        "markPeriodChange": false,
+		        "minHorizontalGap": 35,
+		        "minVerticalGap": 25
+		      },
+		      "trendLines": [],
+		      "graphs": [
+		        {
+		          "balloonText": "[[title]] : [[value]]",
+		          "bulletField": "category",
+		          "fillAlphas": 1,
+		          "fillColors": "#6AB7F3",
+		          "fixedColumnWidth": 30,
+		          "id": "jobsAdded",
+		          "lineColor": "#6AB7F3",
+		          "title": "Jobs Added",
+		          "type": "column",
+		          "valueField": "column-1"
+		        }
+		      ],
+		      "guides": [],
+		      "valueAxes": [
+		        {
+		          "id": "ValueAxis-1",
+		          "axisColor": "#ACACAC",
+		          "firstDayOfWeek": 0,
+		          "gridThickness": 0,
+		          "title": ""
+		        }
+		      ],
+		      "allLabels": [],
+		      "balloon": {
+		        "fixedPosition": false,
+		        "horizontalPadding": 10,
+		        "textAlign": "left",
+		        "verticalPadding": 10
+		      },
+		      "titles": [],
+		      "dataProvider": chartData
+		    });
+}
+    </script>
 
   
   <jsp:include page="../masterFooter.jsp" />

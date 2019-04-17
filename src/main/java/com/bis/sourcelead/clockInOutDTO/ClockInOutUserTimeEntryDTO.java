@@ -26,6 +26,8 @@ public class ClockInOutUserTimeEntryDTO {
 	
 	private String frequency;
 	
+	private String graphForamatDate;
+	
 	private List<ClockInOutSubDTO> subList;
 
 	public Time getClockInTime() {
@@ -114,6 +116,16 @@ public class ClockInOutUserTimeEntryDTO {
 
 	public void setFrequency(String frequency) {
 		this.frequency = frequency;
+	}
+
+	public String getGraphForamatDate()
+	{
+		return graphForamatDate;
+	}
+
+	public void setGraphForamatDate(String graphForamatDate)
+	{
+		this.graphForamatDate = graphForamatDate;
 	}
 	
 }
