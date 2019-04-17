@@ -31,7 +31,8 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.impl.TimesheetSubmissionsServiceImpl;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.timesheet.service.impl.TimesheetSubmissionsServiceImpl;
 import com.bis.sourcelead.util.CommonUtil;
 
 import junit.framework.Assert;
