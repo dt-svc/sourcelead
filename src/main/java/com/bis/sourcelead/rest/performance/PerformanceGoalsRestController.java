@@ -21,8 +21,11 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAttachmentsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsCommentsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
 import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
@@ -30,6 +33,7 @@ import com.bis.sourcelead.entity.performance.PerformanceGoalsAttachments;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.performance.PerformanceGoalsAttachmentsService;
+import com.bis.sourcelead.service.performance.PerformanceGoalsCommentsService;
 import com.bis.sourcelead.service.performance.PerformanceGoalsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -47,6 +51,9 @@ public class PerformanceGoalsRestController {
 	
 	@Autowired
 	PerformanceGoalsAttachmentsService performanceGoalsAttachmentsService;
+	
+	@Autowired
+	PerformanceGoalsCommentsService performanceGoalsCommentsService;
 	
 	  @RequestMapping(value = "/getReportingManagersUsersForGoalsAssignment" , method = RequestMethod.GET)
 	   public List<UserRole> getReportingManagersUsersForGoalsAssignment(HttpServletRequest request) throws Exception {
@@ -385,5 +392,49 @@ public class PerformanceGoalsRestController {
 				
 				return resObj;
 			}
+	 	
+	 	
+	 	@RequestMapping(value = { "/savePerformanceGoalsComments", "/rest/savePerformanceGoalsComments" }, method = RequestMethod.POST)
+		public @ResponseBody Response<PerformanceGoalsCommentsDTO> savePerformanceGoals(PerformanceGoalsCommentsDTO performanceGoalsCommentsDTO,HttpServletRequest request) throws Exception {
+			  Response<PerformanceGoalsCommentsDTO> response = new  Response<>();
+			  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			try {
+			 if(Validator.validate(performanceGoalsCommentsDTO)) {
+				 performanceGoalsCommentsDTO.setCreatedUserId(user.getId());
+				 performanceGoalsCommentsDTO.setCreatedUserName(user.getFullName());
+				 performanceGoalsCommentsService.storePerformanceGoalsComments(performanceGoalsCommentsDTO);
+				 response.setResponse(Result.SUCCESS.name());
+				 response.setResponseMessage(Result.SUCCESS.getValue());
+			 }else {
+	    		 response.setResponse(Result.INVALID_DATA.name());
+				 response.setResponseMessage(Result.INVALID_DATA.getValue());
+	    	 }
+			}catch (Exception e) {
+				e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return response;
+		}
 	 
+	 	
+	 	@RequestMapping(value = { "/getPerformanceGoalsCommentsList", "/rest/getPerformanceGoalsCommentsList" }, method = RequestMethod.GET)
+		public ResponseList<PerformanceGoalsCommentsDTO> getPerformanceGoalsCommentsList(@RequestParam(value="goalId", required=true) Long goalId,HttpServletRequest request) throws Exception {
+	 		
+	 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	 		ResponseList<PerformanceGoalsCommentsDTO> resObj = new ResponseList<>();
+			 try {
+					 List<PerformanceGoalsCommentsDTO> commentsList = performanceGoalsCommentsService.getPerformanceGoalsCommentsList(goalId, orgLocations.getDateFormat());
+					 resObj.setData(commentsList);
+					
+					 resObj.setResponse(Result.SUCCESS.name());
+					 resObj.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+				 	resObj.setResponse(Result.AWKWARD.name());
+				 	resObj.setResponseMessage(Result.AWKWARD.getValue());
+			 }
+			
+			return resObj;
+		}
 }

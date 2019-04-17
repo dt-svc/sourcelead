@@ -16,18 +16,17 @@
 <script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/comment/jquery.caret.min.js"></script>
 <script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/comment/task_comment.js"></script>
 
-<script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/performanceGoals.js"></script>
-
-
 
 <script>
 var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 var dateFormat ='${SourceLeadWeb_dateFormat}';	
+var goalId = '${goalId}';
 window.onload = function () {
 	var goalUUID = '${goalUUID}';
 	performanceGoals.getPerformanceGoalsSummaryDetails(goalUUID);
 	performanceGoals.getPerformanceSubGoalsList(goalUUID);
 	performanceGoals.getPerformanceGoalsAssignToList(goalUUID);
+	performanceGoals.goalsCommentsTableList();
  };
  
 </script>
@@ -126,11 +125,13 @@ window.onload = function () {
 						</div>
 						
 						<div class="clearfix project_wrap_table taskComments projecttask-div">
-						<div id="taskCommentsListDivId"></div>
+						<div id="goalsCommentsListDivId"></div>
 						</div>
 						
 	 </div>
 			
 </section>
+
+<script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/performanceGoals.js"></script>
 
 <jsp:include page="../masterFooter.jsp" />

@@ -574,38 +574,31 @@ function PerformanceGoals(){
 					  }
 					 
 					 
-					 this.predefineGoalUserImage = function(imageId){
-						 $(imageId).attr('src','/resources/images/userprofileImg.jpg');
-					 }
-					 
-					 
-					 
 					 this.addGoalsCommentsPopUp = function(){
 							$(".commentPopUp").fadeIn();
 							performanceGoals.addComment();
 						}
-					 this.closeComment = function(){
+					 this.closeGoalsComment = function(){
 							$(".commentPopUp").fadeOut();
 						}
 					 this.addComment = function(){
 							result = "";
 							result  = result + '	<div class="clearfix">';
-							result  = result + '   <button type="button" class="close mr5 mt5" onclick="performanceGoals.closeComment()">&times;</button>';
+							result  = result + '   <button type="button" class="close mr5 mt5" onclick="performanceGoals.closeGoalsComment()">&times;</button>';
 							result  = result + '   <p class="ml5 mt10 mb0"><strong>Add Comment</strong></p>';
 							result  = result + ' </div>';
-							result = result + '    <form id="addComment_form" name="addComment_form">';
-							result = result + ' <input type="hidden" name="tabType" value="comment">';
+							result = result + '  <form id="addGoalsComment_form" name="addGoalsComment_form">';
 							result  = result + ' <div class="row clearfix">';
 							result  = result + '	<div class="ticketCommentCont">';
 							result  = result + '	<div class="clearfix">';
-							result  = result + '		<div contenteditable="true" id="taskComment" class="tkt_comment_div tkt_comment_custom"></div>';
+							result  = result + '		<div contenteditable="true" id="goalsComment" class="tkt_comment_div tkt_comment_custom"></div>';
 							result  = result + '	</div>';
 							result  = result + '</div>';
 							result  = result + '</div>';
 							result  = result + ' <div class="modalFooter  mb10 clearfix">';
 							result  = result + '   <div class="pull-right">';
-							result  = result + '     <button type="button" class="btn btn-primary btn-sm" id="save_comment" data-dismiss="modal" onclick="performanceGoals.saveComment();">Add</button>';
-							result  = result + '     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="performanceGoals.closeComment()">Cancel</button>';
+							result  = result + '     <button type="button" class="btn btn-primary btn-sm" id="save_comment" data-dismiss="modal" onclick="performanceGoals.saveGoalsComment();">Add</button>';
+							result  = result + '     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="performanceGoals.closeGoalsComment()">Cancel</button>';
 							result  = result + '   </div>';
 							result  = result + ' </div>';
 							result = result + ' </form>';
@@ -653,16 +646,129 @@ function PerformanceGoals(){
 						      limit: 200
 						    }
 						    
-						    $('#taskComment').atwho(commentConfig);
-						    $('#taskComment').on('inserted.atwho', function (event, $li, bEvent) {
+						    $('#goalsComment').atwho(commentConfig);
+						    $('#goalsComment').on('inserted.atwho', function (event, $li, bEvent) {
 						        selectedUsers.push($($li).data("id"));
 						      }).on('reposition.atwho', function (event, offset) {
-						    	  var removeUser = $("#taskComment").find("span[class='atwho-query']").data("id");
+						    	  var removeUser = $("#goalsComment").find("span[class='atwho-query']").data("id");
 						    	  if(removeUser) {
 							    	  selectedUsers.splice($.inArray(removeUser, selectedUsers), 1);
 						    	  }
 						        })
 						}
+						
+						
+						
+						
+						 this.saveGoalsComment  = function (){
+							 var validationSettings = {
+								        errorMessagePosition : 'element',
+								       borderColorOnError : '',
+										scrollToTopOnError : true,
+										dateFormat : 'yyyy/mm/dd' 
+							         }; 
+							 
+							 
+							 if ($('#addGoalsComment_form').validate(false, validationSettings)){ 
+								 
+							        var formData = {};
+									var mentionedUserIds = selectedUsers.toString();
+									var goalComments = $("#goalsComment").html();
+									formData["goalsComment"] = goalComments;
+									formData["goalId"] = goalId;
+									formData["mentionedUserIds"] =  mentionedUserIds;
+							         $.ajax({
+								    	type: "POST",
+								    	data: formData,
+								    	url: pmsUrl+"/savePerformanceGoalsComments?",
+								        success: function(response) {
+								        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+						     	    		    showError(response.responseMessage);
+						     	    		}
+								        	else if (response.response === "AWKWARD") {
+								        	    location.href = "/errorPage";
+								        	} else if (response.response === "SUCCESS") {
+								        		performanceGoals.closeGoalsComment();
+								        		performanceGoals.goalsCommentsTableList();
+								        	} else if (response.indexOf('Sign In') !== -1) {
+								        		location.replace(sourceleadUrl);
+								        	} else {
+								        	    showError("Operation failed, please try again");
+								        	}
+								        },
+								    });  
+							        return true;
+							  } else {
+								return false;
+							  }
+						}
+						 
+						 $('body').on('blur', '#addGoalsComment_form', function() {
+								$("#addGoalsComment_form").showHelpOnFocus();
+								$("#addGoalsComment_form").validateOnBlur(false, validationSettings);  
+							});
+						 
+						 
+						 
+						 
+						 this.goalsCommentsTableList = function(){
+							 
+							  $.ajax({
+							    	type: "GET",
+							        url: pmsUrl+"/getPerformanceGoalsCommentsList?goalId="+goalId, 
+							        success: function(response) {
+							        	if (response.response === "AWKWARD") {
+							        		location.href = "/errorPage";
+							        	} else if (response.response === "SUCCESS") {
+							        		 var result = '';
+							        		 
+							        		 if(dateFormat.match("yyyy-MM-dd")){
+							        			  dateFormatStr = 'YYYY-MM-DD';
+							    	   		  }if(dateFormat.match("dd-MM-yyyy")){
+							    	   			  dateFormatStr = 'DD-MM-YYYY'; 
+							    	   		  }if(dateFormat.match("MM-dd-yyyy")){
+							    	   			  dateFormatStr = 'MM-DD-YYYY'; 
+							    	   		  }if(dateFormat.match("yyyy-dd-MM")){
+							    	   			  dateFormatStr = 'YYYY-DD-MM'; 
+							    	   		  }
+							    	   		  
+									         if(response.data.length > 0){
+									        	 for(var i=0; i<response.data.length; i++){
+									        		 var opt = response.data[i];
+									        		 
+									        		    result = result + '	<div class="media clearfix col-md-12">';
+														result = result + '   <div class="media-left">';
+														if(opt.imgUrl != null){
+															result = result  +'	   <img onerror="predefineGoalUserImage(this);" src="'+opt.imgUrl+'" class="media-object img-circle" style="width:60px"/>';
+														}else{
+															result = result  +'	   <img onerror="predefineGoalUserImage(this);" src="" class="media-object" style="width:60px"/>';
+														}
+														result = result + '   </div>';
+														result = result + '   <div class="media-body">';
+														result = result + '     <h5 class="media-heading text-primary mt10">'+opt.createdUserName+'';
+														result = result + '         <div class="pull-right small text-muted">'+opt.createdTime+'<br/><span class="mt5">'+opt.createdDate+' &nbsp;(<small class="custom-small">'+dateFormatStr+'</small>)</span></div>';
+														result = result + '       </h5>';
+														result = result + '       <p>'+opt.goalsComment+'</p>';
+														result = result + '   </div>';
+														result = result + ' </div>';
+									        		  
+									        	 }
+									        	 
+									         }else{
+													result = result+"   <div class='dataTables_empty'>"; 
+													result = result+"  </div> ";
+											}
+									         
+									         $("#goalsCommentsListDivId").empty();
+									         $("#goalsCommentsListDivId").html(result);
+							        		 
+							        	}
+							        },
+							    });
+							 
+						 }
 					 
-		
+						 this.predefineGoalUserImage = function(imageId){
+							 $(imageId).attr('src','/resources/images/userprofileImg.jpg');
+						 }
 }
