@@ -267,6 +267,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		return clockInOutConfigDao.getExistedBreakTime(clockInOutId);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId,String dateFormat,String dayWisetype,String currentDate,String type) {
 		
