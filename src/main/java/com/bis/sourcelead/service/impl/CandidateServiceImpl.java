@@ -3510,6 +3510,26 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception {
 		return candidateDao.validatePanNumber(panNumber, orgLocationId);
 	}
+
+	@Override
+	public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateDetailsByAadharNoAndId(aadharNumber, orgLocationId);
+	}
+
+	@Override
+	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception {
+		return candidateDao.validateAadharNumber(aadharNumber, orgLocationId);
+	}
+
+	@Override
+	public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateDetailsBySsnNoAndId(ssnNumber, orgLocationId);
+	}
+
+	@Override
+	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception {
+		return candidateDao.validateSsnNumber(ssnNumber, orgLocationId);
+	}
 	
 	
 }

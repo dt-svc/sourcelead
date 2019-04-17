@@ -348,5 +348,13 @@ public interface CandidateService {
 	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception;
+	
+    public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception;
+	
+	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception;
+	
+    public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception;
+	
+	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
 
 }
