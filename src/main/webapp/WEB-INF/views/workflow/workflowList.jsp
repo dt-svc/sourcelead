@@ -133,27 +133,27 @@ function getDynamicWorkflowList(){
   	             	 return result;
 	    	  	}
 	        },{
-		    	  	"targets": colIndex++,
-		    	  	"sortable": false,
-		    	  	"render": function(data, type, workflow, meta) {
-		    	  		var result = "";
-		    	  		
-		    	  		
-	    	  		result = result + checkConfigureType(workflow.configureType, workflow.status, workflow.uuid,workflow.workFlowName,workflow.description);
-	  	             	return result;
-		    	  	}
-		        }
 	    	  	"targets": colIndex++,
 	    	  	"sortable": false,
 	    	  	"render": function(data, type, workflow, meta) {
 	    	  		var result = "";
+	    	  		/* result = result +"<div class='width215px'>";
+	    	  		result = result +"<ul class='list-inline list-unstyled'>";
+	    	  		result = result +"<li>";
+	    	  		result = result +"<label class='switch mr positionRelativeTop10' title='Default'>"
+	    	  		result = result +"<input type='checkbox' name='' "+ (workflow.status == 1 ?'checked':'')+" >";
+	    	  		result = result +"<div class='slider round' onclick = 'changeWorkflowStatus(\""+workflow.uuid+"\", \""+workflow.status+"\");'></div>";
+	    	  		result = result +"</label></li>";
+	    	  		result = result +"<li><a onclick='viewWorkFlow(\""+workflow.uuid+"\")'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
+	    	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete'></i></li>";
+	    	  		result = result +"<li><i onclick='cloneWorkFlow(\""+workflow.uuid+"\",\""+workflow.workFlowName+"\",\""+workflow.description+"\");'class='fa fa fa-clone cursorPointer text-primary' title='Clone'></i></li>";
+	    	  		result = result +"</ul></div>"; */
 	    	  		
-	    	  		result = result + checkConfigureType(workflow.configureType, workflow.status, workflow.uuid, workflow.workFlowName);
-	    	  		
+    	  		result = result + checkConfigureType(workflow.configureType, workflow.status, workflow.uuid,workflow.workFlowName,workflow.description);
   	             	return result;
 	    	  	}
 	        }
-	        ],
+        ],
 	        "scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[2,'desc']],
@@ -199,7 +199,6 @@ function checkConfigureType(configureType, status, uuid,workFlowName,description
   		result = result +"<div class='slider round' onclick = 'changeWorkflowStatus(\""+uuid+"\", \""+status+"\");'></div>";
   		result = result +"</label></li>";
   		result = result +"<li><a onclick='viewWorkFlow(\""+uuid+"\")'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
-  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete'></i></li>";
   		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick='deleteWorkflowEntry(\""+uuid+"\", \""+workFlowName+"\")'></i></li>";
 		result = result +"<li><i onclick='cloneWorkFlow(\""+uuid+"\",\""+workFlowName+"\",\""+description+"\");'class='fa fa fa-clone cursorPointer text-primary' title='Clone'></i></li>";
   		result = result +"</ul></div>";
