@@ -387,7 +387,7 @@ function getUserTimeEntriesPagination(url){
    		    		result = result +'<tr class="parent" id="2479'+i+'">';
 	    	  	    result = result + '    <td><span class="click">'+report.clockInDateStr+'<i class="fa fa-caret-down"></i></span></td>                            '; 
 
-	            	  result = result + '    <td>08</td>         ';
+	            	  result = result + '    <td>'+report.totalTime+'</td>         ';
    		    		
 	            	  result = result + '    <td>&nbsp;</td>   ';
 	            	  
