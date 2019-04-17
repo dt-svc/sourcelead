@@ -862,7 +862,7 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	public ModelAndView availableAassociatesReport(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
-		List<CandidateDTO> empList = projectMembersService.getAllAvailableAssociates(orgLocations.getId());
+		List<Candidate> empList = projectMembersService.getAllAvailableAssociates(orgLocations.getId());
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("empList", empList);
 		 model.setViewName("reports/availableAssociates");
@@ -912,5 +912,20 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	 model.setViewName("reports/vendorJobsApplicantsBackOutList");
 	 return model;
  }
+	
+	
+	@RequestMapping(value = "/releasedJobsApplicantsHiredListByOrgRelationId")
+	public ModelAndView releasedJobsApplicantsHiredListByOrgRelationId(
+	@RequestParam(value = "orgRelationId", required = true) Long orgRelationId,
+	@RequestParam(value = "spocId", required = true) Long spocId, HttpServletRequest request,
+	HttpServletResponse response) throws Exception {
+
+	ModelAndView model = new ModelAndView();
+	model.addObject("sourceleadUrl", sourceleadUrl);
+	model.addObject("orgRelationId", orgRelationId);
+	model.addObject("spocId", spocId);
+	model.setViewName("reports/vendorJobsApplicantHiredList");
+	return model;
+	}
 
 }
