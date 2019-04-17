@@ -398,11 +398,12 @@ public class PerformanceGoalsRestController {
 		public @ResponseBody Response<PerformanceGoalsCommentsDTO> savePerformanceGoals(PerformanceGoalsCommentsDTO performanceGoalsCommentsDTO,HttpServletRequest request) throws Exception {
 			  Response<PerformanceGoalsCommentsDTO> response = new  Response<>();
 			  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			try {
 			 if(Validator.validate(performanceGoalsCommentsDTO)) {
 				 performanceGoalsCommentsDTO.setCreatedUserId(user.getId());
 				 performanceGoalsCommentsDTO.setCreatedUserName(user.getFullName());
-				 performanceGoalsCommentsService.storePerformanceGoalsComments(performanceGoalsCommentsDTO);
+				 performanceGoalsCommentsService.storePerformanceGoalsComments(performanceGoalsCommentsDTO,orgLocations.getId());
 				 response.setResponse(Result.SUCCESS.name());
 				 response.setResponseMessage(Result.SUCCESS.getValue());
 			 }else {

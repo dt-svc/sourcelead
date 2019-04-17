@@ -25,6 +25,8 @@ public class PerformanceGoalsCommentsDTO implements Serializable{
 	private String createdDate;
 	
 	private String createdTime;
+	
+	private String comments;
 
 	public String getGoalsComment() {
 		return goalsComment;
@@ -88,6 +90,14 @@ public class PerformanceGoalsCommentsDTO implements Serializable{
 
 	public void setCreatedTime(String createdTime) {
 		this.createdTime = createdTime;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 	
 	

@@ -9,7 +9,7 @@ public interface PerformanceGoalsCommentsService {
 
 	PerformanceGoalsComments savePerformanceGoalsComments(PerformanceGoalsComments performanceGoalsComments) throws Exception;
 	
-	void storePerformanceGoalsComments(PerformanceGoalsCommentsDTO performanceGoalsCommentsDTO) throws Exception;
+	void storePerformanceGoalsComments(PerformanceGoalsCommentsDTO performanceGoalsCommentsDTO,Long orgLocationId) throws Exception;
 	
 	List<PerformanceGoalsCommentsDTO> getPerformanceGoalsCommentsList(Long goalId, String dateFormat) throws Exception;
 }
