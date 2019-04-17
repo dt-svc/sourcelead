@@ -664,7 +664,11 @@ function getViewInvoice(){
 					result = result +'</div>';
 					}else if(invoiceType === "Payables"){
 						result = result +'<div class="col-md-3 col-md-offset-9">';
+						if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
 						result = result +'<a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'"><i title="Edit details" class="fa fa-pencil cursorPointer pull-right mr"></i></a>';
+						}else{
+							result = result +'<a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'"><i title="Edit details" class="fa fa-pencil cursorPointer pull-right mr"></i></a>';
+						}
 						result = result +'</div>';
 					}
 					}
