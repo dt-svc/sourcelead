@@ -74,7 +74,7 @@ function checkBox(){
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 chooRadius">
+              <div class="col-md-9 chooRadius errorInptgroup">
                 <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" data-Invoice onchange="getClientContacts();getPaymentTerms();flushValues();getInvoiceTemplateList();" data-validation="required" field-name="Client">
                 </select>
@@ -90,7 +90,7 @@ function checkBox(){
               
             <div class="form-group">
               <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-              <div class="col-md-9 chooRadius">
+              <div class="col-md-9 chooRadius errorInptgroup chosenmbNone">
                  <div class="col-md-9 padding_left padding_right">					   
                 <select class="chosen-select form-control" id="clientContact" multiple="multiple" name="clientContact" data-validation="required" field-name="Client Contact">
                 </select>
@@ -135,23 +135,18 @@ function checkBox(){
             </div>
             <div class="form-group">
               <label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9" id="errDuedate">
+              <div class="col-md-9 errorInptgroup" id="errDuedate">
               <div class="input-group">
                 <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
               <span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
               </div>
             </div>
             </div>
-            <div class="form-group">
-              <label class="col-md-3">Invoice Address</label>
-              <div class="col-md-9">
-                <textarea class="form-control" rows="2" placeholder="Invoice Address" id="billingAddress" name="billingAddress"></textarea>
-              </div>
-            </div>
+            
             <div class="form-group">
               <label class="col-md-3">Payment Account</label>
-              <div class="col-md-9 select-field" id="projectMemberIdDiv">
-                <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
+              <div class="col-md-9" id="projectMemberIdDiv">
+                <select class="sel width100percnt" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
                    <option value="">--Select Account--</option>
                     <c:forEach items="${paymentAccountList}" var="p">
                         <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
@@ -161,12 +156,29 @@ function checkBox(){
             </div>
             <div class="form-group">
               <label class="col-md-3">Invoice Template</label>
-              <div class="col-md-9 select-field" id="invoiceTemplateIdDiv">
-                <select class="form-control" id="invoiceTemplateId" field-name="invoiceTemplateId Name" name="invoiceTemplateId">
+              <div class="col-md-9" id="invoiceTemplateIdDiv">
+                <select class="sel width100percnt" id="invoiceTemplateId" field-name="invoiceTemplateId Name" name="invoiceTemplateId">
                    <option value="0">--Select Invoice Template--</option>
                 </select>
               </div>
             </div>
+            
+            <div class="clearfix"></div>
+            
+            <div class="form-group">
+              <label class="col-md-3">Invoice Address</label>
+              <div class="col-md-9">
+                <textarea class="form-control" rows="4" placeholder="Invoice Address" id="billingAddress" name="billingAddress"></textarea>
+              </div>
+            </div>
+            
+            <div class="form-group">
+							<label class="col-md-3">Notify To Others</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="4" id="notifyToOthers" name="notifyToOthers" field-name="NotifyTo" placeholder="Enter multiple Email Id's separated by commas(,)"></textarea>
+							</div>
+							<div class="clearfix"></div>
+						</div>
             
             <!-- <div class="form-group">
 							<label class="col-md-3">Account Details</label>
@@ -1483,6 +1495,10 @@ function toDate(selector) {
 		           	
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
+		           	}
+		           	
+		           	if(json['notifyToOthers'] != null && json['notifyToOthers'] != '' && json['notifyToOthers'] != 'undefined'){
+		           		$("#notifyToOthers").text(json['notifyToOthers']);
 		           	}
 		           	
 		           	/* editInvoice(json['invoiceLineItemsList']);*/

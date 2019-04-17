@@ -41,7 +41,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 chooRadius">
+              <div class="col-md-9 chooRadius errorInptgroup">
                <div class="input-group col-md-10 pull-left">
 			<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();getPaymentAccountList();"
 				data-validation="required" field-name="Vendor">
@@ -57,7 +57,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
               </div>
             <div class="form-group">
               <label class="col-md-3">Vendor Contact<span class="text-danger">*</span></label>
-              <div class="col-md-9 chooRadius">
+              <div class="col-md-9 chooRadius errorInptgroup chosenmbNone">
                  <div class="col-md-9 padding_left padding_right">
                 <select class="chosen-select form-control" id="vendorContact" multiple="multiple" name="vendorContact" data-validation="required" field-name="Vendor Contact">
                 </select>
@@ -101,7 +101,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
             </div>
             <div class="form-group">
                          <label class="col-md-3">Due Date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The deadline for the bill payment'></i></label>
-                            <div class="col-md-9" id="errDuedate">
+                            <div class="col-md-9 errorInptgroup" id="errDuedate">
                             <div class="input-group">
                                  <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
                                   <span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
@@ -138,22 +138,33 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
               </div>
             </div>
               
+            
+            <div class="form-group">
+              <label class="col-md-3">Payment Account</label>
+              <div class="col-md-9">
+                <select class="sel width100percnt" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
+                   <option value="">--Select Account--</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="clearfix"></div>
+            
             <div class="form-group">
               <label class="col-md-3">Billing Address</label>
               <div class="col-md-9">
-                <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" 
+                <textarea class="form-control" rows="4" placeholder="Billing Address" id="billingAddress" 
                      name="billingAddress"></textarea>
               </div>
             </div>
             
             <div class="form-group">
-              <label class="col-md-3">Payment Account</label>
-              <div class="col-md-9 select-field">
-                <select class="form-control" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
-                   <option value="">--Select Account--</option>
-                </select>
-              </div>
-            </div>
+							<label class="col-md-3">Notify To Others</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="4" id="notifyToOthers" name="notifyToOthers" field-name="NotifyTo" placeholder="Enter multiple Email Id's separated by commas(,)"></textarea>
+							</div>
+							<div class="clearfix"></div>
+						</div>
             
             
           </div>
@@ -1384,6 +1395,11 @@ function toDate(selector) {
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
+		           	
+		           	if(json['notifyToOthers'] != null && json['notifyToOthers'] != '' && json['notifyToOthers'] != 'undefined'){
+		           		$("#notifyToOthers").text(json['notifyToOthers']);
+		           	}
+		           	
 		        	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
 		           		$("#accountDetails").val(json['accountDetails']);
 		           	}	

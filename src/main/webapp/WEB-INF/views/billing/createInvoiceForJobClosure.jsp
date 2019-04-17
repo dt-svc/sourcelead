@@ -83,7 +83,7 @@ function errRemoveClientContact(){
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 				           <div class="form-group">
 				              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-				              <div class="col-md-9 select-field chooRadius" id="errClient">
+				              <div class="col-md-9 select-field chooRadius errorInptgroup" id="errClient">
                					<div class="input-group col-md-10 pull-left">				              
 
 				                <select class="chosen-select form-control" id="clientOrgRelationId" data-Invoice name="clientOrgRelationId" onchange="getClientContacts();errRemoveClient();getPaymentTerms();getInvoiceTemplateList();" data-validation="required" field-name="clientName">             
@@ -99,7 +99,7 @@ function errRemoveClientContact(){
 				            </div>
 				             <div class="form-group">
 				              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-				              <div class="col-md-9 chooRadius" id="errClientContact">
+				              <div class="col-md-9 chooRadius errorInptgroup chosenmbNone" id="errClientContact">
 				              	<div class="col-md-9 padding_right padding_left">	
 				                  <select class="chosen-select form-control" multiple="multiple" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact" onchange="errRemoveClientContact();">
 				                  </select>
@@ -150,7 +150,7 @@ function errRemoveClientContact(){
 						<div class="form-group">
 							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The deadline for the invoice payment'></i></label>
 							<div class="col-md-9 " id="errDuedate">
-							<div class="input-group">
+							<div class="input-group errorInptgroup">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date"
 									readonly data-validation="required" field-name="Due Date">
@@ -158,16 +158,11 @@ function errRemoveClientContact(){
 							</div>		
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="col-md-3">Invoice Address</label>
-							<div class="col-md-9">
-								<textarea class="form-control" rows="2" id="billingAddress" field-name="Invoice Address" name="billingAddress" placeholder="Invoice Address"></textarea>
-							</div>
-						</div>
+						
 						<div class="form-group">
 			              <label class="col-md-3">Payment Account</label>
-			              <div class="col-md-9 select-field" id="projectMemberIdDiv">
-			                <select class="form-control" id="paymentAccountId" field-name="paymentAccountId Name" name="paymentAccount">
+			              <div class="col-md-9" id="projectMemberIdDiv">
+			                <select class="sel width100percnt" id="paymentAccountId" field-name="paymentAccountId Name" name="paymentAccount">
 			                   <option value="">--Select Account--</option>
 			                    <c:forEach items="${paymentAccountList}" var="p">
 			                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
@@ -177,12 +172,27 @@ function errRemoveClientContact(){
 			            </div>
 			            <div class="form-group">
 			              <label class="col-md-3">Invoice Template</label>
-			              <div class="col-md-9 select-field" id="invoiceTemplateIdDiv">
-			                <select class="form-control" id="invoiceTemplateId" field-name="invoiceTemplateId Name" name="invoiceTemplateId">
+			              <div class="col-md-9" id="invoiceTemplateIdDiv">
+			                <select class="sel width100percnt" id="invoiceTemplateId" field-name="invoiceTemplateId Name" name="invoiceTemplateId">
 			                   <option value="0">--Select Invoice Template--</option>
 			                </select>
 			              </div>
 			            </div>
+			            
+			            <div class="clearfix"></div>
+			            <div class="form-group">
+							<label class="col-md-3">Invoice Address</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="4" id="billingAddress" field-name="Invoice Address" name="billingAddress" placeholder="Invoice Address"></textarea>
+							</div>
+						</div>
+			            <div class="form-group">
+							<label class="col-md-3">Notify To Others</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="4" id="notifyToOthers" name="notifyToOthers" field-name="NotifyTo" placeholder="Enter multiple Email Id's separated by commas(,)"></textarea>
+							</div>
+							<div class="clearfix"></div>
+						</div>
 			            
 					</div>
 				</div>
@@ -547,6 +557,11 @@ if(selectedTextInvoice =='percentage'){
 		           	
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
+		           	}
+		           	
+
+		           	if(json['notifyToOthers'] != null && json['notifyToOthers'] != '' && json['notifyToOthers'] != 'undefined'){
+		           		$("#notifyToOthers").text(json['notifyToOthers']);
 		           	}
 		           	buildLineItemAndTaxAddRows();
 		           	

@@ -74,7 +74,7 @@ function errRemoveVendorContact(){
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<div class="form-group">
 							<label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9 chooRadius" id="errVendor">
+							<div class="col-md-9 chooRadius errorInptgroup" id="errVendor">
 							<div class="input-group col-md-10 pull-left">
 								<select class="chosen-select form-control"
 									id="vendorOrgRelationId" name="vendorOrgRelationId" data-Bill
@@ -92,7 +92,7 @@ function errRemoveVendorContact(){
 						<div class="form-group">
 							<label class="col-md-3">Vendor Contact<span
 								class="text-danger">*</span></label>
-							<div class="col-md-9 chooRadius" id="errVendorContact">
+							<div class="col-md-9 chooRadius errorInptgroup chosenmbNone" id="errVendorContact">
 								<div class="col-md-9 padding_left padding_right">
 								<select class="chosen-select form-control" id="vendorContact"
 									multiple="multiple" name="vendorContact" data-validation="required"
@@ -149,22 +149,31 @@ function errRemoveVendorContact(){
 									readonly data-validation="required" field-name="Due Date">							
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="col-md-3">Billing Address</label>
-							<div class="col-md-9">
-								<textarea class="form-control" rows="2" id="billingAddress"
-									name="billingAddress" placeholder="Billing Address"></textarea>
-							</div>
-						</div>
 						
-						 <div class="form-group">
+						<div class="form-group">
 			              <label class="col-md-3">Payment Account</label>
-			              <div class="col-md-9 select-field" id="projectMemberIdDiv">
-			                <select class="form-control" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
+			              <div class="col-md-9" id="projectMemberIdDiv">
+			                <select class="sel width100pecnt" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
 			                   <option value="">--Select Account--</option>
 			                </select>
 			              </div>
 			            </div>
+						<div class="clearfix"></div>
+						<div class="form-group">
+							<label class="col-md-3">Billing Address</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="4" id="billingAddress"
+									name="billingAddress" placeholder="Billing Address"></textarea>
+							</div>
+						</div>
+						
+			            <div class="form-group">
+							<label class="col-md-3">Notify To Others</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="4" id="notifyToOthers" name="notifyToOthers" field-name="NotifyTo" placeholder="Enter multiple Email Id's separated by commas(,)"></textarea>
+							</div>
+							<div class="clearfix"></div>
+						</div>
 						
 					</div>
 				</div>
@@ -462,6 +471,12 @@ function remove(){
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
+		           	
+
+		           	if(json['notifyToOthers'] != null && json['notifyToOthers'] != '' && json['notifyToOthers'] != 'undefined'){
+		           		$("#notifyToOthers").text(json['notifyToOthers']);
+		           	}
+		           	
 		        	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
 		           		$("#accountDetails").val(json['accountDetails']);
 		           	}
