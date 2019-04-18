@@ -356,8 +356,6 @@ public class RequirementWorkflowController {
 			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTO = null;
 				try {
 					if (user != null && null != requirementWorkFlowStagesDTO) {
-						requirementWorkFlowTasksDTO = requirementWorkFlowStagesDTO.getTaskList(); 
-						System.out.println("taskSize > "+requirementWorkFlowTasksDTO.size());
 						requirementWorkFlowService.saveRequirementWorkflowStageByWorkflowId(requirementWorkFlowStagesDTO, orgLocations.getId(), user);
 						response.setResponse(Result.SUCCESS.name());
 						response.setResponseMessage(Result.SUCCESS.getValue());

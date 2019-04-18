@@ -517,7 +517,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 					workFlowTasksDTO.setWorkFlowTaskName(workFlow.getWorkFlowTaskName());
 					workFlowTasksDTO.setAssignToUserId(userName.toString());
 					workFlowTasksDTO.setPriority(workFlow.getPriority());
-					workFlowTasksDTO.setDescription(workFlow.getDescription());
+					workFlowTasksDTO.setWorkFlowTaskDescription(workFlow.getDescription());
 					requirementWorkFlowTasksDTOList.add(workFlowTasksDTO);
 					}
 				}
@@ -550,34 +550,5 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		return istrue;
 	}
 
-	@Override
-	public RequirementWorkFlowStages getDefaultWorkFlowStageByOrgLocationId(OrgLocations orgLocations)
-			throws Exception {
-//		try {
-//			Session session = this.sessionFactory.getCurrentSession();
-//			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.orgLocationId.id = :orgLocationId and "
-//					+ "requirementWorkFlowStages.stageName like '"+Constants.DEFAULT_WORKFLOW_STAGE+"'";
-//			RequirementWorkFlowStages requirementWorkFlowStages = (RequirementWorkFlowStages)session.createQuery(query)
-//					.setParameter("orgLocationId", orgLocations.getId()).uniqueResult();
-//			return requirementWorkFlowStages;
-//		} catch (Exception e) {
-//			e.printStackTrace();
-			return null;
-//		}
-	}
 
-	@Override
-	public RequirementWorkFlow getDefaultWorkFlowOrgLocationId(OrgLocations orgLocations) throws Exception {
-		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id = :orgLocationId and "
-					+ "requirementWorkFlow.workFlowName like '"+Constants.DEFAULT_JOB_WORKFLOW+"'";
-			RequirementWorkFlow requirementWorkFlow = (RequirementWorkFlow)session.createQuery(query)
-					.setParameter("orgLocationId", orgLocations.getId()).uniqueResult();
-			return requirementWorkFlow;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
 }

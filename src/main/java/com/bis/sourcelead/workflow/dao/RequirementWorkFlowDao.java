@@ -70,8 +70,5 @@ public interface RequirementWorkFlowDao {
 
 	Boolean deleteApplicationWorkFlowByuuid(String workflowuuid);
 	
-	RequirementWorkFlowStages getDefaultWorkFlowStageByOrgLocationId(OrgLocations orgLocations)throws Exception;
-	
-	RequirementWorkFlow getDefaultWorkFlowOrgLocationId(OrgLocations orgLocations)throws Exception;
 
 }

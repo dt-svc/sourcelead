@@ -16,7 +16,7 @@ public class RequirementWorkFlowTasksDTO extends SearchDTO {
 
 	private String priority;
 	
-	private String 	taskDescription;
+	private String workFlowTaskDescription;
 
 	
 	private String uuid;
@@ -76,15 +76,13 @@ public class RequirementWorkFlowTasksDTO extends SearchDTO {
 		this.priority = priority;
 	}
 
-	public String getDescription() {
-		return taskDescription;
+	public String getWorkFlowTaskDescription() {
+		return workFlowTaskDescription;
 	}
 
-	public void setDescription(String taskDescription) {
-		this.taskDescription = taskDescription;
+	public void setWorkFlowTaskDescription(String workFlowTaskDescription) {
+		this.workFlowTaskDescription = workFlowTaskDescription;
 	}
-
-	
 
 	public String getUuid() {
 		return uuid;
