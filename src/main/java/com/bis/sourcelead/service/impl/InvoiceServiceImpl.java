@@ -360,6 +360,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 			paymentaccount.setId(Long.valueOf(invoiceDTO.getPaymentAccount()));
 			invoice.setPaymentAccount(paymentaccount);
 		}
+		
+		if(StringUtils.isNotBlank(invoiceDTO.getNotifyToOthers())){
+			invoice.setNotifyToOthers(invoiceDTO.getNotifyToOthers());	
+			}
 
 		if (StringUtils.isNotBlank(invoiceDTO.getInvoiceDate())) {
 			Date invoiceDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),
@@ -3197,6 +3201,10 @@ public class InvoiceServiceImpl implements InvoiceService {
 			paymentaccount.setId(Long.valueOf(invoiceDTO.getPaymentAccount()));
 			invoice.setPaymentAccount(paymentaccount);
 		}
+		
+		if(StringUtils.isNotBlank(invoiceDTO.getNotifyToOthers())){
+			invoice.setNotifyToOthers(invoiceDTO.getNotifyToOthers());	
+			}
 
 		if (StringUtils.isNotBlank(invoiceDTO.getDisCount())) {
 			invoice.setDiscountType(invoiceDTO.getDisCount());

@@ -657,11 +657,15 @@ function getViewInvoice(){
 					if(report.orgType == 'Guest'){
 						if(invoiceType === "Receivable"){
 						result = result +'<div class="col-md-3 col-md-offset-9">';
-						result = result +'<a href="'+vmsUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'"><i title="Edit details" class="fa fa-pencil cursorPointer pull-right mr"></i></a>';
+						result = result +'<a href="'+sourceleadUrl+'/getReceivableInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'"><i title="Edit details" class="fa fa-pencil cursorPointer pull-right mr"></i></a>';
 						result = result +'</div>';
 						}else if(invoiceType === "Payables"){
 						result = result +'<div class="col-md-3 col-md-offset-9">';
-						result = result +'<a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'"><i title="Edit details" class="fa fa-pencil cursorPointer pull-right mr"></i></a>';
+						if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
+						result = result +'<a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'"><i title="Edit details" class="fa fa-pencil cursorPointer pull-right mr"></i></a>';
+						}else{
+						result = result +'<a href="'+sourceleadUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'"><i title="Edit details" class="fa fa-pencil cursorPointer pull-right mr"></i></a>';
+						}
 						result = result +'</div>';
 						}
 						}
