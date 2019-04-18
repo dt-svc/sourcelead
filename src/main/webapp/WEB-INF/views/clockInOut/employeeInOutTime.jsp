@@ -298,7 +298,6 @@ function getUserTimeEntriesPagination(url){
    		    	for (var i=0; i<json.data.length; i++)
    				{
    		    		var report = json.data[i];
-//    		    		frequency = report.frequency;
    		    		result = result +'<tbody>';
    		    		
    		    		result = result +'<tr class="parent" id="2479'+i+'">';
@@ -315,31 +314,32 @@ function getUserTimeEntriesPagination(url){
                      result = result + '    <td>'+report.clockOutDateStr+'</td>  ';
 
    		    		
-   		    		
-   		    	  	for(var j=0; j<report.subList.length; j++){
-   		    			var opt = report.subList[j];
-   		    			
-   		    		   result = result +'	 <tr class="subTab child-2479'+i+'" >              '; 
-   					   result = result +'	        <td>'+opt.clockInTime+' - '+opt.clockOutTime+'</td>                    '; 
-   					   result = result +'	        <td>'+opt.individualNoOfHours+'</td>                                     '; 
-   					   if(opt.taskName != null && opt.taskName != "undefined" && opt.taskName != ""){
-   	   					   result = result +'	        <td>'+opt.taskName+'</td>                                 '; 
-   					   }else{
-   	   					   result = result +'	        <td>--</td>                                 '; 
+                     if("Current_Year" != type){
+                    		for(var j=0; j<report.subList.length; j++){
+           		    			var opt = report.subList[j];
+         		    		   result = result +'	 <tr class="subTab child-2479'+i+'" >              '; 
+           					   result = result +'	        <td>'+opt.clockInTime+' - '+opt.clockOutTime+'</td>                    '; 
+           					   result = result +'	        <td>'+opt.individualNoOfHours+'</td>                                     '; 
+           					   if(opt.taskName != null && opt.taskName != "undefined" && opt.taskName != ""){
+           	   					   result = result +'	        <td>'+opt.taskName+'</td>                                 '; 
+           					   }else{
+           	   					   result = result +'	        <td>--</td>                                 '; 
 
-   					   }
-   					   
-   					  if(opt.comments != null && opt.comments != "undefined" && opt.comments != ""){
-  	   					   result = result +'	        <td>'+opt.comments+'</td>                                 '; 
-  					   }else{
-  	   					   result = result +'	        <td>--</td>                                 '; 
+           					   }
+           					   
+           					  if(opt.comments != null && opt.comments != "undefined" && opt.comments != ""){
+          	   					   result = result +'	        <td>'+opt.comments+'</td>                                 '; 
+          					   }else{
+          	   					   result = result +'	        <td>--</td>                                 '; 
 
-  					   }
-   					   result = result +'	        <td>--</td>                              '; 
-   					   result = result +'	        <td>'+opt.clockOutDate+'</td>                             '; 
-   					   result = result +'	  </tr>                                                 '; 
-   		    			
-   		    		}  
+          					   }
+           					   result = result +'	        <td>--</td>                              '; 
+           					   result = result +'	        <td>'+opt.clockOutDate+'</td>                             '; 
+           					   result = result +'	  </tr>                                                 '; 
+           		    			
+           		    		}  
+                     }
+   		    	  
    		    	 result = result +'</tbody>';
    				}
    		    	
@@ -348,7 +348,7 @@ function getUserTimeEntriesPagination(url){
    	    	 userTimeEntriesPagination();
    	    	 $("#clockLoading").removeAttr('style');
    	    	 setTimeout('refresh()', 500);
-   	    	showClockInClockOutGraph(json);
+   	    	showClockInClockOutGraph(json,type);
 			},
 		});
  }
@@ -414,69 +414,79 @@ function getCurrentDates(type){
 </script>
 
 <script>
-function showClockInClockOutGraph(json){
+function showClockInClockOutGraph(json,type){
+	if(json.data.length >0){
+		$("#jobsAdded").removeClass('dataTables_empty'); 
+		var format = "";
+		 if("Current_Year" != type){
+			 format =  "YYYY-MM-DD";
+		 }else{
+			 format =  "YYYY-MM";
+		 }
+		 var chartData = [];
+		   for (var i = 0; i < json.data.length; i++) { 
+		 		 var opt = json.data[i]; 
+		 		 chartData.push({
+		        		"category": opt.graphForamatDate,
+				         "column-1": opt.graphTotalTime
+		       });
+		   }
+		AmCharts.makeChart("jobsAdded",
+			      {
+			      "type": "serial",
+			      "categoryField": "category",
+			      "dataDateFormat": format,
+			      "colors": [],
+			      "startDuration": 1,
+			      "categoryAxis": {
+			        "equalSpacing": true,
+			        "gridPosition": "start",
+			        "parseDates": true,
+			        "axisColor": "#ACACAC",
+			        "gridThickness": 0,
+			        "markPeriodChange": false,
+			        "minHorizontalGap": 35,
+			        "minVerticalGap": 25
+			      },
+			      "trendLines": [],
+			      "graphs": [
+			        {
+			          "balloonText": "[[title]] : [[value]]",
+			          "bulletField": "category",
+			          "fillAlphas": 1,
+			          "fillColors": "#6AB7F3",
+			          "fixedColumnWidth": 30,
+			          "id": "jobsAdded",
+			          "lineColor": "#6AB7F3",
+			          "title": "Clock In/Out Time",
+			          "type": "column",
+			          "valueField": "column-1"
+			        }
+			      ],
+			      "guides": [],
+			      "valueAxes": [
+			        {
+			          "id": "ValueAxis-1",
+			          "axisColor": "#ACACAC",
+			          "firstDayOfWeek": 0,
+			          "gridThickness": 0,
+			          "title": ""
+			        }
+			      ],
+			      "allLabels": [],
+			      "balloon": {
+			        "fixedPosition": false,
+			        "horizontalPadding": 10,
+			        "textAlign": "left",
+			        "verticalPadding": 10
+			      },
+			      "titles": [],
+			      "dataProvider": chartData
+			    });
+	}else{
+		$("#jobsAdded").addClass('dataTables_empty');
+	}
 	
-	 var chartData = [];
-	   for (var i = 0; i < json.data.length; i++) { 
-	 		 var opt = json.data[i]; 
-	         chartData.push({
-	        		"category": "2019-03-13",
-			         "column-1": "16"
-	       });
-	   }
-	   
-	AmCharts.makeChart("jobsAdded",
-		      {
-		      "type": "serial",
-		      "categoryField": "category",
-		      "dataDateFormat": "YYYY-MM-DD",
-		      "colors": [],
-		      "startDuration": 1,
-		      "categoryAxis": {
-		        "equalSpacing": true,
-		        "gridPosition": "start",
-		        "parseDates": true,
-		        "axisColor": "#ACACAC",
-		        "gridThickness": 0,
-		        "markPeriodChange": false,
-		        "minHorizontalGap": 35,
-		        "minVerticalGap": 25
-		      },
-		      "trendLines": [],
-		      "graphs": [
-		        {
-		          "balloonText": "[[title]] : [[value]]",
-		          "bulletField": "category",
-		          "fillAlphas": 1,
-		          "fillColors": "#6AB7F3",
-		          "fixedColumnWidth": 30,
-		          "id": "jobsAdded",
-		          "lineColor": "#6AB7F3",
-		          "title": "Jobs Added",
-		          "type": "column",
-		          "valueField": "column-1"
-		        }
-		      ],
-		      "guides": [],
-		      "valueAxes": [
-		        {
-		          "id": "ValueAxis-1",
-		          "axisColor": "#ACACAC",
-		          "firstDayOfWeek": 0,
-		          "gridThickness": 0,
-		          "title": ""
-		        }
-		      ],
-		      "allLabels": [],
-		      "balloon": {
-		        "fixedPosition": false,
-		        "horizontalPadding": 10,
-		        "textAlign": "left",
-		        "verticalPadding": 10
-		      },
-		      "titles": [],
-		      "dataProvider": chartData
-		    });
 }
     </script>
 

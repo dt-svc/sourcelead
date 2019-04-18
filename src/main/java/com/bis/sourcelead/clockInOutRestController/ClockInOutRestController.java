@@ -222,16 +222,18 @@ public class ClockInOutRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = {"/getUserTimeEntries","/rest/getUserTimeEntries"})
-	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(
-			@RequestParam(value="dayWisetype", required=false) String dayWisetype,
-			@RequestParam(value="currentDate", required=false) String currentDate,
-			@RequestParam(value="type", required=false) String type,
-			HttpServletRequest request) {
-		
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-		return clockInOutConfigService.getUserTimeEntries(loginOrgLocation.getId(),userId,loginOrgLocation.getDateFormat(),dayWisetype,currentDate,type);
+	@RequestMapping(value = { "/getUserTimeEntries", "/rest/getUserTimeEntries" })
+	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(@RequestParam(value = "dayWisetype", required = false) String dayWisetype, @RequestParam(value = "currentDate", required = false) String currentDate, @RequestParam(value = "type", required = false) String type, HttpServletRequest request)
+	{
+		ResponseList<ClockInOutUserTimeEntryDTO> response = null;
+		try {
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			response =  clockInOutConfigService.getUserTimeEntries(loginOrgLocation.getId(), userId, loginOrgLocation.getDateFormat(), dayWisetype, currentDate, type);	
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
 		
 	}
 	
