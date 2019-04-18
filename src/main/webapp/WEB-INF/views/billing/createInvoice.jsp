@@ -2215,6 +2215,16 @@ function saveInvoice(saveType){
 		  }
 		  if ($('#invoice_form').validate(false, validationSettings)){  
  	 	    var formData = getFormData1("invoice_form");
+ 	 	    
+ 	 	  if ($("#notifyToOthers").val() !== "") {
+ 	 		for (var e in $("#notifyToOthers").val().split(",")) {
+ 	 		if (!jQueryFormUtils.validateEmail($("#notifyToOthers").val().split(",")[e].replace(/\s+/g, ''))) {
+ 	 		flag = false;
+ 	 		$("#notifyToOthers").parent().append("<p class='jquery_form_error_message'>Enter valid email id</p>");
+ 	 		return;
+ 	 		}
+ 	 		}
+ 	 		}
          
  	 	    if(selectedAssociates == null || selectedAssociates == '' || selectedAssociates == 'undefined'){
 	        	var result = "";
