@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,9 +67,9 @@ import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -2221,8 +2222,21 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		return projectMembersDao.getProjectMembersByMasterCandiateIdAndProjectClientId(masterCandidateId, projectClientsId);
 	}
 	@Override
+	
 	public List<Candidate> getAllAvailableAssociates(Long orgLocationId) {
-	return projectMembersDao.getAllAvailableAssociates( orgLocationId);
+		List<Candidate> candidateList = new LinkedList<>();
+	List<Object[]> objList =  projectMembersDao.getAllAvailableAssociates( orgLocationId);
+	if(objList != null && !objList.isEmpty()) {
+		for(Object[] obj : objList) {
+			Candidate candidate = new Candidate();
+			candidate.setId(Long.parseLong(String.valueOf(obj[0])));
+			candidate.setFirstName(obj[1] != null ? String.valueOf(obj[1]) : null);
+			candidate.setMiddelName(obj[2] != null ? String.valueOf(obj[2]) : null);
+			candidate.setLastName(obj[3] != null ? String.valueOf(obj[3]) : null);
+			candidateList.add(candidate);
+		}
+	}
+	return candidateList;
 	}
 
 }

@@ -401,6 +401,15 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setIsFavourite(0);
 			candidate.setIsFavouriteAssociate(0);
 			
+			if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+				candidate.setAadharNumber(candidateDto.getAadharNumber());
+				candidate.setPanNumber(candidateDto.getPanNumber());
+				}
+			
+			if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
+				candidate.setSsnNumber(candidateDto.getSsnNumber());;
+				}
+			
 			MasterCandidate masterCandidate = null;
 			masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDto);
 			if(null == masterCandidate){
@@ -1474,7 +1483,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			 }
 			
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
-				candidateDTO.setWorkLocation(candidate.getWorkLocation().getId());
+				if(candidate.getWorkLocation() != null) {
+					candidateDTO.setWorkLocation(candidate.getWorkLocation().getId());
+				}
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
 				candidate.setOrgRelationId(orgRelation);
 				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, candidateUser);
@@ -1737,7 +1748,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate = new Candidate();
 							MasterCandidate masterCandidate = new MasterCandidate();
 							masterCandidate.setId(candidate.getMasterCandidateId().getId());
-							vendorCandidate.setWorkLocation(candidate.getWorkLocation());
+							if(candidate.getWorkLocation() != null) {
+								vendorCandidate.setWorkLocation(candidate.getWorkLocation());
+							}
 							vendorCandidate.setMasterCandidateId(masterCandidate);
 							vendorCandidate.setParentCandidateId(candidate);
 							vendorCandidate.setConsultantUser(candidate.getConsultantUser());
@@ -2574,6 +2587,19 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}else{
 			candidate.setIsAssociate(Constants.NO);
 		}
+		
+		if(StringUtils.isNotBlank(candidateDto.getPanNumber())) {
+			candidate.setPanNumber(candidateDto.getPanNumber());
+		}
+		
+		if(StringUtils.isNotBlank(candidateDto.getAadharNumber())) {
+			candidate.setAadharNumber(candidateDto.getAadharNumber());
+		}
+		
+		if(StringUtils.isNotBlank(candidateDto.getSsnNumber())) {
+			candidate.setSsnNumber(candidateDto.getSsnNumber());
+		}
+		
 		candidate.setUpdatedBy(user.getUserCode());
 		candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
 		candidate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -2874,7 +2900,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, String checkedDate, String searchValue)throws Exception {
 		Date[] checkedDateArray = new Date[0];
-		if(checkedDate != null && !"".equalsIgnoreCase(checkedDate)){
+		if(checkedDate != null && !"".equalsIgnoreCase(checkedDate) && !checkedDate.equalsIgnoreCase("custom")){
 			 checkedDateArray = reportsUtil.getJobFilterDate(checkedDate, orgLocations);
 			 }
 		return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, checkedDateArray, searchValue);	
@@ -3468,6 +3494,41 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public String getCandidatePanNumberByUserId(long userId) {
 		return candidateDao.getCandidatePanNumberByUserId(userId);
+	}
+
+	@Override
+	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
+		return candidateDao.getOffshoreCandidatesByParentCandidateId(candidateId);
+	}
+
+	@Override
+	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateDetailsByPanNumberAndId(panNumber, orgLocationId);
+	}
+
+	@Override
+	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception {
+		return candidateDao.validatePanNumber(panNumber, orgLocationId);
+	}
+
+	@Override
+	public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateDetailsByAadharNoAndId(aadharNumber, orgLocationId);
+	}
+
+	@Override
+	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception {
+		return candidateDao.validateAadharNumber(aadharNumber, orgLocationId);
+	}
+
+	@Override
+	public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateDetailsBySsnNoAndId(ssnNumber, orgLocationId);
+	}
+
+	@Override
+	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception {
+		return candidateDao.validateSsnNumber(ssnNumber, orgLocationId);
 	}
 	
 	

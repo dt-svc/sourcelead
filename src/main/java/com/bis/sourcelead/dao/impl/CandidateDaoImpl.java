@@ -49,6 +49,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -2688,7 +2689,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId and marketCartview.cartStatus = 'In_Cart'";
 			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + checkBoxQuery + query1)
 					.setLong("orgLocationId", orgLocation.getId());
-			//System.out.println(query + createdByQuery + dateQuery + checkBoxQuery);
 			if (!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
 				queryObj.setLong("createdByuser", user.getId());
 			}
@@ -2700,7 +2700,6 @@ public class CandidateDaoImpl implements CandidateDao {
 							source.getCreatedDate()));
 				}
 			}
-			System.out.println(queryObj);
 			return candidatesList;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -3056,12 +3055,10 @@ public class CandidateDaoImpl implements CandidateDao {
 						        if(pair.getKey().equals("fromDate")){
 						        	qeury.setDate("startDate", dateValue.get("fromDate"));
 						        	q.setDate("startDate", dateValue.get("fromDate"));
-						        	System.out.println(dateValue.get("fromDate"));
 						        }
 						        if(pair.getKey().equals("toDate")){
 						        	qeury.setDate("endDate", dateValue.get("toDate"));
 						        	q.setDate("endDate", dateValue.get("toDate"));
-						        	System.out.println(dateValue.get("toDate"));
 						        }
 						    }
 						}
@@ -3089,7 +3086,6 @@ public class CandidateDaoImpl implements CandidateDao {
 					purchaseOrderDtoList.add(purchaseOrderDto);
 					}
 				}
-			System.out.println(qeury);
 			responseList.setData(purchaseOrderDtoList);
 			return responseList;
 		}
@@ -3435,6 +3431,96 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.parentCandidateId.id=:candidateId and can.designationType = '"+Constants.OFFSHORE_C2C+"'";
+		List<Candidate> list = session.createQuery(query).setLong("candidateId", candidateId).list();
+		return list;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		List<Candidate> panNumberList =  session.createQuery(query) .setString("panNumber", panNumber).setLong("orgLocationId", orgLocationId).list();
+		Candidate can = null;
+		if(panNumberList != null && !panNumberList.isEmpty())
+		{
+			can = (Candidate) panNumberList.iterator().next();
+		}
+		return can;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId";
+		List<Candidate> panNumbersList = session.createQuery(query).setString("panNumber", panNumber).setLong("orgLocationId", orgLocationId).list();
+		if (panNumbersList != null && panNumbersList.size() > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		List<Candidate> aadharNumberList =  session.createQuery(query) .setString("aadharNumber", aadharNumber).setLong("orgLocationId", orgLocationId).list();
+		Candidate can = null;
+		if(aadharNumberList != null && !aadharNumberList.isEmpty())
+		{
+			can = (Candidate) aadharNumberList.iterator().next();
+		}
+		return can;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from Candidate can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId";
+		List<Candidate> aadharNumberList = session.createQuery(query).setString("aadharNumber", aadharNumber).setLong("orgLocationId", orgLocationId).list();
+		if (aadharNumberList != null && aadharNumberList.size() > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.ssnNumber = :ssnNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		List<Candidate> ssnNumberList =  session.createQuery(query) .setString("ssnNumber", ssnNumber).setLong("orgLocationId", orgLocationId).list();
+		Candidate can = null;
+		if(ssnNumberList != null && !ssnNumberList.isEmpty())
+		{
+			can = (Candidate) ssnNumberList.iterator().next();
+		}
+		return can;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from Candidate can where can.ssnNumber = :ssnNumber and can.orgLocationId=:orgLocationId";
+		List<Candidate> ssnNumberList = session.createQuery(query).setString("ssnNumber", ssnNumber).setLong("orgLocationId", orgLocationId).list();
+		if (ssnNumberList != null && ssnNumberList.size() > 0) {
+			flag = true;
+		}
+		return flag;
 	}
 	
 	

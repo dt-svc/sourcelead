@@ -9,7 +9,7 @@
     <div id="onboardingLoading"></div>
     <section class="content-header clearfix">
           <div class="pull-left"> <h2 class="pull-left">Templates</h2></div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; Templates</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a> &raquo; Templates</div>
  		<div class="clearfix"></div>
     </section>
     
@@ -128,21 +128,24 @@
 		</span>
 		</div>
 	</div>
-	<div class="landTempCta nomr">
-	<div class="pull-left mr10">
-           <i class="fa fa-plane fa-2x text-info"></i>
-        </div>
-		<div class="pull-left">
-		<h2 class="text-info">Immigration</h2>
-		<p>Manage Your Immigration Templates</p>
-		<span>
-		 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION_TEMPLATE','ROLE_EDIT_VIEW_PETITION_TEMPLATE','ROLE_DELETE_PETITION_TEMPLATE')">
-			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/immigration/addNewPetitionTemplate'/>">Add</a> 
-			<a  class="btn btn-primary btn-sm" href="<c:url value='${appPath}/immigration/viewImmigrationTemplateList'/>">View</a>
-			</sec:authorize>
-		</span>
+	
+	<sec:authorize access="hasAnyRole('ROLE_ADD_PETITION_TEMPLATE','ROLE_EDIT_VIEW_PETITION_TEMPLATE','ROLE_DELETE_PETITION_TEMPLATE')">
+		<div class="landTempCta nomr">
+		<div class="pull-left mr10">
+	           <i class="fa fa-plane fa-2x text-info"></i>
+	        </div>
+			<div class="pull-left">
+			<h2 class="text-info">Immigration</h2>
+			<p>Manage Your Immigration Templates</p>
+			<span>
+			 
+				<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/immigration/addNewPetitionTemplate'/>">Add</a> 
+				<a  class="btn btn-primary btn-sm" href="<c:url value='${appPath}/immigration/viewImmigrationTemplateList'/>">View</a>
+				
+			</span>
+			</div>
 		</div>
-	</div>
+	</sec:authorize>
 	
 	<div class="landTempCta nomr">
 	<div class="pull-left mr10">

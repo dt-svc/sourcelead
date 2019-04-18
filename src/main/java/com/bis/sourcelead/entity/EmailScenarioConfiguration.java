@@ -63,7 +63,11 @@ public class EmailScenarioConfiguration implements Serializable{
 	private String updatedBy;
 	
 	@Column(name="VERIFIED_STATUS")
-	private String status;
+	private String verifiedStatus;
+	
+
+	@Column(name="IS_ACTIVE")
+	private String isActive;
 	
 
 	public String getEmail_UUID() {
@@ -164,12 +168,13 @@ public class EmailScenarioConfiguration implements Serializable{
 		this.encryptionType = encryptionType;
 	}
 
-	public String getStatus() {
-		return status;
+
+	public String getVerifiedStatus() {
+		return verifiedStatus;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setVerifiedStatus(String verifiedStatus) {
+		this.verifiedStatus = verifiedStatus;
 	}
 
 	public String getUsageType() {
@@ -178,6 +183,14 @@ public class EmailScenarioConfiguration implements Serializable{
 
 	public void setUsageType(String usageType) {
 		this.usageType = usageType;
+	}
+
+	public String getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(String isActive) {
+		this.isActive = isActive;
 	}
 	
 }
