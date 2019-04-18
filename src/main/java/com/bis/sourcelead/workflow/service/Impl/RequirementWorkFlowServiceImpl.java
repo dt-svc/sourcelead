@@ -378,11 +378,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				tasks.setOrgLocationId(orglocations);
 				tasks.setWorkFlowTaskName(workFlowTasksDTO.getWorkFlowTaskName());
 				
-				//assignedUser.setId(Long.parseLong(workFlowTasksDTO.getAssignToUserId()));
-				//tasks.setAssignTo(assignedUser);
+				assignedUser.setId(Long.parseLong(workFlowTasksDTO.getAssignToUserId()));
+				tasks.setAssignTo(assignedUser);
 				
 				tasks.setPriority(workFlowTasksDTO.getPriority());
-				tasks.setDescription(workFlowTasksDTO.getDescription());
+				tasks.setDescription(workFlowTasksDTO.getWorkFlowTaskDescription());
 				tasks.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				tasks.setStatus(Constants.RECORD_ACTIVE);
 				tasks.setCreatedDate(new Date());
@@ -416,7 +416,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		requirementWorkFlowTasks.setWorkFlowTaskName(requirementWorkFlowTasksDTO.getWorkFlowTaskName());
 		requirementWorkFlowTasks.setAssignTo(assignedUser);
 		requirementWorkFlowTasks.setPriority(requirementWorkFlowTasksDTO.getPriority());
-		requirementWorkFlowTasks.setDescription(requirementWorkFlowTasksDTO.getDescription());
+		requirementWorkFlowTasks.setDescription(requirementWorkFlowTasksDTO.getWorkFlowTaskDescription());
 		requirementWorkFlowTasks.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		requirementWorkFlowTasks.setStatus(Constants.RECORD_ACTIVE);
 		requirementWorkFlowTasks.setCreatedDate(new Date());
