@@ -39,7 +39,7 @@ $(document).ready(function() {
       <div class="modal-content">
         <div class="modal-body">
           <div class="clearfix minHeight40 form-group">
-          <a href="<c:url value='${appPath}/downloadContactCSVTemplate'/>" class="btn btn-info col-md-4 col-md-offset-4">
+          <a href="<c:url value='${atsUrl}/downloadContactCSVTemplate'/>" class="btn btn-info col-md-4 col-md-offset-4">
 					Download Contact CSV<i class="fa fa-download paddingLeft"></i>
 		  </a>
           </div>
