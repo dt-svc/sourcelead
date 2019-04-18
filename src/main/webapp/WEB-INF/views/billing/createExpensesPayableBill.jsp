@@ -944,6 +944,17 @@ function saveInvoice(saveType){
 	var maxTsRowNum = parseInt($("input[name = 'invoiceExpMaxRowNumber']").val());
          if ($('#project_payable_invoice_form').validate(false, validationSettings)){  
  	 	    var formData = getFormData1("project_payable_invoice_form");
+ 	 	    
+ 	 	  if ($("#notifyToOthers").val() !== "") {
+ 	 		for (var e in $("#notifyToOthers").val().split(",")) {
+ 	 		if (!jQueryFormUtils.validateEmail($("#notifyToOthers").val().split(",")[e].replace(/\s+/g, ''))) {
+ 	 		flag = false;
+ 	 		$("#notifyToOthers").parent().append("<p class='jquery_form_error_message'>Enter valid email id</p>");
+ 	 		return;
+ 	 		}
+ 	 		}
+ 	 		}
+ 	 	    
  	 	  if(maxTsRowNum==0){
 	        	var result = "";
 	     		result = result +"	<div class='project_inn_mask'></div>";
