@@ -269,7 +269,7 @@
 				</sec:authorize>
 				
 				<div class="col-md-2 reportNewCta">
-						<a href="${SourceLeadWeb_atsUrl}/workflowDashboard">
+						<a href="${SourceLeadWeb_sourceleadUrl}/workflowDashboard">
 							<div class="clearfix text-center mb10">
 								<i class="workflowSVG" title="Work Flow"></i>
 							</div>
