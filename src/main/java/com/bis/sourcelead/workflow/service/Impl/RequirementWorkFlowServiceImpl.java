@@ -101,7 +101,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		//stage saving..
 		Set<RequirementWorkFlowStages> requirementWorkFlow = new HashSet<RequirementWorkFlowStages>();
 		List<RequirementDefaultWorkFlowStages> requirementDefaultWorkFlowStages = requirementWorkFlowDao.getRequirementDefaultWorkFlowStages();
-		//if (requirementWorkFlowDTO.getConfigureType()!=null && requirementWorkFlowDTO.getConfigureType().equals(Constants.DEFAULT)) {
 			for (int i = 0; i < requirementDefaultWorkFlowStages.size(); i++) {
 				RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
 				requirementWorkFlowStages.setRequirementWorkFlowId(reqWorkFlow);
@@ -125,7 +124,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				requirementWorkFlowStages.setUpdatedBy(user);
 				requirementWorkFlow.add(requirementWorkFlowStages);
 			}
-		//}
 		reqWorkFlow.setWorkflowStages(requirementWorkFlow);
 		return reqWorkFlow;
 		
