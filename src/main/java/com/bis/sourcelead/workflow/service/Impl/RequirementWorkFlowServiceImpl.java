@@ -520,12 +520,34 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	public void cloneRequirementWorkFlowDetailsByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO,
 			OrgLocations orgLocations, User user) throws Exception {
 		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(requirementWorkFlowDTO.getUuid());
-		
 		List<RequirementWorkFlowStages> workFlowStages = requirementWorkFlowDao.getRequirementWorkflowStagesByUuid(requirementWorkFlow.getUuid());
+		RequirementWorkFlow workFlow = new RequirementWorkFlow ();
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		workFlow.setNoOfStages(workFlowStages.size());
+		workFlow.setCreatedBy(user);
+		workFlow.setCreatedDate(currentDate);
+	if(orgLocations != null){
+		workFlow.setOrgLocationId(orgLocations);
+		}
+	workFlow.setWorkFlowName(requirementWorkFlowDTO.getWorkFlowName());
+	workFlow.setDescription(requirementWorkFlowDTO.getDescription());
+	
+	
+	if(requirementWorkFlowDTO.getNoOfStages() != null) {
+		workFlow.setNoOfStages(Integer.parseInt(requirementWorkFlowDTO.getNoOfStages()));
+	}
+	workFlow.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+	workFlow.setStatus(Constants.RECORD_ACTIVE);
+	workFlow.setConfigureType(Constants.CLIENT);
+	
+	workFlow.setUpdatedBy(user);
+	workFlow.setUpdatedDate(currentDate);
+		
+		requirementWorkFlowDao.saveRequirementWorkFlowDetails(workFlow, orgLocations);
 		
 		for(int i=0; i < workFlowStages.size(); i++) {
 			RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
-			requirementWorkFlowStages.setRequirementWorkFlowId(requirementWorkFlow);
+			requirementWorkFlowStages.setRequirementWorkFlowId(workFlow);
 			requirementWorkFlowStages.setOrgLocationId(orgLocations);
 			requirementWorkFlowStages.setStageName(workFlowStages.get(i).getStageName());
 			requirementWorkFlowStages.setDescription(workFlowStages.get(i).getDescription());
@@ -546,34 +568,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStages.setUpdatedBy(user);
 			requirementWorkFlowDao.saveRequirementWorkFlowStagesByOrgLocationId(requirementWorkFlowStages);
 		}
-		
-		RequirementWorkFlow workFlow = new RequirementWorkFlow ();
-		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-		workFlow.setNoOfStages(workFlowStages.size());
-		workFlow = new RequirementWorkFlow();
-		workFlow.setCreatedBy(user);
-		workFlow.setCreatedDate(currentDate);
-		workFlow.setNoOfStages(10);
-	if(orgLocations != null){
-		workFlow.setOrgLocationId(orgLocations);
-		}
-	workFlow.setWorkFlowName(requirementWorkFlowDTO.getWorkFlowName());
-	workFlow.setDescription(requirementWorkFlowDTO.getDescription());
-	
-	
-	if(requirementWorkFlowDTO.getNoOfStages() != null) {
-		workFlow.setNoOfStages(Integer.parseInt(requirementWorkFlowDTO.getNoOfStages()));
-	}
-	workFlow.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-	workFlow.setStatus(Constants.RECORD_ACTIVE);
-	workFlow.setConfigureType(Constants.CLIENT);
-	
-	workFlow.setUpdatedBy(user);
-	workFlow.setUpdatedDate(currentDate);
-		
-		requirementWorkFlowDao.saveRequirementWorkFlowDetails(workFlow, orgLocations);
-		
-		
 
 		
 	}
