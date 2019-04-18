@@ -425,36 +425,6 @@ public class RequirementWorkflowController {
 			return requirementQuestionnaireTemplateDTO;
 		}
 		
-		/*@RequestMapping(value = "/saveWorkflowTask")
-		public @ResponseBody  Response<String> saveWorkflowTask(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO,
-				HttpServletRequest request)throws Exception{
-			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
-			OrgLocations orgLocations = new OrgLocations();
-			orgLocations.setId(orgLocationId);
-			Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-			User user = new User();
-			user.setId(userId);
-			Response<String> response = new Response<>();
-			try {
-				if (user != null && Validator.validate(requirementWorkFlowTasksDTO)) {
-					requirementWorkFlowService.saveRequirementWorkFlowTask(requirementWorkFlowTasksDTO, user, orgLocations);
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
-				} else if (user == null) {
-					response.setResponse(Result.SESSION_TIMEDOUT.name());
-					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-				} else {
-					response.setResponse(Result.INVALID_DATA.name());
-					response.setResponseMessage(Result.INVALID_DATA.getValue());
-				}
-			} catch (Exception e) {
-				response.setResponse(Result.AWKWARD.name());
-				response.setResponseMessage(Result.AWKWARD.getValue());
-				e.printStackTrace();
-			}
-			return response;
-			
-		}*/
 		
 		@RequestMapping(value = "/getWorkflowTaskList", method = RequestMethod.GET)
 		public @ResponseBody ResponseList<RequirementWorkFlowTasksDTO> getWorkflowTaskList(

@@ -386,38 +386,6 @@ function getRequirementQuestionnaireTemplates(){
 		});
 }
 
-/* function saveWorkflowTask(worflowUuid){
-	var workFlowTaskName = $("#workFlowTaskName").val();
-	var priority = $("#taskPriority").val();
-	var description = $("#summerNote").val();
-	var userList = $("#userList").val();
-	$.ajax({
-		type : "GET",
-		url : sourceleadUrl + "/saveWorkflowTask?requirementWorkFlowUuid="+worflowUuid+"&workFlowTaskName="+workFlowTaskName+"&priority="+priority+
-				"&description="+description+"&assignToUserId="+userList,
-		success : function(dataList){
-			if (dataList.response === "AWKWARD") {
-       	    location.href = "/errorPage";
-       	} else if (dataList.response === "SUCCESS") {
-       		if(dataList.object === "DataMissing") {
-					showError("Invalid data");
-				}else{
-					getRequirementWorkflowTasks();
-					$("#createNewtask").hide();
-					$("#workFlowTaskName").val("");
-					$("#priority").val("");
-					$("#summerNote").val("");
-					
-				}
-       	} else if (dataList.indexOf('Sign In') !== -1) {
-       		location.replace(sourceleadUrl);
-       	} else {
-       	    showError("Operation failed, please try again");
-       	}
-		}
-	});
-	 }
- */	 
 	 function cancelAddStage(){
 		 window.location.href = "${SourceLeadWeb_sourceleadUrl}/workflowList";
 	 }
