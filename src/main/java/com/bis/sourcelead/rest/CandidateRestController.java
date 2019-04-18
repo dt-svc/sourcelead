@@ -1554,6 +1554,41 @@ public class CandidateRestController {
 			}
 			return flag;
 		}  
+	    
+	    
+	    @RequestMapping(value = { "/app/validateAadharNumber" })
+		public Boolean validateAadharNumber(
+				@RequestParam(value = "aadharNumber", required = false) String aadharNumber,@RequestParam(value = "candidateId", required = false) Long candidateId,
+				HttpServletRequest request)
+				throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate can = null;
+			if (null != candidateId) {
+				can = candidateService.getCandidateDetailsByAadharNoAndId(aadharNumber, orgLocations.getId());
+			}
+			Boolean flag = false;
+			if (can == null) {
+				flag = candidateService.validateAadharNumber(aadharNumber, orgLocations.getId());
+			}
+			return flag;
+		}  
+	    
+	    @RequestMapping(value = { "/app/validateSsnNumber" })
+		public Boolean validateSsnNumber(
+				@RequestParam(value = "ssnNumber", required = false) String ssnNumber,@RequestParam(value = "candidateId", required = false) Long candidateId,
+				HttpServletRequest request)
+				throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate can = null;
+			if (null != candidateId) {
+				can = candidateService.getCandidateDetailsBySsnNoAndId(ssnNumber, orgLocations.getId());
+			}
+			Boolean flag = false;
+			if (can == null) {
+				flag = candidateService.validateSsnNumber(ssnNumber, orgLocations.getId());
+			}
+			return flag;
+		}  
 
 }
 
