@@ -115,7 +115,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="assetReportDataTableList();">
-            <input value="Reset" class="btn btn-defualt ml10" type="button">
+            <input value="Reset" class="btn btn-defualt ml10" type="button" onClick="resetAssetReportDataTableList();">
           </div>
         </div>
       </div>      
@@ -176,6 +176,26 @@ function assetReportDataTableList(refreshFlag){
 	 }else{ 
 			return false;
 	 }  
+}
+
+function resetAssetReportDataTableList(){
+	$("#fromDate").val('');
+	$('#fromDate').attr('value', '');
+	$('#fromDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
+	$("#toDate").val('');
+	$('#toDate').attr('value', '');
+	$('#toDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
+	$("#categoryId").val('');
+	$('#categoryId').trigger("chosen:updated");
+	$("#shiftId").val('');
+	$('#shiftId').trigger("chosen:updated");
+	$("#assetId").val('');
+	$('#assetId').trigger("chosen:updated");
+	
 }
 	
 	function prepareAssetReportData(result){
