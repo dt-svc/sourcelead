@@ -1033,6 +1033,19 @@ public class CandidateListRestController {
 				candidateDTO.setIsAssociate(can.getIsAssociate());
 				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
+				
+				if(can.getPanNumber() != null) {
+	 				candidateDTO.setPanNumber(can.getPanNumber());
+					}
+					
+				if(can.getAadharNumber() != null) {
+					candidateDTO.setAadharNumber(can.getAadharNumber());
+					}
+					
+				if(can.getSsnNumber() != null) {
+						candidateDTO.setSsnNumber(can.getSsnNumber());
+						}
+					
 				if(can.getConsultantUser() != null) {
 					candidateDTO.setUserId(can.getConsultantUser().getId());
 				}
