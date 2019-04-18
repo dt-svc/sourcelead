@@ -607,6 +607,9 @@ public class Candidate implements Serializable {
      @Transient
  	 @JsonProperty
      private Long masterCandId;
+     
+     @Column(name = "SSN_Number")
+  	 private String ssnNumber;
 	 
 	public int getProfilePercentage()
 	{
@@ -1940,6 +1943,14 @@ public class Candidate implements Serializable {
 
 	public void setMasterCandId(Long masterCandId) {
 		this.masterCandId = masterCandId;
+	}
+
+	public String getSsnNumber() {
+		return ssnNumber;
+	}
+
+	public void setSsnNumber(String ssnNumber) {
+		this.ssnNumber = ssnNumber;
 	}
 
 	
