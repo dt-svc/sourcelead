@@ -553,17 +553,17 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	@Override
 	public RequirementWorkFlowStages getDefaultWorkFlowStageByOrgLocationId(OrgLocations orgLocations)
 			throws Exception {
-		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.orgLocationId.id = :orgLocationId and "
-					+ "requirementWorkFlowStages.stageName like '"+Constants.DEFAULT_WORKFLOW_STAGE+"'";
-			RequirementWorkFlowStages requirementWorkFlowStages = (RequirementWorkFlowStages)session.createQuery(query)
-					.setParameter("orgLocationId", orgLocations.getId()).uniqueResult();
-			return requirementWorkFlowStages;
-		} catch (Exception e) {
-			e.printStackTrace();
+//		try {
+//			Session session = this.sessionFactory.getCurrentSession();
+//			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.orgLocationId.id = :orgLocationId and "
+//					+ "requirementWorkFlowStages.stageName like '"+Constants.DEFAULT_WORKFLOW_STAGE+"'";
+//			RequirementWorkFlowStages requirementWorkFlowStages = (RequirementWorkFlowStages)session.createQuery(query)
+//					.setParameter("orgLocationId", orgLocations.getId()).uniqueResult();
+//			return requirementWorkFlowStages;
+//		} catch (Exception e) {
+//			e.printStackTrace();
 			return null;
-		}
+//		}
 	}
 
 	@Override
