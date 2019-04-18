@@ -34,8 +34,8 @@
           </c:if>
           </li>
         <li class="">
-            <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-            <span class="repSearchIcon" onclick="getDynamciUserList();"></span>
+            <input class="repSearchBar" placeholder="Search" id="searchtext" type="text">
+            <span class="repSearchIcon" onclick="getViewWorkflowStagesList();"></span>
 		</li>
         </ul>
         <div class="clearfix"></div>
@@ -83,7 +83,7 @@
 		<!-- Cardmodel widget -->
 			<div class="row">
 				<div class="col-md-10">
-				
+				<div>
 					<c:if test = "${requirementWorkFlowStages.stageName == 'Submission'}">
 						<span class="submissionShare pull-left"></span>
 					</c:if>
@@ -117,6 +117,7 @@
 					
 										
 					<h4 class="pull-left mt10 ml">${requirementWorkFlowStages.stageName}</h4>
+				</div>
 				</div>
 				<div class="col-md-2">
 					<ul class="list-inline list-unstyled pull-right mb0">
@@ -223,6 +224,25 @@ function deletepoup(stageUuid, stageName, workflowUuid){
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 	}
+	</script>
+	<script>
+	function getViewWorkflowStagesList() {
+		var filter = $("#searchtext").val();
+		$("li.widgetDiv").each(function() {
+			if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+				$(this).hide();
+			} else {
+				$(this).show();
+			}
+		});
+	}
+
+	$("#searchtext").keyup(function(e) {
+		if (e.which == 13) {
+			getViewWorkflowStagesList();
+
+		}
+	});
 	</script>
 	<script>
 	function deleteRequirementWorkflowStage(stageUuid, workflowUuid){
