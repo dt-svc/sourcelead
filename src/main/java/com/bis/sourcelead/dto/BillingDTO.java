@@ -100,6 +100,7 @@ public class BillingDTO {
 	private String expId;
 	private PaymentAccountDTO paymentAccountDTO;
 	private String orgRelationUUID;
+	private String orgType;
 	
 	public Long getId()
 	{
@@ -779,4 +780,12 @@ public class BillingDTO {
 	public void setPaymentAccountDTO(PaymentAccountDTO paymentAccountDTO) {
 		this.paymentAccountDTO = paymentAccountDTO;
 	}
+	public String getOrgType() {
+		return orgType;
+	}
+	public void setOrgType(String orgType) {
+		this.orgType = orgType;
+	}
+	
+	
 }
