@@ -66,54 +66,61 @@ function errRemoveVendorContact(){
 	<div class="content-area content-new clearfix">
 		<div id="invoiceLoading"></div>
 		<form:form id="invoice_form" name="invoice_form" method="post">
-		<input type="hidden" name="vendorOrgRelation" value="createPayables"/>
-<!-- 		<input type="hidden" name="vendorContact" value="createPayables"/> -->
+			<input type="hidden" name="vendorOrgRelation" value="createPayables" />
+			<!-- <input type="hidden" name="vendorContact" value="createPayables"/> -->
 			<div class="clearfix form-horizontal inner-content">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<div class="form-group">
 							<label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9 chooRadius" id="errVendor">
-							<div class="input-group col-md-10 pull-left">
-								<select class="chosen-select form-control"
-									id="vendorOrgRelationId" name="vendorOrgRelationId" data-Bill
-									onchange="getVendorContacts();errRemoveVendor();getPaymentTerms();getPaymentAccountList();" data-validation="required" field-name="Vendor">
-								</select>
-								  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();createpayablesEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
+							<div class="col-md-9 chooRadius errorInptgroup" id="errVendor">
+								<div class="input-group col-md-10 pull-left">
+									<select class="chosen-select form-control"
+										id="vendorOrgRelationId" name="vendorOrgRelationId" data-Bill
+										onchange="getVendorContacts();errRemoveVendor();getPaymentTerms();getPaymentAccountList();"
+										data-validation="required" field-name="Vendor">
+									</select> <span class="input-group-addon cursorPointer bg-blue"
+										onclick="getVendors();createpayablesEmptyVendorContact();"><i
+										class="fa fa-refresh "></i></span>
+								</div>
+								<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')">
+									<a href="<c:url value="/app/addVendor" />" target="_blank"><i
+										class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+								</sec:authorize>
+								<input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
+								<input type="hidden" name="vendorCurrency" id="vendorCurrency">
 							</div>
-							<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-			                         <a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
-			              </sec:authorize>
-							<input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
-							<input type="hidden" name="vendorCurrency" id="vendorCurrency">
 						</div>
-							</div>
 						<div class="form-group">
 							<label class="col-md-3">Vendor Contact<span
 								class="text-danger">*</span></label>
-							<div class="col-md-9 chooRadius" id="errVendorContact">
+							<div class="col-md-9 chooRadius errorInptgroup chosenmbNone"
+								id="errVendorContact">
 								<div class="col-md-9 padding_left padding_right">
-								<select class="chosen-select form-control" id="vendorContact"
-									multiple="multiple" name="vendorContact" data-validation="required"
-									field-name="Vendor Contact"
-									onchange="errRemoveVendorContact();">
-								</select>
+									<select class="chosen-select form-control" id="vendorContact"
+										multiple="multiple" name="vendorContact"
+										data-validation="required" field-name="Vendor Contact"
+										onchange="errRemoveVendorContact();">
+									</select>
+								</div>
+								<span class="col-md-3 noPad clearfix"> <span
+									class="btn btn-primary btn-sm" onclick="getVendorContacts();"><i
+										class="fa fa-refresh "></i></span> <sec:authorize
+										access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')">
+										<a href="javascript:void(0)" onclick="selectedVendor();"><i
+											class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+									</sec:authorize>
+								</span>
 							</div>
-							<span class="col-md-3 noPad clearfix">
-							<span class="btn btn-primary btn-sm" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
-			                  <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
-			                    <a href="javascript:void(0)" onclick="selectedVendor();"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
-			                  </sec:authorize>
-		                    </span>
 						</div>
-                             	</div>
 						<div class="form-group">
-							<label class="col-md-3">Bill Id<span
-								class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-3">Bill Id<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9" id="invoiceIdDiv">
-								<input type="text" class="form-control" id="invoiceId" onkeyup="validateBillId();"
-									name="invoiceId" value="" placeholder="Bill Id"
-									data-validation="required validate_Alphanumeric validate_length length2-100" field-name="Bill Id">
+								<input type="text" class="form-control" id="invoiceId"
+									onkeyup="validateBillId();" name="invoiceId" value=""
+									placeholder="Bill Id"
+									data-validation="required validate_Alphanumeric validate_length length2-100"
+									field-name="Bill Id">
 							</div>
 						</div>
 						<div class="form-group">
@@ -141,38 +148,44 @@ function errRemoveVendorContact(){
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-3">Due Date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The deadline for the bill payment'></i></label>
+							<label class="col-md-3">Due Date<span class="text-danger">&nbsp;*
+							</span><i class='fa fa-info-circle'
+								title='The deadline for the bill payment'></i></label>
 							<div class="col-md-9" id="errDuedate">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date" id="dueDate"
-									readonly data-validation="required" field-name="Due Date">							
+									readonly data-validation="required" field-name="Due Date">
 							</div>
 						</div>
+
+						<div class="form-group">
+							<label class="col-md-3">Payment Account</label>
+							<div class="col-md-9" id="projectMemberIdDiv">
+								<select class="sel width100pecnt" id="paymentAccountId"
+									field-name="paymentAccount Name" name="paymentAccount">
+									<option value="">--Select Account--</option>
+								</select>
+							</div>
+						</div>
+						<div class="clearfix"></div>
 						<div class="form-group">
 							<label class="col-md-3">Billing Address</label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="2" id="billingAddress"
+								<textarea class="form-control" rows="4" id="billingAddress"
 									name="billingAddress" placeholder="Billing Address"></textarea>
 							</div>
 						</div>
-						
-						 <div class="form-group">
-			              <label class="col-md-3">Payment Account</label>
-			              <div class="col-md-9 select-field" id="projectMemberIdDiv">
-			                <select class="form-control" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
-			                   <option value="">--Select Account--</option>
-			                </select>
-			              </div>
-			            </div>
-			            
-						<!-- <div class="form-group">
-							<label class="col-md-3">Account Details</label>
+
+						<div class="form-group">
+							<label class="col-md-3">Notify To Others</label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="2" id="accountDetails"
-									 name="accountDetails" placeholder="Account Details"></textarea>
+								<textarea class="form-control" rows="4" id="notifyToOthers"
+									name="notifyToOthers" field-name="NotifyTo"
+									placeholder="Enter multiple Email Id's separated by commas(,)"></textarea>
 							</div>
-						</div> -->
-						
+							<div class="clearfix"></div>
+						</div>
+
 					</div>
 				</div>
 
@@ -184,9 +197,11 @@ function errRemoveVendorContact(){
 
 				<footer class="form-footer">
 					<div class="pull-right mr mt25">
-						<button type="button" class="btn btn-sm btn-primary pull-left" id="saveInvoiceId" style="display:block;"
+						<button type="button" class="btn btn-sm btn-primary pull-left"
+							id="saveInvoiceId" style="display: block;"
 							onclick="saveInvoice('DRAFT')">Save</button>
-						<button type="button" class="btn btn-sm btn-success ml pull-left" id="sendInvoiceId" style="display:block;"
+						<button type="button" class="btn btn-sm btn-success ml pull-left"
+							id="sendInvoiceId" style="display: block;"
 							onclick="saveInvoice('SENT')">Send</button>
 						<button type="button" class="btn btn-sm btn-default ml pull-left"
 							onClick="javascript:window.location.href = '<c:url value='${appPath}/payablesList'/>'">Cancel</button>
@@ -469,6 +484,11 @@ function remove(){
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
+		           	
+		           	if(json['notifyToOthers'] != null && json['notifyToOthers'] != '' && json['notifyToOthers'] != 'undefined'){
+		           		$("#notifyToOthers").text(json['notifyToOthers']);
+		           	}
+		           	
 		        	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
 		           		$("#accountDetails").val(json['accountDetails']);
 		           	}
@@ -1857,11 +1877,11 @@ function maskme(){
     
     $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
     	
-    	
-    	var charCode = (evt.which) ? evt.which : event.keyCode
-   	         if (charCode > 31 && (charCode < 48 || charCode > 57))
-   	            return false;
-   	         return true;
+    	var charCode = (evt.which) ? evt.which : evt.keyCode;
+    	if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+    	return false;
+
+    	return true;
    	         
 //     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
 //         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
@@ -2036,9 +2056,20 @@ function validateDiscount() {
 				return false; 
 		 	 }
 	  }if(selectedTextInvoice =='flat'){
-			  $("#saveInvoiceId").removeAttr("disabled", "disabled");
-			  $("#sendInvoiceId").removeAttr("disabled", "disabled");
-		  }		  
+
+		  var numaricNum = /^[0-9]*$/
+		  if(enteredValue.match(numaricNum)){
+		  $("#saveInvoiceId").removeAttr("disabled", "disabled");
+		  $("#saveInvoiceId").removeAttr("disabled", "disabled");
+		  return true;
+		  }else{
+		  $("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Discount</span>");
+		  $("#saveInvoiceId").attr("disabled", "disabled");
+		  $("#saveInvoiceId").attr("disabled", "disabled");
+		  return false; 
+		  }
+
+		  }	  
 }
 </script>
 
