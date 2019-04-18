@@ -822,7 +822,7 @@ function cancel(candidateId){
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
+					<li><a href="${SourceLeadWeb_atsUrl}/candidateListForReports"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				</ul>
 			</div>
 		</div> --%>  
@@ -1162,7 +1162,7 @@ function cancel(candidateId){
 	          </sec:authorize>
 	          
 	          <sec:authorize access="hasAnyRole('ROLE_ASSOCIATE_ASSIGN_HOTLIST_TO_TEAM')">
-	              <li><a href="<c:url value='${appPath}/assignHotListToTeam'/>" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
+	              <li><a href="${SourceLeadWeb_atsUrl}/assignHotListToTeam" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
 	           </sec:authorize>
 	          </ul>
            </div>
@@ -2139,7 +2139,7 @@ function minMaxExperience(){
 					       
 					       <div class="col-md-4 mt25">
 	                          <div class="small-widget bg-yellow">
-	                              <a href="<c:url value='${appPath}/associate?type=associateFromCandidate'/>" title="Add from Candidates">
+	                              <a href="${SourceLeadWeb_atsUrl}/associate?type=associateFromCandidate" title="Add from Candidates">
 	                                  <div class="clearfix mb10">
 	                                      <i class="fa fa-user-circle fa-4x"></i>
 	                                      <span class="fa fa-plus"></span>
@@ -2152,7 +2152,7 @@ function minMaxExperience(){
 						  
 						  <div class="col-md-4 mt25">
 	                          <div class="small-widget bgGreen">
-	                               <a href="<c:url value='${appPath}/associate?type=addAssociate'/>"  title="Add Manually">
+	                               <a href="${SourceLeadWeb_atsUrl}/associate?type=addAssociate"  title="Add Manually">
 	                                  <div class="clearfix mb10">
 	                                    <i class="fa fa-black-tie fa-4x"></i>
 	                                      <span class="fa fa-plus"></span>
@@ -2163,7 +2163,7 @@ function minMaxExperience(){
 	                      </div>
                           <div class="col-md-4 mt25">
                            <div class="small-widget bg-purple">
-                            <a href="<c:url value='${appPath}/associate?type=importAssociate'/>"  title="Import Associate">
+                            <a href="${SourceLeadWeb_atsUrl}/associate?type=importAssociate"  title="Import Associate">
                                 <div class="clearfix mb10">
                                 <i class="fa fa-file-text-o fa-4x"></i>
                                     <span class="fa fa-arrow-right"></span>
