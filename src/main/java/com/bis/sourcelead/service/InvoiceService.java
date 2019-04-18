@@ -136,5 +136,8 @@ public interface InvoiceService {
 	public boolean changeCustomInvoiceTemplateStatus(Long templateId, int status, User user, OrgLocations orgLocations);
 	
 	public boolean deleteCustomInvoiceTemplate(Long templateId);
+	
+	Map<String, String> sendInvoiceMailToOthers(User user, OrgLocations orglocations, Invoice invoice,String invoiceType,List<TimesheetSubmissionsDocuments> docusList,String otherEmails) throws Exception;
+
 
 }
