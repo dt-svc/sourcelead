@@ -6,7 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <style type="text/css">
 .cand-advsrch-popup .bs-caret {
 position: relative; top:8px;
@@ -481,7 +481,7 @@ window.onload = function () {
 <jsp:include page="../masterFooter.jsp" />
 <jsp:include page="applyToJob.jsp" />
 
-<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
+<div class="backtotop" style="display: none;"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/backtotop.png"></div>  
 
 
 <script>

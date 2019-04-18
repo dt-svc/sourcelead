@@ -126,7 +126,7 @@ function candidateQuickViewProfile(candidateId){
 					if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 					result = result+'<img data-id="profileImage" id="userImage" src="'+json.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
 					}else{
-					result = result+'<img data-id="profileImage" id="userImage" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
+					result = result+'<img data-id="profileImage" id="userImage" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
 					} 
 					result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
 						result = result+' <div class="progress nomr">  ';
@@ -205,6 +205,8 @@ function candidateQuickViewProfile(candidateId){
   				    qvemployeeSubmission(candidateId);
   				    qveducationSubmission(candidateId);
 					qwikCertificates(candidateId);
+					alert("success")
+					console.log(result);
 					candidateSideBar(candidateId); 
               	}else{
        	    	         var result ="";
@@ -219,6 +221,7 @@ function candidateQuickViewProfile(candidateId){
       					 result = result+"	</div>"; 
       					 result = result+"  </div> "; 
       					$("#candidateQuickViewDiv").empty();
+      					
       				    $("#candidateQuickViewDiv").append(result); 
                       }
 				} else if (result.indexOf('Sign In') !== -1) {
