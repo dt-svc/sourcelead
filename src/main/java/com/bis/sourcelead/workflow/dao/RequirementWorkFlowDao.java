@@ -27,7 +27,7 @@ public interface RequirementWorkFlowDao {
 	
 	List<RequirementDefaultWorkFlowStages> getRequirementDefaultWorkFlowStages()throws Exception;
 	
-	void saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages)throws Exception;
+	RequirementWorkFlowStages saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages)throws Exception;
 	
 	ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowsByOrgLocationId(RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations)throws Exception;
 
@@ -70,5 +70,8 @@ public interface RequirementWorkFlowDao {
 
 	Boolean deleteApplicationWorkFlowByuuid(String workflowuuid);
 	
+	RequirementWorkFlowStages getDefaultWorkFlowStageByOrgLocationId(OrgLocations orgLocations)throws Exception;
+	
+	RequirementWorkFlow getDefaultWorkFlowOrgLocationId(OrgLocations orgLocations)throws Exception;
 
 }

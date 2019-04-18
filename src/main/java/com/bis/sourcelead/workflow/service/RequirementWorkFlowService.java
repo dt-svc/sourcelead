@@ -70,4 +70,6 @@ public interface RequirementWorkFlowService {
 	void cloneRequirementWorkFlowDetailsByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO,
 			OrgLocations orgLocations, User user) throws Exception;
 	Boolean deleteApplicationWorkFlowByuuid(String workflowuuid);
+	
+	
 }
