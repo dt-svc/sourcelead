@@ -3,15 +3,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<%-- <link href="/resources/css/register-style.css?staticTime=${staticTime}"
+<%-- <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/register-style.css?staticTime=${staticTime}"
 	rel="stylesheet">
-<link href="/resources/css/register-style.css?staticTime=${staticTime}"
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/register-style.css?staticTime=${staticTime}"
 	rel="stylesheet"> --%>
-<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
-<link href="/resources/css/summernote.css?staticTime=${staticTime}"
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/summernote.css?staticTime=${staticTime}"
 	rel="stylesheet" />
-<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="/resources/css/editor.css?staticTime=${staticTime}"
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/editor.css?staticTime=${staticTime}"
 	type="text/css" rel="stylesheet" />
 
 <!-- Content Area -->
@@ -430,8 +430,8 @@
 
 
 <!-- 
-<script src="/resources/js/editor.js"></script>
-    <link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/editor.js"></script>
+    <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
@@ -440,7 +440,7 @@
 -->
 
 
-<!-- <script src="/resources/js/summernote.js"></script>
+<!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/summernote.js"></script>
 <script>
 	$('#txtEditor').summernote({
   toolbar: [

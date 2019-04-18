@@ -1993,7 +1993,7 @@ function listChange(sel){
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
-<script src="/resources/js/jquery-fun.js"></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-fun.js"></script> 
 <script>
 
 // Approved Popup

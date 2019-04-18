@@ -13,7 +13,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 function candidateCommentsList(candidateId,submissionId){
 	
 	$('#tab-7').show();
-	$('.' + "current").removeClass("current");
+	/* $('.' + "current").removeClass("current"); */
 	$("#candidateCommentTab").addClass("current");
 	var urlForm = "";
 	if(submissionId != null && submissionId != '' && submissionId != 'undefined'){

@@ -50,4 +50,4 @@
 </section>
 
 <jsp:include page="../masterFooter.jsp" />
-<script type="text/javascript" src="/resources/js/jobBoard.js?staticTime=${staticTime}"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jobBoard.js?staticTime=${staticTime}"></script>

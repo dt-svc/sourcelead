@@ -172,7 +172,7 @@
      </div>
 </div>
      
-<script type="text/javascript" src="/resources/js/jobBoard.js?staticTime=${staticTime}"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jobBoard.js?staticTime=${staticTime}"></script>
 <script type="text/javascript">
                     $(function () {
                         filterJobBoardAccounts(0, "");
