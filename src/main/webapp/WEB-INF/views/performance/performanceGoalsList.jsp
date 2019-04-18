@@ -626,10 +626,10 @@ function goalsPagination(url){
             	  }
 	              result = result +"<div class='tblminwidth-30'>";
 	              result = result +"<div class='progress mb0 progressGoals'>";
-	              result = result +"<div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='"+percentageDone+"' aria-valuemin='0' aria-valuemax='100' style='width:"+percentageDone+"%'>";
+	              result = result +"<div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='"+percentageDone.toFixed(2)+"' aria-valuemin='0' aria-valuemax='100' style='width:"+percentageDone+"%'>";
 	              result = result +"</div>";
 	              result = result +"</div>";
-	              result = result +"<p class='mb0 fontSmall mt5'>"+percentageDone+"% Complete (info)</p>";
+	              result = result +"<p class='mb0 fontSmall mt5'>"+percentageDone.toFixed(2)+"% Completed (info)</p>";
 	              result = result +"</div>";
 				
 	              return result;

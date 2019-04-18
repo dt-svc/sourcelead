@@ -505,7 +505,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<PerformanceGoals> performanceGoals = new ArrayList<PerformanceGoals>();
 		logger.debug("getPerformanceGoalsByUUID  start");
-		performanceGoals = session.createQuery("from PerformanceGoals goals where goals.uuid = :goalUUID " ).setString( "goalUUID", goalUUID).list();
+		performanceGoals = session.createQuery("from PerformanceGoals goals left join fetch goals.goalId where goals.uuid = :goalUUID " ).setString( "goalUUID", goalUUID).list();
 		logger.debug("getPerformanceGoalsByUUID  end");
 		if (performanceGoals.size() > 0) {
 			return performanceGoals.get(0);
@@ -626,7 +626,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 	}
 
 	@Override
-	public Integer getPerformanceSubGoalsPercentageDoneCount(Long goalId) throws Exception {
+	public double getPerformanceSubGoalsPercentageDoneCount(Long goalId) throws Exception {
 	
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -638,8 +638,33 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				"GOALS.GOAL_ID = :goalId AND GOALS.STATUS = '1' " ;
 		
 		List<BigInteger> countlist = session.createSQLQuery(query).setLong("goalId", goalId).list();
-		Integer percentageDone = countlist.iterator().next().intValue();
+		double percentageDone = countlist.iterator().next().doubleValue();
 		
+		return percentageDone;
+	}
+
+	@Override
+	public double getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(Long goalId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceGoalsDTO> goalsAssignToList = null;
+		
+		String query = 	 "SELECT " + 
+				"SUM(GOALS.PERCENTAGE_DONE) AS percentageDone, " +
+				"COUNT(GOALS.ID) AS subGoalsCount " +
+				"FROM " + 
+				"PERFORMANCE_GOALS GOALS WHERE " + 
+				"GOALS.GOAL_ID = :goalId GROUP BY GOALS.GOAL_ID " ;
+		
+		Query queryObj = null;
+		queryObj = session.createSQLQuery(query);
+		queryObj.setParameter("goalId", goalId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceGoalsDTO.class));
+		goalsAssignToList = queryObj.list();
+		
+		PerformanceGoalsDTO goalsDTO = goalsAssignToList.get(0);
+		double percentageDone = goalsDTO.getPercentageDone() / goalsDTO.getSubGoalsCount().intValue();
 		return percentageDone;
 	}
 

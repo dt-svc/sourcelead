@@ -32,6 +32,8 @@ public interface PerformanceGoalsDao {
 	
 	List<PerformanceGoalsAssignToDTO> getPerformanceGoalsAssignedUsersList(String goalUUID,String dateFormat) throws Exception;
 	
-	Integer getPerformanceSubGoalsPercentageDoneCount(Long goalId) throws Exception;
+	double getPerformanceSubGoalsPercentageDoneCount(Long goalId) throws Exception;
+	
+	double getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(Long goalId) throws Exception;
 	
 }

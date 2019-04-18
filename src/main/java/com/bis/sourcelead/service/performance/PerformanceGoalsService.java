@@ -12,6 +12,8 @@ public interface PerformanceGoalsService {
 
 	PerformanceGoals storePerformanceGoals(PerformanceGoalsDTO performanceGoalsDTO,Long userId,Long orgLocationId,String dateFormat) throws Exception;
 	
+	PerformanceGoals savePerformanceGoals(PerformanceGoals performanceGoals) throws Exception;
+	
 	PerformanceGoals getPerformanceGoalsById(Long goalId) throws Exception;
 	
 	PerformanceGoalsDoNutChartCountsDTO getTotalGoalsDoNutChartCounts(Long userId,Long orgLocationId) throws Exception;
@@ -32,8 +34,8 @@ public interface PerformanceGoalsService {
 	
 	List<PerformanceGoalsAssignToDTO> getPerformanceGoalsAssignedUsersList(String goalUUID,String dateFormat) throws Exception;
 	
-	Integer getPerformanceSubGoalsPercentageDoneCount(Long goalId) throws Exception;
+	double getPerformanceSubGoalsPercentageDoneCount(Long goalId) throws Exception;
 	
-	//Integer getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(Long goalId) throws Exception;
+	double getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(Long goalId) throws Exception;
 	
 }

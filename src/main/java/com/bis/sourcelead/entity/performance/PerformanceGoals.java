@@ -63,7 +63,7 @@ public class PerformanceGoals implements Serializable{
 	    private PerformanceGoals goalId;
 		
 		@Column(name = "PERCENTAGE_DONE ")
-		private Integer percentageDone;
+		private double percentageDone;
 		
 		@Column(name = "UUID")
 		private String uuid;
@@ -164,11 +164,11 @@ public class PerformanceGoals implements Serializable{
 			this.goalType = goalType;
 		}
 
-		public Integer getPercentageDone() {
+		public double getPercentageDone() {
 			return percentageDone;
 		}
 
-		public void setPercentageDone(Integer percentageDone) {
+		public void setPercentageDone(double percentageDone) {
 			this.percentageDone = percentageDone;
 		}
 

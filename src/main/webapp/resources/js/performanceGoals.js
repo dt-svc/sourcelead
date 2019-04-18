@@ -108,8 +108,7 @@ function PerformanceGoals(){
 			        		 }
 			        		 
 			        		 document.getElementById("percentageDoneDiv").style.display="";
-			        		 $("#percentageDone").val(response.object.percentageDone);
-			        		 $('.selectpicker').selectpicker('refresh');
+			        		 $("#goalPercentage").val(response.object.percentageDone.toFixed(2));
 			        		 
 			        		 if(response.object.attachmentsList != null && response.object.attachmentsList.length > 0){
 				        		   var result = '';
@@ -369,10 +368,10 @@ function PerformanceGoals(){
 						        		 if(response.object.percentageDone != null 
 						        				 && response.object.percentageDone != ''
 						        					 && response.object.percentageDone != 'undefined'){
-						        			 $("#goalPercentage").html(response.object.percentageDone+"% Complete (info)");
-						        			 percentage = response.object.percentageDone;
+						        			 $("#goalPercentage").html(response.object.percentageDone.toFixed(2)+"% Completed (info)");
+						        			 percentage = response.object.percentageDone.toFixed(2);
 						        		 }else{
-						        			 $("#goalPercentage").html("0% Complete (info)");
+						        			 $("#goalPercentage").html("0% Completed (info)");
 						        		 }
 						        		
 						        		 var result = "";
@@ -384,7 +383,8 @@ function PerformanceGoals(){
 								        
 								         
 								         var markAsComplete = "";
-								         markAsComplete = markAsComplete+'<a class="text-primary textBold" href="javascript:void(0)">Mark as completed</a>&nbsp;&nbsp;&nbsp;';
+								         var goalType = "parentGoal";
+								         markAsComplete = markAsComplete+"<a class='text-primary textBold' href='javascript:void(0)' onclick='performanceGoals.markGoalAsComplete(\""+goalUUID+"\",\""+goalType+"\")'>Mark as completed</a>&nbsp;&nbsp;&nbsp;";
 								         
 								         $("#markAsComplete").empty();
 								         $("#markAsComplete").html(markAsComplete);
@@ -437,6 +437,7 @@ function PerformanceGoals(){
 						        		location.href = "/errorPage";
 						        	} else if (response.response === "SUCCESS") {
 						        		 var result = '';
+						        		 var goalType = "subGoal";
 						        		 
 						        		  if(dateFormat.match("yyyy-MM-dd")){
 						        			  dateFormatStr = 'YYYY-MM-DD';
@@ -453,7 +454,7 @@ function PerformanceGoals(){
 								        		 var opt = response.data[i];
 								        		 var percentage = 0;
 								        		 if(opt.percentageDone != null){
-								        			 percentage = opt.percentageDone;
+								        			 percentage = opt.percentageDone.toFixed(2);
 								        		 }
 								        		 result = result+'<ul class="list-unstyled mb0 goalsList-list">' ;
 								        		 result = result+'<li>' ;
@@ -472,7 +473,7 @@ function PerformanceGoals(){
 								        		 result = result+'style="width:'+percentage+'%">' ;
 								        		 result = result+'</div>' ;
 								        		 result = result+'</div>' ;
-								        		 result = result+'<p class="fontSmall mt5 mb0">'+percentage+'% Complete (info)</p>' ;
+								        		 result = result+'<p class="fontSmall mt5 mb0">'+percentage+'% Completed (info)</p>' ;
 								        		 result = result+'<div class="clearfix"></div>' ;
 								        		 result = result+'</div>' ;
 								        		
@@ -487,8 +488,8 @@ function PerformanceGoals(){
 								        		 result = result+'</div>' ;
 								        		 
 								        		 result = result+'<div class="clearfix col-md-3">' ;
-								        		 result = result+'<a class="text-primary textBold cursorPointer">Mark as completed</a>&nbsp;&nbsp;&nbsp;' ;
-								        		 result = result+'<a href='+pmsUrl+'/addNewSubGoal?goalUUID='+goalUUID+'><i class="fa fa-pencil cursorPointer" title="Edit"></i></a>&nbsp;&nbsp;&nbsp;' ;
+								        		 result = result+"<a class='text-primary textBold cursorPointer' onclick='performanceGoals.markGoalAsComplete(\""+opt.uuid+"\",\""+goalType+"\",\""+goalUUID+"\",)'>Mark as completed</a>&nbsp;&nbsp;&nbsp;" ;
+								        		 result = result+'<a href='+pmsUrl+'/addNewGoal?goalUUID='+opt.uuid+'><i class="fa fa-pencil cursorPointer" title="Edit"></i></a>&nbsp;&nbsp;&nbsp;' ;
 								        		 result = result+'<a><i class="fa fa-trash cursorPointer" title="Delete"></i></a>&nbsp;&nbsp;&nbsp;' ;
 								        		 result = result+'</div>' ;
 								        		 result = result+'</div>' ;
@@ -775,5 +776,54 @@ function PerformanceGoals(){
 					 
 						 this.predefineGoalUserImage = function(imageId){
 							 $(imageId).attr('src','/resources/images/userprofileImg.jpg');
+						 }
+						 
+						 
+						 this.validateGoalPercentage = function(){
+								var goalPercentage = $('#goalPercentage').val();
+								
+								 if(goalPercentage > 100 || goalPercentage < 0){
+									 if(goalPercentage < 0){
+										    $('#goalPercentageId').find('p.jquery_form_error_message').remove(); 
+											$('input#goalPercentageValidation').attr('class','error signin_fild');
+											$("input#goalPercentageValidation").after("<p class='jquery_form_error_message'>Interest Rate should not in negitive</p>");
+											$('input#goalPercentageValidation').attr('record-exist','yes');
+											$('input#goalPercentageValidation').attr('record-exist-errorMsg','Min Rate should not in negitive'); 
+									 }else{
+										 $('#goalPercentageId').find('p.jquery_form_error_message').remove(); 
+											$('input#goalPercentageValidation').attr('class','error signin_fild');
+											$("input#goalPercentageValidation").after("<p class='jquery_form_error_message'>Interest Rate should not more than 100</p>");
+											$('input#goalPercentageValidation').attr('record-exist','yes');
+											$('input#goalPercentageValidation').attr('record-exist-errorMsg','Min Rate should not more than 100'); 
+									 }
+								 }else{
+									 
+								     $('#goalPercentageId').find('p.jquery_form_error_message').remove(); 
+							    	 $('input#goalPercentageValidation').removeAttr( "class record-exist record-exist-errormsg");
+									 $('#goalPercentageId').find('p.jquery_form_error_message').remove();
+								 }
+							}
+						 
+						 
+						 this.markGoalAsComplete = function(goalUUID,goalType,parentGoalUUID){
+							 $("#goalsDetailsLoading").attr('style','position:absolute; width:100%; height:250%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+							  $.ajax({
+							    	type: "POST",
+							        url: pmsUrl+"/makeGoalAsCompleted?goalUUID="+goalUUID, 
+							        success: function(response) {
+							        	if (response.response === "AWKWARD") {
+							        		location.href = "/errorPage";
+							        	} else if (response.response === "SUCCESS") {
+							        		$("#goalsDetailsLoading").removeAttr('style');
+							        		if(goalType == "parentGoal"){
+							        			performanceGoals.getPerformanceGoalsSummaryDetails(goalUUID);
+							        		}else if(goalType == "subGoal"){
+							        			performanceGoals.getPerformanceGoalsSummaryDetails(parentGoalUUID);
+							        			performanceGoals.getPerformanceSubGoalsList(parentGoalUUID);
+							        		}
+							        		
+							        	}
+							        },
+							    });
 						 }
 }

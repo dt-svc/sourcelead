@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl.performance;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -101,12 +102,11 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 			goals.setDescription(null);
 		}
 		
-		if(performanceGoalsDTO.getPercentageDone() != null) {
-			goals.setPercentageDone(performanceGoalsDTO.getPercentageDone());
-			if(goals != null && goals.getGoalId() != null) {
-				PerformanceGoals parentGoal = getPerformanceGoalsById(goals.getGoalId().getId());
-				
-			}
+		if(StringUtils.isNotBlank(performanceGoalsDTO.getGoalPercentage())) {
+			String percentageDone =  String.format("%.2f", Double.valueOf(performanceGoalsDTO.getGoalPercentage()));
+			goals.setPercentageDone(Double.valueOf(percentageDone));
+		}else {
+			goals.setPercentageDone(0d);
 		}
 		
 		if(performanceGoalsAssignToSet != null) {
@@ -192,8 +192,22 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 		
 		performanceGoalsDao.savePerformanceGoals(goals);
 		
+		if(goals != null && goals.getGoalId() != null) {
+			double percentage = getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(goals.getGoalId().getId());
+			String parentGoalPercentageDone =  String.format("%.2f", percentage);
+			PerformanceGoals parentGoal = getPerformanceGoalsById(goals.getGoalId().getId());
+			parentGoal.setPercentageDone(Double.valueOf(parentGoalPercentageDone));
+			performanceGoalsDao.savePerformanceGoals(parentGoal);
+		}
 		
-		return null;
+		
+		return goals;
+	}
+	
+	
+	@Override
+	public PerformanceGoals savePerformanceGoals(PerformanceGoals performanceGoals) throws Exception {
+		return performanceGoalsDao.savePerformanceGoals(performanceGoals);
 	}
 
 	@Override
@@ -254,8 +268,15 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 	}
 
 	@Override
-	public Integer getPerformanceSubGoalsPercentageDoneCount(Long goalId) throws Exception {
+	public double getPerformanceSubGoalsPercentageDoneCount(Long goalId) throws Exception {
 		return performanceGoalsDao.getPerformanceSubGoalsPercentageDoneCount(goalId);
 	}
+
+	@Override
+	public double getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(Long goalId)
+			throws Exception {
+		return performanceGoalsDao.getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(goalId);
+	}
+
 
 }

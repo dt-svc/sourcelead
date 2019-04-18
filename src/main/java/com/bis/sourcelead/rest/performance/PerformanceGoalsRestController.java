@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -438,4 +439,38 @@ public class PerformanceGoalsRestController {
 			
 			return resObj;
 		}
+	 	
+	 	
+	 	@RequestMapping(value = { "/makeGoalAsCompleted", "/rest/makeGoalAsCompleted" }, method = RequestMethod.POST)
+		public @ResponseBody Response<PerformanceGoalsDTO> makeGoalAsCompleted(@RequestParam(value="goalUUID", required=true) String goalUUID,HttpServletRequest request) throws Exception {
+			  Response<PerformanceGoalsDTO> response = new  Response<>();
+			try {
+			 if(StringUtils.isNoneBlank(goalUUID)) {
+				 PerformanceGoals goals =  performanceGoalsService.getPerformanceGoalsByUUID(goalUUID);
+				 goals.setPercentageDone(100d);
+				 performanceGoalsService.savePerformanceGoals(goals);
+				 
+				 if(goals.getGoalId() != null) {
+					    double percentage = performanceGoalsService.getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(goals.getGoalId().getId());
+						String parentGoalPercentageDone =  String.format("%.2f", percentage);
+						PerformanceGoals parentGoal = performanceGoalsService.getPerformanceGoalsById(goals.getGoalId().getId());
+						parentGoal.setPercentageDone(Double.valueOf(parentGoalPercentageDone));
+						performanceGoalsService.savePerformanceGoals(parentGoal);
+				 }
+				 response.setResponse(Result.SUCCESS.name());
+				 response.setResponseMessage(Result.SUCCESS.getValue());
+			 }else {
+	    		 response.setResponse(Result.INVALID_DATA.name());
+				 response.setResponseMessage(Result.INVALID_DATA.getValue());
+	    	 }
+			}catch (Exception e) {
+				e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return response;
+		}
+	 	
+	 	
+	 	
 }
