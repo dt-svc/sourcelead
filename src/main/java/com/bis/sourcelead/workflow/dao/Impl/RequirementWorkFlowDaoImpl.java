@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -106,17 +107,31 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		}
 	}
 
-	@Override
-	public void saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages){
+/*	@Override
+	public RequirementWorkFlowStages saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages){
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.saveOrUpdate(requirementWorkFlowStages);
+			return requirementWorkFlowStages;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return null;
 		}
 
-	}     
-       
+	} */    
+	@Override
+	public RequirementWorkFlowStages saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages){
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(requirementWorkFlowStages);
+			return requirementWorkFlowStages;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+	
 	@Override
 	public ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowsByOrgLocationId(
 			RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations) throws Exception {
@@ -502,7 +517,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 					workFlowTasksDTO.setWorkFlowTaskName(workFlow.getWorkFlowTaskName());
 					workFlowTasksDTO.setAssignToUserId(userName.toString());
 					workFlowTasksDTO.setPriority(workFlow.getPriority());
-					workFlowTasksDTO.setDescription(workFlow.getDescription());
+					workFlowTasksDTO.setWorkFlowTaskDescription(workFlow.getDescription());
 					requirementWorkFlowTasksDTOList.add(workFlowTasksDTO);
 					}
 				}
@@ -534,4 +549,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		}
 		return istrue;
 	}
+
+
 }
