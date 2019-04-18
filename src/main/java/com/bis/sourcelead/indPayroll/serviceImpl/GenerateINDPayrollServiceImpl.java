@@ -59,8 +59,8 @@ import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.PayrollPaySlipIndService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.TaxService;
-import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.timesheet.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
