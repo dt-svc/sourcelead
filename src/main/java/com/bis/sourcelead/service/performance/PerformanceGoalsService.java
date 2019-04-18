@@ -32,4 +32,8 @@ public interface PerformanceGoalsService {
 	
 	List<PerformanceGoalsAssignToDTO> getPerformanceGoalsAssignedUsersList(String goalUUID,String dateFormat) throws Exception;
 	
+	Integer getPerformanceSubGoalsPercentageDoneCount(Long goalId) throws Exception;
+	
+	//Integer getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(Long goalId) throws Exception;
+	
 }

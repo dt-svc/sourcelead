@@ -107,6 +107,9 @@ function PerformanceGoals(){
 					        	 $(".Editor-editor").html(response.object.description);
 			        		 }
 			        		 
+			        		 document.getElementById("percentageDoneDiv").style.display="";
+			        		 $("#percentageDone").val(response.object.percentageDone);
+			        		 $('.selectpicker').selectpicker('refresh');
 			        		 
 			        		 if(response.object.attachmentsList != null && response.object.attachmentsList.length > 0){
 				        		   var result = '';
@@ -485,7 +488,7 @@ function PerformanceGoals(){
 								        		 
 								        		 result = result+'<div class="clearfix col-md-3">' ;
 								        		 result = result+'<a class="text-primary textBold cursorPointer">Mark as completed</a>&nbsp;&nbsp;&nbsp;' ;
-								        		 result = result+'<a href='+pmsUrl+'/addNewGoal?goalUUID='+goalUUID+'><i class="fa fa-pencil cursorPointer" title="Edit"></i></a>&nbsp;&nbsp;&nbsp;' ;
+								        		 result = result+'<a href='+pmsUrl+'/addNewSubGoal?goalUUID='+goalUUID+'><i class="fa fa-pencil cursorPointer" title="Edit"></i></a>&nbsp;&nbsp;&nbsp;' ;
 								        		 result = result+'<a><i class="fa fa-trash cursorPointer" title="Delete"></i></a>&nbsp;&nbsp;&nbsp;' ;
 								        		 result = result+'</div>' ;
 								        		 result = result+'</div>' ;
@@ -671,7 +674,7 @@ function PerformanceGoals(){
 							 
 							 
 							 if ($('#addGoalsComment_form').validate(false, validationSettings)){ 
-								 $("#goalsDetailsLoading").attr('style','position:absolute; width:150%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+								 $("#goalsDetailsLoading").attr('style','position:absolute; width:100%; height:250%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 							        var formData = {};
 									var mentionedUserIds = selectedUsers.toString();
 									var goalComments = $("#goalsComment").html();

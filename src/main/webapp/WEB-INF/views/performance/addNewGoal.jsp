@@ -77,15 +77,38 @@ window.onload = function () {
 					         </div>
 				        </div>
 				        
-					<div class="form-group">
-						  <label class="col-md-3">Assign To</label>
-						  <div class="col-md-9">
-								<select  multiple class="chosen-select form-control"
-												name="goalsAssignTo" 
-												id="goalsAssignTo" data-validation="required" field-name="Assign To">
-								</select>         	
-						  </div>
+						<div class="form-group">
+							  <label class="col-md-3">Assign To</label>
+							  <div class="col-md-9">
+									<select  multiple class="chosen-select form-control"
+													name="goalsAssignTo" 
+													id="goalsAssignTo" data-validation="required" field-name="Assign To">
+									</select>         	
+							  </div>
 						</div>
+						
+						
+					<div class="form-group" id="percentageDoneDiv" style="display: none;">
+						<label class="col-md-3">Percentage Done (%)</label>
+						<div class="col-md-9">
+							<select class="selectpicker form-control" id="percentageDone"
+								name="percentageDone" 
+								field-name="Percentage Done" data-validation-optional="true">
+								<option value="">--Select Percentage Done--</option>
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="20">20</option>
+								<option value="30">30</option>
+								<option value="40">40</option>
+								<option value="50">50</option>
+								<option value="60">60</option>
+								<option value="70">70</option>
+								<option value="80">80</option>
+								<option value="90">90</option>
+								<option value="100">100</option>
+							</select>
+						</div>
+					</div>
         
 		    	 	 </div>
 		    	 	 

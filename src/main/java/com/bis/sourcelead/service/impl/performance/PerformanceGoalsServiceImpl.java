@@ -101,7 +101,13 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 			goals.setDescription(null);
 		}
 		
-		
+		if(performanceGoalsDTO.getPercentageDone() != null) {
+			goals.setPercentageDone(performanceGoalsDTO.getPercentageDone());
+			if(goals != null && goals.getGoalId() != null) {
+				PerformanceGoals parentGoal = getPerformanceGoalsById(goals.getGoalId().getId());
+				
+			}
+		}
 		
 		if(performanceGoalsAssignToSet != null) {
 			List<Long> goalAssignedUserIds = new ArrayList<>();
@@ -245,6 +251,11 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 	public List<PerformanceGoalsAssignToDTO> getPerformanceGoalsAssignedUsersList(String goalUUID, String dateFormat)
 			throws Exception {
 		return performanceGoalsDao.getPerformanceGoalsAssignedUsersList(goalUUID, dateFormat);
+	}
+
+	@Override
+	public Integer getPerformanceSubGoalsPercentageDoneCount(Long goalId) throws Exception {
+		return performanceGoalsDao.getPerformanceSubGoalsPercentageDoneCount(goalId);
 	}
 
 }

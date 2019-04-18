@@ -79,7 +79,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<PerformanceGoals> performanceGoals = new ArrayList<PerformanceGoals>();
 		logger.debug("getPerformanceGoalsById  start");
-		performanceGoals = session.createQuery("from PerformanceGoals goals where goals.id = :id " ).setLong( "id", goalId).list();
+		performanceGoals = session.createQuery("from PerformanceGoals goals left join fetch goals.goalId where goals.id = :id " ).setLong( "id", goalId).list();
 		logger.debug("getPerformanceGoalsById  end");
 		if (performanceGoals.size() > 0) {
 			return performanceGoals.get(0);
@@ -623,6 +623,24 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 		}
   
 		return goalsAssignToList;
+	}
+
+	@Override
+	public Integer getPerformanceSubGoalsPercentageDoneCount(Long goalId) throws Exception {
+	
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		
+		String query = 	 "SELECT " + 
+				"SUM(GOALS.PERCENTAGE_DONE) AS percentageDone " +
+				"FROM " + 
+				"PERFORMANCE_GOALS GOALS WHERE " + 
+				"GOALS.GOAL_ID = :goalId AND GOALS.STATUS = '1' " ;
+		
+		List<BigInteger> countlist = session.createSQLQuery(query).setLong("goalId", goalId).list();
+		Integer percentageDone = countlist.iterator().next().intValue();
+		
+		return percentageDone;
 	}
 
 }
