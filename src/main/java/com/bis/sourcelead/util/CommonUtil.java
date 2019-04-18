@@ -68,6 +68,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dao.RequirementOffersDao;
 import com.bis.sourcelead.dao.ShiftDao;
 import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
@@ -104,9 +105,10 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.Shift;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
@@ -273,6 +275,9 @@ public class CommonUtil {
 	
 	@Autowired
 	ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
+	
+	@Autowired
+	RequirementOffersDao requirementOffersDao;
 	
 	@Autowired
 	PayrollPaySlipIndService payrollPaySlipIndService;
@@ -1887,12 +1892,20 @@ public class CommonUtil {
 				
 				candidate.setIsAssociate(Constants.NO);
 				candidate.setDesignationType("W-2");
-				candidate.setWorkLocation(candidateDTO.getWorkLocation());
+				if(candidateDTO.getWorkLocation() != null) {
+					OrgLocations workLocation = new OrgLocations();
+					workLocation.setId(candidateDTO.getWorkLocation());
+					candidate.setWorkLocation(workLocation);
+				}
 				candidate.setStatus(1);
 	  			Candidate savedCandidate = candidateService.saveOrUpdateCandidate(candidate);
 	  			candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
 			  }else {
-				  candidate.setWorkLocation(candidateDTO.getWorkLocation());
+				  if(candidateDTO.getWorkLocation() != null) {
+						OrgLocations workLocation = new OrgLocations();
+						workLocation.setId(candidateDTO.getWorkLocation());
+						candidate.setWorkLocation(workLocation);
+					}
 				  candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			  }
 			  
@@ -2680,7 +2693,38 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
   public String saveJoinStatusInSubmission(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, Long submissionId, OrgLocations orgLocations, User user) throws Exception {
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		if(!requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.JOINED)) {
-			// to update submission history
+			
+			// update offer status with out offer accepting and update submission and
+			// history
+			if (requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.OFFERMADE)) {
+				RequirementSubmissionHistory requirementSubmissionHistory1 = new RequirementSubmissionHistory();
+				requirementSubmissionHistory1.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+				requirementSubmissionHistory1.setToStage("OFFERACCEPTED");
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
+						requirementSubmissionHistory1, requirementSubmission.getCreatedBy());
+				List<RequirementOffers> offersList = requirementOffersDao.getRequirementOfferSubmissionByIdAndOrgLocationId(submissionId, orgLocations.getId());
+				offersList.forEach(requirementOffers -> {
+					if (requirementOffers != null) {
+						if (requirementOffers.getOfferStatus().equalsIgnoreCase("CLIENT_OFFERMADE")) {
+							requirementOffers.setOfferStatus("CLIENT_OFFERACCEPTED");
+						} else {
+							requirementOffers.setOfferStatus("OFFERACCEPTED");
+						}
+
+						requirementOffers.setUpdatedBy(user.getUserCode());
+						requirementOffers.setUpdatedDate(this.currentDate());
+						try {
+							requirementOffersDao.storeRequirementOffers(requirementOffers);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 			requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
 			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
