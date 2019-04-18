@@ -130,7 +130,7 @@
           <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-9">
             <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
-								data-validation="required validate_length length1-100">
+								data-validation="required validate_length length1-100"">
           </div>
         </div>
       </div>
@@ -278,8 +278,17 @@ $(document).ready(function() {
 	getRequirementQuestionnaireTemplates();
 	//getRequirementWorkflowTasks();
 	
+	$("#saveTaskButton").attr("disabled", true);
+	$('#stageName').keyup(function(){
+	    if($(this).val().length !=0)
+	    	$("#saveTaskButton").attr("disabled", false);           
+	    else
+	    	$("#saveTaskButton").attr("disabled", true);
+	})
+	
 });
 </script>
+
 <script>
 function saveRequirementWorkflowStage(workflowUuid){
 	 var validationSettings = {
@@ -420,7 +429,7 @@ function getAllActiveUsersList(rowId){
 		url : sourceleadUrl + "/getAllActiveUsersList",
 		success : function(dataList){
 			var result = "";
-			result = result + "<select class='sel form-control' id = 'user"+rowId+"' name ='taskList["+rowId+"].user' >";
+			result = result + "<select class='sel form-control' id = 'user"+rowId+"' name ='taskList["+rowId+"].assignToUserId' >";
 			result = result + "<option selected>Select</option>";
 			if(dataList != null && dataList.length > 0){
 				 for(var i = 0 ; i < dataList.length; i++){
@@ -460,7 +469,7 @@ function prepareDynamicworkflowTask(rowId){
 	dynamicTask = dynamicTask + "<div class='form-group'>";
 	dynamicTask = dynamicTask + "<label class='col-md-3'>Assign To</label>";
 	dynamicTask = dynamicTask + "<div class='col-md-9' id = 'dynamicUserDiv"+rowId+"' >";
-	dynamicTask = dynamicTask + "<select class='sel form-control' id = 'user"+rowId+"' name ='taskList["+rowId+"].user' >";
+	dynamicTask = dynamicTask + "<select class='sel form-control' id = 'user"+rowId+"' name ='taskList["+rowId+"].assignToUserId' >";
 	dynamicTask = dynamicTask + "<option selected>Select</option>";
 	dynamicTask = dynamicTask + " </select>	</div>  </div>";
 	
@@ -479,8 +488,8 @@ function prepareDynamicworkflowTask(rowId){
 	dynamicTask = dynamicTask + "<div class='clearfix'>";
 	dynamicTask = dynamicTask + "<label class='col-md-12'>Description</label>";
 	dynamicTask = dynamicTask + "<div class='col-md-12 descriptionTxtarea'>";
-	dynamicTask = dynamicTask + "<textarea class='form-control' cols='2' id='taskDescription"+rowId+"' placeholder='Description' field-name='summerNote'";
-	dynamicTask = dynamicTask + "data-validation='validate_length length1-500' data-validation-optional='true' name ='taskList["+rowId+"].taskDescription' ></textarea>";
+	dynamicTask = dynamicTask + "<textarea class='form-control' cols='2' id='taskDescription"+rowId+"' name ='taskList["+rowId+"].workFlowTaskDescription'  placeholder='Description'";
+	dynamicTask = dynamicTask + "field-name='summerNote' data-validation='validate_length length1-500' data-validation-optional='true' ></textarea>";
 	dynamicTask = dynamicTask + "</div> </div>";
 	dynamicTask = dynamicTask + "<div class='clearfix'></div>";
 	dynamicTask = dynamicTask + "</div> </div>";
