@@ -16,7 +16,7 @@ public class RequirementWorkFlowTasksDTO extends SearchDTO {
 
 	private String priority;
 	
-	private String 	description;
+	private String 	taskDescription;
 
 	
 	private String uuid;
@@ -24,6 +24,8 @@ public class RequirementWorkFlowTasksDTO extends SearchDTO {
 	private Integer status;
 	
 	private String requirementWorkFlowUuid;
+	
+	private String user;
 
 	public long getId() {
 		return id;
@@ -75,11 +77,11 @@ public class RequirementWorkFlowTasksDTO extends SearchDTO {
 	}
 
 	public String getDescription() {
-		return description;
+		return taskDescription;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setDescription(String taskDescription) {
+		this.taskDescription = taskDescription;
 	}
 
 	
@@ -116,5 +118,14 @@ public class RequirementWorkFlowTasksDTO extends SearchDTO {
 		this.requirementWorkFlowUuid = requirementWorkFlowUuid;
 	}
 
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	
 
 }

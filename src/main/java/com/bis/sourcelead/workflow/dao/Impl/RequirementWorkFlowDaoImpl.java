@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -106,17 +107,31 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		}
 	}
 
-	@Override
-	public void saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages){
+/*	@Override
+	public RequirementWorkFlowStages saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages){
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.saveOrUpdate(requirementWorkFlowStages);
+			return requirementWorkFlowStages;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return null;
 		}
 
-	}     
-       
+	} */    
+	@Override
+	public RequirementWorkFlowStages saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages){
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(requirementWorkFlowStages);
+			return requirementWorkFlowStages;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+	
 	@Override
 	public ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowsByOrgLocationId(
 			RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations) throws Exception {
@@ -533,5 +548,36 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 			e.printStackTrace();
 		}
 		return istrue;
+	}
+
+	@Override
+	public RequirementWorkFlowStages getDefaultWorkFlowStageByOrgLocationId(OrgLocations orgLocations)
+			throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.orgLocationId.id = :orgLocationId and "
+					+ "requirementWorkFlowStages.stageName like '"+Constants.DEFAULT_WORKFLOW_STAGE+"'";
+			RequirementWorkFlowStages requirementWorkFlowStages = (RequirementWorkFlowStages)session.createQuery(query)
+					.setParameter("orgLocationId", orgLocations.getId()).uniqueResult();
+			return requirementWorkFlowStages;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public RequirementWorkFlow getDefaultWorkFlowOrgLocationId(OrgLocations orgLocations) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id = :orgLocationId and "
+					+ "requirementWorkFlow.workFlowName like '"+Constants.DEFAULT_JOB_WORKFLOW+"'";
+			RequirementWorkFlow requirementWorkFlow = (RequirementWorkFlow)session.createQuery(query)
+					.setParameter("orgLocationId", orgLocations.getId()).uniqueResult();
+			return requirementWorkFlow;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
