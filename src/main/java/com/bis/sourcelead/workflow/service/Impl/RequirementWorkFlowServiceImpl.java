@@ -4,7 +4,9 @@ package com.bis.sourcelead.workflow.service.Impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -17,6 +19,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.indPayroll.entity.AssociatePayrollPayheadHistory;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
@@ -35,6 +38,7 @@ import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowService {
 	private static final Logger logger = LoggerFactory.getLogger(RequirementWorkFlowServiceImpl.class);
 	
+
 	@Autowired
 	private CommonUtil commonUtil;
 	
@@ -333,16 +337,15 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	@Override
 	public void saveRequirementWorkflowStageByWorkflowIdAndOrgLocationId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, RequirementWorkFlowStages requirementWorkFlowStages, Long id, User user) throws Exception{
 		
-		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = new RequirementQuestionnaireTemplate(); 
-		RequirementWorkFlowStages newStages = new RequirementWorkFlowStages();
-		
-		
 		OrgLocations orglocations = new OrgLocations();
 		orglocations.setId(id);
+	
+		
+		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = new RequirementQuestionnaireTemplate(); 
 		
 		
 		RequirementWorkFlowStages workFlowStage = new RequirementWorkFlowStages();
-		workFlowStage.setId(newStages.getId());
+		//workFlowStage.setId(defaultWorkFlowStages.getId());
 		workFlowStage.setRequirementWorkFlowId(requirementWorkFlowStages.getRequirementWorkFlowId());
 		
 		if(requirementWorkFlowStagesDTO.getRequirementQuestionnaireTemplateId() != null) {
@@ -355,13 +358,42 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		workFlowStage.setDescription(requirementWorkFlowStagesDTO.getDescription());
 		workFlowStage.setSeqOrder(requirementWorkFlowStages.getSeqOrder());
 		workFlowStage.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-		workFlowStage.setConfigureType(Constants.DEFAULT);
+		workFlowStage.setConfigureType(Constants.CLIENT);
 		workFlowStage.setEditable(Constants.YES);
 		workFlowStage.setStatus(Constants.RECORD_ACTIVE);
 		workFlowStage.setCreatedDate(new Date());
 		workFlowStage.setCreatedBy(user);
 		workFlowStage.setUpdatedDate(new Date());
 		workFlowStage.setUpdatedBy(user);
+		
+		//task saving..
+		User assignedUser = new User();
+		Set<RequirementWorkFlowTasks> requirementWorkFlowTasks = new HashSet<RequirementWorkFlowTasks>();
+		
+		if(requirementWorkFlowStagesDTO.getTaskList() != null && requirementWorkFlowStagesDTO.getTaskList().size() > 0) {
+			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTO = requirementWorkFlowStagesDTO.getTaskList();
+			for(RequirementWorkFlowTasksDTO workFlowTasksDTO : requirementWorkFlowTasksDTO) {
+				RequirementWorkFlowTasks tasks = new RequirementWorkFlowTasks();
+				tasks.setRequirementWorkFlowStagesId(workFlowStage);
+				tasks.setOrgLocationId(orglocations);
+				tasks.setWorkFlowTaskName(workFlowTasksDTO.getWorkFlowTaskName());
+				
+				//assignedUser.setId(Long.parseLong(workFlowTasksDTO.getAssignToUserId()));
+				//tasks.setAssignTo(assignedUser);
+				
+				tasks.setPriority(workFlowTasksDTO.getPriority());
+				tasks.setDescription(workFlowTasksDTO.getDescription());
+				tasks.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				tasks.setStatus(Constants.RECORD_ACTIVE);
+				tasks.setCreatedDate(new Date());
+				tasks.setCreatedBy(user);
+				tasks.setUpdatedDate(new Date());
+				tasks.setUpdatedBy(user);
+				requirementWorkFlowTasks.add(tasks);
+			}
+			requirementWorkFlowStagesDTO.setWorkflowTasks(requirementWorkFlowTasks);
+		}
+		workFlowStage.setWorkflowTasks(requirementWorkFlowStagesDTO.getWorkflowTasks());
 		
 		requirementWorkFlowDao.saveRequirementWorkFlowStagesByOrgLocationId(workFlowStage);		
 	}
