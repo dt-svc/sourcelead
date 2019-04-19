@@ -22,8 +22,8 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
-
-import com.bis.sourcelead.service.impl.TimesheetEntriesServiceImpl;
+import com.bis.sourcelead.timesheet.service.TimesheetEntriesService;
+import com.bis.sourcelead.timesheet.service.impl.TimesheetEntriesServiceImpl;
 import com.bis.sourcelead.util.CommonUtil;
 
 

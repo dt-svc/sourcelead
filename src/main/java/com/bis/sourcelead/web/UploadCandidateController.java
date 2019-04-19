@@ -58,9 +58,18 @@ public class UploadCandidateController {
 		@RequestMapping(value = "/downloadCreateCandidateTemplate", method = RequestMethod.GET)
 		public void downloadCreateCandidateTemplate(HttpServletRequest request,HttpServletResponse response) throws IOException, URISyntaxException{
 			
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
 			File file = null;
-			String fn;	
-			fn = "/templates/Candidate_import_Template.xlsx";
+			String fn;
+			
+			
+			if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+				fn = "/templates/Candidate_import_Template.xlsx";
+			}else {
+				fn = "/templates/Candidate_import_US_Template.xlsx";
+			}
+			
 			URL url = getClass().getResource(fn);
 		     file = new File(url.toURI());
 
