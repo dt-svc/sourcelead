@@ -339,7 +339,12 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 	@Override
 	public void deleteRequirementWorkFlowStagesByuuid(String uuid) {
-		requirementWorkFlowDao.deleteRequirementWorkFlowStagesByuuid(uuid);
+		try {
+		RequirementWorkFlowStages requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkFlowStagesByUuid(uuid);
+		requirementWorkFlowDao.deleteRequirementWorkFlowStagesByuuid(requirementWorkFlowStages.getId());
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 

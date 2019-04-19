@@ -60,7 +60,7 @@ public interface RequirementWorkFlowDao {
 	
 	List<RequirementWorkFlowStages> getRequirementWorkFlowStagesListByOrgLocationId(Long orgLocationId);
 
-	void deleteRequirementWorkFlowStagesByuuid(String uuid);
+	void deleteRequirementWorkFlowStagesByuuid(Long id);
 	
 	List<RequirementQuestionnaireTemplate> getRequirementQuestionnaireTemplates(Long id)throws Exception;
 	
