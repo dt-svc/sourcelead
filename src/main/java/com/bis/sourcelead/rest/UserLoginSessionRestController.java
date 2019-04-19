@@ -83,6 +83,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserLoginSessionRes
 		 
 	 @RequestMapping(value = "/rest/", method = RequestMethod.POST)
 	 public void authenticate() {
+		 System.out.println("enter.......");
 	 }
 		 
 	 @RequestMapping(value = "/rest/loginUserProfile", method = RequestMethod.GET)
