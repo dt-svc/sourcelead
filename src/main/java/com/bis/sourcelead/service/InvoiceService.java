@@ -139,5 +139,7 @@ public interface InvoiceService {
 	
 	Map<String, String> sendInvoiceMailToOthers(User user, OrgLocations orglocations, Invoice invoice,String invoiceType,List<TimesheetSubmissionsDocuments> docusList,String otherEmails) throws Exception;
 
+	void sendInvoiceReminderMailToNotifyOthers(User user, OrgLocations orgLocation, Invoice invoice, String invoiceType, List<TimesheetSubmissionsDocuments> docusList,String otherEmails) throws Exception;
+
 
 }
