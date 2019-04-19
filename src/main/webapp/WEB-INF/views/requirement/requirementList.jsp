@@ -333,7 +333,6 @@ $(document.body).on('change', '#uploadBtn' ,function(){
 </script>
 <script>
 
-<<<<<<< HEAD
 //inlcuded in jsp due to jstl tags inclusion.
 //inlcuded in jsp due to jstl tags inclusion.
 function getTeamsList(reqId){
@@ -695,7 +694,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	};
 	
 }
-=======
+
 <jsp:include page="requirementTable.jsp" />
 <jsp:include page="requirementAssignedTo.jsp"/>
 <!-- <script type="text/javascript" src="/resources/js/requirementTable.js"></script> -->
@@ -735,7 +734,6 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
          <div class="clearfix"></div>
      </ul>
 	</div>
->>>>>>> c260c83988b6f10109026bc2eb21bd079b51c067
 
 
 </script>
