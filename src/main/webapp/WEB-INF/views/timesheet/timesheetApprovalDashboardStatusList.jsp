@@ -9,9 +9,12 @@
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
 
+<!--###############################  Inner Jsp for Common operation in approval and dashboardcountlist page ############################### -->
 <jsp:include page="timesheetApprovalCommonScripts.jsp" />
-<div id="TimeshgeetStatusListId"></div>
 
+
+
+<div id="TimeshgeetStatusListId"></div>
  <body  onclick="bodyClick();">
  
       <section class="content-wraper">
@@ -58,7 +61,8 @@
 						        <th>Stage</th>                 
 						        <th>Action</th>                
 						    </tr>                              
-						   </thead>                               
+						   </thead>   
+						   <!--###############################  list of assigned projectmembers for to fill/approve/reject their timesheets ############################### -->                            
 							<tbody id="timesheetApprList">
 								<jsp:include page="timesheetDashboardTableData.jsp" />
 						   </tbody>                              
@@ -95,7 +99,7 @@
 
 <script type="text/javascript">
 window.onload = function () {
-	filter();
+	getTimesheetApprovalListByStatus();
  };
 </script>
 
@@ -109,7 +113,7 @@ window.onload = function () {
 	});
 </script>
  <script type="text/javascript">
-function filter(){
+function getTimesheetApprovalListByStatus(){
 	var status = '${status}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var pageSize = $("#pageSize").val();

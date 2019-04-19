@@ -2406,35 +2406,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 }
 		}
 	
-	public static TimesheetActivities getTimesheetActivity(SubmissionApproverHierarchy sah,String activityStatus) {
-		TimesheetActivities timesheetActivity = new TimesheetActivities();
-	/*	if(sah != null) {
-			timesheetActivity = new TimesheetActivities();
-			timesheetActivity.setProjectId(sah.getSubmissionId().getProjects());
-			timesheetActivity.setActivityStatus(activityStatus.toUpperCase());
-			timesheetActivity.setMasterCandidate(sah.getSubmissionId().getMasterCandidateId());
-			timesheetActivity.setFrequencyStartDate(sah.getFrequencyStartDate());
-			timesheetActivity.setFrequencyEndDate(sah.getFrequencyEndDate());
-			timesheetActivity.setRejectedReason(sah.getRejectedReason());
-			timesheetActivity.setActionPerformedBy(sah.getActionPerformedBy());
-			timesheetActivity.setActionPerformedByOrgLocationId(sah.getActionPerformedByOrgLocationId());
-			timesheetActivity.setStatus(sah.getStatus());
-			timesheetActivity.setReopenedUser(sah.getReopenedUser());
-			timesheetActivity.setReopenReason(sah.getReopenReason());
-			timesheetActivity.setReopenRejectedReason(sah.getReopenRejectedReason());
-			Date createdDate = addCurrentTimeToDate(sah.getCreatedDate());
-			timesheetActivity.setCreatedDate(createdDate);
-			timesheetActivity.setCreatedBy(sah.getCreatedBy());
-			timesheetActivity.setActionPerformedbyUserId(sah.getTimesheetActivityLoginUser());
-			if(sah.getSubmissionId() != null) {
-				timesheetActivity.setWeekComments(sah.getSubmissionId().getWeekcomments());
-			}
-			timesheetActivity.setWeekTotal(sah.getSubmissionId().getTotalHours());
-			timesheetActivity.setWeekTotalBillable(sah.getSubmissionId().getBillableHours());
-			timesheetActivity.setWeekTotalNonBillable(sah.getSubmissionId().getNonBillableHours());
-		}*/
-		return timesheetActivity;
-	}
+	
 	
 	
   private static Date addCurrentTimeToDate(Date createdDate) {

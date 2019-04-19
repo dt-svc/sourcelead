@@ -15,7 +15,7 @@
 	  </div>
 	  </c:if>
 	  <div id='timesheetEntriesDivByInvoiceFrequency'>
-	     <jsp:include page="employeeWeekFrequencyList.jsp"></jsp:include>
+	     <jsp:include page="timesheetWeekFrequencyList.jsp"></jsp:include>
 	  </div>
 	  
 </div>
