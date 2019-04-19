@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
@@ -44,6 +45,6 @@ public interface EmailScenarioConfigurationService {
 	
 	Boolean validateParser(String parserEmailId,Long orgLocId);
 
-	int changeDefaultParserEmailConfig(String uuid, Long orgLocationId, boolean activeFlag);
+	int changeDefaultParserEmailConfig(String uuid, Long orgLocationId, boolean activeFlag, Date updatedDate);
 
 }
