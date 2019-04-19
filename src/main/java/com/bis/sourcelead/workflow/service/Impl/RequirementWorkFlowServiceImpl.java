@@ -478,8 +478,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	}
 	
 	@Override
-	public Boolean deleteApplicationWorkFlowByuuid(String workflowuuid) {
-		return requirementWorkFlowDao.deleteApplicationWorkFlowByuuid(workflowuuid);
+	public Boolean deleteApplicationWorkFlowByuuid(String workflowuuid) throws Exception{
+		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(workflowuuid);
+		return requirementWorkFlowDao.deleteApplicationWorkFlowByuuid(requirementWorkFlow.getId());
 	}
 
 
