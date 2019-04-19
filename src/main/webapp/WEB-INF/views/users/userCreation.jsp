@@ -1204,6 +1204,18 @@ function getAssociateUserDetails(){
 				    	 if(json['dateofBirthString'] != null && json['dateofBirthString'] != "" && json['dateofBirthString'] != "undefined"){
 				    		 $("#dateofBirth").val(json['dateofBirthString']); 
 				    	 }
+				    	 
+				    	 if(json['panNumber'] != null && json['panNumber'] != "" && json['panNumber'] != "undefined"){
+				    		 $("#panNumber").val(json['panNumber']); 
+				    	 }
+				    	 
+				    	 if(json['aadharNumber'] != null && json['aadharNumber'] != "" && json['aadharNumber'] != "undefined"){
+				    		 $("#aadharNumber").val(json['aadharNumber']); 
+				    	 }
+				    	 
+				    	 if(json['ssnNumber'] != null && json['ssnNumber'] != "" && json['ssnNumber'] != "undefined"){
+				    		 $("#ssnNumber").val(json['ssnNumber']); 
+				    	 }
 	        		  
 	        		  $("#designationType").selectpicker('refresh');
 	        		  employementType(json['designationType']);
