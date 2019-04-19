@@ -218,24 +218,29 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					BigDecimal amount = BigDecimal.ZERO;
 					BigDecimal regularHoursAmount = BigDecimal.ZERO;
 					List<TotalHoursDTO> totalHoursDto = userGroupDao.getTotalHoursByCandidateId(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
-					Map<BigInteger, List<TotalHoursDTO>> map = totalHoursDto.stream().collect(Collectors.groupingBy(TotalHoursDTO::getProjectId));
-					for (Map.Entry<BigInteger, List<TotalHoursDTO>> entry : map.entrySet()) {
-						BigDecimal projectGross = BigDecimal.ZERO;
-						double projectTotalHours = 0;
-						BigDecimal projectPayRate = BigDecimal.ZERO;
-						if(entry.getValue() !=null ) {
-							for(TotalHoursDTO totalHoursDTO : entry.getValue()) {
-								projectPayRate = new BigDecimal(totalHoursDTO.getPayRate());
-								if(StringUtils.isNotBlank(totalHoursDTO.getBillableHours())) {
-									projectTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getBillableHours()),projectTotalHours);
+					try {
+						Map<BigInteger, List<TotalHoursDTO>> map = totalHoursDto.stream().collect(Collectors.groupingBy(TotalHoursDTO::getProjectId));
+						for (Map.Entry<BigInteger, List<TotalHoursDTO>> entry : map.entrySet()) {
+							BigDecimal projectGross = BigDecimal.ZERO;
+							double projectTotalHours = 0;
+							BigDecimal projectPayRate = BigDecimal.ZERO;
+							if(entry.getValue() !=null ) {
+								for(TotalHoursDTO totalHoursDTO : entry.getValue()) {
+									projectPayRate = new BigDecimal(totalHoursDTO.getPayRate());
+									if(StringUtils.isNotBlank(totalHoursDTO.getBillableHours())) {
+										projectTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(totalHoursDTO.getBillableHours()),projectTotalHours);
+									}
 								}
 							}
+							projectGross = getTotalAmount(projectTotalHours,projectPayRate);
+							amount = amount.add(projectGross);
+							payRate = payRate.add(projectPayRate);
+							totalHours = totalHours + projectTotalHours;
 						}
-						projectGross = getTotalAmount(projectTotalHours,projectPayRate);
-						amount = amount.add(projectGross);
-						payRate = payRate.add(projectPayRate);
-						totalHours = totalHours + projectTotalHours;
-					} 
+					}catch (Exception ex) {
+						ex.printStackTrace();
+					}
+					 
 					regularHoursAmount = amount;
 				    if(PayrollConstant.SALARY.equalsIgnoreCase(assoSal.getPayType())) {
 						 amount = assoSal.getGrossSalary();
@@ -410,6 +415,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 						String fromYear = financialYearStr.get(0);
 						String toYear = financialYearStr.get(1);
 						
+						//age calulation
 						int age = 0;
 						if(assoSal.getCandidate().getConsultantUser().getDateOfBirth() != null) {
 							LocalDate today = LocalDate.now();  //Today's date
@@ -418,6 +424,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 							age = p.getYears();
 						}
 						
+						//Eligible percent of tax based on age and salary
 						Double taxPercent = 0d;
 						//List<Tds> tdsList = taxService.getTDSListByFinancialYear(fromYear + "-" + toYear);
 						if(preCheckINDPayrollDTO != null && preCheckINDPayrollDTO.getTdsList() != null && preCheckINDPayrollDTO.getTdsList().size() > 0) {
