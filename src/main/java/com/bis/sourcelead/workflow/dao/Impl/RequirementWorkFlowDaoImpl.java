@@ -445,13 +445,19 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	
 	
 	@Override
-	public void deleteRequirementWorkFlowStagesByuuid(String uuid) {
+	public void deleteRequirementWorkFlowStagesByuuid(Long id) {
+		Session session = null;
 		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			String query = "delete from RequirementWorkFlowStages stage where stage.uuid = :uuid";
-			session.createQuery(query).setParameter("uuid", uuid).executeUpdate();
+		session = this.sessionFactory.openSession();
+		Object workflowStageObject = session.get(RequirementWorkFlowStages.class, id);
+		RequirementWorkFlowStages stage = (RequirementWorkFlowStages)workflowStageObject;
+		Transaction tx = session.beginTransaction();
+		session.delete(stage);
+		tx.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+		e.printStackTrace();
+		}finally{
+		session.close();
 		}
 	}
 
