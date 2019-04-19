@@ -161,7 +161,7 @@
 											var result = "";           
 											if(opt.submitForApproverStatus != null && opt.submitForApproverStatus != '' && opt.submitForApproverStatus !='undefined' && opt.submitForApproverStatus == 'APPROVED'){
 						                		  result = result +'<div class="tblminwidth-30 clearfix">';
-						                		  result = result +'<a href="<c:url value="${appPath}/indPayrollPaySlipView?empPayrollUUID='+opt.indEmpPayrollUUID+'"/>"  class="fa fa-eye mr" title="Edit"></a>';
+						                		  result = result +'<a href="<c:url value="${appPath}/indPayrollPaySlipView?empPayrollUUID='+opt.indEmpPayrollUUID+'"/>"  class="fa fa-eye mr" title="View"></a>';
 						                		  result = result +'<a class="glyphicon glyphicon-download-alt" title="Download Payslip" onclick="downloadPayslip(\''+opt.indEmpPayrollUUID+'\')"></a>';
 						                		  result = result +'</div>';
 						              		}else{

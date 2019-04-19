@@ -25,7 +25,7 @@
 			  	<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dynamicUserDataTableSearch'/><span class="repSearchIcon" onClick="getDynamciUserList();"></span></li>
 	        </ul>
 		</div>			
-		<div class="project_tabs_inn_table clearfix">
+		<div class="clearfix">
 			<table id="submissionTable">
 				<thead>
 					<tr>
@@ -52,7 +52,7 @@
 					<label class="pull-left">
 					<span class="pull-left mt10 mr5">Show</span>
 						<div class="dropdown-select pull-left mr5 tblminwidth-50">
-							<select id="pageSize" onchange="getFormSubmissionMasterList();">
+							<select id="pageSize" onchange="getFormSubmissionMasterList();" class="form-control" style="width:50px;">
 								<option value="5">5</option>
 								<option value="10">10</option>
 								<option value="15">15</option>

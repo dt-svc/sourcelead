@@ -226,8 +226,16 @@ function datePickeerTest(){
 
 <script>
 function resetValues(){
-	$('#fromDate').val('');
-	$('#toDate').val('');
+	$("#fromDate").val('');
+	$('#fromDate').attr('value', '');
+	$('#fromDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
+	$("#toDate").val('');
+	$('#toDate').attr('value', '');
+	$('#toDate').datepicker( "option" , {
+        minDate: null,
+        maxDate: null} );
 	$('#projectMemberList').val('');
 	$('#designationType').val('');
 	$('#projectList').val('');
