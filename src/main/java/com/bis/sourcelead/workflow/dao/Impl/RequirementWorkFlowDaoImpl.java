@@ -6,11 +6,14 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -531,23 +534,25 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	
 	@Override
 	@Transactional
-	public Boolean deleteApplicationWorkFlowByuuid(String workflowuuid) {
+	public Boolean deleteApplicationWorkFlowByuuid(Long workflowId) {
 		Boolean istrue = false;
+		Session session = null;
 		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			RequirementWorkFlow req = getRequirementWorkFlowByUuid(workflowuuid);
-			String query = "delete from REQUIREMENT_WORKFLOW_STAGES where REQUIREMENT_WORKFLOW_STAGES.REQUIREMENT_WORKFLOW_ID =:workflowid";
-			int res = session.createSQLQuery(query).setLong("workflowid", req.getId()).executeUpdate();
-			if(res > 0) {
-				String query1 = "delete from REQUIREMENT_WORKFLOW where REQUIREMENT_WORKFLOW.UUID =:workflowuuid";
-				int res1 = session.createSQLQuery(query1).setString("workflowuuid", workflowuuid).executeUpdate();
-				istrue =true;
-			}
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
+		session = this.sessionFactory.openSession();
+		Object workflowObject = session.get(RequirementWorkFlow.class, workflowId);
+		RequirementWorkFlow workFlow = (RequirementWorkFlow)workflowObject;
+		Transaction tx = session.beginTransaction();
+		session.delete(workFlow);
+		tx.commit();
+		istrue = true;
 		return istrue;
+		} catch (Exception e) {
+		e.printStackTrace();
+		return false;
+		}finally{
+		session.close();
+		}
+		
 	}
 
 
