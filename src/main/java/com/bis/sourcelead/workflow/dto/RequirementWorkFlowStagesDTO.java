@@ -37,8 +37,6 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 	
 	private List<RequirementWorkFlowTasksDTO> taskList;
 	
-	private Set<RequirementWorkFlowTasks> workflowTasks;
-	
 	public long getId() {
 		return id;
 	}
@@ -151,14 +149,6 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 		this.taskList = taskList;
 	}
 
-	public Set<RequirementWorkFlowTasks> getWorkflowTasks() {
-		return workflowTasks;
-	}
-
-	public void setWorkflowTasks(Set<RequirementWorkFlowTasks> workflowTasks) {
-		this.workflowTasks = workflowTasks;
-	}
-	
 	
 
 }
