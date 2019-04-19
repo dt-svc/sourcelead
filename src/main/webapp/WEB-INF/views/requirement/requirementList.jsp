@@ -694,7 +694,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	};
 	
 }
-
+</script>
 <jsp:include page="requirementTable.jsp" />
 <jsp:include page="requirementAssignedTo.jsp"/>
 <!-- <script type="text/javascript" src="/resources/js/requirementTable.js"></script> -->
@@ -1592,7 +1592,8 @@ function getActions(){
 		 //Adding Customized Job Skills list this method is slead-common.js
 		   tagIt("requirementSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
 
-
+  });
+  </script>
 <!-- advanced filter code is below -->
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="requirementFilterPopup">
 <h5 class="headerAdsrch">Filters <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
@@ -1651,8 +1652,6 @@ function getActions(){
 								</ul>
 				</div>
 							</div>
-							
-						
 						
 						<div  class="col-md-2 varsCheckbox">
 			<label><strong>Status</strong></label>
@@ -1698,9 +1697,6 @@ function getActions(){
 							</div>
 			
 			</div>
-							
-							
-							
 							
 						<div class="col-md-3 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch ">
@@ -1780,9 +1776,6 @@ function getActions(){
 								onclick="resetJobFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
-							
-							
-							
  
 </div>
 <!-- advanced filter code end.-->
