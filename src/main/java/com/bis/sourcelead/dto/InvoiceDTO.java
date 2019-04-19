@@ -94,6 +94,8 @@ public class InvoiceDTO extends SearchDTO {
     private String invoiceDeleteStatus;
     private long invoiceTemplateId;
     
+    private String notifyToOthers;
+    
 	public long getInvoiceTemplateId() {
 		return invoiceTemplateId;
 	}
@@ -557,6 +559,14 @@ public class InvoiceDTO extends SearchDTO {
 
 	public void setIsJobClosure(String isJobClosure) {
 		this.isJobClosure = isJobClosure;
+	}
+
+	public String getNotifyToOthers() {
+		return notifyToOthers;
+	}
+
+	public void setNotifyToOthers(String notifyToOthers) {
+		this.notifyToOthers = notifyToOthers;
 	}
 	
 

@@ -49,9 +49,11 @@ public class OfferLetterTemplateServiceImpl implements OfferLetterTemplateServic
 		offerLetterTemplate.setTemplateName(offerLetterTemplateDTO.getTemplateName());
 		
 		//Letter Head 
-		if(offerLetterTemplateDTO.getLetterHead() != null) {
+		if(offerLetterTemplateDTO.getLetterHead() != null && offerLetterTemplateDTO.getLetterHead()  != "") {
 			LetterHead letterHead = letterHeadService.getLetterheadByUUID(offerLetterTemplateDTO.getLetterHead());
 			offerLetterTemplate.setLetterHeadId(letterHead);
+		}else {
+			offerLetterTemplate.setLetterHeadId(null);
 		}
 		
 		

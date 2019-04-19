@@ -28,6 +28,8 @@ public class ProjectTaskDocumentDTO{
 	@Required(desc="taskComment", dependsOn = "tabType", parentValue = "comment")
 	private String taskComment;
 	
+	private String mentionedUserIds;
+	
 	public String getStaticPath() {
 		return staticPath;
 	}
@@ -106,5 +108,13 @@ public class ProjectTaskDocumentDTO{
 
 	public void setTabType(String tabType) {
 		this.tabType = tabType;
+	}
+
+	public String getMentionedUserIds() {
+		return mentionedUserIds;
+	}
+
+	public void setMentionedUserIds(String mentionedUserIds) {
+		this.mentionedUserIds = mentionedUserIds;
 	}
 }

@@ -137,6 +137,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -289,6 +290,9 @@ public class CandidateServiceImpl implements CandidateService {
     @Autowired
     TabsService tabService;
     
+    @Autowired
+  	ReportsUtil reportsUtil;
+    
        
     protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -417,6 +421,15 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidate.setIsFavourite(0);
 			candidate.setIsFavouriteAssociate(0);
+			
+			if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+				candidate.setAadharNumber(candidateDto.getAadharNumber());
+				candidate.setPanNumber(candidateDto.getPanNumber());
+				}
+			
+			if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
+				candidate.setSsnNumber(candidateDto.getSsnNumber());;
+				}
 			
 			MasterCandidate masterCandidate = null;
 			masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDto);
@@ -1492,7 +1505,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		    }
 			 
 			if(StringUtils.isNotBlank(candidateDTO.getVendors())){
-				candidateDTO.setWorkLocation(candidate.getWorkLocation());
+				if(candidate.getWorkLocation() != null) {
+					candidateDTO.setWorkLocation(candidate.getWorkLocation().getId());
+				}
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateDTO.getVendors()));
 				candidate.setOrgRelationId(orgRelation);
 				Candidate vendorCandidate =  commonUtil.getVendorCandidateForCandidateCreation(candidateDTO, orgRelation, orgLocations, candidateUser);
@@ -3107,66 +3122,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	
 	@Override
 	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole, OrgLocations orgLocations, String creationStartDate, String creationEndDate, String checkedDate, String searchValue)throws Exception {
-		Date today = new Date();
-		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
-		Calendar calendar = Calendar.getInstance();
-		Map<String, Date> dateValue = new HashMap<>();
-		if(checkedDate.equalsIgnoreCase("today")){
-			dateValue.put("fromDate", formattedDate);
-			dateValue.put("toDate", formattedDate);
-		}
-		if(checkedDate.equalsIgnoreCase("1_week")){
-			calendar.setTime(formattedDate);
-			calendar.add(Calendar.DAY_OF_YEAR, -7);
-			Date newDate = calendar.getTime();
-			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
-			dateValue.put("fromDate", formattedDate);
-			dateValue.put("toDate", newFormattedDate);
-		}
-		if(checkedDate.equalsIgnoreCase("Last_Week")){
-			//calendar.setTime(formattedDate);
-			calendar.add(Calendar.DAY_OF_YEAR, -14);
-			Date newDate = calendar.getTime();
-			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
-			calendar.add(Calendar.DAY_OF_YEAR, -7);
-			Date newDate1 = calendar.getTime();
-			Date newFormattedDate1 = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate1);
-			dateValue.put("fromDate", newFormattedDate);
-			dateValue.put("toDate", newFormattedDate1);
-		}
-		if(checkedDate.equalsIgnoreCase("1_month")){
-			calendar.setTime(formattedDate);
-			calendar.add(Calendar.MONTH, -1);
-			Date newDate = calendar.getTime();
-			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
-			dateValue.put("fromDate", formattedDate);
-			dateValue.put("toDate", newFormattedDate);
-		}
-		if(checkedDate.equalsIgnoreCase("1_Month_Ago")){
-			calendar.add(Calendar.MONTH, -2);
-			Date newDate = calendar.getTime();
-			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
-			calendar.add(Calendar.MONTH, -1);
-			Date newDate1 = calendar.getTime();
-			Date newFormattedDate1 = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate1);
-			dateValue.put("fromDate", newFormattedDate);
-			dateValue.put("toDate", newFormattedDate1);
-		}
-		if(checkedDate.equalsIgnoreCase("YTD")){
-			calendar.setTime(formattedDate);
-			calendar.add(Calendar.YEAR, -1);
-			Date newDate = calendar.getTime();
-			Date newFormattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
-			dateValue.put("fromDate", formattedDate);
-			dateValue.put("toDate", newFormattedDate);
-		}
-		if(checkedDate.equalsIgnoreCase("custom")){
-			Date fromDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), creationStartDate);
-			Date toDateVal = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), creationEndDate);
-			dateValue.put("fromDate", toDateVal);
-			dateValue.put("toDate", fromDateVal);
-		}
-		return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, dateValue, searchValue);
+		Date[] checkedDateArray = new Date[0];
+		if(checkedDate != null && !"".equalsIgnoreCase(checkedDate) && !checkedDate.equalsIgnoreCase("custom")){
+			 checkedDateArray = reportsUtil.getJobFilterDate(checkedDate, orgLocations);
+			 }
+		return candidateDao.getCandidateDetailsFromMarketcart(user, userRole, orgLocations, creationStartDate, creationEndDate, checkedDateArray, searchValue);	
 	}
 
 	@Override
@@ -3776,6 +3736,37 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getAllAssociateByLocation(Long orgLocationId) throws Exception {		
 		return candidateDao.getAllAssociateByLocation(orgLocationId);
 	}
+	
+	@Override
+	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateDetailsByPanNumberAndId(panNumber, orgLocationId);
+	}
+
+	@Override
+	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception {
+		return candidateDao.validatePanNumber(panNumber, orgLocationId);
+	}
+
+	@Override
+	public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateDetailsByAadharNoAndId(aadharNumber, orgLocationId);
+	}
+
+	@Override
+	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception {
+		return candidateDao.validateAadharNumber(aadharNumber, orgLocationId);
+	}
+
+	@Override
+	public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateDetailsBySsnNoAndId(ssnNumber, orgLocationId);
+	}
+
+	@Override
+	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception {
+		return candidateDao.validateSsnNumber(ssnNumber, orgLocationId);
+	}
+	
 	
 }
 
