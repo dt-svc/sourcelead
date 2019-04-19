@@ -92,8 +92,15 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 	}
 
 	@Override
-	public PerformanceGoalsDoNutChartCountsDTO getTotalGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+	public PerformanceGoalsDoNutChartCountsDTO getTotalGoalsDoNutChartCounts(Long userId, Long orgLocationId,String performanceGoalType)
 			throws Exception {
+		
+		String goalTypeStr = "";
+		if(performanceGoalType.equalsIgnoreCase("self")) {
+			goalTypeStr = "GOALS.TEAM_ID IS NULL AND ";
+		}else {
+			goalTypeStr = "GOALS.TEAM_ID IS NOT NULL AND ";
+		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		PerformanceGoalsDoNutChartCountsDTO totalCountDTO = new PerformanceGoalsDoNutChartCountsDTO();
@@ -104,7 +111,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " PERFORMANCE_GOALS GOALS,"
 				    + " ORG_LOCATIONS OL"
 				    
-					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
 				    + " OL.ID = :orgLocationId"
@@ -126,7 +133,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    + " PERFORMANCE_GOALS GOALS,"
 						    + " ORG_LOCATIONS OL"
 						    
-							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 							+ " GOALS.CREATED_BY <> :userId AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND ASSIGN.STATUS = '1' AND "
 						    + " OL.ID = :orgLocationId"
@@ -152,8 +159,15 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 	}
 
 	@Override
-	public PerformanceGoalsDoNutChartCountsDTO getInprogressGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+	public PerformanceGoalsDoNutChartCountsDTO getInprogressGoalsDoNutChartCounts(Long userId, Long orgLocationId,String performanceGoalType)
 			throws Exception {
+		
+		String goalTypeStr = "";
+		if(performanceGoalType.equalsIgnoreCase("self")) {
+			goalTypeStr = "GOALS.TEAM_ID IS NULL AND ";
+		}else {
+			goalTypeStr = "GOALS.TEAM_ID IS NOT NULL AND ";
+		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		PerformanceGoalsDoNutChartCountsDTO totalCountDTO = new PerformanceGoalsDoNutChartCountsDTO();
@@ -164,7 +178,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " PERFORMANCE_GOALS GOALS,"
 				    + " ORG_LOCATIONS OL"
 				    
-					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 					+ " (GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
@@ -188,7 +202,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    + " PERFORMANCE_GOALS GOALS,"
 						    + " ORG_LOCATIONS OL"
 						    
-							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 							+ " GOALS.CREATED_BY <> :userId AND ASSIGN.STATUS = '1' AND "
 							+ " (GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
@@ -216,8 +230,16 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 	}
 
 	@Override
-	public PerformanceGoalsDoNutChartCountsDTO getCompletedGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+	public PerformanceGoalsDoNutChartCountsDTO getCompletedGoalsDoNutChartCounts(Long userId, Long orgLocationId,String performanceGoalType)
 			throws Exception {
+		
+		
+		String goalTypeStr = "";
+		if(performanceGoalType.equalsIgnoreCase("self")) {
+			goalTypeStr = "GOALS.TEAM_ID IS NULL AND ";
+		}else {
+			goalTypeStr = "GOALS.TEAM_ID IS NOT NULL AND ";
+		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		PerformanceGoalsDoNutChartCountsDTO totalCountDTO = new PerformanceGoalsDoNutChartCountsDTO();
@@ -228,7 +250,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " PERFORMANCE_GOALS GOALS,"
 				    + " ORG_LOCATIONS OL"
 				    
-					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 					+ " GOALS.PERCENTAGE_DONE = '100' AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
@@ -251,7 +273,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    + " PERFORMANCE_GOALS GOALS,"
 						    + " ORG_LOCATIONS OL"
 						    
-							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 							+ " GOALS.CREATED_BY <> :userId AND ASSIGN.STATUS  ='1' AND "
 							+ " GOALS.PERCENTAGE_DONE = '100' AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
@@ -278,8 +300,16 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 	}
 
 	@Override
-	public PerformanceGoalsDoNutChartCountsDTO getOverDueGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+	public PerformanceGoalsDoNutChartCountsDTO getOverDueGoalsDoNutChartCounts(Long userId, Long orgLocationId,String performanceGoalType)
 			throws Exception {
+		
+		
+		String goalTypeStr = "";
+		if(performanceGoalType.equalsIgnoreCase("self")) {
+			goalTypeStr = "GOALS.TEAM_ID IS NULL AND ";
+		}else {
+			goalTypeStr = "GOALS.TEAM_ID IS NOT NULL AND ";
+		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		PerformanceGoalsDoNutChartCountsDTO totalCountDTO = new PerformanceGoalsDoNutChartCountsDTO();
@@ -290,7 +320,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " PERFORMANCE_GOALS GOALS,"
 				    + " ORG_LOCATIONS OL"
 				    
-					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS ='1' AND "
 					+ " ((GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') || (GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
@@ -314,7 +344,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    + " PERFORMANCE_GOALS GOALS,"
 						    + " ORG_LOCATIONS OL"
 						    
-							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 							+ " GOALS.CREATED_BY <> :userId AND "
 							+ " ((GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') || (GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND ASSIGN.STATUS = '1' AND "
@@ -342,8 +372,15 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 	}
 
 	@Override
-	public PerformanceGoalsDoNutChartCountsDTO getNotStartedGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+	public PerformanceGoalsDoNutChartCountsDTO getNotStartedGoalsDoNutChartCounts(Long userId, Long orgLocationId,String performanceGoalType)
 			throws Exception {
+		
+		String goalTypeStr = "";
+		if(performanceGoalType.equalsIgnoreCase("self")) {
+			goalTypeStr = "GOALS.TEAM_ID IS NULL AND ";
+		}else {
+			goalTypeStr = "GOALS.TEAM_ID IS NOT NULL AND ";
+		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		PerformanceGoalsDoNutChartCountsDTO totalCountDTO = new PerformanceGoalsDoNutChartCountsDTO();
@@ -354,7 +391,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    + " PERFORMANCE_GOALS GOALS,"
 				    + " ORG_LOCATIONS OL"
 				    
-					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 					+ " ((GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
 				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
@@ -378,7 +415,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 						    + " PERFORMANCE_GOALS GOALS,"
 						    + " ORG_LOCATIONS OL"
 						    
-							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "
+							+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 							+ " GOALS.CREATED_BY <> :userId AND ASSIGN.STATUS = '1' AND "
 							+ " ((GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
 						    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
@@ -406,7 +443,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 	}
 
 	@Override
-	public ResponseList<PerformanceGoalsDTO> getPerformanceGoalsList(PerformanceGoalsDTO performanceGoalsDTO,Long userId, Long orgLocationId,String dateFormat) throws Exception {
+	public ResponseList<PerformanceGoalsDTO> getPerformanceGoalsList(PerformanceGoalsDTO performanceGoalsDTO,Long userId, Long orgLocationId,String dateFormat,String performanceGoalType) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
@@ -418,6 +455,13 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 		String querySeachStr =  "";
 		
 		String goalDateFormat =  "";
+		
+		String goalTypeStr = "";
+		if(performanceGoalType.equalsIgnoreCase("self")) {
+			goalTypeStr = "GOALS.TEAM_ID IS NULL AND ";
+		}else {
+			goalTypeStr = "GOALS.TEAM_ID IS NOT NULL AND ";
+		}
 		
 		if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
 			goalDateFormat = "\"%y-%m-%d\"";
@@ -460,7 +504,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 					"WHERE OL.ID = ASSIGN.ORG_LOCATION_ID AND " + 
 					"GOALS.ID = ASSIGN.GOAL_ID " + 
 					"AND (GOALS.CREATED_BY = :userId OR (ASSIGN.ASSIGNED_USER_ID = :userId AND ASSIGN.STATUS = '1')) " + 
-					"AND GOALS.ORG_LOCATION_ID = :orgLocationId AND GOALS.STATUS = '1' " + 
+					"AND GOALS.ORG_LOCATION_ID = :orgLocationId AND "+goalTypeStr+" GOALS.STATUS = '1' " + 
 					"GROUP BY  GOALS.ID, "+
 					"DATE_FORMAT(GOALS.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr;
 		

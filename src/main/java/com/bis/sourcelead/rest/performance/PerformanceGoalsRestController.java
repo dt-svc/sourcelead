@@ -148,14 +148,15 @@ public class PerformanceGoalsRestController {
 	  
 	  
 	  @RequestMapping(value = { "/getMyTotalGoalsDoNutCharts", "/rest/getMyTotalGoalsDoNutCharts" }, method = RequestMethod.GET)
-		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyTotalGoalsDoNutCharts(HttpServletRequest request){
+		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyTotalGoalsDoNutCharts(@RequestParam(value="performanceGoalType", required = true) String performanceGoalType,
+				HttpServletRequest request){
 		  
 		    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		  
 			 Response<PerformanceGoalsDoNutChartCountsDTO> resObj = new Response<>();
 			 try {
-				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getTotalGoalsDoNutChartCounts(userId, orgLocationId);
+				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getTotalGoalsDoNutChartCounts(userId, orgLocationId, performanceGoalType);
 				 resObj.setObject(totalCountsDTO);
 				 resObj.setResponse(Result.SUCCESS.name());
 				 resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -170,14 +171,15 @@ public class PerformanceGoalsRestController {
 	  
 	  
 	  @RequestMapping(value = { "/getMyInprogressGoalsDoNutCharts", "/rest/getMyInprogressGoalsDoNutCharts" }, method = RequestMethod.GET)
-		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyInprogressGoalsDoNutCharts(HttpServletRequest request){
+		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyInprogressGoalsDoNutCharts(@RequestParam(value="performanceGoalType", required = true) String performanceGoalType,
+				HttpServletRequest request){
 		  
 		    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		  
 			 Response<PerformanceGoalsDoNutChartCountsDTO> resObj = new Response<>();
 			 try {
-				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getInprogressGoalsDoNutChartCounts(userId, orgLocationId);
+				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getInprogressGoalsDoNutChartCounts(userId, orgLocationId, performanceGoalType);
 				 resObj.setObject(totalCountsDTO);
 				 resObj.setResponse(Result.SUCCESS.name());
 				 resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -191,14 +193,15 @@ public class PerformanceGoalsRestController {
 	  
 	  
 	  @RequestMapping(value = { "/getMyCompletedGoalsDoNutCharts", "/rest/getMyCompletedGoalsDoNutCharts" }, method = RequestMethod.GET)
-		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyCompletedGoalsDoNutCharts(HttpServletRequest request){
+		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyCompletedGoalsDoNutCharts(@RequestParam(value="performanceGoalType", required = true) String performanceGoalType,
+				HttpServletRequest request){
 		  
 		    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		  
 			 Response<PerformanceGoalsDoNutChartCountsDTO> resObj = new Response<>();
 			 try {
-				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getCompletedGoalsDoNutChartCounts(userId, orgLocationId);
+				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getCompletedGoalsDoNutChartCounts(userId, orgLocationId, performanceGoalType);
 				 resObj.setObject(totalCountsDTO);
 				 resObj.setResponse(Result.SUCCESS.name());
 				 resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -212,14 +215,15 @@ public class PerformanceGoalsRestController {
 	  
 	  
 	  @RequestMapping(value = { "/getMyOverDueGoalsDoNutCharts", "/rest/getMyOverDueGoalsDoNutCharts" }, method = RequestMethod.GET)
-		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyOverDueGoalsDoNutCharts(HttpServletRequest request){
+		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyOverDueGoalsDoNutCharts(@RequestParam(value="performanceGoalType", required = true) String performanceGoalType,
+				HttpServletRequest request){
 		  
 		    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		  
 			 Response<PerformanceGoalsDoNutChartCountsDTO> resObj = new Response<>();
 			 try {
-				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getOverDueGoalsDoNutChartCounts(userId, orgLocationId);
+				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getOverDueGoalsDoNutChartCounts(userId, orgLocationId, performanceGoalType);
 				 resObj.setObject(totalCountsDTO);
 				 resObj.setResponse(Result.SUCCESS.name());
 				 resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -232,14 +236,15 @@ public class PerformanceGoalsRestController {
 	    }
 	  
 	  @RequestMapping(value = { "/getMyNotStartedGoalsDoNutCharts", "/rest/getMyNotStartedGoalsDoNutCharts" }, method = RequestMethod.GET)
-		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyNotStartedGoalsDoNutCharts(HttpServletRequest request){
+		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyNotStartedGoalsDoNutCharts(@RequestParam(value="performanceGoalType", required = true) String performanceGoalType,
+				HttpServletRequest request){
 		  
 		    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		  
 			 Response<PerformanceGoalsDoNutChartCountsDTO> resObj = new Response<>();
 			 try {
-				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getNotStartedGoalsDoNutChartCounts(userId, orgLocationId);
+				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getNotStartedGoalsDoNutChartCounts(userId, orgLocationId, performanceGoalType);
 				 resObj.setObject(totalCountsDTO);
 				 resObj.setResponse(Result.SUCCESS.name());
 				 resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -253,7 +258,8 @@ public class PerformanceGoalsRestController {
 	  
 	  
 		 @RequestMapping(value = { "/getPerformanceGoalsList", "/rest/getPerformanceGoalsList" }, method = RequestMethod.GET)
-			public ResponseList<PerformanceGoalsDTO> getPerformanceCompetenceList(PerformanceGoalsDTO performanceGoalsDTO,HttpServletRequest request) throws Exception {
+			public ResponseList<PerformanceGoalsDTO> getPerformanceCompetenceList(PerformanceGoalsDTO performanceGoalsDTO,
+					@RequestParam(value="performanceGoalType", required = true) String performanceGoalType,HttpServletRequest request) throws Exception {
 				
 				Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 				Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
@@ -268,7 +274,7 @@ public class PerformanceGoalsRestController {
 				}
 				performanceGoalsDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				performanceGoalsDTO.setSortOrder(sortColumnOrder);
-				ResponseList<PerformanceGoalsDTO> performanceGoalsList = performanceGoalsService.getPerformanceGoalsList(performanceGoalsDTO, userId, orgLocationId,dateFormat);
+				ResponseList<PerformanceGoalsDTO> performanceGoalsList = performanceGoalsService.getPerformanceGoalsList(performanceGoalsDTO, userId, orgLocationId,dateFormat,performanceGoalType);
 				return performanceGoalsList;
 			}
 		 

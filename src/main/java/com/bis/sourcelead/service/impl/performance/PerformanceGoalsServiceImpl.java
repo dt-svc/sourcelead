@@ -227,38 +227,38 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 	}
 
 	@Override
-	public PerformanceGoalsDoNutChartCountsDTO getTotalGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+	public PerformanceGoalsDoNutChartCountsDTO getTotalGoalsDoNutChartCounts(Long userId, Long orgLocationId,String performanceGoalType)
 			throws Exception {
-		return performanceGoalsDao.getTotalGoalsDoNutChartCounts(userId, orgLocationId);
+		return performanceGoalsDao.getTotalGoalsDoNutChartCounts(userId, orgLocationId,performanceGoalType);
 	}
 
 	@Override
-	public PerformanceGoalsDoNutChartCountsDTO getInprogressGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+	public PerformanceGoalsDoNutChartCountsDTO getInprogressGoalsDoNutChartCounts(Long userId, Long orgLocationId,String performanceGoalType)
 			throws Exception {
-		return performanceGoalsDao.getInprogressGoalsDoNutChartCounts(userId, orgLocationId);
+		return performanceGoalsDao.getInprogressGoalsDoNutChartCounts(userId, orgLocationId,performanceGoalType);
 	}
 
 	@Override
-	public PerformanceGoalsDoNutChartCountsDTO getCompletedGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+	public PerformanceGoalsDoNutChartCountsDTO getCompletedGoalsDoNutChartCounts(Long userId, Long orgLocationId,String performanceGoalType)
 			throws Exception {
-		return performanceGoalsDao.getCompletedGoalsDoNutChartCounts(userId, orgLocationId);
+		return performanceGoalsDao.getCompletedGoalsDoNutChartCounts(userId, orgLocationId,performanceGoalType);
 	}
 
 	@Override
-	public PerformanceGoalsDoNutChartCountsDTO getOverDueGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+	public PerformanceGoalsDoNutChartCountsDTO getOverDueGoalsDoNutChartCounts(Long userId, Long orgLocationId,String performanceGoalType)
 			throws Exception {
-		return performanceGoalsDao.getOverDueGoalsDoNutChartCounts(userId, orgLocationId);
+		return performanceGoalsDao.getOverDueGoalsDoNutChartCounts(userId, orgLocationId,performanceGoalType);
 	}
 
 	@Override
-	public PerformanceGoalsDoNutChartCountsDTO getNotStartedGoalsDoNutChartCounts(Long userId, Long orgLocationId)
+	public PerformanceGoalsDoNutChartCountsDTO getNotStartedGoalsDoNutChartCounts(Long userId, Long orgLocationId,String performanceGoalType)
 			throws Exception {
-		return performanceGoalsDao.getNotStartedGoalsDoNutChartCounts(userId, orgLocationId);
+		return performanceGoalsDao.getNotStartedGoalsDoNutChartCounts(userId, orgLocationId,performanceGoalType);
 	}
 
 	@Override
-	public ResponseList<PerformanceGoalsDTO> getPerformanceGoalsList(PerformanceGoalsDTO performanceGoalsDTO,Long userId, Long orgLocationId,String dateFormat) throws Exception {
-		return performanceGoalsDao.getPerformanceGoalsList(performanceGoalsDTO,userId, orgLocationId,dateFormat);
+	public ResponseList<PerformanceGoalsDTO> getPerformanceGoalsList(PerformanceGoalsDTO performanceGoalsDTO,Long userId, Long orgLocationId,String dateFormat,String performanceGoalType) throws Exception {
+		return performanceGoalsDao.getPerformanceGoalsList(performanceGoalsDTO,userId, orgLocationId,dateFormat,performanceGoalType);
 	}
 
 	@Override

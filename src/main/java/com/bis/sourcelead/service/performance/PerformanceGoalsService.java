@@ -17,17 +17,17 @@ public interface PerformanceGoalsService {
 	
 	PerformanceGoals getPerformanceGoalsById(Long goalId) throws Exception;
 	
-	PerformanceGoalsDoNutChartCountsDTO getTotalGoalsDoNutChartCounts(Long userId,Long orgLocationId) throws Exception;
+	PerformanceGoalsDoNutChartCountsDTO getTotalGoalsDoNutChartCounts(Long userId,Long orgLocationId,String performanceGoalType) throws Exception;
 	
-	PerformanceGoalsDoNutChartCountsDTO getInprogressGoalsDoNutChartCounts(Long userId,Long orgLocationId) throws Exception;
+	PerformanceGoalsDoNutChartCountsDTO getInprogressGoalsDoNutChartCounts(Long userId,Long orgLocationId,String performanceGoalType) throws Exception;
 	
-	PerformanceGoalsDoNutChartCountsDTO getCompletedGoalsDoNutChartCounts(Long userId,Long orgLocationId) throws Exception;
+	PerformanceGoalsDoNutChartCountsDTO getCompletedGoalsDoNutChartCounts(Long userId,Long orgLocationId,String performanceGoalType) throws Exception;
 	
-	PerformanceGoalsDoNutChartCountsDTO getOverDueGoalsDoNutChartCounts(Long userId,Long orgLocationId) throws Exception;
+	PerformanceGoalsDoNutChartCountsDTO getOverDueGoalsDoNutChartCounts(Long userId,Long orgLocationId,String performanceGoalType) throws Exception;
 	
-	PerformanceGoalsDoNutChartCountsDTO getNotStartedGoalsDoNutChartCounts(Long userId,Long orgLocationId) throws Exception;
+	PerformanceGoalsDoNutChartCountsDTO getNotStartedGoalsDoNutChartCounts(Long userId,Long orgLocationId,String performanceGoalType) throws Exception;
 	
-	ResponseList<PerformanceGoalsDTO> getPerformanceGoalsList(PerformanceGoalsDTO performanceGoalsDTO,Long userId,Long orgLocationId,String dateFormat) throws Exception;
+	ResponseList<PerformanceGoalsDTO> getPerformanceGoalsList(PerformanceGoalsDTO performanceGoalsDTO,Long userId,Long orgLocationId,String dateFormat,String performanceGoalType) throws Exception;
 	
 	PerformanceGoals getPerformanceGoalsByUUID(String goalUUID) throws Exception;
 	
