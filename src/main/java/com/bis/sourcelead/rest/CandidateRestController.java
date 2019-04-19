@@ -1536,8 +1536,8 @@ public class CandidateRestController {
 			return marketWalletDTOList;
 		}
 	    
-	    @RequestMapping(value = { "/app/validatePanNumber" })
-		public Boolean validateLcaNumber(
+	    @RequestMapping(value = {"/validatePanNumber"})
+		public Boolean validatePanNumber(
 				@RequestParam(value = "panNumber", required = false) String panNumber,@RequestParam(value = "candidateId", required = false) Long candidateId,
 				HttpServletRequest request)
 				throws Exception {
@@ -1554,7 +1554,7 @@ public class CandidateRestController {
 		}  
 	    
 	    
-	    @RequestMapping(value = { "/app/validateAadharNumber" })
+	    @RequestMapping(value = { "/validateAadharNumber" })
 		public Boolean validateAadharNumber(
 				@RequestParam(value = "aadharNumber", required = false) String aadharNumber,@RequestParam(value = "candidateId", required = false) Long candidateId,
 				HttpServletRequest request)
@@ -1571,7 +1571,7 @@ public class CandidateRestController {
 			return flag;
 		}  
 	    
-	    @RequestMapping(value = { "/app/validateSsnNumber" })
+	    @RequestMapping(value = { "/validateSsnNumber" })
 		public Boolean validateSsnNumber(
 				@RequestParam(value = "ssnNumber", required = false) String ssnNumber,@RequestParam(value = "candidateId", required = false) Long candidateId,
 				HttpServletRequest request)
