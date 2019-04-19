@@ -873,6 +873,9 @@ public class Constants {
 	public static final String CANDIDATE_EDUCATION = "Education";
 	public static final String CANDIDATE_EMPLOERS = "Employer's";
 	public static final String CANDIDATE_PRIMARY_SKILL = "Primary Skill";
+	public static final String CANDIDATE_PAN_NUMBER = "Pan Number";
+	public static final String CANDIDATE_AADHAR_NUMBER = "Aadhar Number";
+	public static final String CANDIDATE_SSN_NUMBER = "SSN Number";
 	public static final String CANDIDATE_INVITATION = "CandidateInvitation";
 	public static final String EMPLOYEE = "Employee";
 	public static final String CUSTOM_REPORTS = "custom";
@@ -1440,7 +1443,7 @@ public class Constants {
 	
 	public static final String ASSOCIATE_DEDUCTION_CONTRIBUTION_DETAIL_HEADERS [] = {"Associate Id",	"Associate Email*",	"Deduction Type","Deduct Amount","Contribute Amount"};
 
-	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number","PF Number","ESI Number"};						
+	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number*","PF Number*","ESI Number"};						
 
 	public static final String TICKET_COMMENT_EMAIL = "NewTicketCommentEmail";
 	public static final String TICKET_COMMENT_NOTIFICATION ="NewTicketCommentNotification";
