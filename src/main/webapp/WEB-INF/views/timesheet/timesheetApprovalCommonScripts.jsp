@@ -111,8 +111,8 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 	    	selectedRecords[$(this).val()] = $(this).is(":checked");
 	    });
 
-$('.selectpicker').selectpicker('refresh');
-$('.existedProjectTaskId'+projectId).selectpicker('refresh');
+		$('.selectpicker').selectpicker('refresh');
+		$('.existedProjectTaskId'+projectId).selectpicker('refresh');
 }	
 </script>
 

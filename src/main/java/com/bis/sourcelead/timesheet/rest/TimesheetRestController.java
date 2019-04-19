@@ -3606,10 +3606,10 @@ public class TimesheetRestController {
 				 * getCurrentTimeSubFrequency()); }
 				 */
 			}
-			model.setViewName("timesheet/timesheetApproverSubmission");
+			model.setViewName("timesheet/timesheetApprovalSubmission");
 		} catch (Exception e) {
 			model.addObject("AWKWARD", true);
-			model.setViewName("timesheet/timesheetApproverSubmission");
+			model.setViewName("timesheet/timesheetApprovalSubmission");
 			e.printStackTrace();
 		}
 		return model;
@@ -5176,7 +5176,7 @@ public class TimesheetRestController {
 			model.addObject("AWKWARD", true);
 			e.printStackTrace();
 		}
-		model.setViewName("timesheet/timesheetApproverSubmission");
+		model.setViewName("timesheet/timesheetApprovalSubmission");
 		return model;
 	}
 
