@@ -42,9 +42,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 <div class="project_wrap">
     <div class="perfTabs">
     	<ul class="clearfix">
-    		<li><a href="#" class="Act">My Goals</a></li>
-    		<li><a href="#">Team Goals</a></li>
-    		<li><a href="#">Department Goals</a></li>
+    		<li><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" class="Act">My Goals</a></li>
+    		<li><a href="${SourceLeadWeb_pmsUrl}/performanceTeamGoalsList">Team Goals</a></li>
     	</ul>
     </div>  
     

@@ -19,6 +19,7 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TeamDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAttachmentsDTO;
@@ -56,7 +57,7 @@ public class PerformanceGoalsRestController {
 	@Autowired
 	PerformanceGoalsCommentsService performanceGoalsCommentsService;
 	
-	  @RequestMapping(value = "/getReportingManagersUsersForGoalsAssignment" , method = RequestMethod.GET)
+	  @RequestMapping(value = { "/getReportingManagersUsersForGoalsAssignment", "/rest/getReportingManagersUsersForGoalsAssignment" }, method = RequestMethod.GET)
 	   public List<UserRole> getReportingManagersUsersForGoalsAssignment(HttpServletRequest request) throws Exception {
 		   Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		   Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
@@ -325,6 +326,7 @@ public class PerformanceGoalsRestController {
 					 resObj.setResponseMessage(Result.SUCCESS.getValue());
 				    
 				 }catch (Exception e) {
+					 e.printStackTrace();
 					 resObj.setResponse(Result.AWKWARD.name());
 					 resObj.setResponseMessage(Result.AWKWARD.getValue());
 				}
@@ -471,6 +473,25 @@ public class PerformanceGoalsRestController {
 			return response;
 		}
 	 	
-	 	
+	 	@RequestMapping(value = { "/getPerformanceGoalsTeamsList", "/rest/getPerformanceGoalsTeamsList" }, method = RequestMethod.GET)
+		public ResponseList<TeamDTO> getPerformanceGoalsTeamsList(HttpServletRequest request) throws Exception {
+	 		
+	 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	 		ResponseList<TeamDTO> resObj = new ResponseList<>();
+	 		
+			 try {
+					 List<TeamDTO> teamList = performanceGoalsService.getPerformanceGoalsTeamList(orgLocations.getId());
+					 resObj.setData(teamList);
+					
+					 resObj.setResponse(Result.SUCCESS.name());
+					 resObj.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+				 	resObj.setResponse(Result.AWKWARD.name());
+				 	resObj.setResponseMessage(Result.AWKWARD.getValue());
+			 }
+			
+			return resObj;
+		}
 	 	
 }

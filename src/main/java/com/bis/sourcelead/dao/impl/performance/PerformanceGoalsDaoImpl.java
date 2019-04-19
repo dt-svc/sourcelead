@@ -4,7 +4,9 @@ import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.performance.PerformanceGoalsDao;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TeamDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
@@ -666,6 +669,73 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 		PerformanceGoalsDTO goalsDTO = goalsAssignToList.get(0);
 		double percentageDone = goalsDTO.getPercentageDone() / goalsDTO.getSubGoalsCount().intValue();
 		return percentageDone;
+	}
+
+	@Override
+	public List<TeamDTO> getPerformanceGoalsTeamList(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<TeamDTO> teamsList = null;
+		
+		try {
+			
+			Query queryObj = null;
+			
+			String query = 	 "SELECT " + 
+					"T.ID AS id, " +
+					"T.NAME AS name " + 
+					"FROM " + 
+					"TEAM T WHERE " + 
+					"T.ORG_LOCATION_ID = :orgLocationId AND T.STATUS = '1' " ;
+		
+			queryObj = session.createSQLQuery(query);
+			queryObj.setParameter("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(TeamDTO.class));
+			teamsList = queryObj.list();
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return teamsList;
+	
+	}
+
+	@Override
+	public String getTeamMemberUserIdsByTeamId(Long teamId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		StringBuilder performanceTeamMebersIds = new StringBuilder();
+		
+try {
+			
+			
+			String teamMembersquery = "SELECT " + 
+					"TM.MEMBER_USER_ID " +
+					"FROM " + 
+					"TEAM_MEMBERS TM WHERE " + 
+					"TM.TEAM_ID = :teamId AND TM.STATUS = '1' " ;
+			
+			List<BigInteger> teamMebersList = null;
+			teamMebersList = session.createSQLQuery(teamMembersquery).setLong("teamId", teamId).list();
+			
+			String teamMembers = StringUtils.join(teamMebersList, ',');
+			
+			String teamOwnerquery = "SELECT " + 
+					"T.OWNER_USER_ID " +
+					"FROM " + 
+					"TEAM T WHERE " + 
+					"T.ID = :teamId AND T.STATUS = '1' " ;
+			
+			List<BigInteger> teamOwnerList = null;
+			teamOwnerList = session.createSQLQuery(teamOwnerquery).setLong("teamId", teamId).list();
+			performanceTeamMebersIds = performanceTeamMebersIds.append(teamOwnerList.get(0).toString()).append(",").append(teamMembers);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		
+		return performanceTeamMebersIds.toString();
 	}
 
 }

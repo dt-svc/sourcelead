@@ -39,9 +39,6 @@ public class PerformanceGoalsAssignTo implements Serializable {
 	    @JoinColumn(name="ORG_LOCATION_ID")        
 	    private OrgLocations orgLocationId;
 		
-		@Column(name = "PERCENTAGE_DONE")
-		private double percentageDone;
-		
 		@Column(name = "UUID")
 		private String uuid;
 		
@@ -93,14 +90,6 @@ public class PerformanceGoalsAssignTo implements Serializable {
 
 		public void setOrgLocationId(OrgLocations orgLocationId) {
 			this.orgLocationId = orgLocationId;
-		}
-
-		public double getPercentageDone() {
-			return percentageDone;
-		}
-
-		public void setPercentageDone(double percentageDone) {
-			this.percentageDone = percentageDone;
 		}
 
 		public String getUuid() {

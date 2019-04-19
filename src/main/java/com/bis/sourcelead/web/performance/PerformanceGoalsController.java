@@ -106,5 +106,45 @@ public class PerformanceGoalsController {
 			model.setViewName("performance/goalSummary");
 			return model;
 	 }
+	 
+	 
+	 @RequestMapping(value = "/performanceTeamGoalsList")
+	 public ModelAndView performanceTeamGoalsList(HttpServletRequest request) throws Exception {
+		    
+				ModelAndView model = new ModelAndView();
+				
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.PERFORMANCE);
+					
+					request.getSession().setAttribute("sessionData",sessionData);
+					
+					model.setViewName("performance/performanceTeamGoalsList");
+					return model;
+	}
+	 
+	 @RequestMapping(value = "/addNewTeamGoal")
+	 public ModelAndView addNewTeamGoal(HttpServletRequest request,
+			 @RequestParam(value="goalUUID", required=false) String goalUUID) throws Exception {
+		    
+				ModelAndView model = new ModelAndView();
+				
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.PERFORMANCE);
+					
+					request.getSession().setAttribute("sessionData",sessionData);
+					
+					model.addObject("goalUUID", goalUUID);
+					model.setViewName("performance/addNewTeamGoal");
+					return model;
+	}
+	 
 
 }

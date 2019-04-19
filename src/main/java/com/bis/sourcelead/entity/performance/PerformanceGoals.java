@@ -24,6 +24,7 @@ import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -61,6 +62,10 @@ public class PerformanceGoals implements Serializable{
 		@ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name="GOAL_ID" )        
 	    private PerformanceGoals goalId;
+		
+		@ManyToOne(fetch = FetchType.LAZY)
+	    @JoinColumn(name="TEAM_ID" )        
+	    private Team teamId;
 		
 		@Column(name = "PERCENTAGE_DONE ")
 		private double percentageDone;
@@ -282,6 +287,14 @@ public class PerformanceGoals implements Serializable{
 
 		public void setCreatedDateStr(String createdDateStr) {
 			this.createdDateStr = createdDateStr;
+		}
+
+		public Team getTeamId() {
+			return teamId;
+		}
+
+		public void setTeamId(Team teamId) {
+			this.teamId = teamId;
 		}
 		
 

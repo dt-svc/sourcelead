@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl.performance;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -17,10 +16,12 @@ import com.bis.sourcelead.dao.performance.PerformanceGoalsAssignToDao;
 import com.bis.sourcelead.dao.performance.PerformanceGoalsDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TeamDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
@@ -147,6 +148,16 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 			
 			
 		}
+		
+		if(StringUtils.isNotBlank(performanceGoalsDTO.getTeamId())) {
+			
+			String performanceGoalTeamMembers = performanceGoalsDao.getTeamMemberUserIdsByTeamId(Long.valueOf(performanceGoalsDTO.getTeamId()));
+			performanceGoalsDTO.setGoalsAssignTo(performanceGoalTeamMembers);
+			Team team = new Team();
+			team.setId(Long.valueOf(performanceGoalsDTO.getTeamId()));
+			goals.setTeamId(team);
+		}
+		
 		
 		if(StringUtils.isNotBlank(performanceGoalsDTO.getGoalsAssignTo())) {
 			Set<PerformanceGoalsAssignTo> goalsAssignedToSet = new HashSet<>();
@@ -276,6 +287,18 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 	public double getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(Long goalId)
 			throws Exception {
 		return performanceGoalsDao.getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(goalId);
+	}
+
+
+	@Override
+	public List<TeamDTO> getPerformanceGoalsTeamList(Long orgLocationId) throws Exception {
+		return performanceGoalsDao.getPerformanceGoalsTeamList(orgLocationId);
+	}
+
+
+	@Override
+	public String getTeamMemberUserIdsByTeamId(Long teamId) throws Exception {
+		return performanceGoalsDao.getTeamMemberUserIdsByTeamId(teamId);
 	}
 
 

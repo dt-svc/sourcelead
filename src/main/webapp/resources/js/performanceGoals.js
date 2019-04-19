@@ -108,6 +108,7 @@ function PerformanceGoals(){
 			        		 }
 			        		 
 			        		 document.getElementById("percentageDoneDiv").style.display="";
+			        		 $("#goalPercentage").attr("data-validation", "validate_Space validate_float");
 			        		 $("#goalPercentage").val(response.object.percentageDone.toFixed(2));
 			        		 
 			        		 if(response.object.attachmentsList != null && response.object.attachmentsList.length > 0){
@@ -252,7 +253,13 @@ function PerformanceGoals(){
 					        	else if (response.response === "AWKWARD") {
 					        	    location.href = "/errorPage";
 					        	} else if (response.response === "SUCCESS") {
-					        		location.replace(pmsUrl+"/performanceGoalsList");
+					        		var performanceGoalType =  $("#performanceGoalType").val();
+					        		if(performanceGoalType == "Self_Goal"){
+					        			location.replace(pmsUrl+"/performanceGoalsList");
+					        		}else if(performanceGoalType == "Team_Goal"){
+					        			location.replace(pmsUrl+"/performanceTeamGoalsList");
+					        		}
+					        		
 					        	} else if (response.indexOf('Sign In') !== -1) {
 					        		location.replace(sourceleadUrl);
 					        	} else {
@@ -826,4 +833,41 @@ function PerformanceGoals(){
 							        },
 							    });
 						 }
+						 
+						 
+						 
+						 this.getPerformanceGoalTeams = function(teamId){
+							  $.ajax({
+							    	type: "GET",
+							        url: pmsUrl+"/getPerformanceGoalsTeamsList", 
+							        success: function(response) {
+							        
+							    	if (response.response === "AWKWARD") {
+						        		location.href = "/errorPage";
+						        	} else if (response.response === "SUCCESS") {
+						        		var output = "";
+						    	   		  
+								         if(response.data.length > 0){
+								        	 output = output + "<option value=''>--Select Team--</option>";
+								        	 for(var i=0; i<response.data.length; i++){
+								        		 var opt = response.data[i];
+									        		if(teamId != null && teamId != '' && teamId != 'undefined'){
+									        			if (teamId.indexOf(opt.id.toString()) > -1) {
+									        				output = output + "<option value='" +opt.id+ "' selected>"+opt.name+"</option>";
+									        			}else{
+									        				output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
+									        			}
+									        		}else{
+									        			output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
+									        		}
+								        	 }
+								         }
+								         $("#performanceTeams").empty();
+								         $("#performanceTeams").append(output);
+								         $('.selectpicker').selectpicker('refresh');
+						        	}
+							        
+							        },   
+							    });
+						  }
 }

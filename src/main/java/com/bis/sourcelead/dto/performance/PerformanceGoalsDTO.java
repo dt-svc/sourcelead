@@ -25,6 +25,8 @@ public class PerformanceGoalsDTO implements Serializable{
 	
 	private String goalsAssignTo;
 	
+	private String teamId;
+	
 	private String description;
 	
 	private String staticPath;
@@ -253,6 +255,14 @@ public class PerformanceGoalsDTO implements Serializable{
 
 	public void setSubGoalsCount(BigInteger subGoalsCount) {
 		this.subGoalsCount = subGoalsCount;
+	}
+
+	public String getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(String teamId) {
+		this.teamId = teamId;
 	}
 
 	
