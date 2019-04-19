@@ -189,7 +189,7 @@ function errRemoveClientContact(){
 						<div class="form-group">
 							<label class="col-md-3">Notify To Others</label>
 							<div class="col-md-9">
-								<textarea class="form-control" rows="4" id="notifyToOthers" name="notifyToOthers" field-name="NotifyTo" placeholder="Enter multiple Email Id's separated by commas(,)"></textarea>
+								<textarea class="form-control" rows="4" id="notifyToOthers" name="notifyToOthers" field-name="NotifyTo"  placeholder="Enter multiple Email Id's separated by commas(,)"></textarea>
 							</div>
 							<div class="clearfix"></div>
 						</div>
@@ -2197,7 +2197,15 @@ function saveInvoice(saveType){
 		  }
 		  if ($('#invoice_form').validate(false, validationSettings)){  
  	 	    var formData = getFormData1("invoice_form");
-         
+ 	 	  if ($("#notifyToOthers").val() !== "") {
+ 				for (var e in $("#notifyToOthers").val().split(",")) {
+ 					if (!jQueryFormUtils.validateEmail($("#notifyToOthers").val().split(",")[e].replace(/\s+/g, ''))) {
+ 						flag = false;
+ 						$("#notifyToOthers").parent().append("<p class='jquery_form_error_message'>Enter valid email id</p>");
+ 						return;
+ 					}
+ 				}
+ 			}
  	 	    if(selectedAssociates == null || selectedAssociates == '' || selectedAssociates == 'undefined'){
 	        	var result = "";
 	     		result = result +"	<div class='project_inn_mask'></div>";
