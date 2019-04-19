@@ -222,7 +222,6 @@
 								placeholder="Zip code" type="text"></input>
 						</div>
 					</div>
-					
 					<c:if test="${loginCountryName == 'India' }">
 						<div class="form-group" id="errPanNoDiv">
 							<label class="col-md-3">Pan Number</label>
@@ -1168,13 +1167,11 @@
 
 <script type="text/javascript">
 function validatePanNumber() {
-	
 	  var panNumber = document.getElementById("panNumber").value;
-	 
 	  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
-		    	 url:atsUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
+		    	 url:atsUrl+"/validatePanNumber?&panNumber="+panNumber, 
 		        success: function(data) {
 		        	if(data == true){
 		        		  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
@@ -1194,9 +1191,7 @@ function validatePanNumber() {
 
 <script type="text/javascript">
 function validateAadharNumber() {
-	
 	  var aadharNumber = document.getElementById("aadharNumber").value;
-	 
 	  $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
@@ -1219,9 +1214,7 @@ function validateAadharNumber() {
 
 <script type="text/javascript">
 function validateSsnNumberDuplicateChek() {
-	
 	  var ssnNumber = document.getElementById("ssnNumber").value;
-	 
 	  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
