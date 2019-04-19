@@ -1494,6 +1494,8 @@ function loadOnBoardingTemplates(onboardTemplateId){
    		    		}else if(json['gender'] == 'Transgender'){
    		    			$("#transgender").prop("checked",true);
    		    		}
+   		    		$("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
+		    		$("#genderValue").val(json['gender']);
    		    	}
    		    	if(json['shift'] != null && json['shift'] != "" && json['shift'] !="undefined"){
    		    		shiftList(json['shift']);
