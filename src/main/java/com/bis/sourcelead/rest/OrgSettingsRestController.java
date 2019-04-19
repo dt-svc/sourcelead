@@ -2,11 +2,9 @@ package com.bis.sourcelead.rest;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
-import org.jsoup.Jsoup;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,8 +56,6 @@ import com.bis.sourcelead.dto.SourceleadRolesDTO;
 import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
 import com.bis.sourcelead.entity.AssociateGrades;
-import com.bis.sourcelead.entity.ContractsTemplate;
-import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.OfferLetterTemplate;
@@ -70,6 +65,7 @@ import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrglocationSignatory;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadRoles;
@@ -94,6 +90,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrglocationSignatoryService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadRolesService;
@@ -106,13 +103,11 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.WhiteListIpAddressService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.Html2PdfUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.util.Calendar;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.tool.xml.XMLWorkerHelper;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -190,6 +185,12 @@ public class OrgSettingsRestController {
 	
 	@Autowired
 	private OfferLetterTemplateDao offerLetterTemplateDao;
+	
+	@Autowired
+	Html2PdfUtil html2PdfUtil;
+	
+	@Autowired
+	RequirementOffersService requirementOffersService;
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/saveOrgImage", method = RequestMethod.POST)
@@ -1710,19 +1711,10 @@ public class OrgSettingsRestController {
 		OfferLetterTemplate offerLetterTemplate = offerLetterTemplateService.getOfferLetterTemplateDetailsByTemplateUUID(templateUUID);
 			String header = "<div style='text-align: center;'>"+offerLetterTemplate.getTemplateName()+"<br></br></div><br></br><br></br><br></br>";
 			String totalBody = header+ offerLetterTemplate.getTemplateContent();
-			if(offerLetterTemplate.getLetterHeadId() != null)
-			reportsUtil.viewOfferLetterHeadData(totalBody, offerLetterTemplate.getLetterHeadId(), response);
+			reportsUtil.viewOfferLetterHeadData(totalBody, offerLetterTemplate, response);
 	}
 	
-	@RequestMapping(value = "/app/ws/viewOfferLetter")
-	public @ResponseBody  void viewOfferLetter(@RequestParam("templateUUID") String templateUUID,@RequestParam("tempName") String tempName,HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		OfferLetterTemplate offerLetterTemplate = offerLetterTemplateService.getOfferLetterTemplateDetailsByTemplateUUID(templateUUID);
-			String header = "<div style='text-align: center;'>"+offerLetterTemplate.getTemplateName()+"<br></br></div><br></br><br></br><br></br>";
-			String totalBody = header+ offerLetterTemplate.getTemplateContent();
-			if(offerLetterTemplate.getLetterHeadId() != null)
-			reportsUtil.viewOfferLetterHeadData(totalBody, offerLetterTemplate.getLetterHeadId(), response);
-	}
+	 
 	
 	
 	@RequestMapping(value = "/app/deleteOfferLetterTemplateByTemplateUUID", method = RequestMethod.POST)
@@ -1752,4 +1744,25 @@ public class OrgSettingsRestController {
     	   }
 		return flag;
 	   }
+    
+    @RequestMapping(value = {"/app/candidateOfferLetterTempleateView","/app/ws/candidateOfferLetterTempleateView"})
+   	public @ResponseBody  void candidateOfferLetterTempleateView(
+   		   @RequestParam(value="offerUUID", required=true) String offerUUID,
+   		   HttpServletRequest request, HttpServletResponse response) throws Exception
+   	{
+       	RequirementOffers offer = requirementOffersService.getRequirementOffersByUUID(offerUUID) ;
+   		byte[] pdfBytes = null;
+   		if(offer.getOfferLetterTemplate() != null) {
+   			pdfBytes = html2PdfUtil.getOfferLetterPdfBytes(offer);
+   		}
+   		response.setHeader("Content-disposition", "inline; filename=offerletterTemplatePdf.pdf");
+   		response.setContentType("application/pdf");
+   		ServletOutputStream sos = response.getOutputStream();
+   		if (null != pdfBytes) {
+   			response.setContentLength(pdfBytes.length);
+   			sos.write(pdfBytes);
+   		}
+   		sos.flush();
+   		sos.close();
+   	} 
 }

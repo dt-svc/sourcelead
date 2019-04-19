@@ -50,9 +50,10 @@
 						</div>
 
 						<div class="form-group">
-			              <label class="col-md-4">Choose Letter Head<span class="text-danger">&nbsp;*</span></label>
+			              <label class="col-md-4">Choose Letter Head</label>
 			              <div class="col-md-8">
-			                  <select class="form-control selectpicker" data-live-search="true" title="Select Letterhead" name="letterHead" field-name="Letterhead" data-validation="required">
+			                  <select class="form-control selectpicker" data-live-search="true" title="Select Letterhead" name="letterHead" field-name="Letterhead" >
+			                    <option value="">>>> Select Letterhead <<< </option>
 			                    <c:forEach var="letter" items="${letterHeadList}">
 							    <c:if test = "${letter.id == offerLetterTemplate.letterHeadId.id}">
 							         <option selected value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
