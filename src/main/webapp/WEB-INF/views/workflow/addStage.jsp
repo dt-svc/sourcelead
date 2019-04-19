@@ -219,7 +219,7 @@
 		  </div>
 		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt myForm">
 			<div class="form-group">
-          <label class="col-md-3">Previous Stage<span class="text-danger paddingLeft">&nbsp;*</span></label>
+          <label class="col-md-3" id="previousStagelabel">Previous Stage</label>
         <div class="col-md-9">
         
           
@@ -308,6 +308,7 @@ function saveRequirementWorkflowStage(workflowUuid){
 	
 	if(previousStageUuid == null || previousStageUuid == "Select"){
 		$('#previousStageUuid').focus();
+		$("#previousStagelabel").html("Previous Stage<span class='text-danger paddingLeft'>&nbsp;*</span>");
 		return false;
 	}if(previousStageUuid != null){
 		$('#previousStageUuid').focusout();
@@ -477,8 +478,10 @@ function prepareDynamicworkflowTask(rowId){
 }
 
 var rowId = 0;
+var divCount = 0;
 function appendDynamicworkflowTask(){
 	   $("#dynamicworkflowTask").append(prepareDynamicworkflowTask(rowId++)); 
+	   divCount++;
 }
 
 
@@ -497,13 +500,16 @@ function deletePopup(rowId){
 	}
 	
 function deleteTask(id){
-	 $("#popUp").empty();
-	 $(".project_inn_mask").fadeOut(200);
-	if(id == 0){
-		$("#createTaskDiv").show();
-	}
-	   $("#dynamicTaskDiv"+id).remove();
+	$("#dynamicTaskDiv"+id).remove();
 	   rowId--;
+	   divCount--;
+	  
+		if(divCount == 0){
+				$("#createTaskDiv").show();
+			}
+	   $("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+	 
 } 
 	
 function cancelTermination(){
