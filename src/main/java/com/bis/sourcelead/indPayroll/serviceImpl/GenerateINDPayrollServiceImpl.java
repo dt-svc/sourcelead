@@ -301,104 +301,102 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					Double tdsEligibilityTotal = 0.0;
 					
 					if(utilDTO.getAssociatePayrollPayheadHistory() != null) {
-						/*for(AssociatePayrollPayheadHistory ph : utilDTO.getAssociatePayrollPayheadHistory()) {*/
-							//if L&D in Associate Payroll Payheads
-							utilDTO.getAssociatePayrollPayheadHistory().forEach(ph -> {
-								if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("L&D")) {
-									loanAdvTotal[0] = iNDPayrollCommonUtil.calculateSumOfAllLoanAdvOfEmp(assLoanAndAdvDTO);
-									ph.setMonthly(new BigDecimal(loanAdvTotal[0]).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-									ph.setAnnualy(new BigDecimal(loanAdvTotal[0]*12).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-									isLD[0] = true;
-								}
-							});
-							
-							//if PT in Associate Payroll Payheads
-							/*utilDTO.getAssociatePayrollPayheadHistory().forEach(ph -> {
-								if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("PT")) {
-									try {
-										ptAmount[0] = iNDPayrollCommonUtil.calculatePTforAssociate(assoSal, paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate(), preCheckINDPayrollDTO.getStateTaxDTO());
-									} catch (ParseException e) {
-										ptAmount[0] = 0.0;
-									}
-									ph.setMonthly(new BigDecimal(ptAmount[0]).multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-									ph.setAnnualy(new BigDecimal(ptAmount[0]*12).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-									isPT[0] = true;
-								}
-							});*/
-							
-							//if ARR in Associate Payroll Payheads
-							utilDTO.getAssociatePayrollPayheadHistory().forEach(ph -> {
-								if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("ARR")) {
-									BigDecimal expenses = expensesDao.getExpenseAmountByCandidateIdAndExpenseStartAndEndDateForClaimedExpenses(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
-									ph.setMonthly(expenses.setScale(2, BigDecimal.ROUND_HALF_EVEN));
-									ph.setAnnualy(expenses.multiply(new BigDecimal(12)).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-									isARR[0] = true;
-								}
-							});
-						/*}*/
-					}
-					
-					//if L&D not found in Associate Payroll Payheads
-					if(!isLD[0]) {
-						loanAdvTotal[0] = iNDPayrollCommonUtil.calculateSumOfAllLoanAdvOfEmp(assLoanAndAdvDTO);
-						AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
-						ph.setIndEmployeePayrollId(employeePayroll);
-						ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("L&D", orgLocation.getId()));
-						ph.setMonthly(new BigDecimal(loanAdvTotal[0]).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-						ph.setAnnualy(new BigDecimal(loanAdvTotal[0]*12).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-						ph.setStatus(Constants.RECORD_ACTIVE);
-						ph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-						ph.setCreatedBy(loginUser);
-						ph.setUpdatedBy(loginUser);
-						ph.setCreatedDate(new Date());
-						ph.setUpdatedDate(new Date());
-						if(utilDTO.getAssociatePayrollPayheadHistory() != null) {
-							utilDTO.getAssociatePayrollPayheadHistory().add(ph);
+						//if L&D in Associate Payroll Payheads
+						utilDTO.getAssociatePayrollPayheadHistory().forEach(ph -> {
+							if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("L&D")) {
+								loanAdvTotal[0] = iNDPayrollCommonUtil.calculateSumOfAllLoanAdvOfEmp(assLoanAndAdvDTO);
+								ph.setMonthly(new BigDecimal(loanAdvTotal[0]).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+								ph.setAnnualy(new BigDecimal(loanAdvTotal[0]*12).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+								isLD[0] = true;
+							}
+						});
+						
+						//if L&D not found in Associate Payroll Payheads
+						if(!isLD[0]) {
+							loanAdvTotal[0] = iNDPayrollCommonUtil.calculateSumOfAllLoanAdvOfEmp(assLoanAndAdvDTO);
+							AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
+							ph.setIndEmployeePayrollId(employeePayroll);
+							ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("L&D", orgLocation.getId()));
+							ph.setMonthly(new BigDecimal(loanAdvTotal[0]).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+							ph.setAnnualy(new BigDecimal(loanAdvTotal[0]*12).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+							ph.setStatus(Constants.RECORD_ACTIVE);
+							ph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+							ph.setCreatedBy(loginUser);
+							ph.setUpdatedBy(loginUser);
+							ph.setCreatedDate(new Date());
+							ph.setUpdatedDate(new Date());
+							if(utilDTO.getAssociatePayrollPayheadHistory() != null) {
+								utilDTO.getAssociatePayrollPayheadHistory().add(ph);
+							}
 						}
-					}
-					
-					//if PT not found in Associate Payroll Payheads
-					if(!isPT[0]) {
-						ptAmount[0] = iNDPayrollCommonUtil.calculatePTforAssociate(assoSal, paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate(), preCheckINDPayrollDTO.getStateTaxDTO());
-						AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
-						ph.setIndEmployeePayrollId(employeePayroll);
-						ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("PT", orgLocation.getId()));
-						ph.setMonthly(new BigDecimal(ptAmount[0]).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-						ph.setAnnualy(new BigDecimal(ptAmount[0]*12).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-						ph.setStatus(Constants.RECORD_ACTIVE);
-						ph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-						ph.setCreatedBy(loginUser);
-						ph.setUpdatedBy(loginUser);
-						ph.setCreatedDate(new Date());
-						ph.setUpdatedDate(new Date());
-						if(utilDTO.getAssociatePayrollPayheadHistory() != null) {
-							utilDTO.getAssociatePayrollPayheadHistory().add(ph);
+						
+						//if PT in Associate Payroll Payheads
+						utilDTO.getAssociatePayrollPayheadHistory().forEach(ph -> {
+							if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("PT")) {
+								try {
+									ptAmount[0] = iNDPayrollCommonUtil.calculatePTforAssociate(assoSal, paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate(), preCheckINDPayrollDTO.getStateTaxDTO());
+								} catch (ParseException e) {
+									ptAmount[0] = 0.0;
+								}
+								ph.setMonthly(new BigDecimal(ptAmount[0]).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+								ph.setAnnualy(new BigDecimal(ptAmount[0]*12).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+								isPT[0] = true;
+							}
+						});
+						
+						//if PT not found in Associate Payroll Payheads
+						if(!isPT[0]) {
+							ptAmount[0] = iNDPayrollCommonUtil.calculatePTforAssociate(assoSal, paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate(), preCheckINDPayrollDTO.getStateTaxDTO());
+							AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
+							ph.setIndEmployeePayrollId(employeePayroll);
+							ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("PT", orgLocation.getId()));
+							ph.setMonthly(new BigDecimal(ptAmount[0]).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+							ph.setAnnualy(new BigDecimal(ptAmount[0]*12).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+							ph.setStatus(Constants.RECORD_ACTIVE);
+							ph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+							ph.setCreatedBy(loginUser);
+							ph.setUpdatedBy(loginUser);
+							ph.setCreatedDate(new Date());
+							ph.setUpdatedDate(new Date());
+							if(utilDTO.getAssociatePayrollPayheadHistory() != null) {
+								utilDTO.getAssociatePayrollPayheadHistory().add(ph);
+							}
 						}
-					}
-					
-					//if ARR not found in Associate Payroll Payheads
-					if(!isARR[0]) {
-						AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
-						ph.setIndEmployeePayrollId(employeePayroll);
-						ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("PT", orgLocation.getId()));
-						BigDecimal expenses = expensesDao.getExpenseAmountByCandidateIdAndExpenseStartAndEndDateForClaimedExpenses(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
-						ph.setMonthly(expenses.setScale(2, BigDecimal.ROUND_HALF_EVEN));
-						ph.setAnnualy(expenses.multiply(new BigDecimal(12)).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-						ph.setStatus(Constants.RECORD_ACTIVE);
-						ph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-						ph.setCreatedBy(loginUser);
-						ph.setUpdatedBy(loginUser);
-						ph.setCreatedDate(new Date());
-						ph.setUpdatedDate(new Date());
-						if(utilDTO.getAssociatePayrollPayheadHistory() != null) {
-							utilDTO.getAssociatePayrollPayheadHistory().add(ph);
+						
+						
+						//if ARR in Associate Payroll Payheads
+						utilDTO.getAssociatePayrollPayheadHistory().forEach(ph -> {
+							if(ph.getPayrollPayhead().getShortCode().equalsIgnoreCase("ARR")) {
+								BigDecimal expenses = expensesDao.getExpenseAmountByCandidateIdAndExpenseStartAndEndDateForClaimedExpenses(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
+								ph.setMonthly(expenses.setScale(2, BigDecimal.ROUND_HALF_EVEN));
+								ph.setAnnualy(expenses.multiply(new BigDecimal(12)).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+								isARR[0] = true;
+							}
+						});
+						
+						//if ARR not found in Associate Payroll Payheads
+						if(!isARR[0]) {
+							AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
+							ph.setIndEmployeePayrollId(employeePayroll);
+							ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("ARR", orgLocation.getId()));
+							BigDecimal expenses = expensesDao.getExpenseAmountByCandidateIdAndExpenseStartAndEndDateForClaimedExpenses(assoSal.getCandidate().getId(),freqStartDate,freqEndDate);
+							ph.setMonthly(expenses.setScale(2, BigDecimal.ROUND_HALF_EVEN));
+							ph.setAnnualy(expenses.multiply(new BigDecimal(12)).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+							ph.setStatus(Constants.RECORD_ACTIVE);
+							ph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+							ph.setCreatedBy(loginUser);
+							ph.setUpdatedBy(loginUser);
+							ph.setCreatedDate(new Date());
+							ph.setUpdatedDate(new Date());
+							if(utilDTO.getAssociatePayrollPayheadHistory() != null) {
+								utilDTO.getAssociatePayrollPayheadHistory().add(ph);
+							}
 						}
 					}
 					
 					// Calculating LOP
 					BigDecimal lopAmount = BigDecimal.ZERO;
 					Set<PayrollLopHis> lopList = iNDPayrollCommonUtil.getLOPAmountInd(employee,assoSal,freqStartDate,freqEndDate,orgLocation,amount,employeePayroll);
-					
 					if(lopList != null && lopList.size() > 0) {
 						Double lopAmont = lopList.stream().mapToDouble(lop->lop.getLopAmount().doubleValue()).sum();
 						lopAmount = new BigDecimal(lopAmont);
