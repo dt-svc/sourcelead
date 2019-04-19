@@ -2,10 +2,7 @@ package com.bis.sourcelead.workflow.dto;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
-import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
-import com.bis.sourcelead.workflow.entity.RequirementWorkFlowTasks;
 
 public class RequirementWorkFlowStagesDTO implements Serializable{
 
