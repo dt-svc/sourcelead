@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
@@ -24,7 +23,6 @@ import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -39,7 +37,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openxmlformats.schemas.spreadsheetml.x2006.main.impl.STIconSetTypeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +54,6 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
-import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsListDTO;
-import com.bis.sourcelead.dto.ExpensesApproverHierarchyDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -95,7 +90,6 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
-import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -103,8 +97,6 @@ import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
-import com.bis.sourcelead.enums.Submission_Status;
-import com.bis.sourcelead.reportsDTO.AssetsReportDTO;
 import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
@@ -130,10 +122,10 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -144,19 +136,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ibm.icu.math.BigDecimal;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.ListItem;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Font.FontFamily;
-import com.itextpdf.text.html.WebColors;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 
 @SuppressWarnings("unchecked")
 @Service
@@ -1003,6 +982,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			OrgLocations clientOrgLoc = new OrgLocations();
 			clientOrgLoc.setId(clientOrgLocation);
 			projectClients.setOrgLocationsId(clientOrgLoc);
+			projectClients.setOrgId(clientOrgLoc.getOrg());
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setLevel(1);
 			projectClients.setStatus(1);
@@ -1049,6 +1029,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectClients = new ProjectClients();
 			projectClients.setProjectId(projects);
 			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setOrgId(orglocations.getOrg());
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setOrgRelationId(orgRelations);
 			projectClients.setLevel(2);
@@ -1083,6 +1064,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectClients = new ProjectClients();
 			projectClients.setProjectId(projects);
 			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setOrgId(orglocations.getOrg());
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setLevel(1);
 			projectClients.setStatus(1);
@@ -2664,7 +2646,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).append(" ").append(pm.getProjectMemberCandidteId().getLastName()).toString());	 
 				 }else {
 					 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).toString());	 
-
+				 }
+				 if(pm.getProjectMemberCandidteId().getEmail() != null) {
+					 pm.setEmpEmail(pm.getProjectMemberCandidteId().getEmail());
 				 }
 				 if(pm.getProjectMemberCandidteId().getConsultantUser() != null){
 					 UserRole userRole = null;
@@ -3075,6 +3059,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 							projectClients = new ProjectClients();
 							projectClients.setProjectId(projects);
 							projectClients.setOrgLocationsId(orglocations);
+							projectClients.setOrgId(orglocations.getOrg());
 							projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 							projectClients.setStatus(1);
 							projectClients.setLevel(2);
@@ -3194,6 +3179,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					OrgSpoc orgSpoc = orgSpocDao.getGusetClientOrgSpocByOrgRelationId(orgRelationId);
 					projectClients.setProjectId(projects);
 					projectClients.setOrgLocationsId(clientOrgLocations);
+					projectClients.setOrgId(clientOrgLocations.getOrg());
 					projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 					projectClients.setStatus(1);
 					projectClients.setLevel(1);
@@ -4001,9 +3987,9 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	}
 
 	@Override
-	public List<Projects> getProjectsListByUserIDAndOrgId(String[] associates,Long orgLocations) {
-		// TODO Auto-generated method stub
-		return projectsDao.getProjectsListByUserIDAndOrgId(associates,orgLocations);
+	public List<Projects> getProjectsListByCanddateIdAndOrgId(String associatesId, Long orglocationId) {
+	// TODO Auto-generated method stub
+	return projectsDao.getProjectsListByCanddateIdAndOrgId(associatesId,orglocationId);
 	}
 
 	@Override
@@ -4119,7 +4105,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			}
 
 			if (null != reportList.getEmpStartDate()) {
-				writeRow.createCell(3).setCellValue(reportList.getEmpStartDate()+ " "+ "to" +" "+(reportList.getEmpEndDate()));
+				writeRow.createCell(3).setCellValue(reportList.getEmpStartDate()+ " "+ "to" +" "+(reportList.getEmpEndDate() != null ? reportList.getEmpEndDate() : "--"));
 				createExcelsheet.autoSizeColumn(3);
 			} else {
 				writeRow.createCell(3).setCellValue("--");
@@ -4127,7 +4113,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			}
 			
 			if (null != reportList.getAvailableHours()) {
-				writeRow.createCell(4).setCellValue(reportList.getAvailableHours());
+				writeRow.createCell(4).setCellValue(reportList.getAvailableHours().substring(0, 5));
 				createExcelsheet.autoSizeColumn(4);
 			} else {
 				writeRow.createCell(4).setCellValue("--");

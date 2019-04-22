@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,12 +37,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OfferLetterTemplateDao;
 import com.bis.sourcelead.dao.WhiteListIpAddressDao;
 import com.bis.sourcelead.dto.AddNewRoleDTO;
 import com.bis.sourcelead.dto.AddNewRoleHierarcyDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateGradesDTO;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
+import com.bis.sourcelead.dto.OfferLetterTemplateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrgSettingsDTO;
 import com.bis.sourcelead.dto.ProbationDTO;
@@ -54,12 +57,14 @@ import com.bis.sourcelead.dto.WhiteListIPAddressDTO;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.Modules;
+import com.bis.sourcelead.entity.OfferLetterTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrglocationSignatory;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadRoles;
@@ -76,12 +81,14 @@ import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OfferLetterTemplateService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrglocationSignatoryService;
+import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadRolesService;
@@ -93,6 +100,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.WhiteListIpAddressService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.Html2PdfUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.util.Calendar;
@@ -155,6 +164,21 @@ public class OrgSettingsRestController {
 	
 	@Autowired
 	SourceleadRolesService sourceleadRolesService;
+	
+	@Autowired
+	OfferLetterTemplateService offerLetterTemplateService;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
+	
+	@Autowired
+	OfferLetterTemplateDao offerLetterTemplateDao;
+	
+	@Autowired
+	Html2PdfUtil html2PdfUtil;
+	
+	@Autowired
+	RequirementOffersService requirementOffersService;
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/app/saveOrgImage", method = RequestMethod.POST)
@@ -1468,5 +1492,106 @@ public class OrgSettingsRestController {
 		
 	}
 	
+	
+	@RequestMapping(value = "/app/saveOfferLetterTemplate", method = RequestMethod.POST)
+	public @ResponseBody String saveContractTemplate(OfferLetterTemplateDTO offerLetterTemplateDTO, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		offerLetterTemplateDTO.setOrgLocationId(orgLocation.getId());
+		offerLetterTemplateDTO.setUserCode(user.getUserCode());
+		offerLetterTemplateService.saveOfferLetterTemplate(offerLetterTemplateDTO);
+		return "success";
+	}
+	
+	
+	@RequestMapping(value = "/app/getAllOfferLetterTemplatesByOrgLocationId", method = RequestMethod.POST)
+	public ResponseList<OfferLetterTemplate> getAllOfferLetterTemplatesByOrgLocationId(OfferLetterTemplateDTO offerLetterTemplateDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String[] tableColumns = { "templateName", "description","letterHead",  "" };
+		int sortColumnIndex = 0; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (offerLetterTemplateDTO.getOrder() != null && !offerLetterTemplateDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(offerLetterTemplateDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = offerLetterTemplateDTO.getOrder().get(0).get("dir");
+		}
+		offerLetterTemplateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		offerLetterTemplateDTO.setSortOrder(sortColumnOrder);
+		offerLetterTemplateDTO.setOrgLocationId(orgLocation.getId());
+		return offerLetterTemplateService.getAllOfferLetterTemplatesByOrgLocationid(offerLetterTemplateDTO);
+	}
 
+	@RequestMapping(value = "/app/getOfferLetterTemplateContent", method = RequestMethod.POST)
+	public @ResponseBody OfferLetterTemplate getOfferLetterTemplateContent(OfferLetterTemplateDTO offerLetterTemplateDTO, HttpServletRequest request) throws Exception
+	{
+		OfferLetterTemplate offerLetterTemplate = offerLetterTemplateService.getOfferLetterTemplateDetailsByTemplateUUID(offerLetterTemplateDTO.getTemplateUUID());
+		return offerLetterTemplate;
+	}
+	
+	
+	@RequestMapping(value = "/app/offerLetterTempleateView/{templateUUID}/{tempName}", method = RequestMethod.GET)
+	public @ResponseBody  void offerLetterTempleateView(@PathVariable("templateUUID") String templateUUID,@PathVariable("tempName") String tempName,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OfferLetterTemplate offerLetterTemplate = offerLetterTemplateService.getOfferLetterTemplateDetailsByTemplateUUID(templateUUID);
+			String header = "<div style='text-align: center;'>"+offerLetterTemplate.getTemplateName()+"<br></br></div><br></br><br></br><br></br>";
+			String totalBody = header+ offerLetterTemplate.getTemplateContent();
+			reportsUtil.viewOfferLetterHeadData(totalBody, offerLetterTemplate, response);
+	}
+	
+	 
+	
+	
+	@RequestMapping(value = "/app/deleteOfferLetterTemplateByTemplateUUID", method = RequestMethod.POST)
+	public @ResponseBody String deleteOfferLetterTemplateByTemplateUUID(@RequestParam(value = "templateUUID", required = false) String templateUUID, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OfferLetterTemplate offerLetterTemplate = offerLetterTemplateService.getOfferLetterTemplateDetailsByTemplateUUID(templateUUID);
+		offerLetterTemplate.setTemplateStatus(Constants.RECORD_INACTIVE);
+		offerLetterTemplate.setUpdatedBy(user.getUserCode());
+		offerLetterTemplate.setUpdatedDate(new Date());
+		offerLetterTemplateDao.saveOfferLetterTemplate(offerLetterTemplate);
+		return "success";
+	}
+	
+	
+    @RequestMapping(value = "/app/validateOfferLetterTemplateName" , method = RequestMethod.GET)
+	 public @ResponseBody  Boolean validateDepartmentname(@RequestParam(value="templateName", required=false) String templateName,
+			@RequestParam(value="templateUUID", required=false) String templateUUID,HttpServletRequest request) throws Exception {
+    	   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
+    	   OfferLetterTemplate offerLetterTemplate = null;
+    	   if(templateUUID != "" && templateUUID != null) {
+    		   offerLetterTemplate = offerLetterTemplateService.validateOfferLetterTemplateByTemplateUUIDAndTemplateName(templateUUID, templateName);
+    	   }
+    	   Boolean flag = false;
+    	   if(offerLetterTemplate == null) {
+    		   flag = offerLetterTemplateService.validateOfferLetterTemplateByOrgLocationIdAndTemplateName(loginOrgLocation.getId(), templateName);
+    	   }
+		return flag;
+	   }
+
+    
+    
+    @RequestMapping(value = {"/app/candidateOfferLetterTempleateView","/app/ws/candidateOfferLetterTempleateView"})
+	public @ResponseBody  void candidateOfferLetterTempleateView(
+		   @RequestParam(value="offerUUID", required=true) String offerUUID,
+		   HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+    	RequirementOffers offer = requirementOffersService.getRequirementOffersByUUID(offerUUID) ;
+		byte[] pdfBytes = null;
+		if(offer.getOfferLetterTemplate() != null) {
+			pdfBytes = html2PdfUtil.getOfferLetterPdfBytes(offer);
+		}
+		response.setHeader("Content-disposition", "inline; filename=offerletterTemplatePdf.pdf");
+		response.setContentType("application/pdf");
+		ServletOutputStream sos = response.getOutputStream();
+		if (null != pdfBytes) {
+			response.setContentLength(pdfBytes.length);
+			sos.write(pdfBytes);
+		}
+		sos.flush();
+		sos.close();
+	} 
+    
+    
 }

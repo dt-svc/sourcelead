@@ -13,14 +13,15 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.SearchDTO;
 
 
 
 public interface TicketManagementService {
 
-	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations();
+	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations(long orgLocationId);
 
-	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, SearchDTO searchDTO);
 
 	public long saveTicketType(TicketTypeDTO ticketTypeDTO, long userId, OrgLocations loginOrgLocation);
 
@@ -28,7 +29,7 @@ public interface TicketManagementService {
 
 	public boolean deleteTicketTypeDataById(long id);
 
-	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, SearchDTO searchDTO);
 
 	public long saveTicketCategory(TicketCategoryDTO ticketCategoryDTO,User user, long userId, OrgLocations loginOrgLocation);
 
@@ -36,7 +37,7 @@ public interface TicketManagementService {
 
 	public Boolean deleteTicketCategoryDataById(long ticketCategoryId);
 
-	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId, int status, SearchDTO searchDTO);
 
 	public long saveTicketPriority(TicketPriorityDTO ticketPriorityDTO, long userId, OrgLocations loginOrgLocation);
 
@@ -44,7 +45,7 @@ public interface TicketManagementService {
 
 	public Boolean deleteTicketPriorityDataById(long ticketPriorityId);
 
-	public List<TicketStatusDTO> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+	public List<TicketStatusDTO> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, SearchDTO searchDTO);
 
 	public long saveTicketStatus(TicketStatusDTO ticketStatusDTO, long userId, OrgLocations loginOrgLocation);
 
@@ -70,7 +71,11 @@ public interface TicketManagementService {
 
 	public List<TicketCommentDTO> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId, String dateFormat);
 	
-	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user);
+	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user, OrgLocations orgLocations);
+
+	public TicketCommentDTO getTicketComment(long ticketCommentId, String dateFormat);
+
+	public Boolean deleteTicketComment(long ticketCommentId);
 
 	public TicketDTO getTicketDataById(long ticketId, String dateFormat);
 
@@ -85,6 +90,8 @@ public interface TicketManagementService {
 	public List<UserDTO> getCategoryAssignToListByTicketCategoryId(long ticketCategoryId, long userId, Long orgLocationId);
 
 	public boolean changeTicketManagementStatus(long ticketId, int status);
+
+
 
 	
 

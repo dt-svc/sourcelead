@@ -29,261 +29,337 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content">
        <div id="invoiceLoading"></div>
-       <form:form id="project_invoice_form"  name="project_invoice_form" method="post"  enctype='multipart/form-data'> 
-       <input type="hidden" name="project"/>
-<!--        <input type="hidden" name="frequency"/> -->
-        <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-            <div class="form-group">
-              <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 chooRadius">
-               <div class="input-group col-md-10 pull-left">
-                <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();getProjectsList();getPaymentTerms();flushValues();getInvoiceTemplateList();" data-validation="required" field-name="Client">
-               </select>
-               <span class="input-group-addon cursorPointer bg-blue" onclick="getClients();createProjectRecInviceEmptyClientContact();"><i class="fa fa-refresh "></i></span>
-              </div>
-              <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-                      <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
-               </sec:authorize>
-               <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
-               <input type="hidden" name="clientCurrency" id="clientCurrency">
-            </div>
-                </div>
-            <div class="form-group">
-              <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-              <div class="col-md-9 chooRadius">		
-              <div class="col-md-9 padding_left padding_right">
-                <select class="chosen-select form-control" multiple="multiple" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
-                </select>
-              </div>
-               <span class="col-md-3 noPad clearfix">
-                  <span class="btn btn-primary btn-sm" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
-			       <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-			         <a href="javascript:void(0)" onclick="selectedClient();"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
-			       </sec:authorize>
-		        </span>
-            </div>
-              </div>
-            <div class="form-group">
-              <label class="col-md-3">Invoice Id<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9" id="invoiceIdDiv">
-                <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Invoice Id" type="text" onkeyup="validateInvoiceId();" data-validation="required validate_Alphanumeric validate_length length2-100" field-name="Invoice Id">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-3">Invoice Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field" id="errInvoiceDate">
-               <div class="input-group">
-                <input class="form-control calendar" id="invoiceDate" name="invoiceDate" value="${currentDate}" placeholder="Invoice Date"  type="text" data-validation="required" field-name="Invoice Date">
-               <span class="input-group-addon" onClick="clearInvoiceDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-              </div>
-              </div>
-            </div>
-              
-           <div class="form-group">
-              <label class="col-md-3">Payment Term</label>
-              <div class="col-md-9 select-field">
-                <select class="chosen-select form-control" id="paymentFrequency" name="paymentFrequency" onchange="getDueDateByFrequency();">
-                  <option value=''>--Select Payment Term--</option>
-                  <option>10 days</option>
-                  <option>15 days</option>
-                  <option>20 days</option>
-                  <option>30 days</option>
-                  <option>60 days</option>
-                  </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-3">Due Date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The deadline for the invoice payment'></i></label>
-              <div class="col-md-9" id="errDuedate">
-               <div class="input-group">
-                <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
-                <span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-              </div>
-              </div>
-            </div>
-              
-              <div class="form-group">
-              <label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
-              <c:if test="${!empty isDraft}">
-                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name" disabled="disabled">
-              </select>
-              </c:if>
-               <c:if test="${empty isDraft}">
-                <select class="chosen-select form-control" id="projectId" name="projectId"  onchange="getProjectFrequency();" data-validation="required" field-name="Project Name">
-              </select>
-              </c:if>
-<!--               <input type="hidden" id="clientProjectIdHidden" value="" name="projectId"> -->
-              </div>
-            </div>
-           <div class="form-group">
-              <label class="col-md-3">Frequency<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
-              <c:if test="${! empty isDraft}">
-                <select class="chosen-select form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();" disabled="disabled">
-              </select>
-              </c:if>
-              <c:if test="${empty isDraft}">
-                <select class="chosen-select form-control" id="frequency" name="frequency" data-validation="required" field-name="Frequency" onchange="getProjectAssignedMem();">
-              </select>
-              </c:if>  
-<!--               <input type="hidden" id="clientProjectFrequencyHidden" value="" name="frequency"> -->
-              </div>
-            </div>
-<!-- 	   
-	       <div class="form-group">
-              <label class="col-md-3">Invoice Frequency</label>
-              <div class="col-md-9">
-                <input class="form-control" id="invoiceFrequency" name="invoiceFrequency" placeholder="Invoice Frequency" type="text">
-              </div>
-            </div> -->
-              
-            <div class="form-group">
-              <label class="col-md-3">Invoice Address<span class="text-danger">&nbsp;</span></label>
-              <div class="col-md-9">
-                <textarea class="form-control" rows="2" placeholder="Invoice Address" id="billingAddress"
-                    name="billingAddress" data-validation-optional="true" data-validation="validate_length length1-100" field-name="Invoice Address"></textarea>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label class="col-md-3">Payment Account</label>
-              <div class="col-md-9 select-field">
-                <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
-                   <option value="">--Select Account--</option>
-                    <c:forEach items="${paymentAccountList}" var="p">
-                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
-                    </c:forEach>
-                </select>
-              </div>
-            </div>
-            
-        	<div class="form-group">
-             <label class="col-md-3">Invoice Template</label>
-             <div class="col-md-9 select-field" id="invoiceTemplateIdDiv">
-               <select class="form-control" id="invoiceTemplateId" field-name="invoiceTemplateId Name" name="invoiceTemplateId">
-                  <option value="0">--Select Invoice Template--</option>
-               </select>
-             </div>
-           </div>
-            
-            <!-- <div class="form-group">
-				<label class="col-md-3">Account Details<span class="text-danger">&nbsp;</span></label>
-				<div class="col-md-9">
-					<textarea class="form-control" rows="2" id="accountDetails"
-						name="accountDetails" placeholder="Account Details" data-validation-optional="true" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
-				</div>
-			</div> -->
-          </div>
-        </div>
-        <div class="clearfix"></div>
-        <!-- Drap and Drop Table Row -->
-        <!-- Table starts here-->
-          <div class="project_wrap_table mt25 invoice_table table_custompadding" id="invoiceTable">
-            <div id="tableBody"></div>
-        </div>
-        <!-- Table Ends here-->
-          
-          <!-- Adding Content Starts herer -->
-           <div id="bottomGrid" style="display: none;" class="mt">
-          <div class="clearfix invoice_other">
-          <div class="col-md-5">
-           <!--  <div class="clearfix mb">
-              <button type="button" class="btn btn-sm btn-primary mr" onclick="cloneRow()"><i class="fa fa-plus paddingRight"></i>Add</button>
-              <button type="button" class="btn btn-sm btn-default" onclick="deleteRow()"><i class="fa fa-close paddingRight"></i>Clear</button>
-            </div> -->
-            <!--   <div class="clearfix mb"> <p>Do you want to raise separate invoice for each line item:</p>
-              <label class="paddingLeft paddingRight">
-                <input  type="radio" value="Y" id="isSeparateInvoice" name="isSeparateInvoice"><strong class="paddingLeft">Yes</strong></label>
-              <label class="paddingLeft">
-                <input type="radio" id="isSeparateInvoice" name="isSeparateInvoice"><strong class="paddingLeft">No</strong></label>
-            </div> -->
-            <div class="clearfix mb">
-              <label><strong>Message</strong></label>
-              <textarea class="form-control" rows="2" id="comment" name="comment"></textarea>
-            </div>
-            <div class="clearfix mb invoiceAttachment">
-            <input type='hidden' name='invoiceAttcahmentMaxRowNumber'  id='invoiceAttcahmentMaxRowNumber' value='1' />
-            <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceAttachmentTbl">
-            <tbody>
-              <tr id='divAttachmentTsRow0'>
-            	<td>
-              	<label><strong>Attachments</strong></label>
-              	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs width100percnt">
-                <span><div id="savedAttachments"></div></span></div> </div>
-	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt" >
-	                <div class="form-group" id='0invoicedocFileuploadFileGroup'> 
-	                <span>
-	                  <input type='file' name='0invoicedocFile' id='0invoicedocFile' field-name='Attachment'  class='timesheetAttachmentValidation' onchange="attachFile(0);"><i class='fa fa-times' mouseOver="Clear" title="Clear" onClick='remove()'></i><i class='fa fa-plus' mouseOver="Add" title="Add" onClick='addInvoiceAttachment()'></i>
-	                 </span> </div>
-	              </div>
-            	</td>
-            </tr>
-            </tbody>
-            </table>
-            
-            </div>
-          </div>
-          <div class="col-md-7">
-            <div class="form-horizontal">
-              <div class="form-group hidden">
-                <label class="control-label col-md-7"><strong>Subtotal</strong></label>
-                <div class="col-md-5 text-right"><input type="text" value = "00:00" id="subTotal" name="subTotal" class="ReadTextFli"></div>
-              </div>
-              <!-- Discount UI -->
-              <div class="form-group">
-                <div class="col-md-7 select-field">
-                  <div class="row">
-                    <div class="col-md-7 paddingRight">
-                      <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDisCount();validateDiscount();">
-                        <option value="percentage">Discount %</option>
-                        <option value="flat">Discount Value</option>
-                      </select>
-                    </div>
-                    <div class="col-md-5 paddingLeft" id="discountValueDiv">
-                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" placeholder="Flat / Discount" name="discountValue" type="text" onblur="calculateDisCount();" onkeyup="validateDiscount();">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-5 text-right">
-                  <input class="form-control input-sm"  id="discountTotal" name="discountTotal" type="text" placeholder="00.00" readonly>
-                </div>
+			<form:form id="project_invoice_form" name="project_invoice_form"
+				method="post" enctype='multipart/form-data'>
+				<input type="hidden" name="project" />
+				<!-- <input type="hidden" name="frequency"/> -->
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+						<div class="form-group">
+							<label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9 chooRadius errorInptgroup">
+								<div class="input-group col-md-10 pull-left">
+									<select class="chosen-select form-control"
+										id="clientOrgRelationId" name="clientOrgRelationId"
+										onchange="getClientContacts();getProjectsList();getPaymentTerms();flushValues();getInvoiceTemplateList();"
+										data-validation="required" field-name="Client">
+									</select> <span class="input-group-addon cursorPointer bg-blue"
+										onclick="getClients();createProjectRecInviceEmptyClientContact();"><i
+										class="fa fa-refresh "></i></span>
+								</div>
+								<sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')">
+									<span class="col-md-2 noPad clearfix"><a
+										href="<c:url value="/app/client" />" target="_blank"><i
+											class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+								</sec:authorize>
+								<input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
+								<input type="hidden" name="clientCurrency" id="clientCurrency">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3">Client Contact<span
+								class="text-danger">*</span></label>
+							<div class="col-md-9 chooRadius">
+								<div
+									class="col-md-9 padding_left padding_right errorInptgroup chosenmbNone">
+									<select class="chosen-select form-control" multiple="multiple"
+										id="clientContact" name="clientContact"
+										data-validation="required" field-name="Client Contact">
+									</select>
+								</div>
+								<span class="col-md-3 noPad clearfix"> <span
+									class="btn btn-primary btn-sm" onclick="getClientContacts();"><i
+										class="fa fa-refresh "></i></span> <sec:authorize
+										access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')">
+										<a href="javascript:void(0)" onclick="selectedClient();"><i
+											class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+									</sec:authorize>
+								</span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3">Invoice Id<span
+								class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9" id="invoiceIdDiv">
+								<input class="form-control" id="invoiceId" name="invoiceId"
+									placeholder="Invoice Id" type="text"
+									onkeyup="validateInvoiceId();"
+									data-validation="required validate_Alphanumeric validate_length length2-100"
+									field-name="Invoice Id">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3">Invoice Date<span
+								class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9 select-field" id="errInvoiceDate">
+								<div class="input-group">
+									<input class="form-control calendar" id="invoiceDate"
+										name="invoiceDate" value="${currentDate}"
+										placeholder="Invoice Date" type="text"
+										data-validation="required" field-name="Invoice Date">
+									<span class="input-group-addon" onClick="clearInvoiceDate();"><i
+										class="colorRed fa fa-times cursorPointer"></i></span>
+								</div>
+							</div>
+						</div>
 
-              </div>
-                 <div class="form-group">
-                <label class="col-md-7 text-right"><strong>After Discount Total</strong></label>
-                <div class="col-md-5 text-right" ><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text"  id="afterDiscountTotal" name="afterDiscountTotal"  value="00.00" class="ReadTextFli" readonly></div>
-              </div>              
-            
-             <div id="lineItemAddRows"></div>
-                <div class="form-group mt">
-                <label class="col-md-7 text-right"><strong>Total</strong></label>
-                    <div class="col-md-5 text-right"><span class="pull-left">${SourceLeadWeb_currencyCode}</span><input type="text" value = "00:00" id="grandTotal" name="grandTotal" class="ReadTextFli" readonly></span></div>
-              </div>
-              
-             <!--  Added Rajashekar -->
-                <div id="conversionId"></div>
-                  <!--  End Rajashekar -->
-              
-              </div>
-          </div>
-        </div>
-        </div> 
-        <!-- Adding Content Starts herer -->
-        <div id="lineItemPopUp"></div>
-          <!-- Drap and Drop Table Row --> 
-          <div id="receivableAlertPopUp"></div>
-      
-          <footer class="form-footer">
-              <div class="pull-right mr">
-                  <button type="button" class="btn btn-sm btn-primary" id="saveInvoice" onclick="saveInvoiceTest('DRAFT');">Save</button>
-                  <button type="button" class="btn btn-sm btn-success ml" id="sendInvoice" onclick="saveInvoiceTest('SENT')">Send</button>
-                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/invoiceList'/>'">Cancel</button>
-              </div>
-          </footer>
-          </form:form>
-     </div>
+						<div class="form-group">
+							<label class="col-md-3">Payment Term</label>
+							<div class="col-md-9 select-field">
+								<select class="chosen-select form-control" id="paymentFrequency"
+									name="paymentFrequency" onchange="getDueDateByFrequency();">
+									<option value=''>--Select Payment Term--</option>
+									<option>10 days</option>
+									<option>15 days</option>
+									<option>20 days</option>
+									<option>30 days</option>
+									<option>60 days</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3">Due Date<span class="text-danger">&nbsp;*
+							</span><i class='fa fa-info-circle'
+								title='The deadline for the invoice payment'></i></label>
+							<div class="col-md-9 errorInptgroup" id="errDuedate">
+								<div class="input-group">
+									<input class="form-control calendar" placeholder="Due Date"
+										id="dueDate" name="dueDate" type="text"
+										data-validation="required" field-name="Due Date" readonly>
+									<span class="input-group-addon" onClick="clearDueDate();"><i
+										class="colorRed fa fa-times cursorPointer"></i></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-3">Project<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9 select-field">
+								<c:if test="${!empty isDraft}">
+									<select class="chosen-select form-control" id="projectId"
+										name="projectId" onchange="getProjectFrequency();"
+										data-validation="required" field-name="Project Name"
+										disabled="disabled">
+									</select>
+								</c:if>
+								<c:if test="${empty isDraft}">
+									<select class="chosen-select form-control" id="projectId"
+										name="projectId" onchange="getProjectFrequency();"
+										data-validation="required" field-name="Project Name">
+									</select>
+								</c:if>
+								<!-- <input type="hidden" id="clientProjectIdHidden" value="" name="projectId"> -->
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-3">Frequency<span
+								class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9 select-field">
+								<c:if test="${! empty isDraft}">
+									<select class="chosen-select form-control" id="frequency"
+										name="frequency" data-validation="required"
+										field-name="Frequency" onchange="getProjectAssignedMem();"
+										disabled="disabled">
+									</select>
+								</c:if>
+								<c:if test="${empty isDraft}">
+									<select class="chosen-select form-control" id="frequency"
+										name="frequency" data-validation="required"
+										field-name="Frequency" onchange="getProjectAssignedMem();">
+									</select>
+								</c:if>
+								<!-- <input type="hidden" id="clientProjectFrequencyHidden" value="" name="frequency"> -->
+							</div>
+						</div>
+						<!-- 
+<div class="form-group">
+<label class="col-md-3">Invoice Frequency</label>
+<div class="col-md-9">
+<input class="form-control" id="invoiceFrequency" name="invoiceFrequency" placeholder="Invoice Frequency" type="text">
+</div>
+</div> -->
+
+
+
+						<div class="form-group">
+							<label class="col-md-3">Payment Account</label>
+							<div class="col-md-9">
+								<select class="sel width100percnt" id="paymentAccountId"
+									field-name="paymentAccountId Name" name="paymentAccount">
+									<option value="">--Select Account--</option>
+									<c:forEach items="${paymentAccountList}" var="p">
+										<option value="${p.id}"
+											${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-3">Invoice Template</label>
+							<div class="col-md-9" id="invoiceTemplateIdDiv">
+								<select class="sel width100percnt" id="invoiceTemplateId"
+									field-name="invoiceTemplateId Name" name="invoiceTemplateId">
+									<option value="0">--Select Invoice Template--</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="clearfix"></div>
+
+						<div class="form-group">
+							<label class="col-md-3">Invoice Address<span
+								class="text-danger">&nbsp;</span></label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="4"
+									placeholder="Invoice Address" id="billingAddress"
+									name="billingAddress" data-validation-optional="true"
+									data-validation="validate_length length1-100"
+									field-name="Invoice Address"></textarea>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-3">Notify To Others</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="4" id="notifyToOthers"
+									name="notifyToOthers" field-name="NotifyTo"
+									placeholder="Enter multiple Email Id's separated by commas(,)"></textarea>
+							</div>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+				<!-- Drap and Drop Table Row -->
+				<!-- Table starts here-->
+				<div
+					class="project_wrap_table mt25 invoice_table table_custompadding"
+					id="invoiceTable">
+					<div id="tableBody"></div>
+				</div>
+				<!-- Table Ends here-->
+
+				<!-- Adding Content Starts herer -->
+				<div id="bottomGrid" style="display: none;" class="mt">
+					<div class="clearfix invoice_other">
+						<div class="col-md-5">
+							<div class="clearfix mb">
+								<label><strong>Message</strong></label>
+								<textarea class="form-control" rows="2" id="comment"
+									name="comment"></textarea>
+							</div>
+							<div class="clearfix mb invoiceAttachment">
+								<input type='hidden' name='invoiceAttcahmentMaxRowNumber'
+									id='invoiceAttcahmentMaxRowNumber' value='1' />
+								<table width="100%" width="100%" cellpadding="0" cellspacing="0"
+									id="invoiceAttachmentTbl">
+									<tbody>
+										<tr id='divAttachmentTsRow0'>
+											<td><label><strong>Attachments</strong></label>
+												<div id="timesheetDocumentsId">
+													<div class="timesheet_week_comm invoiceDocs width100percnt">
+														<span><div id="savedAttachments"></div></span>
+													</div>
+												</div>
+												<div
+													class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt">
+													<div class="form-group" id='0invoicedocFileuploadFileGroup'>
+														<span> <input type='file' name='0invoicedocFile'
+															id='0invoicedocFile' field-name='Attachment'
+															class='timesheetAttachmentValidation'
+															onchange="attachFile(0);"><i class='fa fa-times'
+															mouseOver="Clear" title="Clear" onClick='remove()'></i><i
+															class='fa fa-plus' mouseOver="Add" title="Add"
+															onClick='addInvoiceAttachment()'></i>
+														</span>
+													</div>
+												</div></td>
+										</tr>
+									</tbody>
+								</table>
+
+							</div>
+						</div>
+						<div class="col-md-7">
+							<div class="form-horizontal">
+								<div class="form-group hidden">
+									<label class="control-label col-md-7"><strong>Subtotal</strong></label>
+									<div class="col-md-5 text-right">
+										<input type="text" value="00:00" id="subTotal" name="subTotal"
+											class="ReadTextFli">
+									</div>
+								</div>
+								<!-- Discount UI -->
+								<div class="form-group">
+									<div class="col-md-7 select-field">
+										<div class="row">
+											<div class="col-md-7 paddingRight">
+												<select class="form-control input-sm" id="disCount"
+													name="disCount"
+													onchange="calculateDisCount();validateDiscount();">
+													<option value="percentage">Discount %</option>
+													<option value="flat">Discount Value</option>
+												</select>
+											</div>
+											<div class="col-md-5 paddingLeft" id="discountValueDiv">
+												<input class="form-control input-sm allownumericwithdecimal"
+													id="discountValue" placeholder="Flat / Discount"
+													name="discountValue" type="text"
+													onblur="calculateDisCount();" onkeyup="validateDiscount();">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-5 text-right">
+										<input class="form-control input-sm" id="discountTotal"
+											name="discountTotal" type="text" placeholder="00.00" readonly>
+									</div>
+
+								</div>
+								<div class="form-group">
+									<label class="col-md-7 text-right"><strong>After
+											Discount Total</strong></label>
+									<div class="col-md-5 text-right">
+										<span class="pull-left">${SourceLeadWeb_currencyCode}</span><input
+											type="text" id="afterDiscountTotal" name="afterDiscountTotal"
+											value="00.00" class="ReadTextFli" readonly>
+									</div>
+								</div>
+
+								<div id="lineItemAddRows"></div>
+								<div class="form-group mt">
+									<label class="col-md-7 text-right"><strong>Total</strong></label>
+									<div class="col-md-5 text-right">
+										<span class="pull-left">${SourceLeadWeb_currencyCode}</span><input
+											type="text" value="00:00" id="grandTotal" name="grandTotal"
+											class="ReadTextFli" readonly></span>
+									</div>
+								</div>
+
+								<!-- Added Rajashekar -->
+								<div id="conversionId"></div>
+								<!-- End Rajashekar -->
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Adding Content Starts herer -->
+				<div id="lineItemPopUp"></div>
+				<!-- Drap and Drop Table Row -->
+				<div id="receivableAlertPopUp"></div>
+
+				<footer class="form-footer">
+					<div class="pull-right mr">
+						<button type="button" class="btn btn-sm btn-primary"
+							id="saveInvoice" onclick="saveInvoiceTest('DRAFT');">Save</button>
+						<button type="button" class="btn btn-sm btn-success ml"
+							id="sendInvoice" onclick="saveInvoiceTest('SENT')">Send</button>
+						<button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/invoiceList'/>'">Cancel</button>
+					</div>
+				</footer>
+			</form:form>
+		</div>
     </div>
   </section>
  
@@ -1028,11 +1104,11 @@ function calculateSum(){
 	    		
 	    	 } 
 	 }  
-	  $("#inoviceTotal").val(sum.toFixed(2));
-	  $("#subTotal").val(sum.toFixed(2));
-	  $("#grandTotal").val(sum.toFixed(2));
-	  $("#conversionFrom").val(sum.toFixed(2));
-	  $("#afterDiscountTotal").val(sum.toFixed(2));
+	  $("#inoviceTotal").val(sum.toFixed(3));
+	  $("#subTotal").val(sum.toFixed(3));
+	  $("#grandTotal").val(sum.toFixed(3));
+	  $("#conversionFrom").val(sum.toFixed(3));
+	  $("#afterDiscountTotal").val(sum.toFixed(3));
 	  calculateDisCount();
 	  calculateTaxDiscount();
 	  /* =====================  After adding the rows calculate the tax start  ===================== */
@@ -1088,9 +1164,9 @@ function calculateDisCount(){
 			$("#discountTotal").val(discountValue);
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -1101,12 +1177,12 @@ function calculateDisCount(){
 		if(discountValue && subTotal > 0){
 			var perCentValue = (subTotal * discountValue)/100;
 			total = subTotal - perCentValue;
-			$("#discountTotal").val(perCentValue.toFixed(2));
+			$("#discountTotal").val(perCentValue.toFixed(3));
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
@@ -1301,8 +1377,8 @@ function calculateTaxDiscount(){
 	}
 	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
-	 $("#grandTotal").val(grandTotal.toFixed(2));
-	$("#conversionFrom").val(grandTotal.toFixed(2));
+	 $("#grandTotal").val(grandTotal.toFixed(3));
+	$("#conversionFrom").val(grandTotal.toFixed(3));
 	conversion();
 }
 </script>
@@ -1404,6 +1480,16 @@ function saveInvoiceTest(saveType){
       		
  	 	    var sourceleadUrl ='${sourceleadUrl}';
  	 	    var formData = getFormData1("project_invoice_form");
+ 	 	    
+ 	 	  if ($("#notifyToOthers").val() !== "") {
+ 	 		for (var e in $("#notifyToOthers").val().split(",")) {
+ 	 		if (!jQueryFormUtils.validateEmail($("#notifyToOthers").val().split(",")[e].replace(/\s+/g, ''))) {
+ 	 		flag = false;
+ 	 		$("#notifyToOthers").parent().append("<p class='jquery_form_error_message'>Enter valid email id</p>");
+ 	 		return;
+ 	 		}
+ 	 		}
+ 	 		}
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 // 		        	  $.post(sourceleadUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable", formData, function(result) {
 		        		   $.ajax({
@@ -1611,6 +1697,11 @@ function toDate(selector) {
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
+		           	
+		           	if(json['notifyToOthers'] != null && json['notifyToOthers'] != '' && json['notifyToOthers'] != 'undefined'){
+		           		$("#notifyToOthers").text(json['notifyToOthers']);
+		           	}
+		           	
 		           	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
 		           		$("#accountDetails").val(json['accountDetails']);
 		           	}
@@ -1872,10 +1963,11 @@ function maskme(){
 	
     $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
     	
-    	var charCode = (evt.which) ? evt.which : event.keyCode
-   	         if (charCode > 31 && (charCode < 48 || charCode > 57))
-   	            return false;
-   	         return true;
+    	var charCode = (evt.which) ? evt.which : evt.keyCode;
+    	if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+    	return false;
+
+    	return true;
    	         
 //     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
 //         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
@@ -2060,8 +2152,19 @@ function validateDiscount() {
 				return false; 
 		 	 }
 	  }if(selectedTextInvoice =='flat'){
-			  $("#saveInvoice").removeAttr("disabled", "disabled");
-			  $("#sendInvoice").removeAttr("disabled", "disabled");
+
+		  var numaricNum = /^[0-9]*$/
+		  if(enteredValue.match(numaricNum)){
+		  $("#saveInvoice").removeAttr("disabled", "disabled");
+		  $("#saveInvoice").removeAttr("disabled", "disabled");
+		  return true;
+		  }else{
+		  $("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Discount</span>");
+		  $("#saveInvoice").attr("disabled", "disabled");
+		  $("#saveInvoice").attr("disabled", "disabled");
+		  return false; 
+		  }
+
 		  }		  
 }
 </script>

@@ -27,6 +27,7 @@
                <a href="<c:url value='${appPath}/payrollPayhead'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a>
          </li>
       <li>
+      <a class="addcon-pop" onclick="refreshPayheads()"><i class="fa fa-refresh paddingRight"></i>Refresh Payheads</a><small class="text-muted ml">|</small>
       <a href="<c:url value='${appPath}/payrollSalarySetup'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Salary Setup</a><small class="text-muted ml">|</small>
       </li>
         <li></li>
@@ -188,10 +189,24 @@ function payheadListPagination(url,sourceleadUrl){
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
+	            	    var checked = 'checked';
+	            	    if(opt.active=='NO'){
+	            	    	checked = '';
+	            	    }
 	            	    result = result +"<td>";
-	            	    result = result +"<div class='tbldata-dotdot_50'>";
-	            	    result = result +"<a href='<c:url value='/app/payrollPayhead?uuid="+opt.uuid+"'/>'><span title='Edit Payhead'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
+	            	    result = result +"<div class='tblminwidth-50 mt10'>";
+	            	    result = result +"<a  class='pull-left' href='<c:url value='/app/payrollPayhead?uuid="+opt.uuid+"'/>'><span title='Edit Payhead'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
 	            	    /* result = result +'<a><span title="Delete Payhead"><i class="glyphicon glyphicon-trash" onClick="deletePayhead(\''+opt.uuid+'\')";></i></span></a>'; */
+	            	    
+	            	    result = result +"<div class='toggle-button pull-left ml'>";
+
+	            	    result = result +"<label class='switch'>";
+	            	    result = result +"<input type='checkbox' id='onOff"+opt.uuid+"' onclick='payheadHandler(\""+opt.uuid+"\");' "+checked+">";
+						result = result +"<div class='slider round'></div>";
+						result = result +"</label>";
+
+	            	    result = result +"</div>";
+	            	    
 	            	    result = result +"</div>";
 	            	    result = result +"</td>";
 	            		return result;
@@ -209,7 +224,7 @@ function payheadListPagination(url,sourceleadUrl){
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
-    $("#payheadListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("#payheadListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;' class='project_wrap_table'></div>"); 
     $("input[type=search]").hide();
     $("#payheadDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
@@ -226,6 +241,37 @@ function payheadListPagination(url,sourceleadUrl){
     	});
 }
 
+</script>
+
+<script>
+function payheadHandler(uuid) {
+	var isChecked = 'YES';
+	if($("#onOff"+uuid).is(":checked")){
+		isChecked = 'YES';
+	}else{
+		isChecked = 'NO';
+	}
+	$.ajax({
+		type : "POST",
+		url: sourceleadUrl+"/payheadHandlerByOrg?uuid="+uuid+"&active="+isChecked,
+		success :function(json) {
+			
+		},
+	});
+}
+</script>
+
+<script>
+function refreshPayheads(){
+	$("#payheadListLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/refreshPayheadsForOrg",
+		success :function(json) {
+			payrollPayheadList();
+		},
+	});
+}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />

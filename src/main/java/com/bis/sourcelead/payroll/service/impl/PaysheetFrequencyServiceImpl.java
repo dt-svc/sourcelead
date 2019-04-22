@@ -111,6 +111,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
@@ -207,6 +210,12 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		StringBuilder msgBuild = new StringBuilder();
 		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		
+		//Redirection URL
+		String redirectURL = "/viewPaySheetFrequencyData-params-approverStatus=SENT-and-paySheetFrequencyUUID="
+				+ savedPF.getPaySheetFrequencyUUID() + "-and-payPeriodNum=" + uSPayPeriodw.getPayPeriodNum();
+		Long redirectOrgLocationId = orgLocation.getId();
+				
+		
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		SimpleDateFormat dateFormat = orgLocation.getLocFullFormDateFormatter();
 		
@@ -237,7 +246,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		StringBuilder stringBuilderLoginname = new StringBuilder();
 		globalVarsMap.put("loginUser", stringBuilderLoginname.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		StringBuilder stringBuildforLink = new StringBuilder();
-		globalVarsMap.put("payrollLink", stringBuildforLink.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		
+		
+		globalVarsMap.put("payrollLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Approve Payroll</div></a>").toString());
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUEST_FOR_APPROVING_PAYROLL,Constants.ENTITY_TYPE_EMAIL);
@@ -416,7 +427,12 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 						otTotalHours  = commonUtil.getTotalRegularOverTimeHours(Double.parseDouble(payroll.getOverTimeHours()),otTotalHours);
 						otTotalAmount = otTotalAmount.add(payroll.getOverTimeAmount());
 					}
-					
+					Date todayDate = new Date();
+					 if (todayDate.after(payroll.getPayCheckDate())) {
+						 myPayrollDTO.setEnablePayslip(true); 
+					 }else {
+						 myPayrollDTO.setEnablePayslip(false);
+					 }
 					
 					list.add(myPayrollDTO);
 				}
@@ -1031,9 +1047,9 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 			List<PayrollReportDTO> payrollReportList = new ArrayList<>();
 			Map<Long,PayrollReportDTO> userMap = new HashMap<>();
 			for(InvoicePayment invoicePayment : invoicePayItemList) {
-				PayrollReportDTO dto = new PayrollReportDTO();
 				Invoice invoice = invoicePayment.getInvoiceId();
 				for(InvoiceLineItems invLine : invoice.getInvoiceLineItems()) {
+					PayrollReportDTO dto = new PayrollReportDTO();
 					StringBuilder nameSb = new StringBuilder();
 					if(StringUtils.isNotBlank(invLine.getCandidate().getLastName()))
 						nameSb.append(invLine.getCandidate().getFirstName()).append(" ").append(invLine.getCandidate().getLastName());

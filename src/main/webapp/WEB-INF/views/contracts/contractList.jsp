@@ -2936,7 +2936,7 @@ function preparedClientContractListWTVPagination(url,tabType){
 		    	    	    	    	    	    "render": function(data, type, output, meta) {
 		    	    	    	    	    	      var opt = "";
 		    	    	    	    	    	      opt = opt + '<div class="tbldata-dotdot_80">';
-		    	    	    	    	  	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.ownerUser){
+		    	    	    	    	  	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_loginUserRole}' == "ROLE_MANAGER" ||'${SourceLeadWeb_user.id}' == output.ownerUser){
 		    	    	    	    	 	        	 if(output.contractStatus != "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
 		    	    	    	    	 		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 		    	    	    	    	 		     		}

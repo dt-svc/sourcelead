@@ -282,16 +282,16 @@ public class DynamicReport {
 							col.column("Emp Id", "empId", type.stringType()),
 							col.column("Emp Name", "empName", type.stringType()),
 							col.column("SSN", "ssn", type.stringType()),
-							col.column("Gross Wages", "grossWages", type.bigDecimalType()),
-							col.column("Federal", "federal", type.bigDecimalType()),
+							col.column("Gross Wages", "grossWages", Templates.currencyType),
+							col.column("Federal", "federal", Templates.currencyType),
 							col.column("SOS Sec", "sos", type.bigDecimalType()),
-							col.column("Medicare", "medicare", type.bigDecimalType()),
-							col.column("FUTA", "futa", type.bigDecimalType()),
-					        col.column("State", "state", type.stringType()),
-					        col.column("ST", "st", type.bigDecimalType()),
-					        col.column("Local Tax", "localTax", type.bigDecimalType()),
-					        col.column("Suta", "suta", type.bigDecimalType()),
-					        col.column("YTD", "ytd", type.bigDecimalType()))
+							col.column("Medicare", "medicare", Templates.currencyType),
+							col.column("FUTA", "futa", Templates.currencyType),
+					        col.column("State", "state", type.stringType()).setHorizontalAlignment(HorizontalAlignment.RIGHT),
+					        col.column("ST", "st", Templates.currencyType),
+					        col.column("Local Tax", "localTax", Templates.currencyType),
+					        col.column("Suta", "suta", Templates.currencyType),
+					        col.column("YTD", "ytd", Templates.currencyType))
 					
 					.pageFooter(Templates.footerComponent)
 					.setDataSource(createTaxableWagesDataSource(responseList)).toPdf(pdfExporter);

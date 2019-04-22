@@ -20,8 +20,8 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @ServerEndpoint("/app/ws/dashBoardDynamicCount")

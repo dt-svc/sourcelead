@@ -49,7 +49,7 @@ import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;

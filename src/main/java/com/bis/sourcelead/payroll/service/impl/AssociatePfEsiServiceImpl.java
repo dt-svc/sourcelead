@@ -70,11 +70,11 @@ public class AssociatePfEsiServiceImpl implements AssociatePfEsiService{
 					associatePfEpf.setEligibleForPf(Constants.YES);
 					associatePfEpf.setUanNumber(associatePfEsiDetailsDTO.getUanNumber());
 					associatePfEpf.setPfNumber(associatePfEsiDetailsDTO.getPfNumber());
-					associatePfEpf.setAadharNumber(associatePfEsiDetailsDTO.getAadharNumber());
+					//associatePfEpf.setAadharNumber(associatePfEsiDetailsDTO.getAadharNumber());
 					associatePfEpf.setEnroleDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), associatePfEsiDetailsDTO.getEnroleDate()) );
 				}else {
 					associatePfEpf.setEligibleForPf(null);
-					associatePfEpf.setAadharNumber(null);
+					//associatePfEpf.setAadharNumber(null);
 					associatePfEpf.setUanNumber(null);
 					associatePfEpf.setPfNumber(null);
 					associatePfEpf.setEnroleDate(null);
@@ -105,7 +105,7 @@ public class AssociatePfEsiServiceImpl implements AssociatePfEsiService{
 						associatePfEpf.setEligibleForPf(null);
 						associatePfEpf.setUanNumber(null);
 						associatePfEpf.setPfNumber(null);
-						associatePfEpf.setAadharNumber(null);
+						//associatePfEpf.setAadharNumber(null);
 						associatePfEpf.setEnroleDate(null);
 						associatePfEpf.setEligibleForEsi(null);
 						associatePfEpf.setEsinumber(null);
@@ -148,7 +148,7 @@ public class AssociatePfEsiServiceImpl implements AssociatePfEsiService{
 			efesiDTO.setEligibleForPf(aped.getEligibleForPf());
 			efesiDTO.setUanNumber(aped.getUanNumber());
 			efesiDTO.setPfNumber(aped.getPfNumber());
-			efesiDTO.setAadharNumber(aped.getAadharNumber());
+			//efesiDTO.setAadharNumber(aped.getAadharNumber());
 			if(aped.getEnroleDate() != null) {
 				SimpleDateFormat dateFormat = null;
 				if(StringUtils.isNotBlank(orgLocation.getDateFormat())) {

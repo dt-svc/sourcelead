@@ -15,6 +15,7 @@ import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
 import com.bis.sourcelead.dto.AssociateSalaryPayheadIndDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateSalaryHistoryInd;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
@@ -57,6 +58,7 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 		}else {
 			payrollPayhead = new PayrollPayhead();
 			payrollPayhead.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			payrollPayhead.setActive(Constants.STATUS_YES);
 			payrollPayhead.setCreatedDate(new Date());
 			payrollPayhead.setCreatedBy(user);
 		}
@@ -369,6 +371,34 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 	@Override
 	public List<AssociateSalaryInd> getAssociateSalaryIndListByOrgLocationsId(Long orgLocationId) throws Exception {
 		return payrollPayheadDao.getAssociateSalaryIndListByOrgLocationsId(orgLocationId);
+	}
+
+	@Override
+	public Response<String> refreshPayheadsForOrg(Long orgLocationId) throws Exception {
+		Response<String> response = new Response<>();
+		OrgLocations sourceLeadorgLocation = new OrgLocations();
+		sourceLeadorgLocation.setId(1l);
+		List<PayrollPayhead> defaultPayheadList = payrollPayheadDao.getPayrollPayheadList(sourceLeadorgLocation);
+		List<PayrollPayhead> payheadList = payrollPayheadDao.getAllPayrollPayheadListByOrgLocationId(orgLocationId);
+		for(PayrollPayhead pph : defaultPayheadList) {
+			if(payheadList.stream().filter(ph -> ph.getShortCode().equalsIgnoreCase(pph.getShortCode())).findAny().orElse(null) == null) {
+				OrgLocations orgLoc = new OrgLocations();
+				orgLoc.setId(orgLocationId);
+				pph.setId(null);
+				pph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				pph.setActive(Constants.STATUS_YES);
+				pph.setCreatedDate(new Date());
+				pph.setUpdatedDate(new Date());
+				pph.setOrgLocationId(orgLoc);
+				payrollPayheadDao.savePayrollPayhead(pph);
+			}
+		}
+		return response;
+	}
+	
+	@Override
+	public Response<String> payheadHandlerByOrg(PayrollPayheadDTO payrollPayheadDTO) throws Exception {
+		return payrollPayheadDao.payheadHandlerByOrg(payrollPayheadDTO);
 	}
 	
 }

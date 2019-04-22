@@ -205,6 +205,9 @@ public class Constants {
 	public static final String ORGDEMO_EMAIL = "orgDemoEmail";
 	public static final String ORGDEMO_NOTIFICATION = "orgDemoNotification";
 	
+	public static final String CANDIDATE_BULK_IMPORT_EMAIL = "CandidateBulkImport";
+	public static final String CANDIDATE_BULK_IMPORT_SUPPORT_EMAIL = "CandidateBulkImportSupport";
+	
 	public static final String PROFILES_ADDED_TO_CART_MAIL= "ProfilesAddedToCartMail";
 	public static final String PROFILES_ADDED_TO_CART_NOTIFICATION = "ProfilesAddedToCartNotification";
 	public static final String ENTITY_TYPE_EMAIL = "Email";
@@ -690,7 +693,7 @@ public class Constants {
 	public static final String[] DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS = { "Employee Id" , "First Name*", "Last Name", "Middle Name", "Email Id*", "Phone Number", "Extension",
 			"Rate", "Rate Currency", "Rate Per", "Gender*","Marital Status","Date of Join","Date of Birth","Role*","Day hours(HH:MM)","Manager*(Email)", "Employment type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Department*","Send Mail to User","Is Global Manager"};
 	
-	public static final String[] DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Payment Mode*","Bank Name","Account Number","BSR Number","MICR Code","IFSC Code",
+	public static final String[] DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Payment Mode*","Bank Name*","Account Number*","BSR Number","MICR Code","IFSC Code*",
 			"First Name","Last Name",};
 	
 	public static final String[] DATA_MIGRATION_ASSOCIATE_SALARY_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Pay Type*","Pay Frequency*","Pay Group*","Standard Hours","Annual Salary*"};						
@@ -870,6 +873,9 @@ public class Constants {
 	public static final String CANDIDATE_EDUCATION = "Education";
 	public static final String CANDIDATE_EMPLOERS = "Employer's";
 	public static final String CANDIDATE_PRIMARY_SKILL = "Primary Skill";
+	public static final String CANDIDATE_PAN_NUMBER = "Pan Number";
+	public static final String CANDIDATE_AADHAR_NUMBER = "Aadhar Number";
+	public static final String CANDIDATE_SSN_NUMBER = "SSN Number";
 	public static final String CANDIDATE_INVITATION = "CandidateInvitation";
 	public static final String EMPLOYEE = "Employee";
 	public static final String CUSTOM_REPORTS = "custom";
@@ -1334,6 +1340,8 @@ public class Constants {
 	
 	public static final String JOB_PARSING = "job_parsing";
 	
+	public static final String RESUME_PARSING = "resume_parsing";
+	
 	public static final String REGULAR = "Regular";
 	
 	public static final String[] DIRECT_DEPOSIT_HEADER = { "Employee\nNumber", "Employee Name", "Department", "Transit\nNumber", "Account\nNumber", "Deposit\nAmount", "Description" };
@@ -1410,6 +1418,10 @@ public class Constants {
 	
 	public static final String EMAIL_REMAINDER_INVOICE =  "Applicants Invoice";
 	
+	public static final String COUCH_DOCUMENT_UPLOAD_TYPE = "Import";
+	
+	public static final String COUCH_DOCUMENT_UPLOAD_FAILURE_TYPE = "Failure";
+	
 	public static final String APPLICANT_JOINING = "ApplicantJoining";
 	public static final String EMPLOYEE_ON_LEAVE = "EmployeeOnLeave";
 	public static final String APPROVE_PENDING_LEAVES="approvePendingLeaves";
@@ -1429,8 +1441,22 @@ public class Constants {
 	
 	public static final String PAYMENT_MODE_SAVINGS = "Savings";
 	
+	public static final String ASSOCIATE_DEDUCTION_CONTRIBUTION_DETAIL_HEADERS [] = {"Associate Id",	"Associate Email*",	"Deduction Type","Deduct Amount","Contribute Amount"};
 
-	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number","PF Number","ESI Number"};						
+	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number*","PF Number*","ESI Number"};						
 
+	public static final String TICKET_COMMENT_EMAIL = "NewTicketCommentEmail";
+	public static final String TICKET_COMMENT_NOTIFICATION ="NewTicketCommentNotification";
+	
+	public static final String CLOCK_IN = "ClockIn";
+	public static final String CLOCK_OUT = "ClockOut";
+	public static final String PLAY = "play";
+	public static final String PAUSE = "pause";
+	
+	public static final String ASSOCIATE_ID= "Associate Id";
+	public static final String ASSOCIATE_EMAIL= "Associate Email*";
+	public static final String DEDUCTION_TYPE = "Deduction Type";
+	public static final String DEDUCT_AMOUNT= "Deduct Amount";
+	public static final String CONTRIBUTE_AMOUNT = "Contribute Amount";
 	
 }

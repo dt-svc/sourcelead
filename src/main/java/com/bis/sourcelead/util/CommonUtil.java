@@ -66,6 +66,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dao.RequirementOffersDao;
 import com.bis.sourcelead.dao.ShiftDao;
 import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
@@ -102,9 +103,10 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.Shift;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
@@ -138,13 +140,13 @@ import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
-import com.bis.sourcelead.service.TimeSheetDayEntriesService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimeSheetDayEntriesService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.text.DecimalFormat;
@@ -274,6 +276,9 @@ public class CommonUtil {
 	
 	@Autowired
 	PayrollPaySlipIndService payrollPaySlipIndService;
+	
+	@Autowired
+	private RequirementOffersDao requirementOffersDao;
 	/**
 	 * This method is used to convert JSON String to HashMap<Key,Value>
 	 * @author: Naresh Bolisetty
@@ -1886,7 +1891,11 @@ public class CommonUtil {
 				
 				candidate.setIsAssociate(Constants.NO);
 				candidate.setDesignationType("W-2");
-				
+				if(candidateDTO.getWorkLocation() != null) {
+					OrgLocations workLocation = new OrgLocations();
+					workLocation.setId(candidateDTO.getWorkLocation());
+					candidate.setWorkLocation(workLocation);
+				}
 				candidate.setStatus(1);
 	  			Candidate savedCandidate = candidateService.saveOrUpdateCandidate(candidate);
 	  			candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
@@ -2397,35 +2406,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 }
 		}
 	
-	public static TimesheetActivities getTimesheetActivity(SubmissionApproverHierarchy sah,String activityStatus) {
-		TimesheetActivities timesheetActivity = new TimesheetActivities();
-	/*	if(sah != null) {
-			timesheetActivity = new TimesheetActivities();
-			timesheetActivity.setProjectId(sah.getSubmissionId().getProjects());
-			timesheetActivity.setActivityStatus(activityStatus.toUpperCase());
-			timesheetActivity.setMasterCandidate(sah.getSubmissionId().getMasterCandidateId());
-			timesheetActivity.setFrequencyStartDate(sah.getFrequencyStartDate());
-			timesheetActivity.setFrequencyEndDate(sah.getFrequencyEndDate());
-			timesheetActivity.setRejectedReason(sah.getRejectedReason());
-			timesheetActivity.setActionPerformedBy(sah.getActionPerformedBy());
-			timesheetActivity.setActionPerformedByOrgLocationId(sah.getActionPerformedByOrgLocationId());
-			timesheetActivity.setStatus(sah.getStatus());
-			timesheetActivity.setReopenedUser(sah.getReopenedUser());
-			timesheetActivity.setReopenReason(sah.getReopenReason());
-			timesheetActivity.setReopenRejectedReason(sah.getReopenRejectedReason());
-			Date createdDate = addCurrentTimeToDate(sah.getCreatedDate());
-			timesheetActivity.setCreatedDate(createdDate);
-			timesheetActivity.setCreatedBy(sah.getCreatedBy());
-			timesheetActivity.setActionPerformedbyUserId(sah.getTimesheetActivityLoginUser());
-			if(sah.getSubmissionId() != null) {
-				timesheetActivity.setWeekComments(sah.getSubmissionId().getWeekcomments());
-			}
-			timesheetActivity.setWeekTotal(sah.getSubmissionId().getTotalHours());
-			timesheetActivity.setWeekTotalBillable(sah.getSubmissionId().getBillableHours());
-			timesheetActivity.setWeekTotalNonBillable(sah.getSubmissionId().getNonBillableHours());
-		}*/
-		return timesheetActivity;
-	}
+	
 	
 	
   private static Date addCurrentTimeToDate(Date createdDate) {
@@ -2687,7 +2668,34 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
   public String saveJoinStatusInSubmission(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, Long submissionId, OrgLocations orgLocations, User user) throws Exception {
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		if(!requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.JOINED)) {
-			// to update submission history
+			// update offer status with out offer accepting and update submission and history
+			if(requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.OFFERMADE)){
+				RequirementSubmissionHistory requirementSubmissionHistory1 = new RequirementSubmissionHistory();
+				requirementSubmissionHistory1.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+				requirementSubmissionHistory1.setToStage("OFFERACCEPTED");	
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory1, requirementSubmission.getCreatedBy());
+				List<RequirementOffers> offersList = requirementOffersDao.getRequirementOfferSubmissionByIdAndOrgLocationId(submissionId, orgLocations.getId());
+				offersList.forEach(requirementOffers->{
+					if(requirementOffers  != null){
+				    	  if(requirementOffers.getOfferStatus().equalsIgnoreCase("CLIENT_OFFERMADE")) {
+				    		  requirementOffers.setOfferStatus("CLIENT_OFFERACCEPTED");
+				    	  }else {
+				    		  requirementOffers.setOfferStatus("OFFERACCEPTED");
+				    	  }
+						   
+						    requirementOffers.setUpdatedBy(user.getUserCode());
+						    requirementOffers.setUpdatedDate(this.currentDate());
+						    try {
+								requirementOffersDao.storeRequirementOffers(requirementOffers);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+				     }
+				});
+			}
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 			requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
 			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
@@ -2711,7 +2719,7 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 			}
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
-		}
+			}
 		return "success";
 	}
 
@@ -2895,6 +2903,32 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		pps.setCreatedDate(new Date());
 		pps.setCreatedBy(user);
 		payrollPaySlipIndService.savePayrollPaySlipInd(pps);
+	}
+	
+	public Map<String,String> getCandidateBulkImportHeaderMap() {
+		Map<String,String> headerMap = new HashMap<>();
+		headerMap.put("summary", "summary");
+		headerMap.put("lastName", "Last Name");
+		headerMap.put("vendorcontact", "Vendor Contact");
+		headerMap.put("alternateMobilePhone", "Alternate Mobile Number");
+		headerMap.put("address", "Address");
+		headerMap.put("primarySkill", "Primary Skill");
+		headerMap.put("expectedRate", "Expected Rate");
+		headerMap.put("experienceYears", "Experience");
+		headerMap.put("currentRate", "Current Rate");
+		headerMap.put("candidateSkills", "Skills");
+		headerMap.put("firstName", "First Name");
+		headerMap.put("candidateEmployers", "Employers");
+		headerMap.put("mobilePhone", "Phone");
+		headerMap.put("vendor", "Vendor");
+		headerMap.put("designationType", "Designation Type");
+		headerMap.put("docFile", "Resume");
+		headerMap.put("middleName", "middleName");
+		headerMap.put("designation", "Designation");
+		headerMap.put("candidateEducation", "Education");
+		headerMap.put("email", "Email");
+		return headerMap;
+		
 	}
 }
 

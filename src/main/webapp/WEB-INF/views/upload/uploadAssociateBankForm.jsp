@@ -43,6 +43,11 @@ var uploadflag= true;
         <h2>Import Associates</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates List</a> &raquo; Import Associates </div>
+    
+    <div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+       </div>
+    
     </section>
 	<div id="loading"></div>
 	<div class="content-area clearfix" id="dataFileImportDiv">
@@ -132,11 +137,11 @@ var uploadflag= true;
 		<div id="errorDataDIV"></div>
         </div>
 	<div id="dataFieldsDiv" style="display: none"></div>
-<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
-	<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
-	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
-	    	<input type="hidden"  id="uploadedPercentage" value="0">
-		</div>	 	
+<!--  <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop"> -->
+<!--  	<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5> -->
+<!--  	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table> -->
+<!--  	    	<input type="hidden"  id="uploadedPercentage" value="0"> -->
+<!--  		</div>	 	  -->
 </section>
 
 <div class="success_pop" id="selector11" style="display: none;">
@@ -214,14 +219,20 @@ function importAssociateBankDetail(){
     	    dataType : 'json',
     	    url: sourceleadUrl+"/saveAssociateBankDetailTemplate?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 	   
  		    success : function(json) {
- 		    		$("#loading").removeAttr("style");
- 		    	    if(json.updateCount != null && json.updateCount != '')
- 		    	    $("#msgDiv").removeAttr("style");
- 		 			$("#msgDiv").css({ display: "block" });
- 		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
+ 		    		
  		 			if(json.errorData != null && json.errorData.length >0){
  		 				showFailedExcelData(json);
  		 			}
+ 		 			else{
+ 		 				$("#loading").removeAttr("style");
+//   	 		    	    if(json.updateCount != null && json.updateCount != ''){
+	 	 		    	    $("#selector1").removeAttr("style");
+	 	 		    	    $("#selector1").css({ display: "block" });
+	 	 		 			$("#msgDiv").html("Data successefully imported ...");
+	 	 		 			$("#selector1").fadeIn(200);
+	 	 		 		    $('#selector1').delay(2000).fadeOut('slow');
+//   	 		    	    }
+  		 			}
  			    	},
 		 		   error: function(e){
 			        }
@@ -261,13 +272,43 @@ function cancelFileImport(){
 	    	 for(i=0;i < data.length;i++){
 	    		 var report = data[i];
 	    		 result += '<tr>';
-		         result += '<td>'+report.associateId+'</td>';
-		         result += '<td>'+report.emailId+'</td>';
-		         result += '<td>'+report.accountType+'</td>';
-		         result += '<td>'+report.bankName+'</td>';
-		         result += '<td>'+report.accountNumber+'</td>';
-		         result += '<td>'+report.routingNumber+'</td>';
-		         result += '<td>'+report.reason+'</td>';
+	    		 
+	    		 if(report.associateId != null && report.associateId != '' && report.associateId != 'undefined'){
+	    			 result += '<td>'+report.associateId+'</td>';
+	    		 }else{
+	    			 result += '<td>--</td>';
+	    		 }
+		         if(report.emailId != null && report.emailId != '' && report.emailId != 'undefined'){
+		        	 result += '<td>'+report.emailId+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.accountType != null && report.accountType != '' && report.accountType != 'undefined'){
+		        	 result += '<td>'+report.accountType+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.bankName != null && report.bankName != '' && report.bankName != 'undefined'){
+		        	 result += '<td>'+report.bankName+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.accountNumber != null && report.accountNumber != '' && report.accountNumber != 'undefined'){
+		        	 result += '<td>'+report.accountNumber+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.routingNumber != null && report.routingNumber != '' && report.routingNumber != 'undefined'){
+		        	 result += '<td>'+report.routingNumber+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.reason != null && report.reason != '' && report.reason != 'undefined'){
+		        	 result += '<td>'+report.reason+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         
 		         result += '  </tr>';
 	    	 }
 	    	

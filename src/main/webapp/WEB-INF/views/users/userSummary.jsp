@@ -39,6 +39,7 @@
 
 <script> 
 $(document).ready(function(){
+// 	savedCommentAndCount(candidateId);
 	 var userId = '${userId}';
 	 
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -611,6 +612,13 @@ window.onload = function () {
 					if(json.panNumber != null && json.panNumber !='' && json.panNumber !='undefined'){
 						result = result + '			<div class="project_details_cta">';
 						result = result + '				 <strong>PAN Number:</strong><span class="fix">'+json.panNumber+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+						result = result + '<div class="clearfix"></div>';
+					}
+					
+					if(json.aadharNumber != null && json.aadharNumber !='' && json.aadharNumber !='undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				 <strong>Aadhar Number:</strong><span class="fix">'+json.aadharNumber+'</span><div class="clearfix"></div>';
 						result = result + ' 		</div>';
 						result = result + '<div class="clearfix"></div>';
 					}
@@ -2069,6 +2077,11 @@ $("#editRoleDetailsList").empty();
 						result = result + ' <div class="user_summary_edit_cta" >';
 						result = result + ' <label>PAN Number<span class="text-danger">&nbsp;*</span></label>';
 						result = result + ' <input type="text" value="'+json.panNumber+'"  id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space fixed_length length10"/>';
+						result = result + ' </div>';
+						
+						result = result + ' <div class="user_summary_edit_cta" >';
+						result = result + ' <label>Aadhar Number<span class="text-danger">&nbsp;*</span></label>';
+						result = result + ' <input type="text" value="'+json.aadharNumber+'"  id="aadharNumber" name="aadharNumber" field-name="Aadhar Number" data-validation="required validate_int fixed_length length12"/>';
 						result = result + ' </div>';
 					}
 					
@@ -4682,6 +4695,7 @@ function closeComment(){
 		    		    location.href = "/errorPage";
 		    		} else if (result.response === "SUCCESS") {
 		    			savedCommentAndCount(candidateId);
+		    			candidateCommentsList(candidateId);
 		    		} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {

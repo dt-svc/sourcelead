@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.payroll.dao.AssociateBankDataDao;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.entity.AssociateBankData;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Repository
 public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
@@ -125,9 +126,9 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 				public void execute(java.sql.Connection connection) throws SQLException {
 					boolean initialAutocommitSetting = connection.getAutoCommit();
 					connection.setAutoCommit(false);
-					CallableStatement stmt = connection.prepareCall("{call associateBankDataProcedure(?,?,?,?,?,?,?,?)}");
+					CallableStatement stmt = connection.prepareCall("{call associateBankDataProcedure(?,?,?,?,?,?,?,?,?)}");
 					for (AssociateBankDataDTO bankDto : list) {
-						if(bankDto.getEmailId() !=null && !"".equalsIgnoreCase(bankDto.getEmailId())) {
+						if(bankDto.getEmailId() !=null && !"".equalsIgnoreCase(bankDto.getEmailId()) && map.get(bankDto.getEmailId()) != null) {
 							stmt.setLong(1, map.get(bankDto.getEmailId()));
 						}else {
 							stmt.setLong(1, 0);							
@@ -142,6 +143,7 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 						java.sql.Date sqlDate = new java.sql.Date(date.getTime()); 
 						stmt.setDate(7,sqlDate);	//Created Date
 						stmt.setDate(8, sqlDate);	//Updated Date
+						stmt.setString(9, SourceLeadRandomCodeHelper.generateRandomUUID());	//associateBankUUID
 						stmt.addBatch();
 					}
 					int[] updateCount = stmt.executeBatch();

@@ -12,8 +12,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -48,14 +47,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
-import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
@@ -67,7 +64,6 @@ import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.AssociateGrades;
-import com.bis.sourcelead.entity.AssociateSalary;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
@@ -93,14 +89,12 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
-import com.bis.sourcelead.entity.SourceleadTags;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
-import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
@@ -133,10 +127,10 @@ import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserCustomFieldDataService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -146,8 +140,6 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
-
-import opennlp.tools.parser.Cons;
 
 @RestController
 @RequestMapping("/app")
@@ -922,6 +914,11 @@ public class UsersListRestController {
 				  userRole.setPanNumber(candidate.getPanNumber());
 			  }else {
 				  userRole.setPanNumber("");
+			  }
+			  if(candidate.getAadharNumber() != null) {
+				  userRole.setAadharNumber(candidate.getAadharNumber());
+			  }else {
+				  userRole.setAadharNumber("");
 			  }
 		  }
 		  
@@ -2419,10 +2416,23 @@ public class UsersListRestController {
 			if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
 				 OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
 				   candidate.setWorkLocation(workLocation);
+				   if(candidate.getId() != null) {
+					   List<Candidate> canlist = candidateService.getOffshoreCandidatesByParentCandidateId(candidate.getId());
+					   if(canlist != null && !canlist.isEmpty()) {
+						   for(Candidate can :canlist) {
+							   can.setWorkLocation(workLocation);
+							   candidateService.saveOrUpdateCandidate(can);
+							   candidateService.saveOrUpdateCandidateElkDocument(can);
+						   }
+					   }
+				   }
 			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getPanNumber())){
 				   candidate.setPanNumber(addUserDTO.getPanNumber());
+			}
+			if(StringUtils.isNotBlank(addUserDTO.getAadharNumber())){
+				   candidate.setAadharNumber(addUserDTO.getAadharNumber());
 			}
 			   
 			candidateService.saveOrUpdateCandidate(candidate);
@@ -2492,6 +2502,7 @@ public class UsersListRestController {
 			pclients.setProjectId(projectMembers.getProjects());
 			pclients.setOrgRelationId(orgRelation);
 			pclients.setOrgLocationsId(vendorCandidate.getOrgLocationId());
+			pclients.setOrgId(vendorCandidate.getOrgLocationId().getOrg());
 			pclients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			pclients.setStatus(1);
 			

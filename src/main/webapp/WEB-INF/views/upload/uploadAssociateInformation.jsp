@@ -133,9 +133,9 @@ var uploadflag= true;
         
         
     <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop" id="recentHistoryDiv">
-	<h5 id="uploadXlsHistoryDivTitle"  style="display: block;">Recent Uploads History</h5>
+	<!-- <h5 id="uploadXlsHistoryDivTitle"  style="display: block;">Recent Uploads History</h5>
 	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
-	    	<input type="hidden"  id="uploadedPercentage" value="0">
+	    	<input type="hidden"  id="uploadedPercentage" value="0"> -->
 		</div>	 	
 </section>
 
@@ -155,16 +155,17 @@ document.getElementById("uploadBtn").onchange = function () {
 
 <script type="text/javascript">
 function importAssociateBankDetail(){
-	var validationSettings = {
+	/* var validationSettings = {
             errorMessagePosition : 'element',
             borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-            };
+            }; */
 	var fileUrl = $("#dataFilePath").val();
 	var uploadType = "associateUpload";
 	var headerPosition = $("#headerPosition").val();
 
+	if ($('#upload_asso_info_form').validate(false, validationSettings)){
 	var frm = $('#upload_asso_info_form').serializeFormJSON();
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
@@ -188,7 +189,7 @@ function importAssociateBankDetail(){
  		    		$("#loading").removeAttr("style");
  		    	    if(json.insertedCount != null && json.insertedCount != '')
  		    	    $("#msgDiv").removeAttr("style");
- 		 			$("#msgDiv").css({ display: "block" });
+ 		    	   $("#msgDiv").css({ "display" : "block", "text-align" :"center" });
  		 			$("#msgDiv").html(json.insertedCount+ " Associates are updated");
  		 			msgFadein();
  		 			if(json.pfErrorData != null && json.pfErrorData.length >0){
@@ -199,7 +200,12 @@ function importAssociateBankDetail(){
 		 		   error: function(e){
 			        }
 			 });
-}
+}}
+$('body').on('blur', '#upload_asso_info_form', function() {
+	$("#upload_asso_info_form").showHelpOnFocus();
+	$("#upload_asso_info_form").validateOnBlur(false, validationSettings);
+});
+
 </script>
 
 
