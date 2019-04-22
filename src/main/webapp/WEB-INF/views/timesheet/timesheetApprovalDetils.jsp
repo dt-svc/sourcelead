@@ -1,6 +1,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+
+<!--################################## in-line style   ##################################-->
 <style>
 .timeNewSe_week_date .chosen-drop{
    width : 225px !important;
@@ -8,27 +11,28 @@
 .timeNewSe_client .chosen-drop{
    width: 190px !important;
 }
-
 </style>
 
 
+<!--################################## Content div Starts ##################################-->
 <div class="positionRelative reportHead clearfix">
+        <!-- show/hide accept and reject buttons,when SelectAll check-box is clicked   -->
+		<div class="pull-left ml newAccBtn" id="hedderAcceptRejectButton" style="display: none">
+			<a href="javascript:void(0)" onclick="acceptTimeSheetSubmissionBySubmissionId('approver');" title="Accept"><i class="fa fa-check" ></i></a> 
+			<a href="javascript:void(0)" onclick="rejectTimeSheetSubmissionBySubmissionId('approver');"><i class="fa fa-times"></i></a>
+		</div>
 
-<div class="pull-left ml newAccBtn" id="hedderAcceptRejectButton" style="display: none">
-	<a href="javascript:void(0)" onclick="acceptTimeSheetSubmissionBySubmissionId('approver');" title="Accept"><i class="fa fa-check" ></i></a> 
-	<a href="javascript:void(0)" onclick="rejectTimeSheetSubmissionBySubmissionId('approver');"><i class="fa fa-times"></i></a>
-</div>
-
-      <span class="pull-left refreIcon" id="advanceSearchDiv">
-      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetProjectFilter();"></a>
-      </span>
+        <!-- Reset Button,which will reset all filtered values  -->
+        <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon"  title="Refresh" onclick="resetProjectFilter();"></a>
+        </span>
       
-      <ul class="pull-right list-unstyled list-inline">
-				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="popUpFilterTimesheet();"></a></li>
+        <!-- Export Button,which will export the data -->
+        <ul class="pull-right list-unstyled list-inline">
+				<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="timesheetApprovalAdvanceFilter();"></a></li>
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-						<a href="<c:url value='${appPath}/uploadTimesheet'/>">Import</a>
 						<c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
 						 	<a href="javascript:void(0)" onclick="exportTimeSheetToPdfOrExcel('pdf');" title="PDF">Export PDF</a>
 							<a href="javascript:void(0)" onclick="exportTimeSheetToPdfOrExcel('excel');" title="Excel">Export Excel</a>	
@@ -36,14 +40,24 @@
 						</span>
 					</div>
 				</li>
-		    
-		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearchExpenses'/><span class="repSearchIcon" onClick="dataTableSearchExp();"></span></li>
+		   <!-- Search textbox -->
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearchTimesheets'/><span class="repSearchIcon" onClick="dataTableSearchTime();"></span></li>
         </ul>
-      </div>
+</div>
+<!-- list of assigned projectmembers for to fill/approve/reject their timesheets  -->
+<div class="datatable_filter overflow_inherint">
+	 <div id="approverDataTimesheetDiv"> 
+		<jsp:include page="timesheetApprovalTable.jsp"></jsp:include>
+	</div> 
+</div>
+<!--################################## Content div Ends ##################################-->
 
+
+
+<!--################################################### AdvanceFilter Pop-up div ###################################################-->
 <div class="advancedsearch-mask" id="searchMask" onclick="" style="display: none;"></div>
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" style="display: none;" id="popUpFilterTimesheet">
-<h5 class="headerAdsrch">Filters
+                <h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onclick="closeFilterPop()"><i class="fa fa-close"></i></a>
 				</h5>
 				<form id="timesheetFilterForm" name="timesheetFilterForm">
@@ -75,16 +89,22 @@
 						</div>
 						</div>
 						</div>
-						
 						<div class="col-md-3">
 						<div class="row">
-						 
 						<c:if test="${!empty timesheetApprovalDTO.timesheetFrequency  && timesheetApprovalDTO.timesheetFrequency != 'Monthly' }" >	 
 						 		<div class="col-md-12 mb" id="timesheetWeekFrequencyFilter">
-						 			<jsp:include page="timesheetFilter.jsp"></jsp:include>
+						 			<label><strong>Timesheet Week Frequency</strong></label>
+										<div class="clearfix" id="weekFrequencyDiv">
+											<ul class="list-unstyled" id="frequencyFilter">
+												<c:forEach var="weekFrequencyList"
+													items="${timesheetApprovalDTO.weekFrequencyList}">
+													<li class="radioIput positionRelative">
+														<input	id="weekFrequency" name="weekFrequency" type="radio" ${weekFrequencyList.key == timesheetApprovalDTO.weekFrequency ? 'checked' : ''} value="${weekFrequencyList.key}"><label>${weekFrequencyList.key}</label></li>
+												</c:forEach>
+											</ul>
+									</div>
 						 		</div>
-						</c:if>	 
-						  
+						 </c:if>	 
 						  <div class="col-md-12 mb">
 							<label><strong>Stage</strong></label>
 							 <div class="clearfix">
@@ -111,9 +131,6 @@
 										</ul>
 									 </div> 
 							 </div> 
-							 
-							 
-							 
 							 <div class="col-md-3 mb positionRelative">
 									<div class="clearfix dynamic_search filterDynamicsearch">
 										<input type="text" id="searchClientInput" onkeyup="searchClient()" placeholder="Client" title="Type in a client">
@@ -127,8 +144,6 @@
 										</ul>
 									 </div> 
 							 </div> 
-							 
-							  
 					</div>
 					</div>
 					</form>
@@ -139,15 +154,9 @@
 						</div>
 					</div>
 				
-				
-</div>
+ </div>
 
-<div class="datatable_filter overflow_inherint">
-	 <div id="approverDataTimesheetDiv"> 
-		<jsp:include page="timesheetApprovalSubmission.jsp"></jsp:include>
-	</div> 
-</div>
-<!-- AddRow and Add Attachments Divs  ####-->
+<!--################################## AddRow div's For TimesheetEntries #######################################################-->
          <div id="divadttTd1" style="display:none;">   
              <div class="taskDropDown"> 
               <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId timSelWid"  field-name="Task" onchange="prepareProjectTaskDetails('ENTRYINDEX','REPLACEROWIDtask1Id')">  
@@ -275,41 +284,17 @@
                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment7Id');"></i>
                  <span class="teskcomment" id="REPLACEROWIDcomment7Id" ><textarea name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea7Id"></textarea></span></div>            
     	 </div>
+
 		
-		<!-- Add Attachment ####-->  
+<!--################################## AddAttachment div's For TimesheetEntries ######################################-->  
 		<div id="divAttachmentTd1" style="display: none; float: left;">
 				<div id='REPLACEROWIDdocFileuploadFileGroup'>
 		  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation" onchange='validateUploadFile(REPLACEROWID)'> 
 		  			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i>
 		  		</div>
 	    </div>
-<script>
-$("#dataTableSearchExpenses").keyup(function(event) {
-	if (event.keyCode === 13) {
-    	$('#dataTableSearchExpenses').parent().find('p.jquery_form_error_message').remove();
-    	var searchData = $('#dataTableSearchExpenses').val();
-    	var regex =  new RegExp(/[\\]/g);
-    	if(regex.test(searchData) == false){
-    		timesheetApprovalDetils('',searchData)
-    	}else{
-    		$("#dataTableSearchExpenses").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
-    	}
-    	$('#dataTableSearchExpenses').val(searchData);
-    }
-});
+ 
 
-function dataTableSearchExp(){
-	$('#dataTableSearchExpenses').parent().find('p.jquery_form_error_message').remove();
-	var searchData = $('#dataTableSearchExpenses').val();
-	var regex =  new RegExp(/[\\]/g);
-	if(regex.test(searchData) == false){
-		timesheetApprovalDetils('',searchData)
-	}else{
-		$("#dataTableSearchExpenses").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
-	}
-	$('#dataTableSearchExpenses').val(searchData);
-}
-</script>
 
 <script>
  var selectedRecords = {};
@@ -328,32 +313,63 @@ function dataTableSearchExp(){
 	   
 	});
  </script>
- 
- 
- <script type="text/javascript">
-function displayAcceptRejectButtonOnHedder() {
-	if($('[name="checkBoxForSubmitForApproval"]:checked').length > 0){
-		$('#hedderAcceptRejectButton').removeAttr('style');
-	}else{
-		$('#hedderAcceptRejectButton').attr('style','display:none');
-	}
-	
-}
-</script>
 
- <script type="text/javascript">
-function popUpFilterTimesheet() {
-	$('#searchMask').show();
-	$('#popUpFilterTimesheet').show();
-}
-
-function closeFilterPop(){
-	$('#searchMask').hide();
-	$('#popUpFilterTimesheet').hide();
-}
-</script>	
-
+<!--################# datatable search scripts starts  #################-->
 <script>
+/* works based on enter-button */
+$("#dataTableSearchTimesheets").keyup(function(event) {
+	if (event.keyCode === 13) {
+    	$('#dataTableSearchTimesheets').parent().find('p.jquery_form_error_message').remove();
+    	var searchData = $('#dataTableSearchTimesheets').val();
+    	var regex =  new RegExp(/[\\]/g);
+    	if(regex.test(searchData) == false){
+    		timesheetApprovalDetils('',searchData)
+    	}else{
+    		$("#dataTableSearchTimesheets").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+    	}
+    	$('#dataTableSearchTimesheets').val(searchData);
+    }
+});
+
+/* works based on onclick funtion */
+function dataTableSearchTime(){
+	$('#dataTableSearchTimesheets').parent().find('p.jquery_form_error_message').remove();
+	var searchData = $('#dataTableSearchTimesheets').val();
+	var regex =  new RegExp(/[\\]/g);
+	if(regex.test(searchData) == false){
+		timesheetApprovalDetils('',searchData)
+	}else{
+		$("#dataTableSearchTimesheets").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+	}
+	$('#dataTableSearchTimesheets').val(searchData);
+ }
+</script>
+<!--################# datatable search scripts ends ################# -->
+
+
+
+<!--################# Advance-search scripts starts  #################-->
+<script>
+    /* open advance-search filter */
+	function timesheetApprovalAdvanceFilter() {
+		$('#searchMask').show();
+		$('#popUpFilterTimesheet').show();
+	}
+
+	/* reset advance-search filter */
+	function resetProjectFilter(){
+		location.reload(true);	
+	}
+
+	/* close advance-search filter */
+	function closeFilterPop(){
+		$('#searchMask').hide();
+		$('#popUpFilterTimesheet').hide();
+	}
+
+</script>
+<script>
+/* setting projectname value on selection of project in advance-search filter ##### */
 function getProjectnameByProjectId(){
 	var project = $('input[id=project]:checked').val();
 	if(project != null && project != '' && project !='undefined'){
@@ -362,8 +378,10 @@ function getProjectnameByProjectId(){
 		$('#projectName').attr("value",projectname);
 	}
 }
+</script>
 
-
+<script>
+/*#####  getting week frequency based on month-selection in advance-search filter  #####*/
 function getTimesheetFrequencyForFilter(){
 	var frequencyMonth = $('input[id=frequencyMonth]:checked').val();
 	var timesheetFrequency = $('input[id=timesheetFrequency]:checked').val();
@@ -381,6 +399,7 @@ function getTimesheetFrequencyForFilter(){
 
 
 <script type="text/javascript">
+/* #####  getting results based on filtered data  ##### */
 function getTimesheetFilterData(){
 	var formData = getFormData("timesheetFilterForm");
 	if('frequencyMonth' in formData) {    
@@ -413,10 +432,9 @@ function getTimesheetFilterData(){
 	timesheetApprovalDetils();
 }
 
-function resetProjectFilter(){
-	location.reload(true);	
-}
 
+
+/*search project with in selected projectlist of advancesearch filter  */
 function searchProject() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("projectSearchInput");
@@ -433,6 +451,8 @@ function searchProject() {
         }
     }
 }
+
+/*search client with in selected clientlist of advancesearch filter  */
 function searchClient() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("searchClientInput");
@@ -451,31 +471,6 @@ function searchClient() {
 }
 
 </script>
+<!--################# Advance-search scripts Ends  #################-->
 
-<script>
-function getActions(){
-	$(".action-pop").slideToggle(200);
-	$(".newActPop").slideUp(200);
-}	
-$("html").click(function(){
-	$(".action-pop").slideUp(200);
-});
-$(".action, .action-pop").click(function(e){
- 	e.stopPropagation();
-});	
-
-
-function newActions(){
-	$(".newActPop").slideToggle(200);
-	$(".action-pop").slideUp(200);
-}
-$("html").click(function(){
-	$(".newActPop").slideUp(200);
-});
-$(".overIcon, .newActPop").click(function(e){
- 	e.stopPropagation();
-});	
-
-
-</script>
 
