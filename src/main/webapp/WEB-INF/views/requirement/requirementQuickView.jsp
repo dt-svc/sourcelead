@@ -299,7 +299,7 @@
 
 			            <c:if test="${ (requirement.requirementSubmissionStatus =='NEW'  || requirement.requirementSubmissionStatus =='DRAFT' || requirement.requirementSubmissionStatus =='SUBMITTED'  || requirement.requirementSubmissionStatus  == 'APPROVED'  || requirement.requirementSubmissionStatus =='REJECTED'  ||  requirement.requirementSubmissionStatus  == 'OPEN' ||  requirement.requirementSubmissionStatus  == 'ONHOLD' ) && (isAdmin == 'true' || requirement.isLoginUserAsApprover  == 'true' || isManager  == 'true' || requirement.isLoginUserAsInitiator == 'true') }">
 			            	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">  
-			            		  <a href="<c:url value="/requirement?requirementUUID=${requirementUUID}"/>"><button  class="btn btn-primary" type="button">Edit</button></a> 
+			            		  <a href="${SourceLeadWeb_atsUrl}/requirement?requirementUUID=${requirementUUID}"><button  class="btn btn-primary" type="button">Edit</button></a> 
 			            	</sec:authorize>
 			            </c:if>
 

@@ -10,7 +10,7 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css?staticTime=${staticTime}" />
 <style type="text/css">
 .addinterTable .chosen-container{
 width:125px !important;
@@ -46,7 +46,7 @@ function addInterview(requirementId){
 	var clientSubmissions = '${clientSubmissions}';
 	var result = "";
 	result = result + '<div class="add_inter">';
-	result = result + '<div class="add_inter positionRelative">';
+	result = result + '<div class="clearfix">';
 	result = result + '<div id="interviewLoading"></div>';
 	result = result + '<form id="addInterview_form" name="addInterview_form" style="position:reletive; z-index:100;">';
 	result = result + '<input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="1" />';

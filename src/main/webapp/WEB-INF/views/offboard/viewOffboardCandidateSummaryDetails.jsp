@@ -6,9 +6,9 @@
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="/resources/css/style.css" />
-<script src="/resources/js/offboardCheckListBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/offboardCheckList-view-generator.js" type="text/javascript" ></script> <!-- form generator -->
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css" />
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/offboardCheckListBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/offboardCheckList-view-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 
 <style type="text/css">
@@ -34,7 +34,7 @@ padding-left: 25px;
       <div class="pull-left">
           <h2 id="candidateName"></h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Candidate Offboarding Summary</a> &raquo; Employee Offboard Summary </div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>  &raquo; <a href="${SourceLeadWeb_atsUrl}/candidateOnBoardingList">Onboard & OffBoard List</a> &raquo; Candidate Offboard Summary </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="applicant_accept">

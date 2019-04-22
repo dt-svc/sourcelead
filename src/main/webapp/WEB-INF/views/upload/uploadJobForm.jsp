@@ -63,7 +63,7 @@ var uploadflag= true;
 					</div>
 					
 						<div class="col-xs-5 col-md-5">
-							<a href="<c:url value='/downloadDataImportTemplate'/>"
+							<a href="${SourceLeadWeb_sourceleadUrl}/downloadDataImportTemplate"
 								class="btn btn-success btn-block" title="Download Job Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Job Template
 							</a>
 						</div>
@@ -149,7 +149,7 @@ var uploadflag= true;
     <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 </div>
 
-<script type="text/javascript" src="/resources/js/xlsupload.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/xlsupload.js"></script>
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
 	$('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));

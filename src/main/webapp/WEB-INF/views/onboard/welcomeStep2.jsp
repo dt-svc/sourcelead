@@ -11,23 +11,23 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <!-- Bootstrap -->
 
-<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
-<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
-<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jquery-ui.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 
 
-<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${googleMapsLocationApiKey}" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -136,7 +136,7 @@
 				  <div class="form-group">
 				  <label class="col-md-4 control-label">Location <span class="text-danger paddingLeft">*</span></label>
 				  <div class="col-md-8">
-					<input type="text" class="form-control" data-placeholder="Location" id="onBoardLocatin"  name="location" value="${SourceLeadWeb_candidateOnBoarding.location}">
+					<input type="text" class="form-control" data-placeholder="Location" id="onBoardLocatin"  name="location" value="${candidateOnBoarding.location}">
 					<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('onBoardLocatin','onBoardCountry','onBoardState','onBoardCity','onBoardZipCode');"></i>
 				  </div>
 				</div>
@@ -145,7 +145,7 @@
 			  <div class="form-group">
 			  <label class="col-md-4 control-label">Country <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control"  data-placeholder="Country" id="onBoardCountry"  name="country" value="${SourceLeadWeb_candidateOnBoarding.country}" readonly>
+				<input type="text" class="form-control"  data-placeholder="Country" id="onBoardCountry"  name="country" value="${candidateOnBoarding.country}" readonly>
 			  </div>
 			</div>
 		</div>
@@ -153,7 +153,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">State</label>
 			  <div class="col-md-8">
-				 <input type="text" class="form-control" data-placeholder="State"  id="onBoardState" name="state" value="${SourceLeadWeb_candidateOnBoarding.state}" readonly>
+				 <input type="text" class="form-control" data-placeholder="State"  id="onBoardState" name="state" value="${candidateOnBoarding.state}" readonly>
 			  </div>
 			</div>
 		</div>
@@ -161,7 +161,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">City</label>
 			  <div class="col-md-8">
-				 <input type="text" class="form-control"  data-placeholder="City" id="onBoardCity" name="city" name="state" value="${SourceLeadWeb_candidateOnBoarding.city}" readonly>
+				 <input type="text" class="form-control"  data-placeholder="City" id="onBoardCity" name="city" name="state" value="${candidateOnBoarding.city}" readonly>
 			  </div>
 			</div>
 		</div>
@@ -400,7 +400,7 @@
 
 		  
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDetails();" class="Brig">
 	<div class="clearfix"></div>
 </div>
@@ -419,13 +419,13 @@
   </div>
   		  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-  <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
-  <script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script> 
-  <script src="/resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
-  <script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script> 
-  <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
-  <script src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
-  <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+  <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
+  <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/moment.min.js?staticTime=${staticTime}"></script> 
+  <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
+  <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script> 
+  <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+  <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
+  <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
   <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -447,7 +447,7 @@
 				})		 
 </script> 
 
-<script src="/resources/js/formvalidator.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script>
 <script src="../resources/js/jquery-ui.js"></script>
 <script>
 $(function (){
@@ -607,7 +607,6 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId) {
         
     }
   }
-  
   $("#"+countryId).val(address.country).change();
   $("#"+stateId).val(address.state).change();
   $("#"+cityId).val(address.city).change();

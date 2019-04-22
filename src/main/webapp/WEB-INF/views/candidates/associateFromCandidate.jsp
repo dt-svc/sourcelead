@@ -39,7 +39,7 @@
     <div class="pull-left">
       <h2>Add Associate</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Add Associate</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_atsUrl}/associatesList"> Associate List</a> &raquo; Add Associate</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -254,7 +254,7 @@
                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();associateFromCandEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			</div>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-		           <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+		           <a href="${SourceLeadWeb_vmsUrl}/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
               </sec:authorize>
 		</div>
 		</div>

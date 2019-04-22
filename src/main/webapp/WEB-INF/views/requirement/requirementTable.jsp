@@ -96,6 +96,7 @@ function requirementListCheck(searchValue,universalRequirementSearchList,searchT
 	} 
 }
 function requirementList(searchType,atsUrl){  
+	
 	    var url = '';
 	    if(searchType == 'list' || searchType == 'universalSearch'){
 	    	var filterStatus = [];
@@ -397,10 +398,10 @@ function jpagination(url,atsUrl){
 	      						   }
 	      						   if((opt.isRequirementReleased != null && opt.isRequirementReleased != '' && opt.isRequirementReleased != 'undefined'  && opt.isRequirementReleased == 'Y') 
 	      								   && (contains == true || userRoleName ==  'ROLE_ADMIN' || userRoleName == 'ROLE_SOURCELEAD_ADMIN')){
-	      				    		 	result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
+	      				    		 	result = result +"<div><a href='${SourceLeadWeb_atsUrl}/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"' title='Release Job'><i class='fa fa-bullhorn success'></i></a></div>"; 
 	      			
 	      						   	 }else{	
-	      								result = result +"<div><a href='<c:url value='/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"'/>' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>"; 
+	      								result = result +"<div><a href='${SourceLeadWeb_atsUrl}/releaseRequirementToClientOrVendors?requirementUUID="+opt.requirementUUID+"' title='Release Job'><i class='fa fa-bullhorn'></i></a></div>"; 
 	      						   	 }
 	      			       }
 	      				   else{
@@ -1129,6 +1130,7 @@ function jpaginationForJobFairs(url){
 	        	   $("#requirementEmptyListMessage").val(2);
 	           		var result = "";
 	       		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+	       		    	result = result +"<td><a href='<c:url value='/ats/jobFairSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 	       		    	result = result +"<td><a href='${SourceLeadWeb_atsUrl}/jobFairSummary?uuid="+opt.uuid+"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 	       		    '</sec:authorize>';
 		            return result;

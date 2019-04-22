@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
 	<script type="text/javascript">
 		window.onload = function () {
@@ -229,7 +229,7 @@
                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();importAssociateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 			</div>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-		               <a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+		               <a href="${SourceLeadWeb_vmsUrl}/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
            </sec:authorize>
 		</div>
 			</div>
@@ -433,7 +433,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/associatesList'/>'" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/associatesList" class="btn btn-default ml">
         </div>
       </div>
     </div>

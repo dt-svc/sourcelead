@@ -3,10 +3,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link rel="stylesheet" href="/resources/css/chosen.min.css">
-<script src="/resources/js/chosen.jquery.min.js"></script> 
-<script src="/resources/js/jquery-fun.js"></script> 
-<script src="/resources/js/formvalidator.js"></script>
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/chosen.min.css">
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js"></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-fun.js"></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -83,10 +83,10 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 				<div class="action-pop">
 					<span> 
 			           <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_USER')">
-				          <a href="<c:url value='/candidateOnBoardCreation'/>" title="Create onboard">Create onboard</a> 
+				          <a href="${SourceLeadWeb_atsUrl}/candidateOnBoardCreation" title="Create onboard">Create onboard</a> 
 			          	</sec:authorize>
 			          	<sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_USER')">
-				          <a href="<c:url value='/candidateOffBoardCreation'/>" title="Create offboard">Create offboard</a>
+				          <a href="${SourceLeadWeb_atsUrl}/candidateOffBoardCreation" title="Create offboard">Create offboard</a>
 			          	</sec:authorize>					
 					</span>
 				</div>

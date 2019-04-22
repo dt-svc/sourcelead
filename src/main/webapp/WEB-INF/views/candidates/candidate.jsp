@@ -186,6 +186,37 @@
           </div>
         </div>
         
+          <c:if test="${loginCountryName == 'India' }">
+			<div class="form-group" id="errPanNoDiv">
+				<label class="col-md-3">Pan Number</label>
+				<div class="col-md-9">
+					<input class="form-control" id="panNumber" name="panNumber"
+						placeholder="Pan Number" type="text"field-name="Pan Number" data-validation="validate_Space validate_length length10"
+						data-validation-optional="true" onkeyup="validatePanNumber();" onblur="validatePanNumber();"></input>
+				</div>
+			</div>
+			
+			<div class="form-group" id="errAadharNoDiv">
+				<label class="col-md-3">Aadhar Number</label>
+				<div class="col-md-9">
+					<input class="form-control" id="aadharNumber" name="aadharNumber"
+						placeholder="Aadhar Number" type="text" field-name="Aadhar Number" data-validation="validate_Space validate_length length12-20"
+						data-validation-optional="true" onkeyup="validateAadharNumber();" onblur="validateAadharNumber();"></input>
+				</div>
+			</div>
+		</c:if>
+		<c:if test="${loginCountryName == 'United States' }">
+			<div class="form-group" id="errSsnNoDiv">
+				<label class="col-md-3">SSN Number</label>
+				<div class="col-md-9">
+					<input class="form-control" id="ssnNumber" name="ssnNumber"
+						placeholder="SSN Number" type="text"field-name="SSN Number" data-validation="validate_Space validate_length length9"
+						data-validation-optional="true" onkeyup="validateSsnNumberDuplicateChek();" onblur="validateSsnNumberDuplicateChek();"></input>
+				</div>
+			</div>
+			
+        </c:if>
+        
         <div class="form-group">
                       <label class="col-md-3">Date of Birth</label>
                          <div class="col-md-9">
@@ -951,6 +982,80 @@ function candidateEmptyVendorContact(){
         document.getElementById("candidate_form").reset();
    
     });
+</script>
+<script type="text/javascript">
+function validatePanNumber() {
+	
+	  var panNumber = document.getElementById("panNumber").value;
+	 
+	  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:atsUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#panNumber").after("<p class='jquery_form_error_message'>"+panNumber+" is Already Existed</span>");
+						  $("#store_candidate").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#panNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errPanNoDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#store_candidate").removeAttr("disabled");
+		        	}
+		        }
+		    });
+};
+</script>
+
+<script type="text/javascript">
+function validateAadharNumber() {
+	
+	  var aadharNumber = document.getElementById("aadharNumber").value;
+	 
+	  $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:atsUrl+"/validateAadharNumber?"+tokenParamName+"="+tokenValue+"&aadharNumber="+aadharNumber, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#aadharNumber").after("<p class='jquery_form_error_message'>"+aadharNumber+" is Already Existed</span>");
+						  $("#store_candidate").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#aadharNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errAadharNoDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#store_candidate").removeAttr("disabled");
+		        	}
+		        }
+		    });
+};
+</script>
+
+<script type="text/javascript">
+function validateSsnNumberDuplicateChek() {
+	
+	  var ssnNumber = document.getElementById("ssnNumber").value;
+	 
+	  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:atsUrl+"/validateSsnNumber?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#ssnNumber").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
+						  $("#store_candidate").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#ssnNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errSsnNoDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#store_candidate").removeAttr("disabled");
+		        	}
+		        }
+		    });
+};
 </script>
 <!-- <script>
 	$(".clearUpload").click(function(){
