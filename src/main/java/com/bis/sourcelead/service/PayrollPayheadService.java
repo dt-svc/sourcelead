@@ -46,4 +46,6 @@ public interface PayrollPayheadService {
 	List<AssociateSalaryInd> getAssociateSalaryIndListByOrgLocationsId(Long orgLocationId) throws Exception;
 	
 	Response<String> refreshPayheadsForOrg(Long orgLocationId) throws Exception;
+	
+	Response<String> payheadHandlerByOrg(PayrollPayheadDTO payrollPayheadDTO) throws Exception;
 }
