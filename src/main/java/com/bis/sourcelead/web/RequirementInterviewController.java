@@ -175,7 +175,6 @@ public class RequirementInterviewController {
 			    	     }
 					 }
 					
-					  Long redirectOrgLocationId = orgLocation.getId();
 				     //stroe  requirementSubmissionHistoryService 
 				     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				     RequirementSubmission  requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementInterview.getSubmissionId().getId());
@@ -183,11 +182,11 @@ public class RequirementInterviewController {
 					 requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.INTERVIEW.toString());
 					 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.ATTENDING.toString()) && ((dateDateFormatTimeEnd != null && dateDateFormatTimeEnd.after(dateDateFormatCurTime))||(dateDateFormatTimeStart != null && dateDateFormatTimeStart.after(dateDateFormatCurTime)))){
 						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_ACCEPT);
-						 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId,redirectOrgLocationId);
+						 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
 					 }
 					 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.NOT_ATTENDING.toString()) && ((dateDateFormatTimeEnd != null && dateDateFormatTimeEnd.after(dateDateFormatCurTime))||(dateDateFormatTimeStart != null && dateDateFormatTimeStart.after(dateDateFormatCurTime)))){
 						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_REJECT);
-						 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId,redirectOrgLocationId);
+						 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
 					 }
 					 /*if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.MAYBE.toString())){
 						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_TENTATIVE);
