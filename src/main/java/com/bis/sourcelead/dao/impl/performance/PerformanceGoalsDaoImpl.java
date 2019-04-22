@@ -796,8 +796,8 @@ try {
 		try {
 		Query queryObj = null;
 		
-		String query =  "SELECT Q1.teamMemberId teamMemberId, " +
-						"Q1.teamMemberName teamMemberName " +
+		String query =  "SELECT Q1.teamMemberId , " +
+						"Q1.teamMemberName  " +
 						"FROM(" +
 						"SELECT TM.MEMBER_USER_ID AS teamMemberId , "+
 				        "CONCAT(U.FIRST_NAME,' ',IFNULL(U.MIDDLE_NAME,''),' ',IFNULL(U.LAST_NAME,'')) AS teamMemberName "+
