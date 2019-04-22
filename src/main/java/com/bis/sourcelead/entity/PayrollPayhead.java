@@ -96,6 +96,9 @@ public class PayrollPayhead {
 	@Column(name = "UUID")
 	private String uuid;
 	
+	@Column(name = "ACTIVE")
+	private String active;
+	
 	@Column(name = "STATUS")
 	private Integer status;
     
@@ -304,6 +307,14 @@ public class PayrollPayhead {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public String getActive() {
+		return active;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
 	}
 
 	public Integer getStatus() {
