@@ -127,7 +127,7 @@
 						</li>
 						<li>
 							<a title="Delete" 
-							onclick = 'deletepoup("${requirementWorkFlowStages.uuid}",
+							onclick = 'deletepopup("${requirementWorkFlowStages.uuid}",
 							"${requirementWorkFlowStages.stageName}",
 							"${requirementWorkFlowStages.requirementWorkFlowUuid}")'>
 							<i class="fa fa-trash"></i></a>
@@ -212,7 +212,7 @@ function saveRequirementWorkFlow(workflowUuid){
      } 
 }
 
-function deletepoup(stageUuid, stageName, workflowUuid){
+function deletepopup(stageUuid, stageName, workflowUuid){
 	var result = "";
 	$("#popUp").empty();
 	result = result +" <div class='project_inn_mask'></div>"; 

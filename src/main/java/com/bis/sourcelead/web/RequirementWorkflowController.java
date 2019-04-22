@@ -396,10 +396,13 @@ public class RequirementWorkflowController {
 				HttpServletRequest request) throws Exception {
 		
 			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			OrgLocations orgLocations = new OrgLocations();
+			orgLocations.setId(orgLocationId);
+			
 			requirementWorkFlowService.deleteRequirementWorkFlowStagesByuuid(uuid);
 			
 			
-			List<RequirementWorkFlowStages> stagesList = requirementWorkFlowService.getRequirementWorkFlowStagesListByOrgLocationId(orgLocationId);
+			List<RequirementWorkFlowStages> stagesList = requirementWorkFlowService.getRequirementWorkFlowStagesListByOrgLocationId(orgLocations.getId());
 			int stageCount = 1;
 			for(RequirementWorkFlowStages stage:stagesList) {
 				stage.setSeqOrder(stageCount);

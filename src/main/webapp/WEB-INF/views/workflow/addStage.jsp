@@ -112,6 +112,7 @@
 		}
 	</script>
 <div class="wraper">
+<div id="popUp"></div>
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
@@ -218,7 +219,7 @@
 		  </div>
 		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt myForm">
 			<div class="form-group">
-          <label class="col-md-3">Previous Stage</label>
+          <label class="col-md-3" id="previousStagelabel">Previous Stage</label>
         <div class="col-md-9">
         
           
@@ -235,7 +236,7 @@
 			  </div>
 			  
 			</div>
-			<div class="form-group" id = "nextStageDiv">
+			<div class="form-group">
 			  <label class="col-md-3">Next Stage</label>
 			  <div class="col-md-9" id = "nextStages">		
 			  	
@@ -302,7 +303,17 @@ function saveRequirementWorkflowStage(workflowUuid){
 	var stageUuid = $("#workflowStageUuid").val();
 	var qTemplateId = $("#questionnaireTemplateId").val();
 	
+	 var previousStageUuid = $("#previousStageUuid").val();
 	
+	
+	if(previousStageUuid == null || previousStageUuid == "Select"){
+		$('#previousStageUuid').focus();
+		$("#previousStagelabel").html("Previous Stage<span class='text-danger paddingLeft'>&nbsp;*</span>");
+		return false;
+	}if(previousStageUuid != null){
+		$('#previousStageUuid').focusout();
+	}
+	 
 	if(qTemplateId == "Select"){
 		qTemplateId = "";
 	}
@@ -352,14 +363,11 @@ function getNextWorkflowStage(select, worflowUuid){
 			success : function(dataList){
 				var result = "";
 				 result = result + "<select class='sel form-control' id = 'workflowStageUuid'>";
-				 /*result = result + "<option selected>Select</option>"; */
 				if(dataList != null){
-						$("#nextStageDiv").show();
 						 result = result + "<option value="+dataList.uuid+">"+dataList.stageName+"</option>";
 				}
 				else{
-					//$("#nextStageDiv").hide();
-					result = "";
+					result = "<h2>No Stage.</h2>";
 				}
 				 result = result + "</select>"; 
 				$("#nextStages").empty().append(result);
@@ -417,7 +425,7 @@ function prepareDynamicworkflowTask(rowId){
 	var dynamicTask = "";
 	dynamicTask = dynamicTask + "<div class='clearfix mt' id = 'dynamicTaskDiv"+rowId+"'><div class='clearfix'>";
 	dynamicTask = dynamicTask + "<h4 class='col-md-9'>New Task</h4>";
-	dynamicTask = dynamicTask + "<div class='col-md-3'> <a href='javascript:void(0)' class='btn btn-primary pull-right btn-sm' onClick='deleteTask("+rowId+");'>";
+	dynamicTask = dynamicTask + "<div class='col-md-3'> <a href='javascript:void(0)' class='btn btn-primary pull-right btn-sm' onClick='deletePopup("+rowId+");'>";
 	dynamicTask = dynamicTask + "Delete Task</a> </div>";
 	dynamicTask = dynamicTask + "</div>";
 	dynamicTask = dynamicTask + "<div id='createNewtask"+rowId+"'>";
@@ -470,16 +478,43 @@ function prepareDynamicworkflowTask(rowId){
 }
 
 var rowId = 0;
+var divCount = 0;
 function appendDynamicworkflowTask(){
 	   $("#dynamicworkflowTask").append(prepareDynamicworkflowTask(rowId++)); 
+	   divCount++;
 }
 
-function deleteTask(id){
-	if(id == 0){
-		$("#createTaskDiv").show();
+
+function deletePopup(rowId){
+	var result = "";
+	var workFlowTaskName = $("#workFlowTaskName"+rowId).val();
+	$("#popUp").empty();
+	result = result +" <div class='project_inn_mask'></div>"; 
+	result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +" <p>Do you want to delete "+workFlowTaskName+" ?</p>";
+	result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteTask('+rowId+');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +" </div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
 	}
-	   $("#dynamicTaskDiv"+id).remove();
+	
+function deleteTask(id){
+	$("#dynamicTaskDiv"+id).remove();
 	   rowId--;
+	   divCount--;
+	  
+		if(divCount == 0){
+				$("#createTaskDiv").show();
+			}
+	   $("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+	 
 } 
+	
+function cancelTermination(){
+	 $("#popUp").empty();
+    $(".project_inn_mask").fadeOut(200);
+}
 </script>
 <jsp:include page="../masterFooter.jsp" /> 

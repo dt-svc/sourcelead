@@ -76,7 +76,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			reqWorkFlow = new RequirementWorkFlow();
 			reqWorkFlow.setCreatedBy(user);
 			reqWorkFlow.setCreatedDate(currentDate);
-			reqWorkFlow.setNoOfStages(10);
 		}
 		if(orgLocations != null){
 			reqWorkFlow.setOrgLocationId(orgLocations);
@@ -97,10 +96,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 		reqWorkFlow.setUpdatedBy(user);
 		reqWorkFlow.setUpdatedDate(currentDate);
-
+		
 		//stage saving..
 		Set<RequirementWorkFlowStages> requirementWorkFlow = new HashSet<RequirementWorkFlowStages>();
 		List<RequirementDefaultWorkFlowStages> requirementDefaultWorkFlowStages = requirementWorkFlowDao.getRequirementDefaultWorkFlowStages();
+		reqWorkFlow.setNoOfStages(requirementDefaultWorkFlowStages.size());
 		if(requirementDefaultWorkFlowStages != null && requirementDefaultWorkFlowStages.size() > 0) {
 			for (int i = 0; i < requirementDefaultWorkFlowStages.size(); i++) {
 				RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
@@ -339,7 +339,12 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 	@Override
 	public void deleteRequirementWorkFlowStagesByuuid(String uuid) {
-		requirementWorkFlowDao.deleteRequirementWorkFlowStagesByuuid(uuid);
+		try {
+		RequirementWorkFlowStages requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkFlowStagesByUuid(uuid);
+		requirementWorkFlowDao.deleteRequirementWorkFlowStagesByuuid(requirementWorkFlowStages.getId());
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -419,9 +424,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				tasks.setUpdatedBy(user);
 				requirementWorkFlowTasks.add(tasks);
 			}
-			requirementWorkFlowStagesDTO.setWorkflowTasks(requirementWorkFlowTasks);
 		}
-		workFlowStage.setWorkflowTasks(requirementWorkFlowStagesDTO.getWorkflowTasks());
+		workFlowStage.setWorkflowTasks(requirementWorkFlowTasks);
 		
 		requirementWorkFlowDao.saveRequirementWorkFlowStagesByOrgLocationId(workFlowStage);		
 	}
@@ -479,8 +483,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	}
 	
 	@Override
-	public Boolean deleteApplicationWorkFlowByuuid(String workflowuuid) {
-		return requirementWorkFlowDao.deleteApplicationWorkFlowByuuid(workflowuuid);
+	public Boolean deleteApplicationWorkFlowByuuid(String workflowuuid) throws Exception{
+		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(workflowuuid);
+		return requirementWorkFlowDao.deleteApplicationWorkFlowByuuid(requirementWorkFlow.getId());
 	}
 
 

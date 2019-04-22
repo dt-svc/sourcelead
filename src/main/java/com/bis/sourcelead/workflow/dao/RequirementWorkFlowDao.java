@@ -60,7 +60,7 @@ public interface RequirementWorkFlowDao {
 	
 	List<RequirementWorkFlowStages> getRequirementWorkFlowStagesListByOrgLocationId(Long orgLocationId);
 
-	void deleteRequirementWorkFlowStagesByuuid(String uuid);
+	void deleteRequirementWorkFlowStagesByuuid(Long id);
 	
 	List<RequirementQuestionnaireTemplate> getRequirementQuestionnaireTemplates(Long id)throws Exception;
 	
@@ -68,7 +68,7 @@ public interface RequirementWorkFlowDao {
 	
 	ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user)throws Exception;
 
-	Boolean deleteApplicationWorkFlowByuuid(String workflowuuid);
+	Boolean deleteApplicationWorkFlowByuuid(Long workflowuuid);
 	
 
 }
