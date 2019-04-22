@@ -86,6 +86,8 @@ public class OrgLocationCacheDTO implements Serializable{
 	
 	private String countryCode;
 	
+	private String createdDate;
+	
 	
 	public String getOrgId() {
 		return orgId;
@@ -405,6 +407,14 @@ public class OrgLocationCacheDTO implements Serializable{
 
 	public void setCountryCode(String countryCode) {
 		this.countryCode = countryCode;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
 	}
 	
 	

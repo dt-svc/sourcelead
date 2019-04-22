@@ -848,9 +848,7 @@ public class UserDaoImpl implements UserDao {
      for(Roles roles : rolesList){
     	 if(null != roles.getActionId()){
     		 List<Long> roleActionsList = new ArrayList<Long>();
-    		 /*for (String s : roles.getActionId().split(",")){
-        		 roleActionsList.add(Long.parseLong(s));
-        	 }*/
+
     		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
     			 roleActionsList.add(Long.parseLong(s));
         	 }
@@ -863,7 +861,7 @@ public class UserDaoImpl implements UserDao {
     	 
      }
 	 
-     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList))  ";
+     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList))  ";
      List<User> userRoleList = session.createQuery(query.toString()).setParameterList("ownerRolesList", ownerRolesList).list();
      return userRoleList;
         
@@ -2456,10 +2454,10 @@ public class UserDaoImpl implements UserDao {
 		}
 			String query="";
 		if("yes".equalsIgnoreCase(topleave)) {
-			 query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e, USER_LEAVE ul where u.ID=ur.USER_ID and u.ID = ul.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.USER_STATE = 'ACTIVE' and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
+			 query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.DEPARTMENT_ID AS departmentId, e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e, USER_LEAVE ul where u.ID=ur.USER_ID and u.ID = ul.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.USER_STATE = 'ACTIVE' and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
 		}
 		else {
-			 query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e where u.ID=ur.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.USER_STATE = 'ACTIVE' and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
+			 query ="select distinct CONCAT (u.FIRST_NAME,' ',IFNULL(u.LAST_NAME,'')) AS empName ,e.DEPARTMENT_ID AS departmentId,e.EMPLOYMENT_TYPE AS empType,u.ID AS userId,ur.USER_TYPE AS role from USER u,USER_ROLE ur,EMPLOYEE e where u.ID=ur.USER_ID and u.ID=e.USER_ID and ur.ORG_LOCATIONS_ID=e.ORG_LOCATIONS_ID and ur.USER_STATE = 'ACTIVE' and ur.ORG_LOCATIONS_ID =:orgLocationId "+subQuery8.toString()+subQuery4+subQuery3+subQuery5+subQuery6+subQuery7;
 		}
 					
 		

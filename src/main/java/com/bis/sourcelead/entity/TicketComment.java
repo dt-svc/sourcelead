@@ -30,8 +30,19 @@ public class TicketComment implements Serializable {
 	@JoinColumn(name = "TICKET_ID", referencedColumnName = "ID")
 	private Ticket ticket;
 
-	@Column(name = "COMMENT", columnDefinition = "TEXT default NULL")
+	@Column(name = "COMMENT", columnDefinition = "LONGTEXT default NULL")
 	private String comment;
+	
+	@Column(name = "COMMENT_MENTIONED_USERS")
+	private String commentMentionedUsers;
+
+	public String getCommentMentionedUsers() {
+		return commentMentionedUsers;
+	}
+
+	public void setCommentMentionedUsers(String commentMentionedUsers) {
+		this.commentMentionedUsers = commentMentionedUsers;
+	}
 
 	@Column(name = "STATUS ")
 	private Integer status;

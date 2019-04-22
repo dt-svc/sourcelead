@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,9 +49,11 @@ public class OfferLetterTemplateServiceImpl implements OfferLetterTemplateServic
 		offerLetterTemplate.setTemplateName(offerLetterTemplateDTO.getTemplateName());
 		
 		//Letter Head 
-		if(offerLetterTemplateDTO.getLetterHead() != null) {
+		if(offerLetterTemplateDTO.getLetterHead() != null && offerLetterTemplateDTO.getLetterHead()  != "") {
 			LetterHead letterHead = letterHeadService.getLetterheadByUUID(offerLetterTemplateDTO.getLetterHead());
 			offerLetterTemplate.setLetterHeadId(letterHead);
+		}else {
+			offerLetterTemplate.setLetterHeadId(null);
 		}
 		
 		
@@ -99,6 +102,16 @@ public class OfferLetterTemplateServiceImpl implements OfferLetterTemplateServic
 	@Override
 	public Boolean validateOfferLetterTemplateByOrgLocationIdAndTemplateName(Long orgLocationId, String templateName) throws Exception {
 		return offerLetterTemplateDao.validateOfferLetterTemplateByOrgLocationIdAndTemplateName(orgLocationId, templateName);
+	}
+
+	@Override
+	public List<OfferLetterTemplate> getOfferLetterTemplateListByOrgLocationId(Long orgLocationId) throws Exception {
+		return offerLetterTemplateDao.getOfferLetterTemplateListByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public OfferLetterTemplate getOfferLetterTemplateDetailsById(Long Id) throws Exception {
+		return offerLetterTemplateDao.getOfferLetterTemplateDetailsById(Id);
 	}
 	
 	

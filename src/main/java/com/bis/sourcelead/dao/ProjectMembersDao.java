@@ -6,9 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.enums.Primary;
@@ -152,4 +154,6 @@ public interface ProjectMembersDao {
 	public ProjectMembers getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId,String isGlobalUser) throws Exception;
 			
 	ProjectMembers getProjectMembersByMasterCandiateIdAndProjectClientId(Long masterCandidateId,Long projectClientsId) throws Exception;
+
+	public List<Object[]> getAllAvailableAssociates( Long orgLocationId);
 }

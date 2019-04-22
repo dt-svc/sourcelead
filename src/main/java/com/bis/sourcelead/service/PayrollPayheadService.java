@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -43,4 +44,8 @@ public interface PayrollPayheadService {
 	AssociateSalaryHistoryInd saveAssociateSalaryHistoryInd(AssociateSalaryHistoryInd associateSalaryHistoryInd) throws Exception;
 
 	List<AssociateSalaryInd> getAssociateSalaryIndListByOrgLocationsId(Long orgLocationId) throws Exception;
+	
+	Response<String> refreshPayheadsForOrg(Long orgLocationId) throws Exception;
+	
+	Response<String> payheadHandlerByOrg(PayrollPayheadDTO payrollPayheadDTO) throws Exception;
 }

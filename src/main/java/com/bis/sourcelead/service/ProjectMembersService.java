@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -169,5 +171,7 @@ public interface ProjectMembersService {
 	ResponseList<MarginSheetReportDTO> getProjectMemeberByClientProjectAndOrglocation(Long orglocationId,Date[] searchDates,MarginSheetReportDTO marginSheetReportDTO);
 	
 	ProjectMembers getProjectMembersByMasterCandiateIdAndProjectClientId(Long masterCandidateId,Long projectClientsId) throws Exception;
+
+	public List<Candidate> getAllAvailableAssociates( Long orgLocation);
 	
 }

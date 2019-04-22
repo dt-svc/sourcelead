@@ -109,7 +109,7 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<PaymentAccount> getPaymentAccountDetailsByOrglocationId(Long id) {
+	public List<PaymentAccount> getPaymentAccountDetailsByOrglocationId(Long id) throws Exception{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  PaymentAccount payment where payment.orgLocation.id =:id";
 		List<PaymentAccount> paymentList = session.createQuery(query).setLong("id", id).list();
@@ -131,8 +131,7 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 					connection.setAutoCommit(false);
 					CallableStatement stmt = connection.prepareCall("{call insertAssociateBankingDetails(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
 					for (IndAssociatePaymentAccountDTO paymentlist : list) {	
-						Long candidateId = map.get(paymentlist.getEmail());
-						if(candidateId !=null) {
+						Long candidateId = map.get(paymentlist.getEmail().trim());
 							stmt.setLong(1, candidateId);
 							stmt.setString(2,   paymentlist.getEmail());
 							stmt.setString(3,   paymentlist.getAccountType());
@@ -148,7 +147,6 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 							stmt.setBoolean(13, false);
 							stmt.setString(14,  orgLocationId.toString());	
 							stmt.addBatch();
-						}
 					}
 					int[] updateCount = stmt.executeBatch();
 					listCount.add(updateCount.length);
