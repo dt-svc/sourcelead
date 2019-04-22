@@ -42,7 +42,7 @@
 				      		<c:if test="${userTabs.tabName == 'Jobs'}">
 								<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
 									<c:if test = "${SourceLeadWeb_ats == 'Y' || SourceLeadWeb_vms == 'Y'}">
-										<li class="positionRelative" style="width: 48%; height: 30px;"><input class="checkbox-custom" id="cb${index}" type="checkbox" checked="checked" data-order="${index + 1}" data-size="2:1"><label for="cb${index}">Applicants Pipeline</label><span class="movIcon"></span></li>  
+										<li class="positionRelative" style="width: 48%; height: 30px;"><input class="checkbox-custom" id="cb${index}" type="checkbox" checked="checked" data-order="${index + 1}" data-size="2:1"><label for="cb${index}">Jobs</label><span class="movIcon"></span></li>  
 										<c:set var="index" value="${index +1}"></c:set>
 									</c:if>
 						     	</sec:authorize>
