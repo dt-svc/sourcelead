@@ -183,7 +183,7 @@ public class TimesheetApprovalRestController {
 			ModelAndView model = new ModelAndView();
 			timesheetApprovalDTO = getWeekFrequncyDropDown(timesheetApprovalDTO, request);
 			model.addObject("timesheetApproval",timesheetApprovalDTO);
-			model.setViewName("timesheet/timesheetFilter");
+			model.setViewName("timesheet/timesheetApprovalWeekFrequencyFilter");
 			return model;
 			
 		}
