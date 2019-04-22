@@ -100,6 +100,12 @@ function PerformanceGoals(){
 			        			 $("#goalEndDate").val(response.object.goalEndDate);
 			        		 }
 			        		 
+			        		 if(response.object.teamName != null 
+			        				 && response.object.teamName != ''
+			        					 && response.object.teamName != 'undefined'){
+			        			 $("#performanceTeamName").html(response.object.teamName);
+			        		 }
+			        		 
 			        		 if(response.object.description != null 
 			        				 && response.object.description != ''
 			        					 && response.object.description != 'undefined'){

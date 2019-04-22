@@ -18,6 +18,10 @@ window.onload = function () {
 	var goalUUID = '${goalUUID}';
 	
 	if(goalUUID != null && goalUUID != 'undefined' && goalUUID != ''){
+		 document.getElementById("performanceTeamsDiv").style.display="none";
+		 $("#goalPercentage").attr("data-validation-optional", "true");
+		 $("#goalPercentage").removeAttr("data-validation");
+		 document.getElementById("performanceTeamNameDiv").style.display="block";
 		performanceGoals.getPerformanceGoalsDetails(goalUUID);
 	}else{
 		performanceGoals.getPerformanceGoalTeams();
@@ -78,17 +82,20 @@ window.onload = function () {
 					         </div>
 				        </div>
 				        
-						<div class="form-group">
-						<label class="col-md-3">Team<span class="text-danger paddingLeft">&nbsp;*</span></label>
-						<div class="col-md-9">
-							<select class="selectpicker form-control" id="performanceTeams"
-								name="teamId" field-name="Team" data-validation-required="true">
-								<option value="">--Select Team--</option>
-							</select>
+						<div class="form-group" id="performanceTeamsDiv" style="display: block;">
+							<label class="col-md-3">Team<span class="text-danger paddingLeft">&nbsp;*</span></label>
+							<div class="col-md-9">
+								<select class="selectpicker form-control" id="performanceTeams"
+									name="teamId" field-name="Team" data-validation-optional="true">
+									<option value="">--Select Team--</option>
+								</select>
+							</div>
 						</div>
-					</div>
 					
-					
+					<div class="form-group" id="performanceTeamNameDiv" style="display: none;">
+				          <label class="col-md-3">Team</label>
+				          <div class="col-md-9"><span id="performanceTeamName"></span></div>
+			        </div>
 					
 						
 					<div class="form-group" id="percentageDoneDiv" style="display: none;" >

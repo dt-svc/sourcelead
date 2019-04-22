@@ -64,6 +64,9 @@ public class PerformanceGoalsDTO implements Serializable{
 	private String createdDate;
 	
 	private BigInteger subGoalsCount;
+	
+	private String teamName;
+	
 
 	public Long getGoalId() {
 		return goalId;
@@ -263,6 +266,14 @@ public class PerformanceGoalsDTO implements Serializable{
 
 	public void setTeamId(String teamId) {
 		this.teamId = teamId;
+	}
+
+	public String getTeamName() {
+		return teamName;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
 	}
 
 	

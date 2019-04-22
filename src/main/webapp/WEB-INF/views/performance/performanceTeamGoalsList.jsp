@@ -652,7 +652,7 @@ function goalsPagination(url){
 	            	    result = result +'<td>';
 	            	    result = result +'<div class="width150px clearfix">';
 	            	    result = result +'<ul class="list-unstyled list-inline ml clearfix">';
-	            	    result = result +'<li><a href="'+pmsUrl+'/addNewGoal?goalUUID='+opt.uuid+'"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>';
+	            	    result = result +'<li><a href="'+pmsUrl+'/addNewTeamGoal?goalUUID='+opt.uuid+'"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>';
 	            	    result = result +'<li><i class="fa fa-trash cursorPointer" title="Delete"></i></li>';
 	            	    result = result +'<li><i class="fa fa-comments cursorPointer text-primary" title="Comment"></i></li>';
 		            	   if(opt.goalType == "New_Goal"){

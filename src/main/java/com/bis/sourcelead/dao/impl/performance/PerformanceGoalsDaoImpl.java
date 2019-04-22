@@ -552,7 +552,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<PerformanceGoals> performanceGoals = new ArrayList<PerformanceGoals>();
 		logger.debug("getPerformanceGoalsByUUID  start");
-		performanceGoals = session.createQuery("from PerformanceGoals goals left join fetch goals.goalId where goals.uuid = :goalUUID " ).setString( "goalUUID", goalUUID).list();
+		performanceGoals = session.createQuery("from PerformanceGoals goals left join fetch goals.goalId left join fetch goals.teamId where goals.uuid = :goalUUID " ).setString( "goalUUID", goalUUID).list();
 		logger.debug("getPerformanceGoalsByUUID  end");
 		if (performanceGoals.size() > 0) {
 			return performanceGoals.get(0);

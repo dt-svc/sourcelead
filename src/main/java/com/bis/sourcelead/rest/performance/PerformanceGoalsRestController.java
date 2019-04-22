@@ -297,6 +297,10 @@ public class PerformanceGoalsRestController {
 						 performanceGoalsDTO.setGoalId(performanceGoals.getId());
 						 performanceGoalsDTO.setCreatedDate(performanceGoals.getCreatedDateStr());
 						 
+						 if(performanceGoals.getTeamId() != null) {
+							 performanceGoalsDTO.setTeamName(performanceGoals.getTeamId().getName());
+						 }
+						 
 						 Set<PerformanceGoalsAssignTo> performanceGoalsAssignToSet = performanceGoals.getPerformanceGoalsAssignTo();
 						 if(performanceGoalsAssignToSet != null && !performanceGoalsAssignToSet.isEmpty()) {
 							 StringBuilder assignToIds = new StringBuilder();
