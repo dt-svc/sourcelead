@@ -72,7 +72,8 @@ jQuery(document).ready(function($) {
 	var rate = '${rate}';
 	var noticePeriod = '${noticePeriod}';
 	var visaTypes = '${visaTypes}';
-	var postedOrg='{postedOrg}'
+	var postedOrg='{postedOrg}';
+	var atsUrl = '${atsUrl}';
 	if(sourceleadUrl.indexOf("/app")!=-1){
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
 	}
@@ -206,12 +207,13 @@ jQuery(document).ready(function($) {
 
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
+var atsUrl = '${atsUrl}';
 if(sourceleadUrl.indexOf("/app")!=-1){
 	sourceleadUrl = sourceleadUrl.split("/app")[0];
 }
 function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId){
 	var finalDateFormatScript = 'dd-mm-yy'; 
-	 generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript); 
+	 generateOrgSubmissionForm(atsUrl,requirementId,finalDateFormatScript); 
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 		var result = "";
 		result = result + '<form id="guestApplicant_form" name="guestApplicant_form" enctype="multipart/form-data" method="post">';
@@ -517,7 +519,7 @@ function uploadAddApplicantCandidateDoc(){
 			        processData: false,
 			        contentType:false,
 		   	        dataType : 'json',
-		   	     url : sourceleadUrl+"/parseResume",
+		   	     url : atsUrl+"/parseResume",
 					success : function(response) {
 						if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
@@ -599,7 +601,7 @@ function uploadAddApplicantCandidateDoc(){
 		 $("#save_button").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateRequirementGuestCandidateEmail?&email="+email+"&requirementId="+requirementId, 
+		        url: atsUrl+"/validateRequirementGuestCandidateEmail?&email="+email+"&requirementId="+requirementId, 
 		        success: function(data) {
 		         	if(data == 'true'){
 			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
@@ -803,7 +805,7 @@ function addApplicantSubmission(){
 		     processData: false,
 		     contentType:false,
 		     dataType : 'json',
-	    	url : "/saveGuestAddApplicant?&jsonData="+jsonData+"&con="+con,
+		     url :atsUrl+"/saveGuestAddApplicant?&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	 window.location = sourceleadUrl+"/jobs"
 	        },

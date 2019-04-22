@@ -17,7 +17,7 @@ $(document).ready(function(){
         <h2>Leave Balances</h2>
       </div>
 <!--       <div class="pull-right brud-crum">Home &raquo; Leave Balances</div> -->
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/hrReportsList'/>">HR Reports</a> &raquo; Leave Balances</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard">Reports Dashboard</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/hrReportsList">HR Reports</a> &raquo; Leave Balances</div>
     </section>
     <div class="timesheet_out">
       <div class="vendor_wrap">
@@ -262,16 +262,19 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 						        	  }
 
 									var lo=0;
-									for (i = 0; i < opt.leaveTypeNames.length; i++) {
+									for (var m = 0; m < opt.leaveTypeNames.length; m++) {
 										for(var k in opt.map){
 											var ltName = k.split("-");
-											if(ltName[1] == report.userId && ltName[0] == opt.leaveTypeNames[i]){
+											if(ltName[1] == report.userId && ltName[0] == opt.leaveTypeNames[m]){
 												var l = opt.map[k];
-													result += "<td> "+l+" </td>";
-											       lo = lo+l;
-												}else if(ltName[0] == null &&opt.leaveTypeNames[i] == null)
+												if(l == 0.01){
 													result += "<td> -- </td>";
-												
+												}else{
+													result += "<td> "+l+" </td>";
+													lo = lo+l;
+												}
+											}else if(ltName[0] == null && opt.leaveTypeNames[m] == null)
+													result += "<td> -- </td>";
 											
 										}
 									}

@@ -23,11 +23,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.NotificationDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Notifications;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.service.NotificationsService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -55,6 +56,9 @@ public class NotificationController {
 	@Autowired
 	OrgSpocService orgSpocService;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 	/*
 	 * To change the notification mode as read
 	 */
@@ -75,18 +79,20 @@ public class NotificationController {
 		logger.debug("notificationsList");
 		ModelAndView model = new ModelAndView();
 		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocId);
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		String locationCode =  (String) SourceLeadSessionManager.getSessionAttribute(request,"locationCode");
 		String orgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-		List<Notifications> notificationsList = notificationsService.getAllNotificationsListByUserId(userId,orgLocations.getOrg().getOrgCode(), locationCode);
+		List<Notifications> notificationsList = notificationsService.getAllNotificationsListByUserId(userId,org.getOrgCode(), locationCode);
 		if(notificationsList!=null){
 			calculateDays(notificationsList, timezone);
 		}
 		model.setViewName("notifications/notificationsList");
 		model.addObject("notificationsList", notificationsList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.addObject("orgCode", orgLocations.getOrg().getOrgCode());
+		model.addObject("orgCode", org.getOrgCode());
 		model.addObject("locationCode", locationCode);
 		
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
@@ -104,7 +110,8 @@ public class NotificationController {
 	public @ResponseBody List<Notifications> getNotificationtLists(HttpServletRequest request) throws Exception {
 
 	    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
-	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+	    OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocId);
 	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		String locationCode =  (String) SourceLeadSessionManager.getSessionAttribute(request,"locationCode");
 		List<Notifications> notificationsList = notificationsService.getAllNotificationsListByUserId(userId,orgLocations.getOrg().getOrgCode(), locationCode);
@@ -182,10 +189,12 @@ public class NotificationController {
 	public @ResponseBody ResponseList<Notifications> getDynamicNotificationtLists(NotificationDTO notificationDTO,HttpServletRequest request) throws Exception {
 		ResponseList<Notifications> notificationsList =  new  ResponseList<Notifications>();
 		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
-	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocId);
+	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		String locationCode =  (String) SourceLeadSessionManager.getSessionAttribute(request,"locationCode");
-		 notificationsList = notificationsService.getDynamicAllNotificationsListByUserId(notificationDTO,userId,orgLocations.getOrg().getOrgCode(), locationCode,timezone);
+		 notificationsList = notificationsService.getDynamicAllNotificationsListByUserId(notificationDTO,userId,org.getOrgCode(), locationCode,timezone);
 		 if(notificationsList != null && notificationsList.getData() != null) {
 			 calculateDays(notificationsList.getData(),timezone);
 			 for(Notifications nl : notificationsList.getData()){

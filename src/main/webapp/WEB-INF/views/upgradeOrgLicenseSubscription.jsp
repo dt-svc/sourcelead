@@ -11,7 +11,7 @@
           <div class="pull-left">
             <h2>Upgrade License Subscription</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; <a href="${appPath}/orgLicenseSubscriptionList">License Subscription List</a> &raquo;  Upgrade License Subscription </div>
+          <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/orgLicenseSubscriptionList">License Subscription List</a> &raquo;  Upgrade License Subscription </div>
         </section>
         
         <div class="content-area clearfix">
@@ -136,7 +136,7 @@
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="submit" value="Upgrade" class="btn btn-primary ml10">
-						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/orgLicenseSubscriptionList'/>'"   class="btn btn-default ml">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadUrl}/orgLicenseSubscriptionList'/>'"   class="btn btn-default ml">
 					</div>
 				</div>
 			</div>  
@@ -180,7 +180,7 @@ var validationSettings = {
         			 $.ajax({
                 	      type: "POST",
                 	    	data: formData,
-                      	   url: "/app/init-payment?${_csrf.parameterName}=${_csrf.token}&type=upgrade&subscriptionUUID="+subscriptionUUID+"&registeredModules="+registeredModules,
+                      	   url: sourceleadUrl+"/init-payment?${_csrf.parameterName}=${_csrf.token}&type=upgrade&subscriptionUUID="+subscriptionUUID+"&registeredModules="+registeredModules,
                         	success: function(data) {
                         		 if (data) {
                 	                location.href = data;

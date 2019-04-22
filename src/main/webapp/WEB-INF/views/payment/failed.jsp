@@ -9,8 +9,8 @@
             <h2>Payment Failed</h2>
         </div>
         <div class="pull-right brud-crum">
-				<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-					href="<c:url value='/app/payablesList'/>"> Bills List</a>
+				<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a
+					href="${SourceLeadWeb_sourceleadUrl}/payablesList"> Bills List</a>
 				&raquo; Payment Failed
 			</div>
 			
@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="clearfix text-center mt25">
-                    <a href="<c:url value='${appPath}/dashboard'/>" class="btn btn-primary"><i class="fa fa-angle-double-left paddingRight"></i>Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>
+                    <a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}" class="btn btn-primary"><i class="fa fa-angle-double-left paddingRight"></i>Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>
                     </span></a>
                 </div>
             </section>

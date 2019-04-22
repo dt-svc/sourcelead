@@ -46,6 +46,7 @@ import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.indPayroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -93,6 +94,10 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 	
 	@Autowired
 	private EmployeesService employeesService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
 		
 		 @RequestMapping(value = "/indPayrollReportList")
 			public ModelAndView indPayrollReportList(HttpServletRequest request,HttpServletResponse response) throws Exception {
@@ -228,9 +233,9 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 							
 							List<IndEmployeePayroll> ytdList = indPaysheetFrequencyService.getYTDIndEmployeePayrollList(iepdt.getCandidate().getId(), orgLocations.getStartMonth());
 							if(ytdList != null && ytdList.size() > 0) {
-								double ytdPT = ytdList.stream().mapToDouble(ap->ap.getProfessionalTax().doubleValue()).sum();
-								double ytdTDS = ytdList.stream().mapToDouble(ap->ap.getTds().doubleValue()).sum();
-								double ytdNetPay = ytdList.stream().mapToDouble(ap->ap.getNetPay().doubleValue()).sum();
+								double ytdPT = ytdList.stream().mapToDouble(ap->ap != null && ap.getProfessionalTax()!= null ? ap.getProfessionalTax().doubleValue(): 0).sum();
+								double ytdTDS = ytdList.stream().mapToDouble(ap->ap != null && ap.getTds() != null ? ap.getTds().doubleValue() : 0).sum();
+								double ytdNetPay = ytdList.stream().mapToDouble(ap->ap != null && ap.getNetPay() != null ? ap.getNetPay().doubleValue() : 0).sum();
 								dto.setYtdTaxes(new BigDecimal(ytdPT).add(new BigDecimal(ytdTDS)));
 								dto.setYtdNetPay(new BigDecimal(ytdNetPay));
 							}else {
@@ -410,10 +415,10 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		   					dto.setEmployeeid(iepdt.getEmployee().getEmployeeId());
 		   					dto.setEmployeeName(iepdt.getCandidate().getFullName());
 		   					dto.setDepartmentName(iepdt.getEmployee().getDepartmentId().getDepartmentName());
-		   					double noOfLeaves = entry.getValue().stream().mapToDouble(i->i.getNoOfLeaves().doubleValue()).sum();
-		   					double noOfDays = entry.getValue().stream().mapToDouble(i->i.getNoOfDays().doubleValue()).sum();
-		   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay().doubleValue()).sum();
-		   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay().doubleValue()).sum();
+		   					double noOfLeaves = entry.getValue().stream().mapToDouble(i->i.getNoOfLeaves() != null ? i.getNoOfLeaves().doubleValue() : 0).sum();
+		   					double noOfDays = entry.getValue().stream().mapToDouble(i->i.getNoOfDays() != null ? i.getNoOfDays().doubleValue() : 0).sum();
+		   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay() != null ? i.getGrossPay().doubleValue() : 0).sum();
+		   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay() != null ? i.getNetPay().doubleValue() : 0).sum();
 		   	   				dto.setNoOfLeaves(new BigDecimal(noOfLeaves));
 		   	   			    dto.setNoOfDays(new BigDecimal(noOfDays));
 		   					dto.setGrossPay(new BigDecimal(grossPay));
@@ -502,10 +507,10 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		   					dto.setEmployeeid(iepdt.getEmployee().getEmployeeId());
 		   					dto.setEmployeeName(iepdt.getCandidate().getFullName());
 		   					dto.setDepartmentName(iepdt.getEmployee().getDepartmentId().getDepartmentName());
-		   					double professionalTax = entry.getValue().stream().mapToDouble(i->i.getProfessionalTax().doubleValue()).sum();
-		   					double tds = entry.getValue().stream().mapToDouble(i->i.getTds().doubleValue()).sum();
-		   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay().doubleValue()).sum();
-		   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay().doubleValue()).sum();
+		   					double professionalTax = entry.getValue().stream().mapToDouble(i->i.getProfessionalTax() != null ? i.getProfessionalTax().doubleValue() : 0).sum();
+		   					double tds = entry.getValue().stream().mapToDouble(i->i.getTds() != null ? i.getTds().doubleValue() : 0).sum();
+		   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay() != null ? i.getGrossPay().doubleValue() : 0).sum();
+		   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay() != null ? i.getNetPay().doubleValue() : 0).sum();
 		   	   				dto.setProfessionalTax(new BigDecimal(professionalTax));
 		   	   			    dto.setTds(new BigDecimal(tds));
 		   					dto.setGrossPay(new BigDecimal(grossPay));
@@ -567,7 +572,8 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		    
 		    @RequestMapping(value ="/indPayrollSaleryStatementReport")
 			public @ResponseBody List<IndEmployeePayrollDTO> indPayrollSaleryStatementReport(IndEmployeePayrollDTO indEmployeePayrollDTO,HttpServletRequest request)throws Exception{
-					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			        OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 			    	List<IndEmployeePayrollDTO> salareyStatementReportList = indPaysheetFrequencyService.getPayrollSalaryStatementReportList(indEmployeePayrollDTO, orgLocations);
 			    	Map<String, List<IndEmployeePayrollDTO>> map = salareyStatementReportList.stream().collect(Collectors.groupingBy(IndEmployeePayrollDTO :: getPayHeadName,Collectors.toList()));
 			    	Map<BigInteger, List<IndEmployeePayrollDTO>> canMap = salareyStatementReportList.stream().collect(Collectors.groupingBy(IndEmployeePayrollDTO::getCanId,Collectors.toList()));
@@ -850,9 +856,10 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		    
 		    
 		    @RequestMapping(value = "/getFromMonthNames", method = RequestMethod.POST)
-		   	public List<String> getMonthNames(@RequestParam(value="financialYear", required=false) String financialYear , HttpServletRequest request, HttpServletResponse response) throws Exception
+		   	public @ResponseBody List<String> getMonthNames(@RequestParam(value="financialYear", required=false) String financialYear , HttpServletRequest request, HttpServletResponse response) throws Exception
 		   	{
-		        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		        Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		        OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 			     List<Date> finYearList = iNDPayrollCommonUtil.getFinancialYearStartAndEndDateByOrgLocations(orgLocation, financialYear);
 			     java.sql.Date freqStartDate = new java.sql.Date(finYearList.get(0).getTime());
 			     java.sql.Date freqEndDate = new java.sql.Date(finYearList.get(1).getTime());
@@ -874,10 +881,11 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		    
 		    
 		    @RequestMapping(value = "/getToMonthNames", method = RequestMethod.POST)
-		   	public List<String> getToMonthNames(@RequestParam(value="financialYear", required=false) String financialYear,
+		   	public @ResponseBody List<String> getToMonthNames(@RequestParam(value="financialYear", required=false) String financialYear,
 		   			@RequestParam(value="fromMonth", required=false) String fromMonth,HttpServletRequest request, HttpServletResponse response) throws Exception
 		   	{
-		        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    	Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		        OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		        
 		        String[] selectMonth = fromMonth.split("-");
 		        //Start Year

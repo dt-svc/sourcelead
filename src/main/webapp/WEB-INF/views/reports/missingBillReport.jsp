@@ -20,7 +20,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Missing Bill(s)</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/financialReportsList'/>">Financial Reports</a> &raquo; Missing Bill(s)</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard">Reports Dashboard</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/financialReportsList">Financial Reports</a> &raquo; Missing Bill(s)</div>
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
@@ -40,7 +40,6 @@ $(document).ready(function(){
         </div>
         <div class="col-md-2 dropdown-select positionRelative">
           <select class="form-control" id="filterType" name="filterType" onchange="getMissingBillCustomDates();">
-            <option value="">Select Date</option>
           <option value="last_7days">Last 7 days</option> 
           <option value="last_15days">Last 15 days</option>
           <option value="1month">1 month</option>

@@ -10,13 +10,13 @@
       <div class="pull-left">
         <h2>Project Reports</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard">Reports Dashboard
 </a> &raquo; Project Reports</div>
     </section>
     
 <div class="reportNewDash">
 	
-<a href="${appPath}/projectReport">
+<a href="${SourceLeadWeb_sourceleadUrl}/projectReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-bar-chart"></i></span>
 		<div class="repDashCtaWrap">
@@ -25,7 +25,7 @@
 	</div>
 </a>
 	
-<a href="${appPath}/employeeTasksReport">
+<a href="${SourceLeadWeb_sourceleadUrl}/employeeTasksReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-user-circle"></i></span>
 		<div class="repDashCtaWrap">
@@ -35,7 +35,7 @@
 </a>
      
 	
- <a href="${appPath}/overdueTaskReport">
+ <a href="${SourceLeadWeb_sourceleadUrl}/overdueTaskReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-clock-o"></i></span>
 		<div class="repDashCtaWrap">

@@ -25,8 +25,8 @@ var sourceleadUrl ='${sourceleadUrl}';
       <div class="pull-left">
         <h2>Daywise Timesheet Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;
-       <a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/hrReportsList'/>"> HR Reports
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;
+       <a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"> Reports Dashboard</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/hrReportsList"> HR Reports
 </a> &raquo; Daywise Timesheet Report</div>
     </section>
     <form id="timesheetExportForm" name="timesheetExportForm">
@@ -231,8 +231,18 @@ function datePickeerTest(){
 
 <script>
 function resetValues(){
-	$('#fromDate').val('');
-	$('#toDate').val('');
+	$("#fromDate").val('');
+	$("#toDate").val('');
+	$('#fromDate').attr('value', '');
+	$('#fromDate').datepicker("option", {
+		minDate : null,
+		maxDate : null
+	});
+	$('#toDate').attr('value', '');
+	$('#toDate').datepicker("option", {
+		minDate : null,
+		maxDate : null
+	});
 	$('#projectMemberList').val('');
 	$('#designationType').val('');
 	$('#projectList').val('');

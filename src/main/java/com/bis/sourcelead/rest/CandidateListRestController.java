@@ -1480,7 +1480,8 @@ public class CandidateListRestController {
 			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception {
 		Response<Candidate> response = new Response<>();
 		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = userService.getUserById(userId);
 			if (user != null) {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
@@ -1547,7 +1548,6 @@ public class CandidateListRestController {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 				if (null != candidate) {
 					if (null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_INACTIVE)) {
@@ -1585,7 +1585,6 @@ public class CandidateListRestController {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				if (hotlist != null && !hotlist.isEmpty()) {
 					String[] candidateIds = hotlist.split(",");
 					Team team = new Team();

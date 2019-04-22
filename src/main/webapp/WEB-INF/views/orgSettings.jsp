@@ -216,7 +216,7 @@ function cancelOrgImg(){
 		  <div class="col-xs-12 col-sm-3 col-md-3">
 				 <div class="well well-sm text-center">
 				  <div class="profile-img-container" style="position:relative;">
-				   <img id="orgImage" data-id="orgLogoImage" onerror="predefineOrgImage(this);" src="${SourceLeadWeb_org.fileUrl}" alt="Org Image" class="comp-image img-responsive">
+				   <img id="orgImage" data-id="orgLogoImage" onerror="predefineOrgImage(this);" src="${SourceLeadWeb_fileUrl}" alt="Org Image" class="comp-image img-responsive">
 				  
 				  <div class="btn-group uploadfile">
 					  <button type="button" class="btn btn-sm btn-primary">
@@ -224,7 +224,7 @@ function cancelOrgImg(){
 					   <label class="btn btn-sm btn-primary">
 	                    Upload / Change<input type="file" name="file" id="uploadedImage" data-id='orgLogo'  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
-	 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
+	 				  <c:if test="${!empty SourceLeadWeb_fileUrl}">
 		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
 						  <i class="fa fa-trash"></i></button>
 					  </c:if>
@@ -262,35 +262,35 @@ function cancelOrgImg(){
 							<div class="clearfix mb">
 								<label class="labText">City <b class="valStar">*</b></label>
 								<div class="clearfix positionRelative">
-								 <input type="text" class=" form-control" name="city" value="${SourceLeadWeb_orgLocations.city}" id="orgEditCity" field-name="City" data-validation="required">
+								 <input type="text" class=" form-control" name="city" value="${SourceLeadWeb_city}" id="orgEditCity" field-name="City" data-validation="required">
 								 <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshOrgEditGoogleApiLocation('orgEditState','orgEditCity','orgEditZipCode');"></i>
 								</div>
 							</div>
 							<div class="clearfix mb">
 								<label class="labText">State <b class="valStar">*</b></label>
 								<div class="clearfix">
-								 <input type="text" class=" form-control" name="state" value="${SourceLeadWeb_orgLocations.state}" id="orgEditState" field-name="State" data-validation="required" >
+								 <input type="text" class=" form-control" name="state" value="${SourceLeadWeb_state}" id="orgEditState" field-name="State" data-validation="required" >
 								</div>
 							</div>
 								
 							<div class="clearfix mb">
 								<label class="labText">ZipCode</label>
 								<div class="clearfix">
-								<input type="text"  class="form-control" name="zipCode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+								<input type="text"  class="form-control" name="zipCode" id="orgEditZipCode" field-name="Zip" data-validation="validate_Space" data-validation-optional="true" value="${SourceLeadWeb_zipCode}" />
 								</div>
 							</div>
 							
 						<div class="clearfix mb">
 							<label class="labText">Email for Purchase Order</label>
 							<div class="clearfix">
-							<input type="text"  class="form-control" name="poEmail" field-name="Email for Purchase Order" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.poEmail}" />
+							<input type="text"  class="form-control" name="poEmail" field-name="Email for Purchase Order" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_poEmail}" />
 							</div>
 						</div>
 						
 						<div class="clearfix mb">
 							<label class="labText">Email for Remittance</label>
 							<div class="clearfix">
-							<input type="text"  class="form-control" name="remittanceEmail" field-name="Remittance Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.remittanceEmail}" />
+							<input type="text"  class="form-control" name="remittanceEmail" field-name="Remittance Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_remittanceEmail}" />
 							</div>
 						</div>
 							
@@ -308,7 +308,7 @@ function cancelOrgImg(){
 									 <option value="" >Select Timezone</option>
 									 <c:forEach items="${timezoneList}" var="timezone">
 			                            <c:choose>
-			                                <c:when test="${timezone.timeZoneId eq orgLocations.timezone.timeZoneId}">
+			                                <c:when test="${timezone.timeZoneId eq SourceLeadWeb_timeZone}">
 			                                    <option value= "${timezone.id}" selected="selected">${timezone.timeZoneId}</option>
 			                                </c:when>
 			                                <c:otherwise>
@@ -325,10 +325,10 @@ function cancelOrgImg(){
 							<label class="labText">Date Format</label>
 							<div class="clearfix">
 							 <select class="chosen-select form-control" id="dateFormat1" name="dateFormat1">
-							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'dd-MM-yyyy' ? 'selected' : ''} value="dd-MM-yyyy">dd-MM-yyyy</option>
-							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'MM-dd-yyyy' ? 'selected' : ''} value="MM-dd-yyyy">MM-dd-yyyy</option>
-							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'yyyy-dd-MM' ? 'selected' : ''} value="yyyy-dd-MM">yyyy-dd-MM</option>
-							 <option ${SourceLeadWeb_orgLocations.dateFormat  == 'yyyy-MM-dd' ? 'selected' : ''} value="yyyy-MM-dd">yyyy-MM-dd</option>
+							 <option ${SourceLeadWeb_dateFormat  == 'dd-MM-yyyy' ? 'selected' : ''} value="dd-MM-yyyy">dd-MM-yyyy</option>
+							 <option ${SourceLeadWeb_dateFormat  == 'MM-dd-yyyy' ? 'selected' : ''} value="MM-dd-yyyy">MM-dd-yyyy</option>
+							 <option ${SourceLeadWeb_dateFormat  == 'yyyy-dd-MM' ? 'selected' : ''} value="yyyy-dd-MM">yyyy-dd-MM</option>
+							 <option ${SourceLeadWeb_dateFormat  == 'yyyy-MM-dd' ? 'selected' : ''} value="yyyy-MM-dd">yyyy-MM-dd</option>
 							 </select>
 							</div>
 							</div>
@@ -339,7 +339,7 @@ function cancelOrgImg(){
 							<input type="text"  class="form-control" name="generatedUserId" id="generatedUserId" field-name="Org Short Code" style="text-transform:uppercase" readonly="readonly" data-validation="required validate_length length1-4" maxlength="4" value="${SourceLeadWeb_orgLocations.generatedUserId}" />
 							</div>
 						</div>
-						<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
+						<input type="hidden" id="existingCity" value="${SourceLeadWeb_city}" >
 				   </div>
 				
 					<div class="col-md-6">
@@ -348,12 +348,12 @@ function cancelOrgImg(){
 							<label class="labText">DBA </label>
 							<div class="clearfix">
 								 <div class="col-md-10 noPad">
-				                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_orgLocations.dba}" field-name="DBA" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
+				                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_dba}" field-name="DBA" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
 				                </div>
 				                <div class="col-md-2 dbaCheck dbaCheck-cs">
 				                     
 				                   <div class="ml10">
-                                                <input id="dbaCheckbox" name="dbaCheckbox" ${empty SourceLeadWeb_orgLocations.dba ? 'checked' : SourceLeadWeb_orgLocations.dba == SourceLeadWeb_orgName ? 'checked' : ''} class="checkbox-custom" onclick="getDBAName();" type="checkbox">
+                                                <input id="dbaCheckbox" name="dbaCheckbox" ${empty SourceLeadWeb_dba ? 'checked' : SourceLeadWeb_dba == SourceLeadWeb_orgLocationName ? 'checked' : ''} class="checkbox-custom" onclick="getDBAName();" type="checkbox">
 						              			<label for="dbaCheckbox" class="checkbox-custom-label" title="Make company name as dba"></label>
 				          			</div>
 				                </div>
@@ -401,7 +401,7 @@ function cancelOrgImg(){
 						<div class="clearfix mb">
 								<div class="col-md-11">
 									<div class="checkBox">
-										<label><input type="checkbox" value="Y" ${SourceLeadWeb_orgLocations.isTimesheetAvgHoursRequired == 'Y' ? 'checked' : ''} name="isTimesheetAvgHoursRequired" id="isTimesheetAvgHoursRequired"> Average Hours Validation Is Required</label> 
+										<label><input type="checkbox" value="Y" ${SourceLeadWeb_isTimesheetAvgHoursRequired == 'Y' ? 'checked' : ''} name="isTimesheetAvgHoursRequired" id="isTimesheetAvgHoursRequired"> Average Hours Validation Is Required</label> 
 									</div>
 								</div>
 					    </div>
@@ -409,13 +409,13 @@ function cancelOrgImg(){
 						<div class="clearfix mb">
 							<label class="labText">Phone </label>
 							<div class="clearfix">
-							<input type="text"  class="form-control" name="phone" field-name="phone" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.phone}" />
+							<input type="text"  class="form-control" name="phone" field-name="phone" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_phone}" />
 							</div>
 						</div>
 						<div class="clearfix mb">
 							<label class="labText">Fax </label>
 							<div class="clearfix">
-							<input type="text"  class="form-control" name="fax" id="faxId" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.fax}" />
+							<input type="text"  class="form-control" name="fax" id="faxId" field-name="fax" data-validation="validate_phone validate_Space validate_length length9-20" data-validation-optional="true" value="${SourceLeadWeb_fax}" />
 							</div>
 						</div>
 						
@@ -427,7 +427,7 @@ function cancelOrgImg(){
 									<option value="">--Select Business type--</option>
 									<c:forEach var="bt" items="${bussinessTypesList}">
 								      <c:choose>
-						                      <c:when test="${bt.id eq SourceLeadWeb_orgLocations.businessType.id}">
+						                      <c:when test="${bt.id eq SourceLeadWeb_businessTypeId}">
 						                          <option value= "${bt.id}" selected="selected">${bt.name}</option>
 						                      </c:when>
 						                      <c:otherwise>
@@ -436,11 +436,11 @@ function cancelOrgImg(){
 						              </c:choose>
 					                </c:forEach>  
 					                
-					                <c:if test="${empty SourceLeadWeb_orgLocations.businessType.id && !empty SourceLeadWeb_orgLocations.otherBusinessType}">
+					                <c:if test="${empty SourceLeadWeb_businessTypeId && !empty SourceLeadWeb_otherBusinessType}">
 										<option value="Other" selected="selected">Other</option>
 									</c:if>
 									
-								  <c:if test="${empty SourceLeadWeb_orgLocations.otherBusinessType}">
+								  <c:if test="${empty SourceLeadWeb_otherBusinessType}">
 										<option value="Other">Other</option>
 									</c:if>
 									
@@ -451,7 +451,7 @@ function cancelOrgImg(){
 						<div class="clearfix mb" id="otherBusinessTypeDiv" style="display: none;">
 							<label class="labText">Other Business type <b class="valStar">*</b></label>
 							<div class="clearfix">
-							<input type="text"  class="form-control" name="otherBusinessType" id="otherBusinessType" value="${SourceLeadWeb_orgLocations.otherBusinessType}" field-name="Other Business Type"  data-validation-optional="true" value="${SourceLeadWeb_orgLocations.zipCode}" />
+							<input type="text"  class="form-control" name="otherBusinessType" id="otherBusinessType" value="${SourceLeadWeb_otherBusinessType}" field-name="Other Business Type"  data-validation-optional="true" value="${SourceLeadWeb_zipCode}" />
 							</div>
 						</div>
 						
@@ -459,7 +459,7 @@ function cancelOrgImg(){
 					    <div class="clearfix mb comp-textarea">
 							<label class="labText">Company Descrption</label>
 							<div class="clearfix">
-							   <textarea rows="6" name="aboutCompany" field-name="Company Descrption" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
+							   <textarea rows="6" name="aboutCompany" field-name="Company Descrption" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgDescription}</textarea>
 							</div>
 						</div>
 							
@@ -570,7 +570,7 @@ function cancelOrgImg(){
                 			<form id="profilePercentage_form"  name="profilePercentage_form" method="post">
                 			<div class="form-group">
                 			<label class="col-md-3">Profile Percentage&nbsp;&nbsp;<i class="fa fa-info-circle" title="A Profile Percentage is for an applicant is eligible for job submission or not."></i></label>  
-                			<div class="col-md-4"><input type="text" name="profilePercentage" value="${orgLocations.profilePercentage}" id="profilePercentage" onblur="validateProfilePercentage()" class="form-control input-sm" data-validation="required validate_space validate_int" field-name="Profile Percentage">
+                			<div class="col-md-4"><input type="text" name="profilePercentage" value="${SourceLeadWeb_profilePercentage}" id="profilePercentage" onblur="validateProfilePercentage()" class="form-control input-sm" data-validation="required validate_space validate_int" field-name="Profile Percentage">
                 			<div class="row mxrateerror" id="profilePercentageValidateId">
                 				  <input type="hidden" name="profilePercentageValidation" id="profilePercentageValidation">
              			    </div>
@@ -610,7 +610,7 @@ function cancelOrgImg(){
                             </div>
                 			<div class="form-group">
                 			<label class="col-md-3">Organization Short Code<i class="" title="System Generated Id"></i></label>  
-                			<div class="col-md-4"><input type="text" name="generatedUserId" value="${orgLocations.generatedUserId}" id="generatedUserId" class="form-control input-sm" readonly></div>
+                			<div class="col-md-4"><input type="text" name="generatedUserId" value="${SourceLeadWeb_orgShortCode}" id="generatedUserId" class="form-control input-sm" readonly></div>
                 			</div>         
             			</div> 
             			
@@ -625,10 +625,10 @@ function cancelOrgImg(){
 		               			<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>  
 		               			<div class="col-md-7 toggle-button">
 			                      <label class="switch">
-			                      <c:if test="${orgLocations.loginSecurity == 'Y'}">
+			                      <c:if test="${SourceLeadWeb_orgLocationLoginSecurity == 'Y'}">
 			                      	<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
 			                      </c:if>
-			                      <c:if test="${orgLocations.loginSecurity == 'N'}">
+			                      <c:if test="${SourceLeadWeb_orgLocationLoginSecurity == 'N'}">
 			                      	<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
 			                      </c:if>
 			                      <div class="slider round"></div>
@@ -643,19 +643,19 @@ function cancelOrgImg(){
                                                     <div id="careerPageKeyLoading"></div>
                                                 </div>
                                                 <div class="pull-right">
-                                                    <span title="Click to copy key to clipboard"><i id="copyCareerKey" class="fa fa-clipboard copy-icon hidden {SourceLeadWeb_org.careerPageKey == null ? 'hidden' : ''}" aria-hidden="true"></i></span>
-                                                    <input type="button" value="${SourceLeadWeb_org.careerPageKey == null ? 'Generate Key' : 'Regenerate Key'}" id="generateCareerPageKey" class="btn btn-primary"/>
+                                                    <span title="Click to copy key to clipboard"><i id="copyCareerKey" class="fa fa-clipboard copy-icon hidden {SourceLeadWeb_careerPageKey == null ? 'hidden' : ''}" aria-hidden="true"></i></span>
+                                                    <input type="button" value="${SourceLeadWeb_careerPageKey == null ? 'Generate Key' : 'Regenerate Key'}" id="generateCareerPageKey" class="btn btn-primary"/>
                                                 </div>
                                             </div>
                                             <div class="form-group" id="careerPageInnerContent">
-                                                <c:if test="${SourceLeadWeb_org.careerPageKey != null}">
+                                                <c:if test="${SourceLeadWeb_careerPageKey != null}">
                                                     <div class="clearfix">
                                                         <div class="col-md-2">Career Page Key</div>
-                                                        <div class="col-md-9 break_all">${SourceLeadWeb_org.careerPageKey}</div>
+                                                        <div class="col-md-9 break_all">${SourceLeadWeb_careerPageKey}</div>
                                                         <div class="col-md-1">
                                                             <div class="toggle-button">
                                                                 <label class="switch">
-                                                                    <input type="checkbox" ${SourceLeadWeb_org.careerPageKeyActive ? 'checked' : ''} id="changeCareerPageKeyStatus"/>
+                                                                    <input type="checkbox" ${SourceLeadWeb_careerPageKeyActive ? 'checked' : ''} id="changeCareerPageKeyStatus"/>
                                                                     <div class="slider round"></div>
                                                                 </label>
                                                             </div>
@@ -680,35 +680,35 @@ function cancelOrgImg(){
 		               			<div class="col-md-2 toggle-button" >
 			                      <select class="chosen-select" id="financialStartYear" onChange="validateFinancialYear();">
 			                      <option value = "">--Select Month--</option>
-			                      <option ${orgLocations.startMonth == 'January' ? 'selected' : ''}>January</option>
-			                      <option ${orgLocations.startMonth == 'February' ? 'selected' : ''}>February</option>
-			                      <option ${orgLocations.startMonth == 'March' ? 'selected' : ''}>March</option>
-			                      <option ${orgLocations.startMonth == 'April' ? 'selected' : ''}>April</option>
-			                      <option ${orgLocations.startMonth == 'May' ? 'selected' : ''}>May</option>
-			                      <option ${orgLocations.startMonth == 'June' ? 'selected' : ''}>June</option>
-			                      <option ${orgLocations.startMonth == 'July' ? 'selected' : ''}>July</option>
-			                      <option ${orgLocations.startMonth == 'August' ? 'selected' : ''}>August</option>
-			                      <option ${orgLocations.startMonth == 'September' ? 'selected' : ''}>September</option>
-			                      <option ${orgLocations.startMonth == 'October' ? 'selected' : ''}>October</option>
-			                      <option ${orgLocations.startMonth == 'November' ? 'selected' : ''}>November</option>
-			                      <option ${orgLocations.startMonth == 'December' ? 'selected' : ''}>December</option>
+			                      <option ${SourceLeadWeb_startMonth == 'January' ? 'selected' : ''}>January</option>
+			                      <option ${SourceLeadWeb_startMonth == 'February' ? 'selected' : ''}>February</option>
+			                      <option ${SourceLeadWeb_startMonth == 'March' ? 'selected' : ''}>March</option>
+			                      <option ${SourceLeadWeb_startMonth == 'April' ? 'selected' : ''}>April</option>
+			                      <option ${SourceLeadWeb_startMonth == 'May' ? 'selected' : ''}>May</option>
+			                      <option ${SourceLeadWeb_startMonth == 'June' ? 'selected' : ''}>June</option>
+			                      <option ${SourceLeadWeb_startMonth == 'July' ? 'selected' : ''}>July</option>
+			                      <option ${SourceLeadWeb_startMonth == 'August' ? 'selected' : ''}>August</option>
+			                      <option ${SourceLeadWeb_startMonth == 'September' ? 'selected' : ''}>September</option>
+			                      <option ${SourceLeadWeb_startMonth == 'October' ? 'selected' : ''}>October</option>
+			                      <option ${SourceLeadWeb_startMonth == 'November' ? 'selected' : ''}>November</option>
+			                      <option ${SourceLeadWeb_startMonth == 'December' ? 'selected' : ''}>December</option>
 			                      </select>
 	                   			</div>
 	                   			<div class="col-md-2 toggle-button">
 			                      <select class="chosen-select" id="financialEndYear" disabled="disabled" readonly="">
 			                      <option value = "">--Select Month--</option>
-			                      <option ${orgLocations.endMonth == 'January' ? 'selected' : ''}>January</option>
-			                      <option ${orgLocations.endMonth == 'February' ? 'selected' : ''}>February</option>
-			                      <option ${orgLocations.endMonth == 'March' ? 'selected' : ''}>March</option>
-			                      <option ${orgLocations.endMonth == 'April' ? 'selected' : ''}>April</option>
-			                      <option ${orgLocations.endMonth == 'May' ? 'selected' : ''}>May</option>
-			                      <option ${orgLocations.endMonth == 'June' ? 'selected' : ''}>June</option>
-			                      <option ${orgLocations.endMonth == 'July' ? 'selected' : ''}>July</option>
-			                      <option ${orgLocations.endMonth == 'August' ? 'selected' : ''}>August</option>
-			                      <option ${orgLocations.endMonth == 'September' ? 'selected' : ''}>September</option>
-			                      <option ${orgLocations.endMonth == 'October' ? 'selected' : ''}>October</option>
-			                      <option ${orgLocations.endMonth == 'November' ? 'selected' : ''}>November</option>
-			                      <option ${orgLocations.endMonth == 'December' ? 'selected' : ''}>December</option>
+			                      <option ${SourceLeadWeb_endMonth == 'January' ? 'selected' : ''}>January</option>
+			                      <option ${SourceLeadWeb_endMonth == 'February' ? 'selected' : ''}>February</option>
+			                      <option ${SourceLeadWeb_endMonth == 'March' ? 'selected' : ''}>March</option>
+			                      <option ${SourceLeadWeb_endMonth == 'April' ? 'selected' : ''}>April</option>
+			                      <option ${SourceLeadWeb_endMonth == 'May' ? 'selected' : ''}>May</option>
+			                      <option ${SourceLeadWeb_endMonth == 'June' ? 'selected' : ''}>June</option>
+			                      <option ${SourceLeadWeb_endMonth == 'July' ? 'selected' : ''}>July</option>
+			                      <option ${SourceLeadWeb_endMonth == 'August' ? 'selected' : ''}>August</option>
+			                      <option ${SourceLeadWeb_endMonth == 'September' ? 'selected' : ''}>September</option>
+			                      <option ${SourceLeadWeb_endMonth == 'October' ? 'selected' : ''}>October</option>
+			                      <option ${SourceLeadWeb_endMonth == 'November' ? 'selected' : ''}>November</option>
+			                      <option ${SourceLeadWeb_endMonth == 'December' ? 'selected' : ''}>December</option>
 			                      </select>
 	                   			</div>
 	               			</div>
@@ -752,16 +752,16 @@ function cancelOrgImg(){
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommSkill" id="recommSkill">
 							<option value="0">-- Select Skills --</option>
-							<option ${orgLocations.recommendedSkillPercent == '10' ? 'selected' : ''}>10</option>
-							<option ${orgLocations.recommendedSkillPercent == '20' ? 'selected' : ''}>20</option>
-							<option ${orgLocations.recommendedSkillPercent == '30' ? 'selected' : ''}>30</option>
-							<option ${orgLocations.recommendedSkillPercent == '40' ? 'selected' : ''}>40</option>
-							<option ${orgLocations.recommendedSkillPercent == '50' ? 'selected' : ''}>50</option>
-							<option ${orgLocations.recommendedSkillPercent == '60' ? 'selected' : ''}>60</option>
-							<option ${orgLocations.recommendedSkillPercent == '70' ? 'selected' : ''}>70</option>
-							<option ${orgLocations.recommendedSkillPercent == '80' ? 'selected' : ''}>80</option>
-							<option ${orgLocations.recommendedSkillPercent == '90' ? 'selected' : ''}>90</option>
-							<option ${orgLocations.recommendedSkillPercent == '100' ? 'selected' : ''}>100</option>
+							<option ${SourceLeadWeb_recommendedSkillPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${SourceLeadWeb_recommendedSkillPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${SourceLeadWeb_recommendedSkillPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${SourceLeadWeb_recommendedSkillPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${SourceLeadWeb_recommendedSkillPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${SourceLeadWeb_recommendedSkillPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${SourceLeadWeb_recommendedSkillPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${SourceLeadWeb_recommendedSkillPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${SourceLeadWeb_recommendedSkillPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${SourceLeadWeb_recommendedSkillPercent == '100' ? 'selected' : ''}>100</option>
 							</select>
 						</div>
 						</div> 
@@ -771,16 +771,16 @@ function cancelOrgImg(){
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommLocation" id="recommLocation">
 							<option value="0">-- Select Location --</option>
-							<option ${orgLocations.recommendedLocationPercent == '10' ? 'selected' : ''}>10</option>
-							<option ${orgLocations.recommendedLocationPercent == '20' ? 'selected' : ''}>20</option>
-							<option ${orgLocations.recommendedLocationPercent == '30' ? 'selected' : ''}>30</option>
-							<option ${orgLocations.recommendedLocationPercent == '40' ? 'selected' : ''}>40</option>
-							<option ${orgLocations.recommendedLocationPercent == '50' ? 'selected' : ''}>50</option>
-							<option ${orgLocations.recommendedLocationPercent == '60' ? 'selected' : ''}>60</option>
-							<option ${orgLocations.recommendedLocationPercent == '70' ? 'selected' : ''}>70</option>
-							<option ${orgLocations.recommendedLocationPercent == '80' ? 'selected' : ''}>80</option>
-							<option ${orgLocations.recommendedLocationPercent == '90' ? 'selected' : ''}>90</option>
-							<option ${orgLocations.recommendedLocationPercent == '100' ? 'selected' : ''}>100</option>
+							<option ${SourceLeadWeb_recommendedLocationPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${SourceLeadWeb_recommendedLocationPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${SourceLeadWeb_recommendedLocationPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${SourceLeadWeb_recommendedLocationPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${SourceLeadWeb_recommendedLocationPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${SourceLeadWeb_recommendedLocationPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${SourceLeadWeb_recommendedLocationPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${SourceLeadWeb_recommendedLocationPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${SourceLeadWeb_recommendedLocationPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${SourceLeadWeb_recommendedLocationPercent == '100' ? 'selected' : ''}>100</option>
 							</select>
 						</div>
 						</div>
@@ -790,16 +790,16 @@ function cancelOrgImg(){
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommNoticePeriod" id="recommNoticePeriod">
 							<option value="0">-- Select Notice Period --</option>
-							<option ${orgLocations.recommendedNoticePercent == '10' ? 'selected' : ''}>10</option>
-							<option ${orgLocations.recommendedNoticePercent == '20' ? 'selected' : ''}>20</option>
-							<option ${orgLocations.recommendedNoticePercent == '30' ? 'selected' : ''}>30</option>
-							<option ${orgLocations.recommendedNoticePercent == '40' ? 'selected' : ''}>40</option>
-							<option ${orgLocations.recommendedNoticePercent == '50' ? 'selected' : ''}>50</option>
-							<option ${orgLocations.recommendedNoticePercent == '60' ? 'selected' : ''}>60</option>
-							<option ${orgLocations.recommendedNoticePercent == '70' ? 'selected' : ''}>70</option>
-							<option ${orgLocations.recommendedNoticePercent == '80' ? 'selected' : ''}>80</option>
-							<option ${orgLocations.recommendedNoticePercent == '90' ? 'selected' : ''}>90</option>
-							<option ${orgLocations.recommendedNoticePercent == '100' ? 'selected' : ''}>100</option>
+							<option ${SourceLeadWeb_recommendedNoticePercent == '10' ? 'selected' : ''}>10</option>
+							<option ${SourceLeadWeb_recommendedNoticePercent == '20' ? 'selected' : ''}>20</option>
+							<option ${SourceLeadWeb_recommendedNoticePercent == '30' ? 'selected' : ''}>30</option>
+							<option ${SourceLeadWeb_recommendedNoticePercent == '40' ? 'selected' : ''}>40</option>
+							<option ${SourceLeadWeb_recommendedNoticePercent == '50' ? 'selected' : ''}>50</option>
+							<option ${SourceLeadWeb_recommendedNoticePercent == '60' ? 'selected' : ''}>60</option>
+							<option ${SourceLeadWeb_recommendedNoticePercent == '70' ? 'selected' : ''}>70</option>
+							<option ${SourceLeadWeb_recommendedNoticePercent == '80' ? 'selected' : ''}>80</option>
+							<option ${SourceLeadWeb_recommendedNoticePercent == '90' ? 'selected' : ''}>90</option>
+							<option ${SourceLeadWeb_recommendedNoticePercent == '100' ? 'selected' : ''}>100</option>
 							</select>
 						</div>
 						</div>
@@ -809,16 +809,16 @@ function cancelOrgImg(){
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommExp" id="recommExp">
 							<option value="0">-- Select Experience --</option>
-							<option ${orgLocations.recommendedExpPercent == '10' ? 'selected' : ''}>10</option>
-							<option ${orgLocations.recommendedExpPercent == '20' ? 'selected' : ''}>20</option>
-							<option ${orgLocations.recommendedExpPercent == '30' ? 'selected' : ''}>30</option>
-							<option ${orgLocations.recommendedExpPercent == '40' ? 'selected' : ''}>40</option>
-							<option ${orgLocations.recommendedExpPercent == '50' ? 'selected' : ''}>50</option>
-							<option ${orgLocations.recommendedExpPercent == '60' ? 'selected' : ''}>60</option>
-							<option ${orgLocations.recommendedExpPercent == '70' ? 'selected' : ''}>70</option>
-							<option ${orgLocations.recommendedExpPercent == '80' ? 'selected' : ''}>80</option>
-							<option ${orgLocations.recommendedExpPercent == '90' ? 'selected' : ''}>90</option>
-							<option ${orgLocations.recommendedExpPercent == '100' ? 'selected' : ''}>100</option>
+							<option ${SourceLeadWeb_recommendedExpPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${SourceLeadWeb_recommendedExpPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${SourceLeadWeb_recommendedExpPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${SourceLeadWeb_recommendedExpPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${SourceLeadWeb_recommendedExpPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${SourceLeadWeb_recommendedExpPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${SourceLeadWeb_recommendedExpPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${SourceLeadWeb_recommendedExpPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${SourceLeadWeb_recommendedExpPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${SourceLeadWeb_recommendedExpPercent == '100' ? 'selected' : ''}>100</option>
 							</select>
 						</div>
 						</div> 
@@ -827,16 +827,16 @@ function cancelOrgImg(){
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommVisaType" id="recommVisaType">
 							<option value="0">-- Select Visa Type --</option>
-							<option ${orgLocations.recommendedVisatypePercent == '10' ? 'selected' : ''}>10</option>
-							<option ${orgLocations.recommendedVisatypePercent == '20' ? 'selected' : ''}>20</option>
-							<option ${orgLocations.recommendedVisatypePercent == '30' ? 'selected' : ''}>30</option>
-							<option ${orgLocations.recommendedVisatypePercent == '40' ? 'selected' : ''}>40</option>
-							<option ${orgLocations.recommendedVisatypePercent == '50' ? 'selected' : ''}>50</option>
-							<option ${orgLocations.recommendedVisatypePercent == '60' ? 'selected' : ''}>60</option>
-							<option ${orgLocations.recommendedVisatypePercent == '70' ? 'selected' : ''}>70</option>
-							<option ${orgLocations.recommendedVisatypePercent == '80' ? 'selected' : ''}>80</option>
-							<option ${orgLocations.recommendedVisatypePercent == '90' ? 'selected' : ''}>90</option>
-							<option ${orgLocations.recommendedVisatypePercent == '100' ? 'selected' : ''}>100</option>
+							<option ${SourceLeadWeb_recommendedVisatypePercent == '10' ? 'selected' : ''}>10</option>
+							<option ${SourceLeadWeb_recommendedVisatypePercent == '20' ? 'selected' : ''}>20</option>
+							<option ${SourceLeadWeb_recommendedVisatypePercent == '30' ? 'selected' : ''}>30</option>
+							<option ${SourceLeadWeb_recommendedVisatypePercent == '40' ? 'selected' : ''}>40</option>
+							<option ${SourceLeadWeb_recommendedVisatypePercent == '50' ? 'selected' : ''}>50</option>
+							<option ${SourceLeadWeb_recommendedVisatypePercent == '60' ? 'selected' : ''}>60</option>
+							<option ${SourceLeadWeb_recommendedVisatypePercent == '70' ? 'selected' : ''}>70</option>
+							<option ${SourceLeadWeb_recommendedVisatypePercent == '80' ? 'selected' : ''}>80</option>
+							<option ${SourceLeadWeb_recommendedVisatypePercent == '90' ? 'selected' : ''}>90</option>
+							<option ${SourceLeadWeb_recommendedVisatypePercent == '100' ? 'selected' : ''}>100</option>
 							</select>
 						</div>
 						</div> 
@@ -845,16 +845,16 @@ function cancelOrgImg(){
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommEducation" id="recommEducation">
 							<option value="0">-- Select Education --</option>
-							<option ${orgLocations.recommendedEducationPercent == '10' ? 'selected' : ''}>10</option>
-							<option ${orgLocations.recommendedEducationPercent == '20' ? 'selected' : ''}>20</option>
-							<option ${orgLocations.recommendedEducationPercent == '30' ? 'selected' : ''}>30</option>
-							<option ${orgLocations.recommendedEducationPercent == '40' ? 'selected' : ''}>40</option>
-							<option ${orgLocations.recommendedEducationPercent == '50' ? 'selected' : ''}>50</option>
-							<option ${orgLocations.recommendedEducationPercent == '60' ? 'selected' : ''}>60</option>
-							<option ${orgLocations.recommendedEducationPercent == '70' ? 'selected' : ''}>70</option>
-							<option ${orgLocations.recommendedEducationPercent == '80' ? 'selected' : ''}>80</option>
-							<option ${orgLocations.recommendedEducationPercent == '90' ? 'selected' : ''}>90</option>
-							<option ${orgLocations.recommendedEducationPercent == '100' ? 'selected' : ''}>100</option>
+							<option ${SourceLeadWeb_recommendedEducationPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${SourceLeadWeb_recommendedEducationPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${SourceLeadWeb_recommendedEducationPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${SourceLeadWeb_recommendedEducationPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${SourceLeadWeb_recommendedEducationPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${SourceLeadWeb_recommendedEducationPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${SourceLeadWeb_recommendedEducationPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${SourceLeadWeb_recommendedEducationPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${SourceLeadWeb_recommendedEducationPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${SourceLeadWeb_recommendedEducationPercent == '100' ? 'selected' : ''}>100</option>
 							</select>
 						</div>
 						</div> 
@@ -863,16 +863,16 @@ function cancelOrgImg(){
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommRate" id="recommRate">
 							<option value="0">-- Select Rate --</option>
-							<option ${orgLocations.recommendedRatePercent == '10' ? 'selected' : ''}>10</option>
-							<option ${orgLocations.recommendedRatePercent == '20' ? 'selected' : ''}>20</option>
-							<option ${orgLocations.recommendedRatePercent == '30' ? 'selected' : ''}>30</option>
-							<option ${orgLocations.recommendedRatePercent == '40' ? 'selected' : ''}>40</option>
-							<option ${orgLocations.recommendedRatePercent == '50' ? 'selected' : ''}>50</option>
-							<option ${orgLocations.recommendedRatePercent == '60' ? 'selected' : ''}>60</option>
-							<option ${orgLocations.recommendedRatePercent == '70' ? 'selected' : ''}>70</option>
-							<option ${orgLocations.recommendedRatePercent == '80' ? 'selected' : ''}>80</option>
-							<option ${orgLocations.recommendedRatePercent == '90' ? 'selected' : ''}>90</option>
-							<option ${orgLocations.recommendedRatePercent == '100' ? 'selected' : ''}>100</option>
+							<option ${SourceLeadWeb_recommendedRatePercent == '10' ? 'selected' : ''}>10</option>
+							<option ${SourceLeadWeb_recommendedRatePercent == '20' ? 'selected' : ''}>20</option>
+							<option ${SourceLeadWeb_recommendedRatePercent == '30' ? 'selected' : ''}>30</option>
+							<option ${SourceLeadWeb_recommendedRatePercent == '40' ? 'selected' : ''}>40</option>
+							<option ${SourceLeadWeb_recommendedRatePercent == '50' ? 'selected' : ''}>50</option>
+							<option ${SourceLeadWeb_recommendedRatePercent == '60' ? 'selected' : ''}>60</option>
+							<option ${SourceLeadWeb_recommendedRatePercent == '70' ? 'selected' : ''}>70</option>
+							<option ${SourceLeadWeb_recommendedRatePercent == '80' ? 'selected' : ''}>80</option>
+							<option ${SourceLeadWeb_recommendedRatePercent == '90' ? 'selected' : ''}>90</option>
+							<option ${SourceLeadWeb_recommendedRatePercent == '100' ? 'selected' : ''}>100</option>
 							</select>
 						</div>
 						</div> 
@@ -881,16 +881,16 @@ function cancelOrgImg(){
 						<div class="clearfix dropdown-select mt5">
 							<select class="form-control chosen-select" name="recommKeywords" id="recommKeywords">
 							<option value="0">-- Select Keywords --</option>
-							<option ${orgLocations.recommendedKeywordsPercent == '10' ? 'selected' : ''}>10</option>
-							<option ${orgLocations.recommendedKeywordsPercent == '20' ? 'selected' : ''}>20</option>
-							<option ${orgLocations.recommendedKeywordsPercent == '30' ? 'selected' : ''}>30</option>
-							<option ${orgLocations.recommendedKeywordsPercent == '40' ? 'selected' : ''}>40</option>
-							<option ${orgLocations.recommendedKeywordsPercent == '50' ? 'selected' : ''}>50</option>
-							<option ${orgLocations.recommendedKeywordsPercent == '60' ? 'selected' : ''}>60</option>
-							<option ${orgLocations.recommendedKeywordsPercent == '70' ? 'selected' : ''}>70</option>
-							<option ${orgLocations.recommendedKeywordsPercent == '80' ? 'selected' : ''}>80</option>
-							<option ${orgLocations.recommendedKeywordsPercent == '90' ? 'selected' : ''}>90</option>
-							<option ${orgLocations.recommendedKeywordsPercent == '100' ? 'selected' : ''}>100</option>
+							<option ${SourceLeadWeb_recommendedKeywordsPercent == '10' ? 'selected' : ''}>10</option>
+							<option ${SourceLeadWeb_recommendedKeywordsPercent == '20' ? 'selected' : ''}>20</option>
+							<option ${SourceLeadWeb_recommendedKeywordsPercent == '30' ? 'selected' : ''}>30</option>
+							<option ${SourceLeadWeb_recommendedKeywordsPercent == '40' ? 'selected' : ''}>40</option>
+							<option ${SourceLeadWeb_recommendedKeywordsPercent == '50' ? 'selected' : ''}>50</option>
+							<option ${SourceLeadWeb_recommendedKeywordsPercent == '60' ? 'selected' : ''}>60</option>
+							<option ${SourceLeadWeb_recommendedKeywordsPercent == '70' ? 'selected' : ''}>70</option>
+							<option ${SourceLeadWeb_recommendedKeywordsPercent == '80' ? 'selected' : ''}>80</option>
+							<option ${SourceLeadWeb_recommendedKeywordsPercent == '90' ? 'selected' : ''}>90</option>
+							<option ${SourceLeadWeb_recommendedKeywordsPercent == '100' ? 'selected' : ''}>100</option>
 							</select>
 						</div>
 						</div> 
@@ -963,12 +963,6 @@ function cancelOrgImg(){
         			</div>
    			 <jsp:include page="federalAndStateTaxes.jsp" />
    			 <jsp:include page="locationInformationDetails.jsp" />
-     		 <%-- <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
-     		 <jsp:include page="orglocationBankingDetails.jsp" />
-     		 </c:if>
-     		 <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-     		 <jsp:include page="orglocationIndiaBankingDetails.jsp" />
-     		 </c:if> --%>
      		 <jsp:include page="orglocationDocuments.jsp" />
      		 <jsp:include page="orglocationSignatory.jsp" />
      		 <jsp:include page="googleApiLocation.jsp" />
@@ -1250,7 +1244,7 @@ $(function() {
         });
     });
     
-    applyCareerPageCode('${SourceLeadWeb_org.careerPageKey}')
+    applyCareerPageCode('${SourceLeadWeb_careerPageKey}')
     applyCareerPageStatusEvent();
 });
 function applyCareerPageStatusEvent() {
@@ -1395,7 +1389,7 @@ function saveWhiteListIps(){
 
 <script>
     function savePaymentAccount() {
-    	var countryName = '${SourceLeadWeb_orgLocations.country}';
+    	var countryName = '${SourceLeadWeb_country}';
         var data =  {};
         var val = $("#paymentAccountType").val();
         var flag = false;
@@ -1864,12 +1858,12 @@ function configCoolingOff(){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getCoolingOffPeriod?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(coolingOffPeriod) {
 					var result = "";
-					var coolingOffPeriod = 0;
-					if(null != json.coolingOffPeriod && '' != json.coolingOffPeriod && 'undefined' != json.coolingOffPeriod){
-						coolingOffPeriod = json.coolingOffPeriod;
+					if(null != coolingOffPeriod && '' != coolingOffPeriod && 'undefined' != coolingOffPeriod){
+						coolingOffPeriod = coolingOffPeriod;
+					}else{
+						coolingOffPeriod = '0 Days';
 					}
 					result = result + '<form id="coolingOff_form"  name="coolingOff_form" method="post">'; 
 					
@@ -2138,7 +2132,7 @@ function loadSignature(){
 						result = result + '</div>';
 						
 						}else{
-							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" alt="Org Image" style="height:60px; width: 100px;"></div>';
+							result = result + '<div class="col-md-3" title="Text Box"><img id="orgImage" onerror="predefineOrgImage(this);" data-id="orgLogoImage" src="${SourceLeadWeb_fileUrl}" alt="Org Image" style="height:60px; width: 100px;"></div>';
 							result = result + '<div class="col-md-8 select-field">';
 							result = result + '</div>';
 						}
@@ -2291,7 +2285,7 @@ var validationSettings = {
          $('body').on('submit', '#signature_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-        		    var sourceleadUrl = '${sourceleadUrl}';
+        		    var atsUrl = '${SourceLeadWeb_atsUrl}';
         			var frm = $('#signature_form').serializeFormJSON();
         			var con = JSON.stringify(frm);
         			con = con.replace(/[{}]/g, ""); 
@@ -2300,7 +2294,7 @@ var validationSettings = {
 	           		
         		     $.ajax({
         				type : "POST",
-        				url : sourceleadUrl+"/saveOrgSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+        				url : atsUrl+"/saveOrgSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
         				success : function(result) {
         					loadSignature();
         				},
@@ -2322,11 +2316,11 @@ var validationSettings = {
 function getSignaturePreview(){
 	
 	$("#campaignSignatrue").empty(); 
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	
 	   $.ajax({
 			type : "POST",
-			url : sourceleadUrl+"/getSignaturePreview?${_csrf.parameterName}=${_csrf.token}",
+			url : atsUrl+"/getSignaturePreview?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				
 				$("#campaignSignatrue").html(result);
@@ -2715,7 +2709,7 @@ function createOrg(){
 	            result = result +'</div>';
 	            result = result +'</div>';
 	            
-	            result = result +'<input type="hidden" name="registeredOrgId" id="registeredOrgId"  value="${SourceLeadWeb_org.id}" />';
+	            result = result +'<input type="hidden" name="registeredOrgId" id="registeredOrgId"  value="${SourceLeadWeb_orgId}" />';
            
 	            result = result +'<div class="form-group">';
 	            result = result +'<label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>';

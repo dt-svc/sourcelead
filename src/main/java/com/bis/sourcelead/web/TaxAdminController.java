@@ -274,6 +274,12 @@ public class TaxAdminController {
 			modelAndView.addObject("taxTypes", taxTypeList);
 			if (centraltaxuuid != null) {
 				centralTaxDTO = taxService.getCentralTax(centraltaxuuid);
+				centralTaxDTO.setNoofEmployees(centralTaxDTO.getNoofemployees().intValue());
+				centralTaxDTO.setEmployeePf(centralTaxDTO.getEmployeepf().intValue());
+				centralTaxDTO.setEmployerPf(centralTaxDTO.getEmployerpf().intValue());
+				centralTaxDTO.setEsiEmployee(centralTaxDTO.getEmployeeEsi().intValue());
+				centralTaxDTO.setEsiEmployer(centralTaxDTO.getEmployerEsi().intValue());
+				
 			}
 			modelAndView.addObject("centralTax", centralTaxDTO);
 			setYears(modelAndView, centralTaxDTO.getCtfinancialYear());

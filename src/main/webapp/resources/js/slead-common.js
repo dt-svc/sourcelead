@@ -165,7 +165,7 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 	
 }
 
-$(function() {
+/*$(function() {
 
     for (var selector in config) {
 		$(selector).chosen(config[selector]);
@@ -176,7 +176,7 @@ $(function() {
 		$this.next().css({'width': '100%'});
 	});
 
-});
+});*/
 
 function viewFile(fileURL, title, contentType){
 	if(fileURL != null && fileURL != "" && fileURL != "undefined"){
@@ -276,6 +276,17 @@ function applyData(data, formId, name, id) {
 		var i = name.split('@')[1];
 		  name = name.split('@')[0];
 	}
+	else if(formId == 'timesheet_form'){
+		if($("#"+formId+" input[data-id*='"+id+"']").length > 0){
+			$("#"+formId+" input[data-id*='"+id+"']").remove();
+		}
+		if(name == 'timesheetSubmission.fileInfo'){
+            var i = id.split("docFile")[0];
+        }else{
+            var i = id.split("docFile")[1];
+        }
+		
+	}
 	else{
 		var i = $("#"+formId+" input[type=hidden][name*='"+name+"']").length / 3;
 	}
@@ -287,8 +298,8 @@ function applyData(data, formId, name, id) {
 		if(data[0].fileInfo) {
 			data1 = data[e].fileInfo;
 		}
-		var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value='"+data1.fileURL+"'/>";
-		html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value='"+data1.fileName+"'/>";
+		var html = "<input type='hidden' name='"+name+"["+i+"].fileURL' data-id="+id+" value=\""+data1.fileURL+"\"/>";
+		html += "<input type='hidden' name='"+name+"["+i+"].fileName' data-id="+id+" value=\""+data1.fileName+"\"/>";
 		html += "<input type='hidden' name='"+name+"["+i+"].contentType' data-id="+id+" value='"+data1.contentType+"'/>";
 		if(name == 'uploadContractsFile' || name == 'uploadFormsFile'){
 			html += "<input type='hidden' name='"+name+"["+i+"].fileDbId' data-id="+id+" value='"+id.split(name)[1]+"'/>";

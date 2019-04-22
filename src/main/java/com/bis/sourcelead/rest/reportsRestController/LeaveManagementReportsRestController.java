@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,6 +62,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.mysql.fabric.xmlrpc.base.Array;
 
 @RestController
 @RequestMapping("/app")
@@ -170,6 +172,8 @@ public class LeaveManagementReportsRestController {
 	@ResponseBody
 	public ResponseList<LeaveReportView> getDayEntriesList(HrLeaveReportDTO hrLeaveReportDTO,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		orgLocation.setOrg(org);
 		LeaveReportView leaveReportView = new LeaveReportView();
 		ResponseList<LeaveReportView> leaveReportsList=null;
 
@@ -259,8 +263,10 @@ public class LeaveManagementReportsRestController {
 	{
 		
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		orgLocation.setOrg(org);
 		LeaveReportView leaveReportView = new LeaveReportView();
-String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
 		ResponseList<LeaveReportView> leaveReportsList=null;
@@ -277,7 +283,7 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 				dayWiseLeaveReportDTO.setSortOrder(sortColumnOrder);
 				dayWiseLeaveReportDTO.setLoginUserId(loginUser.getId());
 				
-				leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId(),loginUserRole);
+				leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocation.getOrgId(),orgLocation.getId(),loginUserRole);
 		List<LeaveReportView> list = leaveReportsList.getData();
         for(LeaveReportView lrv : list){
         	 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getFromDate());
@@ -381,7 +387,10 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
         OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		orgLocations.setOrg(org);
 
+		hrLeaveReportDTO.setSortColumn("name");
+		hrLeaveReportDTO.setSortOrder("desc");
  		hrLeaveReportDTO.setLoginUserId(loginUser.getId());
 
 		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("LeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
@@ -544,6 +553,7 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 		}
 		List<LeaveBalanceReportDTO> users =  userService.getUserNameAndTypeByOrgLocationId(searchValue,orgLocation.getId(),userRolesList,orgDepartmentsList,topleave,MonthStart,MonthEnd);
 		
+//		List<Users> usersList = associateBalanceLeaveService.getLeaveUsersByLocatonDepartmentAndRoles()
 		
 		List<String> leaveTypeNames = leaveService.getLeaveTypeNamesByOrgLocationId(orgLocation.getId(),topleave);
 		
@@ -555,22 +565,42 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 		List<LeaveBalanceReportDTO> departmentList = resultMap.get("DEPARMENTS");
 		Map<String,Float> map = new HashMap<>();
 		Map<Long,String> depart = new HashMap<>();
-		int viki;
 		if ("yes".equalsIgnoreCase(topleave)) {
 			leaveTypeNames = leaveTypeList.stream().map(LeaveBalanceReportDTO::getName).collect(Collectors.toList());
 			for(LeaveBalanceReportDTO ltDto : users) {
 				float total =0;
 				List<LeaveType> leaveTypes = leaveTypeService.getLeaveTypeListByLocationId(String.valueOf(orgLocation.getId()));
+				Object[] deptArray =  orgDepartmentsList.toArray();
 				for(LeaveType lt : leaveTypes) {
 					if(leaveTypeNames != null && leaveTypeNames.contains(lt.getName())) {
-						lt.setActionType("CUSTOM");
-						lt.setFromDate(MonthStartDate);
-						lt.setToDate(MonthEndDate);
-						float Leavestaken = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocation, lt, ltDto.getUserId().longValue());
-						StringBuilder sb = new StringBuilder();
-						sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
-						map.put(sb.toString(), Leavestaken);
-						total = total +Leavestaken;
+						boolean flag = false;
+						if(lt.getDepartmentIds() != null) {
+							List<String> ltDepts = Arrays.asList(lt.getDepartmentIds().split(","));
+							List<Long> dList = ltDepts.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList());
+								if(ltDto.getDepartmentId() != null &&  dList.contains(ltDto.getDepartmentId().longValue())) {
+									flag = true;
+								}else if(ltDto.getDepartmentId() == null) {
+									flag = true;
+								}
+						}else {
+							flag = true;
+						}
+						
+//						if(flag) {
+							lt.setActionType("CUSTOM");
+							lt.setFromDate(MonthStartDate);
+							lt.setToDate(MonthEndDate);
+							float Leavestaken = leaveManagementUtil.getTotalAppliedLeaveCount(orgLocation, lt, ltDto.getUserId().longValue());
+							StringBuilder sb = new StringBuilder();
+							sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
+							if(flag) {
+								map.put(sb.toString(), Leavestaken);
+								total = total +Leavestaken;
+							}else {
+								map.put(sb.toString(), 0.01f);
+							}
+							
+//						}
 					}
 				}
 //				for(LeaveBalanceReportDTO d:departmentList) {
@@ -579,12 +609,32 @@ String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(req
 //				}
 				}
 		}else {
+			Object[] deptArray =  orgDepartmentsList.toArray();
 			for(LeaveBalanceReportDTO ltDto : users) {
 				for(LeaveBalanceReportDTO lt : leaveTypeList) {
-					float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrg().getId());
-					StringBuilder sb = new StringBuilder();
-					sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
-					map.put(sb.toString(), leaveTypeBalance);
+					boolean flag = false;
+					if(lt.getDepartment() != null) {
+						List<String> ltDepts = Arrays.asList(lt.getDepartment().split(","));
+						List<Long> dList = ltDepts.stream().map(s -> Long.parseLong(s)).collect(Collectors.toList());
+//						for(Object deptId : deptArray) {
+							if(ltDto.getDepartmentId() != null &&  dList.contains(ltDto.getDepartmentId().longValue())) {
+								flag = true;
+							}else if(ltDto.getDepartmentId() == null) {
+								flag = true;
+							}
+//						}
+					}else {
+						flag = true;
+					}
+					
+						float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrgId());
+						StringBuilder sb = new StringBuilder();
+						sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
+						if(flag) {
+							map.put(sb.toString(), leaveTypeBalance);
+						}else {
+							map.put(sb.toString(), 0.01f);
+						}
 				}
 	//			for(LeaveBalanceReportDTO d:departmentList) {
 	

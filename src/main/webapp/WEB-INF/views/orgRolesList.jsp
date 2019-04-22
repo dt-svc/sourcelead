@@ -59,7 +59,7 @@ padding-right: 254px; padding-top: 10px;
                          <div class="clearfix mb">
                            <div class="" id="roleDiv">
                            		<label class="noPad" for="Role Name">Role Name <b class="valStar">*</b></label>
-                             <input type="text" data-validation="required" field-name="Role Name" onblur="validateRoleName();" name="roleName" id="roleName" class="form-control"  placeholder="Role Name">
+                             <input type="text"  field-name="Role Name" onblur="validateRoleName();" name="roleName" id="roleName" class="form-control"  placeholder="Role Name" data-validation="required validate_length length2-50" field-name="Role Name" >
                            </div>
                          </div>
                          <div class="clearfix mb">
@@ -122,10 +122,6 @@ function validateRoleName(){
 					$("#add_role").removeAttr("disabled");
 					$('input#roleName').removeAttr("class record-exist record-exist-errormsg");
 					$('input#roleName').attr('class','valid form-control');
-					$('#roleDiv').find('p.jquery_form_error_message').remove();
-					$("#add_role").click(function() {
-						
-					});
 				}
 			},
 
@@ -158,10 +154,6 @@ function validateEditRoleName(){
 					$("#update_role").removeAttr("disabled");
 					$('input#displayName').removeAttr("class record-exist record-exist-errormsg");
 					$('input#displayName').attr('class','valid form-control');
-					$('#editRoleDiv').find('p.jquery_form_error_message').remove();
-					$("#update_role").click(function() {
-						
-					});
 				}
 			},
 
@@ -260,9 +252,9 @@ var validationSettings = {
 	                    		else if(data != 'INVALID_DATA' && data != 'AWKWARD'){
 	                    			$("#loading").removeAttr('style');
 	                    		   location.replace(sourceleadUrl+ "/roleActions/"+data+""); 
-	                    		   $(".popClose").click();
-	    			        	    }
-	                    		else if (data.indexOf('Sign In') !== -1) {
+	                    		   $(".mask").hide();
+	                    		   $("#addRolePop").fadeOut(100);
+	                    		}else if (data.indexOf('Sign In') !== -1) {
 	                    			location.replace(sourceleadUrl);
 	          				} else {
 	          					showError("Operation failed, please try again");
@@ -367,7 +359,7 @@ function getRolesList(){
    		    		result = result +'<td>';
    		    		result = result +'<div>';
    		    		result = result +'<label class="label label-success">';
-   		    		result = result +'<a class="anchorWhite" href="${SourceLeadWeb_sourceleadUrl}/roleActions/'+report.uuid+'"/>""><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
+   		    		result = result +'<a class="anchorWhite" href="${SourceLeadWeb_sourceleadUrl}/roleActions/'+report.uuid+'"><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
    		    		result = result +'</label>';
    		    		result = result +'</div>';
    		    		result = result +'</td>';
@@ -401,7 +393,7 @@ function getRoleDeatils(displayName,roleHierarchyId,roleId){
 	result = result + '		<div class="clearfix">  ';
 	result = result + '		<div class="" id="editRoleDiv">  ';
 	result = result + '		  <label class="noPad" for="Role Name">Role Name <b class="valStar">*</b></label> ';
-	result = result + '			<input type="text" class="form-control" onblur="validateEditRoleName();" name="displayName" value="'+displayName+'" id="displayName" field-name="Role Name" data-validation="required  validate_length length1-100">';
+	result = result + '			<input type="text" class="form-control" onblur="validateEditRoleName();" name="displayName" value="'+displayName+'" id="displayName" field-name="Role Name" data-validation="required  validate_length length2-50">';
 	result = result + '		</div> ';
 
 	result = result + '		  <label class="mt" for="Project Id">Level <b class="valStar">*</b></label> ';

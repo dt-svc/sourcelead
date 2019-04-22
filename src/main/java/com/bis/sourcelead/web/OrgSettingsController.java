@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -31,11 +32,14 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
+import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.OfferLetterTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocationInformationDetails;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrglocationDepositTaxes;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
@@ -49,13 +53,16 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailReminderService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
+import com.bis.sourcelead.service.LetterHeadService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OfferLetterTemplateService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationIndiaBankingDetailsService;
 import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
+import com.bis.sourcelead.service.OrglocationDepositTaxesService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.OrglocationSignatoryService;
 import com.bis.sourcelead.service.RoleHierarchyService;
@@ -138,14 +145,23 @@ public class OrgSettingsController {
 	
 	@Autowired
 	EmailReminderService emailReminderService;
+	
+	@Autowired
+	OrglocationDepositTaxesService orglocationDepositTaxesService;
 
+	@Autowired
+	private LetterHeadService letterHeadService;
+	
+	@Autowired
+	private OfferLetterTemplateService offerLetterTemplateService;
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	@RequestMapping(value = "/orgSettings")
 	public ModelAndView orgSettings(HttpServletRequest request,@RequestParam(value = "tabType", required = false) String tabType) throws Exception
 	{
 		logger.debug("Org settings");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
@@ -280,8 +296,33 @@ public class OrgSettingsController {
 		 }
 		 
 		 model.addObject("modulesList", modulesList);*/
-		 modulesNamesList =  (Collection<String>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
-		 model.addObject("modulesNamesList", modulesNamesList);
+		SourceLeadSessionManager.setSessionAttribute(request, "profilePercentage", orgLocations.getProfilePercentage());
+		SourceLeadSessionManager.setSessionAttribute(request, "showCompanyNameInMarkeplace", orgLocations.getShowCompanyNameInMarkeplace());
+		SourceLeadSessionManager.setSessionAttribute(request, "careerPageKey", orgLocations.getOrg().getCareerPageKey());
+		SourceLeadSessionManager.setSessionAttribute(request, "careerPageKeyActive", orgLocations.getOrg().getCareerPageKeyActive());
+		SourceLeadSessionManager.setSessionAttribute(request, "startMonth", orgLocations.getStartMonth());
+		SourceLeadSessionManager.setSessionAttribute(request, "endMonth", orgLocations.getEndMonth());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedSkillPercent", orgLocations.getRecommendedSkillPercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedLocationPercent", orgLocations.getRecommendedLocationPercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedNoticePercent", orgLocations.getRecommendedNoticePercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedExpPercent", orgLocations.getRecommendedExpPercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedEducationPercent", orgLocations.getRecommendedEducationPercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedVisatypePercent", orgLocations.getRecommendedVisatypePercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedRatePercent", orgLocations.getRecommendedRatePercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "recommendedKeywordsPercent", orgLocations.getRecommendedKeywordsPercent());
+		SourceLeadSessionManager.setSessionAttribute(request, "depositSchedule", orgLocations.getDepositSchedule());
+		SourceLeadSessionManager.setSessionAttribute(request, "fillingForm", orgLocations.getFillingForm());
+		SourceLeadSessionManager.setSessionAttribute(request, "unemploymentTax", orgLocations.getUnemploymentTax());
+		SourceLeadSessionManager.setSessionAttribute(request, "federalEin", orgLocations.getFederalEin());
+		SourceLeadSessionManager.setSessionAttribute(request, "coolingOffPeriod", orgLocations.getCoolingOffPeriod());
+		
+		OrglocationDepositTaxes orgLocDepTaxes = orglocationDepositTaxesService
+				.getOrglocationDepositTaxesByOrgLocationId(orgLocations.getId());
+		SourceLeadSessionManager.setSessionAttribute(request, "orglocationDepositTaxes", orgLocDepTaxes);
+		
+		
+		modulesNamesList =  (Collection<String>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
+		model.addObject("modulesNamesList", modulesNamesList);
 		model.addObject("emailSceconf", emailSceconf);
 		model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
 		model.addObject("subscribedCountries", subscribedCountries);
@@ -627,4 +668,100 @@ public class OrgSettingsController {
 			model.addObject("sourceleadUrl", sourceleadUrl);			
 			return model;
 		}
+	    
+	    
+	    @RequestMapping(value = "/addOfferLetterTemplate")
+		public ModelAndView addOfferLetterTemplate(@RequestParam(value="templateUUID", required=false) String templateUUID ,HttpServletRequest request,HttpServletResponse response) throws Exception {
+			ModelAndView model = new ModelAndView();
+			
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if(templateUUID != null) {
+				OfferLetterTemplate offerLetterTemplate = offerLetterTemplateService.getOfferLetterTemplateDetailsByTemplateUUID(templateUUID);
+				model.addObject("offerLetterTemplate", offerLetterTemplate);
+			}
+			List<LetterHead> letterHeadList = letterHeadService.getLetterheadBylocationId(orgLocation.getId());
+			model.addObject("letterHeadList", letterHeadList);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("offerLetter/addOfferLetterTemplate");
+			return model;
+		}
+	    
+	    @RequestMapping(value = "/viewOfferLetterTemplate")
+		public ModelAndView orgContractTemplate() {
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("offerLetter/viewOfferLetterTemplate");
+			return model;
+		}
+	    
+	    @RequestMapping(value = "/jobsConfigureEmails")
+	   	public ModelAndView reminderJobsConfigureEmails(HttpServletRequest request) throws Exception {
+	   	    ModelAndView model = new ModelAndView();
+	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			//get job related reminders
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(8l , orgLocations.getId());
+			//model.addObject("emailReminderList", emailReminderList);
+			
+			for(EmailReminder emailReminder : emailReminderList) {
+				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
+				if(emailReminder.getScenarionName().equalsIgnoreCase("ApplicantJoining")) {
+					model.addObject("applicantJoining", emailReminder);
+				}
+				
+				
+			}
+			
+	   		model.setViewName("jobsConfigureEmails");
+	   		model.addObject("sourceleadUrl", sourceleadUrl);
+	   		return model;
+	       }
+	    
+	    @RequestMapping(value = "/emailReminderLeaveConfiguration")
+	   	public ModelAndView reminderLeaveConfigureEmails(HttpServletRequest request) throws Exception {
+	   	    ModelAndView model = new ModelAndView();
+	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			//get job related reminders
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(31l , orgLocations.getId());
+			//model.addObject("emailReminderList", emailReminderList);
+			
+			for(EmailReminder emailReminder : emailReminderList) {
+				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
+				if(emailReminder.getScenarionName().equalsIgnoreCase("HolidayRemainder")) {
+					model.addObject("Holiday", emailReminder);
+				}
+				else if(emailReminder.getScenarionName().equalsIgnoreCase("approvePendingLeaves")) {
+					model.addObject("approvePendingLeaves", emailReminder);
+				}
+			
+			  else {
+			  model.addObject("employeeonLeave", emailReminder); 
+			  }
+			}
+	   		model.setViewName("emailReminderLeaveConfiguration");
+	   		model.addObject("sourceleadUrl", sourceleadUrl);
+	   		return model;
+	       }
+	    
+	    @RequestMapping(value = "/contractConfigureEmails")
+	   	public ModelAndView reminderContractsConfigureEmails(HttpServletRequest request) throws Exception {
+	   	    ModelAndView model = new ModelAndView();
+	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			//get contracts related reminders
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(16l , orgLocations.getId());
+			//model.addObject("emailReminderList", emailReminderList);
+			
+			for(EmailReminder emailReminder : emailReminderList) {
+				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
+				if(emailReminder.getScenarionName().equalsIgnoreCase("contractExpiryRemainder")) {
+					model.addObject("contractExpire", emailReminder);
+				}
+			}
+	   		model.setViewName("contractConfigureEmails");
+	   		model.addObject("sourceleadUrl", sourceleadUrl);
+	   		return model;
+	       }
+
 }

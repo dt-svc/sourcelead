@@ -9,7 +9,7 @@
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
-	<repositories>
+	<!-- <repositories>
 		<repository>
 			<id>elasticsearch-releases</id>
 			<url>https://artifacts.elastic.co/maven</url>
@@ -20,7 +20,7 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-	</repositories>
+	</repositories> -->
 	<dependencies>
 		<!-- Including Common Sourcelead Files -->
 		<dependency>
@@ -28,6 +28,14 @@
 			<artifactId>sourcelead-commons</artifactId>
 			<version>1.0.0</version>
 			<scope>compile</scope>
+			
+			<exclusions>
+                <exclusion>
+                    <groupId>org.apache.poi</groupId> 
+	                 <artifactId>poi-2.5.1-final</artifactId> 
+                </exclusion>
+            </exclusions>
+            
 		</dependency>
 	</dependencies>
 	<build>
@@ -102,6 +110,14 @@
                 </executions>
             </plugin> 
             <!-- For to create zip -->
+            <!-- Exclude poi-2.5.1-final-20040804.jar in war build -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<packagingExcludes>WEB-INF/lib/poi-2.5.1-final-20040804.jar</packagingExcludes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>

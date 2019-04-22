@@ -1,13 +1,9 @@
 package com.bis.sourcelead.rest.reportsRestController;
 
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.hibernate.mapping.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -48,6 +42,7 @@ import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
 import com.bis.sourcelead.reportsDTO.PaidBillDTO;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -84,6 +79,9 @@ public class FinanceReportRestController {
 	
 	@Autowired
 	AssetService assetService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	/**
 	 * Returns A/P Aging list JSP
@@ -415,7 +413,8 @@ public class FinanceReportRestController {
 	 */
 	@RequestMapping(value = { "/missingInvoiceData", "/rest/missingInvoiceData" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<MissingInvoiceDTO> missingInvoiceData(MissingInvoiceDTO missingInvoiceDto,HttpServletRequest request, HttpServletResponse response) throws Exception {
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 		String contractType = "";
 		if("vendorSow".equalsIgnoreCase(missingInvoiceDto.getContractType())) {
 			contractType = Constants.Vendor_SOW;
@@ -437,8 +436,8 @@ public class FinanceReportRestController {
 	 */
 	@RequestMapping(value = { "/missingInvoiceDataGraph", "/rest/missingInvoiceDataGraph" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<MissingInvoiceDTO> missingInvoiceDataGraph(MissingInvoiceDTO missingInvoiceDto,HttpServletRequest request, HttpServletResponse response) throws Exception {
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 		String contractType = "";
 		if("vendorSow".equalsIgnoreCase(missingInvoiceDto.getContractType())) {
 			contractType = Constants.Vendor_SOW;
@@ -459,7 +458,8 @@ public class FinanceReportRestController {
 	public ModelAndView paidBillReportjSP(HttpServletRequest request) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocId);
 		List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
 		if (null != vendorList) {
 			for (OrgRelations orgRelations : vendorList) {
@@ -706,7 +706,7 @@ public class FinanceReportRestController {
 					if(!assetGrowthDTO.getDateSelection().equalsIgnoreCase("custom")) {
 						searchDates = reportsUtil.getJobFilterDate(assetGrowthDTO.getDateSelection(),orgLocation);
 					}else {
-						Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+						Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 						DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 						DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");

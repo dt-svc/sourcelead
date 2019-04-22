@@ -25,7 +25,7 @@ $( document ).ready(function() {
       <div class="pull-left">
         <h2>Leave Report</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/hrReportsList'/>"> HR Reports
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"> Reports Dashboard</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/hrReportsList"> HR Reports
 </a> &raquo; Leave Report</div>
  <div id="popUp"></div>
     </section>

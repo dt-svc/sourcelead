@@ -24,9 +24,9 @@
         <h2>Employee Tasks</h2>
       </div>
       <div class="pull-right brud-crum">
-        <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a>
-        &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>"> Report Dashboard </a>
-        &raquo; <a href="<c:url value='${appPath}/projectReportList'/>"> Project Report </a>
+        <a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}"> Home </a>
+        &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"> Report Dashboard </a>
+        &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/projectReportList"> Project Report </a>
         &raquo;  Employee Tasks</div>
     </section>
     <div class="candidate_wrap_table clearfix project_wrap">
@@ -38,13 +38,6 @@
 			  <span class="pull-left refreIcon mb5">
 				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a>
 			  </span>
-            <ul class="pull-right list-unstyled list-inline">
-              <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
-              <li>
-<!--                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text"> -->
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span>
-			 </li>
-            </ul>
           </div>
           <div id="loading"></div>
           <div class="datatable_filter dataSeaTop" id="employeeReportListDivId">
@@ -73,8 +66,10 @@ function getEmployeeTaskRepotList(){
 				for (var i=0; i<1; i++)
    				{
 					var report = json[i];
-					for(var k in report.assignMembersMap){
-						result = result +'     <th>'+k+'</th>';
+					if(report != null && report != "" && report != "undefined"){
+						for(var k in report.assignMembersMap){
+							result = result +'     <th>'+k+'</th>';
+						}
 					}
    				}
 				result = result +'   </tr>';

@@ -305,20 +305,18 @@ public class SourceleadTicketsRestController {
 			 @RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception {
 		
 		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		 Long userRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userRoleId");
 		 Collection<Tabs> tabsList = new ArrayList<>();
 		 Collection<Tabs> modulesList = new ArrayList<>();
 		 Tabs dashobardTab = tabsService.getTabListByTabId(1L);
 		 if(!userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
-			 tabsList = (Collection<Tabs>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
+			 tabsList = tabsService.getAllTabsList();
 		 }else{
 			 if(orgLocationId != null && userId != null) {
-				 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-				 UserRole orgUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocationId);
-				 tabsList = tabsService.getTabsListByOrgLocationId(orgUserRole.getRoles().getId(), orgLocations.getId());
+				 tabsList = tabsService.getTabsListByOrgLocationId(userRoleId, orgLocationId);
 				
 			 }
 		 }
-		 
 		 modulesList.add(dashobardTab);
 		 for(Tabs tabs : tabsList) {
 			 modulesList.add(tabs);

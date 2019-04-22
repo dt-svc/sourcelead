@@ -129,7 +129,7 @@ function getTicketCustomDates(){
 					</li>  
 											
 					<li>
-						<a href="<c:url value='${appPath}/addSourceleadTicket'/>"  title="Add Issue" class="action newAdBtn mr5">+ Issue</a>
+						<a href="${SourceLeadWeb_sourceleadUrl}/addSourceleadTicket"  title="Add Issue" class="action newAdBtn mr5">+ Issue</a>
 					</li>	
 						
 					<c:if test="${SourceLeadWeb_orgLocationId == 1}">

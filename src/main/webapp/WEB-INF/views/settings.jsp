@@ -17,243 +17,10 @@
       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; Settings</div>
     </section>
 	<div class="reportNewDash clearfix">
-			<!-- <div class="reqListBtn clearfix mb10">
-				<div class="pull-left">
-					<span class="GView rAct" title="Graphical View"><i class="fa fa-th-large"></i></span>
-					<span class="LView" title="List View"><i class="fa fa-list"></i></span>
-				</div>
-				<h4 class="pull-left text-muted" id="SettingsHeader" style="display: none">Settings</h4>
-				<div class="repSearch">
-					<input class="innSeaFld" id="repSearchaa" onKeyUp="myManagersFunction();" type="text" placeholder="Search"></div>
-			</div> -->
-			
-			
 			
 	<sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
      <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
 	            
-	<!-- 	List view jsp code -->
-         
-		<%-- <div class="newRepList clearfix settingsRepList">		
-			<div class="clearfix">	</div>	
-			<sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
-			<div class="col-md-2">
-				<h5>Schedule Maintenance</h5>
-				<ul class="repSearchList list-unstyled">				  
-				 <li><a href="${sourceleadUrl}/loadScheduleMaintenance" title="License Upgrade">Schedule Maintenance</a></li>
-				</ul>
-			 <div class="noDate noDateSm" style="display:none;"></div>
-			</div>
-			</sec:authorize>
-			
-			 <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-			<div class="col-md-2">
-				<h5>License Upgrade</h5>
-				<ul class="repSearchList list-unstyled">				  
-				 <li><a href="/app/orgLicenseSubscriptionList" title="License Upgrade">License Upgrade</a></li>
-				</ul>
-				 <div class="noDate noDateSm" style="display:none;"></div>
-			</div>
-			</c:if>
-			
-			  <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
-			<div class="col-md-2">
-				<h5>Bulk Import</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="/app/bulk-resume-import.html" title="License Upgrade">Bulk Import</a></li>
-					 <li><a data-toggle="modal" href="javascript:void(0)" id='bulkImportList'>Process File</a></li>
-				</ul>
-				 <div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			</sec:authorize>
-			
-			
-			<div class="col-md-2">
-				<h5>Org Chart</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="/app/orgChart" title="License Upgrade">Org Chart</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			
-			  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-			<div class="col-md-2">
-				<h5>Role Configuration</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="/app/orgRolesList" title="License Upgrade">Role Configuration</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			</sec:authorize>
-			
-			  <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
-			<div class="col-md-2">
-				<h5>Templates</h5>
-				<ul class="repSearchList list-unstyled ">
-					<li><a href="/app/orgTemplates" title="License Upgrade">Templates</a></li>
-				<!-- 	<li><a href="javascript:void(0)">Applicant</a></li>
-					<li><a href="javascript:void(0)">Contract</a></li>
-					<li><a href="javascript:void(0)">Onboard</a></li>
-					<li><a href="javascript:void(0)">Offboard</a></li>
-					<li><a href="javascript:void(0)">Vendor Onboard</a></li>
-					<li><a href="javascript:void(0)">Job</a></li>
-					<li><a href="javascript:void(0)">Interview</a></li>
-					<li><a href="javascript:void(0)">Immigration</a></li>
-					<li><a href="javascript:void(0)">Letterhead</a></li>
-					<li><a href="javascript:void(0)">Employment Verification</a></li>
-					<li><a href="javascript:void(0)">Email</a></li> -->
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			</sec:authorize>
-			
-			 <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
-			<div class="col-md-2">
-				<h5>Org Settings</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="/app/orgSettings" title="License Upgrade">Org Settings</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			</sec:authorize>
-			
-			
-			<div class="clearfix"></div>
-			 <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
-			<div class="col-md-2">
-				<h5>Expense Category</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="/app/expenseCategory" title="License Upgrade">Expense Category</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			</sec:authorize>
-			
-			<div class="col-md-2">
-				<h5>Bank Accounts</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="/app/bankAccountDetails" title="License Upgrade">Bank Accounts</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			
-			 <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
-			<div class="col-md-2">
-				<h5>Leave Configuration</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="/app/leaveConfiguration" title="License Upgrade">Leave Configuration</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			</sec:authorize>
-			
-			
-			 <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-			<div class="col-md-2">
-				<h5>Job Board Configuration</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="/app/job-boards" title="Job Board Configuration">Job Board Configuration</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			</sec:authorize>
-			
-			
-			<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
-			<div class="col-md-2">
-				<h5>Custom Fields</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="/app/customFields" title="Custom Fields">Custom Fields</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			</sec:authorize>			
-			
-			 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
-			<div class="col-md-2">
-				<h5>Campaigns</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="${appPath}/campaignSendersList" title="Campaigns">Senders</a></li>
-					<li><a href="${appPath}/recipientsList" title="Campaigns">Recipients</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			</sec:authorize>
-			
-			 <sec:authorize access="hasRole('ROLE_PAYROLL_CONFIGURATION')">
-				<div class="col-md-2">
-				<h5>Payroll Configuration</h5>
-				<ul class="repSearchList list-unstyled">
-				<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-				
-					<li><a href="/app/payrollConfiguration" title="Campaigns">Payroll Configuration</a></li>
-					</c:if>
-					<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-					<li><a href="${appPath}/indPayrollConfiguration" title="Campaigns">Payroll Configuration</a></li>
-					</c:if>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			</sec:authorize>
-			
-			<!-- Dont remove this comment. Work in progress -->
-			<div class="col-md-2">
-				<ul class="repSearchList list-unstyled">
-				 <li><a href="<c:url value="${appPath}/performanceManagementConfiguration"/>">Performance Management</a></li>
-				</ul>
-			</div>
-			
-			<div class="col-md-2">
-				<h5>Tags</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="${sourceleadUrl}/tagList" title="Tags">Tags</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			
-			<div class="col-md-2">
-				<h5>Project Attributes</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="/app/projectAttributes" title="Tags">Project Attributes</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			
-				<div class="col-md-2">
-				<h5>Reminder Configuration</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="/app/emailreminderConfigurationDashboard" title="Tags">Reminder Configuration</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			
-			 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
-				<div class="col-md-2">
-				<h5>Guest Action Roles</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="${sourceleadUrl}/guestOrgActionRoles" title="Tags">Guest Action Roles</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			</sec:authorize>
-			
-			 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
-				<div class="col-md-2">
-				<h5>Email Templates</h5>
-				<ul class="repSearchList list-unstyled">
-					<li><a href="${sourceleadUrl}/emailTemplates" title="Tags">Email Templates</a></li>
-				</ul>
-				<div class="noDate noDateSm" style="display: none;"></div>
-			</div>
-			</sec:authorize>
-			
-		
-			
-		</div>
-          --%>
-         
-         
-         
          
 		<!--  Grid View  jsp code-->
          
@@ -261,14 +28,6 @@
 			          
 			     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')">  
 			         <div class="col-md-2 reportNewCta">
-				<!-- 	<div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Invite Company</a></li>
-						</ul>
-					</div> -->
 					     <a href="${SourceLeadWeb_sourceleadUrl}/loadScheduleMaintenance">
 						 <div class="clearfix text-center mb10"><i class="leaveConfiguration	"></i></div>
 					     <div class="clearfix text-center">
@@ -282,14 +41,6 @@
 			          <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
 			          
 			             <div class="col-md-2 reportNewCta">
-								 <!-- DropDown -->
-							<!-- <div class="dropdown pull-right report-dropdown">
-								<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu1" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
-								<ul class="dropdown-menu minHeight50 maxHeight250" role="menu" aria-labelledby="menu1">
-								<li><a href="/app/orgLicenseSubscriptionList">License Upgrade</a></li>
-								</ul>
-							</div> -->
-			                 <!-- Dropdown -->
 			                 <a href="${SourceLeadWeb_sourceleadUrl}/orgLicenseSubscriptionList">
 			                  <div class="clearfix text-center mb10"><i class="upgradeLicese"></i></div>
 			                  <div class="clearfix text-center">
@@ -323,14 +74,6 @@
 			              
 			                  
 			             <div class="col-md-2 reportNewCta">
-								 <!-- DropDown -->
-							<!-- <div class="dropdown pull-right report-dropdown">
-								<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu3" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
-							<ul class="dropdown-menu minHeight50 maxHeight250" role="menu" aria-labelledby="menu3">
-							<li><a href="/app/orgChart">Org Chart</a></li>
-							</ul>
-							</div> -->
-								 <!-- Dropdown -->
 			                <a href="${SourceLeadWeb_sourceleadUrl}/orgChart"> 
 						 <div class="clearfix text-center mb10"><i class="orgChartSVG"></i></div>
 						  <div class="clearfix text-center">
@@ -352,14 +95,6 @@
 			                      
 			             <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
 				             <div class="col-md-2 reportNewCta">
-				                 <!-- DropDown -->
-								<!-- <div class="dropdown pull-right report-dropdown">
-									<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu5" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
-									<ul class="dropdown-menu minHeight50 maxHeight250" role="menu" aria-labelledby="menu3">
-									<li><a href="javascript:void(0)">Org Settings</a></li>
-									</ul>
-								</div> -->
-					                 <!-- Dropdown -->
 					                 <a href="${SourceLeadWeb_sourceleadUrl}/orgSettings">
 									<div class="clearfix text-center mb10"><i class="controlsSVG"></i></div>
 					                  <div class="clearfix text-center">
@@ -371,26 +106,6 @@
 			               
 			     <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')">          
 						 <div class="col-md-2 reportNewCta">
-						      	<!-- DropDown -->
-							<!-- <div class="dropdown pull-right report-dropdown">
-							<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu6" data-toggle="dropdown">
-								<span class="caret cursorPointer"></span>
-							</span>
-								<ul class="dropdown-menu minHeight50 maxHeight250">
-								<li><a href="javascript:void(0)">Applicant</a></li>
-								<li><a href="javascript:void(0)">Contract</a></li>
-								<li><a href="javascript:void(0)">Onboard</a></li>
-								<li><a href="javascript:void(0)">Offboard</a></li>
-								<li><a href="javascript:void(0)">Vendor Onboard</a></li>
-								<li><a href="javascript:void(0)">Job</a></li>
-								<li><a href="javascript:void(0)">Interview</a></li>
-								<li><a href="javascript:void(0)">Immigration</a></li>
-								<li><a href="javascript:void(0)">Letterhead</a></li>
-								<li><a href="javascript:void(0)">Employment Verification</a></li>
-								<li><a href="javascript:void(0)">Email</a></li>
-								</ul>
-							</div> -->
-							<!-- Dropdown -->
 							<a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates">
 									<div class="clearfix text-center mb10"><i class="templateSVG"></i></div>
 							<div class="clearfix text-center">
@@ -402,16 +117,6 @@
 			        
 			       <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">            
 						 <div class="col-md-2 reportNewCta">
-							<!-- DropDown -->
-							<!-- <div class="dropdown pull-right report-dropdown">
-							<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu7" data-toggle="dropdown">
-								<span class="caret cursorPointer"></span>
-							</span>
-								<ul class="dropdown-menu minHeight50 maxHeight250">
-								<li><a href="companysnapshot.html">Expense Category</a></li>
-								</ul>
-							</div>
-							Dropdown -->
 							<a href="${SourceLeadWeb_pmsUrl}/expenseCategory">
 							<div class="clearfix text-center mb10"><i class="expensesSVG"></i></div>
 							<div class="clearfix text-center">
@@ -422,16 +127,6 @@
 			      	 </sec:authorize>
 			      	  
 						  <div class="col-md-2 reportNewCta">
-								<!-- DropDown -->
-								<!-- <div class="dropdown pull-right report-dropdown">
-								<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu8" data-toggle="dropdown">
-									<span class="caret cursorPointer"></span>
-								</span>
-									<ul class="dropdown-menu minHeight50 maxHeight250">
-										<li><a href="companysnapshot.html">Bank Accounts</a></li>
-									</ul>
-								</div> -->
-								<!-- Dropdown -->
 								<a href="${SourceLeadWeb_atsUrl}/bankAccountDetails">
 								<div class="clearfix text-center mb10"><i class="bankacountsSVG"></i></div>
 								<div class="clearfix text-center">
@@ -454,16 +149,6 @@
 				
 				  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 					      <div class="col-md-2 reportNewCta">
-							<!-- DropDown -->
-							<!-- <div class="dropdown pull-right report-dropdown">
-							<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu10" data-toggle="dropdown">
-								<span class="caret cursorPointer"></span>
-							</span>
-								<ul class="dropdown-menu minHeight50 maxHeight250">
-								<li><a href="payrollRegister-I.html">Job Board Configuration</a></li>
-								</ul>
-							</div> -->
-							<!-- Dropdown -->
 							<a href="${SourceLeadWeb_sourceleadUrl}/job-boards">
 									<div class="clearfix text-center mb10"><i class="jobConfigureSVG"></i></div>
 							<div class="clearfix text-center">
@@ -475,16 +160,6 @@
 				
 			    <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
 						<div class="col-md-2 reportNewCta">
-							<!-- DropDown -->
-						<!-- 	<div class="dropdown pull-right report-dropdown">
-							<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu11" data-toggle="dropdown">
-								<span class="caret cursorPointer"></span>
-							</span>
-								<ul class="dropdown-menu minHeight50 maxHeight250">
-								<li><a href="payrollRegister-I.html">Custom Fields</a></li>
-								</ul>
-							</div> -->
-							<!-- Dropdown -->
 							<a href="${SourceLeadWeb_sourceleadUrl}/customFields">
 									<div class="clearfix text-center mb10"><i class="sortingSVG"></i></div>
 							<div class="clearfix text-center">
@@ -520,16 +195,6 @@
 					
 						  
 							<div class="col-md-2 reportNewCta">
-									<!-- DropDown -->
-									<!-- <div class="dropdown pull-right report-dropdown">
-									<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu13" data-toggle="dropdown">
-										<span class="caret cursorPointer"></span>
-									</span>
-										<ul class="dropdown-menu minHeight50 maxHeight250">
-										<li><a href="payrollRegister-I.html">Tags</a></li>
-										</ul>
-									</div> -->
-									<!-- Dropdown -->
 									<a href="${SourceLeadWeb_sourceleadUrl}/tagList"title="Tags" data-toggle="modal" id="tagsPop">
 											<div class="clearfix text-center mb10"><i class="tagSVG"></i></div>
 									<div class="clearfix text-center">
@@ -542,17 +207,6 @@
 				   <sec:authorize access="hasRole('ROLE_PAYROLL_CONFIGURATION')">
 				   
 								<div class="col-md-2 reportNewCta">
-								
-								
-										<%-- <div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
-								<div class="clearfix text-center">
-								<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-									<h4> <a href="/app/payrollConfiguration">Us Payroll Configuration</a></h4>
-								</c:if>
-								<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-									 <h4><a href="${appPath}/indPayrollConfiguration">Ind Payroll Configuration</a></h4>
-								</c:if>
-								</div> --%>
 								
 								<a href="${SourceLeadWeb_pmsUrl}/payrollConfiguration">
 									<c:if test="${SourceLeadWeb_country == 'United States'}">
@@ -579,14 +233,6 @@
 				 
 			      	   
 			     <div class="col-md-2 reportNewCta">			
-					<!-- <div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Invite Company</a></li>
-						</ul>
-					</div> -->
 				            <a href="${SourceLeadWeb_pmsUrl}/projectAttributes">
 							<div class="clearfix text-center mb10"><i class="projectAttributesSVG"></i></div>
 					<div class="clearfix text-center">
@@ -596,58 +242,72 @@
 				
 				     	   
 			     <div class="col-md-2 reportNewCta">			
-					<!-- <div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Invite Company</a></li>
-						</ul>
-					</div> -->
-				          <a href="${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard">
+					<a href="${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard">
 							<div class="clearfix text-center mb10"><i class="reminderconfigSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Reminder Configuration</h4>
 					</div>
-				</div>			
+				</div>	
 				
+				<div class="col-md-2 reportNewCta">			
+					<a href="${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration">
+							<div class="clearfix text-center mb10"><i class="roleconfigSVG"></i></div>
+					<div class="clearfix text-center">
+						<h4>Performance Management</h4>
+					</div>
+				</div>		
+				
+				<sec:authorize access="hasRole('ROLE_TICKET_CONFIGURATION')">
+					<div class="col-md-2 reportNewCta">
+						<a href="/app/ticketManagementTypeList">
+							<div class="clearfix text-center mb10"><i class="ticketManagementSVG"></i></div>
+							<div class="clearfix text-center">
+								<h4>Ticket Management</h4>
+							</div>
+						</a>
+					</div>
+				</sec:authorize>
+				
+				<div class="col-md-2 reportNewCta">
+						<a href="${SourceLeadWeb_sourceleadUrl}/workflowDashboard">
+							<div class="clearfix text-center mb10">
+								<i class="workflowSVG" title="Work Flow"></i>
+							</div>
+							<div class="clearfix text-center">
+								<h4>Workflow</h4>
+							</div>
+						</a>
+					</div>
 				
 				 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
-				<div class="col-md-2 reportNewCta">
-					<!-- <div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Guest Action Roles</a></li>
-						</ul>
-					</div> -->
-					<a href="${SourceLeadWeb_sourceleadUrl}/guestOrgActionRoles">
-							<div class="clearfix text-center mb10"><i class="guestactionroleSVG"></i></div>
-					<div class="clearfix text-center">
-						<h4>Guest Action Roles</h4>
-					</div>
-				</div>	
+					<div class="col-md-2 reportNewCta">
+						<a href="${SourceLeadWeb_sourceleadUrl}/guestOrgActionRoles">
+								<div class="clearfix text-center mb10"><i class="guestactionroleSVG"></i></div>
+						<div class="clearfix text-center">
+							<h4>Guest Action Roles</h4>
+						</div>
+					</div>	
 				</sec:authorize>
 				
 				
-				  <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
+			  <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 				<div class="col-md-2 reportNewCta">
-				<!-- 	<div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Email Templates</a></li>
-						</ul>
-					</div> -->
 					<a href="${SourceLeadWeb_sourceleadUrl}/emailTemplates">
 							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Email Templates</h4>
 					</div>
-				</div>	
-				</sec:authorize>		  		  	  
+				</div>
+				
+				
+				<div class="col-md-2 reportNewCta">
+					<a href="${SourceLeadWeb_sourceleadUrl}/orgBulkUploads">
+							<div class="clearfix text-center mb10"><i class="fa fa-upload" aria-hidden="true"></i></div>
+					<div class="clearfix text-center">
+						<h4>Bulk Uploads</h4>
+					</div>
+				</div>
+			</sec:authorize>		  		  	  
 			      	   
       	  </div>
       	  
@@ -698,15 +358,6 @@
            
             <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}"> 
            	<div class="col-md-2 reportNewCta">
-			
-					<!-- <div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Invite Company</a></li>
-						</ul>
-					</div> -->
 				<a href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html">
 							<div class="clearfix text-center mb10"><i class="bulkImport"></i></div>
 					<div class="clearfix text-center">
@@ -718,14 +369,6 @@
 			      	
 			      	  
 			   	<div class="col-md-2 reportNewCta">				
-					<!-- <div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Invite Company</a></li>
-						</ul>
-					</div> -->	
 					<a href="${SourceLeadWeb_atsUrl}/bankAccountDetails">		
 							<div class="clearfix text-center mb10"><i class="bankacountsSVG"></i></div>
 					<div class="clearfix text-center">
@@ -736,15 +379,6 @@
 			      	  
 			      	  
 			      <div class="col-md-2 reportNewCta">
-				<!-- 
-					<div class="dropdown pull-right report-dropdown">
-					<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown">
-						<span class="caret cursorPointer"></span>
-					</span>
-						<ul class="dropdown-menu minHeight50 maxHeight250">
-						<li><a href="payrollRegister-I.html">Invite Company</a></li>
-						</ul>
-					</div> -->
 					<a href="${SourceLeadWeb_atsUrl}/jobAlertList">
 							<div class="clearfix text-center mb10"><i class="reminderconfigSVG"></i></div>
 					<div class="clearfix text-center">

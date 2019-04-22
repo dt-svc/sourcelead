@@ -118,7 +118,7 @@ public class FinanceServiceImpl implements FinanceService{
 						if(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId() != null) {
 							Candidate candidate  = candidateService.getCandidateByParentCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
 							if(candidate != null && candidate.getOrgRelationId() != null) {
-								OrgRelations orgRelations = orgRelationsService.getOrgRelationById(candidate.getOrgRelationId().getId());
+								OrgRelations orgRelations = orgRelationsService.getOrgRelationById(sah.getHeirarchyId().getProjectClientsId().getOrgRelationId().getId());
 								StringBuilder name = new StringBuilder();
 								if(StringUtils.isNotBlank(candidate.getLastName())) {
 									name.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());

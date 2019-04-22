@@ -28,7 +28,7 @@ $(document).ready(function(){
           <div class="col-md-12 clearfix">
             <ul>
               <li> <a href="javascript:void(0)" onClick="advancedsearch()"> <i class="glyphicon glyphicon-search"></i>&nbsp;&nbsp;Advanced Search </a> </li>
-              <li> <a href="<c:url value='${appPath}/transactionsImports'/>"> <i class="fa fa-upload"></i>&nbsp;&nbsp;Import</a> </li>
+              <li> <a href="${SourceLeadWeb_sourceleadUrl}/transactionsImports"> <i class="fa fa-upload"></i>&nbsp;&nbsp;Import</a> </li>
               <!-- <li> <a href="paymenttype.html"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Payment Type</a> </li> -->
             </ul>
           </div>

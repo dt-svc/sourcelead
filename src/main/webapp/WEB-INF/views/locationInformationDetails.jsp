@@ -41,7 +41,7 @@ $(function(){
 		  })
 		  
 		  
-	     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	     var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	 	 var jsDateFormat= '';
 	 	  if(locationDate.match("yyyy-MM-dd")){
 	 		  jsDateFormat = 'yy-mm-dd';

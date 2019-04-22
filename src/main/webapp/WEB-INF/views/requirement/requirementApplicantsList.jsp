@@ -4,11 +4,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+<script type="text/javascript">
+var atsUrl = '${SourceLeadWeb_atsUrl}';
+var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+</script>
   <!-- Header Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Applicant List</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Applicant List</div>
     </section>
     <!-- Project -->
     <div class="timesheet_out">
@@ -55,7 +58,6 @@
     </div>
   </section>
 <script>
-
  $(document).ready(function() {
 	 requirementApplicantList(true);
 	 /* getClientList(); */
@@ -71,7 +73,7 @@
  </script>
 <script type="text/javascript">
        function requirementApplicantList(onloadFlag){
-    	   var sourceleadUrl ='${sourceleadUrl}';
+    	   var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
    		   var tab = '${tab}';
     	   var frequency = $('input[name=customDates]:checked').val(); 
     	    var fromDate = $("#custFromDate").val();
@@ -180,7 +182,6 @@ function prepareApplicantList(url){
 <script>
 function applicantpagination(url){
 	var colIndex = 0;
-	var atsUrl = '${SourceLeadWeb_atsUrl}';
     $('#applicantpagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -360,9 +361,9 @@ function applicantpagination(url){
   
  <script>
  function applicatDocumentListDocumentView(resumeUUID,title){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 		if(resumeUUID != null && resumeUUID != ""){
-			window.open(atsUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
+			window.open(sourceleadUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
 		}
  }
 </script>
@@ -632,10 +633,10 @@ $(".overIcon, .newActPop").click(function(e){
 
 <script>
 /* function getClientList(){
-	var sourceleadUrl = '${sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_sourceleadUrl}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/getClientList?${_csrf.parameterName}=${_csrf.token}",
+		url : atsUrl+ "/getClientList?${_csrf.parameterName}=${_csrf.token}",
 		success : function(data) {
 			var result = "";
 			  for (var i=0; i<data.length; i++)
@@ -686,11 +687,11 @@ function clientFunction() {
 }
 
 /* function getTeamsList(){
-	var sourceleadUrl = '${sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+ "/getTeamsListForLoginUser?${_csrf.parameterName}=${_csrf.token}",
+		url : atsUrl+ "/getTeamsListForLoginUser?${_csrf.parameterName}=${_csrf.token}",
 		success : function(data) {
 			var result = "";
 			  for (var i=0; i<data.length; i++)
@@ -777,7 +778,7 @@ function projectExport(type){
 	}else{
 		exportType = "xls";
 	}
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	   var tab = '${tab}';
 	   var frequency = $('input[name=customDates]:checked').val(); 
 	    var fromDate = $("#custFromDate").val();

@@ -21,6 +21,7 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Controller;
 
+import com.bis.sourcelead.security.CustomTokenAuthenticationFilter;
 import com.bis.sourcelead.security.JWTSecurityContextRepository;
 
 /**
@@ -135,6 +136,7 @@ public class SecurityConfig  {
     			.antMatchers("/parseResume/**").permitAll()
     			.antMatchers("/app/getDemoTimezonesList/**").permitAll()
     			.antMatchers("/app/getDemoModulesList/**").permitAll()
+    			.antMatchers("/app/getAdminDemoModulesList").permitAll()
     			.antMatchers("/app/getActionHistoryList/**").permitAll()
     			.antMatchers("/app/jobCampaignSummary/**").permitAll()
     			.antMatchers("/app/getRequirementProfessionalProfileDetails/**").permitAll()
