@@ -168,11 +168,7 @@ function getDynamicWorkflowList(){
 
 function checkDefaultWorkflow(configureType, uuid, workFlowName){
 	var result = "";
-	if(configureType != "Default"){
-		result = result +"<div class='tbldata-dotdot-verybig'><a onclick='viewWorkFlow(\""+uuid+"\")' title='view'>"+workFlowName+"</a></div>";
-	}else{
-		result = result +"<div class='tbldata-dotdot-verybig'>"+workFlowName+"</div>";
-	}
+	result = result +"<div class='tbldata-dotdot-verybig'><a onclick='viewWorkFlow(\""+uuid+"\")' title='view'>"+workFlowName+"</a></div>";
 	return result;
 }
 

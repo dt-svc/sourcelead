@@ -24,15 +24,19 @@
       
       </div>
     </section>
+    
+    <c:if test="${not empty requirementWorkFlowStagesDTO}">
     <div class="clearfix">
-		
+		 
        <div class="positionRelative reportHead clearfix mb">
         <ul class="pull-right list-unstyled list-inline">
+         <c:if test = "${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
           <li>
           <c:if test="${not empty requirementWorkFlowStagesDTO}">
           <a class="newAdBtn mr5"  href="${SourceLeadWeb_sourceleadUrl}/addStage?uuid=<c:out value="${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}" />" title="Add">+ Add</a>
           </c:if>
           </li>
+         </c:if>
         <li class="">
             <input class="repSearchBar" placeholder="Search" id="searchtext" type="text">
             <span class="repSearchIcon" onclick="getViewWorkflowStagesList();"></span>
@@ -40,7 +44,10 @@
         </ul>
         <div class="clearfix"></div>
       </div>
+       
     </div>
+	</c:if>
+
     
     <c:if test="${not empty requirementWorkFlowStagesDTO}">
     <div class="clearfix backgroundWhite mb">
@@ -119,6 +126,9 @@
 				</div>
 				</div>
 				<div class="col-md-2">
+				
+					<c:if test = "${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
+					
 					<ul class="list-inline list-unstyled pull-right mb0">
 						<c:if test = "${requirementWorkFlowStages.editable == 'Y'}">
 						<li>
@@ -137,6 +147,8 @@
 						</c:if>	
 						
 					</ul>
+					</c:if>
+					
 			</div>
 		</div>
 		<!-- Cardmdoel Widget ends -->
@@ -146,17 +158,35 @@
 		</c:if>
 		
 		<!-- dynamic content ends here -->
-		<div class="footerstyelsNew">
-	<div class="clearfix">
-		<div class="pull-right">
-		<input value="Save" id="saveReqWorkFlow" 
-		onclick="saveRequirementWorkFlow('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');"
-		 class="btn btn-primary" type="button">
-		<input value="Cancel" class="btn btn-default ml" type="button" onclick = "cancelViewWorkflow();">
-		</div>
-	</div>
-	</div>
-	</section>
+			<c:if test="${not empty requirementWorkFlowStagesDTO}">
+				<div class="footerstyelsNew">
+					<div class="clearfix">
+						<div class="pull-right">
+						<c:choose>
+							<c:when
+								test="${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
+									
+									<input value="Save" id="saveReqWorkFlow"
+										onclick="saveRequirementWorkFlow('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');"
+										class="btn btn-primary" type="button"> <input
+										value="Cancel" class="btn btn-default ml" type="button"
+										onclick="cancelViewWorkflow();">
+													</c:when>
+							<c:otherwise>
+							<input value="<< Back To Application Workflow" 
+										onclick="cancelViewWorkflow();"
+										class="btn btn-primary" type="button">
+		
+							</c:otherwise>
+						</c:choose>
+
+
+						</div>
+					</div>
+				</div>
+			</c:if>
+
+		</section>
 	</form>
     </div>
   </section>
