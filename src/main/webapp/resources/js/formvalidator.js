@@ -373,6 +373,38 @@ jQueryFormUtils.validateEmail = function(email) {
     return false;
 };
 
+
+/**
+ * prasad K
+ * Validate pan
+ *
+ * @return {Boolean}
+ */
+jQueryFormUtils.validatePan = function(panNumber) {
+	var regpan = /^([A-Z]){5}([0-9]){4}([A-Z]){1}?$/;
+	if(regpan.test(panNumber)){
+	   return true;
+	} else {
+		 return false;
+	}
+};
+
+/**
+ * prasad K
+ * Validate Aadhar Number
+ *
+ * @return {Boolean}
+ */
+jQueryFormUtils.validateAadhar = function(aadharNumber) {
+	var regpan = /^\d{4}\s?\d{4}\s?\d{4}$/g;
+	if(regpan.test(aadharNumber)){
+	   return true;
+	} else {
+		 return false;
+	}
+};
+
+
 /**
  * Validate phone number, at least 7 digits only 3 hyphen and plus allowed
  *
@@ -1259,6 +1291,15 @@ jQueryFormUtils.validatePercentageOfWork = function(val) {
         else if (validationRules.indexOf('validate_extno') > -1 && !jQueryFormUtils.validateExtNumber(value)) {
             return validationErrorMsg || language.badExtno;
         }
+        
+        // Pan Number
+        else if (validationRules.indexOf('validate_panNumber') > -1 && !jQueryFormUtils.validatePan(value)) {
+            return validationErrorMsg || language.badPan;
+        }
+        // Aadhar Number
+        else if (validationRules.indexOf('validate_aadharNumber') > -1 && !jQueryFormUtils.validateAadhar(value)) {
+            return validationErrorMsg || language.badAadhar;
+        }
 
         // Swedish phone number
         else if (validationRules.indexOf('validate_swemobile') > -1 && !jQueryFormUtils.validateSwedishMobileNumber(value)) {
@@ -1468,6 +1509,8 @@ jQueryFormUtils.LANG =  {
 	badCphone: 'Phone Number is invalid for the Selected Country',
     badTelephone : 'you entered is in improper format',
     badNumber : 'you entered invalid number',
+    badPan : 'Invalid pan number',
+    badAadhar : 'Invalid aadhar number',
     badExtno : 'Only numbers allowed',
     badSecurityAnswer : 'You have not given a correct answer to the security question',
     badDate : 'You have not given a correct date',
