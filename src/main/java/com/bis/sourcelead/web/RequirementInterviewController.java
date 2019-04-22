@@ -80,7 +80,7 @@ public class RequirementInterviewController {
 		    // SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		     RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
 		   
-		     if(requirementInterview.getInterviewStatus() != null && requirementInterview.getInterviewStatus().equalsIgnoreCase(interviewStatus)) {
+		     if((requirementInterview.getInterviewStatus() !=null) && (requirementInterview.getInterviewStatus().equalsIgnoreCase("Attending") || requirementInterview.getInterviewStatus().equalsIgnoreCase("Not_Attending"))) {
 		    	 model.setViewName("requirement/interviewAcceptOrRejectOrTentative");
 		    	 model.addObject("interviewStatus","Action_Done");
 		    	 model.addObject("sourceleadUrl", sourceleadUrl);
