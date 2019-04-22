@@ -192,27 +192,31 @@ function PerformanceGoals(){
 			  $.ajax({
 			    	type: "GET",
 			        url: pmsUrl+"/getReportingManagersUsersForGoalsAssignment", 
-			        success: function(json) {
-			        	var output = "";
-			        	for (var i=0; i<json.length; i++)
-						{
-				        		var opt = json[i];
-				        		if(userIds != null && userIds != '' && userIds != 'undefined'){
-				        			var assignedUserIds = userIds.split(",");
-				        			if (assignedUserIds.indexOf(opt.userId.toString()) > -1) {
-				        				output = output + "<option value='" +opt.userId+ "' selected>"+opt.userName+"</option>";
-				        			}else{
-				        				output = output + "<option value='" +opt.userId+ "'>"+opt.userName+"</option>";
-				        			}
-				        		}else{
-				        			output = output + "<option value='" +opt.userId+ "'>"+opt.userName+"</option>";
-				        		}
-				        		
-				        		
-						}
-			        	$("#goalsAssignTo").empty();
-				        $("#goalsAssignTo").append(output);
-				        $('#goalsAssignTo').trigger("chosen:updated");
+			        success: function(response) {
+				    	if (response.response === "AWKWARD") {
+			        		location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		var output = "";
+			    	   		  
+					        if(response.data.length > 0){
+					        	 for(var i=0; i<response.data.length; i++){
+					        		 var opt = response.data[i];
+					        		 if(userIds != null && userIds != '' && userIds != 'undefined'){
+						        			var assignedUserIds = userIds.split(",");
+						        			if (assignedUserIds.indexOf(opt.assignedUserId.toString()) > -1) {
+						        				output = output + "<option value='" +opt.assignedUserId+ "' selected>"+opt.assignedUser+"</option>";
+						        			}else{
+						        				output = output + "<option value='" +opt.assignedUserId+ "'>"+opt.assignedUser+"</option>";
+						        			}
+						        		}else{
+						        			output = output + "<option value='" +opt.assignedUserId+ "'>"+opt.assignedUser+"</option>";
+						        		}
+					        	 }
+					         }
+					        $("#goalsAssignTo").empty();
+					        $("#goalsAssignTo").append(output);
+					        $('#goalsAssignTo').trigger("chosen:updated");
+			        	}
 			        },
 			    });
 		  }

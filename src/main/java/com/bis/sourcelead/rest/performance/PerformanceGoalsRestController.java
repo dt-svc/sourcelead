@@ -1,5 +1,6 @@
 package com.bis.sourcelead.rest.performance;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -59,20 +60,29 @@ public class PerformanceGoalsRestController {
 	PerformanceGoalsCommentsService performanceGoalsCommentsService;
 	
 	  @RequestMapping(value = { "/getReportingManagersUsersForGoalsAssignment", "/rest/getReportingManagersUsersForGoalsAssignment" }, method = RequestMethod.GET)
-	   public List<UserRole> getReportingManagersUsersForGoalsAssignment(HttpServletRequest request) throws Exception {
+	   public ResponseList<PerformanceGoalsAssignToDTO> getReportingManagersUsersForGoalsAssignment(HttpServletRequest request) throws Exception {
 		   Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		   Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		   Long userRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userRoleId");
-		   List<UserRole> userRolesList = null;
+		   List<PerformanceGoalsAssignToDTO> userRolesList = null;
+		   ResponseList<PerformanceGoalsAssignToDTO> resObj = new ResponseList<>();
 		   try {
-			  userRolesList = userRoleService.getAllAssignedUsersByReportingManagerId(userId,orgLocationId);
+			  userRolesList = performanceGoalsService.getReportingManagersUsersForAssigningGoals(userId,orgLocationId);
 			  UserRole userRole = userRoleService.getUserRoleById(userRoleId);
-			  userRolesList.add(userRole);
-			
+			  PerformanceGoalsAssignToDTO managerDTO = new PerformanceGoalsAssignToDTO();
+			  managerDTO.setAssignedUserId(BigInteger.valueOf(userRole.getId()));
+			  managerDTO.setAssignedUser(userRole.getUser().getFullName());
+			  userRolesList.add(managerDTO);
+			  resObj.setData(userRolesList);
+			  resObj.setResponse(Result.SUCCESS.name());
+			  resObj.setResponseMessage(Result.SUCCESS.getValue());
 		   }catch (Exception e) {
-			     e.printStackTrace();
+			   e.printStackTrace();
+			   resObj.setResponse(Result.AWKWARD.name());
+			   resObj.setResponseMessage(Result.AWKWARD.getValue());
+			     
 			}
-		   return userRolesList;
+		   return resObj;
 	   }
 	  
 	  

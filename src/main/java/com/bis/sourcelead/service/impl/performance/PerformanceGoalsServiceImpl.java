@@ -351,4 +351,11 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 	}
 
 
+	@Override
+	public List<PerformanceGoalsAssignToDTO> getReportingManagersUsersForAssigningGoals(Long reportingManagerId,
+			Long orgLocationId) {
+		return performanceGoalsDao.getReportingManagersUsersForAssigningGoals(reportingManagerId, orgLocationId);
+	}
+
+
 }

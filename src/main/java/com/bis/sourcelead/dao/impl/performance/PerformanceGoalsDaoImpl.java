@@ -26,6 +26,7 @@ import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceTeamMembersDTO;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
 import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -829,6 +830,38 @@ try {
 		
 		return teamMembersList;
 		
+	}
+
+	@Override
+	public List<PerformanceGoalsAssignToDTO> getReportingManagersUsersForAssigningGoals(Long reportingManagerId,
+			Long orgLocationId) {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceGoalsAssignToDTO> reportingManagersUsersList = null;
+		Query queryObj = null;
+		
+		try {
+		String query = "SELECT UR.USER_ID AS assignedUserId , "+
+        "CONCAT(U.FIRST_NAME,' ',IFNULL(U.MIDDLE_NAME,''),' ',IFNULL(U.LAST_NAME,'')) AS assignedUser "+
+        "FROM "+
+  		"USER_ROLE UR, "+ 
+  		"USER U,"+
+  		"ORG_LOCATIONS OL WHERE "+
+  		"UR.USER_ID = U.ID AND UR.ORG_LOCATIONS_ID = OL.ID AND "+
+  		"UR.REPORTING_MANAGER_ID = :reportingManagerId AND UR.ORG_LOCATIONS_ID = :locationId "+
+		"AND UR.USER_STATE <> 'NOT_LOGGEDIN' GROUP BY UR.USER_ID ";
+		
+		queryObj = session.createSQLQuery(query);
+		queryObj.setParameter("reportingManagerId", reportingManagerId);
+		queryObj.setParameter("locationId", orgLocationId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceGoalsAssignToDTO.class));
+		reportingManagersUsersList = queryObj.list();
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return reportingManagersUsersList;
 	}
 
 }

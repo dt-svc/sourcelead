@@ -44,4 +44,6 @@ public interface PerformanceGoalsDao {
 	
 	List<PerformanceTeamMembersDTO> getPerformanceTeamMembersByTeamId(Long teamId) throws Exception;
 	
+	List<PerformanceGoalsAssignToDTO> getReportingManagersUsersForAssigningGoals(Long reportingManagerId,Long orgLocationId);
+	
 }

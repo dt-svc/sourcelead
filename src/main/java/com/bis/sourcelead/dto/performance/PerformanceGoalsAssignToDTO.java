@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto.performance;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 public class PerformanceGoalsAssignToDTO implements Serializable{
 	
@@ -13,6 +14,8 @@ public class PerformanceGoalsAssignToDTO implements Serializable{
 	private String userImgUrl;
 	
 	private String assignedDate;
+	
+	private BigInteger assignedUserId;
 
 	public String getGoalName() {
 		return goalName;
@@ -44,6 +47,14 @@ public class PerformanceGoalsAssignToDTO implements Serializable{
 
 	public void setAssignedDate(String assignedDate) {
 		this.assignedDate = assignedDate;
+	}
+
+	public BigInteger getAssignedUserId() {
+		return assignedUserId;
+	}
+
+	public void setAssignedUserId(BigInteger assignedUserId) {
+		this.assignedUserId = assignedUserId;
 	}
 	
 	
