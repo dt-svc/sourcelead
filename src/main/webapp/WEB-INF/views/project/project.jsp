@@ -521,7 +521,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectDashboard'/>'" class="btn btn-danger ml">
+							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_pmsUrl}/projectDashboard'/>'" class="btn btn-danger ml">
+
 							<input type="button" value="Save & Continue" id="save_project" onclick="projects.saveProject();flushSaveProject()" class="btn btn-primary">
 						</div>
 					</div>
@@ -540,7 +541,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </section>
 <!-- Content Area Ends-->
 
-<script type="text/javascript" src="/pms/resources/js/projects.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/projects.js"></script>
 
 
 <script type="text/javascript">

@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,7 +54,6 @@ import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dao.OptionsDao;
-import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.dao.ShiftDao;
 import com.bis.sourcelead.dto.HolidayDTO;
@@ -105,12 +102,10 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
-import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.ProjectTasksService;
-import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RestrictDayService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
@@ -602,7 +597,7 @@ public class LeaveManagementRestController {
 	@RequestMapping(value = "/addShift")
 	public ModelAndView addShiftJsp(HttpServletRequest request,HttpServletResponse response) throws Exception {
 		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		  Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		  Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 		   ModelAndView model = new ModelAndView();
 		   model.addObject("timezone", timezone.getTimeZoneId());
 		   model.addObject("sourceleadUrl", sourceleadUrl);
@@ -909,7 +904,7 @@ public class LeaveManagementRestController {
 	@RequestMapping(value = "/editleaveshift")
 	public ModelAndView editShift(@RequestParam (value = "shiftUUID", required = false )String shiftUUID,HttpServletRequest request,HttpServletResponse response) throws Exception{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 		ModelAndView model = new ModelAndView();
 		
 	    Shift shift = shiftService.getShiftById(shiftUUID);
@@ -1018,16 +1013,14 @@ public class LeaveManagementRestController {
 
 				
 				if (StringUtils.isNotBlank(reportYear)) {
-					holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,
-							Long.parseLong(reportYear));
+					holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,Long.parseLong(reportYear),shiftIds);
 				} else {
 					int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 					if(StringUtils.isNotBlank(reportYear) ) {
 						holiodaysDTOList = holidayService.getAllHolidaysListByOrgloationIdAndShiftId(orgLocationId,shiftIds);
 					}else {
 						reportYear = String.valueOf(currentYear);
-						holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,
-								Long.parseLong(reportYear));
+						holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId, Long.parseLong(reportYear),shiftIds);
 					}
 				}
 				
@@ -1061,6 +1054,8 @@ public class LeaveManagementRestController {
 			throws Exception {
  		Response<String> response = new Response<>();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+		orgLocation.setOrg(org);
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
@@ -1405,6 +1400,8 @@ public class LeaveManagementRestController {
 		Response<String> response = new Response<>();
 		try {
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			orgLocations.setOrg(org);
 			boolean isSuperUser = false;
 			if(StringUtils.isNotBlank(leaveDTO.getUser())){
 				isSuperUser = orgLocationService.isLoginUserIsSuperUser(Long.parseLong(leaveDTO.getUser()),orgLocations.getId());
@@ -1447,6 +1444,8 @@ public class LeaveManagementRestController {
 		Response<String> response = new Response<>();
 		try {
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			orgLocations.setOrg(org);
 			boolean isSuperUser = false;
 			if(StringUtils.isNotBlank(leaveDTO.getUser())){
 				isSuperUser = orgLocationService.isLoginUserIsSuperUser(Long.parseLong(leaveDTO.getUser()),orgLocations.getId());
@@ -3071,7 +3070,6 @@ public class LeaveManagementRestController {
 	@RequestMapping(value = "/ws/dumpAllGeneralShiftsWithActiveUsers", method = RequestMethod.GET)
     public void dumpAllGeneralShiftsWithActiveUsers(HttpServletRequest request, HttpServletResponse response) throws Exception
     {
-        System.out.println("Start Time"+java.time.LocalDateTime.now());
 		List<BigInteger> userRoleList =  userRoleService.getAllUsersRoleList();
 		for(BigInteger roleId:userRoleList) {
 			UserRole userRole = userRoleService.getUserRoleById(roleId.longValue());	
@@ -3081,7 +3079,6 @@ public class LeaveManagementRestController {
 					userRoleService.addUserRole(userRole);
 				}
 		}
-		 System.out.println("End Time"+java.time.LocalDateTime.now());
     }
 
 	@RequestMapping(value = { "/leavepolicyDescription"}, method = RequestMethod.POST)
@@ -3095,6 +3092,8 @@ public class LeaveManagementRestController {
 		Response<Float> response = new Response<>();
 	    float noOfDays = 0f; 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		orgLocations.setOrg(org);
 		LeaveType leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
 		Leave leave = new Leave();
 		leave.setFromDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getFromDate()));

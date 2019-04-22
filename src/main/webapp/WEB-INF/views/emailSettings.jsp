@@ -28,7 +28,7 @@ display: none;
       <div class="pull-left">
         <h2>Mail account setting</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/mailBox/mails'/>"> Mailbox</a>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_sourceleadUrl}/mailBox/mails"> Mailbox</a>
 			&raquo; Mail account settings</div>
     </section>
     <div class="content-area content-new clearfix">
@@ -112,7 +112,7 @@ display: none;
               <div class="pull-right mr">
                   <button type="button" value="add" id="add_email_account"
 							onclick="addEmailAccount();" class="btn btn-sm btn-primary">Add</button>
-                  <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='${appPath}/mailBox/mails'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
+                  <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/mailBox/mails'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
               </div>
           </footer>
             </form:form>

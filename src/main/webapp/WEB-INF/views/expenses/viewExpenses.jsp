@@ -14,8 +14,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>View Expense</h2>
       </div>
-      
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="/pms/expenses">My Expenses</a> &raquo; View Expense</div>
+        <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/expenses"> My Expense</a> &raquo; View Expense</div>
     </section>  
     <div class="project_tabs"> 
             <div class="project_tabs_inn_table">
@@ -112,6 +111,11 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					<div class="project_details_cta">
 						<strong>Submitted Amount:</strong><span>${expenses.totalsubmittedAmount}</span><div class="clearfix"></div>
 					</div>
+					<c:if test="${submissionStatus !== 'DRAFT'}">
+                        <div class="project_details_cta">
+                           <strong>Submitted On:</strong><span>${expenses.submittedDate}</span><div class="clearfix"></div>
+                        </div>
+                          </c:if>
 					
 					 <div class="project_details_cta">
 					  <c:if test="${submissionStatus == 'APPROVED'}">

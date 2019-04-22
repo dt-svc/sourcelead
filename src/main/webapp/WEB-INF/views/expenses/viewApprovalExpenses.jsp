@@ -21,7 +21,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>View Expense</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/expensesApprovalList'/>">Expenses Approval</a> &raquo; View Expense</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/expensesApprovalList"> Expenses ApprovalList</a> &raquo; View Expense</div>
     </section> 
    <div id='reOpenPopup'></div>
     <div id='reOpenRejectedPopup'></div>
@@ -124,7 +124,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 						 <c:forEach var="project" items="${expEntry.projectsList}">
 						      <c:if test="${project.id == expenses.projectId}">
-						      <a href="<c:url value="${appPath}/clientDashboard?orgRelationUUID=${project.orgRelationUUID}"/>">${project.client}</a>
+						      <a href="<c:url value="${SourceLeadWeb_atsUrl}/clientDashboard?orgRelationUUID=${project.orgRelationUUID}"/>">${project.client}</a>
 						      </c:if>
 		                  </c:forEach>
 		                </sec:authorize>  
@@ -151,6 +151,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					<div class="project_details_cta">
 						<strong>Submitted Amount:</strong><span>${expenses.totalsubmittedAmount}</span><div class="clearfix"></div>
 					</div>
+					<div class="project_details_cta">
+                             <strong>Submitted On:</strong><span>${expenses.submittedDate}</span><div class="clearfix"></div>
+                      </div>
 					
 					 <div class="project_details_cta">
 					  <c:if test="${submissionStatus == 'APPROVED'}">
@@ -217,7 +220,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 								<li><strong>Description :</strong><span title="${entry.entryDescription}">${entry.entryDescription}</span>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
 								<li><strong>Submitted Amount :</strong><span>${entry.submittedamount}</span><div class="clearfix"></div></li>
+								<c:if test="${submissionStatus == 'APPROVED'}">
 								<li><strong>Approved Amount :</strong><span>${entry.amountRoundOff}</span><div class="clearfix"></div></li>
+								</c:if>
 								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
 								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>

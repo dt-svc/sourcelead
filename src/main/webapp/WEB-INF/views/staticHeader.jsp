@@ -12,7 +12,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
 <meta property='og:title' content="sourcelead.com"/> 
 <meta property='og:url' content="https://www.sourcelead.com/"/> 
-<meta property='og:description' content='Bridging talent through technology'/> 
+<meta property='og:description' content='Sourcelead is a global integrated recruitment solution for job seekers and the employers. We carry our expertise for more than a decade, and have expanded to become a global provider of full array of recruitment, vendor management, billing, and client management products and services.'/> 
 <meta property="og:type" content="article" /> 
 <meta property="og:image" content="https://www.sourcelead.com/resources/images/fav.png"/> 
 <meta name="description" content="${description}">

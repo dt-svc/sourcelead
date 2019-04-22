@@ -83,7 +83,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 
 					<div class="clearfix">
 
-						<a href="<c:url value='${appPath}/userMapping'/>"
+						<a href="${SourceLeadWeb_pmsUrl}/userMapping"
 							class="btn btn-primary btn-sm ml10 mt5 hidden"
 							title="User Mapping" onClick="userMaping();">User Mapping </a>
 
@@ -247,12 +247,10 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 
 <script>
 	function runPayrollCycles(type) {
-
-		var payrollValue = $('#payrollCycle').val();
-		var payrollStartDate = $('#payrollStartDate').val();
+// 		var payrollValue = $('#payrollCycle').val();
+	 	var payrollStartDate = $('#payrollStartDate').val();
 		var payrollEndDate = $('#payrollEndDate').val();
-		if (type != "main"
-				|| (payrollValue != "" && payrollValue != 'undefined' && payrollValue != null)) {
+		if (type != "main") {
 			if ($('#run_payroll_cycle').validate(false, validationSettings)) {
 				$('#addPayrollDiv').removeClass("show-div");
 				var payrollCycle = payrollStartDate + " - " + payrollEndDate;
@@ -262,27 +260,16 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				var jsonData = encodeURIComponent(con);
 				var form = $('#run_payroll_cycle')[0];
 				var formData = new FormData(form);
-				$("#loading")
-						.attr(
-								'style',
-								'position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-				$
-						.ajax({
-							type : "GET",
-							data : formData,
-							contentType : 'application/json; charset=utf-8',
-							enctype : 'multipart/form-data',
-							processData : false,
-							contentType : false,
-							dataType : 'json',
-							url : pmsUrl
-									+ "/runPayrollCycle?${_csrf.parameterName}=${_csrf.token}&json="
-									+ jsonData,
-							success : function(result) {
-								generatrPayroll(result, payrollCycle);
-								$("#loading").removeAttr("style");
-							},
-						});
+				$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				$.ajax({
+					type : "GET",
+// 					data : formData,
+					url : pmsUrl+ "/runPayrollCycle?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					success : function(result) {
+						generatrPayroll(result, payrollCycle);
+						$("#loading").removeAttr("style");
+					}
+					});
 
 			}
 		} else if (type == "main") {
@@ -298,7 +285,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			$("#popUp").append(result);
 			$("#remove_user_pop").slideDown(200);
 			$(".project_inn_mask").fadeIn(200);
-		}
+		} 
 
 	}
 

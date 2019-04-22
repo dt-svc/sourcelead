@@ -33,7 +33,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
 						<span>
-						<a href="<c:url value='${appPath}/uploadTimesheet'/>">Import</a>
+						<a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/uploadTimesheet'/>">Import</a>
 						<c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
 						 	<a href="javascript:void(0)" onclick="exportTimeSheetToPdfOrExcel('pdf');" title="PDF">Export PDF</a>
 							<a href="javascript:void(0)" onclick="exportTimeSheetToPdfOrExcel('excel');" title="Excel">Export Excel</a>	

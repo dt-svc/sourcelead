@@ -58,7 +58,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	                </li>
                </sec:authorize>
                <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES')">
-			   		<li><a href="<c:url value='${appPath}/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>
+			   		<li><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>
 			   </sec:authorize>	
 			   <li title="Export"  id="hideExportExpenseLink"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
 					    <div id="exportPop" class="user_exp">

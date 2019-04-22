@@ -28,7 +28,7 @@ $(function() {
     <div class="pull-left">
       <h2>Add New Issue</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/app/sourceleadTicketList'/>"> Issue List</a> &raquo; Add New Issue</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="${SourceLeadWeb_sourceleadUrl}/sourceleadTicketList"> Issue List</a> &raquo; Add New Issue</div>
   </section>
   <div class="content-area content-new clearfix">
   <form:form id="sourceleadTicket_form" name="sourceleadTicket_form" method="post">
@@ -144,7 +144,7 @@ $(function() {
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Report" class="btn btn-primary" id="ticket_save" onclick="saveTickt();">
-          <input type="button" value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/sourceleadTicketList'/>'">
+          <input type="button" value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadUrl}/sourceleadTicketList'/>'">
         </div>
       </div>
     </div>

@@ -91,10 +91,8 @@ margin-top: 3px;
 			<div class="pull-left">
 				<h2>Expenses Approval</h2>
 			</div>
-			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Approval</div>
+			<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Approval</div>
 		</section>
-		
-		
 		
 		<!-- Project -->
 		<div class="timesheet_out">
@@ -499,6 +497,7 @@ function exportToPdf(type){
 		result = result +"	   <div id='expensesListDiv' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Expenses List is Empty</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' class='text-center width100percnt' value='Ok' onclick='expensesCancel();'></b>";
 		result = result +"	</div>";
 		$("#emptyPopup").append(result);
 		$("#expensesListDiv").slideDown(200);

@@ -9,7 +9,7 @@
     <div id="onboardingLoading"></div>
     <section class="content-header clearfix">
           <div class="pull-left"> <h2 class="pull-left">Templates</h2></div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Templates</div>
+          <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/goToSettings">Settings</a>&raquo; Templates</div>
  		<div class="clearfix"></div>
     </section>
     
@@ -24,10 +24,10 @@
 		<p>Manage Your Applicant Templates</p>
 		<span>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE')"> 
-			<a class="btn btn-info btn-sm mr10" href="<c:url value="${appPath}/orgSubmissionTemplate?type=addTemplate" />">Add</a>
+			<a class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_sourceleadUrl}/orgSubmissionTemplate?type=addTemplate">Add</a>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE')"> 
-			<a class="btn btn-primary btn-sm" href="<c:url value="${appPath}/orgSubmissionTemplate" />">View</a>
+			<a class="btn btn-primary btn-sm" href="${SourceLeadWeb_sourceleadUrl}/orgSubmissionTemplate">View</a>
 			</sec:authorize>
 		</span>
 		</div>
@@ -41,10 +41,10 @@
 		<p>Manage Your Contract Templates</p>
 		<span>
 			<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
-			<a class="btn btn-info btn-sm mr10" href="<c:url value="${appPath}/addContractTemplate" />">Add</a> 
+			<a class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_sourceleadUrl}/addContractTemplate">Add</a> 
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE')"> 
-			<a class="btn btn-primary btn-sm" href="<c:url value="${appPath}/orgContractTemplate" />">View</a>
+			<a class="btn btn-primary btn-sm" href="${SourceLeadWeb_sourceleadUrl}/orgContractTemplate">View</a>
 			</sec:authorize>
 		</span>
 	</div>
@@ -58,10 +58,10 @@
 		<p>Manage Your Onboard Templates</p>
 		<span>
 			<sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')"> 
-			<a class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/addNewOnboardTemplate'/>">Add</a> 
+			<a class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_sourceleadUrl}/addNewOnboardTemplate">Add</a> 
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE')"> 
-			<a class="btn btn-primary btn-sm" href="<c:url value="${appPath}/onboardingTemplatesList" />">View</a>
+			<a class="btn btn-primary btn-sm" href="${SourceLeadWeb_sourceleadUrl}/onboardingTemplatesList">View</a>
 			</sec:authorize>
 		</span>
 		</div>
@@ -75,10 +75,10 @@
 		<p>Manage Your Offboard Templates</p>
 		<span>
 			<sec:authorize access="hasRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')"> 
-			<a class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/addNewOffboardTemplate'/>">Add</a>
+			<a class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_sourceleadUrl}/addNewOffboardTemplate">Add</a>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
-			<a class="btn btn-primary btn-sm" href="<c:url value="${appPath}/offboardingTemplatesList" />">View</a>
+			<a class="btn btn-primary btn-sm" href="${SourceLeadWeb_sourceleadUrl}/offboardingTemplatesList">View</a>
 			</sec:authorize>
 		</span>
 		</div>
@@ -91,8 +91,8 @@
 		<h2 class="text-warning">Vendor Onboard</h2>
 		<p>Manage Your Vendor Onboard Templates</p>
 		<span>
-			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/addNewVendorOnboardTemplate'/>">Add</a> 
-			<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/vendorOnboardTemplateList" />">View</a>
+			<a  class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_sourceleadUrl}/addNewVendorOnboardTemplate">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="${SourceLeadWeb_sourceleadUrl}/vendorOnboardTemplateList">View</a>
 		</span>
 		</div>
 	</div>
@@ -107,8 +107,8 @@
 		<p>Manage Your Job Templates</p>
 		<span>
 		<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE','ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE','ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE')">
-			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/addTemplate'/>">Add</a> 
-			<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/template" />">View</a>
+			<a  class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_sourceleadUrl}/addTemplate">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="${SourceLeadWeb_sourceleadUrl}/template">View</a>
 			</sec:authorize>
 		</span>
 		</div>
@@ -122,8 +122,8 @@
 		<p>Manage Your Interview Templates</p>
 		<span>
 		<sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE','ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE')">
-			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/interViewFeedBackTemplate?type=addInterViewFeedBackTemplate'/>">Add</a> 
-			<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/interViewFeedBackTemplate" />">View</a>
+			<a  class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_sourceleadUrl}/interViewFeedBackTemplate?type=addInterViewFeedBackTemplate">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="${SourceLeadWeb_sourceleadUrl}/interViewFeedBackTemplate">View</a>
 			</sec:authorize>
 		</span>
 		</div>
@@ -137,8 +137,8 @@
 		<p>Manage Your Immigration Templates</p>
 		<span>
 		 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION_TEMPLATE','ROLE_EDIT_VIEW_PETITION_TEMPLATE','ROLE_DELETE_PETITION_TEMPLATE')">
-			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/immigration/addNewPetitionTemplate'/>">Add</a> 
-			<a  class="btn btn-primary btn-sm" href="<c:url value='${appPath}/immigration/viewImmigrationTemplateList'/>">View</a>
+			<a  class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_sourceleadUrl}/immigration/addNewPetitionTemplate">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="${SourceLeadWeb_sourceleadUrl}/immigration/viewImmigrationTemplateList">View</a>
 			</sec:authorize>
 		</span>
 		</div>
@@ -152,8 +152,8 @@
 		<h2 class="text-success">Letterhead</h2>
 		<p>Manage your org letterheads</p>
 		<span>
-			<a  class="btn btn-info btn-sm mr10" href="<c:url value="${appPath}/letterHead"/>">Add</a> 
-			<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/letterHeadList" />">View</a>
+			<a  class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_sourceleadUrl}/letterHead">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="${SourceLeadWeb_sourceleadUrl}/letterHeadList">View</a>
 		</span>
 		</div>
 	</div>
@@ -167,8 +167,8 @@
 		<h2 class="text-success">Employment Verification</h2>
 		<p>Manage Employment Verification Templates</p>
 		<span>
-			<a  class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/addEmploymentVerificationTemplate'/>">Add</a> 
-			<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/employmentVerificationTemplateList" />">View</a>
+			<a  class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_sourceleadUrl}/addEmploymentVerificationTemplate">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="${SourceLeadWeb_sourceleadUrl}/employmentVerificationTemplateList">View</a>
 		</span>
 		</div>
 	</div>
@@ -183,7 +183,7 @@
 		<span>
 		
 		
-        	<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/emailTemplates" />">View</a>
+        	<a  class="btn btn-primary btn-sm" href="${SourceLeadWeb_sourceleadUrl}/emailTemplates">View</a>
         
 			
 

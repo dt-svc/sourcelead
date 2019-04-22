@@ -847,7 +847,9 @@ public class PayrollConfigurationRestController {
 		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocationId);
+
 			if (user != null) {
 				if(payrollTaxDTO.getId() == 0) {
 					Calendar c = Calendar.getInstance();
@@ -1099,37 +1101,6 @@ public class PayrollConfigurationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 	    return model;  
 	}
-	
-	
-	
-	 @RequestMapping(value = "/storeJobConfigureEmail" , method = RequestMethod.POST)
-		public Response<String> storeJobConfigureEmail(EmailReminderDTO emailreminderDTO, HttpServletRequest request)
-				throws Exception {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Response<String> response = new Response<>();
-			if (user != null) {
-				if (Validator.validate(emailreminderDTO)) {
-					try {
-						EmailReminder emailReminder = emailReminderService.saveEmailReminderDetails(emailreminderDTO, user, orgLocations);
-						response.setResponse(Result.SUCCESS.name());
-						response.setResponseMessage(Result.SUCCESS.getValue());
-					} catch (Exception e) {
-						response.setResponse(Result.AWKWARD.name());
-						response.setResponseMessage(Result.AWKWARD.getValue());
-						logger.error(ExceptionUtils.getFullStackTrace(e));
-					}
-				}else {
-					response.setObject("DataMissing");
-					response.setResponse(Result.INVALID_DATA.name());
-					response.setResponseMessage(Result.INVALID_DATA.getValue());
-				}
-			}else {
-				response.setResponse(Result.SESSION_TIMEDOUT.name());
-				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-			}
-			return response;
-		}
 	 
 	 
 	 @RequestMapping(value = { "/stopSalaryProcessingForEmployee","/rest/stopSalaryProcessingForEmployee" } , method = RequestMethod.POST)
@@ -1200,4 +1171,20 @@ public class PayrollConfigurationRestController {
 			}
 			return response;
 	}
+	 
+	 @RequestMapping(value = { "/refreshPayheadsForOrg", "rest/refreshPayheadsForOrg" })
+		public Response<String> refreshPayheadsForOrg(HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Response<String> response =  payrollPayheadService.refreshPayheadsForOrg(orgLocations.getId());
+			return response;
+	}
+	 
+	 @RequestMapping(value = { "/payheadHandlerByOrg", "rest/payheadHandlerByOrg" })
+		public Response<String> payheadHandlerByOrg(PayrollPayheadDTO payrollPayheadDTO, HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    payrollPayheadDTO.setOrgLocationId(String.valueOf(orgLocations.getId()));
+			Response<String> response =  payrollPayheadService.payheadHandlerByOrg(payrollPayheadDTO);
+			return response;
+		}
+	 
 }

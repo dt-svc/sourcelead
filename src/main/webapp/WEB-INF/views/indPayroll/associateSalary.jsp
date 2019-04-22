@@ -71,19 +71,19 @@
                    <div class="col-md-5">
                     <label>Annual Salary<span class="text-danger paddingLeft">*</span></label>
                     <div>
-                      <input type="text" class="form-control" id="annualSal" name="annualSal" value="${associateSalaryInd.annualSalary != '' ? associateSalaryInd.annualSalary : candidateCTCPerYear }" data-validation="required validate_float" field-name="Annual Salary" onblur="calculateSal();">
+                      <input type="text" class="form-control allownumericwithdecimal" id="annualSal" name="annualSal" value="${associateSalaryInd.annualSalary != '' ? associateSalaryInd.annualSalary : candidateCTCPerYear }" data-validation="required validate_float" field-name="Annual Salary" onblur="calculateSal();">
                     </div>
                   </div>
                    <div class="col-md-5">
                     <label>Pay Per Salary<span class="text-danger paddingLeft">*</span></label>
                     <div>
-                      <input type="text" class="form-control" id="perPaySal" name="perPaySal" value="${associateSalaryInd.grossSalary}" data-validation="required validate_float" field-name="Pay Per Salary" onblur = "calculatePayPerSal();">
+                      <input type="text" class="form-control allownumericwithdecimal" id="perPaySal" name="perPaySal" value="${associateSalaryInd.grossSalary}" data-validation="required validate_float" field-name="Pay Per Salary" onblur = "calculatePayPerSal();">
                     </div>
                   </div>  
                    <div class="col-md-5">
                     <label>Hourly Rate<span class="text-danger paddingLeft">*</span></label>
                     <div>
-                      <input type="text" class="form-control" id="hourlyRate" name="hourlyRate" value="${associateSalaryInd.hourlyRate}" data-validation="required validate_float" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
+                      <input type="text" class="form-control allownumericwithdecimal" id="hourlyRate" name="hourlyRate" value="${associateSalaryInd.hourlyRate}" data-validation="required validate_float" field-name="Hourly Rate" onblur = "calculateHourlyRateSal();">
                     </div>
                   </div>
                   
@@ -98,7 +98,7 @@
 		              <div class="col-md-5">
 		                <label>% Increase</label>
 		                <div>
-		                  <input class="form-control " name="increasePer" id="increasePer" type="text" value="${associateSalaryInd.incrementPercentage}" data-validation="validate_float" data-validation-optional="true" onblur = "calculatePercentSal();">
+		                  <input class="form-control allownumericwithdecimal" name="increasePer" id="increasePer" type="text" value="${associateSalaryInd.incrementPercentage}" data-validation="validate_float" data-validation-optional="true" onblur = "calculatePercentSal();">
 		                </div>
 		              </div>
 		              <div class="col-md-5">
@@ -626,3 +626,13 @@ function calculatePercentSal(){
 	  	});
 	  
 </script>
+
+<script>
+$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+	$(this).val($(this).val().replace(/[^0-9\.]/g,''));
+	if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+	event.preventDefault();
+	}
+});
+</script>
+

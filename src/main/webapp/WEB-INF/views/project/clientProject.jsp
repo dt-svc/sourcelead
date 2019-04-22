@@ -36,8 +36,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			<h2>Create Client Project</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="<c:url value='${appPath}/projectDashboard'/>"> Projects List</a>
+			<a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo;<a href="<c:url value='${SourceLeadWeb_pmsUrl}/projectDashboard'/>"> Projects List</a>
 			&raquo; Create Client Project
 	</section>
 	
@@ -66,7 +66,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                 </div>	
                  <div class="col-md-1 noPad"><span class="input-group-addon cursorPointer bg-blue reFreBtn" onclick="refreshClientList(); "><i class="fa fa-refresh "></i></span></div>
               <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-                 <span class="col-md-2 noPad clearfix"><a href="/vms/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
+                 <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
                </sec:authorize>              						
 					</div>
 				</div>

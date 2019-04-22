@@ -338,7 +338,9 @@ public class TimesheetApprovalRestController {
 		
 		private TimesheetApprovalDTO getClientList(HttpServletRequest request, TimesheetApprovalDTO timesheetApprovalDTO) throws Exception
 		{
-			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Long locationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(locationId);
+			// OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 List<ProjectClients> projectClientList = projectClientService.getProjectClientsListByLoginUserAndOrgLocationId(orgLocations.getId(), user.getId());
 	 		 Map<Long,String> clientMap = new HashMap<>();
@@ -498,22 +500,6 @@ public class TimesheetApprovalRestController {
 					 timesheetApprovalDTO.setPageCount(pageCount);
 				 }
 			}
-	        
-	       /* if(projectMembers != null && !projectMembers.getData().isEmpty()){
-	        	if(StringUtils.isNotEmpty(timesheetApprovalDTO.getTimesheetFrequency()) && timesheetApprovalDTO.getTimesheetFrequency().equalsIgnoreCase("Bi-Weekly")){
-		        	for(ProjectMembers pm :projectMembers.getData()){
-		        		 Date biweeklyStrDate = null;
-		        		 biweeklyStrDate = timesheetApprovalFrequencyGeneratorUtil.getBiweeklyStartMonDayDateByUsingProjectStartDateAndEmployeeStartDate(pm.getProjects(),pm.getProjects().getStartDate());
-		        		 if(CalendarUtil.getNumberOfDays(biweeklyStrDate, actualStartDate)%14==0){
-		        	    	 freshProjectMembers.add(pm);
-		        	     }
-		        	 }
-	        	 }
-	        	 else{
-			        	freshProjectMembers = new HashSet<>(projectMembers.getData());
-			        }
-	         }*/
-			
 	        if(projectMembers.getData() != null && !projectMembers.getData().isEmpty()){
 	        	int tdSpanLength = 6;
 	        	List<TimesheetApprovalSubmissionDetailsDTO> subDetails = new ArrayList<>();

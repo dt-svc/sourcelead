@@ -24,7 +24,7 @@ padding-right: 254px; padding-top: 10px;
           <div class="pull-left">
             <h2>Roles List</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Roles List </div>
+          <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/goToSettings">Settings</a>&raquo; Roles List </div>
         </section>
 
         
@@ -39,11 +39,11 @@ padding-right: 254px; padding-top: 10px;
 					<span> 
 					  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
 					  	 <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
-								<a href="<c:url value='${appPath}/team'/>">Add Team</a>
+								<a href="${SourceLeadWeb_sourceleadUrl}/team">Add Team</a>
 							</sec:authorize>
-					  	 <a href="<c:url value='${appPath}/addDepartment'/>">Add Department</a>
-					     <a href="<c:url value='${appPath}/roleHierarchy'/>">Add Hierarchy</a>
-					     <a href="<c:url value='${appPath}/addGrade'/>">Add Grade</a>
+					  	 <a href="${SourceLeadWeb_sourceleadUrl}/addDepartment">Add Department</a>
+					     <a href="${SourceLeadWeb_sourceleadUrl}/roleHierarchy">Add Hierarchy</a>
+					     <a href="${SourceLeadWeb_sourceleadUrl}/addGrade">Add Grade</a>
 		                 <a href="javascript:void(0)" class="addcon-pop">Add Role</a>
 		              </sec:authorize>					
 					</span>

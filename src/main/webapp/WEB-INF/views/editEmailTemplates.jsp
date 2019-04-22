@@ -22,7 +22,7 @@
          <%--  <a href="${appPath}/addUserManuals" class="pull-right btn btn-primary btn-sm mb">Add</a> --%>
           <%-- <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default " ><i class="fa fa-pie-chart"></i></a>
           --%> 
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates</a>&raquo; <a href="<c:url value='${appPath}/emailTemplates'/>">EmailTemplatesList</a>&raquo; Email Templates </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="'${SourceLeadWeb_sourceleadUrl}/orgTemplates">Templates</a>&raquo; <a href="${SourceLeadWeb_sourceleadUrl}/emailTemplates'/>">EmailTemplatesList</a>&raquo; Email Templates </div>
         </section>
         
         <div class="content-area clearfix">

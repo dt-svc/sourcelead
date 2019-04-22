@@ -445,7 +445,7 @@ function validateTemplateName(){
 		<div class="success_pop" id="selector" style="display: block;"> <i class="fa fa-check-circle"></i><span>${msg}</span> </div> 
 	</c:if> 
     <div class="pull-left"><h2 class="pull-left">Submission Templates</h2></div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Submission Templates List</div>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates"> Templates</a> &raquo; Submission Templates List</div>
   </section>
   
   <div class="timesheet_out">

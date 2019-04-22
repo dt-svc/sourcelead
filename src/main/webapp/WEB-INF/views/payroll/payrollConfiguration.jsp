@@ -13,7 +13,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Payroll Configure</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard" title="Home">Home</a> &raquo; <a href="${appPath}/settings">Settings</a>&raquo; Payroll Configure</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard" title="Home">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; Payroll Configure</div>
     </section>
     <div class="clearfix"></div>
     <div class="leaveConfigure clerfix">

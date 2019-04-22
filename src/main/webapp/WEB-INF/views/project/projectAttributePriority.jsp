@@ -7,7 +7,7 @@
 
 
 <script>
-var sourceleadUrl = '${sourceleadUrl}';
+var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 </script>
 <script>
 $(document).ready(function(){
@@ -20,16 +20,16 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Priority</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; Project Task Priority</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}"> Home </a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; Project Priority</div>
     </section>
     <div class="content-area content-new clearfix timesheet_out">
       <div class="clearfix mt mb">
         <div class="col-md-2 padding_right">
           <ul class="list-unstyled listStyles">
-            <li><a href="/app/projtctAttributes">Task Type</a></li>
-            <li><a href="/app/projectAttributeStatus">Status</a></li>
-            <li class="activeList"><a href="/app/projectAttributePriority">Priority</a></li>
-            <li><a href="/app/projectAttributeSeverity">Severity</a></li>
+            <li><a href="${SourceLeadWeb_pmsUrl}/projtctAttributes">Task Type</a></li>
+            <li><a href="${SourceLeadWeb_pmsUrl}/projectAttributeStatus">Status</a></li>
+            <li class="activeList"><a href="${SourceLeadWeb_pmsUrl}/projectAttributePriority">Priority</a></li>
+            <li><a href="${SourceLeadWeb_pmsUrl}/projectAttributeSeverity">Severity</a></li>
           </ul>
         </div>
         <div class="col-md-10 padding_left">
@@ -111,7 +111,7 @@ function colorPicker() {
 function getTaskPriorityList(){
 	$.ajax({
 		type : "POST",
- 		url : sourceleadUrl+ "/getTaskPriorityList",
+ 		url : pmsUrl+ "/getTaskPriorityList",
 		success : function(json) {
 			var result = "";
 	        	result = result +'<table id="taskPriorityPagination">';
@@ -187,12 +187,11 @@ function taskTypePagination(){
 <script>
 function saveTaskType(){
 	if ($('#taskType_form').validate(false, validationSettings)) {
-		var sourceleadUrl = '${sourceleadUrl}';
 		var formData = getFormData("taskType_form");
 		$.ajax({
 			type : "POST",
 			data: formData,
-	 		url : sourceleadUrl+ "/saveTaskLookupData",
+	 		url : pmsUrl+ "/saveTaskLookupData",
 			success : function(data) {
 				location.reload();
 				editCloseTaskType();
@@ -230,7 +229,7 @@ function deleteTaskType(lookupId){
 	var taskType = "TaskPriority";
 	$.ajax({
 		type : "POST",
- 		url : sourceleadUrl+ "/deleteLookupDataByLookupId?&taskType="+taskType+"&lookupId="+lookupId,
+ 		url : pmsUrl+ "/deleteLookupDataByLookupId?&taskType="+taskType+"&lookupId="+lookupId,
 		success : function(data) {
 			location.reload();
 		}
@@ -240,7 +239,7 @@ function deleteTaskType(lookupId){
 function eidtTaskType(lookupId){
 	$.ajax({
 		type : "POST",
- 		url : sourceleadUrl+ "/getLookupDataByLookupId?&lookupId="+lookupId,
+ 		url : pmsUrl+ "/getLookupDataByLookupId?&lookupId="+lookupId,
 		success : function(data) {
 			var result = "";
 			result = result +'      <div class="popupHead"><span>Edit Task Priority</span><i class="closePop pull-right popClose" onclick="editCloseTaskType();"></i></div>';
@@ -306,7 +305,7 @@ function validateTaskTypeName(lookupId,type){
 	if (TaskTypeName != null && TaskTypeName != "") {
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+ "/validateTaskTypeName?taskTyePe="+taskTyePe+"&taskTypeName="+TaskTypeName+"&lookupId="+lookupId,
+					url : pmsUrl+ "/validateTaskTypeName?taskTyePe="+taskTyePe+"&taskTypeName="+TaskTypeName+"&lookupId="+lookupId,
 					success : function(data) {
 						 if (data == true) {
 							$("input#taskType").after("<p class='jquery_form_error_message'>"+ TaskTypeName+ " is Already Existed</span>");

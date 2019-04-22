@@ -1029,7 +1029,8 @@ public class ProjectsRestController {
 	 	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-		
+		Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
+		projectsDTO.setOrgId(orgId);
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
 		 StringBuilder excelSB = new StringBuilder();
  		 Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("projects ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
