@@ -17,7 +17,7 @@
           <div class="positionRelative reportHead clearfix">
             <ul class="pull-right list-unstyled list-inline">
                 <li>
-                    <a class="newAdBtn mr5" href="${SourceLeadWeb_sourceleadUrl}/defaultWorkflow" title="Add">+ Add</a>	
+                    <a class="newAdBtn mr5" href="${SourceLeadWeb_sourceleadUrl}/defaultWorkflow" title="Add">+ Workflow</a>	
                     </li>
             
               <li>

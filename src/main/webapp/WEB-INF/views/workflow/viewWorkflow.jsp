@@ -36,7 +36,7 @@
          <c:if test = "${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
           <li>
           <c:if test="${not empty requirementWorkFlowStagesDTO}">
-          <a class="newAdBtn mr5"  href="${SourceLeadWeb_sourceleadUrl}/addStage?uuid=<c:out value="${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}" />" title="Add">+ Add</a>
+          <a class="newAdBtn mr5"  href="${SourceLeadWeb_sourceleadUrl}/addStage?uuid=<c:out value="${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}" />" title="Add">+ Stage</a>
           </c:if>
           </li>
          </c:if>
