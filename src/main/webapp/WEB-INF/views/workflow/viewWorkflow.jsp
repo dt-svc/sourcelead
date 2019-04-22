@@ -6,6 +6,9 @@
 <div id="popUp"></div>
 <form id="requirementWorkFlowForm" name="requirementWorkFlowForm">
   <section class="content-wraper">
+   <div class="success_pop" id="selector" >
+	       <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+			</div>
     <section class="content-header clearfix">
       <div class="pull-left">
       
@@ -277,9 +280,10 @@ function deletepopup(stageUuid, stageName, workflowUuid){
 			url : sourceleadUrl + "/deleteRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid,
 			success : function(dataList){
 				if(dataList == "Success"){
-					$("ul#stageList li:contains('"+stageName+"')").remove();
 					 $("#popUp").empty();
 				     $(".project_inn_mask").fadeOut(200);
+				     $("ul#stageList li:contains('"+stageName+"')").remove();
+					showSuccessMsg("Successfully Deleted "+stageName);
 				}else{
 					 showError("Operation failed, please try again");
 				}
@@ -292,6 +296,10 @@ function deletepopup(stageUuid, stageName, workflowUuid){
 		 $("#popUp").empty();
 	     $(".project_inn_mask").fadeOut(200);
 	}
-
+	function showSuccessMsg(msg){
+		$('#selector').show();
+		$('#msgDiv').text(msg)
+		setTimeout(function(){ $('#selector').hide();$('#msgDiv').text("") }, 1000);
+	}
 </script>
 <jsp:include page="../masterFooter.jsp" /> 
