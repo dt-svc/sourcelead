@@ -30,7 +30,7 @@ $(document).ready(function(){
         <h2>Credit Notes</h2>
       </div>
       
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Credit Note List</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Credit Note List</div>
     </section>
     
     
@@ -283,7 +283,7 @@ function creditNotePagination(url){
     	  				}
     	  				}
     	  			if(((report.creditDebitNoteStatus != "Send" ) || (report.creditDebitNoteStatus == "Rejected")) && (report.status !="0")){
-    	  			result = result +' <span class="clearfix"><a href="<c:url value="/addCreditNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
+    	  			result = result +' <span class="clearfix"><a href="${SourceLeadWeb_vmsUrl}/addCreditNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
     				result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
     				}else if(report.status =="0") {
 	 	    			result = result +' <span class="clearfix"><a onClick="reactiveCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-rotate-left ml10" title="Reactive"></i></a></span>';
@@ -297,7 +297,7 @@ function creditNotePagination(url){
     	  			result = result +'<div class="tbldata-dotdot-vsm">';
     	  			if((report.creditDebitNoteStatus == "Draft") && (report.status !="0"))
    				 {
-					result = result +' <span class="clearfix"><a href="<c:url value="/addCreditNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
+					result = result +' <span class="clearfix"><a href="${SourceLeadWeb_vmsUrl}/addCreditNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit" <i class="fa fa-edit paddingRight paddingLeft" title="Edit"></i></a></span>';
    				 	result = result +' <span class="clearfix"><a onClick="deleteCreditDebitNote(\''+report.creditDebitUUID+'\');"><i class="fa fa-trash paddingRight paddingLeft" title="Remove"></i></a></span>';
 
    				 }else if(report.status !="0"){

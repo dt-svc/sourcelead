@@ -283,7 +283,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 
 <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon" id="advanceSearchDiv">
-      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetVendorFilter();"></a>
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetAdvSearchFilter();"></a>
       		<a href="javascript:void(0)" class="refeIcon" id="resetVendorContact" style="display: none;" title="Refresh" onclick="resetVendorContactFilter();"></a>
       		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
       </span>
@@ -1614,12 +1614,13 @@ function cancelTermination(){
 
 <script>
 function getStates(){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var countryName = $("#country").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: sourceleadUrl+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1649,6 +1650,7 @@ function getStates(){
 
 <script>
 function getCities(){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
 	
@@ -1656,7 +1658,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: sourceleadUrl+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#city').empty();
@@ -1716,11 +1718,11 @@ function releasedJobsCountByOrgRelationId(orgRelationId){
 			 document.getElementById("enableVendorContactAdvancedSearch").style.display="none";
 		}
 		
-	    $('#country').val('${loginCountryName}'); 
-	    $('#state').val(''); 
+	     $('#country').val('${loginCountryName}'); 
+	     $('#state').val(''); 
 	    $('#city').val(''); 
 	    
-	    $("#ownerAdvanced").empty();
+	    /* $("#ownerAdvanced").empty();
 		 $("#ownerAdvanced").val('').trigger("chosen:updated");
 	    
 	    $("#orgAdvanced").val('').trigger("chosen:updated");
@@ -1731,7 +1733,7 @@ function releasedJobsCountByOrgRelationId(orgRelationId){
 
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
-	    $("#excludeKeyWord").empty();
+	    $("#excludeKeyWord").empty(); */
 	}
 </script>      
 
@@ -1788,8 +1790,31 @@ function vendorFileterPopUp(){
 function resetVendorFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
 	getVendorList();
-// 	$(".mask").fadeOut();
 	
+}
+
+
+function resetAdvSearchFilter(){
+	
+    $('#country').val('').trigger("chosen:updated"); 
+    $('#state').val('').trigger("chosen:updated");
+    $('#city').val('').trigger("chosen:updated");
+    
+    $("#tierAdvanced").val('').trigger("chosen:updated");
+    $("#ownerAdvanced").empty();
+	$("#ownerAdvanced").val('').trigger("chosen:updated");
+    
+    $("#orgAdvanced").val('').trigger("chosen:updated");
+    $("#orgNameAdvanced").val('').trigger("chosen:updated");
+    $("#anyOfKeyword").val('').trigger("chosen:updated");
+    $("#allKeywords").val('').trigger("chosen:updated");
+    $("#excludeKeyWord").val('').trigger("chosen:updated");
+
+    $("#anyOfKeyword").empty();
+    $("#allKeywords").empty();
+    $("#excludeKeyWord").empty();
+    getVendorList();
+ 
 }
 
 

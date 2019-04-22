@@ -119,7 +119,7 @@ public class InvoiceRestController {
 	@Autowired
 	private OrgService orgService;
 	@Autowired
-	private CommonUtil commonUtil;
+	private CommonUtil commonUtil;  
 	@Autowired
 	private OrgSpocService orgSpocService;
 	@Value("${sourceleadUrl}")
@@ -128,6 +128,10 @@ public class InvoiceRestController {
 	private String sourceleadLoginUrl;
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Value("${vmsUrl}")
+	private String vmsUrl;
+	
 	@Autowired
 	EmailScenarioService emailScenarioService;
 	@Autowired
@@ -246,10 +250,12 @@ public class InvoiceRestController {
 	{
 		Response<String> response = new Response<>();
 			try {
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+				User user = userService.getUserById(userId);
 				if (user != null) {
 				if (Validator.validate(invoiceDTO)) {
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 					orgLocation = orgLocationService.getOrgLocations(orgLocation.getId());
 					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -290,10 +296,13 @@ public class InvoiceRestController {
 	{
 		Response<String> response = new Response<>();
 			try {
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+				User user = userService.getUserById(userId);
 				if (user != null) {
 				if (Validator.validate(invoiceDTO)) {
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+					orgLocation = orgLocationService.getOrgLocations(orgLocation.getId());
 					String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 					Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 					invoiceDTO.setStaticPath(staticPath);
@@ -637,7 +646,7 @@ return responseList;
 		invoiceDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		invoiceDTO.setSortOrder(sortColumnOrder);
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		DateTime zoned = new DateTime();
+		DateTime zoned = new DateTime(commonUtil.orgLocationCommonDate(new Date(), orgLocations)); //get date and time based on orglocation
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd");
 		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd");
 		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd");
@@ -722,9 +731,11 @@ return responseList;
 			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(invoice.getOrgRelationID().getId());
 			if (orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
 				billingDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
+				billingDto.setOrgType(orgRelations.getResponderLocationId().getOrg().getOrgType());
 			}
 			if (orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
 				billingDto.setClientName(orgRelations.getLocationId().getOrgLocationName());
+				billingDto.setOrgType(orgRelations.getLocationId().getOrg().getOrgType());
 			}
 			if (null != invoice.getProjectID()) {
 				billingDto.setProjectName(invoice.getProjectID().getProjectName());
@@ -1070,7 +1081,8 @@ return responseList;
 //		String resultJson;
 		OrgLocations orgLocations = null;
 		Invoice invoiceId = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
-		orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 orgLocations = orgLocationService.getOrgLocationById(orgLocId);
 		Long Id = null;
 		Invoice parentInvoice = invoiceService.getInvoicetByParentInvoiceId(invoiceId.getId());
 		if (parentInvoice.getParentInvoiceId() != null) {
@@ -1084,10 +1096,11 @@ return responseList;
 		SimpleDateFormat formatter = orgLocations.getLocFullFormDateFormatter();
 		List<Invoice> viewinvoiceList = invoiceService.getViewInvoiceListByInvoiceIdAndOrglocationId(Id, orgLocations.getId());
 		for (Invoice invoice : viewinvoiceList) {
-			OrgLocations LoginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			OrgLocations LoginOrgLocations = orgLocationService.getOrgLocationById(orgLocId);
 			//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (invoice.getOrgRelationID().getLocationId().getId().equals(LoginOrgLocations.getId())) {
 				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+				invoice.setOrgType(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgType());
 				//StringBuilder contactName = new StringBuilder();
 				if(null != invoice.getContactUsers()){
 					String[] contactUsers = invoice.getContactUsers().split(",");
@@ -1127,6 +1140,7 @@ return responseList;
 		    	StringBuilder contactName = new StringBuilder();
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().equals(LoginOrgLocations.getId())){
 					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+					invoice.setOrgType(invoice.getOrgRelationID().getLocationId().getOrg().getOrgType());
 					if(null != invoice.getOwnerUsers()){
 						String[] ownerUsers = invoice.getOwnerUsers().split(",");
 						if(ownerUsers.length != 0){
@@ -1695,11 +1709,11 @@ return responseList;
 					String actionLink = "";
 					StringBuilder notificationLink = new StringBuilder();
 					if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-						actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+						actionLink = notificationLink.append(vmsUrl).append("/").append("viewInvoice?invoiceUUID="
 								+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
 					}
 					else {
-						actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+						actionLink = notificationLink.append(vmsUrl).append("/").append("viewInvoice?invoiceUUID="
 								+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
 					}
 					emailScenerioUtil.sendNotification(actionLink, loginUser, contactUser, invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
@@ -1935,11 +1949,11 @@ return responseList;
 							String actionLink = "";
 							StringBuilder notificationLink = new StringBuilder();
 							if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-								actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+								actionLink = notificationLink.append(vmsUrl).append("/").append("viewInvoice?invoiceUUID="
 										+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
 							}
 							else {
-								actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+								actionLink = notificationLink.append(vmsUrl).append("/").append("viewInvoice?invoiceUUID="
 										+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
 							}
 							emailScenerioUtil.sendNotification(actionLink, loginUser, contactUser, invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
@@ -1967,6 +1981,12 @@ return responseList;
 				Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 				if(invoice != null){
 				invoiceService.sendInvoiceReminderMail(user, orgLocation, invoice, invoice.getInvoiceType(), null);
+				// notify other email
+				if(StringUtils.isNotBlank(invoice.getNotifyToOthers())){
+					for(String notifyToEmail : invoice.getNotifyToOthers().split(",")) {
+						invoiceService.sendInvoiceReminderMailToNotifyOthers(user, orgLocation, invoice, invoice.getInvoiceType(),null,notifyToEmail);
+					}
+				}
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}else{
@@ -2040,7 +2060,8 @@ return responseList;
 	public void getBillingExportList(InvoiceDTO invoiceDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocId);
 		invoiceDTO.setSearchValue("");
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime();
@@ -2202,11 +2223,14 @@ return responseList;
 		InvoiceDTO invoiceDTO = new InvoiceDTO();
 		
 //		String resultJson = "";
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+				
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Integer savedInvoiceCount = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user, contractType,isGlobalAccess);
 //		resultJson = commonUtil.toJSON(savedInvoiceCount);
 		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
@@ -2224,11 +2248,15 @@ return responseList;
 		InvoiceDTO invoiceDTO = new InvoiceDTO();
 		
 //		String resultJson = "";
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+				
+		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = userService.getUserById(userId);
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Integer savedInvoiceCount = invoiceService.getAutomaticInvoiceForJobClosure(orgLocation, loginOrgCurrencyCode, invoiceType, user,contractType,isGlobalAccess);
 //		resultJson = commonUtil.toJSON(savedInvoiceCount);
 		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
@@ -2617,10 +2645,12 @@ return responseList;
 	 */
 	@RequestMapping(value = "/getExpensesByProjectMemberId", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseList<Expenses> getExpensesByProjectMemberId(@RequestParam(value = "memberId", required = false) Long projectMemberId, @RequestParam(value = "invoiceType", required = false) String invoiceType) throws Exception
+	public ResponseList<Expenses> getExpensesByProjectMemberId(@RequestParam(value = "memberId", required = false) Long projectMemberId,
+			@RequestParam(value = "expenseId", required = false) Long expenseId,
+			@RequestParam(value = "invoiceType", required = false) String invoiceType) throws Exception
 	{
 		ResponseList<Expenses> responseList = new ResponseList<>();
-		List<Expenses> expensesList = expensesService.getExpensesByProjectMemberId(projectMemberId, invoiceType);
+		List<Expenses> expensesList = expensesService.getExpensesByProjectMemberId(projectMemberId, invoiceType,expenseId);
 		responseList.setData(expensesList);
 		return responseList;
 	}

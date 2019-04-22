@@ -9,7 +9,7 @@
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 </script>
-<script type="text/javascript" src="/vms/resources/js/contractCommonScripts.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/contractCommonScripts.js"></script>
 
 <style type="text/css">
 .chosen-container {

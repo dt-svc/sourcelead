@@ -11,6 +11,7 @@
 </style>
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 $(document).ready(function(){
 	var noteType = '${noteType}';
 	getViewCreditDebitNote();
@@ -27,8 +28,8 @@ $(document).ready(function(){
 
 <section class="content-wraper">
     <section class="content-header clearfix">
-     <div class="pull-right brud-crum" style="display: none" id ="creditNoteBrudCrum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/creditNoteList'/>">Credit Note List</a> &raquo; Credit Note View</div>
-     <div class="pull-right brud-crum" style="display: none" id ="debitNoteBrudCrum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/debitNoteList'/>">Debit Note List</a> &raquo; Debit Note View</div>
+     <div class="pull-right brud-crum" style="display: none" id ="creditNoteBrudCrum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_vmsUrl}/creditNoteList'/>">Credit Note List</a> &raquo; Credit Note View</div>
+     <div class="pull-right brud-crum" style="display: none" id ="debitNoteBrudCrum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_vmsUrl}/debitNoteList'/>">Debit Note List</a> &raquo; Debit Note View</div>
      <h2 id="creditDebitNoteDivId" class="pull-left"></h2>
     </section>
     

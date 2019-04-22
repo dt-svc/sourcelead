@@ -452,7 +452,7 @@ $("#docZipfile").click(function() {
 		return;
 	$.post("downloadImmigrationDocsZip",{immigrationId: immigrationId, docId: ''}, function(data) {//  passing empty value for docId to do immigration level zip download
 		if(data !== "" && data.indexOf("Documents Found") === -1)
-			location.href = '/app/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
+			location.href = '${SourceLeadWeb_sourceleadUrl}/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
 		else if(data !== "" && data.indexOf("immigrationId Found") !== -1)
 			alert(data);
 		else

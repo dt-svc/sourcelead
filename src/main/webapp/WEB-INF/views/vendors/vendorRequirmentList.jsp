@@ -93,6 +93,7 @@ function vendorRequirementListInclude(orgRelationID){
 <script type="text/javascript">
 	function vendorReqListFunction(orgRelationID) {
 		// var orgRelationId =$("#orgRelationId").val();
+	        var atsUrl = '${SourceLeadWeb_atsUrl}';
 	        var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	        var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  	  if(locationList.match("yyyy-MM-dd")){
@@ -150,7 +151,7 @@ function vendorRequirementListInclude(orgRelationID){
 			        	  var opt = json.data[i];
 			        	  result = result + "<tr>";
 			            	// result = result +"<td><div title='"+opt.jobTitle+"' class='tbldata-dotdot-100'>"+opt.jobTitle+"</div></td>"; 
-			           	result = result +"<td><div class='tbldata-dotdot'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
+			           	result = result +"<td><div class='tbldata-dotdot'> <a href='"+atsUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 
 			            	  if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
 			             	 {

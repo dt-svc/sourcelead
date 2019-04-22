@@ -798,7 +798,7 @@ function preparedContractVendorListDraftPagination(url,tabType){
 				    	    	    	    			     			result = result + ' <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 				    	    	    	    			     		}
 				    	    	    	    			     		'</sec:authorize>';
-		    	    	    	    	    	    	}else if(report.templateSubmissionStatus == "Finalized"){
+		    	    	    	    	    	    	}else if(report.templateSubmissionStatus == "FINALIZED"){
 		    	    	    	    	    	    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		    	    	    	    	   		         if(report.typeOfContract == "New" || report.typeOfContract == "Custom"){
 		    	    	    	    	   		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye mr10" onClick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></i></a></div>';
@@ -1483,7 +1483,7 @@ function preparedVendorContractListWFAPagination(url,tabType){
 			    	    	    	    	    	    	result = result + '<div class="tbldata-dotdot-vsm">';
 			    	    	    	    	 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 			    	    	    	    	 	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.approverUserId){
-			    	    	    	    	 		      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+report.id+',\'REJECTED\');"></i></div></div>';
+			    	    	    	    	 		      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><a><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i></a>|<a><i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+report.id+',\'REJECTED\');"></i></a></div></div>';
 			    	    	    	    	 		      	         }
 			    	    	    	    	 	        	  }else if(report.templateSubmissionStatus == "WAITING_TO_SEND" && (report.isOwner == "Y" || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN")){
 			    	    	    	    	 	        		  result = result + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+report.contractUUID+'\');"></i></a>';
@@ -2135,7 +2135,7 @@ function preparedVendorContractListWTSPagination(url,tabType){
 			    	    	    	    	    			'</sec:authorize>';
 			    	    	    	    			         
 			    	    	    	    			         if(report.revisedReason != null && report.revisedReason != '' && report.revisedReason != 'undefined'){
-			    	    	    	    			        	 result += ' <a><i class="fa fa-commenting-o edit-reason" aria-hidden="true"><div class="edit-status edit-status-top"><p><font color="red">Revise request reason</font>: <br>'+report.revisedReason+'</p></div></i></a>'; 
+			    	    	    	    			        	 result += ' <a onclick="getContractReviseReasonPop('+report.id+');"><i class="fa fa-commenting-o edit-reason" aria-hidden="true"><div class="edit-status edit-status-top" id="reviseReasonDivPop'+report.id+'"><p><font color="red">Revise request reason</font>: <br>'+report.revisedReason+'</p></div></i></a>'; 
 			    	    	    	    			         }
 			    	    	    	    			         result += '</div>';
 			    	    	    	    			         '</sec:authorize>';
@@ -2170,6 +2170,14 @@ function preparedVendorContractListWTSPagination(url,tabType){
 	
 }
 	
+function getContractReviseReasonPop(conId){
+	if( $("#reviseReasonDivPop"+conId).css('display') == 'block' ) {
+		$("#reviseReasonDivPop"+conId).hide();
+	}else{
+		$("#reviseReasonDivPop"+conId).show();
+	}
+}
+
 function preparedContractListClientWTS(url,tabType){
 		var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 		$("#vendorContractsList").empty();
@@ -2348,7 +2356,7 @@ function preparedClientContractListWTSPagination(url,tabType){
 		    	    	    	    	  			'</sec:authorize>';
 		    	    	    	    	 	         
 		    	    	    	    	 	         if(output.revisedReason != null && output.revisedReason != '' && output.revisedReason != 'undefined'){
-		    	    	    	    	 	        	 opt += '<a><i class="fa fa-commenting-o" aria-hidden="true"><div class="edit-status"><p><font color="red">Revise request reason</font>: <br>'+output.revisedReason+'</p></div></i></a>'; 
+		    	    	    	    	 	        	 opt += '<a onclick="getContractReviseReasonPop('+output.id+');"><i class="fa fa-commenting-o" aria-hidden="true"><div class="edit-status" id="reviseReasonDivPop'+output.id+'"><p><font color="red">Revise request reason</font>: <br>'+output.revisedReason+'</p></div></i></a>'; 
 		    	    	    	    	 	         }
 		    	    	    	    	 	         opt = opt + '</div>';
 		    	    	    	    	      		'</sec:authorize>';
@@ -2822,7 +2830,7 @@ function preparedContractClientListWTV(url,tabType){
 	$("#clientContractsList").empty();
     $("#clientContractsList").append(opt); 
 	preparedClientContractListWTVPagination(url,tabType);
-}
+}		
 
 function preparedClientContractListWTVPagination(url,tabType){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
@@ -2953,7 +2961,7 @@ function preparedClientContractListWTVPagination(url,tabType){
 		    	    	    	    	    	    "render": function(data, type, output, meta) {
 		    	    	    	    	    	      var opt = "";
 		    	    	    	    	    	      opt = opt + '<div class="tbldata-dotdot_80">';
-		    	    	    	    	  	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.ownerUser){
+		    	    	    	    	  	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_loginUserRole}' == "ROLE_MANAGER" || '${SourceLeadWeb_user.id}' == output.ownerUser){
 		    	    	    	    	 	        	 if(output.contractStatus != "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
 		    	    	    	    	 		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 		    	    	    	    	 		     		}
@@ -3614,14 +3622,14 @@ function CountClick(contractUUID,parentId){
 
 function uploadRequestedDocuments(id){
 	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload("uploadBtn"+id+"", "Requested Documents", "contractDoc_form");
+	fileUpload("uploadBtn"+id+"", "Requested_Documents", "contractDoc_form");
 }
 
 
 function removeResumeNameDiv(id){
 	$("#removeDiv"+id).hide();
 	
-		 var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 $.ajax({
 	     type : "POST",
 	      url: vmsUrl+"/updateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
@@ -3699,7 +3707,10 @@ function editClo(contractId){
 	
 }
 </script>
-<script type="text/javascript" src="/resources/js/contractCommonScripts.js"></script>
+<script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
+<script type="text/javascript" src="/vms/resources/js/contractCommonScripts.js"></script>
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

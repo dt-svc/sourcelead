@@ -242,7 +242,7 @@
 		
 		templateDocDetails = templateDocDetails+ "<div class='col-md-2'>";
 		
-		templateDocDetails = templateDocDetails+ "<select class='form-control selectpicker' title='Document Type'  field-name='Select Document Category' data-validation='required' name='immigrationDocList["+rowId+"].documentCategory' id='documentCategory"+rowId+"' onchange='getDocumentType(this,"+rowId+");'  data-validation='validate_Space'>";
+		templateDocDetails = templateDocDetails+ "<select class='form-control selectpicker' title='Document Category'  field-name='Select Document Category' data-validation='required' name='immigrationDocList["+rowId+"].documentCategory' id='documentCategory"+rowId+"' onchange='getDocumentType(this,"+rowId+");'  data-validation='validate_Space'>";
 		templateDocDetails = templateDocDetails+ "<option value='' selected>--Select Document Category--</option>";
 		templateDocDetails = templateDocDetails+ "<option value='PetitionerCategory'>Petitioner</option>";
 		templateDocDetails = templateDocDetails+ "<option value='Document Type'>Beneficiary</option>";

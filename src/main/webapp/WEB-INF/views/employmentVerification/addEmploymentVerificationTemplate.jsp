@@ -15,7 +15,7 @@
       <div class="pull-left">
         <h2>Employment Verification Template</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Employment Verification Template</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates"> Templates</a> &raquo; Employment Verification Template</div>
     </section>
 <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal">
@@ -162,7 +162,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" id="save_employment_template" value="Add" class="btn btn-primary" onclick="saveEmploymentVerificationTemplate();">
-			<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/employmentVerificationTemplateList'/>'">
+			<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/employmentVerificationTemplateList'">
           </div>
         </div>
       </div>

@@ -64,8 +64,7 @@ $(document).ready(function(){
 			<h2>Bills</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo; Bill List
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; Bill List
 		</div>
 	</section>
 	
@@ -816,7 +815,7 @@ function payablePagination(url){
 				    	result = result +'         <td>';
 				    	if(report.invoiceStatus == "Rejected" && report.invoiceParentId != null){
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
 						}
 				    	else if(report.invoiceStatus == "DRAFT" || (report.invoiceStatus == "Rejected" && report.invoiceParentId == null)){
@@ -831,11 +830,11 @@ function payablePagination(url){
 						}
 				    	else if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
 						}else{
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
 						}
 						
@@ -1142,13 +1141,11 @@ function rejectInvoice(invoiceUUID){
 function saveReasonforPayable(invoiceUUID){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var reason = document.getElementById("reasonForDelete").value;
-	if(reason == null || reason == '' || reason == 'undefined'){
-	      
-		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
-	  	  $("#reasonForRejectDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-	  	  
-		}else{
-		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
+	if(reason != null && reason != ''){
+		 $("#reasonForRejectDiv").empty();
+		if(reason.length > 250){
+		$("#reasonForRejectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
+		}else{	  
 		$.ajax({
 		   	type: "POST",
 		   	url: vmsUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&reason="+reason,	    	   
@@ -1169,6 +1166,9 @@ function saveReasonforPayable(invoiceUUID){
 		    	
 		    }
 	   });
+		}
+	}else{
+		$("#reasonForRejectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 	}
 	  
 }

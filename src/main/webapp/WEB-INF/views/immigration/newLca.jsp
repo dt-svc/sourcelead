@@ -643,6 +643,8 @@
 			  var formData = getFormData("lcaDetailsForm");
 			  formData.lcaPlacaOfempDeletedListIds = removedLcaPlsOfEmpmntIds.join();
 			  formData.lcaDocumentListIds = removedLcaDocIds.join();
+			  $("#saveLca").attr("disabled", "disabled");
+	          $("#saveLca").addClass('button').val('Processing..');
 		 $.ajax({
 	            type: "POST",
 	            data : formData,
