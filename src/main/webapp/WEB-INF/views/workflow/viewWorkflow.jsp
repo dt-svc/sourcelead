@@ -242,8 +242,6 @@ function saveRequirementWorkFlow(workflowUuid){
 }
 
 function deletepopup(stageUuid, stageName, workflowUuid){
-	$("#stageLoadingDiv").
-    attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; right:0px; margin:0px auto; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	var result = "";
 	$("#popUp").empty();
 	result = result +" <div class='project_inn_mask'></div>"; 
@@ -277,6 +275,8 @@ function deletepopup(stageUuid, stageName, workflowUuid){
 	</script>
 	<script>
 	function deleteRequirementWorkflowStage(stageUuid, workflowUuid, stageName){
+		$("#stageLoadingDiv").
+	    attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; right:0px; margin:0px auto; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/deleteRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid,
@@ -296,7 +296,6 @@ function deletepopup(stageUuid, stageName, workflowUuid){
 	}
 	
 	function cancelTermination(){
-		$("#stageLoadingDiv").removeAttr('style');
 		 $("#popUp").empty();
 	     $(".project_inn_mask").fadeOut(200);
 	}
