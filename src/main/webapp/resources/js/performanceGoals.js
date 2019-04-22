@@ -9,7 +9,6 @@ function PerformanceGoals(){
 				      dateFormat: finalDateFormat,
 				      changeMonth: true,
 				  	  changeYear: true, 
-				  	  minDate:0,
 				  	  onSelect : function(selected) {
 				  		var dt = $(this).datepicker('getDate', '+1d');
 						dt.setDate(dt.getDate() + 1);
@@ -26,7 +25,6 @@ function PerformanceGoals(){
 					      dateFormat: finalDateFormat,
 					      changeMonth: true,
 					  	  changeYear: true, 
-					  	  minDate:0,
 					  	  onSelect : function(selected) {
 					  		var dt = $(this).datepicker('getDate', '-1d');
 							dt.setDate(dt.getDate() - 1);
