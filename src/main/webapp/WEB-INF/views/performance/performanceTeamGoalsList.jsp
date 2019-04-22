@@ -652,11 +652,16 @@ function goalsPagination(url){
 	            	    result = result +'<td>';
 	            	    result = result +'<div class="width150px clearfix">';
 	            	    result = result +'<ul class="list-unstyled list-inline ml clearfix">';
-	            	    result = result +'<li><a href="'+pmsUrl+'/addNewTeamGoal?goalUUID='+opt.uuid+'"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>';
+	            	    if(opt.goalType == "New_Goal"){
+	            	    	 result = result +'<li><a href="'+pmsUrl+'/addNewTeamGoal?goalUUID='+opt.uuid+'"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>';
+	            	    }else{
+	            	    	result = result +'<li><a href="'+pmsUrl+'/addNewTeamSubGoal?goalUUID='+opt.uuid+'&goalType=editGoal"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>';
+	            	    }
+	            	    
 	            	    result = result +'<li><i class="fa fa-trash cursorPointer" title="Delete"></i></li>';
-	            	    result = result +'<li><i class="fa fa-comments cursorPointer text-primary" title="Comment"></i></li>';
+	            	    result = result +'<li><a href="'+pmsUrl+'/goalSummary?goalUUID='+opt.uuid+'"><i class="fa fa-comments cursorPointer text-primary" title="Comment"></i></li>';
 		            	   if(opt.goalType == "New_Goal"){
-		            		   result = result +'<li><a href="'+pmsUrl+'/addNewSubGoal?goalUUID='+opt.uuid+'"><i class="fa fa-level-down cursorPointer textSuccess" title="Sub Goals"></i></a></li>';
+		            		   result = result +'<li><a href="'+pmsUrl+'/addNewTeamSubGoal?goalUUID='+opt.uuid+'&goalType=newSubGoal"><i class="fa fa-level-down cursorPointer textSuccess" title="Sub Goals"></i></a></li>';
 		            	   }
 	            	    result = result +'</ul>';
 	            	    result = result +'</div>';

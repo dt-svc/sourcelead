@@ -7,6 +7,7 @@ import com.bis.sourcelead.dto.TeamDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceTeamMembersDTO;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
 
 public interface PerformanceGoalsService {
@@ -42,5 +43,7 @@ public interface PerformanceGoalsService {
 	List<TeamDTO> getPerformanceGoalsTeamList(Long orgLocationId) throws Exception;
 	
 	String getTeamMemberUserIdsByTeamId(Long teamId) throws Exception;
+	
+	List<PerformanceTeamMembersDTO> getPerformanceTeamMembersByTeamId(Long teamId) throws Exception;
 	
 }

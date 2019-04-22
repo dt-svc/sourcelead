@@ -79,7 +79,7 @@ window.onload = function () {
 				        </div>
 				        
 						<div class="form-group">
-							  <label class="col-md-3">Assign To</label>
+							  <label class="col-md-3">Assign To<span class="text-danger paddingLeft">&nbsp;*</span></label>
 							  <div class="col-md-9">
 									<select  multiple class="chosen-select form-control"
 													name="goalsAssignTo" 

@@ -24,6 +24,7 @@ import com.bis.sourcelead.dto.TeamDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceTeamMembersDTO;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
 import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
@@ -780,6 +781,51 @@ try {
 
 		
 		return performanceTeamMebersIds.toString();
+	}
+
+	@Override
+	public List<PerformanceTeamMembersDTO> getPerformanceTeamMembersByTeamId(Long teamId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceTeamMembersDTO> teamMembersList = null;
+		
+		
+		try {
+		Query queryObj = null;
+		
+		String query =  "SELECT Q1.teamMemberId teamMemberId, " +
+						"Q1.teamMemberName teamMemberName " +
+						"FROM(" +
+						"SELECT TM.MEMBER_USER_ID AS teamMemberId , "+
+				        "CONCAT(U.FIRST_NAME,' ',IFNULL(U.MIDDLE_NAME,''),' ',IFNULL(U.LAST_NAME,'')) AS teamMemberName "+
+				        "FROM "+
+				  		"TEAM_MEMBERS TM, "+ 
+				  		"USER U,"+
+				  		"TEAM T WHERE "+
+				  		"TM.MEMBER_USER_ID = U.ID AND TM.TEAM_ID = :teamId "+
+						"AND TM.STATUS = '1' "+
+				  
+				  		"UNION "+
+				  
+						"SELECT T.OWNER_USER_ID AS teamMemberId, "+
+				        "CONCAT(U.FIRST_NAME,' ',IFNULL(U.MIDDLE_NAME,''),' ',IFNULL(U.LAST_NAME,'')) AS teamMemberName "+
+				        "FROM "+
+				        "TEAM T, "+
+				        "USER U "+
+				       	"WHERE "+
+				       	"T.OWNER_USER_ID = U.ID AND T.ID = :teamId "+
+				       	"AND T.STATUS = '1')Q1";
+		
+		queryObj = session.createSQLQuery(query);
+		queryObj.setParameter("teamId", teamId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceTeamMembersDTO.class));
+		teamMembersList = queryObj.list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return teamMembersList;
+		
 	}
 
 }

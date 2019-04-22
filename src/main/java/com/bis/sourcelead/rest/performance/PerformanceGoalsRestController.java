@@ -26,6 +26,7 @@ import com.bis.sourcelead.dto.performance.PerformanceGoalsAttachmentsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsCommentsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceTeamMembersDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -298,6 +299,7 @@ public class PerformanceGoalsRestController {
 						 performanceGoalsDTO.setCreatedDate(performanceGoals.getCreatedDateStr());
 						 
 						 if(performanceGoals.getTeamId() != null) {
+							 performanceGoalsDTO.setTeamId(String.valueOf(performanceGoals.getTeamId().getId()));
 							 performanceGoalsDTO.setTeamName(performanceGoals.getTeamId().getName());
 						 }
 						 
@@ -503,5 +505,57 @@ public class PerformanceGoalsRestController {
 			
 			return resObj;
 		}
+	 	
+	 	
+	 	@RequestMapping(value = { "/getPerformanceGoalsTeamsMembersList", "/rest/getPerformanceGoalsTeamsMembersList" }, method = RequestMethod.GET)
+		public ResponseList<PerformanceTeamMembersDTO> getPerformanceGoalsTeamsMembersList(@RequestParam(value="goalUUID", required=true) String goalUUID,HttpServletRequest request) throws Exception {
+	 		
+	 		ResponseList<PerformanceTeamMembersDTO> resObj = new ResponseList<>();
+	 		
+			 try {
+				 if(StringUtils.isNoneBlank(goalUUID)) {
+					 PerformanceGoals goals =  performanceGoalsService.getPerformanceGoalsByUUID(goalUUID);
+					 if(goals.getTeamId() != null) {
+						 List<PerformanceTeamMembersDTO> teamMembersList = performanceGoalsService.getPerformanceTeamMembersByTeamId(goals.getTeamId().getId());
+						 resObj.setData(teamMembersList);
+					 }
+				 }
+					
+					 resObj.setResponse(Result.SUCCESS.name());
+					 resObj.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+				 	resObj.setResponse(Result.AWKWARD.name());
+				 	resObj.setResponseMessage(Result.AWKWARD.getValue());
+			 }
+			
+			return resObj;
+		}
+	 	
+	 	
+	 	  @RequestMapping(value = { "/savePerformanceTeamSubGoals", "/rest/savePerformanceTeamSubGoals" }, method = RequestMethod.POST)
+			public @ResponseBody Response<PerformanceGoalsDTO> savePerformanceTeamSubGoals(PerformanceGoalsDTO performanceGoalsDTO,HttpServletRequest request) throws Exception {
+				  Response<PerformanceGoalsDTO> response = new  Response<>();
+				  Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+				  Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+				  String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+				try {
+				 if(Validator.validate(performanceGoalsDTO)) {
+					 performanceGoalsDTO.setGoalType("Sub_Goal");
+					 performanceGoalsDTO.setStaticPath(staticPath);
+					 performanceGoalsService.storePerformanceGoals(performanceGoalsDTO, userId, orgLocationId, dateFormat);
+					 response.setResponse(Result.SUCCESS.name());
+					 response.setResponseMessage(Result.SUCCESS.getValue());
+				 }else {
+		    		 response.setResponse(Result.INVALID_DATA.name());
+					 response.setResponseMessage(Result.INVALID_DATA.getValue());
+		    	 }
+				}catch (Exception e) {
+					e.printStackTrace();
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+				return response;
+			}
 	 	
 }

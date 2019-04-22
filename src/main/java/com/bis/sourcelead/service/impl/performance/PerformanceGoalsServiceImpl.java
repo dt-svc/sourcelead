@@ -20,6 +20,7 @@ import com.bis.sourcelead.dto.TeamDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceTeamMembersDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
@@ -72,12 +73,21 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 			goals.setCreatedBy(loginUser);
 			goals.setOrgLocationId(orgLocations);
 			goals.setStatus(Constants.RECORD_ACTIVE);
-			goals.setGoalType(Constants.GOAL_TYPE_NEW);
 			
 			if(StringUtils.isNotBlank(performanceGoalsDTO.getGoalType()) && performanceGoalsDTO.getGoalType().equalsIgnoreCase("Sub_Goal")) {
 				PerformanceGoals parentGoal = performanceGoalsDao.getPerformanceGoalsByUUID(performanceGoalsDTO.getGoalUUID());
 				goals.setGoalType(performanceGoalsDTO.getGoalType());
 				goals.setGoalId(parentGoal);
+				if(parentGoal.getTeamId() != null) {
+					goals.setTeamId(parentGoal.getTeamId());
+				}
+				double percentage = getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(parentGoal.getId());
+				String parentGoalPercentageDone =  String.format("%.2f", percentage);
+				parentGoal.setPercentageDone(Double.valueOf(parentGoalPercentageDone));
+				performanceGoalsDao.savePerformanceGoals(parentGoal);
+				
+			}else {
+				goals.setGoalType(Constants.GOAL_TYPE_NEW);
 			}
 		}
 		
@@ -110,7 +120,7 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 			goals.setPercentageDone(0d);
 		}
 		
-		if(performanceGoalsAssignToSet != null) {
+		if(performanceGoalsAssignToSet != null && goals.getTeamId() == null) {
 			List<Long> goalAssignedUserIds = new ArrayList<>();
 			for(PerformanceGoalsAssignTo assignTo : performanceGoalsAssignToSet) {
 				 if(assignTo.getStatus() == Constants.RECORD_ACTIVE) {
@@ -145,8 +155,6 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 				
 				performanceGoalsDTO.setGoalsAssignTo(StringUtils.join(assignedUserIds, ','));
 			}
-			
-			
 		}
 		
 		if(StringUtils.isNotBlank(performanceGoalsDTO.getTeamId())) {
@@ -156,6 +164,41 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 			Team team = new Team();
 			team.setId(Long.valueOf(performanceGoalsDTO.getTeamId()));
 			goals.setTeamId(team);
+		}
+		
+		
+		if(performanceGoalsAssignToSet != null && goals.getTeamId() != null) {
+			List<Long> goalAssignedUserIds = new ArrayList<>();
+			for(PerformanceGoalsAssignTo assignTo : performanceGoalsAssignToSet) {
+				 if(assignTo.getStatus() == Constants.RECORD_ACTIVE) {
+					 goalAssignedUserIds.add(assignTo.getAssignedUserId().getId());
+				 }
+			 }
+			if(StringUtils.isNotBlank(performanceGoalsDTO.getGoalsAssignTo())) {
+				String[] assignedUserIdStr = performanceGoalsDTO.getGoalsAssignTo().split(",");
+				List<Long> assignedUserIds = new ArrayList<>();
+				for(int i=0; i<assignedUserIdStr.length; i++) {
+					assignedUserIds.add(Long.valueOf(assignedUserIdStr[i]));
+				}
+				for(Long element : goalAssignedUserIds) {
+					if(!assignedUserIds.contains(element)) {
+						PerformanceGoalsAssignTo assignTo = performanceGoalsAssignToDao.getPerformanceGoalsAssignToByAssignedUserIdAndOrgLocationId(element, performanceGoalsDTO.getGoalId());
+						assignTo.setUpdatedDate(new Date());
+						assignTo.setStatus(Constants.RECORD_INACTIVE);
+						assignTo.setUpdatedBy(loginUser);
+						Set<PerformanceGoalsAssignTo> goalsAssignedToDeletedSet = new HashSet<>();
+						goalsAssignedToDeletedSet.add(assignTo);
+						goals.setPerformanceGoalsAssignTo(goalsAssignedToDeletedSet);
+						performanceGoalsDao.savePerformanceGoals(goals);
+					}else {
+						if(assignedUserIds.contains(element)) {
+							assignedUserIds.remove(element);
+						}
+					}
+				}
+				
+				performanceGoalsDTO.setGoalsAssignTo(StringUtils.join(assignedUserIds, ','));
+			}
 		}
 		
 		
@@ -299,6 +342,12 @@ public class PerformanceGoalsServiceImpl implements PerformanceGoalsService{
 	@Override
 	public String getTeamMemberUserIdsByTeamId(Long teamId) throws Exception {
 		return performanceGoalsDao.getTeamMemberUserIdsByTeamId(teamId);
+	}
+
+
+	@Override
+	public List<PerformanceTeamMembersDTO> getPerformanceTeamMembersByTeamId(Long teamId) throws Exception {
+		return performanceGoalsDao.getPerformanceTeamMembersByTeamId(teamId);
 	}
 
 

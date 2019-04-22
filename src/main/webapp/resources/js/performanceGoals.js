@@ -83,7 +83,14 @@ function PerformanceGoals(){
 			        		location.href = "/errorPage";
 			        	} else if (response.response === "SUCCESS") {
 			        		
-			        		performanceGoals.goalsAssignedToUsersList(response.object.goalsAssignTo);
+			        		 if(response.object.teamId != null 
+			        				 && response.object.teamId != ''
+			        					 && response.object.teamId != 'undefined'){
+			        			 performanceGoals.getPerformanceGoalTeamsMembers(goalUUID,response.object.goalsAssignTo); 
+			        		 }else{
+			        			 performanceGoals.goalsAssignedToUsersList(response.object.goalsAssignTo);
+			        		 }
+			        		
 			        		$("#goalId").val(response.object.goalId);
 			        		$("#goalName").val(response.object.goalName);
 			        		
@@ -876,4 +883,106 @@ function PerformanceGoals(){
 							        },   
 							    });
 						  }
+						 
+						 
+						 this.getPerformanceGoalTeamsMembers = function(goalUUID,userIds){
+							  $.ajax({
+							    	type: "GET",
+							        url: pmsUrl+"/getPerformanceGoalsTeamsMembersList?goalUUID="+goalUUID, 
+							        success: function(response) {
+							        
+							    	if (response.response === "AWKWARD") {
+						        		location.href = "/errorPage";
+						        	} else if (response.response === "SUCCESS") {
+						        		var output = "";
+						    	   		  
+								        if(response.data.length > 0){
+								        	 for(var i=0; i<response.data.length; i++){
+								        		 var opt = response.data[i];
+								        		 if(userIds != null && userIds != '' && userIds != 'undefined'){
+									        			var assignedUserIds = userIds.split(",");
+									        			if (assignedUserIds.indexOf(opt.teamMemberId.toString()) > -1) {
+									        				output = output + "<option value='" +opt.teamMemberId+ "' selected>"+opt.teamMemberName+"</option>";
+									        			}else{
+									        				output = output + "<option value='" +opt.teamMemberId+ "'>"+opt.teamMemberName+"</option>";
+									        			}
+									        		}else{
+									        			output = output + "<option value='" +opt.teamMemberId+ "'>"+opt.teamMemberName+"</option>";
+									        		}
+								        	 }
+								         }
+								        $("#goalsAssignTo").empty();
+								        $("#goalsAssignTo").append(output);
+								        $('#goalsAssignTo').trigger("chosen:updated");
+						        	}
+							        
+							        },   
+							    });
+						  }
+						 
+						 
+						 
+						 
+						 this.addTeamSubGoalsDocumets = function(){
+							  	$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file'+fileCounter+'"  type="file" class="pull-left" onchange="performanceGoals.teamSubGoalsUploadButton('+fileCounter+');"/>' +
+							              '<a id="Button' + fileCounter + '' +
+							              'value="" onclick = "performanceGoals.removeFileUpload(this)"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>').appendTo($('#FileUploadContainer'));
+
+							      		fileCounter++;
+							  }
+						
+						
+						 this.teamSubGoalsUploadButton = function(id){
+							  fileUpload("file"+id+"", "goals", "addTeamSubGoal_form","uploadedFileInfo");
+							  }
+							  
+							  
+							  this.savePerformanceTeamSubGoals  = function (){
+									 var validationSettings = {
+										        errorMessagePosition : 'element',
+										       borderColorOnError : '',
+												scrollToTopOnError : true,
+												dateFormat : 'yyyy/mm/dd' 
+									         }; 
+									 
+									 var editor = $("#txtEditor").val($('.Editor-editor').html()); 
+									 
+									 if ($('#addTeamSubGoal_form').validate(false, validationSettings)){ 
+									        var formData = getFormData1("addTeamSubGoal_form");
+									        $("#goalsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+									         $.ajax({
+										    	type: "POST",
+										    	data: formData,
+								  		        processData: false,
+								  		        contentType:false, 
+										    	url: pmsUrl+"/savePerformanceTeamSubGoals?",
+										        success: function(response) {
+										        	$("#goalsLoading").removeAttr('style');
+										        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+								     	    		    showError(response.responseMessage);
+								     	    		}
+										        	else if (response.response === "AWKWARD") {
+										        	    location.href = "/errorPage";
+										        	} else if (response.response === "SUCCESS") {
+										        		location.replace(pmsUrl+"/performanceTeamGoalsList");
+										        	} else if (response.indexOf('Sign In') !== -1) {
+										        		location.replace(sourceleadUrl);
+										        	} else {
+										        	    showError("Operation failed, please try again");
+										        	}
+										        },
+										    });  
+									        return true;
+									  } else {
+										return false;
+									  }
+								}
+
+								$('body').on('blur', 'addTeamSubGoal_form', function() {
+										$("#addTeamSubGoal_form").showHelpOnFocus();
+										$("#addTeamSubGoal_form").validateOnBlur(false, validationSettings);  
+									});
+								
+						 
+						 
 }
