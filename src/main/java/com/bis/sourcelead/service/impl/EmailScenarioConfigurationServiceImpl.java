@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -228,9 +229,9 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 	}
 
 	@Override
-	public int changeDefaultParserEmailConfig(String uuid, Long orgLocationId, boolean activeFlag) {
+	public int changeDefaultParserEmailConfig(String uuid, Long orgLocationId, boolean activeFlag, Date updatedDate) {
 		// TODO Auto-generated method stub
-		return emailScenarioConfigurationDao.changeDefaultParserEmailConfig(uuid,orgLocationId, activeFlag);
+		return emailScenarioConfigurationDao.changeDefaultParserEmailConfig(uuid,orgLocationId, activeFlag, updatedDate);
 	}
 
 
