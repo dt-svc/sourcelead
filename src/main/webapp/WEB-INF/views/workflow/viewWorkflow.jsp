@@ -76,7 +76,7 @@
   <!-- dynamic content starts here -->
   
  		 <c:if test="${not empty requirementWorkFlowStagesDTO}"> 
-		<ul class="list-unstyled widgetDivLi">
+		<ul class="list-unstyled widgetDivLi" id = "stageList">
 		
 		<c:forEach var="requirementWorkFlowStages" items="${requirementWorkFlowStagesDTO}">	
 		<li class="widgetDiv mb clearfix">
@@ -115,7 +115,6 @@
 						<span class='submissionShare pull-left'></span>
 					</c:if>
 					
-										
 					<h4 class="pull-left mt10 ml">${requirementWorkFlowStages.stageName}</h4>
 				</div>
 				</div>
@@ -147,9 +146,6 @@
 		</c:if>
 		
 		<!-- dynamic content ends here -->
-		<c:if test="${not empty requirementWorkFlowStagesDTO}">
-		<div style="display: none;" id = "stagesDto" value = "{requirementWorkFlowStagesDTO}"></div>
-		</c:if>
 		<div class="footerstyelsNew">
 	<div class="clearfix">
 		<div class="pull-right">
@@ -218,7 +214,7 @@ function deletepopup(stageUuid, stageName, workflowUuid){
 	result = result +" <div class='project_inn_mask'></div>"; 
 	result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +" <p>Do you want to delete "+stageName+"?</p>";
-	result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteRequirementWorkflowStage(\''+stageUuid+'\', \''+workflowUuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteRequirementWorkflowStage(\''+stageUuid+'\', \''+workflowUuid+'\', \''+stageName+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +" </div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -245,14 +241,15 @@ function deletepopup(stageUuid, stageName, workflowUuid){
 	});
 	</script>
 	<script>
-	function deleteRequirementWorkflowStage(stageUuid, workflowUuid){
-		var stageDto = $("#stagesDto").val();
+	function deleteRequirementWorkflowStage(stageUuid, workflowUuid, stageName){
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/deleteRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid,
 			success : function(dataList){
 				if(dataList == "Success"){
-					location.reload();
+					$("ul#stageList li:contains('"+stageName+"')").remove();
+					 $("#popUp").empty();
+				     $(".project_inn_mask").fadeOut(200);
 				}else{
 					 showError("Operation failed, please try again");
 				}

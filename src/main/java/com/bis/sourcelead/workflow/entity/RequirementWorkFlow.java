@@ -69,7 +69,7 @@ import com.bis.sourcelead.entity.User;
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "requirementWorkFlowId")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementWorkFlowId")
 	private Set<RequirementWorkFlowStages> workflowStages;
 	
 	public Long getId() {
