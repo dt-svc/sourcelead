@@ -59,11 +59,20 @@
           <div class="form-group clearfix">
             <label class="col-md-3">Name<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-9">
-              <input type="text" 
-              value='<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}"/>'
-              class="form-control" id="workFlowName" name="workFlowName" placeholder="WorkFlow Name" field-name="WorkFlow Name"
-								data-validation="required validate_length length1-100">
-            </div>
+									<input type="text"
+										value='<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}"/>'
+										class="form-control" id="workFlowName" name="workFlowName"
+										placeholder="WorkFlow Name" field-name="WorkFlow Name"
+										data-validation="required validate_length length1-100"
+										<c:choose>
+							<c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
+							readonly>
+							</c:when>
+								<c:otherwise>
+							>
+							</c:otherwise>
+						</c:choose>
+								</div>
           </div>
         </div>
         <div class="clearfix mt col-md-6">
@@ -73,7 +82,16 @@
               <textarea rows="2" 
               value = '<c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/>'
               class="form-control" name="description" id="description" placeholder="Description" field-name="Description"
-								data-validation="validate_length length1-500" data-validation-optional="true"></textarea>
+								data-validation="validate_length length1-500" data-validation-optional="true"
+								<c:choose>
+							<c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
+							readonly>
+							</c:when>
+								<c:otherwise>
+							>
+							</c:otherwise>
+						</c:choose>
+								</textarea>
             </div>
           </div>
         </div>
