@@ -446,18 +446,13 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	
 	@Override
 	public void deleteRequirementWorkFlowStagesByuuid(Long id) {
-		Session session = null;
 		try {
-		session = this.sessionFactory.openSession();
-		Object workflowStageObject = session.get(RequirementWorkFlowStages.class, id);
-		RequirementWorkFlowStages stage = (RequirementWorkFlowStages)workflowStageObject;
-		Transaction tx = session.beginTransaction();
-		session.delete(stage);
-		tx.commit();
+			Session session = this.sessionFactory.getCurrentSession();
+			Object workflowStageObject = session.get(RequirementWorkFlowStages.class, id);
+			RequirementWorkFlowStages stage = (RequirementWorkFlowStages) workflowStageObject;
+			session.delete(stage);
 		} catch (Exception e) {
-		e.printStackTrace();
-		}finally{
-		session.close();
+			e.printStackTrace();
 		}
 	}
 
@@ -539,27 +534,19 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}
 	
 	@Override
-	@Transactional
 	public Boolean deleteApplicationWorkFlowByuuid(Long workflowId) {
 		Boolean istrue = false;
-		Session session = null;
 		try {
-		session = this.sessionFactory.openSession();
-		Object workflowObject = session.get(RequirementWorkFlow.class, workflowId);
-		RequirementWorkFlow workFlow = (RequirementWorkFlow)workflowObject;
-		Transaction tx = session.beginTransaction();
-		session.delete(workFlow);
-		tx.commit();
-		istrue = true;
-		return istrue;
+			Session session = this.sessionFactory.getCurrentSession();
+			Object workflowObject = session.get(RequirementWorkFlow.class, workflowId);
+			RequirementWorkFlow workFlow = (RequirementWorkFlow) workflowObject;
+			session.delete(workFlow);
+			istrue = true;
+			return istrue;
 		} catch (Exception e) {
-		e.printStackTrace();
-		return false;
-		}finally{
-		session.close();
+			e.printStackTrace();
+			return false;
 		}
-		
 	}
-
 
 }
