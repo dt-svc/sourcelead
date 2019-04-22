@@ -416,9 +416,18 @@ function PerformanceGoals(){
 								         $("#goaledit").empty();
 								         $("#goaledit").html(goalEdit);
 								         
+								         var performanceGoalType = "";
+								         
+								         if(response.object.teamId != null 
+						        				 && response.object.teamId != ''
+						        					 && response.object.teamId != 'undefined'){
+								        	 performanceGoalType = "teamGoal";
+						        		 }else{
+						        			 performanceGoalType = "selfGoal";
+						        		 }
 								         
 								         var goalDelete = "";
-								         goalDelete = goalDelete+'<a class="text-primary textBold" href="javascript:void(0)"><i class="fa fa-trash  cursorPointer paddingRight"></i></a>';
+								         goalDelete = goalDelete+"<a class='text-primary textBold' href='javascript:void(0)' onclick='performanceGoals.deletePerformanceParentGoal(\""+goalUUID+"\",\""+performanceGoalType+"\")'><i class='fa fa-trash  cursorPointer paddingRight'></i></a>";
 								         
 								         $("#goalDelete").empty();
 								         $("#goalDelete").html(goalDelete);
@@ -508,9 +517,9 @@ function PerformanceGoals(){
 								        		 result = result+'</div>' ;
 								        		 
 								        		 result = result+'<div class="clearfix col-md-3">' ;
-								        		 result = result+"<a class='text-primary textBold cursorPointer' onclick='performanceGoals.markGoalAsComplete(\""+opt.uuid+"\",\""+goalType+"\",\""+goalUUID+"\",)'>Mark as completed</a>&nbsp;&nbsp;&nbsp;" ;
+								        		 result = result+"<a class='text-primary textBold cursorPointer' onclick='performanceGoals.markGoalAsComplete(\""+opt.uuid+"\",\""+goalType+"\",\""+goalUUID+"\")'>Mark as completed</a>&nbsp;&nbsp;&nbsp;" ;
 								        		 result = result+'<a href='+pmsUrl+'/addNewGoal?goalUUID='+opt.uuid+'><i class="fa fa-pencil cursorPointer" title="Edit"></i></a>&nbsp;&nbsp;&nbsp;' ;
-								        		 result = result+'<a><i class="fa fa-trash cursorPointer" title="Delete"></i></a>&nbsp;&nbsp;&nbsp;' ;
+								        		 result = result+"<a onclick='performanceGoals.deletePerformanceSubGoal(\""+opt.uuid+"\",\""+goalUUID+"\")'><i class='fa fa-trash cursorPointer' title='Delete'></i></a>&nbsp;&nbsp;&nbsp;" ;
 								        		 result = result+'</div>' ;
 								        		 result = result+'</div>' ;
 								        		 result = result+'<div class="clearfix"></div>' ;
@@ -984,5 +993,44 @@ function PerformanceGoals(){
 									});
 								
 						 
-						 
+								 this.deletePerformanceSubGoal = function(goalUUID,parentGoalUUID){
+									 $("#goalsDetailsLoading").attr('style','position:absolute; width:100%; height:250%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+									  $.ajax({
+									    	type: "POST",
+									        url: pmsUrl+"/deletePerformanceGoalByGoalUUID?goalUUID="+goalUUID, 
+									        success: function(response) {
+									        	if (response.response === "AWKWARD") {
+									        		location.href = "/errorPage";
+									        	} else if (response.response === "SUCCESS") {
+									        		$("#goalsDetailsLoading").removeAttr('style');
+									        		performanceGoals.getPerformanceGoalsSummaryDetails(parentGoalUUID);
+								        			performanceGoals.getPerformanceSubGoalsList(parentGoalUUID);
+									        		
+									        	}
+									        },
+									    });
+								 }
+								 
+								 this.deletePerformanceParentGoal = function(goalUUID,performanceGoalType){
+									 $("#goalsDetailsLoading").attr('style','position:absolute; width:100%; height:250%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+									  $.ajax({
+									    	type: "POST",
+									        url: pmsUrl+"/deletePerformanceGoalByGoalUUID?goalUUID="+goalUUID, 
+									        success: function(response) {
+									        	if (response.response === "AWKWARD") {
+									        		location.href = "/errorPage";
+									        	} else if (response.response === "SUCCESS") {
+									        		$("#goalsDetailsLoading").removeAttr('style');
+									        		if(performanceGoalType == "teamGoal"){
+									        			location.replace(pmsUrl+"/performanceTeamGoalsList");
+									        		}else if(performanceGoalType == "selfGoal"){
+									        			location.replace(pmsUrl+"/performanceGoalsList");
+									        		}
+									        		
+									        	}
+									        },
+									    });
+								 }
+								 
+								 
 }

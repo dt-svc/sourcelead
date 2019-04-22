@@ -557,5 +557,46 @@ public class PerformanceGoalsRestController {
 				}
 				return response;
 			}
+	 	  
+	 	 @RequestMapping(value = { "/deletePerformanceGoalByGoalUUID", "/rest/deletePerformanceGoalByGoalUUID" }, method = RequestMethod.POST)
+			public @ResponseBody Response<PerformanceGoalsDTO> deletePerformanceGoalByGoalUUID(@RequestParam(value="goalUUID", required=true) String goalUUID,HttpServletRequest request) throws Exception {
+				  Response<PerformanceGoalsDTO> response = new  Response<>();
+				try {
+				 if(StringUtils.isNoneBlank(goalUUID)) {
+					 PerformanceGoals goals =  performanceGoalsService.getPerformanceGoalsByUUID(goalUUID);
+					 goals.setStatus(Constants.RECORD_INACTIVE);
+					 performanceGoalsService.savePerformanceGoals(goals);
+					 
+					 String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+					 List<PerformanceGoalsDTO> subGoalsList = performanceGoalsService.getPerformanceSubGoalsList(goals.getId(), dateFormat);
+					 if(subGoalsList != null && !subGoalsList.isEmpty()) {
+						 for(PerformanceGoalsDTO goalsDTO : subGoalsList) {
+							 PerformanceGoals subGoal = performanceGoalsService.getPerformanceGoalsById(goalsDTO.getId().longValue());
+							 subGoal.setStatus(Constants.RECORD_INACTIVE);
+							 performanceGoalsService.savePerformanceGoals(subGoal);
+						 }
+					 }
+					 
+					 if(goals.getGoalId() != null) {
+						    double percentage = performanceGoalsService.getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(goals.getGoalId().getId());
+							String parentGoalPercentageDone =  String.format("%.2f", percentage);
+							PerformanceGoals parentGoal = performanceGoalsService.getPerformanceGoalsById(goals.getGoalId().getId());
+							parentGoal.setPercentageDone(Double.valueOf(parentGoalPercentageDone));
+							performanceGoalsService.savePerformanceGoals(parentGoal);
+					 }
+					 
+					 response.setResponse(Result.SUCCESS.name());
+					 response.setResponseMessage(Result.SUCCESS.getValue());
+				 }else {
+		    		 response.setResponse(Result.INVALID_DATA.name());
+					 response.setResponseMessage(Result.INVALID_DATA.getValue());
+		    	 }
+				}catch (Exception e) {
+					e.printStackTrace();
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+				return response;
+			}
 	 	
 }

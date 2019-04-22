@@ -703,16 +703,19 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				"COUNT(GOALS.ID) AS subGoalsCount " +
 				"FROM " + 
 				"PERFORMANCE_GOALS GOALS WHERE " + 
-				"GOALS.GOAL_ID = :goalId GROUP BY GOALS.GOAL_ID " ;
+				"GOALS.GOAL_ID = :goalId AND GOALS.STATUS = '1' GROUP BY GOALS.GOAL_ID " ;
 		
 		Query queryObj = null;
 		queryObj = session.createSQLQuery(query);
 		queryObj.setParameter("goalId", goalId);
 		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceGoalsDTO.class));
 		goalsAssignToList = queryObj.list();
+		double percentageDone = 0d;
+		if(goalsAssignToList != null && !goalsAssignToList.isEmpty()) {
+			PerformanceGoalsDTO goalsDTO = goalsAssignToList.get(0);
+			percentageDone = goalsDTO.getPercentageDone() / goalsDTO.getSubGoalsCount().intValue();
+		}
 		
-		PerformanceGoalsDTO goalsDTO = goalsAssignToList.get(0);
-		double percentageDone = goalsDTO.getPercentageDone() / goalsDTO.getSubGoalsCount().intValue();
 		return percentageDone;
 	}
 

@@ -658,8 +658,8 @@ function goalsPagination(url){
 	            	    	result = result +'<li><a href="'+pmsUrl+'/addNewTeamSubGoal?goalUUID='+opt.uuid+'&goalType=editGoal"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>';
 	            	    }
 	            	    
-	            	    result = result +'<li><i class="fa fa-trash cursorPointer" title="Delete"></i></li>';
-	            	    result = result +'<li><a href="'+pmsUrl+'/goalSummary?goalUUID='+opt.uuid+'"><i class="fa fa-comments cursorPointer text-primary" title="Comment"></i></li>';
+	            	    result = result +"<li><a onclick='deletePerformanceGoal(\""+opt.uuid+"\")'><i class='fa fa-trash cursorPointer' title='Delete'></i></a></li>";
+	            	    result = result +'<li><a href="'+pmsUrl+'/goalSummary?goalUUID='+opt.uuid+'"><i class="fa fa-comments cursorPointer text-primary" title="Comment"></i></a></li>';
 		            	   if(opt.goalType == "New_Goal"){
 		            		   result = result +'<li><a href="'+pmsUrl+'/addNewTeamSubGoal?goalUUID='+opt.uuid+'&goalType=newSubGoal"><i class="fa fa-level-down cursorPointer textSuccess" title="Sub Goals"></i></a></li>';
 		            	   }
@@ -699,5 +699,24 @@ function goalsPagination(url){
     	});
 }
 
+</script>
+
+
+<script>
+function deletePerformanceGoal(goalUUID){
+	  $.ajax({
+	    	type: "POST",
+	        url: pmsUrl+"/deletePerformanceGoalByGoalUUID?goalUUID="+goalUUID, 
+	        success: function(response) {
+	        
+	    	if (response.response === "AWKWARD") {
+	      		location.href = "/errorPage";
+	      	} else if (response.response === "SUCCESS") {
+	      		location.replace(pmsUrl+"/performanceTeamGoalsList");
+	      	}
+		        
+	       },   
+	    });
+}
 </script>
   
