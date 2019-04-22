@@ -281,7 +281,7 @@ public class TimesheetRestController {
 			if(tedDTO.getProjectMembersList() == null || tedDTO.getProjectMembersList().isEmpty()) {
 				model.addObject("NORECORDSFOUND", true);
 				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
-				model.setViewName("timesheet/employeeTImesheetInvoiceList");
+				model.setViewName("timesheet/timesheetInvoiceList");
 			}else {
 				List<ProjectMembersDTO> freshProjectMembersList = new LinkedList<>();
 				List<ProjectMembersDTO>  allProjectMembersList = new LinkedList<>();
@@ -436,11 +436,11 @@ public class TimesheetRestController {
 				if(allProjectMembersList == null || allProjectMembersList.isEmpty()) {
 					model.addObject("NORECORDSFOUND", true);
 					model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
-					model.setViewName("timesheet/employeeTImesheetInvoiceList");
+					model.setViewName("timesheet/timesheetInvoiceList");
 				}else {
 					model.addObject("timesheetAvgHoursValidation", timesheetAvgHoursValidation);
 					model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
-					model.setViewName("timesheet/employeeTImesheetInvoiceList");
+					model.setViewName("timesheet/timesheetInvoiceList");
 				}
 				
 			}
@@ -448,7 +448,7 @@ public class TimesheetRestController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addObject("AWKWARD", true);
-			model.setViewName("timesheet/employeeTImesheetInvoiceList");
+			model.setViewName("timesheet/timesheetInvoiceList");
 		}
 		return model;
 
@@ -2097,7 +2097,7 @@ public class TimesheetRestController {
 				if(tedDTO.getProjectMembersList() == null || tedDTO.getProjectMembersList().isEmpty()) {
 					model.addObject("NORECORDSFOUND", true);
 					model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
-					model.setViewName("timesheet/employeeTImesheetInvoiceList");
+					model.setViewName("timesheet/timesheetInvoiceList");
 				}else {
 					List<ProjectMembersDTO> freshProjectMembersList = new LinkedList<>();
 					List<ProjectMembersDTO>  allProjectMembersList = new LinkedList<>();
@@ -2254,16 +2254,16 @@ public class TimesheetRestController {
 					if(allProjectMembersList == null || allProjectMembersList.isEmpty()) {
 						model.addObject("NORECORDSFOUND", true);
 						model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
-						model.setViewName("timesheet/employeeTImesheetInvoiceList");
+						model.setViewName("timesheet/timesheetInvoiceList");
 					}else {
 						model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
-						model.setViewName("timesheet/employeeTImesheetInvoiceList");
+						model.setViewName("timesheet/timesheetInvoiceList");
 					}
 				}
 		} catch (Exception e) {
 			e.printStackTrace();
 			model.addObject("AWKWARD", true);
-			model.setViewName("timesheet/employeeTImesheetInvoiceList");
+			model.setViewName("timesheet/timesheetInvoiceList");
 		}
 		return model;
 	}
@@ -2422,7 +2422,8 @@ public class TimesheetRestController {
 					}else if (StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("Submitted")){
 						activityStatus ="Submitted"; 
 					}
-                   TimesheetActivities ta = CommonUtil.getTimesheetActivity(sahActivity, activityStatus);
+                   TimesheetActivities ta = new TimesheetActivities();
+                   ta.setActivityStatus(activityStatus);
                    if(StringUtils.isNotEmpty(recordStatus) && recordStatus.equalsIgnoreCase("removed")) {
                 	   ta.setStatus(Constants.RECORD_INACTIVE + "");
 					}
@@ -3605,10 +3606,10 @@ public class TimesheetRestController {
 				 * getCurrentTimeSubFrequency()); }
 				 */
 			}
-			model.setViewName("timesheet/timeSheetSubmission");
+			model.setViewName("timesheet/timesheetApprovalSubmission");
 		} catch (Exception e) {
 			model.addObject("AWKWARD", true);
-			model.setViewName("timesheet/timeSheetSubmission");
+			model.setViewName("timesheet/timesheetApprovalSubmission");
 			e.printStackTrace();
 		}
 		return model;
@@ -5175,7 +5176,7 @@ public class TimesheetRestController {
 			model.addObject("AWKWARD", true);
 			e.printStackTrace();
 		}
-		model.setViewName("timesheet/timeSheetSubmission");
+		model.setViewName("timesheet/timesheetApprovalSubmission");
 		return model;
 	}
 
@@ -5616,7 +5617,8 @@ public class TimesheetRestController {
 
 				}
 			}
-		    TimesheetActivities ta = CommonUtil.getTimesheetActivity(sahActivity, activityStatus);
+	          TimesheetActivities ta = new TimesheetActivities();
+              ta.setActivityStatus(activityStatus);
             ta = timesheetActivityService.saveTimesheetActivity(ta);
             if(submissionId !=  null) {
             	List<TimesheetSubmissionsDocuments> documents = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(submissionId);
@@ -6139,7 +6141,8 @@ public class TimesheetRestController {
 							deleteSubmissionDocument(removedId);
 						}
 					}
-					 TimesheetActivities ta = CommonUtil.getTimesheetActivity(sahActivity, activityStatus);
+			          TimesheetActivities ta = new TimesheetActivities();
+	                   ta.setActivityStatus(activityStatus);
 			            ta = timesheetActivityService.saveTimesheetActivity(ta);
 			            if(timesheetSubmissions.getId() !=  null) {
 			            	List<TimesheetSubmissionsDocuments> documents = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(timesheetSubmissions.getId());
