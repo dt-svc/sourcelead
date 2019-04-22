@@ -146,7 +146,7 @@ public class INDPayrollCommonUtil {
 				payheadDTO.setComponent(payRollPayhead.getComponent());
 				payheadDTO.setTax(payRollPayhead.getTax());
 				payheadDTO.setUuid(payRollPayhead.getUuid());
-				
+				payheadDTO.setActive(payRollPayhead.getActive());
 				
 				if(Arrays.asList(Constants.BASIC_DEPENDENT_CONSTANT_PAYHEAD_SHORTCODES).contains(payRollPayhead.getShortCode())) {
 					payheadDTO.setMethod("% of Payheads");
