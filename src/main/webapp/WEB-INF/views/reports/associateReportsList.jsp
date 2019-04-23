@@ -68,6 +68,14 @@
 		</div>
 	</div>
 	</a>
+	
+	<a href='${appPath}/associateClockInSummaryReport'><div class="repDashCta">
+		<span><i class="fa fa-users"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Associate Clock-IN/Out Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
 				
 	<div class="clearfix"></div>	
 </div>
