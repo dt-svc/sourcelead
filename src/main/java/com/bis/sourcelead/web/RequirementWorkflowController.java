@@ -86,9 +86,13 @@ public class RequirementWorkflowController {
 	public ModelAndView viewWorkflow(HttpServletRequest request,
 			RequirementWorkFlowDTO requirementWorkFlowDTO) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
-		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO);
+		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(orgLocationId);
+		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations.getId());
 		modelandview.setViewName("workflow/viewWorkflow");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
+		modelandview.addObject("workflowDescription", requirementWorkFlowStagesDTO.get(0).getWorkflowDescription());
 		return modelandview;
 	}
 	
@@ -104,7 +108,7 @@ public class RequirementWorkflowController {
 		User user = new User();
 		user.setId(userId);
 		
-		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO);
+		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations.getId());
 		
 		modelandview.setViewName("workflow/addStage");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
@@ -202,8 +206,11 @@ public class RequirementWorkflowController {
 	public @ResponseBody RequirementWorkFlowDTO createRequirementDefaultWorkFlow(
 			RequirementWorkFlowDTO requirementWorkFlowDTO, HttpServletRequest request) {
 		RequirementWorkFlowDTO workFlowDTO = null;
+		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(orgLocationId);
 		try {
-			workFlowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow();
+			workFlowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow(orgLocations.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -214,8 +221,11 @@ public class RequirementWorkflowController {
 	public @ResponseBody List<RequirementWorkFlowStagesDTO> createRequirementDefaultWorkFlowStages(
 			RequirementWorkFlowDTO requirementWorkFlowDTO, HttpServletRequest request) {
 		List<RequirementWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
+		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(orgLocationId);
 		try {
-			requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages();
+			requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages(orgLocations.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -356,7 +366,7 @@ public class RequirementWorkflowController {
 			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTO = null;
 				try {
 					if (user != null && null != requirementWorkFlowStagesDTO) {
-						requirementWorkFlowService.saveRequirementWorkflowStageByWorkflowId(requirementWorkFlowStagesDTO, orgLocations.getId(), user);
+						requirementWorkFlowService.saveRequirementWorkflowStageByWorkflowId(requirementWorkFlowStagesDTO, orgLocations, user);
 						response.setResponse(Result.SUCCESS.name());
 						response.setResponseMessage(Result.SUCCESS.getValue());
 					} else if(user == null) {
@@ -379,10 +389,14 @@ public class RequirementWorkflowController {
 		}
 		
 		@RequestMapping(value = "/getRequirementWorkflowStage")
-		public @ResponseBody RequirementWorkFlowStagesDTO getRequirementWorkflowStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO){
+		public @ResponseBody RequirementWorkFlowStagesDTO getRequirementWorkflowStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
+				HttpServletRequest request){
 			RequirementWorkFlowStagesDTO requirementDefaultWorkFlowStagesDTO = null;
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			OrgLocations orgLocations = new OrgLocations();
+			orgLocations.setId(orgLocationId);
 			try {
-				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(requirementWorkFlowStagesDTO.getUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim());
+				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(requirementWorkFlowStagesDTO.getUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), orgLocations.getId());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -399,7 +413,7 @@ public class RequirementWorkflowController {
 			OrgLocations orgLocations = new OrgLocations();
 			orgLocations.setId(orgLocationId);
 			
-			requirementWorkFlowService.deleteRequirementWorkFlowStagesByuuid(uuid);
+			requirementWorkFlowService.deleteRequirementWorkFlowStagesByuuid(uuid, orgLocations.getId());
 			
 			
 			List<RequirementWorkFlowStages> stagesList = requirementWorkFlowService.getRequirementWorkFlowStagesListByOrgLocationId(orgLocations.getId());
@@ -548,9 +562,10 @@ public class RequirementWorkflowController {
 		@RequestMapping(value="/removeWorkFlowEntry" , method = RequestMethod.POST)
 		public @ResponseBody String removeWorkFlowEntry(@RequestParam(value = "workflowuuid", required = false) String workflowuuid, HttpServletRequest request) throws Exception {
 			
-			@SuppressWarnings("unused")
 			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
-			Boolean flag = requirementWorkFlowService.deleteApplicationWorkFlowByuuid(workflowuuid);
+			OrgLocations orgLocations = new OrgLocations();
+			orgLocations.setId(orgLocationId);
+			Boolean flag = requirementWorkFlowService.deleteApplicationWorkFlowByuuid(workflowuuid, orgLocations.getId());
 			if(flag == true) {
 				return Constants.SUCCESS;
 			}

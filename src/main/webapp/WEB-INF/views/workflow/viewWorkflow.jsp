@@ -306,6 +306,9 @@ function deletepopup(stageUuid, stageName, workflowUuid){
 				      $("#stageLoadingDiv").removeAttr('style');
 				     showSuccessMsg("Successfully Deleted "+stageName);
 				}else{
+					 $("#popUp").empty();
+				     $(".project_inn_mask").fadeOut(200);
+					$("#stageLoadingDiv").removeAttr('style');
 					 showError("Operation failed, please try again");
 				}
 				}
