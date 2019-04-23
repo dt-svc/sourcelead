@@ -17,7 +17,7 @@
           <div class="positionRelative reportHead clearfix">
             <ul class="pull-right list-unstyled list-inline">
                 <li>
-                    <a class="newAdBtn mr5" href="${SourceLeadWeb_sourceleadUrl}/defaultWorkflow" title="Add">+ Add</a>	
+                    <a class="newAdBtn mr5" href="${SourceLeadWeb_sourceleadUrl}/defaultWorkflow" title="Add">+ Workflow</a>	
                     </li>
             
               <li>
@@ -168,11 +168,7 @@ function getDynamicWorkflowList(){
 
 function checkDefaultWorkflow(configureType, uuid, workFlowName){
 	var result = "";
-	if(configureType != "Default"){
-		result = result +"<div class='tbldata-dotdot-verybig'><a onclick='viewWorkFlow(\""+uuid+"\")' title='view'>"+workFlowName+"</a></div>";
-	}else{
-		result = result +"<div class='tbldata-dotdot-verybig'>"+workFlowName+"</div>";
-	}
+	result = result +"<div class='tbldata-dotdot-verybig'><a onclick='viewWorkFlow(\""+uuid+"\")' title='view'>"+workFlowName+"</a></div>";
 	return result;
 }
 
