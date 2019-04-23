@@ -294,18 +294,16 @@ function deletepopup(stageUuid, stageName, workflowUuid){
 	</script>
 	<script>
 	function deleteRequirementWorkflowStage(stageUuid, workflowUuid, stageName){
+		 $("#popUp").empty();
+	     $(".project_inn_mask").fadeOut(200);
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/deleteRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid,
 			success : function(dataList){
 				if(dataList == "Success"){
-					 $("#popUp").empty();
-				     $(".project_inn_mask").fadeOut(200);
 				      $("ul#stageList li:contains('"+stageName+"')").remove();
 				     showSuccessMsg("Successfully Deleted "+stageName);
 				}else{
-					 $("#popUp").empty();
-				     $(".project_inn_mask").fadeOut(200);
 					 showError("Operation failed, please try again");
 				}
 				}
