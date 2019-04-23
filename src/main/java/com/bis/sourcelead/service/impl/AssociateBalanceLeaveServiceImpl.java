@@ -675,6 +675,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 			 }
 			 stat = updateAssociateAccuralBalanceLeaveCount(assBalList);
 			 
+			 
 		   }catch (Exception e) {
 			   e.printStackTrace();
 		   }
