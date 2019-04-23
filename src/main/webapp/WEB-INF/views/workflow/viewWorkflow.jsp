@@ -80,15 +80,15 @@
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
               <textarea rows="2" 
-              value = '<c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/>'
+              value = ''
               class="form-control" name="description" id="description" placeholder="Description" field-name="Description"
 								data-validation="validate_length length1-500" data-validation-optional="true"
 								<c:choose>
 							<c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
-							readonly>
+							readonly> <c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/>
 							</c:when>
 								<c:otherwise>
-							>
+							> <c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/>
 							</c:otherwise>
 						</c:choose>
 								</textarea>
