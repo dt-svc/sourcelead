@@ -3131,7 +3131,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public JobFair getJobFairByName(String jobFairName, long userId, long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from JobFair jobFair where jobFair.name=:jobFairName and jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId";
+			String query = "from JobFair jobFair where jobFair.name=:jobFairName and jobFair.user.id = :userId and jobFair.orgLocations.id = :orgLocationId and jobFair.status ='1'";
 			Query queryObj = session.createQuery(query);
 			queryObj.setString("jobFairName", jobFairName);
 			queryObj.setLong("userId", userId);
