@@ -728,7 +728,7 @@ function getViewInvoice(){
 					result = result +'                <label>'+clientContactEmail+'</label>                         ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 '; */
-					result = result +'            <div class="col-md-4">';
+					result = result +'            <div class="col-md-3">';
 					if(invoiceType == "Payables"){
 						result = result +'            <div class="row">';
 						result = result +'              <label class="col-md-4 control-label">Bill Id :</label>             ';
@@ -744,29 +744,29 @@ function getViewInvoice(){
 						result = result +'            </div>                                                                 ';
 					}else{
 						result = result +'            <div class="row">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Invoice Id :</label>             ';
-						result = result +'              <div class="col-md-8">                                               ';
+						result = result +'              <label class="col-md-5 control-label">Invoice Id :</label>             ';
+						result = result +'              <div class="col-md-7">                                               ';
 						result = result +'                <label>'+report.invoiceId+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
 						result = result +'            <div class="row  mt5 mb5">                                                 ';
-						result = result +'              <label class="col-md-4 control-label">Invoice Date :</label>           ';
-						result = result +'              <div class="col-md-8">                                               ';
+						result = result +'              <label class="col-md-5 control-label">Invoice Date :</label>           ';
+						result = result +'              <div class="col-md-7">                                               ';
 						result = result +'                <label>'+invoiceDateStr+'</label>                                          ';
 						result = result +'              </div>                                                               ';
 						result = result +'            </div>                                                                 ';
 					}
 					
 					result = result +'            <div class="row">                                                 ';
-					result = result +'              <label class="col-md-4 control-label">Payment Term :</label>           ';
-					result = result +'              <div class="col-md-8">                                               ';
+					result = result +'              <label class="col-md-5 control-label">Payment Term :</label>           ';
+					result = result +'              <div class="col-md-7">                                               ';
 					result = result +'                <label>'+paymentFrequency+'</label>                                             ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>';
 					
 					result = result +'            </div>';
 					
-					result = result +'            <div class="col-md-4">';
+					result = result +'            <div class="col-md-5">';
 					
 					result = result +'            <div class="row">';
 					result = result +'              <label class="col-md-5 control-label">Due Date :</label>               ';
@@ -798,9 +798,17 @@ function getViewInvoice(){
 						result = result +'              </div>';
 						result = result +'            </div>';
 					}
+					if(report.notifyToOthers != null && report.notifyToOthers !='' && report.notifyToOthers !='undefined'){
+					result = result +'            <div class="row">                                                 ';
+					result = result +'              <label class="col-md-5 control-label">Notify to Others :</label>        ';
+					result = result +'              <div class="col-md-7 addressInvoice">                                ';
 					
-
-					
+					result = result +'              <div class="notifyMails">';
+					result = result +'                <p class="mr10 lineHeight">'+report.notifyToOthers+'</p>';
+					result = result +'              </div>';
+					result = result +'              </div>';
+					result = result +'            </div>';
+					}
 					
 					
 					result = result +'          </div>';
@@ -1207,7 +1215,10 @@ function getViewInvoice(){
 				 
 	    		}
 				$("#viewInvoiceId").empty();  
-			    $("#viewInvoiceId").append(result)
+			    $("#viewInvoiceId").append(result);
+			    $(".notifyMails").css({
+			    	"min-height":"75px", "max-height":"120px", "overflow":"auto"
+			    });
 	        },
 	        
 	    });
