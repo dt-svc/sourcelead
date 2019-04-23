@@ -10,7 +10,7 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css?staticTime=${staticTime}" />
 <style type="text/css">
 .addinterTable .chosen-container{
 width:125px !important;

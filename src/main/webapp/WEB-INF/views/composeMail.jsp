@@ -4,8 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link rel="stylesheet" href="/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
-<link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
 
 
 <style>
@@ -187,10 +187,10 @@ display: none;
   </section>
   
   
-  <!-- <script type="text/javascript" src="/resources/js/bootstrap-multiselect.js"></script>
-  <script src="/resources/js/bootstrap3-wysihtml5.all.min.js"></script>  -->
+  <!-- <script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-multiselect.js"></script>
+  <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap3-wysihtml5.all.min.js"></script>  -->
   
-  <script src="/resources/js/nicEdit.js"></script> 
+  <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/nicEdit.js"></script> 
   
 		<script type="text/javascript">
 $(function() { 

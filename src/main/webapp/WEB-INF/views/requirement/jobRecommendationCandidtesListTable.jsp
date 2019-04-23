@@ -5,7 +5,7 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 	
-<script type="text/javascript" src="/resources/js/submissionFailedCandidatesList.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/submissionFailedCandidatesList.js"></script>
 
 <div id="popUp" ></div>
 <div id="customizePopUp"></div>
