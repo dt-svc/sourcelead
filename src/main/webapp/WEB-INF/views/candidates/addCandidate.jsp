@@ -227,7 +227,7 @@
 							<label class="col-md-3">Pan Number</label>
 							<div class="col-md-9">
 								<input class="form-control" id="panNumber" name="panNumber"
-									placeholder="Pan Number" type="text" field-name="Pan Number" data-validation="validate_Space validate_length length10"
+									placeholder="Pan Number" type="text" field-name="Pan Number" data-validation="validate_Space validate_panNumber"
 									data-validation-optional="true" onkeyup="validatePanNumber();" onblur="validatePanNumber();"></input>
 							</div>
 						</div>
@@ -236,7 +236,7 @@
 							<label class="col-md-3">Aadhar Number</label>
 							<div class="col-md-9">
 								<input class="form-control" id="aadharNumber" name="aadharNumber"
-									placeholder="Aadhar Number" type="text" field-name="Aadhar Number" data-validation="validate_Space validate_length length12-20"
+									placeholder="Aadhar Number" type="text" field-name="Aadhar Number" data-validation="validate_Space validate_aadharNumber"
 									data-validation-optional="true" onkeyup="validateAadharNumber();" onblur="validateAadharNumber();"></input>
 							</div>
 						</div>
@@ -246,7 +246,7 @@
 							<label class="col-md-3">SSN Number</label>
 							<div class="col-md-9">
 								<input class="form-control" id="ssnNumber" name="ssnNumber"
-									placeholder="SSN Number" type="text"field-name="SSN Number" data-validation="validate_Space validate_length length9"
+									placeholder="000-00-0000" type="text" field-name="SSN Number" data-validation="validate_Space validate_length length9"
 									data-validation-optional="true" onkeyup="validateSsnNumberDuplicateChek();" onblur="validateSsnNumberDuplicateChek();"></input>
 							</div>
 						</div>
@@ -1164,6 +1164,26 @@
 
 </script>
 
+<script>
+	$('#panNumber').change(function (event) {     
+		 var regExp = /[A-Z]{5}\d{4}[A-Z]{1}/; 
+		 var txtpan = $(this).val(); 
+		 if (txtpan.length == 10 ) { 
+		  if( txtpan.match(regExp) ){ 
+		   alert('PAN match found');
+		  }
+		  else {
+		   alert("Not a valid PAN number");
+		   event.preventDefault(); 
+		  } 
+		 } 
+		 else { 
+		       alert('Please enter 10 digits for a valid PAN number');
+		       event.preventDefault(); 
+		 } 
+	
+		});
+</script>
 
 <script type="text/javascript">
 function validatePanNumber() {
@@ -1233,4 +1253,14 @@ function validateSsnNumberDuplicateChek() {
 		        }
 		    });
 };
+</script>
+<script type="text/javascript">
+$('#ssnNumber').mask('000-00-0000', {
+    translation: {
+        '#': {
+            pattern: "/[0-9]{9}/", optional: true
+        }
+    },
+   placeholder: ""
+});
 </script>
