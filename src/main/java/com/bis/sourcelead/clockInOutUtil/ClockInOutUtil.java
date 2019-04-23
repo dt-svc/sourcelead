@@ -10,13 +10,19 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.clockInOutDTO.PreviousNextDTO;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Component
 public class ClockInOutUtil {
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	
 	public Date[] getClockFilterDate(String dateSelection,OrgLocations orgLocations) throws Exception {
@@ -32,8 +38,6 @@ public class ClockInOutUtil {
 			searchDates = currentMonthDates(orgLocations);
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_YEAR)) {
 			searchDates = currentYearDates();
-		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_YESTERDAY)) {
-			searchDates = yesterdayDates(orgLocations);
 		}
 		
 		
@@ -145,5 +149,281 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		dates[1] = oneDateUTC;
 		return dates;
 	}
+
+public Date[] getClockFilterPreviousDates(String currentDate, Date empJoiningDate, OrgLocations location, String dayWisetype) {
+	
+	Date[] searchDates = null;
+	String[] str = currentDate.split(" To ");
+	
+	try {
+		
+		if(empJoiningDate != null) {
+			  if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+		  			searchDates = previousDays(currentDate,location,empJoiningDate);
+		  		}else if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_7_DAYS)) {
+		  			searchDates = previousWeeks(str[0],location);
+		  		}else if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_MONTH)) {
+		  			searchDates = previousMonthDates(str[0],location);
+		  		}else if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_YEAR)) {
+		  			searchDates = previousYearDates(str[0],location);
+		  		}
+		}else {
+			searchDates = new Date[2];
+			  if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+				  searchDates[0] = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+				  searchDates[1] = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+			  }else {
+					searchDates[0] = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[0]);
+					searchDates[1] = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[1]);
+
+			  }
+		}
+	    	  
+	      
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return searchDates;
+}
+
+private Date[] previousYearDates(String startDate, OrgLocations location) {
+	Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), startDate);
+
+	Calendar calendar = Calendar.getInstance();
+	calendar.setTime(current);
+    calendar.add(Calendar.YEAR, -1);
+    int min = calendar.getActualMinimum(Calendar.DAY_OF_YEAR);
+    calendar.set(Calendar.DAY_OF_YEAR, min);
+    
+    Date st = calendar.getTime();
+
+    int max = calendar.getActualMaximum(Calendar.DAY_OF_YEAR);
+    calendar.set(Calendar.DAY_OF_YEAR, max);
+    
+    Date end = calendar.getTime();
+    
+    Date[] dates = new Date[2];
+    dates[0] = st;
+    dates[1] = end;
+	return dates;
+}
+
+private Date[] previousMonthDates(String startDate, OrgLocations location) {
+	
+	Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), startDate);
+
+	Calendar calendar = Calendar.getInstance();
+	calendar.setTime(current);
+    calendar.add(Calendar.MONTH, -1);
+    int min = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
+    calendar.set(Calendar.DAY_OF_MONTH, min);
+    
+    Date st = calendar.getTime();
+
+    int max = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+    calendar.set(Calendar.DAY_OF_MONTH, max);
+    
+    Date end = calendar.getTime();
+    
+    Date[] dates = new Date[2];
+    dates[0] = st;
+    dates[1] = end;
+	return dates;
+	
+}
+
+private Date[] previousWeeks(String startDate, OrgLocations location) {
+	Date[] dates = null;
+	
+	Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), startDate);
+    Calendar c = Calendar.getInstance();
+    c.setTime(current);
+    int i = c.get(Calendar.DAY_OF_WEEK) - c.getFirstDayOfWeek();
+    c.add(Calendar.DATE, -i - 6);
+    Date start = c.getTime();
+    c.add(Calendar.DATE, 6);
+    Date end = c.getTime();
+    
+    dates = new Date[2];
+    dates[0] = start;
+    dates[1] = end;
+	return dates;
+}
+
+private Date[] previousDays(String currentDate, OrgLocations location, Date empJoiningDate) {
+	
+	  Date[] dates = null;
+	  Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+	  if(empJoiningDate != null) {
+		  
+		  Calendar calendar = Calendar.getInstance();
+		  calendar.setTime(current);
+		  calendar.add(Calendar.DAY_OF_YEAR, -1);
+		 Date prevoiusDate = calendar.getTime();
+		  if(prevoiusDate.after(empJoiningDate) || prevoiusDate.equals(empJoiningDate)) {
+	  	    	dates = new Date[2];
+	  	   		dates[0] = prevoiusDate;
+	  	   		dates[1] = prevoiusDate;
+	  	       }
+	  }else {
+		  dates = new Date[2];
+  	  	   dates[0] = current;
+  	  	   dates[1] = current;
+	  }
+	return dates;
+}
+
+public Date[] getClockFilterNextDates(String currentDate, Date empJoiningDate, OrgLocations location, String dayWiseType) {
+	
+	Date[] searchDates = null;
+	String[] str = currentDate.split(" To ");
+	
+	try {
+		
+		if(empJoiningDate != null) {
+			  if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+		  			searchDates = nextDays(currentDate,location,empJoiningDate);
+		  		}else if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_7_DAYS)) {
+		  			searchDates = nextWeeks(currentDate,location);
+		  		}else if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_MONTH)) {
+		  			searchDates = nextMonthDates(str[1],location);
+		  		}else if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_YEAR)) {
+		  			searchDates = nextYearDates(str[1],location);
+		  		}
+		}else {
+			searchDates = new Date[2];
+			  if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+				  searchDates[0] = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+				  searchDates[1] = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+			  }else {
+					searchDates[0] = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[0]);
+					searchDates[1] = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[1]);
+
+			  }
+		}
+	    	  
+	      
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return searchDates;
+	
+	
+}
+
+private Date[] nextYearDates(String startDate, OrgLocations location) {
+	Date[] dates = null;
+	Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), startDate);
+
+	Calendar calendar = Calendar.getInstance();
+    Date curDate = calendar.getTime();
+
+	calendar.setTime(current);
+    calendar.add(Calendar.YEAR, 1);
+    int min = calendar.getActualMinimum(Calendar.DAY_OF_YEAR);
+    calendar.set(Calendar.DAY_OF_YEAR, min);
+    
+    Date st = calendar.getTime();
+
+    int max = calendar.getActualMaximum(Calendar.DAY_OF_YEAR);
+    calendar.set(Calendar.DAY_OF_YEAR, max);
+    
+    Date end = calendar.getTime();
+    if(st.before(curDate) || end.before(curDate)) {
+    	dates = new Date[2];
+        dates[0] = st;
+        dates[1] = end;
+    }
+    
+	return dates;
+}
+
+private Date[] nextMonthDates(String startDate, OrgLocations location) {
+	Date[] dates = null;
+	Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), startDate);
+
+	Calendar calendar = Calendar.getInstance();
+    Date curDate = calendar.getTime();
+
+	
+	calendar.setTime(current);
+    calendar.add(Calendar.MONTH, 1);
+    int min = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
+    calendar.set(Calendar.DAY_OF_MONTH, min);
+    
+    Date st = calendar.getTime();
+
+    int max = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+    calendar.set(Calendar.DAY_OF_MONTH, max);
+    
+    Date end = calendar.getTime();
+    
+    if(st.before(curDate) || end.before(curDate)) {
+        dates = new Date[2];
+        dates[0] = st;
+        dates[1] = end;
+    }
+	return dates;
+	
+}
+
+private Date[] nextWeeks(String currentDate, OrgLocations location) {
+	Date[] dates = null;
+	
+	String[] str = currentDate.split(" To ");
+	
+	Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[1]);
+    Calendar c = Calendar.getInstance();
+    Date curDate = c.getTime();
+    c.setTime(current);
+//    int i = c.get(Calendar.DAY_OF_WEEK) + c.getFirstDayOfWeek();
+    c.add(Calendar.DATE,1);
+    Date start = c.getTime();
+    c.add(Calendar.DATE, 6);
+    Date end = c.getTime();
+    
+    Date startD = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[0]);
+    Date endD = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[1]);
+    
+    if(startD.before(curDate) && endD.before(curDate)) {
+  	  dates = new Date[2];
+	    dates[0] = start;
+	    dates[1] = end;
+    }
+    
+	return dates;
+}
+
+private Date[] nextDays(String currentDate, OrgLocations location, Date empJoiningDate) {
+	 Date[] dates = null;
+	 try {
+		 Calendar calendar = Calendar.getInstance();
+		 Date curDate = calendar.getTime();
+		  Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+		  if(empJoiningDate != null) {
+			  
+			  
+			  calendar.setTime(current);
+			  calendar.add(Calendar.DAY_OF_YEAR, 1);
+			 Date nextDate = calendar.getTime();
+			  if(nextDate.before(curDate)) {
+		  	    	dates = new Date[2];
+		  	   		dates[0] = nextDate;
+		  	   		dates[1] = nextDate;
+		  	       }
+		  }else {
+			  if(current.before(curDate)) {
+				  dates = new Date[2];
+		  	  	   dates[0] = current;
+		  	  	   dates[1] = current;
+			  }
+		  }
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	
+	return dates;
+}
+
 	
 }
