@@ -540,6 +540,23 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStages.setUpdatedDate(new Date());
 			requirementWorkFlowStages.setUpdatedBy(user);
 			requirementWorkFlowDao.saveRequirementWorkFlowStagesByOrgLocationId(requirementWorkFlowStages);
+			
+			List<RequirementWorkFlowTasks> workFlowtasks = requirementWorkFlowDao.getworkflowTasksBystagesId(workFlowStages.get(i).getId());
+			for(RequirementWorkFlowTasks workFlowtaskss : workFlowtasks) {
+				RequirementWorkFlowTasks reqtasks = new RequirementWorkFlowTasks();
+				reqtasks.setRequirementWorkFlowStagesId(requirementWorkFlowStages);
+				reqtasks.setAssignTo(workFlowtaskss.getAssignTo());
+				reqtasks.setCreatedBy(workFlowtaskss.getCreatedBy());
+				reqtasks.setCreatedDate(new Date());
+				reqtasks.setDescription(workFlowtaskss.getDescription());
+				reqtasks.setOrgLocationId(workFlowtaskss.getOrgLocationId());
+				reqtasks.setPriority(workFlowtaskss.getPriority());
+				reqtasks.setStatus(workFlowtaskss.getStatus());
+				reqtasks.setUpdatedDate(new Date());
+				reqtasks.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				reqtasks.setWorkFlowTaskName(workFlowtaskss.getWorkFlowTaskName());
+			requirementWorkFlowDao.saveRequirementWorkFlowTask(reqtasks);
+			}
 		}
 
 		
