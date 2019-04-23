@@ -93,18 +93,9 @@
 						<div class="row">
 						<c:if test="${!empty timesheetApprovalDTO.timesheetFrequency  && timesheetApprovalDTO.timesheetFrequency != 'Monthly' }" >	 
 						 		<div class="col-md-12 mb" id="timesheetWeekFrequencyFilter">
-						 			<label><strong>Timesheet Week Frequency</strong></label>
-										<div class="clearfix" id="weekFrequencyDiv">
-											<ul class="list-unstyled" id="frequencyFilter">
-												<c:forEach var="weekFrequencyList"
-													items="${timesheetApprovalDTO.weekFrequencyList}">
-													<li class="radioIput positionRelative">
-														<input	id="weekFrequency" name="weekFrequency" type="radio" ${weekFrequencyList.key == timesheetApprovalDTO.weekFrequency ? 'checked' : ''} value="${weekFrequencyList.key}"><label>${weekFrequencyList.key}</label></li>
-												</c:forEach>
-											</ul>
-									</div>
+						 			<jsp:include page="timesheetApprovalWeekFrequencyFilter.jsp"></jsp:include>
 						 		</div>
-						 </c:if>	 
+						</c:if>	
 						  <div class="col-md-12 mb">
 							<label><strong>Stage</strong></label>
 							 <div class="clearfix">
