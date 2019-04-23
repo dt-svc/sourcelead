@@ -2647,6 +2647,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 					 pm.setEmpName(membersListStringBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).toString());	 
 
 				 }
+				 if(pm.getProjectMemberCandidteId().getEmail() != null) {
+					 pm.setEmpEmail(pm.getProjectMemberCandidteId().getEmail());
+				 }
 				 if(pm.getProjectMemberCandidteId().getConsultantUser() != null){
 					 UserRole userRole = null;
 					 if(pm.getProjects().getOrgLocationsId().getId().compareTo(loginOrgLocation.getId()) != 1) {

@@ -155,5 +155,5 @@ public interface ProjectMembersDao {
 			
 	ProjectMembers getProjectMembersByMasterCandiateIdAndProjectClientId(Long masterCandidateId,Long projectClientsId) throws Exception;
 
-	public List<CandidateDTO> getAllAvailableAssociates( Long orgLocationId);
+	public List<Object[]> getAllAvailableAssociates( Long orgLocationId);
 }

@@ -1564,7 +1564,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
 		    	globalUserQuery = " pc.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :locationId)";
 		    }else {
-		    	globalUserQuery = " pc.orgLocationsId.id = :locationId";
+		    	globalUserQuery = " (pm.projectMemberCandidteId.designationType <> 'Offshore C2C' and pc.orgLocationsId.id = :locationId) OR (pm.projectMemberCandidteId.designationType = 'Offshore C2C' and pc.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :locationId))";
 		    }
 		 
 		String query = " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects where  "
@@ -2091,31 +2091,21 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return pm;  
 	}
 
-
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<CandidateDTO> getAllAvailableAssociates( Long orgLocationId) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Query queryObj = null;
-		List<CandidateDTO> candidateDTOList = null;
-		
-		String query = "SELECT CAND.ID AS candId,"
-				+ " CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName"
-				+ " FROM CANDIDATE CAND, "
-				+ " ORG_LOCATIONS OL, "
-				+ " USER_ROLE UR "
-				+ " WHERE CAND.CONSULTANT_USER_ID = UR.USER_ID AND "
-				+ " CAND.ORG_LOCATION_ID = :orgLocationId AND "
-				+ " (UR.USER_STATE = 'ACTIVE' OR UR.USER_STATE = 'NOT_LOGGEDIN')";
-		
-		
-		queryObj = session.createSQLQuery(query);
-		queryObj.setParameter("orgLocationId", orgLocationId);
-		queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
-		candidateDTOList = queryObj.list();
-		
-		return candidateDTOList;
+	public List<Object[]> getAllAvailableAssociates( Long orgLocationId) {
+	Session session = this.sessionFactory.getCurrentSession();
+	/*String query = "select * from Candidate candidate where candidate.orgLocationId = :orgLocationId";
+	query += " and (case when candidate.parentCandidateId is null then (candidate.isAssociate) else (candidate.parentCandidateId.isAssociate) end) = 'Y'";*/
+
+	String query = "SELECT c.ID, c.FIRST_NAME, c.MIDDLE_NAME, c.LAST_NAME FROM CANDIDATE c where c.ORG_LOCATION_ID = :orgLocationId and case when c.PARENT_CANDIDATE_ID is null then c.IS_ASSOCIATE else (select c1.IS_ASSOCIATE from CANDIDATE c1 where c1.ID=c.PARENT_CANDIDATE_ID) end = 'Y';";
+
+	List<Object[]> list = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
+	return list;
 	}
+
+
 	
 }
 

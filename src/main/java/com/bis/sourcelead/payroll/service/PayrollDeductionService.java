@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.service;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -22,5 +24,7 @@ public interface PayrollDeductionService {
 	boolean isValidDeductionType(String payrollDeductionType, OrgLocations orgLocation);
 
 	PayrollDeduction getPayrollDeductionTypeById(long parseLong);
+
+	PayrollDeduction getDeductionByDeductionTypeAndLocationId(String deductionType, Long orgLocationId);
 
 }
