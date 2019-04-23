@@ -814,7 +814,7 @@ $(document).ready(function() {
 </script>
 
 	
-<script type="text/javascript">
+<!-- <script type="text/javascript">
     	   var config = {
     				  '.chosen-select'           : {},
     				  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -822,71 +822,6 @@ $(document).ready(function() {
     				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
     				  '.chosen-select-width'     : {width:"95%"}
     	   }
-			//Adding Customized Any Of Keyword to the list 
-		   /*  var select, chosen;
-		    select = $("#anyOfKeyword");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
-		    {
-		    	var anyKeyword = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(anyKeyword).text(anyKeyword);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-                    $("#anyOfKeyword option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#anyOfKeyword").trigger("chosen:updated");
-	        		
-		        }
-		    }); */
-		    
-		  //Adding Customized Any Of Keyword to the list
-		  /*   var selectone, chosenone;
-		    selectone = $("#allKeywords");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
-		    {
-		    	var allKeyword = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(allKeyword).text(allKeyword);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-                    $("#allKeywords option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#allKeywords").trigger("chosen:updated");
-	        		
-		        }
-		    }); */
-		    
-		  /*   var selecttwo, chosentwo;
-		    selecttwo = $("#excludeKeyWord");
-		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosentwo = selecttwo.data('chosen');
-		    chosentwo.search_field.on('keyup', function(e2)
-		    {
-		    	var excludeKeyword = this.value.replace(",","");
-		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
-		            selecttwo.append(option);
-		            selecttwo.find(option).prop('selected', true);
-                    $("#excludeKeyWord option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#excludeKeyWord").trigger("chosen:updated");
-	        		
-		        }
-		    }); */
-		    
 		    
 		    var selectthree, chosenthree;
 		    selectthree = $("#projectIdAdvanced");
@@ -954,27 +889,6 @@ $(document).ready(function() {
 		    });
 		    
 		    
-		    /* var selectsix, chosensix;
-		    selectsix = $("#invoiceFrequencyAdvanced");
-		    selectsix.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosensix = selectsix.data('chosen');
-		    chosensix.search_field.on('keyup', function(e2)
-		    {
-		    	var invoiceFrequencyAdvanced = this.value.replace(",","");
-		        if ((e2.which == 13 || e2.which == 188) && (invoiceFrequencyAdvanced != null  && invoiceFrequencyAdvanced != '' && invoiceFrequencyAdvanced != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(invoiceFrequencyAdvanced).text(invoiceFrequencyAdvanced);
-		            selectsix.append(option);
-		            selectsix.find(option).prop('selected', true);
-                    $("#invoiceFrequencyAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#invoiceFrequencyAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    }); */
-		    
 		    
 		    var selectseven, chosenseven;
 		    selectseven = $("#clientsAdvanced");
@@ -996,28 +910,6 @@ $(document).ready(function() {
 	        		
 		        }
 		    });
-		    
-		    /* 
-		    var selecteight, choseneight;
-		    selecteight = $("#statusAdvanced");
-		    selecteight.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    choseneight = selecteight.data('chosen');
-		    choseneight.search_field.on('keyup', function(e2)
-		    {
-		    	var statusAdvanced = this.value.replace(",","");
-		        if ((e2.which == 13 || e2.which == 188) && (statusAdvanced != null  && statusAdvanced != '' && statusAdvanced != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(statusAdvanced).text(statusAdvanced);
-		            selecteight.append(option);
-		            selecteight.find(option).prop('selected', true);
-                    $("#statusAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#statusAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    }); */
 		    
 		    
 		    var selectnine, chosennine;
@@ -1070,8 +962,9 @@ $(document).ready(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-</script>
-<script>
+</script> -->
+
+<!-- <script>
 	$('#projectStartDateAdvanced').datepicker({
 		dateFormat : 'yy-mm-dd',
 		//dateFormat : 'dd-mm-yy',
@@ -1092,7 +985,8 @@ $(document).ready(function() {
 		}
 	});
 	$('#projectStartDateAdvanced').attr('readonly', true);
-</script> 
+</script>  -->
+
 <script type="text/javascript">
 	function searchProject() {
 		var validationSettings = {
