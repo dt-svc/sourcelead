@@ -549,4 +549,17 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		}
 	}
 
+	@Override
+	public List<RequirementWorkFlowTasks> getworkflowTasksBystagesId(Long workFlowStagesId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlowTasks requirementWorkFlowTasks where requirementWorkFlowTasks.requirementWorkFlowStagesId.id =:workFlowStagesId ";
+			List<RequirementWorkFlowTasks> requirementWorkFlowTasks = session.createQuery(query).setParameter("workFlowStagesId", workFlowStagesId).list();
+			return requirementWorkFlowTasks;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+	}
+	}  
+
 }
