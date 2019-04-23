@@ -1188,6 +1188,9 @@ return responseList;
 			invoice.setCurrencyCode(invoice.getCurrencyCode());
 			invoice.setDueDateStr(formatter.format(invoice.getDueDate()));
 			invoice.setInvoiceDateStr(formatter.format(invoice.getInvoiceDate()));
+			if(invoice.getNotifyToOthers() !=null){
+			invoice.setNotifyToOthers(invoice.getNotifyToOthers().replaceAll(",", ", "));
+			}
 			if(invoice.getPaymentAccount() != null) {
 				invoice.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null));
 			}
