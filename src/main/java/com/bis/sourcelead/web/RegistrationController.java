@@ -69,6 +69,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
@@ -365,6 +366,8 @@ public class RegistrationController {
 						 referContacts.setContactUserEmail(orgSpoc.getVendorUser().getEmail());
 						 referContacts.setContactUserPhone(orgSpoc.getVendorUser().getMobilePhone());
 						 referContacts.setContactUser(orgSpoc.getVendorUser());
+						 referContacts.setContactUserUUID(SourceLeadRandomCodeHelper.generateUUID());
+
 						 
 						 if(orgSpoc.getOrgRelations().getInitiatorType().equalsIgnoreCase("Vendor")){
 							 String compName=orgSpoc.getOrgRelations().getLocationId().getOrgLocationName(); 

@@ -61,7 +61,7 @@ $(function(){
 	                
 	                result = result + '<td><div class="tblicons">';
 	                    result = result + '<a class="mr10" title="summary" onclick="viewEmailTemplate('+opt.id+',\''+opt.uniqueScenarioName+'\')"><i class="fa fa-eye text-primery"></i></a>';
-	                    result = result + '<a href="'+sourceleadUrl+'/editEmailTemplate?templateUUID='+opt.emailUUID+'" title="Edit"><i class="fa fa-pencil"></i></a>';
+	                    result = result + '<a href="'+sourceleadUrl+'/editEmailTemplate?templateId='+opt.id+'" title="Edit"><i class="fa fa-pencil"></i></a>';
 	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				}  
@@ -103,8 +103,8 @@ function templatepagination(){
   <section class="content-header clearfix">
     <div class="pull-left" id="emailtemplate" style="display:block"><h2>Email Templates</h2> </div>
     <div class="pull-left" id="emailSummary" style="display:none"><h2>Email Template Summary</h2></div>
-    <div class="pull-right brud-crum"  id="emailTemplates" style="display:block"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/goToSettings">Settings</a>&raquo; <a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates">Templates </a>&raquo; Email Templates</div>
-    <div class="pull-right brud-crum" id="emailSumm" style="display:none"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}" class="paddingLeft">Home </a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/goToSettings">Settings</a>&raquo; <a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates">Templates </a>&raquo; <a href="${SourceLeadWeb_sourceleadUrl}/emailTemplates" class="paddingLeft">Email TemplatesList</a> &raquo; emailTemplateSummary </div>
+    <div class="pull-right brud-crum"  id="emailTemplates" style="display:block"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; <a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates">Templates </a>&raquo; Email Templates</div>
+    <div class="pull-right brud-crum" id="emailSumm" style="display:none"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}" class="paddingLeft">Home </a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; <a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates">Templates </a>&raquo; <a href="${SourceLeadWeb_sourceleadUrl}/emailTemplates" class="paddingLeft">Email TemplatesList</a> &raquo; emailTemplateSummary </div>
   </section>
   	
   	
