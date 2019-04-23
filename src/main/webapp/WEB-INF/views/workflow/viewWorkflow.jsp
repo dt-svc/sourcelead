@@ -80,15 +80,15 @@
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
               <textarea rows="2" 
-              value = '<c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/>'
+              value = ''
               class="form-control" name="description" id="description" placeholder="Description" field-name="Description"
 								data-validation="validate_length length1-500" data-validation-optional="true"
 								<c:choose>
 							<c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
-							readonly>
+							readonly> <c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/>
 							</c:when>
 								<c:otherwise>
-							>
+							> <c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/>
 							</c:otherwise>
 						</c:choose>
 								</textarea>
@@ -109,7 +109,7 @@
 		<c:forEach var="requirementWorkFlowStages" items="${requirementWorkFlowStagesDTO}">	
 		<li class="widgetDiv mb clearfix">
 		<!-- Cardmodel widget -->
-			<div class="row" id = "stageLoadingDiv">
+			<div class="row">
 				<div class="col-md-10">
 				<div>
 					<c:if test = "${requirementWorkFlowStages.stageName == 'Submission'}">
@@ -171,6 +171,7 @@
 					</c:if>
 					
 			</div>
+			
 		</div>
 		<!-- Cardmdoel Widget ends -->
 		</li>
@@ -293,22 +294,16 @@ function deletepopup(stageUuid, stageName, workflowUuid){
 	</script>
 	<script>
 	function deleteRequirementWorkflowStage(stageUuid, workflowUuid, stageName){
-		$("#stageLoadingDiv").
-	    attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; right:0px; margin:0px auto; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#popUp").empty();
+	     $(".project_inn_mask").fadeOut(200);
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/deleteRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid,
 			success : function(dataList){
 				if(dataList == "Success"){
-					 $("#popUp").empty();
-				     $(".project_inn_mask").fadeOut(200);
 				      $("ul#stageList li:contains('"+stageName+"')").remove();
-				      $("#stageLoadingDiv").removeAttr('style');
 				     showSuccessMsg("Successfully Deleted "+stageName);
 				}else{
-					 $("#popUp").empty();
-				     $(".project_inn_mask").fadeOut(200);
-					$("#stageLoadingDiv").removeAttr('style');
 					 showError("Operation failed, please try again");
 				}
 				}
