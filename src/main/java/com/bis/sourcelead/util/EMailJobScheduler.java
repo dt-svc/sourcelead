@@ -3984,9 +3984,11 @@ public class EMailJobScheduler {
 				Constants.EMAIL_TO_IMMIGRATION_BENEFICIARY, new ArrayList<EmailAttachment>());
 	}
 	
-	
+	/**
+	 * Calculating Monthly Leaves
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "0 3 0 1 1/1 ?")
-//	@Scheduled(cron = "0 0/3 * 1/1 * ?")
 	@Async
 	public void calculateMonthlyLeaves() throws Exception 
 	{
@@ -4007,6 +4009,10 @@ public class EMailJobScheduler {
 		}
 	}
 	
+	/**
+	 * calculate Quarterly Leaves
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "0 3 0 1 1/3 ?")
 	@Async
 	public void calculateQuarterlyLeaves() throws Exception
@@ -4024,6 +4030,10 @@ public class EMailJobScheduler {
 		}
 	}
 	
+	/**
+	 * calculate Half Yearly Leaves
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "0 3 0 1 1/6 ?")
 	@Async
 	public void calculateHalfYearlyLeaves() throws Exception
@@ -4041,6 +4051,10 @@ public class EMailJobScheduler {
 		}
 	}
 	
+	/**
+	 * calculate Yearly Leaves
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "0 3 0 1 1 ?")
 //	@Scheduled(cron = "0 0/3 * 1/1 * ?")
 	@Async
