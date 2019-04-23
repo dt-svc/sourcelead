@@ -496,6 +496,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		List<RequirementWorkFlowStages> workFlowStages = requirementWorkFlowDao.getRequirementWorkflowStagesListByUuid(requirementWorkFlow.getUuid(), orgLocations.getId());
 		RequirementWorkFlow workFlow = new RequirementWorkFlow ();
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		
+		
+		
 		workFlow.setNoOfStages(workFlowStages.size());
 		workFlow.setCreatedBy(user);
 		workFlow.setCreatedDate(currentDate);
@@ -516,8 +519,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	workFlow.setUpdatedBy(user);
 	workFlow.setUpdatedDate(currentDate);
 		
-		requirementWorkFlowDao.saveRequirementWorkFlowDetails(workFlow, orgLocations);
 		
+	Set<RequirementWorkFlowStages> workFlowSet = new HashSet<RequirementWorkFlowStages>();
+	Set<RequirementWorkFlowTasks> workFlowTaskSet = new HashSet<RequirementWorkFlowTasks>();
 		for(int i=0; i < workFlowStages.size(); i++) {
 			RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
 			requirementWorkFlowStages.setRequirementWorkFlowId(workFlow);
@@ -539,30 +543,31 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStages.setCreatedBy(user);
 			requirementWorkFlowStages.setUpdatedDate(new Date());
 			requirementWorkFlowStages.setUpdatedBy(user);
-			requirementWorkFlowDao.saveRequirementWorkFlowStagesByOrgLocationId(requirementWorkFlowStages);
+			  
 			
-			List<RequirementWorkFlowTasks> workFlowtasks = requirementWorkFlowDao.getworkflowTasksBystagesId(workFlowStages.get(i).getId());
-			for(RequirementWorkFlowTasks workFlowtaskss : workFlowtasks) {
-				RequirementWorkFlowTasks reqtasks = new RequirementWorkFlowTasks();
-				reqtasks.setRequirementWorkFlowStagesId(requirementWorkFlowStages);
-				reqtasks.setAssignTo(workFlowtaskss.getAssignTo());
-				reqtasks.setCreatedBy(workFlowtaskss.getCreatedBy());
-				reqtasks.setCreatedDate(new Date());
-				reqtasks.setDescription(workFlowtaskss.getDescription());
-				reqtasks.setOrgLocationId(workFlowtaskss.getOrgLocationId());
-				reqtasks.setPriority(workFlowtaskss.getPriority());
-				reqtasks.setStatus(workFlowtaskss.getStatus());
-				reqtasks.setUpdatedDate(new Date());
-				reqtasks.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-				reqtasks.setWorkFlowTaskName(workFlowtaskss.getWorkFlowTaskName());
-			requirementWorkFlowDao.saveRequirementWorkFlowTask(reqtasks);
-			}
+			List<RequirementWorkFlowTasks> workFlowtasks =requirementWorkFlowDao.getworkflowTasksBystagesId(workFlowStages.get(i).getId());
+			  for(RequirementWorkFlowTasks workFlowtaskss : workFlowtasks) {
+			  RequirementWorkFlowTasks reqtasks = new RequirementWorkFlowTasks();
+			  reqtasks.setRequirementWorkFlowStagesId(requirementWorkFlowStages);
+			  reqtasks.setAssignTo(workFlowtaskss.getAssignTo());
+			  reqtasks.setCreatedBy(workFlowtaskss.getCreatedBy());
+			  reqtasks.setCreatedDate(new Date());
+			  reqtasks.setDescription(workFlowtaskss.getDescription());
+			  reqtasks.setOrgLocationId(workFlowtaskss.getOrgLocationId());
+			  reqtasks.setPriority(workFlowtaskss.getPriority());
+			  reqtasks.setStatus(workFlowtaskss.getStatus()); reqtasks.setUpdatedDate(new
+			  Date()); reqtasks.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			  reqtasks.setWorkFlowTaskName(workFlowtaskss.getWorkFlowTaskName());
+			  workFlowTaskSet.add(reqtasks);
+			 
+			  requirementWorkFlowStages.setWorkflowTasks(workFlowTaskSet);
 		}
-
-		
+			  workFlowSet.add(requirementWorkFlowStages);
 	}
-
-}
+		workFlow.setWorkflowStages(workFlowSet);
+		requirementWorkFlowDao.saveRequirementWorkFlowDetails(workFlow, orgLocations);
+	}
+	}
 
 
 
