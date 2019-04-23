@@ -1179,4 +1179,12 @@ public class PayrollConfigurationRestController {
 			return response;
 	}
 	 
+	 @RequestMapping(value = { "/payheadHandlerByOrg", "rest/payheadHandlerByOrg" })
+		public Response<String> payheadHandlerByOrg(PayrollPayheadDTO payrollPayheadDTO, HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    payrollPayheadDTO.setOrgLocationId(String.valueOf(orgLocations.getId()));
+			Response<String> response =  payrollPayheadService.payheadHandlerByOrg(payrollPayheadDTO);
+			return response;
+		}
+	 
 }
