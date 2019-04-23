@@ -156,15 +156,15 @@ import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.docusign.esign.api.AuthenticationApi;
 import com.docusign.esign.api.EnvelopesApi;
 import com.docusign.esign.client.ApiClient;
@@ -483,7 +483,7 @@ public class EMailJobScheduler {
 		// Saves the resumes at org level specific folder and updates the org level
 		// candidates table with parsed information.
 		logger.info("******************  Parsing resumes is Started each org level environment value is ::: "+environment);
-		//System.out.println("****************** Parsing resumes is Started..!..! **********");
+		System.out.println("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
 		if(environment != null && !environment.trim().equalsIgnoreCase("local")) {
 		try {
 			List<Org> orgList = orgService.getOrgs();
@@ -497,7 +497,7 @@ public class EMailJobScheduler {
 					OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLoc.getId());
 
 					Long orgLocationId = loginOrgLocation.getId();
-					List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.RESUME_PARSING);
+					List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.RESUME_PARSING, true);
 						File tempfolder = null;
 					for(EmailScenarioConfiguration email :  emailsList) {
 						//System.out.println(" Email id is :" + email.getEmailId());
@@ -3984,9 +3984,11 @@ public class EMailJobScheduler {
 				Constants.EMAIL_TO_IMMIGRATION_BENEFICIARY, new ArrayList<EmailAttachment>());
 	}
 	
-	
+	/**
+	 * Calculating Monthly Leaves
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "0 3 0 1 1/1 ?")
-//	@Scheduled(cron = "0 0/3 * 1/1 * ?")
 	@Async
 	public void calculateMonthlyLeaves() throws Exception 
 	{
@@ -4007,6 +4009,10 @@ public class EMailJobScheduler {
 		}
 	}
 	
+	/**
+	 * calculate Quarterly Leaves
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "0 3 0 1 1/3 ?")
 	@Async
 	public void calculateQuarterlyLeaves() throws Exception
@@ -4024,6 +4030,10 @@ public class EMailJobScheduler {
 		}
 	}
 	
+	/**
+	 * calculate Half Yearly Leaves
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "0 3 0 1 1/6 ?")
 	@Async
 	public void calculateHalfYearlyLeaves() throws Exception
@@ -4041,6 +4051,10 @@ public class EMailJobScheduler {
 		}
 	}
 	
+	/**
+	 * calculate Yearly Leaves
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "0 3 0 1 1 ?")
 //	@Scheduled(cron = "0 0/3 * 1/1 * ?")
 	@Async
