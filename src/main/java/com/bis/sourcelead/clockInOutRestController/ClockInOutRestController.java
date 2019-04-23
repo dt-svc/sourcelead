@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.sendgrid.Method;
 
 @RestController
 @RequestMapping("/app")
@@ -274,6 +275,12 @@ public class ClockInOutRestController {
 		return null;
 	}
 	
-
+	
+	@RequestMapping(value = "/getAossociateClockInOutReportSummary",method = RequestMethod.GET)
+	public String getAossociateClockInOutReportSummary(HttpServletRequest req,HttpServletResponse res) {
+		
+		
+		return null;
+	}
 
 }
