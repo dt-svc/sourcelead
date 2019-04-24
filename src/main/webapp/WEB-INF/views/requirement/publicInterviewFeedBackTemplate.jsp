@@ -14,24 +14,24 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
 <title>Welcome to Source Lead :: Interview Template</title>
 <!-- Bootstrap -->
-<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
-<script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
-<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 </head>
  
  
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css?staticTime=${staticTime}" />
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
 
 
 <style type="text/css">
@@ -138,7 +138,7 @@ function cancelFunction(){
 	$(".project_inn_mask").hide();
 	var result = "";
 	result = result + '<form id="cancelFunction_form" name="cancelFunction_form" enctype="multipart/form-data" method="post">';
-	result = result + '<h3>Interview Feedback</h3>';
+	result = result + '<h3 class="mt ml">Interview Feedback</h3>';
 	
 	result = result + '<div class="row clearfix">';
 	result = result + '<div class="col-md-6">';
@@ -273,7 +273,7 @@ function interviewTemplateForm(){
 		generateInterviewFeedbackForm1(sourceleadUrl,templateId)
 		var result = "";
 		result = result + '<form id="interviewTemplate_form" name="interviewTemplate_form" enctype="multipart/form-data" method="post">';
-		result = result + '<h3>Interview Feedback</h3>';
+		result = result + '<h3 class="mt ml">Interview Feedback</h3>';
 		/* result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
 		result = result + '<div class="sjfb-field sjfb-text">';
 		result = result + '<label>Comment <span class="text-danger">*</span></label>';
@@ -428,7 +428,7 @@ $('body').on('blur', '#interviewTemplate_form', function() {
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">

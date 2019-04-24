@@ -34,8 +34,8 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 		
 	});
 </script>
-<script src="/resources/js/editor.js"></script>
-<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/editor.js"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();

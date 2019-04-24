@@ -4,7 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link href="/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
 
 
 <div class="wraper">
@@ -303,7 +303,7 @@ function validateBlogTitle(blogUUID){
 	 
 }
 </script>  
-<script src="/resources/js/summernote.min.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/summernote.min.js"></script>
 <script>
 $(function() { 
   $('#publishOn').empty().val('${publishon}');

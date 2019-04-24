@@ -3,8 +3,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-	<script src="/resources/js/editor.js"></script>
-	<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/editor.js"></script>
+	<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 <script>
 $(function() { 
     $("#txtEditor").Editor();

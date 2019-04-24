@@ -9,7 +9,7 @@
 <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
- <link href="/resources/css/jquery-tagit.css?staticTime=${staticTime}" rel="stylesheet">
+ <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jquery-tagit.css?staticTime=${staticTime}" rel="stylesheet">
  
 <style type="text/css">
 .edit-details {
