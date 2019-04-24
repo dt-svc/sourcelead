@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.UserAccountsDTO;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dto.DashboardCountsDTO;
@@ -2074,8 +2075,6 @@ public class DashboardRestController {
 
   	}
       
-      
-      
  	 @RequestMapping(value = "/ws/dumpUUIDForUserRoles", method = RequestMethod.GET)
  	 public void dumpUUIDForUserRoles() throws Exception {
  		
@@ -2090,5 +2089,13 @@ public class DashboardRestController {
  			 System.out.println("dumping uuid for userroles ends");
  		 }
  	 }
+ 	 
+ 	 
+ 	@RequestMapping(value = "/getLoginUserMultiAccountsList")
+	public @ResponseBody List<UserAccountsDTO> getLoginUserMultiAccountsList() throws Exception {
+		
+ 		List<UserAccountsDTO> accountsList = userLoginHelper.getUserAccountsList();
+ 		return accountsList;
+	}
       
 }
