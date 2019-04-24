@@ -4,7 +4,9 @@ package com.bis.sourcelead.workflow.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,7 +15,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -34,8 +40,8 @@ import com.bis.sourcelead.entity.User;
 	@JoinColumn(name = "REQUIREMENT_WORKFLOW_ID", nullable = false)
 	private RequirementWorkFlow requirementWorkFlowId;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "REQUIREMENT_QUESTIONNAIRE_TEMPLATE_ID", nullable = false)
+	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@JoinColumn(name = "REQUIREMENT_QUESTIONNAIRE_TEMPLATE_ID")
 	private RequirementQuestionnaireTemplate requirementQuestionnaireTemplateId;
 	
 	
@@ -77,7 +83,11 @@ import com.bis.sourcelead.entity.User;
 	@ManyToOne
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
-
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementWorkFlowStagesId")
+	private Set<RequirementWorkFlowTasks> workflowTasks;
+	
 	public Long getId() {
 		return id;
 	}
@@ -196,5 +206,14 @@ import com.bis.sourcelead.entity.User;
 	public void setRequirementQuestionnaireTemplateId(RequirementQuestionnaireTemplate requirementQuestionnaireTemplateId) {
 		this.requirementQuestionnaireTemplateId = requirementQuestionnaireTemplateId;
 	}
+
+	public Set<RequirementWorkFlowTasks> getWorkflowTasks() {
+		return workflowTasks;
+	}
+
+	public void setWorkflowTasks(Set<RequirementWorkFlowTasks> workflowTasks) {
+		this.workflowTasks = workflowTasks;
+	}
+
 	
 }

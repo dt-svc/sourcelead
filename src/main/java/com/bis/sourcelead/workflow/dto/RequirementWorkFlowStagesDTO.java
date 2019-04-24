@@ -1,6 +1,8 @@
 package com.bis.sourcelead.workflow.dto;
 
 import java.io.Serializable;
+import java.util.List;
+
 
 public class RequirementWorkFlowStagesDTO implements Serializable{
 
@@ -29,6 +31,8 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 	private String workflowDescription;
 	
 	private Integer seqOrder;
+	
+	private List<RequirementWorkFlowTasksDTO> taskList;
 	
 	public long getId() {
 		return id;
@@ -133,7 +137,15 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 	public void setWorkflowDescription(String workflowDescription) {
 		this.workflowDescription = workflowDescription;
 	}
-	
+
+	public List<RequirementWorkFlowTasksDTO> getTaskList() {
+		return taskList;
+	}
+
+	public void setTaskList(List<RequirementWorkFlowTasksDTO> taskList) {
+		this.taskList = taskList;
+	}
+
 	
 
 }

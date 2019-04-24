@@ -72,8 +72,7 @@ import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementWorkFlowId")
 	private Set<RequirementWorkFlowStages> workflowStages;
-	
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -170,5 +169,14 @@ import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+	public Set<RequirementWorkFlowStages> getWorkflowStages() {
+		return workflowStages;
+	}
+
+	public void setWorkflowStages(Set<RequirementWorkFlowStages> workflowStages) {
+		this.workflowStages = workflowStages;
+	}
+	
 	
 }
