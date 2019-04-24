@@ -261,8 +261,9 @@ function PerformanceGoals(){
 			  		        contentType:false, 
 					    	url: pmsUrl+"/savePerformanceGoals?",
 					        success: function(response) {
-					        	$("#goalsLoading").removeAttr('style');
+					        	
 					        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+					        		$("#goalsLoading").removeAttr('style');
 			     	    		    showError(response.responseMessage);
 			     	    		}
 					        	else if (response.response === "AWKWARD") {
@@ -328,8 +329,9 @@ function PerformanceGoals(){
 					  		        contentType:false, 
 							    	url: pmsUrl+"/savePerformanceSubGoals?",
 							        success: function(response) {
-							        	$("#goalsLoading").removeAttr('style');
+							        	
 							        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+							        		$("#goalsLoading").removeAttr('style');
 					     	    		    showError(response.responseMessage);
 					     	    		}
 							        	else if (response.response === "AWKWARD") {
@@ -968,8 +970,9 @@ function PerformanceGoals(){
 								  		        contentType:false, 
 										    	url: pmsUrl+"/savePerformanceTeamSubGoals?",
 										        success: function(response) {
-										        	$("#goalsLoading").removeAttr('style');
+										        	
 										        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+										        		$("#goalsLoading").removeAttr('style');
 								     	    		    showError(response.responseMessage);
 								     	    		}
 										        	else if (response.response === "AWKWARD") {
