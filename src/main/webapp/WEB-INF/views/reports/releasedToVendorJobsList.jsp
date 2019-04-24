@@ -15,20 +15,20 @@
 #billing_chartdiv {
   	width:100%; height:300px;
 }
-/* Ensure that the demo table scrolls */
+/* Ensure that the demo table scrolls fixedColumntable */
 </style>
 <script type="text/javascript">
 	window.onload = function () {
 		releasedToVendorJobsList();
 	 };
 </script>
- 
+  <div id="reportJobsLoadingDivId"></div>
     <div class="reportHead">
     	
     
     	<div class="clearfix"></div>
-    	 	<div class="candidate_wrap_table recruiterReports_table fixedColumntable minHeight positionRelative datatable_filter dashboard-widget clearfix">
-              <div id="releasedJobsList" class="filter_position positionRelative"></div> 
+    	 	<div class="candidate_wrap_table positionRelative datatable_filter clearfix">
+              <div id="releasedJobsList" class="positionRelative"></div> 
           </div> 
     </div>
   </section>
@@ -42,6 +42,7 @@ function releasedToVendorJobsList(){
 	 var searchValue = $("#jobsDataTableSearch").val();
 	 var spocId = '${spocId}';
 	var	searchValue = searchValue ? searchValue : "";
+	  $("#reportJobsLoadingDivId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({  
         type : "GET",
         url: sourceleadUrl+"/getVendorJobsForReleasedJobReportForList?searchValue="+searchValue+"&orgRelationId="+orgRelationId+"&spocId="+spocId,
@@ -68,6 +69,7 @@ function releasedToVendorJobsList(){
                 result = result +"<th><div>No of Applicants</div></th>";
                 result = result +"<th><div>Owner</div></th>"; 
                 result = result +"<th><div>Joined</div></th>"; 
+                result = result +"<th><div>Released On</div></th>"; 
                 result = result +"<th><div>Status</div></th>"; 
                 result = result +"  </tr>"; 
                 result = result +"</thead>";
@@ -91,13 +93,15 @@ function releasedToVendorJobsList(){
 	   		        result = result +'<div class="show_Empdetails showjoblist">';
  		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
 
- 		        	result = result +'<div class="emailvalues emailvaluesNew">';
+ 		        	result = result +'<div class="emailvalues">';
  		        	
 						for(var k=0; k<opt.locationsList.length; k++){
 							result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
 		   		        	
  		    	 	}
  		        	result = result +'</div>';
+ 		        	result = result +'</div>';
+   		        	result = result +'</div>';
  		        	result  = result + ' </td>';
                	 
                	 if(opt.totalApplicants != null && opt.totalApplicants != '' && opt.totalApplicants != 'undefined'){ 
@@ -112,13 +116,15 @@ function releasedToVendorJobsList(){
                  }else{
                  result  = result + '<td><div><span>0</span></div></td>'; 
                  }
-               	 
+               	 result  = result + ' <td><div><span title="'+opt.releasedDate+'">'+opt.releasedDate+'</span></div></td>';
+
                	 result  = result + ' <td><div><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span></div></td>';
                	 
                	 result  = result + '</tr>';
                  } 
                 result = result +" </tbody>";
                 result = result +"</table>";
+                $("#reportJobsLoadingDivId").removeAttr("style");
                 $("#releasedJobsList").append(result); 
                 releasedJobsPagination(); 
      		} else if (response.indexOf('Sign In') !== -1) {

@@ -61,7 +61,7 @@ $(function(){
 	                
 	                result = result + '<td><div class="tblicons">';
 	                    result = result + '<a class="mr10" title="summary" onclick="viewEmailTemplate('+opt.id+',\''+opt.uniqueScenarioName+'\')"><i class="fa fa-eye text-primery"></i></a>';
-	                    result = result + '<a href="'+sourceleadUrl+'/editEmailTemplate?templateUUID='+opt.emailUUID+'" title="Edit"><i class="fa fa-pencil"></i></a>';
+	                    result = result + '<a href="'+sourceleadUrl+'/editEmailTemplate?templateId='+opt.id+'" title="Edit"><i class="fa fa-pencil"></i></a>';
 	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				}  
