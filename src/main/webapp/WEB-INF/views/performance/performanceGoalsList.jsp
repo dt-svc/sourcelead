@@ -42,9 +42,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 <div class="project_wrap">
     <div class="perfTabs">
     	<ul class="clearfix">
-    		<li><a href="#" class="Act">My Goals</a></li>
-    		<li><a href="#">Team Goals</a></li>
-    		<li><a href="#">Department Goals</a></li>
+    		<li><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" class="Act">My Goals</a></li>
+    		<li><a href="${SourceLeadWeb_pmsUrl}/performanceTeamGoalsList">Team Goals</a></li>
     	</ul>
     </div>  
     
@@ -125,7 +124,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	  $("#totalGoalsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({ 
 		   	type: "GET",
-			url: pmsUrl+"/getMyTotalGoalsDoNutCharts",
+			url: pmsUrl+"/getMyTotalGoalsDoNutCharts?performanceGoalType=self",
 		    success: function(response) {
 		    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
   	    		    showError(response.responseMessage);
@@ -152,7 +151,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	  $("#inprogressGoalsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({ 
 		   	type: "GET",
-			url: pmsUrl+"/getMyInprogressGoalsDoNutCharts",
+			url: pmsUrl+"/getMyInprogressGoalsDoNutCharts?performanceGoalType=self",
 		    success: function(response) {
 		    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
   	    		    showError(response.responseMessage);
@@ -179,7 +178,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$("#completedGoalsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({ 
 		   	type: "GET",
-			url: pmsUrl+"/getMyCompletedGoalsDoNutCharts",
+			url: pmsUrl+"/getMyCompletedGoalsDoNutCharts?performanceGoalType=self",
 		    success: function(response) {
 		    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
   	    		    showError(response.responseMessage);
@@ -207,7 +206,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	  $("#overDueGoalsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({ 
 			   	type: "GET",
-				url: pmsUrl+"/getMyOverDueGoalsDoNutCharts",
+				url: pmsUrl+"/getMyOverDueGoalsDoNutCharts?performanceGoalType=self",
 			    success: function(response) {
 			    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 	  	    		    showError(response.responseMessage);
@@ -235,7 +234,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	  $("#notStartedGoalsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({ 
 			   	type: "GET",
-				url: pmsUrl+"/getMyNotStartedGoalsDoNutCharts",
+				url: pmsUrl+"/getMyNotStartedGoalsDoNutCharts?performanceGoalType=self",
 			    success: function(response) {
 			    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 	  	    		    showError(response.responseMessage);
@@ -576,7 +575,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		 var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 		 var searchValue = $("#goalsDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		 var url = pmsUrl+"/getPerformanceGoalsList?searchValue="+searchValue;
+		 var url = pmsUrl+"/getPerformanceGoalsList?performanceGoalType=self&searchValue="+searchValue;
 		 goalsPagination(url);
 		 $("#goalsListLoading").removeAttr("style");
 	}
@@ -626,10 +625,10 @@ function goalsPagination(url){
             	  }
 	              result = result +"<div class='tblminwidth-30'>";
 	              result = result +"<div class='progress mb0 progressGoals'>";
-	              result = result +"<div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='"+percentageDone+"' aria-valuemin='0' aria-valuemax='100' style='width:"+percentageDone+"%'>";
+	              result = result +"<div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='"+percentageDone.toFixed(2)+"' aria-valuemin='0' aria-valuemax='100' style='width:"+percentageDone+"%'>";
 	              result = result +"</div>";
 	              result = result +"</div>";
-	              result = result +"<p class='mb0 fontSmall mt5'>"+percentageDone+"% Complete (info)</p>";
+	              result = result +"<p class='mb0 fontSmall mt5'>"+percentageDone.toFixed(2)+"% Completed (info)</p>";
 	              result = result +"</div>";
 				
 	              return result;
@@ -654,8 +653,8 @@ function goalsPagination(url){
 	            	    result = result +'<div class="width150px clearfix">';
 	            	    result = result +'<ul class="list-unstyled list-inline ml clearfix">';
 	            	    result = result +'<li><a href="'+pmsUrl+'/addNewGoal?goalUUID='+opt.uuid+'"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>';
-	            	    result = result +'<li><i class="fa fa-trash cursorPointer" title="Delete"></i></li>';
-	            	    result = result +'<li><i class="fa fa-comments cursorPointer text-primary" title="Comment"></i></li>';
+	            	    result = result +"<li><a onclick='deletePerformanceGoal(\""+opt.uuid+"\")'><i class='fa fa-trash cursorPointer' title='Delete'></i></a></li>";
+	            	    result = result +'<li><a href="'+pmsUrl+'/goalSummary?goalUUID='+opt.uuid+'"><i class="fa fa-comments cursorPointer text-primary" title="Comment"></i></a></li>';
 		            	   if(opt.goalType == "New_Goal"){
 		            		   result = result +'<li><a href="'+pmsUrl+'/addNewSubGoal?goalUUID='+opt.uuid+'"><i class="fa fa-level-down cursorPointer textSuccess" title="Sub Goals"></i></a></li>';
 		            	   }
@@ -695,5 +694,23 @@ function goalsPagination(url){
     	});
 }
 
+</script>
+
+<script>
+function deletePerformanceGoal(goalUUID){
+	  $.ajax({
+	    	type: "POST",
+	        url: pmsUrl+"/deletePerformanceGoalByGoalUUID?goalUUID="+goalUUID, 
+	        success: function(response) {
+	        
+	    	if (response.response === "AWKWARD") {
+	      		location.href = "/errorPage";
+	      	} else if (response.response === "SUCCESS") {
+	      		location.replace(pmsUrl+"/performanceTeamGoalsList");
+	      	}
+		        
+	       },   
+	    });
+}
 </script>
   
