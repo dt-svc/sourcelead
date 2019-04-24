@@ -42,7 +42,7 @@
                 <div class="project_details col2Custom">
 					<div class="useredit">
 						<div class="width150px">
-							<select class="sel" onchange="changeTicketStatus(this, ${ticketSummary.id});">
+							<select class="sel" onchange="changeTicketStatus(this, ${ticketSummary.id}, ${ticketSummary.ticketStatusId});">
 								<c:forEach items="${statusList}" var="status">
 									<option data-comment="${status.commentRequired}" value="${status.id}" ${status.name == ticketSummary.ticketStatus ? "selected" : ""}>${status.name}</option>
 								</c:forEach>
@@ -124,7 +124,7 @@
 			                    			<div class="col-md-8 tbldata-dotdot-200 inlineBlock">${attachment.fileName}</div>
 			                    			<ul class="list-unstyled list-inline col-md-4 text-center">
 			                    				<li><a href="javascript:void(0)" onclick="viewFile('${attachment.fileUrl}','${attachment.fileName}','${attachment.fileType}');"><i class="fa fa-eye cursorPointer" title="View"></i></a></li>
-			                    				<li><a href="${attachment.fileUrl}" target="_blank"><i class="fa fa-download cursorPointer" title="Download"></i></a></li>
+			                    				<li><a href="${attachment.fileUrl}" download="" class="glyphicon glyphicon-download-alt" title="Download"></a></li>
 			                    			</ul>
 			                    		</div>
 		                    		</div>

@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
-import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -45,6 +44,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.timesheet.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -1554,7 +1554,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
 		    	globalUserQuery = " pc.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :locationId)";
 		    }else {
-		    	globalUserQuery = " pc.orgLocationsId.id = :locationId";
+		    	globalUserQuery = " (pm.projectMemberCandidteId.designationType <> 'Offshore C2C' and pc.orgLocationsId.id = :locationId) OR (pm.projectMemberCandidteId.designationType = 'Offshore C2C' and pc.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :locationId))";
 		    }
 		 
 		String query = " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects where  "
@@ -2062,12 +2062,18 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		return pm;  
 	}
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<Candidate> getAllAvailableAssociates( Long orgLocationId) {
+	public List<Object[]> getAllAvailableAssociates( Long orgLocationId) {
 	Session session = this.sessionFactory.getCurrentSession();
-	String query = "from Candidate candidate where candidate.orgLocationId = :orgLocationId and candidate.designationType = 'Offshore C2C'";
-	List<Candidate> list = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+	/*String query = "select * from Candidate candidate where candidate.orgLocationId = :orgLocationId";
+	query += " and (case when candidate.parentCandidateId is null then (candidate.isAssociate) else (candidate.parentCandidateId.isAssociate) end) = 'Y'";*/
+	
+	String query = "SELECT c.ID, c.FIRST_NAME, c.MIDDLE_NAME, c.LAST_NAME FROM CANDIDATE c where c.ORG_LOCATION_ID = :orgLocationId and case when c.PARENT_CANDIDATE_ID is null then c.IS_ASSOCIATE else (select c1.IS_ASSOCIATE from CANDIDATE c1 where c1.ID=c.PARENT_CANDIDATE_ID) end = 'Y';";
+	
+	List<Object[]> list = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
 	return list;
 	}
 	

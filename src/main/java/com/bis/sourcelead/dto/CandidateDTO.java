@@ -11,6 +11,10 @@ import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Phone;
 import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class CandidateDTO extends SearchDTO{
 
 	private Long id;
@@ -27,7 +31,7 @@ public class CandidateDTO extends SearchDTO{
 
 	//private OrgLocations orgLocationId;
 	
-	private OrgLocations workLocation;
+	private Long workLocation;
 
 	private String consultantUser;
 
@@ -271,6 +275,8 @@ public class CandidateDTO extends SearchDTO{
 	private String defaultOrgProbationPeriod;
 	
 	private String marketPrice;
+	
+	private String ssnNumber;
 	
 	public String getCandidateId() {
 		return candidateId;
@@ -1292,13 +1298,20 @@ public class CandidateDTO extends SearchDTO{
 		this.marketPrice = marketPrice;
 	}
 
-	public OrgLocations getWorkLocation() {
+	public Long getWorkLocation() {
 		return workLocation;
 	}
 
-	public void setWorkLocation(OrgLocations workLocation) {
+	public void setWorkLocation(Long workLocation) {
 		this.workLocation = workLocation;
 	}
 
+	public String getSsnNumber() {
+		return ssnNumber;
+	}
+
+	public void setSsnNumber(String ssnNumber) {
+		this.ssnNumber = ssnNumber;
+	}
 
 }

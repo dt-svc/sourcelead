@@ -374,6 +374,36 @@ jQueryFormUtils.validateEmail = function(email) {
 };
 
 /**
+ * prasad K
+ * Validate pan
+ *
+ * @return {Boolean}
+ */
+jQueryFormUtils.validatePan = function(panNumber) {
+	var regpan = /^([A-Z]){5}([0-9]){4}([A-Z]){1}?$/;
+	if(regpan.test(panNumber)){
+	   return true;
+	} else {
+		 return false;
+	}
+};
+
+/**
+ * prasad K
+ * Validate Aadhar Number
+ *
+ * @return {Boolean}
+ */
+jQueryFormUtils.validateAadhar = function(aadharNumber) {
+	var regpan = /^\d{4}\s?\d{4}\s?\d{4}$/g;
+	if(regpan.test(aadharNumber)){
+	   return true;
+	} else {
+		 return false;
+	}
+};
+
+/**
  * Validate phone number, at least 7 digits only 3 hyphen and plus allowed
  *
  * @return {Boolean}
@@ -1135,6 +1165,11 @@ jQueryFormUtils.validateName = function(val) {
  jQueryFormUtils.validateTax = function(val) {
 	 return val.trim().match(/^[A-Za-z0-9][\s\w-](.*[a-zA-Z0-9])?$/) !== null;
 };
+
+//Below is validting percentage of work field
+jQueryFormUtils.validatePercentageOfWork = function(val) {
+	 return val <= 100;
+};
 //************************************************************************************************************************
 //------------------------------->END New Validation  Entries for Peopleaxis.com by HariKrishna	
 
@@ -1259,7 +1294,16 @@ jQueryFormUtils.validateName = function(val) {
         else if (validationRules.indexOf('validate_extno') > -1 && !jQueryFormUtils.validateExtNumber(value)) {
             return validationErrorMsg || language.badExtno;
         }
-
+        
+     // Pan Number
+        else if (validationRules.indexOf('validate_panNumber') > -1 && !jQueryFormUtils.validatePan(value)) {
+            return validationErrorMsg || language.badPan;
+        }
+        // Aadhar Number
+        else if (validationRules.indexOf('validate_aadharNumber') > -1 && !jQueryFormUtils.validateAadhar(value)) {
+            return validationErrorMsg || language.badAadhar;
+        }
+        
         // Swedish phone number
         else if (validationRules.indexOf('validate_swemobile') > -1 && !jQueryFormUtils.validateSwedishMobileNumber(value)) {
             return validationErrorMsg || fieldname + language.badTelephone;
@@ -1420,6 +1464,9 @@ else if (validationRules.indexOf('validate_Name') > -1 && !jQueryFormUtils.valid
 	return validationErrorMsg || language.badName;
 }
         
+else if (validationRules.indexOf('validate_percentage_of_work') > -1 && !jQueryFormUtils.validatePercentageOfWork(value)) {
+	return validationErrorMsg || language.pecentageOfWork;
+}         
 
 //---------------------------Hari-------------------------
 
@@ -1470,6 +1517,8 @@ jQueryFormUtils.LANG =  {
 	badCphone: 'Phone Number is invalid for the Selected Country',
     badTelephone : 'you entered is in improper format',
     badNumber : 'Invalid number',
+    badPan : 'Invalid pan number',
+    badAadhar : 'Invalid aadhar number',
     badExtno : 'Only numbers allowed',
     badSecurityAnswer : 'You have not given a correct answer to the security question',
     badDate : 'You have not given a correct date',
@@ -1522,7 +1571,8 @@ jQueryFormUtils.LANG =  {
 	badOrgname: 'Only Alphanumeric Ampersand period and Hyphen Allowed',
 	badSpecialChar: 'Only -_.,&() are allowed',
 	badTax: 'Only - and Alpha Numerics Allowed',
-	badName: 'Muststart with Alphabet & Only \+&$@#!.,*-_?:;" allowed.'
+	badName: 'Muststart with Alphabet & Only \+&$@#!.,*-_?:;" allowed.',
+	pecentageOfWork	: '% of work should not be more than 100'
 };
 /**
  * Validate url

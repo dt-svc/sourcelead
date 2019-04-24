@@ -45,6 +45,7 @@ function getFormSubmissionMasterList() {
 					text += "	<td><span class='tblminwidth-100'>" + submissionList[e].fillingDate + "</span></td>";
 					text += "	<td><div class='tblminwidth-150 clearfix'>" + submissionList[e].statusText + "</div></td>";
 					text += "	<td>";
+					text += "	<div class='tblminwidth-75'>";
 					text += "		<ul class='list-unstyled list-inline mb0'>";
 					text += "			<li><a href='javascript:void()' class='text-danger' title='Export' onclick='exportFormToPDF(" + submissionList[e].id + ")'><i class='fa fa-file-pdf-o'></i></a></li>";
 					text += "			<li><a href=" + sourceleadUrl + "/forms/viewForm?uuid=" + submissionList[e].taxFormUUID + "&formUUID=" + submissionList[e].formUUID + " title='View' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
@@ -52,6 +53,7 @@ function getFormSubmissionMasterList() {
 						text += "				<li><a href=" + sourceleadUrl + "/forms/editForm?uuid=" + submissionList[e].taxFormUUID + "&formUUID=" + submissionList[e].formUUID + " title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";	
 					}
 					text += "		</ul>";
+					text += "	</div>";
 					text += "	</td>";
 					text += "</tr>";
 					$("#submissionList").append(text);

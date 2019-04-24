@@ -602,7 +602,7 @@ public class TicketManagementRestController {
 	 * response.setResponseMessage(Result.AWKWARD.getValue()); } return response; }
 	 */
 
-	@RequestMapping(value = "/changeTicketStatusType", method = RequestMethod.POST)
+	@RequestMapping(value = {"/changeTicketStatusType", "/rest/changeTicketStatusType"}, method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> changeTicketStatusType(HttpServletRequest request, TicketStatusHistoryDTO ticketStatusHistoryDTO) {
 		Response<Boolean> response = new Response<>();
@@ -754,7 +754,12 @@ public class TicketManagementRestController {
 		}
 		return response;
 	}
-
+	
+	@RequestMapping(value = {"/rest/changeTicketManagementStatus"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> deleteTicketForMobile(HttpServletRequest request, @RequestParam(defaultValue = "0") long ticketId, @RequestParam(defaultValue = "1") int status) {
+		return deleteTicket(request, ticketId, status);
+	}
 
 	@RequestMapping(value = "/rest/ticketSummary")
 	public Response<TicketDTO> getTicketSummary(HttpServletRequest request, @RequestParam(defaultValue = "") String uuid) {

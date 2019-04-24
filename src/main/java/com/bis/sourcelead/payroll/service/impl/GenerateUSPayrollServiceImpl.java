@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
-import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dao.impl.ExpensesDaoImpl;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
@@ -93,6 +92,7 @@ import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.symmetry.ste.STEPayrollCalculator;
@@ -1279,11 +1279,17 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			}else {
 				payrollDTO.setDepositType("");
 			}
+			payrollDTO.setPayType(payroll.getPayType());
 			payrollDTO.setEmpPayrollId(payroll.getId());
 			payrollDTO.setEmpPayrollUUID(payroll.getUsEmpPayrollUUID());
 			payrollDTO.setGrossPay(payroll.getGrossPay());
 			payrollDTO.setNetPay(payroll.getNetPay());
-			payrollDTO.setRegularHrsTotalAmt(payroll.getRegularHoursAmount());
+			if(payroll.getRegularHoursAmount() != null) {
+				payrollDTO.setRegularHrsTotalAmt(payroll.getRegularHoursAmount());	
+			}else {
+				payrollDTO.setRegularHrsTotalAmt(BigDecimal.ZERO);
+			}
+			
 			payrollDTO.setPayRate(payroll.getEmpPayRate());
 			payrollDTO.setPostTaxDeduction(payroll.getPostTaxDeduction());
 			payrollDTO.setPreTaxDeduction(payroll.getPreTaxDeduction());

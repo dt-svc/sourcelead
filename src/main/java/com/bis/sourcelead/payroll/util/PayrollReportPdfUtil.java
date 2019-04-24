@@ -1594,9 +1594,9 @@ public class PayrollReportPdfUtil {
 					.setColumnStyle(tableRowStyle.setHorizontalAlignment(HorizontalAlignment.CENTER)).columns(
 							col.column("Type", "type", type.stringType()),
 							col.column("No of Employees", "noOfEmployees", type.integerType()),
-							col.column("Current", "current", type.bigDecimalType()),
-							col.column("QTD", "qtd", type.bigDecimalType()),
-							col.column("YTD", "ytd", type.bigDecimalType()))
+							col.column("Current", "current", Templates.currencyType),
+							col.column("QTD", "qtd", Templates.currencyType),
+							col.column("YTD", "ytd", Templates.currencyType))
 					.pageFooter(Templates.footerComponent)
 					.setDataSource(createDeductionSummaryPdfDataSource(data)).toPdf(pdfExporter);
 			} catch (DRException e) {

@@ -251,9 +251,10 @@ padding: 2px 300px 2px 0px;
 <!-- 		    <input type="hidden" name="tabType" id="tabType" value='Vendor'> -->
 			<!-- <a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
 			<a href="#" id="Client" class="tabActivation" onclick="tabEnable(this);getTemplateList('pending'); ">Clients</a> -->
-			<a href="#" id="Vendor1" class="active tabActivation" onclick="tabEnable(this);Check('Vendors');getTemplateList('Vendor');"></a>
-			<a href="#" id="Client1" class="tabActivation" onclick="tabEnable(this);Check('Clients');getTemplateList('Client');">Clients (${contractsCount.totalDraftClientCount})</a>
-			<a href="#" id="Applicants1" class="tabActivation" onclick="tabEnable(this);Check('Applicants');getTemplateList('Full time offer');">Applicants (${contractsCount.totalDraftApplicantCount})</a>
+			<button type="button" value="Vendor" id="Vendor1" class="tabActivation btn btn-default btn-sm" onclick="tabEnable(this);Check('Vendors');getTemplateList('Vendor');"> Vendors(${contractsCount.totalDraftVendorCount})</button>
+			<button type="button" value="Client" id="Client1" class="tabActivation btn btn-default btn-sm" onclick="tabEnable(this);Check('Clients');getTemplateList('Client');">Clients (${contractsCount.totalDraftClientCount})</button>
+			<button type="button" value = "Full time offer" id="Applicants1" class="tabActivation btn btn-default btn-sm" onclick="tabEnable(this);Check('Applicants');getTemplateList('Full time offer');">Applicants (${contractsCount.totalDraftApplicantCount})</button>
+		    <input type="hidden" id="errorDiv" value=""/>
 		</div>
 		<ul>
 		
@@ -271,11 +272,11 @@ padding: 2px 300px 2px 0px;
 			<li id="filterContractTypePop"><i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i>
 	           	<div class="statusFiler-1 approved_pop">
 					<ul class="list-unstyled">
-						<li><input id="c1" type="checkbox" name="contractType" value="MSA" onclick="getTemplateList();"><label for="c1">MSA</label></li>
-						<li><input id="c2" type="checkbox" name="contractType" value="SOW" onclick="getTemplateList();"><label for="c2">SOW</label></li>
-						<li><input id="c3" type="checkbox" name="contractType" value="NDA" onclick="getTemplateList();"><label for="c3">NDA</label></li>
-						<li><input id="c4" type="checkbox" name="contractType" value="NSA" onclick="getTemplateList();"><label for="c4">NSA</label></li>
-						<li><input id="c5" type="checkbox" name="contractType" value="Full Time Offer" onclick="getTemplateList();"><label for="c5">Full Time Offer</label></li>
+						<li><input id="c1" type="checkbox" name="contractType" value="MSA" onclick="filterContractsList();"><label for="c1">MSA</label></li>
+						<li><input id="c2" type="checkbox" name="contractType" value="SOW" onclick="filterContractsList();"><label for="c2">SOW</label></li>
+						<li><input id="c3" type="checkbox" name="contractType" value="NDA" onclick="filterContractsList();"><label for="c3">NDA</label></li>
+						<li><input id="c4" type="checkbox" name="contractType" value="NSA" onclick="filterContractsList();"><label for="c4">NSA</label></li>
+						<li><input id="c5" type="checkbox" name="contractType" value="Full Time Offer" onclick="filterContractsList();"><label for="c5">Full Time Offer</label></li>
 					</ul>
 				</div>	                	
 			</li>
@@ -307,12 +308,12 @@ padding: 2px 300px 2px 0px;
 		    	<input type="text" placeholder="Vendor Search" id="vendorDataTableSearch"/>
 		    </div>
 	    </div>
-	    <div class="clearfix" id="clinetDataTable" style="display: none;">
+	    <div class="clearfix" id="clinetDataTable" style="display: block;">
 		    <div class="remove_search mt5" >
 		    	<input type="text" placeholder="Clinet Search" id="clinetDataTableSearch"/>
 		    </div>
 	    </div>
-	    <div class="clearfix" id="applicantDataTable" style="display: none;">
+	    <div class="clearfix" id="applicantDataTable" style="display: block;">
 		    <div class="remove_search mt5" > 
 		    	<input type="text" placeholder="Applicant Search" id="applicantDataTableSearch"/>
 		    </div>
@@ -324,8 +325,8 @@ padding: 2px 300px 2px 0px;
 	<div id="loading"></div>
     <div class="candidate_wrap_table repoPositiNoCount datatable_filter">
     <div id="vendorContractsList"  class=" overflow-data vendorContractsList" ></div>
-     <div id="clientContractsList"  class=" overflow-data clientContractsList" style="display: none"></div>
-     <div id="applicantsContractsList"  class=" overflow-data applicantsContractsList" style="display: none"></div>
+     <div id="clientContractsList"  class=" overflow-data clientContractsList" ></div>
+     <div id="applicantsContractsList"  class=" overflow-data applicantsContractsList" ></div>
 	</div>
 	
 <!-- <div class="require_wrap_table datatable_filter">
@@ -489,6 +490,13 @@ function previewTemplatePDF(uuid, templateName){
         e.stopPropagation();
     });	
 
+</script>
+
+<script>
+function filterContractsList(){
+	var listType = $("#errorDiv").val(); 
+	getTemplateList(listType);
+}
 </script>
 
 <script type="text/javascript">
@@ -832,7 +840,7 @@ function preparedContractVendorListDraftPagination(url,tabType){
 		    	    	    	 }],
 		    	    	    	 "scrollCollapse": false,
 		    	    	            "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//		    	    	             "aaSorting": [[3,'desc']],
+	     	   	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
 		    	    	            "ordering": true,
@@ -1061,7 +1069,7 @@ function preparedContractClientListDraftPagination(url,tabType){
 		    	    	    	 }],
 		    	    	    	 "scrollCollapse": false,
 		    	    	            "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//		    	    	             "aaSorting": [[3,'desc']],
+		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
 		    	    	            "ordering": true,
@@ -1279,7 +1287,7 @@ function preparedContractApplicantListDraftPagination(url,tabType){
 		    	    	    	   
 		    	    	    	   "scrollCollapse": false,
 		    	    	            "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//		    	    	             "aaSorting": [[3,'desc']],
+	    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
 		    	    	            "ordering": true,
@@ -1314,7 +1322,7 @@ function preparedContractListVendorWFA(url,tabType){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
-    $("#clientContractsList").empty();
+    $("#applicantsContractsList").empty();
     var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
@@ -1505,7 +1513,7 @@ function preparedVendorContractListWFAPagination(url,tabType){
 		    	    	    	 }],
 		    	    	    	 "scrollCollapse": false,
 		    	    	            "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//		    	    	             "aaSorting": [[3,'desc']],
+		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
 		    	    	            "ordering": true,
@@ -1534,7 +1542,7 @@ function preparedContractListClientWFA(url,tabType){
 		var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 		$("#vendorContractsList").empty();
 	    $("#clientContractsList").empty();
-	    $("#clientContractsList").empty();
+	    $("#applicantsContractsList").empty();
 	    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  locationDate = 'YYYY-MM-DD';
@@ -1719,7 +1727,7 @@ function preparedClientContractListWFAPagination(url,tabType){
 		    	    	    	 }],
 		    	    	    	 "scrollCollapse": false,
 		    	    	            "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//		    	    	             "aaSorting": [[3,'desc']],
+		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
 		    	    	            "ordering": true,
@@ -1748,7 +1756,7 @@ function preparedContractListApplicantWFA(url,tabType){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
-    $("#clientContractsList").empty();
+    $("#applicantsContractsList").empty();
     var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
@@ -1915,7 +1923,7 @@ function preparedApplicantContractListWFAPagination(url,tabType){
 		    	    	    	   
 		    	    	    	   "scrollCollapse": false,
 		    	    	            "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//		    	    	             "aaSorting": [[3,'desc']],
+	    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
 		    	    	            "ordering": true,
@@ -2132,7 +2140,7 @@ function preparedVendorContractListWTSPagination(url,tabType){
 		    	    	    	 }],
 		    	    	    	 "scrollCollapse": false,
 		    	    	            "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//		    	    	             "aaSorting": [[3,'desc']],
+		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
 		    	    	            "ordering": true,
@@ -2175,7 +2183,7 @@ function preparedContractListClientWTS(url,tabType){
 	}
 	
 function preparedClientContractListWTS(url,tabType){	
-	var opt="";
+	var opt='';
 	opt = opt +  '<table id="contractListTableWTS1" class="display" cellspacing="0" width="100%" >';
 	opt = opt + '	<thead>';
 	opt = opt + '   <tr>';
@@ -2342,7 +2350,7 @@ function preparedClientContractListWTSPagination(url,tabType){
 		    	    	    	 }],
 		    	    	    	 "scrollCollapse": false,
 		    	    	            "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//		    	    	             "aaSorting": [[3,'desc']],
+	    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
 		    	    	            "ordering": true,
@@ -2522,7 +2530,7 @@ function preparedApplicantContractListWTSPagination(url,tabType){
 		    	    	    	   
 		    	    	    	   "scrollCollapse": false,
 		    	    	            "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//		    	    	             "aaSorting": [[3,'desc']],
+	    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
 		    	    	            "ordering": true,
@@ -2741,7 +2749,7 @@ function preparedVendorContractListWTVPagination(url,tabType){
 		    	    	    	 }],
 		    	    	    	 "scrollCollapse": false,
 		    	    	            "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//		    	    	             "aaSorting": [[3,'desc']],
+		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
 		    	    	            "ordering": true,
@@ -2936,7 +2944,7 @@ function preparedClientContractListWTVPagination(url,tabType){
 		    	    	    	    	    	    "render": function(data, type, output, meta) {
 		    	    	    	    	    	      var opt = "";
 		    	    	    	    	    	      opt = opt + '<div class="tbldata-dotdot_80">';
-		    	    	    	    	  	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.ownerUser){
+		    	    	    	    	  	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_loginUserRole}' == "ROLE_MANAGER" ||'${SourceLeadWeb_user.id}' == output.ownerUser){
 		    	    	    	    	 	        	 if(output.contractStatus != "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
 		    	    	    	    	 		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 		    	    	    	    	 		     		}
@@ -3301,11 +3309,13 @@ function cancelTermination(){
 function tabEnable(local){
 	$('.tabActivation').each(function() {
 		 var localId = this.id;
-		 $("#"+localId).removeClass("active");
+		 $("#"+localId).removeClass("btn-primary").addClass("btn-default");
     });
 	var tabId = local.id;
+	var aa = $("#"+tabId).val();
+	$("#errorDiv").val(aa);
 	$("#tabType").val(tabId);
-	$("#"+tabId).addClass("active");
+	$("#"+tabId).removeClass("btn-default").addClass("btn-primary");
 }
 
 </script>

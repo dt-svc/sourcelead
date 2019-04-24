@@ -879,22 +879,22 @@ function preventTabkey(e){
 <div class="subClock clearfix">
 <div class="subClockCta">
 <p>Current</p>
-<div class="sclock">04 : 45</div>
+<div class="sclock">00 : 00</div>
 </div>
 <div class="subClockCta">
 <p>Day</p>
-<div class="sclock">04 : 45</div>
+<div class="sclock">00 : 00</div>
 </div>
 <div class="subClockCta">
 <p>Week</p>
-<div class="sclock">04 : 45</div>
+<div class="sclock">00 : 00</div>
 </div>
 <div class="subClockCta">
 <p>Month</p>
-<div class="sclock">04 : 45</div>
+<div class="sclock">00 : 00</div>
 </div> 
 </div>
-<div class="clockinn">
+<div class="clockinn hidden" id="clockFieldsId">
 <div class="clearfix mb" id="jobDIV">
 <label class="noPad">Jobs</label>
 <div class="clearfix addicon">
@@ -931,8 +931,8 @@ function preventTabkey(e){
 <textarea rows="3" class="form-control" name="comments" onblur="updateClockInOutTime();"></textarea>
 </div>
 </div> 
-<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Time Entry</a></div> 
 </div>
+<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Time Entry</a></div> 
 </div>
 
 <div>
@@ -1749,9 +1749,9 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
     	 var input = (document.getElementById(locationId));
     	    var options = {
     	    		types: ['geocode'],
-    	        componentRestrictions: {
+    	        /* componentRestrictions: {
     	        	country: ["IN","US","AU","SG","GB","FR"]
-    	        }
+    	        } */
     	    };
     	    autocomplete = new google.maps.places.Autocomplete(input, options);
     }else{
@@ -1953,15 +1953,15 @@ $("#clSub").click(function(){
 $(".clockSub").slideToggle(10);
 });
 
-$(".clockAni").click(function(){
-$(this).css("background-image","url(/resources/images/clock-ani.gif)");
-$(".clockAniAct").show();
-});
+	/* $(".clockAni").click(function(){
+	$(this).css("background-image","url(/resources/images/clock-ani.gif)");
+	$(".clockAniAct").show();
+	}); */
 
-$("#clPop").click(function() {
-getClockInOutConfiguration();
-$(".mask, #clockPop").fadeIn();
-});
+	$("#clPop").click(function() {
+	getClockInOutConfiguration();
+	$(".mask, #clockPop").fadeIn();
+	});
 $(".clPopClose").click(function() {
 $(".mask, .popupWrap2").fadeOut();
 });
@@ -1977,6 +1977,7 @@ function getClockInOutConfiguration(){
 	type: 'GET',
 	success: function (json) {
 	if(json != null){
+	$("#clockFieldsId").show();
 	getExistedClockTime();
 	if(!json.isJobChecked){
 	$("#jobDIV").hide();
@@ -2066,9 +2067,11 @@ function getAssignedProjects(obj){
 	$("#projectDropDownDiv").empty();
 	$("#projectDropDownDiv").append(output);
 	$('#projectDropDownDiv').trigger("chosen:updated"); 
+	
 	}
 	});
 	getProjectTasksByProject(obj);
+	
 }
 </script>
 
@@ -2077,33 +2080,35 @@ function getAssignedProjects(obj){
 function getProjectTasksByProject(obj){
 
 	var projectId = $("#projectDropDownDiv").val();
-	$.ajax({
-	url: sourceleadUrl + "/getProjectsTasksByProjectId?&projectId="+projectId,
-	type: 'GET',
-	success: function (json) {
-	var output = "";
-	output = output + "<option value=''>Select Project Task</option>";
-	if(json != null){
-	for (var i=0; i<json.length; i++)
-	{
-	var opt = json[i];
-	if(obj != null && obj != '' && obj != 'undefined'){
-	if(obj.projectsTaskId == opt.id){
-	output = output + "<option value='" +opt.id+ "' selected>"+opt.taskName+"</option>";
-	}else{
-	output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+	if(projectId != null && projectId != "" && projectId != "undefined"){
+		$.ajax({
+			url: sourceleadUrl + "/getProjectsTasksByProjectId?&projectId="+projectId,
+			type: 'GET',
+			success: function (json) {
+			var output = "";
+			output = output + "<option value=''>Select Project Task</option>";
+			if(json != null){
+			for (var i=0; i<json.length; i++)
+			{
+			var opt = json[i];
+			if(obj != null && obj != '' && obj != 'undefined'){
+			if(obj.projectsTaskId == opt.id){
+			output = output + "<option value='" +opt.id+ "' selected>"+opt.taskName+"</option>";
+			}else{
+			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			}
+			}else{
+			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			}
+			
+			}
+			}
+			$("#projectTaskDropDownDiv").empty();
+			$("#projectTaskDropDownDiv").append(output);
+			$('#projectTaskDropDownDiv').trigger("chosen:updated"); 
+			}
+			});
 	}
-	}else{
-	output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
-	}
-	
-	}
-	}
-	$("#projectTaskDropDownDiv").empty();
-	$("#projectTaskDropDownDiv").append(output);
-	$('#projectTaskDropDownDiv').trigger("chosen:updated"); 
-	}
-	});
 }
 </script>
 
@@ -2234,6 +2239,8 @@ obj = {
 event: function (type) {
 	switch(type) {
 	case 'start':
+	$(".clockAni").css("background-image","url(/resources/images/clock-ani.gif)");
+	$(".clockAniAct").show();
 	obj.element.removeClass('blink');
 	obj.currentSec = 0;
 	obj.refresh();
@@ -2242,6 +2249,8 @@ event: function (type) {
 	saveClockInOutTime('ClockIn');
 	break;
 	case 'play':
+	$(".clockAni").css("background-image","url(/resources/images/clock-ani.gif)");
+	$(".clockAniAct").show();
 	obj.element.removeClass('blink');
 	localStorage.setItem('pauseValue', null);
 	localStorage.setItem('pauseData', null);
@@ -2251,6 +2260,8 @@ event: function (type) {
 	saveBreakTime('play');
 	break;
 	case 'pause':
+	$(".clockAni").css("background-image","url(/resources/images/clock.jpg)");
+	$(".clockAniAct").hide();
 	obj.element.addClass('blink');
 	localStorage.setItem('pauseValue', 'pause');
 	var totalTime = localStorage.getItem('total_Time');
@@ -2259,6 +2270,8 @@ event: function (type) {
 	saveBreakTime('pause');
 	break;
 	case 'reset':
+	$(".clockAni").css("background-image","url(/resources/images/clock.jpg)");
+	$(".clockAniAct").hide();
 	clearTimeout(obj.refreshInterval);
 	var totalTime = localStorage.getItem('total_Time');
 	localStorage.setItem('stopwatch_time', null);

@@ -68,6 +68,7 @@ import com.bis.sourcelead.indPayroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndApprovePayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
+import com.bis.sourcelead.indPayroll.dto.PreCheckINDPayrollDTO;
 import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.indPayroll.service.AssociatePayrollPayheadHistoryService;
@@ -77,7 +78,6 @@ import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
-import com.bis.sourcelead.payroll.dto.PreCheckINDPayrollDTO;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -561,6 +561,7 @@ public class IndianPayrollRestController {
 		try {
 			PreCheckINDPayrollDTO preCheckINDPayrollDTO = iNDPayrollCommonUtil.payrollPrerequisiteCheck(orgLocation, generateINDPayrollDTO.getPayPeriod());
 			if(preCheckINDPayrollDTO.getIsPTConfigured() && preCheckINDPayrollDTO.getIsTDSConfigured()) {
+				generateINDPayrollDTO.setPreCheckINDPayrollDTO(preCheckINDPayrollDTO);
 				indPaysheetFrequencyDTO =  generateINDPayrollService.generateINDPayroll(orgLocation, generateINDPayrollDTO, loginUser);
 				SourceLeadSessionManager.setSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID(), indPaysheetFrequencyDTO);
 				return indPaysheetFrequencyDTO;
@@ -645,12 +646,12 @@ public class IndianPayrollRestController {
 	    		ipDTOList.add(ipDTO);
 	    	}
 	    }
-	    indPaysheetFrequencyDTO.setIndPayrollDTO(ipDTOList);
+	    //indPaysheetFrequencyDTO.setIndPayrollDTO(ipDTOList);
    		model.addObject("freqResponse",indPaysheetFrequencyDTO);
    		
-   		List<AssociatePayrollPayheadHistoryDTO> allAssociatesPayrollPayheadList =indPaysheetFrequencyDTO.getIndPayrollDTO().stream().map(empPayrollDTO->empPayrollDTO.getPayHeadHistoryDTOList()).flatMap(List::stream).collect(Collectors.toList());
+   		List<AssociatePayrollPayheadHistoryDTO> allAssociatesPayrollPayheadList =ipDTOList.stream().map(empPayrollDTO->empPayrollDTO.getPayHeadHistoryDTOList()).flatMap(List::stream).collect(Collectors.toList());
    		
-   		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+   		/*DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		List<AssociatePayrollPayheadHistoryDTO> dupAssociatePayrollPayheadDTOList = allAssociatesPayrollPayheadList;
 		allAssociatesPayrollPayheadList = allAssociatesPayrollPayheadList.stream().filter(ml -> (dupAssociatePayrollPayheadDTOList.stream().filter(sl -> {
 			try {
@@ -659,7 +660,7 @@ public class IndianPayrollRestController {
 				e.printStackTrace();
 			}
 			return false;
-		}).count())<1).collect(Collectors.toList());
+		}).count())<1).collect(Collectors.toList());*/
    		
    		/*Response<IndApprovePayrollDTO> approveResponse = indPaysheetFrequencyService.getApproveInfoIndPayroll(indApprovePayrollDTO, orgLocation,loginUser);
    		model.addObject("approveResponse", approveResponse.getObject());*/
@@ -775,9 +776,9 @@ public class IndianPayrollRestController {
 					
 					List<IndEmployeePayroll> ytdList = indPaysheetFrequencyService.getYTDIndEmployeePayrollList(iepdt.getCandidate().getId(), orgLocations.getStartMonth());
 					if(ytdList != null && ytdList.size() > 0) {
-						double ytdPT = ytdList.stream().mapToDouble(ap->ap.getProfessionalTax().doubleValue()).sum();
-						double ytdTDS = ytdList.stream().mapToDouble(ap->ap.getTds().doubleValue()).sum();
-						double ytdNetPay = ytdList.stream().mapToDouble(ap->ap.getNetPay().doubleValue()).sum();
+						double ytdPT = ytdList.stream().mapToDouble(ap->ap != null && ap.getProfessionalTax()!= null ? ap.getProfessionalTax().doubleValue(): 0).sum();
+						double ytdTDS = ytdList.stream().mapToDouble(ap->ap != null && ap.getTds() != null ? ap.getTds().doubleValue() : 0).sum();
+						double ytdNetPay = ytdList.stream().mapToDouble(ap->ap != null && ap.getNetPay() != null ? ap.getNetPay().doubleValue() : 0).sum();
 						dto.setYtdTaxes(new BigDecimal(ytdPT).add(new BigDecimal(ytdTDS)));
 						dto.setYtdNetPay(new BigDecimal(ytdNetPay));
 					}else {
@@ -957,10 +958,10 @@ public class IndianPayrollRestController {
    					dto.setEmployeeid(iepdt.getEmployee().getEmployeeId());
    					dto.setEmployeeName(iepdt.getCandidate().getFullName());
    					dto.setDepartmentName(iepdt.getEmployee().getDepartmentId().getDepartmentName());
-   					double noOfLeaves = entry.getValue().stream().mapToDouble(i->i.getNoOfLeaves().doubleValue()).sum();
-   					double noOfDays = entry.getValue().stream().mapToDouble(i->i.getNoOfDays().doubleValue()).sum();
-   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay().doubleValue()).sum();
-   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay().doubleValue()).sum();
+   					double noOfLeaves = entry.getValue().stream().mapToDouble(i->i.getNoOfLeaves() != null ? i.getNoOfLeaves().doubleValue() : 0).sum();
+   					double noOfDays = entry.getValue().stream().mapToDouble(i->i.getNoOfDays() != null ? i.getNoOfDays().doubleValue() : 0).sum();
+   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay() != null ? i.getGrossPay().doubleValue() : 0).sum();
+   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay() != null ? i.getNetPay().doubleValue() : 0).sum();
    	   				dto.setNoOfLeaves(new BigDecimal(noOfLeaves));
    	   			    dto.setNoOfDays(new BigDecimal(noOfDays));
    					dto.setGrossPay(new BigDecimal(grossPay));
@@ -1049,10 +1050,10 @@ public class IndianPayrollRestController {
    					dto.setEmployeeid(iepdt.getEmployee().getEmployeeId());
    					dto.setEmployeeName(iepdt.getCandidate().getFullName());
    					dto.setDepartmentName(iepdt.getEmployee().getDepartmentId().getDepartmentName());
-   					double professionalTax = entry.getValue().stream().mapToDouble(i->i.getProfessionalTax().doubleValue()).sum();
-   					double tds = entry.getValue().stream().mapToDouble(i->i.getTds().doubleValue()).sum();
-   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay().doubleValue()).sum();
-   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay().doubleValue()).sum();
+   					double professionalTax = entry.getValue().stream().mapToDouble(i->i.getProfessionalTax() != null ? i.getProfessionalTax().doubleValue() : 0).sum();
+   					double tds = entry.getValue().stream().mapToDouble(i->i.getTds() != null ? i.getTds().doubleValue() : 0).sum();
+   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay() != null ? i.getGrossPay().doubleValue() : 0).sum();
+   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay() != null ? i.getNetPay().doubleValue() : 0).sum();
    	   				dto.setProfessionalTax(new BigDecimal(professionalTax));
    	   			    dto.setTds(new BigDecimal(tds));
    					dto.setGrossPay(new BigDecimal(grossPay));
