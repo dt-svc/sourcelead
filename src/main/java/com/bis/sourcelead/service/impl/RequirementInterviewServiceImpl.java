@@ -1926,12 +1926,12 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 
 
 	@Override
-	public void applicantInterviewAcceptmailToInterviewInitiator(String requirementInterviewId, Long redirectOrgLocationId) throws Exception {
+	public void applicantInterviewAcceptmailToInterviewInitiator(String requirementInterviewId) throws Exception {
 		RequirementInterview reqnterview = getRequirementInterviewById(requirementInterviewId);
 		User interviewCreactorUser =  userService.getUserByUserCode(reqnterview.getCreatedBy());
 		RequirementSubmission reqSubmission = requirementSubmissionService.getRequirementSubmissionById(reqnterview.getSubmissionId().getId());
 		OrgLocations orglo = orgLocationService.getOrgLocations(reqSubmission.getOrgLocations().getId());
-		
+		Long redirectOrgLocationId = orglo.getId();
 		EmailMessage emailMessage = new EmailMessage();
 		User interviewScheduler=userService.getUserByUserCode(reqnterview.getCreatedBy());
 		 OrgSpoc spoc= null;
@@ -2002,9 +2002,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			Date interviewConverteDate = TZ_DF_TS.parse(interviewDateInTimezone);
 			interviewDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),interviewConverteDate);
 			reqnterview.setDateOfInterviewStr(interviewDateInTimezone);
-			globalVarsMap.put("InterviewTime", reqnterview.getDateOfInterviewStr());
+			globalVarsMap.put("InterviewDate", reqnterview.getDateOfInterviewStr());
 		} else {
-			globalVarsMap.put("InterviewTime", "--");
+			globalVarsMap.put("InterviewDate", "--");
 		}
 		StringBuilder sb = new StringBuilder();
 		String interviewStartTime = null;
@@ -2034,13 +2034,13 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			}
 
 			if(null != reqnterview.getStartTime() && null != reqnterview.getEndTime()){
-			globalVarsMap.put("InterviewType",sb.append(interviewStartTime).append("-").append(interviewEndTime).toString());
+			globalVarsMap.put("InterviewTime",sb.append(interviewStartTime).append("-").append(interviewEndTime).toString());
 			}
 		 else if (null != reqnterview.getStartTime()) {
-			globalVarsMap.put("InterviewType", sb.append(interviewStartTime).toString());
+			globalVarsMap.put("InterviewTime", sb.append(interviewStartTime).toString());
 		 }
 		} else {
-			globalVarsMap.put("InterviewType", "--");
+			globalVarsMap.put("InterviewTime", "--");
 		}
 		if (null != reqnterview.getInterviewType() && !"".equalsIgnoreCase(reqnterview.getInterviewType())) {
 			globalVarsMap.put("InterviewType", reqnterview.getInterviewType());

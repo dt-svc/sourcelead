@@ -179,6 +179,7 @@ function cancelTicketCategory() {
 	$("#ticketCategoryId").val(0);
 	if(document.getElementById("addTicketCategoryForm") !== null) {
 		document.getElementById("addTicketCategoryForm").reset();
+		$("#notifyTo").val("");
 		$("#assignedTo option").removeAttr("selected");
 		$("#assignedTo").chosen();
 		$("#assignedTo").trigger("chosen:updated");
@@ -249,12 +250,11 @@ function editTicketCategory(id){
 				$("#ticketCategoryName").val(data.name);
 				$("#ticketCategoryDesc").val(data.description);
 				for(var e in data.assignedTo) {
-					$("#assignedTo option[value='" + data.assignedTo[e] + "']").attr("selected", true);
+					$("#assignedTo option[value='" + data.assignedTo[e] + "']").prop("selected", true);
 				}
-				$("#assignedTo").chosen();
 	     	    $("#assignedTo").trigger("chosen:updated");
 	     	    
-				$("#notifyTo").html(data.notifyTo);
+				$("#notifyTo").val(data.notifyTo);
 				$(".mask, #modalTasktype").fadeIn();
 			} else if (response.indexOf('Sign In') !== -1) {
 				location.replace(sourceleadUrl);
