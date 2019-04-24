@@ -610,7 +610,7 @@ public class Constants {
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
-	
+	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title",
@@ -619,8 +619,8 @@ public class Constants {
 			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager(Email)", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
-	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category", "Work Status",
-			"Name","Laptop Serial Number/CPU Serial Number", "Make", "Model", "MAC Address", "Memory", "CPU", "Monitor Serial Number", "Hard Disk","Operating System","OS Key","Anti-Virus","Manufactured Date","Purchase Date","Cost","Depreciation Assessment Date","Depreciation Amount","Vendor Details", "Description"};
+	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category*", "Work Status*",
+			"Name","Laptop Serial Number/CPU Serial Number*", "Make", "Model", "MAC Address", "Memory", "CPU", "Monitor Serial Number", "Hard Disk","Operating System","OS Key","Anti-Virus","Manufactured Date","Purchase Date","Cost","Depreciation Assessment Date","Depreciation Amount","Vendor Details", "Description"};
 	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };
@@ -710,8 +710,8 @@ public class Constants {
 			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Visa Status", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
 			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
 
-	public static final String[] DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Payment Mode*","Bank Name","Account Number","BSR Number","MICR Code","IFSC Code",
-			"First Name","Last Name",};
+	public static final String[] DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Payment Mode*","Bank Name*","Account Number*","BSR Number","MICR Code","IFSC Code*",
+			"First Name*","Last Name*",};
 	
 	public static final String[] DATA_MIGRATION_ASSOCIATE_SALARY_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Pay Type*","Pay Frequency*","Pay Group*","Standard Hours","Annual Salary*"};						
 
@@ -1355,6 +1355,8 @@ public class Constants {
 	
 	public static final String JOB_PARSING = "job_parsing";
 	
+	public static final String RESUME_PARSING = "resume_parsing";
+	
 	public static final String REGULAR = "Regular";
 	
 	public static final String[] DIRECT_DEPOSIT_HEADER = { "Employee\nNumber", "Employee Name", "Department", "Transit\nNumber", "Account\nNumber", "Deposit\nAmount", "Description" };
@@ -1459,7 +1461,7 @@ public class Constants {
 	
 	public static final String GOAL_TYPE_SUB_GOAL  = "Sub_Goal";
 
-	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number","PF Number","ESI Number"};
+	public static final String[] DATA_MIGRATION_ASSOCIATE_INFO_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","UAN Number*","PF Number*","ESI Number"};
 	
 	public static final String EMPLOYEE_ON_LEAVE = "EmployeeOnLeave";
 	public static final String APPROVE_PENDING_LEAVES="approvePendingLeaves";

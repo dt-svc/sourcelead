@@ -90,6 +90,8 @@ public class PayrollPayheadDTO implements Serializable{
 		private BigDecimal totalForfrequencyLevel;
 		
 		private String status;
+		
+		private String active;
 
 		public Long getId() {
 			return id;
@@ -386,6 +388,14 @@ public class PayrollPayheadDTO implements Serializable{
 
 		public void setStatus(String status) {
 			this.status = status;
+		}
+
+		public String getActive() {
+			return active;
+		}
+
+		public void setActive(String active) {
+			this.active = active;
 		}
 		
 }
