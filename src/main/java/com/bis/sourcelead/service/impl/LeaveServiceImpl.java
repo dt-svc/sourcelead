@@ -1508,7 +1508,12 @@ public class LeaveServiceImpl implements LeaveService{
 		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		emailMessage.setOrgLocationId(orgLoc.getId());
-		// setting the class filed values
+		
+		//redirection URLs
+		String redirectURL = "/employeeRequestedLeaves-params-notifyLink=notifyLink-and-leaveUUID=" + leaveDTO.getLeaveUUID()+ "-and-orgLocationId=" + orgLoc.getId();
+		Long redirectOrgLocationId = orgLoc.getId();
+		
+		//setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		LeaveType leaveType = null;
 		if (null != leaveDTO.getLeaveType()) {
@@ -1562,7 +1567,7 @@ public class LeaveServiceImpl implements LeaveService{
 			globalVarsMap.put("toDate", leaveDTO.getToDate());
 		}
 		StringBuilder stringBuildforLink = new StringBuilder();
-		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL="+pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Leave Request</div></a>").toString());
 		// setting the Recipient information
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		EmailScenario notificationScenario = null;
