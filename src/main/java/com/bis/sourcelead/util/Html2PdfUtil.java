@@ -463,7 +463,10 @@ public class Html2PdfUtil {
 			   	footer.writeSelectedRows(0, -1, 34, 50, canvas);
 			   	canvas.endMarkedContentSequence();
 			   	
-			    XMLWorkerHelper.getInstance().parseXHtml(writer, document, new StringReader(finalString));
+			    HTMLWorker htmlWorker = new HTMLWorker(document);
+		  	    htmlWorker.parse(new StringReader(templateContent));
+		  	    
+//			    XMLWorkerHelper.getInstance().parseXHtml(writer, document, new StringReader(finalString));
 			    document.close();
 			    pdfBytes = byteArray.toByteArray();
 	  	  }else {
