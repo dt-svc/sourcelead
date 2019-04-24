@@ -466,13 +466,13 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 		}
 		
 		if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
-			goalDateFormat = "\"%y-%m-%d\"";
+			goalDateFormat = "\"%Y-%m-%d\"";
 		}else if("dd-MM-yyyy".equalsIgnoreCase(dateFormat)) {
-			goalDateFormat = "\"%d-%m-%y\"";
+			goalDateFormat = "\"%d-%m-%Y\"";
 		}else if("MM-dd-yyyy".equalsIgnoreCase(dateFormat)) {
-			goalDateFormat = "\"%m-%d-%y\"";
+			goalDateFormat = "\"%m-%d-%Y\"";
 		}else if("yyyy-dd-MM".equalsIgnoreCase(dateFormat)) {
-			goalDateFormat = "\"%y-%d-%m\"";
+			goalDateFormat = "\"%Y-%d-%m\"";
 		}
 		
 		  StringBuilder query1 = new StringBuilder("");
