@@ -205,11 +205,11 @@ public class DataMigrationCommonRestController {
 			for (SourceleadFormFields fields : formFields) {
 				
 				if (orgLocations.getCountry().equalsIgnoreCase("India")) {
-					if (!fields.getFieldName().equalsIgnoreCase("ssnNumber")) {
+					if (StringUtils.isNotBlank(fields.getFieldName()) && !fields.getFieldName().equalsIgnoreCase("ssnNumber")) {
 						formFieldsList.add(fields);
 					}
 				}else {
-					if (!fields.getFieldName().equalsIgnoreCase("panNumber")
+					if (StringUtils.isNotBlank(fields.getFieldName()) && !fields.getFieldName().equalsIgnoreCase("panNumber")
 							|| !fields.getFieldName().equalsIgnoreCase("aadharNumber")) {
 						formFieldsList.add(fields);
 					}
