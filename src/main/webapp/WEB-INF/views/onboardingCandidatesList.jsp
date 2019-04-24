@@ -11,7 +11,7 @@
 	<c:if test="${staticTime == null || staticTime == 0 }">
 	    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
 	 </c:if>
-	<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 
 <style>
 .settPop .form-control {
