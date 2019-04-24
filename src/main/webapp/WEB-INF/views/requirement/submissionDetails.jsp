@@ -44,6 +44,10 @@
  #remove_user_pop {
  z-index: 170000;
  }
+ .viewEyeicon {
+position: absolute; right:50px; top:0px; color: #fff; cursor: pointer; z-index: 9999;
+padding: 11.74px 4px;
+}
  </style>
  
  
@@ -190,7 +194,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                if(json.candidate.fileUrl != null && json.candidate.fileUrl !='' && json.candidate.fileUrl !="undefined"){
                result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'"  alt="candidate" title="Candidate"></div>';
                }else{
-               result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="candidate" title="Candidate"></div>';
+               result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofileImg.jpg" alt="candidate" title="Candidate"></div>';
    
                }
                if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
@@ -257,11 +261,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + ' <div class="col-md-8 paddingRight">';
 		       result = result + '<ul class="list-unstyled can-perdt">';
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.requirementSubmissionTemplateFields.emailId+'</a></li>';
-		       if(json.requirementSubmissionTemplateFields.phoneNumber != null && json.requirementSubmissionTemplateFields.phoneNumber != '' && json.requirementSubmissionTemplateFields.phoneNumber != 'undefined'){
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.requirementSubmissionTemplateFields.phoneNumber+'</li>';
-		       }else{
-		    	result = result + '<li><i class="fa fa-phone"></i>---</li>';   
-		       }
 		       result = result + '<li><i class="fa fa-location-arrow"></i>';
 		       result = result +city +''+ state +''+ country
 		       result = result +'</li>';
@@ -1143,7 +1143,7 @@ function getOfferDetails(submissionId){
 	   					  	 result = result + '<div id="offerLoading"></div>';
 	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
 	   					     if(report.templateUUID != null && report.templateUUID != "" && report.templateUUID != "undefined"){
-		   					  	 result = result + '<i class="fa fa-eye pull-right viewEyeicon" style="color:#fff !important;" onclick="viewOfferLetter(\''+report.templateUUID+'\',\''+report.templateName+'\');"></i>';	
+		   					  	 result = result + '<i class="fa fa-eye pull-right viewEyeicon" style="color:#fff !important;" onclick="viewOfferLetter(\''+report.offerUUID+'\');"></i>';	
 	   					     }
 	                    	 result = result + '<h2  class="active">Offer: <span>'+report.offerSourceType+'</span></h2>';
 	                    	 result = result + '<div class="content clearfix">';
@@ -1267,7 +1267,7 @@ function getOfferDetails(submissionId){
 	                    	 if(report.offerExpireDate != null && report.offerExpireDate != "" && report.offerExpireDate  != "undefined"){
 		                    	 result = result + '<div class="row clearfix">';
 	                        	 result = result + '<label class="col-md-5">';
-	                        	 result = result + '<strong>Expire Offer Date</strong>';
+	                        	 result = result + '<strong>Offer Expire Date</strong>';
 	                        	 result = result + '</label>';
 	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerExpireDate+'</p>';
 	                        	 result = result + '</div>';
@@ -2796,9 +2796,9 @@ function acceptProposeTime(id,proposeDate,proposeTime,submissionId){
 </script>
 
 <script>
-function viewOfferLetter(templateUUId,templateName){
+function viewOfferLetter(offerUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/offerLetterTempleateView/'+templateUUId+'/'+templateName+'','_newtab');
+	window.open(sourceleadUrl+'/candidateOfferLetterTempleateView?offerUUID='+offerUUID+'','_newtab');
 }
 
 </script>

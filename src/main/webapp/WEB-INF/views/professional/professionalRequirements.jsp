@@ -6,7 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <style type="text/css">
 .cand-advsrch-popup .bs-caret {
 position: relative; top:8px;
@@ -152,15 +152,15 @@ window.onload = function () {
 	    
           </div>
            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-           <div class="pull-right brud-crum"><a href="${appPath}/professionalDashboard">Home </a> &raquo; Jobs List  </div>
+           <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/professionalDashboard">Home </a> &raquo; Jobs List  </div>
            </c:if>
            
            <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-           <div class="pull-right brud-crum"><a href="${appPath}/recruiterDashboard">Home </a> &raquo; Jobs List  </div>
+           <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard">Home </a> &raquo; Jobs List  </div>
            </c:if>
            
            <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-           <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="${SourceLeadWeb_atsUrl}/jobsList">Jobs List </a> &raquo; Crowdsourcing Jobs</div>
+           <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <a href="${SourceLeadWeb_atsUrl}/jobsList">Jobs List </a> &raquo; Crowdsourcing Jobs</div>
            </c:if>
           
           <div class="clearfix"></div> 
@@ -248,9 +248,9 @@ window.onload = function () {
                   <div class="row">
                     <div class="col-md-6">
                       <label>Rate</label>
-                      <div class="input-group">
-                        <div class="input-group-btn selp-custom-min custommin">
-                          <select class="selectpicker" id="currencyCode" name="currencyCode" >
+                      <div class="row">
+                        <div class="col-md-5 padding_right">
+                          <select class="sel" id="currencyCode" name="currencyCode" >
                             <option selected disabled>INR</option>
                             <option>AUD</option>
                             <option>USD</option>
@@ -259,15 +259,19 @@ window.onload = function () {
                             <option>EUR</option>
                           </select>
                         </div>
-                        <input type="text" class="form-control input-sm" name="minRate" id="minRate" value="" placeholder="Min Rate">
+                        <div class="col-md-7 padding_left">
+                        <input type="text" class="form-control" name="minRate" id="minRate" value="" placeholder="Min Rate">
+                      </div>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <label>&nbsp;</label>
-                      <div class="input-group">
-                        <input type="text" class="form-control input-sm" value="" name="maxRate" id="maxRate" placeholder="Max Rate">
-                        <div class="input-group-btn selp-custom-min custommin">
-                          <select class="selectpicker">
+                      <div class="row">
+                      <div class="col-md-6 padding_right">
+                        <input type="text" class="form-control" value="" name="maxRate" id="maxRate" placeholder="Max Rate">
+                        </div>
+                        <div class="col-md-6 padding_left">
+                          <select class="sel">
                             <option selected disabled>Rate Per</option>
                             <option>Hourly</option>
                             <option>Weekly</option>
@@ -419,7 +423,7 @@ window.onload = function () {
             <div class="row form-footer">
               <div class="pull-right mr"> 
               <input type="button" value="Search" id="search_requiremet" onclick="searchRequirement('0');" class="btn btn-sm btn-success"/>
-               <input type="button" value="Clear" onClick="loadChosenRequirementScripts();" class="btn btn-sm btn-primary ml10"/> 
+               <input type="button" value="Reset" onClick="loadChosenRequirementScripts();" class="btn btn-sm btn-primary ml10"/> 
               </div>
             </div>
           </div>
@@ -477,7 +481,7 @@ window.onload = function () {
 <jsp:include page="../masterFooter.jsp" />
 <jsp:include page="applyToJob.jsp" />
 
-<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
+<div class="backtotop" style="display: none;"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/backtotop.png"></div>  
 
 
 <script>
@@ -950,16 +954,18 @@ function requirementsList(offset){
 			 				result = result +'<div class="OpenJob">';
 			 				
 			 				if(requirements.referUUID != null && requirements.referUUID != 'undefined'){
-			 					result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'/'+requirements.referUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 					result = result +'<a href="${SourceLeadWeb_atsUrl}/requirementProfile/'+requirements.requirementUUID+'/'+requirements.referUUID+'"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 			 				}else{
-			 					result = result +'<a href="<c:url value="/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+			 					result = result +'<a href="${SourceLeadWeb_atsUrl}/requirementProfile/'+requirements.requirementUUID+'"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 			 					
 			 				}
 			 				result = result +'<input type="hidden" id="postedOrg" value=""/>';
 			 				result = result +'<input type="hidden" id="'+i+'locationId" value="'+requirements.orgLocationId+'"/>';
 			 				result = result +'<h4 onClick="getPostedOrgJobs('+i+');" class="orgLink" title="'+requirements.postedOrg+'">'+requirements.postedOrg+'</h4>';
 			 				result = result +'<div class="clearfix"></div>';
-			 				result = result +'<span>';
+			 				
+			 				result = result +'<div class="row">';
+			 				result = result +'<span class="col-md-11">';
 			 				result = result +'<b><i class="fa fa-clock-o" title="Job Type"></i>'+jobType+'</b>';
 			 				result = result +'<b><i class="fa fa-briefcase" title="Experience"></i>'+experience+'</b>';
 			 				/* result = result +'<b><i class="fa fa-map-marker" Title="Location"></i>'+location+'</b>'; */
@@ -967,6 +973,8 @@ function requirementsList(offset){
 			 				result = result +'<b><i class="fa fa-industry" title="Industry"></i>'+industryName+'</b>';
 			 				result = result +'<b><i class="fa fa-plane" title="Immigration Status"></i>'+visaType+'</b>';
 			 				result = result +'</span>';
+			 				result = result +'</div>';
+			 				
 			 				result = result +'<h5>';
 							result = result +'<strong>Locations : </strong>';
 			 				
@@ -1040,7 +1048,7 @@ function requirementsList(offset){
 				 					result = result +'  <a href="#" title="Save Job" href="javascript:void(0)" id="saveJob'+requirements.requirementUUID+'" class="alertBtn" onclick="saveJob(\''+requirements.jobTitle+'\',\''+requirements.requirementUUID+'\','+requirements.referId+')" ><i class="fa fa-floppy-o"></i></a>';
 				 				}else{
 				 					if(requirementType == "SavedJobs"){
-				 						result = result +'  <a href="#" title="Delete Job" href="javascript:void(0)" class="alertBtn bg-red" onclick="deleteSavedJob(\''+requirements.jobTitle+'\',\''+requirements.savedJobUUID+'\',\''+requirements.requirementUUID+'\')" ><i class="fa fa-trash"></i></a>';
+				 						result = result +'  <a href="#" title="Delete Job" href="javascript:void(0)" class="alertBtn bg-red" onclick="deleteSavedJob(\''+requirements.jobTitle+'\',\''+requirements.savedJobUUID+'\',\''+requirements.requirementUUID+'\')" ><i class="fa fa-trash" style="color:#fff !important"></i></a>';
 				 					}else{
 				 						result = result +'  <a href="#" title="Saved Job" href="javascript:void(0)" class="alertBtn bg-green"  ><i class="fa fa-floppy-o"></i></a>';
 				 					}
@@ -1298,7 +1306,7 @@ function searchRequirement(offset){
 									 				link = atsUrl+"/openJobsPublicPage?requirementUUID="+requirements.requirementUUID;
 									 				result = '<section class="openCta">';
 									 				result = result +'<div class="OpenJob">';
-									 				result = result +'<a href="<c:url value="/app/requirementProfile/'+requirements.requirementUUID+'"/>"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
+									 				result = result +'<a href="${SourceLeadWeb_atsUrl}/requirementProfile/'+requirements.requirementUUID+'"><h3>'+jobId+' '+requirements.jobTitle+'</h3></a>';
 									 				result = result +'<h4>'+requirements.postedOrg+'</h4>';
 									 				result = result +'<span>';
 									 				result = result +'<b><i class="fa fa-clock-o"></i>'+jobType+'</b>';
@@ -1706,7 +1714,7 @@ $(function(){
 function loadChosenRequirementScripts(){
 	 $('#country').val('${loginCountryName}'); 
      $('#state').val(''); 
-     $('#city').val('');
+     $('#city').val('').trigger("chosen:updated");
      $("#anyKeyWord").val('').trigger("chosen:updated");
 	 $("#allReqKeyWord").val('').trigger("chosen:updated");
 	 $("#excludeReqKeyWord").val('').trigger("chosen:updated");
@@ -1717,10 +1725,9 @@ function loadChosenRequirementScripts(){
 	 $("#skills").val('').trigger("chosen:updated"); 
 	 $("#noticePeriod").val('').trigger("chosen:updated"); 
 	 $("#organizations").val('').trigger("chosen:updated");
-	 
-	 $("#anyKeyWord").empty();
-	 $("#allReqKeyWord").empty();
-	 $("#excludeReqKeyWord").empty();
+	 $("#minRate").val('');
+	 $("#maxRate").val('');
+	 $("#apiLocation").val('');
 	 $('#experienceId').find('p.jquery_form_error_message').remove(); 
 	 
 }

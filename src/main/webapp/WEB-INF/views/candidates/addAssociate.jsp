@@ -5,7 +5,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 	
-	<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 	
 	<script type="text/javascript">
 		window.onload = function () {
@@ -28,7 +28,7 @@
     <div class="pull-left">
       <h2>Add Associate</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Add Associate</div>
+    <div class="pull-right brud-crum"><a href="<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a href="${SourceLeadWeb_vmsUrl}/associatesList"> Associate List</a> &raquo; Add Associate</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -235,7 +235,7 @@
 									<span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();addassociateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 								</div>
 								<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-		                     	<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+		                     	<a href="${SourceLeadWeb_vmsUrl}/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			                     </sec:authorize>
 			                   </div>	
 							</div>
@@ -475,7 +475,7 @@
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary"> 
-						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/associatesList'/>'" class="btn btn-default ml">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/associatesList" class="btn btn-default ml">
 					</div>
 				</div>
 			</div>

@@ -10,7 +10,7 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
 
-<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}"/>
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css?staticTime=${staticTime}"/>
 
 <style type="text/css">
 
@@ -738,7 +738,7 @@ function clientInvoicePagination(){
 			  result = result +'      <div class="small-widget bgGreen">';
 			  result = result +'          <a onClick="createClientInvoice('+orgRelationId+',\'custom\');" title="Create custom bill">';
 			  result = result +'        <div class="clearfix mb10"> ';
-			  result = result +'            <img src="/resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
+			  result = result +'            <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
 			  result = result +'        </div>';
 			  result = result +'        <strong class="clearfix">Client Based</strong></a>';
 			  result = result +'        </div>';
@@ -748,7 +748,7 @@ function clientInvoicePagination(){
 			  result = result +'        <a onClick="createClientInvoice('+orgRelationId+',\'project\');" title="Create project based bill">';
 			  result = result +'          <div class="clearfix mb10">';
 			  result = result +'              <!--<i class="fa fa-usd fa-3x"></i>-->';
-			  result = result +'              <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
+			  result = result +'              <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
 			  result = result +'          </div>';
 			  result = result +'          <strong class="clearfix">Project Based </strong> </a> </div>';
 			  result = result +'      </div>';
@@ -757,7 +757,7 @@ function clientInvoicePagination(){
 			  result = result +'        <a onClick="createClientInvoice('+orgRelationId+',\'other\');" title="Create Other Bill">';
 			  result = result +'          <div class="clearfix mb10">';
 			  result = result +'              <!--<i class="fa fa-usd fa-3x"></i>-->';
-			  result = result +'              <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
+			  result = result +'              <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
 			  result = result +'          </div>';
 			  result = result +'          <strong class="clearfix">Other </strong> </a> </div>';
 			  result = result +'      </div>';

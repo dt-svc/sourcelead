@@ -11,9 +11,9 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
 </c:if>
 
-<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
-<script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css?staticTime=${staticTime}" />
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
 
 <style type="text/css">
@@ -129,7 +129,7 @@ function clientSubmissionTemplate(clientLocationId){
     		}else{
       			 result = result + '<div class="dataTables_empty">';
        			/*  result = result + '<div class="table_nodata_inn">';
-       			 result = result + '<img src="/resources/images/no-data.png" />';
+       			 result = result + '<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/no-data.png" />';
        			 result = result + '<span>Nothing is here to show </b>';
        			 result = result + '</span>';
        			 result = result + '<div class="clearfix"></div>';

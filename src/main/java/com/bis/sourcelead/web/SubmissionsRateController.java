@@ -87,6 +87,9 @@ public class SubmissionsRateController {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Value("${atsUrl}")
+    private String atsUrl;
+	
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
@@ -119,6 +122,7 @@ public class SubmissionsRateController {
 		model.addObject("submissionId",submissionId);
 		model.addObject("candidateId",requirementSubmission.getCandidate().getId());
 		model.addObject("sourceleadUrl",sourceleadUrl);
+		model.addObject("atsUrl",atsUrl);
 		model.addObject("requirementSubmission",requirementSubmission);
 		model.setViewName("requirement/submissionRate");
 		
@@ -205,6 +209,7 @@ public class SubmissionsRateController {
 		model.addObject("submissionId",submissionId);
 		model.addObject("candidateId",requirementSubmission.getCandidate().getId());
 		model.addObject("sourceleadUrl",sourceleadUrl);
+		model.addObject("atsUrl",atsUrl);
 		model.addObject("requirementSubmission",requirementSubmission);
 		model.setViewName("requirement/submissionRate");
 		
@@ -274,6 +279,7 @@ public class SubmissionsRateController {
 		model.addObject("rateStatus",rateStatus);
 		model.addObject("submissionId",submissionId);
 		model.addObject("sourceleadUrl",sourceleadUrl);
+		model.addObject("atsUrl",atsUrl);
 		model.addObject("requirementSubmission",requirementSubmission);
 		model.setViewName("requirement/submissionRate");
 		
