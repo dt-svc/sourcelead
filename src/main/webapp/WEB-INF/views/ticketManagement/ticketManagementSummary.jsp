@@ -42,7 +42,7 @@
                 <div class="project_details col2Custom">
 					<div class="useredit">
 						<div class="width150px">
-							<select class="sel" onchange="changeTicketStatus(this, ${ticketSummary.id});">
+							<select class="sel" onchange="changeTicketStatus(this, ${ticketSummary.id}, ${ticketSummary.ticketStatusId});">
 								<c:forEach items="${statusList}" var="status">
 									<option data-comment="${status.commentRequired}" value="${status.id}" ${status.name == ticketSummary.ticketStatus ? "selected" : ""}>${status.name}</option>
 								</c:forEach>
