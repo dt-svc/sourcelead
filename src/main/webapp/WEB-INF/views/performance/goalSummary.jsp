@@ -14,7 +14,6 @@
 
 <script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/comment/jquery.atwho.js"></script>
 <script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/comment/jquery.caret.min.js"></script>
-<script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/comment/task_comment.js"></script>
 
 
 <script>
