@@ -197,7 +197,7 @@ public interface CandidateDao {
 	
 	public void addCandidateToMarketCart(CandidateMarketCart marketcart)throws Exception;
 
-	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, Long orgId, String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO, Map<String, Date> dateValue);
+	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, Long orgId, String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO, Map<String, Date> dateValue,Date[] checkedDateArray);
 
 	public int getMarketCartStatusByMarketIdOrgId(Long marketPlaceId, Long orgId);
 
