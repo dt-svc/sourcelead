@@ -1506,7 +1506,7 @@ public class ReportRestController {
 				LetterHead letterHead = letterHeadService.getLetterheadById(empTemplate.getLetterHead().getId());
 				User user = userService.getUserById(employeeId);
 				String templateContent = reportsUtil.replaceAllTemplatePlaceHolders(empTemplate.getTemplateContent(),empTemplate,toAddress,user,orgLocation);
-				reportsUtil.viewCompleteletterheadData(templateContent,letterHead,response);
+				reportsUtil.viewLetterHeadCompleteletterheadData(templateContent,letterHead,response);
 			    
 			} catch (Exception e) {
 			    e.printStackTrace();
