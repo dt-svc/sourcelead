@@ -2152,7 +2152,7 @@ public class ReportRestController {
 								clientIdsList.add(Long.parseLong(clients[i]));
 							}
 						}*/
-					String[] tableColumns = { "employeeId", "employeeName", "clientName", "payRate", "billRate", "Margin"};
+					String[] tableColumns = { "employeeId", "employeeName","associateJoinedDate","projectName","projectDuration", "clientName", "payRate", "billRate", "Margin"};
 					int sortColumnIndex = 1; // by default sorting using updated date
 					String sortColumnOrder = "desc"; // by default descending order
 					
@@ -2215,7 +2215,7 @@ public class ReportRestController {
 				    	    searchDates[1] = endDateUTC;
 						}
 						
-						String[] tableColumns = { "employeeId", "employeeName", "clientName", "payRate", "billRate", "Margin"};
+						String[] tableColumns = { "employeeId", "employeeName","associateJoinedDate","projectName","projectDuration", "clientName", "payRate", "billRate", "Margin"};
 						int sortColumnIndex = 1; // by default sorting using updated date
 						String sortColumnOrder = "desc"; // by default descending order
 						if (marginSheetReportDTO.getOrder() != null && !marginSheetReportDTO.getOrder().isEmpty()) {

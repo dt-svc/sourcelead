@@ -750,9 +750,14 @@ public class DynamicReport {
 					.columns(
 							col.column("Associate Id", "Associate Id", type.stringType()),
 							col.column("Associate Name", "Associate Name", type.stringType()),
+							col.column("Assoicate Join Date", "Assoicate Join Date", type.stringType()),
+							col.column("Project Name", "Project Name", type.stringType()),
+							col.column("Project Duration", "Project Duration", type.stringType()),
 							col.column("Client Name", "Client Name", type.stringType()),
 							col.column("Paid Amount", "Paid Amount", type.stringType()),
 							col.column("Billed Amount", "Billed Amount", type.stringType()),
+							col.column("Pay Rate", "Pay Rate", type.stringType()),
+							col.column("Bill Rate", "Bill Rate", type.stringType()),
 							col.column("Margin", "Margin", type.stringType()))
 					.pageFooter(Templates.footerComponent)
 					.setDataSource(marginSheetReportDataSource(projectMembersDTOList)).toPdf(pdfExporter);
@@ -782,9 +787,14 @@ public class DynamicReport {
 						.columns(
 								col.column("Associate Id", "Associate Id", type.stringType()),
 								col.column("Associate Name", "Associate Name", type.stringType()),
+								col.column("Assoicate Join Date", "Assoicate Join Date", type.stringType()),
+								col.column("Project Name", "Project Name", type.stringType()),
+								col.column("Project Duration", "Project Duration", type.stringType()),
 								col.column("Client Name", "Client Name", type.stringType()),
 								col.column("Paid Amount", "Paid Amount", type.stringType()),
 								col.column("Billed Amount", "Billed Amount", type.stringType()),
+								col.column("Pay Rate", "Pay Rate", type.stringType()),
+								col.column("Bill Rate", "Bill Rate", type.stringType()),
 								col.column("Margin", "Margin", type.stringType()))
 						.setDataSource(marginSheetReportDataSource(projectMembersDTOList)).toXls(xlsExporter);
 			} catch (DRException e) {
@@ -794,7 +804,7 @@ public class DynamicReport {
    }
 	
 	private DRDataSource marginSheetReportDataSource(ResponseList<MarginSheetReportDTO> responseList) {
-		DRDataSource dataSource = new DRDataSource("Associate Id","Associate Name", "Client Name", "Paid Amount", "Billed Amount", "Margin");
+		DRDataSource dataSource = new DRDataSource("Associate Id","Associate Name","Assoicate Join Date","Project Name","Project Duration", "Client Name", "Paid Amount", "Billed Amount","Pay Rate","Bill Rate", "Margin");
 		for(MarginSheetReportDTO margin:responseList.getData()) {
 			String empId = "--";
 			
@@ -803,16 +813,26 @@ public class DynamicReport {
 			}
 			
 			String	associateName = margin.getEmployeeName();
-		
+			
+			String assoicateJoinDate = margin.getAssociateJoinedDate();
+			
+			String projectName = margin.getProjectName();
+			
+			String projectDuration= margin.getProjectDuration();
+			
 			String	clientName = margin.getClinetName();
 			
 			String	 paidAmount = margin.getPayRateCurrency() +" "+String.valueOf(margin.getPayRate())+" "+margin.getPayRateType();
 				 
 			String	 billedAmount = margin.getBillRateTypeCurrency() +" "+String.valueOf(margin.getBillRate())+" "+margin.getBillRateType();
+			
+			String  payRate = String.valueOf(margin.getPayRate());
+			
+			String billRate = String.valueOf(margin.getBillRate());
 			 
 			String marginRate = String.valueOf(margin.getMarginRate());
 			
-			dataSource.add(empId,associateName, clientName, paidAmount,billedAmount,marginRate);
+			dataSource.add(empId,associateName,assoicateJoinDate,projectName,projectDuration, clientName, paidAmount,billedAmount,payRate,billRate,marginRate);
 		}
 		return dataSource;
 	}

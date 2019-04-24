@@ -1978,7 +1978,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String 	query ="SELECT projects.ID as projectId, projects.PROJECT_NAME as projectName, emp.EMPLOYEE_ID as employeeId,(SELECT  CONCAT(user.FIRST_NAME,user.LAST_NAME)) as employeeName, pm.PAY_RATE as payRate,"
 				+" pm.PAY_RATE_TYPE as payRateType, pm.PAY_RATE_CURRENCY as payRateCurrency, pm.CURRENT_BILL_RATE as billRate, pm.RATE_TYPE as billRateType,"
 				+" pm.BILL_RATE_CURRENCY as billRateTypeCurrency, "
-				+" ol.ORG_NAME as clientName, ol.ID as orglocationId, orl.ID as orgRelationId"
+				+" ol.ORG_NAME as clientName, ol.ID as orglocationId, orl.ID as orgRelationId, projects.START_DATE as startDate, projects.END_DATE as endDate,emp.HIRE_DATE as associateJoinedDate"
 				 +" from PROJECTS projects,PROJECT_CLIENTS pc,"
 				+" PROJECT_MEMBERS pm,EMPLOYEE emp,USER user, ORG_RELATIONS orl,ORG_LOCATIONS ol"
 				 +" where" 
@@ -2007,7 +2007,12 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			  mts.setProjectId((BigInteger)mm[0]);		
 			  mts.setEmployeeName(mm[3].toString());
 			  mts.setProjectName(mm[1].toString());
-			  mts.setPayRate((double)mm[4]);
+			  
+			  if (mm[4] !=null) {
+				  mts.setPayRate((double)mm[4]);
+			  } else {
+				  mts.setPayRate(0);
+			  }
 			  if (mm[2] != null) {
 				  mts.setEmployeeId(mm[2].toString());
 			  } else {
@@ -2015,12 +2020,27 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			  }
 			  mts.setPayRateType(mm[5].toString());
 			  mts.setPayRateCurrency(mm[6].toString());
-			  mts.setBillRate((double)mm[7]);
+			  
+			  if (mm[7] !=null) {
+				  mts.setBillRate((double)mm[7]);  
+			  }else {
+				  mts.setBillRate(0);
+			  }
 			  mts.setBillRateType(mm[8].toString());
 			  mts.setBillRateTypeCurrency(mm[9].toString());
 			  mts.setClinetName(mm[10].toString());
 			  mts.setOrglocationId((BigInteger)mm[11]);
 			  mts.setOrgRelationId((BigInteger)mm[12]);
+			  if(mm[14] !=null) {
+			  mts.setProjectDuration(mm[13].toString() +"-"+mm[14].toString());
+			  }else {
+				  mts.setProjectDuration(mm[13].toString());  
+			  }
+			  if(mm[15] != null) {
+			  mts.setAssociateJoinedDate(mm[15].toString());
+			  }else {
+				  mts.setAssociateJoinedDate("--");  
+			  }
 			  mts.setMarginRate((double)mm[7] - (double)mm[4] );
 			  totalPayRate+=(double)mm[4];
 			  totalbilRate+=(double)mm[7];
