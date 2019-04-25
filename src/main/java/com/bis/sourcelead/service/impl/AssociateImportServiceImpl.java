@@ -169,7 +169,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		
 		if(canMap.get(getCellValueAsString(row.getCell(1), fileName).toLowerCase().trim()) != null) {
 			if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
-				InfoDataDTO.setReason("Email Mandatory");
+				InfoDataDTO.setReason("Email is required");
 				return false;
 			}else if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString()) 
 					&& !validateEmail(getCellValueAsString(row.getCell(1), fileName))){
@@ -177,26 +177,26 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				return false;
 			}else if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 			         if (row.getCell(2) == null || "".equalsIgnoreCase(row.getCell(2).toString())) {
-			        	 InfoDataDTO.setReason("Uan number Mandatory");
+			        	 InfoDataDTO.setReason("Uan number is required");
 						return false;
 					}else if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString()) && !validateUan(getCellValueAsString(row.getCell(2), fileName))){
-						InfoDataDTO.setReason("Invalid Uan Number");
+						InfoDataDTO.setReason("Uan number should be between 1-12 characters");
 						return false;
 					}else if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString())) {
-						InfoDataDTO.setReason("Pf Number Mandatory");
+						InfoDataDTO.setReason("PF number is required");
 						return false;	
 					}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validatePf(getCellValueAsString(row.getCell(3), fileName).replaceAll("[^A-Za-z0-9_]" ,""))){
-						InfoDataDTO.setReason("Invalid Pf Number");
+						InfoDataDTO.setReason("Pf number should be between 10-25 characters");
 						return false;
 					/*}else if (row.getCell(4) == null || "".equalsIgnoreCase(row.getCell(4).toString())) {
 						InfoDataDTO.setReason("Esi Number Mandatory");
 						return false;	*/
 					}else if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString()) && !validateEsi(getCellValueAsString(row.getCell(4), fileName))){
-						InfoDataDTO.setReason("Invalid Esi Number");
+						InfoDataDTO.setReason("Esi number should be between 10-17 characters");
 						return false;
 				}
 			}else{
-					InfoDataDTO.setReason("Uan number Mandatory");
+					InfoDataDTO.setReason("Uan number is required");
 			     	return false;
 			     }
 			
