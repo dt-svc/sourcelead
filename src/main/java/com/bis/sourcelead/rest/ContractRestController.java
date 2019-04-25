@@ -214,9 +214,7 @@ public class ContractRestController {
 		
 			String header = "<div style='text-align: center;'>"+contractsTemplate.getTemplateName()+"<br></br></div><br></br><br></br><br></br>";
 			String totalBody =header+ contractsTemplate.getTemplateContent();
-			if(contractsTemplate.getLetterHead() != null)
-				
-			reportsUtil.viewCompleteletterheadData(totalBody, contractsTemplate.getLetterHead(), response);
+			reportsUtil.viewCompleteletterheadData(totalBody, contractsTemplate, response);
     	
 	}
 	
