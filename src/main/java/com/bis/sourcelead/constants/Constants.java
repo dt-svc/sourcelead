@@ -198,6 +198,9 @@ public class Constants {
 	public static final String ADD_TASK_COMMENT_EMAIL = "AddTaskCommentEmail";
 	public static final String ADD_TASK_COMMENT_NOTIFICATION = "AddTaskCommentNotification";
 	
+	public static final String ADD_GOAL_COMMENT_EMAIL = "AddGoalsCommentEmail";
+	public static final String ADD_GOAL_COMMENT_NOTIFICATION = "AddGoalCommentNotification";
+	
 	public static final String TIMESHEET_APPROVED_EMAIL_TOVENDOR = "TimesheetApprovedEmailToVendor";
 	public static final String TIMESHEET_REJECTED_EMAIL_TOVENDOR = "TimesheetRejectEmailToVendor";
 	public static final String LEAVE_CANCEL_EMAIL_TO_USER = "LeaveCancelEmailToUser";
@@ -610,7 +613,7 @@ public class Constants {
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
-	
+	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title",
@@ -1354,6 +1357,8 @@ public class Constants {
 	public static final String USER_EMAIL_UPDATION = "UserEmailUpdation";
 	
 	public static final String JOB_PARSING = "job_parsing";
+	
+	public static final String RESUME_PARSING = "resume_parsing";
 	
 	public static final String REGULAR = "Regular";
 	
