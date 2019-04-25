@@ -271,10 +271,8 @@ function exportSheet(exportType){
 		result = result + '<th>Project Name</th>';
 		result = result + '<th>Project Duration</th>';
 		result = result + '<th>Client Name</th>';
-		result = result + '<th>Paid Amount</th>';
-		result = result + '<th>Billed Amount</th>';
 		result = result + '<th>Pay Rate</th>';
-		result = result + '<th>Bill Rate </th>';
+		result = result + '<th>Bill Rate</th>';
 		result = result + '<th>Margin</th>'; 
 		result = result + '</tr>';
      result = result +'</thead>';
@@ -329,8 +327,6 @@ function marginpagination(url){
             { "data": "projectName"},
             { "data": "projectDuration"},
             { "data": "clientName"},
-            { "data": "paidAmount"},
-            { "data": "billedAmount"},
             { "data": "payRate"},
             { "data": "billRate"},
             { "data": "margin"}
@@ -427,7 +423,7 @@ function marginpagination(url){
 	          },
 	          {
 		    	  "targets": colIndex++,
-	              "data": "paidAmount",
+	              "data": "payRate",
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined'){
@@ -441,7 +437,7 @@ function marginpagination(url){
 		          },
 	          {
             "targets": colIndex++,
-            "data": "billedAmount",
+            "data": "billRate",
             "render": function ( data, type, opt, meta ) {
             	var result = "";
             	
@@ -453,35 +449,6 @@ function marginpagination(url){
    				return result;
             }
           } ,
-          {
-	    	  "targets": colIndex++,
-              "data": "payRate",
-              "render": function ( data, type, opt, meta ) {
-            	  var result = "";
-            	  if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined'){
-                		  result = result + '<td><div><span title='+opt.payRate+'>'+opt.payRate+'</span></div></td>';
-            		}else{
-						result = result + ' <td><div>--</div></td>';
-					}
-            	  return result;
-              		
-              }
-	          },
-	          
-	          {
-		    	  "targets": colIndex++,
-	              "data": "billRate",
-	              "render": function ( data, type, opt, meta ) {
-	            	  var result = "";
-	            	  if(opt.billRate !=null && opt.billRate !='' && opt.billRate !='undefined'){
-	                		  result = result + '<td><div><span title='+opt.billRate+'>'+opt.billRate+'</span></div></td>';
-	            		}else{
-							result = result + ' <td><div>--</div></td>';
-						}
-	            	  return result;
-	              		
-	              }
-		          },
           {
               "targets": colIndex++,
               "data": "margin",

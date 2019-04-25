@@ -2008,11 +2008,10 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			  mts.setEmployeeName(mm[3].toString());
 			  mts.setProjectName(mm[1].toString());
 			  
-			  if (mm[4] !=null) {
-				  mts.setPayRate((double)mm[4]);
-			  } else {
-				  mts.setPayRate(0);
-			  }
+			
+			  if (mm[4] !=null) { mts.setPayRate((double)mm[4]); } else {
+			  mts.setPayRate(0); }
+			 
 			  if (mm[2] != null) {
 				  mts.setEmployeeId(mm[2].toString());
 			  } else {
@@ -2032,7 +2031,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			  mts.setOrglocationId((BigInteger)mm[11]);
 			  mts.setOrgRelationId((BigInteger)mm[12]);
 			  if(mm[14] !=null) {
-			  mts.setProjectDuration(mm[13].toString() +"-"+mm[14].toString());
+			  mts.setProjectDuration(mm[13].toString() +"--"+mm[14].toString());
 			  }else {
 				  mts.setProjectDuration(mm[13].toString());  
 			  }
