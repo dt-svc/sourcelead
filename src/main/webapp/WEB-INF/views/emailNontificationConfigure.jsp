@@ -7,7 +7,7 @@
  <script type="text/javascript">
 		window.onload = function () {
 			getEmailList();
-			var status ='${emailSceconf.status}';
+			var status ='${emailSceconf.verifiedStatus}';
 			if(status == "Y"){
 				configuredMail();
 			}
