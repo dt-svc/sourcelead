@@ -6,7 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link href="/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 <script>
 var atsUrl = '${SourceLeadWeb_atsUrl}';
 var sourceleadUrl ='${sourceleadUrl}';
@@ -1537,7 +1537,7 @@ function reqNotes(requirementId){
 				   	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage !='undefined'){
 				   	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
 				   	    }else{
-				   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
+				   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofileImg.jpg"/>';
 				   	    }
 				   	    output = output+'        </div>';
 				   	    output = output+'    </div>';
@@ -1756,7 +1756,7 @@ function clientSideBar(candidateId,recScore){
 				               if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 							result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 				               }else{
-							result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+							result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 		   
 				               }
 							if(recScore != null && recScore != '' && recScore != 'undefined'){
@@ -3145,7 +3145,7 @@ function refreshImageBlock(candidateId){
 							 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 							 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 							 }else{
-							 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+							 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 		 
 							 }
 							 result = result+'  <div class="btn-group uploadfile">';

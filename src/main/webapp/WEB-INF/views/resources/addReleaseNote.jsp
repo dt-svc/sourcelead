@@ -3,8 +3,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<link href="/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
-<script src="/resources/js/summernote.min.js"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/summernote.min.js"></script>
 <script>
 $(function() {
 	$('#summernote').summernote();

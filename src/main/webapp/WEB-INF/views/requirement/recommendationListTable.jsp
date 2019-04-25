@@ -5,7 +5,7 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 	
-	<script type="text/javascript" src="/resources/js/submissionFailedCandidatesList.js"></script>
+	<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/submissionFailedCandidatesList.js"></script>
 	
 <%-- <jsp:include page="addApplicant.jsp" />
 <jsp:include page="compareCandidatesProfile.jsp"></jsp:include> --%>

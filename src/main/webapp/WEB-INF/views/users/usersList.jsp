@@ -378,7 +378,7 @@ function getUsersSearchResult(searchValue){
 												<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateDeductionContributionDetails" title="Associate Deduction Contribution Import">Associate Deduction Contribution Import</a>
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
 												    <a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankingDetailsForm" title="Associate Bank Detail">Associate Bank Detail</a>
-												   <%--  <a href="${sourceleadUrl}/uploadAssociateInformationForm">Associate Information</a> --%>
+												   <a href="${sourceleadUrl}/uploadAssociateInformationForm">Associate Information</a> 
 													<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateSalary" title="Associate Salary Import">Associate Salary Import</a>
 													
 												</c:if>
@@ -551,10 +551,20 @@ function resetFilter(){
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
 	$("#dynamicUserDataTableSearch").val('');
+	$("#myManagersInput").val('');
+	$("#myRolesInput").val('');
+	$("#myClientsInput").val('');
+	$("#myTeamsInput").val('');
+	$("#myDepartmentInput").val('');
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
 	
+	myManagersFunction();
+	myRolesFunction();
+	myClientsFunction();
+	myTeamsFunction();
+	myDepartmentFunction();
 	getDynamciUserList();
 }
 </script>

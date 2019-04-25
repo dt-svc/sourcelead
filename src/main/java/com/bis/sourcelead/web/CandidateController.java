@@ -68,7 +68,6 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
-import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -93,9 +92,6 @@ public class CandidateController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
-	@Autowired
-	ReportsUtil reportsUtil;
-		
 	
 	@Autowired
 	private RolesService roleService;

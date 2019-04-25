@@ -5,7 +5,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<link rel="stylesheet" href="/resources/css/style.css" />
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css" />
 
 
 <style type="text/css">
@@ -109,7 +109,7 @@ function clientSubmissionTemplate(clientLocationId){
     		}else{
       			 result = result + '<div class="table_nodata">';
        			 result = result + '<div class="table_nodata_inn">';
-       			 result = result + '<img src="/resources/images/no-data.png" />';
+       			 result = result + '<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/no-data.png" />';
        			 result = result + '<span>Nothing is here to show </b>';
        			 result = result + '</span>';
        			 result = result + '<div class="clearfix"></div>';
