@@ -133,9 +133,9 @@ var uploadflag= true;
         
         
     <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop" id="recentHistoryDiv">
-	<h5 id="uploadXlsHistoryDivTitle"  style="display: block;">Recent Uploads History</h5>
+	<!-- <h5 id="uploadXlsHistoryDivTitle"  style="display: block;">Recent Uploads History</h5>
 	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
-	    	<input type="hidden"  id="uploadedPercentage" value="0">
+	    	<input type="hidden"  id="uploadedPercentage" value="0"> -->
 		</div>	 	
 </section>
 
@@ -185,17 +185,21 @@ function importAssociateBankDetail(){
     	    dataType : 'json',
     	    url: sourceleaAtsdUrl+"/uploadAssociateInfomation?",	   
  		    success : function(json) {
- 		    		$("#loading").removeAttr("style");
- 		    	    if(json.insertedCount != null && json.insertedCount != '')
- 		    	    $("#msgDiv").removeAttr("style");
- 		 			$("#msgDiv").css({ display: "block" });
- 		 			$("#msgDiv").html(json.insertedCount+ " Associates are updated");
- 		 			msgFadein();
- 		 			if(json.pfErrorData != null && json.pfErrorData.length >0){
- 		 				showFailedExcelData(json);
- 		 				importassociteSel(json);
- 		 			}
- 			    	},
+ 		    	$("#loading").removeAttr("style");
+		    	    if(json.insertedCount != null && json.insertedCount != '')
+		    	    $("#msgDiv").removeAttr("style");
+		    	    $("#msgDiv").css({ "display" : "block", "text-align" :"center" });
+		    	    if(json.insertedCount != 0){
+		 			$("#msgDiv").html(json.insertedCount+ " Associates updated");}
+		 			else{
+		 				$("#msgDiv").html("Should fill the atleast mandatory Fields").css({"background":"#d9534f"})
+		 			}
+		 			msgFadein();
+		 			if(json.pfErrorData != null && json.pfErrorData.length >0){
+		 				showFailedExcelData(json);
+		 				importassociteSel(json);
+		 			}
+			    	},
 		 		   error: function(e){
 			        }
 			 });
@@ -234,7 +238,7 @@ function cancelFileImport(){
 		         result += '<td><div class="tblminwidth-175">'+report.uanNumber+'</div></td>';
 		         result += '<td><div class="tblminwidth-175">'+report.pfNumber+'</div></td>';
 		         result += '<td><div class="tblminwidth-175">'+report.esinumber+'</div></td>';
-		         result += '<td><div class="tbldata-dotdot-me">'+report.reason+'</div></td>';
+		         result += '<td><div class="colorRed tblminwidth-175">'+report.reason+'</div></td>';
 		         result += '  </tr>';
 	    	 }
 	    	
