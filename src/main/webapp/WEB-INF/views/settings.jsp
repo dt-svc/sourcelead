@@ -482,7 +482,7 @@
 										<i class="payrollSVG"></i>
 									</div>
 									<div class="clearfix text-center">
-										<h4>Us Payroll Configuration</h4>
+										<h4>Payroll Configuration</h4>
 									</div>
 								</c:if>
 							</a> 
@@ -492,7 +492,7 @@
 										<i class="ind_payrollSVG"></i>
 									</div>
 									<div class="clearfix text-center">
-										<h4>Ind Payroll Configuration</h4>
+										<h4>Payroll Configuration</h4>
 									</div>
 								</c:if>
 							</a>
@@ -524,7 +524,7 @@
 					
 							<div class="col-md-2 reportNewCta">
 								<a href="${SourceLeadWeb_sourceleadUrl}/clockInOutConfig">
-								<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+								<div class="clearfix text-center mb10"><i class="timeSettIcon"></i></div>
 								<div class="clearfix text-center">
 								<h4>Clock In - Clock Out</h4>
 								</div>

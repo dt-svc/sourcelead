@@ -1183,6 +1183,9 @@ return responseList;
 			invoice.setCurrencyCode(invoice.getCurrencyCode());
 			invoice.setDueDateStr(formatter.format(invoice.getDueDate()));
 			invoice.setInvoiceDateStr(formatter.format(invoice.getInvoiceDate()));
+			if(invoice.getNotifyToOthers() !=null){
+				invoice.setNotifyToOthers(invoice.getNotifyToOthers().replaceAll(",", ", "));
+				}
 			if(invoice.getPaymentAccount() != null) {
 				invoice.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null));
 			}
@@ -1977,6 +1980,12 @@ return responseList;
 				Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 				if(invoice != null){
 				invoiceService.sendInvoiceReminderMail(user, orgLocation, invoice, invoice.getInvoiceType(), null);
+					// notify other email
+					if (StringUtils.isNotBlank(invoice.getNotifyToOthers())) {
+						for (String notifyToEmail : invoice.getNotifyToOthers().split(",")) {
+							invoiceService.sendInvoiceReminderMailToNotifyOthers(user, orgLocation, invoice,invoice.getInvoiceType(), null, notifyToEmail);
+						}
+					}
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}else{

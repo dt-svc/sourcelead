@@ -1,14 +1,5 @@
 <input type="hidden" id="timesheetApproverCurrentPageNumber">
-<script>
-$(document).ready(function() {
-    $(".glyphicon-comment").mouseenter(function(){
-		$("#rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}").addClass("app_error_mes_active");
-	});
-    $(".glyphicon-comment").mouseleave(function(){
-    	$("#rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}").removeClass("app_error_mes_active");
-	});	
-});
-</script>
+<!-- Hidden Div for Timesheet Entry Details popup from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->
 <div class="time_appr_side_wrap">
 	<div class="time_appr_side_wrap_inn">
 	 	 <form id="timesheet_form" name="timesheet_form"> 
@@ -19,29 +10,45 @@ $(document).ready(function() {
             <input type="hidden" id="timesheetFor" name="timesheetFor" value="approver"/>
             <input type="hidden" name="totalHours" id="totalHours" >
             <div id="timesheetDivByFrequency">
-	 	        <jsp:include page="timeSheetSubmission.jsp"></jsp:include>
+                <!-- inner jsp for timesheetentry details   -->
+	 	        <jsp:include page="timesheetApprovalSubmission.jsp"></jsp:include>
 	 	    </div>
 	 	  </form>
 	 	
 	</div>
 </div>	
+<!-- Hidden div's for loading   -->
 <div id="loadTime"></div>
 <div id="loadTime1"></div>
+
+<!-- Hidden div for reject reason popup -->
 <div id='rejectedPopup'></div>
+
+<!-- Hidden div for reopen popup -->
 <div id='reOpenPopup'></div>
+
+<!-- Hidden div for reopen-reject reason popup -->
 <div id='reOpenRejectedPopup'></div>
+
+<!-- Hidden div timesheet entries popup close button -->
 <div class="side_mask"><div class="proj_close" onclick="timesheetApprovalTableRowByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectMemberId}','approverClose');"></div></div>	
 <div class="mask_time"></div>
+
+
 <script>
-$(document).on("mouseover", ".glyphicon-comment", function() { 
-var localId = $(this).attr('id');
-$("#rejectedMessage"+localId).addClass('app_error_mes_active');
-});	
-$(document).on("mouseleave", ".glyphicon-comment", function() { 
-var localId = $(this).attr('id');
-$("#rejectedMessage"+localId).removeClass('app_error_mes_active');
-});	
-</script> 
+$(document).ready(function() {
+    $(".glyphicon-comment").mouseenter(function(){
+		$("#rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}").addClass("app_error_mes_active");
+	});
+    $(".glyphicon-comment").mouseleave(function(){
+    	$("#rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}").removeClass("app_error_mes_active");
+	});	
+});
+</script>
+
+
+
+<!-- Getting Timesheet Entry Details from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->
 <script>
 function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from,requestFrom){
 	 $('#hedderAcceptRejectButton').hide();
@@ -104,26 +111,15 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 	    	selectedRecords[$(this).val()] = $(this).is(":checked");
 	    });
 
-$('.selectpicker').selectpicker('refresh');
-$('.existedProjectTaskId'+projectId).selectpicker('refresh');
+		$('.selectpicker').selectpicker('refresh');
+		$('.existedProjectTaskId'+projectId).selectpicker('refresh');
 }	
 </script>
+
+
+
+<!-- Approving submitted timesheet from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->  
 <script>
-function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){ 
-    $("#rejectReasonDiv").empty();
-    $("#reject"+projectMemberId+"message").val(''); 
-    var result = "";
-    result = result +'<div class="time_appr_rejct_pop" id="reject'+projectMemberId+'panel" style="top:25%">';
-	result = result +'<textarea placeholder="Enter comment here" id="reject'+projectMemberId+'message" ></textarea>';
-	result = result +'<div id="rejectReasonDiv"/>';
-	result = result +'<a href="#" onClick="removeEmptyLines($(\'#reject'+projectMemberId+'message\'));saveRejectSubmissionByProjectMemberId(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+projectMemberId+'\');">Cancel</a>';
-	result = result +'</div>';
-	result = result +'</div>';
-	$("#rejectedPopup").append(result);
-   $(".mask_time").fadeIn(200); 
-$("#reject"+projectMemberId+"panel").slideToggle(200);
-	
-}
 function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
 	 var rowHtmlContent =  $("#row"+projectMemberId).html();
 	 var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
@@ -173,7 +169,23 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 }
 </script>
 
+<!-- Rejecting submitted timesheet from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->
 <script>
+function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){ 
+    $("#rejectReasonDiv").empty();
+    $("#reject"+projectMemberId+"message").val(''); 
+    var result = "";
+    result = result +'<div class="time_appr_rejct_pop" id="reject'+projectMemberId+'panel" style="top:25%">';
+	result = result +'<textarea placeholder="Enter comment here" id="reject'+projectMemberId+'message" ></textarea>';
+	result = result +'<div id="rejectReasonDiv"/>';
+	result = result +'<a href="#" onClick="removeEmptyLines($(\'#reject'+projectMemberId+'message\'));saveRejectSubmissionByProjectMemberId(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+projectMemberId+'\');">Cancel</a>';
+	result = result +'</div>';
+	result = result +'</div>';
+	$("#rejectedPopup").append(result);
+    $(".mask_time").fadeIn(200); 
+    $("#reject"+projectMemberId+"panel").slideToggle(200);
+	
+}
 function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from,reason){
 	 var msg = ''; 
 	if(reason != null && reason != 'undefined' && reason != ''){
@@ -203,7 +215,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	    url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&approvalStatus=REJECTED",       
 	    success: function(data) { 
 	    	 if (data.response === "AWKWARD") {
-                    location.href = "/errorPage";
+                   location.href = "/errorPage";
 	    	 } else if (data.response === "SUCCESS") {
 	  	        if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 	  	    	     var currentPageNumber =  $("#currentPageNumber").val();
@@ -219,7 +231,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 			    		   $(this).find('input:checkbox:first').remove();
 			    		   var banIcon = '<small class="positionRelative"><i class="fa fa-ban text-danger"></i></small>';
 			    		   $(this).find('td:first-child').html(banIcon);
-       	        	  });
+      	        	  });
 	  	   	     }
 	  	   	     cancelRejectSubmission(projectMemberId);
 	  	   	    pagination();
@@ -236,20 +248,33 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 			}
 		}
 	}
-function rejectedMessage(local){ 
+   function rejectedMessage(local){ 
 		    $("#"+local).slideToggle(200);
 		    $(".timesheet_appr_table .glyphicon strong, .timesheet_appr_table .glyphicon").click(function(e) {
 		        e.stopPropagation();
 		    });	
 		    
 		}
-function cancelRejectSubmission(projectMemberId){
+   function cancelRejectSubmission(projectMemberId){
 	 $(".mask_time").fadeOut(200);
 	 $("#reject"+projectMemberId+"panel").slideUp(200);
 	}
 </script>
 
+<!-- Showing reject reason's on mouseover -->
+<script>
+	$(document).on("mouseover", ".glyphicon-comment", function() { 
+		var localId = $(this).attr('id');
+		$("#rejectedMessage"+localId).addClass('app_error_mes_active');
+	});	
+	$(document).on("mouseleave", ".glyphicon-comment", function() { 
+		var localId = $(this).attr('id');
+		$("#rejectedMessage"+localId).removeClass('app_error_mes_active');
+	});	
+</script>
 
+
+<!-- Bulk Approving submitted timesheets from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->  
 <script>
 function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 	var submissionIDs = [];
@@ -306,6 +331,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 }
 </script>
 
+<!-- Bulk Rejecting submitted timesheets from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->  
 <script>
 function rejectTimeSheetSubmissionBySubmissionId(tableFor){
 	$("#rejectReasonDiv").empty();
