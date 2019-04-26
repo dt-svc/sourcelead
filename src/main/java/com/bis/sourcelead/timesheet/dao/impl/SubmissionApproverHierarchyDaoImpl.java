@@ -687,7 +687,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		if (projectMembers != null && projectMembers.getProjectMemberCandidteId() != null
 				&& projectMembers.getProjectMemberCandidteId().getOrgLocationId() != null
 				&& StringUtils.isNotEmpty(projectMembers.getProjectMemberCandidteId().getOrgLocationId().getOrgLocationName())) {
-			actionPerformedBy = projectMembers.getProjectMemberCandidteId().getOrgLocationId().getOrgLocationName();
+			actionPerformedBy = loginUser.getFullName()+"("+projectMembers.getProjectMemberCandidteId().getOrgLocationId().getOrgLocationName()+")";
 			actionPerformedByORgLocationId = projectMembers.getProjectMemberCandidteId().getOrgLocationId().getId();
 		}
 		else {

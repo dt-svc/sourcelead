@@ -596,8 +596,8 @@ public class Constants {
 			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager(Email)", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
-	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category", "Work Status",
-			"Name","Laptop Serial Number/CPU Serial Number", "Make", "Model", "MAC Address", "Memory", "CPU", "Monitor Serial Number", "Hard Disk","Operating System","OS Key","Anti-Virus","Manufactured Date","Purchase Date","Cost","Depreciation Assessment Date","Depreciation Amount","Vendor Details", "Description"};
+	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category*", "Work Status*",
+			"Name","Laptop Serial Number/CPU Serial Number*", "Make", "Model", "MAC Address", "Memory", "CPU", "Monitor Serial Number", "Hard Disk","Operating System","OS Key","Anti-Virus","Manufactured Date","Purchase Date","Cost","Depreciation Assessment Date","Depreciation Amount","Vendor Details", "Description"};
 	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };
@@ -694,11 +694,11 @@ public class Constants {
 			"Rate", "Rate Currency", "Rate Per", "Gender*","Marital Status","Date of Join","Date of Birth","Role*","Day hours(HH:MM)","Manager*(Email)", "Employment type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Department*","Send Mail to User","Is Global Manager"};
 	
 	public static final String[] DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Payment Mode*","Bank Name*","Account Number*","BSR Number","MICR Code","IFSC Code*",
-			"First Name","Last Name",};
+			"First Name*","Last Name*",};
 	
 	public static final String[] DATA_MIGRATION_ASSOCIATE_SALARY_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Pay Type*","Pay Frequency*","Pay Group*","Standard Hours","Annual Salary*"};						
 
-	public static final String[] PAYMENT_MODE = {"Savings", "Cheque", "Cash"};
+	public static final String[] PAYMENT_MODE = {"SAVINGS", "CHEQUE", "CASH"};
 	
 	public static final String[] ASSOCIATE_SALARY_PAYTYPE = {"Salary"};
 	
@@ -1459,5 +1459,7 @@ public class Constants {
 	public static final String DEDUCTION_TYPE = "Deduction Type";
 	public static final String DEDUCT_AMOUNT= "Deduct Amount";
 	public static final String CONTRIBUTE_AMOUNT = "Contribute Amount";
+	
+	
 	
 }
