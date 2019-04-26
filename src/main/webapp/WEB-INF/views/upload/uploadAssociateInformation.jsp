@@ -189,8 +189,12 @@ function importAssociateBankDetail(){
  		    		$("#loading").removeAttr("style");
  		    	    if(json.insertedCount != null && json.insertedCount != '')
  		    	    $("#msgDiv").removeAttr("style");
- 		    	   $("#msgDiv").css({ "display" : "block", "text-align" :"center" });
- 		 			$("#msgDiv").html(json.insertedCount+ " Associates are updated");
+ 		    	    $("#msgDiv").css({ "display" : "block", "text-align" :"center" });
+ 		    	    if(json.insertedCount != 0){
+ 		 			$("#msgDiv").html(json.insertedCount+ " Associates updated");}
+ 		 			else{
+ 		 				$("#msgDiv").html("Should fill the atleast mandatory Fields").css({"background":"#d9534f"})
+ 		 			}
  		 			msgFadein();
  		 			if(json.pfErrorData != null && json.pfErrorData.length >0){
  		 				showFailedExcelData(json);
@@ -244,7 +248,7 @@ function cancelFileImport(){
 		         result += '<td><div class="tblminwidth-175">'+report.uanNumber+'</div></td>';
 		         result += '<td><div class="tblminwidth-175">'+report.pfNumber+'</div></td>';
 		         result += '<td><div class="tblminwidth-175">'+report.esinumber+'</div></td>';
-		         result += '<td><div class="tbldata-dotdot-me">'+report.reason+'</div></td>';
+		         result += '<td><div class="colorRed tblminwidth-175">'+report.reason+'</div></td>';
 		         result += '  </tr>';
 	    	 }
 	    	
