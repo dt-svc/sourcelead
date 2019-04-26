@@ -1284,4 +1284,16 @@ public class ImmigrationRestController {
 		responseList.setData(canVisaList);
 		return responseList;
 	}
+	
+	//get document Types from lookup data
+	@RequestMapping(value = { "/getDocumentTypeLookUpdata" })
+	public ResponseList<LookUpData> getDocumentTypeLookUpdata(
+			 HttpServletRequest request)
+			throws Exception {
+		ResponseList<LookUpData> responseList = new ResponseList<LookUpData>();
+		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		responseList.setData(documentsList);
+		return responseList;
+	}
+	
 }
