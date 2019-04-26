@@ -1273,4 +1273,15 @@ public class ImmigrationRestController {
 		}
 		return response;
 	}
+	
+	//Visa Type from lookupdata
+	@RequestMapping(value = { "/getVisaTypeLookUpdata" })
+	public ResponseList<String> getVisaTypeLookUpdata(
+			 HttpServletRequest request)
+			throws Exception {
+		ResponseList<String> responseList = new ResponseList<String>();
+		List<String> canVisaList = lookUpDataService.getAllVisaByCategory();
+		responseList.setData(canVisaList);
+		return responseList;
+	}
 }
