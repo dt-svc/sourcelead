@@ -65,7 +65,9 @@ $(document).ready(function(){
 <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
+<c:if test='${viewPage != "vendors/vendorsList"}'>
 <script src="/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
+</c:if>
 <script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
  
 <!--  Amcharts -->
