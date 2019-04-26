@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,6 +26,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -36,6 +38,7 @@ import com.bis.sourcelead.reports.service.JobsPipelineReportService;
 import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.reportsDTO.JobPipelineDTO;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementReportService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -67,13 +70,16 @@ public class JobPipelineReoprtsRestController {
 	@Autowired
 	ClientReportService clientReportService;
 	
+	@Autowired
+	OrgSpocService orgSpocService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(JobPipelineReoprtsRestController.class);
 	
 	@SuppressWarnings({ "unchecked", "unused" })
 	@Async
 	@RequestMapping(value = "/getAllJobsPipelineReoportsList", method = RequestMethod.POST)
 	@ResponseBody
-	Response<JobPipelineDTO> getAllJobsPipelineReoportsList(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception
+	Response<JobPipelineDTO> getAllJobsPipelineReoportsList(JobFilterDTO jobFilterDTO, HttpServletRequest request, @RequestParam(defaultValue = "0") long orgRelationId, @RequestParam(defaultValue = "0") long spocId) throws Exception
 	{
 		Response<JobPipelineDTO> response = new Response<>();
 		try{
@@ -117,6 +123,11 @@ public class JobPipelineReoprtsRestController {
 						}
 					}else {
 						jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
+						if(orgRelationId > 0) {							
+							//above jobIdList is released to vendor job id's
+							//now get the parentJobId based on vendorReleasedJob and get the jobStages for that vendor resubmitted job('submit to client')
+							jobIdList = requirementReportService.getParentRequirementIdListByRequirementIds(jobIdList);
+						}
 					}
 				 }
 			    	int applicantsSum = 0;
@@ -164,7 +175,14 @@ public class JobPipelineReoprtsRestController {
 					Integer filledclosedJobcount = new Integer(0);
 					Integer cancelJobcount = new Integer(0);
 					
-					List<Requirement> requirementList = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates);
+					List<Requirement> requirementList = null;
+					
+					if(orgRelationId > 0) {
+						requirementList = jobsPipelineReportService.vendorRequirementListStatusCountByJobIdsAndDates(jobIdList, searchDates);
+					} else {
+						requirementList = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates);
+					}
+					
 					if(requirementList != null && !requirementList.isEmpty()) {
 						openJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("OPEN")).collect(Collectors.toList()).size();
 						onholdJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("ONHOLD")).collect(Collectors.toList()).size();
@@ -176,7 +194,9 @@ public class JobPipelineReoprtsRestController {
 
 					int count = 1;
 					int dupCount = 0;
-			    	List<RequirementSubmission> reqSubmissionList = jobsPipelineReportService.getAllJobsReportCountByOrglocationIdAndLoginUserCodeAndStartAndEndDate(jobIdList, searchDates);
+					
+					List<RequirementSubmission> reqSubmissionList = jobsPipelineReportService.getAllJobsReportCountByOrglocationIdAndLoginUserCodeAndStartAndEndDate(jobIdList, searchDates);
+			    	
 			    	if(null != reqSubmissionList && reqSubmissionList.size() > 0){
 				    	for(RequirementSubmission reqSub : reqSubmissionList){
 							int applicantsCount = 0;
@@ -189,7 +209,28 @@ public class JobPipelineReoprtsRestController {
 							int rejectedCount = 0;
 							int backoutCount = 0;
 							
-							List<RequirementSubmissionHistory> requirementSubmissionHistoryList = jobsPipelineReportService.getAllJobsReportsCountsBySubmmisonId(reqSub.getId());
+							List<RequirementSubmissionHistory> requirementSubmissionHistoryList = null;
+							
+							if(orgRelationId > 0) {
+					    		String masterUserCode = "";
+					    		if (spocId > 0) {
+					    			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+					    			if(orgSpoc != null) {
+					    				masterUserCode = "'" + orgSpoc.getVendorUser().getUserCode() + "'";
+					    			}
+					    		} else {
+					    			List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelationId);
+					    			if (orgSpocList != null && !orgSpocList.isEmpty()) {
+					    				for (OrgSpoc orgSpoc : orgSpocList) {
+					    					masterUserCode += (masterUserCode.isEmpty() ? "" : ",") + "'" + orgSpoc.getVendorUser().getUserCode() + "'";
+					    				}
+					    			}
+					    		}
+					    		requirementSubmissionHistoryList = jobsPipelineReportService.getAllJobsReportsCountsBySubmmisonIdAndMasterUserCode(reqSub.getId(), masterUserCode);
+					    	} else {
+					    		requirementSubmissionHistoryList = jobsPipelineReportService.getAllJobsReportsCountsBySubmmisonId(reqSub.getId());
+					    	}
+							
 							if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 								Date requirementCreatedDate = reqSub.getRequirement().getCreatedDate();
 								Date applicantCreatedDate = null;
