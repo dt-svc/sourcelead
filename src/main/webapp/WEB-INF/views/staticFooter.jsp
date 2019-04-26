@@ -49,8 +49,8 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 			<li><a title="FaceBook" href="https://www.facebook.com/Sourcelead-303008183449158/" target="_blank"><i class="fa fa-facebook"></i></a></li>
 			<li><a title="Youtube" href="https://www.youtube.com/sourcelead" target="_blank"><i class="fa fa-youtube"></i></a></li>
 			<li><a title="Twitter" href="https://twitter.com/SourceleadInc" target="_blank"><i class="fa fa-twitter"></i></a></li>
-			<li><a title="GooglePlus" href="https://plus.google.com/u/0/106307146025514798879" target="_blank"><i class="fa fa-google-plus"></i></a></li>
-			<li><a title="LinedIn" href="https://www.linkedin.com/company-beta/13268592/" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+			<!-- <li><a title="GooglePlus" href="https://plus.google.com/u/0/106307146025514798879" target="_blank"><i class="fa fa-google-plus"></i></a></li> -->
+			<li><a title="LinedIn" href="https://www.linkedin.com/company/sourcelead" target="_blank"><i class="fa fa-linkedin"></i></a></li>
 		</ul>
 	  </div>
   	</div>
