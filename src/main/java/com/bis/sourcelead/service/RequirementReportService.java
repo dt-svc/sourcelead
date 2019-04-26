@@ -59,5 +59,7 @@ public interface RequirementReportService {
 	List<RequirementSubmissionHistory> getApplicantsCountsByDateRange(Long submissionId, Date startDateUTC, Date endDateUTC) throws Exception;
 	
 	public List<Requirement> getAllJobsBylocationIdAndRelationId(Long orglocationId,String orgRelationIds,Date startDate,Date endDate)throws Exception;
+	
+	public List<Long> getParentRequirementIdListByRequirementIds(List<Long> requirementIds);
 
 }
