@@ -189,7 +189,9 @@ z-index: 1000000000 !important;
 <script type="text/javascript">
 $(document).ready(function(){
 //   getNotificationsByuserId();
+'<sec:authorize access="hasRole(\'ROLE_VIEW_CART\')">' 
 	updateMarketplaceCartCountAndPrice();
+	'</sec:authorize>';
 });
 </script>
 <!-- notification related include jsp -->
