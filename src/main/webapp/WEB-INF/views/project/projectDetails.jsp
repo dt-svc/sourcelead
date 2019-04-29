@@ -9,13 +9,13 @@
 <!-- script for dateformat in datepicker End -->
 <script src="/resources/js/editor.js"></script>
 <link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
-		<script>
+		<!-- <script>
 			$(document).ready(function() {
 				$("#txtEditor1").Editor();
 				$("#txtEditor1").find(".Editor-editor").data-validation('validate_length length2-5000');
 				$("#txtEditor1").find(".Editor-editor").data-validation-optional('rule-required',true);
 			});
-       </script> 
+       </script>  -->
        
 <style>
 .project_details.project_detailsHei {
