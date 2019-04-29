@@ -1354,6 +1354,9 @@ public class Constants {
 	public static final String IND_PAYROLL_PAYHEAD_DEDUCTION = "Deduction";
 	public static final String IND_PAYROLL_PAYHEAD_EARNINGS = "Earnings";
 	
+	public static final String TAXABLE = "Taxable";
+	public static final String NON_TAXABLE = "NonTaxable";
+	
 	public static final String IND_PAYROLL_PAYFREQUENCY_MONTHLY = "Monthly";
 	public static final String IND_PAYROLL_PAYFREQUENCY_WEEKLY = "Bi-Weekly";
 	public static final String IND_PAYROLL_PAYFREQUENCY_BI_WEEKLY = "Weekly";
