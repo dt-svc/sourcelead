@@ -437,6 +437,7 @@ function getBillingReportsChart(invoiceType,json){
 	 var chartData = [];
 	 
   var firstDate = new Date();
+ if(typeof json.billingGraphBean != 'undefined'){
   for (var i = 0; i < json.billingGraphBean.length; i++) { 
 		 var opt = json.billingGraphBean[i]; 
         chartData.push({
@@ -445,7 +446,8 @@ function getBillingReportsChart(invoiceType,json){
         	year2005: opt.expenses
       });
   }
-	var chart = AmCharts.makeChart("billing_chartdiv", {
+ }
+  var chart = AmCharts.makeChart("billing_chartdiv", {
 		"theme": "light",
 	    "type": "serial",
 	    "dataProvider":chartData ,
