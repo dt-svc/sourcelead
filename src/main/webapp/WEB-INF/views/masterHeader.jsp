@@ -1981,7 +1981,7 @@ function getClockInOutConfiguration(){
 	type: 'GET',
 	success: function (json) {
 	if(json != null){
-	$("#clockFieldsId").show();
+// 	$("#clockFieldsId").show();
 	getExistedClockTime();
 	if(!json.isJobChecked){
 	$("#jobDIV").hide();
