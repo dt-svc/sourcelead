@@ -83,7 +83,7 @@
                 <div class="form-group" id="onboardCandidatesDiv">
                   <label class="col-md-3 control-label">Select Candidate <span class="text-danger">* </span><i class='fa fa-info-circle' title='Select the candidate who is being onboarded'></i></label>
                   <div class="col-md-6">
-                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();" field-name="Candidate">
+					<select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();" field-name="Candidate">
                     </select>
                   </div>
                 </div>
@@ -2939,6 +2939,7 @@ function shiftList(shiftId){
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>Select Shift</option>"; 
+	        	if(json != null && json !='' && json !="undefined"){
 	        	for (var i=0; i<json.length; i++)
 				{
 	        		var opt = json[i];
@@ -2948,6 +2949,7 @@ function shiftList(shiftId){
 		       			output = output + "<option value='"+opt.id+"'>"+opt.shiftName+"</option>";
 	        		}
 				}
+	        	}
 	        	$("#shiftList").empty();
 		        $("#shiftList").append(output);
 		        $('#shiftList').trigger("chosen:updated");
