@@ -356,28 +356,29 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '</div>';
-							
-							if(json.country == 'India'){
 							result = result + '<div class="clearfix mb10">';
+							if(loginCountryName == 'India'){
+							result = result + '<div class="clearfix mb10" id="errPanNoDiv">';
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input class="form-control" id="panNumber" name="panNumber" value="'+panNumber+'" placeholder="Pan Number" type="text"></input>';
+							result = result + '<input class="form-control" id="panNumber" name="panNumber" value="'+panNumber+'" placeholder="Pan Number" type="text" onblur="validatePanNumber();" field-name="Pan Number" data-validation="validate_Space validate_panNumber"data-validation-optional="true" ></input>';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input class="form-control" id="aadharNumber" name="aadharNumber" value="'+aadharNumber+'" placeholder="Aadhar Number" type="text"></input>';
+							result = result + '<div class="col-md-6 custom-fields" id="errAadharNoDiv">';
+							result = result + '<input class="form-control" id="aadharNumber" name="aadharNumber" value="'+aadharNumber+'" placeholder="Aadhar Number" type="text" onblur="validateAadharNumber();" field-name="Aadhar Number" data-validation="validate_Space validate_aadharNumber"data-validation-optional="true"></input>';
 							result = result + '</div>';
 							result = result + '</div>';
               		        }
-							
-							if(json.country == 'United States'){
-								result = result + '<div class="clearfix mb10">';
+							result = result + '</div>';
+							result = result + '<div class="clearfix mb10">';
+							if(loginCountryName == 'United States'){
+								result = result + '<div class="clearfix mb10" id="errSsnNoDiv">';
 								result = result + '<div class="col-md-6 custom-fields">';
-								result = result + '<input class="form-control" id="ssnNumber" name="ssnNumber" value="'+ssnNumber+'" placeholder="SSN Number" type="text"></input>';
+								result = result + '<input class="form-control" id="ssnNumber" name="ssnNumber" value="'+ssnNumber+'" onblur="validateSsnNumberDuplicateChek();" placeholder="000-00-0000" type="text"></input>';
 								result = result + '</div>';
 								result = result + '</div>';
 	              		        }
-							
-							result = result + '<div class="clearfix mb10">';
+							/* result = result + '</div>';
+							result = result + '<div class="clearfix mb10">'; */
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
 							result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
@@ -2175,5 +2176,88 @@ function showSuccessStatusPopup(status) {
 </script>
 
 
- 
+ <script type="text/javascript">
+function validatePanNumber() {
+	
+	  var panNumber = document.getElementById("panNumber").value;
+	 
+	  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:sourceleadUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#panNumber").after("<p class='jquery_form_error_message'>"+panNumber+" is Already Existed</span>");
+						  $("#store_candidate").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#panNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errPanNoDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#store_candidate").removeAttr("disabled");
+		        	}
+		        }
+		    });
+};
+</script>
 
+<script type="text/javascript">
+function validateAadharNumber() {
+	
+	  var aadharNumber = document.getElementById("aadharNumber").value;
+	 
+	  $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:sourceleadUrl+"/validateAadharNumber?"+tokenParamName+"="+tokenValue+"&aadharNumber="+aadharNumber, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#aadharNumber").after("<p class='jquery_form_error_message'>"+aadharNumber+" is Already Existed</span>");
+						  $("#store_candidate").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#aadharNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errAadharNoDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#store_candidate").removeAttr("disabled");
+		        	}
+		        }
+		    });
+};
+</script>
+
+<script type="text/javascript">
+function validateSsnNumberDuplicateChek() {
+	
+	  var ssnNumber = document.getElementById("ssnNumber").value;
+	 
+	  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:sourceleadUrl+"/validateSsnNumber?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#ssnNumber").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
+						  $("#store_candidate").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#ssnNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errSsnNoDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#store_candidate").removeAttr("disabled");
+		        	}
+		        }
+		    });
+};
+</script>
+
+<script type="text/javascript">
+$('#ssnNumber').mask('000-00-0000', {
+    translation: {
+        '#': {
+            pattern: "/[0-9]{9}/", optional: true
+        }
+    },
+   placeholder: ""
+});
+</script>

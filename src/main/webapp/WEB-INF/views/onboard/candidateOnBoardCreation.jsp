@@ -27,7 +27,7 @@
   	        $("#documentstemplateId").val(onBoardingId);
   	        
   	        loadOnboardingCandidate('${onBoardingUUID}');
-  	       shiftList();
+  	       shiftListFun();
   	        
 		}else{
 			var candidateId = '${candidateId}';
@@ -83,8 +83,7 @@
                 <div class="form-group" id="onboardCandidatesDiv">
                   <label class="col-md-3 control-label">Select Candidate <span class="text-danger">* </span><i class='fa fa-info-circle' title='Select the candidate who is being onboarded'></i></label>
                   <div class="col-md-6">
-                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();shiftList();" field-name="Candidate">
-                    </select>
+                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();shiftListFun();"></select>
                   </div>
                 </div>
                
@@ -1494,9 +1493,11 @@ function loadOnBoardingTemplates(onboardTemplateId){
    		    		}else if(json['gender'] == 'Transgender'){
    		    			$("#transgender").prop("checked",true);
    		    		}
+   		    		$("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
+		    		$("#genderValue").val(json['gender']);
    		    	}
    		    	if(json['shift'] != null && json['shift'] != "" && json['shift'] !="undefined"){
-   		    		shiftList(json['shift']);
+   		    		shiftListFun(json['shift']);
    		    	}
    		    	
    		    	if(json['employmentEligibility'] != null && json['employmentEligibility'] != "" && json['employmentEligibility'] !="undefined"){
@@ -2929,13 +2930,14 @@ function changeCitizenShip(){
 }
 </script>
  <script>
-function shiftList(shiftId){
+function shiftListFun(shiftId){
 		 $.ajax({
 	      type : "POST",
 	       url: sourceleadUrl+"/shiftList",       
 	       success: function(json) {
 	        	var output = "";
 	        	output = output + "<option value=''>Select Shift</option>"; 
+	        	if(json != null && json !='' && json !="undefined"){
 	        	for (var i=0; i<json.length; i++)
 				{
 	        		var opt = json[i];
@@ -2945,6 +2947,7 @@ function shiftList(shiftId){
 		       			output = output + "<option value='"+opt.id+"'>"+opt.shiftName+"</option>";
 	        		}
 				}
+	        	}
 	        	$("#shiftList").empty();
 		        $("#shiftList").append(output);
 		        $('#shiftList').trigger("chosen:updated");

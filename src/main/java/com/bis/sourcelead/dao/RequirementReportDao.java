@@ -45,4 +45,6 @@ public interface RequirementReportDao {
 
 	List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId, Set<String> userCodesList,Date startDateUTC, Date endDateUTC);
 
+	public List<Long> getParentRequirementIdListByRequirementIds(List<Long> requirementIds);
+	
 }

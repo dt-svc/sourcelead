@@ -2,7 +2,15 @@
 <jsp:include page="../masterSideNav.jsp" />
 
 
-<!-- Content Area -->
+ <!-- Side Nav Bar --> 
+ 
+ <script>
+ $(document).ready(function(){
+	  getAossociateClockInOutReportSummary();
+	}); 
+ </script>
+  
+  <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -113,57 +121,59 @@
               <tbody>
                 <tr>
                   <td><div class="tbldata-dotdot inlineBlock">Rajkumar Santoshi Josh</div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">8hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">9hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">10hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">11hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">8hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">6hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">8hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">9hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">10hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">11hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">8hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">6hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">8hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">9hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">10hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">11hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">8hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">6hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">8hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">9hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">10hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">11hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">8hrs</a></div></td>
-                  <td><div class="tblminwidth-50"><a href="javascript:void(0)">6hrs</a></div></td>
+                  <td><div class="tblminwidth-50 selectedTd">8hrs</div></td>
+                  <td><div class="tblminwidth-50">9hrs</div></td>
+                  <td><div class="tblminwidth-50">10hrs</div></td>
+                  <td><div class="tblminwidth-50">11hrs</div></td>
+                  <td><div class="tblminwidth-50">8hrs</div></td>
+                  <td><div class="tblminwidth-50">6hrs</div></td>
+                  <td><div class="tblminwidth-50 selectedTd">8hrs</div></td>
+                  <td><div class="tblminwidth-50">9hrs</div></td>
+                  <td><div class="tblminwidth-50">10hrs</div></td>
+                  <td><div class="tblminwidth-50">11hrs</div></td>
+                  <td><div class="tblminwidth-50">8hrs</div></td>
+                  <td><div class="tblminwidth-50">6hrs</div></td>
+                  <td><div class="tblminwidth-50 selectedTd">8hrs</div></td>
+                  <td><div class="tblminwidth-50">9hrs</div></td>
+                  <td><div class="tblminwidth-50">10hrs</div></td>
+                  <td><div class="tblminwidth-50">11hrs</div></td>
+                  <td><div class="tblminwidth-50">8hrs</div></td>
+                  <td><div class="tblminwidth-50">6hrs</div></td>
+                  <td><div class="tblminwidth-50 selectedTd">8hrs</div></td>
+                  <td><div class="tblminwidth-50">9hrs</div></td>
+                  <td><div class="tblminwidth-50">10hrs</div></td>
+                  <td><div class="tblminwidth-50">11hrs</div></td>
+                  <td><div class="tblminwidth-50">8hrs</div></td>
+                  <td><div class="tblminwidth-50">6hrs</div></td>
                 </tr>
+
                 <tr>
-                  <td colspan="10">
-                      <div class="clearfix subTable">
-                          <table class="">
-                                <thead>
-                                    <tr>
-                                        <th>Clock In</th>
-                                        <th>No. of hours</th>
-                                        <th>Task</th>
-                                        <th>Comment</th>
-                                        <th>Clock Out</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><div class="tblminwidth-50">9.30pm</div></td>
-                                        <td><div class="tblminwidth-50">7.30pm</div></td>
-                                        <td><div class="tbldata-dotdot-big">HTML Screens</div></td>
-                                        <td><div class="tbldata-dotdot-verybig">Working on clock in clock out Screens</div></td>
-                                        <td><div class="tblminwidth-75">6.30pm</div></td>
+                    <td colspan="7">
+                        <div class="clearfix subTable">
+                            <table class="">
+                                  <thead>
+                                      <tr>
+                                          <th>Clock In</th>
+                                          <th>No. of hours</th>
+                                          <th>Task</th>
+                                          <th>Comment</th>
+                                          <th>Clock Out</th>
                                       </tr>
-                                </tbody>
-                          </table>
-                      </div>
-                  </td>
-              </tr>
+                                  </thead>
+                                  <tbody>
+                                      <tr>
+                                          <td><div class="tblminwidth-50">9.30pm</div></td>
+                                          <td><div class="tblminwidth-50">7.30pm</div></td>
+                                          <td><div class="tbldata-dotdot-big">HTML Screens</div></td>
+                                          <td><div class="tbldata-dotdot-verybig">Working on clock in clock out Screens</div></td>
+                                          <td><div class="tblminwidth-75">6.30pm</div></td>
+                                        </tr>
+                                  </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+
               </tbody>
             </table>
           </div>
@@ -185,209 +195,66 @@
       <!-- Content Area Ends--> 
     </div>
   </section>
+  <!-- Footer Area -->
   
   
-  <div class="advancedsearch-mask" onclick="closeAdsrch()"></div>
-  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
-    <h5 class="headerAdsrch">Filters <a href="javascript:void(0)" class="close-div" onclick="closePop()"><i class="fa fa-close"></i></a> </h5>
-    <div class="addInner">
-        <div class="row">
-            <div class="clearfix">
-              <div class="col-md-6">
-                <label>Department</label>
-                <div class="clearfix mt5">
-                    <select class="chosen-select" data-placeholder="Department" multiple>
-                        <option>Department1</option>
-                        <option>Department2</option>
-                        <option>Department3</option>
-                        <option>Department4</option>
-                        <option>Department5</option>
-                      </select>
-                </div>
-              </div>
-              <div class="col-md-6">
-                  <label>Role</label>
-                  <div class="clearfix mt5">
-                      <select class="chosen-select" data-placeholder="Role" multiple>
-                          <option>Role1</option>
-                          <option>Role2</option>
-                          <option>Role3</option>
-                          <option>Role4</option>
-                          <option>Role5</option>
-                        </select>
-                  </div>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-              <div class="clearfix col-md-12 mt10">
-                  <ul class="list-inline list-unstyled">
-                      <li>
-                          <span class="radioStyles mr">
-                              <input id="jobs" name="applicableFor" type="radio" onclick="jobsFun();">
-                              <label for="jobs">Jobs</label>
-                          </span>
-                      </li>
-                      <li>
-                          <span class="radioStyles mr">
-                              <input id="project" name="applicableFor" type="radio" onclick="projectFun();">
-                              <label for="project">Project</label>
-                          </span>
-                      </li>
-                      <li>
-                          <span class="radioStyles mr">
-                              <input id="generalTask" name="applicableFor" type="radio" onclick="generaltaskFun();">
-                              <label for="generalTask">General Task</label>
-                          </span>
-                      </li>
-                  </ul>
-              </div>
-
-              <div class="clearfix">
-                  <div class="col-md-4">
-                    <label>Jobs</label>
-                    <div class="clearfix mt5">
-                        <select class="chosen-select" data-placeholder="Jobs" multiple>
-                            <option>Jobs1</option>
-                            <option>Jobs2</option>
-                            <option>Jobs3</option>
-                            <option>Jobs4</option>
-                            <option>Jobs5</option>
-                          </select>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                      <label>Project</label>
-                      <div class="clearfix mt5">
-                          <select class="chosen-select" data-placeholder="Project" multiple>
-                              <option>Project1</option>
-                              <option>Project2</option>
-                              <option>Project3</option>
-                              <option>Project4</option>
-                              <option>Project5</option>
-                            </select>
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                        <label>Task</label>
-                        <div class="clearfix mt5">
-                            <select class="chosen-select" data-placeholder="Task" multiple>
-                                <option>Task1</option>
-                                <option>Task2</option>
-                                <option>Task3</option>
-                                <option>Task4</option>
-                                <option>Task5</option>
-                              </select>
-                        </div>
-                      </div>
-                    <div class="clearfix"></div>
-
-                    <div class="col-md-4">
-                        <label>General Task</label>
-                        <div class="clearfix mt5">
-                            <select class="chosen-select" data-placeholder="General Task" multiple>
-                                <option>General Task1</option>
-                                <option>General Task2</option>
-                                <option>General Task3</option>
-                                <option>General Task4</option>
-                                <option>General Task5</option>
-                              </select>
-                        </div>
-                      </div>
-
-                      <div class="col-md-4">
-                          <label>Associate</label>
-                          <div class="clearfix mt5">
-                              <select class="chosen-select" data-placeholder="Associate" multiple>
-                                  <option>Associate1</option>
-                                  <option>Associate2</option>
-                                  <option>Associate3</option>
-                                  <option>Associate4</option>
-                                  <option>Associate5</option>
-                                </select>
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                            <label>Teams</label>
-                            <div class="clearfix mt5">
-                                <select class="chosen-select" data-placeholder="Teams" multiple>
-                                    <option>Teams1</option>
-                                    <option>Teams2</option>
-                                    <option>Teams3</option>
-                                    <option>Teams4</option>
-                                    <option>Teams5</option>
-                                  </select>
-                            </div>
-                          </div>
-
-
-                </div>
-
-          </div>
-    </div>
-<div class="clearfix"></div>
-    <div class="clearfix advancedsearch-footer">
-      <div class="pull-right mr">
-        <input value="Apply" id="search_requiremet" onclick="closePop();getDynamciUserList();" class="btn btn-sm btn-success" type="button">
-        <input value="Reset" id="clear_search" onclick="resetFilter();" class="btn btn-sm btn-primary" type="button">
-      </div>
-    </div>
-  </div>
-  
-  <script>
-  
-  
-  function getActions(){
-		$(".action-pop").slideToggle(200);
-		$(".newActPop").slideUp(200);
-	}	
-	$("html").click(function(){
-		$(".action-pop").slideUp(200);
-	});
-	$(".action, .action-pop").click(function(e){
-	 	e.stopPropagation();
-	});	
-	function newActions(){
-		$(".newActPop").slideToggle(200);
-		$(".action-pop").slideUp(200);
+  <script>	
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});
+function runPayrollregister() {
+	$("#payrollRegister").toggle();
+}
+	// Close Advanced Search
+	function closePop(){
+	$("div.cand-advsrch-popup").hide();
+	$(".advancedsearch-mask").hide();
 	}
-	$("html").click(function(){
-		$(".newActPop").slideUp(200);
-	});
-	$(".overIcon, .newActPop").click(function(e){
-	 	e.stopPropagation();
-	});
-	function runPayrollregister() {
-		$("#payrollRegister").toggle();
+	function openPop(){
+	$(".advancedsearch-mask").show();
+	$("div.cand-advsrch-popup").toggle();
 	}
-  
-  $(".dropdownTableDesig table tr td").click(function() {
+//Date Picker
+$( function(){
+	$("#frmDate").datepicker();
+	$("#toDate").datepicker();
+ });
+ $(".dropdownTableDesig table tr td").click(function() {
 	  $(this).find('a').parent().toggleClass("selectedTd");
 	  $(this).parents().next('tr').toggle();
 	});
-  
-  
-  function closePop(){
-		$("div.cand-advsrch-popup").hide();
-		$(".advancedsearch-mask").hide();
-		}
-		function openPop(){
-		$(".advancedsearch-mask").show();
-		$("div.cand-advsrch-popup").toggle();
-		}
-	//Date Picker
-	$( function(){
-		$("#frmDate").datepicker();
-		$("#toDate").datepicker();
-	 });
+</script>
 
-	$(".dropdownTableDesig table tr td").click(function() {
-	  $(this).find('a').parent().toggleClass("selectedTd");
-	  $(this).parents().next('tr').toggle();
-	});
-  
-  </script>
-  
-  
+
+<script>
+function getAossociateClockInOutReportSummary(){
+		//$("#clockLoading").attr('style','position:absolute; width:100%; height:250%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+			type : "GET",
+			url : sourceleadUrl+ "/getAossociateClockInOutReportSummary?${_csrf.parameterName}=${_csrf.token}",
+			success : function(json) {
+
+			},
+		});
+}
+</script>
   <jsp:include page="../masterFooter.jsp" />
   
   

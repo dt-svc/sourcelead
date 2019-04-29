@@ -327,14 +327,14 @@
 		         		<div class="form-group">
 		                  <label class="col-md-3">PAN Number<span class="text-danger">&nbsp;*</span></label>
 		                  <div class="col-md-9">
-		                    <input type="text" class="form-control" id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space validate_Alphanumeric fixed_length length10" value="">
+		                    <input type="text" class="form-control" id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space validate_panNumber" value="">
 		                    </div>
 		                </div>
 		                
 		                <div class="form-group">
 		                  <label class="col-md-3">Aadhar Number<span class="text-danger">&nbsp;*</span></label>
 		                  <div class="col-md-9">
-		                    <input type="text" class="form-control" id="aadharNumber" name="aadharNumber" field-name="Aadhar Number" data-validation="required validate_int fixed_length length12" value="">
+		                    <input type="text" class="form-control" id="aadharNumber" name="aadharNumber" field-name="Aadhar Number" data-validation="required validate_Space validate_aadharNumber" value="">
 		                    </div>
 		                </div>
 		          </c:if>
@@ -1210,6 +1210,10 @@ function getAssociateUserDetails(){
 				    	 
 				    	 if(json['aadharNumber'] != null && json['aadharNumber'] != "" && json['aadharNumber'] != "undefined"){
 				    		 $("#aadharNumber").val(json['aadharNumber']); 
+				    	 }
+				    	 
+				    	 if(json['ssnNumber'] != null && json['ssnNumber'] != "" && json['ssnNumber'] != "undefined"){
+				    		 $("#ssnNumber").val(json['ssnNumber']); 
 				    	 }
 	        		  
 	        		  $("#designationType").selectpicker('refresh');
