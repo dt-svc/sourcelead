@@ -637,7 +637,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			 */
 			private boolean validatePf(String pfNum){
 				String rutNo = pfNum.trim();
-				Pattern pattern = Pattern.compile("^[A-Z0-9]{10,25}"); 
+				Pattern pattern = Pattern.compile("^[A-Z][A-Z0-9]{10,25}"); 
 				Matcher matcher = pattern.matcher(rutNo);
 				return matcher.matches();
 	    	}

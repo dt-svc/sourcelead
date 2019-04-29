@@ -60,19 +60,6 @@ function clientContacts(orgRelationID,clientLocationId){
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Client", 
 	        success: function(json) {
-	        	
-	     //   var json = JSON.parse(data);
-	     /*    for (var i = 0; i < 1; i++) { 
- 				var val= json.data[i];
- 				var opt = "";
- 					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-     					opt  = opt + '<div class="success_pop" id="clientMsgSelector" style="display: block;">';
-     					opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-     					opt  = opt + '</div>';
- 						}
- 					$("#clientMsgDiv").empty();
- 					$("#clientMsgDiv").append(opt);
- 				} */
 	      
     			$("#clientContactList").empty();
 				var result = "";
@@ -218,7 +205,7 @@ function clientContacts(orgRelationID,clientLocationId){
  				contactPagination();
     		$("#tab-4").empty();  
     		$("#tab-2-addContact").empty();  
-    	    $("#tab-2-addContact").append(res);
+    	    $("#tab-2-addContact").append(result);
     		$("#tab-2").empty();  
     	    $("#tab-2").append(result);  
     	    $("#testDiv").show();
