@@ -33,10 +33,10 @@
 <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
-<script type="text/javascript" src="/resources/js/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.sldr.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
+<script type="text/javascript" src="/resources/js/static-web/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/static-web/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/static-web/jquery.sldr.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/static-web/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
