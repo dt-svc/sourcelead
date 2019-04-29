@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
@@ -91,9 +90,6 @@ public class ImmigrationRestController {
 	private String staticPath;
 
 	@Autowired
-	private CountriesService countriesService;
-
-	@Autowired
 	private CandidateEducationService candidateEducationService;
 
 	@Autowired
@@ -121,9 +117,6 @@ public class ImmigrationRestController {
 	ImmigrationActivityCommonUtil immigrationActivityCommonUtil;
 
 	@Autowired
-	private RequirementService requirementService;
-
-	@Autowired
 	private SourceleadNotesService sourceleadNotesService;
 
 	@Autowired
@@ -134,9 +127,6 @@ public class ImmigrationRestController {
 	
 	@Autowired
 	private OrgLocationService orgLocationService;
-	
-	/*@Autowired
-	LcaActivityCommonUtil lcaActivityCommonUtil;*/
 	
 	
 	// for mobile 
@@ -1286,4 +1276,26 @@ public class ImmigrationRestController {
 		}
 		return response;
 	}
+	
+	//Visa Type from lookupdata
+		@RequestMapping(value = { "/getVisaTypeLookUpdata" })
+		public ResponseList<String> getVisaTypeLookUpdata(
+				 HttpServletRequest request)
+				throws Exception {
+			ResponseList<String> responseList = new ResponseList<String>();
+			List<String> canVisaList = lookUpDataService.getAllVisaByCategory();
+			responseList.setData(canVisaList);
+			return responseList;
+		}
+		
+		//get document Types from lookup data
+		@RequestMapping(value = { "/getDocumentTypeLookUpdata" })
+		public ResponseList<LookUpData> getDocumentTypeLookUpdata(
+				 HttpServletRequest request)
+				throws Exception {
+			ResponseList<LookUpData> responseList = new ResponseList<LookUpData>();
+			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+			responseList.setData(documentsList);
+			return responseList;
+		}
 }
