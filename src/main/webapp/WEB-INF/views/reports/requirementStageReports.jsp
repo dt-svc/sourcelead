@@ -532,7 +532,7 @@ $(".addUser-org").click(function(){
    $("#endDate").click(function(){
 	   $(".endDate").toggle(200);
    });
-   event.preventDefault();
+ //  event.preventDefault(); commnted for the script issue in console.
 });
 
 $(".addSkills").click(function(){
