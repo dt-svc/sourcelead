@@ -34,7 +34,10 @@ $(document).ready(function() {
 		
 		$("#vendorReportsDiv").show();
 		$("#vendorReportsChartDiv").hide();
-	
+		$("#releasedJobsResultDiv").hide();
+		$('#releasedApplicantsDeclineDiv').hide();
+		$('#releasedApplicantsBackOutDiv').hide();
+		$('#releasedApplicantsHiredListDiv').hide();
 		getVendorsReportList();
 	});
 	$("#graphView").click(function() {
@@ -42,9 +45,12 @@ $(document).ready(function() {
 		$("#listView").removeClass("rAct");
 		
 		$("#listViewFilters").hide();
-		
+		$("#releasedJobsResultDiv").hide();
+		$('#releasedApplicantsDeclineDiv').hide();
+		$('#releasedApplicantsBackOutDiv').hide();
 		$("#vendorReportsChartDiv").show();
 		$("#vendorReportsDiv").hide();
+		$('#releasedApplicantsHiredListDiv').hide();
 		
 		getVendorsReportGraphData();
 	});
@@ -121,7 +127,6 @@ function getContactList() {
 function getVendorsReportGraphData() {
 	if(orgRelationId > 0) {
 		getReleasedJobsGraph();
-		getOfferAcceptanceRateGraph();
 		
 		$("#avgPercentMovingFwdloadingDiv").show();
 		$("#avgPercentMovingFwdNoRecordsDiv").hide();
@@ -211,6 +216,7 @@ function getReleasedJobsGraph() {
             		});
             		$("#releasedJobsCount").html(totalReleasedCount);
             		$("#releaseJobs").show();
+            		getOfferAcceptanceRateGraph();
             		getAveragePercentageMovingForwardGraph();
             		getAverageTimeToFillGraph();
             		getQualityCandidatesGraph();
@@ -218,6 +224,7 @@ function getReleasedJobsGraph() {
             		getApplicantBackoutGraph();
             	} else {
             		$("#releaseJobsNoRecordsDiv").show();
+            		$('#releasedJobsResultDiv').hide();
             	}
         		$("#releaseJobsloadingDiv").hide();
             } else if (response.response === "SESSION_TIMEDOUT" || response.indexOf('Sign In') !== -1) {
@@ -228,7 +235,23 @@ function getReleasedJobsGraph() {
 		},
 	});
 }
-
+// released jobs List
+function releasedJobsToVendors() {
+	if($("#releasedJobsCount").html() != "" && parseInt($("#releasedJobsCount").html()) > 0) {
+		$("#releasedJobsResultDiv").show();
+		$("#vendorReportsChartDiv").hide();
+		$("#vendorReportsDiv").hide();
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/releasedJobsListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
+			success :function(result) {
+	       		$('#releasedJobsResultDiv').empty();
+	       		$('#releasedJobsResultDiv').append(result);
+	       		releasedToVendorJobsList();
+	        }
+		});	
+	}
+}
 // Offer acceptance rate
 function getOfferAcceptanceRateGraph() {
 	$("#offerAcceptanceRateloadingDiv").show();
@@ -343,14 +366,16 @@ function getOfferAcceptanceRateGraph() {
 function getAveragePercentageMovingForwardGraph() {
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl + "/getAllJobsPipelineReoportsList",
+		url : sourceleadUrl + "/getAllJobsPipelineReoportsList?orgRelationId=" + orgRelationId + "&spocId=" + contactUserId,
 		success : function(response) {
 			if (response.response === "AWKWARD") {
                 location.href = "/errorPage";
             } else if (response.response === "SUCCESS") {
             	if(response.object && response.object !== null) {
             		var mainChar = [];
+            		var hasResults = false;
                 	if(response.object.applicantsCount>0){
+                		hasResults = true;
                 		mainChar.push( {
                 			"category": "Applicant(s)",
                 			"column-1": response.object.applicantsCount,
@@ -361,6 +386,7 @@ function getAveragePercentageMovingForwardGraph() {
                 	}
                 	
                 	if(response.object.shortlistedCount>0){
+                		hasResults = true;
                 		mainChar.push( {
                 			"category": "Shortlisted",
                 			"column-1": response.object.shortlistedCount,
@@ -371,6 +397,7 @@ function getAveragePercentageMovingForwardGraph() {
                 	}
                 	
                 	if(response.object.submitToClientCount>0){
+                		hasResults = true;
                 		mainChar.push( {
                 			"category": "Submit To Client",
                 			"column-1": response.object.submitToClientCount,
@@ -380,6 +407,7 @@ function getAveragePercentageMovingForwardGraph() {
                 		    } );
                 	}
                 	if(response.object.interviewsCount>0){
+                		hasResults = true;
                 		mainChar.push( {
                 			"category": "Interviewed",
                 		    "column-1": response.object.interviewsCount,
@@ -390,6 +418,7 @@ function getAveragePercentageMovingForwardGraph() {
                 	}
                 	
                 	if(response.object.offeredCount>0){
+                		hasResults = true;
                 		mainChar.push({
                 			"category": "Offered",
                 			"column-1": response.object.offeredCount,
@@ -399,6 +428,7 @@ function getAveragePercentageMovingForwardGraph() {
                 		});
                 	}
                 	if(response.object.offeredAcceptedCount>0){
+                		hasResults = true;
                 		mainChar.push({
                 			"category": "Offers Accepted",
                 			"column-1": response.object.offeredAcceptedCount,
@@ -409,6 +439,7 @@ function getAveragePercentageMovingForwardGraph() {
                 	}
                 	
                 	if(response.object.backoutCount>0){
+                		hasResults = true;
                 		mainChar.push({
                 			"category": "Backout(s)",
                 			"column-1": response.object.backoutCount,
@@ -417,74 +448,77 @@ function getAveragePercentageMovingForwardGraph() {
                 			"moveforward": 84
                 		});
                 	}
-                	
-                	AmCharts.makeChart("avgPercentMovingFwdChartDiv", {
-        				"type": "serial",
-        				"categoryField": "category",
-        				"rotate": true,
-        				"marginBottom": 0,
-        				"marginLeft": 0,
-        				"marginRight": 30,
-        				"marginTop": 0,
-        				"colors": [],
-        				"startDuration": 1,
-        				"fontSize": 10,
-        				"categoryAxis": {
-        					"gridPosition": "start",
-        					"axisThickness": 0,
-        					"gridThickness": 0,
-        					"tickLength": 10,
-        					"titleRotation": -1
-        				},
-        				"export": {
-        				    "enabled": true,
-        				    "pageOrigin": false,
-        				    "fileName":"Average Percentage Moving Forward"
-        				},
-        				"trendLines": [],
-        				"graphs": [
-        					{
-        						"descriptionField": "Days",
-        						"fillAlphas": 1,
-        						"fillColorsField": "Color",
-        						"id": "AmGraph-1",
-        						"labelPosition": "right",
-        						"labelText": "[[value]] <br> [[Days]] Day(s) <br>[[moveforward]]% Moveforward",
-        						"lineColorField": "Color",
-        						"lineThickness": 0,
-        						"maxBulletSize": 0,
-        						"title": "graph 1",
-        						"type": "column",
-        						"valueField": "column-1"
-        					},
-        					{
-        						"id": "AmGraph-2",
-        						"title": "graph 2",
-        						"valueField": "Color"
-        					}
-        				],
-        				"guides": [],
-        				"valueAxes": [
-        					{
-        						"id": "ValueAxis-1",
-        						"axisThickness": 0,
-        						"gridThickness": 0,
-        						"labelsEnabled": false,
-        						"title": ""
-        					}
-        				],
-        				"allLabels": [],
-        				"balloon": {},
-        				"titles": [
-        					{
-        						"id": "Title-1",
-        						"size": 15,
-        						"text": "Jobs Pipeline"
-        					}
-        				],
-        				"dataProvider": mainChar
-                    });
-                	$("#avgPercentMovingFwdChartDiv").show();
+                	if(hasResults) {
+	                	AmCharts.makeChart("avgPercentMovingFwdChartDiv", {
+	        				"type": "serial",
+	        				"categoryField": "category",
+	        				"rotate": true,
+	        				"marginBottom": 0,
+	        				"marginLeft": 0,
+	        				"marginRight": 30,
+	        				"marginTop": 0,
+	        				"colors": [],
+	        				"startDuration": 1,
+	        				"fontSize": 10,
+	        				"categoryAxis": {
+	        					"gridPosition": "start",
+	        					"axisThickness": 0,
+	        					"gridThickness": 0,
+	        					"tickLength": 10,
+	        					"titleRotation": -1
+	        				},
+	        				"export": {
+	        				    "enabled": true,
+	        				    "pageOrigin": false,
+	        				    "fileName":"Average Percentage Moving Forward"
+	        				},
+	        				"trendLines": [],
+	        				"graphs": [
+	        					{
+	        						"descriptionField": "Days",
+	        						"fillAlphas": 1,
+	        						"fillColorsField": "Color",
+	        						"id": "AmGraph-1",
+	        						"labelPosition": "right",
+	        						"labelText": "[[value]] <br> [[Days]] Day(s) <br>[[moveforward]]% Moveforward",
+	        						"lineColorField": "Color",
+	        						"lineThickness": 0,
+	        						"maxBulletSize": 0,
+	        						"title": "graph 1",
+	        						"type": "column",
+	        						"valueField": "column-1"
+	        					},
+	        					{
+	        						"id": "AmGraph-2",
+	        						"title": "graph 2",
+	        						"valueField": "Color"
+	        					}
+	        				],
+	        				"guides": [],
+	        				"valueAxes": [
+	        					{
+	        						"id": "ValueAxis-1",
+	        						"axisThickness": 0,
+	        						"gridThickness": 0,
+	        						"labelsEnabled": false,
+	        						"title": ""
+	        					}
+	        				],
+	        				"allLabels": [],
+	        				"balloon": {},
+	        				"titles": [
+	        					{
+	        						"id": "Title-1",
+	        						"size": 15,
+	        						"text": "Jobs Pipeline"
+	        					}
+	        				],
+	        				"dataProvider": mainChar
+	                    });
+	                	$("#avgPercentMovingFwdChartDiv").show();
+                	} else {
+                		$("#avgPercentMovingFwdNoRecordsDiv").show();	
+                	} 
             	} else {
             		$("#avgPercentMovingFwdNoRecordsDiv").show();
             	}
@@ -532,7 +566,7 @@ function getQualityCandidatesGraph() {
 	            		"percentPrecision": 0,
 	            		"allLabels": [],
 	            		"balloon": {},
-	            		"legend": {
+	            		/*"legend": {
 	            			"enabled": true,
 	            			"align": "center",
 	            			"autoMargins": false,
@@ -542,10 +576,10 @@ function getQualityCandidatesGraph() {
 	            			"markerSize": 15,
 	            			"position": "right",
 	            			"useMarkerColorForLabels": false,
-	            			"valueText": "[[value]] [[percents]]%",
+	            			"valueText": "[[value]]  ([[percents]])%",
 	            			"valueWidth": 100
 	            		},
-	            		"titles": [],
+	            		"titles": [],*/
 	            		"dataProvider": [
 	            			{
 	            				"category": "Hired",
@@ -560,9 +594,14 @@ function getQualityCandidatesGraph() {
 	            		]
 	            	});
 	            	$("#totalReceivedCandidates").html(parseInt(joinedCount) + parseInt(rejectedCount));
+	            	$("#hiredReceivedCandidates").html(parseInt(joinedCount));
+	            	$("#rejectedReceivedCandidates").html(parseInt(rejectedCount));
 	            	$("#qualityCandidatesChartDiv").show();
             	} else {
             		$("#qualityCandidatesNoRecordsDiv").show();
+            		$("#totalReceivedCandidates").html(0);
+	            	$("#hiredReceivedCandidates").html(0);
+	            	$("#rejectedReceivedCandidates").html(0);
             	}
             	$("#qualityCandidatesloadingDiv").hide();  
             } else if (response.response === "SESSION_TIMEDOUT" || response.indexOf('Sign In') !== -1) {
@@ -667,6 +706,7 @@ function getApplicantDeclineGraph() {
                 	$("#applicantDeclineChartDiv").show();
             	} else {
             		$("#applicantDeclineNoRecordsDiv").show();
+            		$("#applicantsDeclineCount").html(0);
             	}
             	$("#applicantDeclineloadingDiv").hide();
             } else if (response.response === "SESSION_TIMEDOUT" || response.indexOf('Sign In') !== -1) {
@@ -676,6 +716,60 @@ function getApplicantDeclineGraph() {
             }
      	},
      });
+}
+
+//Applicant Decline List
+function releasedJobsToVendorsApplicantDecline() {
+	if($("#applicantsDeclineCount").html() != "" && parseInt($("#applicantsDeclineCount").html()) > 0) {
+		$("#releasedApplicantsDeclineDiv").show();
+		$("#vendorReportsChartDiv").hide();
+		$("#vendorReportsDiv").hide();
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/releasedJobsApplicantsDeclineListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
+			success :function(result) {
+	       		$('#releasedApplicantsDeclineDiv').empty();
+	       		$('#releasedApplicantsDeclineDiv').append(result);
+	       		vendorJobsApplicantsDeclineList();
+	        }
+		});	
+	}
+}
+
+//Applicant Hired List
+function releasedJobsToVendorsApplicantHired() {
+	if($("#hiredReceivedCandidates").html() != "" && parseInt($("#hiredReceivedCandidates").html()) > 0) {
+		$("#releasedApplicantsHiredListDiv").show();
+		$("#vendorReportsChartDiv").hide();
+		$("#vendorReportsDiv").hide();
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/releasedJobsApplicantsHiredListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
+			success :function(result) {
+	       		$('#releasedApplicantsHiredListDiv').empty();
+	       		$('#releasedApplicantsHiredListDiv').append(result);
+	       		vendorJobsApplicantsHiredList();
+	        }
+		});	
+	}
+}
+
+//Applicant Backout List
+function releasedJobsToVendorsApplicantBackOut() {
+	if($("#backoutCandidatesCount").html() != "" && parseInt($("#backoutCandidatesCount").html()) > 0) { 
+		$("#releasedApplicantsBackOutDiv").show();
+		$("#vendorReportsChartDiv").hide();
+		$("#vendorReportsDiv").hide();
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/releasedJobsApplicantsBackOutListByOrgRelationId?orgRelationId="+orgRelationId+"&spocId="+contactUserId,
+			success :function(result) {
+	       		$('#releasedApplicantsBackOutDiv').empty();
+	       		$('#releasedApplicantsBackOutDiv').append(result);
+	       		vendorJobsApplicantsBackOutList();
+	        }
+		});	
+	}
 }
 
 /*Backout Candidates*/
@@ -771,6 +865,7 @@ function getApplicantBackoutGraph() {
                 	$("#backoutCandidatesChartDiv").show();
             	} else {
             		$("#backoutCandidatesNoRecordsDiv").show();
+            		$("#backoutCandidatesCount").html(0);
             	}
             	$("#backoutCandidatesloadingDiv").hide();
             } else if (response.response === "SESSION_TIMEDOUT" || response.indexOf('Sign In') !== -1) {

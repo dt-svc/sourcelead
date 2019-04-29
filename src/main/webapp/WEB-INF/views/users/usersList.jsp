@@ -161,6 +161,7 @@ function getUsersSearchResult(searchValue){
       </div>
       </section>
 	    
+	       <div id="resetDiv">
 				<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
 				<h5 class="headerAdsrch">Filters
 					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
@@ -318,16 +319,17 @@ function getUsersSearchResult(searchValue){
 						</div>
 					</div>
 				</div>
+			</div>
       
       <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
       
       <div class="positionRelative reportHead clearfix">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+<!--       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
 	                    
-                  <c:if test="${orgLocationsCount > 1}">
+                 <%--  <c:if test="${orgLocationsCount > 1}"> --%>
 		                    <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
@@ -339,10 +341,18 @@ function getUsersSearchResult(searchValue){
 										<div class="immSub">
 											<a href="#">Import</a>
 											<div class="immSubMenu">
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 												<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
-												<a href="<c:url value='${sourceleadUrl}/uploadAssociateBankForm'/>">Associate Bank Deatils Import</a>
-												<!-- <a href="javascript:void(0)">Option 1</a>
-												<a href="javascript:void(0)">Option 1</a> -->
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateBankForm'/>">Associate Bank Details Import</a>
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateDeductionContributionDetails'/>">Associate Deduction Contribution Import</a>
+													</c:if>
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+
+												    <a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
+												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateBankingDetailsForm'/>">Associate Bank Detail</a>
+												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateInformation'/>">Associate Information</a> 
+													<a href="<c:url value='${sourceleadUrl}/uploadAssociateSalary'/>">Associate Salary Import</a>
+												</c:if>
 											</div>
 										</div>
 										
@@ -350,19 +360,43 @@ function getUsersSearchResult(searchValue){
 									</span>
 								</div>
 							</li>
-				</c:if>
+				<%-- </c:if> --%>
 				
-				<c:if test="${orgLocationsCount == 1}">
+			<%-- <c:if test="${orgLocationsCount == 1}">
 				           <sec:authorize access="hasRole('ROLE_USER_BULK_IMPORTS')"> 
 				           <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
-									<span> 
+								
+								<span class="ovrShow"> 
+									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
+									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
+									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+										<div class="immSub">
+											<a href="#">Import</a>
+											<div class="immSubMenu">
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+												<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateBankForm'/>">Associate Bank Details Import</a>
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateDeductionContributionDetails'/>">Associate Deduction Contribution Import</a>
+													</c:if>
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateBankingDetailsForm'/>">Associate Bank Detail</a>
+												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateInformationForm'/>">Associate Information</a> 
+													<a href="<c:url value='${sourceleadUrl}/uploadAssociateSalary'/>">Associate Salary Import</a>
+												</c:if>
+											</div>
+										</div>
+										
+									</sec:authorize>									
+									</span>
+								 <span> 
 									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
 										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
 									</sec:authorize>									
-									</span>
+									</span> 
 								</div>
 							</li>
 							</sec:authorize>
@@ -371,7 +405,7 @@ function getUsersSearchResult(searchValue){
 						<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
 				</sec:authorize>
 							
-				</c:if>	
+				</c:if>  --%>
 	           
 						
 	       </sec:authorize>
@@ -528,10 +562,20 @@ function resetFilter(){
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
 	$("#dynamicUserDataTableSearch").val('');
+	$("#myManagersInput").val('');
+	$("#myRolesInput").val('');
+	$("#myClientsInput").val('');
+	$("#myTeamsInput").val('');
+	$("#myDepartmentInput").val('');
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
 	
+	myManagersFunction();
+	myRolesFunction();
+	myClientsFunction();
+	myTeamsFunction();
+	myDepartmentFunction();
 	getDynamciUserList();
 }
 </script>
@@ -849,7 +893,8 @@ var validationSettings = {
 		    var form = $('#user_forms')[0];
       		var formData = new FormData(form);  
 			$("#search_user").attr("disabled", "disabled");
-			 $.ajax({
+		
+			$.ajax({
 						 type : "POST",
 		        	     data: formData,
 		        	     processData: false,
@@ -1008,153 +1053,7 @@ function getUserSummary(userId){
 	       e.stopPropagation();
 	   });        
 </script> 
-<script type="text/javascript">
-    	   var config = {
-    				  '.chosen-select'           : {},
-    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-    				  '.chosen-select-no-single' : {disable_search_threshold:10},
-    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-    				  '.chosen-select-width'     : {width:"95%"}
-    	   }
-			//Adding Customized Any Of Keyword to the list 
-		    var select, chosen;
-		    select = $("#anyOfKeyword");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
-		    {
-		    	var anyKeyword = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(anyKeyword).text(anyKeyword);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-                    $("#anyOfKeyword option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#anyOfKeyword").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		  //Adding Customized Any Of Keyword to the list
-		    var selectone, chosenone;
-		    selectone = $("#allKeywords");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
-		    {
-		    	var allKeyword = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(allKeyword).text(allKeyword);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-                    $("#allKeywords option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#allKeywords").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    var selecttwo, chosentwo;
-		    selecttwo = $("#excludeKeyWord");
-		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosentwo = selecttwo.data('chosen');
-		    chosentwo.search_field.on('keyup', function(e2)
-		    {
-		    	var excludeKeyword = this.value.replace(",","");
-		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
-		            selecttwo.append(option);
-		            selecttwo.find(option).prop('selected', true);
-                    $("#excludeKeyWord option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#excludeKeyWord").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    var selectthree, chosenthree;
-		    selectthree = $("#email");
-		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Email:' });
-		    chosenthree = selectthree.data('chosen');
-		    chosenthree.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectthree.append(option);
-		            selectthree.find(option).prop('selected', true);
-                    $("#email option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#email").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    var selectfour, chosenfour;
-		    selectfour = $("#mobilePhone");
-		    selectfour.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Mobile Phone:' });
-		    chosenfour = selectfour.data('chosen');
-		    chosenfour.search_field.on('keyup', function(e6)
-		    {
-		    	var cert = this.value.replace(",","");
-		        if ((e6.which == 13 || e6.which == 188) && (cert != null  && cert != '' && cert != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(cert).text(cert);
-		            selectfour.append(option);
-		            selectfour.find(option).prop('selected', true);
-                    $("#mobilePhone option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#mobilePhone").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		     var selectfive, chosenfive;
-		    selectfive = $("#employeeId");
-		    selectfive.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add EmployeeId:' });
-		    chosenfive = selectfive.data('chosen');
-		    chosenfive.search_field.on('keyup', function(e6)
-		    {
-		    	var cert = this.value.replace(",","");
-		        if ((e6.which == 13 || e6.which == 188) && (cert != null  && cert != '' && cert != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(cert).text(cert);
-		            selectfive.append(option);
-		            selectfive.find(option).prop('selected', true);
-                    $("#employeeId option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#employeeId").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-				for (var selector in config) {
-				  $(selector).chosen(config[selector]);
-				}
-				$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-</script> 
+
 
 
 <!-- ====================================== Prepare Dynamic User List By Laxman  ============================================================ -->

@@ -22,8 +22,8 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
-
-import com.bis.sourcelead.service.impl.TimesheetEntriesServiceImpl;
+import com.bis.sourcelead.timesheet.service.TimesheetEntriesService;
+import com.bis.sourcelead.timesheet.service.impl.TimesheetEntriesServiceImpl;
 import com.bis.sourcelead.util.CommonUtil;
 
 
@@ -52,7 +52,7 @@ public class TimesheetEntriesServiceTest {
 		timesheetSubmissions.setId(1l);
 		User approverUserId = new User();
 		approverUserId.setId(3l);
-		timesheetSubmissions.setApproverUserId(approverUserId);
+		//timesheetSubmissions.setApproverUserId(approverUserId);
 		ProjectMembers projectMembers = new ProjectMembers();
 		projectMembers.setId(1l);
 		timesheetSubmissions.setProjectMembers(projectMembers);

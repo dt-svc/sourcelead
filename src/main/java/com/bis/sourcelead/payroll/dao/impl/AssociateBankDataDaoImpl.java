@@ -3,6 +3,7 @@ package com.bis.sourcelead.payroll.dao.impl;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,6 +24,7 @@ import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.payroll.dao.AssociateBankDataDao;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.entity.AssociateBankData;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Repository
 public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
@@ -88,7 +90,7 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 		
 		AssociateBankData assBankData = null;
 		try {
-			List<AssociateBankData> assBankDataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId").setLong("orgLocationId", locationId).list();
+			List<AssociateBankData> assBankDataList = session.createQuery("from AssociateBankData assBankData where assBankData.orgLocationId.id =:orgLocationId and assBankData.defaultAccount = :defaultAccount").setBoolean("defaultAccount", true).setLong("orgLocationId", locationId).list();
 		    if(assBankDataList != null && assBankDataList.size() >0) {
 		    	assBankData = assBankDataList.get(0);
 		    }
@@ -124,9 +126,9 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 				public void execute(java.sql.Connection connection) throws SQLException {
 					boolean initialAutocommitSetting = connection.getAutoCommit();
 					connection.setAutoCommit(false);
-					CallableStatement stmt = connection.prepareCall("{call associateBankDataProcedure(?,?,?,?,?)}");
+					CallableStatement stmt = connection.prepareCall("{call associateBankDataProcedure(?,?,?,?,?,?,?,?,?)}");
 					for (AssociateBankDataDTO bankDto : list) {
-						if(bankDto.getEmailId() !=null && !"".equalsIgnoreCase(bankDto.getEmailId())) {
+						if(bankDto.getEmailId() !=null && !"".equalsIgnoreCase(bankDto.getEmailId()) && map.get(bankDto.getEmailId()) != null) {
 							stmt.setLong(1, map.get(bankDto.getEmailId()));
 						}else {
 							stmt.setLong(1, 0);							
@@ -135,6 +137,13 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 						stmt.setString(3, bankDto.getBankName());
 						stmt.setString(4, bankDto.getAccountNumber());
 						stmt.setString(5, bankDto.getRoutingNumber());
+						stmt.setString(6, orgLocationId.toString());	//OrgLocationID
+						
+						java.util.Date date = Calendar.getInstance().getTime();
+						java.sql.Date sqlDate = new java.sql.Date(date.getTime()); 
+						stmt.setDate(7,sqlDate);	//Created Date
+						stmt.setDate(8, sqlDate);	//Updated Date
+						stmt.setString(9, SourceLeadRandomCodeHelper.generateRandomUUID());	//associateBankUUID
 						stmt.addBatch();
 					}
 					int[] updateCount = stmt.executeBatch();

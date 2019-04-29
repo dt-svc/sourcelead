@@ -61,7 +61,7 @@ $(function(){
 	                
 	                result = result + '<td><div class="tblicons">';
 	                    result = result + '<a class="mr10" title="summary" onclick="viewEmailTemplate('+opt.id+',\''+opt.uniqueScenarioName+'\')"><i class="fa fa-eye text-primery"></i></a>';
-	                    result = result + '<a href="'+sourceleadUrl+'/editEmailTemplate?templateUUID='+opt.emailUUID+'" title="Edit"><i class="fa fa-pencil"></i></a>';
+	                    result = result + '<a href="'+sourceleadUrl+'/editEmailTemplate?templateID='+opt.id+'" title="Edit"><i class="fa fa-pencil"></i></a>';
 	                result = result +'</div></td>';
 	                result = result + '	 </tr>';
 				}  
@@ -125,21 +125,28 @@ function templatepagination(){
 				<div class="addInner">
 					<div class="row">
 							
-						<div class="col-md-4">
+						<div class="col-md-12">
 						<div class="clearfix mb">
 							<label><strong>Entity</strong></label>
-							 <div class="clearfix">
-								<ul class="list-unstyled" id="entityFilter">
-		                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="associates" value ="2"  ><label>&nbsp;Associates</label></li>
-									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="clients" value ="7"  ><label>&nbsp;Clients</label></li>
-									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="jobs" value ="8" ><label>&nbsp;Jobs</label></li>
-									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="vendors" value ="9"  ><label>&nbsp;Vendors</label></li>
-									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="candidates" value ="10"  ><label>&nbsp;Candidates</label></li>
-									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="projects" value ="3" ><label>&nbsp;Projects</label></li>
-									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="myTimeSheets" value ="5"  ><label>&nbsp;My TimeSheets</label></li>
-									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="timeSheetApproval" value ="6"  ><label>&nbsp;TimeSheet Approval</label></li>
-									<li class="checkBox positionRelative"><input   type="checkbox" name="userTabIds" id="campaigns" value ="30" ><label>&nbsp;Campaigns</label></li>
-		               				
+							 <div class="clearfix mt5">
+								<ul class="list-unstyled list-inline" id="entityFilter">
+		                    	    <li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="asset" value ="14" ><label>&nbsp;Asset</label></li>
+		                    	    <li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="associates" value ="2"  ><label>&nbsp;Associates</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="billing" value ="20" ><label>&nbsp;Billing</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="campaigns" value ="30" ><label>&nbsp;Campaigns</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="candidates" value ="10"  ><label>&nbsp;Candidates</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="clients" value ="7"  ><label>&nbsp;Clients</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="contracts" value ="16" ><label>&nbsp;Contracts</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="expenses" value ="23" ><label>&nbsp;Expenses</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="finance" value ="13" ><label>&nbsp;Finance</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="immigration" value ="33" ><label>&nbsp;Immigration</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="jobs" value ="8" ><label>&nbsp;Jobs</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="leaveManagement" value ="31" ><label>&nbsp;Leave Management</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="myTimeSheets" value ="5"  ><label>&nbsp;My TimeSheets</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="payroll" value ="32" ><label>&nbsp;Payroll</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="projects" value ="3" ><label>&nbsp;Projects</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="timeSheetApproval" value ="6"  ><label>&nbsp;TimeSheet Approval</label></li>
+									<li class="checkBox positionRelative tblwidth-150 mb5"><input   type="checkbox" name="userTabIds" id="vendors" value ="9"  ><label>&nbsp;Vendors</label></li>
 		                        </ul>
 							 </div>
 							 </div> 

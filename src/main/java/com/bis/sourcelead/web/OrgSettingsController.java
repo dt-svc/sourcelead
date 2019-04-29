@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -31,7 +32,9 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
+import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.OfferLetterTemplate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
 import com.bis.sourcelead.entity.OrgLocationInformationDetails;
@@ -49,8 +52,10 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailReminderService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
+import com.bis.sourcelead.service.LetterHeadService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.OfferLetterTemplateService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationIndiaBankingDetailsService;
 import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
@@ -138,6 +143,12 @@ public class OrgSettingsController {
 	
 	@Autowired
 	EmailReminderService emailReminderService;
+	
+	@Autowired
+	private LetterHeadService letterHeadService;
+	
+	@Autowired
+	private OfferLetterTemplateService offerLetterTemplateService;
 
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
@@ -670,10 +681,16 @@ public class OrgSettingsController {
 			
 			for(EmailReminder emailReminder : emailReminderList) {
 				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
-				if(emailReminder.getScenarionName().equalsIgnoreCase("employeeholiday")) {
+				if(emailReminder.getScenarionName().equalsIgnoreCase("HolidayRemainder")) {
 					model.addObject("Holiday", emailReminder);
 				}
-
+				else if(emailReminder.getScenarionName().equalsIgnoreCase("approvePendingLeaves")) {
+					model.addObject("approvePendingLeaves", emailReminder);
+				}
+			
+			  else {
+			  model.addObject("employeeonLeave", emailReminder); 
+			  }
 			}
 	   		model.setViewName("leavemanagement/emailReminderLeaveConfiguration");
 	   		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -691,12 +708,37 @@ public class OrgSettingsController {
 			
 			for(EmailReminder emailReminder : emailReminderList) {
 				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
-				if(emailReminder.getScenarionName().equalsIgnoreCase("ApplicantJoining")) {
-					model.addObject("Contracts", emailReminder);
+				if(emailReminder.getScenarionName().equalsIgnoreCase("contractExpiryRemainder")) {
+					model.addObject("contractExpire", emailReminder);
 				}
 			}
 	   		model.setViewName("contracts/contractConfigureEmails");
 	   		model.addObject("sourceleadUrl", sourceleadUrl);
 	   		return model;
 	       }
+	    
+
+	    @RequestMapping(value = "/addOfferLetterTemplate")
+	   		public ModelAndView addOfferLetterTemplate(@RequestParam(value="templateUUID", required=false) String templateUUID ,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	   			ModelAndView model = new ModelAndView();
+	   			
+	   			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	   			if(templateUUID != null) {
+	   				OfferLetterTemplate offerLetterTemplate = offerLetterTemplateService.getOfferLetterTemplateDetailsByTemplateUUID(templateUUID);
+	   				model.addObject("offerLetterTemplate", offerLetterTemplate);
+	   			}
+	   			List<LetterHead> letterHeadList = letterHeadService.getLetterheadBylocationId(orgLocation.getId());
+	   			model.addObject("letterHeadList", letterHeadList);
+	   			model.addObject("sourceleadUrl", sourceleadUrl);
+	   			model.setViewName("offerLetter/addOfferLetterTemplate");
+	   			return model;
+	   		}
+	   	    
+	   	    @RequestMapping(value = "/viewOfferLetterTemplate")
+	   		public ModelAndView orgContractTemplate() {
+	   			ModelAndView model = new ModelAndView();
+	   			model.addObject("sourceleadUrl", sourceleadUrl);
+	   			model.setViewName("offerLetter/viewOfferLetterTemplate");
+	   			return model;
+	   		}
 }

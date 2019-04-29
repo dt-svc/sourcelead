@@ -73,13 +73,13 @@
           <div class="clearfix mb">
             <label class="noPad">Notify to</label>
             <div class="clearfix">
-                <textarea class="form-control" rows="4" id="notifyTo" name="notifyTo" placeholder="Enter multiple Email Id's separated by commas(,)" data-validation="validate_length length0-500"></textarea>
+                <textarea class="form-control" rows="4" id="notifyTo" name="notifyTo" placeholder="Enter multiple Email Id's separated by commas(,)" data-validation="validate_length length0-1000"></textarea>
             </div>
         </div>
             <div class="clearfix mb">
                 <label class="noPad">Description</label>
                 <div class="clearfix">
-					<textarea placeholder="Description" name="description" id="ticketCategoryDesc" class="form-control" rows="2"></textarea>
+					<textarea placeholder="Description" name="description" id="ticketCategoryDesc" class="form-control" rows="2" data-validation="validate_length length0-1000"></textarea>
                 </div>
             </div>
 
@@ -147,7 +147,7 @@
 		            "render": function ( data, type, opt, meta ) {
 		            		var result = "";
 	           		   if(opt.name != null && opt.name != '' && opt.name != 'undefined') {
-		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.name+'</div></td>';
+		     	        	result = result + '<td><div  class="tbldata-dotdot-sm" title=\'' + opt.name + '\'>'+opt.name+'</div></td>';
 	           		   } else {
 							result = result +"<td><div>-----</div></td>";
 	           	       }
@@ -157,11 +157,11 @@
 		        {
 		            "targets": colIndex++,
 		            "data": "description",
-		            "sortable": false,
+		            "sortable": true,
 		            "render": function ( data, type, opt, meta ) {
 		            		var result = "";
 	           		   if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
-		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.description+'</div></td>';
+		     	        	result = result + '<td><div  class="tbldata-dotdot-big" title=\'' + opt.description + '\'>'+opt.description+'</div></td>';
 	           		   } else {
 							result = result +"<td><div>-----</div></td>";
 	           	       }
@@ -179,7 +179,7 @@
 		                }
 		            	var result = "";
 	           		   if(assignTo !== ""){
-		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">' + assignTo + '</div></td>';
+		     	        	result = result + '<td><div  class="tbldata-dotdot-big" title=\'' + assignTo + '\'>' + assignTo + '</div></td>';
 	           		   } else {
 							result = result +"<td><div>-----</div></td>";
 	           	       }
@@ -218,7 +218,7 @@
 	           ],
 		    	"scrollCollapse": false,
 		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-		    	"aaSorting": [[1,'desc']],
+		    	"aaSorting": [[0,'desc']],
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"ordering": true,

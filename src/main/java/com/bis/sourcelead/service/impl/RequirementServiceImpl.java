@@ -1131,13 +1131,7 @@ public class RequirementServiceImpl implements RequirementService {
 		// store recommended customizeScore
 		RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService
 				.saveCustomizeScore(requirement);
-		if (!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)) {
-			
-			
-	
-			 String redirectURL1 = "/requirementSummary?requirementUUID="+requirement.getRequirementUUID();
-			
-			
+		if (!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)) {						
 			
 			// mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 			// send mail to sequential approver1
@@ -1146,7 +1140,7 @@ public class RequirementServiceImpl implements RequirementService {
 				User approverUser = userService.getUserById(Long.parseLong(approverNames));
 				if (!approverUser.getId().equals(user.getId())) {
 					
-					approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations,redirectURL1,redirectOrgLocationId);
+					approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations);
 				}
 			}
 			// send mail to parallel approver
@@ -1155,7 +1149,7 @@ public class RequirementServiceImpl implements RequirementService {
 				for (String approver : approvers) {
 					User approverUser = userService.getUserById(Long.parseLong(approver));
 					if (!approverUser.getId().equals(user.getId())) {
-						approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations,redirectURL1,redirectOrgLocationId);
+						approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations);
 					}
 				}
 			}
@@ -1804,7 +1798,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public void approverEmailScenario(User loginUser, User approverUser, Requirement requirement,
-			StringBuilder location, OrgLocations loginOrgLocation,String redirectURL1,Long redirectOrgLocationId) throws Exception {
+			StringBuilder location, OrgLocations loginOrgLocation) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
@@ -4807,6 +4801,12 @@ public class RequirementServiceImpl implements RequirementService {
 			e.printStackTrace();
 		}
 		return applicantBackoutDTO;
+	}
+
+	@Override
+	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId, String status) {
+		
+		return requirementDao.getVendorSubmittedCandidates(requirementId, orgRelationId, spocId, status);
 	}
 	
 	

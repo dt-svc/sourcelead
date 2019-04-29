@@ -1,7 +1,11 @@
 var statusOptions = [];
 var statusList = [];
 $(document).ready(function() {
-	
+	$("#ticketListSearch").keyup(function(e) {
+		if(e.which === 13) {
+			getTicketManagementList();
+		}
+	});
 });
 
 //============================== Ticket Management List 	=============================================
@@ -22,43 +26,6 @@ function getTicketStatusList() {
 			showError("Operation failed, please try again");
 		}
 	});
-}
-
-/*function validateTicketId(ticketId) {
-	$.ajax({
-		type : "POST",
-	url : sourceleadUrl+ "/validateTicketId?ticketId="+id,
-		success : function(response) {
-		if (response && response.response === "INVALID_DATA") {
-			showError(response.responseMessage);
-		} else if (response.response === "AWKWARD") {
-			location.href = "/errorPage";
-		} else if (response.response === "SUCCESS") {
-			if(response.data.length > 0) {
-				statusList = response.data;
-			}
-		} else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
-		} else {
-			showError("Operation failed, please try again");
-		}
-	  }
-  });
-}*/
-
-
-function ticketManagementListPagination(){
-	 $('#ticketManagementListTable').DataTable( { 
-	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-	    	"bLengthChange": true,
-	    	"bDestroy": true,
-	    	"ordering": true,
-	    	"oLanguage": {
-	     		"sSearch": "",
-	     		"sZeroRecords": "", "sEmptyTable": ""
-	     	}
-	    } );
 }
 
 function editTicketManagement(uuid) {
@@ -163,7 +130,7 @@ function closeDeletePopup() {
 function getTicketManagementDescription(ticketUUID){
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getTicketManagementDescription?${_csrf.parameterName}=${_csrf.token}&uuid="+ticketUUID, 	   
+	    url: sourceleadUrl+"/getTicketManagementDescription?uuid="+ticketUUID, 	   
 		    success: function(result) {
 		    	$('#txtEditor').html(result.description);
 		    	$('.Editor-editor').html(result.description);
@@ -260,70 +227,6 @@ function saveTicket() {
 	} else {
 		return false;
 	}
-}
-
-//	================================	TicketComment		==============================================
-function getTicketCommetList(ticketId) {
-	$("#ticketCommentListDivId").empty();
-	$.post(sourceleadUrl + "/getTicketCommentList?ticketId="+ticketId, {}, function(response) {
-		if (response && response.response === "INVALID_DATA") {
-			showError(response.responseMessage);
-		} else if (response.response === "AWKWARD") {
-			location.href = "/errorPage";
-		} else if (response.response === "SUCCESS") {
-        	if(response.data.length > 0 ){
-        		 for (var e in response.data) {
-        			var text = "";
-                    text += "<div class='comments-div comments-inner clearfix'>";
-                    text += "    <div class='commentsimg'> <i class='fa fa-comments'></i>";
-                    text += "   <div class='commentsimg-inner'>";
-					text += "		<img onerror='predefineProfileImage(this);' src='../images/userprofile-img.png'></div>";
-                    text += "  </div>";
-                    text += "    <div class='customCommentarea'>";
-                    text += "    <div class='row'>";
-                    text += "        <div class='col-md-12'>";
-                    text += "        <p class='comment-by'> By <span class='text-danger'>" + response.data[e].createdByName + "</span><span class='small mr'>" + response.data[e].createdDate + "</span> <span class='small'>" + response.data[e].createdDateString + "</span> </p>";
-                    text += "        <div class='commentText commentText-styles'>" + response.data[e].comment + "</div>";
-                    text += "      </div>";
-                    text += "      </div>";
-                    text += "  </div>";
-                    text += "  </div>";
-		    		$("#ticketCommentListDivId").append(text);
-				}
-			}
-		} else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
-		} else {
-			showError("Operation failed, please try again");
-		}
-	});
-}
-
-function saveTicketComment(ticketId){
-	if ($("#ticketComment_form").validate(false, validationSettings)){
-		var formData = getFormData("ticketComment_form");
-		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, formData, function(response) {
-			if (response && response.response === "INVALID_DATA") {
-				showError(response.responseMessage);
-			} else if (response.response === "AWKWARD") {
-				location.href = "/errorPage";
-			} else if (response.response === "SUCCESS") {
-				if(response.object === true) {
-					getTicketCommetList(ticketId);
-					closeTicketComment();
-				}
-			} else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
-			} else {
-				showError("Operation failed, please try again");
-			}
-		});
-	}
-}
-function closeTicketComment() {
-	$("#add-comment").fadeOut();
-	 document.getElementById("ticketComment_form").reset();
-	 $("ticketComment_form").validate().resetForm();
 }
 
 function addAttachmentRow() {

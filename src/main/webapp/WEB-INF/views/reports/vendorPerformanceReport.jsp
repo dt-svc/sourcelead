@@ -35,6 +35,7 @@
 
 <div class="GraView mt">
 	<!-- Released Jobs -->
+	
 	<div class="clearfix row mt mb">
 		<div class="col-md-12">
 			<div class="projectDashboad clearfix positionRelative" style="height: 220px;">
@@ -42,7 +43,7 @@
 				<div class="col-md-4">
 					<div class="text-center" style="margin-top: 75px;">
 						<h4 class="mt5">Released Jobs</h4>
-						<p class="ml text-muted" id="releasedJobsCount">0</p>
+						<a class="ml text-muted" id="releasedJobsCount" onclick="releasedJobsToVendors();">0</a>
 					</div>
 				</div>
 				<div class="col-md-8">
@@ -101,9 +102,12 @@
 			<div id="qualityCandidatesloadingDiv" style="display:none; position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url(&quot;/resources/images/loading.gif&quot;); background-position:center; background-repeat:no-repeat; background-size:75px;"></div>
 			<div class="projectDashboad clearfix positionRelative" style="height: 400px;">
 				<h4>Quality Candidates</h4>
-				<div class="pull-right" style="position: absolute; right: 15px; top: 50px;">
-					<h5 class="pull-right mr">Total Received:<a href="javascript:void(0)" class="paddingLeft mr paddingLeft mt" id="totalReceivedCandidates">0</a>
-					</h5>
+				<div class="pull-right" style="position: absolute; right: 15px; top: 50px; z-index: 99;">
+						<h5 class="pull-right mr">Total Received:<a class="paddingLeft mr paddingLeft mt" id="totalReceivedCandidates">0</a></h5>
+						<div class="clearfix"></div>
+						<h5 class="pull-right mr">Hired:<a title="Hired" href="javascript:void(0)" class="paddingLeft mr paddingLeft mt" id="hiredReceivedCandidates" onclick="releasedJobsToVendorsApplicantHired();">0</a></h5>
+						<div class="clearfix"></div>
+						<h5 class="pull-right mr">Rejected:<a title="Rejected" href="javascript:void(0)" class="paddingLeft mr paddingLeft mt" id="rejectedReceivedCandidates" onclick="releasedJobsToVendorsApplicantDecline();">0</a></h5>
 				</div>
 				<div id="qualityCandidatesChartDiv" style="width: 100%; height: 200px;" class="amchartAnchor-Hide"></div>
 				<div id="qualityCandidatesNoRecordsDiv" class='dataTables_empty' style="height: 335px !important; display: none;"></div>
@@ -150,7 +154,7 @@
 					<div id="applicantDeclineloadingDiv" style="display:none; position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url(&quot;/resources/images/loading.gif&quot;); background-position:center; background-repeat:no-repeat; background-size:75px;"></div>
 					<div class="clearfix positionRelative mb5 row">
 						<div class="col-md-12">
-							<h4>Applicant Decline<a href="javascript:void(0)" class="ml mt10" id="applicantsDeclineCount">0</a></h4>
+							<h4>Applicant Decline<a href="javascript:void(0)" class="ml mt10" id="applicantsDeclineCount" onclick="releasedJobsToVendorsApplicantDecline();">0</a></h4>
 						</div>
 					</div>
 					<div class="clearfix positionRelative">
@@ -167,7 +171,7 @@
 					<div id="backoutCandidatesloadingDiv" style="display:none; position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url(&quot;/resources/images/loading.gif&quot;); background-position:center; background-repeat:no-repeat; background-size:75px;"></div>
 					<div class="clearfix positionRelative mb5 row">
 						<div class="col-md-12">
-							<h4>Backout Candidates<a href="javascript:void(0)" class="ml mt10" id="backoutCandidatesCount">0</a></h4>
+							<h4>Backout Candidates<a href="javascript:void(0)" class="ml mt10" id="backoutCandidatesCount" onclick="releasedJobsToVendorsApplicantBackOut();">0</a></h4>
 						</div>
 					</div>
 					<div class="clearfix positionRelative">
@@ -179,3 +183,6 @@
 		<!--Backout Candidates-->
 	</div>
 </div>
+<script type="text/javascript">
+	var vmsURL = '${SourceLeadWeb_vmsUrl}';
+</script>

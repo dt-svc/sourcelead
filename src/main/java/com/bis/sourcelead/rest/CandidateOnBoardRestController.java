@@ -76,6 +76,7 @@ import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.rest.TimesheetRestController;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -1873,6 +1874,10 @@ public class CandidateOnBoardRestController {
 				}
 				
 				candidateOnBoardingService.saveCandidateOnBoarding(candidateOnBoarding);
+				
+				candidateOnBoarding.setJoiningDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),
+						candidateOnBoarding.getStartDate()));
+				
 				SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
 				response.setObject("success");
 				response.setResponse(Result.SUCCESS.name());

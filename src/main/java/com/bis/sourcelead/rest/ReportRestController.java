@@ -508,12 +508,12 @@ public class ReportRestController {
 				List<RecruiterJobsReportView> rjrvList = requirementSubmissionHistoryService.getSubmissionApplicantCountsForRecruiterJobreports(orgLocations.getId(), recruiterUser, searchDates, reqDTO.getId());
 				
 				double  applicantSubmittedApplicantCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantSubmissionCount().doubleValue()));
+				double  applicantRejectedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantRejectedCount().doubleValue()));
 				double  applicantShortlistCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantShortlistedCount().doubleValue()));
 				double  applicantSubmittedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantSubmittedClientCount().doubleValue()));
 				double  applicantInterviewCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantInterviewCount().doubleValue()));
 				double  applicantOfferCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantOfferMadeCount().doubleValue()));
 				double  applicantJoinedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantJoinedCount().doubleValue()));
-				double  applicantRejectedCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantRejectedCount().doubleValue()));
 				double  applicantBackoutCount = rjrvList.stream().collect(Collectors.summingDouble(product->product.getApplicantBackOutCount().doubleValue()));
 
 				reqDTO.setNoOfApplicants(String.valueOf(applicantSubmittedApplicantCount));
@@ -1506,7 +1506,7 @@ public class ReportRestController {
 				LetterHead letterHead = letterHeadService.getLetterheadById(empTemplate.getLetterHead().getId());
 				User user = userService.getUserById(employeeId);
 				String templateContent = reportsUtil.replaceAllTemplatePlaceHolders(empTemplate.getTemplateContent(),empTemplate,toAddress,user,orgLocation);
-				reportsUtil.viewCompleteletterheadData(templateContent,letterHead,response);
+				reportsUtil.viewLetterHeadCompleteletterheadData(templateContent,letterHead,response);
 			    
 			} catch (Exception e) {
 			    e.printStackTrace();
@@ -2637,17 +2637,17 @@ public class ReportRestController {
 	}
 		 
 			
-			@RequestMapping(value = "/getProjectsList")
-			@ResponseBody
-			public ResponseList<Projects> getProjectList(@RequestParam(value="associatesId", required=false) String associatesId,HttpServletRequest request,HttpServletResponse response)throws Exception{
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				String[] associates = associatesId.split(",");
-				ResponseList<Projects> list = new ResponseList<Projects>();
-				List<Projects> projectsList = projectsService.getProjectsListByUserIDAndOrgId(associates,orgLocations.getId());
-				list.setData(projectsList);
-				return list;
-				
-			}
+	@RequestMapping(value = "/getProjectsList")
+	@ResponseBody
+	public ResponseList<Projects> getProjectList(@RequestParam(value="associatesId", required=false) String associatesId,HttpServletRequest request,HttpServletResponse response)throws Exception{
+	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	//String associates = associatesId.split(",");
+	ResponseList<Projects> list = new ResponseList<Projects>();
+	List<Projects> projectsList = projectsService.getProjectsListByCanddateIdAndOrgId(associatesId,orgLocations.getId());
+	list.setData(projectsList);
+	return list;
+
+	}
 			
 	@RequestMapping(value = "/prepareReport")
 	public ResponseList<AvailableAssociatesDTO> prepareReport(AvailableAssociatesDTO availableAssociatesDTO,
@@ -2702,6 +2702,7 @@ public class ReportRestController {
 
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/offerAcceptanceRateListForVendor")
 	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateListForVendor(HttpServletRequest request, 
 			@RequestParam(defaultValue = "") long orgRelationId,
@@ -2711,9 +2712,16 @@ public class ReportRestController {
 		ResponseList<OfferAcceptanceRateDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<Long> jobIdList = new ArrayList<>();
 			if(user != null) {
-				responseList =  requirementSubmissionHistoryService.getOfferAcceptanceRateListForVendor(orgLocations.getId(), orgRelationId, spocId, filterType, filteredDate);
+				jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
+				if(orgRelationId > 0) {							
+					//above jobIdList is released to vendor job id's
+					//now get the parentJobId based on vendorReleasedJob and get the jobStages for that vendor resubmitted job('submit to client')
+					jobIdList = requirementReportService.getParentRequirementIdListByRequirementIds(jobIdList);
+				}
+				responseList =  requirementSubmissionHistoryService.getOfferAcceptanceRateListForVendor(jobIdList, orgRelationId, spocId, filterType, filteredDate);
 			} else {
 				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
 				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

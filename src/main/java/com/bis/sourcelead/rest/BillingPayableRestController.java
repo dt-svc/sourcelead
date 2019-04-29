@@ -129,11 +129,13 @@ public class BillingPayableRestController {
 					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
 					invoice.setGenerateInvoice(invoice.getOrgRelationID().getGenerateInvoice());
 					invoice.setGenerateBill(invoice.getOrgRelationID().getGenerateBill());
+					invoice.setDataResponderLocationId(invoice.getOrgRelationID().getResponderLocationId().getId());
 				}
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
 					invoice.setGenerateInvoice(invoice.getOrgRelationID().getGenerateInvoice());
 					invoice.setGenerateBill(invoice.getOrgRelationID().getGenerateBill());
+					invoice.setDataResponderLocationId(invoice.getOrgRelationID().getLocationId().getId());
 				}
 				/*if(invoice.getContactUser() != null){
 					//invoice.setVendorContactId(invoice.getContactUser().getId());

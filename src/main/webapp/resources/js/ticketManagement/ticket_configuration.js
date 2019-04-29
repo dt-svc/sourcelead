@@ -11,7 +11,7 @@ $(document).ready(function() {
 		cancelTicketCategory();
 		cancelTicketPriority();
 		cancelTicketStatus();
-		cancelTicket();
+//		cancelTicket();
 	});
 	if(document.getElementById("uploadBtn") !== null) {
 		document.getElementById("uploadBtn").onchange = function () {
@@ -76,12 +76,12 @@ function saveTicketType() {
 	if ($('#addTicketTypeForm').validate(false, validationSettings)){
 		var formData = getFormData("addTicketTypeForm");
 		$.post(sourceleadUrl + "/saveTicketType", formData, function(response) {
-			if (response && response.response === "INVALID_DATA") {
+			if (response && (response.response === "INVALID_DATA" || response.response === "DUPLICATE_NAME")) {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
-				if(response.object === true) {
+				if(response.object > 0) {
 					$(".success_pop span").html("TicketType saved successfully...");
 					$(".success_pop").show();
 					cancelTicketType();
@@ -100,9 +100,11 @@ function saveTicketType() {
 }
 
 function cancelTicketType() {
+	$("#ticketTypeId").val(0);
 	if(document.getElementById("addTicketTypeForm") !== null)
 		document.getElementById("addTicketTypeForm").reset();
 	$(".mask, #modalTasktype").fadeOut();
+	$(".location-alert").fadeOut();
 }
 
 function editTicketType(id){
@@ -174,9 +176,16 @@ function getTicketCategoryList() {
 }
 
 function cancelTicketCategory() {
-	if(document.getElementById("addTicketCategoryForm") !== null)
+	$("#ticketCategoryId").val(0);
+	if(document.getElementById("addTicketCategoryForm") !== null) {
 		document.getElementById("addTicketCategoryForm").reset();
+		$("#notifyTo").val("");
+		$("#assignedTo option").removeAttr("selected");
+		$("#assignedTo").chosen();
+		$("#assignedTo").trigger("chosen:updated");
+	}
 	$(".mask, #modalTasktype").fadeOut();
+	$(".location-alert").fadeOut();
 }
 
 function saveTicketCategory() {
@@ -198,12 +207,12 @@ function saveTicketCategory() {
 		     contentType:false, 
 		     url : sourceleadUrl+"/saveTicketCategory",
 			 success : function(response) {
-		  		if (response && response.response === "INVALID_DATA") {
+		  		if (response && (response.response === "INVALID_DATA" || response.response === "DUPLICATE_NAME")) {
 					showError(response.responseMessage);
 				} else if (response.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (response.response === "SUCCESS") {
-					if(response.object === true) {
+					if(response.object > 0) {
 						$(".success_pop span").html("TicketCategory saved successfully...");
 						$(".success_pop").show();
 						cancelTicketCategory();
@@ -241,12 +250,11 @@ function editTicketCategory(id){
 				$("#ticketCategoryName").val(data.name);
 				$("#ticketCategoryDesc").val(data.description);
 				for(var e in data.assignedTo) {
-					$("#assignedTo option[value='" + data.assignedTo[e] + "']").attr("selected", true);
+					$("#assignedTo option[value='" + data.assignedTo[e] + "']").prop("selected", true);
 				}
-				$("#assignedTo").chosen();
 	     	    $("#assignedTo").trigger("chosen:updated");
 	     	    
-				$("#notifyTo").html(data.notifyTo);
+				$("#notifyTo").val(data.notifyTo);
 				$(".mask, #modalTasktype").fadeIn();
 			} else if (response.indexOf('Sign In') !== -1) {
 				location.replace(sourceleadUrl);
@@ -305,12 +313,12 @@ function saveTicketPriority() {
 	if ($('#addTicketPriorityForm').validate(false, validationSettings)){
 		var formData = getFormData("addTicketPriorityForm");
 		$.post(sourceleadUrl + "/saveTicketPriority", formData, function(response) {
-			if (response && response.response === "INVALID_DATA") {
+			if (response && (response.response === "INVALID_DATA" || response.response === "DUPLICATE_NAME")) {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
-				if(response.object === true) {
+				if(response.object > 0) {
 					$(".success_pop span").html("TicketPriority saved successfully...");
 					$(".success_pop").show();
 					cancelTicketPriority();
@@ -328,12 +336,15 @@ function saveTicketPriority() {
 	}
 }
 function cancelTicketPriority() {
+	$("#ticketPriorityId").val(0);
 	if(document.getElementById("addTicketPriorityForm") !== null) {
 		document.getElementById("addTicketPriorityForm").reset();
 		$("#addTicketPriorityForm").find("input[data-id='uploadBtn']").remove();
+		$("#addTicketPriorityForm").find("p[class='jquery_form_error_message']").remove();
 		$("#refreshImage").val(false);
 	}
 	$(".mask, #modalTasktype").fadeOut();
+	$(".location-alert").fadeOut();
 }
 function eidtTicketPriority(id){
 	$.ajax({
@@ -418,12 +429,12 @@ function saveTicketStatus() {
 	if ($('#addTicketStatusForm').validate(false, validationSettings)){
 		var formData = getFormData("addTicketStatusForm");
 		$.post(sourceleadUrl + "/saveTicketStatus", formData, function(response) {
-			if (response && response.response === "INVALID_DATA") {
+			if (response && (response.response === "INVALID_DATA" || response.response === "DUPLICATE_NAME")) {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
-				if(response.object === true) {
+				if(response.object > 0) {
 					$(".success_pop span").html("TicketStatus saved successfully...");
 					$(".success_pop").show();
 					cancelTicketStatus();
@@ -442,11 +453,12 @@ function saveTicketStatus() {
 }
 
 function cancelTicketStatus() {
+	$("#ticketStatusId").val(0);
 	if(document.getElementById("addTicketStatusForm") !== null)
 		document.getElementById("addTicketStatusForm").reset();
 	$(".mask, #modalTasktype").fadeOut();
+	$(".location-alert").fadeOut();
 }
-
 
 function editTicketStatus(id){
 	$.ajax({

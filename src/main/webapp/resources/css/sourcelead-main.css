@@ -9295,6 +9295,22 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	background-image: url("../images/joinedIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
 	background-position: top; background-size: 100%; display: inline-block;
 }
+.noResponseIC {
+	background-image: url("../images/noresponseSVG.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.onHoldIC {
+	background-image: url("../images/onholdSVG.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.rejectIC {
+	background-image: url("../images/rejectedCandidateSVG.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.backoutIC {
+	background-image: url("../images/backoutSVG.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
 .jobSucces_list a {
 	position: relative; right:0px; top:0px; color: #f60;
 }
@@ -9900,11 +9916,81 @@ ul.goalsList-list li {
 .blank-div {
     width:25px; height:25px; float:left;
 }
+.customlist-area {
+	background-color: #f9f9f9; position: absolute; width: 600px; top:45px; left: 0;
+	z-index: 1000; box-shadow: 2px 6px 12px rgba(0,0,0,.175); display: none;
+}
+.customlist-area:before {
+	content:""; width: 0; height: 0; position: absolute; bottom: 100%; left: 0%;
+	border: solid transparent; border-bottom-color: #ddd; border-width: 10px;
+	margin-left: 115px;
+}
+.customlist-area h4 {
+	font-size: 15px; margin-top: 0;
+}
+.customlist-area .col-md-4 {
+	
+}
+.customlist-area .customlistarea-parent {
+	border: 1px solid #ddd; padding: 15px 15px 7px 15px; max-height: 350px;
+}
+.customlist-area .customlistarea-parent .customlistarea-body {
+	height: 235px; overflow: auto; border: 1px solid #ededed; padding-top: 15px;
+}
+.subTable {
+	width: 100%; border:1px solid #a21d24; padding: 5px; border-radius: 5px;
+}
+.subTable table thead tr th {
+	background-color:#fafafa !important; color:#333; border: 1px solid #ededed !important;
+}
+.subTable table tbody tr td {
+	background-color:#fff !important; color:#333; border: 1px solid #ededed !important;
+}
+.selectedTd:before {
+	content:""; width: 0; height: 0; position: absolute; bottom:0%; left: 45%;
+	border: solid transparent; border-bottom-color: #a21d24; border-width: 8px;
+}
+.dropdownTableDesig table tr td {
+	position: relative;
+}
+.dropdownTableDesig table tr:nth-child(2n+2) {
+	display: none; transition: all 0.3s linear;
+}
+.workflowSVG {
+	background: url("../images/workflowSVG.svg"); background-repeat: no-repeat; background-size: 42px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+}
+.helpDeskSVG {
+	background: url("../images/helpDesksvg.svg"); background-repeat: no-repeat; background-size: 75px; background-position: center; width: 80px; text-align: center; display: block; height: 90px; margin: 8px auto 2px; opacity:0.9;
+}
+.positionRelativeTop10 {
+position: relative; top: 10px;
+}
+.answerQuestionaire {
+	padding-left: 30px;
+}
+.answerQuestionaire ul li {
+	list-style-position: inside;
+}
+ul.goalscomments-list li:hover {
+	background-color: #fafafa;
+}
+.goals-list .goalsEditDelete {
+	display: none;
+}
+.goals-list:hover .goalsEditDelete {
+	display: block;
+}
+.top-12 {
+	top:-12px;
+}
+.viewEyeicon {
+	position: absolute; right:50px; top:0px; color: #fff; cursor: pointer; z-index: 9999; padding: 11.74px 4px;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
 }
-    .universalSrch {
+.universalSrch {
     margin-top: 0px; width: 52% !important;
 }
 .hidden-xs {

@@ -743,6 +743,7 @@ public class ProjectPlanningRestController {
 										projectClients.setProjectId(projectPlanningRequest.getProjectId());
 										projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
 										projectClients.setOrgLocationsId(cand.getOrgLocationId());
+										projectClients.setOrgId(cand.getOrgLocationId().getOrg());
 										projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 										projectClients.setStatus(1);
 										
@@ -812,7 +813,7 @@ public class ProjectPlanningRestController {
 									}
 									projectMembers.setProjectMemberCandidteId(cand);
 									projectMembers.setMasterCandidateId(cand.getMasterCandidateId());
-									projectMembers = saveProjectMembers(projectPlanningRequest.getProjectId(), candidate, projectPlanningResourceRequest, user, projectClients);
+									projectMembers = saveProjectMembers(projectPlanningRequest.getProjectId(), cand, projectPlanningResourceRequest, user, projectClients);
 									saveProjectMembersHistory(projectMembers,user,projectClients);
 									if(cand.getParentCandidateId() != null){
 										parentCandidatId = cand.getParentCandidateId().getId();
@@ -838,6 +839,7 @@ public class ProjectPlanningRestController {
 		    		 projectMembersDTO.setBillRate(projectPlanningResourceRequest.getBillRate());
 		    		 projectMembersDTO.setBillRateCurrency(projectPlanningResourceRequest.getBillRateCurrency());
 		    		 projectMembersDTO.setBillRateRateType(projectPlanningResourceRequest.getBillRateType());
+		    		 projectMembersDTO.setPercentageOfWork(projectPlanningResourceRequest.getPercentageOfWork());
 		    		
 		    		 if(projectPlanningResourceRequest.getStartDate() != null) {
 		    			 projectMembersDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projectPlanningResourceRequest.getStartDate()));
@@ -1126,7 +1128,12 @@ public class ProjectPlanningRestController {
 	    
 	    public ProjectMembers saveProjectMembers(Projects projects, Candidate candidate,ProjectPlanningResourceRequest projectPlanningResourceRequest,User user,ProjectClients projectClients) throws Exception {
 	    	
-	    	 ProjectMembers projectMembers = new ProjectMembers();
+	    	 ProjectMembers projectMembers = null;
+	    	 
+	    	 projectMembers = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidate.getId(), projectClients.getId());
+	    	 if(projectMembers == null) {
+	    		 projectMembers =  new ProjectMembers();
+	    	 }
 				projectMembers.setProjects(projects);
 				projectMembers.setProjectMemberCandidteId(candidate);
 				projectMembers.setMasterCandidateId(candidate.getMasterCandidateId());
@@ -1160,6 +1167,9 @@ public class ProjectPlanningRestController {
 				
 				if(projectPlanningResourceRequest.getEstimatedBudget() != null){
 					projectMembers.setEstimatedBudget(projectPlanningResourceRequest.getEstimatedBudget());
+				}
+				if(projectPlanningResourceRequest.getPercentageOfWork() != null) {
+					projectMembers.setPercentageOfWork(projectPlanningResourceRequest.getPercentageOfWork());
 				}
 				
 				projectMembers.setProjects(projects);

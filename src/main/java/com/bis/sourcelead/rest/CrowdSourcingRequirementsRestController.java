@@ -570,6 +570,12 @@ public class CrowdSourcingRequirementsRestController {
     					 requirementIndex.setRateType(savedJobs.getRequirementId().getRateType());
     					 requirementIndex.setCurrentRateCurrency(savedJobs.getRequirementId().getCurrencyCode());
     					 
+    					 if(StringUtils.isNotBlank(savedJobs.getRequirementId().getVisaType())) {
+    						 requirementIndex.setVisaTypes(savedJobs.getRequirementId().getVisaType().split(","));	 
+    					 }
+    					 
+    					 requirementIndex.setIndustryName(savedJobs.getRequirementId().getIndustryName());
+    					 
     					 if(!isNullOrEmpty(savedJobs.getRequirementId().getSkills())){
     						 String[] skills = savedJobs.getRequirementId().getSkills().split(",");
     						 List<String> skillsList = new ArrayList<String>();
@@ -857,6 +863,20 @@ public class CrowdSourcingRequirementsRestController {
 		     }
 		     else if (requirementType.equalsIgnoreCase("CrowdSourcingJobs")){
 		    	 boolQueryBuilder.must(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+		    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
+		    	 if(null != referList && referList.size() > 0){
+		    		 for(RequirementRefer refer : referList){
+		    			 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementId", refer.getRequirementId().getId()));
+		    		 }
+		    	 }
+		     }else if(requirementType.equalsIgnoreCase("allJobs")){
+		    	 BoolQueryBuilder allJobsBoolQueryBuilder = QueryBuilders.boolQuery();
+		    		  allJobsBoolQueryBuilder.should(QueryBuilders.matchQuery("isPublicJob", "Y"));
+		    	 
+		    	 allJobsBoolQueryBuilder.should(QueryBuilders.matchQuery("isCrowdSourcingJob", "Y"));
+		    	 boolQueryBuilder.must(allJobsBoolQueryBuilder);
+		    	 
+		    	 boolQueryBuilder.mustNot(QueryBuilders.matchQuery("appliedProfessionals", user.getId()));
 		    	 List<RequirementRefer> referList = requirementReferService.getLoginUserReferToMeListByUserId(user.getId());
 		    	 if(null != referList && referList.size() > 0){
 		    		 for(RequirementRefer refer : referList){

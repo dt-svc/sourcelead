@@ -11,7 +11,9 @@ import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.UserRole;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+    @JsonIgnoreProperties(ignoreUnknown=true)
 	public class AddUserDTO extends CommonDTO {
 
 		@Required(desc = "first name")
@@ -146,6 +148,8 @@ import com.bis.sourcelead.entity.UserRole;
 		private String EmailId;
 		
 		private String panNumber;
+		
+		private String aadharNumber;
 		
 		private String phoneNumber;
 		
@@ -641,6 +645,14 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setPanNumber(String panNumber) {
 			this.panNumber = panNumber;
+		}
+
+		public String getAadharNumber() {
+			return aadharNumber;
+		}
+
+		public void setAadharNumber(String aadharNumber) {
+			this.aadharNumber = aadharNumber;
 		}
 
 		public String getPhoneNumber() {

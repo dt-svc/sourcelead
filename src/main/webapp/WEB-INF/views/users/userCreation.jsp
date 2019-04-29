@@ -327,7 +327,14 @@
 		         		<div class="form-group">
 		                  <label class="col-md-3">PAN Number<span class="text-danger">&nbsp;*</span></label>
 		                  <div class="col-md-9">
-		                    <input type="text" class="form-control" id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space validate_Alphanumeric fixed_length length10" value="">
+		                    <input type="text" class="form-control" id="panNumber" name="panNumber" field-name="PAN Number" data-validation="required validate_Space validate_panNumber" value="">
+		                    </div>
+		                </div>
+		                
+		                <div class="form-group">
+		                  <label class="col-md-3">Aadhar Number<span class="text-danger">&nbsp;*</span></label>
+		                  <div class="col-md-9">
+		                    <input type="text" class="form-control" id="aadharNumber" name="aadharNumber" field-name="Aadhar Number" data-validation="required validate_Space validate_aadharNumber" value="">
 		                    </div>
 		                </div>
 		          </c:if>
@@ -942,7 +949,7 @@ function getEmployeementType(designationType){
 	   if ($('#createUser_form').validate(false, validationSettings)){
 		    var formData = getFormData("createUser_form");
 // 			$("#create_user").attr("disabled", "disabled");
-			$("#loading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:250%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 //             $( "#create_user" ).addClass('button').val('Processing..');
             
             $.ajax({
@@ -1195,6 +1202,18 @@ function getAssociateUserDetails(){
 				    	 
 				    	 if(json['dateofBirthString'] != null && json['dateofBirthString'] != "" && json['dateofBirthString'] != "undefined"){
 				    		 $("#dateofBirth").val(json['dateofBirthString']); 
+				    	 }
+				    	 
+				    	 if(json['panNumber'] != null && json['panNumber'] != "" && json['panNumber'] != "undefined"){
+				    		 $("#panNumber").val(json['panNumber']); 
+				    	 }
+				    	 
+				    	 if(json['aadharNumber'] != null && json['aadharNumber'] != "" && json['aadharNumber'] != "undefined"){
+				    		 $("#aadharNumber").val(json['aadharNumber']); 
+				    	 }
+				    	 
+				    	 if(json['ssnNumber'] != null && json['ssnNumber'] != "" && json['ssnNumber'] != "undefined"){
+				    		 $("#ssnNumber").val(json['ssnNumber']); 
 				    	 }
 	        		  
 	        		  $("#designationType").selectpicker('refresh');
@@ -1779,11 +1798,3 @@ function calculateConfirmationDate(){
 }
 
 </script>
-
-
-
-
-
-
-
-

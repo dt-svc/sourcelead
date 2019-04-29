@@ -7,7 +7,7 @@
  <script type="text/javascript">
 		window.onload = function () {
 			getEmailList();
-			var status ='${emailSceconf.status}';
+			var status ='${emailSceconf.verifiedStatus}';
 			if(status == "Y"){
 				configuredMail();
 			}
@@ -445,6 +445,12 @@ function changeDefaultemailConfig(ele, id) {
 	 $('#emailNotify').find('p.jquery_form_error_message').remove();
 	 $('#passwordsnotify').find('p.jquery_form_error_message').remove();	
 	 $(".colorBtn").removeClass("disableBtn");	  
+	
+	 var domainName = $('#emailId').val().split("@")[1];
+	 if(typeof domainName != 'undefiend' && domainName != ""){
+		 $('#parserEmailId').val("@"+domainName);
+		 $('#parserPasswordId').val("");
+	 }
  }
  
  /* function closeEmailNotifications() {

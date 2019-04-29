@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.DashboardItems;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
@@ -79,11 +80,11 @@ import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UserLoginHelper;
@@ -102,6 +103,9 @@ public class LoginSessionController {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	private EmployeesService employeeService;
 
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
@@ -251,6 +255,12 @@ public class LoginSessionController {
 		if (userLoginSession != null) {
 			SourceLeadSessionManager.setSessionAttribute(request, "isAuthenticated",
 					userLoginSession.getAuthenticated());
+		}
+		
+		Employees emp = employeeService.getEmployeeByUserId(user.getId());
+		if(emp != null) {
+			SourceLeadSessionManager.setSessionAttribute(request, "joiningDate",
+					emp.getHireDate());
 		}
 
 		/*

@@ -58,8 +58,24 @@
 		</div>
 	</div>
 	</a>
-		</sec:authorize>	
+	</sec:authorize>	
 	
+				<a href='${appPath}/availableAssociatesReport'>
+				<div class="repDashCta">
+		<span><i class="fa fa-users"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Available Associate Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
+	
+	<a href='${appPath}/associateClockInSummaryReport'><div class="repDashCta">
+		<span><i class="fa fa-users"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Associate Clock-IN/Out Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
 				
 	<div class="clearfix"></div>	
 </div>

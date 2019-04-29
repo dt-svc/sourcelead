@@ -2969,6 +2969,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		endDate.setMinutes(59);
 		endDate.setSeconds(59);
 		
+		System.out.println("startDate > "+startDate+" & endDate > "+endDate);
+		
 		List<Long> countlist = null;
 		List<String> petitionTypeList = immigrationReportDTO.getPetitionType();
 		List<String> statusList = immigrationReportDTO.getPetitionStatus();
@@ -3253,5 +3255,33 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	    query.setLong("visaId", visaId);  
 	    int result = query.executeUpdate();
 	    return result;
+	}
+	
+	@Override
+	@Transactional
+	public Lca updateLcaAvailablePositionsById(Lca lca)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		if(lca.getId() != null ) {
+			session.saveOrUpdate(lca);
+	   }
+	    return lca;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Lca getLcaNumber(String lcaNo) throws Exception {
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Lca lca where lca.lcaNo = :lcaNo and lca.status = 1";
+		List<Lca> lcaNumbersList =  session.createQuery(query) .setString("lcaNo", lcaNo).list();
+		Lca lca = null;
+		if(lcaNumbersList != null && !lcaNumbersList.isEmpty())
+		{
+			lca = (Lca) lcaNumbersList.iterator().next();
+		}
+		return lca;
+		
+		
 	}
 }	

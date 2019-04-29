@@ -160,11 +160,10 @@ public class LeaveDaoImpl implements LeaveDao{
 			}
 			
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
-				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ");
+				searchQuery.append(" and concat (laph.leaveid.user.firstName ,' ',")
+				.append("laph.leaveid.user.lastName) like '%"+ leaveDTO.getSearchValue() +"%'");
 				if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					searchQuery.append("OR  (concat(laph.leaveid.approvedBy.firstName,laph.leaveid.approvedBy.lastName) like '%\" + payrollReportDTO.getSearchValue() + \"%' ) ")
+					searchQuery.append("OR  (concat(laph.leaveid.approvedBy.firstName,laph.leaveid.approvedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
 					.append("OR laph.leaveid.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
 					searchQuery.append("OR (concat(laph.leaveid.rejectedBy.firstName,laph.leaveid.rejectedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
@@ -1677,6 +1676,19 @@ public class LeaveDaoImpl implements LeaveDao{
         Session session = this.sessionFactory.getCurrentSession();
         List<Leave> list = null;
         String query = "from Leave leave left join fetch leave.leaveType where leave.orgLocations.id =:orgLocationId and leave.status =:status and leave.createdDate =:sqlappliedDate";
+        list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).setDate("sqlappliedDate", sqlappliedDate).list();
+        return list;
+    }
+	
+	@SuppressWarnings("unchecked")
+    @Override
+    @Transactional
+    public List<Leave> getAllLeavesByLocationIdAndStatusAndLeaveStartDate(Long locationId, String status,
+            Date appliedDate) {
+        java.sql.Date sqlappliedDate = new java.sql.Date(appliedDate.getTime());
+        Session session = this.sessionFactory.getCurrentSession();
+        List<Leave> list = null;
+        String query = "from Leave leave left join fetch leave.leaveType where leave.orgLocations.id =:orgLocationId and leave.status =:status and leave.fromDate =:sqlappliedDate";
         list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).setDate("sqlappliedDate", sqlappliedDate).list();
         return list;
     }
