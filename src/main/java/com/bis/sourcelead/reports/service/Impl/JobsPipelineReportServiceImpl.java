@@ -38,6 +38,11 @@ public class JobsPipelineReportServiceImpl implements JobsPipelineReportService{
 	public List<RequirementSubmissionHistory> getAllJobsReportsCountsBySubmmisonId(Long submissionId) throws Exception {
 		return jobsPipelineReportDao.getAllJobsReportsCountsBySubmmisonId(submissionId);
 	}
+	
+	@Override
+	public List<RequirementSubmissionHistory> getAllJobsReportsCountsBySubmmisonIdAndMasterUserCode(long submissionId, String masterUserCode) {
+		return jobsPipelineReportDao.getAllJobsReportsCountsBySubmmisonIdAndMasterUserCode(submissionId, masterUserCode);
+	}
 
 
 
@@ -51,6 +56,11 @@ public class JobsPipelineReportServiceImpl implements JobsPipelineReportService{
 	@Override
 	public List<Requirement> requirementListStatusCountByJobIdsAndDates(List<Long> jobIds, Date[] searchDates) {
 		return jobsPipelineReportDao.requirementListStatusCountByJobIdsAndDates(jobIds, searchDates);
+	}
+	
+	@Override
+	public List<Requirement> vendorRequirementListStatusCountByJobIdsAndDates(List<Long> jobIds, Date[] searchDates) {
+		return jobsPipelineReportDao.vendorRequirementListStatusCountByJobIdsAndDates(jobIds, searchDates);
 	}
 	
 }
