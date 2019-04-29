@@ -291,7 +291,6 @@ function cancelMarketCartPopup(){
 }
 
 function deleteCandidateMarketCart(candidateName, candidateMarketUUID, obj){
-	console.log(candidateName+" "+candidateMarketUUID+" "+obj);
 	$.ajax({
 		type : "GET",
 		url : sourceleadUrl + "/deleteCandidateMarketCart?marketUUID="+candidateMarketUUID,

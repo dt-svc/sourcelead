@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.ticketManagement.dao.TicketManagementDao;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -48,6 +49,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	
 	 @Autowired
 	 OrgLicenseSubscriptionPriceDao orgLicenseSubscriptionPriceDao;
+	 
+	 @Autowired
+	 private TicketManagementDao ticketManagementDao;
 	
 	@Override
 	public OrgLocations addOrgLocations(OrgLocations orgLocations) throws Exception {
@@ -57,9 +61,10 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 		}
 		orgLocations.setCoolingOffPeriod(Constants.DEFAULT_COOLINGOFF_PERIOD); //to set default cooling-off period to three months
 		orgLocations = orgLocationsDao.addOrgLocations(orgLocations);
-		
+		ticketManagementDao.dumpTicketManagementPreDefinedValuesToAllOrgLocations(orgLocations.getId());
 		if(orgLocations != null && newLocation) {
 			commonUtil.storeDefaultPayheadsWithOrgLocation(null, orgLocations);
+			
 		}
 		return orgLocations;
 	}

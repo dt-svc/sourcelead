@@ -628,7 +628,8 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			  .append("where clk.USER_ID = :userId ")
 			  .append("AND clk.ORG_LOCATION_ID = :orgLocationId ")
 			  .append("AND clk.CLOCK_IN_DATE >= :firstDate ")
-			  .append("AND clk.CLOCK_IN_DATE <= :lastDate ");
+			  .append("AND clk.CLOCK_IN_DATE <= :lastDate ")
+			  .append("AND clk.TOTAL_CLOCK_TIME is not null ");
 			Query queryObj = session.createSQLQuery(sb.toString());
 			queryObj.setLong("orgLocationId", orgLocationId);
 			queryObj.setLong("userId", userId);
