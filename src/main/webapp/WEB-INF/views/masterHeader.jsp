@@ -65,7 +65,9 @@ $(document).ready(function(){
 <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
+<c:if test='${viewPage != "vendors/vendorsList"}'>
 <script src="/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
+</c:if>
 <script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
  
 <!--  Amcharts -->
@@ -896,7 +898,7 @@ function preventTabkey(e){
 <div class="sclock">00 : 00</div>
 </div> 
 </div>
-<div class="clockinn hidden" id="clockFieldsId">
+<div class="clockinn" id="clockFieldsId">
 <div class="clearfix mb" id="jobDIV">
 <label class="noPad">Jobs</label>
 <div class="clearfix addicon">
@@ -1979,7 +1981,7 @@ function getClockInOutConfiguration(){
 	type: 'GET',
 	success: function (json) {
 	if(json != null){
-	$("#clockFieldsId").show();
+// 	$("#clockFieldsId").show();
 	getExistedClockTime();
 	if(!json.isJobChecked){
 	$("#jobDIV").hide();

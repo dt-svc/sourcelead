@@ -119,7 +119,7 @@ $(document).ready(function(){
 		 $("#contractStage").val("DRAFT");
 	}
    getTemplateList();
-   getStageCounts();
+   //getStageCounts();
 });
 </script>
 
@@ -424,13 +424,7 @@ function previewTemplatePDF(uuid, templateName){
 }
 </script>
 
-<script type="text/javascript">
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-            });
-        </script> 
+
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -629,7 +623,7 @@ function getTemplateList(listType){
        			  preparedContractListApplicantWTV(url,tabType);
        		   }
     	   }
-    	   getStageCounts();
+   // 	   getStageCounts();
 }
 </script>
 

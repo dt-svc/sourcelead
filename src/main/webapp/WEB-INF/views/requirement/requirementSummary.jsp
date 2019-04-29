@@ -3072,6 +3072,11 @@ $('body').on('blur', '#updateCustomize_form', function() {
 });
 </script>
 <script>
+//to remove console errors added temporarily 
+function requirementRecommendations(requirementId, requirementSubmissionStatus){
+ 	
+	
+}
 function cancelCustomize(){
 	$(".project_inn_mask").fadeOut();
 	$("#customizePopUp").toggle();
