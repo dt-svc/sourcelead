@@ -27,7 +27,7 @@
   	        $("#documentstemplateId").val(onBoardingId);
   	        
   	        loadOnboardingCandidate('${onBoardingUUID}');
-  	       shiftListFun();
+  	       shiftList();
   	        
 		}else{
 			var candidateId = '${candidateId}';
@@ -83,7 +83,8 @@
                 <div class="form-group" id="onboardCandidatesDiv">
                   <label class="col-md-3 control-label">Select Candidate <span class="text-danger">* </span><i class='fa fa-info-circle' title='Select the candidate who is being onboarded'></i></label>
                   <div class="col-md-6">
-                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();shiftListFun();"></select>
+					<select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();" field-name="Candidate">
+                    </select>
                   </div>
                 </div>
                
@@ -1497,7 +1498,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 		    		$("#genderValue").val(json['gender']);
    		    	}
    		    	if(json['shift'] != null && json['shift'] != "" && json['shift'] !="undefined"){
-   		    		shiftListFun(json['shift']);
+   		    		shiftList(json['shift']);
    		    	}
    		    	
    		    	if(json['employmentEligibility'] != null && json['employmentEligibility'] != "" && json['employmentEligibility'] !="undefined"){
@@ -2731,6 +2732,7 @@ function addCandidateDetailsForOnboarding(){
 	 loadCandidateRoles();
 	 loadTeams();
 	 loadOnBoardingTemplates();
+	 shiftList();
 	 getDatesScript();
    	 $("#loading").removeAttr("style");
    	 
@@ -2930,7 +2932,7 @@ function changeCitizenShip(){
 }
 </script>
  <script>
-function shiftListFun(shiftId){
+function shiftList(shiftId){
 		 $.ajax({
 	      type : "POST",
 	       url: sourceleadUrl+"/shiftList",       
