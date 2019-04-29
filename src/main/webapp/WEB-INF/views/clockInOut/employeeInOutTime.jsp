@@ -361,7 +361,7 @@ function userTimeEntriesPagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": true,
+    	"ordering": false,
     	"oLanguage": {
      		"sSearch": "",
      		"sZeroRecords": "", "sEmptyTable": ""

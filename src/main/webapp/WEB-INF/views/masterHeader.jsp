@@ -898,7 +898,7 @@ function preventTabkey(e){
 <div class="sclock">00 : 00</div>
 </div> 
 </div>
-<div class="clockinn hidden" id="clockFieldsId">
+<div class="clockinn" id="clockFieldsId">
 <div class="clearfix mb" id="jobDIV">
 <label class="noPad">Jobs</label>
 <div class="clearfix addicon">
