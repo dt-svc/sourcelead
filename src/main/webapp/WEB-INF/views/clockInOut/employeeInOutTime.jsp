@@ -64,6 +64,7 @@ $('document').ready(function () {
                     
                      <div class="repclo" id="graphId"  style="display: none;">
         <div id="jobsAdded" class="amchartAnchor-Hide timRep"></div>
+        <div id="graphIdDiv" class=""></div>
     </div>
                     
                   </div>
@@ -301,7 +302,11 @@ function getUserTimeEntriesPagination(url){
    		    		result = result +'<tbody>';
    		    		
    		    		result = result +'<tr class="parent" id="2479'+i+'">';
-	    	  	    result = result + '    <td><span class="click">'+report.clockInDateStr+'<i class="fa fa-caret-down"></i></span></td>                            '; 
+   		    		if(dayWisetype == 'Current_Year'){
+   		    	  	    result = result + '    <td><span class="click">'+report.clockInDateStr+'</span></td>                            '; 
+   		    		}else{
+   		    	  	    result = result + '    <td><span class="click">'+report.clockInDateStr+'<i class="fa fa-caret-down"></i></span></td>                            '; 
+   		    		}
 
 	            	  result = result + '    <td>'+report.totalTime+'</td>         ';
    		    		
@@ -361,7 +366,7 @@ function userTimeEntriesPagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": true,
+    	"ordering": false,
     	"oLanguage": {
      		"sSearch": "",
      		"sZeroRecords": "", "sEmptyTable": ""
@@ -416,7 +421,8 @@ function getCurrentDates(type){
 <script>
 function showClockInClockOutGraph(json,type){
 	if(json.data.length >0){
-		$("#jobsAdded").removeClass('dataTables_empty'); 
+		$("#graphIdDiv").removeClass('dataTables_empty'); 
+		$("#jobsAdded").show();
 		var format = "";
 		 if("Current_Year" != type){
 			 format =  "YYYY-MM-DD";
@@ -484,7 +490,8 @@ function showClockInClockOutGraph(json,type){
 			      "dataProvider": chartData
 			    });
 	}else{
-		$("#jobsAdded").addClass('dataTables_empty');
+		$("#graphIdDiv").addClass('dataTables_empty');
+		$("#jobsAdded").hide();
 	}
 	
 }

@@ -30,12 +30,7 @@
 			});
 </script>
 
-<script type="text/javascript">
-//script for upload file
-document.getElementById("uploadBtn").onchange = function () {
-	document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
-}
-</script>
+
 
 <style type="text/css">
 .timeBalance-scroll .col-md-2 {
