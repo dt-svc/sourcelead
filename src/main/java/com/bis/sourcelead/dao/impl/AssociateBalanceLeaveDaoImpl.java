@@ -4,9 +4,11 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -625,6 +627,46 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 						stmt.addBatch();
 					}
 					int[] updateCount = stmt.executeBatch();
+					connection.commit();
+					connection.setAutoCommit(initialAutocommitSetting);
+				}
+			});
+			return 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+
+	@Override
+	@Transactional
+	public int saveAssociateBalLeaveHistory(List<AssociateBalanceLeaveDTO> assBalList,Date startDate,Date endDate) {
+		try {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(startDate);
+			String month = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+			int year = cal.get(Calendar.YEAR);
+			Session session = this.sessionFactory.getCurrentSession();
+			session.doWork(new Work() {
+				@Override
+				public void execute(java.sql.Connection connection) throws SQLException {
+					boolean initialAutocommitSetting = connection.getAutoCommit();
+					connection.setAutoCommit(false);
+					CallableStatement stmt = connection.prepareCall("{call associateBalanceLeaveHistoryProcedure(?,?,?,?,?,?,?,?)}");
+					for (AssociateBalanceLeaveDTO leave : assBalList) {
+						stmt.setLong(1, Long.parseLong(leave.getUserId()));
+						stmt.setLong(2, leave.getOrgLocationId());
+						stmt.setDate(3, new java.sql.Date(startDate.getTime()));
+						stmt.setDate(4, new java.sql.Date(endDate.getTime()));
+						stmt.setInt(5, year);
+						stmt.setString(6, month+ "-" +year);
+						stmt.setFloat(7, leave.getAssBalLeaveHis());
+						stmt.setLong(8, leave.getLeaveTypeId());
+						
+						stmt.addBatch();
+					}
+					int[] count = stmt.executeBatch();
 					connection.commit();
 					connection.setAutoCommit(initialAutocommitSetting);
 				}
