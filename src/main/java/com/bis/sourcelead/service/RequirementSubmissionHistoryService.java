@@ -55,6 +55,6 @@ public interface RequirementSubmissionHistoryService {
 	
 	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateList(String userCode, long orgLocationId, String selectedClients, String filterType, String filteredDate);
 	
-	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateListForVendor(long orgLocationId, long orgRelationId, long spocId, String filterType, String filteredDate);
+	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateListForVendor(List<Long> parentRequirementIdList, long orgRelationId, long spocId, String filterType, String filteredDate);
 
 }
