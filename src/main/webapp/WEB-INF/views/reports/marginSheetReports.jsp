@@ -267,10 +267,13 @@ function exportSheet(exportType){
      result = result + '<tr>';
 		result = result + '<th>Associate ID</th>';
 		result = result + '<th>Associate Name</th>';
+		result = result + '<th>Assoicate Join Date</th>';
+		result = result + '<th>Project Name</th>';
+		result = result + '<th>Project Duration</th>';
 		result = result + '<th>Client Name</th>';
-		result = result + '<th>Paid Amount</th>';
-		result = result + '<th>Billed Amount</th>';
-		result = result + '<th>Margin</th>';
+		result = result + '<th>Pay Rate</th>';
+		result = result + '<th>Bill Rate</th>';
+		result = result + '<th>Margin</th>'; 
 		result = result + '</tr>';
      result = result +'</thead>';
      result = result +'<tbody>'; 
@@ -320,9 +323,12 @@ function marginpagination(url){
         "columns": [
             { "data": "associateId" },
             { "data": "associateName"},
+            { "data": "associateJoinedDate"},
+            { "data": "projectName"},
+            { "data": "projectDuration"},
             { "data": "clientName"},
-            { "data": "paidAmount"},
-            { "data": "billedAmount"},
+            { "data": "payRate"},
+            { "data": "billRate"},
             { "data": "margin"}
         ],
         "columnDefs": [ {
@@ -354,7 +360,52 @@ function marginpagination(url){
             	  return result;
               		
               }
-	          },
+	          },{
+		    	  "targets": colIndex++,
+	              "data": "associateJoinedDate",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  if(opt.associateJoinedDate!=null && opt.associateJoinedDate !='' && opt.associateJoinedDate !='undefined'){
+	            		
+	                		  result = result + '<td><div><span title='+opt.associateJoinedDate+'>'+opt.associateJoinedDate+'</span></div></td>';
+	            		  }
+	            		else{
+							result = result + ' <td><div>--</div></td>';
+						}
+	            	  return result;
+	              		
+	              }
+		          },{
+			    	  "targets": colIndex++,
+		              "data": "projectName",
+		              "render": function ( data, type, opt, meta ) {
+		            	  var result = "";
+		            	  if(opt.projectName!=null && opt.projectName !='' && opt.projectName !='undefined'){
+		            		
+		                		  result = result + '<td><div><span title='+opt.projectName+'>'+opt.projectName+'</span></div></td>';
+		            		  }
+		            		else{
+								result = result + ' <td><div>--</div></td>';
+							}
+		            	  return result;
+		              		
+		              }
+			          },{
+				    	  "targets": colIndex++,
+			              "data": "projectDuration",
+			              "render": function ( data, type, opt, meta ) {
+			            	  var result = "";
+			            	  if(opt.projectDuration!=null && opt.projectDuration !='' && opt.projectDuration !='undefined'){
+			            		
+			                		  result = result + '<td><div><span title='+opt.projectDuration+'>'+opt.projectDuration+'</span></div></td>';
+			            		  }
+			            		else{
+									result = result + ' <td><div>--</div></td>';
+								}
+			            	  return result;
+			              		
+			              }
+				          },
 	      
 	      {
 	    	  "targets": colIndex++,
@@ -372,7 +423,7 @@ function marginpagination(url){
 	          },
 	          {
 		    	  "targets": colIndex++,
-	              "data": "paidAmount",
+	              "data": "payRate",
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined'){
@@ -386,7 +437,7 @@ function marginpagination(url){
 		          },
 	          {
             "targets": colIndex++,
-            "data": "billedAmount",
+            "data": "billRate",
             "render": function ( data, type, opt, meta ) {
             	var result = "";
             	
@@ -397,7 +448,8 @@ function marginpagination(url){
             	 }
    				return result;
             }
-          } ,{
+          } ,
+          {
               "targets": colIndex++,
               "data": "margin",
               "sortable": false,
