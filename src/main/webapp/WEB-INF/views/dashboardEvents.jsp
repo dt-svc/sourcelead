@@ -1240,9 +1240,8 @@ function feedbackView(interviewId,templateId){
 
 <script>
 function exportInterviewsListSheet(exportType){
-	alert("ssss");
+	
 	var date = getSelectedDateFromCalendar($("#eventCalendar").val());
-	alert("date"+date);
 		window.location.href = sourceleadUrl+"/getInterviewListExportList?"+tokenParamName+"="+tokenValue+"&exportType="+exportType+"&dateRange="+date;
 	}
 </script>
