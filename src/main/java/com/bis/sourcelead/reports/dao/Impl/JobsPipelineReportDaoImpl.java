@@ -61,6 +61,20 @@ public class JobsPipelineReportDaoImpl implements JobsPipelineReportDao{
 		List<RequirementSubmissionHistory>  subHistiryList = session.createQuery(query).setLong("submissionId", submissionId).list();
 	    return subHistiryList;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RequirementSubmissionHistory> getAllJobsReportsCountsBySubmmisonIdAndMasterUserCode(Long submissionId, String masterUserCode) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query ="from RequirementSubmissionHistory rsh where rsh.submissionId.id =:submissionId and rsh.masterUserCode IN (" + masterUserCode + ") and rsh.createdDate = (select Max(rh.createdDate) from RequirementSubmissionHistory rh where rh.submissionId.id =:submissionId and rh.toStage = rsh.toStage) group by rsh.toStage";
+			List<RequirementSubmissionHistory> rshList = session.createQuery(query).setLong("submissionId", submissionId).list();
+			return rshList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -102,5 +116,23 @@ public class JobsPipelineReportDaoImpl implements JobsPipelineReportDao{
 			}	
 		}
 	    return reqList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Requirement> vendorRequirementListStatusCountByJobIdsAndDates(List<Long> jobIds, Date[] searchDates) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Requirement> reqList = null;
+		String query = null;
+		if (jobIds.size() > 0) {
+			if (searchDates != null) {
+				query = " from Requirement requirement  where requirement.id IN (:jobIds) and date(requirement.createdDate) BETWEEN :startDate and :endDate";
+				reqList = session.createQuery(query).setParameterList("jobIds", jobIds).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).list();
+			} else {
+				query = " from  Requirement requirement  where requirement.id IN (:jobIds)";
+				reqList = session.createQuery(query).setParameterList("jobIds", jobIds).list();
+			}
+		}
+		return reqList;
 	}
 }

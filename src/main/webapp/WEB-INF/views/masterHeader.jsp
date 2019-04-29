@@ -65,7 +65,9 @@ $(document).ready(function(){
 <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
+<c:if test='${viewPage != "vendors/vendorsList"}'>
 <script src="/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
+</c:if>
 <script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
  
 <!--  Amcharts -->
@@ -189,7 +191,9 @@ z-index: 1000000000 !important;
 <script type="text/javascript">
 $(document).ready(function(){
 //   getNotificationsByuserId();
+'<sec:authorize access="hasRole(\'ROLE_VIEW_CART\')">' 
 	updateMarketplaceCartCountAndPrice();
+	'</sec:authorize>';
 });
 </script>
 <!-- notification related include jsp -->
@@ -541,7 +545,7 @@ function preventTabkey(e){
 	          </li>
 	          </c:if>	
 		<sec:authorize access="hasAnyRole('ROLE_ADD_TICKET','ROLE_VIEW_TICKET')">
-			<li><a href="<c:url value='${appPath}/ticketManagementList'/>" title="Ticket Management" ><i class="ticketMgIC"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+			<li><a href="<c:url value='${appPath}/ticketManagementList'/>" title="Ticket Management" ><i class="ticketMgIC"></i></a></li>
 		</sec:authorize>
         <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
         	 <li><a title="Reports" href="<c:url value='${appPath}/reportsDashboard'/>"><i class="headNavIcon reporIcon"></i></a></li>
