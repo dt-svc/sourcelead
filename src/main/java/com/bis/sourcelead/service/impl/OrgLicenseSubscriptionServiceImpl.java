@@ -77,6 +77,7 @@ import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.ticketManagement.dao.TicketManagementDao;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -171,6 +172,9 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 	@Autowired
 	OrgLicenseSubscriptionHistoryDao orgLicenseSubscriptionHistoryDao;
 	
+	@Autowired
+	private TicketManagementDao ticketManagementDao;
+	
 	@Value("${static.path}")
     private String staticPath;
 	
@@ -241,6 +245,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			orgLocations.setRegistrationStatus("Registered");
 			orgLocations.setUser(user);
 			orgLocationsDao.updateOrgLocations(orgLocations);
+			ticketManagementDao.dumpTicketManagementPreDefinedValuesToAllOrgLocations(orgLocations.getId());
 			
 			Org org = orgLicenseSubscription.getOrg();
 			org.setUser(user);

@@ -2702,6 +2702,7 @@ public class ReportRestController {
 
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/offerAcceptanceRateListForVendor")
 	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateListForVendor(HttpServletRequest request, 
 			@RequestParam(defaultValue = "") long orgRelationId,
@@ -2711,9 +2712,16 @@ public class ReportRestController {
 		ResponseList<OfferAcceptanceRateDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<Long> jobIdList = new ArrayList<>();
 			if(user != null) {
-				responseList =  requirementSubmissionHistoryService.getOfferAcceptanceRateListForVendor(orgLocations.getId(), orgRelationId, spocId, filterType, filteredDate);
+				jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
+				if(orgRelationId > 0) {							
+					//above jobIdList is released to vendor job id's
+					//now get the parentJobId based on vendorReleasedJob and get the jobStages for that vendor resubmitted job('submit to client')
+					jobIdList = requirementReportService.getParentRequirementIdListByRequirementIds(jobIdList);
+				}
+				responseList =  requirementSubmissionHistoryService.getOfferAcceptanceRateListForVendor(jobIdList, orgRelationId, spocId, filterType, filteredDate);
 			} else {
 				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
 				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
