@@ -1642,7 +1642,7 @@ $(document).ready(function(){
   <script>
   function flushInviteCompany(){
 	  document.getElementById("inviteCompany_form").reset();
-	  $("inviteCompany_form").validate().resetForm();
+	 // $("inviteCompany_form").validate().resetForm();
   }
   </script> 
   <script>
