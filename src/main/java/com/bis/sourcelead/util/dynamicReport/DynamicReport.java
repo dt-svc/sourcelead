@@ -750,8 +750,8 @@ public class DynamicReport {
 							col.column("Associate Id", "Associate Id", type.stringType()),
 							col.column("Associate Name", "Associate Name", type.stringType()),
 							col.column("Client Name", "Client Name", type.stringType()),
-							col.column("Paid Amount", "Paid Amount", type.stringType()),
-							col.column("Billed Amount", "Billed Amount", type.stringType()),
+							col.column("Pay Rate", "Pay Rate", type.stringType()),
+							col.column("Bill Rate", "Bill Rate", type.stringType()),
 							col.column("Margin", "Margin", type.stringType()))
 					.pageFooter(Templates.footerComponent)
 					.setDataSource(marginSheetReportDataSource(projectMembersDTOList)).toPdf(pdfExporter);
@@ -782,8 +782,8 @@ public class DynamicReport {
 								col.column("Associate Id", "Associate Id", type.stringType()),
 								col.column("Associate Name", "Associate Name", type.stringType()),
 								col.column("Client Name", "Client Name", type.stringType()),
-								col.column("Paid Amount", "Paid Amount", type.stringType()),
-								col.column("Billed Amount", "Billed Amount", type.stringType()),
+								col.column("Pay Rate", "Pay Rate", type.stringType()),
+								col.column("Bill Rate", "Bill Rate", type.stringType()),
 								col.column("Margin", "Margin", type.stringType()))
 						.setDataSource(marginSheetReportDataSource(projectMembersDTOList)).toXls(xlsExporter);
 			} catch (DRException e) {
@@ -793,7 +793,7 @@ public class DynamicReport {
   }
 	
 	private DRDataSource marginSheetReportDataSource(ResponseList<MarginSheetReportDTO> responseList) {
-		DRDataSource dataSource = new DRDataSource("Associate Id","Associate Name", "Client Name", "Paid Amount", "Billed Amount", "Margin");
+		DRDataSource dataSource = new DRDataSource("Associate Id","Associate Name", "Client Name", "Pay Rate", "Bill Rate", "Margin");
 		for(MarginSheetReportDTO margin:responseList.getData()) {
 			String empId = "--";
 			
@@ -805,13 +805,13 @@ public class DynamicReport {
 		
 			String	clientName = margin.getClinetName();
 			
-			String	 paidAmount = margin.getPayRateCurrency() +" "+String.valueOf(margin.getPayRate())+" "+margin.getPayRateType();
+			String	 payRate = margin.getPayRateCurrency() +" "+String.valueOf(margin.getPayRate())+" "+margin.getPayRateType();
 				 
-			String	 billedAmount = margin.getBillRateTypeCurrency() +" "+String.valueOf(margin.getBillRate())+" "+margin.getBillRateType();
+			String	 billRate = margin.getBillRateTypeCurrency() +" "+String.valueOf(margin.getBillRate())+" "+margin.getBillRateType();
 			 
 			String marginRate = String.valueOf(margin.getMarginRate());
 			
-			dataSource.add(empId,associateName, clientName, paidAmount,billedAmount,marginRate);
+			dataSource.add(empId,associateName, clientName, payRate,billRate,marginRate);
 		}
 		return dataSource;
 	}
