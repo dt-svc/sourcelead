@@ -5,11 +5,11 @@
 
 <script src="/resources/js/indPayrollReports.js"></script>
 
-<script>
+<!-- <script>
 $(document).ready(function(){
    getDepartmentList();
 });
-</script>
+</script> -->
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
