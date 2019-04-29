@@ -7412,7 +7412,8 @@ max-width: 100% !important;
     border-width: 10px; margin-left: -10px;
 }
 .newActPop a {
-	display: block; padding: 8px 15px; font-size: 13px; color: #454545;
+		display: block; padding: 8px 15px !important; font-size: 13px !important; color: #454545; line-height: normal !important;
+
 }
 .newActPop a:hover {
 	background-color: #f1f1f1;
@@ -8558,3 +8559,5 @@ opacity:1; visibility:visible;
 .ticketCommentCont textarea{
 	border: 1px solid #CECECE; resize: none; width: 100%; height: 200px;
 }
+.dashboardoverIcon { padding: 6px 6px 0px 6px; display: none;}
+.dashboardoverIcon .newActPop { right: 0px;}
