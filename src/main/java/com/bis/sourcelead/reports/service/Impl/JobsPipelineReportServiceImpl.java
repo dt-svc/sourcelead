@@ -53,4 +53,13 @@ public class JobsPipelineReportServiceImpl implements JobsPipelineReportService{
 		return jobsPipelineReportDao.requirementListStatusCountByJobIdsAndDates(jobIds, searchDates);
 	}
 	
+	@Override
+	public List<RequirementSubmissionHistory> getAllJobsReportsCountsBySubmmisonIdAndMasterUserCode(long submissionId, String masterUserCode) {
+		return jobsPipelineReportDao.getAllJobsReportsCountsBySubmmisonIdAndMasterUserCode(submissionId, masterUserCode);
+	}
+	
+	@Override
+	public List<Requirement> vendorRequirementListStatusCountByJobIdsAndDates(List<Long> jobIds, Date[] searchDates) {
+		return jobsPipelineReportDao.vendorRequirementListStatusCountByJobIdsAndDates(jobIds, searchDates);
+	}
 }

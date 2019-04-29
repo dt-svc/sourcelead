@@ -21,6 +21,17 @@ width: 75px; padding: 0 !important;
             <sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">
             <button class="btn btn-primary pull-left btn-sm ml mt7" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
             </sec:authorize>
+            
+            
+        <div class="dashboardoverIcon pull-right">
+			<a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+			<div class="newActPop">
+				<span>
+						<a href="javascript:void(0)" onclick="exportInterviewsListSheet('Pdf');" title="PDF" >Export PDF</a>
+						<a href="javascript:void(0)" onclick="exportInterviewsListSheet('Excel');" title="Excel">Export Excel</a>					
+				</span>
+			</div>
+		</div>
 
 		<ul class="nav nav-tabs pull-right">
 			<li id="jobFairsTab"><a href="javascript:void(0)" onclick="getJobFairs()">Job Fairs</a></li>
@@ -1230,10 +1241,31 @@ function feedbackView(interviewId,templateId){
 	
 }
 </script>
+
+<script>
+function exportInterviewsListSheet(exportType){
+	alert("ssss");
+	var date = getSelectedDateFromCalendar($("#eventCalendar").val());
+	alert("date"+date);
+		window.location.href = sourceleadUrl+"/getInterviewListExportList?"+tokenParamName+"="+tokenValue+"&exportType="+exportType+"&dateRange="+date;
+	}
+</script>
+
 <script>
 function closePop(){
 $(".feedback_view").hide();
 $(".mask_inner").hide();
 }
+</script>
+<script>
+function newActions(){
+	$(".newActPop").slideToggle(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});
 </script>
       

@@ -127,7 +127,6 @@ function getContactList() {
 function getVendorsReportGraphData() {
 	if(orgRelationId > 0) {
 		getReleasedJobsGraph();
-		getOfferAcceptanceRateGraph();
 
 		$("#avgPercentMovingFwdloadingDiv").show();
 		$("#avgPercentMovingFwdNoRecordsDiv").hide();
@@ -217,6 +216,7 @@ function getReleasedJobsGraph() {
 					});
 					$("#releasedJobsCount").html(totalReleasedCount);
 					$("#releaseJobs").show();
+					getOfferAcceptanceRateGraph();
 					getAveragePercentageMovingForwardGraph();
 					getAverageTimeToFillGraph();
 					getQualityCandidatesGraph();
@@ -366,157 +366,168 @@ function getOfferAcceptanceRateGraph() {
 function getAveragePercentageMovingForwardGraph() {
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl + "/getAllJobsPipelineReoportsList",
+		url : sourceleadUrl + "/getAllJobsPipelineReoportsList?orgRelationId=" + orgRelationId + "&spocId=" + contactUserId,
 		success : function(response) {
 			if (response.response === "AWKWARD") {
-				location.href = "/errorPage";
-			} else if (response.response === "SUCCESS") {
-				if(response.object && response.object !== null) {
-					var mainChar = [];
-					if(response.object.applicantsCount>0){
-						mainChar.push( {
-							"category": "Applicant(s)",
-							"column-1": response.object.applicantsCount,
-							"Color": "#9575CD",
-							"Days": response.object.applicantsDays,
-							"moveforward": "100"
-						} );
-					}
-
-					if(response.object.shortlistedCount>0){
-						mainChar.push( {
-							"category": "Shortlisted",
-							"column-1": response.object.shortlistedCount,
-							"Color": "#90CAF9",
-							"Days": response.object.shortlistedDays,
-							"moveforward": response.object.shortlistedMove
-						} );
-					}
-
-					if(response.object.submitToClientCount>0){
-						mainChar.push( {
-							"category": "Submit To Client",
-							"column-1": response.object.submitToClientCount,
-							"Color": "#FFB74D",
-							"Days": response.object.submitToClientDays,
-							"moveforward": response.object.submitToClientMove
-						} );
-					}
-					if(response.object.interviewsCount>0){
-						mainChar.push( {
-							"category": "Interviewed",
-							"column-1": response.object.interviewsCount,
-							"Color": "#5C6BC0",
-							"Days": response.object.interviewsDays,
-							"moveforward": response.object.interviewsMove
-						} );
-					}
-
-					if(response.object.offeredCount>0){
-						mainChar.push({
-							"category": "Offered",
-							"column-1": response.object.offeredCount,
-							"Color": "#9CCC65",
-							"Days": response.object.offeredDays,
-							"moveforward": response.object.offeredMove
-						});
-					}
-					if(response.object.offeredAcceptedCount>0){
-						mainChar.push({
-							"category": "Offers Accepted",
-							"column-1": response.object.offeredAcceptedCount,
-							"Color": "#1E88E5",
-							"Days": response.object.offeredAcceptedDays,
-							"moveforward": response.object.offeredAcceptedMove
-						});
-					}
-
-					if(response.object.backoutCount>0){
-						mainChar.push({
-							"category": "Backout(s)",
-							"column-1": response.object.backoutCount,
-							"Color": "#E57373",
-							"Days": response.object.backoutDays,
-							"moveforward": 84
-						});
-					}
-
-					AmCharts.makeChart("avgPercentMovingFwdChartDiv", {
-						"type": "serial",
-						"categoryField": "category",
-						"rotate": true,
-						"marginBottom": 0,
-						"marginLeft": 0,
-						"marginRight": 30,
-						"marginTop": 0,
-						"colors": [],
-						"startDuration": 1,
-						"fontSize": 10,
-						"categoryAxis": {
-							"gridPosition": "start",
-							"axisThickness": 0,
-							"gridThickness": 0,
-							"tickLength": 10,
-							"titleRotation": -1
-						},
-						"export": {
-							"enabled": true,
-							"pageOrigin": false,
-							"fileName":"Average Percentage Moving Forward"
-						},
-						"trendLines": [],
-						"graphs": [
-							{
-								"descriptionField": "Days",
-								"fillAlphas": 1,
-								"fillColorsField": "Color",
-								"id": "AmGraph-1",
-								"labelPosition": "right",
-								"labelText": "[[value]] <br> [[Days]] Day(s) <br>[[moveforward]]% Moveforward",
-								"lineColorField": "Color",
-								"lineThickness": 0,
-								"maxBulletSize": 0,
-								"title": "graph 1",
-								"type": "column",
-								"valueField": "column-1"
-							},
-							{
-								"id": "AmGraph-2",
-								"title": "graph 2",
-								"valueField": "Color"
-							}
-							],
-							"guides": [],
-							"valueAxes": [
-								{
-									"id": "ValueAxis-1",
-									"axisThickness": 0,
-									"gridThickness": 0,
-									"labelsEnabled": false,
-									"title": ""
-								}
-								],
-								"allLabels": [],
-								"balloon": {},
-								"titles": [
-									{
-										"id": "Title-1",
-										"size": 15,
-										"text": "Jobs Pipeline"
-									}
-									],
-									"dataProvider": mainChar
-					});
-					$("#avgPercentMovingFwdChartDiv").show();
-				} else {
-					$("#avgPercentMovingFwdNoRecordsDiv").show();
-				}
-				$("#avgPercentMovingFwdloadingDiv").hide();
-			} else if (response.response === "SESSION_TIMEDOUT" || response.indexOf('Sign In') !== -1) {
+                location.href = "/errorPage";
+            } else if (response.response === "SUCCESS") {
+            	if(response.object && response.object !== null) {
+            		var mainChar = [];
+            		var hasResults = false;
+                	if(response.object.applicantsCount>0){
+                		hasResults = true;
+                		mainChar.push( {
+                			"category": "Applicant(s)",
+                			"column-1": response.object.applicantsCount,
+                			"Color": "#9575CD",
+                			"Days": response.object.applicantsDays,
+                			"moveforward": "100"
+                		    } );
+                	}
+                	
+                	if(response.object.shortlistedCount>0){
+                		hasResults = true;
+                		mainChar.push( {
+                			"category": "Shortlisted",
+                			"column-1": response.object.shortlistedCount,
+                			"Color": "#90CAF9",
+                			"Days": response.object.shortlistedDays,
+                			"moveforward": response.object.shortlistedMove
+                		    } );
+                	}
+                	
+                	if(response.object.submitToClientCount>0){
+                		hasResults = true;
+                		mainChar.push( {
+                			"category": "Submit To Client",
+                			"column-1": response.object.submitToClientCount,
+                			"Color": "#FFB74D",
+                			"Days": response.object.submitToClientDays,
+                			"moveforward": response.object.submitToClientMove
+                		    } );
+                	}
+                	if(response.object.interviewsCount>0){
+                		hasResults = true;
+                		mainChar.push( {
+                			"category": "Interviewed",
+                		    "column-1": response.object.interviewsCount,
+                		    "Color": "#5C6BC0",
+                		    "Days": response.object.interviewsDays,
+                		    "moveforward": response.object.interviewsMove
+                		} );
+                	}
+                	
+                	if(response.object.offeredCount>0){
+                		hasResults = true;
+                		mainChar.push({
+                			"category": "Offered",
+                			"column-1": response.object.offeredCount,
+                			"Color": "#9CCC65",
+                			"Days": response.object.offeredDays,
+                			"moveforward": response.object.offeredMove
+                		});
+                	}
+                	if(response.object.offeredAcceptedCount>0){
+                		hasResults = true;
+                		mainChar.push({
+                			"category": "Offers Accepted",
+                			"column-1": response.object.offeredAcceptedCount,
+                			"Color": "#1E88E5",
+                			"Days": response.object.offeredAcceptedDays,
+                			"moveforward": response.object.offeredAcceptedMove
+                		});
+                	}
+                	
+                	if(response.object.backoutCount>0){
+                		hasResults = true;
+                		mainChar.push({
+                			"category": "Backout(s)",
+                			"column-1": response.object.backoutCount,
+                			"Color": "#E57373",
+                			"Days": response.object.backoutDays,
+                			"moveforward": 84
+                		});
+                	}
+                	if(hasResults) {
+	                	AmCharts.makeChart("avgPercentMovingFwdChartDiv", {
+	        				"type": "serial",
+	        				"categoryField": "category",
+	        				"rotate": true,
+	        				"marginBottom": 0,
+	        				"marginLeft": 0,
+	        				"marginRight": 30,
+	        				"marginTop": 0,
+	        				"colors": [],
+	        				"startDuration": 1,
+	        				"fontSize": 10,
+	        				"categoryAxis": {
+	        					"gridPosition": "start",
+	        					"axisThickness": 0,
+	        					"gridThickness": 0,
+	        					"tickLength": 10,
+	        					"titleRotation": -1
+	        				},
+	        				"export": {
+	        				    "enabled": true,
+	        				    "pageOrigin": false,
+	        				    "fileName":"Average Percentage Moving Forward"
+	        				},
+	        				"trendLines": [],
+	        				"graphs": [
+	        					{
+	        						"descriptionField": "Days",
+	        						"fillAlphas": 1,
+	        						"fillColorsField": "Color",
+	        						"id": "AmGraph-1",
+	        						"labelPosition": "right",
+	        						"labelText": "[[value]] <br> [[Days]] Day(s) <br>[[moveforward]]% Moveforward",
+	        						"lineColorField": "Color",
+	        						"lineThickness": 0,
+	        						"maxBulletSize": 0,
+	        						"title": "graph 1",
+	        						"type": "column",
+	        						"valueField": "column-1"
+	        					},
+	        					{
+	        						"id": "AmGraph-2",
+	        						"title": "graph 2",
+	        						"valueField": "Color"
+	        					}
+	        				],
+	        				"guides": [],
+	        				"valueAxes": [
+	        					{
+	        						"id": "ValueAxis-1",
+	        						"axisThickness": 0,
+	        						"gridThickness": 0,
+	        						"labelsEnabled": false,
+	        						"title": ""
+	        					}
+	        				],
+	        				"allLabels": [],
+	        				"balloon": {},
+	        				"titles": [
+	        					{
+	        						"id": "Title-1",
+	        						"size": 15,
+	        						"text": "Jobs Pipeline"
+	        					}
+	        				],
+	        				"dataProvider": mainChar
+	                    });
+	                	$("#avgPercentMovingFwdChartDiv").show();
+                	} else {
+                		$("#avgPercentMovingFwdNoRecordsDiv").show();	
+                	} 
+            	} else {
+            		$("#avgPercentMovingFwdNoRecordsDiv").show();
+            	}
+            	$("#avgPercentMovingFwdloadingDiv").hide();
+            } else if (response.response === "SESSION_TIMEDOUT" || response.indexOf('Sign In') !== -1) {
 				location.replace(sourceleadUrl);
 			} else {
-				showError("Operation failed, please try again");
-			}
+                showError("Operation failed, please try again");
+            }
 		},
 	});
 }
