@@ -65,7 +65,8 @@ $(document).ready(function(){
 <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
-<c:if test='${viewPage != "vendors/vendorsList"}'>
+<c:if test='${viewPage != "vendors/vendorsList" && viewPage != "reports/usersUsageReportList"
+            && viewPage != "reports/employeeTasksReportList"  && viewPage != "reports/overdueTaskReport"}'>
 <script src="/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
 </c:if>
 <script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
@@ -416,7 +417,7 @@ function preventTabkey(e){
 
 
 <div class="headProfile">
-	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </div>
+	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}">  <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </span></div>
 	<div class="headPop" id="profilePop">
 		<div class="headPopInn">
 				<a href="<c:url value='${appPath}/userProfile'/>" title="Profile">
@@ -1642,7 +1643,7 @@ $(document).ready(function(){
   <script>
   function flushInviteCompany(){
 	  document.getElementById("inviteCompany_form").reset();
-	  $("inviteCompany_form").validate().resetForm();
+	 // $("inviteCompany_form").validate().resetForm();
   }
   </script> 
   <script>

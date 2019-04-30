@@ -210,7 +210,7 @@ public class DataMigrationCommonRestController {
 					}
 				}else {
 					if (StringUtils.isNotBlank(fields.getFieldName()) && !fields.getFieldName().equalsIgnoreCase("panNumber")
-							|| !fields.getFieldName().equalsIgnoreCase("aadharNumber")) {
+							&& !fields.getFieldName().equalsIgnoreCase("aadharNumber")) {
 						formFieldsList.add(fields);
 					}
 				}
