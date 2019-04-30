@@ -1450,9 +1450,9 @@ $('body').on('blur', '#sjfb', function() {
     
     
     // upload file script
-    document.getElementById("uploadBtn").onchange = function () {
-    document.getElementById("uploadFile").value = this.value;
-	};
+   // document.getElementById("uploadBtn").onchange = function () {
+   // document.getElementById("uploadFile").value = this.value;
+	//};
   </script> 
 <script type="text/javascript">
 			var config = {
