@@ -28,7 +28,7 @@
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectDashboard'/>">Projects List</a> &raquo;Project Summary</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectDashboard'/>">Projects List</a> &raquo; Project Summary</div>
         </section>
 	   
 <div id="projectSideDiv" class="project_wrap"></div>   	   

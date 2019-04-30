@@ -150,7 +150,7 @@ function getHolidaysList(){
 				$("#holidayListDiv").empty();
 				$("#holidayListDiv").append(result);
 				viewHolidaysTablePagination();
-				viewHolidaysTable();
+				
 		} else if (response.indexOf('Sign In') !== -1) {
 			location.replace(sourceleadUrl);
 		} else {
