@@ -1471,6 +1471,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
 		    		if(null != userRole){
 		    			projectsDTO.setManagerLevel1UserType(userRole.getUserType());
+		    		}else {
+		    			UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(approverHierarchy.getApproverUserId().getId());
+		    			projectsDTO.setManagerLevel1UserType(primaryRole.getUserType());
 		    		}
 		    		projectsDTO.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
@@ -1494,6 +1497,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(expenseApproverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
 			    		if(null != userRole){
 			    			projectsDTO.setExpenseApproverLevel1UserType(userRole.getUserType());
+			    		}else {
+			    			UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(expenseApproverHierarchy.getApproverUserId().getId());
+			    			projectsDTO.setManagerLevel1UserType(primaryRole.getUserType());
 			    		}
 			    		projectsDTO.setExpenseApproverLevel1(expenseApprover.append(expenseApproverHierarchy.getApproverUserId().getFirstName()).append(" ").append(expenseApproverHierarchy.getApproverUserId().getLastName()).toString());
 			    	}
