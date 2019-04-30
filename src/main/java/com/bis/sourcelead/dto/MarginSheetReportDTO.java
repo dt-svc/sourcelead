@@ -25,6 +25,8 @@ public class MarginSheetReportDTO extends SearchDTO implements Serializable {
 	private double marginRate;
 	private double totalMarginRate;
 	private String employeeId;
+	private String projectDuration;
+	private String associateJoinedDate;
 	
 	
 
@@ -178,5 +180,18 @@ public class MarginSheetReportDTO extends SearchDTO implements Serializable {
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
 	}
+	public String getProjectDuration() {
+		return projectDuration;
+	}
+	public void setProjectDuration(String projectDuration) {
+		this.projectDuration = projectDuration;
+	}
+	public String getAssociateJoinedDate() {
+		return associateJoinedDate;
+	}
+	public void setAssociateJoinedDate(String associateJoinedDate) {
+		this.associateJoinedDate = associateJoinedDate;
+	}
+	
 	
 }

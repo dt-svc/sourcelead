@@ -1,7 +1,6 @@
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 
-<!DOCTYPE html>
 <html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -1630,7 +1629,6 @@ function showOrHidePaymentFormFields(type) {
             if(parseInt(val) === parseInt(id)) 
                 $(this).show();
         } else {
-            console.log(val);
             val = val.split(",");
             for(var e in val) {
                 if(parseInt(val[e]) === parseInt(id)) {
@@ -2163,7 +2161,7 @@ function loadSignature(){
 					for (var i=0; i<=json.signatureList.length; i++)
  					{
 						var opt = json.signatureList[i];
-						$('#cp'+opt.id+'').colorpicker();
+						//$('#cp'+opt.id+'').colorpicker();
  					}
 					
 					
@@ -2175,14 +2173,14 @@ function loadSignature(){
 
 <script>
 function resetDocument(){
-	$("documents_form").validate().resetForm();
+	//$("documents_form").validate().resetForm();
 }
 
 function resetEmailConfguration(){
-	$("email_configuration_form").validate().resetForm();
+	//$("email_configuration_form").validate().resetForm();
 }
 function colourpicker(){
-	$('#cp2, #cp3').colorpicker();
+	//$('#cp2, #cp3').colorpicker();
 }
 </script>
 

@@ -117,7 +117,7 @@
 			    <li class="${!empty type ? 'current' : ''}" name="applicantNotification" id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'applicantsTab':''}"><a  href="#tab-2" onclick="requirementPipeline('${requirement.id}','all');requirementStatusBar('${requirement.id}');">Pipeline</a></li>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_RECOMMENDATIONS')">
-			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a  href="#tab-3" onclick="requirementRecommendations('${requirement.id}', '${requirement.requirementSubmissionStatus}');">Recommendations</a></li>
+			    <li id="${requirement.requirementSubmissionStatus == 'CLOSED' && requirement.isreceivingApplicants == 'Y' ? 'recommendationsTab':''}"><a  href="#tab-3" onclick="requirementRecommendations('${requirement.id}','${requirement.requirementSubmissionStatus}');">Recommendations</a></li>
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
 			 <li id=""><a  href="#tab-5" onclick="globalDataRecommendations();">Global Data Recommendations</a></li>
@@ -839,7 +839,6 @@ function importApplicantsToJob(requirementId){
 
 <script>
 function getCustomDependentField(sectionId){
-	console.log(sourceleadUrl);
 	var requirementId = '${requirement.id}';
 	var type= 'view';
 	 $.ajax({
