@@ -1148,8 +1148,6 @@ function removeDocNameDiv(){
 }
 </script>
 
-<script> 	
-// Edit pop
 <script type="text/javascript">
 $(document).ready(function() {
     $(".glyphicon-edit").click(function(){
