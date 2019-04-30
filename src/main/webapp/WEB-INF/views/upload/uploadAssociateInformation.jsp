@@ -117,7 +117,9 @@ var uploadflag= true;
 										Fields</strong></span>
 							</p>
 							<p>
-							  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Associate Email</label>
+							  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Associate Email</label>
+							   <label><i class="fa fa-check"></i>&nbsp;&nbsp;Uan number</label>
+							    <label><i class="fa fa-check"></i>&nbsp;&nbsp;Pf number</label>
 							  </p>
 						</span>
 					</div>
@@ -191,7 +193,7 @@ function importAssociateBankDetail(){
  		    	    $("#msgDiv").removeAttr("style");
  		    	    $("#msgDiv").css({ "display" : "block", "text-align" :"center" });
  		    	    if(json.insertedCount != 0){
- 		 			$("#msgDiv").html(json.insertedCount+ " Associates updated");}
+ 		 			$("#msgDiv").html(json.insertedCount+ " Associate PF/ESI details are updated");}
  		 			else{
  		 				$("#msgDiv").html("Should fill the atleast mandatory Fields").css({"background":"#d9534f"})
  		 			}

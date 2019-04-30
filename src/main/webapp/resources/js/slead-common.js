@@ -167,9 +167,9 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 
 $(function() {
 
-    for (var selector in config) {
+    /*for (var selector in config) {
 		$(selector).chosen(config[selector]);
-	}
+	}*/
 	
     $('.chosen-select').each(function() {
 		var $this = $(this);
