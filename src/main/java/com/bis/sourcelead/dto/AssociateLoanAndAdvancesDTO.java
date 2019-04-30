@@ -59,7 +59,7 @@ public class AssociateLoanAndAdvancesDTO extends SearchDTO implements Serializab
 	 
 	 private String nextDueDate;
 	 
-	 private BigInteger sssid;
+	 private Long id;
 	 
 	 private String uuid;
 	 
@@ -267,12 +267,12 @@ public class AssociateLoanAndAdvancesDTO extends SearchDTO implements Serializab
 		this.nextDueDate = nextDueDate;
 	}
 	
-	public BigInteger getSssid() {
-		return sssid;
+	public Long getId() {
+		return id;
 	}
 
-	public void setSssid(BigInteger sssid) {
-		this.sssid = sssid;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getUuid() {
