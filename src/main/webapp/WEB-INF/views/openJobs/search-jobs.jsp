@@ -826,7 +826,7 @@ function getCities(){
     				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
     				  '.chosen-select-width'     : {width:"95%"}
     	   }
-			//Adding Customized Any Of Keyword to the list 
+			/* //Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#anyKeyWord");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
@@ -846,9 +846,9 @@ function getCities(){
 	        		$("#anyKeyWord").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		   
-		    var selectone, chosenone;
+		    /* var selectone, chosenone;
 		    selectone = $("#allReqKeyWord");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosenone = selectone.data('chosen');
@@ -925,7 +925,7 @@ function getCities(){
 				$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+				}) */
 </script> 
 
 

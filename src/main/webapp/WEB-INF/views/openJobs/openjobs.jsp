@@ -2010,11 +2010,11 @@ function openJobSearchRequirement(){
 				});
 			}
 	
-				 window.setTimeout(function() {
+				 /* window.setTimeout(function() {
 						addthis.toolbox(".addthis_inline_share_toolbox_g28q");
 						addthis.init(".addthis_inline_share_toolbox_g28q");
 						addthis.layers.refresh();
-			        }, 500);
+			        }, 500); */
 				$('body').on('blur','#openJobsAdvancedForm',function() {
 				$("#openJobsAdvancedForm").showHelpOnFocus();
 				$("#openJobsAdvancedForm").validateOnBlur(false, validationSettings);

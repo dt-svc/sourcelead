@@ -62,7 +62,7 @@
    });
 });
        </script>
-       <script type="text/javascript">
+    <!--    <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -76,7 +76,7 @@
 			$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				});
+				}); -->
 </script>
 <!-- <script>
 $(document).tooltip({
