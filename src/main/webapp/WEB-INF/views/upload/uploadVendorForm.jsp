@@ -68,7 +68,7 @@ margin:10px 220px 0;
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='${appPath}/vendorsList'/>'">
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadVendorForm'/>'">
 				</div>
 			  </div>
 			</div>
