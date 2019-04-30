@@ -926,7 +926,7 @@ $(document).ready(function() {
 </script>
 <script>
     // Description Custom Script
-	$('#summernote, #description_note').summernote();
+// 	$('#summernote, #description_note').summernote();
 </script>      
     <script>
     // Add Task side bar

@@ -58,6 +58,7 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 		}else {
 			payrollPayhead = new PayrollPayhead();
 			payrollPayhead.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			payrollPayhead.setActive(Constants.STATUS_YES);
 			payrollPayhead.setCreatedDate(new Date());
 			payrollPayhead.setCreatedBy(user);
 		}
@@ -128,6 +129,7 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 			payrollPayhead.setApplicableFor(null);
 		}
 		
+		
 		if(StringUtils.isNotBlank(payrollPayheadDTO.getComponent())) {
 			payrollPayhead.setComponent(payrollPayheadDTO.getComponent());
 		}else {
@@ -187,6 +189,12 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 		}else {
 			payrollPayhead.setFormula(null);
 		}
+		if(StringUtils.isNotBlank(payrollPayheadDTO.getPtApplicable())) {
+			payrollPayhead.setPtApplicable(payrollPayheadDTO.getPtApplicable());
+		}else {
+			payrollPayhead.setPtApplicable("N");
+		}
+		
 		
 		payrollPayhead.setOrgLocationId(orgLocations);
 		payrollPayhead.setStatus(Constants.RECORD_ACTIVE);
@@ -384,6 +392,8 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 				OrgLocations orgLoc = new OrgLocations();
 				orgLoc.setId(orgLocationId);
 				pph.setId(null);
+				pph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				pph.setActive(Constants.STATUS_YES);
 				pph.setCreatedDate(new Date());
 				pph.setUpdatedDate(new Date());
 				pph.setOrgLocationId(orgLoc);
@@ -391,6 +401,11 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 			}
 		}
 		return response;
+	}
+	
+	@Override
+	public Response<String> payheadHandlerByOrg(PayrollPayheadDTO payrollPayheadDTO) throws Exception {
+		return payrollPayheadDao.payheadHandlerByOrg(payrollPayheadDTO);
 	}
 	
 }

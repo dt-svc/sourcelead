@@ -95,10 +95,15 @@ public void generatePayheadsByOrg() throws IOException, SQLException {
 							 String showInPayslip = rs1.getString("SHOW_IN_PAYSLIP");
 							 String pfApplicable = rs1.getString("PF_APPLICABLE");
 							 String esiApplicable = rs1.getString("ESI_APPLICABLE");
+							 String ptApplicable = null;
+							 if("Earnings".equalsIgnoreCase(rs1.getString("TYPE"))) {
+								 ptApplicable = rs1.getString("PT_APPLICABLE");
+							 }
+							 
 							 Integer status = 1;
 							 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
-							 String query = "INSERT INTO `PAYROLL_PAYHEAD` (`NAME`, `SHORT_CODE`,`TYPE`,`PAY_TYPE`,`FORM_16`,`TAX`,`APPLICABLE_FOR`,`COMPONENT`,`SHOW_IN_PAYSLIP`,`PF_APPLICABLE`,`ESI_APPLICABLE`,`PART_OF_GRATITUTIY`,`ORGLOCATION_ID`,`UUID`,`STATUS`) "
-							 				+ " VALUES( '"+name+"', '"+shortCode+"', '"+type+"', '"+payType+"', '"+form16+"', '"+tax+"', '"+applicableFor+"', '"+component+"', '"+showInPayslip+"', '"+pfApplicable+"', '"+esiApplicable+"', '"+partOfGratitutiy+"', "+orgLocationId+", '"+uuid+"', "+status+") ";
+							 String query = "INSERT INTO `PAYROLL_PAYHEAD` (`NAME`, `SHORT_CODE`,`TYPE`,`PAY_TYPE`,`FORM_16`,`TAX`,`APPLICABLE_FOR`,`COMPONENT`,`SHOW_IN_PAYSLIP`,`PF_APPLICABLE`,,`PT_APPLICABLE`,`ESI_APPLICABLE`,`PART_OF_GRATITUTIY`,`ORGLOCATION_ID`,`UUID`,`STATUS`) "
+							 				+ " VALUES( '"+name+"', '"+shortCode+"', '"+type+"', '"+payType+"', '"+form16+"', '"+tax+"', '"+applicableFor+"', '"+component+"', '"+showInPayslip+"', '"+pfApplicable+"', '"+ptApplicable+"',  '"+esiApplicable+"', '"+partOfGratitutiy+"', "+orgLocationId+", '"+uuid+"', "+status+") ";
 							 PreparedStatement pstmt = conn.prepareStatement(query);
 							 pstmt.executeUpdate();
 						 }

@@ -1,9 +1,11 @@
 package com.bis.sourcelead.clockInOutRestController;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +18,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
+import com.bis.sourcelead.clockInOutDTO.PreviousNextDTO;
 import com.bis.sourcelead.clockInOutEntity.Breaks;
 import com.bis.sourcelead.clockInOutEntity.ClockInOut;
 import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
 import com.bis.sourcelead.clockInOutService.ClockInOutConfigService;
+import com.bis.sourcelead.clockInOutUtil.ClockInOutUtil;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -31,7 +35,9 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.sendgrid.Method;
 
 @RestController
 @RequestMapping("/app")
@@ -42,6 +48,12 @@ public class ClockInOutRestController {
 	
 	@Autowired
 	private ClockInOutConfigService clockInOutConfigService;
+	
+	@Autowired
+	private ClockInOutUtil clockInOutUtil;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 	@RequestMapping(value = "/clockInOutConfig")
 	public ModelAndView redirect(HttpServletRequest request) {
@@ -212,13 +224,71 @@ public class ClockInOutRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = {"/getUserTimeEntries","/rest/getUserTimeEntries"})
-	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(@RequestParam(value="dayWisetype", required=false) String dayWisetype,HttpServletRequest request) {
+	@RequestMapping(value = { "/getUserTimeEntries", "/rest/getUserTimeEntries" })
+	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(@RequestParam(value = "dayWisetype", required = false) String dayWisetype, @RequestParam(value = "currentDate", required = false) String currentDate, @RequestParam(value = "type", required = false) String type, HttpServletRequest request)
+	{
+		ResponseList<ClockInOutUserTimeEntryDTO> response = null;
+		try {
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			response =  clockInOutConfigService.getUserTimeEntries(loginOrgLocation.getId(), userId, loginOrgLocation.getDateFormat(), dayWisetype, currentDate, type);	
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
 		
+	}
+	
+	@RequestMapping(value = "/getCurrentDates")
+	public String getCurrentDates(@RequestParam(value="currentDate", required=false) String currentDate,
+			@RequestParam(value="type", required=false) String type,
+			@RequestParam(value="filterType", required=false) String dayWiseType,
+			HttpServletRequest request) {
+		
+		StringBuilder dateStr = new StringBuilder();
+		Date empJoiningDate = (Date) SourceLeadSessionManager.getSessionAttribute(request, "joiningDate");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-		return clockInOutConfigService.getUserTimeEntries(loginOrgLocation.getId(),userId,loginOrgLocation.getDateFormat(),dayWisetype);
+
+		try {
+			Date[] dates = null;
+			
+			if("previous".equalsIgnoreCase(type)) {
+				 dates = clockInOutUtil.getClockFilterPreviousDates(currentDate,empJoiningDate,loginOrgLocation,dayWiseType);
+			}else if("next".equalsIgnoreCase(type)) {
+				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,empJoiningDate,loginOrgLocation,dayWiseType);
+			}else {
+				 dates = clockInOutUtil.getClockFilterDate(type, loginOrgLocation);
+			}
+			if(dates != null) {
+				if(!"today".equalsIgnoreCase(dayWiseType)) {
+					return dateStr.append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), dates[0]))
+							.append(" To ").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), dates[1])).toString();
+				}else {
+					return dateStr.append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), dates[0])).toString();
+
+				}
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	@RequestMapping(value = "/getAossociateClockInOutReportSummary",method = RequestMethod.GET)
+	public String getAossociateClockInOutReportSummary(HttpServletRequest req,HttpServletResponse res) {
 		
+		
+		return null;
+	}
+	
+	@RequestMapping(value = "/getTimeReports",method = RequestMethod.GET)
+	public ClockInOutUserTimeEntryDTO getTimeReports(HttpServletRequest req,HttpServletResponse res) {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
+		return clockInOutConfigService.getTimeReports(loginOrgLocation,user);
 	}
 
 }

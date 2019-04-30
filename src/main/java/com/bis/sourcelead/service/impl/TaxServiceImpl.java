@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.PayrollTaxDao;
 import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.CentralTaxDTO;
@@ -49,6 +50,7 @@ import com.bis.sourcelead.dto.TdsDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CentralTax;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxChallan;
@@ -102,6 +104,9 @@ public class TaxServiceImpl implements TaxService {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private EmployeesDao employeesDao;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -860,6 +865,12 @@ public class TaxServiceImpl implements TaxService {
 					itSubmissionDTO.setFinancialYear(itSubmission.getFinancialYear());
 					itSubmissionDTO.setStatus(itSubmission.getStatus());
 					itSubmissionDTO.setUserId(itSubmission.getUser().getId());
+					Employees emp=employeesDao.getEmployeeByUserIdAndOrgLocationsId(itSubmission.getUser().getId(), orgLocationId);
+					if(emp.getEmployeeId()!=null) {
+					itSubmissionDTO.setEmployeeId(emp.getEmployeeId());
+					}else {
+						itSubmissionDTO.setEmployeeId("--");	
+					}
 					itSubmissionDTO.setUserName(itSubmission.getUser().getFullName());
 					itSubmissionDTO.setTaxFormId(itSubmission.getSourceleadTaxForm().getId());
 					double submittedAmount = getCalculatedAmountForSubmittedItDeclaration(itSubmission);
@@ -904,7 +915,7 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public SourceleadTaxITDeclarationSubmissionDTO getITDeclarationSubmission(String taxFormUUID, String formUUID) {
+	public SourceleadTaxITDeclarationSubmissionDTO getITDeclarationSubmission(String taxFormUUID, String formUUID, Long orgLocationId) {
 		try {
 			SourceleadTaxITDeclarationSubmission itDeclarationSubmission = taxDao
 					.getITDeclarationSubmission(taxFormUUID, formUUID);
@@ -915,6 +926,12 @@ public class TaxServiceImpl implements TaxService {
 				itDeclarationSubmissionDTO.setTaxFormId(itDeclarationSubmission.getSourceleadTaxForm().getId());
 				itDeclarationSubmissionDTO.setStatus(itDeclarationSubmission.getStatus());
 				itDeclarationSubmissionDTO.setFinancialYear(itDeclarationSubmission.getFinancialYear());
+				Employees emp=employeesDao.getEmployeeByUserIdAndOrgLocationsId(itDeclarationSubmission.getUser().getId(), orgLocationId);
+				if(emp.getEmployeeId()!=null) {
+				itDeclarationSubmissionDTO.setEmployeeId(emp.getEmployeeId());
+				}else {
+				itDeclarationSubmissionDTO.setEmployeeId("--");	
+				}
 				if (itDeclarationSubmission.getUser() != null) {
 					itDeclarationSubmissionDTO.setUserId(itDeclarationSubmission.getUser().getId());
 					itDeclarationSubmissionDTO.setUserName(itDeclarationSubmission.getUser().getFullName());
@@ -1450,25 +1467,25 @@ public class TaxServiceImpl implements TaxService {
 				Chunk space = new Chunk(new VerticalPositionMark());
 				
 				Paragraph p1 = addParagraph("1."+"   "+"Income after exemptions", font8, marginLeftChild,(marginRight + marginLeftChild),0,marginBottom);
-				Chunk c1 = new Chunk("[Sample text for Income after exemptions]",font8_U);
+				Chunk c1 = new Chunk("__________________________________________",font8);
 				p1.add(space);
 				p1.add(c1);
 				document.add(p1);
 				
 				Paragraph p2 = addParagraph("2."+"   "+"Provident found(PF)", font8, marginLeftChild,(marginRight + marginLeftChild),0,marginBottom);
-				Chunk c2 = new Chunk("[Sample text for Provident found]",font8_U);
+				Chunk c2 = new Chunk("__________________________________________",font8);
 				p2.add(space);
 				p2.add(c2);
 				document.add(p2);
 				
 				Paragraph p3 = addParagraph("3."+"   "+"Professional tax(PT)", font8, marginLeftChild,(marginRight + marginLeftChild),0,marginBottom);
-				Chunk c3 = new Chunk("[Sample text for Professional tax]",font8_U);
+				Chunk c3 = new Chunk("__________________________________________",font8);
 				p3.add(space);
 				p3.add(c3);
 				document.add(p3);
 				
 				Paragraph p4 = addParagraph("4."+"   "+"Tax Deducted at source(TDS)", font8, marginLeftChild,(marginRight + marginLeftChild),0,marginBottom);
-				Chunk c4 = new Chunk("[Sample text for Tax Deducted at source]",font8_U);
+				Chunk c4 = new Chunk("__________________________________________",font8);
 				p4.add(space);
 				p4.add(c4);
 				document.add(p4);

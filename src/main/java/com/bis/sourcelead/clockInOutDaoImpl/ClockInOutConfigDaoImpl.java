@@ -621,13 +621,15 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			  .append("clk.CLOCK_OUT_DATE as clockOutDate, ")
 			  .append("clk.TOTAL_CLOCK_TIME as totalTime, ")
 			  .append("task.TASK_NAME as projectTaskName, ")
+			  .append("DATE_FORMAT(clk.CLOCK_IN_DATE, '%Y-%m') as yearMonth, ")
 			  .append("clk.COMMENTS as comments ")
 			  .append("FROM CLOCK_INOUT clk ")
 			  .append("LEFT JOIN PROJECT_TASKS task ON clk.PROJECTS_TASK_ID = task.ID ")
 			  .append("where clk.USER_ID = :userId ")
 			  .append("AND clk.ORG_LOCATION_ID = :orgLocationId ")
 			  .append("AND clk.CLOCK_IN_DATE >= :firstDate ")
-			  .append("AND clk.CLOCK_IN_DATE <= :lastDate ");
+			  .append("AND clk.CLOCK_IN_DATE <= :lastDate ")
+			  .append("AND clk.TOTAL_CLOCK_TIME is not null ");
 			Query queryObj = session.createSQLQuery(sb.toString());
 			queryObj.setLong("orgLocationId", orgLocationId);
 			queryObj.setLong("userId", userId);
@@ -642,6 +644,36 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		}
 		return resList;
 		
+	}
+
+	@Override
+	@Transactional
+	public List<ClockInOutUserTimeEntryDTO> getTimeReports(Date[] dates ,OrgLocations loginOrgLocation, User user) {
+		
+		List<ClockInOutUserTimeEntryDTO> clockInOutList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT clk.TOTAL_CLOCK_TIME as totalTime ") 
+			  .append("FROM CLOCK_INOUT clk ")
+			  .append("where clk.USER_ID = :userId ")
+			  .append("AND clk.ORG_LOCATION_ID = :orgLocationId ")
+			  .append("AND clk.CLOCK_IN_DATE >= :firstDate ")
+			  .append("AND clk.CLOCK_IN_DATE <= :lastDate ")
+			  .append("AND clk.TOTAL_CLOCK_TIME IS NOT NULL ");
+			
+			Query queryObj = session.createSQLQuery(sb.toString());
+			queryObj.setLong("orgLocationId", loginOrgLocation.getId());
+			queryObj.setLong("userId", user.getId());
+			queryObj.setDate("firstDate", dates[0]);
+			queryObj.setDate("lastDate", dates[1]);
+			queryObj.setResultTransformer(Transformers.aliasToBean(ClockInOutUserTimeEntryDTO.class));
+			clockInOutList = queryObj.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return clockInOutList;
 	}
 
 }

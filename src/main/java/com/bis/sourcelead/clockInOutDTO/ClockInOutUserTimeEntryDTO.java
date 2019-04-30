@@ -26,7 +26,23 @@ public class ClockInOutUserTimeEntryDTO {
 	
 	private String frequency;
 	
+	private String graphForamatDate;
+	
+	private String graphTotalTime;
+	
+	private String yearMonth;
+	
+	private String type;
+	
 	private List<ClockInOutSubDTO> subList;
+	
+	private Time currentTotTime;
+	
+	private Time weekTotTime;
+	
+	private Time monthTotTime;
+	
+	private Time yearTotTime;
 
 	public Time getClockInTime() {
 		return clockInTime;
@@ -115,5 +131,78 @@ public class ClockInOutUserTimeEntryDTO {
 	public void setFrequency(String frequency) {
 		this.frequency = frequency;
 	}
+
+	public String getGraphForamatDate()
+	{
+		return graphForamatDate;
+	}
+
+	public void setGraphForamatDate(String graphForamatDate)
+	{
+		this.graphForamatDate = graphForamatDate;
+	}
+
+	public String getGraphTotalTime()
+	{
+		return graphTotalTime;
+	}
+
+	public void setGraphTotalTime(String graphTotalTime)
+	{
+		this.graphTotalTime = graphTotalTime;
+	}
+
+	public String getYearMonth()
+	{
+		return yearMonth;
+	}
+
+	public void setYearMonth(String yearMonth)
+	{
+		this.yearMonth = yearMonth;
+	}
+
+	public String getType()
+	{
+		return type;
+	}
+
+	public void setType(String type)
+	{
+		this.type = type;
+	}
+
+	public Time getCurrentTotTime() {
+		return currentTotTime;
+	}
+
+	public void setCurrentTotTime(Time currentTotTime) {
+		this.currentTotTime = currentTotTime;
+	}
+
+	public Time getWeekTotTime() {
+		return weekTotTime;
+	}
+
+	public void setWeekTotTime(Time weekTotTime) {
+		this.weekTotTime = weekTotTime;
+	}
+
+	public Time getMonthTotTime() {
+		return monthTotTime;
+	}
+
+	public void setMonthTotTime(Time monthTotTime) {
+		this.monthTotTime = monthTotTime;
+	}
+
+	public Time getYearTotTime() {
+		return yearTotTime;
+	}
+
+	public void setYearTotTime(Time yearTotTime) {
+		this.yearTotTime = yearTotTime;
+	}
+
 	
 }

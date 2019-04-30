@@ -630,63 +630,47 @@ public class IndianPayrollRestController {
    	{
     	ModelAndView model = new ModelAndView();
    		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-   		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-
-   		Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
-   		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = null;
-	    if(sessionObj != null) {
-	    	indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
-	    }else {
-	    	Response<IndPaysheetFrequencyDTO> freqResponse = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID(), orgLocation);
-	    	indPaysheetFrequencyDTO =freqResponse.getObject();
-	    }
-	    List<INDPayrollDTO> ipDTOList = new ArrayList<>();
-	    for(INDPayrollDTO ipDTO : indPaysheetFrequencyDTO.getIndPayrollDTO()) {
-	    	if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(ipDTO.getIndEmpPayrollUUID())) {
-	    		ipDTOList.add(ipDTO);
-	    	}
-	    }
-	    //indPaysheetFrequencyDTO.setIndPayrollDTO(ipDTOList);
-   		model.addObject("freqResponse",indPaysheetFrequencyDTO);
-   		
-   		List<AssociatePayrollPayheadHistoryDTO> allAssociatesPayrollPayheadList =ipDTOList.stream().map(empPayrollDTO->empPayrollDTO.getPayHeadHistoryDTOList()).flatMap(List::stream).collect(Collectors.toList());
-   		
-   		/*DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		List<AssociatePayrollPayheadHistoryDTO> dupAssociatePayrollPayheadDTOList = allAssociatesPayrollPayheadList;
-		allAssociatesPayrollPayheadList = allAssociatesPayrollPayheadList.stream().filter(ml -> (dupAssociatePayrollPayheadDTOList.stream().filter(sl -> {
-			try {
-				return sl.getPayrollPayhead().equals(ml.getPayrollPayhead()) && df.parse(sl.getUpdatedDate()).after(df.parse(ml.getUpdatedDate()));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			return false;
-		}).count())<1).collect(Collectors.toList());*/
-   		
-   		/*Response<IndApprovePayrollDTO> approveResponse = indPaysheetFrequencyService.getApproveInfoIndPayroll(indApprovePayrollDTO, orgLocation,loginUser);
-   		model.addObject("approveResponse", approveResponse.getObject());*/
-   		
-   		ResponseList<PayrollPayheadDTO> orgLevelPayheads = payrollPayheadService.getPayrollPayheadList(orgLocation);
-   		
-   		if(allAssociatesPayrollPayheadList != null && !allAssociatesPayrollPayheadList.isEmpty()) {
-   			for(PayrollPayheadDTO payheadDto : orgLevelPayheads.getData()) {
-   	   			
-   	   			if(payheadDto.getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
-   	   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)).filter(ap->ap.getPayrollPayheadShortCode().equalsIgnoreCase(payheadDto.getShortCode()) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
-   	   			}
-   	   			if(payheadDto.getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
-   	   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)).filter(ap->ap.getPayrollPayheadShortCode().equalsIgnoreCase(payheadDto.getShortCode()) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
-   	   			}
-   	   		}
-   	   		model.addObject("orgLevelPayheads", orgLevelPayheads.getData());
-   	   		
-   	   		
-   	   		model.addObject("earningTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
-   	   		model.addObject("deductionTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
-   		}
-   		//List<AssociatePayrollPayheadHistory> allAssociatesPayrollPayheadList = associatePayrollPayheadHistoryService.getAllUpdatedAssociatePayrollPayheadByPaySheetFrequencyUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
-   		
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("payroll_india/payroll/approveIndiaPayroll");
+		try {
+	   		Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+	   		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = null;
+		    if(sessionObj != null) {
+		    	indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
+		    }else {
+		    	Response<IndPaysheetFrequencyDTO> freqResponse = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID(), orgLocation);
+		    	indPaysheetFrequencyDTO =freqResponse.getObject();
+		    }
+		    List<INDPayrollDTO> ipDTOList = new ArrayList<>();
+		    for(INDPayrollDTO ipDTO : indPaysheetFrequencyDTO.getIndPayrollDTO()) {
+		    	if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(ipDTO.getIndEmpPayrollUUID())) {
+		    		ipDTOList.add(ipDTO);
+		    	}
+		    }
+	   		model.addObject("freqResponse",indPaysheetFrequencyDTO);
+	   		
+	   		List<AssociatePayrollPayheadHistoryDTO> allAssociatesPayrollPayheadList =ipDTOList.stream().map(empPayrollDTO->empPayrollDTO.getPayHeadHistoryDTOList()).flatMap(List::stream).collect(Collectors.toList());
+	   		
+	   		ResponseList<PayrollPayheadDTO> orgLevelPayheads = payrollPayheadService.getPayrollPayheadList(orgLocation);
+	   		
+	   		if(allAssociatesPayrollPayheadList != null && !allAssociatesPayrollPayheadList.isEmpty()) {
+	   			for(PayrollPayheadDTO payheadDto : orgLevelPayheads.getData()) {
+	   	   			
+	   	   			if(payheadDto.getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
+	   	   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)).filter(ap->ap.getPayrollPayheadShortCode().equalsIgnoreCase(payheadDto.getShortCode()) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+	   	   			}
+	   	   			if(payheadDto.getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
+	   	   				payheadDto.setTotalForfrequencyLevel(BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)).filter(ap->ap.getPayrollPayheadShortCode().equalsIgnoreCase(payheadDto.getShortCode()) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+	   	   			}
+	   	   		}
+	   	   		model.addObject("orgLevelPayheads", orgLevelPayheads.getData());
+	   	   		model.addObject("earningTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+	   	   		model.addObject("deductionTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+	   		}
+	   		
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("payroll_india/payroll/approveIndiaPayroll");
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
    		return model;
    	}
     
@@ -776,9 +760,9 @@ public class IndianPayrollRestController {
 					
 					List<IndEmployeePayroll> ytdList = indPaysheetFrequencyService.getYTDIndEmployeePayrollList(iepdt.getCandidate().getId(), orgLocations.getStartMonth());
 					if(ytdList != null && ytdList.size() > 0) {
-						double ytdPT = ytdList.stream().mapToDouble(ap->ap.getProfessionalTax().doubleValue()).sum();
-						double ytdTDS = ytdList.stream().mapToDouble(ap->ap.getTds().doubleValue()).sum();
-						double ytdNetPay = ytdList.stream().mapToDouble(ap->ap.getNetPay().doubleValue()).sum();
+						double ytdPT = ytdList.stream().mapToDouble(ap->ap != null && ap.getProfessionalTax()!= null ? ap.getProfessionalTax().doubleValue(): 0).sum();
+						double ytdTDS = ytdList.stream().mapToDouble(ap->ap != null && ap.getTds() != null ? ap.getTds().doubleValue() : 0).sum();
+						double ytdNetPay = ytdList.stream().mapToDouble(ap->ap != null && ap.getNetPay() != null ? ap.getNetPay().doubleValue() : 0).sum();
 						dto.setYtdTaxes(new BigDecimal(ytdPT).add(new BigDecimal(ytdTDS)));
 						dto.setYtdNetPay(new BigDecimal(ytdNetPay));
 					}else {
@@ -958,10 +942,10 @@ public class IndianPayrollRestController {
    					dto.setEmployeeid(iepdt.getEmployee().getEmployeeId());
    					dto.setEmployeeName(iepdt.getCandidate().getFullName());
    					dto.setDepartmentName(iepdt.getEmployee().getDepartmentId().getDepartmentName());
-   					double noOfLeaves = entry.getValue().stream().mapToDouble(i->i.getNoOfLeaves().doubleValue()).sum();
-   					double noOfDays = entry.getValue().stream().mapToDouble(i->i.getNoOfDays().doubleValue()).sum();
-   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay().doubleValue()).sum();
-   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay().doubleValue()).sum();
+   					double noOfLeaves = entry.getValue().stream().mapToDouble(i->i.getNoOfLeaves() != null ? i.getNoOfLeaves().doubleValue() : 0).sum();
+   					double noOfDays = entry.getValue().stream().mapToDouble(i->i.getNoOfDays() != null ? i.getNoOfDays().doubleValue() : 0).sum();
+   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay() != null ? i.getGrossPay().doubleValue() : 0).sum();
+   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay() != null ? i.getNetPay().doubleValue() : 0).sum();
    	   				dto.setNoOfLeaves(new BigDecimal(noOfLeaves));
    	   			    dto.setNoOfDays(new BigDecimal(noOfDays));
    					dto.setGrossPay(new BigDecimal(grossPay));
@@ -1050,10 +1034,10 @@ public class IndianPayrollRestController {
    					dto.setEmployeeid(iepdt.getEmployee().getEmployeeId());
    					dto.setEmployeeName(iepdt.getCandidate().getFullName());
    					dto.setDepartmentName(iepdt.getEmployee().getDepartmentId().getDepartmentName());
-   					double professionalTax = entry.getValue().stream().mapToDouble(i->i.getProfessionalTax().doubleValue()).sum();
-   					double tds = entry.getValue().stream().mapToDouble(i->i.getTds().doubleValue()).sum();
-   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay().doubleValue()).sum();
-   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay().doubleValue()).sum();
+   					double professionalTax = entry.getValue().stream().mapToDouble(i->i.getProfessionalTax() != null ? i.getProfessionalTax().doubleValue() : 0).sum();
+   					double tds = entry.getValue().stream().mapToDouble(i->i.getTds() != null ? i.getTds().doubleValue() : 0).sum();
+   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay() != null ? i.getGrossPay().doubleValue() : 0).sum();
+   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay() != null ? i.getNetPay().doubleValue() : 0).sum();
    	   				dto.setProfessionalTax(new BigDecimal(professionalTax));
    	   			    dto.setTds(new BigDecimal(tds));
    					dto.setGrossPay(new BigDecimal(grossPay));

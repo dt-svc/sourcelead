@@ -463,6 +463,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	public int calculateAndUpdateAssociateBalanceLeaves(OrgLocations orgLocations, LeaveType leaveType, Date startDate, Date endDate) throws Exception
 	{
 		int stat = 0;
+		int val = 0;
 		List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		List<AppliedLeaveDateView> appliedLeavesView = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(orgLocations.getId(),leaveType.getId(),startDate,endDate);
 		  try{
@@ -479,6 +480,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 						 associateBalanceLeaves = getTotalLeavesCountByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocations.getId(),orgLocations.getOrg().getId());
 					 }
 					float totalBal = 0f;
+					float totalBalForHis = 0f;
 					boolean flag = true;
 					AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
 					ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
@@ -526,6 +528,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 										}
 									}else if(Constants.NO.equalsIgnoreCase(leaveType.getIncludeInPayroll())){
 										totalBal = associateBalanceLeaves - appliedNoofLeaves;
+										totalBalForHis = totalBal;
 									} 
 								}
 							}
@@ -598,6 +601,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				    assBal.setLeaveTypeId(leaveType.getId());
 				    assBal.setNoofLeaves(String.valueOf(totalBal));
 				    assBal.setOrgLocationId(orgLocations.getId());
+				    assBal.setAssBalLeaveHis(totalBalForHis);
 				    assBalList.add(assBal);
 				 }else{
 					 float associateBalanceLeaves = getTotalLeavesCountByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocations.getId(),orgLocations.getOrg().getId());
@@ -670,10 +674,13 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				     assBal.setLeaveTypeId(leaveType.getId());
 				     assBal.setNoofLeaves(String.valueOf(totalBal));
 				     assBal.setOrgLocationId(orgLocations.getId());
+				     assBal.setAssBalLeaveHis(associateBalanceLeaves);
 				     assBalList.add(assBal);
 				 }
 			 }
 			 stat = updateAssociateAccuralBalanceLeaveCount(assBalList);
+			 val = associateBalanceLeaveDao.saveAssociateBalLeaveHistory(assBalList,startDate,endDate);
+			 
 			 
 		   }catch (Exception e) {
 			   e.printStackTrace();

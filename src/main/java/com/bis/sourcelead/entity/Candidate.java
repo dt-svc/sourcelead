@@ -601,6 +601,9 @@ public class Candidate implements Serializable {
      @Transient
  	@JsonProperty
  	private String candidateAssignedJobsCount;
+     
+    @Column(name = "SSN_Number")
+ 	private String ssnNumber;
 	 
 	public int getProfilePercentage()
 	{
@@ -1926,6 +1929,14 @@ public class Candidate implements Serializable {
 
 	public void setCandidateCertifications(Set<CandidateCertifications> candidateCertifications) {
 		this.candidateCertifications = candidateCertifications;
+	}
+
+	public String getSsnNumber() {
+		return ssnNumber;
+	}
+
+	public void setSsnNumber(String ssnNumber) {
+		this.ssnNumber = ssnNumber;
 	}
 
 	

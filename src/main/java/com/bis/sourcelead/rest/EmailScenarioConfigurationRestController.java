@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PasswordSecurity;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -53,6 +54,9 @@ public class EmailScenarioConfigurationRestController {
 	
 	@Autowired
 	private EmailScenarioConfigurationDao emailScenarioConfigurationDao;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 		 
 	 @RequestMapping(value = "/saveEmailNotification" , method = RequestMethod.POST)
@@ -158,7 +162,7 @@ public class EmailScenarioConfigurationRestController {
 			 emailConfig.setEmail_UUID(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 			 emailConfig.setCreatedBy(user.getFirstName());
 			 emailConfig.setCreatedDate(new Date());
-		 
+			 emailConfig.setUpdatedDate(new Date());
 		
 		
 		 if(emailConfig != null){
@@ -489,7 +493,8 @@ public class EmailScenarioConfigurationRestController {
 				throws Exception {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			 int flag=emailScenarioconService.changeDefaultParserEmailConfig(uuid, orgLocation.getId(), activeFlag);
+			 Date updatedDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(),new Date()); //parsing to org specific date format
+			 int flag=emailScenarioconService.changeDefaultParserEmailConfig(uuid, orgLocation.getId(), activeFlag, updatedDate);
 			return flag;
 		}
 						

@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -14,7 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +50,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.PayrollPayhead;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
 import com.bis.sourcelead.entity.Tds;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
@@ -57,6 +64,7 @@ import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.indPayroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
@@ -64,6 +72,7 @@ import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollTaxService;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.service.UserService;
@@ -133,6 +142,9 @@ public class INDPayrollCommonUtil {
 	@Autowired
 	PayrollUtil payrollUtil;
 	
+	@Autowired
+	PayrollPayheadService payrollPayheadService;
+	
 	public List<PayrollPayheadDTO> setPayrollPayheadList(List<PayrollPayhead> payrollPayheadList,OrgLocations orgLocations) throws Exception {
 		List<PayrollPayheadDTO> payrollPayheadDTOList = new ArrayList<>();
 		if(payrollPayheadList != null && !payrollPayheadList.isEmpty()) {
@@ -146,7 +158,7 @@ public class INDPayrollCommonUtil {
 				payheadDTO.setComponent(payRollPayhead.getComponent());
 				payheadDTO.setTax(payRollPayhead.getTax());
 				payheadDTO.setUuid(payRollPayhead.getUuid());
-				
+				payheadDTO.setActive(payRollPayhead.getActive());
 				
 				if(Arrays.asList(Constants.BASIC_DEPENDENT_CONSTANT_PAYHEAD_SHORTCODES).contains(payRollPayhead.getShortCode())) {
 					payheadDTO.setMethod("% of Payheads");
@@ -524,38 +536,24 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					if(payHead.getPayrollPayhead() != null 
 						&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getShortCode())
 						&& payHead.getPayrollPayhead().getShortCode().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_TDS)) {
-						
-						/*if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
-							tds = payHead.getAnnualy();
-						}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
-							tds = payHead.getMonthly();
-						}else  {
-							tds = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
-						}*/
-						   
+						continue;
 					}else if(payHead.getPayrollPayhead() != null 
 							&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getShortCode())
 							&& payHead.getPayrollPayhead().getShortCode().equalsIgnoreCase(Constants.IND_PAYROLL_PROFESSIONAL_TAX)) {
-							/*if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
-								pt = payHead.getAnnualy();
-							}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
-								pt = payHead.getMonthly();
-							}else  {
-								pt = payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2);
-							}*/
-							
+						continue;
 					}
 					
 					if(payHead.getPayrollPayhead() != null 
 							&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getType())
 							&& payHead.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
 						
-						if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY)) {
-							grossPay = grossPay.add(payHead.getAnnualy());
-						}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY)) {
-							grossPay = grossPay.add(payHead.getMonthly());
+						if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY) && payHead.getAnnualy() != null) {
+							grossPay = grossPay.add(payHead.getAnnualy().multiply("Y".equalsIgnoreCase(payHead.getPayrollPayhead().getLeaveDependent()) ? payAdjustmentConst : new BigDecimal(1)).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+						}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY) && payHead.getMonthly() != null) {
+							grossPay = grossPay.add(payHead.getMonthly().multiply("Y".equalsIgnoreCase(payHead.getPayrollPayhead().getLeaveDependent()) ? payAdjustmentConst : new BigDecimal(1)).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 						}else  {
-							grossPay = grossPay.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2));
+							if(payHead.getAnnualy() != null)
+							grossPay = grossPay.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2)).multiply("Y".equalsIgnoreCase(payHead.getPayrollPayhead().getLeaveDependent()) ? payAdjustmentConst : new BigDecimal(1)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
 						}
 					}
 					
@@ -563,16 +561,16 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 							&& StringUtils.isNotEmpty(payHead.getPayrollPayhead().getType())
 							&& payHead.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
 						if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_ANUALLY) && payHead.getAnnualy() != null) {
-							allDeductions = allDeductions.add(payHead.getAnnualy());
+							allDeductions = allDeductions.add(payHead.getAnnualy().multiply("Y".equalsIgnoreCase(payHead.getPayrollPayhead().getLeaveDependent()) ? payAdjustmentConst : new BigDecimal(1)).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 						}else if(payFrequency.equalsIgnoreCase(Constants.IND_PAYROLL_PAYFREQUENCY_MONTHLY) && payHead.getMonthly() != null) {
-							allDeductions = allDeductions.add(payHead.getMonthly());
+							allDeductions = allDeductions.add(payHead.getMonthly().multiply("Y".equalsIgnoreCase(payHead.getPayrollPayhead().getLeaveDependent()) ? payAdjustmentConst : new BigDecimal(1)).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 						}else  {
 							if(payHead.getAnnualy() != null)
-							allDeductions = allDeductions.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2));
+							allDeductions = allDeductions.add(payHead.getAnnualy().divide(getProjectInvoiceFrequency(payFrequency), 2)).multiply("Y".equalsIgnoreCase(payHead.getPayrollPayhead().getLeaveDependent()) ? payAdjustmentConst : new BigDecimal(1)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
 						}
 					}
 					
-					payHeadHistory.setMonthly(payHead.getMonthly().multiply(payAdjustmentConst).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+					payHeadHistory.setMonthly(payHead.getMonthly().multiply("Y".equalsIgnoreCase(payHead.getPayrollPayhead().getLeaveDependent()) ? payAdjustmentConst : new BigDecimal(1)).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 					payHeadHistory.setAnnualy(payHead.getAnnualy());
 					payHeadHistory.setStatus(payHead.getStatus());
 					
@@ -949,12 +947,12 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		if(assoSal != null && assoSal.getAssociateSalaryPayheadIndList() != null && assoSal.getAssociateSalaryPayheadIndList().size()>0) {
 			AssociateSalaryPayheadInd asph = assoSal.getAssociateSalaryPayheadIndList().stream().filter(h -> h.getPayrollPayhead().getShortCode().equalsIgnoreCase("BA")).findAny().get();
 			if(asph != null) {
-				//List<String> financialYearStr = getFinancialYearByOrgLocationAndDate(asph.getPayrollPayhead().getOrgLocationId(), freqStartDate);
-				//String financialYear = financialYearStr.get(0) + "-" + financialYearStr.get(1);
-				//StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
+				
+				BigDecimal ptSum = new BigDecimal(assoSal.getAssociateSalaryPayheadIndList().stream().filter(p -> "Y".equalsIgnoreCase(p.getPayrollPayhead().getPtApplicable()) && Constants.IND_PAYROLL_PAYHEAD_EARNINGS.equalsIgnoreCase(p.getPayrollPayhead().getType())).mapToDouble(s -> s.getMonthly().doubleValue()).sum()).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+				
 				try {
 					if(taxDTO != null && taxDTO.getProfessionalTaxList().size()>0) {
-						ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(assoSal.getAnnualSalary()) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(assoSal.getAnnualSalary()) >= 0 ).findAny().get();
+						ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(ptSum) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(ptSum) >= 0 ).findAny().get();
 						if(ptDTO != null)
 							ptAmount = Double.valueOf(ptDTO.getAmount());
 					}
@@ -1442,5 +1440,102 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		return finYearList;
 	}
 	
+	@SuppressWarnings("unused")
+	public AssociatePayrollPayheadHistory calculateTDSForEmployee(AssociateSalaryInd assoSal, Employees employee, OrgLocations orgLocation, Date freqStartDate, PreCheckINDPayrollDTO preCheckINDPayrollDTO, IndEmployeePayroll employeePayroll, User loginUser) {
+		AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
+		
+		// TDS process Calculation
+		try {
+			Double tdsYearlyTotal = 0.0;
+			Double tdsMonthlyTotal = 0.0;
+			Double tdsExemptionTotal = 0.0;
+			Double tdsEligibilityTotal = 0.0;
+			
+			//get yearly taxable amount in current frequency
+			BigDecimal taxableYearlyAmount = new BigDecimal("0.00");
+			for(AssociatePayrollPayheadHistory associatePayrollPayheadHistory : employeePayroll.getAssociatePayrollPayheadHistory()) {
+				if(associatePayrollPayheadHistory.getPayrollPayhead().getTax().equalsIgnoreCase(Constants.TAXABLE)) {
+					if(associatePayrollPayheadHistory.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
+						taxableYearlyAmount = taxableYearlyAmount.add(associatePayrollPayheadHistory.getMonthly().multiply(new BigDecimal(12)));
+					}
+					if(associatePayrollPayheadHistory.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
+						taxableYearlyAmount = taxableYearlyAmount.subtract(associatePayrollPayheadHistory.getMonthly().multiply(new BigDecimal(12)));
+					}
+				}
+			}
+			
+			List<String> financialYearStr = this.getFinancialYearByOrgLocationAndDate(orgLocation, freqStartDate);
+			String fromYear = financialYearStr.get(0);
+			String toYear = financialYearStr.get(1);
+			
+			//age calculation
+			int age = 0;
+			if(assoSal.getCandidate().getConsultantUser().getDateOfBirth() != null) {
+				LocalDate today = LocalDate.now();  //Today's date
+				LocalDate birthdate = assoSal.getCandidate().getConsultantUser().getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();	//Birth date
+				Period p = Period.between(birthdate, today);
+				age = p.getYears();
+			}
+			
+			//Eligible percent of tax based on age and salary
+			Double taxPercent = 0d;
+			if(preCheckINDPayrollDTO != null && preCheckINDPayrollDTO.getTdsList() != null && preCheckINDPayrollDTO.getTdsList().size() > 0) {
+				for(Tds tds : preCheckINDPayrollDTO.getTdsList()) {
+					if(age <= 60 && tds.getAge().equalsIgnoreCase("0 - 60 Years") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1) {
+						taxPercent = tds.getPercentage();
+					}else if(age > 60 && age <= 80 && tds.getAge().equalsIgnoreCase("60 - 80 Years") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1) {
+						taxPercent = tds.getPercentage();
+					}else if(age > 80 && tds.getAge().equalsIgnoreCase("Above 80") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1){
+						taxPercent = tds.getPercentage();
+					}
+				}
+			}
+			
+			SourceleadTaxITDeclarationSubmission itDeclarationSubmission = taxService.getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(employee.getUser().getId(), orgLocation.getId(), fromYear + "-" + toYear);
+			if(itDeclarationSubmission != null) {
+				JSONArray jsonArray = new JSONArray(itDeclarationSubmission.getSubmissionItems());
+				if (jsonArray != null) {
+					for (int i = 0; i < jsonArray.length(); i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						if (jsonObject.getJSONArray("items") != null) {
+							for (int j = 0; j < jsonObject.getJSONArray("items").length(); j++) {
+								JSONObject itemsJsonObject = jsonObject.getJSONArray("items").getJSONObject(j);
+								itemsJsonObject.get("amount");
+								itemsJsonObject.get("maxLimit");
+								if(StringUtils.isNotBlank(itemsJsonObject.get("amount").toString()) && NumberUtils.isNumber(itemsJsonObject.get("amount").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > 0) {
+									if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
+										tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("maxLimit").toString());
+									}else if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) <= Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
+										tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("amount").toString());
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			
+			//TDS amount calculation
+			tdsEligibilityTotal = (taxableYearlyAmount).subtract(new BigDecimal(tdsExemptionTotal)).doubleValue();
+			tdsYearlyTotal = (tdsEligibilityTotal * taxPercent) / 100 ;
+			tdsMonthlyTotal = (tdsYearlyTotal / 12);
+			
+			ph.setIndEmployeePayrollId(employeePayroll);
+			ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("TDS", orgLocation.getId()));
+			ph.setAnnualy(new BigDecimal(tdsYearlyTotal).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+			ph.setMonthly(new BigDecimal(tdsMonthlyTotal).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+			ph.setStatus(Constants.RECORD_ACTIVE);
+			ph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			ph.setCreatedBy(loginUser);
+			ph.setUpdatedBy(loginUser);
+			ph.setCreatedDate(new Date());
+			ph.setUpdatedDate(new Date());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return ph;
+	}
 }
 

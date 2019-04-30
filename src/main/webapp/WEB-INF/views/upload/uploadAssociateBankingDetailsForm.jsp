@@ -195,7 +195,11 @@ if ($('#upload_banking_form').validate(false, validationSettings)){
  		    	    if(json.insertedCount != null && json.insertedCount != '')
  		    	    $("#msgDiv").removeAttr("style");
  		 			$("#msgDiv").css({ "display" : "block", "text-align" :"center" });
- 		 			$("#msgDiv").html(json.insertedCount +" Associate are updated");
+ 		 			if(json.insertedCount != 0){
+ 		 			$("#msgDiv").html(json.insertedCount +" Associate updated");}
+ 		 			else{
+ 		 				$("#msgDiv").html("Should fill the atleast mandatory Fields").css({"background":"#d9534f"})
+ 		 			}
  			    	msgFadein();
  		 			if(json.bdErrorData != null && json.bdErrorData.length >0){
  		 				showFailedExcelData(json);
@@ -256,7 +260,7 @@ function cancelFileImport(){
 		         result += '<td><div class="tblminwidth-175">'+report.bankName+'</div></td>';
 		         result += '<td><div class="tblminwidth-175">'+report.accountNumber+'</div></td>';
 		         result += '<td><div class="tblminwidth-175">'+report.routingNumber+'</div></td>';
-		         result += '<td><div class="tbldata-dotdot-me">'+report.reason+'</div></td>';
+		         result += '<td><div class="colorRed tblminwidth-175">'+report.reason+'</div></td>';
 		         result += '  </tr>';
 	    	 }
 	    	
