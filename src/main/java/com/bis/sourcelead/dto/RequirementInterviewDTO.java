@@ -9,6 +9,11 @@ public class RequirementInterviewDTO {
 	private String interviewPhase;
 	
 	private String interviewComment;
+	
+	
+	
+	
+	
 
 	public String getId() {
 		return id;
