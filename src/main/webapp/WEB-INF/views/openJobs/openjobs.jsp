@@ -3038,10 +3038,10 @@ function preventTabkey(e){
 
 <!--   Free trial pop   -->
  
-<div class="clPop"><img src="/resources/css/static-web/images/menu-close.png" alt=""/></div> 
+<div class="clPop"><img src="/resources/static-web/images/menu-close.png" alt=""/></div> 
 <section class="freeTrialPop" id="requestDemo">
 	<div class="Rdemo">
-    	<img src="/resources/css/static-web/images/demo-1.png" alt=""/>
+    	<img src="/resources/static-web/images/demo-1.png" alt=""/>
     	<h3>Request a Demo</h3>
     	<p>We are so glad for your interest in SourceLead.
 Please mail us at </p>
@@ -3052,7 +3052,7 @@ Please mail us at </p>
 <section class="freeTrialPop" id="freeTrial">
 
 	<div class="Rdemo">
-    	<img src="/resources/css/static-web/images/demo-1.png" alt=""/>
+    	<img src="/resources/static-web/images/demo-1.png" alt=""/>
     	<h3>Free Trial</h3>
     	<p>We are so glad for your interest in SourceLead.
 Please mail us at </p>
