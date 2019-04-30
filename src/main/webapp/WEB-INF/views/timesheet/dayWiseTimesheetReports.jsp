@@ -305,7 +305,9 @@ function getProjectMemberFromProjectId(){
         	var output = "";
         	if(result != null && result !='' && result !='undefined'){
         		$.each(result, function(i, item) {
+        			if(item.masterCandidateId != null && item.masterCandidateId !='null' && typeof item.masterCandidateId != 'undefined'){
             		output = output + "<option value='" +item.masterCandidateId.id+ "'>"+item.candidateName+"</option>";
+        			}
         		});
         	}
         	$("#projectMemberList").empty();
