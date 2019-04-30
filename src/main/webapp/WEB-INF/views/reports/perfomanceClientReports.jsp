@@ -486,7 +486,7 @@ function prepareContractChart(client1,client2,client3,client4,client5,client1Cou
 //                     "y": "5%"
 //                 }
 //             ],
-            "balloon": {},
+//            "balloon": {},
             "legend": {
                 "enabled": true,
                 "position": "left"
@@ -669,7 +669,7 @@ function getAmchartData(data){
 //                         "y": "5%"
 //                     }
 //                 ],
-                "balloon": {},
+//                "balloon": {},
                 "legend": {
                     "enabled": true,
                     "labelWidth": 125,

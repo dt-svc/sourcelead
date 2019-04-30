@@ -1276,38 +1276,11 @@ $('body').on('blur', '#assetService_form', function() {
  
  
  
- <script>
 
-</script> 
-  <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-            });
-        </script> 
-  <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-
-});
- 		</script> 
+  
+ 
   <script>
-
 // Error pop
-
-
 // Approved Popup
     $("#category").click(function(){
     	$('#category').find(".approved_pop").toggle();
@@ -1362,7 +1335,6 @@ $('body').on('blur', '#assetService_form', function() {
 $(document).ready(function() {
 	$("#tab-1").show()
     $(".project-tabs-menu a").click(function(event) {
-        event.preventDefault();
         $(this).parent().addClass("current");
         $(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
@@ -1375,7 +1347,7 @@ $(document).ready(function() {
 $(document).ready(function() {
 	$("#tabb-1").show()
     $(".new-tabs a").click(function(event) {
-        event.preventDefault();
+        /* event.preventDefault(); */
         $(this).parent().addClass("current");
         $(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
@@ -1389,7 +1361,7 @@ $(document).ready(function(event) {
  $(".collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 	 e.stopPropagation();
  });
-   event.preventDefault();
+   //event.preventDefault();
 });
 
 $(".close-div").click(function(){
@@ -1451,13 +1423,7 @@ $(document).ready(function(){
    
    
 </script> 
-  <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker5').datetimepicker({
-					locale: 'ru'
-                });
-            });
-        </script>
+
 <script>
 $(".addcon-pop").click(function(){
 	 $(".collapse-div-adduser").toggleClass("show-div");

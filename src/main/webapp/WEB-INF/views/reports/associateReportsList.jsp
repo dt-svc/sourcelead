@@ -69,6 +69,7 @@
 	</div>
 	</a>
 	
+
 	<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 	<a href='${appPath}/loansAndAdvancesReport'>
 				<div class="repDashCta">
@@ -90,6 +91,15 @@
 	</div>
 	</a>
 	</c:if>
+
+	<a href='${appPath}/associateClockInSummaryReport'><div class="repDashCta">
+		<span><i class="fa fa-users"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Associate Clock-IN/Out Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
+ 
 				
 	<div class="clearfix"></div>	
 </div>

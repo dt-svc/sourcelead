@@ -16,7 +16,7 @@
 				<div class='timesheet_wrap' id='timesheet_wrap'>
 				 <div class='data_loading' id="loadTime"></div>
 				 <div id ="timesheetEntriesDiv">
-		           <jsp:include page="employeeTImesheetInvoiceList.jsp"></jsp:include>
+		           <jsp:include page="timesheetInvoiceList.jsp"></jsp:include>
 		          </div>
 		       </div>
 		  </div>

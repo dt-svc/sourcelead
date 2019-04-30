@@ -1,8 +1,8 @@
 <script>
-$(document).ready(function() {
-	userUsageReportsGraph();
-	getAllOrgs();
-});
+/* $(document).ready(function() {
+	//userUsageReportsGraph(); //unused fucntion due to script issue.29-April-2019
+	// getAllOrgs(); //unused fucntion due to script issue.29-April-2019
+}); */
 </script>
 
   <script>

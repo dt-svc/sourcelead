@@ -43,7 +43,6 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
-import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ImportTimesheetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
@@ -94,11 +93,12 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.ShiftService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.dao.TimeSheetDayEntriesDao;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 /**
@@ -3208,12 +3208,66 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					
 				}
 				
+				//pan,aadhar number validation
+				if (orgLocation.getCountry().equalsIgnoreCase("India")) {
+					String panNumberRegEx = "^([A-Z]){5}([0-9]){4}([A-Z]){1}?$";
+					if (dataMigrationDTOJsonCopy.get("panNumber") != null) {
+						boolean flag = false;
+						String panNumber = dataMigrationDTOJsonCopy.get("panNumber").toString();
+						if (panNumber.length() == 10) {
+							flag = panNumber.matches(panNumberRegEx);
+							Candidate candidate=candidateService.getCandidateDetailsByPanNumberAndId(panNumber, orgLocation.getId());
+						    if(candidate != null) {
+						    	errorSet.put("panNumber", "Duplicate Pan Number");
+						    }
+						}
+						if(flag == false) {
+							errorSet.put("panNumber", "Invalid Pan Number ");
+						}
+					}
+				}
+				
+				if (orgLocation.getCountry().equalsIgnoreCase("India")) {
+				String aadharNoRegEx = "^\\d{4}\\s?\\d{4}\\s?\\d{4}$";
+					if (dataMigrationDTOJsonCopy.get("aadharNumber") != null) {
+						boolean flag = false;
+						String aadharNo = dataMigrationDTOJsonCopy.get("aadharNumber").toString();
+						if (aadharNo.length() == 12) {
+							flag = aadharNo.matches(aadharNoRegEx);
+							Candidate candidate=candidateService.getCandidateDetailsByAadharNoAndId(aadharNo, orgLocation.getId());
+						    if(candidate != null) {
+						    	errorSet.put("aadharNumber", "Duplicate Aadhar Number");
+						    }
+						}
+						if(flag == false) {
+							errorSet.put("aadharNumber", "Invalid Aadhar Number ");
+						}
+					}
+				}
+				
+				if (orgLocation.getCountry().equalsIgnoreCase("United States")) {
+					
+					String ssnNoRegEx = "^(\\d{3}-?\\d{2}-?\\d{4}|XXX-XX-XXXX)$";
+					if (dataMigrationDTOJsonCopy.get("ssnNumber") != null) {
+						boolean flag = false;
+						String ssnNo = dataMigrationDTOJsonCopy.get("ssnNumber").toString().replaceAll("-", "");
+						if (ssnNo.length() == 9) {
+							flag = ssnNo.matches(ssnNoRegEx);
+							Candidate candidate=candidateService.getCandidateDetailsBySsnNoAndId(ssnNo, orgLocation.getId());
+						    if(candidate != null) {
+						    	errorSet.put("ssnNumber", "Duplicate SSN Number");
+						    }
+						}
+						if(flag == false) {
+							errorSet.put("ssnNumber", "Invalid SSN Number ");
+						}
+					}
+				
+				}
 			}
 		}else {
 			errorSet.put("email", "Email field is missing");
 		}
-		
-		
 		
 	}
 		

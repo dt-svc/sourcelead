@@ -105,12 +105,12 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TabsService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -305,6 +305,18 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		}
 		if(candidate.getDateOfBirth() != null) {
 			candidate.setDateofBirthString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),candidate.getDateOfBirth()));
+		}
+		
+		if(candidate.getPanNumber() != null) {
+			candidate.setPanNumber(candidate.getPanNumber());
+		}
+		
+		if(candidate.getAadharNumber() != null) {
+			candidate.setAadharNumber(candidate.getAadharNumber());
+		}
+		
+		if(candidate.getSsnNumber() != null) {
+			candidate.setSsnNumber(candidate.getSsnNumber());
 		}
 		
 		return commonUtil.toJSON(candidate);
