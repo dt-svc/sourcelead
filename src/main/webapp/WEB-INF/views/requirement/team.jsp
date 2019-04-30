@@ -1002,7 +1002,7 @@ $(".addUser-org").click(function(){
    $("#endDate").click(function(){
 	   $(".endDate").toggle(200);
    });
-   event.preventDefault();
+  // event.preventDefault();
 });
 
 $(".addSkills").click(function(){

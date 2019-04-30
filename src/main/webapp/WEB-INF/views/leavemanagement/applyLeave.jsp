@@ -1279,12 +1279,15 @@ function getApproversList(){
 		if(data !=null){
 			var result = "";
 			var opt = data[0];
-			result += '<input type="text" class="form-control" id="approverUser" readOnly value="'+opt.firstName+' '+opt.lastName+' ('+opt.userType+')"/>';
-			result += '<input type="hidden" class="form-control" name="approverUser" readOnly value="'+opt.id+'"/>';
-			$("#approvalDiv").show();
-			$("#notifyToOthersDiv").show();
-			$("#approverUserDiv").empty();
-			$("#approverUserDiv").append(result);
+			if(opt != 'undefined' && opt != null && opt != ''){
+				result += '<input type="text" class="form-control" id="approverUser" readOnly value="'+opt.firstName+'" "'+opt.lastName+' ('+opt.userType+')"/>';
+				result += '<input type="hidden" class="form-control" name="approverUser" readOnly value="'+opt.id+'"/>';
+				$("#approvalDiv").show();
+				$("#notifyToOthersDiv").show();
+				$("#approverUserDiv").empty();
+				$("#approverUserDiv").append(result);
+			}
+			
 	// 		$('#approverUser').trigger("chosen:updated");
 		}
 		});
