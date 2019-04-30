@@ -50,7 +50,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			</table>
 		</div>
 		<div class="clearfix"></div>
-		<div id="paginationDiv" class="clearfix">
+		<!-- <div id="paginationDiv" class="clearfix">
 			<div class="col-md-6">
 				<div class="pull-left mt5">
 					<label class="pull-left">
@@ -76,7 +76,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					<li class="disabled"><span class="current next">Next</span></li>
 				</ul>
 			</div>
-		</div>
+		</div> -->
 	</div>
 
 <script type="text/javascript">
