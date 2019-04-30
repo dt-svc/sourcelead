@@ -1138,12 +1138,10 @@ public class CandidateRestController {
 			HttpServletRequest request) throws Exception {
 		ResponseList<MarketplacePurchaseSalesDTO> res = new ResponseList<>();
 		logger.debug("inside PurchaseOrderList  controller =========>");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		marketplacePurchaseSalesDTO.setOrglocationId(orgLocations.getId());
 		try {
-			String[] tableColumns = { "orderNo", "createdDate", "companyName", "totalResumes", "totalPrice",
-					"discount" };
+			String[] tableColumns = { "orderNo", "createdDate", "companyName", "totalResumes", "totalPrice","serviceFee","discount","grandTotal","paymentStatus" };
 			int sortColumnIndex = -1;
 			String sortColumnOrder = "desc";
 			if (marketplacePurchaseSalesDTO.getOrder() != null && !marketplacePurchaseSalesDTO.getOrder().isEmpty()) {
@@ -1514,7 +1512,7 @@ public class CandidateRestController {
 			marketplaceWalletDTO.setOrgLocations(orgLocations);
 			logger.debug("inisde getWalletList  conroller =========> --> ");
 			try {
-				String[] tableColumns = { "openDate", "orderNo", "totalPrice"};
+				String[] tableColumns = { "transactionId", "transactionDate", "description","amount","paymentStatus"};
 																															
 				// entity names
 				int sortColumnIndex = -1; // by default sorting using updated date

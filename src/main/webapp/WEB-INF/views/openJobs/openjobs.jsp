@@ -14,6 +14,7 @@
 
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet"> -->
 <link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
 <link
 	href="/resources/css/font-awesome.min.css?staticTime=${staticTime}"
 	rel="stylesheet" type="text/css">
@@ -126,8 +127,9 @@ display: inline-block;
   </div>
 
 <!--  Modal Ends -->
-
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script type="text/javascript">
+
 window.onload = function () {
 	if('${requirementUUID}' == null && '${requirementUUID}' == '' && '${requirementUUID}' == 'undefined'){
 	$("#noResultsDiv").css("display", "block");

@@ -5,18 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
-<style type="text/css">
-.columnfields-custom label {
-width: 100%; clear:both; display: inline-table; display: none;
-}
-.columnfields-custom .col-md-9 {
-width: 100%;
-}
-.columnfields-custom .col-md-9 select {
-width: 100%; padding: 3px 20px 3px 15px;
-}
-</style>
-
 <%-- 
      @author : David Raju.
      this script is for edit Candidate.
@@ -566,7 +554,7 @@ function editCandidate(candidateId){
 							
 							result = result + '</span>';
 							
-							result = result + '<div id="customFieldDataId" class="myForm columnfields-custom"></div>';
+							result = result + '<div id="customFieldDataId" class="myForm columnfields-custom columnfields-custom-new"></div>';
 							result = result + '<div class="clearfix"></div>';
 							result = result + '<div class="clearfix mb10 mt">';
 							result = result + '<div class="col-md-6">';

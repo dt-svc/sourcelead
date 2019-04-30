@@ -8,7 +8,6 @@
 
 <script src="/resources/js/formvalidator.js"></script>
 
-
 <section class="content-wraper">
     <div id="loading"></div>
     <div id="choicepopUp"></div>
@@ -1226,9 +1225,9 @@ function saveAndFinishOnboardTemplate(templateId){
     
     
     // upload file script
-    document.getElementById("uploadBtn").onchange = function () {
+   /*  document.getElementById("uploadBtn").onchange = function () {
     document.getElementById("uploadFile").value = this.value;
-	};
+	}; */
   </script> 
 <script type="text/javascript">
 			var config = {
@@ -1270,7 +1269,11 @@ $('#nexttab').on('click', function() {
 });
 </script> --> 
 
-<script>
+
+<!-- fileinput function is not declared..! -->
+
+
+<!-- <script>
     //File upload
     $('#file-fr').fileinput({
         language: 'fr',
@@ -1371,7 +1374,7 @@ $('#nexttab').on('click', function() {
          */
     });
 
-    </script>
+    </script> -->
 
   <jsp:include page="../masterFooter.jsp" />
   <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
