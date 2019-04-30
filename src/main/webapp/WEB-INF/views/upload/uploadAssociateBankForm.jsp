@@ -40,7 +40,7 @@ var uploadflag= true;
 <section class="content-wraper">
 	<section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Import Associates</h2>
+        <h2>Import Associate Bank Detail </h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates List</a> &raquo; Import Associates </div>
     
@@ -75,7 +75,7 @@ var uploadflag= true;
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadForm'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadAssociateBankForm'/>'">
 								</div>
 							</div>
 						</div>
@@ -180,6 +180,7 @@ function saveAssociateBankDetailTemplate(){
         }
 }
 
+
 $('body').on('blur', '#upload_job_form', function() {
 	$("#upload_job_form").showHelpOnFocus();
 	$("#upload_job_form").validateOnBlur(false, validationSettings);
@@ -189,13 +190,14 @@ $('body').on('blur', '#upload_job_form', function() {
 
 <script type="text/javascript">
 function importAssociateBankDetail(){
-	var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
+
+	 var validationSettings = {
+           errorMessagePosition : 'element',
+           borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-            };
-	var fileUrl = $("#dataFilePath").val();
+           };
+	var fileUrl = $("#dataFilePaths").val();
 	var uploadType = "associateUpload";
 	var headerPosition = $("#headerPosition").val();
 
@@ -203,13 +205,14 @@ function importAssociateBankDetail(){
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
 	
-	
 	//It will escape all the special characters
 	var jsonData = encodeURIComponent(con);
 	var form = $('#upload_job_form')[0];
 	var formData = new FormData(form); 
+	if (($('#upload_job_form').validate(false, validationSettings))){
+	
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 $.ajax({
+	  $.ajax({
 		   	type: "POST",
 		   	data: formData,
     	    contentType : 'application/json; charset=utf-8',
@@ -219,25 +222,31 @@ function importAssociateBankDetail(){
     	    dataType : 'json',
     	    url: sourceleadUrl+"/saveAssociateBankDetailTemplate?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 	   
  		    success : function(json) {
- 		    		
+ 		    		$("#loading").removeAttr("style");
+ 		    	    if(json.updateCount != null && json.updateCount != '')
+ 		    	    $("#msgDivvv").removeAttr("style");
+ 		 			$("#msgDivvv").css({ display: "inline-block" });  
+ 		 			$("#msgDivvv").html("Associates are updated ..!");
+ 		 			$("#selector11").show();
+ 		 			$("#selector11").fadeOut(2000);
  		 			if(json.errorData != null && json.errorData.length >0){
  		 				showFailedExcelData(json);
  		 			}
- 		 			else{
- 		 				$("#loading").removeAttr("style");
-//   	 		    	    if(json.updateCount != null && json.updateCount != ''){
-	 	 		    	    $("#selector1").removeAttr("style");
-	 	 		    	    $("#selector1").css({ display: "block" });
-	 	 		 			$("#msgDiv").html("Data successefully imported ...");
-	 	 		 			$("#selector1").fadeIn(200);
-	 	 		 		    $('#selector1').delay(2000).fadeOut('slow');
-//   	 		    	    }
-  		 			}
  			    	},
 		 		   error: function(e){
 			        }
-			 });
+			 }); 
+	}else{
+		return false;	
+	} 
 }
+
+$('body').on('blur', '#upload_job_form', function() {
+	$("#upload_job_form").showHelpOnFocus();
+	$("#upload_job_form").validateOnBlur(false, validationSettings);
+	
+});
+	
 </script>
 
 
