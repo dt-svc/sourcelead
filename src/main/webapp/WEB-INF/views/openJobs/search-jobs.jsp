@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css?family=Arima+Madurai:400,500,700" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
 <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="/resources/css/reset.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/source-css/reset.css?staticTime=${staticTime}">
 <link href="/resources/css/jobs/css/source-style.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
