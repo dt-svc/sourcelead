@@ -49,7 +49,7 @@ function taskNameValidation(){
 
 <script>
 	$(document).ready(function() {
-		document.getElementById("addProjectTasks_form").reset();
+// 		document.getElementById("addProjectTasks_form").reset();
 		/* <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		  var sectionId = '${section.id}';
 		  getCustomDependentField(sectionId);
@@ -443,7 +443,6 @@ function changeTaskStatus(projectTaskId){
  
 <div class="vendor_wrap_mask"></div>
 	
-	<script> 	
 // Edit pop
 <script type="text/javascript">
 $(document).ready(function() {
