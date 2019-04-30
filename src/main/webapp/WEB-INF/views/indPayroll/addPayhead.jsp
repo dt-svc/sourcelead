@@ -222,6 +222,12 @@
 								type="checkbox" ${payrollPayhead.esiApplicable  == 'Y' ? "checked" : ''} value="Y"> <label for="esiApplicable"
 								class="checkbox-custom-label"><span class="ml10">ESI Applicable</span></label>
 						</div>
+					<div class="checkbox-new pull-left">
+							<input id="ptApplicable" class="checkbox-custom" name="ptApplicable"
+								type="checkbox" ${payrollPayhead != null ? payrollPayhead.ptApplicable  == 'Y' ? "checked" : '' : "checked"} value="Y"> <label for="ptApplicable"
+								class="checkbox-custom-label"><span class="ml10">PT
+									Applicable</span></label>
+						</div>
 					</div>
 				</div>
 				<div class="clearfix"></div>
