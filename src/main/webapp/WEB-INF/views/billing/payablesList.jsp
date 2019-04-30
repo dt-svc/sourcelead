@@ -2006,7 +2006,7 @@ function resetBillsFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	document.getElementById("invoiceDateRadio").checked = true;
 	$(".custom_search").empty().hide();
-	getPayableInvoiceList();
+// 	getPayableInvoiceList();
 	
 }
 </script>

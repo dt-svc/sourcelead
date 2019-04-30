@@ -671,10 +671,10 @@ function exportUserData(){
 			 $(".advancedsearch-mask").fadeIn();
 		}
 		
-		function closeAdsrch(){
-			$("div.cand-advsrch-popup").fadeOut();
-			$(".advancedsearch-mask").fadeOut();
-		}
+		/* function closeAdsrch(){
+ 			$("div.cand-advsrch-popup").fadeOut();
+ 			$(".advancedsearch-mask").fadeOut();
+		} */
 	</script>
 
 
