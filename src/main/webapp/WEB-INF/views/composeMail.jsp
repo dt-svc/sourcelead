@@ -187,8 +187,8 @@ display: none;
   </section>
   
   
-  <!-- <script type="text/javascript" src="/resources/js/bootstrap-multiselect.js"></script>
-  <script src="/resources/js/bootstrap3-wysihtml5.all.min.js"></script>  -->
+   <script type="text/javascript" src="/resources/js/bootstrap-multiselect.js"></script>
+  <script src="/resources/js/bootstrap3-wysihtml5.all.min.js"></script>  
   
   <script src="/resources/js/nicEdit.js"></script> 
   
@@ -238,7 +238,7 @@ $(function() {
 	 });
   </script> 
  
-<script>
+<!-- <script>
 	$('#bodytext').summernote({
   toolbar: [
     // [groupName, [list of button]]
@@ -252,7 +252,7 @@ $(function() {
   ]
 });
 </script>
-
+ -->
   
   <script type="text/javascript">
 	function sendEmails() {
