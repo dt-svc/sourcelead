@@ -1279,7 +1279,7 @@ function imageCancel(){
 						  <div class="col-md-4">
 							  <label>Notice Period</label>
 							  <div class="clearfix">
-								 <select class="chosen-select" id="noticePeriod" name="noticePeriod" data-placeholder="Notice Period" multiple>
+								 <select class="chosen-select" id="noticePeriod1" name="noticePeriod" data-placeholder="Notice Period" multiple>
 						                 <option value="Immediately available">Immediately available</option>
 						                 <option value="15 Days">15 Days</option>
 						                 <option value="1 Month">1 Month</option>
@@ -2012,10 +2012,10 @@ function savedCommentAndCount(candidateId){
 		  $(".advancedsearch-mask").fadeIn();
 		  $("#candidateFilterPopup").toggle();
 		};
-		function closeAdsrch(){
+		/* function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
 			$(".advancedsearch-mask").fadeOut();
-		};
+		}; */
 	</script>
 <script>
 function getStates(){
@@ -2120,7 +2120,7 @@ function getCities(){
 	    $("#canSkills").val('').trigger("chosen:updated");
 	    $("#canVisa").val('').trigger("chosen:updated");
 	    $("#canTags").val('').trigger("chosen:updated");
-	    $("#noticePeriod").val('').trigger("chosen:updated");
+	    $("#noticePeriod1").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#anyOfKeyword").empty();
@@ -2521,7 +2521,7 @@ function minMaxExperience(){
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
 	    $("#designation").val('').trigger("chosen:updated");
-	    $("#noticePeriod").val('').trigger("chosen:updated");
+	    $("#noticePeriod1").val('').trigger("chosen:updated");
 	    $("#minExpYears").val('').trigger("chosen:updated");
 	    $("#maxExpYears").val('').trigger("chosen:updated");
 	 /*    $("#country").val('').trigger("chosen:updated"); */
@@ -2537,7 +2537,6 @@ function minMaxExperience(){
 	    $("#canVisa").val('').trigger("chosen:updated");
 	    $("#canTags").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
-	    
 	    $("#designationType").val('').trigger("chosen:updated");
 	    
 	    $('#candidatelist_form').find('p.jquery_form_error_message').remove();
@@ -2561,7 +2560,7 @@ function minMaxExperience(){
 	     $("#maxExpYears").val(''); 
 	     $('#expId').find('p.jquery_form_error_message').remove();
 	     
-	     $("#noticePeriod").val(''); 
+	     $("#noticePeriod1").val(''); 
 	     
 	     $("#country").val(''); 
 	     $("#state").val(''); 
