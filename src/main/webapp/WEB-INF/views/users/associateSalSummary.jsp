@@ -591,12 +591,7 @@ var $this = $(this);
 $this.next().css({'width': '100%'});
 });
 </script> 
-<script>
-    $(function()
-{
-	$('.scroll-pane').jScrollPane();
-});
-    </script>
+
     
   <script>
 //Pf Function
