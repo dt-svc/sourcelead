@@ -207,7 +207,8 @@ function uploadFileDoc(){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script>
- 
+<script src="/resources/js/moment.min.js"></script>
+<script src="/resources/js/bootstrap-datetimepicker.min.js"></script>
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},

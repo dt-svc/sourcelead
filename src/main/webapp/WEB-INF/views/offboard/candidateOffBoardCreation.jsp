@@ -498,6 +498,15 @@
 
 
 <script>
+function validateTaskEmail(){
+	  var taskEmail = document.getElementById("taskEmail").checked;
+	  if(taskEmail == 1){
+		  document.getElementById("taskEmail").value = 'Y';
+	  }else{
+		  document.getElementById("taskEmail").value = 'N';
+	  }
+}
+
 function addResignationAttachment(){  
 			var checkMaxTsRowNum = $("#resignationAttcahmentMaxRowNumber").val();
 			var tbl = document.getElementById("resignationAttachmentTable");
