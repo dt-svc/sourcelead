@@ -54,7 +54,7 @@
 					<div class="col-md-5">
 						<label class="clearfix">Pan No</label>
 						<div class="clearfix">
-							<input type="text" class="form-control" readonly="readonly"
+							<input type="text" class="form-control" readonly="readonly" value="${user.panNumber}"
 								id="associatePAN" placeholder="PAN No">
 						</div>
 					</div>
@@ -68,6 +68,13 @@
 									<option ${year.value==true?"selected=selected":""} value="${year.key}">${year.key}</option>
 								</c:forEach>
 							</select>
+						</div>
+					</div>
+					<div class="col-md-5">
+						<label class="clearfix">Date of Birth</label>
+						<div class="clearfix">
+							<input type="text" class="form-control" readonly="readonly" value="${user.dateofBirth}"
+								id="dateOfBirth" placeholder="Date Of Birth">
 						</div>
 					</div>
 					<div class="clearfix"></div>

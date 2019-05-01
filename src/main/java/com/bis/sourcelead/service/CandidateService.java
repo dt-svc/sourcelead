@@ -343,7 +343,7 @@ public interface CandidateService {
 	
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId)throws Exception;
 	
-	public String getCandidatePanNumberByUserId(long userId);
+	public String getCandidatePanNumberByUserId(long userId, Long id);
 	
 	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception;
 	

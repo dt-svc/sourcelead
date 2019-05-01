@@ -83,7 +83,7 @@
 				<div class="row newContrWrap">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<div class="col-md-9 txtEditor_p txtEditorP">
-							<textarea id="txtEditor" name="templateContent" field-name="Template Content" value="" class="form-control newContrtextarea" data-validation="required" >${offerLetterTemplate.templateContent}</textarea>
+							<textarea id="txtEditor" name="templateContent" field-name="Template Content" value="" class="form-control newContrtextarea" data-validation="required validate_length length2-5000" >${offerLetterTemplate.templateContent}</textarea>
 						</div>
 
 						<div class="col-md-3 contrCus">
@@ -253,8 +253,8 @@ function validateOfferLetterTemplateName(){
 	$(document).ready(
 			function() {
 				$("#txtEditor").Editor();
-				$("#txtEditor").find(".Editor-editor").data	- validation('validate_length length2-5000');
-				$("#txtEditor").find(".Editor-editor").data - validation - optional('rule-required', true);
+				//$("#txtEditor").find(".Editor-editor").data	- validation('validate_length length2-5000');
+				//$("#txtEditor").find(".Editor-editor").data - validation - optional('rule-required', true);
 			});
 </script>
 
