@@ -401,15 +401,6 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setIsFavourite(0);
 			candidate.setIsFavouriteAssociate(0);
 			
-			if(orgLocations.getCountry().equalsIgnoreCase("India")) {
-				candidate.setAadharNumber(candidateDto.getAadharNumber());
-				candidate.setPanNumber(candidateDto.getPanNumber());
-				}
-			
-			if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
-				candidate.setSsnNumber(candidateDto.getSsnNumber());;
-				}
-			
 			MasterCandidate masterCandidate = null;
 			masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDto);
 			if(null == masterCandidate){
@@ -419,7 +410,14 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setGeneratedId(getCandidateId(orgLocations));
 		}
         
+		if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+			candidate.setAadharNumber(candidateDto.getAadharNumber());
+			candidate.setPanNumber(candidateDto.getPanNumber());
+			}
 		
+		if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
+			candidate.setSsnNumber(candidateDto.getSsnNumber());;
+			}
 		candidate = getCandidateDetails(candidate, candidateDto, user, orgLocations, activitySummary);
 		
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDto, orgLocations,candidate,user.getUserCode());
@@ -3200,9 +3198,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			dateValue.put("fromDate", toDateVal);
 			dateValue.put("toDate", fromDateVal);
 		}
-		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplacePurchaseOrder(
-				orgLocations.getId(), marketplacePurchaseSalesDTO, purchaseOrderFromDate, purchaseOrderToDate,
-				dateValue);
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO, purchaseOrderFromDate, purchaseOrderToDate,dateValue);
 		return responseList;
 	}
 
@@ -3492,8 +3488,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public String getCandidatePanNumberByUserId(long userId) {
-		return candidateDao.getCandidatePanNumberByUserId(userId);
+	public String getCandidatePanNumberByUserId(long userId, Long id) {
+		return candidateDao.getCandidatePanNumberByUserId(userId, id);
 	}
 
 	@Override

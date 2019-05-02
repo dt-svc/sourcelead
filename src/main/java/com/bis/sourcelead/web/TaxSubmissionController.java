@@ -163,8 +163,9 @@ public class TaxSubmissionController {
 					TaxAdminController.setYears(modelAndView, null);
 					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 							"orgLocations");
+					
 					/*List<Candidate> pannumber = candidateService.getAllCandidatesByLocation(orgLocations.getId());
-					modelAndView.addObject("pannumber", pannumber);*/
+					modelAndView.addObject("panNumber", pannumber);*/
 					
 					/*List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
 					modelAndView.addObject("userRoleList", userRoleList);*/
@@ -172,8 +173,8 @@ public class TaxSubmissionController {
 					List<Employees> employeeList = employeesService.getEmployeesByLocationId(orgLocations.getId());
 					if(employeeList != null && !employeeList.isEmpty()) {
 						for(Employees employee : employeeList) {
-							employee.setPanNumber(candidateService.getCandidatePanNumberByUserId(employee.getUser().getId()));
-							System.out.println("User Id :" + employee.getUser().getId() + "UserName : " + employee.getUser().getFullName() + " Emp ID : " + employee.getEmployeeId() + " Pan : " + employee.getPanNumber());;
+							employee.setPanNumber(candidateService.getCandidatePanNumberByUserId(employee.getUser().getId(), orgLocations.getId()));
+							System.out.println("User Id :" + employee.getUser().getId() + "UserName : " + employee.getUser().getFullName() + " Emp ID : " + employee.getEmployeeId() + " Pan : " + employee.getPanNumber() + " DOB : " + employee.getUser().getDateOfBirth());
 						}
 					}
 					modelAndView.addObject("employeeList", employeeList);
@@ -182,7 +183,7 @@ public class TaxSubmissionController {
 						modelAndView.addObject("viewForm", request.getRequestURL().toString().contains("viewForm"));
 						modelAndView.addObject("uuid", uuid);
 						SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO = taxService
-								.getITDeclarationSubmission(uuid, formUUID);
+								.getITDeclarationSubmission(uuid, formUUID, orgLocations.getId());
 						modelAndView.addObject("form", itDeclarationSubmissionDTO);
 						modelAndView.addObject("documents",
 								taxService.getUploadedDocumentsBySubmissionId(itDeclarationSubmissionDTO.getId()));
