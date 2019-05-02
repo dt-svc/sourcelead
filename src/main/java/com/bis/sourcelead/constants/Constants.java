@@ -504,6 +504,7 @@ public class Constants {
 	public static final String FORMS = "Forms";
 	public static final String MYPAYROLL = "MyPayroll";
 	public static final String RUNPAYROLL = "RunPayroll";
+	public static final String PERFORMANCE = "Performance";
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/
@@ -1451,6 +1452,10 @@ public class Constants {
 
 	public static final String TICKET_COMMENT_EMAIL = "NewTicketCommentEmail";
 	public static final String TICKET_COMMENT_NOTIFICATION ="NewTicketCommentNotification";
+	
+	public static final String GOAL_TYPE_NEW  = "New_Goal";
+	
+	public static final String GOAL_TYPE_SUB_GOAL  = "Sub_Goal";
 	
 	public static final String CLOCK_IN = "ClockIn";
 	public static final String CLOCK_OUT = "ClockOut";
