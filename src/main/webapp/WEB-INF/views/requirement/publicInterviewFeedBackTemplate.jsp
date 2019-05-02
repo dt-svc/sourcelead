@@ -83,7 +83,7 @@ width: auto !important; padding-right: 15px;
 	padding:0;
 }
 .viewTemplate textarea + p{
-top:55px !important;
+	top:75px !important; padding: 0px 0px 0px 25px !important;
 } 
 </style>
 
@@ -142,7 +142,7 @@ function cancelFunction(){
 	$(".project_inn_mask").hide();
 	var result = "";
 	result = result + '<form id="cancelFunction_form" name="cancelFunction_form" enctype="multipart/form-data" method="post">';
-	result = result + '<h3>Interview Feedback</h3>';
+	result = result + '<h3 class="mt ml">Interview Feedback</h3>';
 	
 	result = result + '<div class="row clearfix">';
 	result = result + '<div class="col-md-6">';
@@ -277,7 +277,7 @@ function interviewTemplateForm(){
 		generateInterviewFeedbackForm1(sourceleadUrl,templateId)
 		var result = "";
 		result = result + '<form id="interviewTemplate_form" name="interviewTemplate_form" enctype="multipart/form-data" method="post">';
-		result = result + '<h3>Interview Feedback</h3>';
+		result = result + '<h3 class="mt ml">Interview Feedback</h3>';
 		/* result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
 		result = result + '<div class="sjfb-field sjfb-text">';
 		result = result + '<label>Comment <span class="text-danger">*</span></label>';
@@ -567,7 +567,6 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
             	 if(label == 'Rating'){
             		 options = '<option value="">--Select Rating--</option>';
         		 }
-
                  switch (fieldType) {
                      case 'text':
                          return '' +
@@ -741,10 +740,8 @@ function generateViewpublicpage(sourceleadUrl,templateId) {
              }
         	 
         	 
-        	 
         	  //HTML templates for rendering frontend form fields
              function addFieldHTML(fieldType,required,label) {
-            	 
             	 if(label == 'location'){
             		 var reqSymbol = ''
             		 if(required == 1){
@@ -757,7 +754,6 @@ function generateViewpublicpage(sourceleadUrl,templateId) {
             	 else{
             		 var uniqueID = Math.floor(Math.random()*999999)+1;
             	 }
-                
 
                  switch (fieldType) {
 
