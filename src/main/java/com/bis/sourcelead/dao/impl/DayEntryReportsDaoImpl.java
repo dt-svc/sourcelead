@@ -189,7 +189,8 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "                     SUBSAH.HIERARCHY_ID IN(SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH where APPROVER_USER_ID IN("+userHierarchyIdString+") "
 				+ "                        AND  PAH.PROJECT_ID = PROJ.ID  AND  PAH.LEVEL IN(select MIN(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND SUBPAH.STATUS != '0'))             "
 				+ "                    )"
-			    + "              ) AND SAH.ID IS NOT NULL AND ( SAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR SAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.REJECTED+"' OR SAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.APPROVED+"')"
+			    + "              ) AND SAH.ID IS NOT NULL"
+				// AND ( SAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"' OR SAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.REJECTED+"' OR SAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.APPROVED+"')
 				+ " AND ((TDE.BILLABLE_HOURS IS NOT NULL AND TDE.BILLABLE_HOURS != '00:00')  OR (TDE.NONBILLABLE_HOURS IS NOT NULL AND TDE.NONBILLABLE_HOURS != '00:00' )) AND TDE.TIMESHEET_DATE BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' group by TDE.ID)"
 				+ "  UNION ALL "
 				+ " ( "
