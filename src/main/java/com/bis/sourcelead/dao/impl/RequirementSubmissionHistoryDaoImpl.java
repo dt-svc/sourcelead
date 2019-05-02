@@ -25,6 +25,7 @@ import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OfferAcceptanceRateView;
+import com.bis.sourcelead.entity.OfferAcceptanceRateViewForVendor;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RecruiterJobsReportView;
 import com.bis.sourcelead.entity.RecruiterReportView;
@@ -431,20 +432,10 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<OfferAcceptanceRateView> getOfferAcceptanceRateListForVendor(long orgRelationId, long orgSpocId, int month, int year, boolean compare) {
+	public List<OfferAcceptanceRateViewForVendor> getOfferAcceptanceRateListForVendor(List<Long> parentRequirementIdList, String masterUserCode, int month, int year, boolean compare) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from OfferAcceptanceRateView oarView where oarView.orgRelationId=:orgRelationId";
-			String userCode = "";
-			if (orgSpocId > 0) {
-				OrgSpoc orgSpoc = orgSpocDao.getOrgSpocById(orgSpocId);
-				if (orgSpoc != null) {
-					userCode = orgSpoc.getVendorUser().getUserCode();
-				}
-			}
-			if(userCode != null && !userCode.isEmpty()) {
-				query += " and oarView.userCode=:userCode and oarView.orgSpocId=:orgSpocId";
-			}
+			String query = "from OfferAcceptanceRateViewForVendor oarView where oarView.requirementId in (:parentRequirementId) and oarView.userCode in (" + masterUserCode + ")";
 			if (month > 0 || year > 0) {
 				Calendar c = Calendar.getInstance();
 				if (month > 0) {
@@ -457,16 +448,12 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 					query += " and oarView.createdYear='" + YYYY.format(c.getTime()) + "'";
 				}
 			}
-//			query += " group by oarView.orgRelationId, oarView.OFFERMADE_COUNT, oarView.OFFERACCEPTED_COUNT, oarView.OFFERREJECTED_COUNT";
 			query += " order by oarView.createdYearMonthDate";
 			Query queryObj = session.createQuery(query);
-			queryObj.setLong("orgRelationId", orgRelationId);
-			if(userCode != null && !userCode.isEmpty()) {
-				queryObj.setString("userCode", userCode);
-				queryObj.setLong("orgSpocId", orgSpocId);
-			}
+			queryObj.setParameterList("parentRequirementId", parentRequirementIdList);
+//			queryObj.setString("masterUserCode", masterUserCode);
 			
-			List<OfferAcceptanceRateView> offerAcceptanceRateViewList = queryObj.list();
+			List<OfferAcceptanceRateViewForVendor> offerAcceptanceRateViewList = queryObj.list();
 			if(offerAcceptanceRateViewList != null && !offerAcceptanceRateViewList.isEmpty()) {
 				return offerAcceptanceRateViewList;
 			}
