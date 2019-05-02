@@ -285,7 +285,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 	@Override
 	public RequirementWorkFlowStagesDTO getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(String uuid, String workflowUuid, Long orgLocationId, String currentStageuuid) throws Exception {
-		System.out.println(currentStageuuid);
 		RequirementWorkFlowStages requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkFlowStageByUuidAndWorkflowUuid(uuid, workflowUuid, orgLocationId);
 		RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO = new RequirementWorkFlowStagesDTO();
 		if(requirementWorkFlowStages != null) {

@@ -465,7 +465,6 @@ function saveRequirementWorkflowStage(workflowUuid){
 	var stageUuid = $("#workflowStageUuid").val();
 	var qTemplateId = $("#questionnaireTemplateId").val();
 	
-	alert(stageUuid);
 	 var previousStageUuid = $("#previousStageUuid").val();
 	
 	
