@@ -947,12 +947,12 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		if(assoSal != null && assoSal.getAssociateSalaryPayheadIndList() != null && assoSal.getAssociateSalaryPayheadIndList().size()>0) {
 			AssociateSalaryPayheadInd asph = assoSal.getAssociateSalaryPayheadIndList().stream().filter(h -> h.getPayrollPayhead().getShortCode().equalsIgnoreCase("BA")).findAny().get();
 			if(asph != null) {
-				//List<String> financialYearStr = getFinancialYearByOrgLocationAndDate(asph.getPayrollPayhead().getOrgLocationId(), freqStartDate);
-				//String financialYear = financialYearStr.get(0) + "-" + financialYearStr.get(1);
-				//StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
+				
+				BigDecimal ptSum = new BigDecimal(assoSal.getAssociateSalaryPayheadIndList().stream().filter(p -> "Y".equalsIgnoreCase(p.getPayrollPayhead().getPtApplicable()) && Constants.IND_PAYROLL_PAYHEAD_EARNINGS.equalsIgnoreCase(p.getPayrollPayhead().getType())).mapToDouble(s -> s.getMonthly().doubleValue()).sum()).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+				
 				try {
 					if(taxDTO != null && taxDTO.getProfessionalTaxList().size()>0) {
-						ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(assoSal.getAnnualSalary()) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(assoSal.getAnnualSalary()) >= 0 ).findAny().get();
+						ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(ptSum) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(ptSum) >= 0 ).findAny().get();
 						if(ptDTO != null)
 							ptAmount = Double.valueOf(ptDTO.getAmount());
 					}

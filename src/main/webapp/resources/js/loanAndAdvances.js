@@ -176,6 +176,8 @@ this.getDetuctAmountDetails = function(){
 			}
 			var detuctAmount = eval(totalAmount / noOfSchedules);
 			$("#deductAmount").val(detuctAmount.toFixed(2));
+			$("#rateOfInterest").val(interstRate);
+			$("#outstandingAmount").val(interestAmount);
 			
 		    $.ajax({
 				type : "GET",
