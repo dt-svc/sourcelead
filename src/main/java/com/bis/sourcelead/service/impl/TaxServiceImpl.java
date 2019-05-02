@@ -1441,25 +1441,25 @@ public class TaxServiceImpl implements TaxService {
 				Chunk space = new Chunk(new VerticalPositionMark());
 				
 				Paragraph p1 = addParagraph("1."+"   "+"Income after exemptions", font8, marginLeftChild,(marginRight + marginLeftChild),0,marginBottom);
-				Chunk c1 = new Chunk("[Sample text for Income after exemptions]",font8_U);
+				Chunk c1 = new Chunk("__________________________________________",font8);
 				p1.add(space);
 				p1.add(c1);
 				document.add(p1);
 				
 				Paragraph p2 = addParagraph("2."+"   "+"Provident found(PF)", font8, marginLeftChild,(marginRight + marginLeftChild),0,marginBottom);
-				Chunk c2 = new Chunk("[Sample text for Provident found]",font8_U);
+				Chunk c2 = new Chunk("__________________________________________",font8);
 				p2.add(space);
 				p2.add(c2);
 				document.add(p2);
 				
 				Paragraph p3 = addParagraph("3."+"   "+"Professional tax(PT)", font8, marginLeftChild,(marginRight + marginLeftChild),0,marginBottom);
-				Chunk c3 = new Chunk("[Sample text for Professional tax]",font8_U);
+				Chunk c3 = new Chunk("__________________________________________",font8);
 				p3.add(space);
 				p3.add(c3);
 				document.add(p3);
 				
 				Paragraph p4 = addParagraph("4."+"   "+"Tax Deducted at source(TDS)", font8, marginLeftChild,(marginRight + marginLeftChild),0,marginBottom);
-				Chunk c4 = new Chunk("[Sample text for Tax Deducted at source]",font8_U);
+				Chunk c4 = new Chunk("__________________________________________",font8);
 				p4.add(space);
 				p4.add(c4);
 				document.add(p4);
