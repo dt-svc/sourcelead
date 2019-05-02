@@ -209,4 +209,15 @@ public class PayrollLoanAndAdvancesDaoImpl implements PayrollLoanAndAdvancesDao{
 		}
 		return payrollLoanAndAdvances;
 	}
+
+	@Override
+	@Transactional
+	public List<PayrollLoanAndAdvances> getPayrollLoanAndAdvancesByOrgLocationId(Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+
+	    String query = "from PayrollLoanAndAdvances loanAndAdv where loanAndAdv.orgLocationId.id = :orgLocationId and loanAndAdv.status = '1' ";
+
+	    List<PayrollLoanAndAdvances> payrollLoanAndAdvancesList = session.createQuery(query.toString()).setLong( "orgLocationId", orgLocationId).list();
+        return payrollLoanAndAdvancesList;
+	}
 }

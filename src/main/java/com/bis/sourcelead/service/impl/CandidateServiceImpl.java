@@ -3200,9 +3200,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			dateValue.put("fromDate", toDateVal);
 			dateValue.put("toDate", fromDateVal);
 		}
-		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplacePurchaseOrder(
-				orgLocations.getId(), marketplacePurchaseSalesDTO, purchaseOrderFromDate, purchaseOrderToDate,
-				dateValue);
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO, purchaseOrderFromDate, purchaseOrderToDate,dateValue);
 		return responseList;
 	}
 
@@ -3492,8 +3490,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public String getCandidatePanNumberByUserId(long userId) {
-		return candidateDao.getCandidatePanNumberByUserId(userId);
+	public String getCandidatePanNumberByUserId(long userId, Long id) {
+		return candidateDao.getCandidatePanNumberByUserId(userId, id);
 	}
 
 	@Override

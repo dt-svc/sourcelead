@@ -5,20 +5,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style>
-.addUser-org {
-    overflow-x: auto;
-}
-.project_tabs_inn_table table tr td div i.glyphicon-trash{
-color:red !important;
-}
-</style>
 <%-- 
      @author : prasadK.
      this script is for display candidate documents tab data.
      1.usage     : used at clientSideBar().
 --%>
 <script>
+$(".addUser-org").css({"overflow-x":"auto"});
 function candidateDocuments(candidateId){
 	var result = "";
 	if(window.candidateStatusGlobal == '0'){
@@ -376,7 +369,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result + '</div>'; 
 	
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
-	result = result+'<div class="col-md-12 validation_p">';
+	result = result+'<div class="col-md-12">';
 	result = result+'<div class="input-group" id="uploadFileGroup">';
 	result = result+'<label class="input-group-btn" onchange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file"  id="uploadBtn1" style="display: none;"  multiple="" class="upload">';
