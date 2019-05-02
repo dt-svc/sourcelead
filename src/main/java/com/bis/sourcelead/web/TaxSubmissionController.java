@@ -88,6 +88,7 @@ public class TaxSubmissionController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			if (user != null) {
 				if (!uuid.isEmpty()) {
+					modelAndView.addObject("financialYear", financialYear);
 					modelAndView.addObject("uuid", uuid);
 					SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, false, false);
 					if (sourceleadTaxFormDTO != null) {
@@ -289,7 +290,7 @@ public class TaxSubmissionController {
 	@RequestMapping(value = "/itDeclaration/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(HttpServletRequest request,
-			@RequestParam(defaultValue = "") String uuid, @RequestParam(defaultValue = "") String financialYear,
+			@RequestParam(defaultValue = "") String uuid, @RequestParam(defaultValue = "") String financialYear, String searchValue,
 			Paginator paginator) {
 		ResponseList<SourceleadTaxITDeclarationSubmissionDTO> response = new ResponseList<>();
 		try {
@@ -298,7 +299,7 @@ public class TaxSubmissionController {
 					"orgLocations");
 			if (user != null) {
 				List<SourceleadTaxITDeclarationSubmissionDTO> itDeclarationSubmissionDTOList = taxService
-						.getITDeclarationSubmissionList(orgLocations.getId(), uuid, financialYear, paginator);
+						.getITDeclarationSubmissionList(orgLocations.getId(), uuid, financialYear, searchValue, paginator);
 				response.setData(itDeclarationSubmissionDTOList);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());

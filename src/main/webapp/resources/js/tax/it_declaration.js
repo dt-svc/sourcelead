@@ -257,10 +257,11 @@ function closeChangeStatusPopup() {
 	$(".project_inn_mask").fadeOut(200);
 }
 
-function getItDeclarationSubmissionList(uuid, pageNo) {
+function getItDeclarationSubmissionList(uuid, financialYear, pageNo) {
 	var pageSize = $("#pageSize").val();
+	var searchValue = $("#formSearch").val();
 	$("#formList").empty();
-	$.post(sourceleadUrl + "/itDeclaration/list", {pageNo:pageNo, pageSize:pageSize}, function(response) {
+	$.post(sourceleadUrl + "/itDeclaration/list", {uuid:uuid, financialYear:financialYear, pageNo:pageNo, pageSize:pageSize, searchValue:searchValue}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
 		} else if (response.response === "AWKWARD") {
@@ -302,7 +303,7 @@ function getItDeclarationSubmissionList(uuid, pageNo) {
 						ellipsePageSet : false,
 						cssStyle : 'light-theme',
 						onPageClick : function(pageNumber, event) {
-							getItDeclarationSubmissionList(uuid, pageNumber-1);
+							getItDeclarationSubmissionList(uuid, financialYear, pageNumber-1);
 						}
 				};
 				$("#pagination-demo").pagination(options);
