@@ -2556,20 +2556,21 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 
 			 /** resume tracking code*/
 
-			 CandidateResumes resumes = candidateResumesDao.getCandidateResumeByCandidateId(reqSub.getCandidate().getId());
-
-				if (resumes != null) {
-					String fileURl = resumes.getFileURL().replace("/slead-static", staticPath);
-					File resumeFile = new File(fileURl);
-					if (resumeFile.exists()) {
-						byte[] bytes = Files.readAllBytes(resumeFile.toPath());
-						EmailAttachment emailAttachment = new EmailAttachment();
+			 if(jsonObj.has("sendResumes")) {
+				 CandidateResumes resumes = candidateResumesDao.getCandidateResumeByCandidateId(reqSub.getCandidate().getId());
+				 if (resumes != null ) {
+					 String fileURl = resumes.getFileURL().replace("/slead-static", staticPath);
+					 File resumeFile = new File(fileURl);
+					 if(resumeFile.exists()) {
+						 byte[] bytes =  Files.readAllBytes(resumeFile.toPath());
+						 EmailAttachment emailAttachment = new EmailAttachment();
 						emailAttachment.setName(resumes.getFileName());
 						emailAttachment.setDocFile(bytes);
 						emailAttachment.setType(resumes.getFileContentType());
 						attachmentList.add(emailAttachment);
-					}
-				}
+					 }
+				 }
+			 }
 			 
 			 //URL for page redirection
 			 String redirectURL ="";

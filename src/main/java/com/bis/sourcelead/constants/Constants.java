@@ -198,6 +198,9 @@ public class Constants {
 	public static final String ADD_TASK_COMMENT_EMAIL = "AddTaskCommentEmail";
 	public static final String ADD_TASK_COMMENT_NOTIFICATION = "AddTaskCommentNotification";
 	
+	public static final String ADD_GOAL_COMMENT_EMAIL = "AddGoalsCommentEmail";
+	public static final String ADD_GOAL_COMMENT_NOTIFICATION = "AddGoalCommentNotification";
+	
 	public static final String TIMESHEET_APPROVED_EMAIL_TOVENDOR = "TimesheetApprovedEmailToVendor";
 	public static final String TIMESHEET_REJECTED_EMAIL_TOVENDOR = "TimesheetRejectEmailToVendor";
 	public static final String LEAVE_CANCEL_EMAIL_TO_USER = "LeaveCancelEmailToUser";
@@ -1245,6 +1248,7 @@ public class Constants {
 	public static final String REPORT_FILTER_1_Month_Ago = "1_Month_Ago";
 	public static final String REPORT_FILTER_CURRENT_YEAR = "Current_Year";
 	public static final String CLIENT_REPORT = "clientReport";
+	public static final String VENDOR_REPORT = "vendorReport";
 	public static final String GENERAL = "General";
 	public static final Long TaskStatusID = 1069L;
 
@@ -1367,6 +1371,9 @@ public class Constants {
 	
 	public static final String IND_PAYROLL_PAYHEAD_DEDUCTION = "Deduction";
 	public static final String IND_PAYROLL_PAYHEAD_EARNINGS = "Earnings";
+	
+	public static final String TAXABLE = "Taxable";
+	public static final String NON_TAXABLE = "NonTaxable";
 	
 	public static final String IND_PAYROLL_PAYFREQUENCY_MONTHLY = "Monthly";
 	public static final String IND_PAYROLL_PAYFREQUENCY_WEEKLY = "Bi-Weekly";
