@@ -129,6 +129,7 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 			payrollPayhead.setApplicableFor(null);
 		}
 		
+		
 		if(StringUtils.isNotBlank(payrollPayheadDTO.getComponent())) {
 			payrollPayhead.setComponent(payrollPayheadDTO.getComponent());
 		}else {
@@ -188,6 +189,12 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 		}else {
 			payrollPayhead.setFormula(null);
 		}
+		if(StringUtils.isNotBlank(payrollPayheadDTO.getPtApplicable())) {
+			payrollPayhead.setPtApplicable(payrollPayheadDTO.getPtApplicable());
+		}else {
+			payrollPayhead.setPtApplicable("N");
+		}
+		
 		
 		payrollPayhead.setOrgLocationId(orgLocations);
 		payrollPayhead.setStatus(Constants.RECORD_ACTIVE);

@@ -11,7 +11,7 @@
 .popinnerdiv  {min-height: 100px; max-height: 450px; overflow-y:auto; }
 </style>
 
-<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
+<!-- <script type="text/javascript" src="jquery-1.2.6.min.js"></script> -->
 
 <script>
 $(document).ready(function(){

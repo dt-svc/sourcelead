@@ -3430,20 +3430,22 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public String getCandidatePanNumberByUserId(long userId) {
+	public String getCandidatePanNumberByUserId(long userId, Long id) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "select c.panNumber from Candidate c where c.consultantUser.id=" + userId;
-			List<String> panList = session.createQuery(query).list();
-			if(panList != null && !panList.isEmpty()) {
-				return panList.get(0);
+			String query = "from Candidate c where c.consultantUser.id=:userId and c.orgLocationId.id =:id";
+			Candidate pan = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("id", id)
+					.uniqueResult();
+			if (pan != null) {
+				return pan.getPanNumber();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-
+	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
@@ -3533,6 +3535,24 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return flag;
 	}
+
+	@Override
+	@Transactional
+	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate c where c.consultantUser.id=:userId and c.orgLocationId.id =:orgLocationId";
+			Candidate candidate = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocation.getId()).uniqueResult();
+			if (candidate != null) {
+				return commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getDateOfBirth());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 	
 	
 }

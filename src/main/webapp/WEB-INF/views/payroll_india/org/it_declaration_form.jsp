@@ -28,7 +28,7 @@
 									</option>
 								</c:forEach> --%>
 								<c:forEach items="${employeeList}" var="employee">
-									<option ${user.id == employee.user.id ? "selected='selected'" : ""} value="${employee.user.id}" data-id="${employee.user.id}" data-name="${employee.user.firstName.concat(' ' ).concat(employee.user.lastName)}" data-pan="${employee.panNumber != null ? employee.panNumber : ''}" data-associate_id="${employee.employeeId != null ? employee.employeeId : ''}">
+									<option ${user.id == employee.user.id ? "selected='selected'" : ""} value="${employee.user.id}" data-id="${employee.user.id}" data-name="${employee.user.firstName.concat(' ' ).concat(employee.user.lastName)}" data-pan="${employee.panNumber != null ? employee.panNumber : ''}" data-dob="${employee.dateOfBirth != null ? employee.dateOfBirth : ''}" data-associate_id="${employee.employeeId != null ? employee.employeeId : ''}">
 										${employee.user.firstName} ${employee.user.lastName}
 									</option>
 								</c:forEach>
@@ -54,7 +54,7 @@
 					<div class="col-md-5">
 						<label class="clearfix">Pan No</label>
 						<div class="clearfix">
-							<input type="text" class="form-control" readonly="readonly"
+							<input type="text" class="form-control" readonly="readonly" 
 								id="associatePAN" placeholder="PAN No">
 						</div>
 					</div>
@@ -68,6 +68,13 @@
 									<option ${year.value==true?"selected=selected":""} value="${year.key}">${year.key}</option>
 								</c:forEach>
 							</select>
+						</div>
+					</div>
+					<div class="col-md-5">
+						<label class="clearfix">Date of Birth</label>
+						<div class="clearfix">
+							<input type="text" class="form-control" readonly="readonly"
+								id="associateDOB" placeholder="Date Of Birth">
 						</div>
 					</div>
 					<div class="clearfix"></div>
