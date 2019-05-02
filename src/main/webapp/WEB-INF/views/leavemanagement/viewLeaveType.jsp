@@ -29,7 +29,8 @@
 		<div class="pull-right brud-crum">
 			<a
 				href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;
-			<a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave
+			 <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo;
+			 <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave
 				Configuration</a> &raquo; Leave Type
 		</div>
 	</section>

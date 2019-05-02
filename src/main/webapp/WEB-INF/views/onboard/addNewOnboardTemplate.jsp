@@ -20,7 +20,7 @@ width : 6% !important;
           <div class="pull-left">
             <h2>Onboard Template</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/onboardingTemplatesList'/>">Onboard Templates List</a> &raquo; Add Onboard Template </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; <a href="<c:url value='${appPath}/onboardingTemplatesList'/>">Onboard Templates List</a> &raquo; Add Onboard Template </div>
     </section>
     
     <div class="content-area content-new clearfix">

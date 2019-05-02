@@ -22,7 +22,8 @@
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="<c:url value='${appPath}/orgContractTemplate'/>"> Contract
+			&raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; 
+			        <a href="<c:url value='${appPath}/orgContractTemplate'/>"> Contract
 				Template List</a> &raquo; Add Contract Template
 		</div>
 	</section>
