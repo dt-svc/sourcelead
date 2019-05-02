@@ -539,7 +539,7 @@ function preventTabkey(e){
          </c:if>
          
          <sec:authorize access="hasAnyRole('ROLE_ADD_TICKET','ROLE_VIEW_TICKET')">
-			<li><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>" title="Ticket Management" ><i class="ticketMgIC"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+			<li><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>" title="Ticket Management"><i class="ticketMgIC"></i></a></li>
 		</sec:authorize>
 		
         <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
@@ -1676,9 +1676,9 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
     	 var input = (document.getElementById(locationId));
     	    var options = {
     	    		types: ['geocode'],
-    	        componentRestrictions: {
+    	        /* componentRestrictions: {
     	        	country: ["IN","US","AU","SG","GB","FR"]
-    	        }
+    	        } */
     	    };
     	    autocomplete = new google.maps.places.Autocomplete(input, options);
     }else{
