@@ -3526,6 +3526,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception {
 		return candidateDao.validateSsnNumber(ssnNumber, orgLocationId);
 	}
+
+	@Override
+	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
+		return candidateDao.getCandidateDateOfBirthByUserId(userId, orgLocation);
+	}
 	
 	
 }

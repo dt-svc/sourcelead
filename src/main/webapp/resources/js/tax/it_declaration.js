@@ -8,6 +8,7 @@ $(document).ready(function() {
 		$("#associateName").val($("#employeeSelect :selected").data("name"));
 		$("#associateId").val($("#employeeSelect :selected").data("associate_id"));
 		$("#associatePAN").val($("#employeeSelect :selected").data("pan"));
+		$("#associateDOB").val($("#employeeSelect :selected").data("dob"));
 	});
 	$("#saveBtn, #submitBtn").click(function() {
 		if ($('#itDeclarationForm').validate(false, validationSettings)) {
