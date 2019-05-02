@@ -212,7 +212,7 @@
 									<c:if test="${SourceLeadWeb_country == 'United States'}">
 										<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
 										<div class="clearfix text-center">
-											<h4> Us Payroll Configuration</h4>
+											<h4>Payroll Configuration</h4>
 										</div>
 									</c:if>
 								</a>
@@ -222,7 +222,7 @@
 
 										<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
 										<div class="clearfix text-center">
-											<h4>Ind Payroll Configuration</h4>
+											<h4>Payroll Configuration</h4>
 										</div>
 									</c:if>
 								</a>
