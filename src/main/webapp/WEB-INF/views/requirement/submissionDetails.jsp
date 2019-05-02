@@ -194,7 +194,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                if(json.candidate.fileUrl != null && json.candidate.fileUrl !='' && json.candidate.fileUrl !="undefined"){
                result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'"  alt="candidate" title="Candidate"></div>';
                }else{
-               result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="candidate" title="Candidate"></div>';
+               result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofileImg.jpg" alt="candidate" title="Candidate"></div>';
    
                }
                if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
@@ -261,11 +261,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + ' <div class="col-md-8 paddingRight">';
 		       result = result + '<ul class="list-unstyled can-perdt">';
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.requirementSubmissionTemplateFields.emailId+'</a></li>';
-		       if(json.requirementSubmissionTemplateFields.phoneNumber != null && json.requirementSubmissionTemplateFields.phoneNumber != '' && json.requirementSubmissionTemplateFields.phoneNumber != 'undefined'){
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.requirementSubmissionTemplateFields.phoneNumber+'</li>';
-		       }else{
-		    	result = result + '<li><i class="fa fa-phone"></i>---</li>';   
-		       }
 		       result = result + '<li><i class="fa fa-location-arrow"></i>';
 		       result = result +city +''+ state +''+ country
 		       result = result +'</li>';
