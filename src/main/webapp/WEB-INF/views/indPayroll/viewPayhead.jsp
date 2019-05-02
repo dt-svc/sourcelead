@@ -201,6 +201,16 @@
 							  </div>
 			              </div>
 		              </c:if>
+		              <c:if test="${!empty payrollPayhead.ptApplicable}">
+			              <div class="col-md-5 mb">
+			                  <div class="row">
+			                  <label class="col-md-4 control-label"><b>PT Applicable:</b></label>
+			                  <div class="col-md-8">
+			                      <span>${payrollPayhead.ptApplicable}</span>
+			                  </div>
+							  </div>
+			              </div>
+		              </c:if>
 		         </div>
 		      </div>
 			</div>
