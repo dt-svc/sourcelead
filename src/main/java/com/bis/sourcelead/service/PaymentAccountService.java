@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
+import com.bis.sourcelead.payroll.dto.AssociateBankErrorData;
 
 
 public interface PaymentAccountService {
@@ -18,9 +19,5 @@ public interface PaymentAccountService {
 	PaymentAccount getPaymentAccountById(Long id) throws Exception;
 	
 	PaymentAccount getPaymentAccountDetailsByCandidateId(Long candidateId) throws Exception;
-	
-	//List <PaymentAccount> getPaymentAccountDetailsByOrglocationId(Long OrgLocationId) throws Exception;
-	
-	IndAssociatePaymentAccountDTO saveImportBankDetails(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception;
-	
+
 }

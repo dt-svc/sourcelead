@@ -21,6 +21,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
@@ -155,15 +156,15 @@ import com.bis.sourcelead.service.RequirementInterviewerService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.docusign.esign.api.AuthenticationApi;
 import com.docusign.esign.api.EnvelopesApi;
 import com.docusign.esign.client.ApiClient;
@@ -207,6 +208,9 @@ public class EMailJobScheduler {
 	
 	@Value("${defaultFromEmailAddressForProd}")
 	private String defaultFromEmailAddressForProd;	
+	
+	 @Value("${env}")
+	 private String environment;
 	
 	@Autowired
 	JobSchedulerTestService jobSchedulerTestService;
@@ -470,14 +474,17 @@ public class EMailJobScheduler {
 	 * @Reason as this schedule job is blocking IPAddress in QA server, and anyhow we aren't using this functionality.
 	 *  	   So, commented for now. If needed will open later
 	 **/
-    /*@Scheduled(cron = "0 0/30 * 1/1 * ?") // Scheduled for every 30 Minutes.
+   // 
+	//@Scheduled(cron = "0/30 * * * * *")// Scheduled for every 30 seconds for testing need to comment after testing.
+	@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every 15 Minutes.
 	@Async
 	public void runJobSchedulerEmailJobParsingAtOrgLevel() { // reads the email configured at org level and parse the
 																// Jobs(attachments)in inbox folder.
 		// Saves the resumes at org level specific folder and updates the org level
 		// candidates table with parsed information.
-		logger.info("******************  Parsing resumes is Started each org level ! **********");
-		//System.out.println("****************** Parsing resumes is Started..!..! **********");
+		logger.info("******************  Parsing resumes is Started each org level environment value is ::: "+environment);
+		System.out.println("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
+		if(environment != null && !environment.trim().equalsIgnoreCase("local")) {
 		try {
 			List<Org> orgList = orgService.getOrgs();
 			User user = null;
@@ -490,7 +497,7 @@ public class EMailJobScheduler {
 					OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLoc.getId());
 
 					Long orgLocationId = loginOrgLocation.getId();
-					List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.JOB_PARSING);
+					List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.RESUME_PARSING, true);
 						File tempfolder = null;
 					for(EmailScenarioConfiguration email :  emailsList) {
 						//System.out.println(" Email id is :" + email.getEmailId());
@@ -518,7 +525,8 @@ public class EMailJobScheduler {
 			logger.error("*****************Exception caught while Job parsing shceduler *************"+e.getMessage());
 			e.printStackTrace();
 		}
-	}*/
+       }
+	}
 	
    @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
    //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
@@ -2798,7 +2806,9 @@ public class EMailJobScheduler {
 		/*
 		 * OrgLocations orgLocations = orgLocationsList.get(1);..for single org
 		 */
+		List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByEmailScenarioName(Constants.HOLIDAY_REMAINDER);
 		for (OrgLocations orgLocations : orgLocationsList) {
+			if(emailReminderList.stream().filter(e -> e.getOrgLocationsId().getId() == orgLocations.getId()).collect(Collectors.toList()).size() == 0) {
 			List<Holiday> holidayList = holidayService.getHolidaybyLocationIdAndFromdate(holidayStartDate, holidayEndDate, orgLocations.getId());
 			String holidayNames = "";
 			int i = 0;
@@ -2923,13 +2933,14 @@ public class EMailJobScheduler {
 				}
 			}
 		}
-	}
+	}}
 	
 	/**
 	 * @author Pavan Jampana
 	 * cron runs every day at 9:00 AM to remind the approver about pending leaves
 	 * @throws Exception  
 	 */
+//	@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
 	@Scheduled(cron = "0 0 9 1/1 * ?")
 //	@Scheduled(cron = "	0 0/1 * 1/1 * ?")
 //	@Scheduled(cron = "0/30 * * * * *")
@@ -2940,7 +2951,13 @@ public class EMailJobScheduler {
 		try {
 			
 			List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocations();
+			
+			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByEmailScenarioName(Constants.APPROVE_PENDING_LEAVES);
+				
 			for(OrgLocations orgLocation : orgLocationsList){
+				
+				if(emailReminderList.stream().filter(e -> e.getOrgLocationsId().getId() == orgLocation.getId()).collect(Collectors.toList()).size() == 0) {
+					
 				List<LeaveApproveHierarchy> lahList = leaveService.getAllLeaveApproversList(orgLocation.getId());
 				
 				Collection<LeaveApproveHierarchy> filteredLahList = lahList.stream().<Map<Long, LeaveApproveHierarchy>> collect(HashMap::new,(m,e)->m.put(e.getApproverUserId().getId(), e), Map::putAll).values();
@@ -3031,6 +3048,7 @@ public class EMailJobScheduler {
 						
 					}
 				}
+			}
 			}
 			
 			sendProbationPeriodMail();
@@ -3966,9 +3984,11 @@ public class EMailJobScheduler {
 				Constants.EMAIL_TO_IMMIGRATION_BENEFICIARY, new ArrayList<EmailAttachment>());
 	}
 	
-	
+	/**
+	 * Calculating Monthly Leaves
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "0 3 0 1 1/1 ?")
-//	@Scheduled(cron = "0 0/3 * 1/1 * ?")
 	@Async
 	public void calculateMonthlyLeaves() throws Exception 
 	{
@@ -3989,6 +4009,10 @@ public class EMailJobScheduler {
 		}
 	}
 	
+	/**
+	 * calculate Quarterly Leaves
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "0 3 0 1 1/3 ?")
 	@Async
 	public void calculateQuarterlyLeaves() throws Exception
@@ -4006,6 +4030,10 @@ public class EMailJobScheduler {
 		}
 	}
 	
+	/**
+	 * calculate Half Yearly Leaves
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "0 3 0 1 1/6 ?")
 	@Async
 	public void calculateHalfYearlyLeaves() throws Exception
@@ -4023,6 +4051,10 @@ public class EMailJobScheduler {
 		}
 	}
 	
+	/**
+	 * calculate Yearly Leaves
+	 * @throws Exception
+	 */
 	@Scheduled(cron = "0 3 0 1 1 ?")
 //	@Scheduled(cron = "0 0/3 * 1/1 * ?")
 	@Async
@@ -4393,9 +4425,9 @@ public class EMailJobScheduler {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
+	//@SuppressWarnings("deprecation")
 	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
-   // @Scheduled(cron = "0 * * * * *") // Scheduled for every minute
+    //@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
 	@Async
 	public void runLeaveHolidaySchedulerEmailReminderAtOrgLevel() {
 		try {
@@ -4424,7 +4456,7 @@ public class EMailJobScheduler {
 							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 							String updatedDateStr = dateFormat.format(calendar.getTime());
 							Date updatedDate = dateFormat.parse(updatedDateStr);
-
+ 
 							DateTime zoned = new DateTime(updatedDate);
 							DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
 							DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
@@ -4573,8 +4605,7 @@ public class EMailJobScheduler {
 													.append("/").append("leaveManagementReports").toString();
 											emailScenerioUtil.sendNotification(actionLink,
 													orgLocations.getOrg().getUser(), user, orgLocations,
-													notificationScenario, new HashMap<String, String>());
-											
+													notificationScenario, new HashMap<String, String>()); 
 											// calling the saveCroneTracker method
 											saveCronTracker("ApplicantHolidayRemainder","runLeaveHolidaySchedulerEmailReminderAtOrgLevel","0 0 0/1 1/1 * ?","Scheduled for every one hour");
 										}
@@ -4664,7 +4695,7 @@ public class EMailJobScheduler {
 													emailReminder.getOrgLocationsId().getId(), "PENDING", updatedDate);
 								}else if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
 									userLeaveLIst = leaveService
-											.getAllLeavesByLocationIdAndStatusAndAppliedDate(
+											.getAllLeavesByLocationIdAndStatusAndLeaveStartDate(
 													emailReminder.getOrgLocationsId().getId(), "APPROVED", updatedDate);
 								}
 								
@@ -4702,10 +4733,13 @@ public class EMailJobScheduler {
 											LeaveType = pendingLeave.getLeaveType().getName();
 										}
 										if (" " + pendingLeave.getNumberOfDays() != null) {
-											LeaveDuration = " " + pendingLeave.getNumberOfDays();
+											java.sql.Date sqlLeaveStartDate = new java.sql.Date(pendingLeave.getFromDate().getTime());
+											java.sql.Date sqlLeaveEndDate = new java.sql.Date(pendingLeave.getToDate().getTime());
+											LeaveDuration = " " + sqlLeaveStartDate + " to " + sqlLeaveEndDate;
 										}
 										if (" " + pendingLeave.getCreatedDate() != null) {
-											leaveApplyDate = " " + pendingLeave.getCreatedDate();
+											java.sql.Date sqlappliedDate = new java.sql.Date(pendingLeave.getCreatedDate().getTime());
+											leaveApplyDate = " " + sqlappliedDate;
 										}
 
 										approvePendingInfoGrid.append("<tr>");
@@ -4751,6 +4785,7 @@ public class EMailJobScheduler {
 											if (StringUtils.isNotBlank(toUser.getLastName())) {
 												emailMessage.setLastName(toUser.getLastName());
 											}
+											
 											emailMessage.setToEmail(toUser.getEmail());
 											emailMessage.setFromEmail("info@sourcelead.com");
 											emailMessage.setFromName("Sourcelead Team");
@@ -4760,7 +4795,7 @@ public class EMailJobScheduler {
 											emailMessage.setOrgLocationId(emailReminder.getOrgLocationsId().getId());
 
 											// setting the class filed values
-
+											java.sql.Date sqlDateOfLeave = new java.sql.Date(pendingLeave.getFromDate().getTime());
 											Map<String, String> globalVarsMap = new HashMap<String, String>();
 											globalVarsMap.put("Manager", Manager);
 											globalVarsMap.put("ApplyLeaveDate", leaveApplyDate);
@@ -4769,7 +4804,63 @@ public class EMailJobScheduler {
 											globalVarsMap.put("noOfDays",
 													emailReminderHierarchy.getReminderdays() + " days");
 											globalVarsMap.put("applicantsInfo", approvePendingInfoGrid.toString());
+											globalVarsMap.put("DateOfLeave", sqlDateOfLeave.toString());
 
+											// Setting the approveLeave
+										  StringBuilder linkBuild = new StringBuilder();
+										  globalVarsMap.put("approveLeaveLink", linkBuild.append("<a href='")
+										  .append(sourceleadUrl).append("/").append("employeeRequestedLeaves")
+										  .append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Approve Leave</div></a>"
+										  ) .toString());
+										 
+
+											List<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+											if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
+												commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,
+														emailReminder.getOrgLocationsId().getOrg(),
+														emailReminder.getOrgLocationsId(), Constants.APPROVE_PENDING_LEAVES,
+														attachmentList);
+											}
+											
+											if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+											commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, emailReminder.getOrgLocationsId().getOrg(), emailReminder.getOrgLocationsId(), Constants.EMPLOYEE_ON_LEAVE, attachmentList);
+											}
+
+										} // end for loop
+
+										// sending the mail to the reporting manager
+										for(LeaveApproveHierarchy lah : pendingLeave.getApproverHierarchyList()){
+											 
+											User toUser= lah.getApproverUserId();
+											EmailMessage emailMessage = new EmailMessage();
+											String Manager = "";
+											if (StringUtils.isNotBlank(toUser.getFirstName())) {
+												emailMessage.setFirstName(toUser.getFirstName());
+												Manager = toUser.getFullName();
+											}
+											if (StringUtils.isNotBlank(toUser.getLastName())) {
+												emailMessage.setLastName(toUser.getLastName());
+											}
+											emailMessage.setToEmail(toUser.getEmail());
+											emailMessage.setFromEmail("info@sourcelead.com");
+											emailMessage.setFromName("Sourcelead Team");
+											emailMessage.setEmailType(leaveStatus);
+											emailMessage.setCreatedBy(
+													emailReminder.getOrgLocationsId().getUser().getUserCode());
+											emailMessage.setOrgLocationId(emailReminder.getOrgLocationsId().getId());
+
+											// setting the class filed values
+											
+											java.sql.Date sqlDateOfLeave = new java.sql.Date(pendingLeave.getFromDate().getTime());	
+											Map<String, String> globalVarsMap = new HashMap<String, String>();
+											globalVarsMap.put("Manager", Manager);
+											globalVarsMap.put("ApplyLeaveDate", leaveApplyDate);
+											globalVarsMap.put("NoOfApprovePendingLeaves",
+													String.valueOf(userLeaveLIst.size()));
+											globalVarsMap.put("noOfDays",
+													emailReminderHierarchy.getReminderdays() + " days");
+											globalVarsMap.put("applicantsInfo", approvePendingInfoGrid.toString());
+											globalVarsMap.put("DateOfLeave", sqlDateOfLeave.toString());	
 											// Setting the approveLeave
 
 											StringBuilder linkBuild = new StringBuilder();
@@ -4778,27 +4869,27 @@ public class EMailJobScheduler {
 													.append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Approve Leave</div></a>")
 													.toString());
 
-											// globalVarsMap.put("approveLeaveLink", approveLink.append("<a
-											// href='").append(sourceleadUrl).append("/").append("employeeRequestedLeaves").append("</a>").toString());
 
 											List<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
-											commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,
-													emailReminder.getOrgLocationsId().getOrg(),
-													emailReminder.getOrgLocationsId(), Constants.APPROVE_PENDING_LEAVES,
-													attachmentList);
+											if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
+												commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,
+														emailReminder.getOrgLocationsId().getOrg(),
+														emailReminder.getOrgLocationsId(), Constants.APPROVE_PENDING_LEAVES,
+														attachmentList);
+											}
 											
 											if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
 											commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, emailReminder.getOrgLocationsId().getOrg(), emailReminder.getOrgLocationsId(), Constants.EMPLOYEE_ON_LEAVE, attachmentList);
-											}
-
-										} // end for loop
-
+	
+										}
+										
 									}
 
 								}
 						}
 					}
 				}
+			}
 			}
 		} catch (Exception e) {
 			logger.error(

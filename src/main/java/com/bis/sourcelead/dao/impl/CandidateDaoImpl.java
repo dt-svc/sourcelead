@@ -49,6 +49,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -2427,7 +2428,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, Long orgId,
-			String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO, Map<String, Date> dateValue, Long userId) {
+			String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO, Map<String, Date> dateValue,Date[] checkedDateArray) {
 		Session session = this.sessionFactory.getCurrentSession();
 		StringBuilder query1 = new StringBuilder("");
 		List<CandidateMarketPlace> queryList = null;
@@ -2465,53 +2466,52 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
 			if (candidateMarketPlaceDTO.getStatus() != null
 					&& candidateMarketPlaceDTO.getStatus().equals("" + Constants.CANDIDATE_ACTIVE)) {
-				statusQuery.append(" and marketplace.candidateId.status = 1 ");
+				statusQuery.append(" and (marketplace.candidateId.status = 1) ");
 			}
 			if (candidateMarketPlaceDTO.getStatus() != null
 					&& candidateMarketPlaceDTO.getStatus().equals("" + Constants.CANDIDATE_IN_ACTIVE)) {
-				statusQuery.append(" and marketplace.candidateId.status = 0 ");
+				statusQuery.append(" and (marketplace.candidateId.status = 0) ");
 			}
 			if (candidateMarketPlaceDTO.getStatus() != null
 					&& candidateMarketPlaceDTO.getStatus().equals("" + Constants.CANDIDATE_ALL)) {
-				statusQuery.append(" and marketplace.candidateId.status = 0 or marketplace.candidateId.status = 1 ");
+				statusQuery.append(" and ((marketplace.candidateId.status = 0) or (marketplace.candidateId.status = 1)) ");
 			}
-			if (!dateValue.isEmpty()) {
+			if (checkedDateArray != null && checkedDateArray.length > 0) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(checkedDateArray[0]);
+				String customEnddate = dateFormat.format(checkedDateArray[1]);
+				dateQuery.append("and ( DATE_FORMAT(marketplace.updatedDate, '%Y-%m-%d') between '"
+						+ customStartdate + "' and '" + customEnddate + "') ");
+			}
+			if (!dateValue.isEmpty() && checkedDateArray.length == 0) {
 				dateQuery.append(
 						" and (marketplace.updatedDate BETWEEN :endDate AND :startDate) OR (marketplace.updatedDate = :endDate) OR (marketplace.updatedDate = :startDate) ");
 			}
 			if (candidateMarketPlaceDTO != null && !candidateMarketPlaceDTO.getEmploymentType().equals("")) {
-				employmentTypeQuery.append(" and marketplace.candidateId.designationType IN (:employmentList) ");
+				employmentTypeQuery.append(" and (marketplace.candidateId.designationType IN (:employmentList)) ");
 			}
 			if (candidateMarketPlaceDTO != null && !candidateMarketPlaceDTO.getNoticePeriod().equals("")) {
 				noticePeriodQuery
-						.append(" and marketplace.candidateId.noticePeriod IN (:noticePeriodList) ");
+						.append(" and (marketplace.candidateId.noticePeriod IN (:noticePeriodList)) ");
 			}
 			if (candidateMarketPlaceDTO != null && !candidateMarketPlaceDTO.getSkillsName().equals("")) {
-				 skillsQuery.append(" and marketplace.candidateId.skillsName IN (:skillsList) ");
+				 skillsQuery.append(" and (marketplace.candidateId.skillsName IN (:skillsList)) ");
 			}
 			if (candidateMarketPlaceDTO != null
 					&& candidateMarketPlaceDTO.getIsFavourite().equals(Constants.ALL_RECORDS)) {
-				typeQuery.append(" and marketplace.candidateId.isFavourite = 0 ");
+				typeQuery.append(" and (marketplace.candidateId.isFavourite = 0) ");
 			}
 			if (candidateMarketPlaceDTO != null
 					&& candidateMarketPlaceDTO.getIsFavourite().equals(Constants.Favourite)) {
-				typeQuery.append(" and marketplace.candidateId.isFavourite = 1 ");
+				typeQuery.append(" and (marketplace.candidateId.isFavourite = 1) ");
 			}
 			if (candidateMarketPlaceDTO != null
 					&& candidateMarketPlaceDTO.getIsAssociate().equals(Constants.Candidates)) {
-				candidateTypeQuery.append(" and marketplace.candidateId.isAssociate = 'N' ");
+				candidateTypeQuery.append(" and (marketplace.candidateId.isAssociate = 'N') ");
 			}
 			if (candidateMarketPlaceDTO != null
 					&& candidateMarketPlaceDTO.getIsAssociate().equals(Constants.Associates)) {
-				candidateTypeQuery.append(" and marketplace.candidateId.isAssociate = 'Y' ");
-			}
-			if (candidateMarketPlaceDTO != null
-					&& candidateMarketPlaceDTO.getCreatedBy().equals("myCandidates")) {
-				createdByQuery.append(" and marketplace.createdBy.id = :userId ");
-			}
-			if (candidateMarketPlaceDTO != null
-					&& candidateMarketPlaceDTO.getCreatedBy().equals("allCandidates")) {
-				createdByQuery.append(" and marketplace.orgLocationId.id = :candidateOrgLocId ");
+				candidateTypeQuery.append(" and (marketplace.candidateId.isAssociate = 'Y') ");
 			}
 		}
 		if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
@@ -2538,10 +2538,11 @@ public class CandidateDaoImpl implements CandidateDao {
 		if (searchCandidateIds.length == 0 && orgId != 0 && candidateLocation.equals("") && searchValue.equals("")) {
 			queryList = new ArrayList<>();
 		} else {
-			String listQuery = "from CandidateMarketPlace marketplace  where  marketplace.status = 1 and marketplace.candidateMarketStatus = 'Active' and marketplace.orgLocationId.id <> :candidateOrgLocId and marketplace.candidateId.isSharedInMarketplace = 'Y' and marketplace.candidateId.email not in (select Email from CandidateMarketCart cart where cart.targetOrgLocationId = :candidateOrgLocId and cart.cartStatus = 'Purchased')";
-			Query queryObject = session.createQuery(listQuery + query1 + query2+
-					statusQuery + dateQuery + employmentTypeQuery + noticePeriodQuery +
-					skillsQuery + typeQuery + candidateTypeQuery + createdByQuery).setParameter("candidateOrgLocId", orgId);
+			String listQuery = "from CandidateMarketPlace marketplace  where  (marketplace.status = 1) and (marketplace.candidateMarketStatus = 'Active') and (marketplace.orgLocationId.id <> :candidateOrgLocId) and (marketplace.candidateId.isSharedInMarketplace = 'Y') ";
+			String emailQuery = "and (marketplace.candidateId.email not in (select Email from CandidateMarketCart cart where cart.targetOrgLocationId = :candidateOrgLocId and cart.cartStatus = 'Purchased')) ";
+			Query queryObject = session.createQuery(listQuery + query1 + query2 + emailQuery
+					+ statusQuery + dateQuery + employmentTypeQuery + noticePeriodQuery +
+					skillsQuery + typeQuery + candidateTypeQuery + createdByQuery ).setParameter("candidateOrgLocId", orgId);
 					
 			if (searchCandidateIds.length != 0 && !searchCandidateIds[0].equals("undefined")) {
 				queryObject.setParameterList("searchCandidateIds", searchCandiIdsLong);
@@ -2555,14 +2556,6 @@ public class CandidateDaoImpl implements CandidateDao {
 				}
 				if (!candidateMarketPlaceDTO.getSkillsName().equals("")) {
 					queryObject.setParameterList("skillsList", skillsList);
-				}
-				if (candidateMarketPlaceDTO != null
-						&& candidateMarketPlaceDTO.getCreatedBy().equals("myCandidates")) {
-					queryObject.setParameter("userId", userId);
-				}
-				if (candidateMarketPlaceDTO != null
-						&& candidateMarketPlaceDTO.getCreatedBy().equals("allCandidates")) {
-					queryObject.setParameter("candidateOrgLocId", orgId);
 				}
 			if(!dateValue.isEmpty()){
 				Iterator it = dateValue.entrySet().iterator();
@@ -2664,7 +2657,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole,
-			OrgLocations orgLocation, String creationStartDate, String creationEndDate, Map<String, Date> dateValue, String searchValue) {
+			OrgLocations orgLocation, String creationStartDate, String creationEndDate, Date[] checkedDateArray, String searchValue) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "";
@@ -2678,26 +2671,33 @@ public class CandidateDaoImpl implements CandidateDao {
 				query1.append(" or (marketCartview.skillsName like '%" + searchValue + "%' ))");
 			}
 			StringBuilder dateQuery = new StringBuilder("");
-			if(!dateValue.isEmpty()){
-				dateQuery.append(" and (marketCartview.createdDate >= :endDate and marketCartview.createdDate <= :startDate) ");
+			if (creationStartDate != null && creationEndDate != null && !"".equalsIgnoreCase(creationStartDate)
+					&& !"".equalsIgnoreCase(creationEndDate)) {
+				if (creationStartDate.contains("/") || creationEndDate.contains("/")) {
+					creationStartDate = creationStartDate.replaceAll("/", "-");
+					creationEndDate = creationEndDate.replaceAll("/", "-");
+				}
+				Date formattedStartdate = new ConversionUtil().getDateFromString(creationStartDate);
+				Date formattedEnddate = new ConversionUtil().getDateFromString(creationEndDate);
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(formattedStartdate);
+				String customEnddate = dateFormat.format(formattedEnddate);
+				dateQuery.append(" and ( DATE_FORMAT(marketCartview.createdDate, '%Y-%m-%d') between '" + customStartdate
+						+ "' and '" + customEnddate + "') ");
+			}
+			StringBuilder checkBoxQuery = new StringBuilder("");
+			if (checkedDateArray != null && checkedDateArray.length > 0) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(checkedDateArray[0]);
+				String customEnddate = dateFormat.format(checkedDateArray[1]);
+				checkBoxQuery.append("and ( DATE_FORMAT(marketCartview.createdDate, '%Y-%m-%d') between '"
+						+ customStartdate + "' and '" + customEnddate + "') ");
 			}
 			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId and marketCartview.cartStatus = 'In_Cart'";
-			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + query1)
+			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + checkBoxQuery + query1)
 					.setLong("orgLocationId", orgLocation.getId());
 			if (!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
 				queryObj.setLong("createdByuser", user.getId());
-			}
-			if(!dateValue.isEmpty()){
-				Iterator it = dateValue.entrySet().iterator();
-			    while (it.hasNext()) {
-			        Map.Entry pair = (Map.Entry)it.next();
-			        if(pair.getKey().equals("fromDate")){
-			        	queryObj.setDate("startDate", dateValue.get("fromDate"));
-			        }
-			        if(pair.getKey().equals("toDate")){
-			        	queryObj.setDate("endDate", dateValue.get("toDate"));
-			        }
-			    }
 			}
 			@SuppressWarnings("unchecked")
 			List<CandidateMarketPlaceCartView> candidatesList = queryObj.list();
@@ -2714,6 +2714,8 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 	}
 
+	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Boolean deleteCandidateFromMarketcartByCandidateUuid(String candidateUuid) {
@@ -2997,7 +2999,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(Long id, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate, String purchaseOrderToDate, Map<String, Date> dateValue) throws Exception{
 		
 		try {
-			Session session = this.sessionFactory.getCurrentSession();
+			Session session = this.sessionFactory.getCurrentSession();   
 			StringBuilder queryBuilder2 = new StringBuilder("");
 			StringBuilder dateQuery1 = new StringBuilder();
 			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
@@ -3011,13 +3013,13 @@ public class CandidateDaoImpl implements CandidateDao {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
 				if(sortColumnName.equalsIgnoreCase("totalPrice")){
 					queryBuilder2.append(" order by cmpth." + sortColumnName + " " + marketplacePurchaseSalesDTO.getSortOrder());
+					
 				}else{
-					queryBuilder2.append(" order by cmpth.id " + marketplacePurchaseSalesDTO.getSortOrder());
+					queryBuilder2.append(" order by cmpth. " + sortColumnName + " " + marketplacePurchaseSalesDTO.getSortOrder());
 				}
 			}
 			}
-			
-			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			   Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
 			   Matcher matcher = pattern.matcher(marketplacePurchaseSalesDTO.getSearchValue());
 			   java.sql.Date sqlDate = null;
 			    if(matcher.matches() == true) {
@@ -3051,8 +3053,8 @@ public class CandidateDaoImpl implements CandidateDao {
 				
 			String query="from MarketplacePurchaseOrder cmpth where cmpth.orgLocationId.id = :orgLocationId "+query1+"";
 			String countQuery = "select count(*) from MarketplacePurchaseOrder cmpth  where  cmpth.orgLocationId =:orgLocationId "+query1+"";
-			Query qeury =  session.createQuery(query + dateQuery1.toString()).setLong("orgLocationId", id);
-						Query q = session.createQuery(countQuery + dateQuery1.toString()).setLong("orgLocationId", id);
+			Query qeury =  session.createQuery(query + dateQuery1.toString()+ queryBuilder2).setLong("orgLocationId", id);
+						Query q = session.createQuery(countQuery + dateQuery1.toString() + queryBuilder2 ).setLong("orgLocationId", id);
 						if(!dateValue.isEmpty()){
 							Iterator it = dateValue.entrySet().iterator();
 						    while (it.hasNext()) {
@@ -3089,7 +3091,7 @@ public class CandidateDaoImpl implements CandidateDao {
 					formattedDate =  commonUtil.dateStrFromOrgDateFormatter("dd-MM-yyyy", purchase.getOrderDate());
 					purchaseOrderDto.setOrderDate(formattedDate);
 					purchaseOrderDtoList.add(purchaseOrderDto);
-					}
+					}     
 				}
 			responseList.setData(purchaseOrderDtoList);
 			return responseList;
@@ -3144,9 +3146,9 @@ public class CandidateDaoImpl implements CandidateDao {
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
 				if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
-					queryEndBuilder2.append(" order by salesOrder.orderDate "+marketplacePurchaseSalesDTO.getSortOrder());
+					queryEndBuilder2.append(" order by salesOrder.totalResumePrice "+marketplacePurchaseSalesDTO.getSortOrder());
 				}else{
-					queryEndBuilder2.append(" order by salesOrder.id "+marketplacePurchaseSalesDTO.getSortOrder());
+					queryEndBuilder2.append(" order by salesOrder." + sortColumnName + " "+marketplacePurchaseSalesDTO.getSortOrder());
 				}
 			}
 			}
@@ -3192,7 +3194,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				salesOrderDto.setTotalresume(sales.getNoOfResumes());
 				salesOrderDto.setTotalPrice(sales.getTotalResumePrice());
 				salesOrderDto.setCandidateName(sales.getCandidateMarketPlace().getCandidateId().getFullName());
-				salesOrderDtoList.add(salesOrderDto);
+ 				salesOrderDtoList.add(salesOrderDto);
 				}
 			}
 			responseList.setData(salesOrderDtoList);
@@ -3231,6 +3233,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		List<CandidateMarketWallet> candidateMarketWallets = null;
 		ResponseList<MarketplaceWalletDTO> responseList = new ResponseList<>();
 		try {
+			StringBuilder queryBuilder1 = new StringBuilder();
 
 			StringBuilder query1 = new StringBuilder("");
 			if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
@@ -3246,15 +3249,18 @@ public class CandidateDaoImpl implements CandidateDao {
 				dateValueTypeQuery.append(" and (cmwallet.transactionDate BETWEEN :endDate AND :startDate) OR (cmwallet.transactionDate = :endDate) OR (cmwallet.transactionDate = :startDate) ");
 			}
 			
-			String sortingQry = "";
-			if (StringUtils.isNotBlank(marketplaceWalletDTO.getSortColumn())) {
-				String sortColumnName = marketplaceWalletDTO.getSortColumn();
-				if(sortColumnName.equalsIgnoreCase("marketPrice")){
-					sortingQry = " order by cmwallet." + sortColumnName + " " + marketplaceWalletDTO.getSortOrder();
+			if(marketplaceWalletDTO != null){
+				if (StringUtils.isNotBlank(marketplaceWalletDTO.getSortColumn())) {
+					String sortColumnName = marketplaceWalletDTO.getSortColumn();
+					if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
+						queryBuilder1.append(" order by cmwallet.totalResumePrice "+marketplaceWalletDTO.getSortOrder());
+					}else{
+						queryBuilder1.append(" order by cmwallet." + sortColumnName + " "+marketplaceWalletDTO.getSortOrder());
+					}
 				}
-			}
-			String  listQuery = "from CandidateMarketWallet cmwallet  where  cmwallet.orgLocationId.id =:orgLocationId  "+query1+"  "+transactionTypeQuery+" "+dateValueTypeQuery+" "+sortingQry+"";
-			String 	listQueryCount = "select count(*) from CandidateMarketWallet cmwallet  where  cmwallet.orgLocationId.id =:orgLocationId  "+query1+" "+transactionTypeQuery+" "+dateValueTypeQuery+" "+sortingQry+"";
+				}
+			String  listQuery = "from CandidateMarketWallet cmwallet  where  cmwallet.orgLocationId.id =:orgLocationId  "+query1+"  "+transactionTypeQuery+" "+dateValueTypeQuery+" "+queryBuilder1+"";
+			String 	listQueryCount = "select count(*) from CandidateMarketWallet cmwallet  where  cmwallet.orgLocationId.id =:orgLocationId  "+query1+" "+transactionTypeQuery+" "+dateValueTypeQuery+" "+queryBuilder1+"";
 			Query hqlQuery = session.createQuery(listQuery).setFirstResult(marketplaceWalletDTO.getStart()).setMaxResults(marketplaceWalletDTO.getLength()).setLong("orgLocationId", marketplaceWalletDTO.getOrgLocationId());
 			Query hqlQuery1 = session.createQuery(listQueryCount).setLong("orgLocationId", marketplaceWalletDTO.getOrgLocationId());
 			if(transactionType != null && !"".equalsIgnoreCase(transactionType)){
@@ -3407,4 +3413,128 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllAssociateByLocation(Long orgLocationId) {	
+		try {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candi  where candi.orgLocationId.id =:orgLocationId  and candi.isAssociate ='Y' ";
+		List<Candidate> can = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		return can;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;	
+      }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String getCandidatePanNumberByUserId(long userId, Long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate c where c.consultantUser.id=:userId and c.orgLocationId.id =:id";
+			Candidate pan = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("id", id)
+					.uniqueResult();
+			if (pan != null) {
+				return pan.getPanNumber();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.parentCandidateId.id=:candidateId and can.designationType = '"+Constants.OFFSHORE_C2C+"'";
+		List<Candidate> list = session.createQuery(query).setLong("candidateId", candidateId).list();
+		return list;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		List<Candidate> panNumberList =  session.createQuery(query) .setString("panNumber", panNumber).setLong("orgLocationId", orgLocationId).list();
+		Candidate can = null;
+		if(panNumberList != null && !panNumberList.isEmpty())
+		{
+			can = (Candidate) panNumberList.iterator().next();
+		}
+		return can;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId";
+		List<Candidate> panNumbersList = session.createQuery(query).setString("panNumber", panNumber).setLong("orgLocationId", orgLocationId).list();
+		if (panNumbersList != null && panNumbersList.size() > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		List<Candidate> aadharNumberList =  session.createQuery(query) .setString("aadharNumber", aadharNumber).setLong("orgLocationId", orgLocationId).list();
+		Candidate can = null;
+		if(aadharNumberList != null && !aadharNumberList.isEmpty())
+		{
+			can = (Candidate) aadharNumberList.iterator().next();
+		}
+		return can;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from Candidate can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId";
+		List<Candidate> aadharNumberList = session.createQuery(query).setString("aadharNumber", aadharNumber).setLong("orgLocationId", orgLocationId).list();
+		if (aadharNumberList != null && aadharNumberList.size() > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.ssnNumber = :ssnNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		List<Candidate> ssnNumberList =  session.createQuery(query) .setString("ssnNumber", ssnNumber).setLong("orgLocationId", orgLocationId).list();
+		Candidate can = null;
+		if(ssnNumberList != null && !ssnNumberList.isEmpty())
+		{
+			can = (Candidate) ssnNumberList.iterator().next();
+		}
+		return can;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from Candidate can where can.ssnNumber = :ssnNumber and can.orgLocationId=:orgLocationId";
+		List<Candidate> ssnNumberList = session.createQuery(query).setString("ssnNumber", ssnNumber).setLong("orgLocationId", orgLocationId).list();
+		if (ssnNumberList != null && ssnNumberList.size() > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+	
+	
 }

@@ -64,6 +64,7 @@ import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
@@ -1137,12 +1138,10 @@ public class CandidateRestController {
 			HttpServletRequest request) throws Exception {
 		ResponseList<MarketplacePurchaseSalesDTO> res = new ResponseList<>();
 		logger.debug("inside PurchaseOrderList  controller =========>");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		marketplacePurchaseSalesDTO.setOrglocationId(orgLocations.getId());
 		try {
-			String[] tableColumns = { "orderNo", "createdDate", "companyName", "totalResumes", "totalPrice",
-					"discount" };
+			String[] tableColumns = { "orderNo", "createdDate", "companyName", "totalResumes", "totalPrice","serviceFee","discount","grandTotal","paymentStatus" };
 			int sortColumnIndex = -1;
 			String sortColumnOrder = "desc";
 			if (marketplacePurchaseSalesDTO.getOrder() != null && !marketplacePurchaseSalesDTO.getOrder().isEmpty()) {
@@ -1513,7 +1512,7 @@ public class CandidateRestController {
 			marketplaceWalletDTO.setOrgLocations(orgLocations);
 			logger.debug("inisde getWalletList  conroller =========> --> ");
 			try {
-				String[] tableColumns = { "openDate", "orderNo", "totalPrice"};
+				String[] tableColumns = { "transactionId", "transactionDate", "description","amount","paymentStatus"};
 																															
 				// entity names
 				int sortColumnIndex = -1; // by default sorting using updated date
@@ -1537,7 +1536,57 @@ public class CandidateRestController {
 			return marketWalletDTOList;
 		}
 	    
+	    @RequestMapping(value = { "/app/validatePanNumber" })
+		public Boolean validateLcaNumber(
+				@RequestParam(value = "panNumber", required = false) String panNumber,@RequestParam(value = "candidateId", required = false) Long candidateId,
+				HttpServletRequest request)
+				throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate can = null;
+			if (null != candidateId) {
+				can = candidateService.getCandidateDetailsByPanNumberAndId(panNumber, orgLocations.getId());
+			}
+			Boolean flag = false;
+			if (can == null) {
+				flag = candidateService.validatePanNumber(panNumber, orgLocations.getId());
+			}
+			return flag;
+		}  
 	    
+	    
+	    @RequestMapping(value = { "/app/validateAadharNumber" })
+		public Boolean validateAadharNumber(
+				@RequestParam(value = "aadharNumber", required = false) String aadharNumber,@RequestParam(value = "candidateId", required = false) Long candidateId,
+				HttpServletRequest request)
+				throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate can = null;
+			if (null != candidateId) {
+				can = candidateService.getCandidateDetailsByAadharNoAndId(aadharNumber, orgLocations.getId());
+			}
+			Boolean flag = false;
+			if (can == null) {
+				flag = candidateService.validateAadharNumber(aadharNumber, orgLocations.getId());
+			}
+			return flag;
+		}  
+	    
+	    @RequestMapping(value = { "/app/validateSsnNumber" })
+		public Boolean validateSsnNumber(
+				@RequestParam(value = "ssnNumber", required = false) String ssnNumber,@RequestParam(value = "candidateId", required = false) Long candidateId,
+				HttpServletRequest request)
+				throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Candidate can = null;
+			if (null != candidateId) {
+				can = candidateService.getCandidateDetailsBySsnNoAndId(ssnNumber, orgLocations.getId());
+			}
+			Boolean flag = false;
+			if (can == null) {
+				flag = candidateService.validateSsnNumber(ssnNumber, orgLocations.getId());
+			}
+			return flag;
+		}  
 
 }
 

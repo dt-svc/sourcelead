@@ -106,6 +106,8 @@ $(document).ready(function(){
 		
 		<div class="candidate_wrap_table datatable_filter">
 	                 <div id="directDepositReportDIV"></div>
+	                 <div id="popUp"></div>
+	                 <input type="hidden" id="directDepositDataLength" value="0"/>
          </div>
        
        </div>
@@ -178,13 +180,7 @@ $(document).ready(function(){
       <!-- Content Area Ends--> 
   </section>
   
-  <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-            });
-        </script> 
+  
 
 <script type="text/javascript">
 			var config = {
@@ -296,6 +292,7 @@ function checkDirectDepositReportsList(url) {
 	$("#liveChecks").text(0);
 	$("#directDepositReportDIV").append(result);
 	directDepositData(url);
+	$("#directDepositDataLength").val(0);
 
 }
 
@@ -329,7 +326,7 @@ function directDepositData(url) {
 									"data" : "empId",
 									"sortable": false,
 									"render" : function(data, type, opt,meta) {
-										
+										$("#directDepositDataLength").val(1);
 										var result = "";
 										if(opt.employeeId != null && opt.employeeId != '' && opt.employeeId != 'undefined'){
 											result = result+ ' <td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
@@ -433,7 +430,31 @@ function directDepositData(url) {
      getFreqdates("freqStartDate", "freqEndDate");
      var  freqStartDate = $("#freqStartDate").val();
      var freqEndDate = $("#freqEndDate").val();
-	 window.location.href = sourceleadUrl+"/exportToPdfCheckRegisterReport?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue+"&depositType=Direct Deposit";
+     
+     var directDepositLength = $("#directDepositDataLength").val();
+     
+     if(directDepositLength > 0){
+    	 window.location.href = sourceleadUrl+"/exportToPdfCheckRegisterReport?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue+"&depositType=Direct Deposit";
+     }else{
+    	 
+    	 var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='direct_deposit_popup' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Direct Deposit List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelList();' style='width : 100%'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#direct_deposit_popup").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+    	 
+     }
+	 
+ }
+ 
+ function cancelList(){
+ 	$("#popUp").empty();
+ 	$(".project_inn_mask").fadeOut(200);
  }
  
  </script>

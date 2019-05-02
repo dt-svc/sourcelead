@@ -29,28 +29,6 @@
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 <script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
 <link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
-
-
-<style type="text/css">
-.reqDocuments {
-	padding-top: 10px; border: 1px solid #ededed; margin-top: 75px;
-    margin-bottom: 15px; min-height: 150px; border-radius:5px;
-}
-.reqDocuments table {
-border:1px solid #ddd; width: 100%;
-}
-.reqDocuments .clients_wrap_table {
-border-bottom:0;
-}
-.clients_wrap_table .glyphicon {
-    color: red;
-    cursor: pointer;
-}
-.edit-status {
-top: 20%; right: auto; left: 40%;
-}
-</style>
-
 <body>
 <script type="text/javascript">
 var sourceleadUrl ='${sourceleadUrl}';
@@ -67,7 +45,7 @@ var sourceleadUrl ='${sourceleadUrl}';
    </header>
    
    <c:if test="${isDocsUploaded == 'N'}">
-	   <form:form class="login-form clearfix reqDocuments container"  id="requestForDocs_form"  name="requestForDocs_form">
+	   <form:form class="login-form clearfix reqDocuments reqDocuments_customs container"  id="requestForDocs_form"  name="requestForDocs_form">
 	   <div id="loading"></div>
 	   <input type="hidden" name="requestDocUUID" id="requestDocUUID" value="${requestDocUUID}">
 	   <input  type="hidden" name="requestDocType" id="requestDocType" value="${docs.documentType}"/>
@@ -88,7 +66,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 							        <td>
 							        <div class="tbldata-dotdot-sm">${docs.documentType}
 							        <c:if test="${docs.requestedDocStatus == 'Rejected' && !empty docs.requestedDocRejectedReason}">
-							        	<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>${docs.requestedDocRejectedReason}</p></div></i>
+							        	<i class="glyphicon-custom glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status edit-status-custom"><p>${docs.requestedDocRejectedReason}</p></div></i>
 							        </c:if>
 							        </div>
 							        </td>
@@ -104,11 +82,11 @@ var sourceleadUrl ='${sourceleadUrl}';
 								    <td class="text-center">
 								    <div class="width300px mt5" id="attachmentDiv${docs.id}">
 								        <c:if test="${docs.isRequestedDocRequired == 'Y'}">
-								        	<input type="file"  class="form-control welFile"  id="uploadDocFile${docs.id}"    placeholder="Upload Resume ..." field-name="Document" data-validation="required validatedoc" onchange="uploadFileReqDoc(${docs.id});">
+								        	<input type="file"  class="form-control welFile"  id="uploadDocFile${docs.id}"    placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf" onchange="uploadFileReqDoc(${docs.id});">
 								        </c:if>
 								        
 								        <c:if test="${docs.isRequestedDocRequired == 'N'}">
-								        	<input type="file"  class="form-control welFile"  id="uploadDocFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validatedoc" data-validation-optional="true" onchange="uploadFileReqDoc(${docs.id});">
+								        	<input type="file"  class="form-control welFile"  id="uploadDocFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validate_docimgpdf" data-validation-optional="true" onchange="uploadFileReqDoc(${docs.id});">
 								        </c:if>
 								     </div>
 								    </td>

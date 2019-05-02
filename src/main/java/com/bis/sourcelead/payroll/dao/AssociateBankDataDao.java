@@ -28,4 +28,6 @@ public interface AssociateBankDataDao {
 	boolean checkDeafaultAccountActiveOrNot(Long candidateId, Long orgLocationId);
 
 	boolean changeActiveAccount(Long associateBankId, Long candidateId);
+
+	List<AssociateBankDataDTO> getAssociateBankDataListByOrgLocationId(Long locationId);
 }

@@ -34,11 +34,11 @@
 			<div class="pull-left">
 				<h2>Vendor(s) Report</h2>
 			</div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Vendor(s) Report</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/performanceReportList'/>">Performance Reports</a> &raquo; Vendor(s) Report</div>
 </section>
 
 
-    <div class="vendor_wrap positionRelative">
+    <div class="positionRelative">
     
     
 <div class="reportHead">
@@ -46,7 +46,7 @@
 				<a title="Graphical View" id="graphView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a> 
 				<a title="List View" id="listView" class="btn btn-default"><i class="fa fa-list"></i></a>
 			</div>
-			<ul class="clearfix pull-right" id="listViewFilters" style="display: none;">
+    	<ul class="clearfix pull-right" id="listViewFilters" style="display: none;">
     		<li>
         <div class="dropdown-select positionRelative repSelWrap clearfix">
 			<select class="form-control repSelFiled" id="vendorreportTypeId" onChange="flushVendorCustomDates(); custVendorDates();">
@@ -89,7 +89,11 @@
 	<jsp:include page="vendorPerformanceReport.jsp" flush="true"></jsp:include>
 </div>
 <div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
-</section>    
+<div id="releasedJobsResultDiv"></div>
+<div id="releasedApplicantsDeclineDiv"></div>
+<div id="releasedApplicantsBackOutDiv"></div>
+<div id="releasedApplicantsHiredListDiv"></div>
+</section>   
  
       
 
@@ -571,7 +575,7 @@ $(".addUser-org").click(function(){
    $("#endDate").click(function(){
 	   $(".endDate").toggle(200);
    });
-   event.preventDefault();
+ //   event.preventDefault(); commented the code not a valid palce to use.
 });
 
 $(".addSkills").click(function(){

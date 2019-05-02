@@ -1,7 +1,11 @@
 var statusOptions = [];
 var statusList = [];
 $(document).ready(function() {
-	
+	$("#ticketListSearch").keyup(function(e) {
+		if(e.which === 13) {
+			getTicketManagementList();
+		}
+	});
 });
 
 //============================== Ticket Management List 	=============================================
@@ -22,89 +26,6 @@ function getTicketStatusList() {
 			showError("Operation failed, please try again");
 		}
 	});
-}
-
-function getTicketManagementList() {
-	$("#ticketManagementList").empty();
-	$.post(sourceleadUrl + "/getTicketList", {}, function(response) {
-		if (response && response.response === "INVALID_DATA") {
-			showError(response.responseMessage);
-		} else if (response.response === "AWKWARD") {
-			location.href = "/errorPage";
-		} else if (response.response === "SUCCESS") {
-			if(response.data.length > 0) {
-				for(var e in response.data) {
-					var text = "<tr>";
-		            text+= "      <td><div class='tblminwidth-150'>" + response.data[e].generatedId + "</div></td>";
-		            text+= "      <td><div class='tbldata-dotdot-vsm'><a href='/app/ticketSummary?uuid=" + response.data[e].uuid + "' title='" + response.data[e].title + "'>" + response.data[e].title + "</a></div></td>";
-		            /*text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketCategory + "</div></td>";*/
-		            /*text+= "     <td><div class='tbldata-dotdot-vsm'>" + response.data[e].ticketStatus + "</div></td>";*/
-		            text+= "   	<td><div class='tblminwidth-75' style='color:" + (response.data[e].ticketPriorityTextColor != null && response.data[e].ticketPriorityTextColor !== "" ? response.data[e].ticketPriorityTextColor : "") + "'>" + (response.data[e].ticketPriorityImage !== null && response.data[e].ticketPriorityImage !== "" ? "<div class='priorityImage pull-left mr10'><img src=\"" + response.data[e].ticketPriorityImage + "\" class='mr10'/></div>" : "<div class='blank-div mr10'></div>") + "<div class='pull-left'>" + response.data[e].ticketPriority + "</div></div></td>";
-		            text+= "    <td><div class='tbldata-dotdot-vsm'>" + response.data[e].createdBy + "</div></td>";
-		            var assignTo = "";
-					for(var a in response.data[e].assignedTo) {
-						assignTo += (assignTo === "" ? "" : ",") + response.data[e].assignedTo[a];
-					}
-					text += "    <td><div class='tbldata-dotdot'>" + (assignTo === "" ? "--" : assignTo) + "</div></td>";
-					text += "<td><select class='sel' onChange='changeTicketStatus(this, \"" + response.data[e].id + "\", \"" + response.data[e].ticketStatusId + "\")'>";
-					for(var s in statusList) {
-						text += "<option data-comment=" + statusList[s].commentRequired + " value='" + statusList[s].id + "' " + (statusList[s].name === response.data[e].ticketStatus ? "selected" : "") + ">" + statusList[s].name + "</option>";
-					}
-					text += "</select></td>";
-		            text+= "      <td>";
-					text+= "		  <ul class=list-inline list-unstyled'>";
-					text+= "			  <li><i class='fa fa-pencil cursorPointer' onClick='editTicketManagement(\"" + response.data[e].uuid + "\");'></i></li>";
-					text+= "		  <li><i class='fa fa-trash cursorPointer' onclick='showDeletePopup(" + response.data[e].id + ", 0);'></i></li>";
-					text+= "	  </ul>";
-					text+= "		</td>";
-		            text+= "   </tr>";
-		    		$("#ticketManagementList").append(text);
-				}
-			}
-			ticketManagementListPagination();
-		} else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
-		} else {
-			showError("Operation failed, please try again");
-		}
-	});
-}
-
-/*function validateTicketId(ticketId) {
-	$.ajax({
-		type : "POST",
-	url : sourceleadUrl+ "/validateTicketId?ticketId="+id,
-		success : function(response) {
-		if (response && response.response === "INVALID_DATA") {
-			showError(response.responseMessage);
-		} else if (response.response === "AWKWARD") {
-			location.href = "/errorPage";
-		} else if (response.response === "SUCCESS") {
-			if(response.data.length > 0) {
-				statusList = response.data;
-			}
-		} else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
-		} else {
-			showError("Operation failed, please try again");
-		}
-	  }
-  });
-}*/
-
-
-function ticketManagementListPagination(){
-	 $('#ticketManagementListTable').DataTable( { 
-	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-	    	"bLengthChange": true,
-	    	"bDestroy": true,
-	    	"ordering": true,
-	    	"oLanguage": {
-	     		"sSearch": "",
-	     		"sZeroRecords": "", "sEmptyTable": ""
-	     	}
-	    } );
 }
 
 function editTicketManagement(uuid) {
@@ -209,7 +130,7 @@ function closeDeletePopup() {
 function getTicketManagementDescription(ticketUUID){
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getTicketManagementDescription?${_csrf.parameterName}=${_csrf.token}&uuid="+ticketUUID, 	   
+	    url: sourceleadUrl+"/getTicketManagementDescription?uuid="+ticketUUID, 	   
 		    success: function(result) {
 		    	$('#txtEditor').html(result.description);
 		    	$('.Editor-editor').html(result.description);
@@ -306,70 +227,6 @@ function saveTicket() {
 	} else {
 		return false;
 	}
-}
-
-//	================================	TicketComment		==============================================
-function getTicketCommetList(ticketId) {
-	$("#ticketCommentListDivId").empty();
-	$.post(sourceleadUrl + "/getTicketCommentList?ticketId="+ticketId, {}, function(response) {
-		if (response && response.response === "INVALID_DATA") {
-			showError(response.responseMessage);
-		} else if (response.response === "AWKWARD") {
-			location.href = "/errorPage";
-		} else if (response.response === "SUCCESS") {
-        	if(response.data.length > 0 ){
-        		 for (var e in response.data) {
-        			var text = "";
-                    text += "<div class='comments-div comments-inner clearfix'>";
-                    text += "    <div class='commentsimg'> <i class='fa fa-comments'></i>";
-                    text += "   <div class='commentsimg-inner'>";
-					text += "		<img onerror='predefineProfileImage(this);' src='../images/userprofile-img.png'></div>";
-                    text += "  </div>";
-                    text += "    <div class='customCommentarea'>";
-                    text += "    <div class='row'>";
-                    text += "        <div class='col-md-12'>";
-                    text += "        <p class='comment-by'> By <span class='text-danger'>" + response.data[e].createdByName + "</span><span class='small mr'>" + response.data[e].createdDate + "</span> <span class='small'>" + response.data[e].createdDateString + "</span> </p>";
-                    text += "        <div class='commentText commentText-styles'>" + response.data[e].comment + "</div>";
-                    text += "      </div>";
-                    text += "      </div>";
-                    text += "  </div>";
-                    text += "  </div>";
-		    		$("#ticketCommentListDivId").append(text);
-				}
-			}
-		} else if (response.indexOf('Sign In') !== -1) {
-			location.replace(sourceleadUrl);
-		} else {
-			showError("Operation failed, please try again");
-		}
-	});
-}
-
-function saveTicketComment(ticketId){
-	if ($("#ticketComment_form").validate(false, validationSettings)){
-		var formData = getFormData("ticketComment_form");
-		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, formData, function(response) {
-			if (response && response.response === "INVALID_DATA") {
-				showError(response.responseMessage);
-			} else if (response.response === "AWKWARD") {
-				location.href = "/errorPage";
-			} else if (response.response === "SUCCESS") {
-				if(response.object === true) {
-					getTicketCommetList(ticketId);
-					closeTicketComment();
-				}
-			} else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
-			} else {
-				showError("Operation failed, please try again");
-			}
-		});
-	}
-}
-function closeTicketComment() {
-	$("#add-comment").fadeOut();
-	 document.getElementById("ticketComment_form").reset();
-	 $("ticketComment_form").validate().resetForm();
 }
 
 function addAttachmentRow() {

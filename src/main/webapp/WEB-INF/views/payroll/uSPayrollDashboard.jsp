@@ -188,7 +188,7 @@ $("#customLeaves, #customDates, .customDates").click(function(e) {
 	e.stopPropagation();
 })
 $("#datepicker4, #datepicker2").datepicker();
-
+</script>
 <script>
 $(function() {
     $("#payslipCalendar").datepicker({

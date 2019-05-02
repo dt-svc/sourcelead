@@ -1201,5 +1201,10 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 			Date startDate, Date endDate)throws Exception {
 		return requirementDao.getJobsListByOrgRelationAndLocation(orglocationId, orgRelationIds, startDate, endDate);
 	}
+	
+	@Override
+	public List<Long> getParentRequirementIdListByRequirementIds(List<Long> requirementIds) {
+		return requirementReportDao.getParentRequirementIdListByRequirementIds(requirementIds);
+	}
 
 }

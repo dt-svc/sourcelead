@@ -167,9 +167,9 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 
 $(function() {
 
-    for (var selector in config) {
+    /*for (var selector in config) {
 		$(selector).chosen(config[selector]);
-	}
+	}*/
 	
     $('.chosen-select').each(function() {
 		var $this = $(this);
@@ -275,6 +275,16 @@ function applyData(data, formId, name, id) {
 	else if(formId == 'vendorOnboardUploadedDocuments_form'){
 		var i = name.split('@')[1];
 		  name = name.split('@')[0];
+	}else if(formId == 'timesheet_form'){
+		if($("#"+formId+" input[data-id*='"+id+"']").length > 0){
+			$("#"+formId+" input[data-id*='"+id+"']").remove();
+		}
+		if(name == 'timesheetSubmission.fileInfo'){
+            var i = id.split("docFile")[0];
+        }else{
+            var i = id.split("docFile")[1];
+        }
+		
 	}
 	else{
 		var i = $("#"+formId+" input[type=hidden][name*='"+name+"']").length / 3;

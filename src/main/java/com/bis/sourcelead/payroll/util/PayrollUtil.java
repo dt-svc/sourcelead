@@ -1249,7 +1249,7 @@ public class PayrollUtil {
 			    						 System.out.println("******************************leaves = "+leaves);
 			    						 System.out.println("******************************leaves = "+dyHours);
 			    						 System.out.println("******************************LOP Amount = "+lopAmt);
-			    						 lopAmt = getTotalAmount(dyHours, hourlyRate);
+			    						 lopAmt = getTotalAmountForDouble(dyHours, hourlyRate);
 			    					
 			    				 }
 			    			 }
@@ -1274,12 +1274,12 @@ public class PayrollUtil {
 	 * @param payRate
 	 * @return double
 	 */
-	public BigDecimal getTotalAmount(double totalHours, BigDecimal payRate)
+	public BigDecimal getTotalAmount(String totalHours, BigDecimal payRate)
 	{
 		String pRate = String.valueOf(totalHours);
 		String[] rate = pRate.split("\\.");
 		double hr = Double.parseDouble(rate[0]);
-		double min = Double.parseDouble(rate[1]);
+		double min = (Double.parseDouble(rate[1]));
 		double hrsToMin = hr * 60;
 		double totalMin = hrsToMin + min;
 //		BigDecimal perMinRate= payRate.divide(PayrollConstant.ONE_MIN_SEC,);
@@ -1287,6 +1287,27 @@ public class PayrollUtil {
 		double totatAmount = totalMin * perMinRate;
 		return BigDecimal.valueOf(totatAmount);
 	}
+	
+	/***
+	 * calculating total amount by multipltying hours with rate
+	 * @param totalHours
+	 * @param payRate
+	 * @return double
+	 */
+	public BigDecimal getTotalAmountForDouble(double totalHours, BigDecimal payRate)
+	{
+		String pRate = String.valueOf(totalHours);
+		String[] rate = pRate.split("\\.");
+		double hr = Double.parseDouble(rate[0]);
+		double min = (Double.parseDouble(rate[1]));
+		double hrsToMin = hr * 60;
+		double totalMin = hrsToMin + min;
+//		BigDecimal perMinRate= payRate.divide(PayrollConstant.ONE_MIN_SEC,);
+		double perMinRate = payRate.doubleValue() / 60;
+		double totatAmount = totalMin * perMinRate;
+		return BigDecimal.valueOf(totatAmount);
+	}
+
 
 	public ResponseList<FilteredClientDTO> getFilteredClientListData(FileReader reader) {
 		ResponseList<FilteredClientDTO> res = new ResponseList<>();
@@ -1558,5 +1579,33 @@ public class PayrollUtil {
 			e.printStackTrace();
 		}
 		return ytd;
+	}
+
+	/**
+	 * Adding Total Time 
+	 * @param regulraHours
+	 * @param overTimeHours
+	 * @return String
+	 */ 
+	public String getTotalRegularOverTimeHours(double regulraHours, double overTimeHours)
+	{
+		String actualTimeString = "";
+		try {
+			double cthHours = regulraHours;
+			double cthHoursValue = (int) cthHours;
+			double cthMinutesValue = cthHours - cthHoursValue;
+			double totalCthMinutes = (cthHoursValue * 60) + (cthMinutesValue * 100);
+			double wthHours = overTimeHours;
+			double wthHoursValue = (int) wthHours;
+			double wthMinutesValue = wthHours - wthHoursValue;
+			double totalWthMinutes = (wthHoursValue * 60) + (wthMinutesValue * 100);
+			double totalMinutes = totalCthMinutes + totalWthMinutes;
+			double actualHours = (int) (totalMinutes / 60); 
+			double actualMinutes = (totalMinutes % 60) / 100;
+			actualTimeString = String.format("%.2f", (actualHours + actualMinutes));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return actualTimeString;
 	}
 }

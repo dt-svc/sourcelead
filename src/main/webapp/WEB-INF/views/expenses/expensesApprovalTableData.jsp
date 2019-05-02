@@ -37,12 +37,9 @@
 		 <div class="tbldata-dotdot-100"><span title="${expApproverHierarchy.expensesProjectName}">${expApproverHierarchy.expensesProjectName}</span><br>
 			 <sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 				 <c:if test="${not empty expApproverHierarchy.orgRelationUUID}">
-				 	<span title="${expApproverHierarchy.clientName}"> <a href="/app/clientDashboard?orgRelationUUID=${expApproverHierarchy.orgRelationUUID}" title="${expApproverHierarchy.clientName}" class="aLink"> ${expApproverHierarchy.clientName}</a></span>
+				 	<span title="${expApproverHierarchy.clientName}"> <a href="/app/clientDashboard?orgRelationUUID=${expApproverHierarchy.orgRelationUUID}" class="aLink"> ${expApproverHierarchy.clientName}</a></span>
 				 </c:if>
 			 </sec:authorize>
-				 <c:if test="${not empty expApproverHierarchy.clientName}">
-				 	<span title="${expApproverHierarchy.clientName}"> <a title="${expApproverHierarchy.clientName}" class="aLink"> ${expApproverHierarchy.clientName}</a></span>
-				 </c:if>
 		 </div>
 	 </td>
 </c:if>
@@ -97,7 +94,7 @@
          </div> 
       </c:if>
       <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus == 'REJECTED'}">
-       	  <div class='sm text-center' title="Rejected"><h3 class='reje_color'>Rejected</h3>
+       	  <div class='sm text-center'><h3 class='reje_color'>Rejected</h3>
 	       	  <i class='glyphicon glyphicon-comment' id="${expApproverHierarchy.expId}" onclick='rejectedMessage(\"rejectedMessage"${expApproverHierarchy.expId}"\");'></i>
 	       	 	<div class='app_error_mes' id="rejectedMessage${expApproverHierarchy.expId}">${expApproverHierarchy.rejectedReason}</div>
 	   	 		 <br><p title="${expApproverHierarchy.actionPerformedBy}">By :${expApproverHierarchy.actionPerformedBy}</p>
@@ -106,7 +103,7 @@
       
       
        <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus == 'REOPENED'}">
-       	  <div class='sm text-center' title="Reopened"><h3 class='bg-blue'>Reopened</h3>
+       	  <div class='sm text-center'><h3 class='bg-blue'>Reopened</h3>
 	       	 <%--  <i class='glyphicon glyphicon-comment' id="${expApproverHierarchy.expId}" onclick='rejectedMessage(\"rejectedMessage"${expApproverHierarchy.expId}"\");'></i>
 	       	 	<div class='app_error_mes' id="rejectedMessage${expApproverHierarchy.expId}">${expApproverHierarchy.reopenReason}</div> --%>
 	   	 		 <br><p title="${expApproverHierarchy.actionPerformedBy}">By :${expApproverHierarchy.actionPerformedBy}</p>
@@ -125,7 +122,9 @@
 
       	</c:if>
       	<c:if test="${not empty expApproverHierarchy.actionPerformedBy}">
-      		 <div class='sm text-center' title="Approved"> <h3>Approved</h3><br>By : ${expApproverHierarchy.actionPerformedBy}</div> 
+      		 <div class='sm text-center'> <h3>Approved</h3>
+      		<br><p title="${expApproverHierarchy.actionPerformedBy}">By :${expApproverHierarchy.actionPerformedBy}</p>
+      		 </div> 
       	</c:if>
       </c:if>
       <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus == 'REOPEN'}">

@@ -69,8 +69,8 @@ import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -1036,7 +1036,8 @@ public class PdfUtil {
 	        document.add(orderedList);
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        int[] columnWidths = new int[]{5, 5, 3,3, 3,3,3,3,3};
-            PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
+            PdfPTable table = getProjectPdfTable(headers,columnWidths,titleName.toString());
+            table.completeRow();
             java.util.List<String[]> assignedEmpList = new ArrayList<>();
             for(ProjectMembers projectMembers : employeeList){
             	assignedEmpList.add(prepareEmployeeArray(projectMembers,headers));
@@ -1049,8 +1050,8 @@ public class PdfUtil {
                     cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
                     table.addCell(cell);
                 }
+                table.completeRow();
 	        }
-	        table.completeRow();
 	        
 	        document.addTitle("Project Employee Table");
 	        table.setSpacingBefore(15f);
@@ -1068,6 +1069,30 @@ public class PdfUtil {
 	
 	    
 
+	private PdfPTable getProjectPdfTable(String[] headers, int[] columnWidths, String title) {
+			PdfPTable table = new PdfPTable(headers.length);
+	        table.setWidthPercentage(100);
+	        try {
+	        	    Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+			        PdfPCell cell1 = new PdfPCell(new Phrase(title,font));
+			        cell1.setColspan(9);
+			        headerCellStyle(cell1);
+		            table.addCell(cell1);
+				table.setWidths(columnWidths);
+				for (int i = 0; i < headers.length; i++) {
+		            String header = headers[i];
+		            PdfPCell cell = new PdfPCell();
+		            cell.setGrayFill(0.9f);
+		            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+		            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+		            cell.setBackgroundColor(myColor);
+		            table.addCell(cell);
+		        }
+			} catch (DocumentException e) {
+				e.printStackTrace();
+			}
+			return table;
+	}
 	private String[] prepareEmployeeArray(ProjectMembers projectMember, String[] headers) {
 			if(projectMember.getProjectMemberCandidteId().getConsultantUser() != null){
 				 UserRole userRole;
@@ -3545,7 +3570,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 						}
 						
 						if (report.getAvailableHours() != null) {
-							reportArray[4] = report.getAvailableHours();
+							reportArray[4] = report.getAvailableHours().substring(0, 5);
 						} else {
 							reportArray[4] = "--";
 						}

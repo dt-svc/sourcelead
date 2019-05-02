@@ -15,7 +15,11 @@ public interface JobsPipelineReportService {
 
 	List<RequirementSubmissionHistory> getAllJobsReportsCountsBySubmmisonId(Long submissionId) throws Exception;
 	
+	List<RequirementSubmissionHistory> getAllJobsReportsCountsBySubmmisonIdAndMasterUserCode(long submissionId, String masterUserCode);
+	
 	List<Requirement> requirementListStatusCountByJobIdsAndDates(List<Long> jobIds,Date[] searchDates);
+	
+	List<Requirement> vendorRequirementListStatusCountByJobIdsAndDates(List<Long> jobIds, Date[] searchDates);
 	
 	Integer requirementListStatusCountByJobIdsAndDates(List<Long> jobIds,Date[] searchDates,String JobStage);
 }

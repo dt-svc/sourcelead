@@ -89,7 +89,6 @@ import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.entity.EmployeePayroll;
 import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
-import com.bis.sourcelead.rest.TimesheetRestController;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
@@ -101,6 +100,7 @@ import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.rest.TimesheetRestController;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -1592,6 +1592,11 @@ public class LeaveServiceImpl implements LeaveService {
 		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		emailMessage.setOrgLocationId(orgLoc.getId());
+		
+		//redirection URLs
+		String redirectURL = "/employeeRequestedLeaves-params-notifyLink=notifyLink-and-leaveUUID=" + leaveDTO.getLeaveUUID()+ "-and-orgLocationId=" + orgLoc.getId();
+		Long redirectOrgLocationId = orgLoc.getId();
+		
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		LeaveType leaveType = null;
@@ -1651,8 +1656,8 @@ public class LeaveServiceImpl implements LeaveService {
 		}
 
 		StringBuilder stringBuildforLink = new StringBuilder();
-		globalVarsMap.put("loginURL", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append(
-				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+		globalVarsMap.put("loginURL", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Leave Request</div></a>")
 				.toString());
 		// setting the Recipient information
 
@@ -3056,6 +3061,13 @@ public class LeaveServiceImpl implements LeaveService {
 			Date appliedDate) {
 
 		return leaveDao.getAllLeavesByLocationIdAndStatusAndAppliedDate(locationId, status, appliedDate);
+	}
+	
+	@Override
+	public List<Leave> getAllLeavesByLocationIdAndStatusAndLeaveStartDate(Long locationId, String status,
+			Date appliedDate) {
+
+		return leaveDao.getAllLeavesByLocationIdAndStatusAndLeaveStartDate(locationId, status, appliedDate);
 	}
 
 }

@@ -11,7 +11,7 @@ $(document).ready(function() {
 		cancelTicketCategory();
 		cancelTicketPriority();
 		cancelTicketStatus();
-		cancelTicket();
+//		cancelTicket();
 	});
 	if(document.getElementById("uploadBtn") !== null) {
 		document.getElementById("uploadBtn").onchange = function () {
@@ -72,137 +72,16 @@ function getTicketTypeList() {
 	ticketManagementTypePagination(sourceleadUrl + "/getTicketTypeList?searchValue=" + $("#ticketTypeDataTableSearch").val());
 }
 
-function ticketManagementTypePagination(url){
-	var colIndex = 0;
-    $('#ticketManagementTypeTable').DataTable( {
-    	"processing": true,
-       "serverSide": true,
-       "searching": true,
-       "searchHighlight": true,
-       "ajax": $.fn.dataTable.pipeline( {
-           url: url,
-           method: 'POST',
-           pages: 1
-       }),
-       "columns": [
-    	   {"data": "id"},
-           {"data": "name"},
-           {"data": "description"},
-           {"data": "actions" }
-       	],
-	       "columnDefs": [
-    	   {
-	            "targets": colIndex++,
-	            "data": "id",
-	            "visible": false,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.id != null && opt.id != '' && opt.id != 'undefined') {
-	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.id+'</div></td>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		           		return result;
-	             }
-	        },
-            {
-	            "targets": colIndex++,
-	            "data": "name",
-	            "sortable": true,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.name != null && opt.name != '' && opt.name != 'undefined') {
-	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.name+'</div></td>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		           		return result;
-	             }
-	        },
-	        {
-	            "targets": colIndex++,
-	            "data": "description",
-	            "sortable": false,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
-	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.description+'</div></td>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		                return result;
-	             }
-	        },
-	        {
-	            "targets": colIndex++,
-	            "data": "actions",
-	            "sortable": false,
-	            "render": function ( data, type, opt, meta ) {
-	            	var result = '<div class=" widthIcon widthIcon-three">';
-	            	result +='	<div class="text-center">';
-	            	result +='		<a href="javascript:void(0)" title="Edit TicketType" onclick="editTicketType(' + opt.id + ', -1)">';
-	            	result +='		<i class="fa fa-pencil"></i>';
-	            	result +='		</a>';
-	            	result +='	</div>';
-	            	
-	            	
-	            	result +='	<div class="text-center">';
-	            	if(opt.status === 0) {
-	            		result +='		<a href="javascript:void(0)" title="Active TicketType" onclick="showDeletePopup(' + opt.id + ', 1)">';
-	            		result +='		<i class="fa fa-edit"></i>';
-	            	} else {
-	            		result +='		<a href="javascript:void(0)" title="In-active TicketType" onclick="showDeletePopup(' + opt.id + ', 0)">';
-	            		result +='		<i class="fa fa-trash"></i>';
-	            	}
-	            	result +='		</a>';
-	            	result +='	</div>';
-	            	result +='</div>';
-           	        return result;
-	             }
-	        }
-           ],
-	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
-	    	"bLengthChange": true,
-	    	"bDestroy": true,
-	    	"ordering": true,
-	    	"createdRow": function ( row, data, index ) {
-	    		row.setAttribute('id',"ticketType_"+data.id);
-    	    },
-	    	"initComplete": function( settings, json ) {
-	    		 $('#ticketTypeDataTableSearch').removeAttr('disabled');
-	    	},
-	    	"oLanguage": {
-	     		"sSearch": "",
-	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     },
-	     drawCallback: function(){
-   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
-   	    	setTimeout(function () {
-   	  		var body = $( table.table().body() );
-   	 	        body.unhighlight();
-   	 	        body.highlight($("#ticketTypeDataTableSearch").val());   
-   	 			
-   	 			}, 1000);
-   	      });
-   	   	}
-   });
-   $("#ticketManagementTypeTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
-   $("input[type=search]").hide();
-}
-
 function saveTicketType() {
 	if ($('#addTicketTypeForm').validate(false, validationSettings)){
 		var formData = getFormData("addTicketTypeForm");
 		$.post(sourceleadUrl + "/saveTicketType", formData, function(response) {
-			if (response && response.response === "INVALID_DATA") {
+			if (response && (response.response === "INVALID_DATA" || response.response === "DUPLICATE_NAME")) {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
-				if(response.object === true) {
+				if(response.object > 0) {
 					$(".success_pop span").html("TicketType saved successfully...");
 					$(".success_pop").show();
 					cancelTicketType();
@@ -221,9 +100,11 @@ function saveTicketType() {
 }
 
 function cancelTicketType() {
+	$("#ticketTypeId").val(0);
 	if(document.getElementById("addTicketTypeForm") !== null)
 		document.getElementById("addTicketTypeForm").reset();
 	$(".mask, #modalTasktype").fadeOut();
+	$(".location-alert").fadeOut();
 }
 
 function editTicketType(id){
@@ -293,147 +174,18 @@ function getTicketCategoryList() {
 	$("#ticketCategoryParentList").append(text);
 	ticketManagementCategoryPagination(sourceleadUrl + "/getTicketCategoryList?searchValue=" + $("#ticketCategoryDataTableSearch").val());
 }
-function ticketManagementCategoryPagination(url){
-	var colIndex = 0;
-    $('#ticketManagementCategoryTable').DataTable( {
-    	"processing": true,
-       "serverSide": true,
-       "searching": true,
-       "searchHighlight": true,
-       "ajax": $.fn.dataTable.pipeline( {
-           url: url,
-           method: 'POST',
-           pages: 1
-       }),
-       "columns": [
-    	   {"data": "id"},
-           {"data": "category"},
-           {"data": "description"},
-           {"data": "assignTo"},
-           {"data": "actions" }
-       	],
-	       "columnDefs": [
-    	   {
-	            "targets": colIndex++,
-	            "data": "id",
-	            "visible": false,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.id != null && opt.id != '' && opt.id != 'undefined') {
-	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.id+'</div></td>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		           		return result;
-	             }
-	        },
-            {
-	            "targets": colIndex++,
-	            "data": "category",
-	            "sortable": true,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.name != null && opt.name != '' && opt.name != 'undefined') {
-	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.name+'</div></td>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		           		return result;
-	             }
-	        },
-	        {
-	            "targets": colIndex++,
-	            "data": "description",
-	            "sortable": false,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
-	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.description+'</div></td>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		                return result;
-	             }
-	        },
-	        {
-	            "targets": colIndex++,
-	            "data": "assignTo",
-	            "sortable": false,
-	            "render": function ( data, type, opt, meta ) {
-	            	var assignTo = "";
-	                for(var a in opt.assignedTo) {
-	                  assignTo += (assignTo === "" ? "" : ",") + opt.assignedTo[a];
-	                }
-	            	var result = "";
-           		   if(assignTo !== ""){
-	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">' + assignTo + '</div></td>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		           return result;
-	             }
-	        },
-	        {
-	            "targets": colIndex++,
-	            "data": "actions",
-	            "sortable": false,
-	            "render": function ( data, type, opt, meta ) {
-	            	var result = '<div class=" widthIcon widthIcon-three">';
-	            	result +='	<div class="text-center">';
-	            	result +='		<a href="javascript:void(0)" title="Edit TicketCategory" onclick="editTicketCategory(' + opt.id + ')">';
-	            	result +='		<i class="fa fa-pencil"></i>';
-	            	result +='		</a>';
-	            	result +='	</div>';
-	            	result +='	<div class="text-center">';
-	            	if(opt.status === 0) {
-	            		result +='		<a href="javascript:void(0)" title="Active TicketCategory" onclick="showDeletePopup(' + opt.id + ', 1)">';
-	            		result +='		<i class="fa fa-edit"></i>';
-	            	} else {
-	            		result +='		<a href="javascript:void(0)" title="In-active TicketCategory" onclick="showDeletePopup(' + opt.id + ', 0)">';
-	            		result +='		<i class="fa fa-trash"></i>';
-	            	}
-	            	result +='		</a>';
-	            	result +='	</div>';
-	            	result +='</div>';
-           	        return result;
-	             }
-	        }
-           ],
-	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
-	    	"bLengthChange": true,
-	    	"bDestroy": true,
-	    	"ordering": true,
-	    	"createdRow": function ( row, data, index ) {
-	    		row.setAttribute('id',"ticketCategory_"+data.id);
-    	    },
-	    	"initComplete": function( settings, json ) {
-	    		 $('#ticketCategoryDataTableSearch').removeAttr('disabled');
-	    	},
-	    	"oLanguage": {
-	     		"sSearch": "",
-	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     },
-	     drawCallback: function(){
-   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
-   	    	setTimeout(function () {
-   	  		var body = $( table.table().body() );
-   	 	        body.unhighlight();
-   	 	        body.highlight($("#ticketCategoryDataTableSearch").val());   
-   	 			
-   	 			}, 1000);
-   	      });
-   	   	}
-   });
-   $("#ticketManagementCategoryTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
-   $("input[type=search]").hide();
-}
+
 function cancelTicketCategory() {
-	if(document.getElementById("addTicketCategoryForm") !== null)
+	$("#ticketCategoryId").val(0);
+	if(document.getElementById("addTicketCategoryForm") !== null) {
 		document.getElementById("addTicketCategoryForm").reset();
+		$("#notifyTo").val("");
+		$("#assignedTo option").removeAttr("selected");
+		$("#assignedTo").chosen();
+		$("#assignedTo").trigger("chosen:updated");
+	}
 	$(".mask, #modalTasktype").fadeOut();
+	$(".location-alert").fadeOut();
 }
 
 function saveTicketCategory() {
@@ -455,12 +207,12 @@ function saveTicketCategory() {
 		     contentType:false, 
 		     url : sourceleadUrl+"/saveTicketCategory",
 			 success : function(response) {
-		  		if (response && response.response === "INVALID_DATA") {
+		  		if (response && (response.response === "INVALID_DATA" || response.response === "DUPLICATE_NAME")) {
 					showError(response.responseMessage);
 				} else if (response.response === "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (response.response === "SUCCESS") {
-					if(response.object === true) {
+					if(response.object > 0) {
 						$(".success_pop span").html("TicketCategory saved successfully...");
 						$(".success_pop").show();
 						cancelTicketCategory();
@@ -498,12 +250,11 @@ function editTicketCategory(id){
 				$("#ticketCategoryName").val(data.name);
 				$("#ticketCategoryDesc").val(data.description);
 				for(var e in data.assignedTo) {
-					$("#assignedTo option[value='" + data.assignedTo[e] + "']").attr("selected", true);
+					$("#assignedTo option[value='" + data.assignedTo[e] + "']").prop("selected", true);
 				}
-				$("#assignedTo").chosen();
 	     	    $("#assignedTo").trigger("chosen:updated");
 	     	    
-				$("#notifyTo").html(data.notifyTo);
+				$("#notifyTo").val(data.notifyTo);
 				$(".mask, #modalTasktype").fadeIn();
 			} else if (response.indexOf('Sign In') !== -1) {
 				location.replace(sourceleadUrl);
@@ -558,165 +309,16 @@ function getTicketPriorityList(){
 	ticketManagementPriorityPagination(sourceleadUrl + "/getTicketPriorityList?searchValue=" + $("#ticketPriorityDataTableSearch").val());
 }
 
-function ticketManagementPriorityPagination(url){
-	var colIndex = 0;
-    $('#ticketManagementPriorityTable').DataTable( {
-    	"processing": true,
-       "serverSide": true,
-       "searching": true,
-       "searchHighlight": true,
-       "ajax": $.fn.dataTable.pipeline( {
-           url: url,
-           method: 'POST',
-           pages: 1
-       }),
-       "columns": [
-    	   {"data": "id"},
-           {"data": "icon"},
-           {"data": "priority"},
-           {"data": "description"},
-           {"data": "color"},
-           {"data": "actions" }
-       	],
-	       "columnDefs": [
-    	   {
-	            "targets": colIndex++,
-	            "data": "id",
-	            "visible": false,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.id != null && opt.id != '' && opt.id != 'undefined') {
-	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.id+'</div></td>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		           		return result;
-	             }
-	        },
-            {
-	            "targets": colIndex++,
-	            "data": "icon",
-	            "sortable": false,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.fileURL != null && opt.fileURL != '' && opt.fileURL != 'undefined') {
-           			   result = result + '<div class="priorityImage"><img src=' + opt.fileURL + ' alt="' + opt.fileName + '" title="Priority Image"></img></div>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		           		return result;
-	             }
-	        },
-	        {
-	            "targets": colIndex++,
-	            "data": "priority",
-	            "sortable": true,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.name != null && opt.name != '' && opt.name != 'undefined') {
-	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.name+'</div></td>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		           		return result;
-	             }
-	        },
-	        {
-	            "targets": colIndex++,
-	            "data": "description",
-	            "sortable": true,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
-	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.description+'</div></td>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		                return result;
-	             }
-	        },
-	        {
-	            "targets": colIndex++,
-	            "data": "color",
-	            "sortable": false,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.colorCode != null && opt.colorCode != '' && opt.colorCode != 'undefined'){
-	     	        	result = result + '<div class="tblminwidth-75"><small class="colorBox" id="colorBox" style="background:' + opt.colorCode + '"></small></div>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		                return result;
-	             }
-	        },
-	        {
-	            "targets": colIndex++,
-	            "data": "actions",
-	            "sortable": false,
-	            "render": function ( data, type, opt, meta ) {
-	            	var result = '<div class=" widthIcon widthIcon-three">';
-	            	result +='	<div class="text-center">';
-	            	result +='		<a href="javascript:void(0)" title="Edit TicketPriority" onclick="eidtTicketPriority(' + opt.id + ')">';
-	            	result +='		<i class="fa fa-pencil"></i>';
-	            	result +='		</a>';
-	            	result +='	</div>';
-	            	result +='	<div class="text-center">';
-	            	if(opt.status === 0) {
-	            		result +='		<a href="javascript:void(0)" title="Active TicketPriority" onclick="showDeletePopup(' + opt.id + ', 1)">';
-	            		result +='		<i class="fa fa-edit"></i>';
-	            	} else {
-	            		result +='		<a href="javascript:void(0)" title="In-active TicketPriority" onclick="showDeletePopup(' + opt.id + ', 0)">';
-	            		result +='		<i class="fa fa-trash"></i>';
-	            	}
-	            	result +='		</a>';
-	            	result +='	</div>';
-	            	result +='</div>';
-           	        return result;
-	             }
-	        }
-           ],
-	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
-	    	"bLengthChange": true,
-	    	"bDestroy": true,
-	    	"ordering": true,
-	    	"createdRow": function ( row, data, index ) {
-	    		row.setAttribute('id',"ticketPriority_"+data.id);
-    	    },
-	    	"initComplete": function( settings, json ) {
-	    		 $('#ticketPriorityDataTableSearch').removeAttr('disabled');
-	    	},
-	    	"oLanguage": {
-	     		"sSearch": "",
-	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     },
-	     drawCallback: function(){
-   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
-   	    	setTimeout(function () {
-   	  		var body = $( table.table().body() );
-   	 	        body.unhighlight();
-   	 	        body.highlight($("#ticketPriorityDataTableSearch").val());   
-   	 			
-   	 			}, 1000);
-   	      });
-   	   	}
-   });
-   $("#ticketManagementPriorityTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
-   $("input[type=search]").hide();
-}
-
 function saveTicketPriority() {
 	if ($('#addTicketPriorityForm').validate(false, validationSettings)){
 		var formData = getFormData("addTicketPriorityForm");
 		$.post(sourceleadUrl + "/saveTicketPriority", formData, function(response) {
-			if (response && response.response === "INVALID_DATA") {
+			if (response && (response.response === "INVALID_DATA" || response.response === "DUPLICATE_NAME")) {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
-				if(response.object === true) {
+				if(response.object > 0) {
 					$(".success_pop span").html("TicketPriority saved successfully...");
 					$(".success_pop").show();
 					cancelTicketPriority();
@@ -734,12 +336,15 @@ function saveTicketPriority() {
 	}
 }
 function cancelTicketPriority() {
+	$("#ticketPriorityId").val(0);
 	if(document.getElementById("addTicketPriorityForm") !== null) {
 		document.getElementById("addTicketPriorityForm").reset();
 		$("#addTicketPriorityForm").find("input[data-id='uploadBtn']").remove();
+		$("#addTicketPriorityForm").find("p[class='jquery_form_error_message']").remove();
 		$("#refreshImage").val(false);
 	}
 	$(".mask, #modalTasktype").fadeOut();
+	$(".location-alert").fadeOut();
 }
 function eidtTicketPriority(id){
 	$.ajax({
@@ -820,147 +425,16 @@ function getTicketStatusList() {
 	ticketManagementStatusPagination(sourceleadUrl + "/getTicketStatusList?searchValue=" + $("#ticketStatusDataTableSearch").val());
 }
 
-function ticketManagementStatusPagination(url){
-	var colIndex = 0;
-    $('#ticketManagementStatusTable').DataTable( {
-    	"processing": true,
-       "serverSide": true,
-       "searching": true,
-       "searchHighlight": true,
-       "ajax": $.fn.dataTable.pipeline( {
-           url: url,
-           method: 'POST',
-           pages: 1
-       }),
-       "columns": [
-    	   {"data": "id"},
-           {"data": "status"},
-           {"data": "description"},
-           {"data": "comment"},
-           {"data": "actions" }
-       	],
-	       "columnDefs": [
-    	   {
-	            "targets": colIndex++,
-	            "data": "id",
-	            "visible": false,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.id != null && opt.id != '' && opt.id != 'undefined') {
-	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.id+'</div></td>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		           		return result;
-	             }
-	        },
-	        {
-	            "targets": colIndex++,
-	            "data": "status",
-	            "sortable": true,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.name != null && opt.name != '' && opt.name != 'undefined') {
-	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.name+'</div></td>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		           		return result;
-	             }
-	        },
-	        {
-	            "targets": colIndex++,
-	            "data": "description",
-	            "sortable": true,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-           		   if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
-	     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.description+'</div></td>';
-           		   } else {
-						result = result +"<td><div>-----</div></td>";
-           	       }
-		                return result;
-	             }
-	        },
-	        {
-	            "targets": colIndex++,
-	            "data": "comment",
-	            "sortable": true,
-	            "render": function ( data, type, opt, meta ) {
-	            		var result = "";
-	            		result = result + '<td><div  class="tbldata-dotdot-sm">' + (opt.commentRequired ? "YES" : "NO") + '</div></td>';
-		                return result;
-	             }
-	        },
-	        {
-	            "targets": colIndex++,
-	            "data": "actions",
-	            "sortable": false,
-	            "render": function ( data, type, opt, meta ) {
-	            	var result = '<div class=" widthIcon widthIcon-three">';
-	            	result +='	<div class="text-center">';
-	            	result +='		<a href="javascript:void(0)" title="Edit TicketStatus" onclick="editTicketStatus(' + opt.id + ')">';
-	            	result +='		<i class="fa fa-pencil"></i>';
-	            	result +='		</a>';
-	            	result +='	</div>';
-	            	result +='	<div class="text-center">';
-	            	if(opt.status === 0) {
-	            		result +='		<a href="javascript:void(0)" title="Active TicketStatus" onclick="showDeletePopup(' + opt.id + ', 1)">';
-	            		result +='		<i class="fa fa-edit"></i>';
-	            	} else {
-	            		result +='		<a href="javascript:void(0)" title="In-active TicketStatus" onclick="showDeletePopup(' + opt.id + ', 0)">';
-	            		result +='		<i class="fa fa-trash"></i>';
-	            	}
-	            	result +='		</a>';
-	            	result +='	</div>';
-	            	result +='</div>';
-           	        return result;
-	             }
-	        }
-           ],
-	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
-	    	"bLengthChange": true,
-	    	"bDestroy": true,
-	    	"ordering": true,
-	    	"createdRow": function ( row, data, index ) {
-	    		row.setAttribute('id',"ticketStatus_"+data.id);
-    	    },
-	    	"initComplete": function( settings, json ) {
-	    		 $('#ticketStatusDataTableSearch').removeAttr('disabled');
-	    	},
-	    	"oLanguage": {
-	     		"sSearch": "",
-	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     },
-	     drawCallback: function(){
-   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
-   	    	setTimeout(function () {
-   	  		var body = $( table.table().body() );
-   	 	        body.unhighlight();
-   	 	        body.highlight($("#ticketStatusDataTableSearch").val());   
-   	 			
-   	 			}, 1000);
-   	      });
-   	   	}
-   });
-   $("#ticketManagementStatusTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
-   $("input[type=search]").hide();
-}
-
-
 function saveTicketStatus() {
 	if ($('#addTicketStatusForm').validate(false, validationSettings)){
 		var formData = getFormData("addTicketStatusForm");
 		$.post(sourceleadUrl + "/saveTicketStatus", formData, function(response) {
-			if (response && response.response === "INVALID_DATA") {
+			if (response && (response.response === "INVALID_DATA" || response.response === "DUPLICATE_NAME")) {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
-				if(response.object === true) {
+				if(response.object > 0) {
 					$(".success_pop span").html("TicketStatus saved successfully...");
 					$(".success_pop").show();
 					cancelTicketStatus();
@@ -979,11 +453,12 @@ function saveTicketStatus() {
 }
 
 function cancelTicketStatus() {
+	$("#ticketStatusId").val(0);
 	if(document.getElementById("addTicketStatusForm") !== null)
 		document.getElementById("addTicketStatusForm").reset();
 	$(".mask, #modalTasktype").fadeOut();
+	$(".location-alert").fadeOut();
 }
-
 
 function editTicketStatus(id){
 	$.ajax({

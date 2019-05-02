@@ -219,13 +219,15 @@
 						<div class="noDate noDateSm" style="display: none;"></div>
 					</div>
 					
-					<div class="col-md-2">
-						<h5>Ticket Management</h5>
-						<ul class="repSearchList list-unstyled">
-							<li><a href="/app/ticketManagementTypeList" title="Tags">Ticket Management</a></li>
-						</ul>
-						<div class="noDate noDateSm" style="display: none;"></div>
-					</div>
+					<sec:authorize access="hasRole('ROLE_TICKET_CONFIGURATION')">
+						<div class="col-md-2">
+							<h5>Ticket Management</h5>
+							<ul class="repSearchList list-unstyled">
+								<li><a href="/app/ticketManagementTypeList" title="Tags">Ticket Management</a></li>
+							</ul>
+							<div class="noDate noDateSm" style="display: none;"></div>
+						</div>
+					</sec:authorize>
 
 					<sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
 						<div class="col-md-2">
@@ -315,7 +317,7 @@
 							</div>
 						</a>
 					</div>
-
+					
 					<sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')">
 						<div class="col-md-2 reportNewCta">
 							<a href="/app/orgRolesList">
@@ -480,7 +482,7 @@
 										<i class="payrollSVG"></i>
 									</div>
 									<div class="clearfix text-center">
-										<h4>Us Payroll Configuration</h4>
+										<h4>Payroll Configuration</h4>
 									</div>
 								</c:if>
 							</a> 
@@ -490,7 +492,7 @@
 										<i class="ind_payrollSVG"></i>
 									</div>
 									<div class="clearfix text-center">
-										<h4>Ind Payroll Configuration</h4>
+										<h4>Payroll Configuration</h4>
 									</div>
 								</c:if>
 							</a>
@@ -519,17 +521,27 @@
 							</div>
 						</a>
 					</div>
-					<div class="col-md-2 reportNewCta">
-						<a href="/app/ticketManagementTypeList">
-							<div class="clearfix text-center mb10">
-								<i class="ticketManagementSVG"></i>
-							</div>
-							<div class="clearfix text-center">
-								<h4>Ticket Management</h4>
-							</div>
-						</a>
-					</div>
-
+					
+							<div class="col-md-2 reportNewCta">
+								<a href="${SourceLeadWeb_sourceleadUrl}/clockInOutConfig">
+								<div class="clearfix text-center mb10"><i class="timeSettIcon"></i></div>
+								<div class="clearfix text-center">
+								<h4>Clock In - Clock Out</h4>
+								</div>
+								</div>
+								
+					<sec:authorize access="hasRole('ROLE_TICKET_CONFIGURATION')">
+						<div class="col-md-2 reportNewCta">
+							<a href="/app/ticketManagementTypeList">
+								<div class="clearfix text-center mb10">
+									<i class="ticketManagementSVG"></i>
+								</div>
+								<div class="clearfix text-center">
+									<h4>Ticket Management</h4>
+								</div>
+							</a>
+						</div>
+					</sec:authorize>
 
 					<sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
 						<div class="col-md-2 reportNewCta">
@@ -555,6 +567,19 @@
 								</div>
 							</a>
 						</div>
+						
+						
+						<div class="col-md-2 reportNewCta">
+							<a href="${sourceleadUrl}/orgBulkUploads">
+								<div class="clearfix text-center mb10">
+									<i class="bulkUploadSVG"></i>
+								</div>
+								<div class="clearfix text-center">
+									<h4>Bulk Uploads</h4>
+								</div>
+							</a>
+						</div>
+						
 					</sec:authorize>
 
 				</div>

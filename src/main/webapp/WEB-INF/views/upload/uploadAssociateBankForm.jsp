@@ -40,9 +40,14 @@ var uploadflag= true;
 <section class="content-wraper">
 	<section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Import Associates</h2>
+        <h2>Import Associate Bank Details </h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates List</a> &raquo; Import Associates </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates List</a> &raquo; Import Bank Details </div>
+    
+    <div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+       </div>
+    
     </section>
 	<div id="loading"></div>
 	<div class="content-area clearfix" id="dataFileImportDiv">
@@ -70,7 +75,7 @@ var uploadflag= true;
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadForm'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadAssociateBankForm'/>'">
 								</div>
 							</div>
 						</div>
@@ -132,11 +137,11 @@ var uploadflag= true;
 		<div id="errorDataDIV"></div>
         </div>
 	<div id="dataFieldsDiv" style="display: none"></div>
-<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
-	<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5>
-	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
-	    	<input type="hidden"  id="uploadedPercentage" value="0">
-		</div>	 	
+<!--  <div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop"> -->
+<!--  	<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Uploads History</h5> -->
+<!--  	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table> -->
+<!--  	    	<input type="hidden"  id="uploadedPercentage" value="0"> -->
+<!--  		</div>	 	  -->
 </section>
 
 <div class="success_pop" id="selector11" style="display: none;">
@@ -175,6 +180,7 @@ function saveAssociateBankDetailTemplate(){
         }
 }
 
+
 $('body').on('blur', '#upload_job_form', function() {
 	$("#upload_job_form").showHelpOnFocus();
 	$("#upload_job_form").validateOnBlur(false, validationSettings);
@@ -184,13 +190,14 @@ $('body').on('blur', '#upload_job_form', function() {
 
 <script type="text/javascript">
 function importAssociateBankDetail(){
-	var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
+
+	 var validationSettings = {
+           errorMessagePosition : 'element',
+           borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
-            };
-	var fileUrl = $("#dataFilePath").val();
+           };
+	var fileUrl = $("#dataFilePaths").val();
 	var uploadType = "associateUpload";
 	var headerPosition = $("#headerPosition").val();
 
@@ -198,13 +205,14 @@ function importAssociateBankDetail(){
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
 	
-	
 	//It will escape all the special characters
 	var jsonData = encodeURIComponent(con);
 	var form = $('#upload_job_form')[0];
 	var formData = new FormData(form); 
+	if (($('#upload_job_form').validate(false, validationSettings))){
+	
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 $.ajax({
+	  $.ajax({
 		   	type: "POST",
 		   	data: formData,
     	    contentType : 'application/json; charset=utf-8',
@@ -216,17 +224,29 @@ function importAssociateBankDetail(){
  		    success : function(json) {
  		    		$("#loading").removeAttr("style");
  		    	    if(json.updateCount != null && json.updateCount != '')
- 		    	    $("#msgDiv").removeAttr("style");
- 		 			$("#msgDiv").css({ display: "block" });
- 		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
+ 		    	    $("#msgDivvv").removeAttr("style");
+ 		 			$("#msgDivvv").css({ display: "inline-block" });  
+ 		 			$("#msgDivvv").html("Associates are updated ..!");
+ 		 			$("#selector11").show();
+ 		 			$("#selector11").fadeOut(2000);
  		 			if(json.errorData != null && json.errorData.length >0){
  		 				showFailedExcelData(json);
  		 			}
  			    	},
 		 		   error: function(e){
 			        }
-			 });
+			 }); 
+	}else{
+		return false;	
+	} 
 }
+
+$('body').on('blur', '#upload_job_form', function() {
+	$("#upload_job_form").showHelpOnFocus();
+	$("#upload_job_form").validateOnBlur(false, validationSettings);
+	
+});
+	
 </script>
 
 
@@ -261,13 +281,43 @@ function cancelFileImport(){
 	    	 for(i=0;i < data.length;i++){
 	    		 var report = data[i];
 	    		 result += '<tr>';
-		         result += '<td>'+report.associateId+'</td>';
-		         result += '<td>'+report.emailId+'</td>';
-		         result += '<td>'+report.accountType+'</td>';
-		         result += '<td>'+report.bankName+'</td>';
-		         result += '<td>'+report.accountNumber+'</td>';
-		         result += '<td>'+report.routingNumber+'</td>';
-		         result += '<td>'+report.reason+'</td>';
+	    		 
+	    		 if(report.associateId != null && report.associateId != '' && report.associateId != 'undefined'){
+	    			 result += '<td>'+report.associateId+'</td>';
+	    		 }else{
+	    			 result += '<td>--</td>';
+	    		 }
+		         if(report.emailId != null && report.emailId != '' && report.emailId != 'undefined'){
+		        	 result += '<td>'+report.emailId+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.accountType != null && report.accountType != '' && report.accountType != 'undefined'){
+		        	 result += '<td>'+report.accountType+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.bankName != null && report.bankName != '' && report.bankName != 'undefined'){
+		        	 result += '<td>'+report.bankName+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.accountNumber != null && report.accountNumber != '' && report.accountNumber != 'undefined'){
+		        	 result += '<td>'+report.accountNumber+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.routingNumber != null && report.routingNumber != '' && report.routingNumber != 'undefined'){
+		        	 result += '<td>'+report.routingNumber+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         if(report.reason != null && report.reason != '' && report.reason != 'undefined'){
+		        	 result += '<td>'+report.reason+'</td>';
+		         }else{
+		        	 result += '<td>--</td>';
+		         }
+		         
 		         result += '  </tr>';
 	    	 }
 	    	

@@ -30,12 +30,7 @@
 			});
 </script>
 
-<script type="text/javascript">
-//script for upload file
-document.getElementById("uploadBtn").onchange = function () {
-	document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
-}
-</script>
+
 
 <style type="text/css">
 .timeBalance-scroll .col-md-2 {
@@ -600,6 +595,7 @@ function viewHolidaysTable(){
     $('#viewHolidaysTable').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"columnDefs": [ { orderable: false, targets: [2]}],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,

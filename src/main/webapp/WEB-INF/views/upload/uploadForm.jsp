@@ -49,14 +49,14 @@ var uploadflag= true;
 	
 	<div class="content-area clearfix backgroundWhite">
 		
-		<div class="clearfix width215px" style="position: absolute; top:15px; left: 15px; z-index: 1;">
+	<!-- 	<div class="clearfix width215px" style="position: absolute; top:15px; left: 15px; z-index: 1;">
 			<select class="sel" id="importassociteSel" onChange="importassociteSel();">
 			    <option value="addAssociate">Add Associate</option>
 			    <option value="associateBnkdet">Associate Banking Details</option>
 			    <option value="associateInfo">Associate Information</option>
 			    <option value="associateSalary">Associate Salary</option>
 			</select>
-		</div>
+		</div> -->
 
 		<!--         Dropdown div for import associate           -->
 		
@@ -69,7 +69,7 @@ var uploadflag= true;
 				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 					<!-- Download File button -->
 					<div class="clearfix mb row">
-					<div class="col-xs-2 col-md-2 col-md-offset-4">
+					<div class="col-xs-2 col-md-3">
 						<input type="text" class="form-control" placeholder="Header Index" id="headerPosition" name="headerPosition"  field-name="Header index" data-validation="required validate_Space validate_length length1-6 validate_int">
 					</div>			
 						<div class="col-xs-2 col-md-2">
@@ -78,9 +78,9 @@ var uploadflag= true;
 							</a>
 						</div>				
 						
-						<div class="col-xs-4 col-md-4">
+						<div class="col-xs-2 col-md-5">
 							<div class="btn-group btn-group-justified">
-								<div class="btn-group" id="import1">
+								<div class="btn-group" id="import">
 									<input type="button" class="btn btn-primary" id="upload_button"
 										name="upload_button" onclick="fetchFieldsWithMatchedColumn();"
 										value="Import">
@@ -154,196 +154,20 @@ var uploadflag= true;
 	</div>
 	
 	
-	<!--         Dropdown div for Associate banking details        -->
+
+<!--         Dropdown div for Associate banking details  -->
 	
 	
 		<div id="associateBnkdet" style="display:none;">
-			<div class="clearfix"></div>
-		<div class="clearfix" id="dataFileImportDiv">
-		 <div class="success_pop" id="msgDiv" style="display: none;"></div>
-		<form:form id="upload_banking_form" name="upload_banking_form" method="post" enctype="multipart/form-data">
-			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-			<div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
-				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-					<!-- Download File button -->
-					<div class="clearfix mb row">
-					<div class="col-xs-2 col-md-2 col-md-offset-4">
-						<!-- <input type="text" class="form-control" placeholder="Header Index" id="headerPosition" name="headerPosition"  field-name="Header index" data-validation="required validate_Space validate_length length1-6 validate_int"> -->
-					</div>			
-						<div class="col-xs-2 col-md-2">
-							<a href="<c:url value='${appPath}/downloadTemplateForAssociateBankingDetails'/>"
-								class="btn btn-success btn-block" title="Download Associate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Template
-							</a>
-						</div>				
-						
-						<div class="col-xs-4 col-md-4">
-							<div class="btn-group btn-group-justified">
-								<div class="btn-group" id="import1">
-									<input type="button" class="btn btn-primary" id="upload_button"
-										name="upload_button" onclick="importAssoBankingdeatils();"
-										value="Import">
-								</div>
-								
-								<div class="btn-group">
-									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadForm'/>'">
-								</div>
-							</div>
-						</div>
-					</div>
-					
-					<!-- Attach File button -->
-
-					<div class="dropzone">
-						<div class="clearfix"></div>
-						<div class="file-upload clearfix text-center">
-							<div class="col-md-12" id="">
-								<label class="bg-default"> <i aria-hidden="true"
-									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
-									type="file" name="file" field-name="File Upload"
-									style="display: none;" id="uploadBtn1"
-									data-validation="required validate_importFile">
-								</label>
-								<div class="clearfix"></div>
-								<label id="newUploadFile1"></label> 
-								<input type="text" hidden readonly id="dataFilePath" value="">
-							</div>
-							<div class="center-div">
-								<input id="uploadFile" placeholder="" disabled="disabled"
-									style="width: 100%;" />
-							</div>
-						</div>
-
-
-						<!--  Downloaded File show here -->
-						<div class="col-xs-3 alert alert-success fade in hidden"
-							style="position: absolute; top: 10px;" id="fileAttached">
-							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-							<div>File Holder</div>
-						</div>
-						<!--  Downloaded File show here -->
-					</div>
-					<div id="errorDownloadDiv" style="display: none"></div>
-				</div>
-				<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-					<div class="bgInfo bg-info clearfix text-center">
-						<span><i class="fa fa-question" aria-hidden="true"></i></span> <span
-							class="info-msg clearfix mt">
-							<p class="clearfix mt">
-								According to this template, the Users need to
-								<span class="text-danger"><strong>Import Required Fields</strong></span>
-							</p>
-							<p>
-							  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Associate Email</label>
-							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Payment Mode</label>
-							   <label><i class="fa fa-check"></i>&nbsp;&nbsp;Bank Name</label>
-							    <label><i class="fa fa-check"></i>&nbsp;&nbsp;Account number</label>
-							     <label><i class="fa fa-check"></i>&nbsp;&nbsp;IFSC Code</label>
-							      <label><i class="fa fa-check"></i>&nbsp;&nbsp;First Name</label>
-							       <label><i class="fa fa-check"></i>&nbsp;&nbsp;Last Name</label>
-							  </p>
-						</span>
-					</div>
-				</div>
+			Associate banking details        
 			</div>
-		</div>		<div class="clearfix"></div>
-		</form:form>
-	</div>
-	</div>
+	
 			
 	<!--      Dropdown div for Associate information      -->		
 			
 		<div id="associateInfo" style="display:none;">
-			<div class="clearfix"></div>
-		<div class="clearfix" id="dataFileImportDiv">
-		<form:form id="upload_job_form" name="upload_job_form" method="post" enctype="multipart/form-data">
-			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-			<div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
-				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-					<!-- Download File button -->
-					<div class="clearfix mb row">
-					<div class="col-xs-2 col-md-2 col-md-offset-4">
-						<input type="text" class="form-control" placeholder="Header Index" id="headerPosition" name="headerPosition"  field-name="Header index" data-validation="required validate_Space validate_length length1-6 validate_int">
-					</div>			
-						<div class="col-xs-2 col-md-2">
-							<a href="<c:url value='${appPath}/downloadDataImportTemplateForAssociate'/>"
-								class="btn btn-success btn-block" title="Download Associate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Template
-							</a>
-						</div>				
-						
-						<div class="col-xs-4 col-md-4">
-							<div class="btn-group btn-group-justified">
-								<div class="btn-group" id="import1">
-									<input type="button" class="btn btn-primary" id="upload_button"
-										name="upload_button" onclick="fetchFieldsWithMatchedColumn();"
-										value="Import">
-								</div>
-								
-								<div class="btn-group">
-									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadForm'/>'">
-								</div>
-							</div>
-						</div>
-					</div>
-					
-					<!-- Attach File button -->
-
-					<div class="dropzone">
-						<div class="clearfix"></div>
-						<div class="file-upload clearfix text-center">
-							<div class="col-md-12" id="">
-								<label class="bg-default"> <i aria-hidden="true"
-									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
-									type="file" name="file" field-name="File Upload"
-									style="display: none;" id="uploadBtn"
-									data-validation="required validate_importFile">
-								</label>
-								<div class="clearfix"></div>
-								<label id="newUploadFile"></label> 
-								<input type="text" hidden readonly id="dataFilePath" value="">
-							</div>
-							<div class="center-div">
-								<input id="uploadFile" placeholder="" disabled="disabled"
-									style="width: 100%;" />
-							</div>
-						</div>
-
-						<!--  Downloaded File show here -->
-						<div class="col-xs-3 alert alert-success fade in hidden"
-							style="position: absolute; top: 10px;" id="fileAttached">
-							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-							<div>File Holder</div>
-						</div>
-						<!--  Downloaded File show here -->
-					</div>
-					<div id="errorDownloadDiv" style="display: none"></div>
-				</div>
-				<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-					<div class="bgInfo bg-info clearfix text-center">
-						<span><i class="fa fa-question" aria-hidden="true"></i></span> <span
-							class="info-msg clearfix mt">
-							<p class="clearfix mt">
-								According to this template, the Users need to
-								<span class="text-danger"><strong>Import Required Fields</strong></span>
-							</p>
-							<p>
-							  <label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
-							  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
-							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Role</label>
-							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Shift</label>
-							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Manager(Email)</label>
-							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Employment Type</label>
-							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Designation</label>
-							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Department</label>
-							  </p>
-						</span>
-					</div>
-				</div>
-			</div>
-		</div>		<div class="clearfix"></div>
-		</form:form>
-	</div>
+			 Associate information    
+	
 	</div>
 		
 	<!--      Dropdown div for Associate salary      -->			
@@ -354,7 +178,6 @@ var uploadflag= true;
 
 		
 	<!--  new div with dropdown ends here -->
-	
 	
 	
 	<div id="dataFieldsDiv" style="display: none"></div>
@@ -479,50 +302,6 @@ function cancelFileImport(){
 	}
     </script> 
 	
-	<script type="text/javascript">
-function importAssoBankingdeatils(){
-	var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-            };
-if ($('#upload_banking_form').validate(false, validationSettings)){
-	var frm = $('#upload_banking_form').serializeFormJSON();
-	var con = JSON.stringify(frm);
-	con = con.replace(/[{}]/g, "");
-	
-	
-	//It will escape all the special characters
-	var jsonData = encodeURIComponent(con);
-	var form = $('#upload_banking_form')[0];
-	var formData = new FormData(form); 
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 $.ajax({
-		   	type: "POST",
-		   	data: formData,
-    	    contentType : 'application/json; charset=utf-8',
-    	    enctype: 'multipart/form-data',
-	        processData: false,
-	        contentType:false,
-    	    dataType : 'json',
-		    url : sourceleadUrl+"/uploadbankdetails?"+tokenParamName+"="+tokenValue+"", 	   
- 		    success : function(json) {
- 		    		$("#loading").removeAttr("style");
- 		    	    if(json.recordCount != null && json.recordCount != '')
- 		    	    $("#msgDiv").removeAttr("style");
- 		 			$("#msgDiv").css({ display: "block" });
- 		 			$("#msgDiv").html(json.recordCount+ " Associates Bank details updated ..!");
- 			    	msgFadein();
- 		    	    closeImportFile();
- 		    	   resetUpload();
-		 		    },
-		 		   error: function(e){
-			        }
-			 });
-			 
-}}
-</script>
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

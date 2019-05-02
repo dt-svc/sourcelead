@@ -150,7 +150,7 @@ function getHolidaysList(){
 				$("#holidayListDiv").empty();
 				$("#holidayListDiv").append(result);
 				viewHolidaysTablePagination();
-				viewHolidaysTable();
+				
 		} else if (response.indexOf('Sign In') !== -1) {
 			location.replace(sourceleadUrl);
 		} else {
@@ -172,6 +172,7 @@ function viewHolidaysTablePagination(){
     $('#viewHolidaysTableId').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+    	"columnDefs": [ { orderable: false, targets: [1,2]}],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,

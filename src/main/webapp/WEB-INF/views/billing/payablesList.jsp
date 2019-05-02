@@ -1204,33 +1204,34 @@ function rejectInvoice(invoiceUUID){
 <script>
 function saveReasonforPayable(invoiceUUID){
 	var reason = document.getElementById("reasonForDelete").value;
-	if(reason == null || reason == '' || reason == 'undefined'){
-	      
-		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
-	  	  $("#reasonForRejectDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-	  	  
-		}else{
-		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
-		$.ajax({
-		   	type: "POST",
-		   	url: sourceleadUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&reason="+reason,	    	   
-		    success: function(result) {
-		    	if (result && result.response === "INVALID_DATA") {
-          		    showError(result.responseMessage);
-          		} else if (result.response === "AWKWARD") {
-          		    location.href = "/errorPage";
-          		} else if (result.response === "SUCCESS") {
-          			$("#popUp").empty();
-   	 			    $(".project_inn_mask").fadeOut(200);
-   		    	    location.replace(sourceleadUrl+"/payablesList");
-          		} else if (result.indexOf('Sign In') !== -1) {
-          			location.replace(sourceleadUrl);
-          		} else {
-          		    showError("Operation failed, please try again");
-          		}
-		    	
-		    }
-	   });
+	if(reason != null && reason != ''){
+	$("#reasonForRejectDiv").empty();
+	if(reason.length > 250){
+	$("#reasonForRejectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
+	}else{ 
+	$.ajax({
+	type: "POST",
+	url: sourceleadUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&reason="+reason, 
+	success: function(result) {
+	if (result && result.response === "INVALID_DATA") {
+	showError(result.responseMessage);
+	} else if (result.response === "AWKWARD") {
+	location.href = "/errorPage";
+	} else if (result.response === "SUCCESS") {
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+	location.replace(sourceleadUrl+"/payablesList");
+	} else if (result.indexOf('Sign In') !== -1) {
+	location.replace(sourceleadUrl);
+	} else {
+	showError("Operation failed, please try again");
+	}
+
+	}
+	});
+	}
+	}else{
+	$("#reasonForRejectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 	}
 	  
 }
@@ -2005,7 +2006,7 @@ function resetBillsFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	document.getElementById("invoiceDateRadio").checked = true;
 	$(".custom_search").empty().hide();
-	getPayableInvoiceList();
+// 	getPayableInvoiceList();
 	
 }
 </script>

@@ -452,7 +452,7 @@
 					 </div>
 				 </div>
 				 
-				 <div class="col-md-12 mb">
+				 <!-- <div class="col-md-12 mb">
 				<label><strong>Created By</strong></label>
 				 <div class="clearfix">
 					<ul class="list-unstyled" id="createdByTypeFilter">
@@ -460,7 +460,7 @@
 						<li class="radioIput positionRelative" ><input  type="radio" id="allCandidatesRadio"  name="createdByFilter"  value ="allCandidates"  ><label>All Candidates</label></li>
                     </ul>
 				 </div>
-				 </div>  
+				 </div>  -->  
 			 </div>
 			</div> 
 			

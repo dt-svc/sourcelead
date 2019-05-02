@@ -94,9 +94,6 @@ public class CandidateController {
 	@Autowired
 	LookUpDataService lookUpDataService;
 	
-	@Autowired
-	ReportsUtil reportsUtil;
-		
 	
 	@Autowired
 	private RolesService roleService;
@@ -180,9 +177,8 @@ public class CandidateController {
 					CandidateMarketPlaceDTO candidateMarketPlaceDTO,
 					HttpServletRequest request) {
 				List<CandidateMarketPlaceDTO> candidateMarketPlaceDTOs = null;
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations, candidateLocation, searchValue, candidateMarketPlaceDTO, user.getId());
+				candidateMarketPlaceDTOs = candidateService.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations, candidateLocation, searchValue, candidateMarketPlaceDTO);
 				return candidateMarketPlaceDTOs;
 			}
 	
@@ -780,7 +776,6 @@ public class CandidateController {
 			List<CandidateMarketPlaceCartView> candidatesFromMarketplace = null;
 			if(user != null){
 				if(StringUtils.isNotBlank(userRoleName)) {
-					
 					candidatesFromMarketplace = candidateService.getCandidateDetailsFromMarketcart(user, userRoleName, orgLocation, creationStartDate, creationEndDate, checkedDate, searchValue);
 			}}
 			return candidatesFromMarketplace;

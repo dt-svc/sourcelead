@@ -52,7 +52,7 @@ public interface RequirementService {
 
     public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId) throws Exception;
 
-    public void approverEmailScenario(User user, User approverUser, Requirement requirement, StringBuilder location, OrgLocations loginOrgLocation,String redirectURL1,Long redirectOrgLocationId) throws Exception;
+    public void approverEmailScenario(User user, User approverUser, Requirement requirement, StringBuilder location, OrgLocations loginOrgLocation) throws Exception;
 
     public void approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations) throws Exception;
 
@@ -263,6 +263,8 @@ public interface RequirementService {
 	public List<Requirement> getAllReleasedJobsBasedOnSpocId(long spocId);
 
 	public long getQualityCandidatesForVendors(List<Long> requirementIdList, long orgRelationId, long spocId, String staus);
+	
+	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId, String status);
 
 	public ApplicantDeclineDTO getApplicantDeclineCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId);
 	

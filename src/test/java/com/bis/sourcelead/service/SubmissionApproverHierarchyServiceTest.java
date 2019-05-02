@@ -22,6 +22,7 @@ import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Approval_Mechanism_Type;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -50,7 +51,7 @@ public class SubmissionApproverHierarchyServiceTest {
 		submissionId.setProjectMembers(projectMembers );
 		User approverUserId = new User();
 		approverUserId.setId(1l);
-		submissionId.setApproverUserId(approverUserId );
+		//submissionId.setApproverUserId(approverUserId );
 		submissionApproverHierarchy.setSubmissionId(submissionId);
 		submissionApproverHierarchy.setUpdatedBy("shiv");
 		submissionApproverHierarchy.setUpdatedDate(new Date());

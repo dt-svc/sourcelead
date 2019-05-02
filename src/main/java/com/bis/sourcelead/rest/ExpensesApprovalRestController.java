@@ -277,7 +277,7 @@ public class ExpensesApprovalRestController {
 				 		 if(approverList != null && !approverList.isEmpty()){
 				 			 for(ExpenseProjectApproverHierarchy  approver : approverList){
 				 				if(approver.getLevel() != null && approver.getLevel() != 1){
-				 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(),  orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
+				 					sendEmailNotificationTolevelToApprover(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(),  orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
 				 				}
 				 			 }
 				 		 } 
@@ -466,7 +466,71 @@ public class ExpensesApprovalRestController {
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());  
     }
 	
+    private void sendEmailNotificationTolevelToApprover(Expenses expenses,String currencyCode,String firstName,String lastName,String toEmail,User loginUser, User toUser,OrgLocations loginOrgLocation,ProjectMembers projectMembers,String startDate, String endDate,String status,String rejectedReason) throws Exception{
+		
+    	 EmailMessage emailMessage = new EmailMessage();
+    	 emailMessage.setFirstName(firstName);
+	 	 emailMessage.setLastName(lastName);
+	 	 emailMessage.setToEmail(toEmail);
+	 	 emailMessage.setFromEmail(loginUser.getEmail());
+	 	 emailMessage.setCreatedBy(loginUser.getUserCode());
+	 	 StringBuilder userNameSB = new StringBuilder();
+	 	 emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+	   	 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 Map<String, String> globalVarsMap = new HashMap<>();
+		
+		// globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
+		// globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+		 
+		 
+		 if(null != lastName && !"".equalsIgnoreCase(lastName)){
+			 StringBuilder manager =new StringBuilder();
+			 globalVarsMap.put("levelTwoApprover",firstName+" "+lastName.toString());
+		 }else{
+			 globalVarsMap.put("levelTwoApprover",firstName);
+		 }
+		 
+		 globalVarsMap.put("employeeName",projectMembers.getProjectMemberCandidteId().getFullName());
+		 globalVarsMap.put("projectName",projectMembers.getProjects().getProjectName());
+		 globalVarsMap.put("expenseStartDate",startDate);
+		 globalVarsMap.put("expenseEndDate", endDate);
+		 globalVarsMap.put("approverOne", (userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString()));
+		 Set<ExpensesEntries> expensesEntriesList = expenses.getExpensesEntries();
+		 for(ExpensesEntries expList: expensesEntriesList) {
+			 //globalVarsMap.put("amount", expList.getSubmittedamount().toString());
+			 globalVarsMap.put("climedamount",expenses.getTotalAmount().toString());
+		 }
+		 globalVarsMap.put("loginOrg",loginOrgLocation.getOrgLocationName());
+
+		 StringBuilder timeFrequencySB = new StringBuilder();
+		 globalVarsMap.put("timeFrequency",timeFrequencySB.append(startDate).append(" to ").append(endDate).toString());
+		 
+		 globalVarsMap.put("loginUser", loginUser.getFirstName());
+		 globalVarsMap.put("loginUser", loginUser.getLastName());
+		 
+		 StringBuilder loginURLSB = new StringBuilder();
+		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		
+		/* if("APPROVED".equalsIgnoreCase(status)){
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TO_LEVELTWO_APPROVER_WHILE_LEVENONE_APPROVEEXPENSES_INSEQUENTIALMECHANISM,new ArrayList<EmailAttachment>());
+		 }
+		
+		 EmailScenario  notificationScenario = null;
+		 String actionLink="";
+		 StringBuilder notificationLink = new StringBuilder();
+		 if("APPROVED".equalsIgnoreCase(status)){
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
+
+			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TO_LEVELTWO_APPROVER_WHILE_LEVENONE_APPROVEEXPENSES_INSEQUENTIALMECHANISM,Constants.ENTITY_TYPE_NOTIFICATION);
+		 }
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
+		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());  */
+    }
+    
     @RequestMapping(value="/getExpenseAttachmentStatus")
+    
     public String getExpenseAttachmentStatusByCategoryId(@RequestParam(value="categoryId" ,required=true)long categoryId) {
     	 String isAttachemtRequired = expensesCategoryService.getExpenseAttachmentStatusByCategoryId(categoryId);
     	return isAttachemtRequired;

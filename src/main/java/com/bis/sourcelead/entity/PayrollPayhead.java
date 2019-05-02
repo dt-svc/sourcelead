@@ -82,6 +82,9 @@ public class PayrollPayhead {
 	@Column(name = "ESI_APPLICABLE")
 	private String esiApplicable;
 	
+	@Column(name = "PT_APPLICABLE")
+	private String ptApplicable;
+
 	@Column(name = "METHOD")
 	private String method;
 	
@@ -95,6 +98,9 @@ public class PayrollPayhead {
 	
 	@Column(name = "UUID")
 	private String uuid;
+	
+	@Column(name = "ACTIVE")
+	private String active;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -306,6 +312,14 @@ public class PayrollPayhead {
 		this.uuid = uuid;
 	}
 
+	public String getActive() {
+		return active;
+	}
+
+	public void setActive(String active) {
+		this.active = active;
+	}
+
 	public Integer getStatus() {
 		return status;
 	}
@@ -360,5 +374,13 @@ public class PayrollPayhead {
 
 	public void setIsFormulaEditable(String isFormulaEditable) {
 		this.isFormulaEditable = isFormulaEditable;
+	}
+	
+	public String getPtApplicable() {
+		return ptApplicable;
+	}
+
+	public void setPtApplicable(String ptApplicable) {
+		this.ptApplicable = ptApplicable;
 	}
 }

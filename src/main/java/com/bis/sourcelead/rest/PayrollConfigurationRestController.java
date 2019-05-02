@@ -800,6 +800,12 @@ public class PayrollConfigurationRestController {
 												payrollPayheadDTO.setPfApplicable("N");
 											}
 											
+											if(StringUtils.isNotBlank(payrollPayhead.getPtApplicable())) {
+												payrollPayheadDTO.setPtApplicable(payrollPayhead.getPtApplicable());
+											}else {
+												payrollPayheadDTO.setPtApplicable("N");
+											}
+											
 											if(StringUtils.isNotBlank(payrollPayhead.getEsiApplicable())) {
 												payrollPayheadDTO.setEsiApplicable(payrollPayhead.getEsiApplicable());
 											}else {
@@ -1133,6 +1139,21 @@ public class PayrollConfigurationRestController {
 			}
 			return resObj;
 			
+		}
+		
+		@RequestMapping(value = { "/refreshPayheadsForOrg", "rest/refreshPayheadsForOrg" })
+		public Response<String> refreshPayheadsForOrg(HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Response<String> response =  payrollPayheadService.refreshPayheadsForOrg(orgLocations.getId());
+			return response;
+		}
+		
+		@RequestMapping(value = { "/payheadHandlerByOrg", "rest/payheadHandlerByOrg" })
+		public Response<String> payheadHandlerByOrg(PayrollPayheadDTO payrollPayheadDTO, HttpServletRequest request) throws Exception {
+		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    payrollPayheadDTO.setOrgLocationId(String.valueOf(orgLocations.getId()));
+			Response<String> response =  payrollPayheadService.payheadHandlerByOrg(payrollPayheadDTO);
+			return response;
 		}
 	
 }

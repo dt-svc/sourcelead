@@ -435,9 +435,9 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		}*/
 		
 		String subquery1 = "";
-		if("WAITING_FOR_APPROVER".equalsIgnoreCase(contractStatus)){
+		if("WAITING_FOR_APPROVER".equalsIgnoreCase(contractStatus) || "WAITING_TO_SEND".equalsIgnoreCase(contractStatus)){
 			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_FOR_APPROVER' or contracts.templateSubmissionStatus = 'WAITING_TO_SEND') ";
-		}else if("WAITING_TO_BE_SIGNED".equalsIgnoreCase(contractStatus)){
+		}else if("WAITING_TO_BE_SIGNED".equalsIgnoreCase(contractStatus) || "PENDING".equalsIgnoreCase(contractStatus)){
 			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_TO_BE_SIGNED' or contracts.templateSubmissionStatus = 'PENDING') ";
 		}else{
 			subquery1 += " contracts.templateSubmissionStatus = '"+contractStatus+"'";
@@ -495,7 +495,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Contracts  contracts =  null;
-		List<Contracts>  contractsList = session.createQuery("from Contracts ct where ct.id =:contractId").setLong("contractId", contractId).list();
+		List<Contracts>  contractsList = session.createQuery("from Contracts ct left join fetch ct.parentContractId where ct.id =:contractId").setLong("contractId", contractId).list();
 		if(null != contractsList && contractsList.size() >0){
 			contracts = contractsList.get(0);
 		}

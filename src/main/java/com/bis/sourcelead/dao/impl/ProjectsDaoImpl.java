@@ -914,10 +914,15 @@ public class ProjectsDaoImpl implements ProjectsDao{
 								 if(clientProjectClients == null) {
 									 clientProjectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getSharedLocationId().getId());
 								 }
-								 if(!clientProjectClients.getOrgRelationId().getResponderLocationId().getId().equals(orglo.getId())) {
+								 if(clientProjectClients != null && clientProjectClients.getOrgRelationId() != null && !clientProjectClients.getOrgRelationId().getResponderLocationId().getId().equals(orglo.getId())) {
 									 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProjectClients.getOrgRelationId().getLocationId().getId());
 								 }else {
-									 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProjectClients.getOrgRelationId().getResponderLocationId().getId());
+									 if(clientProjectClients.getOrgRelationId() != null) {
+										 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProjectClients.getOrgRelationId().getResponderLocationId().getId());
+									 }else {
+										 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
+									 }
+									 
 								 }
 							 }
 							 
@@ -1674,23 +1679,19 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 
 	@Override
 	@Transactional
-	public List<Projects> getProjectsListByUserIDAndOrgId(String[] associatesId,Long orgLocations) {
-	    try {
-	    	// convert string array to long array
-	    	Long[] data = new Long[associatesId.length];
-	    	for (int i = 0; i < associatesId.length; i++) {
-	    	data[i] = Long.valueOf(associatesId[i]);
-	    	}
-	    	   Session session = this.sessionFactory.getCurrentSession();
-				String query = "from Projects pj where pj.orgLocationsId = :orgLocations and pj.projectStatus = 'INPROGRESS' and pj.id  IN(select pm.projects.id from ProjectMembers pm where pm.employee.id IN(select emp.id from Employees emp where emp.user.id IN( :associatesId ))) ";
-				List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocations", orgLocations).setParameterList("associatesId", data).list();
-				return projectsList;
-	    	   
-	        } catch (Exception e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
+	public List<Projects> getProjectsListByCanddateIdAndOrgId(String associatesId, Long orglocationId) {
+	try {
+	Long candidateId = Long.valueOf(associatesId);
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = "select pm.projects from ProjectMembers pm where pm.projectMemberCandidteId.id In(:candidateId) ";
+	List<Projects> projectsList = session.createQuery(query.toString()).setParameter("candidateId", candidateId).list();
+	return projectsList;
+
+	} catch (Exception e) {
+	e.printStackTrace();
+	}
+	return null;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -1698,7 +1699,7 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	public List<Object[]> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
 	try {
 		
-		Session session = this.sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();       
 		 
 //		SimpleDateFormat dateFormat = new SimpleDateFormat(orgLocations.getDateFormat());
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -1710,8 +1711,10 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		int noOfHours =((orgLocations.getAverageWorkingHours())*(orgLocations.getWorkingDaysPerWeek()));
 		 
 		String query = "select pm.id as id,"
-				+ " pm.employee.employeeId as empId,"
-				+ " pm.employee.user.firstName as empName,"
+				/*+ " pm.employee.employeeId as empId,"
+				+ " pm.employee.user.firstName as empName,"*/
+				+ " pm.id as empId,"
+				+ " pm.id as empName,"
 				+ " pm.projects.projectName as projectName,"
 				+ " pm.projects.startDate as projectStartDate,"
 				+ " pm.projects.endDate as projectEndDate ,"
@@ -1720,7 +1723,8 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 				+ "  pm.percentageOfWork as availableHours,"
 				+ "  (( pm.percentageOfWork)/100) * " + noOfHours + " as hoursperWeek"
 				+ " from ProjectMembers pm"
-				+ " where pm.projects.orgLocationsId=:orgLocations";
+//				+ " where pm.projects.orgLocationsId=:orgLocations"
+				+ "";
 			
 			
 		/*	query += " and (case when pm.projectEndDate is null and pm.projects.endDate is null"
@@ -1732,7 +1736,8 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 							+ "			else pm.projectAssignedDate like '%" + fromDate + "%' and pm.projectEndDate like '%" + toDate + "%' end) "
 					+ "end)";*/
 			
-			query += " and '" + fromDate + "' >= (case when pm.projectEndDate is null and pm.projects.endDate is null"
+		
+			query += " where '" + fromDate + "' >= (case when pm.projectEndDate is null and pm.projects.endDate is null"
 					+ "		then pm.projectAssignedDate"
 							+ " else (case when pm.projectEndDate is null "
 							+ "			then pm.projectAssignedDate "
@@ -1747,6 +1752,9 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 							+ "					else pm.projectEndDate end)"
 							+ "			else pm.projectEndDate end) "
 					+ "end)";
+
+			
+			
 			
 		if (availableAssociatesDTO.getProjectsIds() != null && !availableAssociatesDTO.getProjectsIds().isEmpty()) {
 			String projectIds = "";
@@ -1754,13 +1762,15 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 				projectIds += (projectIds.isEmpty() ? "" : ", ") + id;
 			}
  			query += " and pm.projects.id in (" + projectIds + ")";
+ 			
 		}
 		if(availableAssociatesDTO.getUserIds() != null && !availableAssociatesDTO.getUserIds().isEmpty()) {
 			String userIds = "";
 			for (long id : availableAssociatesDTO.getUserIds()) {
 				userIds += (userIds.isEmpty() ? "" : ", ") + id;
 			}
-			query += " and pm.employee.user.id in (" + userIds + ")";
+			query += " and pm.projectMemberCandidteId.id in (" + userIds + ")";
+			
 		}
 		
 		System.out.println(query);
@@ -1769,9 +1779,10 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		java.sql.Date toDate = new java.sql.Date(availableAssociatesDTO.getToDate().getTime());*/
 		
 		Query queryObj = session.createQuery(query);
-		queryObj.setLong("orgLocations", orgLocations.getId());
+//		queryObj.setLong("orgLocations", orgLocations.getId());
 		/*queryObj.setString("fromDate", fromDate);
 		queryObj.setString("toDate", toDate);*/
+		
 		
 		return queryObj.list();
 	} catch (Exception e) {
