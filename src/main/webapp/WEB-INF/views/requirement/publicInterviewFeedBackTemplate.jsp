@@ -138,7 +138,7 @@ function cancelFunction(){
 	$(".project_inn_mask").hide();
 	var result = "";
 	result = result + '<form id="cancelFunction_form" name="cancelFunction_form" enctype="multipart/form-data" method="post">';
-	result = result + '<h3>Interview Feedback</h3>';
+	result = result + '<h3 class="mt ml">Interview Feedback</h3>';
 	
 	result = result + '<div class="row clearfix">';
 	result = result + '<div class="col-md-6">';
@@ -273,7 +273,7 @@ function interviewTemplateForm(){
 		generateInterviewFeedbackForm1(sourceleadUrl,templateId)
 		var result = "";
 		result = result + '<form id="interviewTemplate_form" name="interviewTemplate_form" enctype="multipart/form-data" method="post">';
-		result = result + '<h3>Interview Feedback</h3>';
+		result = result + '<h3 class="mt ml">Interview Feedback</h3>';
 		/* result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
 		result = result + '<div class="sjfb-field sjfb-text">';
 		result = result + '<label>Comment <span class="text-danger">*</span></label>';

@@ -875,7 +875,7 @@ function activeEmail(id, ele){
 					 var report = response.data[e];
 					 var margin = report.split("<<>>")[1].split(".").length > 1 ? (report.split("<<>>")[1].split(".").length - (report.split("<<>>")[0] === "INBOX" ? 1 : 2)) : 0;
 					 result = result + "<ul class='nav nav-pills nav-stacked dynMailList' style='margin-left : " + (margin * 20) + "px;'>";
-					 result = result + "<li name='mailFolder' data-index='" + e + "' " + (report.split("<<>>")[2] > 0 ? "class='unseen-text'" : "") + " onClick='readFolder(\"" + report.split("<<>>")[0] + "\",\"" + report.split("<<>>")[1] + "\"," + id + ", 0, 10, " + e + ");'>" + report.split("<<>>")[0] + (report.split("<<>>")[2] > 0 ? " (" + report.split("<<>>")[2] + ")" : "") + "</li>";
+					 result = result + "<li name='mailFolder' data-index='" + e + "' " + (report.split("<<>>")[2] > 0 ? "class='unseen-text'" : "") + " onClick='readFolder(\"" + report.split("<<>>")[0] + "\",\"" + report.split("<<>>")[1] + "\"," + id + ", 0, 10, " + e + ");'>" + report.split("<<>>")[0] + (report.split("<<>>")[2] > 0 ? " (" + report.split("<<>>")[2].trim() + ")" : "") + "</li>";
 					 /* result = result + "<li onClick='readFolder(\"" + report + "\"," + id + ");'>" + report + "</li>"; */
 					 result = result + "</ul>";
 				 }
@@ -1007,7 +1007,7 @@ function prepareDynamicPagination(name, fullName, id, paginator, index) {
 	text += "</div>";
 
 	var unreadCount = paginator.filterType;
-	$("li[data-index='"+ index +"']").html(name + " (" + unreadCount + ")");
+	$("li[data-index='"+ index +"']").html(name + (unreadCount > 0 ? " (" + unreadCount + ")" : ""));
 	var resultsFrom = (paginator.pageNo * paginator.pageSize) + 1;
 	var resultsTo = (paginator.pageNo + 1) * paginator.pageSize > paginator.totalRows ? paginator.totalRows : (paginator.pageNo + 1) * paginator.pageSize;	
 	text += "<div class='dataTables_info pull-left' id='emailMailDetailsPagination_info' role='status' aria-live='polite'>Showing " + resultsFrom + " to " + resultsTo + " of " + paginator.totalRows + " entries</div>";
