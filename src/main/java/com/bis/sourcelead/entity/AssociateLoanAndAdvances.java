@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
 
 import com.bis.sourcelead.constants.Constants;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "ASSOCIATE_LOAN_ADVANCES")
@@ -110,6 +111,12 @@ public class AssociateLoanAndAdvances implements Serializable{
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY")
     private User updatedBy;
+    
+    @Column(name = "OUTSTANDING_AMOUNT")
+	private BigDecimal outstandingAmount;
+    
+    @Column(name = "RATE_OF_INTEREST")
+	private Double rateOfInterest;
     
     @Transient
     private String approverName;
@@ -367,4 +374,22 @@ public class AssociateLoanAndAdvances implements Serializable{
 	{
 		this.deductionStatus = deductionStatus;
 	}
+
+	public BigDecimal getOutstandingAmount() {
+		return outstandingAmount;
+	}
+
+	public Double getRateOfInterest() {
+		return rateOfInterest;
+	}
+
+	public void setOutstandingAmount(BigDecimal outstandingAmount) {
+		this.outstandingAmount = outstandingAmount;
+	}
+
+	public void setRateOfInterest(Double rateOfInterest) {
+		this.rateOfInterest = rateOfInterest;
+	}
+	
+	
 }

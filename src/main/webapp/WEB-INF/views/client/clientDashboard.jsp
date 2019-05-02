@@ -2443,7 +2443,7 @@ function clientFileterPopUp(){
 }
 function resetClientFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
-	getClientList();
+// 	getClientList();
 // 	$(".mask").fadeOut();
 }
 
@@ -2459,7 +2459,7 @@ function clientContactFilterPopUp(){
 function resetClientContactFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
-	getClientContactList();
+// 	getClientContactList();
 // 	 $(".mask").fadeIn();
 	
 }

@@ -2437,14 +2437,14 @@ $("#editRoleDetailsList").empty();
 					}
 					
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label>Date of Birth <span class="text-danger">*</span></label>';
+					result = result + ' <label>Date of Birth </label>';
 					result = result + '<div class="input-group">';
 					if(json.hireDateStr != null && json.dateofBirthStr != "" && json.dateofBirthStr != "undefined"){
-						result = result + ' <input type="text" value="'+json.dateofBirthStr+'" name="dateofBirth" id="dateofBirth" readonly="readonly" class="calendar" field-name="Date of Birth" data-validation="required">';
+						result = result + ' <input type="text" value="'+json.dateofBirthStr+'" name="dateofBirth" id="dateofBirth" readonly="readonly" class="calendar" field-name="Date of Birth">';
 						result = result + '   <span class="input-group-addon" onClick="clearDateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 					}else{
-						result = result + ' <input type="text" value="'+json.dateofBirthStr+'" name="dateofBirth" id="dateofBirth" readonly="readonly" class="calendar" field-name="Date of Birth" data-validation="required">';
+						result = result + ' <input type="text" value="'+json.dateofBirthStr+'" name="dateofBirth" id="dateofBirth" readonly="readonly" class="calendar" field-name="Date of Birth">';
 						result = result + '   <span class="input-group-addon" onClick="clearDateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 					}
