@@ -36,24 +36,31 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private String appraisalApprovingEndDate;
 	
-	@Required(desc="applicableFor")
-	private String applicableFor;
+	private String appraisalProcessStartDate;
 	
-	@Required (desc = "experienceYears", dependsOn = "applicableFor", parentValue = "Experienced")
-	private String experienceYears;
-	
-	@Required (desc = "experienceMonths", dependsOn = "applicableFor",  parentValue = "Experienced")
-	private String experienceMonths;
+	private String appraisalProcessEndDate;
 	
 	private String description ;
 	
 	private String descriptionDisplay;
 	
-	@Required(desc="appraisalCategories")
+	private String feedbackCategory;
+	
 	private String appraisalCategories;
 	
-	@Required(desc="jsonTemplateString")
+	private String comptencyCategories;
+	
 	private String jsonCategoriesString ;
+	
+	private String appraisalGoals;
+	
+	@Required(desc="goalsWeightage", dependsOn = "appraisalGoals", parentValue = "Y")
+	private String goalsWeightage;
+	
+	private String appraisalProjectTasks;
+	
+	@Required(desc="projectTasksWeightage", dependsOn = "appraisalProjectTasks", parentValue = "Y")
+	private String projectTasksWeightage;
 	
 	private List<DepartmentDTO> departmentList;
 	
@@ -146,30 +153,6 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 		this.appraisalApprovingEndDate = appraisalApprovingEndDate;
 	}
 
-	public String getApplicableFor() {
-		return applicableFor;
-	}
-
-	public void setApplicableFor(String applicableFor) {
-		this.applicableFor = applicableFor;
-	}
-
-	public String getExperienceYears() {
-		return experienceYears;
-	}
-
-	public void setExperienceYears(String experienceYears) {
-		this.experienceYears = experienceYears;
-	}
-
-	public String getExperienceMonths() {
-		return experienceMonths;
-	}
-
-	public void setExperienceMonths(String experienceMonths) {
-		this.experienceMonths = experienceMonths;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -177,7 +160,6 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
 
 	public String getDescriptionDisplay() {
 		return descriptionDisplay;
@@ -210,6 +192,72 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	public void setDepartmentList(List<DepartmentDTO> departmentList) {
 		this.departmentList = departmentList;
 	}
+
+	public String getAppraisalProcessStartDate() {
+		return appraisalProcessStartDate;
+	}
+
+	public void setAppraisalProcessStartDate(String appraisalProcessStartDate) {
+		this.appraisalProcessStartDate = appraisalProcessStartDate;
+	}
+
+	public String getAppraisalProcessEndDate() {
+		return appraisalProcessEndDate;
+	}
+
+	public void setAppraisalProcessEndDate(String appraisalProcessEndDate) {
+		this.appraisalProcessEndDate = appraisalProcessEndDate;
+	}
+
+	public String getFeedbackCategory() {
+		return feedbackCategory;
+	}
+
+	public void setFeedbackCategory(String feedbackCategory) {
+		this.feedbackCategory = feedbackCategory;
+	}
+
+	public String getAppraisalGoals() {
+		return appraisalGoals;
+	}
+
+	public void setAppraisalGoals(String appraisalGoals) {
+		this.appraisalGoals = appraisalGoals;
+	}
+
+	public String getGoalsWeightage() {
+		return goalsWeightage;
+	}
+
+	public void setGoalsWeightage(String goalsWeightage) {
+		this.goalsWeightage = goalsWeightage;
+	}
+
+	public String getAppraisalProjectTasks() {
+		return appraisalProjectTasks;
+	}
+
+	public void setAppraisalProjectTasks(String appraisalProjectTasks) {
+		this.appraisalProjectTasks = appraisalProjectTasks;
+	}
+
+	public String getProjectTasksWeightage() {
+		return projectTasksWeightage;
+	}
+
+	public void setProjectTasksWeightage(String projectTasksWeightage) {
+		this.projectTasksWeightage = projectTasksWeightage;
+	}
+
+	public String getComptencyCategories() {
+		return comptencyCategories;
+	}
+
+	public void setComptencyCategories(String comptencyCategories) {
+		this.comptencyCategories = comptencyCategories;
+	}
+
+	
 
 	
 }
