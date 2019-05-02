@@ -392,7 +392,7 @@ $(".addUser-org").click(function(){
    $("#endDate").click(function(){
 	   $(".endDate").toggle(200);
    });
-   event.preventDefault();
+   // event.preventDefault(); commneted due to script issues.
 });
 
 $(".addSkills").click(function(){

@@ -174,7 +174,8 @@
 		                  <label>Deduct Amount<span class="text-danger">&nbsp;*</span></label>
 		                   <input type="text" class="form-control" name="deductAmount" id="deductAmount" readonly="readonly" field-name="Deduct Amount">
 		              </div>
-		              
+		              <input type="hidden" name="rateOfInterest" id="rateOfInterest"/>
+		              <input type="hidden" name="outstandingAmount" id="outstandingAmount"/>
 		              <div class="col-md-4 minHeight" id="loanAndAdvApproverDiv">
 		                  <label>Approver<span class="text-danger">&nbsp;*</span></label>
 		                   <select class="form-control chosen-select" name="loanAndAdvApprover" id="loanAndAdvApprover"  field-name="Approver" field-name="Approver">

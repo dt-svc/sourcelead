@@ -31,6 +31,8 @@ public class AssociateBalanceLeaveDTO {
 	private List<TotalLeaveDTO> totalLeavesDto;
 	
 	private float appliedLeaveCount;
+	
+	private float assBalLeaveHis;
 
 	public String getId()
 	{
@@ -151,6 +153,13 @@ public class AssociateBalanceLeaveDTO {
 	{
 		this.appliedLeaveCount = appliedLeaveCount;
 	}
-	
+
+	public float getAssBalLeaveHis() {
+		return assBalLeaveHis;
+	}
+
+	public void setAssBalLeaveHis(float assBalLeaveHis) {
+		this.assBalLeaveHis = assBalLeaveHis;
+	}
 	
 }
