@@ -278,5 +278,11 @@ void sendEmployemntConfirmationMailToAssocaite(User fromUser, User toUser, OrgLo
 
 User validateSSNDuplicate(String ssnNumber, Long id, String userId);
 
+/**
+ * @author Mahaveer Manoj
+ * @purpose - to add new portlet to dashboard
+ **/
+public int addItemToDashboard(String itemName, String itemSize, List<String> rolesList);
+
 }	
 

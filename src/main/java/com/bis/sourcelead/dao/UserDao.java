@@ -197,6 +197,7 @@ public interface UserDao {
 
 	public long saveDashboardItems(DashboardItems dashboardItems);
 	
+	public List<DashboardItems> getAllDashboardItems();
 	
 	public List<User> getUsersListUsingMultipleStringIdsWithLocationId(String ids, Long orgLocationId) throws Exception;
 	

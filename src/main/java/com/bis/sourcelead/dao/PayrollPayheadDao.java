@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
@@ -17,6 +18,8 @@ public interface PayrollPayheadDao {
 	PayrollPayhead savePayrollPayhead(PayrollPayhead payrollPayhead) throws Exception;
 	
 	List<PayrollPayhead> getPayrollPayheadList(OrgLocations orgLocations) throws Exception;
+	
+	List<PayrollPayhead> getAllPayrollPayheadListByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	List<PayrollPayhead> getPayrollPayheadListByPayheadComponentType(OrgLocations orgLocations, String component) throws Exception;
 	
@@ -41,5 +44,8 @@ public interface PayrollPayheadDao {
 	PayrollPayhead getPayrollPayheadByShortCodeAndOrglocation(String shortCode, Long orgLocationId);
 	
 	AssociateSalaryHistoryInd saveAssociateSalaryHistoryInd(AssociateSalaryHistoryInd associateSalaryHistoryInd) throws Exception;
+	
+	List<AssociateSalaryInd> getAssociateSalaryIndListByOrgLocationsId(Long orgLocationId) throws Exception;
 
+	Response<String> payheadHandlerByOrg(PayrollPayheadDTO payrollPayheadDTO) throws Exception;
 }

@@ -22,6 +22,8 @@ import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
+import com.bis.sourcelead.reportsDTO.ApplicantsBackoutDTO;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 
 /**
@@ -50,7 +52,7 @@ public interface RequirementService {
 
     public List<RequirementAssignTo> getUserAssignJobCount(Long userId, Long orgLocationId) throws Exception;
 
-    public void approverEmailScenario(User user, User approverUser, Requirement requirement, StringBuilder location, OrgLocations loginOrgLocation,String redirectURL1,Long redirectOrgLocationId) throws Exception;
+    public void approverEmailScenario(User user, User approverUser, Requirement requirement, StringBuilder location, OrgLocations loginOrgLocation) throws Exception;
 
     public void approverTwoEmailScenario(User loginUser, User approverUser, Requirement requirement, StringBuilder location, OrgLocations orgLocations) throws Exception;
 
@@ -256,5 +258,16 @@ public interface RequirementService {
 
 	public void sendMailToPrimaryRecruiter(Requirement requirement,User loginUser,User toUser) throws Exception;
 	
+	public List<Requirement> getAllReleasedJobsForVendorBasedOnOrgRelationId(Long orgLocationId, Long orgRelationId);
+	
+	public List<Requirement> getAllReleasedJobsBasedOnSpocId(long spocId);
+
+	public long getQualityCandidatesForVendors(List<Long> requirementIdList, long orgRelationId, long spocId, String staus);
+
+	public ApplicantDeclineDTO getApplicantDeclineCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId);
+	
+	public ApplicantsBackoutDTO getApplicantBackoutCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId);
+	
+	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId,String status);
 	
 }

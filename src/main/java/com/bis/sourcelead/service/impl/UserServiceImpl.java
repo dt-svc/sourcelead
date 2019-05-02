@@ -88,6 +88,7 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Shift;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
@@ -104,6 +105,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.MasterCandidateService;
+import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -114,6 +116,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserCustomFieldDataService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -124,6 +127,7 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
+import com.google.gson.JsonObject;
 import com.ibm.icu.math.BigDecimal;
 
 /**
@@ -253,9 +257,14 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private RequirementSubmissionDao requirementSubmissionDao;
 	
+	@Autowired
+	private ModulesService modulesService;
+	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+	
 	@Value("${isCouchbaseEnabled}")
 	private String isCouchbaseEnabled;
-	
 	
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
@@ -524,6 +533,11 @@ public class UserServiceImpl implements UserService {
 				}else{
 					candidate.setPanNumber(null);
 				}
+				if(StringUtils.isNotBlank(candidateDTO.getAadharNumber())){
+					candidate.setAadharNumber(candidateDTO.getAadharNumber());
+				}else{
+					candidate.setAadharNumber(null);
+				}
 				if(StringUtils.isNotBlank(addUserDTO.getVendors())){
 					OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
 					candidate.setOrgRelationId(orgRelation);
@@ -625,6 +639,11 @@ public class UserServiceImpl implements UserService {
 					}else{
 						candidate.setPanNumber(null);
 					}
+					if(StringUtils.isNotBlank(candidateDTO.getAadharNumber())){
+						candidate.setAadharNumber(candidateDTO.getAadharNumber());
+					}else{
+						candidate.setAadharNumber(null);
+					}
 					candidate.setIsAssociate(Constants.YES);
 					candidateService.addCandidate(candidate);
 					candidateService.saveOrUpdateCandidateElkDocument(candidate);
@@ -647,6 +666,11 @@ public class UserServiceImpl implements UserService {
 					candidate.setPanNumber(candidateDTO.getPanNumber());
 				}else{
 					candidate.setPanNumber(null);
+				}
+				if(StringUtils.isNotBlank(candidateDTO.getAadharNumber())){
+					candidate.setAadharNumber(candidateDTO.getAadharNumber());
+				}else{
+					candidate.setAadharNumber(null);
 				}
 				candidate.setConsultantUser(user);
 				candidate.setIsAssociate(Constants.YES);
@@ -2459,6 +2483,64 @@ public File exportAllApplicantJoinedListPdf(ResponseList<ApplicantsJoinedReportD
 	public User validateSSNDuplicate(String ssnNumber, Long locationId,String userId)
 	{
 		return userDao.validateSSNDuplicate(ssnNumber,locationId,userId);
+	}
+	
+	@Override
+	public int addItemToDashboard(String itemName, String itemSize, List<String> rolesList) {
+		int count = 0;
+		try {
+			List<DashboardItems> dashboardItemsList = userDao.getAllDashboardItems();
+			if (dashboardItemsList != null && !dashboardItemsList.isEmpty()) {
+				for (DashboardItems dashboardItems : dashboardItemsList) {
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(dashboardItems.getUser().getId(), dashboardItems.getOrgLocations().getId());
+					if (userRole != null) {
+						List<Long> modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(dashboardItems.getOrgLocations());
+						List<SourceleadActions> actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), dashboardItems.getOrgLocations().getId());
+						if (actionsList != null && !actionsList.isEmpty()) {
+							boolean hasRole = false;
+							for (SourceleadActions action : actionsList) {
+								for (String roleAction : rolesList) {
+									if (action.getActionRole().equalsIgnoreCase(roleAction)) {
+										hasRole = true;
+										break;
+									}
+								}
+							}
+							if (hasRole) {
+								boolean containsItem = false;
+								JSONArray jsonArray = new JSONArray(dashboardItems.getItems());
+								if (jsonArray != null && jsonArray.length() > 0) {
+									for (int i = 0; i < jsonArray.length(); i++) {
+										JSONObject jsonObject = jsonArray.getJSONObject(i);
+										if(jsonObject.has("name") && jsonObject.getString("name").equalsIgnoreCase(itemName)) {
+											containsItem = true;
+										}
+									}
+								}
+								if(!containsItem) {
+									String items = dashboardItems.getItems();
+									JsonObject jsonObject = new JsonObject();
+									jsonObject.addProperty("name", itemName);
+									jsonObject.addProperty("checked", true);
+									jsonObject.addProperty("order", jsonArray.length() + 1);
+									jsonObject.addProperty("size", itemSize);
+									items = items.replace("]", "," + jsonObject + "]");
+									dashboardItems.setItems(items);
+									userDao.saveDashboardItems(dashboardItems);
+									System.out.println(dashboardItems.getId() + " : " + items);
+									count++;
+								}
+							}
+						}
+					}
+
+				}
+			}
+			System.out.println("Total Updates : " + count);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
 	}
 
 	

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.DayWiseLeaveReportDTO;
 import com.bis.sourcelead.dto.HrLeaveReportDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
@@ -95,6 +97,9 @@ public class LeaveDaoImpl implements LeaveDao{
 	@Autowired
 	LeaveManagementUtil leaveManagementUtil;
 	
+	@Autowired
+	UserDao userDao;
+	
 	@Override
 	@Transactional
 	public Leave saveLeave(Leave leave) throws Exception {
@@ -155,11 +160,10 @@ public class LeaveDaoImpl implements LeaveDao{
 			}
 			
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
-				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR laph.leaveid.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ");
+				searchQuery.append(" and concat (laph.leaveid.user.firstName ,' ',")
+				.append("laph.leaveid.user.lastName) like '%"+ leaveDTO.getSearchValue() +"%'");
 				if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					searchQuery.append("OR  (concat(laph.leaveid.approvedBy.firstName,laph.leaveid.approvedBy.lastName) like '%\" + payrollReportDTO.getSearchValue() + \"%' ) ")
+					searchQuery.append("OR  (concat(laph.leaveid.approvedBy.firstName,laph.leaveid.approvedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
 					.append("OR laph.leaveid.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
 					searchQuery.append("OR (concat(laph.leaveid.rejectedBy.firstName,laph.leaveid.rejectedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
@@ -1039,7 +1043,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		if("yes".equalsIgnoreCase(topleave)) {
 	    query = "select lt.NAME AS name,lt.ID AS id from LEAVE_TYPE lt where  lt.STATUS =1  and lt.ORGLOCATION_ID =:orgLocationId"+subQuery1+subQuery3;
 		}else {
-			query = "select lt.NAME AS name,lt.ID AS id from LEAVE_TYPE lt where  lt.STATUS =1 and lt.VISIBLE_IN_BALANCE_LEAVES='Y' and lt.ORGLOCATION_ID =:orgLocationId"+subQuery1+subQuery3;
+			query = "select lt.NAME AS name,lt.ID AS id, lt.DEPARTMENT_IDS AS department from LEAVE_TYPE lt where  lt.STATUS =1 and lt.VISIBLE_IN_BALANCE_LEAVES='Y' and lt.ORGLOCATION_ID =:orgLocationId"+subQuery1+subQuery3;
 		}
 		String query1 ="select d.DEPARTMENT_NAME AS deparmentNames,d.ID AS departmentId from DEPARTMENT d where d.ORG_LOCATION_ID =:orgLocationId";
 		Query queryString1 = session.createSQLQuery(query1);
@@ -1362,24 +1366,38 @@ public class LeaveDaoImpl implements LeaveDao{
                 startDateSqlDate = new java.sql.Date(startDate.getTime());
                 endDateSqlDate = new java.sql.Date(endDate.getTime());
             }
+            List<Long> userHierarchyIdList = new LinkedList<>();
+            String userHierarchyIdString = "";
+            if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
+            	userHierarchyIdList = userDao.getUserHierarchyIdList(hrLeaveReportDTO.getLoginUserId());
+            	if(!userHierarchyIdList.contains(hrLeaveReportDTO.getLoginUserId())) {
+            		userHierarchyIdList.add(hrLeaveReportDTO.getLoginUserId());
+            	}
+            	if(userHierarchyIdList != null && !userHierarchyIdList.isEmpty()) {
+            		userHierarchyIdString = StringUtils.join(userHierarchyIdList, ',');
+            	}
+            }
+            if(userHierarchyIdString.isEmpty()) {
+            	userHierarchyIdString = hrLeaveReportDTO.getLoginUserId() + "";
+            }
             if (loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && hrLeaveReportDTO.getStatus() != null
                     && !hrLeaveReportDTO.getStatus().isEmpty()) {
                 query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
             }
             else if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")
                     && hrLeaveReportDTO.getStatus().isEmpty()) {
-                query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId)and leaveReport.reportingManagerId = :loginUserId and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
+                query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId)and leaveReport.reportingManagerId IN (" + userHierarchyIdString + ") and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
             }
             else if (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN")
                     && !hrLeaveReportDTO.getStatus().isEmpty()) {
-                query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId)and leaveReport.reportingManagerId = :loginUserId and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
+                query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId)and leaveReport.reportingManagerId IN (" + userHierarchyIdString + ") and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
             }
             else if (loginUserRole.equalsIgnoreCase("ROLE_ADMIN")
                     && hrLeaveReportDTO.getStatus().isEmpty()) {
                 query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
             }
             else {
-                query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and leaveReport.reportingManagerId = :loginUserId and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
+                query = "from LeaveReportView leaveReport where (leaveReport.orglocationId = :orgLocationId or leaveReport.orgId = :orgId) and leaveReport.reportingManagerId IN (" + userHierarchyIdString + ") and (leaveReport.fromDate >= :fromDate AND leaveReport.toDate <= :toDate)";
             }
             StringBuilder query1 = new StringBuilder();
             if (StringUtils.isNotBlank(hrLeaveReportDTO.getSearchValue())) {
@@ -1645,5 +1663,31 @@ public class LeaveDaoImpl implements LeaveDao{
 		}
 		return lovLeaves;
 	}
+	
+	@SuppressWarnings("unchecked")
+    @Override
+    @Transactional
+    public List<Leave> getAllLeavesByLocationIdAndStatusAndAppliedDate(Long locationId, String status,
+            Date appliedDate) {
+        java.sql.Date sqlappliedDate = new java.sql.Date(appliedDate.getTime());
+        Session session = this.sessionFactory.getCurrentSession();
+        List<Leave> list = null;
+        String query = "from Leave leave left join fetch leave.leaveType where leave.orgLocations.id =:orgLocationId and leave.status =:status and leave.createdDate =:sqlappliedDate";
+        list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).setDate("sqlappliedDate", sqlappliedDate).list();
+        return list;
+    }
+	
+	@SuppressWarnings("unchecked")
+    @Override
+    @Transactional
+    public List<Leave> getAllLeavesByLocationIdAndStatusAndLeaveStartDate(Long locationId, String status,
+            Date appliedDate) {
+        java.sql.Date sqlappliedDate = new java.sql.Date(appliedDate.getTime());
+        Session session = this.sessionFactory.getCurrentSession();
+        List<Leave> list = null;
+        String query = "from Leave leave left join fetch leave.leaveType where leave.orgLocations.id =:orgLocationId and leave.status =:status and leave.fromDate =:sqlappliedDate";
+        list = session.createQuery(query).setString("status", status).setLong("orgLocationId", locationId).setDate("sqlappliedDate", sqlappliedDate).list();
+        return list;
+    }
 }
 

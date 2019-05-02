@@ -23,12 +23,15 @@ import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TicketDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
@@ -749,8 +752,8 @@ public class DynamicReport {
 							col.column("Associate Id", "Associate Id", type.stringType()),
 							col.column("Associate Name", "Associate Name", type.stringType()),
 							col.column("Client Name", "Client Name", type.stringType()),
-							col.column("Paid Amount", "Paid Amount", type.stringType()),
-							col.column("Billed Amount", "Billed Amount", type.stringType()),
+							col.column("Pay Rate", "Pay Rate", type.stringType()),
+							col.column("Bill Rate", "Bill Rate", type.stringType()),
 							col.column("Margin", "Margin", type.stringType()))
 					.pageFooter(Templates.footerComponent)
 					.setDataSource(marginSheetReportDataSource(projectMembersDTOList)).toPdf(pdfExporter);
@@ -781,8 +784,8 @@ public class DynamicReport {
 								col.column("Associate Id", "Associate Id", type.stringType()),
 								col.column("Associate Name", "Associate Name", type.stringType()),
 								col.column("Client Name", "Client Name", type.stringType()),
-								col.column("Paid Amount", "Paid Amount", type.stringType()),
-								col.column("Billed Amount", "Billed Amount", type.stringType()),
+								col.column("Pay Rate", "Pay Rate", type.stringType()),
+								col.column("Bill Rate", "Bill Rate", type.stringType()),
 								col.column("Margin", "Margin", type.stringType()))
 						.setDataSource(marginSheetReportDataSource(projectMembersDTOList)).toXls(xlsExporter);
 			} catch (DRException e) {
@@ -792,7 +795,7 @@ public class DynamicReport {
   }
 	
 	private DRDataSource marginSheetReportDataSource(ResponseList<MarginSheetReportDTO> responseList) {
-		DRDataSource dataSource = new DRDataSource("Associate Id","Associate Name", "Client Name", "Paid Amount", "Billed Amount", "Margin");
+		DRDataSource dataSource = new DRDataSource("Associate Id","Associate Name", "Client Name", "Pay Rate", "Bill Rate", "Margin");
 		for(MarginSheetReportDTO margin:responseList.getData()) {
 			String empId = "--";
 			
@@ -804,13 +807,13 @@ public class DynamicReport {
 		
 			String	clientName = margin.getClinetName();
 			
-			String	 paidAmount = margin.getPayRateCurrency() +" "+String.valueOf(margin.getPayRate())+" "+margin.getPayRateType();
+			String	 payRate = margin.getPayRateCurrency() +" "+String.valueOf(margin.getPayRate())+" "+margin.getPayRateType();
 				 
-			String	 billedAmount = margin.getBillRateTypeCurrency() +" "+String.valueOf(margin.getBillRate())+" "+margin.getBillRateType();
+			String	 billRate = margin.getBillRateTypeCurrency() +" "+String.valueOf(margin.getBillRate())+" "+margin.getBillRateType();
 			 
 			String marginRate = String.valueOf(margin.getMarginRate());
 			
-			dataSource.add(empId,associateName, clientName, paidAmount,billedAmount,marginRate);
+			dataSource.add(empId,associateName, clientName, payRate,billRate,marginRate);
 		}
 		return dataSource;
 	}
@@ -1109,6 +1112,172 @@ public class DynamicReport {
 			}
 			
 			dataSource.add(applicantName,emailId,contactNumber,jobTitle,jobRate,client,dateOfInterview,source,submittedOn,joinedDate,offerRate,offerRateYearly,marginRateYearly,paymentTerm,invoiceDate);
+		}
+		return dataSource;
+	}
+	
+	public File ticketManagementPdfExport(ResponseList<TicketDTO> responseList, OrgLocations orgLocations) throws IOException {
+		File file = null;
+		try {
+			StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("ticket_")
+					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()))
+					.toString(), ".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle)
+							.setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(col.column("Ticket Id", "Ticket Id", type.stringType()),
+							col.column("Ticket Title", "Ticket Title", type.stringType()),
+							col.column("Status", "Status", type.stringType()),
+							col.column("Priority", "Priority", type.stringType()),
+							col.column("Requested By", "Requested By", type.stringType()),
+							col.column("AssignedTo", "AssignedTo", type.stringType()))
+					.pageFooter(Templates.footerComponent).setDataSource(createTicketDataSource(responseList))
+					.toPdf(pdfExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+
+	public File ticketManagementExcelExport(ResponseList<TicketDTO> responseList, OrgLocations orgLocations) throws IOException {
+		File file = null;
+		try {
+			StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("ticket_")
+					.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()))
+					.toString(), ".xls");
+			file.setReadable(true);
+			JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file).setDetectCellType(true)
+					.setIgnorePageMargins(true).setWhitePageBackground(false).setRemoveEmptySpaceBetweenColumns(true);
+
+			report().setTemplate(Templates.reportTemplate).setColumnTitleStyle(Templates.columnTitleStyle)
+					.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1").ignorePageWidth().ignorePagination()
+					.columns(col.column("Ticket Id", "Ticket Id", type.stringType()),
+							col.column("Ticket Title", "Ticket Title", type.stringType()),
+							col.column("Status", "Status", type.stringType()),
+							col.column("Priority", "Priority", type.stringType()),
+							col.column("Requested By", "Requested By", type.stringType()),
+							col.column("AssignedTo", "AssignedTo", type.stringType()))
+					.setDataSource(createTicketDataSource(responseList)).toXls(xlsExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+
+	private DRDataSource createTicketDataSource(ResponseList<TicketDTO> responseList) {
+		DRDataSource dataSource = new DRDataSource("Ticket Id", "Ticket Title", "Status", "Priority", "Requested By", "AssignedTo");
+		try {
+			for (TicketDTO history : responseList.getData()) {
+				String ticketId = history.getGeneratedId();
+				String ticketTitle = history.getTitle();
+				String status = history.getTicketStatus();
+				String priority = history.getTicketPriority();
+				String requestedBy = history.getCreatedBy();
+				String assignedTo = history.getAssignedTo().toString();
+				assignedTo = assignedTo.replace("[", " ");
+				assignedTo = assignedTo.replace("]", " ");
+				dataSource.add(ticketId, ticketTitle, status, priority, requestedBy, assignedTo);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dataSource;
+	}
+	public File interviewListPdfExport(List<RequirementInterviewHistory> requirementInterviewList, String orgLocationDateFormat,String orglocationName) throws IOException {
+		 File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("interviewPdfList_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationDateFormat,new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orglocationName).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Applicant Name", "Applicant Name", type.stringType()),
+							col.column("Job Title", "Job Title", type.stringType()),
+							col.column("Client", "Client", type.stringType()),
+							col.column("Date Of Interview", "Date Of Interview", type.stringType()),
+							col.column("Interview Time", "Interview Time", type.stringType()),
+							col.column("Interview Type", "Interview Type", type.stringType()),
+							col.column("Time Zone", "Time Zone", type.stringType()),
+							col.column("Details", "Details", type.stringType()),
+							col.column("Interviewers", "Interviewers", type.stringType()))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createInterviewDataListataSource(requirementInterviewList)).toPdf(pdfExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	public File interviewListExcelExport(List<RequirementInterviewHistory> requirementInterviewList, String orgLocationDateFormat,String orglocationName) throws IOException {
+		 File file = null;
+			try {
+			    StringBuilder fileSB = new StringBuilder();
+				file = File.createTempFile(fileSB.append("interviewExcelList_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationDateFormat,new Date())).toString(),".xls");
+				file.setReadable(true);
+				JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                   .setIgnorePageMargins(true)
+                   .setWhitePageBackground(false)
+                   .setRemoveEmptySpaceBetweenColumns(true);
+
+				report().setTemplate(Templates.reportTemplate)
+						.setColumnTitleStyle(Templates.columnTitleStyle)
+						.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+						.ignorePageWidth()
+						.ignorePagination()
+						.columns(
+								col.column("Applicant Name", "Applicant Name", type.stringType()),
+								col.column("Job Title", "Job Title", type.stringType()),
+								col.column("Client", "Client", type.stringType()),
+								col.column("Date Of Interview", "Date Of Interview", type.stringType()),
+								col.column("Interview Time", "Interview Time", type.stringType()),
+								col.column("Interview Type", "Interview Type", type.stringType()),
+								col.column("Time Zone", "Time Zone", type.stringType()),
+								col.column("Details", "Details", type.stringType()),
+								col.column("Interviewers", "Interviewers", type.stringType()))
+						.setDataSource(createInterviewDataListataSource(requirementInterviewList)).toXls(xlsExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+}
+	private DRDataSource createInterviewDataListataSource(List<RequirementInterviewHistory> requirementInterviewList) {
+		DRDataSource dataSource = new DRDataSource( "Applicant Name", "Job Title","Client", "Date Of Interview","Interview Time", "Interview Type","Time Zone","Details","Interviewers");
+		
+		for(RequirementInterviewHistory interview:requirementInterviewList) {
+			
+			String applicantName = interview.getCandidateName();
+			
+			String jobTitle = interview.getSubmissionId().getRequirement().getJobTitle();
+			
+			String client = "---";
+			
+			String dateOfInterview = commonUtil.dateStrFromOrgDateFormatter(interview.getOrgLocationId().getDateFormat(), interview.getInterviewId().getDateOfInterview());
+			
+			// String interviewTime =  commonUtil.dateStrFromOrgDateFormatter(interview.getOrgLocationId().getDateFormat(),interview.getInterviewId().getStartTime());
+			
+			String interviewTime= interview.getInterviewId().getStartTime().toString();
+			
+			String interviewType = interview.getInterviewId().getInterviewType();
+			
+			String timeZone =  interview.getInterviewId().getTimezone().getTimeZoneId();
+			
+			List<String> interviewerList = new ArrayList<String>();
+			for(RequirementInterviewer requirementInterviewer  : interview.getInterviewId().getRequirementInterviewers()) {
+				interviewerList.add(requirementInterviewer.getInterviewerUser().getFullName());
+				
+			}
+			
+			String details = interview.getInterviewId().getLocation();
+			
+			String interviewer = StringUtils.join(interviewerList, ',');
+			
+			
+			dataSource.add(applicantName,jobTitle,client,dateOfInterview,interviewTime,interviewType,timeZone,details,interviewer);
 		}
 		return dataSource;
 	}

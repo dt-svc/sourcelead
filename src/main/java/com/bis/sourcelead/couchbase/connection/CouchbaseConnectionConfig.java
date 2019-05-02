@@ -22,6 +22,9 @@ public class CouchbaseConnectionConfig {
 	
 	@Value("${bulkImportsBucket}")
 	private String bulkImportsBucket;
+	
+	@Value("${customTokensBucket}")
+	private String customTokensBucket;
 
 	@Value("${couchbase.password}")
 	private String password;
@@ -85,6 +88,14 @@ public class CouchbaseConnectionConfig {
 
 	public void setBulkImportsBucket(String bulkImportsBucket) {
 		this.bulkImportsBucket = bulkImportsBucket;
+	}
+
+	public String getCustomTokensBucket() {
+		return customTokensBucket;
+	}
+
+	public void setCustomTokensBucket(String customTokensBucket) {
+		this.customTokensBucket = customTokensBucket;
 	}
 
 	

@@ -304,6 +304,9 @@ public class Candidate implements Serializable {
 	
 	@Column(name = "PAN_NUMBER")
 	private String panNumber;
+	
+	@Column(name = "AADHAR_NUMBER")
+	private String aadharNumber;
 
 	@Column(name = "PLACE_OF_BIRTH")
 	private String placeOfBirth;
@@ -604,6 +607,9 @@ public class Candidate implements Serializable {
      @Transient
  	 @JsonProperty
      private Long masterCandId;
+     
+     @Column(name = "SSN_Number")
+  	 private String ssnNumber;
 	 
 	public int getProfilePercentage()
 	{
@@ -1438,6 +1444,14 @@ public class Candidate implements Serializable {
 		this.panNumber = panNumber;
 	}
 
+	public String getAadharNumber() {
+		return aadharNumber;
+	}
+
+	public void setAadharNumber(String aadharNumber) {
+		this.aadharNumber = aadharNumber;
+	}
+
 	public String getGender() {
 		return gender;
 	}
@@ -1929,6 +1943,14 @@ public class Candidate implements Serializable {
 
 	public void setMasterCandId(Long masterCandId) {
 		this.masterCandId = masterCandId;
+	}
+
+	public String getSsnNumber() {
+		return ssnNumber;
+	}
+
+	public void setSsnNumber(String ssnNumber) {
+		this.ssnNumber = ssnNumber;
 	}
 
 	

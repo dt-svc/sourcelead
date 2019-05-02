@@ -2430,7 +2430,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, Long orgId,
 			String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO,
-			Map<String, Date> dateValue) {
+			Map<String, Date> dateValue,Date[] checkedDateArray) {
 		Session session = this.sessionFactory.getCurrentSession();
 		StringBuilder query1 = new StringBuilder("");
 		List<CandidateMarketPlace> queryList = null;
@@ -2478,9 +2478,16 @@ public class CandidateDaoImpl implements CandidateDao {
 					&& candidateMarketPlaceDTO.getStatus().equals("" + Constants.CANDIDATE_ALL)) {
 				statusQuery.append(" and ((marketplace.candidateId.status = 0) or (marketplace.candidateId.status = 1)) ");
 			}
-			if (!dateValue.isEmpty()) {
+			if (checkedDateArray != null && checkedDateArray.length > 0) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(checkedDateArray[0]);
+				String customEnddate = dateFormat.format(checkedDateArray[1]);
+				dateQuery.append("and ( DATE_FORMAT(marketplace.updatedDate, '%Y-%m-%d') between '"
+						+ customStartdate + "' and '" + customEnddate + "') ");
+			}
+			if (!dateValue.isEmpty() && checkedDateArray.length == 0) {
 				dateQuery.append(
-						" and ((marketplace.updatedDate BETWEEN :endDate AND :startDate) OR (marketplace.updatedDate = :endDate) OR (marketplace.updatedDate = :startDate)) ");
+						" and (marketplace.updatedDate BETWEEN :endDate AND :startDate) OR (marketplace.updatedDate = :endDate) OR (marketplace.updatedDate = :startDate) ");
 			}
 			if (candidateMarketPlaceDTO != null && !candidateMarketPlaceDTO.getEmploymentType().equals("")) {
 				employmentTypeQuery.append(" and (marketplace.candidateId.designationType IN (:employmentList)) ");
@@ -2653,7 +2660,8 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateMarketPlaceCartView> getCandidateDetailsFromMarketcart(User user, String userRole,
-			OrgLocations orgLocation, String creationStartDate, String creationEndDate, Map<String, Date> dateValue, String searchValue) {
+			OrgLocations orgLocation, String creationStartDate, String creationEndDate, Date[] checkedDateArray,
+			String searchValue) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "";
@@ -2667,26 +2675,33 @@ public class CandidateDaoImpl implements CandidateDao {
 				query1.append(" or (marketCartview.skillsName like '%" + searchValue + "%' ))");
 			}
 			StringBuilder dateQuery = new StringBuilder("");
-			if(!dateValue.isEmpty()){
-				dateQuery.append(" and (marketCartview.createdDate >= :endDate and marketCartview.createdDate <= :startDate) ");
+			if (creationStartDate != null && creationEndDate != null && !"".equalsIgnoreCase(creationStartDate)
+					&& !"".equalsIgnoreCase(creationEndDate)) {
+				if (creationStartDate.contains("/") || creationEndDate.contains("/")) {
+					creationStartDate = creationStartDate.replaceAll("/", "-");
+					creationEndDate = creationEndDate.replaceAll("/", "-");
+				}
+				Date formattedStartdate = new ConversionUtil().getDateFromString(creationStartDate);
+				Date formattedEnddate = new ConversionUtil().getDateFromString(creationEndDate);
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(formattedStartdate);
+				String customEnddate = dateFormat.format(formattedEnddate);
+				dateQuery.append(" and ( DATE_FORMAT(marketCartview.createdDate, '%Y-%m-%d') between '"
+						+ customStartdate + "' and '" + customEnddate + "') ");
+			}
+			StringBuilder checkBoxQuery = new StringBuilder("");
+			if (checkedDateArray != null && checkedDateArray.length > 0) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(checkedDateArray[0]);
+				String customEnddate = dateFormat.format(checkedDateArray[1]);
+				checkBoxQuery.append("and ( DATE_FORMAT(marketCartview.createdDate, '%Y-%m-%d') between '"
+						+ customStartdate + "' and '" + customEnddate + "') ");
 			}
 			query = "from CandidateMarketPlaceCartView marketCartview where marketCartview.targetOrgLocationId =:orgLocationId and marketCartview.cartStatus = 'In_Cart'";
-			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + query1)
+			Query queryObj = session.createQuery(query + createdByQuery + dateQuery + checkBoxQuery + query1)
 					.setLong("orgLocationId", orgLocation.getId());
 			if (!userRole.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
 				queryObj.setLong("createdByuser", user.getId());
-			}
-			if(!dateValue.isEmpty()){
-				Iterator it = dateValue.entrySet().iterator();
-			    while (it.hasNext()) {
-			        Map.Entry pair = (Map.Entry)it.next();
-			        if(pair.getKey().equals("fromDate")){
-			        	queryObj.setDate("startDate", dateValue.get("fromDate"));
-			        }
-			        if(pair.getKey().equals("toDate")){
-			        	queryObj.setDate("endDate", dateValue.get("toDate"));
-			        }
-			    }
 			}
 			@SuppressWarnings("unchecked")
 			List<CandidateMarketPlaceCartView> candidatesList = queryObj.list();
@@ -3395,5 +3410,100 @@ public class CandidateDaoImpl implements CandidateDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getAllAssociateByLocation(Long orgLocationId) {	
+		try {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candi  where candi.orgLocationId.id =:orgLocationId  and candi.isAssociate ='Y' ";
+		List<Candidate> can = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		return can;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;	
+      }
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		List<Candidate> panNumberList =  session.createQuery(query) .setString("panNumber", panNumber).setLong("orgLocationId", orgLocationId).list();
+		Candidate can = null;
+		if(panNumberList != null && !panNumberList.isEmpty())
+		{
+			can = (Candidate) panNumberList.iterator().next();
+		}
+		return can;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId";
+		List<Candidate> panNumbersList = session.createQuery(query).setString("panNumber", panNumber).setLong("orgLocationId", orgLocationId).list();
+		if (panNumbersList != null && panNumbersList.size() > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		List<Candidate> aadharNumberList =  session.createQuery(query) .setString("aadharNumber", aadharNumber).setLong("orgLocationId", orgLocationId).list();
+		Candidate can = null;
+		if(aadharNumberList != null && !aadharNumberList.isEmpty())
+		{
+			can = (Candidate) aadharNumberList.iterator().next();
+		}
+		return can;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from Candidate can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId";
+		List<Candidate> aadharNumberList = session.createQuery(query).setString("aadharNumber", aadharNumber).setLong("orgLocationId", orgLocationId).list();
+		if (aadharNumberList != null && aadharNumberList.size() > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.ssnNumber = :ssnNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		List<Candidate> ssnNumberList =  session.createQuery(query) .setString("ssnNumber", ssnNumber).setLong("orgLocationId", orgLocationId).list();
+		Candidate can = null;
+		if(ssnNumberList != null && !ssnNumberList.isEmpty())
+		{
+			can = (Candidate) ssnNumberList.iterator().next();
+		}
+		return can;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from Candidate can where can.ssnNumber = :ssnNumber and can.orgLocationId=:orgLocationId";
+		List<Candidate> ssnNumberList = session.createQuery(query).setString("ssnNumber", ssnNumber).setLong("orgLocationId", orgLocationId).list();
+		if (ssnNumberList != null && ssnNumberList.size() > 0) {
+			flag = true;
+		}
+		return flag;
 	}
 }

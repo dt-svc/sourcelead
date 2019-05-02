@@ -31,6 +31,7 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	private String fileContentType;
 	private String fileName;
 	private String fileURL;
+	private String createdUser;
 	
 	
   //Dashboard realated properties added on 13/08/2018
@@ -420,7 +421,11 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	public void setGenerateDate(Boolean generateDate) {
 		this.generateDate = generateDate;
 	}
-	
-	
+	public String getCreatedUser() {
+		return createdUser;
+	}
+	public void setCreatedUser(String createdUser) {
+		this.createdUser = createdUser;
+	}
 	
 }

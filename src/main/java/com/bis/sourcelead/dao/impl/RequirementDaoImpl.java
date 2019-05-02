@@ -40,6 +40,7 @@ import org.xml.sax.InputSource;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.JobBoardConfigurationDAO;
 import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.RequirementAssignToDao;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
@@ -58,6 +59,7 @@ import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.JobFairRequirements;
 import com.bis.sourcelead.entity.OrgJobBoardAccount;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
@@ -65,6 +67,7 @@ import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementIncentive;
 import com.bis.sourcelead.entity.RequirementJobBoardInfo;
 import com.bis.sourcelead.entity.RequirementLocations;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
@@ -122,6 +125,9 @@ public class RequirementDaoImpl implements RequirementDao {
     
     @Autowired
     private OrgLocationsDao orgLocationsDao;
+    
+    @Autowired
+    private OrgRelationsDao orgRelationsDao;
         
     @Value("${static.path}")
 	private String staticPath;
@@ -708,11 +714,11 @@ public class RequirementDaoImpl implements RequirementDao {
 			/*String subQuery5 = "requirement.id IN ( select approver.requirementId from RequirementApproverHierarchy approver where approver.approverUserId.id = :approverUserId )";
 			params.put("approverUserId", userId);*/
 			
-			String subQuery5 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  requirement.requirementSubmissionStatus <> 'DRAFT'  ) or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) ) ";
+			String subQuery5 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  requirement.requirementSubmissionStatus <> 'DRAFT'  ) or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId and rah.status <> '0')   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) ) ";
 			params.put("userId", user.getId());
 			params.put("level", 1);
 
-			String subQuery6 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2  and  requirement.requirementSubmissionStatus <> 'DRAFT' and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED'))  or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) )  )";
+			String subQuery6 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2  and  requirement.requirementSubmissionStatus <> 'DRAFT' and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED'))  or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId and rah.status <> '0')   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) )  )";
 			params.put("approverUserId", user.getId());
 			params.put("userId", user.getId());
 			params.put("level1", 1);
@@ -3858,6 +3864,137 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 		}
 		 return reqList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAllReleasedJobsForVendorBasedOnOrgRelationId(Long orgLocationId, Long orgRelationId) {
+		List<Requirement> releasedJobsList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			if (orgRelationId != null && orgLocationId != null) {
+				String query = "from Requirement requirement left join fetch requirement.parentRequirement left join fetch requirement.clientId where requirement.clientId.id =:orgRelationId and requirement.clientId.id IN (select orgRelation.id from OrgRelations orgRelation where orgRelation.locationId.id =:orgLocationId ) and requirement.parentRequirement IS NOT NULL";
+				releasedJobsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgRelationId", orgRelationId).list();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return releasedJobsList;
+	}
+
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Requirement> getAllReleasedJobsBasedOnSpocId(long spocId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "";
+			query = "from Requirement requirement left join fetch requirement.parentRequirement where requirement.spocId.id=:spocId and requirement.parentRequirement IS NOT NULL";
+			List<Requirement> releasedJobsList = session.createQuery(query).setLong("spocId", spocId).list();
+			return releasedJobsList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public long getQualityCandidatesForVendors(List<Long> requirementIdList, long orgRelationId, long spocId,
+			String status) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			String query = "select count(*) from RequirementSubmission rs join rs.requirement req where req.id in (select r.parentRequirement.id from Requirement r where r.parentRequirement IS NOT NULL";
+			if (spocId > 0) {
+				query += " and r.spocId.id=" + spocId;
+			} else {
+				query += " and r.clientId.id=" + orgRelationId;
+			}
+			query += ")";
+			OrgRelations orgRelations = orgRelationsDao.getOrgRelationById(orgRelationId);
+			query += " and rs.vendorLocationId.id = " + orgRelations.getResponderLocationId().getId();
+			
+			/*String query = "select count(*) from RequirementSubmission rs join rs.requirement req where req.id in (:reqIds)";
+			if (spocId > 0) {
+				query += " and req.spocId.id=" + spocId;
+			} else {
+				query += " and req.clientId.id=" + orgRelationId;
+			}*/
+			query += " and rs.submissionStatus='" + status + "'";
+			Query queryObj = session.createQuery(query);
+//			queryObj.setParameterList("reqIds", requirementIdList);
+			List<Long> countList = queryObj.list();
+			if (countList != null && !countList.isEmpty()) {
+				return countList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<RequirementSubmission> getApplicantDeclineCountsForVendor(List<Long> requirementIdList,
+			long orgRelationId, long spocId, String submissionStatus) {
+		try {
+			List<RequirementSubmission> list = null;
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementSubmission rs left join fetch rs.requirement req where req.id in (select r.parentRequirement.id from Requirement r where r.parentRequirement IS NOT NULL";
+			if (spocId > 0) {
+				query += " and r.spocId.id=" + spocId;
+			} else {
+				query += " and r.clientId.id=" + orgRelationId;
+			}
+			query += ")";
+			OrgRelations orgRelations = orgRelationsDao.getOrgRelationById(orgRelationId);
+			query += " and rs.vendorLocationId.id = " + orgRelations.getResponderLocationId().getId();
+			query += " and rs.submissionStatus='" + submissionStatus + "'";
+			//queryObj.setParameterList("reqIds", requirementIdList);
+			 list = session.createQuery(query).list();
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId,
+			String status) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			String query = "select count(*) from RequirementSubmission rs join rs.requirement req where req.id in (select r.parentRequirement.id from Requirement r where r.parentRequirement IS NOT NULL and r.parentRequirement.id =:requirementId";
+			if (spocId > 0) {
+				query += " and r.spocId.id=" + spocId;
+			} else {
+				query += " and r.clientId.id=" + orgRelationId;
+			}
+			query += ")";
+			OrgRelations orgRelations = orgRelationsDao.getOrgRelationById(orgRelationId);
+			query += " and rs.vendorLocationId.id = " + orgRelations.getResponderLocationId().getId();
+			if(!status.equalsIgnoreCase("ALL")){
+				query += " and rs.submissionStatus='" + status + "'";
+			}
+			Query queryObj = session.createQuery(query);
+			queryObj.setParameter("requirementId", requirementId);
+			List<Long> countList = queryObj.list();
+			if (countList != null && !countList.isEmpty()) {
+				return countList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 }

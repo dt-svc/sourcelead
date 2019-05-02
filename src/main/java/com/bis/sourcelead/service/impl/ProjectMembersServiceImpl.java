@@ -7,12 +7,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -41,7 +41,6 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
@@ -1674,6 +1673,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 			orgRelations.setResponderLocationId(clientOrgLocation);
 			orgRelations.setInitiatorType("Vendor");
 			orgRelations.setResponderType("Client");
+			orgRelations.setGenerateInvoice("Bulk");
 			orgRelations.setInitiatorLevel("Tier-5");
 			orgRelations.setResponderLevel("Tier-5");
 			orgRelations.setStatus("ACTIVE");
@@ -2330,6 +2330,24 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	public ProjectMembers getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId,
 			Long projectId, Long locationId, String isGlobalUser) throws Exception {
 		return projectMembersDao.getAllProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId, isGlobalUser);
+	}
+
+	@Override
+
+	public List<Candidate> getAllAvailableAssociates(Long orgLocationId) {
+	List<Candidate> candidateList = new LinkedList<>();
+	List<Object[]> objList = projectMembersDao.getAllAvailableAssociates( orgLocationId);
+	if(objList != null && !objList.isEmpty()) {
+	for(Object[] obj : objList) {
+	Candidate candidate = new Candidate();
+	candidate.setId(Long.parseLong(String.valueOf(obj[0])));
+	candidate.setFirstName(obj[1] != null ? String.valueOf(obj[1]) : null);
+	candidate.setMiddelName(obj[2] != null ? String.valueOf(obj[2]) : null);
+	candidate.setLastName(obj[3] != null ? String.valueOf(obj[3]) : null);
+	candidateList.add(candidate);
+	}
+	}
+	return candidateList;
 	}
 
 

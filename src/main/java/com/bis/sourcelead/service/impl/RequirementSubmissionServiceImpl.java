@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -274,8 +275,19 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
-		return requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+	public List<RequirementSubmissionsDTO> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
+		List<RequirementSubmissionsDTO> requirementSubmissionsDTOList = new LinkedList<>();
+		List<Object[]> objList = requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+		if(objList != null && !objList.isEmpty()) {
+			for(Object[] obj : objList) {
+				RequirementSubmissionsDTO requirementSubmissionsDTO = new RequirementSubmissionsDTO();
+				requirementSubmissionsDTO.setId(Long.parseLong(String.valueOf(obj[0])));
+				requirementSubmissionsDTO.setCreatedUser(String.valueOf(obj[1]));
+				requirementSubmissionsDTO.setClientSubmissions(String.valueOf(obj[2]));
+				requirementSubmissionsDTOList.add(requirementSubmissionsDTO);
+			}
+		}
+		return requirementSubmissionsDTOList;
 	}
 	
 	@Override
@@ -2445,7 +2457,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, user, clientSubmissionHistory, clientUser.getUserCode());
 	   		 
 	   		 
-	   		 if(requirementSubmissionHistoryForCoolingOff != null){
+	   		 /*if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
 					 RequirementSubmissionHistory requirementSubmissionHistoryNewToSubmission = new RequirementSubmissionHistory();
 					 requirementSubmissionHistoryNewToSubmission.setFromStage(Submission_Status.NEW.toString());
@@ -2458,7 +2470,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					 requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, null, requirementSubmissionHistorySubmissionToRejected, clientUser.getUserCode());
 					 
 				 }
-	   		}
+	   		}*/
    		 }
    		 
    		 
@@ -5361,7 +5373,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				writeRow.createCell(6).setCellValue(rsh.getSubmissionId().getCreatedUser());
 				
 				//Aplicant Status
-				writeRow.createCell(7).setCellValue(rsh.getToStage());
+				writeRow.createCell(7).setCellValue(rsh.getSubmissionId().getSubmissionStatus().toString());
 				
 				//Job Rating
 				 if(rsh.getSubmissionId().getRequirement().getJobRate() != null) {

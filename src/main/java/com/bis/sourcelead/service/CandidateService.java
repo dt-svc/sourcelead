@@ -332,5 +332,19 @@ public interface CandidateService {
 	public void updateMarketWalletAmount(Double balanceAmountValue, Long id);
 	
 	public void deleteCandidateFromMarketplaceByCandidateUuid(String candidateUuid)throws Exception;
+	
+	public List<Candidate> getAllAssociateByLocation(Long orgLocationId)throws Exception;
+	
+    public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception;
+	
+	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception;
+	
+    public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception;
+	
+	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception;
+	
+    public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception;
+	
+	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
 
 }

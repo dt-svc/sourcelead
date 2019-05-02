@@ -2665,8 +2665,8 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						String lcaStatus = dataMigrationDTOJsonCopy.getString("lcaStatus").trim().toLowerCase();
 						if(lcaStatus.equalsIgnoreCase("Initiated")) {
 							dataMigrationDTOJsonCopy.put("lcaStatus", "Initiated");
-						}else if(lcaStatus.equalsIgnoreCase("In-progress")) {
-							dataMigrationDTOJsonCopy.put("lcaStatus", "In-progress");
+						 }else if(lcaStatus.equals("in progress") || lcaStatus.equalsIgnoreCase("In-progress") || lcaStatus.equalsIgnoreCase("In progress") || lcaStatus.equalsIgnoreCase("inprogress") || lcaStatus.equalsIgnoreCase("Inprogress")) {
+							 dataMigrationDTOJsonCopy.put("lcaStatus", "In progress");
 						}else if(lcaStatus.equalsIgnoreCase("Certified")) {
 							dataMigrationDTOJsonCopy.put("lcaStatus", "Certified");
 						}else if(lcaStatus.equalsIgnoreCase("Denied")) {
@@ -3200,6 +3200,39 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						errorSet.put("currentRate", "Current Rate Allow Only Integers and length 0-8");
 					}
 					
+				}
+				
+				//pan,aadhar number validation
+				String panNumberRegEx = "^([A-Z]){5}([0-9]){4}([A-Z]){1}?$";
+				if (dataMigrationDTOJsonCopy.get("panNumber") != null) {
+					boolean flag = false;
+					String panNumber = dataMigrationDTOJsonCopy.get("panNumber").toString();
+					if (panNumber.length() == 10) {
+						flag = panNumber.matches(panNumberRegEx);
+						Candidate candidate=candidateService.getCandidateDetailsByPanNumberAndId(panNumber, orgLocation.getId());
+					    if(candidate != null) {
+					    	errorSet.put("panNumber", "Duplicate Pan Number");
+					    }
+					}
+					if(flag == false) {
+						errorSet.put("panNumber", "Invalid Pan Number ");
+					}
+				}
+				
+				String aadharNoRegEx = "^\\d{4}\\s?\\d{4}\\s?\\d{4}$";
+				if (dataMigrationDTOJsonCopy.get("aadharNumber") != null) {
+					boolean flag = false;
+					String aadharNo = dataMigrationDTOJsonCopy.get("aadharNumber").toString();
+					if (aadharNo.length() == 12) {
+						flag = aadharNo.matches(aadharNoRegEx);
+						Candidate candidate=candidateService.getCandidateDetailsByAadharNoAndId(aadharNo, orgLocation.getId());
+					    if(candidate != null) {
+					    	errorSet.put("aadharNumber", "Duplicate Aadhar Number");
+					    }
+					}
+					if(flag == false) {
+						errorSet.put("aadharNumber", "Invalid Aadhar Number ");
+					}
 				}
 				
 			}

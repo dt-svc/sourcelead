@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -134,8 +135,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementSubmission> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
-		 Session session = this.sessionFactory.getCurrentSession();
+	public List<Object[]> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
+		List<Object[]> objList = null;
+		Calendar c1 = Calendar.getInstance(); 
+		Session session = this.sessionFactory.getCurrentSession();
 		 String subQuery = "";
 		 if(isClientInterview != null && "Y".equalsIgnoreCase(isClientInterview)){
 			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' ) "; 
@@ -152,15 +155,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 }
 		 
 		 
-		 List<RequirementSubmission> shortListCandidatesList;
 		 if(existingApplicantsIds != null && !existingApplicantsIds.isEmpty()){
-			 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.id NOT IN (:existingApplicantsIds) "+subQuery+" "+subQuery2+" ";
-			 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).setParameterList("existingApplicantsIds", existingApplicantsIds).list();
+			 String query = "select rs.id, rs.createdUser, rs.requirement.isClientJob from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId and rs.id NOT IN (:existingApplicantsIds) "+subQuery+" "+subQuery2+" ";
+			 objList = session.createQuery(query).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).setParameterList("existingApplicantsIds", existingApplicantsIds).list();
 		 }else{
-			 String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId "+subQuery+" "+subQuery2+" ";
-			 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).list();
+			 String testQuery = "select rs.id, rs.createdUser, rs.requirement.isClientJob from RequirementSubmission rs where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId "+subQuery+" "+subQuery2+" ";
+			 objList = session.createQuery(testQuery).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).list();
+
+			 /*String query = "from RequirementSubmission rs left join fetch rs.requirement where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId "+subQuery+" "+subQuery2+" ";
+			 shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocations.getId()).setLong( "requirementId", requirementId).list();*/
 		 }
-	     return shortListCandidatesList;
+		 Calendar c2 = Calendar.getInstance();
+		 System.out.println("Total Execution Time : " + (c2.getTimeInMillis() - c1.getTimeInMillis()));
+	     return objList;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -819,7 +826,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                         params.put("usercode",user.getUserCode());
                         
                         //  this is if the  user is   Assign Team  Owner
-                        String subQuery3 = "reqSub.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId))";
+                       String subQuery3 = "reqSub.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.requirementId.id=:requirementId and rah.teamId.id IN ( select team.id from Team team where team.ownerUserId.id =:userId))";
                         params.put("userId",user.getId());
                         
                        //  this is if the  user is   Assign Team  Member
@@ -835,7 +842,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
         				
                         
                         if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != ""  || subQuery5 != ""  ){
-                            subQuery = "where reqSub.orgLocations.id =:loginOrgLocation  "+submissionStages+" and reqSub.requirement.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") OR ("+subQuery5+")  )";
+                            subQuery = "where reqSub.orgLocations.id =:loginOrgLocation  "+submissionStages+" and reqSub.requirement.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+")  OR ("+subQuery4+") OR ("+subQuery5+")  )";
                             params.put("loginOrgLocation",loginOrgLocation.getId());
                             params.put("requirementId",requirementId);
                         }
@@ -3553,7 +3560,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							String subQuery5 = "reqSub.requirement.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";
 							params.put("userId",requirementSubmissionsDTO.getUserId());
 							if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery5 != "" || subQuery6 !=""  ){
-								subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery5+")    )";
+								subQuery = "where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+")  OR ("+subQuery5+")    )";
 								params.put("loginOrgLocation",requirementSubmissionsDTO.getOrgLocationId());
 								params.put("requirementId",requirementSubmissionsDTO.getRequirementId());
 							}

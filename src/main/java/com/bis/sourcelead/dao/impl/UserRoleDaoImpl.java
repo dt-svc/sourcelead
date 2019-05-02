@@ -751,7 +751,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<UserRole> getAllAssignedUsersByReportingManagerId(Long reportingManagerId, Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.orgLocations.id = :locationId ";
+		String query = "from UserRole userRole where userRole.reportingManager.id = :reportingManagerId and userRole.orgLocations.id = :locationId and userRole.userState <> 'NOT_LOGGEDIN' ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong( "reportingManagerId", reportingManagerId).setLong("locationId", orgLocationId).list();
 		return userRoleList;
 	}
@@ -1313,12 +1313,11 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			userRoleList = query.setLong("locationId", locationId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).setParameterList("orgRelationsList", orgRelationsList).setString("varString", "").setParameterList("tagsList", tagsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
 			
 			
-			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "+subQuery2+""
+			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> '1' "+subQuery2+""
 					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" "+tagsQuery+" "+employmentTypeQuery+" " ;
 			Query query2 = session.createQuery(queryCount+query1);
 			
-			countlist =query2.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setString("varString", "").setParameterList("tagsList", tagsList).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setLong("varZero", 0).list();
-			
+			countlist =query2.setLong("locationId", locationId).setParameterList("roleIds", userRolesList).setString("varString", "").setParameterList("tagsList", tagsList).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setLong("varZero", 0).list();
 			
 
 			  
@@ -1646,5 +1645,34 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	
 	
+	}
+
+	@Override
+	@Transactional
+	public List<UserDTO> getAllActiveUsersList(Long orgLocationId) throws Exception {
+		
+		List<UserDTO> userDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+				
+		query ="SELECT DISTINCT "
+				+" UR.ID AS userId,"
+				+" UR.EMAIL AS email,"
+				+" IFNULL(UR.FILE_URL,'/resources/images/userprofileImg.jpg') AS fileURL,"
+				+" CONCAT (UR.FIRST_NAME,' ',IFNULL(UR.MIDDLE_NAME,''),' ',IFNULL(UR.LAST_NAME,'')) AS fullName"
+				+" FROM"
+			    +" USER_ROLE RL ,"
+			    +" USER UR,"
+			    +" ORG_LOCATIONS OL"
+				+" WHERE RL.USER_ID = UR.ID AND RL.ORG_LOCATIONS_ID = :orgLocationId "
+				+" AND RL.USER_STATE = 'ACTIVE'";
+		
+		
+		    
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
+			userDTOList = queryObj.list();
+			return userDTOList;
 	}
 }

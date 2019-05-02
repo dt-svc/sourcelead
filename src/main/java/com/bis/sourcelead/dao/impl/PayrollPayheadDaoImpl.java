@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
@@ -81,6 +82,19 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 		String query = " FROM PayrollPayhead payhead WHERE  payhead.orgLocationId.id=:orgLocationId and payhead.status = '1'";
 		
 		List<PayrollPayhead> payrollPayheadList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).list();
+		
+		return payrollPayheadList;
+	}
+	
+	@Override
+	@Transactional
+	public List<PayrollPayhead> getAllPayrollPayheadListByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = " FROM PayrollPayhead payhead WHERE  payhead.orgLocationId.id=:orgLocationId ";
+		
+		List<PayrollPayhead> payrollPayheadList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		
 		return payrollPayheadList;
 	}
@@ -362,5 +376,27 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return associateSalaryHistoryInd;
+	}
+	
+	@Override
+	@Transactional
+	public List<AssociateSalaryInd> getAssociateSalaryIndListByOrgLocationsId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociateSalaryInd salary where salary.orgLocations.id = :orgLocationId and salary.status = '1' ";  
+		List<AssociateSalaryInd> associateSalaryIndList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		return associateSalaryIndList;
+		
+	}
+	
+	@Override
+	@Transactional
+	public Response<String> payheadHandlerByOrg(PayrollPayheadDTO payrollPayheadDTO) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Response<String> response = new Response<>();
+		String update ="UPDATE PAYROLL_PAYHEAD p set p.ACTIVE = :active where p.UUID = :uuid and p.ORGLOCATION_ID = :orgLocationId and p.STATUS = '1' ";
+		Query updatequeryString = session.createSQLQuery(update);
+		updatequeryString.setString("active", payrollPayheadDTO.getActive()).setString("uuid", payrollPayheadDTO.getUuid()).setLong("orgLocationId", Long.parseLong(payrollPayheadDTO.getOrgLocationId()));
+		response.setResponse(String.valueOf(updatequeryString.executeUpdate()));
+		return response;
 	}
 }

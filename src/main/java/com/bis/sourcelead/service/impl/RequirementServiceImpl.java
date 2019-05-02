@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 
@@ -96,6 +97,8 @@ import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
+import com.bis.sourcelead.reportsDTO.ApplicantsBackoutDTO;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -1123,15 +1126,14 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 		}
 		// for URL redirections from mail
-		String redirectURL ="";
+		String redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 		Long redirectOrgLocationId = orgLocations.getId();
 		
 		// store recommended customizeScore
 		RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService
 				.saveCustomizeScore(requirement);
 		if (!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)) {			
-			    redirectURL = "/requirementSummary?requirementUUID="+requirement.getRequirementUUID();
-									
+			 								
 			// mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 			// send mail to sequential approver1
 			if (StringUtils.isNotBlank(requirementDTO.getSequentialApprover1())) {
@@ -1139,7 +1141,7 @@ public class RequirementServiceImpl implements RequirementService {
 				User approverUser = userService.getUserById(Long.parseLong(approverNames));
 				if (!approverUser.getId().equals(user.getId())) {
 					
-					approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
+					approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations);
 				}
 			}
 			// send mail to parallel approver
@@ -1148,7 +1150,7 @@ public class RequirementServiceImpl implements RequirementService {
 				for (String approver : approvers) {
 					User approverUser = userService.getUserById(Long.parseLong(approver));
 					if (!approverUser.getId().equals(user.getId())) {
-						approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
+						approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations);
 					}
 				}
 			}
@@ -1168,7 +1170,6 @@ public class RequirementServiceImpl implements RequirementService {
 						}
 					}
 					if (!found) {
-						redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 						List<RequirementAssignTo> newlyAddedList = new ArrayList<RequirementAssignTo>();
 						newlyAddedList.add(newList);
 						for (RequirementAssignTo newly : newlyAddedList) {
@@ -1191,7 +1192,6 @@ public class RequirementServiceImpl implements RequirementService {
 			if (!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)) {
 				// Set<RequirementAssignTo> updatedRequirementAssignToList =
 				// savedRequirement.getRequirementAssignTo();
-				redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 				Set<RequirementAssignTo> teamMembers = getRequirementAssignedToTeamByRequirementId(
 						savedRequirement.getId());
 				Set<RequirementAssignTo> updatedRequirementAssignToList = teamMembers;
@@ -1211,7 +1211,6 @@ public class RequirementServiceImpl implements RequirementService {
 			// condition : if login user as team member then mail should not
 			// send
 			if (!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)) {
-				redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 				Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
 				if (updatedRequirementAssignToList != null) {
 					for (RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList) {
@@ -1232,11 +1231,9 @@ public class RequirementServiceImpl implements RequirementService {
 			if (savedRequirement.getManagerUserId() != null
 					&& !user.getId().equals(savedRequirement.getManagerUserId().getId())
 					&& savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())) {
-				redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 				mailRequirementtoManager(user, user, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
 			} else if (!savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())
 					&& !user.getId().equals(savedRequirement.getManagerUserId().getId())) {
-				redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 				updatedRequirementMailToManager(user, user, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
 			}
 		}
@@ -1802,7 +1799,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public void approverEmailScenario(User loginUser, User approverUser, Requirement requirement,
-			StringBuilder location, OrgLocations loginOrgLocation,String redirectURL,Long redirectOrgLocationId) throws Exception {
+			StringBuilder location, OrgLocations loginOrgLocation) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
@@ -4720,6 +4717,97 @@ public class RequirementServiceImpl implements RequirementService {
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, toUserOrg.getOrgLocations(), notificationScenario,
 				new HashMap<String, String>());	
 	}
+	
+	@Override
+	public List<Requirement> getAllReleasedJobsForVendorBasedOnOrgRelationId(Long orgLocationId, Long orgRelationId) {
+		try {
+			return requirementDao.getAllReleasedJobsForVendorBasedOnOrgRelationId(orgLocationId, orgRelationId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<Requirement> getAllReleasedJobsBasedOnSpocId(long spocId) {
+		try {
+			return requirementDao.getAllReleasedJobsBasedOnSpocId(spocId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public long getQualityCandidatesForVendors(List<Long> requirementIdList, long orgRelationId, long spocId, String status) {
+		try {
+			return requirementDao.getQualityCandidatesForVendors(requirementIdList, orgRelationId, spocId, status);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	public ApplicantDeclineDTO getApplicantDeclineCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId) {
+		ApplicantDeclineDTO applicantDeclineDTO = new ApplicantDeclineDTO();
+		try {
+		 	List<RequirementSubmission> requirementSubmissionList = requirementDao.getApplicantDeclineCountsForVendor(requirementIdList, orgRelationId, spocId, "REJECTED");
+		 	if(requirementSubmissionList != null && !requirementSubmissionList.isEmpty()) {
+		 		int wrongSkillsCount = requirementSubmissionList.stream().filter(rs->rs.getRejectedCategoryType() != null && rs.getRejectedCategoryType().equalsIgnoreCase("Wrong Skill Sets")).collect(Collectors.toList()).size();
+		 		int unsubitablePersonalityCount = requirementSubmissionList.stream().filter(rs->rs.getRejectedCategoryType() != null && rs.getRejectedCategoryType().equalsIgnoreCase("Unsuitable Personality")).collect(Collectors.toList()).size();
+		 		int badFitCount = requirementSubmissionList.stream().filter(rs->rs.getRejectedCategoryType() != null && rs.getRejectedCategoryType().equalsIgnoreCase("Bad Fit")).collect(Collectors.toList()).size();
+		 		int salaryCount = requirementSubmissionList.stream().filter(rs->rs.getRejectedCategoryType() != null && rs.getRejectedCategoryType().equalsIgnoreCase("Salary")).collect(Collectors.toList()).size();
+		 		int interviewRejectionCount = requirementSubmissionList.stream().filter(rs->rs.getRejectedCategoryType() != null && rs.getRejectedCategoryType().equalsIgnoreCase("Interview Rejection")).collect(Collectors.toList()).size();
+		 		int otherCount = requirementSubmissionList.stream().filter(rs->rs.getRejectedCategoryType() != null && rs.getRejectedCategoryType().equalsIgnoreCase("Other")).collect(Collectors.toList()).size();
+		 		int totalCount = wrongSkillsCount + unsubitablePersonalityCount + badFitCount + salaryCount + interviewRejectionCount + otherCount;
+		 		
+				applicantDeclineDTO.setSkillsCount(new BigInteger(wrongSkillsCount + ""));
+				applicantDeclineDTO.setUnsuitableCount(new BigInteger(unsubitablePersonalityCount + ""));
+				applicantDeclineDTO.setBadfitCount(new BigInteger(badFitCount + ""));
+				applicantDeclineDTO.setSalaryCount(new BigInteger(salaryCount + ""));
+				applicantDeclineDTO.setInterviewCount(new BigInteger(interviewRejectionCount + ""));
+				applicantDeclineDTO.setOtherCount(new BigInteger(otherCount + ""));
+				applicantDeclineDTO.setTotalCount(new BigInteger(totalCount + ""));
+		 	}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return applicantDeclineDTO;
+	}
+	
+	@Override
+	public ApplicantsBackoutDTO getApplicantBackoutCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId) {
+		ApplicantsBackoutDTO applicantBackoutDTO = new ApplicantsBackoutDTO();
+		try {
+		 	List<RequirementSubmission> requirementSubmissionList = requirementDao.getApplicantDeclineCountsForVendor(requirementIdList, orgRelationId, spocId, "BACKOUT");
+		 	if(requirementSubmissionList != null && !requirementSubmissionList.isEmpty()) {
+		 		int currentCompanyCount = requirementSubmissionList.stream().filter(rs->rs.getBackOutCategoryType() != null && rs.getBackOutCategoryType().equalsIgnoreCase("Current Company")).collect(Collectors.toList()).size();
+		 		int compensationCount = requirementSubmissionList.stream().filter(rs->rs.getBackOutCategoryType() != null && rs.getBackOutCategoryType().equalsIgnoreCase("Compensation")).collect(Collectors.toList()).size();
+		 		int betterOfferCount = requirementSubmissionList.stream().filter(rs->rs.getBackOutCategoryType() != null && rs.getBackOutCategoryType().equalsIgnoreCase("Better Offer")).collect(Collectors.toList()).size();
+		 		int coldFeetCount = requirementSubmissionList.stream().filter(rs->rs.getBackOutCategoryType() != null && rs.getBackOutCategoryType().equalsIgnoreCase("Cold Feet")).collect(Collectors.toList()).size();
+		 		int personalCount = requirementSubmissionList.stream().filter(rs->rs.getBackOutCategoryType() != null && rs.getBackOutCategoryType().equalsIgnoreCase("Personal")).collect(Collectors.toList()).size();
+		 		int otherCount = requirementSubmissionList.stream().filter(rs->rs.getBackOutCategoryType() != null && rs.getBackOutCategoryType().equalsIgnoreCase("Other")).collect(Collectors.toList()).size();
+				int totalCount = currentCompanyCount + compensationCount + betterOfferCount + coldFeetCount + personalCount + otherCount;
+		 		applicantBackoutDTO.setCurrentCompany(new BigInteger(currentCompanyCount + ""));
+				applicantBackoutDTO.setCompensation(new BigInteger(compensationCount + ""));
+				applicantBackoutDTO.setBetterOffer(new BigInteger(betterOfferCount + ""));
+				applicantBackoutDTO.setColdFeet(new BigInteger(coldFeetCount + ""));
+				applicantBackoutDTO.setPersonal(new BigInteger(personalCount + ""));
+				applicantBackoutDTO.setOther(new BigInteger(otherCount + ""));
+		 		applicantBackoutDTO.setTotalCount(new BigInteger(totalCount + ""));
+		 	}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return applicantBackoutDTO;
+	}
+
+	@Override
+	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId, String status) {
+		return requirementDao.getVendorSubmittedCandidates(requirementId, orgRelationId, spocId, status);
+	}
+	
 	
 }
 
