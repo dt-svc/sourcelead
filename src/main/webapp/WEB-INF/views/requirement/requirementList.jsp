@@ -1025,10 +1025,10 @@ function getActions(){
 			 $(".advancedsearch-mask").fadeIn();
 			 $("#requirementFilterPopup").toggle();
 		}
-		function closeAdsrch(){
+		/* function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
 			$(".advancedsearch-mask").fadeOut();
-		};
+		}; */
 	</script>
 
 <script>
@@ -1098,6 +1098,7 @@ function clearSearch(){
 	$('#noticePeriod').val('').trigger('chosen:updated');
 	$('#requirementTitle').val('').trigger('chosen:updated');
 	$('#jobId').val('').trigger('chosen:updated');
+	$('#jobsTags').val('').trigger('chosen:updated');
 	$('#generatedId').val('').trigger('chosen:updated');
 }
 </script>
@@ -1170,7 +1171,7 @@ function refreshGoogleApiCity(cityId){
 
 
 
-<!-- <div class="sideMask"></div> -->
+<div class="sideMask"></div>
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="requirementFilterPopup">
 <h5 class="headerAdsrch">Filters <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
 <div class="addInner">
