@@ -1,2 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','USER','PROFESSIONAL_REGISTER_COUNTRY','VARCHAR(100) NULL');
-CALL sourcelead.AlterTableAddColumn ('sourcelead','USER','RECRUITER_REGISTER_COUNTRY','VARCHAR(100) NULL');

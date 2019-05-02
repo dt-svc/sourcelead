@@ -1,7 +1,0 @@
-SET SQL_SAFE_UPDATES = 0;
-
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{ExpensesApprovalManagerEmailToEmployee.employeeUser}}\nWe are pleased to inform you,\nyour proposal for expenses submitted on {{ExpensesApprovalManagerEmailToEmployee.submitForApprovalDate}} has been approved.,\nExpense id :  {{ExpensesApprovalManagerEmailToEmployee.expenseId}}\nProject :  {{ExpensesApprovalManagerEmailToEmployee.projectName}}\nStart Date :  {{ExpensesApprovalManagerEmailToEmployee.startDate}}\nEnd Date :  {{ExpensesApprovalManagerEmailToEmployee.endDate}}\nAmount :  {{ExpensesApprovalManagerEmailToEmployee.amount}}\n\nAll The Best' WHERE `UNIQUE_SCENARIO_NAME`='ExpensesApprovalManagerEmailToEmployee' and `ENTITY_TYPE`='Email';
-
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{ExpensesApprovalRejectedEmailToEmployee.employeeUser}}\nWe are sorry to inform you, your proposal for expenses submitted on {{ExpensesApprovalRejectedEmailToEmployee.submitForApprovalDate}} has been rejected.,\nExpense id : {{ExpensesApprovalRejectedEmailToEmployee.expenseId}}\nProject : {{ExpensesApprovalRejectedEmailToEmployee.projectName}}\nStart Date :{{ExpensesApprovalRejectedEmailToEmployee.startDate}}\nEnd Date :{{ExpensesApprovalRejectedEmailToEmployee.endDate}}\nAmount : {{ExpensesApprovalRejectedEmailToEmployee.amount}}\n\nAll The Best' WHERE `UNIQUE_SCENARIO_NAME`='ExpensesApprovalRejectedEmailToEmployee' and `ENTITY_TYPE`='Email';
-
-SET SQL_SAFE_UPDATES = 1;

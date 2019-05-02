@@ -1,11 +1,20 @@
+<script>
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
+
 <script type="text/javascript">
 function accountDeductionsList(){
 	    $("#addPayrollDiv").hide();
-		var sourceleadUrl ='${sourceleadUrl}';
+	    $("#employeeCostSearch").hide();
+		$("#wageTaxSearch").hide();
+		$("#accountDedSearch").show();
+		$("#hrDedSearch").hide();
+		$("#checksSearch").hide();
+		$("#invoiceDataSearch").hide();
 		var searchValue = $("#accountDataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getAccountDeductionsList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
+		var url = pmsUrl+"/getAccountDeductionsList?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareAccountDeductionsList(url);
 }
@@ -26,13 +35,17 @@ function prepareAccountDeductionsList(url){
 	
 	 $("#accountDeductionsListDiv").removeAttr("style");
  	 $("#accountDeductionsListDiv").empty();
+ 	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
+	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
- 	result = result +" <div class='modal-header'>";
- 	result = result +" <div class='remove_search'>";
- 	result = result +" <input type='text' placeholder='Search' id='accountDataTableSearch'/>";
- 	result = result +"</div>";
- 	result = result +"</div>";
- 	  result = result +"<table id='accountDeductionsPagination' class='display' cellspacing='0' width='100%' >"; 
+ 		
+ 		/* result = result +" <div class='reportHead'>";
+		result = result + " <ul class='pull-right'>";
+		result = result + " <li><input type='text' placeholder='Search' class='repSearchBar' id='accountDataTableSearch'/><span class='repSearchIcon' onClick='accountDataTableSearch();'></span></li>";
+		result = result + "</ul>";
+		result = result + "</div>";  */ 		
+ 		
+ 	 	result = result +"<table id='accountDeductionsPagination' class='display' cellspacing='0' width='100%' >"; 
  	    result = result + '<thead>';
 		result = result + '<tr>';
 		result = result + '<th>Employee Id</th>';
@@ -44,6 +57,7 @@ function prepareAccountDeductionsList(url){
 		result = result + '<th>Request Sub.Date</th>';
 		result = result + '<th>Request Approved Date</th>';
 		result = result + '<th>Repaid Status</th>';
+		result = result + '<th>Action</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
         result = result +"</table>";
@@ -75,12 +89,14 @@ function accountDeductionsPagination(url){
             { "data": "batchNumber" },
             { "data": "requestSubDate" },
             { "data": "requestApprovedDate"},
-            { "data": "repaidStatus"}
+            { "data": "repaidStatus"},
+            { "data": "action"}
             
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
 	    	  	"data": "employeeId",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 			    	  if(opt.employeeId !=null && opt.employeeId !='' && opt.employeeId !='undefined'){
@@ -106,6 +122,7 @@ function accountDeductionsPagination(url){
 	          },{
             "targets": colIndex++,
             "data": "fromDate",
+            "sortable": false,
             "render": function ( data, type, opt, meta ) {
             	var result = "";
             	if(opt.fromDateStr !=null && opt.fromDateStr !='' && opt.fromDateStr !='undefined'){
@@ -118,6 +135,7 @@ function accountDeductionsPagination(url){
           }, {
               "targets": colIndex++,
               "data": "toDate",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.toDateStr !=null && opt.toDateStr !='' && opt.toDateStr !='undefined'){
@@ -130,6 +148,7 @@ function accountDeductionsPagination(url){
             }, {
                 "targets": colIndex++,
                 "data": "dedAmount",
+                "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		 if(opt.dedAmount !=null && opt.dedAmount !='' && opt.dedAmount !='undefined'){
@@ -160,6 +179,7 @@ function accountDeductionsPagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "requestSubDate",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.requestSubDate !=null && opt.requestSubDate !='' && opt.requestSubDate !='undefined'){
@@ -172,6 +192,7 @@ function accountDeductionsPagination(url){
 	    	  }, {
                   "targets": colIndex++,
                   "data": "requestApprovedDate",
+                  "sortable": false,
                   "render": function ( data, type, opt, meta ) {
                 	  var result = "";
                 	  if(opt.requestApprovedDate !=null && opt.requestApprovedDate !='' && opt.requestApprovedDate !='undefined'){
@@ -184,6 +205,7 @@ function accountDeductionsPagination(url){
                 },{
                     "targets": colIndex++,
                     "data": "repaidStatus",
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                     	var result = "";
                     	if(opt.repaidStatus !=null && opt.repaidStatus !='' && opt.repaidStatus !='undefined'){
@@ -193,26 +215,40 @@ function accountDeductionsPagination(url){
 						}
                     	return result;
                     }
-                  } ], 
+                  },
+  				{
+  					"targets" : colIndex++,
+  					"data" : "action",
+  					"sortable": false,
+  					"render" : function(data, type, opt, meta) {
+  						var result = "";
+  						result = result + '<td><div><i class="glyphicon glyphicon-trash" onclick="deletePayrollEntity(\''+opt.uuid+'\',\'AccountDeductions\')"></i></div></td>';
+  						return result;
+  					}
+  				} ], 
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[0,'desc']],
+	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#accountDeductionsPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#accountDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    	   accountDeductionsList();
-    	   }
-    	});
+}
+
+$("#accountDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+	   accountDeductionsList();
+	   }
+	});
+function accountDataTableSearch(){
+	accountDeductionsList();
 }
 </script>
 
@@ -237,11 +273,10 @@ function accountDeductionsPagination(url){
 function getEmpAccountDeductionDetails(accountDedId,empName){
 	$(".sideMask").fadeIn("slow");
 	$(".AccountDedu").fadeIn("slow");
-	  var sourceleadUrl ='${sourceleadUrl}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 			  $.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&deductionId="+accountDedId,
+			        url: pmsUrl+"/getDeductionsDetailsbyId?${_csrf.parameterName}=${_csrf.token}&deductionId="+accountDedId,
 			        success: function(data) {
 					var result = "";				        	
 					result = result + '<table id="employeeDeductionsListTable" class="display" cellspacing="0" width="100%" >';
@@ -253,7 +288,7 @@ function getEmpAccountDeductionDetails(accountDedId,empName){
 					result = result + '</tr>';
 					result = result + '</thead>	';
 					result = result + '<tbody>';
-					var json = JSON.parse(data);
+					var json = data.data;
 		        	 for (var i=0; i<json.length; i++)
 					{
 		        		 var opt = json[i];
@@ -315,10 +350,9 @@ function editAccountDetails(id){
 	}
 	if(flag == "valid"){
 		$("#preDedError").empty();
-		 var sourceleadUrl ='${sourceleadUrl}';
 		  $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/updateAccountDeduction?${_csrf.parameterName}=${_csrf.token}&accDeductionId="+id+"&dedAmount="+output,
+		        url: pmsUrl+"/updateAccountDeduction?${_csrf.parameterName}=${_csrf.token}&accDeductionId="+id+"&dedAmount="+output,
 		        success: function(data) {
 		        	document.getElementById("preDedDiv"+id).style.display="block";
 		   		 	document.getElementById("editDedDiv"+id).style.display="none";

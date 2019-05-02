@@ -1,2 +1,0 @@
-UPDATE `sourcelead`.`ACTION_ROLES` SET `IS_NOTIFY`='N' WHERE `ID`='6';
-UPDATE `sourcelead`.`ACTION_ROLES` SET `IS_NOTIFY`='N' WHERE `ID`='9';

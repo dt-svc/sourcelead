@@ -8,23 +8,14 @@ import javax.servlet.http.HttpSessionListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
-import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.UserLoginLogoutSessionServiceImpl;
-import com.bis.sourcelead.service.impl.UserServiceImpl;
 
 public class SourceleadSessionListener implements HttpSessionListener {
 

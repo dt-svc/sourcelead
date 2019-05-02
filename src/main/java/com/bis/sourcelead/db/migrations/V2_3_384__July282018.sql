@@ -1,9 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE','INVOICE_CATEGORY','VARCHAR(250) NULL AFTER `SUBMISSION_APPROVER_HIERARCHY_ID`');
-CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE','EXPENSES_INVOICES','VARCHAR(250) NULL AFTER `INVOICE_CATEGORY`');
-CALL sourcelead.AlterTableAddColumn ('sourcelead','INVOICE_LINE_ITEMS','QUANTITY','VARCHAR(250) NULL AFTER `UPDATED_BY`');
-
-
-
-
-
-

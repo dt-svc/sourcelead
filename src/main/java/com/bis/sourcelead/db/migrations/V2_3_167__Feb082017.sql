@@ -1,1 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','RELEASED_BY','TEXT NULL');

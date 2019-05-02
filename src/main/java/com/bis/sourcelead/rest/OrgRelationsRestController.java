@@ -15,12 +15,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.EmailReminderDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.FinanceConfigureEmailService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 /**
@@ -32,6 +37,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @RestController
+@RequestMapping("/app")
 public class OrgRelationsRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(OrgRelationsRestController.class);
@@ -45,6 +51,9 @@ public class OrgRelationsRestController {
 	
 	@Autowired
 	private ClientService clientService;
+	
+	@Autowired
+	private FinanceConfigureEmailService FinanceConfigureEmailService;
 	
 	/*------------Create a OrgRelations--------------------------------*/
 
@@ -87,6 +96,35 @@ public class OrgRelationsRestController {
 		 resultJson = commonUtil.toJSON(orgClientList);
 		 return resultJson;
 	}*/
+	
+	@RequestMapping(value="/updatePaymentTermsInOrgrelations")
+	public String updatePaymentTermsInOrgrelations() {
+		int count = orgRelationsService.updatePaymentTermsInOrgrelations();
+		return count + " Records updated";
+	}
+	
+	
+	
+	 @RequestMapping(value = "/saveFinanceConfigureEmail", method = RequestMethod.POST)
+	 @ResponseBody
+	 public String saveFinanceConfigureEmail(EmailReminderDTO emailreminderConfigurationDTO,
+			@RequestParam(value = "responderType", required = false) String responderType,
+			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request)
+			throws Exception {
+		  System.out.println("inside the rest controller class");
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		if (null != orgLocationId) {
+			emailreminderConfigurationDTO.setOrgLocationId(orgLocationId);
+		}
+
+		FinanceConfigureEmailService.storeFinanceConfigureEmailService(emailreminderConfigurationDTO,org,orgLocation);
+		SourceLeadSessionManager.setSessionAttribute(request, "clientCreateMsg", "Success!! New client created");
+		return "emailreminderConfigurationDashboard";
+	}
 	
 	
 }

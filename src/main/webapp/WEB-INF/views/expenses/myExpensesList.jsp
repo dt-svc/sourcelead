@@ -14,8 +14,8 @@
     </section>
     
     
-    <li> <a href="<c:url value='/addExpense'/>"><i class="fa fa-plus"></i>Add Expenses</a></li>
-    <li> <a href="<c:url value='/expenses'/>"><i class="fa fa-plus"></i>Expenses</a></li>
+    <li> <a href="/pms/addExpense"><i class="fa fa-plus"></i>Add Expenses</a></li>
+    <li> <a href="/pms/expenses"><i class="fa fa-plus"></i>Expenses</a></li>
  </section>
  
 <jsp:include page="../masterFooter.jsp" />

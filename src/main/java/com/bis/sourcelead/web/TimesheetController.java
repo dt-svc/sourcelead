@@ -3,15 +3,16 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -43,12 +43,12 @@ import com.bis.sourcelead.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.TimesheetEmailUtil;
  
 
 @Controller 
 public class TimesheetController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(TimesheetController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	 
@@ -68,19 +68,22 @@ public class TimesheetController {
 	private ProjectMembersService projectMembersService;
 	
 	@Autowired
-	SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
 	
 	@Autowired
-	UserService userService;
+	private UserService userService;
 	
 	@Autowired
-	TimeZoneService timeZoneService;
+	private TimeZoneService timeZoneService;
 	
 	@Autowired
 	private TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
 	
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
+	
+	@Autowired
+	private TimesheetEmailUtil timesheetEmailUtil;
 	
 	/**
 	 * @author naresh bolisetty and sarath kumar
@@ -96,13 +99,12 @@ public class TimesheetController {
 	 * @throws NullPointer
 	 */
 	
-	@RequestMapping(value = "/timesheet")
+	@RequestMapping(value = {"/timesheet","/timesheet/{notificationUUID}"})
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS')")
-	public ModelAndView newTimesheet(HttpServletRequest request) throws Exception {
+	public ModelAndView newTimesheet(HttpServletRequest request,@PathVariable Optional<String> notificationUUID) throws Exception {
 			ModelAndView model = new ModelAndView();
 			
 			commonUtil.highLightMenu(Constants.TimeSheet, request);
-			
 			String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -114,13 +116,47 @@ public class TimesheetController {
 			SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
 			SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
 			
-			Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
+			Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLoc.getTimeZoneId()));
 			Long notificationTo = loginUser.getId();
 			List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
 			calculateDays(notificationList, timezone);
 			SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
 			SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationList);
 			
+			if(notificationUUID != null && notificationUUID.isPresent()) {
+				Notifications notifications = notificationsService.getNotificationsByUUID(notificationUUID.get());
+				if(notifications != null && StringUtils.isNotEmpty(notifications.getParameterList())) {
+					HashMap<String, String>  paramList = CommonUtil.getJsonAsMap(notifications.getParameterList());
+					model.addObject("notifyLink", true);
+					
+					String weekFrequency = "";
+					String startDateStr = "";
+					String endDateStr = "";
+					String dateFormat = "";
+					if(paramList != null && !paramList.isEmpty()) {
+						for(Map.Entry<String,String> entry : paramList.entrySet()) {
+							if(entry.getKey().equalsIgnoreCase("projectMemberId"))
+							{
+								model.addObject(entry.getKey(), entry.getValue());
+							}else if(entry.getKey().equalsIgnoreCase("startDateStr")) {
+								startDateStr = entry.getValue();
+							}else if(entry.getKey().equalsIgnoreCase("endDateStr")) {
+								endDateStr = entry.getValue();
+							}else if(entry.getKey().equalsIgnoreCase("dateFormat")) {
+								dateFormat = entry.getValue();
+							}
+						}
+					}
+					if(StringUtils.isNotEmpty(dateFormat) && StringUtils.isNotEmpty(startDateStr) && StringUtils.isNotEmpty(endDateStr)) {
+						 Date frequencyStartDate = commonUtil.orgLocationDateFormat(dateFormat,startDateStr);
+						 Date frequencyEndDate = commonUtil.orgLocationDateFormat(dateFormat,endDateStr);
+						 String actualStartDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),frequencyStartDate);
+						 String actualEndDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),frequencyEndDate);
+						 weekFrequency = actualStartDate+"To"+actualEndDate;
+						 model.addObject("currentTimeFrequency", weekFrequency);
+					}
+				}	
+			}	
 			List<ProjectMembers> projectMembersList =  projectMembersService.getProjectMembersListByOrgLocationsIdAndEmpUserId(orgLoc.getId(), loginUser.getId());
 			model.addObject("ProjectMembersList", projectMembersList);
 			
@@ -131,7 +167,7 @@ public class TimesheetController {
 	}
 	
 	
-	@RequestMapping(value = "/acceptOrRejectReopenTimeSheet")
+	@RequestMapping(value = "/ws/acceptOrRejectReopenTimeSheet")
 	@ResponseBody  ModelAndView acceptOrRejectReopenTimeSheet(@RequestParam(value="projectMemberId", required=false) Long projectMemberId,
 			@RequestParam(value="userId", required=false) Long userId,
 			@RequestParam(value="timesheetFrequency", required=false) String timesheetFrequency,
@@ -141,7 +177,7 @@ public class TimesheetController {
 		    User superUser = userService.getUserById(userId);
 		    ProjectMembers projectMembers = projectMembersService.getProjectMemberById(projectMemberId);
 		     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
+		     String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		   // SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		    ModelAndView model = new ModelAndView();
 		    
@@ -150,7 +186,7 @@ public class TimesheetController {
 		  	 String weekEndDateTimeSheet = frequencyDate[1].trim();
 		  	 Date startDateTimeSheet = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekStartDateTimeSheet.replaceAll("/", "-"));
 			 Date endDateTimeSheet = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDateTimeSheet.replaceAll("/", "-"));
-			SubmissionApproverHierarchy subApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLogin(userId, projectMemberId, startDateTimeSheet, endDateTimeSheet);
+			SubmissionApproverHierarchy subApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(userId, projectMembers.getProjects().getId(),projectMembers.getMasterCandidateId().getId(),orgLocations.getId(),startDateTimeSheet, endDateTimeSheet,isGlobalAccess);
 			String approvalStatus = subApproverHierarchy.getSubmissionApprovalStatus().getValue();
 		    	//DateFormat format = simpleDateFormat;
 			if(approvalStatus.equalsIgnoreCase("new") || subApproverHierarchy.getReopenRejectedReason() != null){
@@ -164,7 +200,7 @@ public class TimesheetController {
 					 Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDate.replaceAll("/", "-"));
 					 User reopenedUser = submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,superUser,type,Constants.NO);
 				  	//send mail & notification logic
-				  	 submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),timesheetFrequency,type,reopenedUser);
+					 timesheetEmailUtil.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),timesheetFrequency,type,reopenedUser);
 				}else if(!approvalStatus.equalsIgnoreCase("new") && (StringUtils.isNotEmpty(timesheetFrequency) && null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason))){
 					String[] frequency = timesheetFrequency.split("To");
 				 	 String weekStartDate = frequency[0].trim();
@@ -173,7 +209,7 @@ public class TimesheetController {
 				  	 Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDate.replaceAll("/", "-"));
 					 User reopenedUser = submissionApproverHierarchyService.updateSubmissionStatusByProjectMemberIdStartDateAndEndDateWithReOpenReason(projectMemberId, startDate, endDate,reason,superUser,type,Constants.NO);
 				  	//send mail & notification logic
-				  	 submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),timesheetFrequency,type,reopenedUser);
+					 timesheetEmailUtil.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,superUser,projectMembers.getProjects().getOrgLocationsId(),timesheetFrequency,type,reopenedUser);
 				}	
 			}
 			 
@@ -233,24 +269,7 @@ public class TimesheetController {
 	
 	private void calculateDays(List<Notifications> notificationList, Timezone timezone) throws ParseException {
 		for (Notifications notifications : notificationList) {
-					/*//differentiating date and time
-						Date date = notifications.getCreatedDate();
-					    String[] parts = date.toString().split(" ");
-					    notifications.setDateValue(parts[0]);
-					    final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
-					    final Date dateObj = sdf.parse(parts[1]);
-					    notifications.setTime(new SimpleDateFormat("K:mm a").format(dateObj));
-					    
-					    // calculating days b/w dates 
-					    Date currentDate = new Date();
-						Date d1 = notifications.getCreatedDate();
-						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-						String strDate = dateFormat.format(currentDate);
-						Date d2 = dateFormat.parse(strDate);
-						long diff = d2.getTime() - d1.getTime();
-						long diffDays = diff / (24 * 60 * 60 * 1000);
-						notifications.setCalDays(String.valueOf(diffDays));*/
-			long diff = commonUtil.currentDate().getTime() - notifications.getCreatedDate().getTime();
+			long diff = CommonUtil.currentDate().getTime() - notifications.getCreatedDate().getTime();
 		    long diffSeconds = diff / 1000 % 60;
 			long diffMinutes = diff / (60 * 1000) % 60;
 			long diffHours = diff / (60 * 60 * 1000) % 24;

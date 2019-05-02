@@ -1,1 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','PROJECTS','IS_TIMESHEET_ATTACHMENT_REQUIRED','INT(2) NULL AFTER `IS_PRIMARY`');

@@ -1,1 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION_HISTORY','CREATED_USER','VARCHAR(200) NULL');

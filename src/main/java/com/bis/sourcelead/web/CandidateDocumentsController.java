@@ -22,6 +22,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RequestedDocumentsService;
 
 @Controller
+@RequestMapping("/app")
 public class CandidateDocumentsController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateEmployersController.class);
 	@Value("${sourceleadUrl}")
@@ -58,7 +59,7 @@ public class CandidateDocumentsController {
 			return model;
 	    }
 	 
-	 @RequestMapping(value = "/requestedDocuments")
+	 @RequestMapping(value = "/ws/requestedDocuments")
 		public ModelAndView requestedDocuments(@RequestParam(value = "requestDocUUID", required = false) String requestDocUUID) throws Exception {
 			ModelAndView model = new ModelAndView();
 			if(!isNullOrEmpty(requestDocUUID)){

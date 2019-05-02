@@ -1,1 +1,0 @@
-CALL sourcelead.AlterTableAddColumn ('sourcelead','REQUIREMENT','REQUIREMENT_SUBMISSION_STATUS','VARCHAR(50) NULL AFTER `STATUS`');
