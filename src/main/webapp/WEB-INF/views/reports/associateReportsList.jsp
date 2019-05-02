@@ -69,6 +69,29 @@
 	</div>
 	</a>
 	
+
+	<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+	<a href='${appPath}/loansAndAdvancesReport'>
+				<div class="repDashCta">
+		<span><i class="fa fa-dollar"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Loans And Advances Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
+	</c:if>
+	
+	<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+	<a href='${appPath}/loansAndAdvancesReport'>
+				<div class="repDashCta">
+		<span><i class="fa fa-rupee"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Loans And Advances Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
+	</c:if>
+
 	<a href='${appPath}/associateClockInSummaryReport'><div class="repDashCta">
 		<span><i class="fa fa-users"></i></span>
 		<div class="repDashCtaWrap">
@@ -76,6 +99,7 @@
 		</div>
 	</div>
 	</a>
+ 
 				
 	<div class="clearfix"></div>	
 </div>

@@ -5,11 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <jsp:include page="candidatesQuickView.jsp"></jsp:include>
-<style>
-.addUser-org {
-	overflow-x: auto;
-}
-</style>
 <%-- 
      @author : sarath kumar.
      this script is for display candidate education tab data.

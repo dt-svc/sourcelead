@@ -3490,8 +3490,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public String getCandidatePanNumberByUserId(long userId) {
-		return candidateDao.getCandidatePanNumberByUserId(userId);
+	public String getCandidatePanNumberByUserId(long userId, Long id) {
+		return candidateDao.getCandidatePanNumberByUserId(userId, id);
 	}
 
 	@Override
