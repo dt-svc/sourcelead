@@ -9,10 +9,12 @@ import com.bis.sourcelead.clockInOutEntity.ClockInOut;
 import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Tasks;
+import com.bis.sourcelead.entity.User;
 
 
 public interface ClockInOutConfigDao {
@@ -44,6 +46,8 @@ public interface ClockInOutConfigDao {
 	public Breaks getExistedBreakTime(Long clockInOutId);
 
 	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId, Date[] dates);
+
+	public List<ClockInOutUserTimeEntryDTO> getTimeReports(Date[] dates, OrgLocations loginOrgLocation, User user);
 
 
 }

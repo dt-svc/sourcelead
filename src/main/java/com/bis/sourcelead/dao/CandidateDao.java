@@ -255,7 +255,7 @@ public interface CandidateDao {
 	public List<MarketplacePurchaseOrder> getPurchaseCandidateListByOrglocation(Long id)throws Exception;
 
 	public void saveCandidateMarketPlaceWallet(CandidateMarketWallet wallet) throws Exception;
-
+	
 	public Double getBalanceAmountFromWallet(Long id);
 
 	public void updateMarketWalletAmount(Double balanceAmountValue, Long id);
@@ -266,7 +266,7 @@ public interface CandidateDao {
 	
 	public List<Candidate> getAllAssociateByLocation(Long orgLocationId);
 
-	public String getCandidatePanNumberByUserId(long userId);
+	public String getCandidatePanNumberByUserId(long userId, Long id);
 	
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception;
 	

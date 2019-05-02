@@ -282,5 +282,13 @@ public class ClockInOutRestController {
 		
 		return null;
 	}
+	
+	@RequestMapping(value = "/getTimeReports",method = RequestMethod.GET)
+	public ClockInOutUserTimeEntryDTO getTimeReports(HttpServletRequest req,HttpServletResponse res) {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
+		return clockInOutConfigService.getTimeReports(loginOrgLocation,user);
+	}
 
 }

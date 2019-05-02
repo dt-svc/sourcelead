@@ -43,7 +43,7 @@
 					<div class="col-md-5">
 						<label class="clearfix">Associate ID</label>
 						<div class="clearfix">
-							<input type="text" value="${form.userId}" class="form-control" disabled="disabled" id="associateId" placeholder="Associate Id">
+							<input type="text" value="${form.employeeId}" class="form-control" disabled="disabled" id="associateId" placeholder="Associate Id">
 						</div>
 					</div>
 					<div class="col-md-5">
@@ -61,6 +61,13 @@
 									<option ${year.value==true || form.financialYear == year.key ? "selected=selected" : ""} value="${year.key}">${year.key}</option>
 								</c:forEach>
 							</select>
+						</div>
+					</div>
+					<div class="col-md-5">
+						<label class="clearfix">Date of Birth</label>
+						<div class="clearfix">
+							<input type="text" class="form-control" readonly="readonly" value="${user.dateofBirth}"
+								id="dateOfBirth" placeholder="Date Of Birth">
 						</div>
 					</div>
 					<div class="clearfix"></div>
