@@ -67,18 +67,17 @@ function getFormSubmissionMasterList() {
 							getItDeclarationSubmissionList(pageNumber-1);
 						}
 				};
-				$("#pagination-demo").pagination(options);
-				$("#pageMsg").html("Showing " + ((paginator.pageNo * paginator.pageSize) + 1) + " to " + (((paginator.pageNo + 1) * paginator.pageSize) > paginator.totalRows ? paginator.totalRows : ((paginator.pageNo + 1) * paginator.pageSize)) + " of " + paginator.totalRows + " results");
-			
-				$("#submissionTable").show();
-				$("#paginationDiv").show();
-				$("#noResultsTable").hide();
-			} else {
-				$("#submissionTable").hide();
-				$("#paginationDiv").hide();
-				$("#noResultsTable").show();
-			}
-			
+				/*$("#pagination-demo").pagination(options);
+                $("#pageMsg").html("Showing " + ((paginator.pageNo * paginator.pageSize) + 1) + " to " + (((paginator.pageNo + 1) * paginator.pageSize) > paginator.totalRows ? paginator.totalRows : ((paginator.pageNo + 1) * paginator.pageSize)) + " of " + paginator.totalRows + " results");*/
+                payrollFormListTablePagination();
+                $("#submissionTable").show();
+                /*$("#paginationDiv").show();*/
+                $("#noResultsTable").hide();
+            } else {
+                $("#submissionTable").hide();
+                /*$("#paginationDiv").hide();*/
+                $("#noResultsTable").show();
+            }
 		} else if (response.indexOf('Sign In') !== -1) {
 			location.replace(pmsUrl);
 		} else {
@@ -86,6 +85,23 @@ function getFormSubmissionMasterList() {
 		}
 	});
 }
+
+function payrollFormListTablePagination(){ 
+    $('#submissionTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+    $("#submissionTable").wrap("<div class='overflow_Auto  width100percnt'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
+}
+
 function exportFormToPDF(formId) {
 	var exportType = "pdf";
 	window.location.href = pmsUrl+"/itDeclartionSubmissionExport?formId="+formId+"&exportType="+exportType;
