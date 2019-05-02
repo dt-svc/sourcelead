@@ -12,7 +12,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
 <meta property='og:title' content="sourcelead.com"/> 
 <meta property='og:url' content="https://www.sourcelead.com/"/> 
-<meta property='og:description' content='Bridging talent through technology'/> 
+<meta property='og:description' content='Sourcelead is a global integrated recruitment solution for job seekers and the employers. We carry our expertise for more than a decade, and have expanded to become a global provider of full array of recruitment, vendor management, billing, and client management products and services.'/> 
 <meta property="og:type" content="article" /> 
 <meta property="og:image" content="https://www.sourcelead.com/resources/images/fav.png"/> 
 <meta name="description" content="${description}">
@@ -77,7 +77,7 @@ gtag('config', 'UA-115098165-1');
 	 <li class="dropdown dropdown-featureshome">
 	 <a data-target="#featureshome" href="javascript:void(0)" id="featuresID">Features
 			  <span class="fa fa-angle-down"></span></a>
-			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
+			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom dropdownmenucustom_defualt">
 <!--
 				<li><a href="features.html">Features</a></li>
 -->
@@ -101,7 +101,7 @@ gtag('config', 'UA-115098165-1');
 	<li class="dropdown dropdown-featureshome">
 	 <a data-target="#featureshome" href="javascript:void(0)" id="resourcesID">Resources
 			  <span class="fa fa-angle-down"></span></a>
-			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
+			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom dropdownmenucustom_defualt">
 				<li><a class="helpbtn" href="/help.html">Help Manuals</a></li>
 				<li><a href="/blog/all.html" id="blogID">Blog</a></li>
 				<li><a href="/blog/allReleaseNote.html" id="releaseNoteID">Release Note</a></li>

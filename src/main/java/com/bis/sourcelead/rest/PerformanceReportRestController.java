@@ -77,6 +77,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
+import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -117,6 +118,7 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementLocationsService;
+import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementReportService;
@@ -281,6 +283,9 @@ public class PerformanceReportRestController {
 	 
 	 @Autowired
 	 ClientReportDao clientReportDao;
+	 
+	 @Autowired
+	 RequirementOfferHistoryService requirementOfferHistoryService;
 	 
 	 @SuppressWarnings("unchecked")
 		@RequestMapping(value = "/getTopFiveConracts", method = RequestMethod.GET)
@@ -999,7 +1004,10 @@ public class PerformanceReportRestController {
 			try{
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+					
 					List<ApplicantsBySourceDTO> applicantBySourceList = new ArrayList<>();
 					List<Long> jobIdList = new ArrayList<>();
 					DecimalFormat df = new DecimalFormat("#.00");
@@ -1427,7 +1435,10 @@ public class PerformanceReportRestController {
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
 					
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+					
+					
 					List<Long> jobIdList = new ArrayList<>();
 					if(StringUtils.isNotBlank(jobFilterDTO.getJobIds())) {
 						String[] jobIds = jobFilterDTO.getJobIds().split(",");
@@ -1521,7 +1532,9 @@ public class PerformanceReportRestController {
 			try{
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 
 					List<ApplicantsBackoutDTO> applicantsBackoutList = new ArrayList<>();
 					ApplicantsBackoutDTO applicantsBackoutDTO=new ApplicantsBackoutDTO();
@@ -1915,8 +1928,10 @@ public class PerformanceReportRestController {
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
 
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
+					
 					List<ApplicantDeclineDTO> applicantDeclineList = new ArrayList<>();
 					ApplicantDeclineDTO applicantDeclineDTO=new ApplicantDeclineDTO();
 					List<Long> jobIdList = new ArrayList<>();
@@ -1998,7 +2013,8 @@ public class PerformanceReportRestController {
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
 
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 
 					List<ApplicantDeclineDTO> applicantDeclineList = new ArrayList<>();
 					ApplicantDeclineDTO applicantDeclineDTO=new ApplicantDeclineDTO();
@@ -2492,7 +2508,7 @@ public class PerformanceReportRestController {
 						rshDTO.setJobRate(rsh.getSubmissionId().getRequirement().getJobRate().toString());
 					}
 					
-					if(rsh.getSubmissionId().getRequirement().getPayOutPeriod() != null &&  rsh.getSubmissionId().getJoinedDate()  != null){
+					if(rshDTO.getPayTerm() > 0 &&  rsh.getSubmissionId().getJoinedDate()  != null){
 //						Integer result = Integer.parseInt(rshDTO.getPayOutPeriod());
 						if(rshDTO.getPayTerm() != 0){
 							Date generatedInvoiceDate=CalendarUtil.addDaysForGenerateInvoice(rsh.getSubmissionId().getJoinedDate(), rshDTO.getPayTerm());
@@ -2578,12 +2594,30 @@ public class PerformanceReportRestController {
 					rshDTO.setSubmittedBy(rsh.getCreatedUser());
 		//					}
 						
-					RequirementRateSubmissionNegotiation rateNegotiation = requirementRateSubmissionNegotiationService.getRequirementRateSubmissionByMaxId(rsh.getSubmissionId().getId());
+					/*RequirementRateSubmissionNegotiation rateNegotiation = requirementRateSubmissionNegotiationService.getRequirementRateSubmissionByMaxId(rsh.getSubmissionId().getId());
 					if(rateNegotiation !=null && rateNegotiation.getCurrentRate()!=null){
 						float currentRate = conversionUtil.rateConvertToYear(rateNegotiation.getCurrentRate(),rateNegotiation.getCurrentRateType(),loginOrgLocations);
 						float expectedRate = conversionUtil.rateConvertToYear(rateNegotiation.getExpectedRate(),rateNegotiation.getExpectedRateType(),loginOrgLocations);
 						float finalRatePerYear = expectedRate-currentRate;
 						rshDTO.setMarginRateYearly(String.format("%.3f", Float.valueOf(finalRatePerYear)));
+					}*/
+					
+					List<RequirementOfferHistory> offerHistorList = requirementOfferHistoryService.getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId(rsh.getSubmissionId().getId(), loginOrgLocations.getId());
+					if(offerHistorList != null && !offerHistorList.isEmpty()) {
+						float clientOfferRate = 0;
+						float internalOfferRate = 0;
+						for(RequirementOfferHistory roh : offerHistorList) {
+//							System.out.println("OfferID:"+roh.getOfferId().getId() + " SubmissionID:"+roh.getSubmissionId().getId()+ " Amount:" + roh.getOfferId().getAmount() + " Status:" + roh.getOfferId().getOfferStatus());
+							if(roh.getOfferId().getOfferStatus().equalsIgnoreCase("CLIENT_OFFERACCEPTED")) {
+								clientOfferRate = conversionUtil.rateConvertToYear(roh.getOfferId().getAmount(),roh.getOfferId().getPaymentMode(),loginOrgLocations);
+							} else if(roh.getOfferId().getOfferStatus().equalsIgnoreCase("OFFERACCEPTED")) {
+								internalOfferRate = conversionUtil.rateConvertToYear(roh.getOfferId().getAmount(),roh.getOfferId().getPaymentMode(),loginOrgLocations);
+							}
+						}
+						if(clientOfferRate > 0) {
+							float finalRatePerYear = clientOfferRate-internalOfferRate;
+							rshDTO.setMarginRateYearly(String.format("%.3f", Float.valueOf(finalRatePerYear)));
+						}
 					}
 					
 					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), rsh.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
@@ -2630,7 +2664,7 @@ public class PerformanceReportRestController {
 	@Async
 	@RequestMapping(value = "/getAllJobsPipelineReoportsList", method = RequestMethod.POST)
 	@ResponseBody
-	Response<JobPipelineDTO> getAllJobsPipelineReoportsList(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception
+	Response<JobPipelineDTO> getAllJobsPipelineReoportsList(JobFilterDTO jobFilterDTO, HttpServletRequest request, @RequestParam(defaultValue = "0") long orgRelationId, @RequestParam(defaultValue = "0") long spocId) throws Exception
 	{
 		Response<JobPipelineDTO> response = new Response<>();
 		try{
@@ -2674,8 +2708,14 @@ public class PerformanceReportRestController {
 						}
 					}else {
 						jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
+						if(orgRelationId > 0) {							
+							//above jobIdList is released to vendor job id's
+							//now get the parentJobId based on vendorReleasedJob and get the jobStages for that vendor resubmitted job('submit to client')
+							jobIdList = requirementReportService.getParentRequirementIdListByRequirementIds(jobIdList);
+						}
 					}
 				 }
+//				System.out.println("PerformanceReportRestController : JobId - " + jobIdList.size());
 			    	int applicantsSum = 0;
 					int requestSentSum = 0;
 					int shortlistedSum = 0;
@@ -2721,7 +2761,14 @@ public class PerformanceReportRestController {
 					Integer filledclosedJobcount = new Integer(0);
 					Integer cancelJobcount = new Integer(0);
 					
-					List<Requirement> requirementList = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates);
+					List<Requirement> requirementList = null;
+					
+					if(orgRelationId > 0) {
+						requirementList = jobsPipelineReportService.vendorRequirementListStatusCountByJobIdsAndDates(jobIdList, searchDates);
+					} else {
+						requirementList = jobsPipelineReportService.requirementListStatusCountByJobIdsAndDates(jobIdList, searchDates);
+					}
+					
 					if(requirementList != null && !requirementList.isEmpty()) {
 						openJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("OPEN")).collect(Collectors.toList()).size();
 						onholdJobcount = requirementList.stream().filter(r->r.getRequirementSubmissionStatus().toString().equalsIgnoreCase("ONHOLD")).collect(Collectors.toList()).size();
@@ -2733,7 +2780,9 @@ public class PerformanceReportRestController {
 
 					int count = 1;
 					int dupCount = 0;
-			    	List<RequirementSubmission> reqSubmissionList = jobsPipelineReportService.getAllJobsReportCountByOrglocationIdAndLoginUserCodeAndStartAndEndDate(jobIdList, searchDates);
+					
+					List<RequirementSubmission> reqSubmissionList = jobsPipelineReportService.getAllJobsReportCountByOrglocationIdAndLoginUserCodeAndStartAndEndDate(jobIdList, searchDates);
+			    	
 			    	if(null != reqSubmissionList && reqSubmissionList.size() > 0){
 				    	for(RequirementSubmission reqSub : reqSubmissionList){
 							int applicantsCount = 0;
@@ -2747,6 +2796,27 @@ public class PerformanceReportRestController {
 							int backoutCount = 0;
 							
 							List<RequirementSubmissionHistory> requirementSubmissionHistoryList = jobsPipelineReportService.getAllJobsReportsCountsBySubmmisonId(reqSub.getId());
+							
+							if(orgRelationId > 0) {
+					    		String masterUserCode = "";
+					    		if (spocId > 0) {
+					    			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+					    			if(orgSpoc != null) {
+					    				masterUserCode = "'" + orgSpoc.getVendorUser().getUserCode() + "'";
+					    			}
+					    		} else {
+					    			List<OrgSpoc> orgSpocList = orgSpocService.getOrgSpocByOrgRelationId(orgRelationId);
+					    			if (orgSpocList != null && !orgSpocList.isEmpty()) {
+					    				for (OrgSpoc orgSpoc : orgSpocList) {
+					    					masterUserCode += (masterUserCode.isEmpty() ? "" : ",") + "'" + orgSpoc.getVendorUser().getUserCode() + "'";
+					    				}
+					    			}
+					    		}
+					    		requirementSubmissionHistoryList = jobsPipelineReportService.getAllJobsReportsCountsBySubmmisonIdAndMasterUserCode(reqSub.getId(), masterUserCode);
+					    	} else {
+					    		requirementSubmissionHistoryList = jobsPipelineReportService.getAllJobsReportsCountsBySubmmisonId(reqSub.getId());
+					    	}
+							
 							if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
 								Date requirementCreatedDate = reqSub.getRequirement().getCreatedDate();
 								Date applicantCreatedDate = null;

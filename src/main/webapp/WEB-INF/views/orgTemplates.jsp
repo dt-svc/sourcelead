@@ -192,7 +192,21 @@
 		</span>
 		</div>
 	</div> 
-	<div class="clearfix"></div>
+	
+		<div class="landTempCta">
+		<div class="pull-left mr10">
+	           <i class="fa fa-envelope-open-o fa-2x text-info"></i>
+	        </div>
+			<div class="pull-left">
+			<h2 class="text-info">Offer Letter</h2>
+			<p>Manage Your Offer Letter Templates</p>
+			<span>
+				<a class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_sourceleadUrl}/addOfferLetterTemplate">Add</a> 
+				<a class="btn btn-primary btn-sm" href="${SourceLeadWeb_sourceleadUrl}/viewOfferLetterTemplate">View</a>
+			</span>
+		</div>
+		</div>
+		<div class="clearfix"></div>
 </section>
     
         

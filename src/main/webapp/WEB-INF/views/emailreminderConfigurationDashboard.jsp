@@ -18,27 +18,27 @@
         <div class="repDashCtaWrap ml">
           <h2>Jobs</h2>
           <div class="clearfix mt5"></div>
-          <a href="/ats/jobsConfigureEmails" class="fontSmall">Configure</a> </div>
+          <a href="${SourceLeadWeb_sourceleadUrl}/jobsConfigureEmails" class="fontSmall">Configure</a> </div>
       </div>
       <%-- <div class="repDashCta"> <span class="navIcons canIcon svgReport margin-top0"></span>
         <div class="repDashCtaWrap ml">
           <h2>Candidates</h2>
           <div class="clearfix mt5"></div>
           <a href="javascript:void(0)" class="fontSmall">Configure</a> </div>
-      </div>
+      </div> --%>
       <div class="repDashCta"> <span class="navIcons leaveIcon svgReport margin-top0"></span>
         <div class="repDashCtaWrap ml">
           <h2>Leaves</h2>
           <div class="clearfix mt5"></div>
-          <a href="/pms/emailReminderLeaveConfiguration" class="fontSmall">Configure</a> </div>
+          <a href="${SourceLeadWeb_sourceleadUrl}/emailReminderLeaveConfiguration" class="fontSmall">Configure</a> </div>
       </div>
       <div class="repDashCta"> <span class="navIcons contIcon svgReport margin-top0"></span>
         <div class="repDashCtaWrap ml">
           <h2>Contracts</h2>
           <div class="clearfix mt5"></div>
-          <a href="contractsConfigure_Emails.html" class="fontSmall">Configure</a> </div>
+           <a href="${SourceLeadWeb_sourceleadUrl}/contractConfigureEmails" class="fontSmall">Configure</a> </div>
       </div>
-      <div class="repDashCta"> <span class="navIcons finIcon svgReport margin-top0"></span>
+      <%-- <div class="repDashCta"> <span class="navIcons finIcon svgReport margin-top0"></span>
         <div class="repDashCtaWrap ml">
           <h2>Finance</h2>
           <div class="clearfix mt5"></div>

@@ -1,6 +1,6 @@
-<footer class="footer-area">
+<footer class="footerarea_default">
   <div class="container">
-  <div class="footerinner clearfix">
+  <div class="sitemap_default clearfix">
   	<div class="col-md-2 sitemap">
   	<h4>Site Map</h4>
 	 <ul class="list-unstyled">
@@ -46,11 +46,11 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 		</div>
 			  <div class="social-links social-icons mt">
 	  	<ul class="list-unstyled list-inline">
-			<li><a title="FaceBook" href="https://www.facebook.com/Sourcelead-303008183449158/" target="_blank"><i class="fa fa-facebook text-primary"></i></a></li>
-			<li><a title="Youtube" href="https://www.youtube.com/sourcelead" target="_blank"><i class="fa fa-youtube text-danger"></i></a></li>
-			<li><a title="Twitter" href="https://twitter.com/SourceleadInc" target="_blank"><i class="fa fa-twitter text-info"></i></a></li>
-			<li><a title="GooglePlus" href="https://plus.google.com/u/0/106307146025514798879" target="_blank"><i class="fa fa-google-plus text-danger"></i></a></li>
-			<li><a title="LinedIn" href="https://www.linkedin.com/company-beta/13268592/" target="_blank"><i class="fa fa-linkedin text-primary"></i></a></li>
+			<li><a title="FaceBook" href="https://www.facebook.com/Sourcelead-303008183449158/" target="_blank"><i class="fa fa-facebook"></i></a></li>
+			<li><a title="Youtube" href="https://www.youtube.com/sourcelead" target="_blank"><i class="fa fa-youtube"></i></a></li>
+			<li><a title="Twitter" href="https://twitter.com/SourceleadInc" target="_blank"><i class="fa fa-twitter"></i></a></li>
+			<!-- <li><a title="GooglePlus" href="https://plus.google.com/u/0/106307146025514798879" target="_blank"><i class="fa fa-google-plus"></i></a></li> -->
+			<li><a title="LinedIn" href="https://www.linkedin.com/company/sourcelead" target="_blank"><i class="fa fa-linkedin"></i></a></li>
 		</ul>
 	  </div>
   	</div>
@@ -58,7 +58,7 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
   	 <div class="clearfix"></div>
   </div>
 </footer>
-<section class="footer-copyright">
+<section class="footercopyright_default">
   <div class="container">
     <div class="col-xs-12 col-sm-6 text-center">
       <p>&copy; 2018, All Rights Reserved.</p>
@@ -104,7 +104,8 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 			  <span class="fa fa-angle-down"></span></a>
 			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
 				<li><a class="helpbtn" href="/help.html">Help</a></li>
-				<li><a href="/all.html" id="blogID">Blog</a></li>
+				<li><a href="/blog/all.html" id="blogID">Blog</a></li>
+				<li><a href="/blog/allReleaseNote.html" id="releaseNoteID">Release Note</a></li>
 			</ul>
 	</li>
 
@@ -201,7 +202,7 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 			               <div class="clearfix"></div>
 				            <div class="clearfix">
 				            <div id="moduleList" class="text-left"></div>
-				            <input type="hidden"  id="demoModuleValue" name="demoModule"  field-name="Module" data-validation="required"/> 		
+				            <input type="hidden"  id="demoModuleValue" name="demoModule" field-name="Module" data-validation="required"/> 		
 				            </div>
 			            </div>
 			            <div class="clearfix mt">
