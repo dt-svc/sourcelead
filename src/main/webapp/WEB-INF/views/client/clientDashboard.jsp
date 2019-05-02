@@ -2443,7 +2443,11 @@ function clientFileterPopUp(){
 }
 function resetClientFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
-// 	getClientList();
+	getClientList();
+// 	$(".mask").fadeOut();
+}
+function resetingClientFilter(){
+	$("ul#tierFilter > li input:checkbox").prop("checked",false);
 // 	$(".mask").fadeOut();
 }
 
@@ -2459,7 +2463,13 @@ function clientContactFilterPopUp(){
 function resetClientContactFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
-// 	getClientContactList();
+	getClientContactList();
+// 	 $(".mask").fadeIn();
+	
+}
+function resetingClientContactFilter(){
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
 // 	 $(".mask").fadeIn();
 	
 }
@@ -2493,7 +2503,7 @@ function resetClientContactFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientFilterPop();getClientList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetClientFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingClientFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>
@@ -2541,7 +2551,7 @@ function resetClientContactFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientContactFilterPop();getClientContactList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetClientContactFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingClientContactFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>
