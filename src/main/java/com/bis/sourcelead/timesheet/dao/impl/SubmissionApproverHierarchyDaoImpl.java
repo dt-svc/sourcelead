@@ -656,7 +656,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				
 				try {
 					session.saveOrUpdate(sah);
-					ta = CommonUtil.getTimesheetActivity(sah, type);
+					ta =   new TimesheetActivities();
+	                ta.setActivityStatus(type);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -686,7 +687,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		if (projectMembers != null && projectMembers.getProjectMemberCandidteId() != null
 				&& projectMembers.getProjectMemberCandidteId().getOrgLocationId() != null
 				&& StringUtils.isNotEmpty(projectMembers.getProjectMemberCandidteId().getOrgLocationId().getOrgLocationName())) {
-			actionPerformedBy = projectMembers.getProjectMemberCandidteId().getOrgLocationId().getOrgLocationName();
+			actionPerformedBy = loginUser.getFullName()+"("+projectMembers.getProjectMemberCandidteId().getOrgLocationId().getOrgLocationName()+")";
 			actionPerformedByORgLocationId = projectMembers.getProjectMemberCandidteId().getOrgLocationId().getId();
 		}
 		else {
@@ -751,9 +752,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					sah.setActionPerformedByOrgLocationId(actionPerformedByORgLocationId);
 				}
 				try {
-					updateSubmissionApproverHierarchy(sah);
-					TimesheetActivities ta = CommonUtil.getTimesheetActivity(sah, status);
-			        timesheetActivityService.saveTimesheetActivity(ta);
+					  updateSubmissionApproverHierarchy(sah);
+			           TimesheetActivities ta = new TimesheetActivities();
+	                   ta.setActivityStatus(status);
+			          timesheetActivityService.saveTimesheetActivity(ta);
 				} catch (Exception e) {
 				}
 				// Get Max Level in Current Location

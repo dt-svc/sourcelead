@@ -122,7 +122,7 @@ public class TimesheetApprovalController {
 			ModelAndView model = new ModelAndView();
 			request.setAttribute("status", status);
 			
-			model.setViewName("timesheet/timesheetStatusList");
+			model.setViewName("timesheet/timesheetApprovalDashboardStatusList");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 

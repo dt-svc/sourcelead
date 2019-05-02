@@ -185,7 +185,7 @@ $(window).load(function() {
 						 	   	        $("#backoutReason").empty();
 						                $("#backoutReason").append(result);
 									}
-			    		}else if (response.indexOf('Sign In') !== -1) {
+			    		}else if (JSON.stringify(response).indexOf('Sign In') != -1) { //  earlier is response.indexOf() which is not preferrable
 			    			location.replace(sourceleadUrl);
 			    		} else {
 			    		    showError("Operation failed, please try again");

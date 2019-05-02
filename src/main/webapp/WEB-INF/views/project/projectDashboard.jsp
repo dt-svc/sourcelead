@@ -441,8 +441,7 @@ function filter(){
 	    $("#projectFilterList").empty();
 	    $("#projectFilterList").append(result);
 	    
-	    projectDataTableList();
-	  
+	    projectDataTableList();  
 }
 
 </script>
@@ -809,7 +808,7 @@ $(document).ready(function() {
 	}
 </script>
 
-	
+	 
 <script>
 	$('#projectStartDateAdvanced').datepicker({
 		dateFormat : 'yy-mm-dd',

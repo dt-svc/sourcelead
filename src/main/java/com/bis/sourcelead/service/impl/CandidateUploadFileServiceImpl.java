@@ -1036,4 +1036,47 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		
 		return eRate;
 	}
+	
+	
+	/**
+	 * validate Pan Number
+	 * 
+	 * @param panNumber
+	 * @return boolean
+	 */
+	private boolean validatePanNumber(String panNumber)
+	{
+		String panNo = panNumber.trim();
+		Pattern pattern = Pattern.compile("[A-Z]{5}[0-9]{4}[A-Z]{1}");
+		Matcher matcher = pattern.matcher(panNo);
+		return matcher.matches();
+	}
+	
+	/**
+	 * validate Aadhar Number
+	 * @param aadharNumber
+	 * @return boolean
+	 */
+	private boolean validateAadharNumber(String aadharNumber)
+	{
+		String aadharNo = aadharNumber.trim();
+		Pattern pattern = Pattern.compile("/^\\d{4}\\s\\d{4}\\s\\d{4}$/g");
+		Matcher matcher = pattern.matcher(aadharNo);
+		return matcher.matches();
+	}
+	
+	/**
+	 * validate SSN Number
+	 * @param ssnNumber
+	 * @return boolean
+	 */
+	private boolean validateSsnNumber(String ssnNumber)
+	{
+		String ssnNo = ssnNumber.trim();
+		Pattern pattern = Pattern.compile("^(\\d{3}-?\\d{2}-?\\d{4}|XXX-XX-XXXX)$");
+		Matcher matcher = pattern.matcher(ssnNo);
+		return matcher.matches();
+	}
+	
+	
 }

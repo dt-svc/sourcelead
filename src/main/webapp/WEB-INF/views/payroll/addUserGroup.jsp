@@ -349,7 +349,11 @@ function closeBatch() {
 	 $("#userId").empty();
 	 $("#addUserGroupFormDiv").empty();
 }
-document.getElementById("createbatches").addEventListener("click", function(){
-	$(".addPayrollGroupWrap, .mask").fadeIn();
-});
+var el = document.getElementById("createbatches")
+if(el){
+  el.addEventListener("click", function(){
+	  $(".addPayrollGroupWrap, .mask").fadeIn();
+  });
+}
+
 </script> 

@@ -727,9 +727,11 @@ return responseList;
 			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(invoice.getOrgRelationID().getId());
 			if (orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
 				billingDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
+				billingDto.setOrgType(orgRelations.getResponderLocationId().getOrg().getOrgType());
 			}
 			if (orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()) {
 				billingDto.setClientName(orgRelations.getLocationId().getOrgLocationName());
+				billingDto.setOrgType(orgRelations.getLocationId().getOrg().getOrgType());
 			}
 			if (null != invoice.getProjectID()) {
 				billingDto.setProjectName(invoice.getProjectID().getProjectName());
@@ -1093,6 +1095,7 @@ return responseList;
 			//User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (invoice.getOrgRelationID().getLocationId().getId().equals(LoginOrgLocations.getId())) {
 				invoice.setClientName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+				invoice.setOrgType(invoice.getOrgRelationID().getResponderLocationId().getOrg().getOrgType());
 				//StringBuilder contactName = new StringBuilder();
 				if(null != invoice.getContactUsers()){
 					String[] contactUsers = invoice.getContactUsers().split(",");
@@ -1132,6 +1135,7 @@ return responseList;
 		    	StringBuilder contactName = new StringBuilder();
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().equals(LoginOrgLocations.getId())){
 					invoice.setClientName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+					invoice.setOrgType(invoice.getOrgRelationID().getLocationId().getOrg().getOrgType());
 					if(null != invoice.getOwnerUsers()){
 						String[] ownerUsers = invoice.getOwnerUsers().split(",");
 						if(ownerUsers.length != 0){
@@ -1179,6 +1183,9 @@ return responseList;
 			invoice.setCurrencyCode(invoice.getCurrencyCode());
 			invoice.setDueDateStr(formatter.format(invoice.getDueDate()));
 			invoice.setInvoiceDateStr(formatter.format(invoice.getInvoiceDate()));
+			if(invoice.getNotifyToOthers() !=null){
+				invoice.setNotifyToOthers(invoice.getNotifyToOthers().replaceAll(",", ", "));
+				}
 			if(invoice.getPaymentAccount() != null) {
 				invoice.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null));
 			}
@@ -1973,6 +1980,12 @@ return responseList;
 				Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 				if(invoice != null){
 				invoiceService.sendInvoiceReminderMail(user, orgLocation, invoice, invoice.getInvoiceType(), null);
+					// notify other email
+					if (StringUtils.isNotBlank(invoice.getNotifyToOthers())) {
+						for (String notifyToEmail : invoice.getNotifyToOthers().split(",")) {
+							invoiceService.sendInvoiceReminderMailToNotifyOthers(user, orgLocation, invoice,invoice.getInvoiceType(), null, notifyToEmail);
+						}
+					}
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}else{

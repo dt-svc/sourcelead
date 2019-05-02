@@ -2785,12 +2785,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		Calendar calendar = Calendar.getInstance();
 		Map<String, Date> dateValue = new HashMap<>();
 		String updatedDate = candidateMarketPlaceDTO.getUpdatedDate();
+		Date[] checkedDateArray = new Date[0];
 		try {
 			Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
 		if(updatedDate != null){
 			if(updatedDate.equalsIgnoreCase("today")){
-				dateValue.put("fromDate", formattedDate);
-				dateValue.put("toDate", formattedDate);
+					 checkedDateArray = reportsUtil.getJobFilterDate(updatedDate, orgLocations);
 			}
 			if(updatedDate.equalsIgnoreCase("1_day_ago")){
 				calendar.setTime(formattedDate);
@@ -2844,7 +2844,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue, candidateMarketPlaceDTO, dateValue);
+		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue, candidateMarketPlaceDTO, dateValue,checkedDateArray);
 		if(candidateMarketPlaces != null){
 			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
 				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
@@ -3499,6 +3499,36 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
 		return candidateDao.getOffshoreCandidatesByParentCandidateId(candidateId);
+	}
+
+	@Override
+	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateDetailsByPanNumberAndId(panNumber, orgLocationId);
+	}
+
+	@Override
+	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception {
+		return candidateDao.validatePanNumber(panNumber, orgLocationId);
+	}
+
+	@Override
+	public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateDetailsByAadharNoAndId(aadharNumber, orgLocationId);
+	}
+
+	@Override
+	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception {
+		return candidateDao.validateAadharNumber(aadharNumber, orgLocationId);
+	}
+
+	@Override
+	public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
+		return candidateDao.getCandidateDetailsBySsnNoAndId(ssnNumber, orgLocationId);
+	}
+
+	@Override
+	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception {
+		return candidateDao.validateSsnNumber(ssnNumber, orgLocationId);
 	}
 	
 	

@@ -22,11 +22,25 @@ width: 75px; padding: 0 !important;
             <button class="btn btn-primary pull-left btn-sm ml mt7" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
             </sec:authorize>
 
+<div class="dashboardoverIcon pull-right">
+			<a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+			<div class="newActPop">
+				<span>
+						<a href="javascript:void(0)" onclick="exportInterviewsListSheet('Pdf');" title="PDF" >Export PDF</a>
+						<a href="javascript:void(0)" onclick="exportInterviewsListSheet('Excel');" title="Excel">Export Excel</a>					
+				</span>
+			</div>
+		</div>
+
+
 		<ul class="nav nav-tabs pull-right">
 			<li id="jobFairsTab"><a href="javascript:void(0)" onclick="getJobFairs()">Job Fairs</a></li>
 			<li id="interviewsTab" class="active"><a href="javascript:void(0)" onclick="getInterviewsandTasks()">Interviews & Tasks</a></li>
 			<div class="clearfix"></div>
-		</ul>            
+		</ul>       
+		
+		
+		     
         </div>
         
       <!-- show Calendar -->
@@ -162,6 +176,7 @@ width: 75px; padding: 0 !important;
 function getJobFairs() {
 	$("#interviewsTab").removeClass("active");
 	$("#dashboardEventsDiv").hide();
+	$(".dashboardoverIcon").hide();
 	
 	$("#jobFairsTab").addClass("active");
 	$("#dashboardJobFairsDiv").show();
@@ -172,6 +187,7 @@ function getJobFairs() {
 function getInterviewsandTasks() {
 	$("#interviewsTab").addClass("active");
 	$("#dashboardEventsDiv").show();
+	$(".dashboardoverIcon").show();
 	
 	$("#jobFairsTab").removeClass("active");
 	$("#dashboardJobFairsDiv").hide();
@@ -1221,10 +1237,33 @@ function feedbackView(interviewId,templateId){
 	
 }
 </script>
+
+<script>
+function exportInterviewsListSheet(exportType){
+	
+	var date = getSelectedDateFromCalendar($("#eventCalendar").val());
+		window.location.href = sourceleadUrl+"/getInterviewListExportList?"+tokenParamName+"="+tokenValue+"&exportType="+exportType+"&dateRange="+date;
+	}
+</script>
+
 <script>
 function closePop(){
 $(".feedback_view").hide();
 $(".mask_inner").hide();
 }
 </script>
+
+<script>
+function newActions(){
+	$(".newActPop").slideToggle(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});
+</script>
+
+
       
