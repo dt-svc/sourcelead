@@ -522,13 +522,21 @@
 						</a>
 					</div>
 					
-							<div class="col-md-2 reportNewCta">
+						<div class="col-md-2 reportNewCta">
 								<a href="${SourceLeadWeb_sourceleadUrl}/clockInOutConfig">
 								<div class="clearfix text-center mb10"><i class="timeSettIcon"></i></div>
 								<div class="clearfix text-center">
 								<h4>Clock In - Clock Out</h4>
 								</div>
-								</div>
+						</div>
+						
+						<div class="col-md-2 reportNewCta">			
+							<a href="${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration">
+									<div class="clearfix text-center mb10"><i class="roleconfigSVG"></i></div>
+							<div class="clearfix text-center">
+								<h4>Performance Management</h4>
+							</div>
+						</div>
 								
 					<sec:authorize access="hasRole('ROLE_TICKET_CONFIGURATION')">
 						<div class="col-md-2 reportNewCta">
