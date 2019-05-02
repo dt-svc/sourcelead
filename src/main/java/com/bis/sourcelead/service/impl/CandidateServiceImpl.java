@@ -3008,12 +3008,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		Calendar calendar = Calendar.getInstance();
 		Map<String, Date> dateValue = new HashMap<>();
 		String updatedDate = candidateMarketPlaceDTO.getUpdatedDate();
+		Date[] checkedDateArray = new Date[0];
 		try {
 			Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
-			if (updatedDate != null) {
-				if (updatedDate.equalsIgnoreCase("today")) {
-					dateValue.put("fromDate", formattedDate);
-					dateValue.put("toDate", formattedDate);
+			if(updatedDate != null){
+				if(updatedDate.equalsIgnoreCase("today")){
+						 checkedDateArray = reportsUtil.getJobFilterDate(updatedDate, orgLocations);
 				}
 				if (updatedDate.equalsIgnoreCase("1_day_ago")) {
 					calendar.setTime(formattedDate);
@@ -3067,7 +3067,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue, candidateMarketPlaceDTO, dateValue);
+		candidateMarketPlaces = candidateDao.getGlobalMarketplaceCandListGridCard(searchCandidateIds, orgLocations.getId(), candidateLocation, searchValue, candidateMarketPlaceDTO, dateValue,checkedDateArray);
 		if(candidateMarketPlaces != null){
 			for(CandidateMarketPlace marketPlace : candidateMarketPlaces){
 				CandidateMarketPlaceDTO marketPlaceDTO = new CandidateMarketPlaceDTO();
