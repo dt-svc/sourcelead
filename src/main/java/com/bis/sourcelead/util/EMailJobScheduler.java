@@ -216,6 +216,9 @@ public class EMailJobScheduler {
 	@Value("${defaultFromEmailAddressForProd}")
 	private String defaultFromEmailAddressForProd;	
 	
+	@Value("${env}")
+	private String environment;
+	 
 	@Autowired
 	JobSchedulerTestService jobSchedulerTestService;
 	
@@ -475,55 +478,58 @@ public class EMailJobScheduler {
 	 * @Reason as this schedule job is blocking IPAddress in QA server, and anyhow we aren't using this functionality.
 	 *  	   So, commented for now. If needed will open later
 	 **/
-    /*@Scheduled(cron = "0 0/30 * 1/1 * ?") // Scheduled for every 30 Minutes.
-	@Async
-	public void runJobSchedulerEmailJobParsingAtOrgLevel() { // reads the email configured at org level and parse the
-																// Jobs(attachments)in inbox folder.
-		// Saves the resumes at org level specific folder and updates the org level
-		// candidates table with parsed information.
-		logger.info("******************  Parsing resumes is Started each org level ! **********");
-		//System.out.println("****************** Parsing resumes is Started..!..! **********");
-		try {
-			List<Org> orgList = orgService.getOrgs();
-			User user = null;
-			for (Org org : orgList) {
-				List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+	//@Scheduled(cron = "0/30 * * * * *")// Scheduled for every 30 seconds for testing need to comment after testing.
+		@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every 15 Minutes.
+		@Async
+		public void runJobSchedulerEmailJobParsingAtOrgLevel() { // reads the email configured at org level and parse the
+																	// Jobs(attachments)in inbox folder.
+			// Saves the resumes at org level specific folder and updates the org level
+			// candidates table with parsed information.
+			logger.info("******************  Parsing resumes is Started each org level environment value is ::: "+environment);
+			System.out.println("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
+			if(environment != null && !environment.trim().equalsIgnoreCase("local")) {
+			try {
+				List<Org> orgList = orgService.getOrgs();
+				User user = null;
+				for (Org org : orgList) {
+					List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
 
-				for (OrgLocations orgLoc : orgLocations) {
-					user = orgLoc.getUser();
+					for (OrgLocations orgLoc : orgLocations) {
+						user = orgLoc.getUser();
 
-					OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLoc.getId());
+						OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLoc.getId());
 
-					Long orgLocationId = loginOrgLocation.getId();
-					List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.JOB_PARSING);
-						File tempfolder = null;
-					for(EmailScenarioConfiguration email :  emailsList) {
-						//System.out.println(" Email id is :" + email.getEmailId());
-						logger.debug("*********** Email id is :" + email.getEmailId());
-						tempfolder = new File(staticPath+ System.getProperty("file.separator") +"tempResumes" );
-						if (!tempfolder.exists()) tempfolder.mkdirs(); // if not exist create the folder with path.
-						 new ReadEmail().readEMailAttachments(orgLocationId, email, tempfolder);  //downloads the attachments from the configured email by user level to temp folder.
-					
-					
-						 List<File> fileList = Arrays.asList(tempfolder.listFiles());
-					
-	                    if(fileList.size() > 0) { // if no email attachment found skip the parsing.
-						List<FileInfo> fileInfoList = commonUtil.getListOfFileInfo(fileList, "resumes",	loginOrgLocation.getOrg().getId(), orgLocationId);
-						FileUploadUtil.processConfiguredEmailShedulerForResumesParsing(fileInfoList, staticPath, sourceleadResumeParser, candidateService,
-								                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user);
-	                    }
+						Long orgLocationId = loginOrgLocation.getId();
+						List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.RESUME_PARSING, true);
+							File tempfolder = null;
+						for(EmailScenarioConfiguration email :  emailsList) {
+							//System.out.println(" Email id is :" + email.getEmailId());
+							logger.debug("*********** Email id is :" + email.getEmailId());
+							tempfolder = new File(staticPath+ System.getProperty("file.separator") +"tempResumes" );
+							if (!tempfolder.exists()) tempfolder.mkdirs(); // if not exist create the folder with path.
+							 new ReadEmail().readEMailAttachments(orgLocationId, email, tempfolder);  //downloads the attachments from the configured email by user level to temp folder.
+						
+						
+							 List<File> fileList = Arrays.asList(tempfolder.listFiles());
+						
+		                    if(fileList.size() > 0) { // if no email attachment found skip the parsing.
+							List<FileInfo> fileInfoList = commonUtil.getListOfFileInfo(fileList, "resumes",	loginOrgLocation.getOrg().getId(), orgLocationId);
+							FileUploadUtil.processConfiguredEmailShedulerForResumesParsing(fileInfoList, staticPath, sourceleadResumeParser, candidateService,
+									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user);
+		                    }
+						}
 					}
+
 				}
+				logger.debug("******************  parsing resume Jobs on org locations Completed **********************");
+				//System.out.println("=========== parsing resume Jobs on org locations Completed =======================");
 
+			} catch (Exception e) {
+				logger.error("*****************Exception caught while Job parsing shceduler *************"+e.getMessage());
+				e.printStackTrace();
 			}
-			logger.debug("******************  parsing resume Jobs on org locations Completed **********************");
-			//System.out.println("=========== parsing resume Jobs on org locations Completed =======================");
-
-		} catch (Exception e) {
-			logger.error("*****************Exception caught while Job parsing shceduler *************"+e.getMessage());
-			e.printStackTrace();
+	       }
 		}
-	}*/
 	
    @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
    //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
