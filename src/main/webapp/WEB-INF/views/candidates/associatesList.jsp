@@ -30,7 +30,7 @@
   }
 </script>
 
- <jsp:include page="candidatesProfile.jsp"></jsp:include>
+<jsp:include page="candidatesProfile.jsp"></jsp:include>
 <jsp:include page="candidatesResumes.jsp"></jsp:include>
 <jsp:include page="candidatesExperience.jsp"></jsp:include>
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
@@ -63,15 +63,13 @@ name2Flag = true;
 	 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
 };
 </script>
-
-<style type="text/css">
-.candidate_wrap_table table tr td:first-child {
-    padding: 0;
-    text-align: center;
-    width: 200px;
-    padding-right: 5px;
-}
-</style>
+<script>
+$(document).ready(function() {
+	$(".candidate_wrap_table table tr td:first-child").css({
+	"padding":"0", "text-align":"center", "width":"200px", "padding-right":"5px"
+	});
+});
+</script>
 <script type="text/javascript" src="/resources/js/candidateTable.js"></script>
 <%-- 
      @author : Laxman.

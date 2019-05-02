@@ -589,6 +589,9 @@ public class Constants {
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
 	
+	public static final String DEFAULT = "Default";
+	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
+	
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title",
@@ -1119,6 +1122,7 @@ public class Constants {
 	public static final String CANDIDATE_REJECT_REQUEST_DOCUMENTS = "rejected documents";
 	public static final String CANDIDATE_TAG_ADDED = "added tag";
 	public static final String CANDIDATE_TAG_REMOVED = "removed tag";
+	
 	
 	public static final String EXPENSES = "expenses";
 	public static final String VIEW_TYPE = "LISTVIEW"; 

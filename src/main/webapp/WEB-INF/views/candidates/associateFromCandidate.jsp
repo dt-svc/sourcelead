@@ -24,15 +24,6 @@
 			document.getElementById("candidate_form").reset();
 		});
 	</script>
-	 
- <style>
-	 #associateResumeDivId{
-	 display: none;
-	 }
- 
- 
- </style>
-
 <!-- Content Area -->
 <section class="content-wraper">
   <section class="content-header clearfix">

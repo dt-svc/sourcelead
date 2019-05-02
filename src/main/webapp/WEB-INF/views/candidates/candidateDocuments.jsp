@@ -5,18 +5,6 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<style>
-.addUser-org {
-    overflow-x: auto;
-}
-.validation_p p.jquery_form_error_message {
-bottom:-25px !important;
-}
-.settPop .form-control {
-height: auto !important;
-}
-</style>
 <%-- 
      @author : prasadK.
      this script is for display candidate education tab data.
@@ -461,7 +449,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result + '</div>'; 
 	
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
-	result = result+'<div class="col-md-12 validation_p">';
+	result = result+'<div class="col-md-12">';
 	result = result+'<div class="input-group" id="uploadFileGroup">';
 	result = result+'<label class="input-group-btn" onchange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file"  id="uploadBtn" style="display: none;"  multiple="" class="upload">';
