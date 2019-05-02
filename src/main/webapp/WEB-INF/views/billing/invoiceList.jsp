@@ -615,7 +615,7 @@ function invoicePagination(url){
 	    	  	    
 	    	  	  if(report.invoiceStatus == "Rejected" && report.invoiceParentId != null){
 						'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>';				
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>';				
 						'</sec:authorize>' ;
 					}
 	    	  	  else if(report.invoiceStatus == "DRAFT" || (report.invoiceStatus == "Rejected" && report.invoiceParentId == null)){
@@ -625,11 +625,11 @@ function invoicePagination(url){
 					}
 	    	  	  else if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
 						'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>';				
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>';				
 						'</sec:authorize>' ;
 					}else{
 						'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>';				
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable" title="'+report.invoiceId+'">'+report.invoiceId+'</a></div>';				
 						'</sec:authorize>' ;
 					}
 					result = result +'         </td>  ';  
@@ -864,16 +864,17 @@ function showPopUp(id,invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,file
 
 <div id="popUp"></div>
 <script>
+
+
+
 function saveReasonforReceivable(invoiceUUID){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var reason = document.getElementById("reasonForDelete").value;
-	if(reason == null || reason == '' || reason == 'undefined'){
-	      
-		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
-	  	  $("#reasonForRejectDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-	  	  
-		}else{
-		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
+	if(reason != null && reason != ''){
+		 $("#reasonForRejectDiv").empty();
+		if(reason.length > 250){
+		$("#reasonForRejectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
+		}else{	
 		$.ajax({
 		   	type: "POST",
 		   	url: vmsUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&reason="+reason,	    	   
@@ -895,7 +896,9 @@ function saveReasonforReceivable(invoiceUUID){
 		    }
 	   });
 	}
-	  
+	}else{
+		$("#reasonForRejectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
 }
 </script>
 <script>
