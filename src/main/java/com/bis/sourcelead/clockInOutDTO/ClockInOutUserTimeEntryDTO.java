@@ -35,6 +35,14 @@ public class ClockInOutUserTimeEntryDTO {
 	private String type;
 	
 	private List<ClockInOutSubDTO> subList;
+	
+	private Time currentTotTime;
+	
+	private Time weekTotTime;
+	
+	private Time monthTotTime;
+	
+	private Time yearTotTime;
 
 	public Time getClockInTime() {
 		return clockInTime;
@@ -164,7 +172,37 @@ public class ClockInOutUserTimeEntryDTO {
 		this.type = type;
 	}
 
+	public Time getCurrentTotTime() {
+		return currentTotTime;
+	}
 
+	public void setCurrentTotTime(Time currentTotTime) {
+		this.currentTotTime = currentTotTime;
+	}
+
+	public Time getWeekTotTime() {
+		return weekTotTime;
+	}
+
+	public void setWeekTotTime(Time weekTotTime) {
+		this.weekTotTime = weekTotTime;
+	}
+
+	public Time getMonthTotTime() {
+		return monthTotTime;
+	}
+
+	public void setMonthTotTime(Time monthTotTime) {
+		this.monthTotTime = monthTotTime;
+	}
+
+	public Time getYearTotTime() {
+		return yearTotTime;
+	}
+
+	public void setYearTotTime(Time yearTotTime) {
+		this.yearTotTime = yearTotTime;
+	}
 
 	
 }

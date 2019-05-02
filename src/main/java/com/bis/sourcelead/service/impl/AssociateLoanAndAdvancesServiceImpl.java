@@ -140,7 +140,8 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 			}else {
 				loanAndAdv.setDescription(null);
 			}
-			
+			loanAndAdv.setOutstandingAmount(associateLoanAndAdvancesDTO.getOutstandingAmount());
+			loanAndAdv.setRateOfInterest(associateLoanAndAdvancesDTO.getRateOfInterest());
 			
 			loanAndAdv.setStatus(Constants.RECORD_ACTIVE);
 			loanAndAdv.setUpdatedDate(new Date());
@@ -212,7 +213,7 @@ public class AssociateLoanAndAdvancesServiceImpl implements AssociateLoanAndAdva
 			loanAndAdvDTO.setLoanAndAdvStatus(loanAndAdv.getLoanAndAdvanceStatus());
 			loanAndAdvDTO.setLoanAmount(String.valueOf(loanAndAdv.getAmount()));
 			loanAndAdvDTO.setScheduler(loanAndAdv.getScheduler());
-			loanAndAdvDTO.setId(loanAndAdv.getId());
+//			loanAndAdvDTO.setId(loanAndAdv.getId());
 			if(loanAndAdv.getEffectiveDate() != null) {
 				loanAndAdvDTO.setEffectiveDate(dateFormat.format(loanAndAdv.getEffectiveDate()));
 			}

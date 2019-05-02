@@ -61,7 +61,7 @@
 							<input type="text" name="type" value="${payrollPayhead.type}" style="display: none;">
 						</c:if>
 						<c:if test="${empty payrollPayhead || payrollPayhead.type == ''}">
-							<select class="form-control chosen-select" id="type" name="type" field-name="Type" data-validation="required" ${!empty payrollPayhead && !empty payrollPayhead.type  ? 'disabled' :''}>
+							<select class="form-control chosen-select" id="type" name="type" field-name="Type" data-validation="required" ${!empty payrollPayhead && !empty payrollPayhead.type  ? 'disabled' :''} onchange = "unCheck(this.value);">
 								<option value="Earnings" ${payrollPayhead.type  == 'Earnings'  ? 'selected' :''}>Earning</option>
 								<option value="Deduction" ${payrollPayhead.type  == 'Deduction'  ? 'selected' :''}>Deduction</option>
 							</select>
@@ -221,6 +221,12 @@
 							<input id="esiApplicable" class="checkbox-custom" name="esiApplicable"
 								type="checkbox" ${payrollPayhead.esiApplicable  == 'Y' ? "checked" : ''} value="Y"> <label for="esiApplicable"
 								class="checkbox-custom-label"><span class="ml10">ESI Applicable</span></label>
+						</div>
+					<div class="checkbox-new pull-left">
+							<input id="ptApplicable" class="checkbox-custom" name="ptApplicable"
+								type="checkbox" ${payrollPayhead != null ? payrollPayhead.ptApplicable  == 'Y' ? "checked" : '' : "checked"} value="Y"> <label for="ptApplicable"
+								class="checkbox-custom-label"><span class="ml10">PT Applicable
+									</span></label>
 						</div>
 					</div>
 				</div>
@@ -652,6 +658,13 @@ function addPaytypeFun() {
 function closePaytypeFun() {
 	$(".addPaytype, .comMask").hide();
 }
+function unCheck(a)
+{
+	if(a == "Deduction")
+		$('#ptApplicable')[0].checked = false
+	else
+		$('#ptApplicable')[0].checked = true	}
+
 </script>
 
 	<jsp:include page="../masterFooter.jsp" />
