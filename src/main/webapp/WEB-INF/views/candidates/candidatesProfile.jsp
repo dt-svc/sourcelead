@@ -349,10 +349,12 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10" id="errPanNoDiv">';
 							result = result + '<div class="col-md-6 custom-fields">';
 							result = result + '<input class="form-control" id="panNumber" name="panNumber" value="'+panNumber+'" placeholder="Pan Number" type="text" onblur="validatePanNumber();" field-name="Pan Number" data-validation="validate_Space validate_panNumber"data-validation-optional="true" ></input>';
+							result = result + '<input type="hidden" id="tempPanNumber" value="'+json.panNumber+'" />';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields" id="errAadharNoDiv">';
 							result = result + '<input class="form-control" id="aadharNumber" name="aadharNumber" value="'+aadharNumber+'" placeholder="Aadhar Number" type="text" onblur="validateAadharNumber();" field-name="Aadhar Number" data-validation="validate_Space validate_aadharNumber"data-validation-optional="true"></input>';
+							result = result + '<input type="hidden" id="tempAadharNumber" value="'+json.aadharNumber+'" />';
 							result = result + '</div>';
 							result = result + '</div>';
               		        }
@@ -362,6 +364,7 @@ function editCandidate(candidateId){
 								result = result + '<div class="clearfix mb10" id="errSsnNoDiv">';
 								result = result + '<div class="col-md-6 custom-fields">';
 								result = result + '<input class="form-control" id="ssnNumber" name="ssnNumber" value="'+ssnNumber+'" onblur="validateSsnNumberDuplicateChek();" placeholder="000-00-0000" type="text"></input>';
+								result = result + '<input type="hidden" id="tempSsnNumber" value="'+json.ssnNumber+'" />';
 								result = result + '</div>';
 								result = result + '</div>';
 	              		        }
@@ -2167,26 +2170,30 @@ function showSuccessStatusPopup(status) {
   <script type="text/javascript">
 function validatePanNumber() {
     var panNumber = document.getElementById("panNumber").value;
+    var tempPanNumber = $('#tempPanNumber').val(); 
+	 if(tempPanNumber != panNumber){
+		 $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+		 $("#update_candidate").removeAttr("disabled");
 	if(panNumber != "" && panNumber != null && panNumber != "undefined"){
-	  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+	 
 		 $.ajax({
 		    	type: "GET",
 		    	 url:sourceleadUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
 		        success: function(data) {
-		        	
 		        	if(data == true){
 		        		  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
 		        		  $("input#panNumber").after("<p class='jquery_form_error_message'>"+panNumber+" is Already Existed</span>");
-						  $("#store_candidate").attr('disabled','disabled');
+						  $("#update_candidate").attr('disabled','disabled');
 		        	}
 		        	else{
 		        		 $('input#panNumber').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#errPanNoDiv').find('p.jquery_form_error_message').remove(); 
-                        $("#store_candidate").removeAttr("disabled");
+                        $("#update_candidate").removeAttr("disabled");
 		        	}
 		        }
 		    });
      }
+}
 };
 </script>
 
@@ -2194,9 +2201,14 @@ function validatePanNumber() {
 function validateAadharNumber() {
 	
 	  var aadharNumber = document.getElementById("aadharNumber").value;
+	  
+	  var tempAadharNumber = $('#tempAadharNumber').val(); 
+	if(tempAadharNumber != aadharNumber){
+			 $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
+			 $("#update_candidate").removeAttr("disabled");
+	 
 	  if(aadharNumber != "" && aadharNumber != null && aadharNumber != "undefined"){
 		  
-	  $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
 		    	 url:sourceleadUrl+"/validateAadharNumber?"+tokenParamName+"="+tokenValue+"&aadharNumber="+aadharNumber, 
@@ -2204,16 +2216,18 @@ function validateAadharNumber() {
 		        	if(data == true){
 		        		  $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
 		        		  $("input#aadharNumber").after("<p class='jquery_form_error_message'>"+aadharNumber+" is Already Existed</span>");
-						  $("#store_candidate").attr('disabled','disabled');
+						  $("#update_candidate").attr('disabled','disabled');
 		        	}
 		        	else{
 		        		 $('input#aadharNumber').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#errAadharNoDiv').find('p.jquery_form_error_message').remove(); 
-                        $("#store_candidate").removeAttr("disabled");
+                        $("#update_candidate").removeAttr("disabled");
 		        	}
 		        }
 		    });
 	  }
+	  
+	}
 };
 </script>
 
@@ -2221,8 +2235,13 @@ function validateAadharNumber() {
 function validateSsnNumberDuplicateChek() {
 	
 	  var ssnNumber = document.getElementById("ssnNumber").value;
+	  
+	  var tempSsnNumber = $('#tempSsnNumber').val(); 
+		if(tempSsnNumber != ssnNumber){
+			 $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
+			 $("#update_candidate").removeAttr("disabled");
+	  
 	  if(ssnNumber != "" && ssnNumber != null && ssnNumber != "undefined"){
-	  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
 		    	 url:sourceleadUrl+"/validateSsnNumber?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber, 
@@ -2230,16 +2249,17 @@ function validateSsnNumberDuplicateChek() {
 		        	if(data == true){
 		        		  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
 		        		  $("input#ssnNumber").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
-						  $("#store_candidate").attr('disabled','disabled');
+						  $("#update_candidate").attr('disabled','disabled');
 		        	}
 		        	else{
 		        		 $('input#ssnNumber').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#errSsnNoDiv').find('p.jquery_form_error_message').remove(); 
-                        $("#store_candidate").removeAttr("disabled");
+                        $("#update_candidate").removeAttr("disabled");
 		        	}
 		        }
 		    });
 	  }
+	}
 };
 </script>
 

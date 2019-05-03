@@ -4,11 +4,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<style>
-#scheduleDateValidation {
-	padding: 0px 0px 0px 0px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500; text-align: center;
-}
-</style>
+
 <script type="text/javascript">
     var invoiceType = '${invoiceType}';
 $(document).ready(function(){

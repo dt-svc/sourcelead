@@ -16,7 +16,7 @@ $(document).ready(function(){
         <h2>Approval</h2>
       </div>
       <div class="pull-right brud-crum">
-                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;
+                <a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;  <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo;
                 <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
                 	<a href="<c:url value='${appPath}/indPayrollConfiguration'/>"> Payroll Configuration</a>
                 </c:if>
