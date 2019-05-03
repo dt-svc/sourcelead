@@ -1789,30 +1789,13 @@ function vendorFileterPopUp(){
 }
 function resetVendorFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
-	getVendorList();
-	
 }
 
 
 function resetAdvSearchFilter(){
 	
-    $('#country').val('').trigger("chosen:updated"); 
-    $('#state').val('').trigger("chosen:updated");
-    $('#city').val('').trigger("chosen:updated");
-    
-    $("#tierAdvanced").val('').trigger("chosen:updated");
-    $("#ownerAdvanced").empty();
-	$("#ownerAdvanced").val('').trigger("chosen:updated");
-    
-    $("#orgAdvanced").val('').trigger("chosen:updated");
-    $("#orgNameAdvanced").val('').trigger("chosen:updated");
-    $("#anyOfKeyword").val('').trigger("chosen:updated");
-    $("#allKeywords").val('').trigger("chosen:updated");
-    $("#excludeKeyWord").val('').trigger("chosen:updated");
-
-    $("#anyOfKeyword").empty();
-    $("#allKeywords").empty();
-    $("#excludeKeyWord").empty();
+    $("#dataTableSearch").val('');
+    clearSearch();
     getVendorList();
  
 }
@@ -1830,6 +1813,8 @@ function vendorContactFilterPopUp(){
 function resetVendorContactFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
+	 $("#dataTableSearch").val('');
+	clearSearch();
 	getVendorContactList();
 }
 </script>
