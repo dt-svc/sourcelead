@@ -1,136 +1,22 @@
-<html>
-<head>
-<meta charset="utf-8">
-<meta http-equiv="Pragma" content="private">
-<meta http-equiv="Cache-Control" content="private">
-<meta http-equiv="Expires" content="0">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
-<title>Welcome to Source Lead</title>
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/cropper.min.css" >
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css" />
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/chosen.min.css">
-<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-bundle.css" rel="stylesheet">
-<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-main.css" rel="stylesheet">
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css" type="text/css">
-<!--  scripts are added here  -->
-
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/masterHeaderAction.js"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-select.min.js"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/sourcelead-app.js"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.dataTables.min.js"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js"></script>
-<script  src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jobs/js/controls.js"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/cropper.min.js"></script> 
-<script src="${SourceLeadWeb_atsUrl}/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="${SourceLeadWeb_atsUrl}/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/slead-common.js"></script>
-<script src="${SourceLeadWeb_atsUrl}/resources/js/requirement.js"></script>
-<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
-
-<style>
-.pac-container {
-z-index: 1000000000 !important;
-}
-.pac-container::after {
-display:none;
-}
-
-.varsCheckbox .checkbox label, .varsCheckbox .radio label {
-	padding-left: 0 !important;
-}
-.varsCheckbox .checkbox input[type=checkbox] {
-    margin-left: 0 !important;
-}
-.varsCheckboxDynamic .checkbox input[type=checkbox] {
-    margin-left: 0 !important;
-}
-</style>
-</head>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%-- 
-     @author : Srinivas Sabbu.<!
+     @author : David Raju.
      this script is to get filter popup
      1.usage     : onclick on requirementList() ; 
      
 --%>
-<script>
-var  tabAccessArray = '${SourceLeadWeb_tabsList}';
-var roleActionsArray = '${SourceLeadWeb_actionsList}';
-
-var sourceleadUrl ='${sourceleadUrl}';
-var atsUrl = '${SourceLeadWeb_atsUrl}';
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-var vmsUrl ='${SourceLeadWeb_vmsUrl}';
-
-var locationList = '${SourceLeadWeb_dateFormat}';
-//reruirement list variables.
-var orgATS = '${SourceLeadWeb_ats}';
-var orgVMS = '${SourceLeadWeb_vms}';
-var userRoleName = '${SourceLeadWeb_loginUserRole}';
-var userId =  '${SourceLeadWeb_userId}';
-var reqCoolingOffPeriod ='${requirement.reqCoolingOffPeriod}';
-var orgLocationId  = '${SourceLeadWeb_orgLocationId}';
-var country = '${SourceLeadWeb_country}';
-var loginUser = '${SourceLeadWeb_loginUserFullName}';
-var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-var userImgUrl =  '${SourceLeadWeb_userImgUrl}'; 
-var tokenParamName = "${_csrf.parameterName}";
-var tokenValue = "${_csrf.token}";
-//
-
-var viewTab = "${viewTab}";
-var searchValue = "${searchValue}"
-var universalRequirementList = "${universalRequirementList}";
-
-	(function($) {
-		$.fn.serializeFormJSON = function() {
-			var o = {};
-			var a = this.serializeArray();
-			$.each(a, function() {
-				if (o[this.name]) {
-					if (!o[this.name].push) {
-						o[this.name] = [ o[this.name] ];
-					}
-					o[this.name].push(this.value || '');
-				} else {
-					o[this.name] = this.value || '';
-				}
-			});
-			return o;
-		};
-	})(jQuery);
-</script>
-	  <script type="text/javascript">
-	        var validationSettings = {
-	            errorMessagePosition : 'element',
-	            borderColorOnError : '',
-				scrollToTopOnError : true,
-				dateFormat : 'yyyy/mm/dd' 
-	            };
-	        
-	        var config = {
-	      		  '.chosen-select'           : {},
-	      		  '.chosen-select-deselect'  : {allow_single_deselect:true},
-	      		  '.chosen-select-no-single' : {disable_search_threshold:10},
-	      		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-	      		  '.chosen-select-width'     : {width:"95%"}
-	      		}
-	</script> 
  <script type="text/javascript">
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
  var hideColumns = [];
  var table = "";
- var advnSearchPopEle="";
- var advnFilterPopEle="";
  $(document).ready(function () {
-	 advnSearchPopEle= $("#requirement_form");
-	 advnFilterPopEle =$("#requirementFilterPopup");
-	 $('body').load(atsUrl+"/resources/sourceleadHtmls/requirementListHtml.html");
      $('label.toggle-vis').on('click', function (e) {
          e.preventDefault();
          // Get the column API object
@@ -142,7 +28,10 @@ var universalRequirementList = "${universalRequirementList}";
 });
 </script>
 <script>
-// toggle events are not worked properly thats why kept in jsp.
+function clearList(){
+	location.reload();
+}
+
 function selectAllPriority(){
 	$("ul#priority > li input:checkbox").prop("checked",true);
 	requirementList('list','${SourceLeadWeb_atsUrl}');
@@ -167,38 +56,64 @@ function clearAllStatus(){
 	$("ul#status > li input:checkbox").prop("checked",false);
 	requirementList('list','${SourceLeadWeb_atsUrl}');
 }
-/* function getActions(){// // toggle events are not worked properly thats why kept in jsp.
-	$(".action-pop").slideToggle(200);
-	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop, #exportPopJobFair").slideUp(200);
-	
-	$("html").click(function(){
-		$(".action-pop").slideUp(200);
-	});
-	$(".action, .action-pop").click(function(e){
-	 	e.stopPropagation();
- 	});	
-} */
-/* function newActions(){
-	$(".newActPop").slideToggle(200);
-	$(".action-pop").slideUp(200);
-}
- $("html").click(function(){
-	$(".newActPop").slideUp(200);
-}); 
-$(".overIcon, .newActPop").click(function(e){
- 	e.stopPropagation();
-});	 */
+
 </script>
 <script>
 $(document).ready(function() {
 	getcites('apiLocation','city','recommendation');
 });
 </script>
+
+
+<style>
+
+.clsDatePicker {
+	z-index: 100000 !important;
+}
+.side-bar .side-nav ul li span {
+	display: inline-block;
+	float: none;
+}
+
+.project_wrap_table span {
+	display: inline;
+}
+
+.timesheet_out {
+	overflow-x: auto;
+	background: #f5f5f5;
+	box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+	top: -45px;
+}
+
+.vendor_wrap {
+	box-shadow: none;
+}
+
+.require_wrap_table {
+	overflow: inherit;
+	min-height: 175px;
+}
+
+.require_wrap_table select {
+	width: 100% !important;
+}
+.ref-top{
+top: 18px;height: 32px; line-height: 18px;
+}
+</style>
 <script>
  window.onload = function() {
-	
+	 var viewTab = "${viewTab}";
+		if(viewTab === 'jobFair') {
+			/* alert("viewTab : " + viewTab); */
+			jobFairListCheck();
+		} else {
+ 			requirementListCheck("${searchValue}","${universalRequirementList}","universalSearch",'${SourceLeadWeb_atsUrl}');
+		}
 };
 </script>
+
 <script>
 function statusvalidating(id){
 	changeStatusAuthorisation(id);
@@ -224,477 +139,20 @@ function statusvalidating(id){
 		        },
 		    }); 
    }
-/*  $(function() { // updated need to check working properly or not  
-	       //Adding Customized Job Title list this method is slead-common.js
-		   tagIt("requirementTitle", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
-	       
-		   //Adding Customized Job Id list this method is slead-common.js
-		   tagIt("jobId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Requirement ID:', 'tagItBykeyForSkills','skills','Job Id');
-		   
-		 //Adding Customized Job Id list this method is slead-common.js
-		   tagIt("generatedId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Generated ID:', 'tagItBykeyForSkills','skills','Generated ID');
-		 
-		 //Adding Customized Job Skills list this method is slead-common.js
-		   tagIt("requirementSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
-
-		   tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
-
-		   
-});
-  */
- 
    </script>
-<script type="text/javascript">
-		     /*  $("#country").on('change', function (e) {
-		    	  getcites('apiLocation','city','recommendation');
-		    	  $("#apiLocation").val('');
-		    	  $("#city").val('').trigger("chosen:updated");
-		       });  */
-				 for (var selector in config) {
-				  $(selector).chosen(config[selector]);
-				}
-				$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				}) 
-				
-</script>
-<script>
-$(document.body).on('change', '#uploadBtn' ,function(){
-	 $('#uploadFile').val(this.value.split( '\\' ).pop());
-	 $("#uploadFile").focus();
-	 if(validate_fileupload(this.value)){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		var form = $('#addApplicant_form')[0];
- 		var formData = new FormData(form); 
-		   $.ajax({
-				    type: "POST",
-			    	data: formData,
-		   	        contentType : 'application/json; charset=utf-8',
-		   	        enctype: 'multipart/form-data',
-			        processData: false,
-			        contentType:false,
-		   	        dataType : 'json',
-					url : atsUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
-					success : function(response) {
-						if (response.response === "AWKWARD") {
-						    location.href = "/errorPage";
-						} else if (response.response === "SUCCESS") {
-							if(response.object !== null) {
-								var json = response.object;
-								var name = json.name;
-								var firstName = '';
-								var lastName = '';
-								if(name != null && name != 'undefined' && name != ''){
-									 firstName = name.split(".")[0]; 
-									 lastName = name.split(".")[1]; 
-									 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-											 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-										 firstName = name;
-									 }
-								}
-								
-								 $("input[name=FirstName]").val(firstName);
-					        	 $("input[name=LastName]").val(lastName);
-					        	 $("input[name=EmailId]").val(json.email);
-					        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
-					        	 
-					        	 $("#candidateSkills").empty();
-					        	 var internalOutput = "";
-		 						 <c:forEach var="skill" items="${skillList}">
-		 						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-		 	                     </c:forEach>
-		 						var skills = json.skills;
-		 						if(skills != null && skills != 'undefined' && skills != ''){
-		 							var str_array = skills.split(',');
-		 							for(var i = 0; i < str_array.length; i++) {
-		 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-		 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-		 							}
-		 						}
-		 						$("#candidateSkills").append(internalOutput);
-		 		        		$("#candidateSkills").trigger("chosen:updated");
-		  						
-								 validateSubmissionCandidateEmail();
-								 getUserByUserEmail();
-							} else {
-								showError("Resume Parsing Failed");	
-							}
-							$("#loading").removeAttr("style");
-						} else if (response.indexOf('Sign In') !== -1) {
-							location.replace(sourceleadUrl);
-						} else {
-						    showError("Operation failed, please try again");
-						}
-					},
-				});
-	 }
-});
-</script>
-<script>
+   
+<div class='project_inn_mask'></div>
 
-//inlcuded in jsp due to jstl tags inclusion.
-//inlcuded in jsp due to jstl tags inclusion.
-function getTeamsList(reqId){
-	  $.ajax({
-         type : "POST",
-         url: atsUrl+"/getTeamsList?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
-          success :function(result) {
-          	var json = result.object;
-          	if (result.response === "SESSION_TIMEDOUT") {
-	  				location.replace(sourceleadUrl);
-              } else if (result.response === "AWKWARD") {
-                  location.href = "/errorPage";
-              } else if (result.response === "SUCCESS") {
-					var output = "";
-				  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_TEAM\')">';
-				  if(json.teams.length > 0){
-					  output = output + "<optgroup label='Teams'>";
-					  for (var i = 0; i < json.teams.length; i++) {
-							var opt = json.teams[i];
-							if('Y' == opt.isTeamAssigned){
-								output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected >"+ opt.name + "</option>";
-							}else if($.inArray(''+opt.id, teamRoleIds) > -1){
-								output = output + "<option name='TeamAndRole' value='"+opt.id+"' selected>"+ opt.name + "</option>";	
-						    }else{
-								output = output + "<option name='TeamAndRole' value='"+opt.id+"'>"+ opt.name + "</option>";	
-							}
-						}
-					  output = output + "</optgroup>";
-				  }
-				  '</sec:authorize>';
-	
-				  if(json.roles.length > 0){
-					  output = output + "<optgroup label='Roles'>"; 
-						for (var i = 0; i < json.roles.length; i++) {
-							var opt = json.roles[i];
-							if('Y' == opt.isRoleAssigned){
-								output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected >"+ opt.displayName + "</option>";
-							}else if($.inArray(''+opt.id+'role', teamRoleIds) > -1){
-								output = output + "<option name='TeamAndRole' value='"+opt.id+"role' selected>"+ opt.displayName + "</option>";
-							}else{
-								output = output + "<option name='TeamAndRole' value='"+opt.id+"role'>"+ opt.displayName + "</option>";	
-							}
-						}
-						output = output + "</optgroup>";
-				  }
-					$("#teamSelectionCategory").empty();
-				    $("#teamSelectionCategory").append(output);
-				    $("#teamSelectionCategory").selectpicker("refresh");
-              } else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
-				} else {
-                  showError("Operation failed, please try again");
-              }
-          },
-          complete: function (result) {
-          	var teamType = $("#teamSelectionCategory").val();
-        		getUserList(teamType);
-          }
-          
-    }); 
-}
-// inlcuded in jsp due to jstl tags inclusion.
-function getAddApplicant(requirementId,reqCoolingOffPeriod){
-	$('.action-pop').slideUp();
-	var locationDate ='${SourceLeadWeb_dateFormat}'; 
-	  var finalDateFormatScript = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatScript = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatScript = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatScript = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatScript = 'yy-dd-mm'; 
-	  }
-	generateOrgSubmissionForm(atsUrl,requirementId,finalDateFormatScript)
-	var result = "";
-	result = result + '<form id="addApplicant_form" name="addApplicant_form" enctype="multipart/form-data" method="post">';
-	result = result + '<h3>Add Applicant</h3>';
-	result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
-	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
-	result = result + '<input type="hidden" id="reqCoolingOffPeriod" name="reqCoolingOffPeriod" value=\''+reqCoolingOffPeriod+'\'>';
-	
-	result = result + '<div class="row">';
-	result = result + '<div class="venk clearfix">';
-	result = result + '<div class="col-md-7 radioInline">';
-	result = result + '<label class="mr"><input type="radio" checked="checked" value="N" name="candidateType" onClick="getCandidatesList('+requirementId+',\'N\');">Candidates</label>';
-	
-	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
-	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
-	result = result + '</div>';	
-	
-	result = result + '<div class="col-md-5 pull-right">';
-	result = result + '<div class="col-md-12" id="browseDiv"  style="display: none;">';
-	result = result + '<div class="input-group" id="uploadFileGroup">';
-	result = result + '<label class="input-group-btn"  onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result + '<input type="file" style="display: none;" name="locationMapFile" multiple id="uploadBtn"  class="upload">';
-	result = result + '</span> </label>';
-	result = result + '<input type="text" class="form-control" data-validation="validatedoc" data-validation-optional="true" field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
-	result = result + '</div>';
-	result = result + '</div>';	
-	result = result + '</div>';
-	
-	result = result + '<div class="clearfix"></div>';
-	result = result + '<div class="col-md-6 mt10">';
-	result = result + '<div id="selectCandidateDiv" style="display: block;">';
-	result = result + '<select class="form-control chosen-select" onchange="getCandidateDetails(); getCandidateResumes();"  name="candidateId" id="candidateId" data-validation="required" field-name="Applicant" class="form-control  block mt10">';
-	result = result + '<option value="">-- Select Candidate --</option>';
-	result = result + '</select>';
-	result = result + '</div>';	
-	result = result + '</div>';	
-	
-	result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv"  style="display: none;">';
-	result = result + '<select id="candidateResumesList" name="candidateResume" data-validation-optional="true" field-name="Resume" class="form-control block">';
-	result = result + '</select>';
-	result = result + '</div>';
-	
-	result = result + '<div id="orConditionDiv" class="text-center text-info col-md-2" style="display: none;">';
-	result = result + '------- ( OR ) -------';
-	result = result + '</div>';
-	
-	
-	
-	
-	result = result + '</div>';
-	
-	result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div> <div id="emailDiv"></div>';
-	
-	result = result + '</div>';
-	
-                        
-	result = result + '</div>';
-	
-	
-	result = result + '<div class="row">';
-    result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Skills</label>';
-	result = result + '<div class="col-md-8">';
-	result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
-	result = result + '<c:forEach var="skill" items="${skillList}">';
-	result = result + "<option value='${skill.name}'>${skill.name}</option>";
-	result = result + ' </c:forEach>';
-	result = result + '</select>';
-	result = result + '		 </div>';
-	result = result + '	 </div>';
-	result = result + '	 </div>';
-	
-	result = result + '<div class="row">';
-    result = result + '	<div class="col-md-6 upresume mb" id="primarySkillDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Primary Skill</label>';
-	result = result + '<div class="col-md-8">';
-	result = result + '<input type="text" class="form-control" id="primarySkill" name="primarySkill"  field-name="Primary Skill">';
-	result = result + '</div>';
-	result = result + '</div>';
-	result = result + '</div>'; 
-	
-	result = result + '<div class="row">';
-    result = result + '	<div class="col-md-6 upresume mb" id="employmentTypeDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Employment<br/> Type<span class="paddingLeft">*</span></label>';
-	result = result + '<div class="col-md-8">';
-	result = result + '<select class="form-control" id="designationType" name="designationType" onchange="getEmployementType();" field-name="Employment Type">';
-	result = result + '<option value="">--Select Employment Type--</option>';
-	result = result + '</select>';
-	result = result + '</div>';
-	result = result + '</div>';
-	result = result + '</div>'; 
-	
-	
-    result = result + '<div class="row">';
-    result = result + '	<div class="col-md-6 upresume mb" id="employmentOtherTypeDiv" style="display: none;">';
-    result = result + '<label class="col-md-4"></label>';
-    result = result + '<div class="col-md-8">';
-	result = result + '<input type="text" class="form-control" placeholder="Employment Other Type" id="designationOtherType" name="designationOtherType" field-name="Employment Other Type" >';
-	result = result + '</div>';
-	result = result + '</div>';
-	result = result + '</div>'; 
-	
-	
-    result = result + '<div class="row">';
-    result = result + '	<div class="col-md-6 upresume mb" id="vendorsDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Vendors</label>';
-	result = result + '<div class="col-md-8">';
-	result = result + '<select class="chosen-select form-control" id="vendors" name="vendors" data-validation-optional="true"  onchange="getAddApplicantVendorContactList();" field-name="Vendors">';
-	result = result + '</select>';
-	result = result + '</div>';
-	result = result + '</div>';
-	result = result + '</div>';
-	
-	
-	result = result + '<div class="row">';
-    result = result + '	<div class="col-md-6 upresume mb" id="vendorContactsDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Vendor Contacts</label>';
-	result = result + '<div class="col-md-8">';
-	result = result + '<select class="chosen-select form-control" id="vendorContact" data-validation-optional="true"  name="vendorContact"  field-name="vendor Contacts">';
-	result = result + '<option value="">--Select Vendor Contacts--</option>';
-	result = result + '</select>';
-	result = result + '</div>';
-	result = result + '</div>';
-	result = result + '</div>'; 
-	
-	
-	result = result + '<div class="row">';
-	result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Add Resume</label>';
-	result = result + '		<div class="col-md-8">';
-	result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
-	result = result + '			        <label class="input-group-btn" onchange="uploadAddApplicantCandidateDoc();"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
-	result = result + '                   <input type="file" style="display: none;" name="newUploadBtn" id="newUploadBtn"  class="upload">';
-	result = result + '			          </span> </label>';
-	result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation-optional="true" data-validation="validatedoc "  >';
-	result = result + '			    </div>';
-	result = result + '		 </div>';
-	result = result + '	 </div>';
-	
-	
-	result = result + '	<div class="col-md-6 upresume mb">';
-	result = result + '<label class="col-md-4">&nbsp;</label>';
-	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<strong>Need applicant permission</strong><br> ';
-	result = result + '<input type="checkbox" name="notifyToApplicant" value="Y" id="notifyToApplicantId" onClick="NotifyToApplicant();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
-	result = result + '</div>';
-	result = result + '</div>';
-	
-	result = result + '<div class="form-footer clearfix mt">';
-	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="button" onclick="addApplicantForm();" id="save_button"  class="btn btn-sm btn-primary " >SUBMIT</button>';
-	result = result + '</div>';
-	result = result + '</div>';
-	result = result + '</div>';  
-	result = result + '</form>';
-	
-	
-	 
-	getCandidatesList(requirementId,'N');
-	
-	
-	$("#addApplicantDiv").empty();
-	$("#addApplicantDiv").append(result);
-	
-	   var config = {
-				  '.chosen-select'           : {},
-				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-				  '.chosen-select-no-single' : {disable_search_threshold:10},
-				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-				  '.chosen-select-width'     : {width:"95%"}
-				}
-	   
-	 //Adding Customized Skills to the list
-       var select, chosen;
-	    select = $("#candidateSkills");
-	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-	    chosen = select.data('chosen');
-	    
-	    $("#candidateSkills").chosen().change(function(event) {
-	    	var allSkills = $(event.target).val();
-	    	$.ajax({
-		    	type: "POST",
-		        url: atsUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
-		        success: function(response) {
-		        	if (response.response === "AWKWARD") {
-		        	    location.href = "/errorPage";
-		        	} else if (response.response === "SUCCESS") {
-		        		var primarySkill = response.object;
-			        	$("#primarySkill").val(primarySkill);
-		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
-		        	} else {
-		        	    showError("Operation failed, please try again");
-		        	}
-		        },
-		    });
-	    });
-	    chosen.search_field.on('keydown keyup', function(e)
-			    {
-			    	   var skillsArray = this.value.split(",");
-				    	 if(skillsArray.length > 1){
-			        		 for (var i=0; i < skillsArray.length; i++) {
-			        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-			        			 select.append(option);
-			 		             select.find(option).prop('selected', true);
-			 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-			 	        		 $("#candidateSkills").trigger("chosen:updated");
-			                 }
-				    	 }else{
-				    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
-			    			var newSkill = this.value.replace(","," ");
-			    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-			                 {
-			    				 preventTabkey(e);
-			                   // below code manually enter skills are taken
-			    				  
-			                   var isNewSkill = true;
-								 $("#candidateSkills option:selected").each(function(){
-									 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-										 isNewSkill = false;
-										 return false;
-									 }
-			                    
-			                   });
-								
-									if(focussedSkills.length > 0){
-										var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
-										select.append(skillOption);
-										select.find(skillOption).prop('selected',true);
-										select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
-										$("#candidateSkills").trigger("chosen:updated");
-								   }
-								   else{
-									   if(isNewSkill){
-										var option = $("<option>").val(newSkill).text(newSkill);
-										select.append(option);
-										select.find(option).prop('selected', true);
-									   }
-								   }
-								
-				               $("#candidateSkills").trigger("chosen:updated"); 
-			                   
-			                }
-					       
-		    	         }
-	    	});
-	    //Adding Customized Skills to the list
-			
-	$("#candidateSkills").val('').trigger("chosen:updated");
-	    
-		for (var selector in config) {
-		  $(selector).chosen(config[selector]);
-		}
-		$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			})
-	
-	
-	$(".new_side_wrap").addClass("new_side_wrap_active");
-	$(".side_mask").fadeIn(200);
-	$("body").css('overflow-y', 'hidden');
-	
-	var selectedFile = document.getElementById("newUploadBtn");
-    selectedFile.addEventListener("change", function() {
-    	 $("#newUploadFile").focus();
-    	 if(validate_fileupload(this.value)){
-    		 var docSize = this.files[0].size;
-   	      $("#uploadFileGroup1").find('p.jquery_form_error_message').remove();
-   	      if(docSize > 2097152){
-   	    	  document.getElementById("newUploadFile").value = '';
-   	    	  $('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
-   			  $("input#newUploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-   			  document.getElementById("newUploadFile").setAttribute('record-exist','yes');
-   			  document.getElementById("newUploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-   	      }else{
-   	    	 $('input#newUploadFile').removeAttr( "record-exist record-exist-errormsg");
-      		 $('#uploadFileGroup1').find('p.jquery_form_error_message').remove(); 
-    	    }
-    	 }
-    });
-	
-	document.getElementById("newUploadBtn").onchange = function () {
-		$('#newUploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-	};
-	
-}
-</script>
+<div id='changeStatusPopup' class='remove_user_pop remove_user_pop_a'>
+	<p>Are are sure you want to delete the JobFair?</p>
+	<div>&nbsp;&nbsp;&nbsp;</div>
+	<b>
+		<input id='confirmId' type='button' value='Ok' onclick='changeJobFairStatus()' class="pull-left">
+		<input id="cancelStatusPopup" class='u_can_color' type='button' value='Cancel' onClick='closeChangeStatusPopup()'>
+	</b>
+</div>
+
+
 <jsp:include page="requirementTable.jsp" />
 <jsp:include page="requirementAssignedTo.jsp"/>
 <!-- <script type="text/javascript" src="/resources/js/requirementTable.js"></script> -->
@@ -735,10 +193,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
      </ul>
 	</div>
 
-
-</script>
-<!-- advanced search popup Start  Block -->
-<form id="requirement_form" name="requirement_form" enctype='multipart/form-data'>
+<form:form id="requirement_form" name="requirement_form" enctype='multipart/form-data'>
 <div class="cand-advsrch-popup advancedsearch-popup reqadvsrch candAdvsrch ">
 <h5 class="headerAdsrch">Advanced Search
 	<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
@@ -975,8 +430,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 		</div>
 	</div>
 </div>
-</form>
-<!-- advanced search End Block -->
+</form:form>
 
 <div class="timesheet_out overflow_inherint" id="jobsTabContent">
 		
@@ -1592,9 +1046,132 @@ function getActions(){
 		 //Adding Customized Job Skills list this method is slead-common.js
 		   tagIt("requirementSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
 
+		   tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+
+		   
   });
   </script>
-<!-- advanced filter code is below -->
+  
+
+<script type="text/javascript">
+		     /*  $("#country").on('change', function (e) {
+		    	  getcites('apiLocation','city','recommendation');
+		    	  $("#apiLocation").val('');
+		    	  $("#city").val('').trigger("chosen:updated");
+		       });  */
+				 for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				}) 
+				
+</script>
+
+<script>
+function loadChosenRequirementScripts(){
+     $("#city").empty();
+	 $("#city").val('').trigger("chosen:updated");
+	 $("#requirementTitle").val('').trigger("chosen:updated");
+	 $("#rate").val('').trigger("chosen:updated");
+	 $("#minExp").val('').trigger("chosen:updated");
+	 $("#maxExp").val('').trigger("chosen:updated");
+	 $("#requirementStatu").val('').trigger("chosen:updated");
+	 $("#updatedOn").val('').trigger("chosen:updated");
+	 $("#education").val('').trigger("chosen:updated");
+	 $("#client").val('').trigger("chosen:updated");
+	 $("#skills").val('').trigger("chosen:updated"); 
+	
+}
+</script>
+<script>
+function clearSearch(){
+	document.getElementById("requirement_form").reset();
+	$('#requirementStatu').val('').trigger('chosen:updated');
+	$('#updatedOn').val('').trigger('chosen:updated');
+	$('#client').val('').trigger('chosen:updated');
+	$('#country').val('').trigger('chosen:updated');
+	$('#visaType').val('').trigger('chosen:updated');
+	$('#requirementSkills').val('').trigger('chosen:updated');
+	$('#state').val('').trigger('chosen:updated');
+	$('#city').val('').trigger('chosen:updated');
+	$('#noticePeriod').val('').trigger('chosen:updated');
+	$('#requirementTitle').val('').trigger('chosen:updated');
+	$('#jobId').val('').trigger('chosen:updated');
+	$('#generatedId').val('').trigger('chosen:updated');
+}
+</script>
+
+
+
+
+
+
+
+<!-- ============================ Laxman Google Api Location ============================= -->
+
+<!-- <script>
+ function getcites(locatinId,cityId){
+	 var countryName = $("#country").val().split(',');
+	 var countryCode = countryName[1];
+	 initialize(locatinId,countryCode,cityId);
+ }
+function initialize(locatinId,countryCode,cityId) {
+    	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locatinId)), {
+    		types: ['geocode'],
+    		componentRestrictions: {
+	        	country: countryCode
+	        }
+        });
+    	
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+  place = autocomplete.getPlace();
+  var address = {};
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    switch (addressType) {
+       case "route":
+    	 address.name=place.address_components[i].long_name;
+    	 break;
+      case "locality":
+        address.city = place.address_components[i].long_name;
+        break;
+      case "administrative_area_level_1":
+        address.state = place.address_components[i].long_name;
+        break;
+      case "country":
+        address.country = place.address_components[i].long_name;
+        address.countryShortName = place.address_components[i].short_name;
+        
+    }
+  }
+ 
+  $("#"+locatinId).val(address.city).change();
+  multicities[address.city] = address.city;
+  
+  for(var e in multicities) {
+		 var option = $("<option>").val(multicities[e]).text(multicities[e]);
+		 $("#"+cityId).append(option);
+		 $("#"+cityId).find(option).prop('selected', true);
+		 $("#"+cityId).find(option).siblings("[value='"+ multicities[e].replace(",","")+"']").remove();
+		 $("#"+cityId).trigger("chosen:updated");
+  }
+});
+}
+function refreshGoogleApiCity(cityId){
+	$("#"+cityId).val('');
+}
+</script> -->
+
+
+
+
+<!--  Filter Pop -->
+
+
+
+<!-- <div class="sideMask"></div> -->
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="requirementFilterPopup">
 <h5 class="headerAdsrch">Filters <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
 <div class="addInner">
@@ -1602,7 +1179,7 @@ function getActions(){
  
  <div class='col-md-2'>
  <div class='row'>
- <div class='col-md-12 varsCheckbox'>
+ <div class='col-md-12'>
  <label><strong>Assign To</strong></label>
  <div class='clearfix'>
  	<ul id="assignTo" class="list-unstyled">
@@ -1613,24 +1190,24 @@ function getActions(){
 	</div>
  </div>
  
- 			<div  class="col-md-12 varsCheckbox">
+ 			<div  class="col-md-12">
  			<label><strong>Priority</strong></label>
  			<div class='clearfix'>
 								<ul id="priority" class="list-unstyled">
-									<li class="checkBox positionRelative mb0"><input id="c1" type="checkbox" name="requirementPriority" value="Medium" ><label for="c1">Medium </label></li>
-									<li class="checkBox positionRelative mb0"><input id="c2" type="checkbox" name="requirementPriority" value="Low" ><label for="c2">Low </label></li>
-									<li class="checkBox positionRelative mb0"><input id="c3" type="checkbox" name="requirementPriority" value="Urgent" ><label for="c3">Urgent </label></li>
-									<li class="checkBox positionRelative mb0"><input id="c4" type="checkbox" name="requirementPriority" value="High" ><label for="c4">High </label></li>
+									<li class="checkBox positionRelative"><input id="c1" type="checkbox" name="requirementPriority" value="Medium" ><label for="c1">Medium </label></li>
+									<li class="checkBox positionRelative"><input id="c2" type="checkbox" name="requirementPriority" value="Low" ><label for="c2">Low </label></li>
+									<li class="checkBox positionRelative"><input id="c3" type="checkbox" name="requirementPriority" value="Urgent" ><label for="c3">Urgent </label></li>
+									<li class="checkBox positionRelative"><input id="c4" type="checkbox" name="requirementPriority" value="High" ><label for="c4">High </label></li>
 								</ul>
 				</div>
 			</div>
 			
-			<div class="col-md-12 varsCheckbox">
+			<div class="col-md-12">
 				<label><strong>Jobs</strong></label>
 					<div class='clearfix'>
 				<ul id="jobs" class="list-unstyled">
-					<li class="checkBox positionRelative mb0"><input id="j1" type="checkbox" name="requirementSpecJobs" value="ClientJobs" ><label for="j1">All Client Jobs </label></li>
-					<li class="checkBox positionRelative mb0"><input id="j2" type="checkbox" name="requirementSpecJobs" value="NormalJobs" ><label for="j2">All Internal jobs</label></li>
+					<li class="checkBox positionRelative"><input id="j1" type="checkbox" name="requirementSpecJobs" value="ClientJobs" ><label for="j1">All Client Jobs </label></li>
+					<li class="checkBox positionRelative"><input id="j2" type="checkbox" name="requirementSpecJobs" value="NormalJobs" ><label for="j2">All Internal jobs</label></li>
 				
 				</ul>
 			</div>
@@ -1638,59 +1215,61 @@ function getActions(){
 			</div>
 			</div>
 			
-			<div  class="col-md-2 varsCheckbox">
+			<div  class="col-md-2">
 			<label><strong>Job Type</strong></label>
 			<div class='clearfix'>
 								<ul id="jobType" class="list-unstyled">
-									<li class="checkBox positionRelative mb0"><input id="c11" type="checkbox" name="requirementType" value="C2C" ><label for="c11">C2C </label></li>
-									<li class="checkBox positionRelative mb0"><input id="c12" type="checkbox" name="requirementType" value="W-2" ><label for="c12">W-2 </label></li>
-									<li class="checkBox positionRelative mb0"><input id="c13" type="checkbox" name="requirementType" value="C2H" ><label for="c13">C2H </label></li>
-									<li class="checkBox positionRelative mb0"><input id="c14" type="checkbox" name="requirementType" value="Contract" ><label for="c14">Contract </label></li>
-									<li class="checkBox positionRelative mb0"><input id="c15" type="checkbox" name="requirementType" value="Part Time" ><label for="c15">Part Time </label></li>
-									<li class="checkBox positionRelative mb0"><input id="c16" type="checkbox" name="requirementType" value="Full Time" ><label for="c16">Full Time </label></li>
-									<li class="checkBox positionRelative mb0"><input id="c17" type="checkbox" name="requirementType" value="Other" ><label for="c17">Other </label></li>
+									<li class="checkBox positionRelative"><input id="c11" type="checkbox" name="requirementType" value="C2C" ><label for="c11">C2C </label></li>
+									<li class="checkBox positionRelative"><input id="c12" type="checkbox" name="requirementType" value="W-2" ><label for="c12">W-2 </label></li>
+									<li class="checkBox positionRelative"><input id="c13" type="checkbox" name="requirementType" value="C2H" ><label for="c13">C2H </label></li>
+									<li class="checkBox positionRelative"><input id="c14" type="checkbox" name="requirementType" value="Contract" ><label for="c14">Contract </label></li>
+									<li class="checkBox positionRelative"><input id="c15" type="checkbox" name="requirementType" value="Part Time" ><label for="c15">Part Time </label></li>
+									<li class="checkBox positionRelative"><input id="c16" type="checkbox" name="requirementType" value="Full Time" ><label for="c16">Full Time </label></li>
+									<li class="checkBox positionRelative"><input id="c17" type="checkbox" name="requirementType" value="Other" ><label for="c17">Other </label></li>
 								</ul>
 				</div>
 							</div>
+							
 						
-						<div  class="col-md-2 varsCheckbox">
+						
+						<div  class="col-md-2">
 			<label><strong>Status</strong></label>
 			<div class='clearfix'>	
 			
 								<ul id="status" class="list-unstyled">
-									<li class="checkBox positionRelative mb0"><input id="c6" type="checkbox"
+									<li class="checkBox positionRelative"><input id="c6" type="checkbox"
 										name="requirementStatus" value="NEW"><label for="c6">New<span id="newRequirementCount"></span></label></li>
-									<li class="checkBox positionRelative mb0"><input id="c7" name="requirementStatus" type="checkbox" value="DRAFT" ><label
+									<li class="checkBox positionRelative"><input id="c7" name="requirementStatus" type="checkbox" value="DRAFT" ><label
 										for="c7">Draft<span id="draftRequirementCount"></span></label></li>
-									<li class="checkBox positionRelative mb0"><input id="c8" type="checkbox"
+									<li class="checkBox positionRelative"><input id="c8" type="checkbox"
 										name="requirementStatus" type="checkbox" value="SUBMITTED" ><label for="c8">Submitted
 											<span id="submittedRequirementCount"></span>
 									</label></li>
-									<li class="checkBox positionRelative mb0"><input id="c9" type="checkbox"
+									<li class="checkBox positionRelative"><input id="c9" type="checkbox"
 										name="requirementStatus" type="checkbox" value="OPEN" ><label for="c9">Open
 											<span id="openRequirementCount"></span>
 									</label></li>
-									<li class="checkBox positionRelative mb0"><input id="c10" type="checkbox"
+									<li class="checkBox positionRelative"><input id="c10" type="checkbox"
 										name="requirementStatus" type="checkbox" value="ONHOLD" ><label for="c10">On
 											Hold <span id="onHoldRequirementCount"></span>
 									</label></li>
-									<li class="checkBox positionRelative mb0"><input id="c11" type="checkbox"
+									<li class="checkBox positionRelative"><input id="c11" type="checkbox"
 										name="requirementStatus" type="checkbox" value="CANCEL" ><label for="c11">Cancel
 											<span id="cancelRequirementCount"></span>
 									</label></li>
-									<li class="checkBox positionRelative mb0"><input id="c12" type="checkbox"
+									<li class="checkBox positionRelative"><input id="c12" type="checkbox"
 										name="requirementStatus" type="checkbox" value="FILLEDCLOSED" ><label for="c12">Filled
 											Closed<span id="filledClosedRequirementCount"></span>
 									</label></li>
-									<li class="checkBox positionRelative mb0"><input id="c13" type="checkbox"
+									<li class="checkBox positionRelative"><input id="c13" type="checkbox"
 										name="requirementStatus" type="checkbox" 
 										value="UNFILLEDCLOSED" ><label
 										for="c13">UnFilled Closed<span
 											id="unFilledClosedRequirementCount"></span></label></li>
-									<li class="checkBox positionRelative mb0"><input id="c14" type="checkbox"
+									<li class="checkBox positionRelative"><input id="c14" type="checkbox"
 										name="requirementStatus" type="checkbox" value="REJECTED" ><label for="c14">Rejected<span
 											id="rejectedRequirementCount"></span></label></li>
-									<li class="checkBox positionRelative mb0"><input id="c15" type="checkbox"
+									<li class="checkBox positionRelative"><input id="c15" type="checkbox"
 										name="requirementStatus" type="checkbox" value="CLOSED" ><label for="c15">Closed<span
 											id="closedRequirementCount"></span></label></li>
 								</ul>
@@ -1698,21 +1277,24 @@ function getActions(){
 			
 			</div>
 							
+							
+							
+							
 						<div class="col-md-3 mb positionRelative">
-							<div class="clearfix dynamic_search filterDynamicsearch ">
+							<div class="clearfix dynamic_search filterDynamicsearch">
 								<input type="text" id="myClientInput" onkeyup="myClientFunction()" placeholder="Clients" title="Type in a teams">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
-							 <div class="clearfix filterSearch-ul varsCheckboxDynamic">
+							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientUL">
 									<c:forEach var="team" items="${add_clientList}">
 									
 									<c:if test="${team.locationId.id == loginOrgLocId}">
-									<li class="checkBox positionRelative  mb0"><input  type="checkbox" name="clientNameById" data-val = "${team.id}" value ="${team.responderLocationId.org.orgName}" ><label>${team.responderLocationId.org.orgName}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" data-val = "${team.id}" value ="${team.responderLocationId.org.orgName}" ><label>${team.responderLocationId.org.orgName}</label></li>
 									</c:if>
 									
 									<c:if test="${team.responderLocationId.id == loginOrgLocId}">
-									<li class="checkBox positionRelative mb0"><input  type="checkbox" name="clientNameById" data-val = "${team.id}"  value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" data-val = "${team.id}"  value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
 									</c:if>
 									
 									</c:forEach>
@@ -1725,12 +1307,12 @@ function getActions(){
 								<input type="text" id="myCityInput" onkeyup="myCityFunction()" placeholder="City" title="Type in a teams">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
-							 <div class="clearfix filterSearch-ul varsCheckboxDynamic">
+							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myCitytUL">
 									<c:forEach var="city" items="${cityList}">
 									
 <%-- 									<c:if test="${team.city == loginOrgLocId}"> --%>
-									<li class="checkBox positionRelative mb0"><input  type="checkbox" name="cityName" value ="${city}" ><label>${city}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="cityName" value ="${city}" ><label>${city}</label></li>
 <%-- 									</c:if> --%>
 									
 <%-- 									<c:if test="${team.responderLocationId.id == loginOrgLocId}"> --%>
@@ -1750,11 +1332,11 @@ function getActions(){
 								<input type="text" id="myProjectInput" onkeyup="myProjectFunction()" placeholder="Projects" title="Type in a teams">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
-							 <div class="clearfix filterSearch-ul varsCheckboxDynamic">
+							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myprojectUL">
 									<c:forEach var="project" items="${projectList}">
 									
-									<li class="checkBox positionRelative mb0"><input  type="checkbox" name="projectNameById" value ="${project.id}" ><label>${project.projectId.projectName}</label></li>
+									<li class="checkBox positionRelative"><input  type="checkbox" name="projectNameById" value ="${project.id}" ><label>${project.projectId.projectName}</label></li>
 									
 									<%-- <c:if test="${team.responderLocationId.id == loginOrgLocId}">
 									<li class="checkBox positionRelative"><input  type="checkbox" name="clientNameById" value ="${team.locationId.org.orgName}" ><label>${team.locationId.org.orgName}</label></li>
@@ -1776,6 +1358,163 @@ function getActions(){
 								onclick="resetJobFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
+							
+							
+							
  
 </div>
-<!-- advanced filter code end.-->
+</div>
+</div>
+
+<script>
+function myClientFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myClientInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myClientUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myProjectFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myProjectInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myprojectUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+function myCityFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myCityInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myCitytUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeFilter();
+	  }
+	});
+</script>
+<script>
+function resetJobFilter(){
+	$("ul#myprojectUL > li input:checkbox").prop("checked",false);
+	$("ul#myCitytUL > li input:checkbox").prop("checked",false);
+	$("ul#myClientUL > li input:checkbox").prop("checked",false);
+	$("ul#jobs > li input:checkbox").prop("checked",false);
+	$("ul#status > li input:checkbox").prop("checked",false);
+	$("ul#jobType > li input:checkbox").prop("checked",false);
+	$("ul#priority > li input:checkbox").prop("checked",false);
+	$("ul#assignTo > li input:radio").prop("checked",false);
+	
+	requirementList('list','${SourceLeadWeb_atsUrl}');
+}
+</script>
+<script type="text/javascript">
+	var ele = "";
+	function showChangeJobFairStatusPopup(jobFairId, status, oldValue, element) {
+		ele = element;
+		var statusText = "";
+		if(status === "0") {
+			statusText = "Are you sure to make the JobFair status to 'CLOSE' ?";
+		} else if(status === "1") {
+			statusText = "Are you sure to make the JobFair status to 'OPEN' ?";
+		} else {
+			statusText = "Are you sure to delete the JobFair ?";
+		}
+		$("#changeStatusPopup p").html(statusText);
+		$("#confirmId").data("job_fair_id", jobFairId);
+		$("#confirmId").data("status",status);
+		$("#cancelStatusPopup").data("old_value", oldValue);
+		$("#changeStatusPopup").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+	
+	function closeChangeStatusPopup() {
+		var oldValue = $("#cancelStatusPopup").data("old_value");
+		$(ele).val(oldValue);
+		$("#changeStatusPopup").slideUp(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
+	
+	function changeJobFairStatus() {
+		var jobFairId = $("#confirmId").data("job_fair_id");
+		var status = $("#confirmId").data("status");
+		var data = {
+				jobFairId: jobFairId,
+				status : status
+		};
+		$.post(atsUrl + "/changeJobFairStatus?", data, function(result) {
+			if (result.response === "SESSION_TIMEDOUT") {
+				location.replace(sourceleadUrl);
+			} else if (result.response === "AWKWARD") {
+				location.href = "/errorPage";
+			} else if (result.response === "SUCCESS") {
+				location.href = atsUrl + "/jobsList?viewTab=jobFair";
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
+		});
+	}
+</script>
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+</script>
+
+<jsp:include page="../masterFooter.jsp" />
