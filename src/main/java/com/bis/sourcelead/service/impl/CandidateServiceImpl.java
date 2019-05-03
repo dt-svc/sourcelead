@@ -3738,6 +3738,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
+	public String getCandidatePanNumberByUserId(long userId, Long id) {
+		return candidateDao.getCandidatePanNumberByUserId(userId, id);
+	}
+	
+	@Override
 	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
 		return candidateDao.getCandidateDetailsByPanNumberAndId(panNumber, orgLocationId);
 	}
@@ -3767,6 +3772,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.validateSsnNumber(ssnNumber, orgLocationId);
 	}
 	
+	@Override
+	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
+		return candidateDao.getCandidateDateOfBirthByUserId(userId, orgLocation);
+	}
 	
 }
 
