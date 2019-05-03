@@ -5,8 +5,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page trimDirectiveWhitespaces="true" %>
-<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
-
+<!-- <script type="text/javascript" src="jquery-1.2.6.min.js"></script> -->
 <script>
 $(document).ready(function(){
 	getDynamicAssetList();
