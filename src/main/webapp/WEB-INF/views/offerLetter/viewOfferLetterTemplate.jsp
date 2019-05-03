@@ -16,7 +16,8 @@
     
     <div class="pull-right brud-crum">
 			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>
-			&raquo;<a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates"> Templates
+			&raquo;  <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo;
+			         <a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates"> Templates
 				</a> &raquo; Offer Letter Template List
 		</div>
   

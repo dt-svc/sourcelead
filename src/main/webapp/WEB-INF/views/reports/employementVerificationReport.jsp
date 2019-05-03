@@ -607,7 +607,7 @@ function emplyoeesListPagination(url){
 	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
-	    	"ordering": true,
+	    	"ordering": false,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
