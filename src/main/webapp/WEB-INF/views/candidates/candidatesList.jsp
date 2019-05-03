@@ -2470,7 +2470,7 @@ function getCities(){
      
       <div class="pop_mask"></div>
     
-    <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+    <div class="advancedsearch-mask"></div>
     
     <script>
     //addcandidate-popup script
