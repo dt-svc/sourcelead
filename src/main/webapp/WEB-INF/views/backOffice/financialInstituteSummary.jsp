@@ -9,16 +9,7 @@
 	   getFinancialTransactionsList();
  };
 </script> 
-
-<style type="text/css">
-.require_wrap_table.chosen-table{
-overflow: visible;
-}
-</style>
-
 <body>
-
-  
   <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
