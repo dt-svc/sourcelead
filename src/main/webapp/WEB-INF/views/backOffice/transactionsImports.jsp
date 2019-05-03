@@ -2,23 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
-<style type="text/css">
-.center-div{
-width:500px;
-height:30px;
-margin:0 auto;
-clear:both;
-display: inline-block;
-text-align: center;
-line-height: 30px;
-}
-.center-div input {
-	border:none;
-	background:transparent
-}
-</style>
-  
   
 <section class="content-wraper">
     <section class="content-header clearfix">
@@ -82,7 +65,7 @@ line-height: 30px;
         	</div>
         	
         	<div class="center-div">
-        	<input id="uploadFile" placeholder="" disabled="disabled"/>
+        		<input id="uploadFile" placeholder="" disabled="disabled"/>
         	</div>
         	
         	

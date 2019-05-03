@@ -5,12 +5,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page trimDirectiveWhitespaces="true" %>
-
-<style type="text/css">
-.columnfields-custom .col-md-9 { width: 100%;}
-.popinnerdiv  {min-height: 100px; max-height: 450px; overflow-y:auto; }
-</style>
-
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
 
 <script>
@@ -215,13 +209,13 @@ $(document).ready(function(){
       <input type="hidden" id="assetmanagementPdfFile" name="assetmanagementPdfFile">
       <input type="hidden" id="assetAssignFileSize" name="assetAssignFileSize">
     <!-- list Table -->
-    <div class="require_wrap_table table-wrap datatable_filter overflow_inherint project_tabs_inn" id="tab-8">
+    <div class="require_wrap_table table-wrap datatable_filter project_tabs_inn" id="tab-8">
 	    <div id= "assetManagementLoderDiv"></div>
 	    <table id="assetManagementList" class="display" cellspacing="0" width="100%"> </table>
 	    <div id="dynamicAssetManagementList"></div>
     </div>
     
-    <div class="timesheet_out project_tabs_inn require_wrap_table table-wrap datatable_filter overflow_inherint" id="tab-9">
+    <div class="timesheet_out project_tabs_inn require_wrap_table table-wrap datatable_filter" id="tab-9">
     </div>
     
     
@@ -812,7 +806,7 @@ function projectAssetPaginations(url){
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
-    $("assetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("#assetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $('#assetPagination').DataTable().column(0).visible(false);
     $("input[type=search]").hide();
     $("#assetDataTableSearch").keyup(function(e) {
@@ -1020,7 +1014,7 @@ function assignAssetPagination(url){
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
-    $("assignAssetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("#assignAssetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
     $("#assignAssetDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
