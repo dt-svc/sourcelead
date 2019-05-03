@@ -2164,16 +2164,16 @@ function showSuccessStatusPopup(status) {
 </script>
 
 
- <script type="text/javascript">
+  <script type="text/javascript">
 function validatePanNumber() {
-	
-	  var panNumber = document.getElementById("panNumber").value;
-	 
+    var panNumber = document.getElementById("panNumber").value;
+	if(panNumber != "" && panNumber != null && panNumber != "undefined"){
 	  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
 		    	 url:sourceleadUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
 		        success: function(data) {
+		        	
 		        	if(data == true){
 		        		  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
 		        		  $("input#panNumber").after("<p class='jquery_form_error_message'>"+panNumber+" is Already Existed</span>");
@@ -2186,6 +2186,7 @@ function validatePanNumber() {
 		        	}
 		        }
 		    });
+     }
 };
 </script>
 
@@ -2193,7 +2194,8 @@ function validatePanNumber() {
 function validateAadharNumber() {
 	
 	  var aadharNumber = document.getElementById("aadharNumber").value;
-	 
+	  if(aadharNumber != "" && aadharNumber != null && aadharNumber != "undefined"){
+		  
 	  $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
@@ -2211,6 +2213,7 @@ function validateAadharNumber() {
 		        	}
 		        }
 		    });
+	  }
 };
 </script>
 
@@ -2218,7 +2221,7 @@ function validateAadharNumber() {
 function validateSsnNumberDuplicateChek() {
 	
 	  var ssnNumber = document.getElementById("ssnNumber").value;
-	 
+	  if(ssnNumber != "" && ssnNumber != null && ssnNumber != "undefined"){
 	  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
@@ -2236,6 +2239,7 @@ function validateSsnNumberDuplicateChek() {
 		        	}
 		        }
 		    });
+	  }
 };
 </script>
 

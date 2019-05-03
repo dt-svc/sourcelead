@@ -24,8 +24,8 @@
 					<ul class="list-unstyled list-inline">
 						<li>
 							<div class="dynamic_search">
-								<input placeholder="Search" type="text"> <i
-									class="fa fa-search"></i>
+								<input placeholder="Search" type="text" id="formSearch"> 
+								<i class="fa fa-search" onclick="getItDeclarationSubmissionList('${uuid}', '${financialYear}', 0);"></i>
 							</div>
 						</li>
 						<li><a href="getForm?uuid=${uuid}" class="addBtn">+ Add Form</a>
@@ -58,7 +58,7 @@
 						<label class="pull-left">
 						<span class="pull-left mt10 mr5">Show</span>
 							<div class="dropdown-select pull-left mr5 tblminwidth-50">
-								<select id="pageSize" onchange="getItDeclarationSubmissionList('${uuid}', 0);">
+								<select id="pageSize" onchange="getItDeclarationSubmissionList('${uuid}', '${financialYear}', 0);">
 									<option value="5">5</option>
 									<option value="10">10</option>
 									<option value="15">15</option>
@@ -100,8 +100,14 @@
 	var taxFormName = "${taxForm.name}";
 	$(document).ready(function () {
 		if(taxFormName === "IT Declaration") {
-			getItDeclarationSubmissionList('${uuid}',0);
+			getItDeclarationSubmissionList('${uuid}', '${financialYear}', 0);
 		}
-	})
+		
+		$("#formSearch").keyup(function(e) {
+	   	   if(e.which === 13) {
+	   		getItDeclarationSubmissionList('${uuid}', '${financialYear}', 0);
+	   	   }
+	   	});
+	});
 	/* $('#form_table').DataTable(); */
 </script>
