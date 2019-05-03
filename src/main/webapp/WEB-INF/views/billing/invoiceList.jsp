@@ -5,33 +5,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.invoiceId_Anchor a {
-color:#337ab7 !important;
-}
-.successBtn {
-background-color: #1ab394;
-border-color: #1ab394;
-border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
-font-size: 13px; width: 60px;
-}
-.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
-    z-index: 900000 !important;
-}
-.modal{
-z-index: 15000;
-}
-.remove_user_pop.remove_user_pop_a {
-z-index: 18000;
-}
-.popCusDate{
-	right: 16px; bottom: -40px; top: inherit; background: #fff; border: none; padding: 8px 10px 8px 5px;
-}
-</style>
-
 <script type="text/javascript">
 $(document).ready(function(){
 	getInvoiceList();
+	$(".ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br").css({'z-index':'900000 !important'});
 });
 </script>
 
@@ -354,14 +331,14 @@ function removeErr(){
 </script>  
   <!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
-<div id="recvPymntpop" class="modal" style="display: none;">
+<div id="recvPymntpop" class="modal zIndexStyle" style="display: none;">
    <div id="receivePaymentId" ></div>
 </div>
 <!-- modal pop --> 
 
   <!-- modal pop -->
 <div class="side_mask" style="display: none"></div>
-<div class="modal modal_invoice datatable_filter" style="display: none;">
+<div class="zIndexStyle modal modal_invoice datatable_filter" style="display: none;">
    <div id="linkPopup" ></div>
 </div>
 <!-- modal pop -->
@@ -584,7 +561,7 @@ function invoicePagination(url){
 							
 					}else{
 						if(report.invoiceStatus == "Linked"){
-							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
+							result = result +' <a class="successBtn successBtn-custom primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 						}else if(report.invoiceStatus == "Void"){
 							result = result +'           <span class="colorRed pull-left">Void</span>   ';	
 						}
@@ -604,7 +581,7 @@ function invoicePagination(url){
 						if(report.invoiceStatus == "Rejected"){
 							result = result +'           <div class="colorRed pull-left">Rejected</div>   ';	
 						}else if(report.invoiceStatus == "Linked"){
-							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
+							result = result +' <a class="successBtn successBtn-custom primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 						}else if(report.invoiceStatus == "Void"){
 							result = result +'           <span class="colorRed pull-left">Void</span>   ';	
 						}else{
