@@ -16,13 +16,13 @@
       <div class="pull-left">
         <h2>View New Request Resources</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/projectDashboard'/>">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources">Planning</a> &raquo; View New Request Resources</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/projectDashboard">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources">Planning</a> &raquo; View New Request Resources</div>
 </section>
 
  <div class="content-area content-new clearfix">
    <div id="requestedAssociatesList"></div>
    <div class="modal-footer">
-   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'/>'" >Back to list</button>
+   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'" >Back to list</button>
    </div>
 					
  </div>
@@ -38,11 +38,11 @@
 function getRequestedAssociatesList(){
 	var requestUUID = '${requestUUID}';
 	
-	var sourceleadUrl ='${sourceleadUrl}';
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	    	 
 	$.ajax({
     	type: "POST",
-    	 url: sourceleadUrl+"/getResourceRequestDetailsByRequestUUID?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
+    	 url: pmsUrl+"/getResourceRequestDetailsByRequestUUID?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID, 
          success: function(json) {
         	
         	 var result = "";

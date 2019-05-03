@@ -53,25 +53,5 @@ public class EmailNotificationConfigureController {
 		 return model;
 	}
 	
-	@RequestMapping(value = "/emailReminderLeaveConfiguration")
-    public ModelAndView reminderLeaveConfigureEmails(HttpServletRequest request) throws Exception {
-        ModelAndView model = new ModelAndView();
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        
-        //get job related reminders
-        List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(31l , orgLocations.getId());
-        //model.addObject("emailReminderList", emailReminderList);
-        
-        for(EmailReminder emailReminder : emailReminderList) {
-            emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
-            if(emailReminder.getScenarionName().equalsIgnoreCase("employeeholiday")) {
-                model.addObject("Holiday", emailReminder);
-            }
-
-        }
-        model.setViewName("leavemanagement/emailReminderLeaveConfiguration");
-        model.addObject("sourceleadUrl", sourceleadUrl);
-        return model;
-       }
 	
 }
