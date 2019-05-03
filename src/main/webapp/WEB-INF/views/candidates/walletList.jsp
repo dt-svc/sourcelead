@@ -402,8 +402,7 @@
 	    
 	     $("#dynamicWalletListTbl").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 	     
-	    $("table").colResizable(); // for resizing columns in tables. 
-	    
+	 //$("table").colResizable(); // for resizing columns in tables. 
 	      
   }
   </script>

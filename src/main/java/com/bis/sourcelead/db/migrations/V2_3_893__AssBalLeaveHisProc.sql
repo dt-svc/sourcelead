@@ -34,7 +34,7 @@ CREATE PROCEDURE associateBalanceLeaveHistoryProcedure
     IN startDate date,
 	IN endDate date,
 	IN year integer,
-	IN month varchar,
+	IN month varchar(100),
 	IN totalBalanceLeaves integer,
     IN leaveTypeId bigint
 ) 

@@ -19,7 +19,7 @@
           <div class="pull-left">
             <h2>Offboard Template</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/offboardingTemplatesList'/>">Offboard Templates List</a> &raquo; Add Offboard Template </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; <a href="<c:url value='${appPath}/offboardingTemplatesList'/>">Offboard Templates List</a> &raquo; Add Offboard Template </div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -1450,9 +1450,9 @@ $('body').on('blur', '#sjfb', function() {
     
     
     // upload file script
-    document.getElementById("uploadBtn").onchange = function () {
-    document.getElementById("uploadFile").value = this.value;
-	};
+   // document.getElementById("uploadBtn").onchange = function () {
+   // document.getElementById("uploadFile").value = this.value;
+	//};
   </script> 
 <script type="text/javascript">
 			var config = {
@@ -1494,7 +1494,9 @@ $('#nexttab').on('click', function() {
 });
 </script> --> 
 
-<script>
+<!-- fileinput function is not declared..! -->
+
+<!-- <script>
     //File upload
     $('#file-fr').fileinput({
         language: 'fr',
@@ -1595,7 +1597,7 @@ $('#nexttab').on('click', function() {
          */
     });
 
-    </script>
+    </script> -->
     
 
   <jsp:include page="../masterFooter.jsp" />

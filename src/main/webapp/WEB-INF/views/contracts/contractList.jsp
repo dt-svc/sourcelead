@@ -837,7 +837,7 @@ function preparedContractVendorListDraftPagination(url,tabType){
 	     	   	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -1066,7 +1066,7 @@ function preparedContractClientListDraftPagination(url,tabType){
 		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -1284,7 +1284,7 @@ function preparedContractApplicantListDraftPagination(url,tabType){
 	    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -1510,7 +1510,7 @@ function preparedVendorContractListWFAPagination(url,tabType){
 		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -1724,7 +1724,7 @@ function preparedClientContractListWFAPagination(url,tabType){
 		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -1920,7 +1920,7 @@ function preparedApplicantContractListWFAPagination(url,tabType){
 	    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -2137,7 +2137,7 @@ function preparedVendorContractListWTSPagination(url,tabType){
 		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -2347,7 +2347,7 @@ function preparedClientContractListWTSPagination(url,tabType){
 	    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -2527,7 +2527,7 @@ function preparedApplicantContractListWTSPagination(url,tabType){
 	    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -2746,7 +2746,7 @@ function preparedVendorContractListWTVPagination(url,tabType){
 		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -2959,7 +2959,7 @@ function preparedClientContractListWTVPagination(url,tabType){
 //		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -3145,7 +3145,7 @@ function preparedContractApplicantListWTVPagination(url,tabType){
 //		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",

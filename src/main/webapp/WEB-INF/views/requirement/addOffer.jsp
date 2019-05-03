@@ -695,8 +695,7 @@ function cancelOfferPopup(){
 
 function NotifyToVendor(){
 	
-	 if (document.getElementById('notifyToVendor').checked){
-	
+	if($("#notifyToVendor").is(':checked')){
 		 $("#notifyToVendor").val('Y');	
 	}else {
 		
@@ -710,7 +709,7 @@ function NotifyToVendor(){
 
 <script>
 function NotifyToApplicant(){
-	 if (document.getElementById('notifyToApplicant').checked){
+	if($("#notifyToApplicant").is(':checked')){
 		 $("#notifyToApplicant").val('Y');	
 	}else {
 		 $("#notifyToApplicant").val('N');

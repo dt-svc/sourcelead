@@ -65,7 +65,8 @@ $(document).ready(function(){
 <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
-<c:if test='${viewPage != "vendors/vendorsList"}'>
+<c:if test='${viewPage != "vendors/vendorsList" && viewPage != "reports/usersUsageReportList"
+            && viewPage != "reports/employeeTasksReportList"  && viewPage != "reports/overdueTaskReport"}'>
 <script src="/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
 </c:if>
 <script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
@@ -416,7 +417,7 @@ function preventTabkey(e){
 
 
 <div class="headProfile">
-	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </div>
+	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_userName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}">  <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_userName}"> ${SourceLeadWeb_userName} </span></div>
 	<div class="headPop" id="profilePop">
 		<div class="headPopInn">
 				<a href="<c:url value='${appPath}/userProfile'/>" title="Profile">
@@ -863,10 +864,15 @@ function preventTabkey(e){
 <div class="clockIn clearfix">
 <div class="clockTime pull-left"><p>Clock In</p> <b id="stopwatchPop">00:00:00</b></div>
 
-<div class="pull-right">
+<div class="pull-right" id="withBreakDiv">
 <a id="start" onclick="obj.event('start');" class="CloIn" href="javascript:void(0)"><img src="/resources/images/clock.png">Start</a>
 <a id="pause" onclick="obj.event('pause');" class="braIn" href="javascript:void(0)"><img src="/resources/images/break.png">Start Break</a>
 <a id="play" onclick="obj.event('play');" class="braOut" href="javascript:void(0)"><img src="/resources/images/break.png">End Break</a>
+<a id="reset" onclick="obj.event('reset');" class="CloOut" href="javascript:void(0)"><img src="/resources/images/clock.png">Clock Out</a>
+</div> 
+
+<div class="pull-right" id="withoutBreakDiv">
+<a id="start" onclick="obj.event('start');" class="CloIn cwob" href="javascript:void(0)"><img src="/resources/images/clock.png">Start</a>
 <a id="reset" onclick="obj.event('reset');" class="CloOut" href="javascript:void(0)"><img src="/resources/images/clock.png">Clock Out</a>
 </div> 
 
@@ -881,21 +887,21 @@ function preventTabkey(e){
 
 </div>
 <div class="subClock clearfix">
-<div class="subClockCta">
+<!-- <div class="subClockCta">
 <p>Current</p>
-<div class="sclock">00 : 00</div>
-</div>
+<div class="sclock" id="curDiv">00 : 00</div>
+</div> -->
 <div class="subClockCta">
 <p>Day</p>
-<div class="sclock">00 : 00</div>
+<div class="sclock" id="dayDiv">00 : 00</div>
 </div>
 <div class="subClockCta">
 <p>Week</p>
-<div class="sclock">00 : 00</div>
+<div class="sclock" id="weekDiv">00 : 00</div>
 </div>
 <div class="subClockCta">
 <p>Month</p>
-<div class="sclock">00 : 00</div>
+<div class="sclock" id="monthDiv">00 : 00</div>
 </div> 
 </div>
 <div class="clockinn" id="clockFieldsId">
@@ -1636,13 +1642,16 @@ $(document).ready(function(){
 	$("#campSubMenu").click(function(){
 		$(".campsubMenuView").slideToggle(100);
 	});	
+	
+	$('#reset,#play, #pause').attr("disabled",true);
+	$('#start').attr("disabled",false);
 });
 </script>
   
   <script>
   function flushInviteCompany(){
 	  document.getElementById("inviteCompany_form").reset();
-	  $("inviteCompany_form").validate().resetForm();
+	 // $("inviteCompany_form").validate().resetForm();
   }
   </script> 
   <script>
@@ -1964,7 +1973,7 @@ $(".clockSub").slideToggle(10);
 
 	$("#clPop").click(function() {
 	getClockInOutConfiguration();
-	$(".mask, #clockPop").fadeIn();
+	getTimeReports();
 	});
 $(".clPopClose").click(function() {
 $(".mask, .popupWrap2").fadeOut();
@@ -1981,7 +1990,17 @@ function getClockInOutConfiguration(){
 	type: 'GET',
 	success: function (json) {
 	if(json != null){
-	$("#clockFieldsId").show();
+		if(json.isBreak == true){
+			$(".mask, #clockPop").fadeIn();
+			$("#withBreakDiv").show();
+			$("#withoutBreakDiv").hide();
+		}else{
+			$(".mask, #clockPop").fadeIn();
+			$("#withoutBreakDiv").show();
+			$("#withBreakDiv").hide();
+		}
+	
+// 	$("#clockFieldsId").show();
 	getExistedClockTime();
 	if(!json.isJobChecked){
 	$("#jobDIV").hide();
@@ -2006,10 +2025,37 @@ function getClockInOutConfiguration(){
 	}else{
 	$("#commentsDIV").show();
 	}
+	}else{
+		$(".mask, #clockPop").fadeIn();
+		$("#withoutBreakDiv").show();
+		$("#withBreakDiv").hide();
 	}
 	}
 	});
 
+}
+
+
+function getTimeReports(){
+	$.ajax({
+		url: sourceleadUrl + "/getTimeReports",
+		type: 'GET',
+		success: function (json) {
+			if(json.currentTotTime != null){
+				$("#dayDiv").text(json.currentTotTime);
+			}
+			
+			if(json.weekTotTime != null){
+				$("#weekDiv").text(json.weekTotTime);
+			}
+			
+			if(json.monthTotTime != null){
+				$("#monthDiv").text(json.monthTotTime);
+			}
+			
+		}
+	
+});
 }
 </script>
 
@@ -2164,8 +2210,9 @@ function saveClockInOutTime(type,totalTime){
 	$('#start,#play').attr("disabled",true);
 	}else{
 	$("#clockInOutId").val('');
-	$('#reset,#play,#pause').attr("disabled",true);
 	$('#start').attr("disabled",false);
+	$('.cwob').attr("disabled",false);
+	$('#reset,#play,#pause').attr("disabled",true);
 	}
 	},	
 	}); 
@@ -2289,6 +2336,9 @@ event: function (type) {
 	
 	// $('div > input').attr("disabled",false);
 	saveClockInOutTime('ClockOut',totalTime);
+	window.setTimeout(function() {
+		getTimeReports();
+	}, 200);
 	break;
 	
 	}

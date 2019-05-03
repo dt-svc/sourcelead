@@ -11,7 +11,7 @@
 		<div class="pull-left">
 			<h2>Payhead Summary</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a> &raquo; <a href="<c:url value='${appPath}/payheadList'/>">Payhead List</a> &raquo; Payhead Summary</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a> &raquo; <a href="<c:url value='${appPath}/payheadList'/>">Payhead List</a> &raquo; Payhead Summary</div>
 	</section>
 	<div class="clearfix"></div>
 	<div class="timesheet_out">
@@ -197,6 +197,16 @@
 			                  <label class="col-md-4 control-label"><b>ESI Applicable:</b></label>
 			                  <div class="col-md-8">
 			                      <span>${payrollPayhead.esiApplicable}</span>
+			                  </div>
+							  </div>
+			              </div>
+		              </c:if>
+		              <c:if test="${!empty payrollPayhead.ptApplicable}">
+			              <div class="col-md-5 mb">
+			                  <div class="row">
+			                  <label class="col-md-4 control-label"><b>PT Applicable:</b></label>
+			                  <div class="col-md-8">
+			                      <span>${payrollPayhead.ptApplicable}</span>
 			                  </div>
 							  </div>
 			              </div>

@@ -82,6 +82,9 @@ public class PayrollPayhead {
 	@Column(name = "ESI_APPLICABLE")
 	private String esiApplicable;
 	
+	@Column(name = "PT_APPLICABLE")
+	private String ptApplicable;
+
 	@Column(name = "METHOD")
 	private String method;
 	
@@ -371,5 +374,13 @@ public class PayrollPayhead {
 
 	public void setIsFormulaEditable(String isFormulaEditable) {
 		this.isFormulaEditable = isFormulaEditable;
+	}
+	
+	public String getPtApplicable() {
+		return ptApplicable;
+	}
+
+	public void setPtApplicable(String ptApplicable) {
+		this.ptApplicable = ptApplicable;
 	}
 }

@@ -8804,7 +8804,12 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 
 
 
+.dashboardoverIcon { padding: 6px 6px 0px 6px; display: none;}
+.dashboardoverIcon .newActPop { right: 0px;}
 
+.immSubMenu.immSubMenu-custome {
+	right: -226px; width: 225px;
+}
 
 
 
