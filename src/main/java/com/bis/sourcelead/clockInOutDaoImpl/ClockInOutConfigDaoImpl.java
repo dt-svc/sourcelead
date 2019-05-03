@@ -3,6 +3,7 @@ package com.bis.sourcelead.clockInOutDaoImpl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
 import com.bis.sourcelead.clockInOutEntity.Breaks;
 import com.bis.sourcelead.clockInOutEntity.ClockInOut;
 import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
+import com.bis.sourcelead.clockInOutUtil.ClockInOutUtil;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ProjectsDTO;
@@ -54,6 +56,9 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	private ClockInOutUtil clockInOutUtil;
 
 	@Override
 	@Transactional
@@ -76,26 +81,37 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 	@Transactional
 	public ClockInOutConfig getClockInOutConfigBasedOnOrgLocationId(Long orgLocationId) {
 		
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ClockInOutConfig clockInOut where clockInOut.orgLocationId.id = :orgLocationId";
-		ClockInOutConfig clockInOut = (ClockInOutConfig) session.createQuery(query).setLong("orgLocationId", orgLocationId).uniqueResult();
-		if(clockInOut != null) {
-			return clockInOut;
+		List<ClockInOutConfig> clkList = new ArrayList<>();
+		ClockInOutConfig clk = new ClockInOutConfig();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from ClockInOutConfig clockInOut where clockInOut.orgLocationId.id = :orgLocationId";
+			clkList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return null;
+		if(clkList != null && clkList.size() > 0) {
+			clk = clkList.get(0);
+		}
+		
+		return clk;
 	}
 	
 	@Override
 	@Transactional
 	public ClockInOutConfig getClockInOutConfigBasedOnId(Long clockInOutId) {
 		
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ClockInOutConfig clockInOut where clockInOut.id = :clockInOutId";
-		ClockInOutConfig clockInOut = (ClockInOutConfig) session.createQuery(query).setLong("clockInOutId", clockInOutId).uniqueResult();
-		if(clockInOut != null) {
-			return clockInOut;
+		ClockInOutConfig clockInOut = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from ClockInOutConfig clockInOut where clockInOut.id = :clockInOutId";
+			 clockInOut = (ClockInOutConfig) session.createQuery(query).setLong("clockInOutId", clockInOutId).uniqueResult();
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return null;
+		return clockInOut;
 	}
 
 	@Override
@@ -589,11 +605,13 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 
 	@Override
 	@Transactional
-	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId) {
+	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId,Date[] dates) {
 		
 		ResponseList<ClockInOutUserTimeEntryDTO> resList = new ResponseList<>();
 		List<ClockInOutUserTimeEntryDTO> clockInOutList = null;
+		
 		try {
+			
 			Session session = this.sessionFactory.getCurrentSession();
 			
 			StringBuilder sb = new StringBuilder();
@@ -603,14 +621,20 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			  .append("clk.CLOCK_OUT_DATE as clockOutDate, ")
 			  .append("clk.TOTAL_CLOCK_TIME as totalTime, ")
 			  .append("task.TASK_NAME as projectTaskName, ")
+			  .append("DATE_FORMAT(clk.CLOCK_IN_DATE, '%Y-%m') as yearMonth, ")
 			  .append("clk.COMMENTS as comments ")
 			  .append("FROM CLOCK_INOUT clk ")
 			  .append("LEFT JOIN PROJECT_TASKS task ON clk.PROJECTS_TASK_ID = task.ID ")
 			  .append("where clk.USER_ID = :userId ")
-			  .append("AND clk.ORG_LOCATION_ID = :orgLocationId ");
+			  .append("AND clk.ORG_LOCATION_ID = :orgLocationId ")
+			  .append("AND clk.CLOCK_IN_DATE >= :firstDate ")
+			  .append("AND clk.CLOCK_IN_DATE <= :lastDate ")
+			  .append("AND clk.TOTAL_CLOCK_TIME is not null ");
 			Query queryObj = session.createSQLQuery(sb.toString());
 			queryObj.setLong("orgLocationId", orgLocationId);
 			queryObj.setLong("userId", userId);
+			queryObj.setDate("firstDate", dates[0]);
+			queryObj.setDate("lastDate", dates[1]);
 			queryObj.setResultTransformer(Transformers.aliasToBean(ClockInOutUserTimeEntryDTO.class));
 			clockInOutList = queryObj.list();
 			resList.setData(clockInOutList);
@@ -620,6 +644,36 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		}
 		return resList;
 		
+	}
+
+	@Override
+	@Transactional
+	public List<ClockInOutUserTimeEntryDTO> getTimeReports(Date[] dates ,OrgLocations loginOrgLocation, User user) {
+		
+		List<ClockInOutUserTimeEntryDTO> clockInOutList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT clk.TOTAL_CLOCK_TIME as totalTime ") 
+			  .append("FROM CLOCK_INOUT clk ")
+			  .append("where clk.USER_ID = :userId ")
+			  .append("AND clk.ORG_LOCATION_ID = :orgLocationId ")
+			  .append("AND clk.CLOCK_IN_DATE >= :firstDate ")
+			  .append("AND clk.CLOCK_IN_DATE <= :lastDate ")
+			  .append("AND clk.TOTAL_CLOCK_TIME IS NOT NULL ");
+			
+			Query queryObj = session.createSQLQuery(sb.toString());
+			queryObj.setLong("orgLocationId", loginOrgLocation.getId());
+			queryObj.setLong("userId", user.getId());
+			queryObj.setDate("firstDate", dates[0]);
+			queryObj.setDate("lastDate", dates[1]);
+			queryObj.setResultTransformer(Transformers.aliasToBean(ClockInOutUserTimeEntryDTO.class));
+			clockInOutList = queryObj.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return clockInOutList;
 	}
 
 }

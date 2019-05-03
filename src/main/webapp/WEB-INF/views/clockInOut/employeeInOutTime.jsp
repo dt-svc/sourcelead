@@ -12,7 +12,8 @@
 var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 
 $('document').ready(function () {
-	 getUserTimeEntries();
+	 getCurrentDates('today');
+	 
 });
 </script>
 
@@ -23,7 +24,8 @@ $('document').ready(function () {
       <div class="pull-left">
         <h2>Clock in List</h2>
       </div>
-      <div class="pull-right brud-crum">Home  &raquo; Clock in list</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; Clock in list</div>
+    <div id="clockLoading"></div>
     </section>
 
     <div class="clockListWrap clearfix">
@@ -37,45 +39,34 @@ $('document').ready(function () {
                          <div id="graphViewId">
 
             <div class="clDate">
-                <i class="fa fa-chevron-left"></i>
-                <p>11-03-19 to 18-03-19</p>
-                <i class="fa fa-chevron-right"></i>
+                <i class="fa fa-chevron-left" id="previousId" onclick="getCurrentDates('previous');"></i>
+                <p id="frequencyId"></p>
+                <i class="fa fa-chevron-right" id="nextId" onclick="getCurrentDates('next');"></i>
               </div>            
 
-   
-
-    <div class="repclo" id="graphId"  style="display: none;">
-        <div id="jobsAdded" class="amchartAnchor-Hide timRep"></div>
-    </div>
 
   </div>    
 				<div id="listDivId">
-                    <ul class="pull-right list-unstyled list-inline">
-                      <li><a class="filtIcon" id="filPop"></a>
+                    <ul class="pull-right list-unstyled list-inline dataTabPad">
+                      <li id="filterId"><a class="filtIcon" id="filPop"></a>
                         <div class="approved_pop">
                             <ul>
-                                <li><input type="checkbox" id="a"><label for="a">Today</label></li> 
-                                <li><input type="checkbox" id="b"><label for="b">Yesterday</label></li> 
-                                <li><input type="checkbox" id="c"><label for="c">Last Week</label></li> 
-                                <li><input type="checkbox" id="d"><label for="d">This Week</label></li> 
-                                <li><input type="checkbox" id="d"><label for="d">This Month</label></li> 
-                                <li><input type="checkbox" id="d"><label for="d">Last Month</label></li> 
+                                <li><input type="radio" name="a" value="today" checked id="a" onclick="getCurrentDates('today');"><label for="a">Today</label></li> 
+                                <li><input type="radio" name="a" value="Last_7_days" id="b" onclick="getCurrentDates('Last_7_days');"><label for="b">This Week</label></li> 
+                                <li><input type="radio" name="a" value="current_month" id="c" onclick="getCurrentDates('current_month');"><label for="c">This Month</label></li> 
+                                <li><input type="radio" name="a" value="Current_Year" id="d" onclick="getCurrentDates('Current_Year');"><label for="d">This Year</label></li> 
                             </ul>
                           </div>                      
                       </li>
-                      <li><a href="javascript:void(0)" class="overIcon" title="Actions" id="exPop"></a>
-                        <div class="newActPop">
-                            <span>
-                               <a href="javascript:void(0)" onclick="exportToPdf('pdf');" title="PDF">Export PDF</a>
-                              <a href="javascript:void(0)" onclick="exportToPdf('excel');" title="Excel">Export Excel</a>
-                            </span>
-                          </div>                      
-                      </li>
-                      <li class="">
-                        <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                        <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                  
                     </ul>
                     </div>
+                    
+                     <div class="repclo" id="graphId"  style="display: none;">
+        <div id="jobsAdded" class="amchartAnchor-Hide timRep"></div>
+        <div id="graphIdDiv" class=""></div>
+    </div>
+                    
                   </div>
                </div>
                
@@ -87,90 +78,7 @@ $('document').ready(function () {
   
 
 
-<script>
-    // Jobs added Column Chart
-      AmCharts.makeChart("jobsAdded",
-      {
-      "type": "serial",
-      "categoryField": "category",
-      "dataDateFormat": "YYYY-MM-DD",
-      "colors": [],
-      "startDuration": 1,
-      "categoryAxis": {
-        "equalSpacing": true,
-        "gridPosition": "start",
-        "parseDates": true,
-        "axisColor": "#ACACAC",
-        "gridThickness": 0,
-        "markPeriodChange": false,
-        "minHorizontalGap": 35,
-        "minVerticalGap": 25
-      },
-      "trendLines": [],
-      "graphs": [
-        {
-          "balloonText": "[[title]] : [[value]]",
-          "bulletField": "category",
-          "fillAlphas": 1,
-          "fillColors": "#6AB7F3",
-          "fixedColumnWidth": 30,
-          "id": "jobsAdded",
-          "lineColor": "#6AB7F3",
-          "title": "Jobs Added",
-          "type": "column",
-          "valueField": "column-1"
-        }
-      ],
-      "guides": [],
-      "valueAxes": [
-        {
-          "id": "ValueAxis-1",
-          "axisColor": "#ACACAC",
-          "firstDayOfWeek": 0,
-          "gridThickness": 0,
-          "title": ""
-        }
-      ],
-      "allLabels": [],
-      "balloon": {
-        "fixedPosition": false,
-        "horizontalPadding": 10,
-        "textAlign": "left",
-        "verticalPadding": 10
-      },
-      "titles": [],
-      "dataProvider": [
-        {
-          "category": "2019-03-11",
-          "column-1": "10"
-        },
-        {
-          "category": "2019-03-12",
-          "column-1": "6"
-        },
-        {
-          "category": "2019-03-13",
-          "column-1": "16"
-        },
-        {
-          "category": "2019-03-14",
-          "column-1": "6"
-        },
-        {
-          "category": "2019-03-15",
-          "column-1": "2"
-        },
-        {
-          "category": "2019-03-16",
-          "column-1": "4"
-        },
-        {
-          "category": "2019-03-17",
-          "column-1": "8"
-        }                                                
-      ]
-    });
-    </script>
+
     
     
     
@@ -184,7 +92,7 @@ $('document').ready(function () {
 	  $("#graphicalId").addClass("act");
 	  document.getElementById("graphId").style.display="block";
 	  document.getElementById("userTimeEntriesDiv").style.display="none";
-	  document.getElementById("listDivId").style.display="none";
+	  document.getElementById("searchId").style.display="none";
   }
   
   
@@ -194,6 +102,7 @@ $('document').ready(function () {
 	  document.getElementById("userTimeEntriesDiv").style.display="block";
 	  document.getElementById("listDivId").style.display="block";
 	  document.getElementById("graphId").style.display="none";
+	  document.getElementById("searchId").style.display="block";
   }
   
 //clock list pop 
@@ -362,13 +271,19 @@ function getUserTimeEntriesPagination(url){
 
 
 <script>
- function getUserTimeEntries(){
-		
+ function getUserTimeEntries(type){
+	 var currentDate = $("#frequencyId").html();
+	 var dayWisetype = null;
+	 $('input:radio[name=a]:checked').each(function() {
+		 dayWisetype = $(this).val();
+	 });
+		$("#clockLoading").attr('style','position:absolute; width:100%; height:250%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl+ "/getUserTimeEntries?${_csrf.parameterName}=${_csrf.token}",
+			url : sourceleadUrl+ "/getUserTimeEntries?${_csrf.parameterName}=${_csrf.token}&dayWisetype="+dayWisetype+"&type="+type+"&currentDate="+currentDate,
 			success : function(json) {
    	        	var result = "";
+//    	        	var frequency = "";
    	        	result = result +'<table id="userTimePagination">';
    		    	result = result +'<thead>';
    		    	result = result +'	<tr>';
@@ -387,9 +302,13 @@ function getUserTimeEntriesPagination(url){
    		    		result = result +'<tbody>';
    		    		
    		    		result = result +'<tr class="parent" id="2479'+i+'">';
-	    	  	    result = result + '    <td><span class="click">'+report.clockInDateStr+'<i class="fa fa-caret-down"></i></span></td>                            '; 
+   		    		if(dayWisetype == 'Current_Year'){
+   		    	  	    result = result + '    <td><span class="click">'+report.clockInDateStr+'</span></td>                            '; 
+   		    		}else{
+   		    	  	    result = result + '    <td><span class="click">'+report.clockInDateStr+'<i class="fa fa-caret-down"></i></span></td>                            '; 
+   		    		}
 
-	            	  result = result + '    <td>08</td>         ';
+	            	  result = result + '    <td>'+report.totalTime+'</td>         ';
    		    		
 	            	  result = result + '    <td>&nbsp;</td>   ';
 	            	  
@@ -400,26 +319,41 @@ function getUserTimeEntriesPagination(url){
                      result = result + '    <td>'+report.clockOutDateStr+'</td>  ';
 
    		    		
-   		    		
-   		    	  	for(var j=0; j<report.subList.length; j++){
-   		    			var opt = report.subList[j];
-   		    			
-   		    		   result = result +'	 <tr class="subTab child-2479'+i+'" >              '; 
-   					   result = result +'	        <td>'+opt.clockInTime+' - '+opt.clockOutTime+'</td>                    '; 
-   					   result = result +'	        <td>'+opt.individualNoOfHours+'</td>                                     '; 
-   					   result = result +'	        <td>'+opt.taskName+'</td>                                 '; 
-   					   result = result +'	        <td>Hyderabad</td>                              '; 
-   					   result = result +'	        <td>'+opt.comments+'</td>                       '; 
-   					   result = result +'	        <td>'+opt.clockOutDate+'</td>                             '; 
-   					   result = result +'	  </tr>                                                 '; 
-   		    			
-   		    		}  
+                     if("Current_Year" != type){
+                    		for(var j=0; j<report.subList.length; j++){
+           		    			var opt = report.subList[j];
+         		    		   result = result +'	 <tr class="subTab child-2479'+i+'" >              '; 
+           					   result = result +'	        <td>'+opt.clockInTime+' - '+opt.clockOutTime+'</td>                    '; 
+           					   result = result +'	        <td>'+opt.individualNoOfHours+'</td>                                     '; 
+           					   if(opt.taskName != null && opt.taskName != "undefined" && opt.taskName != ""){
+           	   					   result = result +'	        <td>'+opt.taskName+'</td>                                 '; 
+           					   }else{
+           	   					   result = result +'	        <td>--</td>                                 '; 
+
+           					   }
+           					   
+           					  if(opt.comments != null && opt.comments != "undefined" && opt.comments != ""){
+          	   					   result = result +'	        <td>'+opt.comments+'</td>                                 '; 
+          					   }else{
+          	   					   result = result +'	        <td>--</td>                                 '; 
+
+          					   }
+           					   result = result +'	        <td>--</td>                              '; 
+           					   result = result +'	        <td>'+opt.clockOutDate+'</td>                             '; 
+           					   result = result +'	  </tr>                                                 '; 
+           		    			
+           		    		}  
+                     }
+   		    	  
    		    	 result = result +'</tbody>';
    				}
    		    	
    		    	$("#userTimeEntriesDiv").empty();  
    	    	    $("#userTimeEntriesDiv").append(result);
    	    	 userTimeEntriesPagination();
+   	    	 $("#clockLoading").removeAttr('style');
+   	    	 setTimeout('refresh()', 500);
+   	    	showClockInClockOutGraph(json,type);
 			},
 		});
  }
@@ -432,7 +366,7 @@ function userTimeEntriesPagination(){
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": true,
+    	"ordering": false,
     	"oLanguage": {
      		"sSearch": "",
      		"sZeroRecords": "", "sEmptyTable": ""
@@ -442,22 +376,126 @@ function userTimeEntriesPagination(){
 </script>
 
 <script>
-$(function() {
-	alert(1)
-    $('tr.parent td span.click').on("click", function(){
-            var idOfParent = $(this).parents('tr').attr('id');
-            $('tr.child-'+idOfParent).toggle(100);
-        });
-    $('tr[class^=child-]').hide().children('td');
-});
+
+function refresh(){
+	$('tr.parent td span.click').on("click", function(){
+        var idOfParent = $(this).parents('tr').attr('id');
+        $('tr.child-'+idOfParent).toggle(100);
+    });
+$('tr[class^=child-]').hide().children('td');
+}
 </script> 
 
-<!-- <script>
-function clickTab(){ 
-	$(".subTab").toggle();
+<script>
+function getCurrentDates(type){
+	var currentDate = $("#frequencyId").html();
+	 var dayWisetype = null;
+	 $('input:radio[name=a]:checked').each(function() {
+		 dayWisetype = $(this).val();
+	 });
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+ "/getCurrentDates?${_csrf.parameterName}=${_csrf.token}&type="+type+"&currentDate="+currentDate+"&filterType="+dayWisetype,
+		success : function(dates) {
+			
+			if(dates != null && dates != "" && dates != "undefined"){
+				$("#frequencyId").html(dates);
+				getUserTimeEntries(type);
+				$("#previousId").show();
+				$("#nextId").show();
+			}else{
+				if(type == 'previous'){
+					$("#previousId").hide();
+					$("#nextId").show();
+				}else if(type == 'next'){
+					$("#nextId").hide();
+					$("#previousId").show();
+				}
+			}
+		}
+});
 }
-</script> -->
 
+</script>
+
+<script>
+function showClockInClockOutGraph(json,type){
+	if(json.data.length >0){
+		$("#graphIdDiv").removeClass('dataTables_empty'); 
+		$("#jobsAdded").show();
+		var format = "";
+		 if("Current_Year" != type){
+			 format =  "YYYY-MM-DD";
+		 }else{
+			 format =  "YYYY-MM";
+		 }
+		 var chartData = [];
+		   for (var i = 0; i < json.data.length; i++) { 
+		 		 var opt = json.data[i]; 
+		 		 chartData.push({
+		        		"category": opt.graphForamatDate,
+				         "column-1": opt.graphTotalTime
+		       });
+		   }
+		AmCharts.makeChart("jobsAdded",
+			      {
+			      "type": "serial",
+			      "categoryField": "category",
+			      "dataDateFormat": format,
+			      "colors": [],
+			      "startDuration": 1,
+			      "categoryAxis": {
+			        "equalSpacing": true,
+			        "gridPosition": "start",
+			        "parseDates": true,
+			        "axisColor": "#ACACAC",
+			        "gridThickness": 0,
+			        "markPeriodChange": false,
+			        "minHorizontalGap": 35,
+			        "minVerticalGap": 25
+			      },
+			      "trendLines": [],
+			      "graphs": [
+			        {
+			          "balloonText": "[[title]] : [[value]]",
+			          "bulletField": "category",
+			          "fillAlphas": 1,
+			          "fillColors": "#6AB7F3",
+			          "fixedColumnWidth": 30,
+			          "id": "jobsAdded",
+			          "lineColor": "#6AB7F3",
+			          "title": "Clock In/Out Time",
+			          "type": "column",
+			          "valueField": "column-1"
+			        }
+			      ],
+			      "guides": [],
+			      "valueAxes": [
+			        {
+			          "id": "ValueAxis-1",
+			          "axisColor": "#ACACAC",
+			          "firstDayOfWeek": 0,
+			          "gridThickness": 0,
+			          "title": ""
+			        }
+			      ],
+			      "allLabels": [],
+			      "balloon": {
+			        "fixedPosition": false,
+			        "horizontalPadding": 10,
+			        "textAlign": "left",
+			        "verticalPadding": 10
+			      },
+			      "titles": [],
+			      "dataProvider": chartData
+			    });
+	}else{
+		$("#graphIdDiv").addClass('dataTables_empty');
+		$("#jobsAdded").hide();
+	}
+	
+}
+    </script>
 
   
   <jsp:include page="../masterFooter.jsp" />

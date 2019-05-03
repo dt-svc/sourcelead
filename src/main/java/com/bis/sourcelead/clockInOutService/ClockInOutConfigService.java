@@ -1,5 +1,6 @@
 package com.bis.sourcelead.clockInOutService;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
@@ -41,6 +42,8 @@ public interface ClockInOutConfigService {
 
 	public Breaks getExistedBreakTime(Long clockInOutId);
 
-	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId, String dateFormat);
+	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId, String dateFormat, String dayWisetype, String previousDate, String type);
+
+	public ClockInOutUserTimeEntryDTO getTimeReports(OrgLocations loginOrgLocation, User user);
 
 }
