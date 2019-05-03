@@ -57,7 +57,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						<label class="clearfix">Pan No</label>
 						<div class="clearfix">
 							<input type="text" class="form-control" readonly="readonly"
-								id="associatePAN" placeholder="PAN No">
+								id="associatePAN" placeholder="PAN No" value="">
 						</div>
 					</div>
 					<div class="col-md-5">
@@ -70,6 +70,14 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 									<option ${year.value==true?"selected=selected":""} value="${year.key}">${year.key}</option>
 								</c:forEach>
 							</select>
+						</div>
+					</div>
+					<div class="col-md-5">
+						<label class="clearfix">Date of Birth</label>
+						<div class="clearfix">
+							<input type="text" class="form-control" readonly="readonly"
+								value="" id="dateOfBirth"
+								placeholder="Date Of Birth">
 						</div>
 					</div>
 					<div class="clearfix"></div>
