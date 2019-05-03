@@ -32,7 +32,7 @@
 });
        </script>
        <script type="text/javascript">
-			var config = {
+			/* var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
 			  '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -45,7 +45,7 @@
 			$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				});
+				}); */
 </script>
 <c:if test='${viewPage == "orgChart"}'>
 	<script src="/resources/js/jquery.orgchart.js"></script>

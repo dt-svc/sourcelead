@@ -351,7 +351,7 @@ function removepPayCheckDate(){
 	        	   var data = json.approvers;
 	        	   var monthly = json.month;
 					var res = "";
-					res = res + "<option value=''>Slect Month</option>";
+					res = res + "<option value=''>Select Month</option>";
 					  for (var j=0; j<monthly.length; j++)
 					{
 						res = res + "<option selected value='" +monthly[j]+ "'>"+monthly[j]+"</option>";

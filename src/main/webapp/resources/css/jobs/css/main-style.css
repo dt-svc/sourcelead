@@ -62,7 +62,7 @@ content p i {
 }
 .searchHome.searchHomeE {
 	width:100%; font-size: 14px; color: 666; -webkit-appearance: none; -moz-appearance: none; appearance: none;
-	text-align: 0.0px; overflow: hidden; background-image: url(../images/arrow.png); background-repeat: no-repeat;
+	text-align: 0.0px; overflow: hidden; background-image: url(../images/arrow-d-g.png); background-repeat: no-repeat;
 	background-position: 90% center; background-size: 10px;
 }
 .searchBtn{

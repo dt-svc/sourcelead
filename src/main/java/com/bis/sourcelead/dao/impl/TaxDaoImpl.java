@@ -522,7 +522,7 @@ public class TaxDaoImpl implements TaxDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(long orgLocationId, String uuid,
-			String financialYear, Paginator paginator) {
+			String financialYear, String searchValue, Paginator paginator) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from SourceleadTaxITDeclarationSubmission it where it.orgLocations.id=:orgLocationId";
@@ -531,6 +531,9 @@ public class TaxDaoImpl implements TaxDao {
 			}
 			if (!financialYear.isEmpty()) {
 				query += (query.contains("where") ? " and " : " where ") + "it.financialYear=:financialYear";
+			}
+			if (!searchValue.isEmpty()) {
+				query += (query.contains("where") ? " and " : " where ") + "(it.user.firstName like '%" + searchValue + "%' or it.user.lastName like '%" + searchValue + "%')";
 			}
 			query += " order by it.id desc";
 			Query queryObj = session.createQuery(query);

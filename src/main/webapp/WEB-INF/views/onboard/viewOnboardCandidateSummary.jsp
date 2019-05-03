@@ -421,7 +421,7 @@ padding-left: 25px;
 					 $("#onboardCandidateSummaryDetailsId").empty();
 	            	 
 	            	 $("#onboardCandidateSummaryDetailsId").append(result);
-	            	 loadOnBoardingTemplates(json.onboardTemplateId);
+	            	 //loadOnBoardingTemplates(json.onboardTemplateId);
 	        	} else if (response.indexOf('Sign In') !== -1) {
 	        		location.replace(sourceleadUrl);
 	        	} else {
@@ -587,7 +587,7 @@ function getTemplatePolicyDocumentsDetails(){
 		        	} else if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		var json = JSON.parse(response);
+		        		var json = JSON.parse(response.object);
 			        	var result = "";
 			        	result = result +'	 <div class="row">                                                       ';
 			        	if(json.length > 0){

@@ -119,7 +119,7 @@ $(document).ready(function(){
 		 $("#contractStage").val("DRAFT");
 	}
    getTemplateList();
-   getStageCounts();
+   //getStageCounts();
 });
 </script>
 
@@ -251,7 +251,7 @@ padding: 2px 300px 2px 0px;
 <!-- 		    <input type="hidden" name="tabType" id="tabType" value='Vendor'> -->
 			<!-- <a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
 			<a href="#" id="Client" class="tabActivation" onclick="tabEnable(this);getTemplateList('pending'); ">Clients</a> -->
-			<button type="button" value="Vendor" id="Vendor1" class="tabActivation btn btn-default btn-sm" onclick="tabEnable(this);Check('Vendors');getTemplateList('Vendor');"> Vendors(${contractsCount.totalDraftVendorCount})</button>
+			<button type="button" value="Vendor" id="Vendor1" class="tabActivation btn btn-primary btn-sm" onclick="tabEnable(this);Check('Vendors');getTemplateList('Vendor');"> Vendors(${contractsCount.totalDraftVendorCount})</button>
 			<button type="button" value="Client" id="Client1" class="tabActivation btn btn-default btn-sm" onclick="tabEnable(this);Check('Clients');getTemplateList('Client');">Clients (${contractsCount.totalDraftClientCount})</button>
 			<button type="button" value = "Full time offer" id="Applicants1" class="tabActivation btn btn-default btn-sm" onclick="tabEnable(this);Check('Applicants');getTemplateList('Full time offer');">Applicants (${contractsCount.totalDraftApplicantCount})</button>
 		    <input type="hidden" id="errorDiv" value=""/>
@@ -308,12 +308,12 @@ padding: 2px 300px 2px 0px;
 		    	<input type="text" placeholder="Vendor Search" id="vendorDataTableSearch"/>
 		    </div>
 	    </div>
-	    <div class="clearfix" id="clinetDataTable" style="display: block;">
+	    <div class="clearfix" id="clinetDataTable" style="display: none;">
 		    <div class="remove_search mt5" >
-		    	<input type="text" placeholder="Clinet Search" id="clinetDataTableSearch"/>
+		    	<input type="text" placeholder="Client Search" id="clinetDataTableSearch"/>
 		    </div>
 	    </div>
-	    <div class="clearfix" id="applicantDataTable" style="display: block;">
+	    <div class="clearfix" id="applicantDataTable" style="display: none;">
 		    <div class="remove_search mt5" > 
 		    	<input type="text" placeholder="Applicant Search" id="applicantDataTableSearch"/>
 		    </div>
@@ -424,13 +424,7 @@ function previewTemplatePDF(uuid, templateName){
 }
 </script>
 
-<script type="text/javascript">
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-            });
-        </script> 
+
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -629,7 +623,7 @@ function getTemplateList(listType){
        			  preparedContractListApplicantWTV(url,tabType);
        		   }
     	   }
-    	   getStageCounts();
+   // 	   getStageCounts();
 }
 </script>
 
@@ -843,7 +837,7 @@ function preparedContractVendorListDraftPagination(url,tabType){
 	     	   	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -1072,7 +1066,7 @@ function preparedContractClientListDraftPagination(url,tabType){
 		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -1290,7 +1284,7 @@ function preparedContractApplicantListDraftPagination(url,tabType){
 	    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -1516,7 +1510,7 @@ function preparedVendorContractListWFAPagination(url,tabType){
 		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -1730,7 +1724,7 @@ function preparedClientContractListWFAPagination(url,tabType){
 		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -1926,7 +1920,7 @@ function preparedApplicantContractListWFAPagination(url,tabType){
 	    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -2143,7 +2137,7 @@ function preparedVendorContractListWTSPagination(url,tabType){
 		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -2353,7 +2347,7 @@ function preparedClientContractListWTSPagination(url,tabType){
 	    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -2533,7 +2527,7 @@ function preparedApplicantContractListWTSPagination(url,tabType){
 	    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -2752,7 +2746,7 @@ function preparedVendorContractListWTVPagination(url,tabType){
 		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -2965,7 +2959,7 @@ function preparedClientContractListWTVPagination(url,tabType){
 //		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",
@@ -3151,7 +3145,7 @@ function preparedContractApplicantListWTVPagination(url,tabType){
 //		    	    	             "aaSorting": [[3,'desc']],
 		    	    	            "bLengthChange": true,
 		    	    	            "bDestroy": true,
-		    	    	            "ordering": true,
+		    	    	            "ordering": false,
 		    	    	            "oLanguage": {
 		    	    	                 "sSearch": "",
 		    	    	                  "sZeroRecords": "", "sEmptyTable": "",

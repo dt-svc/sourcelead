@@ -22,7 +22,8 @@
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="<c:url value='${appPath}/orgContractTemplate'/>"> Contract
+			&raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; 
+			        <a href="<c:url value='${appPath}/orgContractTemplate'/>"> Contract
 				Template List</a> &raquo; Add Contract Template
 		</div>
 	</section>
@@ -754,14 +755,11 @@
 <!-- Footer Area -->
 
 
-<script>
-	$(document).ready(
-			function() {
+		<script>	
+			$(document).ready(function(){
 				$("#txtEditor").Editor();
-				$("#txtEditor").find(".Editor-editor").data
-						- validation('validate_length length2-5000');
-				$("#txtEditor").find(".Editor-editor").data - validation
-						- optional('rule-required', true);
-			});
-</script>
+// 				$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
+// 				$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required', true);
+				});
+		</script>
 

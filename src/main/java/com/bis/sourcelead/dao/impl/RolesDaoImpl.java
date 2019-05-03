@@ -480,6 +480,25 @@ public class RolesDaoImpl implements RolesDao{
 		return rolesDTOList;
 	
 	}
+	
+	@Override
+	@Transactional
+	public List<String> getRolesNamesListByRolesId(List<String> roleIds) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query ="SELECT "
+				+" R.DISPLAY_NAME "
+				+" FROM ROLES R "
+				+" WHERE "
+				+" R.ID IN (:roleIds)";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setParameterList("roleIds", roleIds);
+		List<String> rolesNamesList = (List<String>)queryObj.list();
+		return rolesNamesList;
+	
+	}
+
 
 
 }

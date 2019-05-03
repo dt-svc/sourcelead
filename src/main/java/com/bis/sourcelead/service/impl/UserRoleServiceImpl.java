@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -46,10 +45,10 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserIdView;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ActionHistoryService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -106,6 +105,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 	
 	@Autowired
 	UserGroupDao userGroupDao;
+	
+	@Autowired
+	private CandidateService candidateService;
 	
 
 	@Override
@@ -231,7 +233,7 @@ public class UserRoleServiceImpl implements UserRoleService{
         int column=0;
         for(UserRole userRoles : userRolesList){
        	 writeRow = createExcelsheet.createRow(column+8);
-       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,column,userRoles);
+       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,column,userRoles,orgLocations);
        	 column++;
         }
 		return createExcelsheet;
@@ -321,42 +323,114 @@ public class UserRoleServiceImpl implements UserRoleService{
 		 Cell cell6 = writeRow.createCell(1);
 				 cell6.setCellValue(notLoggedInCount); 
 		 cell6.setCellStyle(style);
-		 String headers [] = Constants.USER_EXCEL_HEADERS;
+		 
+		 String headers [] = null;
+		 
+		 if(orgLocations.getCountry().equalsIgnoreCase(Constants.COUNTRY_INDIA)) {
+			 headers  = Constants.USER_EXCEL_HEADERS_INDIA; 
+		 }else {
+			 headers  = Constants.USER_EXCEL_HEADERS_NOT_INDIA;  
+		 }
+		 
 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,7);
 	}
 
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, UserRole userRoles) throws Exception {
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, UserRole userRoles,OrgLocations orgLocations) throws Exception {
 //		 Set<Employees> employeeSet = userRoles.getUser().getEmployee();
-		 Employees empl = employeesService.getEmployeeByUserId(userRoles.getUser().getId());
-			 if(empl.getEmployeeId() !=null){
-				 writeRow.createCell(0).setCellValue(empl.getEmployeeId()); 
+		 Employees employee = employeesService.getEmployeeByUserId(userRoles.getUser().getId());
+		 if(employee.getUser().getId() != null) {
+			 writeRow.createCell(0).setCellValue(employee.getUser().getId());
+		 }
+		 
+		  if(employee.getHireDate() !=null){
+				 String dateOfJoin = commonUtil.dateStrFromOrgDateFormatter(userRoles.getOrgLocations().getDateFormat(),employee.getHireDate());
+				 writeRow.createCell(1).setCellValue(dateOfJoin); 
 			 }
-			 if(empl.getHireDate() !=null){
-				 String dateOfJoin = commonUtil.dateStrFromOrgDateFormatter(userRoles.getOrgLocations().getDateFormat(),empl.getHireDate());
-				 writeRow.createCell(5).setCellValue(dateOfJoin); 
+			 
+			 if(userRoles.getUser().getEmail() !=null){
+			   writeRow.createCell(2).setCellValue(userRoles.getUser().getEmail());
+		   }
+		   
+		   if(orgLocations.getProbationPeriod() != null){
+			   writeRow.createCell(3).setCellValue(userRoles.getRoles().getOrgLocations().getProbationPeriod());
+		   }
+		   if(userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+			   writeRow.createCell(4).setCellValue("Invite");
+	   		   }else if((userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
+	   			writeRow.createCell(4).setCellValue("Resend");
+	   		   }else if(userRoles.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+	   			writeRow.createCell(4).setCellValue("Active");
+	   		   }else if(userRoles.getUserState() !=null && "INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
+	   			writeRow.createCell(4).setCellValue("In-active");
+	   		   }
+		   if(employee.getConfirmationDate() !=null){
+				 String confirmationDate = commonUtil.dateStrFromOrgDateFormatter(userRoles.getOrgLocations().getDateFormat(),employee.getConfirmationDate());
+				 writeRow.createCell(5).setCellValue(confirmationDate); 
 			 }
-			 if(empl.getRate() !=null && !"".equalsIgnoreCase(empl.getRate())){
-				 StringBuilder sb = new StringBuilder();
-				 writeRow.createCell(6).setCellValue(sb.append(empl.getRate()).append("/").append(empl.getRatePer()).toString());
-			 }
+		   
 		   if(userRoles.getUser().getFirstName() !=null){
-			   writeRow.createCell(1).setCellValue(userRoles.getUser().getFirstName());
+			   writeRow.createCell(6).setCellValue(userRoles.getUser().getFirstName());
 		   }
+		   
+		   if(userRoles.getUser().getMiddelName() !=null){
+			   writeRow.createCell(7).setCellValue(userRoles.getUser().getMiddelName());
+		   }
+		   
 		   if(userRoles.getUser().getLastName() != null){
-			   writeRow.createCell(2).setCellValue(userRoles.getUser().getLastName());
+			   writeRow.createCell(8).setCellValue(userRoles.getUser().getLastName());
 		   }
-		   if(userRoles.getUser().getEmail() !=null){
-			   writeRow.createCell(3).setCellValue(userRoles.getUser().getEmail());
+		   
+		   if(orgLocations.getLocation() !=null){
+		    	writeRow.createCell(9).setCellValue(orgLocations.getLocation());
+		    }
+		   
+		   com.bis.sourcelead.entity.Candidate candidate = candidateService.getCandidateByConsultantUserId(userRoles.getUser().getId(), orgLocations.getId());
+		    
+		   if(candidate !=null) {
+		   if(candidate.getResidenceAddress() != null) {
+		    	writeRow.createCell(10).setCellValue(candidate.getResidenceAddress());
+		    }
 		   }
-		   if(userRoles.getUser().getMobilePhone() != null){
-			   writeRow.createCell(4).setCellValue(userRoles.getUser().getMobilePhone());
+			
+			 if(userRoles.getUser().getMobilePhone() != null){
+			   writeRow.createCell(11).setCellValue(userRoles.getUser().getMobilePhone());
 		   }
-		   if(userRoles.getRoles() != null){
-			   writeRow.createCell(7).setCellValue(userRoles.getRoles().getDisplayName());
+			 if(userRoles.getUser().getExtensionNumber() != null){
+				   writeRow.createCell(12).setCellValue(userRoles.getUser().getExtensionNumber());
+			   }
+		   
+		    if(userRoles.getUser().getGender() != null){
+		    	writeRow.createCell(13).setCellValue(userRoles.getUser().getGender());
+		    }
+			
+			if(userRoles.getUser().getMaritalStatus() != null) {
+		    	writeRow.createCell(14).setCellValue(userRoles.getUser().getMaritalStatus());
+		    }
+			
+			if(userRoles.getUser().getDateOfBirth() != null) {
+		    	writeRow.createCell(15).setCellValue(userRoles.getUser().getDateOfBirth());
+		    }
+			
+			if(employee.getDepartmentId() != null) {
+		    	writeRow.createCell(16).setCellValue(employee.getDepartmentId().getDepartmentName());
+		    }
+			
+			if(employee.getUserEmploymentType() != null) {
+		    	writeRow.createCell(17).setCellValue(employee.getUserEmploymentType());
+		    }
+			
+			if(userRoles.getRoles() != null){
+			   writeRow.createCell(18).setCellValue(userRoles.getRoles().getDisplayName());
 		   }
-		  /* if(userRoles.getUser().getLocation() !=null){
-			   writeRow.createCell(7).setCellValue(userRoles.getUser().getLocation());
-		   }*/
+		   
+		   if(userRoles.getDesignation() != null) {
+		    	writeRow.createCell(19).setCellValue(userRoles.getDepartment());
+		    }
+			
+			if(userRoles.getGradeId() != null) {
+		  writeRow.createCell(20).setCellValue(userRoles.getGradeId().getGradeName());
+		  }
+		  
 		   if(userRoles.getReportingManager() !=null){
 			   StringBuilder reportingManager = new StringBuilder();
 			   if(userRoles.getReportingManager().getLastName() != null && !userRoles.getReportingManager().getLastName().isEmpty()) {
@@ -364,23 +438,65 @@ public class UserRoleServiceImpl implements UserRoleService{
 			   }else {
 				   reportingManager = reportingManager.append(userRoles.getReportingManager().getFirstName());
 			   }
-			   writeRow.createCell(8).setCellValue(reportingManager.toString());
+			   writeRow.createCell(21).setCellValue(reportingManager.toString());
 		   }
 		   
-		   if(userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-			   writeRow.createCell(9).setCellValue("Invite");
-	   		   }else if((userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
-	   			writeRow.createCell(9).setCellValue("Resend");
-	   		   }else if(userRoles.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-	   			writeRow.createCell(9).setCellValue("Active");
-	   		   }else if(userRoles.getUserState() !=null && "INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-	   			writeRow.createCell(9).setCellValue("In-active");
-	   		   }
+		   if(userRoles.getResourceManager() !=null){
+			   StringBuilder resourceManager = new StringBuilder();
+			   if(userRoles.getResourceManager().getLastName() != null && !userRoles.getResourceManager().getLastName().isEmpty()) {
+				   resourceManager = resourceManager.append(userRoles.getReportingManager().getFirstName()).append(" ").append(userRoles.getResourceManager().getLastName());
+			   }else {
+				   resourceManager = resourceManager.append(userRoles.getResourceManager().getFirstName());
+			   }
+			   writeRow.createCell(22).setCellValue(resourceManager.toString());
+		   }
 		   
-		return createExcelsheet;
+		    if(userRoles.getShift() != null) {
+		    	writeRow.createCell(23).setCellValue(userRoles.getShift().getShiftName());
+		    }
+			
+			if(employee.getRate() !=null && !"".equalsIgnoreCase(employee.getRate())){
+				 StringBuilder sb = new StringBuilder();
+				 writeRow.createCell(24).setCellValue(sb.append(employee.getRate()).append("/").append(employee.getRatePer()).toString());
+			 }
+			 
+			 if(employee.getDailyHours() != null) {
+		    	writeRow.createCell(25).setCellValue(employee.getDailyHours());
+		    }
+			 
+			 if(userRoles.getIsGlobal() != null) {
+				 writeRow.createCell(26).setCellValue(userRoles.getIsGlobal());
+			 }
+			 
+			 if(userRoles.getIsMailSent() != null) {
+				 writeRow.createCell(27).setCellValue(userRoles.getIsMailSent().toString());;
+			 }
+			 
+			 if(userRoles.getUser().getAllowEmployeeToFill() != null) {
+				 writeRow.createCell(28).setCellValue(userRoles.getUser().getAllowEmployeeToFill().toString());
+			 }
+			
+
+		    if(orgLocations.getCountry().equalsIgnoreCase(Constants.COUNTRY_INDIA)) {
+			if(candidate !=null) { 
+		    if(candidate.getAadharNumber() !=null){
+				 writeRow.createCell(29).setCellValue(candidate.getAadharNumber()); 
+			 }
+			 if(candidate.getPanNumber() != null) {
+				 writeRow.createCell(30).setCellValue(candidate.getPanNumber());
+			 }
+			}
+		    }else {
+		    	if(candidate !=null) {
+		    		if(candidate.getSsnNumber() != null)
+		    	 writeRow.createCell(29).setCellValue(candidate.getSsnNumber()); 
+		    	}
+		    }
+			 
+		    
+		    return createExcelsheet;
 		
 	}
-
 	@Override
 	public File getPdfFile(List<UserRole> activeList,
 			List<UserRole> inactiveList, List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
@@ -883,6 +999,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	public UserRole getProjectmemberUserDetailsByUserIdAndLocationId(Long userId, Long locationId, String designationType)
 			throws Exception {
 		return userRoleDao.getProjectmemberUserDetailsByUserIdAndLocationId(userId,locationId,designationType);
+	}
+
+	@Override
+	public List<UserDTO> getAllActiveUsersList(Long orgLocationId) throws Exception {
+		return userRoleDao.getAllActiveUsersList(orgLocationId);
 	}
 
 

@@ -99,7 +99,8 @@
 		</div>
 		<c:if test="${empty leaveType.id}">
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a 
+			    href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo;<a
 				href="<c:url value='${appPath}/leaveConfiguration'/>"> Leave Configuration</a>
 			&raquo;<a href="<c:url value='${appPath}/viewLeaveTypes'/>">Leave type List</a>
 			&raquo; Add Leave Type
@@ -543,7 +544,11 @@
 										placeholder="Select Color Picker" readonly="readonly"
 										value="${leaveType.colorCode}" class="form-control" id="colorCode" 
 										data-validation="required"> 
-											<span class="input-group-addon colPicBox"><input type="color" class="" value="${leaveType.colorCode}" id="favcolor" onclick="validateColor(); colorPicker();"></span>
+											<span class="input-group-addon colPicBox"><input type="color" class="" 
+											
+											value="${leaveType.colorCode}" 
+											
+											id="favcolor" onclick="validateColor(); colorPicker();"></span>
 								</div>
 								<div>
 								
@@ -1165,7 +1170,7 @@
 					<div class="row">		
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12  txtEditor_p">
 						<h5>Description<span class="text-danger">&nbsp;*</span></h5>
-						<textarea id="txtEditor" name="leavePolicyDescription"   field-name="Description" class="form-control newContrtextarea" data-validation="validate_length length2-5000" data-validation-optional="true"></textarea>
+						<textarea id="txtEditor" name="leavePolicyDescription"   field-name="Description" class="form-control newContrtextarea" data-validation="required validate_length length2-5000" data-validation-optional="true"></textarea>
 					</div>
 </div>
 						</div>
@@ -1614,8 +1619,8 @@ $(window).load(function() {
 <script>
 	$(document).ready(function() {
 		$("#txtEditor").Editor();
-		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
-		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
+		//$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
+		//$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 	});
  </script>
  

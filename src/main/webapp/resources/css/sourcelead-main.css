@@ -9986,6 +9986,65 @@ ul.goalscomments-list li:hover {
 .viewEyeicon {
 	position: absolute; right:50px; top:0px; color: #fff; cursor: pointer; z-index: 9999; padding: 11.74px 4px;
 }
+.candidateCustomtextArea {
+	width: 957px !important; border: none !important;
+}
+.addUser-org {
+	overflow-x: auto;
+}
+.columnfields-custom-new label {
+width: 100%; clear:both; display: inline-table; display: none;
+}
+.columnfields-custom-new .col-md-9 {
+width: 100%;
+}
+.columnfields-custom-new .col-md-9 select {
+width: 100%; padding: 3px 20px 3px 15px;
+}
+.reqDocuments.reqDocuments_customs {
+	padding-top: 10px; border: 1px solid #ededed; margin-top: 75px; margin-bottom: 15px; min-height: 150px; border-radius:5px;
+}
+.reqDocuments.reqDocuments_customs table {
+border:1px solid #ddd; width: 100%;
+}
+.reqDocuments.reqDocuments_customs .clients_wrap_table {
+border-bottom:0;
+}
+.glyphicon.glyphicon-custom {
+    color: red; cursor: pointer;
+}
+.edit-status.edit-status-custom {
+top: 20%; right: auto; left: 40%;
+}
+.refresh-icon.refreshIcon.refreshIcon-custom {
+	top: 16px !important;
+}
+.popinnerdiv-innerscroll { min-height: 100px; max-height: 425px; overflow-y:auto; }
+.inlineField, .inlineField:focus {
+	width:100px !important; text-align:center;
+}
+.form-control.formControl-styles {
+	border:none; background: none; font-size:14px; font-weight:600; box-shadow: none;}
+.fa-times.mr6 { margin:6px; }
+.project_wrap_table.tableI table i { font-size: 13px;}
+.successBtn.successBtn-custom { background-color: #1ab394; border-color: #1ab394;
+	border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px; font-size: 13px; width: 60px;
+}
+.modal.zIndexStyle { z-index: 15000;}
+.popCusDate{
+	right: 16px; bottom: -40px; top: inherit; background: #fff; border: none; padding: 8px 10px 8px 5px;
+}
+.remove_user_pop.remove_user_pop_a { z-index: 18000; }
+
+.scheduleDateValidation {
+	padding: 0px 0px 0px 0px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500; text-align: center;
+}
+.count.count-values { display: block !important; }
+.billingArea { padding: 10px; }
+.side_mask.side_mask_new { background-color: rgba(0,0,0,0.3); }
+.pop_mask.pop_mask_newstyles { z-index: 99999; }
+.addcandidate-popup.addcandidate-popup-newstyles { z-index: 9999999; }
+.exlpdf_btns.exlpdf_btns_btns table tr td div i { color: #333; }
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

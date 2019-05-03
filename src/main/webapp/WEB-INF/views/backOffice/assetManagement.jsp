@@ -5,14 +5,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page trimDirectiveWhitespaces="true" %>
-
-<style type="text/css">
-.columnfields-custom .col-md-9 { width: 100%;}
-.popinnerdiv  {min-height: 100px; max-height: 450px; overflow-y:auto; }
-</style>
-
-<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
-
+<!-- <script type="text/javascript" src="jquery-1.2.6.min.js"></script> -->
 <script>
 $(document).ready(function(){
 	getDynamicAssetList();
@@ -215,13 +208,13 @@ $(document).ready(function(){
       <input type="hidden" id="assetmanagementPdfFile" name="assetmanagementPdfFile">
       <input type="hidden" id="assetAssignFileSize" name="assetAssignFileSize">
     <!-- list Table -->
-    <div class="require_wrap_table table-wrap datatable_filter overflow_inherint project_tabs_inn" id="tab-8">
+    <div class="require_wrap_table table-wrap datatable_filter project_tabs_inn" id="tab-8">
 	    <div id= "assetManagementLoderDiv"></div>
 	    <table id="assetManagementList" class="display" cellspacing="0" width="100%"> </table>
 	    <div id="dynamicAssetManagementList"></div>
     </div>
     
-    <div class="timesheet_out project_tabs_inn require_wrap_table table-wrap datatable_filter overflow_inherint" id="tab-9">
+    <div class="timesheet_out project_tabs_inn require_wrap_table table-wrap datatable_filter" id="tab-9">
     </div>
     
     
@@ -812,7 +805,7 @@ function projectAssetPaginations(url){
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
-    $("assetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("#assetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $('#assetPagination').DataTable().column(0).visible(false);
     $("input[type=search]").hide();
     $("#assetDataTableSearch").keyup(function(e) {
@@ -1020,7 +1013,7 @@ function assignAssetPagination(url){
 	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
-    $("assignAssetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("#assignAssetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
     $("#assignAssetDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
@@ -1276,38 +1269,11 @@ $('body').on('blur', '#assetService_form', function() {
  
  
  
- <script>
 
-</script> 
-  <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-            });
-        </script> 
-  <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-
-});
- 		</script> 
+  
+ 
   <script>
-
 // Error pop
-
-
 // Approved Popup
     $("#category").click(function(){
     	$('#category').find(".approved_pop").toggle();
@@ -1362,7 +1328,6 @@ $('body').on('blur', '#assetService_form', function() {
 $(document).ready(function() {
 	$("#tab-1").show()
     $(".project-tabs-menu a").click(function(event) {
-        event.preventDefault();
         $(this).parent().addClass("current");
         $(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
@@ -1375,7 +1340,7 @@ $(document).ready(function() {
 $(document).ready(function() {
 	$("#tabb-1").show()
     $(".new-tabs a").click(function(event) {
-        event.preventDefault();
+        /* event.preventDefault(); */
         $(this).parent().addClass("current");
         $(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
@@ -1389,7 +1354,7 @@ $(document).ready(function(event) {
  $(".collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 	 e.stopPropagation();
  });
-   event.preventDefault();
+   //event.preventDefault();
 });
 
 $(".close-div").click(function(){
@@ -1451,13 +1416,7 @@ $(document).ready(function(){
    
    
 </script> 
-  <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker5').datetimepicker({
-					locale: 'ru'
-                });
-            });
-        </script>
+
 <script>
 $(".addcon-pop").click(function(){
 	 $(".collapse-div-adduser").toggleClass("show-div");

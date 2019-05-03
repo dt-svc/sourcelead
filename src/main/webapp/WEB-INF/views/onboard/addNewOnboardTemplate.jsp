@@ -20,7 +20,7 @@ width : 6% !important;
           <div class="pull-left">
             <h2>Onboard Template</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/onboardingTemplatesList'/>">Onboard Templates List</a> &raquo; Add Onboard Template </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; <a href="<c:url value='${appPath}/onboardingTemplatesList'/>">Onboard Templates List</a> &raquo; Add Onboard Template </div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -1316,9 +1316,9 @@ function saveAndFinishOnboardTemplate(templateId) {
     
     
     // upload file script
-    document.getElementById("uploadBtn").onchange = function () {
+    /* document.getElementById("uploadBtn").onchange = function () {
     document.getElementById("uploadFile").value = this.value;
-	};
+	}; */
   </script> 
 <script type="text/javascript">
 			var config = {
@@ -1360,7 +1360,9 @@ $('#nexttab').on('click', function() {
 });
 </script> --> 
 
-<script>
+<!-- fileinput function is not declared..! -->
+
+<!-- <script>
     //File upload
     $('#file-fr').fileinput({
         language: 'fr',
@@ -1461,6 +1463,6 @@ $('#nexttab').on('click', function() {
          */
     });
 
-    </script>
+    </script> -->
 
   <jsp:include page="../masterFooter.jsp" />

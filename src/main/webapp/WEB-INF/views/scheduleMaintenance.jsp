@@ -7,12 +7,6 @@
 <script src="/resources/js/moment.min.js"></script>
 <script src="/resources/js/bootstrap-datetimepicker.min.js"></script>
 
-<style>
-#scheduleDateValidation {
-	padding: 0px 0px 0px 0px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500; text-align: center;
-}
-</style>
-
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -43,7 +37,7 @@
 		</div>
 		<form:form id="scheduleMaintenance_form" name="scheduleMaintenance_form" method="post">
 	<div class="popupMid popupMidHeight clearfix">
-		<div id="scheduleDateValidation"></div>
+		<div id="scheduleDateValidation" class="scheduleDateValidation"></div>
           <div class="col-sm-12 noPad mt clearfix">
           		<input type="hidden" id="scheduleId" name="id" value=""/>
 				<label class="col-md-4 padding_left">Start Date<span class="text-danger paddingLeft">*</span></label>

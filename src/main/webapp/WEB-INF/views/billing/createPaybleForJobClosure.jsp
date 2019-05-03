@@ -10,19 +10,6 @@
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
 
-<style type="text/css">
-.inline_field, .inline_field:focus {
-	width:100px !important; text-align:center;
-}
-.timesheet_week_comm .form-group {
-margin-bottom: 0;
-}
-.timesheet_week_comm.invoiceDocs_add span .fa-times {
-    margin: 6px;
-}
-</style>
-
-
 <script type="text/javascript">
 $(document).ready(function(){
 	var invoiceUUID = '${invoiceUUID}';
@@ -353,7 +340,7 @@ function errRemoveVendorContact(){
          result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add width100percnt">';
          result = result +'  <div id="0invoicedocFileuploadFileGroup"> ';
          result = result +'  <span>';
-         result = result +'  <input type="file" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);"><i class="fa fa-times" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOvere="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
+         result = result +'  <input type="file" id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);"><i class="fa fa-times mr6" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOvere="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
          result = result +'  </span> </div>';
          result = result +'  </div>';
          result = result +'  </td>';
@@ -1274,11 +1261,11 @@ function calculateDiscount(){
 
 <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
 	<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt">
-		<div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup">
+		<div class="form-group mb0" id="REPLACEROWIDinvoicedocFileuploadFileGroup">
 			<span> <input type="file" name='REPLACEROWIDinvoicedocFile'
 				id='REPLACEROWIDinvoicedocFile'
 				onchange='attachFile(REPLACEROWID);validateContractsUploadFile(REPLACEROWID)'> <i
-				class="fa fa-times" mouseOver="Delete" title="Delete"
+				class="fa fa-times mr6" mouseOver="Delete" title="Delete"
 				onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
 			</span>
 		</div>
@@ -1883,7 +1870,7 @@ function maskme(){
     $.mask.definitions['m'] = "[0-9]";
     $.mask.definitions['P'] = "[AaPp]";
     $.mask.definitions['p'] = "[Mm]";
-    $(".inline_field").mask("Hhh:Mm"); 
+    $(".inlineField").mask("Hhh:Mm"); 
     
     $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
     	

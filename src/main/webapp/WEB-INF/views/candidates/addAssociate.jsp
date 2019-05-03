@@ -5,7 +5,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 	
-	<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 	
 	<script type="text/javascript">
 		window.onload = function () {
