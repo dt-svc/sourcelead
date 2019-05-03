@@ -34,6 +34,8 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 	
 	private List<RequirementWorkFlowTasksDTO> taskList;
 	
+	private String currentStageUuid;
+	
 	public long getId() {
 		return id;
 	}
@@ -144,6 +146,14 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 
 	public void setTaskList(List<RequirementWorkFlowTasksDTO> taskList) {
 		this.taskList = taskList;
+	}
+
+	public String getCurrentStageUuid() {
+		return currentStageUuid;
+	}
+
+	public void setCurrentStageUuid(String currentStageUuid) {
+		this.currentStageUuid = currentStageUuid;
 	}
 
 	
