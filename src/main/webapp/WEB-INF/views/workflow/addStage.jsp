@@ -395,8 +395,8 @@ $(document).ready(function() {
 });
 
 
-/* var stagename = $('#stageName').val();
-<c:if test="${not empty requirementWorkFlowStagesDTO}">
+  var stagename = $('#stageName').val();
+ <c:if test="${not empty requirementWorkFlowStagesDTO}">
 var workflowStages = new Array();
 var stageUuid = new Array();
 
@@ -426,7 +426,6 @@ var nextstageResult = "";
 previousStageResult = previousStageResult + '<select class="sel form-control" id = "previousStageUuid">';
 
 if(stageIndex > -1) {
-	//result = result + "<option value="+dataList.uuid+">"+dataList.stageName+"</option>";
 	previousStageResult = previousStageResult + "<option value = "+stageUuid[stageIndex-1]+">"+workflowStages[stageIndex-1]+"</option>";
 }
 previousStageResult = previousStageResult + "</select>"; 
@@ -439,7 +438,6 @@ if((stageIndex+1) == workflowStages.length){
 	}else{
 		nextstageResult = nextstageResult + "<select class='sel form-control' id = 'workflowStageUuid'>";	
 		if(stageIndex > -1) {
-			//result = result + "<option value="+dataList.uuid+">"+dataList.stageName+"</option>";
 			nextstageResult = nextstageResult + "<option value = "+stageUuid[stageIndex+1]+">"+workflowStages[stageIndex+1]+"</option>";		
 			console.log(stageUuid[stageIndex+1] + " "+workflowStages[stageIndex+1]);
 		}
@@ -448,7 +446,7 @@ if((stageIndex+1) == workflowStages.length){
 }
 
 }
-</c:if> */
+</c:if>   
 
 </script>
 
@@ -483,7 +481,6 @@ function saveRequirementWorkflowStage(workflowUuid){
 	if(stageUuid == null){
 		stageUuid = $("#previousStageUuid").val();
 	}
-	
 	var currentStageUuid = $("#currentStageUuid").val();
 	
 	 if ($('#addStageForm').validate(false, validationSettings)) {
