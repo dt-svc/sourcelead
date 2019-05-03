@@ -6,8 +6,9 @@ var uploadCount = 1;
 $(document).ready(function() {
 	$("#employeeSelect").change(function() {
 		$("#associateName").val($("#employeeSelect :selected").data("name"));
-		$("#associateId").val($(this).val());
-		$("#associatePAN").val("");
+		$("#associateId").val($("#employeeSelect :selected").data("associate_id"));
+		$("#associatePAN").val($("#employeeSelect :selected").data("pan"));
+		$("#associateDOB").val($("#employeeSelect :selected").data("dob"));
 	});
 	$("#saveBtn, #submitBtn").click(function() {
 		if ($('#itDeclarationForm').validate(false, validationSettings)) {
@@ -258,11 +259,11 @@ function closeChangeStatusPopup() {
 	$(".project_inn_mask").fadeOut(200);
 }
 
-function getItDeclarationSubmissionList(uuid, pageNo) {
+function getItDeclarationSubmissionList(uuid, financialYear, pageNo) {
 	var pageSize = $("#pageSize").val();
 	$("#formList").empty();
 	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-	$.post(pmsUrl + "/itDeclaration/list", {pageNo:pageNo, pageSize:pageSize}, function(response) {
+	$.post(pmsUrl + "/itDeclaration/list", {uuid:uuid, financialYear:financialYear, pageNo:pageNo, pageSize:pageSize}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
 		} else if (response.response === "AWKWARD") {
@@ -304,7 +305,7 @@ function getItDeclarationSubmissionList(uuid, pageNo) {
 						ellipsePageSet : false,
 						cssStyle : 'light-theme',
 						onPageClick : function(pageNumber, event) {
-							getItDeclarationSubmissionList(uuid, pageNumber-1);
+							getItDeclarationSubmissionList(uuid, financialYear, pageNumber-1);
 						}
 				};
 				$("#pagination-demo").pagination(options);
