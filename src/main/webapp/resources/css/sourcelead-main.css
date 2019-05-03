@@ -10019,6 +10019,32 @@ top: 20%; right: auto; left: 40%;
 .refresh-icon.refreshIcon.refreshIcon-custom {
 	top: 16px !important;
 }
+.popinnerdiv-innerscroll { min-height: 100px; max-height: 425px; overflow-y:auto; }
+.inlineField, .inlineField:focus {
+	width:100px !important; text-align:center;
+}
+.form-control.formControl-styles {
+	border:none; background: none; font-size:14px; font-weight:600; box-shadow: none;}
+.fa-times.mr6 { margin:6px; }
+.project_wrap_table.tableI table i { font-size: 13px;}
+.successBtn.successBtn-custom { background-color: #1ab394; border-color: #1ab394;
+	border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px; font-size: 13px; width: 60px;
+}
+.modal.zIndexStyle { z-index: 15000;}
+.popCusDate{
+	right: 16px; bottom: -40px; top: inherit; background: #fff; border: none; padding: 8px 10px 8px 5px;
+}
+.remove_user_pop.remove_user_pop_a { z-index: 18000; }
+
+.scheduleDateValidation {
+	padding: 0px 0px 0px 0px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500; text-align: center;
+}
+.count.count-values { display: block !important; }
+.billingArea { padding: 10px; }
+.side_mask.side_mask_new { background-color: rgba(0,0,0,0.3); }
+.pop_mask.pop_mask_newstyles { z-index: 99999; }
+.addcandidate-popup.addcandidate-popup-newstyles { z-index: 9999999; }
+.exlpdf_btns.exlpdf_btns_btns table tr td div i { color: #333; }
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
