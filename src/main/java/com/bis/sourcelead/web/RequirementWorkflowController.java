@@ -364,7 +364,6 @@ public class RequirementWorkflowController {
 			User user = new User();
 			user.setId(userId);
 			Response<String> response = new Response<>();
-			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTO = null;
 				try {
 					if (user != null && null != requirementWorkFlowStagesDTO) {
 						requirementWorkFlowService.saveRequirementWorkflowStageByWorkflowId(requirementWorkFlowStagesDTO, orgLocations, user);

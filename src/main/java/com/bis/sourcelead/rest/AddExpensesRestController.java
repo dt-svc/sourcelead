@@ -167,7 +167,7 @@ public class AddExpensesRestController {
 				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId(),isGlobalAccess);
 
 				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser,loginUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
-				expensesApprovalService.sendExpenseReopenAcceptMailToEmployee(expense,orgLoc,type,reopenedUser,loginUser);
+				//expensesApprovalService.sendExpenseReopenAcceptMailToEmployee(expense,orgLoc,type,reopenedUser,loginUser);
 
 			}else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
 				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,type,Constants.YES);
@@ -265,16 +265,17 @@ public class AddExpensesRestController {
 			Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
 			currencyCode = countries.getCurrency();
 		}
+		 String loginUserType = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess"); 
 		if(loginUser != null && orgLoc != null){
-			addExpensesService.storeAddExpensesData(expensesDTO,loginUser,orgLoc,request,currencyCode,isGlobalAccess);
+			addExpensesService.storeAddExpensesData(expensesDTO,loginUser,orgLoc,request,currencyCode,isGlobalAccess,loginUserType);
 			return "success";
 		}
 		else{
 			return "failure";
 		}
 		//JSONObject jsonObj = new JSONObject(request.getParameter("json"));
-	
+
 		
    }
  	

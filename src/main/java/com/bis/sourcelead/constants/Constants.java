@@ -124,6 +124,12 @@ public class Constants {
 	public static final String INVITE_USER = "Invite User";
 	public static final String BLOG_SUBSCRIPTION = "blogSubscription";
 	public static final String EXPENSES_EMAIL_TO_MANAGER = "ExpensesEmailToManager";
+	
+	public static final String MAILTOEMPLOYEEWHEN_MANAGERSUBMITEXPENSE = "MailToEmployeeWhenManagerSubmitExpense";
+	public static final String MAILTOAPPROVER2WHENAPPROVER1APPROVESTHEEXPENSE = "MailToApprover2WhenApprover1ApprovesTheExpense";
+	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_REJECT_THE_EXPENSE = "MailToManager1WhenManager2orAdminRejectTheExpense";
+	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_APPROVESTHE_EXPENSE = "MailToManager1WhenManager2orAdminApprovesTheExpense";
+	
 	public static final String INVITE_CLIENT = "Invite Client";
 	public static final String INVITE_VENDOR = "Invite Vendor";
 	public static final String MODIFY_CONTRACT_ENDDATE = "ModifyContractEndDate";
@@ -184,6 +190,9 @@ public class Constants {
 	
 	public static final String ADD_TASK_COMMENT_EMAIL = "AddTaskCommentEmail";
 	public static final String ADD_TASK_COMMENT_NOTIFICATION = "AddTaskCommentNotification";
+	
+	public static final String ADD_GOAL_COMMENT_EMAIL = "AddGoalsCommentEmail";
+	public static final String ADD_GOAL_COMMENT_NOTIFICATION = "AddGoalCommentNotification";
 	
 	public static final String TIMESHEET_APPROVED_EMAIL_TOVENDOR = "TimesheetApprovedEmailToVendor";
 	public static final String TIMESHEET_REJECTED_EMAIL_TOVENDOR = "TimesheetRejectEmailToVendor";
@@ -610,9 +619,21 @@ public class Constants {
 	public static final String[] COUNTRY_DROPDOWN = { "India", "Australia", "France", "Singapore",
 			"United Kingdom", "United States" };
 	public static final String[] LEVEL_DROPDOWN = { "Tier-1", "Tier-2", "Tier-3", "Tier-4", "Tier-5" };
+	
+	public static final String[] USER_EXCEL_HEADERS_INDIA = {  "Employee Id","Date Of Join","Email-id","Probationary Period","status","Confirmation Date",
+			"First Name","Middle Name", "Last Name","Work Location","Residence Location","Phone Number","Extension Number","Gender","MaritalStatus","Date Of Birth",
+			"Department","EmpType","Role","Designation","Grade","Reporting Manager","Resource Manager","Shift","Rate",
+			"Daily Hours","Global Manager","Is  send mail to Associate","Allow Employee To Fill","PAN Number","Aadhar Number" };
+	
 	public static final String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name",
 			"Email-id", "Phone Number", "Date Of Join", "Rate", "Role", "Manager",
 			"status" };
+	
+	public static final String[] USER_EXCEL_HEADERS_NOT_INDIA = {	"Employee Id","Date Of Join","Email-id","Probationary Period","status","Confirmation Date",
+			"First Name","Middle Name","Last Name","Work Location","Residence Location","Phone Number","Extension Number","Gender","MaritalStatus","Date Of Birth",	"Department",
+			"EmpType","Role","Designation","Grade","Reporting Manager","Resource Manager","Shift","Rate",
+			"Daily Hours","Global Manager","Is send mail to Associate","Allow Employee To Fill","SSN Number"};
+	
 	public static final String[] DAILY_WISE_LEAVE_REPORT_HEADERS = { "Emp Name", "Emp Type", "Departement",
 			"Role", "Leave Type", "Type", "Duration", "From Date",
 			"To Date", "Applied On", "Reason", "Status", "Approver", "Approved On" };
@@ -1471,7 +1492,6 @@ public class Constants {
 	public static final String DEDUCTION_TYPE = "Deduction Type";
 	public static final String DEDUCT_AMOUNT= "Deduct Amount";
 	public static final String CONTRIBUTE_AMOUNT = "Contribute Amount";
-	
 	
 	
 }
