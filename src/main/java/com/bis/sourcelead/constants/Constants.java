@@ -504,6 +504,7 @@ public class Constants {
 	public static final String FORMS = "Forms";
 	public static final String MYPAYROLL = "MyPayroll";
 	public static final String RUNPAYROLL = "RunPayroll";
+	public static final String PERFORMANCE = "Performance";
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/
@@ -587,6 +588,9 @@ public class Constants {
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
+	
+	public static final String DEFAULT = "Default";
+	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
@@ -706,11 +710,11 @@ public class Constants {
 			"Rate", "Rate Currency", "Rate Per", "Gender*","Marital Status","Date of Join","Date of Birth","Role*","Day hours(HH:MM)","Manager*(Email)", "Employment type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Department*","Send Mail to User","Is Global Manager"};
 	
 	public static final String[] DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Payment Mode*","Bank Name*","Account Number*","BSR Number","MICR Code","IFSC Code*",
-			"First Name","Last Name",};
+			"First Name*","Last Name*",};
 	
 	public static final String[] DATA_MIGRATION_ASSOCIATE_SALARY_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Pay Type*","Pay Frequency*","Pay Group*","Standard Hours","Annual Salary*"};						
 
-	public static final String[] PAYMENT_MODE = {"Savings", "Cheque", "Cash"};
+	public static final String[] PAYMENT_MODE = {"SAVINGS", "CHEQUE", "CASH"};
 	
 	public static final String[] ASSOCIATE_SALARY_PAYTYPE = {"Salary"};
 	
@@ -1131,6 +1135,7 @@ public class Constants {
 	public static final String CANDIDATE_TAG_ADDED = "added tag";
 	public static final String CANDIDATE_TAG_REMOVED = "removed tag";
 	
+	
 	public static final String EXPENSES = "expenses";
 	public static final String VIEW_TYPE = "LISTVIEW"; 
 	public static final String GUEST = "Guest";
@@ -1242,6 +1247,7 @@ public class Constants {
 	public static final String REPORT_FILTER_1_Month_Ago = "1_Month_Ago";
 	public static final String REPORT_FILTER_CURRENT_YEAR = "Current_Year";
 	public static final String CLIENT_REPORT = "clientReport";
+	public static final String VENDOR_REPORT = "vendorReport";
 	public static final String GENERAL = "General";
 	public static final Long TaskStatusID = 1069L;
 
@@ -1365,6 +1371,9 @@ public class Constants {
 	public static final String IND_PAYROLL_PAYHEAD_DEDUCTION = "Deduction";
 	public static final String IND_PAYROLL_PAYHEAD_EARNINGS = "Earnings";
 	
+	public static final String TAXABLE = "Taxable";
+	public static final String NON_TAXABLE = "NonTaxable";
+	
 	public static final String IND_PAYROLL_PAYFREQUENCY_MONTHLY = "Monthly";
 	public static final String IND_PAYROLL_PAYFREQUENCY_WEEKLY = "Bi-Weekly";
 	public static final String IND_PAYROLL_PAYFREQUENCY_BI_WEEKLY = "Weekly";
@@ -1459,6 +1468,10 @@ public class Constants {
 
 	public static final String TICKET_COMMENT_EMAIL = "NewTicketCommentEmail";
 	public static final String TICKET_COMMENT_NOTIFICATION ="NewTicketCommentNotification";
+	
+	public static final String GOAL_TYPE_NEW  = "New_Goal";
+	
+	public static final String GOAL_TYPE_SUB_GOAL  = "Sub_Goal";
 	
 	public static final String CLOCK_IN = "ClockIn";
 	public static final String CLOCK_OUT = "ClockOut";

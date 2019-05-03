@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css?family=Arima+Madurai:400,500,700" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
 <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="/resources/css/reset.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/source-css/reset.css?staticTime=${staticTime}">
 <link href="/resources/css/jobs/css/source-style.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/jobs/css/source-responsive.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/jobs/css/chosen.min.css?staticTime=${staticTime}">
@@ -33,10 +33,10 @@
 <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
-<script type="text/javascript" src="/resources/js/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.sldr.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
+<script type="text/javascript" src="/resources/js/static-web/modernizr.custom.86080.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/static-web/jquery-1.12.4.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/static-web/jquery.sldr.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/static-web/masonry.pkgd.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jobs/js/bootstrap.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jobs/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jobs/js/controls.js?staticTime=${staticTime}"></script>
@@ -826,7 +826,7 @@ function getCities(){
     				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
     				  '.chosen-select-width'     : {width:"95%"}
     	   }
-			//Adding Customized Any Of Keyword to the list 
+			/* //Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#anyKeyWord");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
@@ -846,9 +846,9 @@ function getCities(){
 	        		$("#anyKeyWord").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); */
 		   
-		    var selectone, chosenone;
+		    /* var selectone, chosenone;
 		    selectone = $("#allReqKeyWord");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
 		    chosenone = selectone.data('chosen');
@@ -925,7 +925,7 @@ function getCities(){
 				$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+				}) */
 </script> 
 
 

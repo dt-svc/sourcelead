@@ -397,7 +397,74 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		return null;
 		
 	}
-	
+
+	@Override
+	public ClockInOutUserTimeEntryDTO getTimeReports(OrgLocations loginOrgLocation, User user) {
+		
+			ClockInOutUserTimeEntryDTO dto = new ClockInOutUserTimeEntryDTO();
+		
+		try {
+			
+			Date[] currentDates = clockInOutUtil.getClockFilterDate("today", loginOrgLocation);
+			List<ClockInOutUserTimeEntryDTO> list1 = clockInOutConfigDao.getTimeReports(currentDates,loginOrgLocation,user);
+			
+			int sec = 0;
+	    	int min = 0;
+	    	int hr = 0;
+	    	Time sum = null;
+			
+			for (ClockInOutUserTimeEntryDTO data : list1) {
+				
+	    		sec += data.getTotalTime().getSeconds();
+	    		min += data.getTotalTime().getMinutes();
+	    		hr += data.getTotalTime().getHours();
+	    		sum = new Time(hr, min, sec);
+	    	}
+			dto.setCurrentTotTime(sum);
+			
+			Date[] currentWeek = clockInOutUtil.getClockFilterDate("Last_7_days", loginOrgLocation);
+			List<ClockInOutUserTimeEntryDTO> list2 = clockInOutConfigDao.getTimeReports(currentWeek,loginOrgLocation,user);
+			
+			int sec2 = 0;
+	    	int min2 = 0;
+	    	int hr2 = 0;
+	    	Time sum2 = null;
+			
+			for (ClockInOutUserTimeEntryDTO data : list2) {
+				
+	    		sec2 += data.getTotalTime().getSeconds();
+	    		min2 += data.getTotalTime().getMinutes();
+	    		hr2 += data.getTotalTime().getHours();
+	    		sum2 = new Time(hr2, min2, sec2);
+	    	}
+			dto.setWeekTotTime(sum2);
+			
+			
+			Date[] currentMonth = clockInOutUtil.getClockFilterDate("current_month", loginOrgLocation);
+			List<ClockInOutUserTimeEntryDTO> list3 = clockInOutConfigDao.getTimeReports(currentMonth,loginOrgLocation,user);
+			
+			
+			int sec3 = 0;
+	    	int min3 = 0;
+	    	int hr3 = 0;
+	    	Time sum3 = null;
+			
+			for (ClockInOutUserTimeEntryDTO data : list3) {
+				
+	    		sec3 += data.getTotalTime().getSeconds();
+	    		min3 += data.getTotalTime().getMinutes();
+	    		hr3 += data.getTotalTime().getHours();
+	    		sum3 = new Time(hr3, min3, sec3);
+	    	}
+			dto.setMonthTotTime(sum3);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return dto;
+	}
 	
 
 	

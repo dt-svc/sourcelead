@@ -5,7 +5,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ page trimDirectiveWhitespaces="true" %>
 
-<script type="text/javascript" src="jquery-1.2.6.min.js"></script>
+<!-- <script type="text/javascript" src="jquery-1.2.6.min.js"></script> -->
 <jsp:include page="assetManagementDetails.jsp" />
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -74,7 +74,7 @@ $(document).ready(function() {
 <script>
 $("#tab-1").show();
 $(".project-tabs-menu a").click(function(event) {
-    event.preventDefault();
+//     event.preventDefault();
     $(this).parent().addClass("current");
     $(this).parent().siblings().removeClass("current");
     var tab = $(this).attr("href");
@@ -100,7 +100,7 @@ $(".addUser-org").click(function(){
    $("#endDate").click(function(){
 	   $(".endDate").toggle(200);
    });
-   event.preventDefault();
+//    event.preventDefault();
 });
 </script>
 

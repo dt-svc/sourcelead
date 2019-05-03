@@ -711,7 +711,7 @@ function applyKeyEventsToYears() {
 							result = result + "</table>";
 							$("#candidateEmployersList").append(result);
 							employeePagination();
-							msgFadein2();
+							//msgFadein2();
 						} else if (json.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} 
