@@ -842,11 +842,11 @@ public class TaxServiceImpl implements TaxService {
 
 	@Override
 	public List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(long orgLocationId, String uuid,
-			String financialYear, Paginator paginator) {
+			String financialYear, String searchValue, Paginator paginator) {
 		List<SourceleadTaxITDeclarationSubmissionDTO> itDeclarationSubmissionList = new LinkedList<>();
 		try {
 			List<SourceleadTaxITDeclarationSubmission> itList = taxDao.getITDeclarationSubmissionList(orgLocationId, uuid,
-					financialYear, paginator);
+					financialYear, searchValue, paginator);
 			if (itList != null && !itList.isEmpty()) {
 				for (SourceleadTaxITDeclarationSubmission itSubmission : itList) {
 					SourceleadTaxITDeclarationSubmissionDTO itSubmissionDTO = new SourceleadTaxITDeclarationSubmissionDTO();
