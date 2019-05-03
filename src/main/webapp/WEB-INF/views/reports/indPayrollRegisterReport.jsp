@@ -17,7 +17,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Payroll Register</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/indPayrollReportList">India Payroll Reports List</a> &raquo;  Payroll Register</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/indPayrollReportList'/>">India Payroll Reports List</a> &raquo;  Payroll Register</div>
     </section>
     
     <div class="contentareaInner-styles clearfix">
@@ -50,10 +50,6 @@ $(document).ready(function(){
               <label class="col-md-12">Pay Period<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-12">
                 <select class="form-control sel" id="payPeriod" name="payPeriod" onchange="getFreqdates('freqStartDate','freqEndDate');">
-					    <!-- <option>Select Period</option>
-						<option>01-02-2018 28-02-2018</option>
-						<option>01-03-2018 28-03-2018</option>
-						<option>01-02-2018 28-02-2018</option> -->
 					</select>
 					<input type="hidden" name="freqStartDate" id="freqStartDate" value=""/>
 					<input type="hidden" name="freqEndDate" id="freqEndDate" value=""/>
@@ -63,10 +59,6 @@ $(document).ready(function(){
               <label class="col-md-12">Department</label>
               <div class="col-md-12">
                 <select class="form-control chosen-select" multiple id="payrollDepartment" name="department">
-					    <!-- <option>Select Department</option>
-						<option>Department-1</option>
-						<option>Department-2</option>
-						<option>Department-3</option> -->
 					</select>
               </div>
             </div>
@@ -75,7 +67,7 @@ $(document).ready(function(){
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runPayrollregisterReport();">
+            <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runIndPayrollregisterReport();">
             <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetForm();">
           </div>
         </div>
@@ -88,8 +80,6 @@ $(document).ready(function(){
       <div class="clearfix">
         <div class="positionRelative reportHead clearfix"> 
   			<ul class="pull-right list-unstyled list-inline">
-<!-- 			    <li><a class="newAdBtn mr5 hidden" href="/app/userCreation">+  Associate</a></li> -->
-<!-- 			    <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li> -->
 				<li>
 				<a class="overIcon" title="Actions" onclick="newActions();"></a>
       				<div class="newActPop" style="display: block;">
@@ -97,7 +87,7 @@ $(document).ready(function(){
    				</li>
 			    <li class="">
 			      <input class="repSearchBar" placeholder="Search" id="payrollRegisterSearch" type="text">
-			      <span class="repSearchIcon" onclick="runPayrollregisterReport();"></span>
+			      <span class="repSearchIcon" onclick="runIndPayrollregisterReport();"></span>
 			    </li>
   			</ul>
 		</div>
@@ -112,13 +102,6 @@ $(document).ready(function(){
     
   </section>
   
-  <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-            });
-        </script> 
 
 <script type="text/javascript">
 			var config = {
@@ -165,6 +148,7 @@ function resetForm(){
 	 $("#payGroup").val('');
 	 $("#payPeriod").empty();
 	 $("#payrollDepartment").val('');
+	 $("#payrollRegisterSearch").val('');
 	 $("#payrollDepartment").trigger("chosen:updated"); 
 }
 </script>
@@ -177,12 +161,11 @@ function exportPayrollRegisterReportPdf(){
 	var payRollType = $('#payRollType').val();
 	var freqStartDate = $('#freqStartDate').val();
 	var freqEndDate = $('#freqEndDate').val();
-    window.location.href = sourceleadUrl+"/exportPayrollRegisterReportPdf?&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
+    window.location.href = sourceleadUrl+"/exportIndPayrollRegisterReportPdf?&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
 }
 </script>
 <script type="text/javascript">
-function runPayrollregisterReport(){
-	var formData = getFormData('payrollregister_form');
+function runIndPayrollregisterReport(){
 	var searchValue = $("#payrollRegisterSearch").val();
 	var payGroup = $('#payGroup').val();
 	var department = $('#payrollDepartment').val();
@@ -303,11 +286,7 @@ function payrollRegisterPagination(url){
               "sorting":false,
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-            	   if(opt.regularHours !=null && opt.regularHours != '' && opt.regularHours !='undefined'){
-	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.regularHours+'" >'+opt.regularHours+'</div>';
-	        		}else{
-	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
-	        		}
+	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.currentHours+'" >'+opt.currentHours+'</div>';
             	    return result; 
               }
             },{
@@ -317,7 +296,7 @@ function payrollRegisterPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.grossPay !=null && opt.grossPay != '' && opt.grossPay !='undefined'){
-	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.grossPay+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.grossPay+'</div>';
+	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.grossPay+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.grossPay+'</div>';
 	        		}else{
 	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
 	        		}
@@ -329,11 +308,7 @@ function payrollRegisterPagination(url){
                   "sorting":false,
                   "render": function ( data, type, opt, meta ) {
                 	var result = "";
-  	    	  		if(opt.ytdTaxes !=null && opt.ytdTaxes != '' && opt.ytdTaxes !='undefined'){
-  	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdTaxes+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.ytdTaxes+'</div>';
-  	        		}else{
-  	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
-  	        		}
+  	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdTaxes+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.ytdTaxes+'</div>';
   	    	  		return result; 
                   }
                }, {
@@ -342,11 +317,7 @@ function payrollRegisterPagination(url){
                     "sorting":false,
                     "render": function ( data, type, opt, meta ) {
                   		var result = "";
-    	    	  		if(opt.deductions !=null && opt.deductions != '' && opt.deductions !='undefined'){
-    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.deductions+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.deductions+'</div>';
-    	        		}else{
-    	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
-    	        		}
+    	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.deducationAmount+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.deducationAmount+'</div>';
     	    	  		return result; 
                     }
                 }, {
@@ -356,7 +327,7 @@ function payrollRegisterPagination(url){
                       "render": function ( data, type, opt, meta ) {
                    		var result = "";
       	    	  		if(opt.netPay !=null && opt.netPay != '' && opt.netPay !='undefined'){
-      	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.netPay+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.netPay+'</div>';
+      	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.netPay+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.netPay+'</div>';
       	        		}else{
       	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
       	        		}
@@ -368,11 +339,7 @@ function payrollRegisterPagination(url){
                     "sorting":false,
                     "render": function ( data, type, opt, meta ) {
                  		var result = "";
-    	    	  		if(opt.ytdNet !=null && opt.ytdNet != '' && opt.ytdNet !='undefined'){
-    	    	  			result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdNet+'" ><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.ytdNet+'</div>';
-    	        		}else{
-    	        			result = result + '     <div class="tbldata-dotdot-vsm" title="" >---</div>';
-    	        		}
+    	    	  		result = result + '     <div class="tbldata-dotdot-vsm" title="'+opt.ytdNetPay+'" ><i class="fa fa-inr"style="color:#454545;"></i> '+opt.ytdNetPay+'</div>';
     	    	  		return result; 
                     }
                 }],
@@ -389,12 +356,12 @@ function payrollRegisterPagination(url){
     	     }
                 });
        $("#payrollRegisterTable").wrap("<div class='overflow_Auto width100percnt'></div>")
-//        $("input[type=search]").hide();
-//        $("#requestedEmployeesTableSearch").keyup(function(e) {
-//        	   if(e.which === 13) {
-//        		getRequestedEmployeesList();
-//        	   }
-//        	});
+       $("input[type=search]").hide();
+       $("#payrollRegisterSearch").keyup(function(e) {
+       	   if(e.which === 13) {
+       		runIndPayrollregisterReport();
+       	   }
+       	});
 }
 </script>
 
