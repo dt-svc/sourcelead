@@ -2946,7 +2946,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		List<CandidateEmployers> candidateEmployers = candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
 		List<CandidateEmployerDTO> candidateEmployerDTOs = new ArrayList<>();
-		if(!candidateEmployers.isEmpty()) {
+		
 		for(CandidateEmployers employers : candidateEmployers){
 			CandidateEmployerDTO employerDTO = new CandidateEmployerDTO();
 			BeanUtils.copyProperties(employers, employerDTO);
@@ -2958,13 +2958,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				String[] endMonth = employers.getEndMonth().split("&");
 				employerDTO.setEndMonth(endMonth[1]);
 			}
-			if(employers.getIsCurrentPosition().equalsIgnoreCase("Y")){
+			if(employers.getIsCurrentPosition() != null && employers.getIsCurrentPosition().equalsIgnoreCase("Y")){
 				employerDTO.setEndMonth("Present");
 				employerDTO.setEndYear("");
 			}
 			candidateEmployerDTOs.add(employerDTO);
 		}
-		}
+		
 		marketPlaceDTO.setCandidateEmployers(candidateEmployerDTOs);
 		List<CandidateEducation> educations = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
 		List<CandidateEducationDTO> educationDTOs = new ArrayList<>();
