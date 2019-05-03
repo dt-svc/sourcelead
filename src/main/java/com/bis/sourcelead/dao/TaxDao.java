@@ -83,7 +83,7 @@ public interface TaxDao {
 
 	public int getITDeclarationFormsCountByYear(String financialYear, String tableName, long orgLocationId);
 
-	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(long orgLocationId, String uuid, String financialYear,
+	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(long orgLocationId, String uuid, String financialYear, String searchValue,
 			Paginator paginator);
 
 	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(String taxFormUUID, String formUUID);

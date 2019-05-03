@@ -34,6 +34,7 @@ $(document).ready(function(){
         <h2>Pay Schedule</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard'/>" title="Home">Home</a>&raquo;
+       <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo;
        <a href="<c:url value='${appPath}/payrollConfiguration'/>"> Payroll Configuration</a>&raquo;Pay Schedule List
 		</div>
     </section>
