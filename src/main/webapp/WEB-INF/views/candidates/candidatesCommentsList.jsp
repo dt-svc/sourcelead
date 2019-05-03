@@ -1,12 +1,6 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<style>
-#tab-7 .comments-content textarea {
-	width: 957px;
-    border: none;
-}
-</style>
 
 <script>
 function candidateCommentsList(candidateId,submissionId){
@@ -47,7 +41,7 @@ function candidateCommentsList(candidateId,submissionId){
 		     	        result = result+'         <p class="comment-by">';
 		     	        result = result+'            By <span class="text-danger">'+report.commentAuthor+'</span>';
 		     	        result = result+'            <span class="small">('+report.commentTime+')</span></p>';
-		     	        result = result+'         <textarea class="commentText" readonly>'+report.comment+'</textarea>';
+		     	        result = result+'         <textarea class="commentText candidateCustomtextArea" readonly>'+report.comment+'</textarea>';
 		     	        result = result+'         </div>';
 		     	        result = result+'     </div>';
 		     	        result = result+'</div>';

@@ -1591,4 +1591,34 @@ public class UserRoleDaoImpl implements UserRoleDao {
 
 	
 	}
+	
+	
+	@Override
+	@Transactional
+	public List<UserDTO> getAllActiveUsersList(Long orgLocationId) throws Exception {
+		
+		List<UserDTO> userDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+				
+		query ="SELECT DISTINCT "
+				+" UR.ID AS userId,"
+				+" UR.EMAIL AS email,"
+				+" IFNULL(UR.FILE_URL,'/resources/images/userprofileImg.jpg') AS fileURL,"
+				+" CONCAT (UR.FIRST_NAME,' ',IFNULL(UR.MIDDLE_NAME,''),' ',IFNULL(UR.LAST_NAME,'')) AS fullName"
+				+" FROM"
+			    +" USER_ROLE RL ,"
+			    +" USER UR,"
+			    +" ORG_LOCATIONS OL"
+				+" WHERE RL.USER_ID = UR.ID AND RL.ORG_LOCATIONS_ID = :orgLocationId "
+				+" AND RL.USER_STATE = 'ACTIVE'";
+		
+		
+		    
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
+			userDTOList = queryObj.list();
+			return userDTOList;
+	}
 }

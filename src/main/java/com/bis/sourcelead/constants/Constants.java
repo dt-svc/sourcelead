@@ -510,6 +510,7 @@ public class Constants {
 	public static final String FORMS = "Forms";
 	public static final String MYPAYROLL = "MyPayroll";
 	public static final String RUNPAYROLL = "RunPayroll";
+	public static final String PERFORMANCE = "Performance";
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/
@@ -593,6 +594,9 @@ public class Constants {
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
+	
+	public static final String DEFAULT = "Default";
+	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
@@ -1125,6 +1129,7 @@ public class Constants {
 	public static final String CANDIDATE_TAG_ADDED = "added tag";
 	public static final String CANDIDATE_TAG_REMOVED = "removed tag";
 	
+	
 	public static final String EXPENSES = "expenses";
 	public static final String VIEW_TYPE = "LISTVIEW"; 
 	public static final String GUEST = "Guest";
@@ -1457,6 +1462,10 @@ public class Constants {
 
 	public static final String TICKET_COMMENT_EMAIL = "NewTicketCommentEmail";
 	public static final String TICKET_COMMENT_NOTIFICATION ="NewTicketCommentNotification";
+	
+	public static final String GOAL_TYPE_NEW  = "New_Goal";
+	
+	public static final String GOAL_TYPE_SUB_GOAL  = "Sub_Goal";
 	
 	public static final String CLOCK_IN = "ClockIn";
 	public static final String CLOCK_OUT = "ClockOut";

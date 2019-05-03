@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.PayrollTaxDao;
 import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.CentralTaxDTO;
@@ -49,6 +50,7 @@ import com.bis.sourcelead.dto.TdsDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CentralTax;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxChallan;
@@ -102,6 +104,9 @@ public class TaxServiceImpl implements TaxService {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private EmployeesDao employeesDao;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -847,11 +852,11 @@ public class TaxServiceImpl implements TaxService {
 
 	@Override
 	public List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(long orgLocationId, String uuid,
-			String financialYear, Paginator paginator) {
+			String financialYear, String searchValue, Paginator paginator) {
 		List<SourceleadTaxITDeclarationSubmissionDTO> itDeclarationSubmissionList = new LinkedList<>();
 		try {
 			List<SourceleadTaxITDeclarationSubmission> itList = taxDao.getITDeclarationSubmissionList(orgLocationId, uuid,
-					financialYear, paginator);
+					financialYear, searchValue, paginator);
 			if (itList != null && !itList.isEmpty()) {
 				for (SourceleadTaxITDeclarationSubmission itSubmission : itList) {
 					SourceleadTaxITDeclarationSubmissionDTO itSubmissionDTO = new SourceleadTaxITDeclarationSubmissionDTO();
@@ -860,6 +865,12 @@ public class TaxServiceImpl implements TaxService {
 					itSubmissionDTO.setFinancialYear(itSubmission.getFinancialYear());
 					itSubmissionDTO.setStatus(itSubmission.getStatus());
 					itSubmissionDTO.setUserId(itSubmission.getUser().getId());
+					Employees emp=employeesDao.getEmployeeByUserIdAndOrgLocationsId(itSubmission.getUser().getId(), orgLocationId);
+					if(emp.getEmployeeId()!=null) {
+					itSubmissionDTO.setEmployeeId(emp.getEmployeeId());
+					}else {
+						itSubmissionDTO.setEmployeeId("--");	
+					}
 					itSubmissionDTO.setUserName(itSubmission.getUser().getFullName());
 					itSubmissionDTO.setTaxFormId(itSubmission.getSourceleadTaxForm().getId());
 					double submittedAmount = getCalculatedAmountForSubmittedItDeclaration(itSubmission);
@@ -904,7 +915,7 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public SourceleadTaxITDeclarationSubmissionDTO getITDeclarationSubmission(String taxFormUUID, String formUUID) {
+	public SourceleadTaxITDeclarationSubmissionDTO getITDeclarationSubmission(String taxFormUUID, String formUUID, Long orgLocationId) {
 		try {
 			SourceleadTaxITDeclarationSubmission itDeclarationSubmission = taxDao
 					.getITDeclarationSubmission(taxFormUUID, formUUID);
@@ -915,6 +926,12 @@ public class TaxServiceImpl implements TaxService {
 				itDeclarationSubmissionDTO.setTaxFormId(itDeclarationSubmission.getSourceleadTaxForm().getId());
 				itDeclarationSubmissionDTO.setStatus(itDeclarationSubmission.getStatus());
 				itDeclarationSubmissionDTO.setFinancialYear(itDeclarationSubmission.getFinancialYear());
+				Employees emp=employeesDao.getEmployeeByUserIdAndOrgLocationsId(itDeclarationSubmission.getUser().getId(), orgLocationId);
+				if(emp.getEmployeeId()!=null) {
+				itDeclarationSubmissionDTO.setEmployeeId(emp.getEmployeeId());
+				}else {
+				itDeclarationSubmissionDTO.setEmployeeId("--");	
+				}
 				if (itDeclarationSubmission.getUser() != null) {
 					itDeclarationSubmissionDTO.setUserId(itDeclarationSubmission.getUser().getId());
 					itDeclarationSubmissionDTO.setUserName(itDeclarationSubmission.getUser().getFullName());
