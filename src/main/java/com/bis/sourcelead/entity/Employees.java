@@ -140,7 +140,18 @@ public class Employees implements Serializable{
 	@Transient
 	private String panNumber;
 	
+	@Transient
+	private String dateOfBirth;
 	
+	
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
 	public String getPanNumber() {
 		return panNumber;
 	}

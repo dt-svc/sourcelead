@@ -487,7 +487,7 @@ window.onload = function () {
 <div class="pop_mask"></div>
     
     <!-- <div class="advancedsearch-mask" onClick="closeAdsrch()"></div> -->
-<div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+<div class="advancedsearch-mask"></div>
 <script>
 //Function to validate if maxExpYears  value is more the minExpYears  value
 function minMaxExperienceOfProfessional(){
