@@ -124,6 +124,12 @@ public class Constants {
 	public static final String INVITE_USER = "Invite User";
 	public static final String BLOG_SUBSCRIPTION = "blogSubscription";
 	public static final String EXPENSES_EMAIL_TO_MANAGER = "ExpensesEmailToManager";
+	
+	public static final String MAILTOEMPLOYEEWHEN_MANAGERSUBMITEXPENSE = "MailToEmployeeWhenManagerSubmitExpense";
+	public static final String MAILTOAPPROVER2WHENAPPROVER1APPROVESTHEEXPENSE = "MailToApprover2WhenApprover1ApprovesTheExpense";
+	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_REJECT_THE_EXPENSE = "MailToManager1WhenManager2orAdminRejectTheExpense";
+	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_APPROVESTHE_EXPENSE = "MailToManager1WhenManager2orAdminApprovesTheExpense";
+	
 	public static final String INVITE_CLIENT = "Invite Client";
 	public static final String INVITE_VENDOR = "Invite Vendor";
 	public static final String MODIFY_CONTRACT_ENDDATE = "ModifyContractEndDate";
