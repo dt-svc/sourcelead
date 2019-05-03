@@ -30,6 +30,8 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.RequirementInterviewHistory;
+import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
@@ -1182,6 +1184,100 @@ public class DynamicReport {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		return dataSource;
+	}
+	public File interviewListPdfExport(List<RequirementInterviewHistory> requirementInterviewList, String orgLocationDateFormat,String orglocationName) throws IOException {
+		 File file = null;
+		try {
+		    StringBuilder fileSB = new StringBuilder();
+			file = File.createTempFile(fileSB.append("interviewPdfList_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationDateFormat,new Date())).toString(),".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate)
+					.title(cmp.text(orglocationName).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
+					.columns(
+							col.column("Applicant Name", "Applicant Name", type.stringType()),
+							col.column("Job Title", "Job Title", type.stringType()),
+							col.column("Client", "Client", type.stringType()),
+							col.column("Date Of Interview", "Date Of Interview", type.stringType()),
+							col.column("Interview Time", "Interview Time", type.stringType()),
+							col.column("Interview Type", "Interview Type", type.stringType()),
+							col.column("Time Zone", "Time Zone", type.stringType()),
+							col.column("Details", "Details", type.stringType()),
+							col.column("Interviewers", "Interviewers", type.stringType()))
+					.pageFooter(Templates.footerComponent)
+					.setDataSource(createInterviewDataListataSource(requirementInterviewList)).toPdf(pdfExporter);
+		} catch (DRException e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	public File interviewListExcelExport(List<RequirementInterviewHistory> requirementInterviewList, String orgLocationDateFormat,String orglocationName) throws IOException {
+		 File file = null;
+			try {
+			    StringBuilder fileSB = new StringBuilder();
+				file = File.createTempFile(fileSB.append("interviewExcelList_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocationDateFormat,new Date())).toString(),".xls");
+				file.setReadable(true);
+				JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file) .setDetectCellType(true)
+                   .setIgnorePageMargins(true)
+                   .setWhitePageBackground(false)
+                   .setRemoveEmptySpaceBetweenColumns(true);
+
+				report().setTemplate(Templates.reportTemplate)
+						.setColumnTitleStyle(Templates.columnTitleStyle)
+						.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1")
+						.ignorePageWidth()
+						.ignorePagination()
+						.columns(
+								col.column("Applicant Name", "Applicant Name", type.stringType()),
+								col.column("Job Title", "Job Title", type.stringType()),
+								col.column("Client", "Client", type.stringType()),
+								col.column("Date Of Interview", "Date Of Interview", type.stringType()),
+								col.column("Interview Time", "Interview Time", type.stringType()),
+								col.column("Interview Type", "Interview Type", type.stringType()),
+								col.column("Time Zone", "Time Zone", type.stringType()),
+								col.column("Details", "Details", type.stringType()),
+								col.column("Interviewers", "Interviewers", type.stringType()))
+						.setDataSource(createInterviewDataListataSource(requirementInterviewList)).toXls(xlsExporter);
+			} catch (DRException e) {
+				e.printStackTrace();
+			}
+		return file;
+}
+	private DRDataSource createInterviewDataListataSource(List<RequirementInterviewHistory> requirementInterviewList) {
+		DRDataSource dataSource = new DRDataSource( "Applicant Name", "Job Title","Client", "Date Of Interview","Interview Time", "Interview Type","Time Zone","Details","Interviewers");
+		
+		for(RequirementInterviewHistory interview:requirementInterviewList) {
+			
+			String applicantName = interview.getCandidateName();
+			
+			String jobTitle = interview.getSubmissionId().getRequirement().getJobTitle();
+			
+			String client = "---";
+			
+			String dateOfInterview = commonUtil.dateStrFromOrgDateFormatter(interview.getOrgLocationId().getDateFormat(), interview.getInterviewId().getDateOfInterview());
+			
+			// String interviewTime =  commonUtil.dateStrFromOrgDateFormatter(interview.getOrgLocationId().getDateFormat(),interview.getInterviewId().getStartTime());
+			
+			String interviewTime= interview.getInterviewId().getStartTime().toString();
+			
+			String interviewType = interview.getInterviewId().getInterviewType();
+			
+			String timeZone =  interview.getInterviewId().getTimezone().getTimeZoneId();
+			
+			List<String> interviewerList = new ArrayList<String>();
+			for(RequirementInterviewer requirementInterviewer  : interview.getInterviewId().getRequirementInterviewers()) {
+				interviewerList.add(requirementInterviewer.getInterviewerUser().getFullName());
+				
+			}
+			
+			String details = interview.getInterviewId().getLocation();
+			
+			String interviewer = StringUtils.join(interviewerList, ',');
+			
+			
+			dataSource.add(applicantName,jobTitle,client,dateOfInterview,interviewTime,interviewType,timeZone,details,interviewer);
 		}
 		return dataSource;
 	}
