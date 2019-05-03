@@ -1248,6 +1248,7 @@ public class Constants {
 	public static final String REPORT_FILTER_1_Month_Ago = "1_Month_Ago";
 	public static final String REPORT_FILTER_CURRENT_YEAR = "Current_Year";
 	public static final String CLIENT_REPORT = "clientReport";
+	public static final String VENDOR_REPORT = "vendorReport";
 	public static final String GENERAL = "General";
 	public static final Long TaskStatusID = 1069L;
 
@@ -1371,6 +1372,9 @@ public class Constants {
 	public static final String IND_PAYROLL_PAYHEAD_DEDUCTION = "Deduction";
 	public static final String IND_PAYROLL_PAYHEAD_EARNINGS = "Earnings";
 	
+	public static final String TAXABLE = "Taxable";
+	public static final String NON_TAXABLE = "NonTaxable";
+	
 	public static final String IND_PAYROLL_PAYFREQUENCY_MONTHLY = "Monthly";
 	public static final String IND_PAYROLL_PAYFREQUENCY_WEEKLY = "Bi-Weekly";
 	public static final String IND_PAYROLL_PAYFREQUENCY_BI_WEEKLY = "Weekly";
@@ -1468,6 +1472,11 @@ public class Constants {
 	
 	public static final String EMPLOYEE_ON_LEAVE = "EmployeeOnLeave";
 	public static final String APPROVE_PENDING_LEAVES="approvePendingLeaves";
+	
+	public static final String CLOCK_IN = "ClockIn";
+	public static final String CLOCK_OUT = "ClockOut";
+	public static final String PLAY = "play";
+	public static final String PAUSE = "pause";
 
 	
 }
