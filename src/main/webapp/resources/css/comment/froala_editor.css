@@ -1326,9 +1326,6 @@ span.fr-sr-only {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
-
-
-
 .atwho-view {
     position:absolute;
     top: 0;
@@ -1343,7 +1340,6 @@ span.fr-sr-only {
     min-width: 120px;
     z-index: 11110 !important;
 }
-
 .atwho-view .atwho-header {
     padding: 5px;
     margin: 5px;
@@ -1353,7 +1349,6 @@ span.fr-sr-only {
     font-size: 11px;
     font-weight: bold;
 }
-
 .atwho-view .atwho-header .small {
     color: #6f8092;
     float: right;
@@ -1362,11 +1357,9 @@ span.fr-sr-only {
     font-size: 12px;
     font-weight: normal;
 }
-
 .atwho-view .atwho-header:hover {
     cursor: default;
 }
-
 .atwho-view .cur {
     background: #3366FF;
     color: white;
@@ -1401,7 +1394,6 @@ span.fr-sr-only {
     color: #777;
     font-weight: normal;
 }
-
 .tkt_comment_div {
 	height: 150px;
 	overflow: auto;
@@ -1409,4 +1401,3 @@ span.fr-sr-only {
 .tkt_comment_div.tkt_comment_custom {
 	border: 1px solid #ddd; padding: 10px;
 }
-

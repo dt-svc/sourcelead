@@ -233,9 +233,9 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 							
 							List<IndEmployeePayroll> ytdList = indPaysheetFrequencyService.getYTDIndEmployeePayrollList(iepdt.getCandidate().getId(), orgLocations.getStartMonth());
 							if(ytdList != null && ytdList.size() > 0) {
-								double ytdPT = ytdList.stream().mapToDouble(ap->ap.getProfessionalTax().doubleValue()).sum();
-								double ytdTDS = ytdList.stream().mapToDouble(ap->ap.getTds().doubleValue()).sum();
-								double ytdNetPay = ytdList.stream().mapToDouble(ap->ap.getNetPay().doubleValue()).sum();
+								double ytdPT = ytdList.stream().mapToDouble(ap->ap != null && ap.getProfessionalTax()!= null ? ap.getProfessionalTax().doubleValue(): 0).sum();
+								double ytdTDS = ytdList.stream().mapToDouble(ap->ap != null && ap.getTds() != null ? ap.getTds().doubleValue() : 0).sum();
+								double ytdNetPay = ytdList.stream().mapToDouble(ap->ap != null && ap.getNetPay() != null ? ap.getNetPay().doubleValue() : 0).sum();
 								dto.setYtdTaxes(new BigDecimal(ytdPT).add(new BigDecimal(ytdTDS)));
 								dto.setYtdNetPay(new BigDecimal(ytdNetPay));
 							}else {
@@ -415,10 +415,10 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		   					dto.setEmployeeid(iepdt.getEmployee().getEmployeeId());
 		   					dto.setEmployeeName(iepdt.getCandidate().getFullName());
 		   					dto.setDepartmentName(iepdt.getEmployee().getDepartmentId().getDepartmentName());
-		   					double noOfLeaves = entry.getValue().stream().mapToDouble(i->i.getNoOfLeaves().doubleValue()).sum();
-		   					double noOfDays = entry.getValue().stream().mapToDouble(i->i.getNoOfDays().doubleValue()).sum();
-		   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay().doubleValue()).sum();
-		   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay().doubleValue()).sum();
+		   					double noOfLeaves = entry.getValue().stream().mapToDouble(i->i.getNoOfLeaves() != null ? i.getNoOfLeaves().doubleValue() : 0).sum();
+		   					double noOfDays = entry.getValue().stream().mapToDouble(i->i.getNoOfDays() != null ? i.getNoOfDays().doubleValue() : 0).sum();
+		   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay() != null ? i.getGrossPay().doubleValue() : 0).sum();
+		   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay() != null ? i.getNetPay().doubleValue() : 0).sum();
 		   	   				dto.setNoOfLeaves(new BigDecimal(noOfLeaves));
 		   	   			    dto.setNoOfDays(new BigDecimal(noOfDays));
 		   					dto.setGrossPay(new BigDecimal(grossPay));
@@ -507,10 +507,10 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		   					dto.setEmployeeid(iepdt.getEmployee().getEmployeeId());
 		   					dto.setEmployeeName(iepdt.getCandidate().getFullName());
 		   					dto.setDepartmentName(iepdt.getEmployee().getDepartmentId().getDepartmentName());
-		   					double professionalTax = entry.getValue().stream().mapToDouble(i->i.getProfessionalTax().doubleValue()).sum();
-		   					double tds = entry.getValue().stream().mapToDouble(i->i.getTds().doubleValue()).sum();
-		   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay().doubleValue()).sum();
-		   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay().doubleValue()).sum();
+		   					double professionalTax = entry.getValue().stream().mapToDouble(i->i.getProfessionalTax() != null ? i.getProfessionalTax().doubleValue() : 0).sum();
+		   					double tds = entry.getValue().stream().mapToDouble(i->i.getTds() != null ? i.getTds().doubleValue() : 0).sum();
+		   					double grossPay = entry.getValue().stream().mapToDouble(i->i.getGrossPay() != null ? i.getGrossPay().doubleValue() : 0).sum();
+		   					double netPay = entry.getValue().stream().mapToDouble(i->i.getNetPay() != null ? i.getNetPay().doubleValue() : 0).sum();
 		   	   				dto.setProfessionalTax(new BigDecimal(professionalTax));
 		   	   			    dto.setTds(new BigDecimal(tds));
 		   					dto.setGrossPay(new BigDecimal(grossPay));

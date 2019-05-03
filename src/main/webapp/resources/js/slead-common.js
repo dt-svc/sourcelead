@@ -165,7 +165,7 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 	
 }
 
-$(function() {
+/*$(function() {
 
     for (var selector in config) {
 		$(selector).chosen(config[selector]);
@@ -176,7 +176,7 @@ $(function() {
 		$this.next().css({'width': '100%'});
 	});
 
-});
+});*/
 
 function viewFile(fileURL, title, contentType){
 	if(fileURL != null && fileURL != "" && fileURL != "undefined"){
