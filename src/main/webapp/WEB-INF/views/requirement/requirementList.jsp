@@ -725,7 +725,7 @@ function statusvalidating(id){
 	
 	
 </section>
- <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+ <div class="advancedsearch-mask"></div>
 <jsp:include page="addApplicantFromRequirementList.jsp" />
 
 <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
@@ -1026,10 +1026,10 @@ function getActions(){
 			 $(".advancedsearch-mask").fadeIn();
 			 $("#requirementFilterPopup").toggle();
 		}
-		function closeAdsrch(){
+		/* function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
 			$(".advancedsearch-mask").fadeOut();
-		};
+		}; */
 	</script>
 
 <script>
@@ -1171,7 +1171,7 @@ function refreshGoogleApiCity(cityId){
 
 
 
-<!-- <div class="sideMask"></div> -->
+<div class="sideMask"></div>
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="requirementFilterPopup">
 <h5 class="headerAdsrch">Filters <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
 <div class="addInner">
