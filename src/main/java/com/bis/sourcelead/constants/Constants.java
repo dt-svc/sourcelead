@@ -1472,6 +1472,11 @@ public class Constants {
 	
 	public static final String EMPLOYEE_ON_LEAVE = "EmployeeOnLeave";
 	public static final String APPROVE_PENDING_LEAVES="approvePendingLeaves";
+	
+	public static final String CLOCK_IN = "ClockIn";
+	public static final String CLOCK_OUT = "ClockOut";
+	public static final String PLAY = "play";
+	public static final String PAUSE = "pause";
 
 	
 }
