@@ -112,6 +112,7 @@ public class RequirementWorkflowController {
 		
 		modelandview.setViewName("workflow/addStage");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
+		modelandview.addObject("workflowUuid", requirementWorkFlowStagesDTO.get(0).getRequirementWorkFlowUuid());
 		return modelandview;
 	}
 	
@@ -363,7 +364,6 @@ public class RequirementWorkflowController {
 			User user = new User();
 			user.setId(userId);
 			Response<String> response = new Response<>();
-			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTO = null;
 				try {
 					if (user != null && null != requirementWorkFlowStagesDTO) {
 						requirementWorkFlowService.saveRequirementWorkflowStageByWorkflowId(requirementWorkFlowStagesDTO, orgLocations, user);
@@ -396,7 +396,7 @@ public class RequirementWorkflowController {
 			OrgLocations orgLocations = new OrgLocations();
 			orgLocations.setId(orgLocationId);
 			try {
-				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(requirementWorkFlowStagesDTO.getUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), orgLocations.getId());
+				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(requirementWorkFlowStagesDTO.getUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), orgLocations.getId(), requirementWorkFlowStagesDTO.getCurrentStageUuid());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -600,6 +600,62 @@ public class RequirementWorkflowController {
 			}
 
 			return userRoleListDTO;
+		}
+		
+		@RequestMapping(value = "/saveWorkflowTask")
+		public @ResponseBody  Response<String> saveWorkflowTask(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO,
+				HttpServletRequest request)throws Exception{
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			OrgLocations orgLocations = new OrgLocations();
+			orgLocations.setId(orgLocationId);
+			Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+			User user = new User();
+			user.setId(userId);
+			Response<String> response = new Response<>();
+			String Uuid;
+			try {
+				if (user != null && Validator.validate(requirementWorkFlowTasksDTO)) {
+					Uuid = requirementWorkFlowService.saveRequirementWorkFlowTask(requirementWorkFlowTasksDTO, orgLocations, user);
+					response.setResponse(Uuid);
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
+			}
+			return response;
+			
+		}
+		
+		@RequestMapping(value = "/editStage")
+		public ModelAndView editStage(HttpServletRequest request,
+				RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO) throws Exception{
+			ModelAndView modelandview = new ModelAndView();
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			OrgLocations orgLocations = new OrgLocations();
+			orgLocations.setId(orgLocationId);
+			RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO();
+			requirementWorkFlowDTO.setUuid(requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid());
+			requirementWorkFlowDTO.setCurrentStageUuid(requirementWorkFlowStagesDTO.getUuid().trim());
+			
+			RequirementWorkFlowStages stages = requirementWorkFlowService.getRequirementWorkFlowStageForEditStage(requirementWorkFlowStagesDTO, orgLocations.getId());
+			
+			List<RequirementWorkFlowStagesDTO> stagesDTO = requirementWorkFlowService.getNextRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations.getId());
+			
+			modelandview.setViewName("workflow/addStage");
+			modelandview.addObject("stageName", stages.getStageName());
+			modelandview.addObject("description", stages.getDescription());
+			modelandview.addObject("currentStageUuid", requirementWorkFlowStagesDTO.getUuid().trim());
+			modelandview.addObject("workflowUuid", requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid());
+			modelandview.addObject("requirementWorkFlowStagesDTO", stagesDTO);
+			return modelandview;
 		}
 		
 }

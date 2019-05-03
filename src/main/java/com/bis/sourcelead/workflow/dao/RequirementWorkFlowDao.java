@@ -72,5 +72,7 @@ public interface RequirementWorkFlowDao {
 
 	List<RequirementWorkFlowTasks> getworkflowTasksBystagesId(Long workstageId);
 	
+	List<RequirementWorkFlowStages> getNextRequirementWorkflowStagesListByUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, Long id)throws Exception;
+	
 
 }

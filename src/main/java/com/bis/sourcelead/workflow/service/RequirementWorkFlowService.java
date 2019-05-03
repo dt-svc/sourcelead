@@ -42,7 +42,7 @@ public interface RequirementWorkFlowService {
 	
 	void saveRequirementWorkflowStageByWorkflowId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, OrgLocations orgLocations, User user)throws Exception;
 	
-	RequirementWorkFlowStagesDTO getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(String uuid, String workflowUuid, Long orgLocationId)throws Exception;
+	RequirementWorkFlowStagesDTO getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(String uuid, String workflowUuid, Long orgLocationId, String currentStageUuid)throws Exception;
 	
     RequirementWorkFlowStages getRequirementWorkFlowStagesByUuid(String uuid, Long orgLocationId)throws Exception;
 	
@@ -56,7 +56,7 @@ public interface RequirementWorkFlowService {
 	
 	List<RequirementQuestionnaireTemplateDTO> getRequirementQuestionnaireTemplates(Long id)throws Exception;
 	
-	void saveRequirementWorkflowStageByWorkflowIdAndOrgLocationId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, RequirementWorkFlowStages requirementWorkFlowStages, Long id, User user)throws Exception;
+	String saveRequirementWorkflowStageByWorkflowIdAndOrgLocationId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, RequirementWorkFlowStages requirementWorkFlowStages, Long id, User user)throws Exception;
 
 	ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user)throws Exception;
 	
@@ -67,5 +67,10 @@ public interface RequirementWorkFlowService {
 			OrgLocations orgLocations, User user) throws Exception;
 	Boolean deleteApplicationWorkFlowByuuid(String workflowuuid, Long orgLocationId) throws Exception;
 	
+	String saveRequirementWorkFlowTask(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user)throws Exception;
+	
+	RequirementWorkFlowStages getRequirementWorkFlowStageForEditStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, Long id)throws Exception;
+	
+	List<RequirementWorkFlowStagesDTO> getNextRequirementWorkflowStagesByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, Long id)throws Exception;
 	
 }
