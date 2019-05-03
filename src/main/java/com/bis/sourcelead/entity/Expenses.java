@@ -151,6 +151,9 @@ private static final long serialVersionUID = 1L;
 		
 	@Transient
 	private List<User> projectManagerUserList;
+	
+	@Transient
+	private List<User> projectEmp;
   
 	@Transient
 	private String employementType;
@@ -565,6 +568,15 @@ private static final long serialVersionUID = 1L;
 	public void setSubmittedDate(Date submittedDate) {
 		this.submittedDate = submittedDate;
 	}
+
+	public List<User> getProjectEmp() {
+		return projectEmp;
+	}
+
+	public void setProjectEmp(List<User> projectEmp) {
+		this.projectEmp = projectEmp;
+	}
+	
 	
 	
 
