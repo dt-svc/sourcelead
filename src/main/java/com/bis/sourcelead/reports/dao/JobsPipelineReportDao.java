@@ -19,5 +19,7 @@ public interface JobsPipelineReportDao {
 
 	List<Requirement> requirementListStatusCountByJobIdsAndDates(List<Long> jobIds,Date[] searchDates);
 
-	
+	List<RequirementSubmissionHistory> getAllJobsReportsCountsBySubmmisonIdAndMasterUserCode(Long submissionId, String masterUserCode);
+
+	List<Requirement> vendorRequirementListStatusCountByJobIdsAndDates(List<Long> jobIds, Date[] searchDates);
 }

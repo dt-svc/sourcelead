@@ -109,7 +109,7 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<PaymentAccount> getPaymentAccountDetailsByOrglocationId(Long id) {
+	public List<PaymentAccount> getPaymentAccountDetailsByOrglocationId(Long id) throws Exception{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from  PaymentAccount payment where payment.orgLocation.id =:id";
 		List<PaymentAccount> paymentList = session.createQuery(query).setLong("id", id).list();
