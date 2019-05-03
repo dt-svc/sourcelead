@@ -8,9 +8,7 @@
 
 <style type="text/css">
 .collapse-div-adduser select{
-width: 100% !important;
-    padding-right: 10px !important;
-    padding-left: 10px !important;
+width: 100% !important; padding-right: 10px !important;padding-left: 10px !important;
     border:1px solid #ccc !important
 }
 </style>
