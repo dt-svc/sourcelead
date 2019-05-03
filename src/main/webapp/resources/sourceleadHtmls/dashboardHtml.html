@@ -513,7 +513,7 @@ $('#dasboardTaskDatpicker').datepicker({
         	<div class="dashNewWrapHead clearfix">
 				<h4 class="pull-left">Project Requests</h4>
 	     	    <ul class="nav nav-tabs pull-right">
-	     	    	<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
+	     	    	<!-- <sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')"> -->
 				        <li class="active" id="associateDiv"><a  onclick="resourceRequestList('Waiting For Approval')">Associate</a></li>
 				        <li id="newResourceDiv"><a href="javascript:void(0)"  onclick="newResourceRequestList('Waiting For Approval');">New Resource</a></li>
 				       </sec:authorize> 

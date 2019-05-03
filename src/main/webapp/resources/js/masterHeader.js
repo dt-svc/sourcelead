@@ -153,6 +153,7 @@ var masterHeader = new buildMasterHeaderPanel();
 	    masterNavHtml = masterNavHtml+'</ul>';
 		
 	    $("#masterHeaderNav").append(masterNavHtml);
+	    $("#searchType").selectpicker('refresh');
 	    sideNewMenuActionListener();
 	 }
 	 
