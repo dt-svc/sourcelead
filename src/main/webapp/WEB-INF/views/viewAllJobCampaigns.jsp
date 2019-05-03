@@ -14,22 +14,22 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
 
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <!-- Bootstrap -->
-<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 
-<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 </head>
 
- <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
- <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
- <script src="/resources/js/slead-common.js"></script> 
+ <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+ <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+ <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/slead-common.js"></script> 
 <script>
 		$(document).ready(function() { 
 			getAllCampaignJobs();
@@ -66,7 +66,7 @@ padding: 0 !important; padding-left: 165px !important; margin-top: 15px;
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/logo-sourceld.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>
     </a>
     </span>

@@ -1,8 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <link rel="stylesheet" href="/resources/css/style.css" />
 <link rel="stylesheet" href="/resources/css/chosen.min.css">
-<script src="/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
 <style>
 .refresh-icon.refreshIcon {
@@ -132,7 +132,7 @@ $(document).ready(function() {
 					
 			</div>
 
-<script type="text/javascript" src="/resources/js/submissionFailedCandidatesList.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/submissionFailedCandidatesList.js"></script>
 
 <script>
 function clearJobAdvSearch(){

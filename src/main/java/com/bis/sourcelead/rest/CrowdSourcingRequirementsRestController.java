@@ -568,6 +568,10 @@ public class CrowdSourcingRequirementsRestController {
     					
     					 requirementIndex.setRateType(savedJobs.getRequirementId().getRateType());
     					 requirementIndex.setCurrentRateCurrency(savedJobs.getRequirementId().getCurrencyCode());
+    					 if(StringUtils.isNotBlank(savedJobs.getRequirementId().getVisaType())) {
+    						 requirementIndex.setVisaTypes(savedJobs.getRequirementId().getVisaType().split(","));	
+    						 }
+    					 requirementIndex.setIndustryName(savedJobs.getRequirementId().getIndustryName());
     					 
     					 if(!isNullOrEmpty(savedJobs.getRequirementId().getSkills())){
     						 String[] skills = savedJobs.getRequirementId().getSkills().split(",");
@@ -2813,7 +2817,7 @@ public class CrowdSourcingRequirementsRestController {
       				referContacDTO.setContactType("Other");
       			}
       			if(referContacts.getContactUserPhone() != null){
-      				referContacDTO.setPhone(referContacts.getContactUserPhone());
+      				referContacDTO.setPhone(referContacts.getContactUserPhone().trim());
       			}
       		}
       		
