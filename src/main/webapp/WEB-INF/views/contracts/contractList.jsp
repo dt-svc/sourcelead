@@ -281,13 +281,13 @@ padding: 2px 300px 2px 0px;
 				</div>	                	
 			</li>
 			
-			<li id="filterContractTypePop-2" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i>
+			<li id="filterContractTypePop-2" style="display:block"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i>
 	           	<div class="statusFiler-3 approved_pop">
-	           		<ul class="list-unstyled" style="display:none" id="waitingLiDiv">
+	           		<ul class="list-unstyled" style="display:block" id="waitingLiDiv">
 						<li><input id="status5" type="checkbox" name="contractStatus" value="WAITING_TO_SEND" onclick="getTemplateList();"><label for="status5">Waiting to Send</label></li>
 					</ul>
 					
-					<ul class="list-unstyled" style="display:none" id="signedDiv">
+					<ul class="list-unstyled" style="display:block" id="signedDiv">
 						<li><input id="status1" type="checkbox" name="contractStatus" value="PENDING" onclick="getTemplateList();"><label for="status1">Pending</label></li>
 						<li><input id="status3" type="checkbox" name="contractStatus" value="WAITING_TO_BE_SIGNED" onclick="getTemplateList();"><label for="status3">Waiting to be Sign</label></li>
 					</ul>
@@ -536,8 +536,8 @@ function getTemplateList(listType){
 			$("#status4").removeAttr("checked");
 		}
 	}else{
-		$("#filterContractTypePop-2").css("display", "none");
-		$("#waitingLiDiv").css("display", "none");
+		$("#filterContractTypePop-2").css("display", "block");
+		$("#waitingLiDiv").css("display", "block");
 		$("#status5").removeAttr("checked");
 	}
 	
