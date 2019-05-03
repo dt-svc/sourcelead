@@ -2190,7 +2190,7 @@ function validatePanNumber() {
 	 
 		 $.ajax({
 		    	type: "GET",
-		    	 url:sourceleadUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
+		    	 url:atsUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
 		        success: function(data) {
 		        	if(data == true){
 		        		  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
@@ -2223,7 +2223,7 @@ function validateAadharNumber() {
 		  
 		 $.ajax({
 		    	type: "GET",
-		    	 url:sourceleadUrl+"/validateAadharNumber?"+tokenParamName+"="+tokenValue+"&aadharNumber="+aadharNumber, 
+		    	 url:atsUrl+"/validateAadharNumber?"+tokenParamName+"="+tokenValue+"&aadharNumber="+aadharNumber, 
 		        success: function(data) {
 		        	if(data == true){
 		        		  $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
@@ -2256,7 +2256,7 @@ function validateSsnNumberDuplicateChek() {
 	  if(ssnNumber != "" && ssnNumber != null && ssnNumber != "undefined"){
 		 $.ajax({
 		    	type: "GET",
-		    	 url:sourceleadUrl+"/validateSsnNumber?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber, 
+		    	 url:atsUrl+"/validateSsnNumber?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber, 
 		        success: function(data) {
 		        	if(data == true){
 		        		  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
