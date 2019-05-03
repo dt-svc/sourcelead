@@ -10,15 +10,8 @@
 $(document).ready(function(){
 	getAssetCategoryList();
 });
-</script> 
-
-<style>
-.table-wrap{
-      overflow-y: visible;
-  }
-</style>
-                         
-                         
+</script>
+                                                  
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
