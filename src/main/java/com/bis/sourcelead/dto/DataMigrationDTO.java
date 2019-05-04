@@ -380,6 +380,8 @@ public class DataMigrationDTO extends CommonDTO {
     
     private String vendors;
     
+    private String vendor;
+    
     private String vendorcontact;
     
     private String currentRate;
@@ -2501,6 +2503,14 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setBeneficiaryPhone(String beneficiaryPhone) {
 		this.beneficiaryPhone = beneficiaryPhone;
+	}
+
+	public String getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
 	}
    
 }
