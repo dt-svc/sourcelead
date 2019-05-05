@@ -21,7 +21,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Add Shift</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='${appPath}/viewShift'/>">Shift List</a> &raquo; Add Shift</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='${appPath}/viewShift'/>">Shift List</a> &raquo; Add Shift</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="loading"></div>

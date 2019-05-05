@@ -78,9 +78,9 @@ public interface TaxService {
 	Response<Long> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO,
 			User loggedInUser, OrgLocations orgLocations);
 
-	List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(long orgLocationId, String uuid, String financialYear, Paginator paginator);
+	List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(long orgLocationId, String uuid, String financialYear, String searchValue, Paginator paginator);
 
-	SourceleadTaxITDeclarationSubmissionDTO getITDeclarationSubmission(String taxFormUUID, String formUUID);
+	SourceleadTaxITDeclarationSubmissionDTO getITDeclarationSubmission(String taxFormUUID, String formUUID, Long orgLocationId);
 
 	void saveUploadedDocuments(List<SourceleadTaxSubmissionDocumentDTO> documentList, String staticPath, Long orgId,
 			Long orgLocationId, long submissionId);

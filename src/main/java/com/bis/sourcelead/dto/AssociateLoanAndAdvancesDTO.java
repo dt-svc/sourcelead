@@ -2,13 +2,15 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
 import java.util.Set;
 
 import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvances;
 
-public class AssociateLoanAndAdvancesDTO implements Serializable{
+public class AssociateLoanAndAdvancesDTO extends SearchDTO implements Serializable{
 	
 	 private static final long serialVersionUID = 1L;
 	 
@@ -57,7 +59,7 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
 	 
 	 private String nextDueDate;
 	 
-	 private long id;
+	 private Long id;
 	 
 	 private String uuid;
 	 
@@ -82,6 +84,40 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
      Set<AssociateLoanAndAdvanceHistory> loanHis;
      
      AssociateLoanAndAdvances associateLoanAndAdvances;
+     
+     private BigDecimal outstandingAmount;
+     
+     private Double rateOfInterest;
+     
+     private String firstName;
+     
+     private String lastName;
+     
+     private String employeeId;
+     
+     private String empType;
+     
+     private Date startDate;
+     
+     private Date loanEndDate;
+     
+     private Double loanTotalAmount;
+     
+     private Double loanPaidAmount;
+     
+     private Double loanPendingAmount;
+     
+     private Double loanDeductAmount;
+     
+     private int loanNoOfSchedules;
+     
+     private String loanName;
+     
+     private String searchValue;
+     
+     private String fromDate;
+     
+     private String toDate;
      
 	public Set<AssociateLoanAndAdvanceHistory> getLoanHis() {
 		return loanHis;
@@ -231,11 +267,11 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
 		this.nextDueDate = nextDueDate;
 	}
 	
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -323,5 +359,141 @@ public class AssociateLoanAndAdvancesDTO implements Serializable{
 		this.lastPaidOnMaxDate = lastPaidOnMaxDate;
 	}
 
+	public BigDecimal getOutstandingAmount() {
+		return outstandingAmount;
+	}
+
+	public Double getRateOfInterest() {
+		return rateOfInterest;
+	}
+
+	public void setOutstandingAmount(BigDecimal outstandingAmount) {
+		this.outstandingAmount = outstandingAmount;
+	}
+
+	public void setRateOfInterest(Double rateOfInterest) {
+		this.rateOfInterest = rateOfInterest;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public String getEmpType() {
+		return empType;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public Date getLoanEndDate() {
+		return loanEndDate;
+	}
+
+	public void setEmpType(String empType) {
+		this.empType = empType;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setLoanEndDate(Date loanEndDate) {
+		this.loanEndDate = loanEndDate;
+	}
+
+	public Double getLoanTotalAmount() {
+		return loanTotalAmount;
+	}
+
+	public void setLoanTotalAmount(Double loanTotalAmount) {
+		this.loanTotalAmount = loanTotalAmount;
+	}
+
+	public Double getLoanPaidAmount() {
+		return loanPaidAmount;
+	}
+
+	public Double getLoanPendingAmount() {
+		return loanPendingAmount;
+	}
+
+	public Double getLoanDeductAmount() {
+		return loanDeductAmount;
+	}
+
+	public int getLoanNoOfSchedules() {
+		return loanNoOfSchedules;
+	}
+
+	public void setLoanPaidAmount(Double loanPaidAmount) {
+		this.loanPaidAmount = loanPaidAmount;
+	}
+
+	public void setLoanPendingAmount(Double loanPendingAmount) {
+		this.loanPendingAmount = loanPendingAmount;
+	}
+
+	public void setLoanDeductAmount(Double loanDeductAmount) {
+		this.loanDeductAmount = loanDeductAmount;
+	}
+
+	public void setLoanNoOfSchedules(int loanNoOfSchedules) {
+		this.loanNoOfSchedules = loanNoOfSchedules;
+	}
+
+	public String getLoanName() {
+		return loanName;
+	}
+
+	public void setLoanName(String loanName) {
+		this.loanName = loanName;
+	}
+
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+
+	public String getFromDate() {
+		return fromDate;
+	}
+
+	public String getToDate() {
+		return toDate;
+	}
+
+	public void setFromDate(String fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public void setToDate(String toDate) {
+		this.toDate = toDate;
+	}
+	
 	
 }

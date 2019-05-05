@@ -105,9 +105,10 @@
 					<div class="project_details_cta">
 						<strong>Expense Id:</strong><span>${expenses != null ? expenses.expenseAutoId : ExpensesId}</span><div class="clearfix"></div>
 					</div>
-					<div class="project_details_cta">
-						<strong>Purpose:</strong><span>${expenses.expensePurpose}</span><div class="clearfix"></div>
-					</div>
+					 <div class="project_details_cta">
+						<strong>Purpose:</strong><span>
+							<span title="${expenses.expensePurpose}">${expenses.expensePurpose}</span><div class="clearfix"></div>
+					</div> 
 					<div class="project_details_cta">
 						<strong>Project Name:</strong><span>${expenses.projectName}</span><div class="clearfix"></div>
 					</div>
