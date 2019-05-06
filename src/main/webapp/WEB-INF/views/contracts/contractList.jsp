@@ -566,7 +566,6 @@ function getTemplateList(listType){
 	}else{
 		tabType = listType;
 	}
-	alert("Hi"+tabType);
 // 	var tabType = $("#tabType").val();
 	var sourceleadUrl ='${sourceleadUrl}';
 	var searchValue = "";
