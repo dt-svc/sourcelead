@@ -42,36 +42,6 @@ $(document).ready(function(){
 	 }
 });
 </script>
-
-<style type="text/css">
-.glyphicon-none:before {
-    content: "\2122";
-    color: transparent !important;
-}
-.timesheet-content {
-background: #fff;
-min-height: 100px;
-clear:both;
-display: inline-block;
-width:100%;
-}
-.timesheet-content #example_filter {
-position: relative !important;
-top:0px !important;
-}
-.timesheet_appr_table.overflowVisible {
-overflow: visible !important;
-margin-top: 45px;
-}
-.timesheet_appr_table.overflow_Visible {
-overflow: visible !important;
-margin-top: 3px;
-}
-.time_pop {
- z-index: 99999;
-}
-</style>
-
 <div id='emptyPopup'></div>
 <div id='rejectedPopup'></div>
 <div id='reOpenPopup'></div>

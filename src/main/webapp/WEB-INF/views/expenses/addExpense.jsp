@@ -12,13 +12,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 
  
   <jsp:include page="addExpenseEntries.jsp"></jsp:include>
- 
-  <style type="text/css">
-.ReadTextFli {
-	 text-align: -webkit-left;
-}
-</style>
-
  <script type="text/javascript">
 		window.onload = function () {
 			//getClientBasedOnSelectedProject();
