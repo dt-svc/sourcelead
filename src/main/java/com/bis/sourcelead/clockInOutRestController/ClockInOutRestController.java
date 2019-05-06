@@ -1,5 +1,6 @@
 package com.bis.sourcelead.clockInOutRestController;
 
+import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -289,6 +290,14 @@ public class ClockInOutRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
 		return clockInOutConfigService.getTimeReports(loginOrgLocation,user);
+	}
+	
+	@RequestMapping(value = "/getWorkingTime",method = RequestMethod.GET)
+	public Time getWorkingTime(HttpServletRequest req,HttpServletResponse res,@RequestParam(value="clockId", required=false) Long clockId) {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
+		return clockInOutConfigService.getWorkingTimeByClockId(loginOrgLocation,user);
 	}
 
 }

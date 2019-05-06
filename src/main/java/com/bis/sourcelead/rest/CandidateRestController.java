@@ -1141,7 +1141,7 @@ public class CandidateRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		marketplacePurchaseSalesDTO.setOrglocationId(orgLocations.getId());
 		try {
-			String[] tableColumns = { "orderNo", "createdDate", "companyName", "totalResumes", "totalPrice","serviceFee","discount","grandTotal","paymentStatus" };
+			String[] tableColumns = { "orderNo", "orderDate", "companyName", "totalResume", "totalPrice","serviceFee","discount","grandTotal","paymentStatus" };
 			int sortColumnIndex = -1;
 			String sortColumnOrder = "desc";
 			if (marketplacePurchaseSalesDTO.getOrder() != null && !marketplacePurchaseSalesDTO.getOrder().isEmpty()) {
@@ -1442,7 +1442,7 @@ public class CandidateRestController {
 		try{
 			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		  	String[] tableColumns = { "orderNo", "orderDate", "companyName", "noOfResumes", "totalResumePrice", "paymentStatus" };
+		  	String[] tableColumns = { "orderNo", "orderDate", "companyName", "totalResume", "totalPrice", "paymentStatus" };
 		  	int sortColumnIndex = -1; 
 	  		String sortColumnOrder = "desc"; 
 	  		if (marketplacePurchaseSalesDTO.getOrder() != null && !marketplacePurchaseSalesDTO.getOrder().isEmpty()) {

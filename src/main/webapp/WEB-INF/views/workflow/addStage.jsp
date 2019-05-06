@@ -421,30 +421,22 @@ function checkStageIndex(value){
 	stageIndex = a;
 }
  
-var previousStageResult = "";
+ var previousStageResult = "";
 var nextstageResult = "";
-previousStageResult = previousStageResult + '<select class="sel form-control" id = "previousStageUuid">';
 
 if(stageIndex > -1) {
-	previousStageResult = previousStageResult + "<option value = "+stageUuid[stageIndex-1]+">"+workflowStages[stageIndex-1]+"</option>";
-}
-previousStageResult = previousStageResult + "</select>"; 
-
-$("#previousStages").empty().append(previousStageResult);
+	$("#previousStageUuid option[value='"+stageUuid[stageIndex-1]+"']").attr('selected', 'selected');
 
 if((stageIndex+1) == workflowStages.length){
 	nextstageResult = "<h2>No Stage.</h2>";
 	$("#nextStages").empty().append(nextstageResult);
 	}else{
 		nextstageResult = nextstageResult + "<select class='sel form-control' id = 'workflowStageUuid'>";	
-		if(stageIndex > -1) {
-			nextstageResult = nextstageResult + "<option value = "+stageUuid[stageIndex+1]+">"+workflowStages[stageIndex+1]+"</option>";		
-			console.log(stageUuid[stageIndex+1] + " "+workflowStages[stageIndex+1]);
-		}
+		nextstageResult = nextstageResult + "<option value = "+stageUuid[stageIndex+1]+">"+workflowStages[stageIndex+1]+"</option>";	
 		nextstageResult = nextstageResult + "</select>";
 		$("#nextStages").empty().append(nextstageResult);
 }
-
+}
 }
 </c:if>   
 
