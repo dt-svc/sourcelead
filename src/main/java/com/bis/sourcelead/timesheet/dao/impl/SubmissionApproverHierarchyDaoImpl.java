@@ -2436,7 +2436,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	     StringBuilder sequentiaLCheckForVendorApproval= new StringBuilder();                   
 		                           sequentiaLCheckForVendorApproval
 		                          .append( "        (PC.LEVEL+1) IN ( SELECT SUBPC.LEVEL FROM SUBMISSION_APPROVER_HIERARCHY  SUBSAH ")
-		                          .append( "                           INNER JOIN (SELECT ID,LEVEL FROM PROJECT_APPROVER_HIERARCHY) AS SUBPAH ON SUBPAH.ID = SUBSAH.HIERARCHY_ID ")
+		                          .append( "                           INNER JOIN (SELECT ID,LEVEL,PROJECT_CLIENTS_ID FROM PROJECT_APPROVER_HIERARCHY) AS SUBPAH ON SUBPAH.ID = SUBSAH.HIERARCHY_ID ")
 		                          .append( "                           INNER JOIN (SELECT ID,LEVEL FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBSAH.PROJECT_CLIENT_ID ")
 		                                                               //getting vendor highest level manager approved record
 		                          .append( "                           WHERE SUBSAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.APPROVED+"' AND SUBSAH.MASTER_CANDIDATE_ID = SAH.MASTER_CANDIDATE_ID AND SUBSAH.FREQUENCY_START_DATE = SAH.FREQUENCY_START_DATE AND SUBSAH.FREQUENCY_END_DATE = SAH.FREQUENCY_END_DATE  ")
@@ -2518,7 +2518,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             .append("  INNER JOIN (SELECT ID,INVOICE_FREQUENCY,PROJECT_APPROVAL_TYPE,PROJECT_NAME,IS_REPORTING_MANAGER_AS_APPROVER FROM PROJECTS ) AS PROJ ON PROJ.ID = PM.PROJECT_ID")
            
             /*Getting location based candidate*/
-			.append("  LEFT JOIN (SELECT ID,DESIGNATION_TYPE FROM CANDIDATE WHERE ID) AS CAN ON CAN.ID = PM.CANDIDATE_ID")
+			.append("  LEFT JOIN (SELECT ID,DESIGNATION_TYPE FROM CANDIDATE) AS CAN ON CAN.ID = PM.CANDIDATE_ID")
            
 			/*Getting consultant user candidate*/
             .append("  LEFT JOIN (SELECT MASTER_CANDIDATE_ID,CONSULTANT_USER_ID,FIRST_NAME,LAST_NAME,EMAIL,MOBILE_PHONE,WORK_LOCATION FROM CANDIDATE) AS CONSULTANTCAN ON  CONSULTANTCAN.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND  CONSULTANTCAN.CONSULTANT_USER_ID IS NOT NULL ")
@@ -2541,7 +2541,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		                 
 		                 //should be a low-level org in the case of client-vendor relationship
 		                .append(" PC.LEVEL IN(SELECT MAX(SUBPC.LEVEL) FROM PROJECT_CLIENTS SUBPC  ")  
-		                .append("             INNER JOIN (SELECT ID FROM ORG) AS OG ON OG.ID = SUBPC.ORG_ID  ")
+		                .append("             INNER JOIN (SELECT ID,ORG_TYPE FROM ORG) AS OG ON OG.ID = SUBPC.ORG_ID  ")
 		                .append("             WHERE SUBPC.PROJECT_ID = PROJ.ID AND OG.ORG_TYPE != 'GUEST' AND SUBPC.STATUS != '0' ) ")
 		    
 		                //ProjectMember should be available with in the frequency or not
@@ -2597,13 +2597,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					.append("  LEFT JOIN (SELECT ID,FILE_URL FROM USER) AS U ON U.ID = SAH.CONSULTANT_USER_ID ")
 					
 					 /*Getting location based candidate*/
-					.append("  LEFT JOIN (SELECT ID,DESIGNATION_TYPE FROM CANDIDATE WHERE ID) AS CAN ON CAN.ID = PM.CANDIDATE_ID")
+					.append("  LEFT JOIN (SELECT ID,DESIGNATION_TYPE FROM CANDIDATE) AS CAN ON CAN.ID = PM.CANDIDATE_ID")
 		           
 					/*Getting consultant user candidate*/
 		            .append("  LEFT JOIN (SELECT MASTER_CANDIDATE_ID,CONSULTANT_USER_ID,FIRST_NAME,LAST_NAME,EMAIL,MOBILE_PHONE,WORK_LOCATION FROM CANDIDATE) AS CONSULTANTCAN ON  CONSULTANTCAN.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND  CONSULTANTCAN.CONSULTANT_USER_ID IS NOT NULL ")
 		            
 					/*Getting Approver Hierarchy*/
-					.append("  INNER JOIN (SELECT ID,APPROVER_USER_ID,STATUS,LEVEL FROM PROJECT_APPROVER_HIERARCHY) AS PAH ON PAH.ID = SAH.HIERARCHY_ID ")
+					.append("  INNER JOIN (SELECT ID,APPROVER_USER_ID,PROJECT_CLIENTS_ID,STATUS,LEVEL FROM PROJECT_APPROVER_HIERARCHY) AS PAH ON PAH.ID = SAH.HIERARCHY_ID ")
 					/*Getting Project*/
 					.append("  INNER JOIN (SELECT ID,INVOICE_FREQUENCY,PROJECT_APPROVAL_TYPE,PROJECT_NAME,IS_REPORTING_MANAGER_AS_APPROVER FROM PROJECTS ) AS PROJ ON PROJ.ID = SAH.PROJECT_ID ");
 					 /*Getting Project Client*/

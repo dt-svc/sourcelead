@@ -485,7 +485,7 @@ public class TimesheetApprovalRestController {
 	        if(StringUtils.isNotEmpty(timesheetApprovalDTO.getProject()) && !timesheetApprovalDTO.getProject().equalsIgnoreCase("undefined")  && !timesheetApprovalDTO.getProject().equalsIgnoreCase("All")){
 	        	projectId =Long.parseLong(timesheetApprovalDTO.getProject());
 	        }
-	        ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId,projectId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId(),timesheetApprovalDTO.getSearchValue(),timesheetApprovalDTO.getProjectName(),start,length,"",isGlobalAccess);
+	       /* ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId,projectId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId(),timesheetApprovalDTO.getSearchValue(),timesheetApprovalDTO.getProjectName(),start,length,"",isGlobalAccess);
 	        
 	        timesheetApprovalDTO.setTotalRows(projectMembers.getRecordsTotal());
 			
@@ -510,8 +510,8 @@ public class TimesheetApprovalRestController {
 	        	subDetails.add(ts);
 	         }
 	         timesheetApprovalDTO.setTimesheetSubmission(subDetails);
-	       }
-	       /* Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isAdmin");
+	       }*/
+	        Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isAdmin");
 	        ResponseList<TimesheetApprovalSubmissionDetailsDTO> tasDetails =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId, projectId, timesheetApprovalDTO.getStage(), orgLocations.getId(),orgLocations.getOrg().getId(), user.getId(), timesheetApprovalDTO.getSearchValue(), timesheetApprovalDTO.getProjectName(), start, length, "", isGlobalAccess,isAdmin,"approver",6,orgLocations.getDateFormat());
 	        timesheetApprovalDTO.setTotalRows(tasDetails.getRecordsTotal());
 	        int totalRows = tasDetails.getRecordsTotal();
@@ -591,7 +591,7 @@ public class TimesheetApprovalRestController {
 					 timesheetApprovalDTO.setPageCount(pageCount);
 				 }
 			}
-			 timesheetApprovalDTO.setTimesheetSubmission(tasDetails.getData());*/
+			 timesheetApprovalDTO.setTimesheetSubmission(tasDetails.getData());
 	        return timesheetApprovalDTO;
 	   }
 		

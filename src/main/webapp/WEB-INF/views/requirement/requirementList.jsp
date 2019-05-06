@@ -105,7 +105,7 @@ top: 18px;height: 32px; line-height: 18px;
  window.onload = function() {
 	 var viewTab = "${viewTab}";
 		if(viewTab === 'jobFair') {
-			/* alert("viewTab : " + viewTab); */
+			
 			jobFairListCheck();
 		} else {
  			requirementListCheck("${searchValue}","${universalRequirementList}","universalSearch",'${sourceleadUrl}');
@@ -995,7 +995,7 @@ function exportToPdf(type) {
 	} else {
 		/* alert("Export JobFair to PDF"); */
 		$(".buttons-pdf").click();
-		window.location.href = sourceleadUrl +"/pdfExportForJobfair?includeInactive=true";
+		window.location.href = sourceleadUrl +"/pdfExportForJobfair?includeInactive=true&searchValue="+$("#jobFairDataTableSearch").val();
 	}
 }
 </script>
@@ -1076,7 +1076,7 @@ function exportToExcel(type) {
 		}
 	} else {
 		/* alert("Export JobFair to Excel"); */
-		window.location.href = sourceleadUrl +"/excelExportForJobfair?includeInactive=true"
+		window.location.href = sourceleadUrl +"/excelExportForJobfair?includeInactive=true&searchValue="+$("#jobFairDataTableSearch").val();
 		$(".buttons-excel").click();
 	}
 }
