@@ -383,8 +383,7 @@ var masterHeader = new buildMasterHeaderPanel();
 	   
 	   
 	   this.logoutFormSubmit = function(){
-		   window.location.href = sourceleadUrl+"/getActionHistoryList?userSessionId="+userSessionId; 
-		   document.getElementById("logoutForm").submit();
+		   window.location.href = sourceleadUrl+"/getActionHistoryList/"+userSessionId; 
 	   }
 	   
 	   this.predefineProfileImage = function(imageId){
