@@ -207,7 +207,7 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 		  				  recQvemployeeSubmission(candidateId);
 		  				  recQveducationSubmission(candidateId);
 						  recQwikCertificates(candidateId);
-						  candidateSideBar(candidateId);
+// 						  candidateSideBar(candidateId);
 		              }else{
 		       	    	         var result ="";
 		      		    	     result = result+"   <div class='row'>"; 

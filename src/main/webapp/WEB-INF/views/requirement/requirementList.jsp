@@ -127,12 +127,14 @@ function statusvalidating(id){
 		        url: atsUrl+"/getSourceleadTagsList?"+tokenParamName+"="+tokenValue, 
 		        success: function(json) {
 		        	var output = "";
+		        	if(json != null && json !='' && json != 'undefined'){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
 			        		output = output + "<option value='" +opt+ "'>"+opt+"</option>";
 			        		
 					}
+		        	}
 		        	$("#jobsTags").empty();
 			        $("#jobsTags").append(output);
 			        $('#jobsTags').trigger("chosen:updated");
