@@ -41,7 +41,7 @@
 			<div class="form-group">
               <label class="col-md-12">Emp Type</label>
               <div class="col-md-12">
-                <select class="selectpicker form-control" id="designType"
+                <select class="form-control" id="designType"
 								name="designType"
 								field-name="Employment type">
 								<option value="">--Select Employment Type--</option>
@@ -95,7 +95,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="runLoanReport();">
-            <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetButton()">
+            <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetLoanReport();">
           </div>
         </div>
       </div>      
@@ -263,6 +263,7 @@ function getLoanNames(){
 
 <script>
 	function loanReportURL(url) {
+		$("#deductionReportDIV").show();
 		$("#deductionReportDIV").empty();
 		var result = "";
 		result = result + '<table id="loanReportTable" class="display" cellspacing="0" width="100%" >';
@@ -397,7 +398,7 @@ function getLoanNames(){
 										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.startDate+'</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.fromDate+'</div></td>';
 											return result;
 										}
 									},{
@@ -406,7 +407,7 @@ function getLoanNames(){
 										"sortable": false,
 										"render" : function(data, type, opt,meta) {
 											var result = "";
-											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.loanEndDate+'</div></td>';
+											result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.toDate+'</div></td>';
 											return result;
 										}
 									},{
@@ -415,7 +416,7 @@ function getLoanNames(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.loanTotalAmount != null && opt.loanTotalAmount != '' && opt.loanTotalAmount != 'undefined'){
-												result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.loanTotalAmount+'</div></td>';
+												result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.loanTotalAmount+'</div></td>';
 											}else{
 												result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 											}
@@ -428,7 +429,7 @@ function getLoanNames(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.loanPaidAmount != null && opt.loanPaidAmount != '' && opt.loanPaidAmount != 'undefined'){
-												result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.loanPaidAmount+'</div></td>';
+												result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.loanPaidAmount+'</div></td>';
 											}else{
 												result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 											}
@@ -441,7 +442,7 @@ function getLoanNames(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.loanPendingAmount != null && opt.loanPendingAmount != '' && opt.loanPendingAmount != 'undefined'){
-												result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.loanPendingAmount+'</div></td>';
+												result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.loanPendingAmount+'</div></td>';
 											}else{
 												result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 											}
@@ -467,7 +468,7 @@ function getLoanNames(){
 										"render" : function(data, type, opt,meta) {
 											var result = "";
 											if(opt.loanDeductAmount != null && opt.loanDeductAmount != '' && opt.loanDeductAmount != 'undefined'){
-												result = result+ '<td><div class="tbldata-dotdot-vsm" title="">'+opt.loanDeductAmount+'</div></td>';
+												result = result+ '<td><div class="tbldata-dotdot-vsm" title="">$ '+opt.loanDeductAmount+'</div></td>';
 											}else{
 												result = result + '<td class="tblminwidth-75"><div>--</div></td>';
 											}
@@ -493,7 +494,7 @@ function getLoanNames(){
 							"aaSorting" : [ [ 3, 'desc' ] ],
 							"bLengthChange" : true,
 							"bDestroy" : true,
-							"ordering" : true,
+							"ordering" : false,
 							 "oLanguage" : {
 								"sSearch" : "",
 								"sZeroRecords" : "",
@@ -511,6 +512,23 @@ function getLoanNames(){
 		});
 	}
 </script> 
+
+<script>
+function resetLoanReport(){
+	$("#deductionReportDIV").hide();
+	$("#loanSearchDiv").hide();
+	$("#loanName").val('');
+	$("#loanName").trigger("chosen:updated");
+	$("#designType").val('');
+	$("#designType").trigger("chosen:updated");
+	$("#loanAndAdvStatus").val('');
+	$("#loanAndAdvStatus").trigger("chosen:updated");
+	$("#fromDate").val('');
+	$("#fromDate").trigger("chosen:updated");
+	$("#toDate").val('');
+	$("#toDate").trigger("chosen:updated");
+}
+</script>
 
 
 <jsp:include page="../masterFooter.jsp" />
