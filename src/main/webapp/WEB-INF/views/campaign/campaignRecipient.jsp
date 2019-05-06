@@ -6,12 +6,6 @@
 <link rel="stylesheet" href="/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
 <link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
 
-<style>
-.modal-backdrop{
-z-index: 1040 !important;
-}
-</style>
-
 <script type="text/javascript">
     var staticTime='${staticTime}'
     

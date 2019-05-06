@@ -3145,8 +3145,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			if(marketplacePurchaseSalesDTO != null){
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
-				if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
-					queryEndBuilder2.append(" order by salesOrder.totalResumePrice "+marketplacePurchaseSalesDTO.getSortOrder());
+				if(sortColumnName.equalsIgnoreCase("totalPrice")){
+					queryEndBuilder2.append(" order by salesOrder.totalPrice "+marketplacePurchaseSalesDTO.getSortOrder());
 				}else{
 					queryEndBuilder2.append(" order by salesOrder." + sortColumnName + " "+marketplacePurchaseSalesDTO.getSortOrder());
 				}
