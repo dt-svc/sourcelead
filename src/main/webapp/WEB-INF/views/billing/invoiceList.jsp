@@ -5,33 +5,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.invoiceId_Anchor a {
-color:#337ab7 !important;
-}
-.successBtn {
-background-color: #1ab394;
-border-color: #1ab394;
-border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
-font-size: 13px; width: 60px;
-}
-.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
-    z-index: 900000 !important;
-}
-.modal{
-z-index: 15000;
-}
-.remove_user_pop.remove_user_pop_a {
-z-index: 18000;
-}
-.popCusDate{
-	right: 16px; bottom: -40px; top: inherit; background: #fff; border: none; padding: 8px 10px 8px 5px;
-}
-</style>
-
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 $(document).ready(function(){
+	$(".ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br").css({'z-index':'900000 !important'});
 	getInvoiceList();
 });
 </script>
