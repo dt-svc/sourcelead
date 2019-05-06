@@ -95,7 +95,6 @@ public class PushNotificationUtill {
 	
 	public final static String AUTH_KEY_FCM = "AAAAcCJ8Zqo:APA91bGcbtil0EWobEobneqgJfaQxt15JAtcnYQ17hZNDqMyHmSN7myt11P0aa4iBqG0O8lbleV2fnS2QCd55wPpCI4h24tYi3KQUgixjRz6-p4tskwezM_f6V4aK2PUVX1Y7Qi81Y07";
 	public final static String API_URL_FCM = "https://fcm.googleapis.com/fcm/send";
-	public final static String DEVICE_TOKEN ="c16fJs01cbA:APA91bFUULAtPEekHiI8OsRLzllRs9b4m6EX5xj62MApKSkIEKvY2LqgsdIGKhGe0xGcnnCkW3_Ss3caT3XuckPChi9wVV75mMSwPWKmA3cDndMLMSjYNarfeBNx7ZriMWaaQKBFkC-V";
 	    
 	@SuppressWarnings("unchecked")
 	public void sendAndriodPushNotification(MobilePushNotificationDTO mobilePushNotificationDTO) throws Exception{
@@ -115,10 +114,10 @@ public class PushNotificationUtill {
         conn.setRequestProperty("Content-Type", "application/json");
 
         JSONObject data = new JSONObject();
-        data.put("to", DEVICE_TOKEN.trim());
+        data.put("to", mobilePushNotificationDTO.getDeviceToken().trim());
         JSONObject info = new JSONObject();
-        info.put("title", "FCM Notificatoin Title"); // Notification title
-        info.put("body", "Hai ra nanna Trigun"); // Notification body
+        info.put("title", "Sourcelead Notification"); // Notification title
+        info.put("body", mobilePushNotificationDTO.getNotificationDescritpion().replaceAll("&nbsp;", " ")); // Notification body
         data.put("data", info);
 
         OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());

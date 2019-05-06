@@ -66,7 +66,7 @@ public class MobilePushNotificationServiceImpl implements MobilePushNotification
             	}
             }
             
-            List<MobileDeviceTokenInformaion> andriodTokeknLis = mobilePushNotificationDao.mobileDeviceTokenInformaionList(mdti.getUserId().getId(),"Andriod");{
+            List<MobileDeviceTokenInformaion> andriodTokeknLis = mobilePushNotificationDao.mobileDeviceTokenInformaionList(mdti.getUserId().getId(),"Android");{
             	for(MobileDeviceTokenInformaion mdtf :andriodTokeknLis) {
             		mobilePushNotificationDTO.setDeviceToken(mdtf.getDeviceToken());
             		pushNotificationUtill.sendAndriodPushNotification(mobilePushNotificationDTO);
