@@ -166,3 +166,4 @@ INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_N
 ('AddGoalCommentNotification', 'Notification', 'AddGoalCommentNotification', 'Forward the email to the goals assignee about goals Comments', '[Login_User] commented on  [Goal_Name]', 'org', '', '[Login_User] commented on [Goal_Name]','N','SLADMIN', 'slead', 'sleadIN',1,'Y');
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT MAX( ID ) FROM `EMAIL_SCENARIO`), 'goalName', '[Goal_Name]');
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT MAX( ID ) FROM `EMAIL_SCENARIO`), 'loginUser', '[Login_User]');
+
