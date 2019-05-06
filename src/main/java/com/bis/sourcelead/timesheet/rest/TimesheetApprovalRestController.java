@@ -1,5 +1,6 @@
 package com.bis.sourcelead.timesheet.rest;
 
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -510,6 +511,87 @@ public class TimesheetApprovalRestController {
 	         }
 	         timesheetApprovalDTO.setTimesheetSubmission(subDetails);
 	       }
+	       /* Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isAdmin");
+	        ResponseList<TimesheetApprovalSubmissionDetailsDTO> tasDetails =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId, projectId, timesheetApprovalDTO.getStage(), orgLocations.getId(),orgLocations.getOrg().getId(), user.getId(), timesheetApprovalDTO.getSearchValue(), timesheetApprovalDTO.getProjectName(), start, length, "", isGlobalAccess,isAdmin,"approver",6,orgLocations.getDateFormat());
+	        timesheetApprovalDTO.setTotalRows(tasDetails.getRecordsTotal());
+	        int totalRows = tasDetails.getRecordsTotal();
+			if(totalRows > 0) {
+				final Date aStartDate = actualStartDate;
+				final Date aEndDate = actualEndDate;
+				final Integer tdSpanLength = 6;
+				 tasDetails.getData().stream().forEach(tas->{
+					 Float totalHours = 0f;
+						Float estimatedTotalHours = 0f;
+						LinkedHashMap<Date, Float> dateTotalsMap = null;
+						try {
+							dateTotalsMap = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(tas.getProjectId().longValue(),tas.getMasterCandidateId().longValue(),aStartDate,aEndDate,orgLocations.getLocFullFormDateFormatter(),orgLocations.getDateFormat());
+						} catch (Exception e) {	}
+						if(timesheetApprovalDTO.getDisplayWeekList() != null && !timesheetApprovalDTO.getDisplayWeekList().isEmpty()){
+							  List<String> weekTotalList = new ArrayList<String>();
+							  List<String> submissionTotalList = new ArrayList<String>();   
+							  Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+			                  if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+								 avgWorkingHoursPerDay = 8; 
+							   }
+							    for (Map.Entry<Date,Date> entry : timesheetApprovalDTO.getDisplayWeekList().entrySet()) { 
+							    	     //Used to calculate estimated hours
+								    	 long diff = CalendarUtil.getNumberOfDays(entry.getKey(), entry.getValue());
+								    	 Float weekTotal = 0f;
+								    	 if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 7){
+								    		  weekTotal = (float) ((diff)*avgWorkingHoursPerDay);
+								    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+								    	 }
+								    	 else if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 1){
+								    		  weekTotal = (float) ((diff-1)*avgWorkingHoursPerDay);
+								    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+								    	 }
+								    	 else if(CalendarUtil.getDayOfTheDate(entry.getKey()) == 2){
+								    		  weekTotal = (float) ((diff+1)*avgWorkingHoursPerDay);
+								    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
+								    	 }
+							    	    float leaveTotal = 0f;
+							    	   if(tas.getConsultantUserId() != null && tas.getWorkLocationId() != null) {
+							    		 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(tas.getConsultantUserId().longValueExact(), entry.getKey(), entry.getValue(),tas.getWorkLocationId().longValue());
+							    	     if(leaveTotalMap != null && !leaveTotalMap.isEmpty()) {
+							    	    	 leaveTotal = leaveTotalMap.get("TOTAL");
+							    	     }
+							    	   }
+							    	 if(dateTotalsMap!= null && !dateTotalsMap.isEmpty() && dateTotalsMap.get(entry.getKey()) != null){
+							    		  //calculating total hours with out leaves
+							    		  totalHours = CommonUtil.getCombinedHours(totalHours, dateTotalsMap.get(entry.getKey()));
+							    		  
+							    		  //calculating total hours with leaves
+							    		  totalHours = CommonUtil.getCombinedHours(totalHours, leaveTotal);
+							    		  
+							    		  //for week-wise display
+							    		  weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal,null));
+							    		 
+							    		  Float submissionTotal = CommonUtil.getCombinedHours(leaveTotal, dateTotalsMap.get(entry.getKey()));
+							    		  
+							    		  submissionTotalList.add(CommonUtil.getHoursDisplayFormat(submissionTotal,null));
+							    	 }else{
+							    		 submissionTotalList.add(CommonUtil.getHoursDisplayFormat(leaveTotal,null));
+							    		 weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal,null));
+							    	 }
+							    	 
+							     }
+							    tas.setTdSpanLength(tdSpanLength);
+							    tas.setWeeekTotal(weekTotalList);
+							    tas.setSubmissionTotal(submissionTotalList);
+							    tas.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours,null));
+							    tas.setEstimatedHours(CommonUtil.getHoursDisplayFormat(estimatedTotalHours,null));
+						  	  }
+				 });
+				 int remainder = totalRows % length;
+				 int pageCount = totalRows / length;
+				 if(remainder > 0) {
+					 timesheetApprovalDTO.setPageCount(pageCount+1);
+				 }
+				 else {
+					 timesheetApprovalDTO.setPageCount(pageCount);
+				 }
+			}
+			 timesheetApprovalDTO.setTimesheetSubmission(tasDetails.getData());*/
 	        return timesheetApprovalDTO;
 	   }
 		
@@ -564,7 +646,7 @@ public class TimesheetApprovalRestController {
 				 fileUrl = pm.getProjectMemberCandidteId().getConsultantUser().getFileUrl();
 			
 			 ts.setProfileImageFileUrl(fileUrl);
-			 ts.setProjectMemberId(projectMember.getId());
+			 ts.setProjectMemberId(BigInteger.valueOf(projectMember.getId()));
 			 ts.setEmployeeName(projectMember.getProjectMemberCandidteId().getFullName());
 			 ts.setEmployeeEmail(projectMember.getProjectMemberCandidteId().getEmail());
 			 ts.setEmployeePhoneNo(projectMember.getProjectMemberCandidteId().getMobilePhone());
@@ -584,8 +666,8 @@ public class TimesheetApprovalRestController {
 		    }else{
 		   	 ts.setDesignation("--"); 
 		    }
-			 ts.setMasterCandidateId(projectMember.getProjectMemberCandidteId().getMasterCandidateId().getId());
-			 ts.setProjectId(projectMember.getProjects().getId());
+			 ts.setMasterCandidateId(BigInteger.valueOf(projectMember.getProjectMemberCandidteId().getMasterCandidateId().getId()));
+			 ts.setProjectId(BigInteger.valueOf(projectMember.getProjects().getId()));
 			 ts.setProject(projectMember.getProjects().getProjectName());
 		    
 		    if(null != projectMember.getProjectClientsId().getOrgRelationId()){

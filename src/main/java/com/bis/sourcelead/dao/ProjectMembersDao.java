@@ -124,6 +124,8 @@ public interface ProjectMembersDao {
 
 	ProjectMembers getProjectMembersByCandidateIdAndProjectClientId(Long candidateId,Long projectClientsId) throws Exception;
 	
+	ProjectMembers getProjectMembersByMasterCandidateIdAndProjectClientId(Long masterCandidateId,Long projectClientsId) throws Exception;
+	
 	public List<ProjectMembers> getAllProjectMembersByProjectClientId(Long projectClientsId) throws Exception;
 	
 	public ProjectMembers getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId,Long orgId,String isGlobalAccess) throws Exception;

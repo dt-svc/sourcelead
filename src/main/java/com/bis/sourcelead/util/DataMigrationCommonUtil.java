@@ -1232,6 +1232,21 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				    	saHierarchy = new SubmissionApproverHierarchy();
 						saHierarchy.setHeirarchyId(hierarchy);
 						saHierarchy.setSubmissionId(timesheetSubmissions);
+
+						//Additional Fields are added for de-normalization
+						saHierarchy.setProjectId(timesheetSubmissions.getProjects());
+						saHierarchy.setMasterCandidateId(timesheetSubmissions.getMasterCandidateId().getId());
+						saHierarchy.setProjectClientId(hierarchy.getProjectClientsId());
+						saHierarchy.setOrgLocationId(hierarchy.getProjectClientsId().getOrgLocationsId().getId());
+						saHierarchy.setOrgId(hierarchy.getProjectClientsId().getOrgLocationsId().getOrg().getId());
+						ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectClientId(timesheetSubmissions.getMasterCandidateId().getId(), hierarchy.getProjectClientsId().getId());
+						if(pm != null) {
+							saHierarchy.setProjectMemberId(pm);
+							saHierarchy.setCandidateId(pm.getCandidateId());
+							User consultantUser = candidateService.getConsultantUserByCandidateIdOrMasterCandidateId(pm.getProjectMemberCandidteId().getId(),pm.getProjectMemberCandidteId().getMasterCandidateId().getId());
+							saHierarchy.setConsultantUser(consultantUser);
+						}
+						
 						if(frequencyStartDate != null)
 							saHierarchy.setFrequencyStartDate(frequencyStartDate);
 						if(frequencyEndDate != null)
