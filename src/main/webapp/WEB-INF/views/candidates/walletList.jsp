@@ -315,6 +315,7 @@
 	        	 {
 	                 "targets": colIndex++,
 	                 "data": "transactionId",
+	                 "sortable": false,
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.transactionId !== null && opt.transactionId !== '' && opt.transactionId !== 'undefined') {
