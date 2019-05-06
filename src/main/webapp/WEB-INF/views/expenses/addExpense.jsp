@@ -50,7 +50,7 @@ $(document).ready(function(){
 	        <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view">View Expenses</a> &raquo; Edit Expense</div> 
 	    </c:when>    
 	     <c:otherwise>
-	       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/expenses">My Expenses</a> &raquo; Add Exhdgfdpense</div> 
+	       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/expenses">My Expenses</a> &raquo; Add Expense</div> 
 	    </c:otherwise>
 	</c:choose>
     </section>
