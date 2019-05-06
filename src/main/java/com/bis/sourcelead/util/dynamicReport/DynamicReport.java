@@ -1254,13 +1254,22 @@ public class DynamicReport {
 			
 			String jobTitle = interview.getSubmissionId().getRequirement().getJobTitle();
 			
-			String client = "---";
+			String client = null;
+			if(interview.getClientName() != null) {
+			client = interview.getClientName();
+			}else {
+				client = "--";
+			}
 			
 			String dateOfInterview = commonUtil.dateStrFromOrgDateFormatter(interview.getOrgLocationId().getDateFormat(), interview.getInterviewId().getDateOfInterview());
 			
 			// String interviewTime =  commonUtil.dateStrFromOrgDateFormatter(interview.getOrgLocationId().getDateFormat(),interview.getInterviewId().getStartTime());
 			
-			String interviewTime= interview.getInterviewId().getStartTime().toString();
+			String interviewTimeStr= interview.getInterviewId().getStartTime().toString();
+			
+			String TimeStr[] =interviewTimeStr.split(" ");
+			
+			String interviewTime = TimeStr[TimeStr.length-1].replace(".0", " ");
 			
 			String interviewType = interview.getInterviewId().getInterviewType();
 			
