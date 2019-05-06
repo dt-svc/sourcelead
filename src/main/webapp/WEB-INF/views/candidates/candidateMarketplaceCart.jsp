@@ -15,14 +15,14 @@
       <h2 id="headerLbl">Cart</h2>
     </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl"><a href="${appPath}/globalMarketplacePage">Global Marketplace List</a></label> &raquo; <label id="brudCrumLbl">Cart</label> </div>
+	    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <label id="brudCrumLbl"><a href="${SourceLeadWeb_atsUrl}/globalMarketplacePage">Global Marketplace List</a></label> &raquo; <label id="brudCrumLbl">Cart</label> </div>
 	  </c:if>
 	  </section>
 	  <div id="popUp"></div>
  	<div class="clearfix"></div>
 	  <div class="clearfix">
 			<ul class="project-tabs-menu projecttabs-custom clearfix">
-		         <li id="" ><a href="${appPath}/candidatesList">Candidate List</a></li>
+		         <li id="" ><a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidate List</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
 		         <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
 		         <li id="" class="current"><a href="javascript:void(0)">Cart</a></li>
@@ -123,7 +123,7 @@
                 <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <div class="cartInvoiceBodyFooter">
                 <div class="clearfix">
-                  <div class="pull-right"> <a onclick="initMarketplacePayment()" href="javascript:void(0)" class="btn btn-primary mr" id = "checkOutButton2"><i class="fa fa-send paddingRight"></i>Check Out</a> <a class="btn btn-default" href="${appPath}/globalMarketplacePage">Cancel</a> </div>
+                  <div class="pull-right"> <a onclick="initMarketplacePayment()" href="javascript:void(0)" class="btn btn-primary mr" id = "checkOutButton2"><i class="fa fa-send paddingRight"></i>Check Out</a> <a class="btn btn-default" href="${SourceLeadWeb_atsUrl}/globalMarketplacePage">Cancel</a> </div>
                 </div>
               </div>
               </sec:authorize>
@@ -177,10 +177,10 @@
                 <input class="dateCheckBox" name="MarketCartDate" value="YTD" type="radio">
                 <label>This Year</label>
               </li>
-               <li class="positionRelative">
+              <li class="positionRelative">
                 <input class="dateCheckBox" name="MarketCartDate" value="custom" type="radio" id = "customDateCheckBox">
                 <label>Custom</label>
-              </li> 
+              </li>
             </ul>
           </div>
         </div>
@@ -219,10 +219,10 @@
             <ul class="list-unstyled positionRelative filterSearch" id="">
               <li class="positionRelative mb">
                 <div class="row">
-                <div class="col-md-6" id= "cartFromDiv">
+                <div class="col-md-6"  id= "cartFromDiv">
                 	<input type="text" value="" class="form-control calendar" placeholder="From Date" id="creationStartDate">
                 </div>
-                <div class="col-md-6" id= "cartToDiv">
+                <div class="col-md-6"  id= "cartFromDiv">
                 	<input type="text" value="" class="form-control calendar" placeholder="To Date" id="creationEndDate">
 				</div>
              </div>
@@ -245,12 +245,10 @@
   <jsp:include page="../masterFooter.jsp" />
 </body>	
 <script type="text/javascript">
-
+var atsUrl = '${SourceLeadWeb_atsUrl}';
 $(document).ready(function () {
-	/* var customDate = "";
-	var fromDate = "";
-	var toDate = "";
-	getCandidateDetailsFromMarketcart(); */
+	getCandidateDetailsFromMarketcart();
+	/* updateInvoiceDetails(); */
 	validateMarketCartFilter();
 
 });
@@ -284,45 +282,42 @@ $('.chosen-select').each(function() {
 
 });
 function goToOrgMarketPlaceList(){
-	location.href = "${appPath}/OrgMarketplace";
+	location.href = "${SourceLeadWeb_atsUrl}/OrgMarketplace";
 }
 
 function goToGlobalMarketPlaceList(){
-	location.href = "${appPath}/globalMarketplacePage";
+	location.href = "${SourceLeadWeb_atsUrl}/globalMarketplacePage";
 }
 
 function goToPurchaseOrderList(){
-	location.href ="${appPath}/PurchaseOrderList";
+	location.href ="${SourceLeadWeb_atsUrl}/PurchaseOrderList";
 	}
 function goToSalesOrderList(){
-	location.href = "${appPath}/SalesOrderList";
+	location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 }
 
 function goToWalletList(){
-    location.href = "${appPath}/walletList";
+    location.href = "${SourceLeadWeb_atsUrl}/walletList";
 }
-
 
 function getCandidateDetailsFromMarketcart(customDate, fromDate, toDate){
 	var candidateLength = 0;
+	 if(customDate == null || customDate == "undefined"){
+			customDate = "";
+			}
+			
+			if(fromDate == null || toDate== null){
+				fromDate = "";
+				toDate = "";
+			}
 	/* var checkedDate = $('input[name=MarketCartDate]:checked').val();
 	var creationStartDate = $("#creationStartDate").val();
-	var creationEndDate = $("#creationEndDate").val(); 
-	*/
-	 if(customDate == null || customDate == "undefined"){
-	customDate = "";
-	}
-	
-	if(fromDate == null || toDate== null){
-		fromDate = "";
-		toDate = "";
-	}
-	
+	var creationEndDate = $("#creationEndDate").val();  */
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl +"/getCandidateDetailsFromMarketcart?searchValue="+searchValue+"&creationStartDate="+fromDate+"&creationEndDate="+toDate+"&checkedDate="+customDate,
+		url : atsUrl +"/getCandidateDetailsFromMarketcart?searchValue="+searchValue+"&creationStartDate="+fromDate+"&creationEndDate="+toDate+"&checkedDate="+customDate,
 		async : false,
 		success : function(object) {
 			var result ="";
@@ -396,7 +391,7 @@ function getCandidateDetailsFromMarketcart(customDate, fromDate, toDate){
 function updateInvoiceDetails(){
 	var totalPriceInCurrency;
 	$.ajax({
-		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
+		 	url: atsUrl + "/updateMarketplaceCartCountAndPrice",
 	        type: 'GET',
 	        success: function (object) {
 	        	if(object != null){
@@ -431,7 +426,7 @@ function deleteCandidateFromMarketcart(candidateName, candidateUuid){
 function deleteCandidateFromMarketcartByCandidateUuid(candidateUuid){
 	var cLength;
 	$.ajax({
-	 	url: sourceleadUrl + "/deleteCandidateFromMarketcartByCandidateUuid?candidateUuid="+candidateUuid,
+	 	url: atsUrl + "/deleteCandidateFromMarketcartByCandidateUuid?candidateUuid="+candidateUuid,
 		type: 'GET',
 		success : function(result){
 			if (result.response === "AWKWARD") {
@@ -470,7 +465,7 @@ function deleteAllCandidatesFromMarketcart(){
 
 function deleteAllCandidatesForCheckout(){
 	$.ajax({
-	 	url: sourceleadUrl + "/deleteAllCandidatesFromMarketcart",
+	 	url: atsUrl + "/deleteAllCandidatesFromMarketcart",
 		type: 'GET',
 		success : function(result){
 			if (result.response === "AWKWARD") {
@@ -524,52 +519,52 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		createMarketCartEndDate();
  	 });
 	
-	function validateMarketCartFilter(){ 
-		
-		var customDate = $('input[name=MarketCartDate]:checked').val();
-  		var fromDate = $("#creationStartDate").val();
-  		var toDate = $("#creationEndDate").val();
-  	//cartFromDiv, cartToDiv
-		   if(customDate === "custom"){ 
-		   if(fromDate === '' && toDate != null){ 
-		   $('#cartFromDiv').find('p.jquery_form_error_message').remove(); 
-		   $("input#creationStartDate").after( "<p class='jquery_form_error_message'>From Date is required.</span>"); 
-		   $("input#creationStartDate").empty(); 
-		   return false; 
-		   } 
-		   if(toDate === '' && fromDate !== ''){ 
-		   $('#cartToDiv').find('p.jquery_form_error_message').remove(); 
-		   $("input#creationEndDate").after( "<p class='jquery_form_error_message'>To Date is required.</span>"); 
-		   $("input#creationEndDate").empty(); 
-		   return false; 
-		   } 
-		   if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && 
-		   (toDate != '' && toDate != 'undefined' && toDate != null)){ 
-		   $('#cartFromDiv').find('p.jquery_form_error_message').remove(); 
-		   $('#cartToDiv').find('p.jquery_form_error_message').remove(); 
-		   } 
-		   } 
-		   else{
-		   $('#cartFromDiv').find('p.jquery_form_error_message').remove(); 
-		   $('#cartToDiv').find('p.jquery_form_error_message').remove(); 
-		   }
-		   closePop(); 
-		   getCandidateDetailsFromMarketcart(customDate, fromDate, toDate);
-		   } 
-	
-	 $('input[name=MarketCartDate]').on('change', function() {
-	   		if($(this).val() == "custom"){
-	   			$("#customDates").show();
-		   		$('#creationStartDate').attr('data-validation',"required");
-		        $('#salesOrderToDate').attr('data-validation',"required");
-	   		}else{
-	   			$("#customDates").hide();
-	   			$('#creationStartDate').removeAttr('data-validation');
-	   	        $('#creationEndDate').removeAttr('data-validation');
-	   	     	$('#creationEndDate, #creationStartDate').val('').datepicker('setDate', null);
-	   		}
-});
-	 
+  	function validateMarketCartFilter(){ 
+  				
+  				var customDate = $('input[name=MarketCartDate]:checked').val();
+  		  		var fromDate = $("#creationStartDate").val();
+  		  		var toDate = $("#creationEndDate").val();
+  		  	//cartFromDiv, cartToDiv
+  				   if(customDate === "custom"){ 
+  				   if(fromDate === '' && toDate != null){ 
+  				   $('#cartFromDiv').find('p.jquery_form_error_message').remove(); 
+  				   $("input#creationStartDate").after( "<p class='jquery_form_error_message'>From Date is required.</span>"); 
+  				   $("input#creationStartDate").empty(); 
+  				   return false; 
+  				   } 
+  				   if(toDate === '' && fromDate !== ''){ 
+  				   $('#cartToDiv').find('p.jquery_form_error_message').remove(); 
+  				   $("input#creationEndDate").after( "<p class='jquery_form_error_message'>To Date is required.</span>"); 
+  				   $("input#creationEndDate").empty(); 
+  				   return false; 
+  				   } 
+  				   if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && 
+  				   (toDate != '' && toDate != 'undefined' && toDate != null)){ 
+  				   $('#cartFromDiv').find('p.jquery_form_error_message').remove(); 
+  				   $('#cartToDiv').find('p.jquery_form_error_message').remove(); 
+  				   } 
+  				   } 
+  				   else{
+  				   $('#cartFromDiv').find('p.jquery_form_error_message').remove(); 
+  				   $('#cartToDiv').find('p.jquery_form_error_message').remove(); 
+  				   }
+  				   closePop(); 
+  				   getCandidateDetailsFromMarketcart(customDate, fromDate, toDate);
+  				   } 
+  	
+  	 $('input[name=MarketCartDate]').on('change', function() {
+  			   		if($(this).val() == "custom"){
+  			   			$("#customDates").show();
+  				   		$('#creationStartDate').attr('data-validation',"required");
+  				        $('#salesOrderToDate').attr('data-validation',"required");
+  			   		}else{
+  			   			$("#customDates").hide();
+  			   			$('#creationStartDate').removeAttr('data-validation');
+  			   	        $('#creationEndDate').removeAttr('data-validation');
+  			   	     	$('#creationEndDate, #creationStartDate').val('').datepicker('setDate', null);
+  			   		}
+  		});
+  	
 	function resetMarketCartFilter(){
 		emptyMarketCartSearchValues();
 		$("#customDates").hide();
