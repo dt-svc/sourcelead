@@ -62,7 +62,7 @@ margin:10px 220px 0;
 			  <div class="clearfix">
 		
 			  </div>
-			<div class="file-upload clearfix text-center" id="fileDiv" onclick = "check();">
+			<div class="file-upload clearfix text-center" id="fileDiv">
 		<div class="col-md-12" id="clientNameDiv">
 			<label class="bg-default">
 			<i aria-hidden="true" class="fa fa-paperclip" title="Attach file"></i> <br/>

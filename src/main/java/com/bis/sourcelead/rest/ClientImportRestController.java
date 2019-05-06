@@ -84,7 +84,7 @@ public class ClientImportRestController {
 			ResponseList<BulkClientDetails> response = clientImportsService.getbulkClientDetailsByOrgLocationId(fileList,clientVendorUploadDTO,orgLocation,user,org,isMailCheck,responderType);
 			
 			
-			if(response !=null) {
+//			if(response !=null) {
 				if(response.getData().isEmpty() && response.getData().size() == 0) {
 					response.setStatusCode("success");
 				}else if(!response.getData().isEmpty() && response.getData().size() >0) {
@@ -99,7 +99,7 @@ public class ClientImportRestController {
 					}
 					
 				}
-			}
+//			}
 			return response;
 		}
 		return null;

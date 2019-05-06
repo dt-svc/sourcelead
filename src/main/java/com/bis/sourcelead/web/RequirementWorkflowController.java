@@ -411,9 +411,7 @@ public class RequirementWorkflowController {
 		
 		@RequestMapping(value = "/getRequirementQuestionnaireTemplates")
 		public @ResponseBody List<RequirementQuestionnaireTemplateDTO> getRequirementQuestionnaireTemplates(HttpServletRequest request){
-			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
-			OrgLocations orgLocations = new OrgLocations();
-			orgLocations.setId(orgLocationId);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			List<RequirementQuestionnaireTemplateDTO> requirementQuestionnaireTemplateDTO = null;
 			try {
 				requirementQuestionnaireTemplateDTO = requirementWorkFlowService.getRequirementQuestionnaireTemplates(orgLocations.getId());
