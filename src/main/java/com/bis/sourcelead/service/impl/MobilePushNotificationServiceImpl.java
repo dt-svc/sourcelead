@@ -60,18 +60,24 @@ public class MobilePushNotificationServiceImpl implements MobilePushNotification
 			mobilePushNotificationDao.saveMobileDeviceTokenInformaion(mpn);
 			
             List<MobileDeviceTokenInformaion> iosTokeknLis = mobilePushNotificationDao.mobileDeviceTokenInformaionList(mdti.getUserId().getId(),"IOS");{
-            	for(MobileDeviceTokenInformaion mdtf :iosTokeknLis) {
-            		mobilePushNotificationDTO.setDeviceToken(mdtf.getDeviceToken());
-            		pushNotificationUtill.sendIOSPushNotification(mobilePushNotificationDTO);
+            	if(iosTokeknLis != null) {
+            		for(MobileDeviceTokenInformaion mdtf :iosTokeknLis) {
+                		mobilePushNotificationDTO.setDeviceToken(mdtf.getDeviceToken());
+                		pushNotificationUtill.sendIOSPushNotification(mobilePushNotificationDTO);
+                	}
             	}
+            	
             }
-            
-            List<MobileDeviceTokenInformaion> andriodTokeknLis = mobilePushNotificationDao.mobileDeviceTokenInformaionList(mdti.getUserId().getId(),"Android");{
-            	for(MobileDeviceTokenInformaion mdtf :andriodTokeknLis) {
-            		mobilePushNotificationDTO.setDeviceToken(mdtf.getDeviceToken());
-            		pushNotificationUtill.sendAndriodPushNotification(mobilePushNotificationDTO);
+            //not implemented in Android push notification dont delete the code
+           /* List<MobileDeviceTokenInformaion> andriodTokeknLis = mobilePushNotificationDao.mobileDeviceTokenInformaionList(mdti.getUserId().getId(),"Android");{
+            	if(andriodTokeknLis != null) {
+            		for(MobileDeviceTokenInformaion mdtf :andriodTokeknLis) {
+                		mobilePushNotificationDTO.setDeviceToken(mdtf.getDeviceToken());
+                		pushNotificationUtill.sendAndriodPushNotification(mobilePushNotificationDTO);
+                	}
             	}
-            }
+            	
+            }*/
 		}
 		return "success";
 	}
