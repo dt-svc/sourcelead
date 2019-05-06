@@ -200,6 +200,7 @@ $('body').on('blur', '#cancelFunction_form', function() {
 		var templateId = '${templateId}';
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementInterviewid = '${requirementInterviewid}';
+		var orgLocations = '${orgLocations}';
 		$(".project_inn_mask").hide();
 		$(".remove_user_pop").hide();
 		$("#cancelFeedbackDiv").hide();
@@ -231,6 +232,7 @@ $('body').on('blur', '#cancelFunction_form', function() {
 				     result = result + ' <div class="content clearfix">'; 
 				     result = result +  '&nbsp &nbsp Selected for Interview :- &nbsp;'+interviewStatus;
 				     result = result + ' </div>';
+	       	         result = result +"<h5><a class='btn btn-primary btn-sm' href='<c:url value='/app/dashboard/"+orgLocations+"'/>''> <span title='Back'><i class='fa fa-angle-double-left paddingRight'></i>Back</span> </a> </h5>";
 				     result = result + ' </div>';
 	                 result = result + ' </div>';
                      result = result + ' </div>'; 
