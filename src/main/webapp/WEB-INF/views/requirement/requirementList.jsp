@@ -995,7 +995,7 @@ function exportToPdf(type) {
 	} else {
 		/* alert("Export JobFair to PDF"); */
 		$(".buttons-pdf").click();
-		window.location.href = atsUrl +"/pdfExportForJobfair?includeInactive=true";
+		window.location.href = sourceleadUrl +"/pdfExportForJobfair?includeInactive=true&searchValue="+$("#jobFairDataTableSearch").val();
 	}
 }
 </script>
@@ -1076,7 +1076,7 @@ function exportToExcel(type) {
 		}
 	} else {
 		/* alert("Export JobFair to Excel"); */
-		window.location.href = atsUrl +"/excelExportForJobfair?includeInactive=true"
+		window.location.href = atsUrl +"/excelExportForJobfair?includeInactive=true&searchValue="+$("#jobFairDataTableSearch").val();
 		$(".buttons-excel").click();
 	}
 }
