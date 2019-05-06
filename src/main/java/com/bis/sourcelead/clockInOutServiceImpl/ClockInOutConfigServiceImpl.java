@@ -140,6 +140,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		return clockInOutConfigDao.getClockInOutConfigBasedOnOrgLocationId(orgLocationId);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public ClockInOut saveClockInOutTime(ClockInOutDTO clockInOutDTO,OrgLocations loginOrgLocation, User loginUser) {
 		
@@ -165,14 +166,19 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			String s = formatter.format(Calendar.getInstance().getTime());
 			timeValue =  new java.sql.Time(formatter.parse(s).getTime());
 			
-			if(Constants.CLOCK_IN.equalsIgnoreCase(clockInOutDTO.getType()))
+			if(Constants.CLOCK_IN.equalsIgnoreCase(clockInOutDTO.getType())) {
 				clockInOut.setClockInTime(timeValue);
 				clockInOut.setClockInDate(new Date());
+			}
 			
 			if(Constants.CLOCK_OUT.equalsIgnoreCase(clockInOutDTO.getType())) {
 				
-				java.sql.Time totalTime =  new java.sql.Time(formatter.parse(clockInOutDTO.getTotalTime()).getTime());
-				clockInOut.setTotalClockTime(totalTime);
+				int sec = timeValue.getSeconds() - clockInOut.getClockInTime().getSeconds();
+				int min = timeValue.getMinutes() - clockInOut.getClockInTime().getMinutes();
+				int hr = timeValue.getHours() - clockInOut.getClockInTime().getHours();
+				Time totTime = new Time(hr, min, sec);
+				
+				clockInOut.setTotalClockTime(totTime);
 				clockInOut.setClockOutTime(timeValue);
 				clockInOut.setClockOutDate(new Date());
 				
@@ -225,6 +231,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public Breaks saveBreakTime(ClockInOutDTO clockInOutDTO,Long userId) {
 		
@@ -252,8 +259,15 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				breaks.setBreakStartTime(timeValue);
 			
 			if(Constants.PLAY.equalsIgnoreCase(clockInOutDTO.getType())) {
-					
+				
+				int sec = timeValue.getSeconds() - breaks.getBreakStartTime().getSeconds();
+				int min = timeValue.getMinutes() - breaks.getBreakStartTime().getMinutes();
+				int hr = timeValue.getHours() - breaks.getBreakStartTime().getHours();
+				Time totTime = new Time(hr, min, sec);
+				
 				breaks.setBreakEndTime(timeValue);
+				breaks.setTotalBreakTime(totTime);
+					
 			}
 				
 			breaks = clockInOutConfigDao.saveBreakTime(breaks);
@@ -398,6 +412,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public ClockInOutUserTimeEntryDTO getTimeReports(OrgLocations loginOrgLocation, User user) {
 		
@@ -412,15 +427,38 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	    	int min = 0;
 	    	int hr = 0;
 	    	Time sum = null;
+	    	
+	    	int brksec = 0;
+	    	int brkmin = 0;
+	    	int brkhr = 0;
+	    	Time brksum = null;
 			
 			for (ClockInOutUserTimeEntryDTO data : list1) {
+				
+				List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
+				for (Breaks breaks : breakList) {
+					if(breaks.getTotalBreakTime() != null) {
+						brksec += breaks.getTotalBreakTime().getSeconds();
+						brkmin += breaks.getTotalBreakTime().getMinutes();
+						brkhr += breaks.getTotalBreakTime().getHours();
+						brksum = new Time(brkhr, brkmin, brksec);
+					}
+				}
 				
 	    		sec += data.getTotalTime().getSeconds();
 	    		min += data.getTotalTime().getMinutes();
 	    		hr += data.getTotalTime().getHours();
 	    		sum = new Time(hr, min, sec);
 	    	}
-			dto.setCurrentTotTime(sum);
+			
+			Time totSum = null;
+			if(brksum != null) {
+				int totSec = sum.getSeconds() - brksum.getSeconds();
+				int totMin = sum.getMinutes() - brksum.getMinutes();
+				int totHr = sum.getHours() - brksum.getHours();
+				totSum = new Time(totHr, totMin, totSec);
+			}
+			dto.setCurrentTotTime(totSum);
 			
 			Date[] currentWeek = clockInOutUtil.getClockFilterDate("Last_7_days", loginOrgLocation);
 			List<ClockInOutUserTimeEntryDTO> list2 = clockInOutConfigDao.getTimeReports(currentWeek,loginOrgLocation,user);
@@ -429,15 +467,38 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	    	int min2 = 0;
 	    	int hr2 = 0;
 	    	Time sum2 = null;
+	    	
+	    	int brksec2 = 0;
+	    	int brkmin2 = 0;
+	    	int brkhr2 = 0;
+	    	Time brksum2 = null;
 			
 			for (ClockInOutUserTimeEntryDTO data : list2) {
+				
+				List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
+				for (Breaks breaks : breakList) {
+					if(breaks.getTotalBreakTime() != null) {
+						brksec2 += breaks.getTotalBreakTime().getSeconds();
+						brkmin2 += breaks.getTotalBreakTime().getMinutes();
+						brkhr2 += breaks.getTotalBreakTime().getHours();
+						brksum2 = new Time(brkhr2, brkmin2, brksec2);
+					}
+				}
 				
 	    		sec2 += data.getTotalTime().getSeconds();
 	    		min2 += data.getTotalTime().getMinutes();
 	    		hr2 += data.getTotalTime().getHours();
 	    		sum2 = new Time(hr2, min2, sec2);
 	    	}
-			dto.setWeekTotTime(sum2);
+			
+			Time totSum2 = null;
+			if(brksum2 != null) {
+				int totSec = sum2.getSeconds() - brksum2.getSeconds();
+				int totMin = sum2.getMinutes() - brksum2.getMinutes();
+				int totHr = sum2.getHours() - brksum2.getHours();
+				totSum2 = new Time(totHr, totMin, totSec);
+			}
+			dto.setWeekTotTime(totSum2);
 			
 			
 			Date[] currentMonth = clockInOutUtil.getClockFilterDate("current_month", loginOrgLocation);
@@ -448,15 +509,38 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	    	int min3 = 0;
 	    	int hr3 = 0;
 	    	Time sum3 = null;
+	    	
+	    	int brksec3 = 0;
+	    	int brkmin3 = 0;
+	    	int brkhr3 = 0;
+	    	Time brksum3 = null;
 			
 			for (ClockInOutUserTimeEntryDTO data : list3) {
+				
+				List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
+				for (Breaks breaks : breakList) {
+					if(breaks.getTotalBreakTime() != null) {
+						brksec3 += breaks.getTotalBreakTime().getSeconds();
+						brkmin3 += breaks.getTotalBreakTime().getMinutes();
+						brkhr3 += breaks.getTotalBreakTime().getHours();
+						brksum3 = new Time(brkhr3, brkmin3, brksec3);
+					}
+				}
 				
 	    		sec3 += data.getTotalTime().getSeconds();
 	    		min3 += data.getTotalTime().getMinutes();
 	    		hr3 += data.getTotalTime().getHours();
 	    		sum3 = new Time(hr3, min3, sec3);
 	    	}
-			dto.setMonthTotTime(sum3);
+			
+			Time totSum3 = null;
+			if(brksum3 != null) {
+				int totSec = sum3.getSeconds() - brksum3.getSeconds();
+				int totMin = sum3.getMinutes() - brksum3.getMinutes();
+				int totHr = sum3.getHours() - brksum3.getHours();
+				totSum3 = new Time(totHr, totMin, totSec);
+			}
+			dto.setMonthTotTime(totSum3);
 			
 			
 		} catch (Exception e) {
@@ -464,6 +548,64 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		}
 		
 		return dto;
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public Time getWorkingTimeByClockId(OrgLocations loc,User user) {
+		List<ClockInOut> list = clockInOutConfigDao.getWorkingTimeByClockId(loc,user);
+		int sec = 0;
+    	int min = 0;
+    	int hr = 0;
+    	Time sum = null;
+    	
+    	int brksec = 0;
+    	int brkmin = 0;
+    	int brkhr = 0;
+    	Time brksum = null;
+		for (ClockInOut clockInOut : list) {
+			
+			List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(clockInOut.getId());
+			for (Breaks breaks : breakList) {
+				if(breaks.getTotalBreakTime() != null) {
+					brksec += breaks.getTotalBreakTime().getSeconds();
+					brkmin += breaks.getTotalBreakTime().getMinutes();
+					brkhr += breaks.getTotalBreakTime().getHours();
+					brksum = new Time(brkhr, brkmin, brksec);
+				}
+			}
+			
+			if(clockInOut.getTotalClockTime() != null) {
+				sec += clockInOut.getTotalClockTime().getSeconds();
+	    		min += clockInOut.getTotalClockTime().getMinutes();
+	    		hr += clockInOut.getTotalClockTime().getHours();
+	    		sum = new Time(hr, min, sec);
+			}else {
+				
+				int sec1 = new Date().getSeconds() - clockInOut.getClockInTime().getSeconds();
+				int min1 = new Date().getMinutes() - clockInOut.getClockInTime().getMinutes();
+				int hr1 = new Date().getHours() - clockInOut.getClockInTime().getHours();
+				Time currentTime = new Time(hr1, min1, sec1);
+				
+				sec += currentTime.getSeconds();
+	    		min += currentTime.getMinutes();
+	    		hr += currentTime.getHours();
+	    		sum = new Time(hr, min, sec);
+			}
+		}
+		
+		Time totSum = null;
+		if(brksum != null) {
+			int totSec = sum.getSeconds() - brksum.getSeconds();
+			int totMin = sum.getMinutes() - brksum.getMinutes();
+			int totHr = sum.getHours() - brksum.getHours();
+			totSum = new Time(totHr, totMin, totSec);
+		}else {
+			totSum = sum;
+		}
+		
+		
+		return totSum;
 	}
 	
 
