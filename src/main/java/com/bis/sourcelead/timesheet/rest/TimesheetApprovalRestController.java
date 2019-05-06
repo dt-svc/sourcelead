@@ -757,20 +757,22 @@ public class TimesheetApprovalRestController {
 			     }
 			     if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 			          	 ts.setRejectedReason(sah.getRejectedReason());
-			          	 if(sah.getActionPerformedByOrgLocationId() != null) {
+			          	  ts.setActionPerformedBy(sah.getActionPerformedBy());
+			          	/* if(sah.getActionPerformedByOrgLocationId() != null) {
 			          		 OrgLocations orglocation = orgLocationService.getOrgLocations(sah.getActionPerformedByOrgLocationId());
 			          		ts.setActionPerformedBy(orglocation.getOrgLocationName());
 			          	 }else {
 			          		ts.setActionPerformedBy(sah.getActionPerformedBy());
-			          	 }
+			          	 }*/
 			     }
 			     if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED){
-			    	 if(sah.getActionPerformedByOrgLocationId() != null) {
+			    	 ts.setActionPerformedBy(sah.getActionPerformedBy());
+			    	 /*if(sah.getActionPerformedByOrgLocationId() != null) {
 		          		 OrgLocations orglocation = orgLocationService.getOrgLocations(sah.getActionPerformedByOrgLocationId());
 		          		 	ts.setActionPerformedBy(orglocation.getOrgLocationName());
 		          	 }else {
 			   	            ts.setActionPerformedBy(sah.getActionPerformedBy());
-		          	 }
+		          	 }*/
 			     }  
 		     return ts;
        }
