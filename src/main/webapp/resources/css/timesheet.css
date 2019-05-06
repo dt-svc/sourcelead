@@ -2987,7 +2987,7 @@ contrHead ul li a.draft:after {
     color: #fff; background-color: #0cc2aa; position: relative; border-right: 1px solid #07a893;
 }
 .note-editable {
-    min-height: 350px; max-height: 450px;
+    min-height: 250px; max-height: 450px;
 }
 .note-dialog .form-group {
     float:none; width: 100%;
@@ -8258,8 +8258,10 @@ aside.asideAct {
 .releViewWrap h2 { margin: 0px 0px; padding: 0px 0px; font-size: 22px; font-weight: 400; color: #1271b6;}
 .releViewWrap h3 { padding: 15px 0px 0px 0px; margin: 0px 0px; font-size: 18px; font-weight: 400; color: #1271b6;}
 .perfDashCta {
-	border-radius: 0px !important; margin-bottom: -1px; margin-left: -1px; transition: all 0.1s ease-in-out !important; text-align: center;}
-.perfDashCta img { display: block; margin: 0px auto; width: 90px;}
+    border-radius: 0px !important; margin-bottom: -1px; margin-left: -1px; transition: all 0.1s ease-in-out !important; text-align: center;
+    min-height: 180px;
+}
+.perfDashCta img { display: block; margin: 10px auto; width: 70px;}
 .perfDashCta h3 { margin: 0px 0px; padding: 0px 0px 12px 0px; font-size: 16px; font-weight: 500; color: #757575;}
 .perfDashCta span { display: block; padding: 0px 0px 10px 0px;}
 .perfDashCta a { display: inline-block; padding: 0px 5px; margin: 0px 5px; font-size: 14px; font-weight: 500; color: #339833;}
@@ -8535,7 +8537,7 @@ bottom: auto !important; top: 55px !important;
 }
 .immSub:hover .immSubMenu {opacity:1; visibility:visible;}
 .pad20 { padding: 20px;}
-
+.immSubMenu.immSubMenu-custome { right: -226px; width: 225px;}
 .clockCta { padding: 10px 5px 15px 10px;}
 .clockCta p {
     font-size: 16px; font-weight: 400; color: #454545; padding: 0px 0px 6px; margin: 0px 0px;
@@ -8633,7 +8635,7 @@ bottom: auto !important; top: 55px !important;
     padding: 10px 0px 15px; border-top: 1px solid #dedede; margin: 8px 0px 0px 0px; border-bottom: 1px solid #dedede;
 }
 .subClockCta {
-    float: left; width: 23%; margin: 1%;
+    float: left; width: 31%; margin: 1%;
 }
 .subClockCta p {
     font-size: 15px; font-weight: 400; color: #666; margin:0px 0px; padding: 0px 0px 8px 10px; 
@@ -8801,6 +8803,7 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .dataTabPad { padding: 8px 220px 8px 0px !important;}
 .dashboardoverIcon { padding: 6px 6px 0px 6px; display: none;}
 .dashboardoverIcon .newActPop { right: 0px;}
+.padd10 { padding: 10px;}
 
 
 
