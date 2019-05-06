@@ -6,13 +6,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
-  <jsp:include page="addExpenseEntries.jsp"></jsp:include>
- 
-  <style type="text/css">
-.ReadTextFli {
-	 text-align: -webkit-left;
-}
-</style>
+<jsp:include page="addExpenseEntries.jsp"></jsp:include>
 
  <script type="text/javascript">
 		window.onload = function () {
