@@ -4,14 +4,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
- <style>
-.moveErrorMsgUp{
-    position: absolute !important;
-    right: -30px !important;
-    top: 5px;
-}
-</style>
- 
 <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
