@@ -726,7 +726,7 @@ function statusvalidating(id){
 	
 	
 </section>
- <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+ <div class="advancedsearch-mask"></div>
 <jsp:include page="addApplicantFromRequirementList.jsp" />
 
 <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>

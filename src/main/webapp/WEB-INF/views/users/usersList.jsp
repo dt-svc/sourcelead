@@ -447,7 +447,7 @@ function getUsersSearchResult(searchValue){
   </section>
   
       <!-- Content Area Ends--> 
- <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+ <div class="advancedsearch-mask"></div>
       <jsp:include page="../masterFooter.jsp" />
       <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
@@ -567,6 +567,8 @@ function resetFilter(){
 	$("#myClientsInput").val('');
 	$("#myTeamsInput").val('');
 	$("#myDepartmentInput").val('');
+	myDepartmentFunction();
+	
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
@@ -575,7 +577,6 @@ function resetFilter(){
 	myRolesFunction();
 	myClientsFunction();
 	myTeamsFunction();
-	myDepartmentFunction();
 	getDynamciUserList();
 }
 </script>

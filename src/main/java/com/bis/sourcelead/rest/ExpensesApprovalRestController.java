@@ -54,6 +54,7 @@ import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.impl.ExpensesEmailsUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -89,6 +90,9 @@ public class ExpensesApprovalRestController {
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	ExpensesEmailsUtil expensesEmailsUtil;
 	
 	
 	@Autowired
@@ -238,7 +242,7 @@ public class ExpensesApprovalRestController {
 
 				 			 for(ExpenseProjectApproverHierarchy  approver : approverList){
 				 				if(!user.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())){
-				 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(), orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
+				 					 expensesEmailsUtil.sendEmailNotificationToManagers(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(),approver.getApproverUserId(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(), orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
 				 				}
 				 			 }
 				 			 
@@ -248,7 +252,7 @@ public class ExpensesApprovalRestController {
 				 						   &&  projectMembers.getProjectMemberCandidteId().getConsultantUser()!= null && projectMembers.getProjectMemberCandidteId().getOrgLocationId() != null) {
 				 					   UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(projectMembers.getProjectMemberCandidteId().getConsultantUser().getId(), projectMembers.getProjectMemberCandidteId().getOrgLocationId().getId());
 				 					   if(userRole != null && userRole.getReportingManager() != null) {
-				 						  sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,userRole.getReportingManager().getFirstName(), userRole.getReportingManager().getLastName(), userRole.getReportingManager().getEmail(), user,userRole.getReportingManager(),  orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
+				 						  expensesEmailsUtil.sendEmailNotificationToManagers(eah.getExpenseId(),currencyCode,userRole.getReportingManager().getFirstName(),userRole.getUser(), userRole.getReportingManager().getLastName(), userRole.getReportingManager().getEmail(), user,userRole.getReportingManager(),  orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
 				 					   }
 				 				   }
 				 			   }
@@ -265,7 +269,9 @@ public class ExpensesApprovalRestController {
 	 	            String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getStartDate());
 	 	            String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getEndDate());
 	 	           //For Employee
+	 	          if( eah.getHierarchyId().getLevel() != 1) {
 	 	            sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user,projectMembers.getProjectMemberCandidteId().getConsultantUser(), orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
+	 	          }
 	 	            if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() == 1 && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())){
 			 			//For Approvers of EndClient
 				 		 List<ExpenseProjectApproverHierarchy> approverList =  expenseProjectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
@@ -277,7 +283,7 @@ public class ExpensesApprovalRestController {
 				 		 if(approverList != null && !approverList.isEmpty()){
 				 			 for(ExpenseProjectApproverHierarchy  approver : approverList){
 				 				if(approver.getLevel() != null && approver.getLevel() != 1){
-				 					sendEmailNotificationTolevelToApprover(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(),  orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
+				 					expensesEmailsUtil.sendEmailNotificationTolevelTwoApprover(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user,approver.getApproverUserId(),  orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason);
 				 				}
 				 			 }
 				 		 } 

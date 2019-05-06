@@ -3535,6 +3535,24 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return flag;
 	}
+
+	@Override
+	@Transactional
+	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate c where c.consultantUser.id=:userId and c.orgLocationId.id =:orgLocationId";
+			Candidate candidate = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocation.getId()).uniqueResult();
+			if (candidate != null) {
+				return commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getDateOfBirth());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 	
 	
 }
