@@ -179,7 +179,7 @@ public class TaxSubmissionController {
 						modelAndView.addObject("viewForm", request.getRequestURL().toString().contains("viewForm"));
 						modelAndView.addObject("uuid", uuid);
 						SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO = taxService
-								.getITDeclarationSubmission(uuid, formUUID);
+								.getITDeclarationSubmission(uuid, formUUID, orgLocations.getId());
 						modelAndView.addObject("form", itDeclarationSubmissionDTO);
 						modelAndView.addObject("documents",
 								taxService.getUploadedDocumentsBySubmissionId(itDeclarationSubmissionDTO.getId()));
