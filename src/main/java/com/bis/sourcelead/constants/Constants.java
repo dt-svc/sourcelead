@@ -116,6 +116,16 @@ public class Constants {
 	 * "yyyy-MM-dd HH:mm:ss");
 	 */
 	
+	public static final String MAILTOEMPLOYEEWHEN_MANAGERSUBMITEXPENSE = "MailToEmployeeWhenManagerSubmitExpense";
+
+	public static final String MAILTOAPPROVER2WHENAPPROVER1APPROVESTHEEXPENSE = "MailToApprover2WhenApprover1ApprovesTheExpense";
+
+	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_REJECT_THE_EXPENSE = "MailToManager1WhenManager2orAdminRejectTheExpense";
+
+	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_APPROVESTHE_EXPENSE = "MailToManager1WhenManager2orAdminApprovesTheExpense";
+
+
+	
 	public static final String DEFAULT = "Default";
 	public static final String ONBOARD_DOCUMENT_BUSNIESS_LICENSE = "Business License";
 	public static final String BANK_CHEQUE = "Bank Cheque";
