@@ -49,5 +49,9 @@ public interface ClockInOutConfigDao {
 
 	public List<ClockInOutUserTimeEntryDTO> getTimeReports(Date[] dates, OrgLocations loginOrgLocation, User user);
 
+	public List<ClockInOut> getWorkingTimeByClockId(OrgLocations loc, User user);
+
+	public List<Breaks> getBreakListByClockInId(Long id);
+
 
 }
