@@ -1713,6 +1713,13 @@ function resetInvoiceFilter(){
 	getInvoiceList();
 	
 }
+function resetingInvoiceFilter(){
+	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myInvoiceUL > li input:checkbox").prop("checked",false);
+	document.getElementById("invoiceDateRadio").checked = true;
+	$(".custom_search").empty().hide();
+}
 </script>
 
 
@@ -1815,7 +1822,7 @@ function resetInvoiceFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="getInvoiceList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetInvoiceFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingInvoiceFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>
