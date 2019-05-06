@@ -6,11 +6,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 
-<style type="text/css">
-.columnfields-custom .col-md-9 { width: 100%;}
-.popinnerdiv  {min-height: 100px; max-height: 450px; overflow-y:auto; }
-</style>
-
 <script type="text/javascript" src="jquery-1.2.6.min.js"></script>
 
 <script>
