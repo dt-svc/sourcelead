@@ -59,7 +59,7 @@ public class EmailReminder {
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
 	
-	@Column(name = "ROLES")
+	@Column(name = "ROLES", columnDefinition = "TEXT default NULL")
 	private String roles;
 
 	public String getRoles() {
