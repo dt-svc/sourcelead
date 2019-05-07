@@ -339,7 +339,6 @@ public class TimesheetApprovalRestController {
 			 String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 			 List<ProjectClients> projectClientList = projectClientService.getProjectClientsListByLoginUserAndOrgLocationIdForTimesheetApproval(orgLocations.getId(), user.getId(),isGlobalUser);
 			 Map<Long,String> clientMap = new HashMap<>();
-	 		 clientMap.put(null, "All");
 	                if(projectClientList != null && !projectClientList.isEmpty()){
 	                	    projectClientList.forEach(projectClient ->{
 	               	        	if(projectClient.getOrgRelationId() != null && projectClient.getOrgRelationId().getLocationId() != null && projectClient.getOrgRelationId().getLocationId().getId() != null && projectClient.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
@@ -353,6 +352,10 @@ public class TimesheetApprovalRestController {
 	        						}
 	        					}
 	               	        });
+	                	    
+	                	    if(clientMap != null && !clientMap.isEmpty()) {
+	                	    	 clientMap.put(null, "All");
+	                	    }
 	                	    timesheetApprovalDTO.setClientList(clientMap);
 	                	    
 								
