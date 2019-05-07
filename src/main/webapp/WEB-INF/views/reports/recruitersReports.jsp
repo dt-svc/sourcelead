@@ -163,6 +163,11 @@ function getDayWiseReports(){
  
  function resetFilter() {
 	 $("ul#myTeamsUL > li input:checkbox").prop("checked",false);
+	 $("ul#myRolesUL > li input:checkbox").prop("checked",false);
+	$('#myRolesInput').val('').trigger('chosen:updated');
+	$('#myTeamsInput').val('').trigger('chosen:updated');
+	myRolesFunction();
+	myTeamsFunction();
 }
  function myTeamsFunction() {
 	    var input, filter, ul, li, a, i;
@@ -206,6 +211,7 @@ function getDayWiseReports(){
  function closeFilterPop(){
 		$("div.cand-advsrch-popup").hide();
 		$(".advancedsearch-mask").fadeOut();
+		resetFilter();
 	}
 	function addValidClass(){
 		 var StartDate = document.getElementById("ReportStartDate").value;

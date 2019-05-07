@@ -3143,7 +3143,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	
 	@Override
 	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations,
-			MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate,
+			MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,  String searchValue,String purchaseOrderFromDate,
 			String purchaseOrderToDate, String purchaseOrderFilterDate) throws Exception {
 		Date today = new Date();
 		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
@@ -3200,7 +3200,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			dateValue.put("fromDate", toDateVal);
 			dateValue.put("toDate", fromDateVal);
 		}
-		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO, purchaseOrderFromDate, purchaseOrderToDate,dateValue);
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,orgLocations, searchValue, purchaseOrderFromDate, purchaseOrderToDate,dateValue);
 		return responseList;
 	}
 
