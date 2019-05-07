@@ -9,15 +9,7 @@
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 </script>
-<script type="text/javascript" src="/vms/resources/js/contractCommonScripts.js"></script>
-
-<style type="text/css">
-.chosen-container {
-    width: 100% !important;
-}
-.fullWid {width: 100% !important;}
-</style>
-
+<script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/contractCommonScripts.js"></script>
 <script>
 		$(document).ready(function() {
 			var vmsUrl ='${SourceLeadWeb_vmsUrl}';
@@ -762,7 +754,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                         </div>
                       </div>
                       <div class="col-md-7 paddingLeft" id="taxPercentageReward">
-                        <div class="form-group positionRelative iconHolder percentage fullWid" > 
+                        <div class="form-group positionRelative iconHolder percentage width100percnt" > 
                           <input type="text" class="form-control input-sm" field-name="Percentage" value="${contract.tax}" id="taxPercentageRewardValue" name="taxPercentageReward" onblur="getTaxPercentageValue()" placeholder="Percentage">
                           <i class="fa fa-percent"></i> 
                         </div>

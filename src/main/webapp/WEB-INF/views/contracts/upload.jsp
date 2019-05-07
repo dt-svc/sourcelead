@@ -5,15 +5,17 @@
 <spring:url value="/resources/css/styles.css" var="cssmy"/>
 <link href="${cssmy}" rel="stylesheet">
 <script src="/resources/js/jquery-1.11.3.min.js"></script>
-<script src="/resources/js/signer.js" type="text/javascript"></script>
+
              
              
-<c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
+<c:if test='${empty type}'>
+<script src="${SourceLeadWeb_vmsUrl}/resources/js/signer.js" type="text/javascript"></script>
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 </c:if>
 
- <c:if test='${empty SourceLeadWeb_sourceleadUrl}'>
+ <c:if test='${!empty type}'>
+ <script src="${vmsUrl}/resources/js/signer.js" type="text/javascript"></script>
  <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
  <link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
@@ -37,62 +39,7 @@
 });
 </script> 
 
-<style type="text/css">
-.sign-buttons {
-width: 120px; padding: 15px; margin: 0 auto; box-shadow: 2px 2px 2px #909090;
-}
-.sign-buttons ul li {
-border: none; margin: 15px auto; padding: 20px; background-size: 30px;
-width: 50px; height: 50px;
-}
-.icon-addTask {
-float: right;
-}
-.addTask {
-display: none;
-}
-#addSign {
-height: auto; min-height: 200px;
-}
-#backShadow {
-	z-index: 9999;
-}
-#addSign {
-z-index: 9999; padding:20px;
-}
-.signContainer {
-width: 100%;
-}
-.panel-body.panelbody-custom {
-padding: 20px;background-color: #f5f5f5;
-}
-.margnBottom-0{
-margin-bottom: 0 !important;
-}
-.insertSignImg {
-height: 55px !important;
-}
-.insertedSign .delete-sign {
-z-index: 99; top:-5px !important;
-}
-.sign-initial {
-width: 125px !important; height: 35px; line-height: 35px;
-}
-.publicpageHeader {
-	min-height: 50px; background-color: #368ee0; padding:0px;
-}
-.publicpageHeader .publicpage-logo {
-background-color: #fff; height: 50px; padding: 5px 0; text-align: center;
-}
-.publicpageHeader .publicpage-logo img {
-max-height: 100%;
-}
-.side-bar .side-nav ul li span  {
-position: relative;top:8px;
-}
-</style>
-
-<c:if test='${empty SourceLeadWeb_sourceleadUrl}'>
+<c:if test='${!empty type}'>
 <header class="publicpageHeader">
 <div class="clearfix">
 	<div class="publicpage-logo col-md-2 text-center">
@@ -113,8 +60,8 @@ position: relative;top:8px;
     <div class="text-center clearfix" id="hideSig">
       <h2>Create Signature</h2>
     </div>
-    <c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/contractListbyStatus'/>">Contracts List</a>&raquo;Create Signature</div>
+    <c:if test='${empty type}'>
+    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a href="${SourceLeadWeb_vmsUrl}/contractListbyStatus">Contracts List</a>&raquo;Create Signature</div>
   </c:if>
   </section>
             <div id="addSign">
@@ -170,12 +117,12 @@ position: relative;top:8px;
             
             <div>
 
-                <div class="signContainer">
+                <div class="signContainer width100percnt">
                     <div>
                         <iframe id="fuploadframe" name="fuploadframe" src="" height="0px" width="0px" frameborder="0" scrolling="no"></iframe>
                     </div>
                     <div class="row" id="signerType">
-                        <div class="container panel margnBottom-0">
+                        <div class="container panel mb0">
                         <div class="panel-body panelbody-custom">
                             <label for="ddnSignType" class="col-xs-3 text-right mt5">Select signing type</label>
                             <div class="col-xs-6 dropdown-select">
@@ -195,7 +142,7 @@ position: relative;top:8px;
                                 <button value="Sign This Document" id="btnComplete" class="btn btn-success">Complete</button>
                             </div>
                         </div>
-                        <input type="hidden" id="sourceUrl" value="${sourceleadUrl}">
+                        <input type="hidden" id="sourceUrl" value="${vmsUrl}">
                         <input id="contractOrgLocationId" value="${contract.contractOrgLocationId.id}" type="hidden">
                         <input type="hidden" id="contractId" value="${contract.id}">
                     </div>
@@ -224,6 +171,6 @@ position: relative;top:8px;
 </section>
 
             
- <c:if test='${!empty SourceLeadWeb_sourceleadUrl}'>
+ <c:if test='${empty type}'>
  <jsp:include page="../masterFooter.jsp" />
  </c:if>

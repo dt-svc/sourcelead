@@ -22,13 +22,6 @@ $(document).ready(function(){
 	 }
 });
 </script>
-<style type="text/css">
-.chosen-container {
-    width: 100% !important;
-}
-.fullWid {width: 100% !important;}
-</style>
-
 <!-- these files for autocomplete with tagit -->
 <link href="/resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
@@ -39,7 +32,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Add Existing Contract</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/vms/contractListbyStatus">Contracts</a> &raquo;Add Existing Contract</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/contractListbyStatus">Contracts</a> &raquo;Add Existing Contract</div>
     </section>
     <div class="content-area content-new clearfix">
      <div id="existLoading"></div>
@@ -174,7 +167,7 @@ $(document).ready(function(){
                    <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addExistedEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
               </div>
                <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+               <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
           </sec:authorize>
           </div>     
            </div>                   
@@ -225,7 +218,7 @@ $(document).ready(function(){
 	                        <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addExistedEmptyClientContact();"><i class="fa fa-refresh "></i></span>
                   </div>
                   <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-                      <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+                      <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
                  </sec:authorize>
               </div>
           </div>                      
@@ -482,7 +475,7 @@ $(document).ready(function(){
                         </div>
                       </div>
                       <div class="col-md-7 paddingLeft" id="taxPercentageReward">
-                        <div class="form-group positionRelative iconHolder percentage fullWid" > 
+                        <div class="form-group positionRelative iconHolder percentage width100percnt" > 
                           <input type="text" class="form-control input-sm" field-name="Percentage" value="${contract.tax}" id="taxPercentageRewardValue" name="taxPercentageReward" onblur="getTaxPercentageValue()" placeholder="Percentage">
                           <i class="fa fa-percent"></i> 
                         </div>
@@ -1968,7 +1961,7 @@ function previewTemplatePDF(){
 	}
 	
 	function getVendor(){
-		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		var relationList = '${orgRelationsList}';
 		var associateId = $("#submissionOffersList").val();
 		var map = new Object(); // or var map = {};
@@ -1977,7 +1970,7 @@ function previewTemplatePDF(){
 		</c:forEach>
 		$.ajax({
 	        type : "GET",
-	        url: vmsUrl+"/getCandidateDetails?candidateId="+associateId,    
+	        url: atsUrl+"/getCandidateDetails?candidateId="+associateId,    
 	         success :function(data) {
 	        	 if (data.response === "FAILED") {
 			    		showError(data.responseMessage);

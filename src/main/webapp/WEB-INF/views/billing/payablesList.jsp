@@ -10,44 +10,10 @@
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 $(document).ready(function(){
+	$(".ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br").css({'z-index':'900000 !important'});
 	getPayableInvoiceList();
 });
 </script>
-
-
-<style type="text/css">
-.invoiceId_Anchor a {
-	color: #337ab7 !important;
-}
-
-.successBtn {
-	background-color: #1ab394;
-	border-color: #1ab394;
-	border: 1px solid;
-	color: #fff;
-	padding: 1px 5px;
-	border-radius: 3px;
-	font-size: 13px;
-	width: 60px;
-}
-
-.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
-	z-index: 900000 !important;
-}
-
-.modal {
-	z-index: 15000;
-}
-
-.remove_user_pop.remove_user_pop_a {
-	z-index: 18000;
-}
-
-.popCusDate{
-	right: 16px; bottom: -40px; top: inherit; background: #fff; border: none; padding: 8px 10px 8px 5px;
-}
-</style>
-
 <input type="hidden" id="emptyPayableInvoiceId"
 	name="emptyPayableInvoiceId" />
 <div class="success_pop" id="selector1" style="display: none;">
@@ -64,8 +30,7 @@ $(document).ready(function(){
 			<h2>Bills</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo; Bill List
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; Bill List
 		</div>
 	</section>
 	
@@ -217,7 +182,7 @@ $(document).ready(function(){
 <!-- Add invoice Popup -->
 
 <div class="pop_mask"></div>
-<div id="recvPymntpopOnline" class="modal" style="display: none;">
+<div id="recvPymntpopOnline" class="modal zIndexStyle" style="display: none;">
     
     <div class="modal-dialog modal-lg ">
         <div class="modal-content">                                                     
@@ -454,7 +419,7 @@ function validMask(){
 </script>
 <!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
-<div id="recvPymntpop" class="modal" style="display: none;">
+<div id="recvPymntpop" class="modal zIndexStyle" style="display: none;">
 	<div id="receivePaymentId"></div>
 </div>
 
@@ -739,7 +704,7 @@ function payablePagination(url){
                                       else
 										result = result +'           <span class="textSuccess pull-left" title="Accepted">Accepted</span> </td>';
 									}else if(report.invoiceStatus == "Linked"){
-										result = result +' <a class="successBtn primary pull-left cursorPointer" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
+										result = result +' <a class="successBtn successBtn-custom primary pull-left cursorPointer" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 									}else if(report.invoiceStatus == "Void"){
 										result = result +'           <span class="colorRed pull-left">Void</span>   ';	
 									}
@@ -763,7 +728,7 @@ function payablePagination(url){
 										
 								}else{
 									if(report.invoiceStatus == "Linked"){
-										result = result +' <a class="successBtn primary pull-left" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
+										result = result +' <a class="successBtn successBtn-custom primary pull-left" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 									}else if(report.invoiceStatus == "Received"){
 										result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
 									}else if(report.invoiceStatus == "Void"){
@@ -816,26 +781,26 @@ function payablePagination(url){
 				    	result = result +'         <td>';
 				    	if(report.invoiceStatus == "Rejected" && report.invoiceParentId != null){
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor invoiceId-anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
 						}
 				    	else if(report.invoiceStatus == "DRAFT" || (report.invoiceStatus == "Rejected" && report.invoiceParentId == null)){
 							if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
 								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">';
-								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
+								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor invoiceId-anchor"><a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 								'</sec:authorize>';
 							}else{
-								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
+								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor invoiceId-anchor"><a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 							}
 							
 						}
 				    	else if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor invoiceId-anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
 						}else{
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables"/>" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor invoiceId-anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
 						}
 						
@@ -1142,13 +1107,11 @@ function rejectInvoice(invoiceUUID){
 function saveReasonforPayable(invoiceUUID){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var reason = document.getElementById("reasonForDelete").value;
-	if(reason == null || reason == '' || reason == 'undefined'){
-	      
-		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
-	  	  $("#reasonForRejectDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
-	  	  
-		}else{
-		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
+	if(reason != null && reason != ''){
+		 $("#reasonForRejectDiv").empty();
+		if(reason.length > 250){
+		$("#reasonForRejectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
+		}else{	  
 		$.ajax({
 		   	type: "POST",
 		   	url: vmsUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&reason="+reason,	    	   
@@ -1169,6 +1132,9 @@ function saveReasonforPayable(invoiceUUID){
 		    	
 		    }
 	   });
+		}
+	}else{
+		$("#reasonForRejectDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 	}
 	  
 }
@@ -1918,6 +1884,13 @@ function resetBillsFilter(){
 	getPayableInvoiceList();
 	
 }
+function resetingBillsFilter(){
+	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	document.getElementById("invoiceDateRadio").checked = true;
+	$(".custom_search").empty().hide();
+	
+}
 </script>
 
 
@@ -2018,7 +1991,7 @@ function resetBillsFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="getPayableInvoiceList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetBillsFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingBillsFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>

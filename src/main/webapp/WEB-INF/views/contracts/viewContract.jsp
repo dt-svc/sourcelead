@@ -6,17 +6,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
 
-<style type="text/css">
-.chosen-container {
-    width: 100% !important;        
-}
-
-.fullWid {width: 100% !important;}
-.viewontracts .tab-content {
-background-color: #fff;
-}
-</style>
-
 <script type="text/javascript">
 $(document).ready(function(){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
@@ -33,7 +22,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>View Contract</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/contractListbyStatus">Contracts</a> &raquo; View Contract</div>
+     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/contractListbyStatus">Contracts</a> &raquo; View Contract</div>
     </section>
     
 
@@ -56,7 +45,7 @@ $(document).ready(function(){
 		   <li id="candDetailView" onclick="addContractNotes();"><a data-toggle="tab" href="#notes" >Notes</a></li>
 		 </ul>
 		
-		 <div class="tab-content">
+		 <div class="tab-content backgroundWhite">
 		   <div id="contractDetails" class="tab-pane fade in active">
 		   
 		        <div id="loading"></div>

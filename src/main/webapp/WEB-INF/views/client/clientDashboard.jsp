@@ -361,7 +361,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
          </div>
 	</section>
 	
-	<div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+	<div class="advancedsearch-mask"></div>
 </body>
 
 
@@ -774,7 +774,7 @@ function clearSearch(){
 		}
 	    
 	    
-	    $("#citySearch").empty();
+/* 	    $("#citySearch").empty();
 		 $("#citySearch").val('').trigger("chosen:updated");
 		 
 		 $("#ownerAdvanced").empty();
@@ -788,7 +788,7 @@ function clearSearch(){
 
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
-	    $("#excludeKeyWord").empty();
+	    $("#excludeKeyWord").empty(); */
 // 	    $("#orgNameAdvanced").empty();
 	}
 </script>   
@@ -2234,10 +2234,10 @@ $('#selector').delay(2000).fadeOut('slow');
 		  $("div.cand-advsrch-popup").toggle();
 		  $(".mask").fadeIn();
 		}
-		function closeAdsrch(){
+		/* function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
 			$(".mask").fadeOut();
-		};
+		}; */
 </script>
 	
  
@@ -2354,12 +2354,13 @@ $('#selector').delay(2000).fadeOut('slow');
 <script>
 function getStates(){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var countryName = $("#countrySearch").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: vmsUrl+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: sourceleadUrl+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#stateSearch').empty();
@@ -2391,6 +2392,7 @@ function getStates(){
 <script>
 function getCities(){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var countryName = $("#countrySearch").val();
 	var stateName = $("#stateSearch").val();
 	
@@ -2398,7 +2400,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: vmsUrl+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: sourceleadUrl+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#citySearch').empty();
@@ -2449,7 +2451,13 @@ function clientFileterPopUp(){
 }
 function resetClientFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
+	$("#dataTableSearch").val('');
+	clearSearch();
 	getClientList();
+// 	$(".mask").fadeOut();
+}
+function resetingClientFilter(){
+	$("ul#tierFilter > li input:checkbox").prop("checked",false);
 // 	$(".mask").fadeOut();
 }
 
@@ -2465,7 +2473,15 @@ function clientContactFilterPopUp(){
 function resetClientContactFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
+	$("#dataTableSearch").val('');
+	clearSearch();
 	getClientContactList();
+// 	 $(".mask").fadeIn();
+	
+}
+function resetingClientContactFilter(){
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
 // 	 $(".mask").fadeIn();
 	
 }
@@ -2499,7 +2515,7 @@ function resetClientContactFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientFilterPop();getClientList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetClientFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingClientFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>
@@ -2547,7 +2563,7 @@ function resetClientContactFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientContactFilterPop();getClientContactList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetClientContactFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingClientContactFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>

@@ -26,13 +26,6 @@ $(document).ready(function(){
 	$("#tempEye").hide();
 });
 </script>
-<style type="text/css">
-.chosen-container {
-    width: 100% !important;
-}
-.fullWid {width: 100% !important;}
-</style>
-
 <!-- these files for autocomplete with tagit -->
 <link href="/resources/css/jquery-tagit.css" rel="stylesheet">
 <!-- end files for autocomplete with tagit -->
@@ -243,7 +236,7 @@ $(document).ready(function(){
                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addCustomEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
               </div>
               <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-              <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+              <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/addVendor"  target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
            </sec:authorize>
           </div>                      
              </div>          
@@ -294,7 +287,7 @@ $(document).ready(function(){
                    <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addCustomEmptyClientContact();"><i class="fa fa-refresh "></i></span>
               </div>
                 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-              <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+              <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
                </sec:authorize>
           </div> 
           </div>                      
@@ -625,7 +618,7 @@ $(document).ready(function(){
                         </div>
                       </div>
                       <div class="col-md-7 paddingLeft" id="taxPercentageReward">
-                        <div class="form-group positionRelative iconHolder percentage fullWid" > 
+                        <div class="form-group positionRelative iconHolder percentage width100percnt" > 
                           <input type="text" class="form-control input-sm" field-name="Percentage" value="${contract.tax}" id="taxPercentageRewardValue" name="taxPercentageReward" onblur="getTaxPercentageValue()" placeholder="Percentage">
                           <i class="fa fa-percent"></i> 
                         </div>

@@ -8,13 +8,6 @@
 <script src="/resources/js/jquery.mask.min.js"></script>
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
-<style type="text/css">
-.inline_field, .inline_field:focus {
-	width:100px !important; text-align:center;
-}
-.form-control.formControl {
-border:none; background: none; font-size:14px; font-weight:600; box-shadow: none;}
-</style>
 <script>
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 
@@ -74,7 +67,7 @@ function checkBox(){
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 chooRadius">
+              <div class="col-md-9 chooRadius errorInptgroup">
                 <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" data-Invoice onchange="getClientContacts();getPaymentTerms();flushValues();getInvoiceTemplateList();" data-validation="required" field-name="Client">
                 </select>
@@ -90,7 +83,7 @@ function checkBox(){
               
             <div class="form-group">
               <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
-              <div class="col-md-9 chooRadius">
+              <div class="col-md-9 chooRadius errorInptgroup chosenmbNone">
                  <div class="col-md-9 padding_left padding_right">					   
                 <select class="chosen-select form-control" id="clientContact" multiple="multiple" name="clientContact" data-validation="required" field-name="Client Contact">
                 </select>
@@ -135,23 +128,18 @@ function checkBox(){
             </div>
             <div class="form-group">
               <label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9" id="errDuedate">
+              <div class="col-md-9 errorInptgroup" id="errDuedate">
               <div class="input-group">
                 <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
               <span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
               </div>
             </div>
             </div>
-            <div class="form-group">
-              <label class="col-md-3">Invoice Address</label>
-              <div class="col-md-9">
-                <textarea class="form-control" rows="2" placeholder="Invoice Address" id="billingAddress" name="billingAddress"></textarea>
-              </div>
-            </div>
+            
             <div class="form-group">
               <label class="col-md-3">Payment Account</label>
-              <div class="col-md-9 select-field" id="projectMemberIdDiv">
-                <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
+              <div class="col-md-9" id="projectMemberIdDiv">
+                <select class="sel width100percnt" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
                    <option value="">--Select Account--</option>
                     <c:forEach items="${paymentAccountList}" var="p">
                         <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
@@ -161,12 +149,29 @@ function checkBox(){
             </div>
             <div class="form-group">
               <label class="col-md-3">Invoice Template</label>
-              <div class="col-md-9 select-field" id="invoiceTemplateIdDiv">
-                <select class="form-control" id="invoiceTemplateId" field-name="invoiceTemplateId Name" name="invoiceTemplateId">
+              <div class="col-md-9" id="invoiceTemplateIdDiv">
+                <select class="sel width100percnt" id="invoiceTemplateId" field-name="invoiceTemplateId Name" name="invoiceTemplateId">
                    <option value="0">--Select Invoice Template--</option>
                 </select>
               </div>
             </div>
+            
+            <div class="clearfix"></div>
+            
+            <div class="form-group">
+              <label class="col-md-3">Invoice Address</label>
+              <div class="col-md-9">
+                <textarea class="form-control" rows="4" placeholder="Invoice Address" id="billingAddress" name="billingAddress"></textarea>
+              </div>
+            </div>
+            
+            <div class="form-group">
+							<label class="col-md-3">Notify To Others</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="4" id="notifyToOthers" name="notifyToOthers" field-name="NotifyTo" placeholder="Enter multiple Email Id's separated by commas(,)"></textarea>
+							</div>
+							<div class="clearfix"></div>
+						</div>
             
             <!-- <div class="form-group">
 							<label class="col-md-3">Account Details</label>
@@ -610,15 +615,19 @@ function editExpensesDetailsEdit(data){
 
 
 <script>
-function getExpenses(projectMemberId,expensesFrequency){
+function getExpenses(projectMemberId,expensesFrequency,expId){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var memberId = $("#projectMemberId").val();
 	if(projectMemberId !=null && projectMemberId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
-		memberId = projectMemberId
+		memberId = projectMemberId;
+	}
+	var expenseId = 0;
+	if(expId !=null && expId !='undefined' && expensesFrequency !=null && expensesFrequency !='undefined'){
+		expenseId = expId;
 	}
 	$.ajax({
 		type : "GET",
-		url: vmsUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&invoiceType=Receivable",
+		url: vmsUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&expenseId="+expenseId+"&invoiceType=Receivable",
 		success :function(json) {
 			var output = "";
 			output = output + "<option value=''>--Select Expenses--</option>";
@@ -626,7 +635,7 @@ function getExpenses(projectMemberId,expensesFrequency){
 			{
 			var opt = json.data[i];
 			var selected = "";
-			 if(expensesFrequency = opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
+			 if(expensesFrequency == opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
 				selected = 'selected';
 			} 
 			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.dateFrequency+"</option>";
@@ -657,7 +666,7 @@ function getProjectAssignMembers(pid,projectMemberName){
 			{
 			var opt = json.data[i];
 			var selected = "";
-			 if(projectMemberName = opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
+			 if(projectMemberName == opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
 				 selected = 'selected';
 			} 
 			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.empName+"</option>";
@@ -1009,11 +1018,11 @@ function calculateSum(){
 	    		
 	    	 } 
 	 }  
-	  $("#inoviceTotal").val(sum.toFixed(2));
-	  $("#subTotal").val(sum.toFixed(2));
-	  $("#grandTotal").val(sum.toFixed(2));
-	  $("#conversionFrom").val(sum.toFixed(2));
-	  $("#afterDiscountTotal").val(sum.toFixed(2));
+	  $("#inoviceTotal").val(sum.toFixed(3));
+	  $("#subTotal").val(sum.toFixed(3));
+	  $("#grandTotal").val(sum.toFixed(3));
+	  $("#conversionFrom").val(sum.toFixed(3));
+	  $("#afterDiscountTotal").val(sum.toFixed(3));
 	  calculateDisCount();
 	  calculateTaxDiscount();
 }
@@ -1033,9 +1042,9 @@ function calculateDisCount(){
 			$("#discountTotal").val(discountValue);
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -1046,12 +1055,12 @@ function calculateDisCount(){
 		if(discountValue && subTotal > 0){
 			var perCentValue = (subTotal * discountValue)/100;
 			total = subTotal - perCentValue;
-			$("#discountTotal").val(perCentValue.toFixed(2));
+			$("#discountTotal").val(perCentValue.toFixed(3));
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
@@ -1221,8 +1230,8 @@ function calculateTaxDiscount(){
 	}
 	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
-	 $("#grandTotal").val(grandTotal.toFixed(2));
-	$("#conversionFrom").val(grandTotal.toFixed(2));
+	 $("#grandTotal").val(grandTotal.toFixed(0));
+	$("#conversionFrom").val(grandTotal.toFixed(0));
 	/* conversion(); */
 }
 </script>
@@ -1323,6 +1332,17 @@ function saveInvoice(saveType){
 	
          if ($('#project_invoice_form').validate(false, validationSettings)){  
  	 	    var formData = getFormData1("project_invoice_form");
+ 	 	    
+ 	 	  if ($("#notifyToOthers").val() !== "") {
+				for (var e in $("#notifyToOthers").val().split(",")) {
+					if (!jQueryFormUtils.validateEmail($("#notifyToOthers").val().split(",")[e].replace(/\s+/g, ''))) {
+						flag = false;
+						$("#notifyToOthers").parent().append("<p class='jquery_form_error_message'>Enter valid email id</p>");
+						return;
+					}
+				}
+			}
+ 	 	  
  	 	  if(maxTsRowNum==0){
 	        	var result = "";
 	     		result = result +"	<div class='project_inn_mask'></div>";
@@ -1446,7 +1466,8 @@ function toDate(selector) {
 		        		 $("#paymentAccountId").val(json.paymentAccountId);
 		        	 }
 		        	 result = result +'<option disabled selected>--Select Client--</option>';
-		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-Invoice ='+json['generateInvoice']+'>'+json['orgName']+'</option>';
+		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' data-Invoice ='+json['generateInvoice']+'data-responder_location_id= '+json['dataResponderLocationId']+'>'+json['orgName']+'</option>';
+
 		        	 $("#clientOrgRelationId").empty();
 		           	 $("#clientOrgRelationId").append(result); 
 		           	 $('#clientOrgRelationId').trigger("chosen:updated");
@@ -1462,7 +1483,7 @@ function toDate(selector) {
 		           		getProjectsList(json['projectName']);
 		           		checkedvalue(json['expensesInvoices']);
 		           		getProjectAssignMembers(json['projectId'],json['projectMemberName']);
-		           		getExpenses(json['memberId'],json['expensesFrequency']);
+		           		getExpenses(json['memberId'],json['expensesFrequency'],json['expId']);
 		           		editExpensesDetailsEdit(json['invoiceLineItemsList']); 
 		           	}else{
 		           	 	editExpensesInlineItems(json['invoiceLineItemsList']);
@@ -1480,6 +1501,10 @@ function toDate(selector) {
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
 		           	
+		           	if(json['notifyToOthers'] != null && json['notifyToOthers'] != '' && json['notifyToOthers'] != 'undefined'){
+		           		$("#notifyToOthers").text(json['notifyToOthers']);
+		           	}
+		           	
 		           	/* editInvoice(json['invoiceLineItemsList']);*/
 		        	$("#inoviceTotal").val(json['subTotal']);
 		        	$("#subTotal").val(json['subTotal']);
@@ -1490,6 +1515,8 @@ function toDate(selector) {
 		           	getClientContacts(json['contactUsers']);
 		        	$("#afterDiscountTotal").val(json['afterDiscountValue']);http://localhost:8080/app/getReceivableInvoiceByUUID?invoiceUUID=sTljRS5n&projectId=15
 		        	editTax(json['invoiceTaxList'])
+		        	
+		        	getInvoiceTemplateList(json.customInvoiceId);
 		        	
 		        	getSavedAttachments(json['invoiceDocumentsList']);
 		        	
@@ -1916,7 +1943,7 @@ function getPaymentTerms(){
 	});
 }
 
-function getInvoiceTemplateList() {
+function getInvoiceTemplateList(selectedId) {
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $("#clientOrgRelationId").val();
 	var responderLocationId = $("#clientOrgRelationId :selected").data("responder_location_id");
@@ -1925,12 +1952,12 @@ function getInvoiceTemplateList() {
 		type : "POST",
 		url: vmsUrl+"/invoiceTemplateList?orgRelationId=" + orgRelationId + "&orgLocationId=" + responderLocationId,
 		success : function(data) {
-			$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
-			$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
-			if(data && data.data != null && data.data.length > 0) {
-				for(var e in data.data) {
-					$("#invoiceTemplateId").append("<option value=" + data.data[e].id + ">" + data.data[e].name + "</option>");
-				}
+		$("#invoiceTemplateId").append("<option value='0'>-- Select Invoice Template --</option>");
+		$("#invoiceTemplateId").append("<option value='-1' selected>Default Template</option>");
+		if(data && data.data != null && data.data.length > 0) {
+		for(var e in data.data) {
+		$("#invoiceTemplateId").append("<option value=" + data.data[e].id + " "+ (selectedId && selectedId === data.data[e].id ? "selected" : "") +">" + data.data[e].name + "</option>");
+	}
 			}
 		}
 	});
@@ -2043,9 +2070,19 @@ function validateDiscount() {
 				return false; 
 		 	 }
 	  }if(selectedTextInvoice =='flat'){
-			  $("#saveButtonId").removeAttr("disabled", "disabled");
-			  $("#sendButtonId").removeAttr("disabled", "disabled");
-		  }		  
+		  var numaricNum = /^[0-9]*$/
+			  if(enteredValue.match(numaricNum)){
+				  $("#saveButtonId").removeAttr("disabled", "disabled");
+				  $("#sendButtonId").removeAttr("disabled", "disabled");
+				  return true;
+			  }else{
+				  $("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Discount</span>");
+					$("#saveButtonId").attr("disabled", "disabled");
+					$("#sendButtonId").attr("disabled", "disabled");
+					return false;  
+			  }
+				  
+			  }	  
 }
 </script>
 
