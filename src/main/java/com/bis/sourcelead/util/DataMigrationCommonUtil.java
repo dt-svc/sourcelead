@@ -1232,6 +1232,21 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				    	saHierarchy = new SubmissionApproverHierarchy();
 						saHierarchy.setHeirarchyId(hierarchy);
 						saHierarchy.setSubmissionId(timesheetSubmissions);
+
+						//Additional Fields are added for de-normalization
+						saHierarchy.setProjectId(timesheetSubmissions.getProjects());
+						saHierarchy.setMasterCandidateId(timesheetSubmissions.getMasterCandidateId().getId());
+						saHierarchy.setProjectClientId(hierarchy.getProjectClientsId());
+						saHierarchy.setOrgLocationId(hierarchy.getProjectClientsId().getOrgLocationsId().getId());
+						saHierarchy.setOrgId(hierarchy.getProjectClientsId().getOrgLocationsId().getOrg().getId());
+						ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectClientId(timesheetSubmissions.getMasterCandidateId().getId(), hierarchy.getProjectClientsId().getId());
+						if(pm != null) {
+							saHierarchy.setProjectMemberId(pm);
+							saHierarchy.setCandidateId(pm.getCandidateId());
+							User consultantUser = candidateService.getConsultantUserByCandidateIdOrMasterCandidateId(pm.getProjectMemberCandidteId().getId(),pm.getProjectMemberCandidteId().getMasterCandidateId().getId());
+							saHierarchy.setConsultantUser(consultantUser);
+						}
+						
 						if(frequencyStartDate != null)
 							saHierarchy.setFrequencyStartDate(frequencyStartDate);
 						if(frequencyEndDate != null)
@@ -3034,7 +3049,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 				
 				//pan,aadhar number validation
-				if (orgLocation.getCountry().equalsIgnoreCase("India")) {
+				if("India".equalsIgnoreCase(orgLocation.getCountry())) {
 					String panNumberRegEx = "^([A-Z]){5}([0-9]){4}([A-Z]){1}?$";
 					if (dataMigrationDTOJsonCopy.get("panNumber") != null) {
 						boolean flag = false;
@@ -3052,7 +3067,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 				}
 				
-				if (orgLocation.getCountry().equalsIgnoreCase("India")) {
+				if("India".equalsIgnoreCase(orgLocation.getCountry())) {
 				String aadharNoRegEx = "^\\d{4}\\s?\\d{4}\\s?\\d{4}$";
 					if (dataMigrationDTOJsonCopy.get("aadharNumber") != null) {
 						boolean flag = false;
@@ -3070,8 +3085,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 				}
 				
-				if (orgLocation.getCountry().equalsIgnoreCase("United States")) {
-					
+					if("United States".equalsIgnoreCase(orgLocation.getCountry())) {	
 					String ssnNoRegEx = "^(\\d{3}-?\\d{2}-?\\d{4}|XXX-XX-XXXX)$";
 					if (dataMigrationDTOJsonCopy.get("ssnNumber") != null) {
 						boolean flag = false;

@@ -464,6 +464,12 @@ function resetFilter(){
 	$("ul#leaveTypeUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
 	$("#dynamicUserDataTableSearch").val('');
+	$('#myRolesInput').val('');
+	$('#leaveTypeInput').val('');
+	$('#myDepartmentInput').val('');
+	leaveTypeFunction();
+	myRolesFunction();
+	myDepartmentFunction();
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
@@ -520,6 +526,24 @@ function myDepartmentFunction() {
     input = document.getElementById("myDepartmentInput");
     filter = input.value.toUpperCase();
     ul = document.getElementById("myDepartmentUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function leaveTypeFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("leaveTypeInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("leaveTypeUL");
     li = ul.getElementsByTagName("li");
     for (i = 0; i < li.length; i++) {
         a = li[i].getElementsByTagName("label")[0];
