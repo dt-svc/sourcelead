@@ -48,7 +48,10 @@ display:none;
 }
 </style>
 </head>
-
+<%@page session="true"%>
+    <c:if test="${staticTime == null || staticTime == 0 }">
+    	<c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+    </c:if>
 <!-- 
 JQUERY DOs AND DONTs 
 ONE AND ONLY ONE JQUERY READY
@@ -95,7 +98,7 @@ var searchType = '${searchType}';
 </script>
 <script>
   $(document).ready(function() {
-	  $('body').load("/resources/sourceleadHtmls/dashboardHtml.html");
+	  $('body').load("/resources/sourceleadHtmls/dashboardHtml.html?staticTime=${staticTime}");
 	});
 </script>
 
