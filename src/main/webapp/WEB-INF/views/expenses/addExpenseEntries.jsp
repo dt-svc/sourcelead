@@ -4,38 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-  .dropdown_inr select {
- height: 34px; color: #fff;
- }
- .uploadFile {
- width: 100%;
- }
- .uploadFile span {
- max-width: 100% !important; width: 100% !important;
- }
- .uploadFile span input {
- width: 90% !important;
- }
- .uploadFile table i {
- margin-left:10px;
- }
-  .expAddRo, .expDetails {
- background-color: #f5f5f5;
- } 
- .expDetails {
- padding: 15px 0;
- }
- .expensTableView table tr td {
- padding: 0 !important;
- }
- .valid_ation p.jquery_form_error_message {
- position: absolute; bottom: -13px; left: 0;
- }
- .valid_ation .positionRelative{
- position: relative !important;
- }
- </style>
  <script>
 	function expensesDatePickerStartDate(projectStartDate, projectEndDate) {
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -405,7 +373,7 @@ function addAttachment(entityRowId,from){
 </div>
 
 <div id="divAddRowTr2" style="display: none; float: left;">
-         <div class="expDetails">
+         <div class="expDetails exp_details">
 			          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
 						<div class="col-md-4 minHeight chosen-custom chooRadius">
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
@@ -466,7 +434,7 @@ function addAttachment(entityRowId,from){
 	                   <div id='attachmentSection' class='col-md-4 minHeight'>
 	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>
 	                   <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>
-	                   <div class="uploadFile timesheet_week_comm">
+	                   <div class="uploadFile timesheet_week_comm width100percnt upload_file">
 		                 <input type='hidden' name='attcahmentMaxRowNumberREPLACEROWID'  id='attcahmentMaxRowNumberREPLACEROWID' value='1' />
 		                 <span> 
 		                     <table class='timesheetAttachment' id='attachmentTableREPLACEROWID' cellpadding='0' cellspacing='0' width="100%">

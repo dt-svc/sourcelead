@@ -2222,7 +2222,6 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		return projectMembersDao.getProjectMembersByMasterCandiateIdAndProjectClientId(masterCandidateId, projectClientsId);
 	}
 	@Override
-	
 	public List<Candidate> getAllAvailableAssociates(Long orgLocationId) {
 		List<Candidate> candidateList = new LinkedList<>();
 	List<Object[]> objList =  projectMembersDao.getAllAvailableAssociates( orgLocationId);
@@ -2237,6 +2236,12 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		}
 	}
 	return candidateList;
+	}
+
+	@Override
+	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectClientId(Long masterCandidateId,
+			Long projectClientsId) throws Exception {
+		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectClientId(masterCandidateId, projectClientsId);
 	}
 
 }
