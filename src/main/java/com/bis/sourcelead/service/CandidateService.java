@@ -358,5 +358,7 @@ public interface CandidateService {
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
 	
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
+	
+	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
 
 }

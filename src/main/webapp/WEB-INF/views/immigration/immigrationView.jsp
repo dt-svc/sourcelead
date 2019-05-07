@@ -9,17 +9,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 <script src="/resources/js/immigration.js?staticTime=${staticTime}"></script>
-<style>
-.disabledLink
-{
-	color: #333;
-	text-decoration : none;
-	pointer-events: none;
-}
-.form-control[disabled].selectdisabled {
-background-color: #ddd; color: #333; border: 1px solid #ddd !important;
-}
-</style>
 <c:set var ="myImmigrationPage" value = "${myImmigrationPage}" scope="session"/>
 <c:set var ="passOnLoadCount" value = "${tabRecordCountMap['Passport']}" scope="request"/>
 <c:set var ="visaOnLoadCount" value = "${tabRecordCountMap['Visa']}" scope="request"/>
