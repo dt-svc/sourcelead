@@ -66,7 +66,7 @@ function hideandshowHoliday(){
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/emailreminderConfigurationDashboard'/>"> Email Reminder Configuration</a> &raquo; leave Configuration</div>
   </section>
    
-  <div class="project_wrap">
+  <div class="project_wrap clearfix">
     <div class="col-xs-12 col-sm-6 col-md-6 mt mb">
 			<div class="row">
 				<div class="col-md-6 textBold"> Employee on Leave</div>
@@ -206,13 +206,25 @@ function hideandshowHoliday(){
 								<div id="reminderParent_Leave_Configuration_form" class="clearfix"></div>
 	
 									<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
-										<label class="col-md-3">Notify To<span class="text-danger paddingLeft">*</span></label>
-										<div class="col-md-9" id="notifyToDiv_Leave_Configuration_form">
+										<label class="col-md-3">Reminder To<span class="text-danger paddingLeft">*</span></label>
+										<div class="col-md-9">
+											<select  class="chosen-select form-control" multiple name="reminderTo" id="reminderTo" >
+							                        <%-- <c:forEach var="option" items="${rolesList}">
+								                         <c:if test ="${option.roleName != 'ROLE_ADMIN' && option.roleName != 'ROLE_USER' && option.roleName != 'ROLE_MANAGER'}"> 
+															<option value="${option.id}">${option.displayName}</option>
+														 </c:if>
+													</c:forEach> --%>
+													<option value="Reporting Manager">Reporting Manager</option>
+													<option value="Project Manager">Project Manager</option>
+													<option value="Team Leader">Team Leader</option>
+											</select>
+										</div>	
+										<%-- <div class="col-md-9" id="notifyToDiv_Leave_Configuration_form">
 											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${employeeonLeave.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
-										</div>
-										<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="EmployeeOnLeave">
-										<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="31">
-										<input type="text" style="display: none;" class="form-control" name="id" value="${employeeonLeave.id}">
+										</div> --%>
+										<input type="hidden" class="form-control" name="scenarioName" id="scenarionName" value="EmployeeOnLeave">
+										<input type="hidden" class="form-control" name="tabsId" id="tabsId" value="31">
+										<input type="hidden" class="form-control" name="id" value="${employeeonLeave.id}">
 									</div>
 								</div>
 							</div>
@@ -384,7 +396,7 @@ function hideandshowHoliday(){
 							<div class="clearfix footerstyelsNew">
 								<div class="col-lg-12">
 									<div class="pull-right">
-										<input type="button" value="Save" id="approve_Pending_Leaves_form_btn"
+									<input type="button" value="Save" id="approve_Pending_Leaves_form_btn"
 											class="btn btn-primary"
 											onclick="stroeLeaveReminderConfiguration('approve_Pending_Leaves_form');"> 
 											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
@@ -532,16 +544,20 @@ function hideandshowHoliday(){
 										</div>
 									</c:if>
 								<div id="reminderParent_Holiday_form" class="clearfix"></div>
+								
+								<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="HolidayRemainder">
+								<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="31">
+								<input type="text" style="display: none;" class="form-control" name="id" value="${Holiday.id}">
 	
 									<%-- <div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
 										<label class="col-md-3">Notify To<span class="text-danger paddingLeft">*</span></label>
 										<div class="col-md-9" id="notifyToDiv_Holiday_form">
 											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${Holiday.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
-										</div>
+										</div> 
 										<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="HolidayRemainder">
 										<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="31">
-										<input type="text" style="display: none;" class="form-control" name="id" value="${Holiday.id}">
-									</div> --%>
+										<input type="text" style="display: none;" class="form-control" name="id" value="${Holiday.id}"> --%>
+									</div> 
 								</div>
 							</div>
 							<div class="clearfix"></div>
@@ -567,6 +583,8 @@ function hideandshowHoliday(){
   
   <script>
   function stroeLeaveReminderConfiguration(form) {
+	  
+	  var reminderTo = $("#reminderTo").val();
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -591,12 +609,13 @@ function hideandshowHoliday(){
 				return false;
 				}
 			}
-			
 			$('#'+form+'_btn').prop('disabled', true);
-			var formData = getFormData(form);
+			var formData = getFormData1(form);
 			$.ajax({
 				type : "POST",
 				data : formData,
+				processData: false, 
+			 	contentType: false,
 				url : sourceleadUrl + "/storeLeaveConfigureEmail?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
 					if(result.object === 'MissingData'){
@@ -626,6 +645,7 @@ function hideandshowHoliday(){
 </script>
 
 <script type="text/javascript">
+
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -644,8 +664,9 @@ function hideandshowHoliday(){
 					$("#cd").click(function(){
 						$(".clientDetails").toggleClass('hidden', 500);
 					});
-	});
-</script> 
+	});			
+</script>
+ 
 <script type="text/javascript">
 $('.clockpicker').clockpicker({
     placement: 'bottom',
