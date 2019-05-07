@@ -3382,3 +3382,19 @@ function filterTeamMembers(){
 		fileUpload("uploadBtn", "addApplicants", "addApplicant_form");
 	}
 // addApplicantFromRequirementList.jsp  End HERE upated.
+// updating catrt count in header view in cart icon count value.
+	function updateMarketplaceCartCountAndPrice(){
+		var totalPriceInCurrency;
+		$.ajax({
+			 	url: sourceleadUrl + "/getMarketplaceCartCountAndPrice",
+		        type: 'GET',
+		        success: function (object) {
+		        	console.log(object)
+		        	if(object != null){
+		        		$("#headerCartCount").html(object[0]);
+		        		$("#cartCount").html(object[0]);
+		        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
+		        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
+		        	}}
+		        });
+		}
