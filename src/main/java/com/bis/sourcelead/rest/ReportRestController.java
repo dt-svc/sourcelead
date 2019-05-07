@@ -1509,10 +1509,14 @@ public class ReportRestController {
 			try {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				EmployeeVerificationTemplate empTemplate = employeeVerificationTemplateService.getEmploymentVerificationtemplateByTemplateUUID(templateUUID);
-				LetterHead letterHead = letterHeadService.getLetterheadById(empTemplate.getLetterHead().getId());
-				User user = userService.getUserById(employeeId);
-				String templateContent = reportsUtil.replaceAllTemplatePlaceHolders(empTemplate.getTemplateContent(),empTemplate,toAddress,user,orgLocation);
-				reportsUtil.viewLetterHeadCompleteletterheadData(templateContent,letterHead,response);
+				LetterHead letterHead = null;
+				if(empTemplate.getLetterHead() != null) {
+				 letterHead = letterHeadService.getLetterheadById(empTemplate.getLetterHead().getId());
+				 User user = userService.getUserById(employeeId);
+				 String templateContent = reportsUtil.replaceAllTemplatePlaceHolders(empTemplate.getTemplateContent(),empTemplate,toAddress,user,orgLocation);
+				 reportsUtil.viewLetterHeadCompleteletterheadData(templateContent,letterHead,response);
+				}
+				
 			    
 			} catch (Exception e) {
 			    e.printStackTrace();
@@ -2741,13 +2745,16 @@ public class ReportRestController {
 	}
 	
 	@RequestMapping(value = "/getLoanReport", method = RequestMethod.GET)
-	public ResponseList<LoanAndAdvanceReportDTO> getLoanReport(LoanAndAdvanceReportDTO loanAndAdvanceReportDTO,HttpServletRequest request,HttpServletResponse response) {
+	public ResponseList<LoanAndAdvanceReportDTO> getLoanReport(LoanAndAdvanceReportDTO loanAndAdvanceReportDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 //		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		ResponseList<LoanAndAdvanceReportDTO> assLoanList =  loanAndAdvancesReportService.getLoansAndAdvancesByLoanNameAndOrglocationId(orgLocations.getId(), loanAndAdvanceReportDTO);
-		
+		for(LoanAndAdvanceReportDTO lard:assLoanList.getData()) {
+			lard.setFromDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lard.getStartDate()));
+			lard.setToDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lard.getLoanEndDate()));
+		}
 		return assLoanList;
 	}
 	

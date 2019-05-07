@@ -5,6 +5,6 @@ import com.bis.sourcelead.dto.ResponseList;
 
 public interface LoanAndAdvancesReportDao {
 	
-	ResponseList<LoanAndAdvanceReportDTO> getLoansAndAdvancesByLoanNameAndOrglocationId(Long orgLocations,LoanAndAdvanceReportDTO loanAndAdvanceReportDTO);
+	ResponseList<LoanAndAdvanceReportDTO> getLoansAndAdvancesByLoanNameAndOrglocationId(Long orgLocations,LoanAndAdvanceReportDTO loanAndAdvanceReportDTO)throws Exception;
 	
 }

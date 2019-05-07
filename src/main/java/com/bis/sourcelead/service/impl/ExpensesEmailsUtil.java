@@ -16,6 +16,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -133,13 +134,17 @@ public class ExpensesEmailsUtil {
 				cg = cg.setScale(2,BigDecimal.ROUND_HALF_UP );		
 				
 			 globalVarsMap.put("totalAmount",str.append(cg).append(" ").append(currencyCode).toString());*/
-
-			    String redirectURL = "/expensesApprovalList/";
-				Long redirectOrgLocationId = orgLoc.getId();
+			 String expenseLocationCode = managerUser.getLocationCode();
+			 Long redirectOrgLocationId = managerUser.getOrgLocationId();
+/*			     for(ExpensesApproverHierarchy eah : expenses.getApproverHierarchyList()) {
+			    	 if(eah.getHierarchyId().getApproverUserId().getId() == managerUser.getId()) {
+			    	 }
+			     }
+*/			    String redirectURL = "/addApprovalExpense-params-expenseId="+expenses.getExpenseId()+"-and-expenseLocationCode="+expenseLocationCode + "-and-type=view";
+				
 			 
 				StringBuilder stringBuildforLink = new StringBuilder();
 				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-			 
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
 			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_EMAIL_TO_MANAGER,Constants.ENTITY_TYPE_EMAIL);
 			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_EMAIL_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
