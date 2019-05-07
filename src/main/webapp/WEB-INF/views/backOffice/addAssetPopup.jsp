@@ -1,12 +1,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  <c:set var = "dropDownSelFlag" value="false"/>
- <style type="text/css">
- #ui-datepicker-div {
- z-index: 999999 !important;
- }
- </style>
+
  <script>
+ $("#ui-datepicker-div").css({"z-index":"999999 !important"});
  var dropdownSelectedUserIds = []; 
  </script>
 	  <div class="modal-dialog modal-lg">
@@ -19,7 +16,7 @@
 		          <form:form id="addAsset_form"  name="addAsset_form"> 
 		           <!-- <i class="fa fa-close close-div"></i> -->
 					 
-					<div class="popinnerdiv minHeightcol5"> 
+					<div class="popinnerdiv minHeightcol5 popinnerdiv-innerscroll"> 
 		            <input type="hidden" name="assetId" value="${assetAssignData.id}">
 		            <div class="clearfix assetaddpop-ul col-md-5" id="categoryDiv">
 		            <label class="clearfix">Category<span class="text-danger paddingLeft">*</span></label>

@@ -378,6 +378,8 @@ public class DataMigrationDTO extends CommonDTO {
     
     private String experienceYears;
     
+    private String vendors;
+    
     private String vendor;
     
     private String vendorcontact;
@@ -2025,12 +2027,13 @@ public class DataMigrationDTO extends CommonDTO {
 		this.experienceYears = experienceYears;
 	}
 
-	public String getVendor() {
-		return vendor;
+
+	public String getVendors() {
+		return vendors;
 	}
 
-	public void setVendor(String vendor) {
-		this.vendor = vendor;
+	public void setVendors(String vendors) {
+		this.vendors = vendors;
 	}
 
 	public String getVendorcontact() {
@@ -2502,6 +2505,14 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setBeneficiaryPhone(String beneficiaryPhone) {
 		this.beneficiaryPhone = beneficiaryPhone;
+	}
+
+	public String getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
 	}
    
 }

@@ -254,8 +254,8 @@
 	            { "data": "orderNo" },
 	            { "data": "orderDate"},
 	            { "data": "companyName"},
-	            { "data": "noOfResumes" },
-	            { "data": "totalResumePrice" },
+	            { "data": "totalResume" },
+	            { "data": "totalPrice" },
 	            { "data": "paymentStatus"},
 	        ],
 	    
