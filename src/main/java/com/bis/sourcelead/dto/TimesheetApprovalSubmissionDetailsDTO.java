@@ -1,15 +1,17 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 
 
 public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	private BigInteger projectMemberId;
+	private BigInteger projectId;
+	private BigInteger masterCandidateId;
 	
-	private Long projectMemberId;
-	private Long projectId;
-	private Long masterCandidateId;
 	private String employeeName;
 	private String profileImageFileUrl;
 	private String employeeEmail;
@@ -17,21 +19,19 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	private String designation;
 	private String project;
 	private String clientName;
-	private String total;
-	private String stage;
+	private BigInteger clientId;
 	private String vendorOrgName;
 	private List<String> weeekTotal;
 	private List<String> submissionTotal;
 	private String totalHours;
 	private String estimatedHours;
 	private String submissionStatus;
-	private String submissionApprovalStatus;
 	private String actionPerformedBy;
 	private String rejectedReason;
 	private String actualStartDate;
 	private String actualEndDate;
 	private String currentTimeFrequency;
-	private int tdSpanLength;
+	private Integer tdSpanLength;
 	
 	private String orgRelationUUID;
 	
@@ -39,11 +39,28 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	private String dashboardDateList;
 	private String tableFor;
 	
-	public Long getProjectMemberId() {
+	private BigInteger consultantUserId;
+	private BigInteger workLocationId;
+	
+	private String total;
+	private String stage;
+	public BigInteger getProjectMemberId() {
 		return projectMemberId;
 	}
-	public void setProjectMemberId(Long projectMemberId) {
+	public void setProjectMemberId(BigInteger projectMemberId) {
 		this.projectMemberId = projectMemberId;
+	}
+	public BigInteger getProjectId() {
+		return projectId;
+	}
+	public void setProjectId(BigInteger projectId) {
+		this.projectId = projectId;
+	}
+	public BigInteger getMasterCandidateId() {
+		return masterCandidateId;
+	}
+	public void setMasterCandidateId(BigInteger masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
 	}
 	public String getEmployeeName() {
 		return employeeName;
@@ -87,17 +104,11 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
 	}
-	public String getTotal() {
-		return total;
+	public BigInteger getClientId() {
+		return clientId;
 	}
-	public void setTotal(String total) {
-		this.total = total;
-	}
-	public String getStage() {
-		return stage;
-	}
-	public void setStage(String stage) {
-		this.stage = stage;
+	public void setClientId(BigInteger clientId) {
+		this.clientId = clientId;
 	}
 	public String getVendorOrgName() {
 		return vendorOrgName;
@@ -135,12 +146,6 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	public void setSubmissionStatus(String submissionStatus) {
 		this.submissionStatus = submissionStatus;
 	}
-	public String getSubmissionApprovalStatus() {
-		return submissionApprovalStatus;
-	}
-	public void setSubmissionApprovalStatus(String submissionApprovalStatus) {
-		this.submissionApprovalStatus = submissionApprovalStatus;
-	}
 	public String getActionPerformedBy() {
 		return actionPerformedBy;
 	}
@@ -165,23 +170,23 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	public void setActualEndDate(String actualEndDate) {
 		this.actualEndDate = actualEndDate;
 	}
-	public int getTdSpanLength() {
+	public String getCurrentTimeFrequency() {
+		return currentTimeFrequency;
+	}
+	public void setCurrentTimeFrequency(String currentTimeFrequency) {
+		this.currentTimeFrequency = currentTimeFrequency;
+	}
+	public Integer getTdSpanLength() {
 		return tdSpanLength;
 	}
-	public void setTdSpanLength(int tdSpanLength) {
+	public void setTdSpanLength(Integer tdSpanLength) {
 		this.tdSpanLength = tdSpanLength;
 	}
-	public Long getProjectId() {
-		return projectId;
+	public String getOrgRelationUUID() {
+		return orgRelationUUID;
 	}
-	public void setProjectId(Long projectId) {
-		this.projectId = projectId;
-	}
-	public Long getMasterCandidateId() {
-		return masterCandidateId;
-	}
-	public void setMasterCandidateId(Long masterCandidateId) {
-		this.masterCandidateId = masterCandidateId;
+	public void setOrgRelationUUID(String orgRelationUUID) {
+		this.orgRelationUUID = orgRelationUUID;
 	}
 	public String getDashboardInvoiceFrequency() {
 		return dashboardInvoiceFrequency;
@@ -195,24 +200,38 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	public void setDashboardDateList(String dashboardDateList) {
 		this.dashboardDateList = dashboardDateList;
 	}
-	public String getOrgRelationUUID() {
-		return orgRelationUUID;
-	}
-	public void setOrgRelationUUID(String orgRelationUUID) {
-		this.orgRelationUUID = orgRelationUUID;
-	}
-	public String getCurrentTimeFrequency() {
-		return currentTimeFrequency;
-	}
-	public void setCurrentTimeFrequency(String currentTimeFrequency) {
-		this.currentTimeFrequency = currentTimeFrequency;
-	}
 	public String getTableFor() {
 		return tableFor;
 	}
 	public void setTableFor(String tableFor) {
 		this.tableFor = tableFor;
 	}
+	public BigInteger getConsultantUserId() {
+		return consultantUserId;
+	}
+	public void setConsultantUserId(BigInteger consultantUserId) {
+		this.consultantUserId = consultantUserId;
+	}
+	public BigInteger getWorkLocationId() {
+		return workLocationId;
+	}
+	public void setWorkLocationId(BigInteger workLocationId) {
+		this.workLocationId = workLocationId;
+	}
+	public String getTotal() {
+		return total;
+	}
+	public void setTotal(String total) {
+		this.total = total;
+	}
+	public String getStage() {
+		return stage;
+	}
+	public void setStage(String stage) {
+		this.stage = stage;
+	}
+	
+	
 	
 	
 }

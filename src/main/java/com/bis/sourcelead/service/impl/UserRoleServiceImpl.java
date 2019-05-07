@@ -408,9 +408,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 		    }
 			
 			if(userRoles.getUser().getDateOfBirth() != null) {
-		    	writeRow.createCell(15).setCellValue(userRoles.getUser().getDateOfBirth());
-		    }
-			
+				 String dateOfBirth = commonUtil.dateStrFromOrgDateFormatter(userRoles.getOrgLocations().getDateFormat(),userRoles.getUser().getDateOfBirth());
+				 writeRow.createCell(15).setCellValue(dateOfBirth);
+			} 
 			if(employee.getDepartmentId() != null) {
 		    	writeRow.createCell(16).setCellValue(employee.getDepartmentId().getDepartmentName());
 		    }

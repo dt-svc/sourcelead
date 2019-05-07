@@ -43,11 +43,11 @@ import org.springframework.web.client.RestTemplate;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.MobilePushNotificationDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
@@ -57,7 +57,6 @@ import com.bis.sourcelead.dto.SingnatoryDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
-import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -72,7 +71,6 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProbationHistory;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -94,6 +92,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.MobilePushNotificationService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -225,6 +224,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	@Autowired
 	private ProbationHistoryService probationHistoryService;
 	
+	@Autowired
+	private MobilePushNotificationService mobilePushNotificationService;
 	
 	/**
 	 * To get All Approvers
@@ -996,7 +997,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		 }
 		 
 		 @RequestMapping(value = "/rest/loginUserProfile", method = RequestMethod.GET)
-		 public UserProfileDTO getLoginUserProfile() {
+		 public UserProfileDTO getLoginUserProfile(@RequestParam(value = "deviceToken", required = false) String deviceToken,
+				 @RequestParam(value = "deviceType", required = false) String deviceType) throws Exception {
 			 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			 User  user = userService.findByUserName(auth.getName());
 			 List<UserRole> userRoleList = null;
@@ -1065,6 +1067,16 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	         
 	         userProfileDTO.setOrgLocationsList(orgLocationsList);
 	         
+	         //Mobile device token information saving  
+	         if(deviceToken != null && deviceToken != "" && deviceToken != "undefined" && deviceType != null && deviceType != "" && deviceType != "undefined") {
+	        	 Boolean flag = mobilePushNotificationService.validateMobileDevicceTokenByUserIdAndTokeIndAndDeviceType(user.getId(), deviceToken, deviceType);
+	        	if(flag == false) {
+	        		 MobilePushNotificationDTO mpntd = new MobilePushNotificationDTO();
+		        	 mpntd.setDeviceToken(deviceToken);
+		        	 mpntd.setDeviceType(deviceType);
+		        	 mobilePushNotificationService.saveMobileDeviceTokenInformation(mpntd);
+	        	  }
+	         }
 			return userProfileDTO;
 	         
 		 }
