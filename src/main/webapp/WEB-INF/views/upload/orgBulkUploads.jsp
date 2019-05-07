@@ -102,9 +102,14 @@ function getBulkUploadsList(){
 		        		    result = result + '<td><div class="tbldata-dotdot-me">'+report.time+'</div></td>';
 		        		    result = result + '<td><div class="tbldata-dotdot-me">'+report.uploadEntityType+'</div></td>';
 		        		    result = result+'<td>';
-		        		    result = result+'<div>'; 
-		        		    result = result+'<a href="#" onclick="dumpUploadedRecords(\''+report.documentKey+'\');" ><i class="fa fa-cloud-upload text-success" aria-hidden="true" alt="Upload" title="Upload"></i></a>';
-		        		    result = result+'</div></td>';
+		        		    if(report.uploadStatus == 'New'){
+		        			    result = result+'<div>'; 
+			        		    result = result+'<a href="#" onclick="dumpUploadedRecords(\''+report.documentKey+'\');" ><i class="fa fa-cloud-upload text-success" aria-hidden="true" alt="Upload" title="Upload"></i></a>';
+			        		    result = result+'</div>';
+		        		    }else{
+		        		    	 result = result+'<div class="tbldata-dotdot-me">In Progress</div>';
+		        		    }
+		        		    result = result + '</td>';
 		        		   
 		        		    result = result + '</tr>';
 			    		}

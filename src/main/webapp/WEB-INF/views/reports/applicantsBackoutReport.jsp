@@ -20,7 +20,7 @@ $(window).load(function() {
       <div class="pull-left">
         <h2>Applicant(s) Backout</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/performanceReportList'/>">Performance Reports</a> &raquo; Applicant(s) BackOut </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicant(s) BackOut </div>
    
     </section>
     
@@ -185,7 +185,7 @@ $(window).load(function() {
 						 	   	        $("#backoutReason").empty();
 						                $("#backoutReason").append(result);
 									}
-			    		}else if (response.indexOf('Sign In') !== -1) {
+			    		}else if (JSON.stringify(response).indexOf('Sign In') != -1) { //  earlier is response.indexOf() which is not preferrable
 			    			location.replace(sourceleadUrl);
 			    		} else {
 			    		    showError("Operation failed, please try again");

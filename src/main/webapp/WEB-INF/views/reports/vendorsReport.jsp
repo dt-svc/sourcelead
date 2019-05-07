@@ -92,6 +92,7 @@
 <div id="releasedJobsResultDiv"></div>
 <div id="releasedApplicantsDeclineDiv"></div>
 <div id="releasedApplicantsBackOutDiv"></div>
+<div id="releasedApplicantsHiredListDiv"></div>
 </section>   
  
       
