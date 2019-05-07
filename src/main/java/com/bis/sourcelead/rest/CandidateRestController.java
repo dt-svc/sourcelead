@@ -1132,6 +1132,7 @@ public class CandidateRestController {
 	@RequestMapping(value = "/app/getPurchasedOrderList")
 	public ResponseList<MarketplacePurchaseSalesDTO> getPurchasedOrderList(
 			MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
+			@RequestParam(value = "searchValue", required = false)String searchValue,
 			@RequestParam(value = "purchaseOrderFromDate", required = false) String purchaseOrderFromDate,
 			@RequestParam(value = "purchaseOrderToDate", required = false) String purchaseOrderToDate,
 			@RequestParam(value = "purchaseOrderFilterDate", required = false) String purchaseOrderFilterDate,
@@ -1156,7 +1157,7 @@ public class CandidateRestController {
 			e.printStackTrace();
 			return null;
 		}
-		ResponseList<MarketplacePurchaseSalesDTO>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations, marketplacePurchaseSalesDTO, purchaseOrderFromDate, purchaseOrderToDate,purchaseOrderFilterDate);			
+		ResponseList<MarketplacePurchaseSalesDTO>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations, marketplacePurchaseSalesDTO,searchValue, purchaseOrderFromDate, purchaseOrderToDate,purchaseOrderFilterDate);			
 		return marketplacePurchaseOrder;
 		/*
 		 * res.setData(marketplacePurchaseOrder); return res;
