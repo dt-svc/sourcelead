@@ -19,7 +19,7 @@ public class LoanAndAdvancesReportServiceImpl implements LoanAndAdvancesReportSe
 
 	@Override
 	public ResponseList<LoanAndAdvanceReportDTO> getLoansAndAdvancesByLoanNameAndOrglocationId(Long orgLocations,
-			LoanAndAdvanceReportDTO loanAndAdvanceReportDTO) {
+			LoanAndAdvanceReportDTO loanAndAdvanceReportDTO) throws Exception {
 		
 		return loanAndAdvancesReportDao.getLoansAndAdvancesByLoanNameAndOrglocationId(orgLocations, loanAndAdvanceReportDTO);
 	}

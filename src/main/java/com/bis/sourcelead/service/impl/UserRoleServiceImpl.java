@@ -477,7 +477,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 			 }
 			
 
-		    if(orgLocations.getCountry().equalsIgnoreCase(Constants.COUNTRY_INDIA)) {
+		    if(Constants.COUNTRY_INDIA.equalsIgnoreCase(orgLocations.getCountry())) {
 			if(candidate !=null) { 
 		    if(candidate.getAadharNumber() !=null){
 				 writeRow.createCell(29).setCellValue(candidate.getAadharNumber()); 
@@ -486,7 +486,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 				 writeRow.createCell(30).setCellValue(candidate.getPanNumber());
 			 }
 			}
-		    }else {
+		    }
+		    
+		    if(Constants.COUNTRY_UNITEDSTATES.equalsIgnoreCase(orgLocations.getCountry())) {
 		    	if(candidate !=null) {
 		    		if(candidate.getSsnNumber() != null)
 		    	 writeRow.createCell(29).setCellValue(candidate.getSsnNumber()); 
