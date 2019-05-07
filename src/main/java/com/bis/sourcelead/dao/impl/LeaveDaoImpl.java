@@ -163,7 +163,7 @@ public class LeaveDaoImpl implements LeaveDao{
 			}
 			
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
-				if (leaveDTO.getSearchValue().contains("/") || leaveDTO.getSearchValue().contains("-")) {
+				if ((leaveDTO.getSearchValue().contains("/") || leaveDTO.getSearchValue().contains("-")) &&  leaveDTO.getSearchValue().contains("/p")){
 					String convertedDate = leaveDTO.getSearchValue();
 					if (leaveDTO.getSearchValue().contains("/")) {
 						convertedDate = leaveDTO.getSearchValue().replaceAll("/", "-");
