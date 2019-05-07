@@ -215,44 +215,47 @@ function statusvalidating(id){
 </script>
 
 <script>
-   function getSourceleadTags(){
- 		 $.ajax({
-		    	type: "GET",
-		        url: atsUrl+"/getSourceleadTagsList?"+tokenParamName+"="+tokenValue, 
-		        success: function(json) {
-		        	var output = "";
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt+ "'>"+opt+"</option>";
-			        		
+   
+	function getSourceleadTags() {
+		$.ajax({
+			type : "GET",
+			url : atsUrl + "/getSourceleadTagsList?" + tokenParamName + "="
+					+ tokenValue,
+			success : function(json) {
+				var output = "";
+				if (json != null && json != '' && json != 'undefined') {
+					for (var i = 0; i < json.length; i++) {
+						var opt = json[i];
+						output = output + "<option value='" +opt+ "'>" + opt
+								+ "</option>";
+
 					}
-		        	$("#jobsTags").empty();
-			        $("#jobsTags").append(output);
-			        $('#jobsTags').trigger("chosen:updated");
-		        },
-		    }); 
-   }
-/*  $(function() { // updated need to check working properly or not  
-	       //Adding Customized Job Title list this method is slead-common.js
-		   tagIt("requirementTitle", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
-	       
-		   //Adding Customized Job Id list this method is slead-common.js
-		   tagIt("jobId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Requirement ID:', 'tagItBykeyForSkills','skills','Job Id');
-		   
-		 //Adding Customized Job Id list this method is slead-common.js
-		   tagIt("generatedId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Generated ID:', 'tagItBykeyForSkills','skills','Generated ID');
-		 
-		 //Adding Customized Job Skills list this method is slead-common.js
-		   tagIt("requirementSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
+				}
+				$("#jobsTags").empty();
+				$("#jobsTags").append(output);
+				$('#jobsTags').trigger("chosen:updated");
+			},
+		});
+	}
+	/*  $(function() { // updated need to check working properly or not  
+	 //Adding Customized Job Title list this method is slead-common.js
+	 tagIt("requirementTitle", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
+	
+	 //Adding Customized Job Id list this method is slead-common.js
+	 tagIt("jobId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Requirement ID:', 'tagItBykeyForSkills','skills','Job Id');
+	
+	 //Adding Customized Job Id list this method is slead-common.js
+	 tagIt("generatedId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Generated ID:', 'tagItBykeyForSkills','skills','Generated ID');
+	
+	 //Adding Customized Job Skills list this method is slead-common.js
+	 tagIt("requirementSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
 
-		   tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+	 tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
 
-		   
-});
-  */
- 
-   </script>
+	
+	 });
+	 */
+</script>
 <script type="text/javascript">
 		     /*  $("#country").on('change', function (e) {
 		    	  getcites('apiLocation','city','recommendation');
@@ -1280,7 +1283,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	
 	
 </section>
- <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+ <div class="advancedsearch-mask"></div>
 <jsp:include page="addApplicantFromRequirementList.jsp" />
 
 <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
@@ -1675,10 +1678,10 @@ function getActions(){
 			 $(".advancedsearch-mask").fadeIn();
 			 $("#requirementFilterPopup").toggle();
 		}
-		function closeAdsrch(){
+		/* function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
 			$(".advancedsearch-mask").fadeOut();
-		};
+		}; */
 	</script>
 
 <script>

@@ -2279,8 +2279,8 @@ public class RequirementListRestController {
 							} 
 						}
 						
-						//requirementPriority
-						if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterJobType())){
+						//jobType
+						/*if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterJobType())){
 							String jobType = "";
 							if(StringUtils.isNotEmpty(search.getRequirementStatus())){
 								jobType = search.getRequirementStatus();
@@ -2300,7 +2300,7 @@ public class RequirementListRestController {
 									boolQueryBuilderForCount.must(reqJobTypeBoolQueryBuilder);
 								}
 							} 
-						}
+						}*/
 						
 						
 						//filter for is Client job

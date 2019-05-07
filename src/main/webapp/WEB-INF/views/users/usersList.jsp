@@ -436,7 +436,7 @@ function getUsersSearchResult(searchValue){
   </section>
   
       <!-- Content Area Ends--> 
- <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+ <div class="advancedsearch-mask"></div>
       <jsp:include page="../masterFooter.jsp" />
       <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
@@ -660,10 +660,10 @@ function exportUserData(){
 			 $(".advancedsearch-mask").fadeIn();
 		}
 		
-		function closeAdsrch(){
+		/* function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
 			$(".advancedsearch-mask").fadeOut();
-		}
+		} */
 	</script>
 
 
