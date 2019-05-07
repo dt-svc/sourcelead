@@ -153,7 +153,10 @@
 					<ul class="list-inline list-unstyled pull-right mb0">
 						<c:if test = "${requirementWorkFlowStages.editable == 'Y'}">
 						<li>
-							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" 
+							onclick = 'editStage("${requirementWorkFlowStages.uuid}",
+							"${requirementWorkFlowStages.requirementWorkFlowUuid}")'>
+							<i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" 
@@ -213,6 +216,12 @@
     </div>
   </section>
 </div>
+<script>
+ function editStage(stageUuid, workflowUuid){
+	window.location.href = "${SourceLeadWeb_sourceleadUrl}/editStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid;
+	
+} 
+</script>
 <script>
 
 function cancelViewWorkflow(){

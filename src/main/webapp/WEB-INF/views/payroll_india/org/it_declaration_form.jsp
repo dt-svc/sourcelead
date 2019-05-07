@@ -24,9 +24,14 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						<div class="clearfix dropdown-select">
 							<select class="selectpicker width100percnt" id="employeeSelect" ${autoSelectUser ? "disabled='disabled'" : ""}
 								data-live-search="true" title="Select Employee" field-name="Employee" data-validation="required" name="userId">
-								<c:forEach items="${userRoleList}" var="userRole">
+								<%-- <c:forEach items="${userRoleList}" var="userRole">
 									<option ${user.id == userRole.user.id ? "selected='selected'" : ""} value="${userRole.user.id}" data-id="${userRole.user.id}" data-name="${userRole.user.firstName.concat(' ' ).concat(userRole.user.lastName)}">
 										${userRole.user.firstName} ${userRole.user.lastName}
+									</option>
+								</c:forEach> --%>
+								<c:forEach items="${employeeList}" var="employee">
+									<option ${user.id == employee.user.id ? "selected='selected'" : ""} value="${employee.user.id}" data-id="${employee.user.id}" data-name="${employee.user.firstName.concat(' ' ).concat(employee.user.lastName)}" data-pan="${employee.panNumber != null ? employee.panNumber : ''}" data-dob="${employee.dateOfBirth != null ? employee.dateOfBirth : ''}" data-associate_id="${employee.employeeId != null ? employee.employeeId : ''}">
+										${employee.user.firstName} ${employee.user.lastName}
 									</option>
 								</c:forEach>
 							</select>
@@ -51,7 +56,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					<div class="col-md-5">
 						<label class="clearfix">Pan No</label>
 						<div class="clearfix">
-							<input type="text" class="form-control" readonly="readonly"
+							<input type="text" class="form-control" readonly="readonly" value=""
 								id="associatePAN" placeholder="PAN No">
 						</div>
 					</div>
@@ -65,6 +70,14 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 									<option ${year.value==true?"selected=selected":""} value="${year.key}">${year.key}</option>
 								</c:forEach>
 							</select>
+						</div>
+					</div>
+					<div class="col-md-5">
+						<label class="clearfix">Date of Birth</label>
+						<div class="clearfix">
+							<input type="text" class="form-control" readonly="readonly"
+								value="" id="dateOfBirth"
+								placeholder="Date Of Birth">
 						</div>
 					</div>
 					<div class="clearfix"></div>

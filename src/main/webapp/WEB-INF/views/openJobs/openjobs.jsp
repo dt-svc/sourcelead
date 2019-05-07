@@ -1827,6 +1827,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';		
 				result = result +'	</section>'; 
+				document.getElementById("orgProfile").style.display="none";
 				$("#openJobsRequirementsList").hide();
 				$("#openJobsRequirementsSummary").empty();
 
@@ -2008,11 +2009,11 @@ function openJobSearchRequirement(){
 				});
 			}
 	
-				 window.setTimeout(function() {
+				/*  window.setTimeout(function() {
 						addthis.toolbox(".addthis_inline_share_toolbox_g28q");
 						addthis.init(".addthis_inline_share_toolbox_g28q");
 						addthis.layers.refresh();
-			        }, 500);
+			        }, 500); */
 				$('body').on('blur','#openJobsAdvancedForm',function() {
 				$("#openJobsAdvancedForm").showHelpOnFocus();
 				$("#openJobsAdvancedForm").validateOnBlur(false, validationSettings);
@@ -3036,10 +3037,10 @@ function preventTabkey(e){
 
 <!--   Free trial pop   -->
  
-<div class="clPop"><img src="/resources/css/static-web/images/menu-close.png" alt=""/></div> 
+<div class="clPop"><img src="/resources/static-web/images/menu-close.png" alt=""/></div> 
 <section class="freeTrialPop" id="requestDemo">
 	<div class="Rdemo">
-    	<img src="/resources/css/static-web/images/demo-1.png" alt=""/>
+    	<img src="/resources/static-web/images/demo-1.png" alt=""/>
     	<h3>Request a Demo</h3>
     	<p>We are so glad for your interest in SourceLead.
 Please mail us at </p>
@@ -3050,7 +3051,7 @@ Please mail us at </p>
 <section class="freeTrialPop" id="freeTrial">
 
 	<div class="Rdemo">
-    	<img src="/resources/css/static-web/images/demo-1.png" alt=""/>
+    	<img src="/resources/static-web/images/demo-1.png" alt=""/>
     	<h3>Free Trial</h3>
     	<p>We are so glad for your interest in SourceLead.
 Please mail us at </p>
