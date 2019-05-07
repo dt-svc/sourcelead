@@ -6,13 +6,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.collapse-div-adduser select{
-width: 100% !important; padding-right: 10px !important; padding-left: 10px !important;
-    border:1px solid #ccc !important
-}
-</style>
-
 <script>
 function clientContacts(orgRelationID,clientLocationId){
 	
@@ -32,7 +25,7 @@ function clientContacts(orgRelationID,clientLocationId){
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div id="clientContactList" class="datatable_filter"></div>';
+		result  = result + '   <div id="clientContactList" class=""></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
@@ -243,7 +236,9 @@ function contactPagination(){
              "sZeroRecords": "", "sEmptyTable": ""
          }
        
-    } );
+    });
+    $('#clientContactsPagination_wrapper').wrap("<div class='datatable_filter project_tabs_inn_table vendor_wrap_inn_table'></div>");
+    $('#clientContactsPagination_filter').attr("style", "position:relative !important; top:0px !important; margin-top:10px !important;");
 }
 </script>
 
