@@ -2395,7 +2395,6 @@ public class UsersListRestController {
 			candidate.setGender(addUserDTO.getGender());
 			candidate.setMobilePhone(addUserDTO.getPhoneNumber());
 			candidate.setMaritalStatus(addUserDTO.getMaritalStatus());
-			
 			if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
 			   candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
 			   candidate.setResidenceCountry(addUserDTO.getResidenceCountry());
@@ -2434,7 +2433,9 @@ public class UsersListRestController {
 			if(StringUtils.isNotBlank(addUserDTO.getAadharNumber())){
 				   candidate.setAadharNumber(addUserDTO.getAadharNumber());
 			}
-			   
+			if(StringUtils.isNotBlank(addUserDTO.getSsn())){  
+			candidate.setSsnNumber(addUserDTO.getSsn());
+			}
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			
