@@ -1,6 +1,8 @@
 package com.bis.sourcelead.clockInOutDaoImpl;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -655,7 +657,8 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			
 			StringBuilder sb = new StringBuilder();
-			sb.append("SELECT clk.TOTAL_CLOCK_TIME as totalTime ") 
+			sb.append("SELECT clk.TOTAL_CLOCK_TIME as totalTime, ") 
+			  .append("clk.ID as id ")
 			  .append("FROM CLOCK_INOUT clk ")
 			  .append("where clk.USER_ID = :userId ")
 			  .append("AND clk.ORG_LOCATION_ID = :orgLocationId ")
@@ -674,6 +677,43 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			e.printStackTrace();
 		}
 		return clockInOutList;
+	}
+
+	@Override
+	@Transactional
+	public List<ClockInOut> getWorkingTimeByClockId(OrgLocations loc, User user) {
+		
+		List<ClockInOut> clkList = null;
+		
+		try {
+			
+		    long millis=System.currentTimeMillis();  
+	        java.sql.Date date = new java.sql.Date(millis);
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from ClockInOut clk where clk.orgLocations.id =:orgLocationId and clk.userId.id =:user and clk.clockInDate =:currentDate";
+			clkList = session.createQuery(query).setLong("orgLocationId", loc.getId()).setLong("user", user.getId()).setDate("currentDate", date).list();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return clkList;
+	}
+
+	@Override
+	@Transactional
+	public List<Breaks> getBreakListByClockInId(Long clockInId) {
+		
+		List<Breaks> breakList = null;
+		try {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Breaks brk where brk.clockInOutId =:clockInId";
+			breakList = session.createQuery(query).setLong("clockInId", clockInId).list();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return breakList;
 	}
 
 }

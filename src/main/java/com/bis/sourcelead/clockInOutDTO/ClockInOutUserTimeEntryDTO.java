@@ -1,11 +1,14 @@
 package com.bis.sourcelead.clockInOutDTO;
 
+import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
 public class ClockInOutUserTimeEntryDTO {
 
+	private BigInteger id;
+	
 	private Time clockInTime;
 	
 	private Time totalTime;
@@ -43,6 +46,15 @@ public class ClockInOutUserTimeEntryDTO {
 	private Time monthTotTime;
 	
 	private Time yearTotTime;
+	
+
+	public BigInteger getId() {
+		return id;
+	}
+
+	public void setId(BigInteger id) {
+		this.id = id;
+	}
 
 	public Time getClockInTime() {
 		return clockInTime;
