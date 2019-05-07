@@ -65,7 +65,7 @@
 	</div>
 <script type="text/javascript">
 	$("#yearList").change(function() {
-		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+		/* var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		$.ajax({
 		 type : "POST",
 		 url : pmsUrl+"/getFormsByFinancialYear?financialYear="+$(this).val(),
@@ -95,9 +95,8 @@
 	                showError("Operation failed, please try again");
 	            }
 		  	},
-		});
-		
-		
+		}); */
+		formsDiv($(this).val());
 	});
 </script>
 
