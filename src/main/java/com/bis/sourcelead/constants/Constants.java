@@ -116,6 +116,16 @@ public class Constants {
 	 * "yyyy-MM-dd HH:mm:ss");
 	 */
 	
+	public static final String MAILTOEMPLOYEEWHEN_MANAGERSUBMITEXPENSE = "MailToEmployeeWhenManagerSubmitExpense";
+
+	public static final String MAILTOAPPROVER2WHENAPPROVER1APPROVESTHEEXPENSE = "MailToApprover2WhenApprover1ApprovesTheExpense";
+
+	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_REJECT_THE_EXPENSE = "MailToManager1WhenManager2orAdminRejectTheExpense";
+
+	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_APPROVESTHE_EXPENSE = "MailToManager1WhenManager2orAdminApprovesTheExpense";
+
+
+	
 	public static final String DEFAULT = "Default";
 	public static final String ONBOARD_DOCUMENT_BUSNIESS_LICENSE = "Business License";
 	public static final String BANK_CHEQUE = "Bank Cheque";
@@ -616,10 +626,10 @@ public class Constants {
 	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
-	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title",
-			"Min Experience", "Max Experience", "Min/Max Rate", "Location", "City",	"State", "Country", "Zip Code",	
+	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title*",
+			"Min Experience", "Max Experience", "Min/Max Rate", "Location*", "City",	"State", "Country", "Zip Code",	
 			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
-			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager(Email)", "Approver", "Assign To",
+			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority*", "Description", "Attachment", "Manager(Email)*", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category*", "Work Status*",
@@ -656,8 +666,8 @@ public class Constants {
 			"Rate", "Vendor", "Vendor Contact", "Is Favourite"};
 	public static final String[] REQUIREMENT_EXCEL_HEADERS = { "Jobs id", "Jobs Title",
 			"Experience", "Rate", "Location", "Skills", "Manager", "Priority",
-			"Application Form Name", "Client Name", "Client Contact Name", "Client Contact Email",
-			"Status", "Posted On"};
+			"Client Name", "Client Contact Name", "Client Contact Email",
+			"Status", "Posted On (YYYY-MM-DD)"};
 	public static final String[] REQUIREMENT_PIPELINE_EXCEL_HEADERS = { "Name", "Email", "PhoneNumber",
 			"Resume", "Applied On", "Rate", "Source", "Score", "Experience", "Status",
 			"Submitted On", "Submitted By" };

@@ -421,16 +421,7 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			candidate.setIsFavourite(0);
 			candidate.setIsFavouriteAssociate(0);
-			
-			if(orgLocations.getCountry().equalsIgnoreCase("India")) {
-				candidate.setAadharNumber(candidateDto.getAadharNumber());
-				candidate.setPanNumber(candidateDto.getPanNumber());
-				}
-			
-			if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
-				candidate.setSsnNumber(candidateDto.getSsnNumber());;
-				}
-			
+
 			MasterCandidate masterCandidate = null;
 			masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDto);
 			if(null == masterCandidate){
@@ -440,7 +431,14 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setGeneratedId(getCandidateId(orgLocations));
 		}
         
+		if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+			candidate.setAadharNumber(candidateDto.getAadharNumber());
+			candidate.setPanNumber(candidateDto.getPanNumber());
+			}
 		
+		if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
+			candidate.setSsnNumber(candidateDto.getSsnNumber());;
+			}
 		candidate = getCandidateDetails(candidate, candidateDto, user, orgLocations, activitySummary);
 		
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDto, orgLocations,candidate,user.getUserCode());
