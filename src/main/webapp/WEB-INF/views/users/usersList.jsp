@@ -379,7 +379,7 @@ function getUsersSearchResult(searchValue){
 												<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateDeductionContributionDetails" title="Associate Deduction Contribution Import">Associate Deduction Contribution Import</a>
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
 												    <a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankingDetailsForm" title="Associate Bank Detail">Associate Bank Detail</a>
-												   <%--  <a href="${sourceleadUrl}/uploadAssociateInformationForm">Associate Information</a> --%>
+												   <a href="${sourceleadUrl}/uploadAssociateInformationForm">Associate Information</a> 
 													<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateSalary" title="Associate Salary Import">Associate Salary Import</a>
 													
 												</c:if>
@@ -437,7 +437,7 @@ function getUsersSearchResult(searchValue){
   </section>
   
       <!-- Content Area Ends--> 
- <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+ <div class="advancedsearch-mask"></div>
       <jsp:include page="../masterFooter.jsp" />
       <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
@@ -552,10 +552,20 @@ function resetFilter(){
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
 	$("#dynamicUserDataTableSearch").val('');
+	$("#myManagersInput").val('');
+	$("#myRolesInput").val('');
+	$("#myClientsInput").val('');
+	$("#myTeamsInput").val('');
+	$("#myDepartmentInput").val('');
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
 	
+	myManagersFunction();
+	myRolesFunction();
+	myClientsFunction();
+	myTeamsFunction();
+	myDepartmentFunction();
 	getDynamciUserList();
 }
 </script>
@@ -651,10 +661,10 @@ function exportUserData(){
 			 $(".advancedsearch-mask").fadeIn();
 		}
 		
-		function closeAdsrch(){
+		/* function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
 			$(".advancedsearch-mask").fadeOut();
-		}
+		} */
 	</script>
 
 

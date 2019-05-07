@@ -6,7 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <style type="text/css">
 .cand-advsrch-popup .bs-caret {
 position: relative; top:8px;
@@ -204,10 +204,8 @@ window.onload = function () {
 		  <span>
 			  <input type="button" value="Search" class="jobBtn" onclick="requirementsList('0');">
 		  </span>	
-		  
+		  <a href="javascript:void(0)" class="btn btn-primary anchorWhite AdSer" id="advancedSearch" style="display: block; width:150px; margin-left: 15px;" title="Advanced Search" onClick="openPop()">Advanced Search <i class="fa fa-search"></i></a>
 		  <div class="cand-advsrch">
-            <a href="javascript:void(0)" class="btn btn-primary anchorWhite AdSer" id="advancedSearch" style="display: block;" title="Advanced Search" onClick="openPop()">Advanced Search <i class="fa fa-search"></i></a>
-          
           <form:form id="professional_requirement_search_form" name="professional_requirement_search_form"  enctype='multipart/form-data' >
           <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();loadChosenRequirementScripts();"><i class="fa fa-close"></i></a>
             <div class="row">
@@ -251,7 +249,7 @@ window.onload = function () {
                       <div class="row">
                         <div class="col-md-5 padding_right">
                           <select class="sel" id="currencyCode" name="currencyCode" >
-                            <option selected disabled>INR</option>
+                            <option selected>INR</option>
                             <option>AUD</option>
                             <option>USD</option>
                             <option>GBP</option>
@@ -481,7 +479,7 @@ window.onload = function () {
 <jsp:include page="../masterFooter.jsp" />
 <jsp:include page="applyToJob.jsp" />
 
-<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
+<div class="backtotop" style="display: none;"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/backtotop.png"></div>  
 
 
 <script>
@@ -1697,6 +1695,7 @@ $(function(){
     // Close Advanced Search
     function closePop(){
     $("div.cand-advsrch-popup").hide();
+    $(".advancedsearch-mask").fadeOut();
     };
     
     function openPop(){
@@ -1705,7 +1704,11 @@ $(function(){
     		$("#refertoJobDiv"+referRequirementId.value+"").empty(); 
     		$("#refer"+referRequirementId.value+"").removeClass("referWrapActive"); 
     	 } 
-    $("div.cand-advsrch-popup").toggle();
+    	 $(".advancedsearch-mask").fadeIn().css({"z-index":"1000"});
+    	 $("div.cand-advsrch-popup").toggle();
+    	 $(".cand-advsrch").fadeIn().css({"z-index":"99999999"});
+    	 $(".main-header").css({"z-index":"9"});
+    	 $("aside").css({"z-index":"99"});
     };
 	</script>	
 	
@@ -1979,6 +1982,7 @@ $('body').on('submit', '#referToContacts', function(e){
 
 <!-- Create Alert modal Popup --> 
 <div class="pop_mask"></div>
+<div class="advancedsearch-mask"></div>
  <!-- Modal -->
   <div class="modal_createalert" id="myModal" role="dialog">
     <div id="createAlertPopUpDiv"></div>
