@@ -1325,6 +1325,8 @@ function getAssignedMembersDiv(reqId){
 	$("#listButtonsDiv").show();
 	$('#listSaveButton').removeAttr('onclick');
 	$('#listSaveButton').attr('onClick', 'editAssignedTeamsOrUsers('+reqId+');');
+	$('#resetAssignedTo').removeAttr('onclick');
+	$('#resetAssignedTo').attr('onClick', 'clearAssignedTeamsOrUsers();');
 	getAssignedMembersListForEdit(reqId);
 	
 }
