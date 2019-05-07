@@ -99,15 +99,6 @@ function closeCandiatesSubmitedList() {
 }
 </script>
 
-
-<style type="text/css">
-.candidate_wrap_table table tr td:first-child {
-    padding: 0;
-    text-align: center;
-    width: 200px;
-    padding-right: 5px;
-}
-</style>
 <script>
   var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>

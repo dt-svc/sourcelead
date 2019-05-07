@@ -1476,18 +1476,65 @@ function changeStatus(requirementId, requirementStatus){
 function exportToPdf(type) {
 	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	if(type === 1) {
-		var req = $("#noReq").val();
-	 	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
-	  	var status = [];
-		$('input:checkbox[name=requirementStatus]:checked').each(function() {
-			status.push($(this).val());
+		var filterStatus = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() 
+	    {
+			filterStatus.push($(this).val());
 	    });
-	 	var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() {
-			clients.push($(this).attr("data-val"));
+	    var filterClients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() 
+	    {
+			filterClients.push($(this).val());
 	    });
+		
+		var filterPriority = [];
+		$('input:checkbox[name=requirementPriority]:checked').each(function() 
+	    {
+			filterPriority.push($(this).val());
+	    });
+		
+		var filterJobType = [];
+		$('input:checkbox[name=requirementType]:checked').each(function() 
+	    {
+			filterJobType.push($(this).val());
+	    });
+		
+		var filterAssignTo = [];
+		$('input:radio[name=requirementAssignTo]:checked').each(function() 
+	    {
+			filterAssignTo.push($(this).val());
+	    });
+		
+		var filterSpecJobs = [];
+		$('input:checkbox[name=requirementSpecJobs]:checked').each(function() 
+	    {
+			filterSpecJobs.push($(this).val());
+	    });
+		
+		var filterProjects = [];
+		$('input:checkbox[name=projectNameById]:checked').each(function() 
+	    {
+			filterProjects.push($(this).val());
+	    });
+		
+		var city = [];
+		$('input:checkbox[name=cityName]:checked').each(function() 
+	    {
+			city.push($(this).val());
+	    });
+		
+		var frm = $('#requirement_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, ""); 
+	    var jsonData = encodeURIComponent(con);
+		var form = $('#requirement_form')[0];
+  		var formData = new FormData(form); 
+  		var searchValue = $("#dataTableSearch").val();
+  		searchValue = searchValue ? searchValue : "";
+  		
+  		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 		if(requirementEmptyMessage > 0) {
-			window.location.href = atsUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
+			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?exportType=pdf&searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;
 		} else {
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1503,7 +1550,7 @@ function exportToPdf(type) {
 	} else {
 		/* alert("Export JobFair to PDF"); */
 		$(".buttons-pdf").click();
-		window.location.href = atsUrl +"/pdfExportForJobfair?includeInactive=true";
+		window.location.href = sourceleadUrl +"/pdfExportForJobfair?includeInactive=true&searchValue="+$("#jobFairDataTableSearch").val();
 	}
 }
 </script>
@@ -1511,18 +1558,65 @@ function exportToPdf(type) {
 function exportToExcel(type) {
 	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	if(type === 1) {
-		var req = $("#noReq").val();
-		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
-	  	var status = [];
-		$('input:checkbox[name=requirementStatus]:checked').each(function() {
-			status.push($(this).val());
+		var filterStatus = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() 
+	    {
+			filterStatus.push($(this).val());
 	    });
-	 	var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() {
-			clients.push($(this).attr("data-val"));
+	    var filterClients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() 
+	    {
+			filterClients.push($(this).val());
 	    });
+		
+		var filterPriority = [];
+		$('input:checkbox[name=requirementPriority]:checked').each(function() 
+	    {
+			filterPriority.push($(this).val());
+	    });
+		
+		var filterJobType = [];
+		$('input:checkbox[name=requirementType]:checked').each(function() 
+	    {
+			filterJobType.push($(this).val());
+	    });
+		
+		var filterAssignTo = [];
+		$('input:radio[name=requirementAssignTo]:checked').each(function() 
+	    {
+			filterAssignTo.push($(this).val());
+	    });
+		
+		var filterSpecJobs = [];
+		$('input:checkbox[name=requirementSpecJobs]:checked').each(function() 
+	    {
+			filterSpecJobs.push($(this).val());
+	    });
+		
+		var filterProjects = [];
+		$('input:checkbox[name=projectNameById]:checked').each(function() 
+	    {
+			filterProjects.push($(this).val());
+	    });
+		
+		var city = [];
+		$('input:checkbox[name=cityName]:checked').each(function() 
+	    {
+			city.push($(this).val());
+	    });
+		
+		var frm = $('#requirement_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, ""); 
+	    var jsonData = encodeURIComponent(con);
+		var form = $('#requirement_form')[0];
+  		var formData = new FormData(form); 
+  		var searchValue = $("#dataTableSearch").val();
+  		searchValue = searchValue ? searchValue : "";
+  		
+  		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 		if(requirementEmptyMessage > 0) {
-			window.location.href = atsUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=xls";	
+			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?exportType=xls&searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;	
 		} else {
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1537,7 +1631,7 @@ function exportToExcel(type) {
 		}
 	} else {
 		/* alert("Export JobFair to Excel"); */
-		window.location.href = atsUrl +"/excelExportForJobfair?includeInactive=true"
+		window.location.href = atsUrl +"/excelExportForJobfair?includeInactive=true&searchValue="+$("#jobFairDataTableSearch").val();
 		$(".buttons-excel").click();
 	}
 }

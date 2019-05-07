@@ -4,11 +4,6 @@
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
-<style>
-.refresh-icon.refreshIcon {
- top: 16px !important;
-}
-</style>
 <script>
 $(document).ready(function() {
 	getcites('apiLocation','city','recommendation');
