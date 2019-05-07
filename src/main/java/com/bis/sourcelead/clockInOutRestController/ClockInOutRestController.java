@@ -249,13 +249,6 @@ public class ClockInOutRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/associateClockInSummaryReport")
-	public ModelAndView associateClockInSummaryReport() {
-		ModelAndView model = new ModelAndView();
-		model.setViewName("clockInOut/associateClockInSummaryReport");
-		return model;
-	}
-	
 	@RequestMapping(value = { "/getUserTimeEntries", "/rest/getUserTimeEntries" })
 	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(@RequestParam(value = "dayWisetype", required = false) String dayWisetype, @RequestParam(value = "currentDate", required = false) String currentDate, @RequestParam(value = "type", required = false) String type, HttpServletRequest request)
 	{
