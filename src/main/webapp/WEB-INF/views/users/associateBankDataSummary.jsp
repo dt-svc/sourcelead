@@ -178,27 +178,28 @@ function changeActiveAccount(associateBankId,candidateId,userId) {
 		                        <option value="">--Select Account Type--</option>
 			                    <option value="Direct Deposit" data-type="1">Direct Deposit</option>
 			                    <option value="Cheque" data-type="2">Cheque</option>
+			                     <option value="Cash" data-type="3">Cash</option>
 		                  </select>
 		                  <input type="hidden" name="id" id="id"/>
 		                </div>
 		         </div>
 		         
 		         <div class="col-md-6" id="bankNameDiv">
-		                  <label>Bank Name</label>
+		                  <label>Bank Name<span id="bankNameSpanId" class="text-danger">&nbsp;*</span></label>
 		                  <div>
 		                   <input type="text" class="form-control" id="bankName" name="bankName" data-validation="required validate_Space validate_length length2-100" field-name="Bank Name"/>
 		                  </div>
 		          </div>
 		          <div class="clearfix"></div>
 		          <div class="col-md-6" id="">
-		                  <label>Account Number</label>
+		                  <label>Account Number<span id="accountNumberSpanId" class="text-danger">&nbsp;*</span></label>
 		                  <div>
 		                   <input type="text" class="form-control" id="accountNumber" name="accountNumber" data-validation="required validate_Space validate_int validate_length length2-100" field-name="Account Number"/>
 		                  </div>
 		          </div>
 		          
 		          <div class="col-md-6" id="">
-		                  <label>Routing Number</label>
+		                 <label>Routing Number<span id="routingNumberSpanId" class="text-danger">&nbsp;*</span></label>
 		                  <div>
 		                   <input type="text" class="form-control" id="routingNumber" name="routingNumber"  data-validation="required validate_space validate_int validate_length length9-9" field-name="Routing Number"/>
 		                  </div>
@@ -256,27 +257,29 @@ function changeActiveAccount(associateBankId,candidateId,userId) {
   }
   </script>
   
- 
- <script>
+<script>
 function showHideAccountTypes(){
 	var accountType = $("#accountType").val();
 	if(accountType == "Direct Deposit"){
-// 		$("#bankName").val('');
-// 		$("#accountNumber").val('');
-// 		$("#routingNumber").val('');
+		$("#bankName").val('');
+		$("#accountNumber").val('');
+		$("#routingNumber").val('');
 		
 		$("#bankName").removeAttr('data-validation-optional');
-		$('#bankName').attr('data-validation',"required validate_Space validate_length length2-100");
+		$('#bankName').attr('data-validation',"required");
 		$("#accountNumber").removeAttr('data-validation-optional');
-		$('#accountNumber').attr('data-validation',"required validate_Space validate_int validate_length length2-100");
+		$('#accountNumber').attr('data-validation',"required");
 		$("#routingNumber").removeAttr('data-validation-optional');
-		$('#routingNumber').attr('data-validation',"required validate_space validate_int validate_length length9-9");
+		$('#routingNumber').attr('data-validation',"required validate_int validate_length length9-9");
 		
-		$('#editBankNameSpanId').attr('style',"display:inline-block");
-		$('#editAccountNumberSpanId').attr('style',"display:inline-block");
-		$('#editRoutingNumberSpanId').attr('style',"display:inline-block");
+		$('#bankNameSpanId').attr('style',"display:inline-block");
+		$('#accountNumberSpanId').attr('style',"display:inline-block");
+		$('#routingNumberSpanId').attr('style',"display:inline-block");
+		
 	}else{
-
+		$("#bankName").val('');
+		$("#accountNumber").val('');
+		$("#routingNumber").val('');
 		$("#bankName").removeAttr('data-validation');
 		$('#bankName').attr('data-validation-optional',"true");
 		$("#accountNumber").removeAttr('data-validation');
@@ -284,9 +287,13 @@ function showHideAccountTypes(){
 		$("#routingNumber").removeAttr('data-validation');
 		$('#routingNumber').attr('data-validation-optional',"true");
 		
-		$('#editBankNameSpanId').attr('style',"display:none");
-		$('#editAccountNumberSpanId').attr('style',"display:none");
-		$('#editRoutingNumberSpanId').attr('style',"display:none");
+		$('#bankNameSpanId').attr('style',"display:none");
+		$('#accountNumberSpanId').attr('style',"display:none");
+		$('#routingNumberSpanId').attr('style',"display:none");
+		
+		$('#bankName').parent().find('p.jquery_form_error_message').remove();
+		$('#accountNumber').parent().find('p.jquery_form_error_message').remove();
+		$('#routingNumber').parent().find('p.jquery_form_error_message').remove();
 		
 	}
 }
