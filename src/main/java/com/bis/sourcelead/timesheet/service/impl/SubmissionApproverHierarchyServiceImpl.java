@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -343,11 +344,11 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 
 	@Override
 	public ResponseList<TimesheetApprovalSubmissionDetailsDTO> getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
-			String timesheetFrequency, Date startDate, Date endDate, Long clientId, Long projectId, String status,
+			Set<Long> projectIds,Boolean isAdmin,String timesheetFrequency, Date startDate, Date endDate, Long clientId, Long projectId, String status,
 			Long locationsId, Long orgId, Long approverUserId, String searchValue, String projectName, int start,
-			int length, String timesheetFor, String isGlobalUser, Boolean isAdmin, String tableFor,
+			int length, String timesheetFor, String isGlobalUser, String tableFor,
 			Integer tdSpanLength, String dateFormat) throws Exception {
-		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, projectId, status, locationsId, orgId, approverUserId, searchValue, projectName, start, length, timesheetFor, isGlobalUser, isAdmin, tableFor, tdSpanLength, dateFormat);
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(projectIds,isAdmin,timesheetFrequency, startDate, endDate, clientId, projectId, status, locationsId, orgId, approverUserId, searchValue, projectName, start, length, timesheetFor, isGlobalUser, tableFor, tdSpanLength, dateFormat);
 	}
 
 	@Override
