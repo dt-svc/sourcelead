@@ -705,6 +705,10 @@ public class DumpPublicRestCalls {
 		return "Name successfully changed for " + count + " file(s)";
 	}
 
+	/**
+	 * @author Mahaveer Manoj
+	 * @purpose To rename file names under 'slead-static' folder containing white-spaces to underscore
+	 **/
 	@RequestMapping(value = "/ws/changeDocumentFileNames")
 	@ResponseBody
 	public String changeDocumentNames(HttpServletRequest request) {
@@ -719,6 +723,10 @@ public class DumpPublicRestCalls {
 		return "Successfully changed document names in 'slead-static' folder";
 	}
 
+	/**
+	 * @author Mahaveer Manoj
+	 * @purpose Add new dashboard item 'Candidates for Invoice' to already configured dashboard items at last
+	 **/
 	@RequestMapping(value = "/ws/updateDashboardItemCandidateForInvoice")
 	@ResponseBody
 	public String updateDashboardItemCandidateForInvoice(HttpServletRequest request) {
