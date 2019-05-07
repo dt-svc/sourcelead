@@ -925,6 +925,7 @@ public class UsersListRestController {
 				  userRole.setResidenceLatitude(candidate.getResidenceLatitude());
 				  userRole.setResidenceLongitude(candidate.getResidenceLongitude());
 			  }
+			  
 			  if(candidate.getPanNumber() != null) {
 				  userRole.setPanNumber(candidate.getPanNumber());
 			  }else {
@@ -2446,6 +2447,10 @@ public class UsersListRestController {
 			if(StringUtils.isNotBlank(addUserDTO.getAadharNumber())){
 				   candidate.setAadharNumber(addUserDTO.getAadharNumber());
 			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getSsn())){  
+				candidate.setSsnNumber(addUserDTO.getSsn());
+				}
 			   
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
