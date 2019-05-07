@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -120,7 +121,6 @@ public class DataMigrationCommonRestController {
 	    case "jobUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(46l, 1);break;
 	    case "projectTasks": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(94l, 1);break;  
 	    case "associateUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(161l, 1);break;  
-	    case "candidatesUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(73l, 1);break;
 	    case "submmissionTemplateUpload": formFields = dataMigrationService.getSubmissionTemplateFormFields(dataMigrationCommonDTO.getRequirementId());break; 
 	    }
 		
@@ -187,13 +187,30 @@ public class DataMigrationCommonRestController {
 	@RequestMapping(value = {"/candidateUploadFieldMapping","/rest/candidateUploadFieldMapping"}, method = RequestMethod.POST)
 	public ModelAndView candidateUploadFieldMapping(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
 	{
-		  
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		ModelAndView model = new ModelAndView();
 		try {
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		Map<String, String> dataWithCellId = new TreeMap<String, String>();
+		List<SourceleadFormFields> formFieldsList = new CopyOnWriteArrayList<>();
 		dataWithCellId = dataMigrationService.getCandidateMappingFileData(ac+dataMigrationCommonDTO.getFilePath(), dataMigrationCommonDTO.getHeaderPosition());
 		List<SourceleadFormFields>  formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(73l, 1);
+		
+		for (SourceleadFormFields fields : formFields) {
+			
+			if (orgLocations.getCountry().equalsIgnoreCase("India")) {
+				if (StringUtils.isNotBlank(fields.getFieldName()) && !fields.getFieldName().equalsIgnoreCase("ssnNumber")) {
+					formFieldsList.add(fields);
+				}
+			}else {
+				if (StringUtils.isNotBlank(fields.getFieldName()) && !fields.getFieldName().equalsIgnoreCase("panNumber")
+						|| !fields.getFieldName().equalsIgnoreCase("aadharNumber")) {
+					formFieldsList.add(fields);
+				}
+			}
+		}
+		
 		
 		model.setViewName("upload/candidateImportFieldMapping");
 		model.addObject("sourceleadUrl", sourceleadUrl);

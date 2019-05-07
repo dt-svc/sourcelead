@@ -208,7 +208,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserLoginSessionRes
 		 if(StringUtils.isNotEmpty(json)){
 			 String sourceleadUrl = request.getRequestURL().toString().replace("/restAuthenticate","");
 			 //TODO remove this sysout. Just for rest call testing purpose
-			 System.out.println("sourceleadURL =======> "+sourceleadUrl);
+			
 			 JSONObject jsonObject = new JSONObject(json);
 			 if(jsonObject != null && jsonObject.has("username")&& jsonObject.has("password") 
 			    && StringUtils.isNotEmpty(jsonObject.getString("username"))&& StringUtils.isNotEmpty(jsonObject.getString("password")))

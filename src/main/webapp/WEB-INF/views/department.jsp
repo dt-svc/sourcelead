@@ -77,7 +77,7 @@ $(document).ready(function() {
 		<div id="popUp"></div>
 			<form:form id="department_form" name="department_form" method="post">
 				<div class="popupWrap" id="departmentCloseDiv">
-				<div class="popupHead">Add Department <i class="closePop pull-right popClose" onclick="flushRole();"></i></div>
+				<div class="popupHead">Add Department <i class="closePop pull-right popClose"></i></div>
 				<div  id="departmentDivLoading"></div>
                     <div class="popupContent">
                       <div class="clearfix mb">
@@ -280,7 +280,8 @@ $('body').on('blur', '#department_form', function() {
 function flushDepartment(){
 	 $("#departmentName").val('');
 	 $("#departmentDesc").val('');
-	 $("department_form").validate().resetForm();
+	 $('#departmentNameDiv').find('p.jquery_form_error_message').remove();
+	 //$("department_form").validate().resetForm();
 
 }
 </script>
