@@ -1459,8 +1459,9 @@ public class RequirementListRestController {
 		}
 		
 		SearchResponse searchResponse = sourceleadELKBaseIndexer
-				.searchDocumentWithGlobalSearchResult(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
+				.searchDocumentsResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,10000,
 						 boolQueryBuilder);
+		
 		SearchHit searchHits[] = searchResponse.getHits().getHits();
 		//boolQueryBuilderForCount
 		List<Requirement>   reqList = new LinkedList<>();
