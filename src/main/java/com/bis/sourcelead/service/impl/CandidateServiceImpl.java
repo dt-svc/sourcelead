@@ -410,12 +410,12 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setGeneratedId(getCandidateId(orgLocations));
 		}
         
-		if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+		if("India".equalsIgnoreCase(orgLocations.getCountry())) {
 			candidate.setAadharNumber(candidateDto.getAadharNumber());
 			candidate.setPanNumber(candidateDto.getPanNumber());
 			}
 		
-		if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
+		if("United States".equalsIgnoreCase(orgLocations.getCountry())) {
 			candidate.setSsnNumber(candidateDto.getSsnNumber());;
 			}
 		candidate = getCandidateDetails(candidate, candidateDto, user, orgLocations, activitySummary);
