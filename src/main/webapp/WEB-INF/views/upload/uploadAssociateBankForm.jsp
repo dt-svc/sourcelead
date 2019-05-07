@@ -40,9 +40,9 @@ var uploadflag= true;
 <section class="content-wraper">
 	<section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Import Associates</h2>
+        <h2>Import Associate Bank Details</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates List</a> &raquo; Import Associates </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/usersList">Associates List</a> &raquo; Import Bank Details </div>
     </section>
 	<div id="loading"></div>
 	<div class="content-area clearfix" id="dataFileImportDiv">
