@@ -197,7 +197,7 @@ public interface CandidateDao {
 	
 	public void addCandidateToMarketCart(CandidateMarketCart marketcart)throws Exception;
 
-	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, Long orgId, String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO, Map<String, Date> dateValue);
+	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, Long orgId, String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO, Map<String, Date> dateValue,Date[] checkedDateArray);
 
 	public int getMarketCartStatusByMarketIdOrgId(Long marketPlaceId, Long orgId);
 
@@ -266,6 +266,8 @@ public interface CandidateDao {
 	
 	public List<Candidate> getAllAssociateByLocation(Long orgLocationId);
 	
+	public String getCandidatePanNumberByUserId(long userId, Long id);
+	
     public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception;
@@ -277,5 +279,7 @@ public interface CandidateDao {
     public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
+	
+	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
 	
 }

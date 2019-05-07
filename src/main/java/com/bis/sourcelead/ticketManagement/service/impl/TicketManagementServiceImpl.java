@@ -77,9 +77,9 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	private String sourceleadUrl;
 
 	@Override
-	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations() {
+	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations(long orgLocationId) {
 		try {
-			return ticketManagementDao.dumpTicketManagementPreDefinedValuesToAllOrgLocations();
+			return ticketManagementDao.dumpTicketManagementPreDefinedValuesToAllOrgLocations(orgLocationId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
