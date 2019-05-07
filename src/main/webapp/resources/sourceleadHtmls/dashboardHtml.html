@@ -513,7 +513,7 @@ $('#dasboardTaskDatpicker').datepicker({
         	<div class="dashNewWrapHead clearfix">
 				<h4 class="pull-left">Project Requests</h4>
 	     	    <ul class="nav nav-tabs pull-right">
-	     	    	<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
+	     	    	<!-- <sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')"> -->
 				        <li class="active" id="associateDiv"><a  onclick="resourceRequestList('Waiting For Approval')">Associate</a></li>
 				        <li id="newResourceDiv"><a href="javascript:void(0)"  onclick="newResourceRequestList('Waiting For Approval');">New Resource</a></li>
 				       </sec:authorize> 
@@ -947,10 +947,14 @@ width: 100% !important;
 	</section>
 </div>
 <!-- Footer Area -->
-<footer class="footer-area clearfix text-center">
-    <div class="clearfix">&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved</div>
-<!--     <div class="powered-by"> Powered by: businessintelli.com </div>
- -->  </footer>
+<footer class="footer-area clearfix">
+    <div class="col-md-6 text-left">
+    	&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved
+    </div>
+            <div class='col-md-6 text-right'>
+                  <a href="/terms-of-use.html" target="blank" title="Terms of Service">Terms of Service</a> <small class="text-muted">|</small> <a href="/privacy-policy.html" target="blank" title="Privacy Policy">Privacy Policy</a>
+            </div>
+</footer>
   
   <div class='file_mask'>
   </div>
@@ -968,6 +972,14 @@ width: 100% !important;
 	</div>
 	<span></span>
   </div> 
+  <form action="/logout" method="post" id="logoutForm">
+  <input type="hidden" name="userSessionId" value="">
+   <input type="hidden" name="orgLocationId" value="">
+ <input type="hidden" name="" value="">
+</form>
+<form action="/logout" method="post" id="logoutForm">
+ <input type="hidden" name="" value="">
+</form>
 </body>
 
 </html>
