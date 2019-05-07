@@ -4635,8 +4635,8 @@ public class EMailJobScheduler {
 	
 	
 	@SuppressWarnings({ "deprecation", "unused" })
-	//@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
-	@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
+	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	//@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
 	@Async
 	public void runApprovedAndPendingLeaveSchedulerEmailReminderAtOrgLevel() {
 		try {
@@ -4778,14 +4778,17 @@ public class EMailJobScheduler {
 										approvePendingInfoGrid.append("</tbody>");
 										approvePendingInfoGrid.append("</table>");
 
-									/*
-									 * // loop for notify to emails for (String email :
-									 * emailReminder.getNotifyTo().split(",")) { User toUser = new User();
-									 * toUser.setEmail(email.trim()); toUser.setFirstName("");
-									 * toUser.setLastName(""); 
-									 * sendConfiguredMailTo(toUser, emailReminder,
-									 * emailReminderHierarchy, approvePendingInfoGrid, userLeaveList); }
-									 */ 
+									
+									  // loop for notify to emails for (String email :
+										
+										for(String email : emailReminder.getNotifyTo().split(",")) {
+											User toUser = new User();
+											toUser.setEmail(email.trim());
+											toUser.setFirstName("");
+											toUser.setLastName("");
+											sendConfiguredMailTo(toUser, emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus); 
+										}
+ 
 										
 										String[] roleIds = emailReminder.getRoles().split(",");
 										
