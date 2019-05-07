@@ -110,10 +110,12 @@ $(document).ready(function(){
 		} else {
 			requirementListCheck(searchValue,universalRequirementList,"universalSearch",atsUrl);
 		}
-	  
+	  if(roleActionsArray.indexOf("ROLE_VIEW_CART") > -1){
+          updateMarketplaceCartCountAndPrice(); // used to update the cart count in header.
+	 }
 	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") == -1){
 		  $("#jobActions").remove();
-	  }
+	  } 
 	  if(roleActionsArray.indexOf("ROLE_EXPORT_REQUIREMENTS") == -1){
 		  $("#jobExportAndImportActions").remove();
 	  }
