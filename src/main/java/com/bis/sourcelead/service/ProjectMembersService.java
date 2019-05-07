@@ -135,6 +135,8 @@ public interface ProjectMembersService {
 	
 	ProjectMembers getProjectMembersByCandidateIdAndProjectClientId(Long candidateId,Long projectClientsId) throws Exception;
 	
+	ProjectMembers getProjectMembersByMasterCandidateIdAndProjectClientId(Long masterCandidateId,Long projectClientsId) throws Exception;
+	
 	public List<ProjectMembers> getAllProjectMembersByProjectClientId(Long projectClientsId) throws Exception;
 	
 	List<ProjectMembers> getAllProjectMembersByMasterCandidateId(Long masterCandidateId,Long projectId) throws Exception;

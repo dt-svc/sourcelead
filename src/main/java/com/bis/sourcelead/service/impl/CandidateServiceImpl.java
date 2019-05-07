@@ -410,12 +410,12 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setGeneratedId(getCandidateId(orgLocations));
 		}
         
-		if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+		if("India".equalsIgnoreCase(orgLocations.getCountry())) {
 			candidate.setAadharNumber(candidateDto.getAadharNumber());
 			candidate.setPanNumber(candidateDto.getPanNumber());
 			}
 		
-		if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
+		if("United States".equalsIgnoreCase(orgLocations.getCountry())) {
 			candidate.setSsnNumber(candidateDto.getSsnNumber());;
 			}
 		candidate = getCandidateDetails(candidate, candidateDto, user, orgLocations, activitySummary);
@@ -3143,7 +3143,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	
 	@Override
 	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations,
-			MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate,
+			MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,  String searchValue,String purchaseOrderFromDate,
 			String purchaseOrderToDate, String purchaseOrderFilterDate) throws Exception {
 		Date today = new Date();
 		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
@@ -3200,7 +3200,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			dateValue.put("fromDate", toDateVal);
 			dateValue.put("toDate", fromDateVal);
 		}
-		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO, purchaseOrderFromDate, purchaseOrderToDate,dateValue);
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,orgLocations, searchValue, purchaseOrderFromDate, purchaseOrderToDate,dateValue);
 		return responseList;
 	}
 
@@ -3532,6 +3532,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
 		return candidateDao.getCandidateDateOfBirthByUserId(userId, orgLocation);
+	}
+
+	@Override
+	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId, Long masterCandidateId)
+			throws Exception {
+		return candidateDao.getConsultantUserByCandidateIdOrMasterCandidateId(candidateId, masterCandidateId);
 	}
 	
 	

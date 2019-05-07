@@ -10045,6 +10045,36 @@ top: 20%; right: auto; left: 40%;
 .pop_mask.pop_mask_newstyles { z-index: 99999; }
 .addcandidate-popup.addcandidate-popup-newstyles { z-index: 9999999; }
 .exlpdf_btns.exlpdf_btns_btns table tr td div i { color: #333; }
+.CurDiv { position: static !important; float: left; }
+.timesheet_head.timesheet_head_customize ul { padding: 2px 300px 2px 0px; }
+.publicpageHeader { min-height: 50px; background-color: #368ee0; padding:0px; }
+.publicpageHeader .publicpage-logo { background-color: #fff; height: 50px; padding: 5px 0; text-align: center;
+}
+.publicpageHeader .publicpage-logo img { max-height: 100%; }
+.sign-buttons { width: 120px; padding: 15px; margin: 0 auto; box-shadow: 2px 2px 2px #909090;
+}
+.sign-buttons ul li { border: none; margin: 15px auto; padding: 20px; background-size: 30px;
+width: 50px; height: 50px;
+}
+#addSign { height: auto; min-height: 200px; }
+#backShadow { z-index: 9999; }
+#addSign { z-index: 9999; padding:20px; }
+.ReadTextFli { text-align: -webkit-left; }
+.uploadFile.upload_file span { max-width: 100% !important; width: 100% !important; }
+.uploadFile.upload_file span input { width: 90% !important; }
+.uploadFile.upload_file table i { margin-left:10px; }
+.valid_ation p.jquery_form_error_message { position: absolute; bottom: -13px; left: 0; }
+.valid_ation .positionRelative{ position: relative !important; }
+.dropdown_inr select { height: 34px; color: #fff; }
+.expAddRo, .exp_details { background-color: #f5f5f5; } 
+.exp_details { padding: 15px 0; }
+.moveErrorMsgUp { position: absolute !important; right: -30px !important; top: 5px; }
+.temp_Draft { color:#447fb5; }
+.disabledLink { color: #333; text-decoration : none; pointer-events: none; }
+
+.selfAppraisalWidget {
+	border: 1px solid red;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

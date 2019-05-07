@@ -59,7 +59,7 @@
 									title="Excel">Export Excel</a> </span>
 							</div></li>
 						<li class="noMar"><input class="repSearchBar"
-							placeholder="Search" id="searchByValue" type="text" value="">
+							placeholder="Order No" id="searchByValue" type="text" value="">
 							<span class="repSearchIcon" onclick="getDynamicSalesOrderList();"></span>
 
 						</li>
