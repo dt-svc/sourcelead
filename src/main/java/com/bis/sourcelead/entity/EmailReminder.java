@@ -58,6 +58,17 @@ public class EmailReminder {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
+	
+	@Column(name = "ROLES")
+	private String roles;
+
+	public String getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
+	}
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "emailReminder")
 	private List<EmailReminderHierarchy> emailReminderHierarchyList;

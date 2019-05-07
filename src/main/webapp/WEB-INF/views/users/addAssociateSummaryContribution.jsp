@@ -88,8 +88,9 @@ $(document).ready(function(){
                 
                <div class="minHeightcol5">
                <div class="col-md-5">
+               <div id="contriTypeDiv">
                <label class="clearfix">Type</label>
-                      <select class="sel" id="contriType" name="contriType" data-validation="required" field-name="Contribution Type" onchange="getContributionAmount(); resValues();" onblur="validateDuplicateContribution();">
+                      <select class="sel" id="contriType" name="contriType" data-validation="required" field-name="Contribution Type" onchange="getContributionAmount(); resValues(); validateDuplicateContribution();">
                       </select>
                   </div>
                   
@@ -161,7 +162,7 @@ $(document).ready(function(){
  <script type="text/javascript">
 function validateContributionForm(){
 	  if ($('#associate_contribution_form').validate(false, validationSettings)){  
-		  validateDuplicateContribution();
+// 		  validateDuplicateContribution();
 		 /*  saveAssociateContribution(); */
 	       return true; 
 	   }else{
@@ -299,12 +300,12 @@ function resValues(){
 			url: sourceleadUrl+"/validateContribution?"+tokenParamName+"="+tokenValue+"&contriType="+contriType+"&userId="+userId,
 			success :function(data) {
 				if(data == true){
-					$('#contriType').find('p.jquery_form_error_message').remove();
-					$("#contriType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
+					$('#contriTypeDiv').find('p.jquery_form_error_message').remove();
+					$("#contriTypeDiv").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
 					document.getElementById("contribution_save_button").disabled = true;
 					document.getElementById("contributionAddButtonId").disabled = true;
 				}else{
-					$('#contriType').find('p.jquery_form_error_message').remove();
+					$('#contriTypeDiv').parent().find('p.jquery_form_error_message').remove();
 					document.getElementById("contribution_save_button").disabled = false;
 					document.getElementById("contributionAddButtonId").disabled = false;
 				}

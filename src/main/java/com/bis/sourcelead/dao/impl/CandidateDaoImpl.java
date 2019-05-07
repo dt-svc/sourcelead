@@ -3145,8 +3145,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			if(marketplacePurchaseSalesDTO != null){
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
-				if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
-					queryEndBuilder2.append(" order by salesOrder.totalResumePrice "+marketplacePurchaseSalesDTO.getSortOrder());
+				if(sortColumnName.equalsIgnoreCase("totalPrice")){
+					queryEndBuilder2.append(" order by salesOrder.totalPrice "+marketplacePurchaseSalesDTO.getSortOrder());
 				}else{
 					queryEndBuilder2.append(" order by salesOrder." + sortColumnName + " "+marketplacePurchaseSalesDTO.getSortOrder());
 				}
@@ -3550,6 +3550,25 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = null;
+		String query = "select can.consultantUser from  Candidate can where can.id = :candidateId";
+		List<User> consultantUserList = session.createQuery(query).setLong("candidateId", candidateId).list();
+		if (consultantUserList != null && !consultantUserList.isEmpty()) {
+			user = consultantUserList.get(0);
+		}else {
+		    query = "select can.consultantUser from  Candidate can where can.masterCandidateId.id = :masterCandidateId and can.consultantUser IS NOT NULL and can.consultantUser != 0";
+		    consultantUserList = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).list();
+		    if (consultantUserList != null && !consultantUserList.isEmpty()) {
+		    	user = consultantUserList.get(0);
+		    }
+		}
+		return user;
 	}
 	
 	
