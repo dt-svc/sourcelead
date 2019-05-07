@@ -23,8 +23,15 @@ public class EmailReminderDTO implements Serializable{
 	private Long orgLocationId;
 	private Long tabsId;
 	private List<EmailReminderHierarchyDTO> emailReminderHierarchyList;
+	private String reminderTo;
 	
 	
+	public String getReminderTo() {
+		return reminderTo;
+	}
+	public void setReminderTo(String reminderTo) {
+		this.reminderTo = reminderTo;
+	}
 	public Long getOrgLocationId() {
 		return orgLocationId;
 	}
