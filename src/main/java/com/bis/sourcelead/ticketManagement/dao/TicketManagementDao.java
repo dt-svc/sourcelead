@@ -16,7 +16,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface TicketManagementDao {
 
-	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations();
+	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations(long orgLocationId);
 
 	public List<TicketType> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
