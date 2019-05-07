@@ -5,18 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
-<style type="text/css">
-.columnfields-custom label {
-width: 100%; clear:both; display: inline-table; display: none;
-}
-.columnfields-custom .col-md-9 {
-width: 100%;
-}
-.columnfields-custom .col-md-9 select {
-width: 100%; padding: 3px 20px 3px 15px;
-}
-</style>
-
 <%-- 
      @author : David Raju.
      this script is for edit Candidate.
