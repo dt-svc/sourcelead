@@ -9,17 +9,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <script src="/resources/js/immigration.js?staticTime=${staticTime}"></script>
 <title>Insert title here</title>
-<style>
-.disabledLink
-{
-	color: #333;
-	text-decoration : none;
-	pointer-events: none;
-}
-.form-control[disabled].selectdisabled {
-background-color: #ddd; color: #333; border: 1px solid #ddd !important;
-}
-</style>
 <c:set var ="myLcaPage" value ="${myLcaPage}" scope="session"/>
 
  <section class="content-wraper content-wraperNew">

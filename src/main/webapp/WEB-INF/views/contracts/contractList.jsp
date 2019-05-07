@@ -123,14 +123,6 @@ $(document).ready(function(){
    getStageCounts();
 });
 </script>
-
-<style>
-.CurDiv { position: static !important; float: left;}
-.timesheet_head ul {
-padding: 2px 300px 2px 0px;
-}
-</style>
-
 <section class="content-wraper">
 <section class="content-header clearfix">
  <div class="success_pop" id="contractSelector" style="display: none;"> 
@@ -247,7 +239,7 @@ padding: 2px 300px 2px 0px;
 </section>
  
  
-	<div class="timesheet_head">
+	<div class="timesheet_head timesheet_head_customize">
 		<div class="ContrBut">
 <!-- 		    <input type="hidden" name="tabType" id="tabType" value='Vendor'> -->
 			<!-- <a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
@@ -798,7 +790,7 @@ function preparedContractVendorListDraftPagination(url,tabType){
 				    	    	    	    			     			result = result + ' <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 				    	    	    	    			     		}
 				    	    	    	    			     		'</sec:authorize>';
-		    	    	    	    	    	    	}else if(report.templateSubmissionStatus == "Finalized"){
+		    	    	    	    	    	    	}else if(report.templateSubmissionStatus == "FINALIZED"){
 		    	    	    	    	    	    		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		    	    	    	    	   		         if(report.typeOfContract == "New" || report.typeOfContract == "Custom"){
 		    	    	    	    	   		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye mr10" onClick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></i></a></div>';
@@ -2830,7 +2822,7 @@ function preparedContractClientListWTV(url,tabType){
 	$("#clientContractsList").empty();
     $("#clientContractsList").append(opt); 
 	preparedClientContractListWTVPagination(url,tabType);
-}
+}		
 
 function preparedClientContractListWTVPagination(url,tabType){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
@@ -2961,7 +2953,7 @@ function preparedClientContractListWTVPagination(url,tabType){
 		    	    	    	    	    	    "render": function(data, type, output, meta) {
 		    	    	    	    	    	      var opt = "";
 		    	    	    	    	    	      opt = opt + '<div class="tbldata-dotdot_80">';
-		    	    	    	    	  	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.ownerUser){
+		    	    	    	    	  	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_loginUserRole}' == "ROLE_MANAGER" || '${SourceLeadWeb_user.id}' == output.ownerUser){
 		    	    	    	    	 	        	 if(output.contractStatus != "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
 		    	    	    	    	 		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 		    	    	    	    	 		     		}
