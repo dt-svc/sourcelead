@@ -16,8 +16,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateReportSummaryDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutSubDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
@@ -609,6 +611,41 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	}
 	
 
-	
+	@Override
+	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, OrgLocations orgLocation) {
+		// TODO Auto-generated method stub
+		 List<ClockInOutAssociateReportSummaryDTO> getAssociateReportList = clockInOutConfigDao.getAssociateClockInOutReportSummary(clockInOutFiltersDTO, orgLocation.getId());
+
+		 /*
+		 List<ClockInOutAssociateReportSummaryDTO> associateReportList = new ArrayList<>();
+		 ClockInOutAssociateReportSummaryDTO associateReportDto = new ClockInOutAssociateReportSummaryDTO();
+		 
+		 for (ClockInOutAssociateReportSummaryDTO associateReport : getAssociateReportList) {
+			 associateReportDto.setId(associateReport.getId());
+			 associateReportDto.setUserId(associateReport.getUserId());
+			 associateReportDto.setRoleId(associateReport.getRoleId());
+			 associateReportDto.setDepId(associateReport.getDepId());
+			 associateReportDto.setClockInTime(associateReport.getClockInTime());
+			 associateReportDto.setClockOutTime(associateReport.getClockOutTime());
+			 associateReportDto.setTotalTime(associateReport.getTotalTime());
+			 associateReportDto.setClockInDate(associateReport.getClockInDate());
+			 associateReportDto.setClockOutDate(associateReport.getClockOutDate());
+			 associateReportDto.setYearDate(associateReport.getYearDate());
+			 associateReportDto.setFirstName(associateReport.getFirstName());
+			 associateReportDto.setLastName(associateReport.getLastName());
+			 associateReportDto.setRoleType(associateReport.getRoleType());
+			 associateReportDto.setComments(associateReport.getComments());
+			 
+			 if("Last_7_days".equals(clockInOutFiltersDTO.getType())) {
+				 
+			 }
+			 
+			  
+			 associateReportList.add(associateReportDto);
+		 }
+		 */
+
+		return getAssociateReportList;
+	}
 
 }
