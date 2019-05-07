@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bis.sourcelead.constants.Constants;
@@ -53,6 +52,7 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.payroll.dao.BisUserMappingDao;
@@ -69,7 +69,6 @@ import com.bis.sourcelead.payroll.service.HrDeductionsService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.AssetService;
-import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
@@ -484,6 +483,19 @@ public class DumpPublicRestCalls {
 																	saHierarchy.setHeirarchyId(hierarchy);
 																	saHierarchy.setSubmissionId(timesheetSubmissions);
 																	saHierarchy.setSubmissionStatus(submissionStatus);
+																	//Additional Fields are added for de-normalization
+																	saHierarchy.setProjectId(timesheetSubmissions.getProjects());
+																	saHierarchy.setMasterCandidateId(timesheetSubmissions.getMasterCandidateId().getId());
+																	saHierarchy.setProjectClientId(hierarchy.getProjectClientsId());
+																	saHierarchy.setOrgLocationId(hierarchy.getProjectClientsId().getOrgLocationsId().getId());
+																	saHierarchy.setOrgId(hierarchy.getProjectClientsId().getOrgLocationsId().getOrg().getId());
+																	ProjectMembers projectMember = projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectClientId(timesheetSubmissions.getMasterCandidateId().getId(), hierarchy.getProjectClientsId().getId());
+																	if(projectMember != null) {
+																		saHierarchy.setProjectMemberId(projectMember);
+																		saHierarchy.setCandidateId(projectMember.getCandidateId());
+																		User consultantUser = candidateService.getConsultantUserByCandidateIdOrMasterCandidateId(projectMember.getProjectMemberCandidteId().getId(),projectMember.getProjectMemberCandidteId().getMasterCandidateId().getId());
+																		saHierarchy.setConsultantUser(consultantUser);
+																	}
 																	saHierarchy.setSubmissionApprovalStatus(submissionApprovalStatus);
 																	saHierarchy.setCreatedDate(timesheetSubmissions.getCreatedDate());
 																	if (frequencyStartDate != null)

@@ -1,0 +1,1 @@
+CALL AlterTableAddColumn ('EMAIL_REMINDER','ROLES','TEXT AFTER `STATUS`');

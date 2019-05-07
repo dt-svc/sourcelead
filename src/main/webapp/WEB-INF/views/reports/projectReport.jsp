@@ -193,8 +193,8 @@
 function resetFilter(){
 
 	$("ul#projectStatus > li input:checkbox").prop("checked",false);
-	$("ul#managersUL > li input:checkbox").prop("checked",false);
-	$("ul#clientsUL > li input:checkbox").prop("checked",false);
+	$("ul#myManagersListUL > li input:checkbox").prop("checked",false);
+	$("ul#myClinetsListUL > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	
 	document.getElementById("activeStatus").checked = true;

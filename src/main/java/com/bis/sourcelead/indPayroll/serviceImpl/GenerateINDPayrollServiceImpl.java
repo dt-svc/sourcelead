@@ -434,7 +434,9 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					Double tdsMonthlyTotal = 0.0;
 					if(utilDTO.getAssociatePayrollPayheadHistory() != null) {
 						AssociatePayrollPayheadHistory ph = iNDPayrollCommonUtil.calculateTDSForEmployee(assoSal, employee, orgLocation, freqStartDate, preCheckINDPayrollDTO, employeePayroll, loginUser);
-						tdsMonthlyTotal = ph.getMonthly().doubleValue();
+						if(ph != null && ph.getMonthly() != null) {
+							tdsMonthlyTotal = ph.getMonthly().doubleValue();
+						}
 						if(tdsMonthlyTotal > 0) {
 							utilDTO.getAssociatePayrollPayheadHistory().add(ph);
 							employeePayroll.getAssociatePayrollPayheadHistory().add(ph);
