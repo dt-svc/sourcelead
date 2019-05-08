@@ -864,8 +864,8 @@ function preventTabkey(e){
 <div class="clockIn clearfix">
 <div class="clockTime pull-left">
 <!-- 	<div class="pull-left"><input type="button" value="Show Time" class="newAdBtn mr5" onclick="showWorkingTime();"></div> -->
-	<div class="pull-left"><span class="pull-left refreIcon" id="">
-      		<a href="javascript:void(0)" class="mr" id="" title="Refresh" onclick="showWorkingTime();"></a>
+	<div class="pull-left"><span class="pull-left mr" id="">
+      		<a href="javascript:void(0)" class="refeIcon" id="" title="Refresh" onclick="showWorkingTime();"></a>
       </span></div>
 	<b class="pull-left" id="stopwatchPop">00:00:00</b>
 </div>
