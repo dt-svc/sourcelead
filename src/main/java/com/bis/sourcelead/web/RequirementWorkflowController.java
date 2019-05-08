@@ -375,9 +375,9 @@ public class RequirementWorkflowController {
 		}
 		
 		@RequestMapping(value = "/getRequirementWorkflowStage")
-		public @ResponseBody RequirementWorkFlowStagesDTO getRequirementWorkflowStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
+		public @ResponseBody List<RequirementWorkFlowStagesDTO> getRequirementWorkflowStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
 				HttpServletRequest request){
-			RequirementWorkFlowStagesDTO requirementDefaultWorkFlowStagesDTO = null;
+			List<RequirementWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 			try {
 				requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(requirementWorkFlowStagesDTO.getUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), orgLocations, requirementWorkFlowStagesDTO.getCurrentStageUuid());
