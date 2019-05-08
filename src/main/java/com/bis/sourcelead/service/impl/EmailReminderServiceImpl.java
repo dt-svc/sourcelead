@@ -62,6 +62,7 @@ public class EmailReminderServiceImpl implements EmailReminderService {
 		}
 		emailReminder.setScenarioId(emailReminderDTO.getScenarioId());
 		emailReminder.setScenarionName(emailReminderDTO.getScenarioName());
+		emailReminder.setRoles(emailReminderDTO.getReminderTo());
 		
 		if(emailReminderDTO.getEmailReminderHierarchyList().size() > 0) {
 			List<EmailReminderHierarchy> emailReminderHierarchyList = new ArrayList<>();
