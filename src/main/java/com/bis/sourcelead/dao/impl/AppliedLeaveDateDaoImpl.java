@@ -106,7 +106,7 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 					 + "      END "
 					 + "     ) AS  nonBillableHrs "
 				     + "      FROM HOLIDAY HD WHERE "
-				     + "         HD.FROM_DATE >= :startDate AND HD.TO_DATE <= :endDate AND HD.STATUS != '0' AND HD.ORGLOCATION_ID = :worklocationId AND HD.ID NOT IN(SELECT UDH.HOLIDAY_ID FROM USER_DROPPED_HOLIDAYS UDH WHERE UDH.USER_ID = :userId AND UDH.STATUS = '1')"
+				     + "         HD.FROM_DATE >= :startDate AND HD.TO_DATE <= :endDate AND HD.STATUS != '0' AND HD.ORGLOCATION_ID = :worklocationId AND HD.ID NOT IN(SELECT UDH.HOLIDAY_ID FROM USER_DROPPED_HOLIDAYS UDH WHERE UDH.FROM_DATE = HD.FROM_DATE AND UDH.TO_DATE = HD.TO_DATE UDH.USER_ID = :userId AND UDH.STATUS = '1')"
 				     + "       )" ;
 		
 		//LeaveHolidayHoursDTO
