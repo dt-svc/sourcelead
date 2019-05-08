@@ -2313,7 +2313,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Override
 	@Transactional
 	public ResponseList<TimesheetApprovalSubmissionDetailsDTO> getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(Set<Long> projectIds,Boolean isAdmin,String timesheetFrequency,Date startDate,Date endDate,Long clientId,Long projectId,String status,Long locationsId,Long orgId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor,String isGlobalUser,String tableFor,Integer tdSpanLength,String dateFormat) throws Exception {
-		long startTime = System.nanoTime();
 		List<BigInteger> countlist = null;  
 		Integer filterCount = 0;
 		ResponseList<TimesheetApprovalSubmissionDetailsDTO> response = new ResponseList<TimesheetApprovalSubmissionDetailsDTO>();
@@ -2380,7 +2379,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			if(StringUtils.isNotEmpty(projectName) || clientId != null) {
 				filterQuery.append(" AND ");
 			}
-			filterQuery.append(" SELECT Q1.* FROM (  ( SELECT  PM.ID as projectMemberId, PROJ.ID as projectId, PM.MASTER_CANDIDATE_ID as masterCandidateId, CONCAT(IF(CONSULTANTCAN.FIRST_NAME IS NOT NULL, CONCAT(CONSULTANTCAN.FIRST_NAME,' '),'') ,IF(CONSULTANTCAN.LAST_NAME IS NOT NULL, CONCAT(CONSULTANTCAN.LAST_NAME),'')) as employeeName, U.FILE_URL as profileImageFileUrl , CONSULTANTCAN.EMAIL as employeeEmail, CONSULTANTCAN.MOBILE_PHONE as employeePhoneNo, CAN.DESIGNATION_TYPE  as designation, PROJ.PROJECT_NAME as project,   (CASE         WHEN PC.ORG_RELATION_ID IS NOT NULL AND ORGRL.LOCATION_ID = 3334 THEN ( SELECT ORG_NAME FROM ORG_LOCATIONS CLIENTLOC WHERE CLIENTLOC.ID = ORGRL.RESPONDER_LOCATION_ID)         WHEN PC.ORG_RELATION_ID IS NOT NULL AND ORGRL.RESPONDER_LOCATION_ID = 3334 THEN ( SELECT ORG_NAME FROM ORG_LOCATIONS CLIENTLOC WHERE CLIENTLOC.ID = ORGRL.LOCATION_ID)         ELSE  '--'       END      ) AS  clientName,     (CASE       WHEN PC.ORG_RELATION_ID IS NOT NULL AND ORGRL.UUID IS NOT NULL       THEN  ORGRL.UUID      ELSE  ''      END  ) AS orgRelationUUID,  (CASE       WHEN PC.ORG_RELATION_ID IS NOT NULL AND ORGRL.ID IS NOT NULL       THEN  ORGRL.ID      ELSE  NULL       END  ) AS clientId, DATE_FORMAT('2019-05-06',\"%d-%m-%Y\") as actualStartDate, DATE_FORMAT('2019-05-12',\"%d-%m-%Y\") as actualEndDate,  'approver' AS tableFor,    CONSULTANTCAN.CONSULTANT_USER_ID AS consultantUserId,   CONSULTANTCAN.WORK_LOCATION AS workLocationId,  (CASE  WHEN SAH.SUBMISSION_APPROVALSTATUS = 'SUBMITTEDFORAPPROVAL'       THEN  'SUBMITTED FOR APPROVAL'      ELSE  SAH.SUBMISSION_APPROVALSTATUS      END  ) AS submissionStatus, SAH.ACTIONPERFORMEDBY AS actionPerformedBy, SAH.REJECTED_REASON AS rejectedReason  FROM USER_ROLE UR,SUBMISSION_APPROVER_HIERARCHY SAH   INNER JOIN (SELECT ID,CANDIDATE_ID,MASTER_CANDIDATE_ID FROM PROJECT_MEMBERS ) AS PM ON PM.ID = SAH.PROJECT_MEMBER_ID   LEFT JOIN (SELECT ID,FILE_URL FROM USER) AS U ON U.ID = SAH.CONSULTANT_USER_ID   LEFT JOIN (SELECT ID,DESIGNATION_TYPE FROM CANDIDATE) AS CAN ON CAN.ID = PM.CANDIDATE_ID  LEFT JOIN (SELECT MASTER_CANDIDATE_ID,CONSULTANT_USER_ID,FIRST_NAME,LAST_NAME,EMAIL,MOBILE_PHONE,WORK_LOCATION FROM CANDIDATE) AS CONSULTANTCAN ON  CONSULTANTCAN.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND  CONSULTANTCAN.CONSULTANT_USER_ID IS NOT NULL   INNER JOIN (SELECT ID,APPROVER_USER_ID,PROJECT_CLIENTS_ID,STATUS,LEVEL FROM PROJECT_APPROVER_HIERARCHY) AS PAH ON PAH.ID = SAH.HIERARCHY_ID   INNER JOIN (SELECT ID,INVOICE_FREQUENCY,PROJECT_APPROVAL_TYPE,PROJECT_NAME,IS_REPORTING_MANAGER_AS_APPROVER FROM PROJECTS ) AS PROJ ON PROJ.ID = SAH.PROJECT_ID  INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.PROJECT_ID =  PROJ.ID AND (PC.ORG_LOCATIONS_ID = '3334' OR  (PC.ORG_LOCATIONS_ID != '3334' AND PC.ORG_ID = '3209'))  LEFT JOIN (SELECT ID,LOCATION_ID,RESPONDER_LOCATION_ID,UUID FROM ORG_RELATIONS) AS ORGRL ON ORGRL.ID = PC.ORG_RELATION_ID AND PC.ORG_RELATION_ID IS NOT NULL  WHERE  SAH.FREQUENCY_START_DATE = '2019-05-06' AND  SAH.FREQUENCY_END_DATE = '2019-05-12' AND SAH.STATUS != 0    AND SAH.PROJECT_CLIENT_ID = PC.ID AND  SAH.SUBMISSION_APPROVALSTATUS = 'SUBMITTEDFORAPPROVAL'  AND PROJ.INVOICE_FREQUENCY = 'Weekly' AND  PROJ.ID IN( ,6641,6643,6644,6645,6648,6651,6653 ) AND    ( CASE         WHEN PROJ.PROJECT_APPROVAL_TYPE ='Parallel' THEN          ( ( PAH.APPROVER_USER_ID = '19252'  AND PAH.STATUS != '0' AND PAH.PROJECT_CLIENTS_ID = PC.ID)          OR    (false AND PAH.LEVEL IN(SELECT MAX(PAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID) AND PAH.PROJECT_CLIENTS_ID = PC.ID)       OR    ( PAH.LEVEL = '1' AND PROJ.IS_REPORTING_MANAGER_AS_APPROVER = 'Y' AND  CONSULTANTCAN.CONSULTANT_USER_ID IS NOT NULL AND UR.USER_ID = CONSULTANTCAN.CONSULTANT_USER_ID AND UR.REPORTING_MANAGER_ID = '19252' AND PAH.PROJECT_CLIENTS_ID = PC.ID))        WHEN PROJ.PROJECT_APPROVAL_TYPE ='Sequential' THEN          ( (    (        PAH.APPROVER_USER_ID = '19252'  AND PAH.STATUS != '0' AND PAH.PROJECT_CLIENTS_ID = PC.ID         AND        ( CASE         WHEN (PAH.LEVEL = '1')           THEN (         (PC.LEVEL+1) IN ( SELECT SUBPC.LEVEL FROM SUBMISSION_APPROVER_HIERARCHY  SUBSAH                            INNER JOIN (SELECT ID,LEVEL,PROJECT_CLIENTS_ID FROM PROJECT_APPROVER_HIERARCHY) AS SUBPAH ON SUBPAH.ID = SUBSAH.HIERARCHY_ID                            INNER JOIN (SELECT ID,LEVEL FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBSAH.PROJECT_CLIENT_ID                            WHERE SUBSAH.SUBMISSION_APPROVALSTATUS = 'APPROVED' AND SUBSAH.MASTER_CANDIDATE_ID = SAH.MASTER_CANDIDATE_ID AND SUBSAH.FREQUENCY_START_DATE = SAH.FREQUENCY_START_DATE AND SUBSAH.FREQUENCY_END_DATE = SAH.FREQUENCY_END_DATE                             AND SUBPAH.LEVEL IN (SELECT MAX(INNERPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY INNERPAH WHERE INNERPAH.PROJECT_CLIENTS_ID = SUBPAH.PROJECT_CLIENTS_ID)          ))        WHEN (PAH.LEVEL = '2')          THEN ( 1 IN (     SELECT SUBPAH.LEVEL FROM SUBMISSION_APPROVER_HIERARCHY SUBSAH      INNER JOIN (SELECT ID,LEVEL FROM PROJECT_APPROVER_HIERARCHY) AS SUBPAH ON SUBPAH.ID = SUBSAH.HIERARCHY_ID       WHERE      SUBSAH.PROJECT_CLIENT_ID = SAH.PROJECT_CLIENT_ID      AND SUBSAH.SUBMISSION_APPROVALSTATUS = 'APPROVED'      AND SUBSAH.MASTER_CANDIDATE_ID = SAH.MASTER_CANDIDATE_ID      AND SUBSAH.FREQUENCY_START_DATE = SAH.FREQUENCY_START_DATE      AND SUBSAH.FREQUENCY_END_DATE = SAH.FREQUENCY_END_DATE  ))        ELSE  ''         END         )       )  OR           (false    AND             ( CASE           WHEN (1 IN(SELECT MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID) AND PAH.PROJECT_CLIENTS_ID = PC.ID)             THEN (         (PC.LEVEL+1) IN ( SELECT SUBPC.LEVEL FROM SUBMISSION_APPROVER_HIERARCHY  SUBSAH                            INNER JOIN (SELECT ID,LEVEL,PROJECT_CLIENTS_ID FROM PROJECT_APPROVER_HIERARCHY) AS SUBPAH ON SUBPAH.ID = SUBSAH.HIERARCHY_ID                            INNER JOIN (SELECT ID,LEVEL FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBSAH.PROJECT_CLIENT_ID                            WHERE SUBSAH.SUBMISSION_APPROVALSTATUS = 'APPROVED' AND SUBSAH.MASTER_CANDIDATE_ID = SAH.MASTER_CANDIDATE_ID AND SUBSAH.FREQUENCY_START_DATE = SAH.FREQUENCY_START_DATE AND SUBSAH.FREQUENCY_END_DATE = SAH.FREQUENCY_END_DATE                             AND SUBPAH.LEVEL IN (SELECT MAX(INNERPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY INNERPAH WHERE INNERPAH.PROJECT_CLIENTS_ID = SUBPAH.PROJECT_CLIENTS_ID)          ))          WHEN (2 IN(SELECT MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID) AND PAH.PROJECT_CLIENTS_ID = PC.ID)            THEN ( 1 IN (     SELECT SUBPAH.LEVEL FROM SUBMISSION_APPROVER_HIERARCHY SUBSAH      INNER JOIN (SELECT ID,LEVEL FROM PROJECT_APPROVER_HIERARCHY) AS SUBPAH ON SUBPAH.ID = SUBSAH.HIERARCHY_ID       WHERE      SUBSAH.PROJECT_CLIENT_ID = SAH.PROJECT_CLIENT_ID      AND SUBSAH.SUBMISSION_APPROVALSTATUS = 'APPROVED'      AND SUBSAH.MASTER_CANDIDATE_ID = SAH.MASTER_CANDIDATE_ID      AND SUBSAH.FREQUENCY_START_DATE = SAH.FREQUENCY_START_DATE      AND SUBSAH.FREQUENCY_END_DATE = SAH.FREQUENCY_END_DATE  ))           ELSE  ''            END          )      )  OR           ( ( PAH.LEVEL = '1' AND PROJ.IS_REPORTING_MANAGER_AS_APPROVER = 'Y' AND  CONSULTANTCAN.CONSULTANT_USER_ID IS NOT NULL AND UR.USER_ID = CONSULTANTCAN.CONSULTANT_USER_ID AND UR.REPORTING_MANAGER_ID = '19252' AND PAH.PROJECT_CLIENTS_ID = PC.ID)      )))        ELSE  ''       END     ) ) )Q1  GROUP BY CONCAT(Q1.projectId,Q1.masterCandidateId,Q1.actualStartDate,Q1.actualEndDate)  = " + projectId + "");
+			filterQuery.append(" PROJ.ID  = " + projectId + "");
 		}else {
 			if(StringUtils.isNotEmpty(projectName) || clientId != null) {
 				filterQuery.append(" AND ");
@@ -2434,18 +2433,22 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		        		  //isReportingManager
 		        		  .append(" ( PAH.LEVEL = '1' AND PROJ.IS_REPORTING_MANAGER_AS_APPROVER = 'Y' AND  CONSULTANTCAN.CONSULTANT_USER_ID IS NOT NULL AND UR.USER_ID = CONSULTANTCAN.CONSULTANT_USER_ID AND UR.REPORTING_MANAGER_ID = '"+approverUserId+"' AND PAH.PROJECT_CLIENTS_ID = PC.ID)");
 		
-	   StringBuilder sequentialCheckForNewStatus= new StringBuilder(); 
-	                           sequentialCheckForNewStatus
-	                          .append("( PAH.LEVEL = '1' AND PAH.APPROVER_USER_ID = '"+approverUserId+"'  AND PAH.STATUS != '0' AND PAH.PROJECT_CLIENTS_ID = PC.ID ) ")
-	                          .append("  OR     ")
-	                          .append(" (").append(isAdmin).append(" AND 1 IN(SELECT MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID) AND PAH.PROJECT_CLIENTS_ID = PC.ID)")
-	                          .append("  OR     ")
-	                          .append(" ( PAH.LEVEL = '1' AND PROJ.IS_REPORTING_MANAGER_AS_APPROVER = 'Y' AND  CONSULTANTCAN.CONSULTANT_USER_ID IS NOT NULL AND UR.USER_ID = CONSULTANTCAN.CONSULTANT_USER_ID AND UR.REPORTING_MANAGER_ID = '"+approverUserId+"' AND PAH.PROJECT_CLIENTS_ID = PC.ID)")
-	                          .append("");
 	  
 	     //checking with low-level(vendor),highest level manager approval                      
 	     StringBuilder sequentiaLCheckForVendorApproval= new StringBuilder();                   
 		                           sequentiaLCheckForVendorApproval
+		                           .append(" ( CASE ")
+		                           .append("     WHEN PC.LEVEL < (")
+		                           .append( "             SELECT MAX(SUBPC.LEVEL) FROM PROJECT_MEMBERS SUBPM ")
+		                           .append( "              INNER JOIN(SELECT ID,ORG_ID,LEVEL,PROJECT_ID,STATUS FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBPM.PROJECT_CLIENTS_ID ")
+		   		   		           .append( "              INNER JOIN (SELECT ID,ORG_TYPE FROM ORG) AS OG ON OG.ID = SUBPC.ORG_ID     ")	   
+		   		   		           .append("               WHERE SUBPM.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND SUBPC.PROJECT_ID = PROJ.ID AND OG.ORG_TYPE != 'GUEST' AND SUBPC.STATUS != '0') ")
+		   		   		           .append( "          THEN  false ")
+		   		   		           .append( "          ELSE  true ")
+		   		   		           .append( "   END )      ");	   
+		                         
+		   		   		           
+		   		   		          /* .append( "                    )")
 		                          .append( "        (PC.LEVEL+1) IN ( SELECT SUBPC.LEVEL FROM SUBMISSION_APPROVER_HIERARCHY  SUBSAH ")
 		                          .append( "                           INNER JOIN (SELECT ID,LEVEL,PROJECT_CLIENTS_ID FROM PROJECT_APPROVER_HIERARCHY) AS SUBPAH ON SUBPAH.ID = SUBSAH.HIERARCHY_ID ")
 		                          .append( "                           INNER JOIN (SELECT ID,LEVEL FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBSAH.PROJECT_CLIENT_ID ")
@@ -2453,7 +2456,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		                          .append( "                           WHERE SUBSAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.APPROVED+"' AND SUBSAH.MASTER_CANDIDATE_ID = SAH.MASTER_CANDIDATE_ID AND SUBSAH.FREQUENCY_START_DATE = SAH.FREQUENCY_START_DATE AND SUBSAH.FREQUENCY_END_DATE = SAH.FREQUENCY_END_DATE  ")
 		                                                               //getting vendor highest level manager
 		                          .append( "                           AND SUBPAH.LEVEL IN (SELECT MAX(INNERPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY INNERPAH WHERE INNERPAH.PROJECT_CLIENTS_ID = SUBPAH.PROJECT_CLIENTS_ID) ")
-		                          .append("         )");
+		                          .append("         )");*/
 		                           
       //checking with level2 manager approver in same org                          
 	  StringBuilder sequentiaLCheckForLevel2Approval= new StringBuilder();
@@ -2494,9 +2497,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	                         .append("").append(isAdmin).append("")
 	                         .append("    AND    ")
 	                         .append("         ( CASE ")
-	 				    	 .append( "          WHEN (1 IN(SELECT MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID) AND PAH.PROJECT_CLIENTS_ID = PC.ID)  " )
+	 				    	 .append( "          WHEN (1 IN(SELECT MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND SUBPAH.status != '0') AND PAH.PROJECT_CLIENTS_ID = PC.ID)  " )
 	 				    	 .append("           THEN ( ").append(sequentiaLCheckForVendorApproval).append(")")
-	 				    	 .append( "          WHEN (2 IN(SELECT MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID) AND PAH.PROJECT_CLIENTS_ID = PC.ID) " )
+	 				    	 .append( "          WHEN (2 IN(SELECT MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND SUBPAH.status != '0') AND PAH.PROJECT_CLIENTS_ID = PC.ID) " )
 	 				    	 .append("           THEN ( ").append(sequentiaLCheckForLevel2Approval).append(")")
 	 				    	 .append("           ELSE  '' ")
 	 				    	 .append("           END ")
@@ -2522,7 +2525,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             
             .append("  FROM USER_ROLE UR,PROJECT_MEMBERS PM ")
             
-            /*Getting Project Member Hierarchy*/
+            /*Getting Project Member History*/
             .append("  INNER JOIN (SELECT ID,PROJECT_MEMBERS_ID,PROJECT_TERMINATION_DATE,PROJECT_ASSIGNED_DATE FROM PROJECT_MEMBERS_HISTORY) AS PMH ON PMH.PROJECT_MEMBERS_ID = PM.ID")
             
             /*Getting Projects*/
@@ -2538,22 +2541,23 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             .append("  INNER JOIN (SELECT ID,FILE_URL FROM USER) AS U ON U.ID = CONSULTANTCAN.CONSULTANT_USER_ID ");
 			 //To get current  orglocation details 
 		    if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
-		    	newStatusQuery.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.PROJECT_ID =  PROJ.ID AND (PC.ORG_LOCATIONS_ID = '"+locationsId+"' OR  (PC.ORG_LOCATIONS_ID != '"+locationsId+"' AND PC.ORG_ID = '"+orgId+"'))");
+		    	newStatusQuery.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = PM.PROJECT_CLIENTS_ID AND PC.PROJECT_ID =  PROJ.ID AND (PC.ORG_LOCATIONS_ID = '"+locationsId+"' OR  (PC.ORG_LOCATIONS_ID != '"+locationsId+"' AND PC.ORG_ID = '"+orgId+"'))");
 		    }else {
-		    	newStatusQuery.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+locationsId+"'");
+		    	newStatusQuery.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = PM.PROJECT_CLIENTS_ID AND PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+locationsId+"'");
 		    			
 		    }
 		    //getting project approver hierarchy
-		    newStatusQuery.append("  INNER JOIN (SELECT ID,PROJECT_ID,PROJECT_CLIENTS_ID,APPROVER_USER_ID,STATUS,LEVEL FROM PROJECT_APPROVER_HIERARCHY) AS PAH ON PAH.PROJECT_ID = PROJ.ID AND PAH.PROJECT_CLIENTS_ID = PC.ID ");
+		    newStatusQuery.append(" INNER JOIN (SELECT ID,PROJECT_ID,PROJECT_CLIENTS_ID,APPROVER_USER_ID,STATUS,LEVEL FROM PROJECT_APPROVER_HIERARCHY) AS PAH ON PAH.PROJECT_ID = PROJ.ID AND PAH.PROJECT_CLIENTS_ID = PC.ID ");
 		    /*Getting Org-Relation*/
 		    newStatusQuery.append("  LEFT JOIN (SELECT ID,LOCATION_ID,RESPONDER_LOCATION_ID,UUID FROM ORG_RELATIONS) AS ORGRL ON ORGRL.ID = PC.ORG_RELATION_ID AND PC.ORG_RELATION_ID IS NOT NULL");
 		    
 		    newStatusQuery.append(" WHERE ")
 		                 
 		                 //should be a low-level org in the case of client-vendor relationship
-		                .append(" PC.LEVEL IN(SELECT MAX(SUBPC.LEVEL) FROM PROJECT_CLIENTS SUBPC  ")  
-		                .append("             INNER JOIN (SELECT ID,ORG_TYPE FROM ORG) AS OG ON OG.ID = SUBPC.ORG_ID  ")
-		                .append("             WHERE SUBPC.PROJECT_ID = PROJ.ID AND OG.ORG_TYPE != 'GUEST' AND SUBPC.STATUS != '0' ) ")
+		                .append(" PC.LEVEL IN(SELECT MAX(SUBPC.LEVEL) FROM PROJECT_MEMBERS SUBPM ")
+		                .append( "              INNER JOIN(SELECT ID,ORG_ID,LEVEL,PROJECT_ID,STATUS FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBPM.PROJECT_CLIENTS_ID ")
+		                .append( "              INNER JOIN (SELECT ID,ORG_TYPE FROM ORG) AS OG ON OG.ID = SUBPC.ORG_ID     ")
+		                .append("               WHERE SUBPM.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND SUBPC.PROJECT_ID = PROJ.ID AND OG.ORG_TYPE != 'GUEST' AND SUBPC.STATUS != '0' ) ")
 		    
 		                //ProjectMember should be available with in the frequency or not
 		                .append(" AND (")
@@ -2571,6 +2575,15 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		                if(StringUtils.isNotEmpty(filterQuery)) {
 		                	newStatusQuery.append(" AND ").append(filterQuery);
 					    }
+		                
+		                StringBuilder sequentialCheckForNewStatus= new StringBuilder(); 
+                        sequentialCheckForNewStatus
+                       .append("( PAH.LEVEL = '1' AND PAH.APPROVER_USER_ID = '"+approverUserId+"'  AND PAH.STATUS != '0' AND PAH.PROJECT_CLIENTS_ID = PC.ID ) ")
+                       .append("  OR     ")
+                       .append(" (").append(isAdmin).append(" AND 1 IN(SELECT MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID) AND PAH.PROJECT_CLIENTS_ID = PC.ID)")
+                       .append("  OR     ")
+                       .append(" ( PAH.LEVEL = '1' AND PROJ.IS_REPORTING_MANAGER_AS_APPROVER = 'Y' AND  CONSULTANTCAN.CONSULTANT_USER_ID IS NOT NULL AND UR.USER_ID = CONSULTANTCAN.CONSULTANT_USER_ID AND UR.REPORTING_MANAGER_ID = '"+approverUserId+"' AND PAH.PROJECT_CLIENTS_ID = PC.ID)")
+                       .append("");
 		                
 		                //projectmember should  not present in submissionapprover hierarchy 
 		                newStatusQuery.append(" AND  PM.MASTER_CANDIDATE_ID NOT IN(SELECT SAH.MASTER_CANDIDATE_ID FROM SUBMISSION_APPROVER_HIERARCHY SAH WHERE SAH.PROJECT_CLIENT_ID = PC.ID AND SAH.FREQUENCY_START_DATE = '"+sqlStartDate+"' AND  SAH.FREQUENCY_END_DATE = '"+sqlEndDate+"' AND SAH.STATUS != 0 AND SAH.SUBMISSION_APPROVALSTATUS IN('"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"','"+Submission_ApprovalStatus.APPROVED+"','"+Submission_ApprovalStatus.REJECTED+"'))");
@@ -2603,7 +2616,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			    
 		            .append("  FROM USER_ROLE UR,SUBMISSION_APPROVER_HIERARCHY SAH ")
 		            /*Getting ProjectMember*/
-		            .append("  INNER JOIN (SELECT ID,CANDIDATE_ID,MASTER_CANDIDATE_ID FROM PROJECT_MEMBERS ) AS PM ON PM.ID = SAH.PROJECT_MEMBER_ID ")
+		            .append("  INNER JOIN (SELECT ID,CANDIDATE_ID,MASTER_CANDIDATE_ID,PROJECT_CLIENTS_ID FROM PROJECT_MEMBERS ) AS PM ON PM.ID = SAH.PROJECT_MEMBER_ID ")
 		            /*Getting consultant UserId*/
 					.append("  LEFT JOIN (SELECT ID,FILE_URL FROM USER) AS U ON U.ID = SAH.CONSULTANT_USER_ID ")
 					
@@ -2619,9 +2632,9 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					.append("  INNER JOIN (SELECT ID,INVOICE_FREQUENCY,PROJECT_APPROVAL_TYPE,PROJECT_NAME,IS_REPORTING_MANAGER_AS_APPROVER FROM PROJECTS ) AS PROJ ON PROJ.ID = SAH.PROJECT_ID ");
 					 /*Getting Project Client*/
 				    if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
-				    	query.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.PROJECT_ID =  PROJ.ID AND (PC.ORG_LOCATIONS_ID = '"+locationsId+"' OR  (PC.ORG_LOCATIONS_ID != '"+locationsId+"' AND PC.ORG_ID = '"+orgId+"'))");
+				    	query.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = PM.PROJECT_CLIENTS_ID AND PC.PROJECT_ID =  PROJ.ID AND (PC.ORG_LOCATIONS_ID = '"+locationsId+"' OR  (PC.ORG_LOCATIONS_ID != '"+locationsId+"' AND PC.ORG_ID = '"+orgId+"'))");
 				    }else {
-				    	query.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+locationsId+"'");
+				    	query.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = PM.PROJECT_CLIENTS_ID AND PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+locationsId+"'");
 				    			
 				    }    
 	                /*Getting Org-Relation*/
