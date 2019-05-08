@@ -1673,10 +1673,8 @@ public class DashboardRestController {
 		return requirementDTOList;
 	}
 	
-	
-	
-		/**
-	 * @author Laxman
+	/**
+	 * @author Mahaveer Manoj
 	 * @param request
 	 * @param dashboardItemsDTO
 	 * @return

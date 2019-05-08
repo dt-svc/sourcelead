@@ -22,7 +22,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Applicant(s) by Source</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/performanceReportList'/>">Performance Reports</a> &raquo; Applicant(s) by source </div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicant(s) by source </div>
     </section>
     
     
@@ -198,7 +198,6 @@ function getCustomDates(){
 		  
 	  }
 	  
-		
 	   if(flag){
 			  $("#reportLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 
@@ -289,7 +288,7 @@ function getCustomDates(){
 				                $("#reportLoading").removeAttr("style");
 				 	   		}
 			    			
-			    		}else if (response.indexOf('Sign In') !== -1) {
+			    		}else if (JSON.stringify(response).indexOf('Sign In') != -1) { //  earlier is response.indexOf() which is not preferrable
 			    			location.replace(sourceleadUrl);
 			    		} else {
 			    		    showError("Operation failed, please try again");
