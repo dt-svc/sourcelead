@@ -1459,8 +1459,9 @@ public class RequirementListRestController {
 		}
 		
 		SearchResponse searchResponse = sourceleadELKBaseIndexer
-				.searchDocumentWithGlobalSearchResult(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,
+				.searchDocumentsResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,0,10000,
 						 boolQueryBuilder);
+		
 		SearchHit searchHits[] = searchResponse.getHits().getHits();
 		//boolQueryBuilderForCount
 		List<Requirement>   reqList = new LinkedList<>();
@@ -2278,8 +2279,8 @@ public class RequirementListRestController {
 							} 
 						}
 						
-						//requirementPriority
-						if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterJobType())){
+						//jobType
+						/*if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterJobType())){
 							String jobType = "";
 							if(StringUtils.isNotEmpty(search.getRequirementStatus())){
 								jobType = search.getRequirementStatus();
@@ -2299,7 +2300,7 @@ public class RequirementListRestController {
 									boolQueryBuilderForCount.must(reqJobTypeBoolQueryBuilder);
 								}
 							} 
-						}
+						}*/
 						
 						
 						//filter for is Client job

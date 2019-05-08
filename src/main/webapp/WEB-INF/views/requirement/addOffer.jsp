@@ -698,14 +698,13 @@ function cancelOfferPopup(){
 
 function NotifyToVendor(){
 	
-	 if (document.getElementById('notifyToVendor').checked){
-	
-		 $("#notifyToVendor").val('Y');	
-	}else {
-		
-		 $("#notifyToVendor").val('N');
-    
-	} 
+	if($("#notifyToVendor").is(':checked')){
+		$("#notifyToVendor").val('Y');	
+		}else {
+
+		$("#notifyToVendor").val('N');
+
+		}
 }
 
 </script>
@@ -713,12 +712,12 @@ function NotifyToVendor(){
 
 <script>
 function NotifyToApplicant(){
-	 if (document.getElementById('notifyToApplicant').checked){
-		 $("#notifyToApplicant").val('Y');	
-	}else {
-		 $("#notifyToApplicant").val('N');
-    
-	} 
+	if($("#notifyToApplicant").is(':checked')){
+		$("#notifyToApplicant").val('Y');	
+		}else {
+		$("#notifyToApplicant").val('N');
+
+		}
 }
 
 </script>

@@ -2446,6 +2446,7 @@ $(document.body).on('change', '#editUploadBtn' ,function(){
 
 
 var editselectedFile = document.getElementById("editUploadBtn");
+if(editselectedFile != null && editselectedFile != '' && editselectedFile != 'undefined'){
 editselectedFile.addEventListener("change", function() {
 	 $("#editUploadFile").focus();
 	 if(validate_fileupload(this.value)){
@@ -2463,6 +2464,7 @@ editselectedFile.addEventListener("change", function() {
 	    }
 	 }
 });
+}
 </script>
 
  <script>
