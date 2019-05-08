@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -197,8 +198,8 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 	}
 
 	@Override
-	public List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId, String parsingType) throws Exception {
-		return  emailScenarioConfigurationDao.getConfParserMailList(orgLocId, parsingType);
+	public List<EmailScenarioConfiguration> getConfParserMailList(Long orgLocId, String parsingType, boolean isActive) throws Exception {
+		return  emailScenarioConfigurationDao.getConfParserMailList(orgLocId, parsingType, isActive);
 	}
 
 	@Override
@@ -225,6 +226,12 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 		// TODO Auto-generated method stub
         return emailScenarioConfigurationDao.validateParser(parserEmailId,orgLocId);
 
+	}
+
+	@Override
+	public int changeDefaultParserEmailConfig(String uuid, Long orgLocationId, boolean activeFlag, Date updatedDate) {
+		// TODO Auto-generated method stub
+		return emailScenarioConfigurationDao.changeDefaultParserEmailConfig(uuid,orgLocationId, activeFlag, updatedDate);
 	}
 
 

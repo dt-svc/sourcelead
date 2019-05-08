@@ -335,6 +335,8 @@ public interface CandidateService {
 	
 	public List<Candidate> getAllAssociateByLocation(Long orgLocationId)throws Exception;
 	
+	public String getCandidatePanNumberByUserId(long userId, Long id);
+	
     public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception;
@@ -347,4 +349,6 @@ public interface CandidateService {
 	
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
 
+	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
+	
 }
