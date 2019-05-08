@@ -76,5 +76,11 @@ public class ProjectClientServiceImpl implements ProjectClientService {
 	public List<Long> getProjectClientsByRelationId(Long orgRelationId) throws Exception {
 		return projectClientDao.getProjectClientsByRelationId(orgRelationId);
 	}
+
+	@Override
+	public List<ProjectClients> getProjectClientsListByLoginUserAndOrgLocationIdForTimesheetApproval(Long locationsId,
+			Long userId, String isGlobalUser) throws Exception {
+		return projectClientDao.getProjectClientsListByLoginUserAndOrgLocationIdForTimesheetApproval(locationsId, userId, isGlobalUser);
+	}
 	
 }

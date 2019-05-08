@@ -47,6 +47,6 @@ public interface ClockInOutConfigService {
 
 	public ClockInOutUserTimeEntryDTO getTimeReports(OrgLocations loginOrgLocation, User user);
 
-	public Time getWorkingTimeByClockId(OrgLocations loginOrgLocation, User user);
+	public String getWorkingTimeByClockId(OrgLocations loginOrgLocation, User user);
 
 }
