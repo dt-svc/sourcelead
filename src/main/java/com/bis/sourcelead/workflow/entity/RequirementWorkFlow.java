@@ -4,7 +4,9 @@ package com.bis.sourcelead.workflow.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.bis.sourcelead.entity.OrgLocations;
@@ -43,11 +46,14 @@ import com.bis.sourcelead.entity.User;
 	@Column(name = "NO_OF_STAGES")
 	private Integer noOfStages;
 	
-	@Column(name = "UUID ")
+	@Column(name = "UUID")
 	private String uuid;
 	
 	@Column(name = "STATUS")
 	private Integer status;
+	
+	@Column(name = "CONFIGURE_TYPE")
+	private String configureType;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -63,6 +69,9 @@ import com.bis.sourcelead.entity.User;
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementWorkFlowId")
+	private Set<RequirementWorkFlowStages> workflowStages;
+	
 	public Long getId() {
 		return id;
 	}
@@ -115,6 +124,15 @@ import com.bis.sourcelead.entity.User;
 		return status;
 	}
 
+	
+	public String getConfigureType() {
+		return configureType;
+	}
+
+	public void setConfigureType(String configureType) {
+		this.configureType = configureType;
+	}
+
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
@@ -150,5 +168,14 @@ import com.bis.sourcelead.entity.User;
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+	public Set<RequirementWorkFlowStages> getWorkflowStages() {
+		return workflowStages;
+	}
+
+	public void setWorkflowStages(Set<RequirementWorkFlowStages> workflowStages) {
+		this.workflowStages = workflowStages;
+	}
+	
 	
 }

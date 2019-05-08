@@ -1,8 +1,10 @@
 package com.bis.sourcelead.workflow.dto;
 
+import java.io.Serializable;
+import java.util.List;
 
 
-public class RequirementWorkFlowStagesDTO {
+public class RequirementWorkFlowStagesDTO implements Serializable{
 
 	private long id;
 	
@@ -16,7 +18,7 @@ public class RequirementWorkFlowStagesDTO {
 	
 	private String uuid;
 	
-	private Long requirementQuestionnaireId;
+	private Long requirementQuestionnaireTemplateId;
 	
 	private Integer status;
 	
@@ -26,7 +28,13 @@ public class RequirementWorkFlowStagesDTO {
 
 	private String requirementWorkFlowUuid;
 	
+	private String workflowDescription;
+	
 	private Integer seqOrder;
+	
+	private List<RequirementWorkFlowTasksDTO> taskList;
+	
+	private String currentStageUuid;
 	
 	public long getId() {
 		return id;
@@ -68,12 +76,12 @@ public class RequirementWorkFlowStagesDTO {
 		this.uuid = uuid;
 	}
 
-	public Long getRequirementQuestionnaireId() {
-		return requirementQuestionnaireId;
+	public Long getRequirementQuestionnaireTemplateId() {
+		return requirementQuestionnaireTemplateId;
 	}
 
-	public void setRequirementQuestionnaireId(Long requirementQuestionnaireId) {
-		this.requirementQuestionnaireId = requirementQuestionnaireId;
+	public void setRequirementQuestionnaireTemplateId(Long requirementQuestionnaireTemplateId) {
+		this.requirementQuestionnaireTemplateId = requirementQuestionnaireTemplateId;
 	}
 
 	public Integer getStatus() {
@@ -123,7 +131,31 @@ public class RequirementWorkFlowStagesDTO {
 	public void setSeqOrder(Integer seqOrder) {
 		this.seqOrder = seqOrder;
 	}
-	
+
+	public String getWorkflowDescription() {
+		return workflowDescription;
+	}
+
+	public void setWorkflowDescription(String workflowDescription) {
+		this.workflowDescription = workflowDescription;
+	}
+
+	public List<RequirementWorkFlowTasksDTO> getTaskList() {
+		return taskList;
+	}
+
+	public void setTaskList(List<RequirementWorkFlowTasksDTO> taskList) {
+		this.taskList = taskList;
+	}
+
+	public String getCurrentStageUuid() {
+		return currentStageUuid;
+	}
+
+	public void setCurrentStageUuid(String currentStageUuid) {
+		this.currentStageUuid = currentStageUuid;
+	}
+
 	
 
 }

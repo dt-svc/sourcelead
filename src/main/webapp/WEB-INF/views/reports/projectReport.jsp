@@ -60,7 +60,7 @@
   </div>
   
 	
-	  <div class="advancedsearch-mask" onclick="closeAdsrch()"></div>
+	  <div class="advancedsearch-mask"></div>
   <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
     <h5 class="headerAdsrch">Filters <a href="javascript:void(0)" class="close-div" onclick="closePop()"><i class="fa fa-close"></i></a> </h5>
     <div class="addInner">
@@ -193,8 +193,8 @@
 function resetFilter(){
 
 	$("ul#projectStatus > li input:checkbox").prop("checked",false);
-	$("ul#managersUL > li input:checkbox").prop("checked",false);
-	$("ul#clientsUL > li input:checkbox").prop("checked",false);
+	$("ul#myManagersListUL > li input:checkbox").prop("checked",false);
+	$("ul#myClinetsListUL > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	
 	document.getElementById("activeStatus").checked = true;

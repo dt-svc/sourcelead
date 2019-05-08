@@ -22,6 +22,12 @@ public class RequirementWorkFlowDTO extends SearchDTO{
 	
 	private String reqWorkFlowId;
 
+	private String configureType;
+	
+	private String stageUuid;
+	
+	private String currentStageUuid;
+	
 	public long getId() {
 		return id;
 	}
@@ -85,5 +91,31 @@ public class RequirementWorkFlowDTO extends SearchDTO{
 	public void setReqWorkFlowId(String reqWorkFlowId) {
 		this.reqWorkFlowId = reqWorkFlowId;
 	}
+
+	public String getConfigureType() {
+		return configureType;
+	}
+
+	public void setConfigureType(String configureType) {
+		this.configureType = configureType;
+	}
+
+	public String getStageUuid() {
+		return stageUuid;
+	}
+
+	public void setStageUuid(String stageUuid) {
+		this.stageUuid = stageUuid;
+	}
+
+	public String getCurrentStageUuid() {
+		return currentStageUuid;
+	}
+
+	public void setCurrentStageUuid(String currentStageUuid) {
+		this.currentStageUuid = currentStageUuid;
+	}
+	
+	
 	
 }
