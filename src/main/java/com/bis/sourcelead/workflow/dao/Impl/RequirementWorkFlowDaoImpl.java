@@ -229,7 +229,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:uuid and requirementWorkFlowStages.orgLocationId.id =:orgLocationId "
-					+ " ORDER BY requirementWorkFlowStages.seqOrder ASC";
+					+ " and requirementWorkFlowStages.status = 1 ORDER BY requirementWorkFlowStages.seqOrder ASC";
 			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("uuid", uuid).setLong("orgLocationId", orgLocationId).list();
 			return requirementWorkFlowStages;
 		} catch (Exception e) {
@@ -580,7 +580,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 					+ " and requirementWorkFlowStages.uuid <> '"+requirementWorkFlowDTO.getCurrentStageUuid()+"' ORDER BY requirementWorkFlowStages.seqOrder ASC";
 			*/
 			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:uuid and requirementWorkFlowStages.orgLocationId.id =:orgLocationId "
-					+ " ORDER BY requirementWorkFlowStages.seqOrder ASC";
+					+ " and requirementWorkFlowStages.status = 1 ORDER BY requirementWorkFlowStages.seqOrder ASC";
 			
 			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("uuid", requirementWorkFlowDTO.getUuid()).setLong("orgLocationId", id).list();
 			return requirementWorkFlowStages;
