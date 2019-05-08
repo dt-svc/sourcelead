@@ -288,7 +288,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				
 				
 				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(breaks.getBreakStartDate());
+				calendar.setTime(breaks.getBreakStartDateTime());
 				Date date1 = calendar.getTime();
 				Date date2 = new Date();
 				
@@ -872,11 +872,35 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			int totHr = 0;
 			String[] str = sum.split(":");
 			String[] brkStr = brksum.split(":");
-			int totSec = Integer.parseInt(str[2]) - Integer.parseInt(brkStr[2]);
+			if(str[2].equals("00")) {
+				str[2] = "60";
+			}if(brkStr[2].equals("00")) {
+				brkStr[2] = "60";
+			}
+			
+			int minSec = 0;
+			if(Integer.parseInt(str[2])<Integer.parseInt(brkStr[2])) {
+				minSec = Integer.parseInt(str[2])+60;
+			}else {
+				minSec = Integer.parseInt(str[2]);
+			}
+			int totSec = minSec - Integer.parseInt(brkStr[2]);
+			if(totSec<0) {
+				totSec = Math.abs(totSec);
+			}
 			if(totSec>=60) {
 				totMin++;
 			}
-			 totMin = Integer.parseInt(str[1]) - Integer.parseInt(brkStr[1]);
+			int minMin = 0;
+			if(str[2].equals("60") || Integer.parseInt(str[2])<Integer.parseInt(brkStr[2])) {
+				minMin = Integer.parseInt(str[1]) - 1;
+			}else {
+				minMin = Integer.parseInt(str[1]);
+			}
+			 totMin = minMin - Integer.parseInt(brkStr[1]);
+			 if(totMin<0) {
+				 totMin = Math.abs(totMin);
+				}
 			 if(totMin>=60) {
 				 totHr++;
 				}
