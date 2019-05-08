@@ -11,8 +11,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -850,11 +854,25 @@ public class RequirementRestController {
 	 	if(loginUser != null) {
 			try {
 
-			    // This is made static as requirment action id is 146
-				
 				List<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
+				List<User> assignedUserList = new CopyOnWriteArrayList<>();
+		    	  HashMap<Long,User> userMap = new HashMap<>();
+				    if(usersList != null && usersList.size() > 0) {
+				    	for(User assignedUser : usersList) {
+				    		
+				    		User tempUser = userMap.get(assignedUser.getId());
+				    		if(tempUser == null) {
+				    			userMap.put(assignedUser.getId(),assignedUser);
+					    		assignedUserList.add(assignedUser);
+				    		}else {
+				    			assignedUserList.remove(assignedUser);
+								continue;
+				    		}
+				    		
+				    	}
+				    }
 				
-				response.setData(usersList);
+				response.setData(assignedUserList);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch (Exception e) {

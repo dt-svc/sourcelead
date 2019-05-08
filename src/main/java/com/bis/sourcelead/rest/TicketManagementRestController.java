@@ -66,7 +66,7 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = "/dumpTicketManagementData")
 	@ResponseBody
-	public String dumpTicketManagementPreDefinedValuesToAllOrgLocations(HttpServletRequest request, @RequestParam(defaultValue="") long orgLocationId) {
+	public String dumpTicketManagementPreDefinedValuesToAllOrgLocations(HttpServletRequest request, @RequestParam(defaultValue="0") long orgLocationId) {
 		int count = 0;
 		try {
 			if(request.getSession().getAttribute("dumpTicketManagementData") == null || (!(Boolean) request.getSession().getAttribute("dumpTicketManagementData"))) {
