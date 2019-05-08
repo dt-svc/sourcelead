@@ -5781,6 +5781,8 @@ public class TimesheetRestController {
 			Holiday holiday = new Holiday();
 			holiday.setId(holidayId);
 			userDroppedHolidays.setHoliday(holiday);
+			userDroppedHolidays.setToDate(holiday.getToDate());
+			userDroppedHolidays.setFromDate(holiday.getFromDate());
 			User user = new User();
 			user.setId(holidayUserId);
 			userDroppedHolidays.setUser(user);
