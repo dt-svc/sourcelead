@@ -480,7 +480,7 @@ function preventTabkey(e){
 <div class="headNav">
 	<ul>
 	
-	<li id="clPop" class="clPop">
+	<li id="clPop">
 			<a href="javascript:void(0)" title="Clock In"><i class="clockAni"><div class="clockAniAct"></div></i></a>
 	</li>
 <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
@@ -864,7 +864,7 @@ function preventTabkey(e){
 <div class="clockIn clearfix">
 <div class="clockTime pull-left">
 <!-- 	<div class="pull-left"><input type="button" value="Show Time" class="newAdBtn mr5" onclick="showWorkingTime();"></div> -->
-	<div class="pull-left"><span class="pull-left refreIcon" id="">
+	<div class="pull-left"><span class="pull-left mr" id="">
       		<a href="javascript:void(0)" class="refeIcon" id="" title="Refresh" onclick="showWorkingTime();"></a>
       </span></div>
 	<b class="pull-left" id="stopwatchPop">00:00:00</b>

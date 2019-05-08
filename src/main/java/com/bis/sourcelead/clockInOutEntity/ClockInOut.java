@@ -20,6 +20,10 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 
+/**
+ * @author rakshith
+ *
+ */
 @Entity
 @Table(name = "CLOCK_INOUT")
 public class ClockInOut {
@@ -38,6 +42,12 @@ public class ClockInOut {
 	
 	@Column(name = "CLOCK_OUT_DATE")
 	private Date clockOutDate;
+	
+	@Column(name = "CLOCK_IN_DATETIME")
+	private Date clockInDateTime;
+	
+	@Column(name = "CLOCK_OUT_DATETIME")
+	private Date clockOutDateTime;
 	
 	@Column(name = "CLOCK_IN_TIME")
 	private Time clockInTime;
@@ -78,6 +88,9 @@ public class ClockInOut {
 	
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
+	
+	@Column(name = "TOTAL_TIME")
+	private String totalTime;
 
 	public Long getId()
 	{
@@ -237,6 +250,30 @@ public class ClockInOut {
 
 	public void setTotalClockTime(Time totalClockTime) {
 		this.totalClockTime = totalClockTime;
+	}
+
+	public String getTotalTime() {
+		return totalTime;
+	}
+
+	public void setTotalTime(String totalTime) {
+		this.totalTime = totalTime;
+	}
+
+	public Date getClockInDateTime() {
+		return clockInDateTime;
+	}
+
+	public void setClockInDateTime(Date clockInDateTime) {
+		this.clockInDateTime = clockInDateTime;
+	}
+
+	public Date getClockOutDateTime() {
+		return clockOutDateTime;
+	}
+
+	public void setClockOutDateTime(Date clockOutDateTime) {
+		this.clockOutDateTime = clockOutDateTime;
 	}
 
 }

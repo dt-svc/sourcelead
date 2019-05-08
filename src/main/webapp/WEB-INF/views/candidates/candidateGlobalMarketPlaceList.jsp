@@ -10,7 +10,7 @@
     <section class="content-header clearfix">
     <div id="popUpDeleteCart"></div>
     <div class="pull-left">
-      <h2 id="headerLbl">Marketplace List</h2>
+      <h2 id="headerLbl">Global Marketplace List</h2>
     </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 	    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <label id="brudCrumLbl">Global Marketplace List</label> </div>
