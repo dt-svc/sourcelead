@@ -166,7 +166,7 @@ function approvedEmployeesPagination(url){
             "sortable":false,
             "render": function ( data, type, opt, meta ) {
             	 var result = "";
-            	 result = result + '   <div title="'+opt.duration+'" class="tbldata-dotdot-100">'+opt.duration+'</div>';
+            	 result = result + '   <div title="'+opt.duration+'" class="">'+opt.duration+'</div>';
             	return result; 
             }
           }, {
