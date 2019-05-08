@@ -52,7 +52,7 @@ $(document).ready(function(){
                  </div>
               </li>
             <li class="noMar">
-                <input class="repSearchBar" placeholder="Search" id="purchaseOrderDataTableSearch" type="text">
+                <input class="repSearchBar" placeholder="Order No" id="purchaseOrderDataTableSearch" type="text">
                 <span class="repSearchIcon" onclick="getPurchaseOrderList();"></span>
 			</li>
             </ul>

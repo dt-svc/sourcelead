@@ -11,7 +11,7 @@ public class ClockInOutUserTimeEntryDTO {
 	
 	private Time clockInTime;
 	
-	private Time totalTime;
+	private String totalTime;
 	
 	private Time clockOutTime;
 	
@@ -39,11 +39,11 @@ public class ClockInOutUserTimeEntryDTO {
 	
 	private List<ClockInOutSubDTO> subList;
 	
-	private Time currentTotTime;
+	private String currentTotTime;
 	
-	private Time weekTotTime;
+	private String weekTotTime;
 	
-	private Time monthTotTime;
+	private String monthTotTime;
 	
 	private Time yearTotTime;
 	
@@ -64,11 +64,11 @@ public class ClockInOutUserTimeEntryDTO {
 		this.clockInTime = clockInTime;
 	}
 
-	public Time getTotalTime() {
+	public String getTotalTime() {
 		return totalTime;
 	}
 
-	public void setTotalTime(Time totalTime) {
+	public void setTotalTime(String totalTime) {
 		this.totalTime = totalTime;
 	}
 
@@ -184,27 +184,27 @@ public class ClockInOutUserTimeEntryDTO {
 		this.type = type;
 	}
 
-	public Time getCurrentTotTime() {
+	public String getCurrentTotTime() {
 		return currentTotTime;
 	}
 
-	public void setCurrentTotTime(Time currentTotTime) {
+	public void setCurrentTotTime(String currentTotTime) {
 		this.currentTotTime = currentTotTime;
 	}
 
-	public Time getWeekTotTime() {
+	public String getWeekTotTime() {
 		return weekTotTime;
 	}
 
-	public void setWeekTotTime(Time weekTotTime) {
+	public void setWeekTotTime(String weekTotTime) {
 		this.weekTotTime = weekTotTime;
 	}
 
-	public Time getMonthTotTime() {
+	public String getMonthTotTime() {
 		return monthTotTime;
 	}
 
-	public void setMonthTotTime(Time monthTotTime) {
+	public void setMonthTotTime(String monthTotTime) {
 		this.monthTotTime = monthTotTime;
 	}
 
