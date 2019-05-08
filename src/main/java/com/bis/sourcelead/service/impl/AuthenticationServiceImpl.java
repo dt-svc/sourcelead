@@ -100,8 +100,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Override
 	public void logout(String token,HttpSession session) {
-		UserDetails logoutUser = tokenManager.removeToken(token,session);
-		session.invalidate();
+		/*UserDetails logoutUser = tokenManager.removeToken(token,session);
+		session.invalidate();*/
+		//remove the token from coutch
 		SecurityContextHolder.clearContext();
 	}
 
