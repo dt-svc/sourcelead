@@ -1848,7 +1848,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				         + " left join fetch pm.employee "
 				         + " left join fetch pm.masterCandidateId "
 				         + " left join fetch pm.projectMemberCandidteId  "
-				         + " where pm.status != 0 and pm.projects.invoiceFrequency = :timesheetFrequency and  "
+				         //pm.status != 0 and
+				         + " where  pm.projects.invoiceFrequency = :timesheetFrequency and  "
 				         + " pm.id IN(select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  pmh.projectTerminationDate IS NULL OR (pmh.projectTerminationDate IS NOT NULL and pmh.projectTerminationDate > pmh.projectAssignedDate)) "
 				         + " and  (pm.projectMemberCandidteId.parentCandidateId.id = :candidateId OR pm.projectMemberCandidteId.id = :candidateId) and "
 				         + " ((pm.projectMemberCandidteId.designationType IS NOT NULL and pm.projectMemberCandidteId.designationType ='"+Constants.OFFSHORE_C2C+"' and pc.orgLocationsId.org.id = :orgId) OR ((pm.projectMemberCandidteId.designationType IS  NULL OR (pm.projectMemberCandidteId.designationType IS  NOT NULL and pm.projectMemberCandidteId.designationType !='"+Constants.OFFSHORE_C2C+"')) and pc.orgLocationsId.id = :locationsId)) GROUP BY pm.projects.id";
