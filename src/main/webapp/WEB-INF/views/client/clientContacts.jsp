@@ -8,7 +8,6 @@
 
 <script>
 function clientContacts(orgRelationID,clientLocationId){
-	
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
 	result  = result + '<div class="success_pop" id="clientTerminateMsgDiv" style="display: none;">';
@@ -196,7 +195,7 @@ function clientContacts(orgRelationID,clientLocationId){
  				contactPagination();
     		$("#tab-4").empty();  
     		$("#tab-2-addContact").empty();  
-    	    $("#tab-2-addContact").append(result);
+    	    $("#tab-2-addContact").append(res);
     		$("#tab-2").empty();  
     	    $("#tab-2").append(result);  
     	    $("#testDiv").show();
