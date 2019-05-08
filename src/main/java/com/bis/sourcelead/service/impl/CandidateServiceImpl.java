@@ -1843,6 +1843,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate.setOrgLocationId(orgLocations);
 							vendorCandidate.setIsAssociate(Constants.YES);
 							vendorCandidate.setDesignationType("Offshore C2C");
+							vendorCandidate.setGeneratedId(getCandidateId(orgLocations));
 							
 							if(associateDTO.getBillRate() != null){
 								vendorCandidate.setCurrentRate(associateDTO.getBillRate().toString());
