@@ -800,6 +800,12 @@ public class PayrollConfigurationRestController {
 												payrollPayheadDTO.setPfApplicable("N");
 											}
 											
+											if(StringUtils.isNotBlank(payrollPayhead.getPtApplicable())) {
+												payrollPayheadDTO.setPtApplicable(payrollPayhead.getPtApplicable());
+											}else {
+												payrollPayheadDTO.setPtApplicable("N");
+											}
+											
 											if(StringUtils.isNotBlank(payrollPayhead.getEsiApplicable())) {
 												payrollPayheadDTO.setEsiApplicable(payrollPayhead.getEsiApplicable());
 											}else {

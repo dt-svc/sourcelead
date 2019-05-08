@@ -704,144 +704,6 @@ public class DataMigrationCommonUtil {
 				
 			}
 	
-			@SuppressWarnings("unchecked")
-			public void dataValidationForCandidates(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,List<String> candidateEmailsList) throws Exception
-			{
-				
-				if(!dataMigrationDTOJsonCopy.getString("email").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
-					Long candidateId = candidateService.getCandidateIdByEmailAndOrgLocationId(dataMigrationDTOJsonCopy.getString("email"), orgLocation.getId());
-					/*if (candidateEmailsList.contains(dataMigrationDTOJsonCopy.getString("email"))) {*/
-					if (candidateId != null) {
-						errorSet.put("email", "Candidate already exist.!");
-					}else {
-						
-						
-						Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-								+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-						
-						if (!dataMigrationDTOJsonCopy.get("email").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("email").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("email").toString().equalsIgnoreCase("undefined")) {
-							Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("email").toString().trim());
-							if(matcher.matches() == false) {
-								errorSet.put("email", "Invalid Email");
-								return;
-							}
-						}
-						
-						if(dataMigrationDTOJsonCopy.getString("firstName").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("firstName"))) {
-							errorSet.put("firstName", "First Name field is missing");
-							    return;
-						}
-						
-						
-						
-						if (!dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase("undefined")) {
-							Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("vendorcontact").toString().trim());
-							if(matcher.matches() == false) {
-								errorSet.put("vendorcontact", "Invalid Vendor Contact Email");
-								return;
-							}
-							
-							if (!dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase("undefined")) {
-								
-								List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
-								Long vendorId = 0l;
-								for(OrgRelations rel : vendorsList) {
-									if((dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
-										vendorId = rel.getId();
-										break;
-									}
-								}
-								
-
-								List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
-								
-								for(OrgSpoc vendorContacts : vendorContactsList) {
-									if(!dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
-										errorSet.put("vendorcontact", "No contact exists with entered email");
-										return;
-									}
-								}
-								
-								if(vendorContactsList == null || vendorContactsList.size() == 0) {
-									errorSet.put("vendorcontact","No Active contacts exists with this vendor");
-									return;
-								}
-							
-								
-							}
-							
-							if(dataMigrationDTOJsonCopy.getString("vendor").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("vendor"))) {
-								errorSet.put("vendor", "Vendor field is missing for Vendor");
-								return;
-							}
-						}
-					
-						String mobileRegex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
-						if (!dataMigrationDTOJsonCopy.get("mobilePhone").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("mobilePhone").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("mobilePhone").toString().equalsIgnoreCase("undefined")) {
-							boolean flag = false;
-							String mobNum = dataMigrationDTOJsonCopy.get("mobilePhone").toString();
-							if (mobNum.length() > 9 && mobNum.length() <= 20) {
-								flag = mobNum.matches(mobileRegex);
-							}
-							if(flag == false) {
-								errorSet.put("mobilePhone", "Invalid Mobile Phone");
-								return;
-							}
-							
-						}
-						
-						if (!dataMigrationDTOJsonCopy.get("alternateMobilePhone").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("alternateMobilePhone").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("alternateMobilePhone").toString().equalsIgnoreCase("undefined")) {
-							boolean flag = false;
-							String alternatemobNum = dataMigrationDTOJsonCopy.get("alternateMobilePhone").toString();
-							if (alternatemobNum.length() > 9 && alternatemobNum.length() <= 20) {
-								flag = alternatemobNum.matches(mobileRegex);
-							}
-							if(flag == false) {
-								errorSet.put("alternateMobilePhone", "Invalid Alternate Mobile Phone");
-								return;
-							}
-							
-						}
-						
-						String rateRegEx = "^[0-9\b]+$";
-						if (!dataMigrationDTOJsonCopy.get("expectedRate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("expectedRate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("expectedRate").toString().equalsIgnoreCase("undefined")) {
-							boolean flag = false;
-							String expectedRate = dataMigrationDTOJsonCopy.get("expectedRate").toString();
-							if (expectedRate.length() > 0 && expectedRate.length() <= 8) {
-								flag = expectedRate.matches(rateRegEx);
-							}
-							if(flag == false) {
-								errorSet.put("expectedRate", "Expected Rate Allow Only Integers and length 0-8");
-								return;
-							}
-							
-						}
-						
-						if (!dataMigrationDTOJsonCopy.get("currentRate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("currentRate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("currentRate").toString().equalsIgnoreCase("undefined")) {
-							boolean flag = false;
-							String currentRate = dataMigrationDTOJsonCopy.get("currentRate").toString();
-							if (currentRate.length() > 0 && currentRate.length() <= 8) {
-								flag = currentRate.matches(rateRegEx);
-							}
-							if(flag == false) {
-								errorSet.put("currentRate", "Current Rate Allow Only Integers and length 0-8");
-								return;
-							}
-							
-						}
-						
-					}
-				}else {
-					errorSet.put("email", "Email field is missing");
-				}
-				
-				
-				
-			}
-			
-			
-			
-			
 			
 			public void dataValidationForTimesheets(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, DataFormatter objDefaultFormat, User user, OrgLocations orgLocation, String timeFrequency) throws Exception
 			{
@@ -1370,6 +1232,21 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				    	saHierarchy = new SubmissionApproverHierarchy();
 						saHierarchy.setHeirarchyId(hierarchy);
 						saHierarchy.setSubmissionId(timesheetSubmissions);
+
+						//Additional Fields are added for de-normalization
+						saHierarchy.setProjectId(timesheetSubmissions.getProjects());
+						saHierarchy.setMasterCandidateId(timesheetSubmissions.getMasterCandidateId().getId());
+						saHierarchy.setProjectClientId(hierarchy.getProjectClientsId());
+						saHierarchy.setOrgLocationId(hierarchy.getProjectClientsId().getOrgLocationsId().getId());
+						saHierarchy.setOrgId(hierarchy.getProjectClientsId().getOrgLocationsId().getOrg().getId());
+						ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectClientId(timesheetSubmissions.getMasterCandidateId().getId(), hierarchy.getProjectClientsId().getId());
+						if(pm != null) {
+							saHierarchy.setProjectMemberId(pm);
+							saHierarchy.setCandidateId(pm.getCandidateId());
+							User consultantUser = candidateService.getConsultantUserByCandidateIdOrMasterCandidateId(pm.getProjectMemberCandidteId().getId(),pm.getProjectMemberCandidteId().getMasterCandidateId().getId());
+							saHierarchy.setConsultantUser(consultantUser);
+						}
+						
 						if(frequencyStartDate != null)
 							saHierarchy.setFrequencyStartDate(frequencyStartDate);
 						if(frequencyEndDate != null)
@@ -2746,11 +2623,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					errorSet.put("vendorcontact", "Invalid Vendor Contact Email");
 				}
 				
-				if (!dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase("undefined")) {
+				if (!dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase("undefined")) {
 					List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
 					Long vendorId = 0l;
 					for(OrgRelations rel : vendorsList) {
-						if((dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+						if((dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
 							vendorId = rel.getId();
 							break;
 						}
@@ -3121,43 +2998,6 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 				
 				
-				
-				if (dataMigrationDTOJsonCopy.get("vendorcontact") != null) {
-					matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("vendorcontact").toString().trim());
-					if(matcher.matches() == false) {
-						errorSet.put("vendorcontact", "Invalid Vendor Contact Email");
-					}
-					
-					if (dataMigrationDTOJsonCopy.get("vendor") != null) {
-						
-						Long vendorId = 0l;
-						for(OrgRelations rel : vendorsList) {
-							if((dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
-								vendorId = rel.getId();
-							}
-						}
-						
-
-						List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
-						
-						for(OrgSpoc vendorContacts : vendorContactsList) {
-							if(!dataMigrationDTOJsonCopy.get("vendorcontact").toString().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
-								errorSet.put("vendorcontact", "No contact exists with entered email");
-							}
-						}
-						
-						if(vendorContactsList == null || vendorContactsList.size() == 0) {
-							errorSet.put("vendorcontact","No Active contacts exists with this vendor");
-						}
-					
-						
-					}
-					
-					if(dataMigrationDTOJsonCopy.get("vendor") == null) {
-						errorSet.put("vendor", "Vendor field is missing for Vendor");
-					}
-				}
-			
 				String mobileRegex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
 				if (dataMigrationDTOJsonCopy.get("mobilePhone") != null) {
 					boolean flag = false;
@@ -3209,7 +3049,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 				
 				//pan,aadhar number validation
-				if (orgLocation.getCountry().equalsIgnoreCase("India")) {
+				if("India".equalsIgnoreCase(orgLocation.getCountry())) {
 					String panNumberRegEx = "^([A-Z]){5}([0-9]){4}([A-Z]){1}?$";
 					if (dataMigrationDTOJsonCopy.get("panNumber") != null) {
 						boolean flag = false;
@@ -3227,7 +3067,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 				}
 				
-				if (orgLocation.getCountry().equalsIgnoreCase("India")) {
+				if("India".equalsIgnoreCase(orgLocation.getCountry())) {
 				String aadharNoRegEx = "^\\d{4}\\s?\\d{4}\\s?\\d{4}$";
 					if (dataMigrationDTOJsonCopy.get("aadharNumber") != null) {
 						boolean flag = false;
@@ -3245,8 +3085,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 				}
 				
-				if (orgLocation.getCountry().equalsIgnoreCase("United States")) {
-					
+					if("United States".equalsIgnoreCase(orgLocation.getCountry())) {	
 					String ssnNoRegEx = "^(\\d{3}-?\\d{2}-?\\d{4}|XXX-XX-XXXX)$";
 					if (dataMigrationDTOJsonCopy.get("ssnNumber") != null) {
 						boolean flag = false;

@@ -50,7 +50,7 @@ margin:10px 220px 0;
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='${appPath}/clientDashboard'/>'">
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadClientForm'/>'">
 				</div>
 			  </div>
 			</div>
@@ -62,7 +62,7 @@ margin:10px 220px 0;
 			  <div class="clearfix">
 		
 			  </div>
-			<div class="file-upload clearfix text-center" id="fileDiv" onclick = "check();">
+			<div class="file-upload clearfix text-center" id="fileDiv">
 		<div class="col-md-12" id="clientNameDiv">
 			<label class="bg-default">
 			<i aria-hidden="true" class="fa fa-paperclip" title="Attach file"></i> <br/>

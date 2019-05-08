@@ -401,15 +401,6 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setIsFavourite(0);
 			candidate.setIsFavouriteAssociate(0);
 			
-			if(orgLocations.getCountry().equalsIgnoreCase("India")) {
-				candidate.setAadharNumber(candidateDto.getAadharNumber());
-				candidate.setPanNumber(candidateDto.getPanNumber());
-				}
-			
-			if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
-				candidate.setSsnNumber(candidateDto.getSsnNumber());;
-				}
-			
 			MasterCandidate masterCandidate = null;
 			masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDto);
 			if(null == masterCandidate){
@@ -419,7 +410,14 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setGeneratedId(getCandidateId(orgLocations));
 		}
         
+		if("India".equalsIgnoreCase(orgLocations.getCountry())) {
+			candidate.setAadharNumber(candidateDto.getAadharNumber());
+			candidate.setPanNumber(candidateDto.getPanNumber());
+			}
 		
+		if("United States".equalsIgnoreCase(orgLocations.getCountry())) {
+			candidate.setSsnNumber(candidateDto.getSsnNumber());;
+			}
 		candidate = getCandidateDetails(candidate, candidateDto, user, orgLocations, activitySummary);
 		
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDto, orgLocations,candidate,user.getUserCode());
@@ -2948,6 +2946,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		List<CandidateEmployers> candidateEmployers = candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
 		List<CandidateEmployerDTO> candidateEmployerDTOs = new ArrayList<>();
+		
 		for(CandidateEmployers employers : candidateEmployers){
 			CandidateEmployerDTO employerDTO = new CandidateEmployerDTO();
 			BeanUtils.copyProperties(employers, employerDTO);
@@ -2959,12 +2958,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				String[] endMonth = employers.getEndMonth().split("&");
 				employerDTO.setEndMonth(endMonth[1]);
 			}
-			if(employers.getIsCurrentPosition().equalsIgnoreCase("Y")){
+			if(employers.getIsCurrentPosition() != null && employers.getIsCurrentPosition().equalsIgnoreCase("Y")){
 				employerDTO.setEndMonth("Present");
 				employerDTO.setEndYear("");
 			}
 			candidateEmployerDTOs.add(employerDTO);
 		}
+		
 		marketPlaceDTO.setCandidateEmployers(candidateEmployerDTOs);
 		List<CandidateEducation> educations = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
 		List<CandidateEducationDTO> educationDTOs = new ArrayList<>();
@@ -3143,7 +3143,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	
 	@Override
 	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations,
-			MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate,
+			MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,  String searchValue,String purchaseOrderFromDate,
 			String purchaseOrderToDate, String purchaseOrderFilterDate) throws Exception {
 		Date today = new Date();
 		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
@@ -3200,9 +3200,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			dateValue.put("fromDate", toDateVal);
 			dateValue.put("toDate", fromDateVal);
 		}
-		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplacePurchaseOrder(
-				orgLocations.getId(), marketplacePurchaseSalesDTO, purchaseOrderFromDate, purchaseOrderToDate,
-				dateValue);
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,orgLocations, searchValue, purchaseOrderFromDate, purchaseOrderToDate,dateValue);
 		return responseList;
 	}
 
@@ -3492,8 +3490,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-	public String getCandidatePanNumberByUserId(long userId) {
-		return candidateDao.getCandidatePanNumberByUserId(userId);
+	public String getCandidatePanNumberByUserId(long userId, Long id) {
+		return candidateDao.getCandidatePanNumberByUserId(userId, id);
 	}
 
 	@Override
@@ -3529,6 +3527,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception {
 		return candidateDao.validateSsnNumber(ssnNumber, orgLocationId);
+	}
+
+	@Override
+	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
+		return candidateDao.getCandidateDateOfBirthByUserId(userId, orgLocation);
+	}
+
+	@Override
+	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId, Long masterCandidateId)
+			throws Exception {
+		return candidateDao.getConsultantUserByCandidateIdOrMasterCandidateId(candidateId, masterCandidateId);
 	}
 	
 	

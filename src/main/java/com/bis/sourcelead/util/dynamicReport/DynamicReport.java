@@ -1281,14 +1281,27 @@ public class DynamicReport {
 			String applicantName = interview.getCandidateName();
 			
 			String jobTitle = interview.getSubmissionId().getRequirement().getJobTitle();
-			
-			String client = "---";
+			String client = null;
+			if(interview.getClientName() != null) {
+				client	 = interview.getClientName();
+			}
+			else { 
+			 client = "--"; 
+			  }
 			
 			String dateOfInterview = commonUtil.dateStrFromOrgDateFormatter(interview.getOrgLocationId().getDateFormat(), interview.getInterviewId().getDateOfInterview());
 			
 			// String interviewTime =  commonUtil.dateStrFromOrgDateFormatter(interview.getOrgLocationId().getDateFormat(),interview.getInterviewId().getStartTime());
+			/*
+			 * String interviewTimeStr =
+			 * interview.getInterviewId().getStartTime().toString();
+			 * 
+			 * String timeStr[] = interviewTimeStr.split(" ");
+			 * 
+			 * String interviewTime= timeStr[timeStr.length-1].replace(".0", " ");
+			 */
 			
-			String interviewTime= interview.getInterviewId().getStartTime().toString();
+			String interviewTime = interview.getStartTimeStr();
 			
 			String interviewType = interview.getInterviewId().getInterviewType();
 			
@@ -1297,7 +1310,6 @@ public class DynamicReport {
 			List<String> interviewerList = new ArrayList<String>();
 			for(RequirementInterviewer requirementInterviewer  : interview.getInterviewId().getRequirementInterviewers()) {
 				interviewerList.add(requirementInterviewer.getInterviewerUser().getFullName());
-				
 			}
 			
 			String details = interview.getInterviewId().getLocation();

@@ -480,8 +480,8 @@ function preventTabkey(e){
 <div class="headNav">
 	<ul>
 	
-	<li id="clPop" class="clPop">
-			<label class="clheadtime" id="stopwatch">00:00:00</label><a href="javascript:void(0)" title="Clock In"><i class="clockAni"><div class="clockAniAct"></div></i></a>
+	<li id="clPop">
+			<a href="javascript:void(0)" title="Clock In"><i class="clockAni"><div class="clockAniAct"></div></i></a>
 	</li>
 <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
 
@@ -862,12 +862,23 @@ function preventTabkey(e){
 <input type="hidden" id="breakId" name="breakId">
 <div class="clockWrap">
 <div class="clockIn clearfix">
-<div class="clockTime pull-left"><p>Clock In</p> <b id="stopwatchPop">00:00:00</b></div>
+<div class="clockTime pull-left">
+<!-- 	<div class="pull-left"><input type="button" value="Show Time" class="newAdBtn mr5" onclick="showWorkingTime();"></div> -->
+	<div class="pull-left"><span class="pull-left mr" id="">
+      		<a href="javascript:void(0)" class="refeIcon" id="" title="Refresh" onclick="showWorkingTime();"></a>
+      </span></div>
+	<b class="pull-left" id="stopwatchPop">00:00:00</b>
+</div>
 
-<div class="pull-right">
+<div class="pull-right" id="withBreakDiv">
 <a id="start" onclick="obj.event('start');" class="CloIn" href="javascript:void(0)"><img src="/resources/images/clock.png">Start</a>
 <a id="pause" onclick="obj.event('pause');" class="braIn" href="javascript:void(0)"><img src="/resources/images/break.png">Start Break</a>
 <a id="play" onclick="obj.event('play');" class="braOut" href="javascript:void(0)"><img src="/resources/images/break.png">End Break</a>
+<a id="reset" onclick="obj.event('reset');" class="CloOut" href="javascript:void(0)"><img src="/resources/images/clock.png">Clock Out</a>
+</div> 
+
+<div class="pull-right" id="withoutBreakDiv">
+<a id="start" onclick="obj.event('start');" class="CloIn cwob" href="javascript:void(0)"><img src="/resources/images/clock.png">Start</a>
 <a id="reset" onclick="obj.event('reset');" class="CloOut" href="javascript:void(0)"><img src="/resources/images/clock.png">Clock Out</a>
 </div> 
 
@@ -882,21 +893,21 @@ function preventTabkey(e){
 
 </div>
 <div class="subClock clearfix">
-<div class="subClockCta">
+<!-- <div class="subClockCta">
 <p>Current</p>
-<div class="sclock">00 : 00</div>
-</div>
+<div class="sclock" id="curDiv">00 : 00</div>
+</div> -->
 <div class="subClockCta">
 <p>Day</p>
-<div class="sclock">00 : 00</div>
+<div class="sclock" id="dayDiv">00 : 00</div>
 </div>
 <div class="subClockCta">
 <p>Week</p>
-<div class="sclock">00 : 00</div>
+<div class="sclock" id="weekDiv">00 : 00</div>
 </div>
 <div class="subClockCta">
 <p>Month</p>
-<div class="sclock">00 : 00</div>
+<div class="sclock" id="monthDiv">00 : 00</div>
 </div> 
 </div>
 <div class="clockinn" id="clockFieldsId">
@@ -1637,6 +1648,9 @@ $(document).ready(function(){
 	$("#campSubMenu").click(function(){
 		$(".campsubMenuView").slideToggle(100);
 	});	
+	
+	$('#reset,#play, #pause').attr("disabled",true);
+	$('#start').attr("disabled",false);
 });
 </script>
   
@@ -1965,7 +1979,7 @@ $(".clockSub").slideToggle(10);
 
 	$("#clPop").click(function() {
 	getClockInOutConfiguration();
-	$(".mask, #clockPop").fadeIn();
+	getTimeReports();
 	});
 $(".clPopClose").click(function() {
 $(".mask, .popupWrap2").fadeOut();
@@ -1982,6 +1996,16 @@ function getClockInOutConfiguration(){
 	type: 'GET',
 	success: function (json) {
 	if(json != null){
+		if(json.isBreak == true){
+			$(".mask, #clockPop").fadeIn();
+			$("#withBreakDiv").show();
+			$("#withoutBreakDiv").hide();
+		}else{
+			$(".mask, #clockPop").fadeIn();
+			$("#withoutBreakDiv").show();
+			$("#withBreakDiv").hide();
+		}
+	
 // 	$("#clockFieldsId").show();
 	getExistedClockTime();
 	if(!json.isJobChecked){
@@ -2007,10 +2031,37 @@ function getClockInOutConfiguration(){
 	}else{
 	$("#commentsDIV").show();
 	}
+	}else{
+		$(".mask, #clockPop").fadeIn();
+		$("#withoutBreakDiv").show();
+		$("#withBreakDiv").hide();
 	}
 	}
 	});
 
+}
+
+
+function getTimeReports(){
+	$.ajax({
+		url: sourceleadUrl + "/getTimeReports",
+		type: 'GET',
+		success: function (json) {
+			if(json.currentTotTime != null){
+				$("#dayDiv").text(json.currentTotTime);
+			}
+			
+			if(json.weekTotTime != null){
+				$("#weekDiv").text(json.weekTotTime);
+			}
+			
+			if(json.monthTotTime != null){
+				$("#monthDiv").text(json.monthTotTime);
+			}
+			
+		}
+	
+});
 }
 </script>
 
@@ -2151,22 +2202,24 @@ function getGeneralTasks(data){
 </script>
 
 <script>
-function saveClockInOutTime(type,totalTime){
+function saveClockInOutTime(type){
 	var formData = getFormData("clock_inout_form");
 	$.ajax({
 	type : "POST",
 	data : formData,
-	url: sourceleadUrl+"/saveClockInOutTime?&type="+type+"&totalTime="+totalTime, 
+	url: sourceleadUrl+"/saveClockInOutTime?&type="+type, 
 	success :function(data) {
 	
+	$("#breakId").val('');
 	if(type == 'ClockIn'){
 	$("#clockInOutId").val(data.id);
 	$('#reset,#pause').attr("disabled",false);
 	$('#start,#play').attr("disabled",true);
 	}else{
 	$("#clockInOutId").val('');
-	$('#reset,#play,#pause').attr("disabled",true);
 	$('#start').attr("disabled",false);
+	$('.cwob').attr("disabled",false);
+	$('#reset,#play,#pause').attr("disabled",true);
 	}
 	},	
 	}); 
@@ -2247,49 +2300,52 @@ event: function (type) {
 	$(".clockAni").css("background-image","url(/resources/images/clock-ani.gif)");
 	$(".clockAniAct").show();
 	obj.element.removeClass('blink');
-	obj.currentSec = 0;
-	obj.refresh();
-	localStorage.setItem('pauseValue', null);
-	localStorage.setItem('pauseData', null);
+// 	obj.currentSec = 0;
+// 	obj.refresh();
+// 	localStorage.setItem('pauseValue', null);
+// 	localStorage.setItem('pauseData', null);
 	saveClockInOutTime('ClockIn');
 	break;
 	case 'play':
 	$(".clockAni").css("background-image","url(/resources/images/clock-ani.gif)");
 	$(".clockAniAct").show();
-	obj.element.removeClass('blink');
-	localStorage.setItem('pauseValue', null);
-	localStorage.setItem('pauseData', null);
-	var pauseSec = localStorage.getItem('pause_sec');
-	obj.currentSec = pauseSec; 
-	obj.refresh();
+// 	obj.element.removeClass('blink');
+// 	localStorage.setItem('pauseValue', null);
+// 	localStorage.setItem('pauseData', null);
+// 	var pauseSec = localStorage.getItem('pause_sec');
+// 	obj.currentSec = pauseSec; 
+// 	obj.refresh();
 	saveBreakTime('play');
 	break;
 	case 'pause':
 	$(".clockAni").css("background-image","url(/resources/images/clock.jpg)");
 	$(".clockAniAct").hide();
-	obj.element.addClass('blink');
-	localStorage.setItem('pauseValue', 'pause');
-	var totalTime = localStorage.getItem('total_Time');
-	localStorage.setItem('pauseData', totalTime);
-	clearTimeout(obj.refreshInterval);
+// 	obj.element.addClass('blink');
+// 	localStorage.setItem('pauseValue', 'pause');
+// 	var totalTime = localStorage.getItem('total_Time');
+// 	localStorage.setItem('pauseData', totalTime);
+// 	clearTimeout(obj.refreshInterval);
 	saveBreakTime('pause');
 	break;
 	case 'reset':
 	$(".clockAni").css("background-image","url(/resources/images/clock.jpg)");
 	$(".clockAniAct").hide();
-	clearTimeout(obj.refreshInterval);
-	var totalTime = localStorage.getItem('total_Time');
-	localStorage.setItem('stopwatch_time', null);
-	localStorage.setItem('stopwatch_sec', 0);
-	obj.currentSec = 0;
-	obj.element.html('00:00:00');
-	localStorage.setItem('pauseValue', null);
-	localStorage.setItem('pauseData', null);
-	localStorage.setItem('pause_sec',0);
+// 	clearTimeout(obj.refreshInterval);
+// 	var totalTime = localStorage.getItem('total_Time');
+// 	localStorage.setItem('stopwatch_time', null);
+// 	localStorage.setItem('stopwatch_sec', 0);
+// 	obj.currentSec = 0;
+// 	obj.element.html('00:00:00');
+// 	localStorage.setItem('pauseValue', null);
+// 	localStorage.setItem('pauseData', null);
+// 	localStorage.setItem('pause_sec',0);
 	obj.element.removeClass('blink');
 	
 	// $('div > input').attr("disabled",false);
-	saveClockInOutTime('ClockOut',totalTime);
+	saveClockInOutTime('ClockOut');
+	window.setTimeout(function() {
+		getTimeReports();
+	}, 200);
 	break;
 	
 	}
@@ -2358,6 +2414,26 @@ function saveBreakTime(type){
 		}
 		},	
 		}); 
+}
+</script>
+
+
+<script>
+function showWorkingTime(){
+	
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getWorkingTime", 
+		success :function(data) {
+			if(data != null && data !="" && data != 'undefined'){
+				$("#stopwatchPop").text(data);
+			}else{
+				$("#stopwatchPop").text("00:00:00");
+			}
+			
+		},	
+		}); 
+	
 }
 </script>
 

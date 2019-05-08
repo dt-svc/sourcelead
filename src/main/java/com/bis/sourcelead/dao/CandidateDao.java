@@ -242,7 +242,7 @@ public interface CandidateDao {
 
 	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
 
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder( Long id,MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate, String purchaseOrderToDate, Map<String, Date> dateValue)throws Exception;
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder( Long id,MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,OrgLocations orgLocations,String searchValue, String purchaseOrderFromDate, String purchaseOrderToDate, Map<String, Date> dateValue)throws Exception;
 
 	public MarketplacePurchaseOrder getPurchaseDetailByPurchaseUuid(String purchaseUuid, Long id)throws Exception;
 	
@@ -255,7 +255,7 @@ public interface CandidateDao {
 	public List<MarketplacePurchaseOrder> getPurchaseCandidateListByOrglocation(Long id)throws Exception;
 
 	public void saveCandidateMarketPlaceWallet(CandidateMarketWallet wallet) throws Exception;
-
+	
 	public Double getBalanceAmountFromWallet(Long id);
 
 	public void updateMarketWalletAmount(Double balanceAmountValue, Long id);
@@ -266,7 +266,7 @@ public interface CandidateDao {
 	
 	public List<Candidate> getAllAssociateByLocation(Long orgLocationId);
 
-	public String getCandidatePanNumberByUserId(long userId);
+	public String getCandidatePanNumberByUserId(long userId, Long id);
 	
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception;
 	
@@ -282,4 +282,7 @@ public interface CandidateDao {
 	
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
 	
+	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
+	
+	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
 }

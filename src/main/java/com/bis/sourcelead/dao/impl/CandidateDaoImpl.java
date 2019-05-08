@@ -2996,11 +2996,12 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(Long id, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate, String purchaseOrderToDate, Map<String, Date> dateValue) throws Exception{
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(Long id, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, OrgLocations orgLocations, String searchValue,String purchaseOrderFromDate, String purchaseOrderToDate, Map<String, Date> dateValue) throws Exception{
 		
 		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			StringBuilder queryBuilder2 = new StringBuilder("");
+			Session session = this.sessionFactory.getCurrentSession();   
+			StringBuilder queryBuilder1 = new StringBuilder();
+			StringBuilder queryEndBuilder2 = new StringBuilder();
 			StringBuilder dateQuery1 = new StringBuilder();
 			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
 			List<Long> countlist = null;
@@ -3008,53 +3009,81 @@ public class CandidateDaoImpl implements CandidateDao {
 			List<MarketplacePurchaseSalesDTO> purchaseOrderDtoList = new ArrayList<>();
 			MarketplacePurchaseSalesDTO purchaseOrderDto = null;
 			String formattedDate =  null;
+			if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
+				queryBuilder1.append(" and (cmpth.orderNo like '%"+searchValue+"%')) ");
+			}
+			if(!dateValue.isEmpty()){
+				dateQuery1.append(" and (cmpth.orderDate BETWEEN :endDate AND :startDate) OR (cmpth.orderDate = :endDate) OR (cmpth.orderDate = :startDate) ");
+			}
 			if(marketplacePurchaseSalesDTO != null){
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
 				if(sortColumnName.equalsIgnoreCase("totalPrice")){
-					queryBuilder2.append(" order by cmpth." + sortColumnName + " " + marketplacePurchaseSalesDTO.getSortOrder());
+					queryEndBuilder2.append(" order by cmpth.totalPrice "+marketplacePurchaseSalesDTO.getSortOrder());
 				}else{
-					queryBuilder2.append(" order by cmpth.id " + marketplacePurchaseSalesDTO.getSortOrder());
+					queryEndBuilder2.append(" order by cmpth." + sortColumnName + " "+marketplacePurchaseSalesDTO.getSortOrder());
 				}
 			}
 			}
-			
-			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
-			   Matcher matcher = pattern.matcher(marketplacePurchaseSalesDTO.getSearchValue());
-			   java.sql.Date sqlDate = null;
-			    if(matcher.matches() == true) {
-							if(marketplacePurchaseSalesDTO.getSearchValue().contains("/")||(marketplacePurchaseSalesDTO.getSearchValue().contains("-"))) {
-								String replacedValue = marketplacePurchaseSalesDTO.getSearchValue().replaceAll("/", "-");
-								    OrgLocations orgLoc = orgLocationService.getOrgLocations(marketplacePurchaseSalesDTO.getOrglocationId());
-									SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
-							        java.util.Date utilDate = format.parse(replacedValue);
-							        sqlDate = new java.sql.Date(utilDate.getTime());
-							}
-			    }
-			    
-			    
-			    			    if(!dateValue.isEmpty()){
-			    					dateQuery1.append(" and (cmpth.orderDate BETWEEN :endDate AND :startDate) OR (cmpth.orderDate = :endDate) OR (cmpth.orderDate = :startDate) ");
-			    				}
-			    			    
-				StringBuilder query1 = new StringBuilder("");
-				if(marketplacePurchaseSalesDTO.getSearchValue() !=null && !"".equalsIgnoreCase(marketplacePurchaseSalesDTO.getSearchValue())) {
-				 query1.append("and (cmpth.orderNo like '%" + marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
-				       .append("OR cmpth.companyName like '%" + marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
-				       .append("OR cmpth.totalPrice like '%" + marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
-				       .append("OR cmpth.serviceFee like '%" + marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
-				       .append("OR cmpth.paymentStatus like '%" + marketplacePurchaseSalesDTO.getSearchValue()  + "%' ")
-					   .append("OR cmpth.discount like '%" + marketplacePurchaseSalesDTO.getSearchValue() + "%' )");
-				    if(sqlDate != null) {
-				    	query1.append("OR cmpth.orderDate like '%" + sqlDate + "%' ");
-					 }
-							
-				}
+			/*
+			 * if(marketplacePurchaseSalesDTO != null){ if
+			 * (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
+			 * String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
+			 * if(sortColumnName.equalsIgnoreCase("totalPrice")){
+			 * queryBuilder2.append(" order by cmpth." + sortColumnName + " " +
+			 * marketplacePurchaseSalesDTO.getSortOrder());
+			 * 
+			 * }else{ queryBuilder2.append(" order by cmpth. " + sortColumnName + " " +
+			 * marketplacePurchaseSalesDTO.getSortOrder()); } } } Pattern pattern =
+			 * Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			 * Matcher matcher =
+			 * pattern.matcher(marketplacePurchaseSalesDTO.getSearchValue()); java.sql.Date
+			 * sqlDate = null; if(matcher.matches() == true) {
+			 * if(marketplacePurchaseSalesDTO.getSearchValue().contains("/")||(
+			 * marketplacePurchaseSalesDTO.getSearchValue().contains("-"))) { String
+			 * replacedValue = marketplacePurchaseSalesDTO.getSearchValue().replaceAll("/",
+			 * "-"); OrgLocations orgLoc =
+			 * orgLocationService.getOrgLocations(marketplacePurchaseSalesDTO.
+			 * getOrglocationId()); SimpleDateFormat format = new
+			 * SimpleDateFormat(orgLoc.getDateFormat()); java.util.Date utilDate =
+			 * format.parse(replacedValue); sqlDate = new java.sql.Date(utilDate.getTime());
+			 * } }
+			 * 
+			 * 
+			 * if(!dateValue.isEmpty()){ dateQuery1.
+			 * append(" and (cmpth.orderDate BETWEEN :endDate AND :startDate) OR (cmpth.orderDate = :endDate) OR (cmpth.orderDate = :startDate) "
+			 * ); }
+			 * 
+			 * StringBuilder query1 = new StringBuilder("");
+			 * if(marketplacePurchaseSalesDTO.getSearchValue() !=null &&
+			 * !"".equalsIgnoreCase(marketplacePurchaseSalesDTO.getSearchValue())) {
+			 * query1.append("and (cmpth.orderNo like '%" +
+			 * marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
+			 * .append("OR cmpth.companyName like '%" +
+			 * marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
+			 * .append("OR cmpth.totalPrice like '%" +
+			 * marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
+			 * .append("OR cmpth.serviceFee like '%" +
+			 * marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
+			 * .append("OR cmpth.paymentStatus like '%" +
+			 * marketplacePurchaseSalesDTO.getSearchValue() + "%' ")
+			 * .append("OR cmpth.discount like '%" +
+			 * marketplacePurchaseSalesDTO.getSearchValue() + "%' )"); if(sqlDate != null) {
+			 * query1.append("OR cmpth.orderDate like '%" + sqlDate + "%' "); }
+			 * 
+			 * }
+			 */
 				
-			String query="from MarketplacePurchaseOrder cmpth where cmpth.orgLocationId.id = :orgLocationId "+query1+"";
-			String countQuery = "select count(*) from MarketplacePurchaseOrder cmpth  where  cmpth.orgLocationId =:orgLocationId "+query1+"";
-			Query qeury =  session.createQuery(query + dateQuery1.toString()).setLong("orgLocationId", id);
-						Query q = session.createQuery(countQuery + dateQuery1.toString()).setLong("orgLocationId", id);
+			String query="from MarketplacePurchaseOrder cmpth where cmpth.orgLocationId.id = :orgLocationId ";
+			String countQuery = "select count(*) from MarketplacePurchaseOrder cmpth  where  cmpth.orgLocationId =:orgLocationId ";
+			/*
+			 * Query qeury = session.createQuery(query + dateQuery1.toString()+
+			 * queryBuilder2).setLong("orgLocationId", id); Query q =
+			 * session.createQuery(countQuery + dateQuery1.toString() + queryBuilder2
+			 * ).setLong("orgLocationId", id);
+			 */
+			Query qeury = session.createQuery(query + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId",  orgLocations.getId());
+			Query q = session.createQuery(countQuery + queryBuilder1.toString() + dateQuery1.toString() + queryEndBuilder2.toString()).setLong("orgLocationId",  orgLocations.getId());
 						if(!dateValue.isEmpty()){
 							Iterator it = dateValue.entrySet().iterator();
 						    while (it.hasNext()) {
@@ -3091,7 +3120,7 @@ public class CandidateDaoImpl implements CandidateDao {
 					formattedDate =  commonUtil.dateStrFromOrgDateFormatter("dd-MM-yyyy", purchase.getOrderDate());
 					purchaseOrderDto.setOrderDate(formattedDate);
 					purchaseOrderDtoList.add(purchaseOrderDto);
-					}
+					}     
 				}
 			responseList.setData(purchaseOrderDtoList);
 			return responseList;
@@ -3136,8 +3165,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			String formattedDate =  null;
 			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
 			if(searchValue != null && !"".equalsIgnoreCase(searchValue)){
-				queryBuilder1.append(" and (salesOrder.totalResumePrice like '%"+searchValue+"%')");
-				queryBuilder1.append(" or (salesOrder.orderNo like '%"+searchValue+"%')) ");
+				queryBuilder1.append(" and (salesOrder.orderNo like '%"+searchValue+"%')) ");
 			}
 			if(!dateValue.isEmpty()){
 				dateQuery1.append(" and (salesOrder.orderDate BETWEEN :endDate AND :startDate) OR (salesOrder.orderDate = :endDate) OR (salesOrder.orderDate = :startDate) ");
@@ -3145,10 +3173,10 @@ public class CandidateDaoImpl implements CandidateDao {
 			if(marketplacePurchaseSalesDTO != null){
 			if (StringUtils.isNotBlank(marketplacePurchaseSalesDTO.getSortColumn())) {
 				String sortColumnName = marketplacePurchaseSalesDTO.getSortColumn();
-				if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
-					queryEndBuilder2.append(" order by salesOrder.orderDate "+marketplacePurchaseSalesDTO.getSortOrder());
+				if(sortColumnName.equalsIgnoreCase("totalPrice")){
+					queryEndBuilder2.append(" order by salesOrder.totalPrice "+marketplacePurchaseSalesDTO.getSortOrder());
 				}else{
-					queryEndBuilder2.append(" order by salesOrder.id "+marketplacePurchaseSalesDTO.getSortOrder());
+					queryEndBuilder2.append(" order by salesOrder." + sortColumnName + " "+marketplacePurchaseSalesDTO.getSortOrder());
 				}
 			}
 			}
@@ -3194,7 +3222,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				salesOrderDto.setTotalresume(sales.getNoOfResumes());
 				salesOrderDto.setTotalPrice(sales.getTotalResumePrice());
 				salesOrderDto.setCandidateName(sales.getCandidateMarketPlace().getCandidateId().getFullName());
-				salesOrderDtoList.add(salesOrderDto);
+ 				salesOrderDtoList.add(salesOrderDto);
 				}
 			}
 			responseList.setData(salesOrderDtoList);
@@ -3233,6 +3261,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		List<CandidateMarketWallet> candidateMarketWallets = null;
 		ResponseList<MarketplaceWalletDTO> responseList = new ResponseList<>();
 		try {
+			StringBuilder queryBuilder1 = new StringBuilder();
 
 			StringBuilder query1 = new StringBuilder("");
 			if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
@@ -3248,15 +3277,18 @@ public class CandidateDaoImpl implements CandidateDao {
 				dateValueTypeQuery.append(" and (cmwallet.transactionDate BETWEEN :endDate AND :startDate) OR (cmwallet.transactionDate = :endDate) OR (cmwallet.transactionDate = :startDate) ");
 			}
 			
-			String sortingQry = "";
-			if (StringUtils.isNotBlank(marketplaceWalletDTO.getSortColumn())) {
-				String sortColumnName = marketplaceWalletDTO.getSortColumn();
-				if(sortColumnName.equalsIgnoreCase("marketPrice")){
-					sortingQry = " order by cmwallet." + sortColumnName + " " + marketplaceWalletDTO.getSortOrder();
+			if(marketplaceWalletDTO != null){
+				if (StringUtils.isNotBlank(marketplaceWalletDTO.getSortColumn())) {
+					String sortColumnName = marketplaceWalletDTO.getSortColumn();
+					if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
+						queryBuilder1.append(" order by cmwallet.totalResumePrice "+marketplaceWalletDTO.getSortOrder());
+					}else{
+						queryBuilder1.append(" order by cmwallet." + sortColumnName + " "+marketplaceWalletDTO.getSortOrder());
+					}
 				}
-			}
-			String  listQuery = "from CandidateMarketWallet cmwallet  where  cmwallet.orgLocationId.id =:orgLocationId  "+query1+"  "+transactionTypeQuery+" "+dateValueTypeQuery+" "+sortingQry+"";
-			String 	listQueryCount = "select count(*) from CandidateMarketWallet cmwallet  where  cmwallet.orgLocationId.id =:orgLocationId  "+query1+" "+transactionTypeQuery+" "+dateValueTypeQuery+" "+sortingQry+"";
+				}
+			String  listQuery = "from CandidateMarketWallet cmwallet  where  cmwallet.orgLocationId.id =:orgLocationId  "+query1+"  "+transactionTypeQuery+" "+dateValueTypeQuery+" "+queryBuilder1+"";
+			String 	listQueryCount = "select count(*) from CandidateMarketWallet cmwallet  where  cmwallet.orgLocationId.id =:orgLocationId  "+query1+" "+transactionTypeQuery+" "+dateValueTypeQuery+" "+queryBuilder1+"";
 			Query hqlQuery = session.createQuery(listQuery).setFirstResult(marketplaceWalletDTO.getStart()).setMaxResults(marketplaceWalletDTO.getLength()).setLong("orgLocationId", marketplaceWalletDTO.getOrgLocationId());
 			Query hqlQuery1 = session.createQuery(listQueryCount).setLong("orgLocationId", marketplaceWalletDTO.getOrgLocationId());
 			if(transactionType != null && !"".equalsIgnoreCase(transactionType)){
@@ -3426,20 +3458,22 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public String getCandidatePanNumberByUserId(long userId) {
+	public String getCandidatePanNumberByUserId(long userId, Long id) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "select c.panNumber from Candidate c where c.consultantUser.id=" + userId;
-			List<String> panList = session.createQuery(query).list();
-			if(panList != null && !panList.isEmpty()) {
-				return panList.get(0);
+			String query = "from Candidate c where c.consultantUser.id=:userId and c.orgLocationId.id =:id";
+			Candidate pan = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("id", id)
+					.uniqueResult();
+			if (pan != null) {
+				return pan.getPanNumber();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-
+	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
@@ -3529,6 +3563,43 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return flag;
 	}
+
+	@Override
+	@Transactional
+	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate c where c.consultantUser.id=:userId and c.orgLocationId.id =:orgLocationId";
+			Candidate candidate = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocation.getId()).uniqueResult();
+			if (candidate != null) {
+				return commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getDateOfBirth());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = null;
+		String query = "select can.consultantUser from  Candidate can where can.id = :candidateId";
+		List<User> consultantUserList = session.createQuery(query).setLong("candidateId", candidateId).list();
+		if (consultantUserList != null && !consultantUserList.isEmpty()) {
+			user = consultantUserList.get(0);
+		}else {
+		    query = "select can.consultantUser from  Candidate can where can.masterCandidateId.id = :masterCandidateId and can.consultantUser IS NOT NULL and can.consultantUser != 0";
+		    consultantUserList = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).list();
+		    if (consultantUserList != null && !consultantUserList.isEmpty()) {
+		    	user = consultantUserList.get(0);
+		    }
+		}
+		return user;
+	}
+	
+	
 	
 	
 }

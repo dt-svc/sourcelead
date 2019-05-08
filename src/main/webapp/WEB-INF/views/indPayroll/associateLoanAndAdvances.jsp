@@ -42,7 +42,7 @@
 				   <td><div class="tblminwidth-50" title="${loanAdv.scheduler}">${loanAdv.scheduler}</div></td>
 				   <td><div class="tblminwidth-30" title="${loanAdv.noOfSchedules}">${loanAdv.noOfSchedules}</div></td>
 				   <td><div class="tblminwidth-50" title="${loanAdv.effectiveDateStr}">${loanAdv.effectiveDateStr}</div></td>
-				   <td><div class="tblminwidth-50" title="${loanAdv.deductAmount}">${loanAdv.deductAmount}</div></td>
+				   <td><div class="tblminwidth-50" title="${loanAdv.deductAmount}">$ ${loanAdv.deductAmount}</div></td>
 				   <td><div class="tblminwidth-50" title="${loanAdv.approverName}">${loanAdv.approverName}</div></td>
 				   <td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="editLoanAndAdvance('${loanAdv.id}')">Edit</a>
 				     |&nbsp;<a href="javascript:void(0)" onclick="deleteLoanAndAdvance('${loanAdv.id}')">Delete</a>
@@ -174,7 +174,8 @@
 		                  <label>Deduct Amount<span class="text-danger">&nbsp;*</span></label>
 		                   <input type="text" class="form-control" name="deductAmount" id="deductAmount" readonly="readonly" field-name="Deduct Amount">
 		              </div>
-		              
+		              <input type="hidden" name="rateOfInterest" id="rateOfInterest"/>
+		              <input type="hidden" name="outstandingAmount" id="outstandingAmount"/>
 		              <div class="col-md-4 minHeight" id="loanAndAdvApproverDiv">
 		                  <label>Approver<span class="text-danger">&nbsp;*</span></label>
 		                   <select class="form-control chosen-select" name="loanAndAdvApprover" id="loanAndAdvApprover"  field-name="Approver" field-name="Approver">

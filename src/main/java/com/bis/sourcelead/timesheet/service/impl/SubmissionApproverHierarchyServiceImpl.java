@@ -1,8 +1,11 @@
 package com.bis.sourcelead.timesheet.service.impl;
 
+import java.text.DateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +16,7 @@ import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TimesheetApprovalSubmissionDetailsDTO;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -336,6 +340,22 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	public Boolean isMissingTimesheetPerProjectByMasterCandidateIdAndProjectId(Date frequencyStartDate,
 			Date frequencyEndDate, Long masterCandidateId, Long projectId) {
 		return submissionApproverHierarchyDao.isMissingTimesheetPerProjectByMasterCandidateIdAndProjectId(frequencyStartDate, frequencyEndDate, masterCandidateId, projectId);
+	}
+
+	@Override
+	public ResponseList<TimesheetApprovalSubmissionDetailsDTO> getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
+			Set<Long> projectIds,Boolean isAdmin,String timesheetFrequency, Date startDate, Date endDate, Long clientId, Long projectId, String status,
+			Long locationsId, Long orgId, Long approverUserId, String searchValue, String projectName, int start,
+			int length, String timesheetFor, String isGlobalUser, String tableFor,
+			Integer tdSpanLength, String dateFormat) throws Exception {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(projectIds,isAdmin,timesheetFrequency, startDate, endDate, clientId, projectId, status, locationsId, orgId, approverUserId, searchValue, projectName, start, length, timesheetFor, isGlobalUser, tableFor, tdSpanLength, dateFormat);
+	}
+
+	@Override
+	public LinkedHashMap<Date, Float> getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(
+			Long projectId, Long pmMasterCandidateId, Date startDate, Date endDate, DateFormat format,
+			String dateFormat) throws Exception {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(projectId, pmMasterCandidateId, startDate, endDate, format, dateFormat);
 	}
 
 	

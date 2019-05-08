@@ -8,14 +8,6 @@
 <script src="/resources/js/jquery.mask.min.js"></script>
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
-<style type="text/css">
-.inline_field, .inline_field:focus {
-	width:100px !important; text-align:center;
-}
-.form-control.formControl {
-border:none; background: none; font-size:14px; font-weight:600; box-shadow: none;}
-</style>
-
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -516,11 +508,11 @@ function populateInlineItemsGrid(json){
              result = result +'</td>';
              result = result +' <td>';
              result = result +'<div class="tbldata-dotdot-vsm">';
-             result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="lineItems['+i+'].totalHours" placeholder="HHH:MM" value='+opt.totalHours+' data-validation="required" field-name="Total Hours" type="text" onblur="totalHoursCalculateAmount('+i+');">';
+             result = result +'  <input class="form-control input-sm inlineField" id="'+i+'totalHours" name="lineItems['+i+'].totalHours" placeholder="HHH:MM" value='+opt.totalHours+' data-validation="required" field-name="Total Hours" type="text" onblur="totalHoursCalculateAmount('+i+');">';
              result = result +'</div>';
              result = result +'</td>';
              result = result +'<td>';
-             result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="lineItems['+i+'].amount" value="0.0" placeholder="Amount" type="text" readonly="readonly">';
+             result = result +'<input class="form-control formControl-styles input-sm text-right" id="'+i+'amount" name="lineItems['+i+'].amount" value="0.0" placeholder="Amount" type="text" readonly="readonly">';
              result = result +'</td>';
              result = result +'</tr>';
              /* getSow(i,opt.candidateId); */
@@ -693,14 +685,14 @@ function populateInlineItemsGrid1(data){
     	 result = result +'</td>';
     	 result = result +' <td>';
     	 result = result +'<div class="tbldata-dotdot-100">';
-    	 result = result +'  <input class="form-control input-sm inline_field" id="'+i+'totalHours" name="lineItems['+i+'].totalHours" value='+opt.totalHours+' placeholder="HHH:MM" value='+opt.totalHours+' data-validation="required" field-name="Total Hours" type="text" onblur="totalHoursCalculateAmount('+i+');">';
+    	 result = result +'  <input class="form-control input-sm inlineField" id="'+i+'totalHours" name="lineItems['+i+'].totalHours" value='+opt.totalHours+' placeholder="HHH:MM" value='+opt.totalHours+' data-validation="required" field-name="Total Hours" type="text" onblur="totalHoursCalculateAmount('+i+');">';
     	 result = result +'</div>';
     	 result = result +'</td>';
     	 result = result +'<td>';
     	 if(opt.amount !=null && opt.amount !='' && opt.amount !='undefined'){
-    		 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="lineItems['+i+'].amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';	 
+    		 result = result +'<input class="form-control formControl-styles input-sm text-right" id="'+i+'amount" name="lineItems['+i+'].amount" value='+opt.amount+' placeholder="Amount" type="text" readonly="readonly">';	 
     	 }else{
-    		 result = result +'<input class="form-control formControl input-sm text-right" id="'+i+'amount" name="lineItems['+i+'].amount"  placeholder="Amount" type="text" readonly="readonly">';
+    		 result = result +'<input class="form-control formControl-styles input-sm text-right" id="'+i+'amount" name="lineItems['+i+'].amount"  placeholder="Amount" type="text" readonly="readonly">';
     	 }
     	
     	 result = result +'</td>';
@@ -1900,7 +1892,7 @@ function maskme(){
     $.mask.definitions['m'] = "[0-9]";
     $.mask.definitions['P'] = "[AaPp]";
     $.mask.definitions['p'] = "[Mm]";
-    $(".inline_field").mask("Hhh:Mm"); 
+    $(".inlineField").mask("Hhh:Mm"); 
 	
     $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
     	

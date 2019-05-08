@@ -3,6 +3,9 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -160,34 +163,52 @@ public class LeaveDaoImpl implements LeaveDao{
 			}
 			
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
-				searchQuery.append(" and concat (laph.leaveid.user.firstName ,' ',")
-				.append("laph.leaveid.user.lastName) like '%"+ leaveDTO.getSearchValue() +"%'");
-				if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					searchQuery.append("OR  (concat(laph.leaveid.approvedBy.firstName,laph.leaveid.approvedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
-					.append("OR laph.leaveid.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
-				}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					searchQuery.append("OR (concat(laph.leaveid.rejectedBy.firstName,laph.leaveid.rejectedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
-					.append("OR laph.leaveid.rejectedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
-				} else if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					searchQuery.append("OR (concat(laph.leaveid.cancelledBy.firstName,laph.leaveid.cancelledBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
-					.append("OR laph.leaveid.cancelledBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
-				}
-				searchQuery.append("OR laph.leaveid.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
-				
-				leavesearchQuery.append(" and ((concat(leave.user.firstName,leave.user.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
-				.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
-				.append("OR leave.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ");
-				if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					leavesearchQuery.append("OR (concat(leave.approvedBy.firstName,leave.approvedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
-					.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
-				}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
-					leavesearchQuery.append("OR (concat(leave.rejectedBy.firstName,leave.rejectedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
-					.append("OR leave.rejectedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+				if ((leaveDTO.getSearchValue().contains("/") || leaveDTO.getSearchValue().contains("-")) &&  leaveDTO.getSearchValue().contains("/p")){
+					String convertedDate = leaveDTO.getSearchValue();
+					if (leaveDTO.getSearchValue().contains("/")) {
+						convertedDate = leaveDTO.getSearchValue().replaceAll("/", "-");
+					}
+					DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat())
+							.toFormatter();
+					LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
+					DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+					String newDate = parsedDate.format(f2);
+					Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+					java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
+					searchQuery.append(" and laph.leaveid.fromDate like '%" + sqlDate + "%' ");
+					searchQuery.append(" and  laph.leaveid.toDate like '%" + sqlDate + "%' ");
 				}else {
-					leavesearchQuery.append("OR (concat(leave.cancelledBy.firstName,leave.cancelledBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
-					.append("OR leave.cancelledBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+					searchQuery.append(" and concat (laph.leaveid.user.firstName ,' ',")
+					.append("laph.leaveid.user.lastName) like '%"+ leaveDTO.getSearchValue() +"%'");
+					if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+						searchQuery.append("OR  (concat(laph.leaveid.approvedBy.firstName,laph.leaveid.approvedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ")
+						.append("OR laph.leaveid.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
+						.append("OR laph.leaveid.fromDate like '%" + leaveDTO.getSearchValue() + "%') ");
+					}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+						searchQuery.append("OR (concat(laph.leaveid.rejectedBy.firstName,laph.leaveid.rejectedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+						.append("OR laph.leaveid.rejectedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+					} else if(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+						searchQuery.append("OR (concat(laph.leaveid.cancelledBy.firstName,laph.leaveid.cancelledBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+						.append("OR laph.leaveid.cancelledBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+					}
+					searchQuery.append("OR laph.leaveid.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
+					
+					leavesearchQuery.append(" and ((concat(leave.user.firstName,leave.user.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+					.append("OR leave.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
+					.append("OR leave.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ");
+					if(Constants.LEAVE_APPROVED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+						leavesearchQuery.append("OR (concat(leave.approvedBy.firstName,leave.approvedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+						.append("OR leave.approvedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+					}else if(Constants.LEAVE_REJECTED.equalsIgnoreCase(leaveDTO.getLeaveStatus())) {
+						leavesearchQuery.append("OR (concat(leave.rejectedBy.firstName,leave.rejectedBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+						.append("OR leave.rejectedBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+					}else {
+						leavesearchQuery.append("OR (concat(leave.cancelledBy.firstName,leave.cancelledBy.lastName) like '%" + leaveDTO.getSearchValue() + "%' ) ")
+						.append("OR leave.cancelledBy.lastName like '%" + leaveDTO.getSearchValue() + "%' ");
+					}
+					leavesearchQuery.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
 				}
-				leavesearchQuery.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
+				
 			}
 			
 			Query queryObj = session.createQuery(query+searchQuery+" group by leave.id "+qry);
@@ -249,6 +270,21 @@ public class LeaveDaoImpl implements LeaveDao{
 			}
 			
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
+				if (leaveDTO.getSearchValue().contains("/") || leaveDTO.getSearchValue().contains("-")) {
+					String convertedDate = leaveDTO.getSearchValue();
+					if (leaveDTO.getSearchValue().contains("/")) {
+						convertedDate = leaveDTO.getSearchValue().replaceAll("/", "-");
+					}
+					DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat())
+							.toFormatter();
+					LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
+					DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+					String newDate = parsedDate.format(f2);
+					Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+					java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
+					searchQuery.append(" and laph.leaveid.fromDate like '%" + sqlDate + "%' ");
+					searchQuery.append(" and  laph.leaveid.toDate like '%" + sqlDate + "%' ");
+				}else {
 				searchQuery.append(" and (laph.leaveid.user.firstName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR laph.leaveid.user.lastName like '%" + leaveDTO.getSearchValue() + "%' ")
 				.append("OR laph.leaveid.numberOfDays like '%" + leaveDTO.getSearchValue() + "%' ");
@@ -278,6 +314,7 @@ public class LeaveDaoImpl implements LeaveDao{
 					.append("OR leave.cancelledBy.firstName like '%" + leaveDTO.getSearchValue() + "%' ");
 				}
 				leavesearchQuery.append("OR leave.leaveType.name like '%" + leaveDTO.getSearchValue() + "%' )");
+				}
 				
 			}
 			

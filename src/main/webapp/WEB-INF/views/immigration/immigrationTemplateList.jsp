@@ -1,3 +1,4 @@
+
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -13,16 +14,6 @@
 <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
 
-
-<style type="text/css">
-    .active {
-        color: red !important;
-    }
-
-.temp_Draft {
-    color:#447fb5;
-}
-</style>
 <section class="content-wraper content-wraperNew">
 
     <section class="content-header clearfix cusFieldHead">
@@ -503,3 +494,4 @@ function checkAllColumns(obj){
 }
 
 </script>
+

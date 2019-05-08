@@ -105,7 +105,7 @@ top: 18px;height: 32px; line-height: 18px;
  window.onload = function() {
 	 var viewTab = "${viewTab}";
 		if(viewTab === 'jobFair') {
-			/* alert("viewTab : " + viewTab); */
+			
 			jobFairListCheck();
 		} else {
  			requirementListCheck("${searchValue}","${universalRequirementList}","universalSearch",'${sourceleadUrl}');
@@ -726,7 +726,7 @@ function statusvalidating(id){
 	
 	
 </section>
- <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+ <div class="advancedsearch-mask"></div>
 <jsp:include page="addApplicantFromRequirementList.jsp" />
 
 <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
@@ -920,18 +920,66 @@ function changeStatus(requirementId, requirementStatus){
 function exportToPdf(type) {
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(type === 1) {
-		var req = $("#noReq").val();
-	 	var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
-	  	var status = [];
-		$('input:checkbox[name=requirementStatus]:checked').each(function() {
-			status.push($(this).val());
+		
+		var filterStatus = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() 
+	    {
+			filterStatus.push($(this).val());
 	    });
-	 	var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() {
-			clients.push($(this).attr("data-val"));
+	    var filterClients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() 
+	    {
+			filterClients.push($(this).val());
 	    });
+		
+		var filterPriority = [];
+		$('input:checkbox[name=requirementPriority]:checked').each(function() 
+	    {
+			filterPriority.push($(this).val());
+	    });
+		
+		var filterJobType = [];
+		$('input:checkbox[name=requirementType]:checked').each(function() 
+	    {
+			filterJobType.push($(this).val());
+	    });
+		
+		var filterAssignTo = [];
+		$('input:radio[name=requirementAssignTo]:checked').each(function() 
+	    {
+			filterAssignTo.push($(this).val());
+	    });
+		
+		var filterSpecJobs = [];
+		$('input:checkbox[name=requirementSpecJobs]:checked').each(function() 
+	    {
+			filterSpecJobs.push($(this).val());
+	    });
+		
+		var filterProjects = [];
+		$('input:checkbox[name=projectNameById]:checked').each(function() 
+	    {
+			filterProjects.push($(this).val());
+	    });
+		
+		var city = [];
+		$('input:checkbox[name=cityName]:checked').each(function() 
+	    {
+			city.push($(this).val());
+	    });
+		
+		var frm = $('#requirement_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, ""); 
+	    var jsonData = encodeURIComponent(con);
+		var form = $('#requirement_form')[0];
+  		var formData = new FormData(form); 
+  		var searchValue = $("#dataTableSearch").val();
+  		searchValue = searchValue ? searchValue : "";
+  		
+  		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 		if(requirementEmptyMessage > 0) {
-			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=pdf";
+			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?exportType=pdf&searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;
 		} else {
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -947,7 +995,7 @@ function exportToPdf(type) {
 	} else {
 		/* alert("Export JobFair to PDF"); */
 		$(".buttons-pdf").click();
-		window.location.href = sourceleadUrl +"/pdfExportForJobfair?includeInactive=true";
+		window.location.href = sourceleadUrl +"/pdfExportForJobfair?includeInactive=true&searchValue="+$("#jobFairDataTableSearch").val();
 	}
 }
 </script>
@@ -955,18 +1003,65 @@ function exportToPdf(type) {
 function exportToExcel(type) {
 	var sourceleadUrl ='${sourceleadUrl}';
 	if(type === 1) {
-		var req = $("#noReq").val();
-		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
-	  	var status = [];
-		$('input:checkbox[name=requirementStatus]:checked').each(function() {
-			status.push($(this).val());
+		var filterStatus = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() 
+	    {
+			filterStatus.push($(this).val());
 	    });
-	 	var clients = [];
-		$('input:checkbox[name=clientNameById]:checked').each(function() {
-			clients.push($(this).attr("data-val"));
+	    var filterClients = [];
+		$('input:checkbox[name=clientNameById]:checked').each(function() 
+	    {
+			filterClients.push($(this).val());
 	    });
+		
+		var filterPriority = [];
+		$('input:checkbox[name=requirementPriority]:checked').each(function() 
+	    {
+			filterPriority.push($(this).val());
+	    });
+		
+		var filterJobType = [];
+		$('input:checkbox[name=requirementType]:checked').each(function() 
+	    {
+			filterJobType.push($(this).val());
+	    });
+		
+		var filterAssignTo = [];
+		$('input:radio[name=requirementAssignTo]:checked').each(function() 
+	    {
+			filterAssignTo.push($(this).val());
+	    });
+		
+		var filterSpecJobs = [];
+		$('input:checkbox[name=requirementSpecJobs]:checked').each(function() 
+	    {
+			filterSpecJobs.push($(this).val());
+	    });
+		
+		var filterProjects = [];
+		$('input:checkbox[name=projectNameById]:checked').each(function() 
+	    {
+			filterProjects.push($(this).val());
+	    });
+		
+		var city = [];
+		$('input:checkbox[name=cityName]:checked').each(function() 
+	    {
+			city.push($(this).val());
+	    });
+		
+		var frm = $('#requirement_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, ""); 
+	    var jsonData = encodeURIComponent(con);
+		var form = $('#requirement_form')[0];
+  		var formData = new FormData(form); 
+  		var searchValue = $("#dataTableSearch").val();
+  		searchValue = searchValue ? searchValue : "";
+  		
+  		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 		if(requirementEmptyMessage > 0) {
-			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients+"&exportType=xls";	
+			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?exportType=xls&searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;	
 		} else {
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -981,7 +1076,7 @@ function exportToExcel(type) {
 		}
 	} else {
 		/* alert("Export JobFair to Excel"); */
-		window.location.href = sourceleadUrl +"/excelExportForJobfair?includeInactive=true"
+		window.location.href = sourceleadUrl +"/excelExportForJobfair?includeInactive=true&searchValue="+$("#jobFairDataTableSearch").val();
 		$(".buttons-excel").click();
 	}
 }
@@ -1025,10 +1120,10 @@ function getActions(){
 			 $(".advancedsearch-mask").fadeIn();
 			 $("#requirementFilterPopup").toggle();
 		}
-		function closeAdsrch(){
+		/* function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
 			$(".advancedsearch-mask").fadeOut();
-		};
+		}; */
 	</script>
 
 <script>
@@ -1098,6 +1193,7 @@ function clearSearch(){
 	$('#noticePeriod').val('').trigger('chosen:updated');
 	$('#requirementTitle').val('').trigger('chosen:updated');
 	$('#jobId').val('').trigger('chosen:updated');
+	$('#jobsTags').val('').trigger('chosen:updated');
 	$('#generatedId').val('').trigger('chosen:updated');
 }
 </script>
@@ -1170,7 +1266,7 @@ function refreshGoogleApiCity(cityId){
 
 
 
-<!-- <div class="sideMask"></div> -->
+<div class="sideMask"></div>
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="requirementFilterPopup">
 <h5 class="headerAdsrch">Filters <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
 <div class="addInner">

@@ -76,15 +76,15 @@ public class ClientImportRestController {
 		}
 		
 		List<BulkClientDetails> fileList = null;
+		ResponseList<BulkClientDetails> mainresponse = new ResponseList<>();
+		mainresponse.setStatusCode("success");
 		if(multipartFile != null){
 			fileList = clientImportsService.clientExcelDataSave(multipartFile,user,orgLocation,org,isMailCheck,responderType);
 		}
 		
 		if(fileList != null && fileList.size() > 0) {
 			ResponseList<BulkClientDetails> response = clientImportsService.getbulkClientDetailsByOrgLocationId(fileList,clientVendorUploadDTO,orgLocation,user,org,isMailCheck,responderType);
-			
-			
-			if(response !=null) {
+//			if(response !=null) {
 				if(response.getData().isEmpty() && response.getData().size() == 0) {
 					response.setStatusCode("success");
 				}else if(!response.getData().isEmpty() && response.getData().size() >0) {
@@ -99,10 +99,10 @@ public class ClientImportRestController {
 					}
 					
 				}
-			}
+//			}
 			return response;
 		}
-		return null;
+		return mainresponse;
 	}
 	
 //	/deleteRecordFromBulk

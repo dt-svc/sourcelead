@@ -56,8 +56,10 @@ import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.AssociateJoineReportDTO;
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.AvailableAssociatesDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.LoanAndAdvanceReportDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
@@ -96,6 +98,7 @@ import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.reports.service.LoanAndAdvancesReportService;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
@@ -272,6 +275,9 @@ public class ReportRestController {
 	
 	@Autowired
 	private RequirementOffersService requirementOffersService;
+	
+	@Autowired
+	private LoanAndAdvancesReportService loanAndAdvancesReportService;
 	
 	@RequestMapping(value="/updateSourceUserCodeForSubmissionHistory")
 	public String updateSourceUserCodeForSubmissionHistory() {
@@ -1503,10 +1509,14 @@ public class ReportRestController {
 			try {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				EmployeeVerificationTemplate empTemplate = employeeVerificationTemplateService.getEmploymentVerificationtemplateByTemplateUUID(templateUUID);
-				LetterHead letterHead = letterHeadService.getLetterheadById(empTemplate.getLetterHead().getId());
-				User user = userService.getUserById(employeeId);
-				String templateContent = reportsUtil.replaceAllTemplatePlaceHolders(empTemplate.getTemplateContent(),empTemplate,toAddress,user,orgLocation);
-				reportsUtil.viewLetterHeadCompleteletterheadData(templateContent,letterHead,response);
+				LetterHead letterHead = null;
+				if(empTemplate.getLetterHead() != null) {
+				 letterHead = letterHeadService.getLetterheadById(empTemplate.getLetterHead().getId());
+				 User user = userService.getUserById(employeeId);
+				 String templateContent = reportsUtil.replaceAllTemplatePlaceHolders(empTemplate.getTemplateContent(),empTemplate,toAddress,user,orgLocation);
+				 reportsUtil.viewLetterHeadCompleteletterheadData(templateContent,letterHead,response);
+				}
+				
 			    
 			} catch (Exception e) {
 			    e.printStackTrace();
@@ -2732,6 +2742,20 @@ public class ReportRestController {
 			responseList.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		return responseList;
+	}
+	
+	@RequestMapping(value = "/getLoanReport", method = RequestMethod.GET)
+	public ResponseList<LoanAndAdvanceReportDTO> getLoanReport(LoanAndAdvanceReportDTO loanAndAdvanceReportDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+//		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		ResponseList<LoanAndAdvanceReportDTO> assLoanList =  loanAndAdvancesReportService.getLoansAndAdvancesByLoanNameAndOrglocationId(orgLocations.getId(), loanAndAdvanceReportDTO);
+		for(LoanAndAdvanceReportDTO lard:assLoanList.getData()) {
+			lard.setFromDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lard.getStartDate()));
+			lard.setToDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lard.getLoanEndDate()));
+		}
+		return assLoanList;
 	}
 	
 	

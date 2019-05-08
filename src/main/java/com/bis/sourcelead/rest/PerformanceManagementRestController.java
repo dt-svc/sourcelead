@@ -24,19 +24,26 @@ import com.bis.sourcelead.dto.DepartmentDTO;
 import com.bis.sourcelead.dto.PerformanceBadgesDTO;
 import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
+import com.bis.sourcelead.dto.performance.PerformanceCompetenciesDTO;
+import com.bis.sourcelead.dto.performance.PerformanceTagCompetenciesDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
+import com.bis.sourcelead.entity.performance.PerformanceCompetencies;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
+import com.bis.sourcelead.entity.performance.PerformanceTagCompetencies;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateService;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
+import com.bis.sourcelead.service.performance.PerformanceCompetenciesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
+import com.bis.sourcelead.service.performance.PerformanceTagCompetenciesService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -68,6 +75,11 @@ public class PerformanceManagementRestController {
 	@Autowired
 	RolesService rolesService;
 	
+	@Autowired
+	PerformanceCompetenciesService performanceCompetenciesService;
+	
+	@Autowired
+	PerformanceTagCompetenciesService performanceTagCompetenciesService;
 	
     @RequestMapping(value = "/savePerformanceBudgetDetails", method = RequestMethod.POST)
 	public Response<PerformanceBadgesDTO> savePerformanceBudgetDetails(HttpServletRequest request, 
@@ -123,6 +135,40 @@ public class PerformanceManagementRestController {
   			 badges.setStatus(Constants.RECORD_INACTIVE);
   			 performanceBadgesService.savePerformanceBadges(badges);
   			 resObj = Result.SUCCESS.name();
+  		    
+  		 }catch (Exception e) {
+  			resObj = Result.AWKWARD.name();
+  		}
+  		 return resObj;
+    }
+    
+    
+    @RequestMapping(value = "/deletePerformanceCompetenceById", method = RequestMethod.POST)
+  	public String deletePerformanceCompetenceById(HttpServletRequest request, 
+  			@RequestParam(value = "competenceId", required = true) Long competenceId){
+  		 String resObj = null;
+  		 try {
+  			 PerformanceCompetencies competence =  performanceCompetenciesService.getPerformanceCompetenciesById(competenceId);
+  			competence.setStatus(Constants.RECORD_INACTIVE);
+  			performanceCompetenciesService.savePerformanceCompetencies(competence);
+  			resObj = Result.SUCCESS.name();
+  		    
+  		 }catch (Exception e) {
+  			resObj = Result.AWKWARD.name();
+  		}
+  		 return resObj;
+    }
+    
+    
+    @RequestMapping(value = "/deletePerformanceTagCompetenceById", method = RequestMethod.POST)
+  	public String deletePerformanceTagCompetenceById(HttpServletRequest request, 
+  			@RequestParam(value = "tagCompetenceId", required = true) Long tagCompetenceId){
+  		 String resObj = null;
+  		 try {
+  			PerformanceTagCompetencies tagCompetence =  performanceTagCompetenciesService.getPerformanceTagCompetenciesById(tagCompetenceId);
+  			tagCompetence.setStatus(Constants.RECORD_INACTIVE);
+  			performanceTagCompetenciesService.savePerformanceTagCompetencies(tagCompetence);
+  			resObj = Result.SUCCESS.name();
   		    
   		 }catch (Exception e) {
   			resObj = Result.AWKWARD.name();
@@ -299,6 +345,19 @@ public class PerformanceManagementRestController {
 	   return templateDTOList;
    }
    
+   
+   @RequestMapping(value = "/getPerformanceCompetenceListForTagging" , method = RequestMethod.GET)
+   public List<PerformanceCompetenciesDTO> getPerformanceCompetenceListForTagging(HttpServletRequest request) throws Exception {
+	   Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+	   List<PerformanceCompetenciesDTO> competenciesDTOList = null;
+	   try {
+		   competenciesDTOList = performanceCompetenciesService.getPerformanceCompetenciesListByOrgLocationId(orgLocationId);
+	   }catch (Exception e) {
+		     e.printStackTrace();
+		}
+	   return competenciesDTOList;
+   }
+   
    @RequestMapping(value = "/deleteAppraisalCycleTemplateById", method = RequestMethod.POST)
  	public String deleteAppraisalCycleTemplateById(HttpServletRequest request, 
  			@RequestParam(value = "templateId", required = true) Long templateId){
@@ -314,5 +373,134 @@ public class PerformanceManagementRestController {
  		}
  		 return resObj;
    }
+   
+   
+   @RequestMapping(value = "/savePerformanceCompetence", method = RequestMethod.POST)
+  	public Response<PerformanceCompetenciesDTO> savePerformanceCompetence(HttpServletRequest request, 
+  			PerformanceCompetenciesDTO performanceCompetenciesDTO){
+  		 Response<PerformanceCompetenciesDTO> resObj = new Response<>();
+  		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+  		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+  		 try {
+  			 if(Validator.validate(performanceCompetenciesDTO)){
+  				performanceCompetenciesService.storePerformanceCompetencies(performanceCompetenciesDTO, orgLocation.getId(), user.getId());
+  			 resObj.setResponse(Result.SUCCESS.name());
+  			 resObj.setResponseMessage(Result.SUCCESS.getValue());
+  		    }
+  			 else {
+  				 resObj.setResponse(Result.INVALID_DATA.name());
+  				 resObj.setResponseMessage(Result.INVALID_DATA.getValue());
+  				
+  	    	 }
+  		 }catch (Exception e) {
+  			 resObj.setResponse(Result.AWKWARD.name());
+  			 resObj.setResponseMessage(Result.AWKWARD.getValue());
+  		}
+  		 return resObj;
+      }
+   
+   
+	 @RequestMapping(value = "/getPerformanceCompetenceList", method = RequestMethod.GET)
+	public ResponseList<PerformanceCompetenciesDTO> getPerformanceCompetenceList(PerformanceCompetenciesDTO performanceCompetenciesDTO,HttpServletRequest request) throws Exception {
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		String[] tableColumns = { "competenciesName", "createdDate", "description", "competenciesStatus" };
+		int sortColumnIndex = 1; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (performanceCompetenciesDTO.getOrder() != null && !performanceCompetenciesDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(performanceCompetenciesDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = performanceCompetenciesDTO.getOrder().get(0).get("dir");
+		}
+		performanceCompetenciesDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		performanceCompetenciesDTO.setSortOrder(sortColumnOrder);
+		ResponseList<PerformanceCompetenciesDTO> performanceCompetenciesList = performanceCompetenciesService.getPerformanceCompetenciesList(performanceCompetenciesDTO, orgLocation.getDateFormat(), orgLocation.getId());
+		return performanceCompetenciesList;
+	}
+	 
+	 
+	 
+	    @RequestMapping(value = "/getTagCompetenceList", method = RequestMethod.GET)
+		public ResponseList<PerformanceTagCompetenciesDTO> getTagCompetenceList(HttpServletRequest request){
+	    	 ResponseList<PerformanceTagCompetenciesDTO> resObj = new ResponseList<>();
+			 try {
+				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 List<PerformanceTagCompetenciesDTO> competenciesTagDTOList =  performanceTagCompetenciesService.getPerformanceTagCompetenciesList(orgLocation.getId(),orgLocation.getDateFormat());
+				 resObj.setData(competenciesTagDTOList);
+				 resObj.setResponse(Result.SUCCESS.name());
+				 resObj.setResponseMessage(Result.SUCCESS.getValue());
+			    
+			 }catch (Exception e) {
+				 resObj.setResponse(Result.AWKWARD.name());
+				 resObj.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			 return resObj;
+	    }
+	 
+	 
+	    @RequestMapping(value = "/getPerformanceCompetenceDetailsById", method = RequestMethod.GET)
+		public Response<PerformanceCompetenciesDTO> getPerformanceCompetenceDetailsById(HttpServletRequest request, 
+				@RequestParam(value = "competenceId", required = true) Long competenceId){
+			 Response<PerformanceCompetenciesDTO> resObj = new Response<>();
+			 try {
+				 PerformanceCompetenciesDTO competenciesDTO =  performanceCompetenciesService.getPerformanceCompetenciesDTOById(competenceId);
+				 resObj.setObject(competenciesDTO);
+				 resObj.setResponse(Result.SUCCESS.name());
+				 resObj.setResponseMessage(Result.SUCCESS.getValue());
+			    
+			 }catch (Exception e) {
+				 resObj.setResponse(Result.AWKWARD.name());
+				 resObj.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			 return resObj;
+	    }
+	    
+	    
+	    @RequestMapping(value = "/savePerformanceTagCompetencies", method = RequestMethod.POST)
+		public Response<PerformanceTagCompetenciesDTO> savePerformanceTagCompetencies(HttpServletRequest request, 
+				PerformanceTagCompetenciesDTO tagCompetenciesDTO){
+			 Response<PerformanceTagCompetenciesDTO> resObj = new Response<>();
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 try {
+				 if(Validator.validate(tagCompetenciesDTO)){
+					 performanceTagCompetenciesService.storePerformanceTagCompetencies(tagCompetenciesDTO, orgLocation.getId(), user.getId());
+				 resObj.setResponse(Result.SUCCESS.name());
+				 resObj.setResponseMessage(Result.SUCCESS.getValue());
+			    }
+				 else {
+					 resObj.setResponse(Result.INVALID_DATA.name());
+					 resObj.setResponseMessage(Result.INVALID_DATA.getValue());
+					
+		    	 }
+			 }catch (Exception e) {
+				 resObj.setResponse(Result.AWKWARD.name());
+				 resObj.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			 return resObj;
+	   }
+	    
+	    
+	    @RequestMapping(value = "/getTagPerformanceCompetenceDetailsById" , method = RequestMethod.GET)
+	    public Response<PerformanceTagCompetenciesDTO> getTagPerformanceCompetenceDetailsById(@RequestParam(value="tagCompetenceId", required=true) Long tagCompetenceId) throws Exception {
+	 	   Response<PerformanceTagCompetenciesDTO> resObj = new Response<>();
+	 	   try {
+	 		   PerformanceTagCompetencies tagCompetices = performanceTagCompetenciesService.getPerformanceTagCompetenciesById(tagCompetenceId);
+	 		   PerformanceTagCompetenciesDTO competencesDTO = new PerformanceTagCompetenciesDTO();
+	 		   competencesDTO.setTagCompetenceId(tagCompetices.getId());
+	 		   competencesDTO.setCompetenceRole(tagCompetices.getRoles());
+	 		   competencesDTO.setJsonCompetenceString(tagCompetices.getCompetenciesTaggingJsonString());
+	 		   competencesDTO.setCompetenceIds(tagCompetices.getCompetencies());
+	 		   resObj.setObject(competencesDTO);
+	 		   resObj.setResponse(Result.SUCCESS.name());
+	 		   resObj.setResponseMessage(Result.SUCCESS.getValue());
+	 	   }catch (Exception e) {
+	 		     e.printStackTrace();
+	 			 resObj.setResponse(Result.AWKWARD.name());
+	 			 resObj.setResponseMessage(Result.AWKWARD.getValue());
+	 		}
+	 	  
+	 	   return resObj;
+	    }
 
 }

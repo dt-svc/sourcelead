@@ -1,14 +1,17 @@
 package com.bis.sourcelead.clockInOutDTO;
 
+import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
 public class ClockInOutUserTimeEntryDTO {
 
+	private BigInteger id;
+	
 	private Time clockInTime;
 	
-	private Time totalTime;
+	private String totalTime;
 	
 	private Time clockOutTime;
 	
@@ -35,6 +38,23 @@ public class ClockInOutUserTimeEntryDTO {
 	private String type;
 	
 	private List<ClockInOutSubDTO> subList;
+	
+	private String currentTotTime;
+	
+	private String weekTotTime;
+	
+	private String monthTotTime;
+	
+	private Time yearTotTime;
+	
+
+	public BigInteger getId() {
+		return id;
+	}
+
+	public void setId(BigInteger id) {
+		this.id = id;
+	}
 
 	public Time getClockInTime() {
 		return clockInTime;
@@ -44,11 +64,11 @@ public class ClockInOutUserTimeEntryDTO {
 		this.clockInTime = clockInTime;
 	}
 
-	public Time getTotalTime() {
+	public String getTotalTime() {
 		return totalTime;
 	}
 
-	public void setTotalTime(Time totalTime) {
+	public void setTotalTime(String totalTime) {
 		this.totalTime = totalTime;
 	}
 
@@ -164,7 +184,37 @@ public class ClockInOutUserTimeEntryDTO {
 		this.type = type;
 	}
 
+	public String getCurrentTotTime() {
+		return currentTotTime;
+	}
 
+	public void setCurrentTotTime(String currentTotTime) {
+		this.currentTotTime = currentTotTime;
+	}
+
+	public String getWeekTotTime() {
+		return weekTotTime;
+	}
+
+	public void setWeekTotTime(String weekTotTime) {
+		this.weekTotTime = weekTotTime;
+	}
+
+	public String getMonthTotTime() {
+		return monthTotTime;
+	}
+
+	public void setMonthTotTime(String monthTotTime) {
+		this.monthTotTime = monthTotTime;
+	}
+
+	public Time getYearTotTime() {
+		return yearTotTime;
+	}
+
+	public void setYearTotTime(Time yearTotTime) {
+		this.yearTotTime = yearTotTime;
+	}
 
 	
 }
