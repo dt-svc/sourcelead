@@ -606,7 +606,7 @@ function RequirementWorkflow(){
 							success : function(dataList){
 								var result = "";
 								 result = result + "<select class='sel form-control' id = 'workflowStageUuid'>";
-								if(dataList != null && dataList > 0){
+								if(dataList != null && dataList.length > 1){
 									lastStage = "";
 									for(var i=0 ; i<dataList.length;i++){
 										if(dataList[i].uuid == stageUuid){
@@ -626,22 +626,8 @@ function RequirementWorkflow(){
 								}
 							}
 						});
-						requirementWorkflow.checkLastStage(); 
 				}
-				
-				this.checkLastStage=function(){
-				
-					if($("#workflowStageUuid").val() == null){
-						alert();
-						var result = "";
-						result = result + "<select class='sel form-control' id = 'workflowStageUuid'>";
-						lastStage = "lastStage";
-						result = "<h2>No Stage.</h2>";
-						result = result + "</select>"; 
-						$("#nextStages").empty().append(result);
-					}
-				}
-
+			
 				this.getRequirementQuestionnaireTemplates = function(){
 					$.ajax({
 						type : "GET",
