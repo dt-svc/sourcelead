@@ -2313,6 +2313,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Override
 	@Transactional
 	public ResponseList<TimesheetApprovalSubmissionDetailsDTO> getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(Set<Long> projectIds,Boolean isAdmin,String timesheetFrequency,Date startDate,Date endDate,Long clientId,Long projectId,String status,Long locationsId,Long orgId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor,String isGlobalUser,String tableFor,Integer tdSpanLength,String dateFormat) throws Exception {
+		long queryStartTime = System.nanoTime();
 		List<BigInteger> countlist = null;  
 		Integer filterCount = 0;
 		ResponseList<TimesheetApprovalSubmissionDetailsDTO> response = new ResponseList<TimesheetApprovalSubmissionDetailsDTO>();
@@ -2326,10 +2327,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			sqlEndDate = new java.sql.Date(endDate.getTime());
 		}
 		
-		String projectIdString = "";
-		if(projectIds != null && !projectIds.isEmpty()) {
-			projectIdString = StringUtils.join(projectIds, ',').replaceFirst(",", "");
-		}
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String startDateStr = sdf.format(startDate);
@@ -2375,6 +2372,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			filterQuery.append(" PC.ORG_RELATION_ID = " + clientId + "");
 		}
 		
+		String projectIdString = "";
+		if(projectIds != null && !projectIds.isEmpty()) {
+			projectIdString = StringUtils.join(projectIds, ',').replaceFirst(",", "");
+		}
 		if(projectId != null){
 			if(StringUtils.isNotEmpty(projectName) || clientId != null) {
 				filterQuery.append(" AND ");
@@ -2532,7 +2533,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             .append("  INNER JOIN (SELECT ID,PROJECT_MEMBERS_ID,PROJECT_TERMINATION_DATE,PROJECT_ASSIGNED_DATE FROM PROJECT_MEMBERS_HISTORY) AS PMH ON PMH.PROJECT_MEMBERS_ID = PM.ID")
             
             /*Getting Projects*/
-            .append("  INNER JOIN (SELECT ID,INVOICE_FREQUENCY,PROJECT_APPROVAL_TYPE,PROJECT_NAME,IS_REPORTING_MANAGER_AS_APPROVER, WEEK_START_DATE FROM PROJECTS ) AS PROJ ON PROJ.ID = PM.PROJECT_ID")
+            .append("  INNER JOIN (SELECT ID,INVOICE_FREQUENCY,PROJECT_APPROVAL_TYPE,PROJECT_NAME,IS_REPORTING_MANAGER_AS_APPROVER, WEEK_START_DATE,IS_PROJECT_FOR_TIMESHEETS FROM PROJECTS ) AS PROJ ON PROJ.ID = PM.PROJECT_ID")
            
             /*Getting location based candidate*/
 			.append("  LEFT JOIN (SELECT ID,DESIGNATION_TYPE FROM CANDIDATE) AS CAN ON CAN.ID = PM.CANDIDATE_ID")
@@ -2633,7 +2634,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					/*Getting Approver Hierarchy*/
 					.append("  INNER JOIN (SELECT ID,APPROVER_USER_ID,PROJECT_CLIENTS_ID,STATUS,LEVEL FROM PROJECT_APPROVER_HIERARCHY) AS PAH ON PAH.ID = SAH.HIERARCHY_ID ")
 					/*Getting Project*/
-					.append("  INNER JOIN (SELECT ID,INVOICE_FREQUENCY,PROJECT_APPROVAL_TYPE,PROJECT_NAME,IS_REPORTING_MANAGER_AS_APPROVER FROM PROJECTS ) AS PROJ ON PROJ.ID = SAH.PROJECT_ID ");
+					.append("  INNER JOIN (SELECT ID,INVOICE_FREQUENCY,PROJECT_APPROVAL_TYPE,PROJECT_NAME,IS_REPORTING_MANAGER_AS_APPROVER,WEEK_START_DATE,IS_PROJECT_FOR_TIMESHEETS FROM PROJECTS ) AS PROJ ON PROJ.ID = SAH.PROJECT_ID ");
 					 /*Getting Project Client*/
 				    if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
 				    	query.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = PM.PROJECT_CLIENTS_ID AND PC.PROJECT_ID =  PROJ.ID AND (PC.ORG_LOCATIONS_ID = '"+locationsId+"' OR  (PC.ORG_LOCATIONS_ID != '"+locationsId+"' AND PC.ORG_ID = '"+orgId+"'))");
@@ -2668,12 +2669,16 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	      }
 	      query.append(" )Q1 "+searchQuery+" GROUP BY CONCAT(Q1.projectId,Q1.masterCandidateId,Q1.actualStartDate,Q1.actualEndDate) ");
 	     //System.out.println(query);
-	     long queryStartTime = System.nanoTime();
+	     
+	     long qstartTime = System.nanoTime();
 		Query result = session.createSQLQuery(query.toString()).setFirstResult(start).setMaxResults(length);
 		List<TimesheetApprovalSubmissionDetailsDTO> reportList  = result.setResultTransformer(Transformers.aliasToBean(TimesheetApprovalSubmissionDetailsDTO.class)).list();
-		long queryEndTime = System.nanoTime();
+		long qEndTime = System.nanoTime();
+		
+	    long countstartTime = System.nanoTime();
 		String  countQuery = "SELECT COUNT(*) AS TOTAL FROM (" + query.toString() +")Q2;" ;
 		countlist = session.createSQLQuery(countQuery).list();
+		long countEndTime = System.nanoTime();
 		
 		filterCount = countlist.iterator().next().intValue();
 		
@@ -2689,7 +2694,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			response.setRecordsFiltered(totalCount);
 		}
 		response.setData(reportList);
-		//System.out.println("Query Execution>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((queryEndTime - queryStartTime), TimeUnit.NANOSECONDS));
+		long queryEndTime = System.nanoTime();
+		System.out.println("Query Execution Time>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((qEndTime - qstartTime), TimeUnit.NANOSECONDS));
+		System.out.println("Query Count Execution Time>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((countEndTime - countstartTime), TimeUnit.NANOSECONDS));
+		System.out.println("Query Method Execution Time>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((queryEndTime - queryStartTime), TimeUnit.NANOSECONDS));
 		return response;
      }
 	
