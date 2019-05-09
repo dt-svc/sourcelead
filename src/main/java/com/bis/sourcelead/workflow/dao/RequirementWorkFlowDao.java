@@ -78,4 +78,5 @@ public interface RequirementWorkFlowDao {
 	
 	void deleteInactiveRequirementWorkflowStagesByStageId(List<RequirementWorkFlowStages> requirementWorkFlowStage)throws Exception;
 
+	List<RequirementWorkFlowStages> getRequirementworkflowStageByQuestionnaireId(Long id, Long orgLocationId)throws Exception;
 }

@@ -621,6 +621,22 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		}
 		}
 
+	@Override
+	public List<RequirementWorkFlowStages> getRequirementworkflowStageByQuestionnaireId(Long id, Long orgLocationId)
+			throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementQuestionnaireTemplateId.id = :id and "
+					+ " requirementWorkFlowStages.orgLocationId.id = :orgLocationId";
+			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("id", id).setParameter("orgLocationId", orgLocationId).list();
+			return requirementWorkFlowStages;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+	}
+		
+	}
+
 	
 
 }

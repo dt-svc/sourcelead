@@ -238,8 +238,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public String deleteQuestionnaireTemplateById(String templateUuid) {
+	public String deleteQuestionnaireTemplateById(String templateUuid, Long id)throws Exception {
 		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = requirementWorkFlowDao.getQuestionnaireTemplateById(templateUuid);
+		List<RequirementWorkFlowStages> requirementWorkFlowStages = requirementWorkFlowDao.getRequirementworkflowStageByQuestionnaireId(requirementQuestionnaireTemplate.getId(), id);
+		for(RequirementWorkFlowStages stages : requirementWorkFlowStages) {
+			stages.setRequirementQuestionnaireTemplateId(null);
+			requirementWorkFlowDao.saveRequirementWorkFlowStages(stages);
+		}
 		return requirementWorkFlowDao.deleteQuestionnaireTemplateById(requirementQuestionnaireTemplate.getId());
 	}
 
