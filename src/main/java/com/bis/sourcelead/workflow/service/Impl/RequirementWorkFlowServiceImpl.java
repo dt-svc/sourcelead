@@ -239,7 +239,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 	@Override
 	public String deleteQuestionnaireTemplateById(String templateUuid) {
-		return requirementWorkFlowDao.deleteQuestionnaireTemplateById(templateUuid);
+		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = requirementWorkFlowDao.getQuestionnaireTemplateById(templateUuid);
+		return requirementWorkFlowDao.deleteQuestionnaireTemplateById(requirementQuestionnaireTemplate.getId());
 	}
 
 
@@ -647,6 +648,15 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 		return workFlowStagesDTO;
 	}
+
+
+	@Override
+	public void deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(String uuid, Long id) throws Exception {
+		List<RequirementWorkFlowStages> requirementWorkFlowStages = requirementWorkFlowDao.getInactiveRequirementWorkflowStagesListByUuidAndOrgLocationId(uuid, id);
+		if(requirementWorkFlowStages.size() > 0) {
+		requirementWorkFlowDao.deleteInactiveRequirementWorkflowStagesByStageId(requirementWorkFlowStages);
+	}
+		}
 
 
 	}

@@ -43,7 +43,7 @@ public interface RequirementWorkFlowDao {
 	
 	RequirementWorkFlow getRequirementDefaultWorkflow(Long orgLocationId)throws Exception;
 
-	String deleteQuestionnaireTemplateById(String templateUuid);
+	String deleteQuestionnaireTemplateById(Long id);
 
 	RequirementQuestionnaireTemplate getQuestionnaireTemplateById(String templateUuid);
 	
@@ -74,5 +74,8 @@ public interface RequirementWorkFlowDao {
 	
 	List<RequirementWorkFlowStages> getNextRequirementWorkflowStagesListByUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, Long id)throws Exception;
 	
+	List<RequirementWorkFlowStages> getInactiveRequirementWorkflowStagesListByUuidAndOrgLocationId(String uuid, Long id)throws Exception;
+	
+	void deleteInactiveRequirementWorkflowStagesByStageId(List<RequirementWorkFlowStages> requirementWorkFlowStage)throws Exception;
 
 }
