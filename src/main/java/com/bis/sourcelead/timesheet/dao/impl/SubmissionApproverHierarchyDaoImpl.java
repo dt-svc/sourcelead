@@ -2438,25 +2438,25 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	     StringBuilder sequentiaLCheckForVendorApproval= new StringBuilder();                   
 		                           sequentiaLCheckForVendorApproval
 		                           .append(" ( CASE ")
-		                           .append("     WHEN PC.LEVEL < (")
+		                           .append("   WHEN PC.LEVEL < (")
 		                           .append( "             SELECT MAX(SUBPC.LEVEL) FROM PROJECT_MEMBERS SUBPM ")
 		                           .append( "              INNER JOIN(SELECT ID,ORG_ID,LEVEL,PROJECT_ID,STATUS FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBPM.PROJECT_CLIENTS_ID ")
 		   		   		           .append( "              INNER JOIN (SELECT ID,ORG_TYPE FROM ORG) AS OG ON OG.ID = SUBPC.ORG_ID     ")	   
-		   		   		           .append("               WHERE SUBPM.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND SUBPC.PROJECT_ID = PROJ.ID AND OG.ORG_TYPE != 'GUEST' AND SUBPC.STATUS != '0') ")
-		   		   		           .append( "          THEN  ")
-		   		   		           .append( "            (   ")
+		   		   		           .append("               WHERE SUBPM.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND SUBPC.PROJECT_ID = PROJ.ID AND OG.ORG_TYPE != 'GUEST' AND SUBPC.STATUS != '0'")
+		   		   		           .append( "            ) THEN  ")
+		   		   		           .append( "            (    ")
 		   		   		           .append( "              (PC.LEVEL+1) IN (  ")
-		   		   		           
-		   		   		           .append(" SELECT SUBPC.LEVEL FROM SUBMISSION_APPROVER_HIERARCHY  SUBSAH " + 
-		   		   		        		" INNER JOIN (SELECT ID,MASTER_CANDIDATE_ID FROM PROJECT_MEMBERS) AS SUBPM ON SUBPM.ID = SUBSAH.PROJECT_MEMBER_ID " +
-		   		   		           		" INNER JOIN (SELECT ID,LEVEL,PROJECT_CLIENTS_ID FROM PROJECT_APPROVER_HIERARCHY) AS SUBPAH ON SUBPAH.ID = SUBSAH.HIERARCHY_ID " + 
-		   		   		           		" INNER JOIN (SELECT ID,LEVEL FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBSAH.PROJECT_CLIENT_ID " + 
-		   		   		           		
-		   		   		           		" WHERE SUBSAH.SUBMISSION_APPROVALSTATUS =  '"+Submission_ApprovalStatus.APPROVED+"' AND " + 
-		   		   		           		" SUBPM.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND SUBSAH.FREQUENCY_START_DATE = '"+sqlStartDate+"' AND SUBSAH.FREQUENCY_END_DATE = '"+sqlEndDate+"' " + 
-		   		   		           		" AND SUBPAH.LEVEL IN (SELECT MAX(INNERPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY INNERPAH WHERE INNERPAH.PROJECT_CLIENTS_ID = SUBPAH.PROJECT_CLIENTS_ID)")
+		   		   		           .append("                               SELECT SUBPC.LEVEL FROM SUBMISSION_APPROVER_HIERARCHY  SUBSAH " + 
+		   		   		        		"                                  INNER JOIN (SELECT ID,MASTER_CANDIDATE_ID FROM PROJECT_MEMBERS) AS SUBPM ON SUBPM.ID = SUBSAH.PROJECT_MEMBER_ID " +
+		   		   		           		"                                  INNER JOIN (SELECT ID,LEVEL,PROJECT_CLIENTS_ID FROM PROJECT_APPROVER_HIERARCHY) AS SUBPAH ON SUBPAH.ID = SUBSAH.HIERARCHY_ID " + 
+		   		   		           		"                                  INNER JOIN (SELECT ID,LEVEL FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBSAH.PROJECT_CLIENT_ID " + 
+		   		   		           		"                                  WHERE SUBSAH.SUBMISSION_APPROVALSTATUS =  '"+Submission_ApprovalStatus.APPROVED+"' AND " + 
+		   		   		           		                                   //checking with subsequent vendor 
+		   		   		           		"                                  SUBPM.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND SUBSAH.FREQUENCY_START_DATE = '"+sqlStartDate+"' AND SUBSAH.FREQUENCY_END_DATE = '"+sqlEndDate+"' " + 
+		   		   		                                                   //checking with subsequent vendor's highest level of approval mechanism
+		   		   		        	    "                                  AND SUBPAH.LEVEL IN (SELECT MAX(INNERPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY INNERPAH WHERE INNERPAH.PROJECT_CLIENTS_ID = SUBPAH.PROJECT_CLIENTS_ID)")
 		   		   		          .append("                              )")
-		   		               	   .append( "         ) ELSE  true ")
+		   		               	   .append( "            ) ELSE  true ")
 		   		   		           .append( "   END )      ");	   
 		                         
 		   		   		          
@@ -2532,7 +2532,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             .append("  INNER JOIN (SELECT ID,PROJECT_MEMBERS_ID,PROJECT_TERMINATION_DATE,PROJECT_ASSIGNED_DATE FROM PROJECT_MEMBERS_HISTORY) AS PMH ON PMH.PROJECT_MEMBERS_ID = PM.ID")
             
             /*Getting Projects*/
-            .append("  INNER JOIN (SELECT ID,INVOICE_FREQUENCY,PROJECT_APPROVAL_TYPE,PROJECT_NAME,IS_REPORTING_MANAGER_AS_APPROVER FROM PROJECTS ) AS PROJ ON PROJ.ID = PM.PROJECT_ID")
+            .append("  INNER JOIN (SELECT ID,INVOICE_FREQUENCY,PROJECT_APPROVAL_TYPE,PROJECT_NAME,IS_REPORTING_MANAGER_AS_APPROVER, WEEK_START_DATE FROM PROJECTS ) AS PROJ ON PROJ.ID = PM.PROJECT_ID")
            
             /*Getting location based candidate*/
 			.append("  LEFT JOIN (SELECT ID,DESIGNATION_TYPE FROM CANDIDATE) AS CAN ON CAN.ID = PM.CANDIDATE_ID")
@@ -2571,7 +2571,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		                .append( " ) ");
 		    
 					    if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
-					    	newStatusQuery.append(" AND DATEDIFF(PROJ.WEEK_START_DATE,:startDate)%14=0 ");
+					    	newStatusQuery.append(" AND DATEDIFF(PROJ.WEEK_START_DATE,'"+ sqlStartDate+"')%14=0 ");
 						}
 			
 		                
