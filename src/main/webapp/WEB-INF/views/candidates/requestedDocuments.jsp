@@ -30,27 +30,6 @@
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
 <link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
 
-
-<style type="text/css">
-.reqDocuments {
-	padding-top: 10px; border: 1px solid #ededed; margin-top: 75px;
-    margin-bottom: 15px; min-height: 150px; border-radius:5px;
-}
-.reqDocuments table {
-border:1px solid #ddd; width: 100%;
-}
-.reqDocuments .clients_wrap_table {
-border-bottom:0;
-}
-.clients_wrap_table .glyphicon {
-    color: red;
-    cursor: pointer;
-}
-.edit-status {
-top: 20%; right: auto; left: 40%;
-}
-</style>
-
 <body>
 <script type="text/javascript">
 var sourceleadUrl ='${sourceleadUrl}';

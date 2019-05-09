@@ -146,7 +146,7 @@ public class MailBoxController {
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
 	@RequestMapping(value = "/composeMail")
- 	public ModelAndView composeMail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID) throws Exception {
+ 	public ModelAndView composeMail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID, @RequestParam(defaultValue="") String mailType) throws Exception {
 		    
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
@@ -162,7 +162,7 @@ public class MailBoxController {
  				if(null != mailBox){
  					model.addObject("subject", mailBox.getSubject());
  					model.addObject("fromEmail", mailBox.getFromMail());
- 					model.addObject("toEmail",mailBox.getToMail());
+ 					model.addObject("toEmail", mailType.equalsIgnoreCase("reply") ? mailBox.getToMail() : mailBox.getFromMail());
  				}else{
  					model.setViewName("registration/persmissionDenied");
  				}

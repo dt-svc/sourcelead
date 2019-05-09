@@ -498,30 +498,44 @@
 
 
 <script>
-function addResignationAttachment(){  
-			var checkMaxTsRowNum = $("#resignationAttcahmentMaxRowNumber").val();
-			var tbl = document.getElementById("resignationAttachmentTable");
-			var maxRowNum = parseInt($("input[name = 'resignationAttcahmentMaxRowNumber']").val());
-			$("input[name = 'resignationAttcahmentMaxRowNumber']").val(maxRowNum + 1);
-			
-			
-			var row = tbl.insertRow(maxRowNum);
-			row.setAttribute("id", "divAttachmentResignationRow" + maxRowNum);
-			
-			
-			var cell0 = row.insertCell(0);
-			var divAttachmentTdStr = document.getElementById("divResignationAttachmentTd1").innerHTML;
-			divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g, (maxRowNum));
-			cell0.innerHTML = divAttachmentTdStr;
-			
-			
-}	
-function uploadResignationTerminationDoc(id){
-	fileUpload(""+id+"resignationdocFile", "Employee-Offboard-Resignation-Documents", "templateDocuments_form","resignationFileInfo");
+function validateTaskEmail() {
+	var taskEmail = document.getElementById("taskEmail").checked;
+	if (taskEmail == 1) {
+		document.getElementById("taskEmail").value = 'Y';
+	} else {
+		document.getElementById("taskEmail").value = 'N';
+	}
 }
-function uploadOffboardPackDoc(id){
-	fileUpload(""+id+"offboardPackdocFile", "Employee-Offboard-OffboardPack-Documents", "templateDocuments_form","offboardPackFileInfo");
-}
+
+	function addResignationAttachment() {
+		var checkMaxTsRowNum = $("#resignationAttcahmentMaxRowNumber").val();
+		var tbl = document.getElementById("resignationAttachmentTable");
+		var maxRowNum = parseInt($(
+				"input[name = 'resignationAttcahmentMaxRowNumber']").val());
+		$("input[name = 'resignationAttcahmentMaxRowNumber']").val(
+				maxRowNum + 1);
+
+		var row = tbl.insertRow(maxRowNum);
+		row.setAttribute("id", "divAttachmentResignationRow" + maxRowNum);
+
+		var cell0 = row.insertCell(0);
+		var divAttachmentTdStr = document
+				.getElementById("divResignationAttachmentTd1").innerHTML;
+		divAttachmentTdStr = divAttachmentTdStr.replace(/REPLACEROWID/g,
+				(maxRowNum));
+		cell0.innerHTML = divAttachmentTdStr;
+
+	}
+	function uploadResignationTerminationDoc(id) {
+		fileUpload("" + id + "resignationdocFile",
+				"Employee-Offboard-Resignation-Documents",
+				"templateDocuments_form", "resignationFileInfo");
+	}
+	function uploadOffboardPackDoc(id) {
+		fileUpload("" + id + "offboardPackdocFile",
+				"Employee-Offboard-OffboardPack-Documents",
+				"templateDocuments_form", "offboardPackFileInfo");
+	}
 </script>
 
 
