@@ -65,6 +65,17 @@ public class EmailReminder {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "emailReminder")
 	private List<EmailReminderHierarchy> emailReminderHierarchyList;
+	
+	@Column(name = "ROLES", columnDefinition = "TEXT default NULL")
+	private String roles;
+
+	public String getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
+	}
 
 	public Long getId() {
 		return id;
