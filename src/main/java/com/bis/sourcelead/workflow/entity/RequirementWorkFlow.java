@@ -20,7 +20,6 @@ import javax.persistence.Table;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 
 	
 	@Entity
@@ -72,7 +71,7 @@ import com.bis.sourcelead.payroll.entity.EmployeePayrollTax;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementWorkFlowId")
 	private Set<RequirementWorkFlowStages> workflowStages;
-
+	
 	public Long getId() {
 		return id;
 	}

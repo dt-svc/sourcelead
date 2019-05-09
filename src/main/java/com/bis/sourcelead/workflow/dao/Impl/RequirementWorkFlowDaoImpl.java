@@ -489,17 +489,25 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 			List<Long> countlist = null;
 			Integer filterCount = 0;
 			StringBuilder queryEndBuilder = new StringBuilder("");
+			StringBuilder stageQuery = new StringBuilder("");
 			RequirementWorkFlowTasksDTO workFlowTasksDTO = null;
 			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTOList = new ArrayList<>();
 			ResponseList<RequirementWorkFlowTasksDTO> responseList = new ResponseList<>();
 			if(requirementWorkFlowTasksDTO != null){
 				queryEndBuilder.append(" order by requirementWorkFlowTasks.updatedDate "+requirementWorkFlowTasksDTO.getSortOrder());
 				}
-			String query = "from RequirementWorkFlowTasks requirementWorkFlowTasks where requirementWorkFlowTasks.orgLocationId.id = :orgLocationId and requirementWorkFlowTasks.status= 1";
-			String countQuery = "select count(*) from RequirementWorkFlowTasks requirementWorkFlowTasks  where  requirementWorkFlowTasks.orgLocationId.id =:orgLocationId and requirementWorkFlowTasks.status= 1";
-			Query query1 = session.createQuery(query + queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
-			Query query2 = session.createQuery(countQuery + queryEndBuilder).setLong("orgLocationId", orgLocations.getId());
-			countlist = query2.list();
+/*			if(requirementWorkFlowTasksDTO.getStageId() != null) {
+				stageQuery.append(" and requirementWorkFlowTasks.requirementWorkFlowStagesId.id = :StageId ");
+			}
+*/			String query = "from RequirementWorkFlowTasks requirementWorkFlowTasks where requirementWorkFlowTasks.orgLocationId.id = :orgLocationId and requirementWorkFlowTasks.status= 1 and requirementWorkFlowTasks.requirementWorkFlowStagesId.id like '"+requirementWorkFlowTasksDTO.getStageId()+"'";
+			String countQuery = "select count(*) from RequirementWorkFlowTasks requirementWorkFlowTasks  where  requirementWorkFlowTasks.orgLocationId.id =:orgLocationId and requirementWorkFlowTasks.status= 1 and requirementWorkFlowTasks.requirementWorkFlowStagesId.id like '"+requirementWorkFlowTasksDTO.getStageId()+"'";
+			Query query1 = session.createQuery(query + queryEndBuilder + stageQuery).setLong("orgLocationId", orgLocations.getId());
+			Query query2 = session.createQuery(countQuery + queryEndBuilder + stageQuery).setLong("orgLocationId", orgLocations.getId());
+/*			if(requirementWorkFlowTasksDTO.getStageId() != null) {
+				query1.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
+				query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
+			}
+*/			countlist = query2.list();
 			int totalCount = 0;
 			if (requirementWorkFlowTasksDTO != null) {
 				if (countlist != null && !countlist.isEmpty()) {
@@ -557,6 +565,25 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 			String query = "from RequirementWorkFlowTasks requirementWorkFlowTasks where requirementWorkFlowTasks.requirementWorkFlowStagesId.id =:workFlowStagesId ";
 			List<RequirementWorkFlowTasks> requirementWorkFlowTasks = session.createQuery(query).setParameter("workFlowStagesId", workFlowStagesId).list();
 			return requirementWorkFlowTasks;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+	}
+	}
+
+	@Override
+	public List<RequirementWorkFlowStages> getNextRequirementWorkflowStagesListByUuid(
+			RequirementWorkFlowDTO requirementWorkFlowDTO, Long id) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			/*String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:uuid and requirementWorkFlowStages.orgLocationId.id =:orgLocationId "
+					+ " and requirementWorkFlowStages.uuid <> '"+requirementWorkFlowDTO.getCurrentStageUuid()+"' ORDER BY requirementWorkFlowStages.seqOrder ASC";
+			*/
+			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:uuid and requirementWorkFlowStages.orgLocationId.id =:orgLocationId "
+					+ " ORDER BY requirementWorkFlowStages.seqOrder ASC";
+			
+			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("uuid", requirementWorkFlowDTO.getUuid()).setLong("orgLocationId", id).list();
+			return requirementWorkFlowStages;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
