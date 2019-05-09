@@ -1,5 +1,6 @@
 package com.bis.sourcelead.clockInOutService;
 
+import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 
@@ -45,5 +46,7 @@ public interface ClockInOutConfigService {
 	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId, String dateFormat, String dayWisetype, String previousDate, String type);
 
 	public ClockInOutUserTimeEntryDTO getTimeReports(OrgLocations loginOrgLocation, User user);
+
+	public String getWorkingTimeByClockId(OrgLocations loginOrgLocation, User user);
 
 }
