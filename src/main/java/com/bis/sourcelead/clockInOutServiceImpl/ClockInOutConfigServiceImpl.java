@@ -2,6 +2,7 @@ package com.bis.sourcelead.clockInOutServiceImpl;
 
 import java.sql.Time;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -167,20 +168,42 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			timeValue =  new java.sql.Time(formatter.parse(s).getTime());
 			
 			if(Constants.CLOCK_IN.equalsIgnoreCase(clockInOutDTO.getType())) {
-				clockInOut.setClockInTime(timeValue);
 				clockInOut.setClockInDate(new Date());
+				clockInOut.setClockInDateTime(new Date());
+				clockInOut.setClockInTime(timeValue);
 			}
 			
 			if(Constants.CLOCK_OUT.equalsIgnoreCase(clockInOutDTO.getType())) {
 				
-				int sec = timeValue.getSeconds() - clockInOut.getClockInTime().getSeconds();
-				int min = timeValue.getMinutes() - clockInOut.getClockInTime().getMinutes();
-				int hr = timeValue.getHours() - clockInOut.getClockInTime().getHours();
-				Time totTime = new Time(hr, min, sec);
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(clockInOut.getClockInDateTime());
+				Date date1 = calendar.getTime();
+				Date date2 = new Date();
 				
-				clockInOut.setTotalClockTime(totTime);
+				
+				long diff = date2.getTime() - date1.getTime();
+				long diffDays = diff / (24 * 60 * 60 * 1000);
+				long diffSeconds = diff / 1000 % 60;
+				long diffMinutes = diff / (60 * 1000) % 60;
+				long diffHours = diff / (60 * 60 * 1000) % 24;
+
+				if(diffDays>0) {
+					diffHours = diffDays * 24;
+				}
+				
+//				int sec = timeValue.getSeconds() - clockInOut.getClockInTime().getSeconds();
+//				int min = timeValue.getMinutes() - clockInOut.getClockInTime().getMinutes();
+//				int hr = timeValue.getHours() - clockInOut.getClockInTime().getHours();
+//				Time totTime = new Time(hr, min, sec);
+				
+//				clockInOut.setTotalClockTime(totTime);
+				
 				clockInOut.setClockOutTime(timeValue);
 				clockInOut.setClockOutDate(new Date());
+				clockInOut.setClockOutDateTime(new Date());
+				DecimalFormat df = new DecimalFormat("00");
+				clockInOut.setTotalTime(df.format(diffHours)+":"+df.format(diffMinutes)+":"+df.format(diffSeconds));
+
 				
 			}
 			
@@ -249,24 +272,48 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			}
 			
 			breaks.setClockInOutId(clockInOutDTO.getClockInOutId());
-			breaks.setBreakDate(new Date());
+		
 			
 			DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
 			String s = formatter.format(Calendar.getInstance().getTime());
 			java.sql.Time timeValue =  new java.sql.Time(formatter.parse(s).getTime());
 			
-			if(Constants.PAUSE.equalsIgnoreCase(clockInOutDTO.getType()))
+			if(Constants.PAUSE.equalsIgnoreCase(clockInOutDTO.getType())) {
 				breaks.setBreakStartTime(timeValue);
+				breaks.setBreakStartDate(new Date());
+				breaks.setBreakStartDateTime(new Date());
+			}
 			
 			if(Constants.PLAY.equalsIgnoreCase(clockInOutDTO.getType())) {
 				
-				int sec = timeValue.getSeconds() - breaks.getBreakStartTime().getSeconds();
-				int min = timeValue.getMinutes() - breaks.getBreakStartTime().getMinutes();
-				int hr = timeValue.getHours() - breaks.getBreakStartTime().getHours();
-				Time totTime = new Time(hr, min, sec);
 				
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(breaks.getBreakStartDateTime());
+				Date date1 = calendar.getTime();
+				Date date2 = new Date();
+				
+				
+				long diff = date2.getTime() - date1.getTime();
+				long diffDays = diff / (24 * 60 * 60 * 1000);
+				long diffSeconds = diff / 1000 % 60;
+				long diffMinutes = diff / (60 * 1000) % 60;
+				long diffHours = diff / (60 * 60 * 1000) % 24;
+
+				if(diffDays>0) {
+					diffHours = diffDays * 24;
+				}
+				
+//				int sec = timeValue.getSeconds() - breaks.getBreakStartTime().getSeconds();
+//				int min = timeValue.getMinutes() - breaks.getBreakStartTime().getMinutes();
+//				int hr = timeValue.getHours() - breaks.getBreakStartTime().getHours();
+//				Time totTime = new Time(hr, min, sec);
+				
+				DecimalFormat df = new DecimalFormat("00");
+				breaks.setTotalTime(df.format(diffHours)+":"+df.format(diffMinutes)+":"+df.format(diffSeconds));
+				breaks.setBreakEndDate(new Date());
+				breaks.setBreakEndDateTime(new Date());
 				breaks.setBreakEndTime(timeValue);
-				breaks.setTotalBreakTime(totTime);
+//				breaks.setTotalBreakTime(totTime);
 					
 			}
 				
@@ -287,6 +334,8 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	@Override
 	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId,String dateFormat,String dayWisetype,String currentDate,String type) {
 		
+		DecimalFormat df = new DecimalFormat("00");
+
 		try {
 			OrgLocations location = orgLocationService.getOrgLocations(orgLocationId);
 			Date[] dates = null;
@@ -314,7 +363,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    	int sec = 0;
 				    	int min = 0;
 				    	int hr = 0;
-				    	Time sum = null;
+				    	String sum = null;
 				    	
 				    	for (ClockInOutUserTimeEntryDTO data : uniqueData.getValue()) {
 				    		
@@ -333,10 +382,25 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    		main.setGraphForamatDate(commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", data.getClockInDate()));
 				    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockOutDate()));
 						
-				    		sec += data.getTotalTime().getSeconds();
-				    		min += data.getTotalTime().getMinutes();
-				    		hr += data.getTotalTime().getHours();
-				    		sum = new Time(hr, min, sec);
+//				    		sec += data.getTotalTime().getSeconds();
+//				    		min += data.getTotalTime().getMinutes();
+//				    		hr += data.getTotalTime().getHours();
+//				    		sum = new Time(hr, min, sec);
+				    		
+				    		
+				    		String[] str = data.getTotalTime().split(":");
+				    		sec += Integer.parseInt(str[2]);
+							if(sec>=60) {
+								min++;
+								sec = sec - 60; 
+							}
+							min += Integer.parseInt(str[1]);
+							if(min>=60) {
+								hr++;
+								min = min - 60;
+							}
+							hr += Integer.parseInt(str[0]);
+				    		sum = df.format(hr)+":"+df.format(min)+":"+df.format(sec);
 				    	}
 				    	
 				    	main.setTotalTime(sum);
@@ -364,7 +428,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    	int sec = 0;
 				    	int min = 0;
 				    	int hr = 0;
-				    	Time sum = null;
+				    	String sum = null;
 				    	
 				    	for (ClockInOutUserTimeEntryDTO data : uniqueData.getValue()) {
 				    		
@@ -382,10 +446,24 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    		main.setGraphForamatDate(uniqueData.getKey());
 				    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockOutDate()));
 						
-				    		sec += data.getTotalTime().getSeconds();
-				    		min += data.getTotalTime().getMinutes();
-				    		hr += data.getTotalTime().getHours();
-				    		sum = new Time(hr, min, sec);
+//				    		sec += data.getTotalTime().getSeconds();
+//				    		min += data.getTotalTime().getMinutes();
+//				    		hr += data.getTotalTime().getHours();
+//				    		sum = new Time(hr, min, sec);
+				    		
+				    		String[] str = data.getTotalTime().split(":");
+				    		sec += Integer.parseInt(str[2]);
+							if(sec>=60) {
+								min++;
+								sec = sec - 60; 
+							}
+							min += Integer.parseInt(str[1]);
+							if(min>=60) {
+								hr++;
+								min = min - 60;
+							}
+							hr += Integer.parseInt(str[0]);
+				    		sum = df.format(hr)+":"+df.format(min)+":"+df.format(sec);
 				    	}
 				    	
 				    	main.setTotalTime(sum);
@@ -416,6 +494,8 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	@Override
 	public ClockInOutUserTimeEntryDTO getTimeReports(OrgLocations loginOrgLocation, User user) {
 		
+		DecimalFormat df = new DecimalFormat("00");
+
 			ClockInOutUserTimeEntryDTO dto = new ClockInOutUserTimeEntryDTO();
 		
 		try {
@@ -426,37 +506,107 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			int sec = 0;
 	    	int min = 0;
 	    	int hr = 0;
-	    	Time sum = null;
+	    	String sum = null;
 	    	
 	    	int brksec = 0;
 	    	int brkmin = 0;
 	    	int brkhr = 0;
-	    	Time brksum = null;
+	    	String brksum = null;
 			
 			for (ClockInOutUserTimeEntryDTO data : list1) {
 				
 				List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
 				for (Breaks breaks : breakList) {
-					if(breaks.getTotalBreakTime() != null) {
-						brksec += breaks.getTotalBreakTime().getSeconds();
-						brkmin += breaks.getTotalBreakTime().getMinutes();
-						brkhr += breaks.getTotalBreakTime().getHours();
-						brksum = new Time(brkhr, brkmin, brksec);
+					if(breaks.getTotalTime() != null) {
+						
+						
+						String[] str = breaks.getTotalTime().split(":");
+						brksec += Integer.parseInt(str[2]);
+						if(brksec>=60) {
+							brkmin++;
+							brksec = brksec - 60; 
+						}
+						brkmin += Integer.parseInt(str[1]);
+						if(brkmin>=60) {
+							brkhr++;
+							brkmin = brkmin - 60;
+						}
+						brkhr += Integer.parseInt(str[0]);
+			    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
+						
+//						brksec += breaks.getTotalBreakTime().getSeconds();
+//						brkmin += breaks.getTotalBreakTime().getMinutes();
+//						brkhr += breaks.getTotalBreakTime().getHours();
+//						brksum = new Time(brkhr, brkmin, brksec);
 					}
 				}
-				
-	    		sec += data.getTotalTime().getSeconds();
-	    		min += data.getTotalTime().getMinutes();
-	    		hr += data.getTotalTime().getHours();
-	    		sum = new Time(hr, min, sec);
+				String[] str = data.getTotalTime().split(":");
+	    		sec += Integer.parseInt(str[2]);
+	    		if(sec>=60) {
+					min++;
+					sec = sec - 60; 
+				}
+	    		min += Integer.parseInt(str[1]);
+	    		if(min>=60) {
+					hr++;
+					min = min - 60;
+				}
+	    		hr += Integer.parseInt(str[0]);
+//	    		sum = new Time(hr, min, sec);
+	    		sum = df.format(hr)+":"+df.format(min)+":"+df.format(sec);
+
 	    	}
 			
-			Time totSum = null;
+			String totSum = null;
 			if(brksum != null) {
-				int totSec = sum.getSeconds() - brksum.getSeconds();
-				int totMin = sum.getMinutes() - brksum.getMinutes();
-				int totHr = sum.getHours() - brksum.getHours();
-				totSum = new Time(totHr, totMin, totSec);
+				
+				int totMin = 0;
+				int totHr = 0;
+				String[] str = sum.split(":");
+				String[] brkStr = brksum.split(":");
+				if(str[2].equals("00")) {
+					str[2] = "60";
+				}if(brkStr[2].equals("00")) {
+					brkStr[2] = "60";
+				}
+				
+				int minSec = 0;
+				if(Integer.parseInt(str[2])<Integer.parseInt(brkStr[2])) {
+					minSec = Integer.parseInt(str[2])+60;
+				}else {
+					minSec = Integer.parseInt(str[2]);
+				}
+				int totSec = minSec - Integer.parseInt(brkStr[2]);
+				if(totSec<0) {
+					totSec = Math.abs(totSec);
+				}
+				if(totSec>=60) {
+					totMin++;
+				}
+				int minMin = 0;
+				if(str[2].equals("60") || Integer.parseInt(str[2])<Integer.parseInt(brkStr[2])) {
+					minMin = Integer.parseInt(str[1]) - 1;
+				}else {
+					minMin = Integer.parseInt(str[1]);
+				}
+				 totMin = minMin - Integer.parseInt(brkStr[1]);
+				 if(totMin<0) {
+					 totMin = Math.abs(totMin);
+					}
+				 if(totMin>=60) {
+					 totHr++;
+					}
+				totHr = Integer.parseInt(str[0]) - Integer.parseInt(brkStr[0]);
+//				totSum = new Time(totHr, totMin, totSec);
+				totSum = df.format(totHr)+":"+df.format(totMin)+":"+df.format(totSec);
+			
+//				int totSec = sum.getSeconds() - brksum.getSeconds();
+//				int totMin = sum.getMinutes() - brksum.getMinutes();
+//				int totHr = sum.getHours() - brksum.getHours();
+//				totSum = new Time(totHr, totMin, totSec);
+			
+			}else {
+				totSum = sum;
 			}
 			dto.setCurrentTotTime(totSum);
 			
@@ -466,37 +616,112 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			int sec2 = 0;
 	    	int min2 = 0;
 	    	int hr2 = 0;
-	    	Time sum2 = null;
+	    	String sum2 = null;
 	    	
 	    	int brksec2 = 0;
 	    	int brkmin2 = 0;
 	    	int brkhr2 = 0;
-	    	Time brksum2 = null;
+	    	String brksum2 = null;
 			
 			for (ClockInOutUserTimeEntryDTO data : list2) {
 				
 				List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
 				for (Breaks breaks : breakList) {
-					if(breaks.getTotalBreakTime() != null) {
-						brksec2 += breaks.getTotalBreakTime().getSeconds();
-						brkmin2 += breaks.getTotalBreakTime().getMinutes();
-						brkhr2 += breaks.getTotalBreakTime().getHours();
-						brksum2 = new Time(brkhr2, brkmin2, brksec2);
+					if(breaks.getTotalTime() != null) {
+//						brksec2 += breaks.getTotalBreakTime().getSeconds();
+//						brkmin2 += breaks.getTotalBreakTime().getMinutes();
+//						brkhr2 += breaks.getTotalBreakTime().getHours();
+//						brksum2 = new Time(brkhr2, brkmin2, brksec2);
+						
+						String[] str = breaks.getTotalTime().split(":");
+						brksec2 += Integer.parseInt(str[2]);
+						if(brksec2>=60) {
+							brkmin2++;
+							brksec2 = brksec2 - 60; 
+						}
+						brkmin2 += Integer.parseInt(str[1]);
+						if(brkmin2>=60) {
+							brkhr2++;
+							brkmin2 = brkmin2 - 60;
+						}
+						brkhr2 += Integer.parseInt(str[0]);
+			    		brksum2 = df.format(brkhr2)+":"+df.format(brkmin2)+":"+df.format(brksec2);
 					}
 				}
 				
-	    		sec2 += data.getTotalTime().getSeconds();
-	    		min2 += data.getTotalTime().getMinutes();
-	    		hr2 += data.getTotalTime().getHours();
-	    		sum2 = new Time(hr2, min2, sec2);
+//	    		sec2 += data.getTotalTime().getSeconds();
+//	    		min2 += data.getTotalTime().getMinutes();
+//	    		hr2 += data.getTotalTime().getHours();
+//	    		sum2 = new Time(hr2, min2, sec2);
+	    		
+	    		String[] str = data.getTotalTime().split(":");
+	    		sec2 += Integer.parseInt(str[2]);
+	    		if(sec2>=60) {
+					min2++;
+					sec2 = sec2 - 60; 
+				}
+	    		min2 += Integer.parseInt(str[1]);
+	    		if(min2>=60) {
+					hr2++;
+					min2 = min2 - 60;
+				}
+	    		hr2 += Integer.parseInt(str[0]);
+//	    		sum = new Time(hr, min, sec);
+	    		sum2 = df.format(hr2)+":"+df.format(min2)+":"+df.format(sec2);
+	    		
+	    		
 	    	}
 			
-			Time totSum2 = null;
+			String totSum2 = null;
 			if(brksum2 != null) {
-				int totSec = sum2.getSeconds() - brksum2.getSeconds();
-				int totMin = sum2.getMinutes() - brksum2.getMinutes();
-				int totHr = sum2.getHours() - brksum2.getHours();
-				totSum2 = new Time(totHr, totMin, totSec);
+				
+				int totMin = 0;
+				int totHr = 0;
+				String[] str = sum2.split(":");
+				String[] brkStr = brksum2.split(":");
+				if(str[2].equals("00")) {
+					str[2] = "60";
+				}if(brkStr[2].equals("00")) {
+					brkStr[2] = "60";
+				}
+				
+				int minSec = 0;
+				if(Integer.parseInt(str[2])<Integer.parseInt(brkStr[2])) {
+					minSec = Integer.parseInt(str[2])+60;
+				}else {
+					minSec = Integer.parseInt(str[2]);
+				}
+				int totSec = minSec - Integer.parseInt(brkStr[2]);
+				if(totSec<0) {
+					totSec = Math.abs(totSec);
+				}
+				if(totSec>=60) {
+					totMin++;
+				}
+				int minMin = 0;
+				if(str[2].equals("60") || Integer.parseInt(str[2])<Integer.parseInt(brkStr[2])) {
+					minMin = Integer.parseInt(str[1]) - 1;
+				}else {
+					minMin = Integer.parseInt(str[1]);
+				}
+				 totMin = minMin - Integer.parseInt(brkStr[1]);
+				 if(totMin<0) {
+					 totMin = Math.abs(totMin);
+					}
+				 if(totMin>=60) {
+					 totHr++;
+					}
+				totHr = Integer.parseInt(str[0]) - Integer.parseInt(brkStr[0]);
+//				totSum = new Time(totHr, totMin, totSec);
+				totSum2 = df.format(totHr)+":"+df.format(totMin)+":"+df.format(totSec);
+				
+//				int totSec = sum2.getSeconds() - brksum2.getSeconds();
+//				int totMin = sum2.getMinutes() - brksum2.getMinutes();
+//				int totHr = sum2.getHours() - brksum2.getHours();
+//				totSum2 = new Time(totHr, totMin, totSec);
+				
+			}else {
+				totSum2 = sum2;
 			}
 			dto.setWeekTotTime(totSum2);
 			
@@ -508,37 +733,109 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			int sec3 = 0;
 	    	int min3 = 0;
 	    	int hr3 = 0;
-	    	Time sum3 = null;
+	    	String sum3 = null;
 	    	
 	    	int brksec3 = 0;
 	    	int brkmin3 = 0;
 	    	int brkhr3 = 0;
-	    	Time brksum3 = null;
+	    	String brksum3 = null;
 			
 			for (ClockInOutUserTimeEntryDTO data : list3) {
 				
 				List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
 				for (Breaks breaks : breakList) {
-					if(breaks.getTotalBreakTime() != null) {
-						brksec3 += breaks.getTotalBreakTime().getSeconds();
-						brkmin3 += breaks.getTotalBreakTime().getMinutes();
-						brkhr3 += breaks.getTotalBreakTime().getHours();
-						brksum3 = new Time(brkhr3, brkmin3, brksec3);
+					if(breaks.getTotalTime() != null) {
+//						brksec3 += breaks.getTotalBreakTime().getSeconds();
+//						brkmin3 += breaks.getTotalBreakTime().getMinutes();
+//						brkhr3 += breaks.getTotalBreakTime().getHours();
+//						brksum3 = new Time(brkhr3, brkmin3, brksec3);
+						String[] str = breaks.getTotalTime().split(":");
+						brksec3 += Integer.parseInt(str[2]);
+						if(brksec3>=60) {
+							brkmin3++;
+							brksec3 = brksec3 - 60; 
+						}
+						brkmin3 += Integer.parseInt(str[1]);
+						if(brkmin3>=60) {
+							brkhr3++;
+							brkmin3 = brkmin3 - 60;
+						}
+						brkhr3 += Integer.parseInt(str[0]);
+			    		brksum3 = df.format(brkhr3)+":"+df.format(brkmin3)+":"+df.format(brksec3);
 					}
 				}
 				
-	    		sec3 += data.getTotalTime().getSeconds();
-	    		min3 += data.getTotalTime().getMinutes();
-	    		hr3 += data.getTotalTime().getHours();
-	    		sum3 = new Time(hr3, min3, sec3);
+//	    		sec3 += data.getTotalTime().getSeconds();
+//	    		min3 += data.getTotalTime().getMinutes();
+//	    		hr3 += data.getTotalTime().getHours();
+//	    		sum3 = new Time(hr3, min3, sec3);
+	    		
+	    		String[] str = data.getTotalTime().split(":");
+	    		sec3 += Integer.parseInt(str[2]);
+	    		if(sec3>=60) {
+					min3++;
+					sec3 = sec3 - 60; 
+				}
+	    		min3 += Integer.parseInt(str[1]);
+	    		if(min3>=60) {
+					hr3++;
+					min3 = min3 - 60;
+				}
+	    		hr3 += Integer.parseInt(str[0]);
+//	    		sum = new Time(hr, min, sec);
+	    		sum3 = df.format(hr3)+":"+df.format(min3)+":"+df.format(sec3);
 	    	}
 			
-			Time totSum3 = null;
+			String totSum3 = null;
 			if(brksum3 != null) {
-				int totSec = sum3.getSeconds() - brksum3.getSeconds();
-				int totMin = sum3.getMinutes() - brksum3.getMinutes();
-				int totHr = sum3.getHours() - brksum3.getHours();
-				totSum3 = new Time(totHr, totMin, totSec);
+
+				int totMin = 0;
+				int totHr = 0;
+				String[] str = sum3.split(":");
+				String[] brkStr = brksum3.split(":");
+				if(str[2].equals("00")) {
+					str[2] = "60";
+				}if(brkStr[2].equals("00")) {
+					brkStr[2] = "60";
+				}
+				
+				int minSec = 0;
+				if(Integer.parseInt(str[2])<Integer.parseInt(brkStr[2])) {
+					minSec = Integer.parseInt(str[2])+60;
+				}else {
+					minSec = Integer.parseInt(str[2]);
+				}
+				int totSec = minSec - Integer.parseInt(brkStr[2]);
+				if(totSec<0) {
+					totSec = Math.abs(totSec);
+				}
+				if(totSec>=60) {
+					totMin++;
+				}
+				int minMin = 0;
+				if(str[2].equals("60") || Integer.parseInt(str[2])<Integer.parseInt(brkStr[2])) {
+					minMin = Integer.parseInt(str[1]) - 1;
+				}else {
+					minMin = Integer.parseInt(str[1]);
+				}
+				 totMin = minMin - Integer.parseInt(brkStr[1]);
+				 if(totMin<0) {
+					 totMin = Math.abs(totMin);
+					}
+				 if(totMin>=60) {
+					 totHr++;
+					}
+				totHr = Integer.parseInt(str[0]) - Integer.parseInt(brkStr[0]);
+//				totSum = new Time(totHr, totMin, totSec);
+				totSum3 = df.format(totHr)+":"+df.format(totMin)+":"+df.format(totSec);
+				
+//				int totSec = sum3.getSeconds() - brksum3.getSeconds();
+//				int totMin = sum3.getMinutes() - brksum3.getMinutes();
+//				int totHr = sum3.getHours() - brksum3.getHours();
+//				totSum3 = new Time(totHr, totMin, totSec);
+
+			}else {
+				totSum3 = sum3;
 			}
 			dto.setMonthTotTime(totSum3);
 			
@@ -552,54 +849,143 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public Time getWorkingTimeByClockId(OrgLocations loc,User user) {
+	public String getWorkingTimeByClockId(OrgLocations loc,User user) {
+		DecimalFormat df = new DecimalFormat("00");
+		
 		List<ClockInOut> list = clockInOutConfigDao.getWorkingTimeByClockId(loc,user);
 		int sec = 0;
     	int min = 0;
     	int hr = 0;
-    	Time sum = null;
+    	String sum = null;
     	
     	int brksec = 0;
     	int brkmin = 0;
     	int brkhr = 0;
-    	Time brksum = null;
+    	String brksum = null;
 		for (ClockInOut clockInOut : list) {
 			
 			List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(clockInOut.getId());
 			for (Breaks breaks : breakList) {
-				if(breaks.getTotalBreakTime() != null) {
-					brksec += breaks.getTotalBreakTime().getSeconds();
-					brkmin += breaks.getTotalBreakTime().getMinutes();
-					brkhr += breaks.getTotalBreakTime().getHours();
-					brksum = new Time(brkhr, brkmin, brksec);
+				if(breaks.getTotalTime() != null) {
+					
+					String[] str = breaks.getTotalTime().split(":");
+					brksec += Integer.parseInt(str[2]);
+					if(brksec>=60) {
+						brkmin++;
+						brksec = brksec - 60; 
+					}
+					brkmin += Integer.parseInt(str[1]);
+					if(brkmin>=60) {
+						brkhr++;
+						brkmin = brkmin - 60;
+					}
+					brkhr += Integer.parseInt(str[0]);
+//					brksec += breaks.getTotalBreakTime().getSeconds();
+//					brkmin += breaks.getTotalBreakTime().getMinutes();
+//					brkhr += breaks.getTotalBreakTime().getHours();
+//					brksum = new Time(brkhr, brkmin, brksec);
+		    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
+
 				}
 			}
-			
-			if(clockInOut.getTotalClockTime() != null) {
-				sec += clockInOut.getTotalClockTime().getSeconds();
-	    		min += clockInOut.getTotalClockTime().getMinutes();
-	    		hr += clockInOut.getTotalClockTime().getHours();
-	    		sum = new Time(hr, min, sec);
+				
+			if(clockInOut.getTotalTime() != null) {
+				String[] str = clockInOut.getTotalTime().split(":");
+				sec += Integer.parseInt(str[2]);
+				if(sec>=60) {
+					min++;
+					sec = sec - 60;
+				}
+	    		min += Integer.parseInt(str[1]);
+	    		if(min>=60) {
+	    			hr++;
+	    			min = min - 60;
+				}
+	    		hr += Integer.parseInt(str[0]);
+//	    		sum = new Time(hr, min, sec);
+	    		sum = df.format(hr)+":"+df.format(min)+":"+df.format(sec);
+
 			}else {
 				
-				int sec1 = new Date().getSeconds() - clockInOut.getClockInTime().getSeconds();
-				int min1 = new Date().getMinutes() - clockInOut.getClockInTime().getMinutes();
-				int hr1 = new Date().getHours() - clockInOut.getClockInTime().getHours();
-				Time currentTime = new Time(hr1, min1, sec1);
+//				int sec1 = new Date().getSeconds() - clockInOut.getClockInTime().getSeconds();
+//				int min1 = new Date().getMinutes() - clockInOut.getClockInTime().getMinutes();
+//				int hr1 = new Date().getHours() - clockInOut.getClockInTime().getHours();
+//				Time currentTime = new Time(hr1, min1, sec1);
 				
-				sec += currentTime.getSeconds();
-	    		min += currentTime.getMinutes();
-	    		hr += currentTime.getHours();
-	    		sum = new Time(hr, min, sec);
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(clockInOut.getClockInDateTime());
+				Date date1 = calendar.getTime();
+				Date date2 = new Date();
+				
+				
+				long diff = date2.getTime() - date1.getTime();
+				long diffDays = diff / (24 * 60 * 60 * 1000);
+				long diffSeconds = diff / 1000 % 60;
+				long diffMinutes = diff / (60 * 1000) % 60;
+				long diffHours = diff / (60 * 60 * 1000) % 24;
+
+				if(diffDays>0) {
+					diffHours = diffDays * 24;
+				}
+				
+				sec += diffSeconds;
+				if(sec>=60) {
+					min++;
+					sec = sec - 60;
+				}
+	    		min += diffMinutes;
+	    		if(min>=60) {
+	    			hr++;
+	    			min = min - 60;
+				}
+	    		hr += diffHours;
+//	    		sum = new Time(hr, min, sec);
+	    		
+	    		sum = df.format(hr)+":"+df.format(min)+":"+df.format(sec);
 			}
 		}
 		
-		Time totSum = null;
+		String totSum = null;
 		if(brksum != null) {
-			int totSec = sum.getSeconds() - brksum.getSeconds();
-			int totMin = sum.getMinutes() - brksum.getMinutes();
-			int totHr = sum.getHours() - brksum.getHours();
-			totSum = new Time(totHr, totMin, totSec);
+			int totMin = 0;
+			int totHr = 0;
+			String[] str = sum.split(":");
+			String[] brkStr = brksum.split(":");
+			if(str[2].equals("00")) {
+				str[2] = "60";
+			}if(brkStr[2].equals("00")) {
+				brkStr[2] = "60";
+			}
+			
+			int minSec = 0;
+			if(Integer.parseInt(str[2])<Integer.parseInt(brkStr[2])) {
+				minSec = Integer.parseInt(str[2])+60;
+			}else {
+				minSec = Integer.parseInt(str[2]);
+			}
+			int totSec = minSec - Integer.parseInt(brkStr[2]);
+			if(totSec<0) {
+				totSec = Math.abs(totSec);
+			}
+			if(totSec>=60) {
+				totMin++;
+			}
+			int minMin = 0;
+			if(str[2].equals("60") || Integer.parseInt(str[2])<Integer.parseInt(brkStr[2])) {
+				minMin = Integer.parseInt(str[1]) - 1;
+			}else {
+				minMin = Integer.parseInt(str[1]);
+			}
+			 totMin = minMin - Integer.parseInt(brkStr[1]);
+			 if(totMin<0) {
+				 totMin = Math.abs(totMin);
+				}
+			 if(totMin>=60) {
+				 totHr++;
+				}
+			totHr = Integer.parseInt(str[0]) - Integer.parseInt(brkStr[0]);
+//			totSum = new Time(totHr, totMin, totSec);
+			totSum = df.format(totHr)+":"+df.format(totMin)+":"+df.format(totSec);
 		}else {
 			totSum = sum;
 		}

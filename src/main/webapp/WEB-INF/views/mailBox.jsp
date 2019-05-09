@@ -357,9 +357,13 @@
 	  $('#checkAllEmails').removeAttr('checked');
 	  $('#mailboxLabel').html(type);
 	  
-	  if(type == "Trash"){
-		  $('#trashtype').html(' <b>Delete For Ever</b>');
-	  }else{
+	  if(type == "Trash") {
+		  $("#trashtype").removeClass("trashIcon mailIcon");
+		  $("#trashtype").addClass("deleTrash deleteForever");
+		  $('#trashtype').html('<b>Delete For Ever</b>');
+	  } else {
+		  $("#trashtype").addClass("trashIcon mailIcon");
+		  $("#trashtype").removeClass("deleTrash deleteForever");
 		  $('#trashtype').html('');
 	  }
 	  
@@ -1194,7 +1198,7 @@ $(document).ready(function(){
 <script>
 function replayToMail(uuid){
 	var sourceleadUrl = '${sourceleadUrl}';
-	location.replace(sourceleadUrl+"/composeMail?UUID="+uuid);  
+	location.replace(sourceleadUrl+"/composeMail?UUID="+uuid + "&mailType='reply'");  
 }
 </script>
 

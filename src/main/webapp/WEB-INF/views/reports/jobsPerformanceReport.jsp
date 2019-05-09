@@ -7,6 +7,9 @@
   <!-- Header Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
+    <div class="pull-left">
+      <h2 class="pull-left">Jobs Report</h2>
+    </div>
        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Jobs Report  </div>
     </section>
        

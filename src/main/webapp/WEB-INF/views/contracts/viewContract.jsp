@@ -558,7 +558,7 @@ function displyContract(stage){
 			
 			if(null != json.initiatorType && "Client" == json.initiatorType && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
 				'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\',\'ROLE_VIEW_EDIT_VENDOR\')">';
 				result = result +	'		<div class="col-md-8 col-sm-8">: <a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+json.orgRelationUUID+'" title="'+json.contractWith+'">'+json.contractWith+'</a></div>';
 				'</sec:authorize>';
@@ -572,7 +572,7 @@ function displyContract(stage){
 			
 			if(null != json.initiatorType && "Vendor" == json.initiatorType && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
 				'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
 				result = result +	'		<div class="col-md-8 col-sm-8">: <a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+json.contractWith+'"> '+json.contractWith+'</a></div>';
 				'</sec:authorize>';
