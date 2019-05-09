@@ -3432,11 +3432,10 @@ public class CandidateDaoImpl implements CandidateDao {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from Candidate c where c.consultantUser.id=:userId and c.orgLocationId.id =:id";
-			Candidate pan = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("id", id)
-					.uniqueResult();
-			if (pan != null) {
-				return pan.getPanNumber();
-			}
+						Candidate pan = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("id", id).uniqueResult();
+						if (pan != null) {
+							return pan.getPanNumber();
+						}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
