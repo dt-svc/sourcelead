@@ -355,7 +355,7 @@
           			 <li class="${sessionData.nav == 'Taxes' ? 'navActive' : ''}"><a href="<c:url value='${appPath}/stateTax/list'/>" title="Taxes"><span class="navIcons finIcon"></span><b>Taxes</b></a></li>
        	 	  </c:if>	
 	     
-	     <li class="${sessionData.nav == 'Taxes' ? 'navActive' : ''}"><a href="${appPath}/performanceGoalsList" title="Goals"><span class="navIcons finIcon"></span><b>Goals</b></a></li>       	
+	     <%-- <li class="${sessionData.nav == 'Taxes' ? 'navActive' : ''}"><a href="${appPath}/performanceGoalsList" title="Goals"><span class="navIcons finIcon"></span><b>Goals</b></a></li> --%>       	
 			
           	
         </ul>
