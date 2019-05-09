@@ -72,6 +72,7 @@ import com.bis.sourcelead.dto.WeekDaysDTO;
 import com.bis.sourcelead.dto.helper.ProjectMemberDTOConverter;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -93,6 +94,7 @@ import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -204,6 +206,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	private HolidayDAO holidayDAO;
+	
+	@Autowired
+	private EmployeesService employeesService;
 
 	/***
 	 * @purpose : Getting ProjectList For Login User (Step - 1)
@@ -390,6 +395,7 @@ public class TimesheetRestController {
 					tedDTO.setSaveButtonVisible(true);
 				}
 				tedDTO.setSubmitButtonVisible(submitButtonVisible);
+				 
 				int workingDaysPerWeek = 0;
 				if(StringUtils.isNotEmpty(orgLocations.getWeekOffDays())) {
 					 String[] strArray = orgLocations.getWeekOffDays().split(",");
@@ -418,11 +424,14 @@ public class TimesheetRestController {
 				}else {
 					workingDaysPerWeek = 5;
 				}
-                
-                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
-					avgWorkingHoursPerDay = 8; 
+				Integer avgWorkingHoursPerDay = 8;
+				Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(loginUser.getId(),orgLocations.getId());
+				if(employee == null) {
+					avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+				}else if(StringUtils.isNotEmpty(employee.getDailyHours())){
+					avgWorkingHoursPerDay = Integer.parseInt(employee.getDailyHours());
 				}
+                
                 Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,candidate);
 				tedDTO.setEmpLeaveMap(empLeaveMap);
 				Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
@@ -2234,10 +2243,13 @@ public class TimesheetRestController {
 					}else {
 						workingDaysPerWeek = 5;
 					}
-	                
-	                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-					if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
-						avgWorkingHoursPerDay = 8; 
+					
+					Integer avgWorkingHoursPerDay = 8;
+					Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(loginUser.getId(),orgLocations.getId());
+					if(employee == null) {
+						avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+					}else if(StringUtils.isNotEmpty(employee.getDailyHours())){
+						avgWorkingHoursPerDay = Integer.parseInt(employee.getDailyHours());
 					}
 					Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,candidate);
 					tedDTO.setEmpLeaveMap(empLeaveMap);	
@@ -5781,6 +5793,8 @@ public class TimesheetRestController {
 			Holiday holiday = new Holiday();
 			holiday.setId(holidayId);
 			userDroppedHolidays.setHoliday(holiday);
+			userDroppedHolidays.setToDate(holiday.getToDate());
+			userDroppedHolidays.setFromDate(holiday.getFromDate());
 			User user = new User();
 			user.setId(holidayUserId);
 			userDroppedHolidays.setUser(user);
