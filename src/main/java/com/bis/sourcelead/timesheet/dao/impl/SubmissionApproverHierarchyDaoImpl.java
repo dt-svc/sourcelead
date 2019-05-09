@@ -2443,20 +2443,23 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		                           .append( "              INNER JOIN(SELECT ID,ORG_ID,LEVEL,PROJECT_ID,STATUS FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBPM.PROJECT_CLIENTS_ID ")
 		   		   		           .append( "              INNER JOIN (SELECT ID,ORG_TYPE FROM ORG) AS OG ON OG.ID = SUBPC.ORG_ID     ")	   
 		   		   		           .append("               WHERE SUBPM.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND SUBPC.PROJECT_ID = PROJ.ID AND OG.ORG_TYPE != 'GUEST' AND SUBPC.STATUS != '0') ")
-		   		   		           .append( "          THEN  false ")
-		   		   		           .append( "          ELSE  true ")
+		   		   		           .append( "          THEN  ")
+		   		   		           .append( "            (   ")
+		   		   		           .append( "              (PC.LEVEL+1) IN (  ")
+		   		   		           
+		   		   		           .append(" SELECT SUBPC.LEVEL FROM SUBMISSION_APPROVER_HIERARCHY  SUBSAH " + 
+		   		   		        		" INNER JOIN (SELECT ID,MASTER_CANDIDATE_ID FROM PROJECT_MEMBERS) AS SUBPM ON SUBPM.ID = SUBSAH.PROJECT_MEMBER_ID " +
+		   		   		           		" INNER JOIN (SELECT ID,LEVEL,PROJECT_CLIENTS_ID FROM PROJECT_APPROVER_HIERARCHY) AS SUBPAH ON SUBPAH.ID = SUBSAH.HIERARCHY_ID " + 
+		   		   		           		" INNER JOIN (SELECT ID,LEVEL FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBSAH.PROJECT_CLIENT_ID " + 
+		   		   		           		
+		   		   		           		" WHERE SUBSAH.SUBMISSION_APPROVALSTATUS =  '"+Submission_ApprovalStatus.APPROVED+"' AND " + 
+		   		   		           		" SUBPM.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND SUBSAH.FREQUENCY_START_DATE = '"+sqlStartDate+"' AND SUBSAH.FREQUENCY_END_DATE = '"+sqlEndDate+"' " + 
+		   		   		           		" AND SUBPAH.LEVEL IN (SELECT MAX(INNERPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY INNERPAH WHERE INNERPAH.PROJECT_CLIENTS_ID = SUBPAH.PROJECT_CLIENTS_ID)")
+		   		   		          .append("                              )")
+		   		               	   .append( "         ) ELSE  true ")
 		   		   		           .append( "   END )      ");	   
 		                         
-		   		   		           
-		   		   		          /* .append( "                    )")
-		                          .append( "        (PC.LEVEL+1) IN ( SELECT SUBPC.LEVEL FROM SUBMISSION_APPROVER_HIERARCHY  SUBSAH ")
-		                          .append( "                           INNER JOIN (SELECT ID,LEVEL,PROJECT_CLIENTS_ID FROM PROJECT_APPROVER_HIERARCHY) AS SUBPAH ON SUBPAH.ID = SUBSAH.HIERARCHY_ID ")
-		                          .append( "                           INNER JOIN (SELECT ID,LEVEL FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBSAH.PROJECT_CLIENT_ID ")
-		                                                               //getting vendor highest level manager approved record
-		                          .append( "                           WHERE SUBSAH.SUBMISSION_APPROVALSTATUS = '"+Submission_ApprovalStatus.APPROVED+"' AND SUBSAH.MASTER_CANDIDATE_ID = SAH.MASTER_CANDIDATE_ID AND SUBSAH.FREQUENCY_START_DATE = SAH.FREQUENCY_START_DATE AND SUBSAH.FREQUENCY_END_DATE = SAH.FREQUENCY_END_DATE  ")
-		                                                               //getting vendor highest level manager
-		                          .append( "                           AND SUBPAH.LEVEL IN (SELECT MAX(INNERPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY INNERPAH WHERE INNERPAH.PROJECT_CLIENTS_ID = SUBPAH.PROJECT_CLIENTS_ID) ")
-		                          .append("         )");*/
+		   		   		          
 		                           
       //checking with level2 manager approver in same org                          
 	  StringBuilder sequentiaLCheckForLevel2Approval= new StringBuilder();
@@ -2685,7 +2688,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			response.setRecordsFiltered(totalCount);
 		}
 		response.setData(reportList);
-		System.out.println("Query Execution>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((queryEndTime - queryStartTime), TimeUnit.NANOSECONDS));
+		//System.out.println("Query Execution>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((queryEndTime - queryStartTime), TimeUnit.NANOSECONDS));
 		return response;
      }
 	
