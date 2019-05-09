@@ -48,7 +48,10 @@ display:none;
 }
 </style>
 </head>
-
+<%@page session="true"%>
+    <c:if test="${staticTime == null || staticTime == 0 }">
+    	<c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+    </c:if>
 <!-- 
 JQUERY DOs AND DONTs 
 ONE AND ONLY ONE JQUERY READY
@@ -79,7 +82,9 @@ var timezone = '${SourceLeadWeb_timezone}';
 var timezoneId ='${SourceLeadWeb_timeZoneId}'; 
 var candidateId = '${SourceLeadWeb_candidateId}';
 var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
-
+var userType =  '${SourceLeadWeb_loginUserRole}'; 
+var userSessionId = '${SourceLeadWeb_actionUUID}';
+var loginOrgLocationName = '${SourceLeadWeb_orgName}'; 
 // below are related variable used in showing tabs in dashboard.
 var bothTimesheets ='${bothTimesheets}';
 var onlyTimesheets ='${onlyTimesheets}';
@@ -89,10 +94,11 @@ var orgATS = '${SourceLeadWeb_ats}';
 var orgVMS = '${SourceLeadWeb_vms}';
 var requirementId = '${requirementId}'; 
 var locationDate = '${SourceLeadWeb_dateFormat}';	
+var searchType = '${searchType}';
 </script>
 <script>
   $(document).ready(function() {
-	  $('body').load("/resources/sourceleadHtmls/dashboardHtml.html");
+	  $('body').load("/resources/sourceleadHtmls/dashboardHtml.html?staticTime=${staticTime}");
 	});
 </script>
 
