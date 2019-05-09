@@ -463,5 +463,10 @@ function searchClient() {
 
 </script>
 <!--################# Advance-search scripts Ends  #################-->
-
+<script>
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+	}
+</script>
 
