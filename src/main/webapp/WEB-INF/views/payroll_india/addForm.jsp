@@ -1,12 +1,12 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script type="text/javascript" src='/resources/js/tax/tax.js'></script>
 <script type="text/javascript">
 	var activeTaxTab = "${activeTaxTab}";
-	var formId = "${formId}";
+	formId = "${formId}";
 	var isEditable = ${isEditable};
 </script>
-<script type="text/javascript" src='/resources/js/tax/tax.js'></script>
 <section class="content-wraper contentWraper">
 	<jsp:include page="../payroll_india/taxHeader.jsp"></jsp:include>
 	<div class="timesheet_out">

@@ -271,7 +271,7 @@ function getItDeclarationSubmissionList(uuid, financialYear, pageNo) {
 			if(formList.length > 0) {
 				for(var e in formList) {
 					var text = "<tr>";
-					text += "	<td>" + formList[e].userId + "</td>";
+					text += "	<td>" + formList[e].employeeId + "</td>";
 					text += "	<td>";
 					text += "		<div class='tblminwidth proj_show'>";
 					text += "			<span>" + formList[e].userName + "</span> <a href='viewForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "'><i class='fa fa-binoculars'></i></a>";
