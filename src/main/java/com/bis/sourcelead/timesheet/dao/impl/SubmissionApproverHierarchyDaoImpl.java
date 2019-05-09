@@ -2555,7 +2555,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		    newStatusQuery.append("  LEFT JOIN (SELECT ID,LOCATION_ID,RESPONDER_LOCATION_ID,UUID FROM ORG_RELATIONS) AS ORGRL ON ORGRL.ID = PC.ORG_RELATION_ID AND PC.ORG_RELATION_ID IS NOT NULL");
 		    
 		    newStatusQuery.append(" WHERE ")
-		                 
+		 		        .append(" PROJ.IS_PROJECT_FOR_TIMESHEETS = 'Y' ")
+		                .append(" AND ")
 		                 //should be a low-level org in the case of client-vendor relationship
 		                .append(" PC.LEVEL IN(SELECT MAX(SUBPC.LEVEL) FROM PROJECT_MEMBERS SUBPM ")
 		                .append( "              INNER JOIN(SELECT ID,ORG_ID,LEVEL,PROJECT_ID,STATUS FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBPM.PROJECT_CLIENTS_ID ")
