@@ -56,11 +56,12 @@ public class ApplicantBySourceRestController {
 	public ResponseList<ApplicantsBySourceDTO> getApplicantBySourceDetails(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception {
 		
 		ResponseList<ApplicantsBySourceDTO> response = new ResponseList<>();
+		List<ApplicantsBySourceDTO> applicantBySourceList = new ArrayList<>();
 		try{
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if(loginUser != null){
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<ApplicantsBySourceDTO> applicantBySourceList = new ArrayList<>();
+				
 				List<Long> jobIdList = new ArrayList<>();
 				DecimalFormat df = new DecimalFormat("#.00");
 				
@@ -400,12 +401,17 @@ public class ApplicantBySourceRestController {
 						response.setResponseMessage(Result.FAILED.getValue());
 					}
 				 
-				}
-
-			}else if (loginUser == null) {
+				}else if(jobIdList == null || jobIdList.isEmpty()) {
+				    	response.setData(applicantBySourceList); // returning empty data List if jobIdList is empty or null.
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+			    } 
+			}
+			else if (loginUser == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-			} else {
+			}
+			else {
 				response.setResponse(Result.INVALID_DATA.name());
 				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}

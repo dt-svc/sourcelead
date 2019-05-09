@@ -64,6 +64,7 @@ public class ApplicantsBackoutReportRestController {
 	public Response<ApplicantsBackoutDTO> getApplicantBackoutReport(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception {
 		
 		Response<ApplicantsBackoutDTO> response = new Response<>();
+		ApplicantsBackoutDTO applicantsBackoutDTOEmpty = new ApplicantsBackoutDTO();
 		try{
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if(loginUser != null){
@@ -133,6 +134,12 @@ public class ApplicantsBackoutReportRestController {
 					response.setObject(applicantsBackoutDTO);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
+				}else if (applicantsBackoutDTO == null && jobIdList.isEmpty()) {
+					if (response.getObject() == null) { // if jobIdList is empty then sending empty list as a response to service.
+						response.setObject(applicantsBackoutDTOEmpty);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
 				} else {
 					response.setResponse(Result.FAILED.name());
 					response.setResponseMessage(Result.FAILED.getValue());
