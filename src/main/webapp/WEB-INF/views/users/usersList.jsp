@@ -339,7 +339,7 @@ function getUsersSearchResult(searchValue){
 										<%-- <a href="<c:url value='${appPath}/uploadForm'/>">Import</a> --%>
 										<div class="immSub">
 											<a href="#">Import</a>
-											<div class="immSubMenu">
+										<div class="immSubMenu immSubMenu-custome">
 
 												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm">Associate Import</a>
 								 
@@ -349,6 +349,7 @@ function getUsersSearchResult(searchValue){
 												</c:if>
 
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+												<a href="${atsUrl}/uploadForm">Associate Import</a>
 												    <a href="${atsUrl}/uploadAssociateBankingDetailsForm">Associate Bank Detail</a>
 												    <a href="${atsUrl}/uploadAssociateInformation">Associate Information</a>
 													<a href="${atsUrl}/uploadAssociateSalary">Associate Salary Import</a>
