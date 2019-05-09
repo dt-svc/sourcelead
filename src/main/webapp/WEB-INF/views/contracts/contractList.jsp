@@ -123,14 +123,6 @@ $(document).ready(function(){
    getStageCounts();
 });
 </script>
-
-<style>
-.CurDiv { position: static !important; float: left;}
-.timesheet_head ul {
-padding: 2px 300px 2px 0px;
-}
-</style>
-
 <section class="content-wraper">
 <section class="content-header clearfix">
  <div class="success_pop" id="contractSelector" style="display: none;"> 
@@ -247,7 +239,7 @@ padding: 2px 300px 2px 0px;
 </section>
  
  
-	<div class="timesheet_head">
+	<div class="timesheet_head timesheet_head_customize">
 		<div class="ContrBut">
 <!-- 		    <input type="hidden" name="tabType" id="tabType" value='Vendor'> -->
 			<!-- <a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
