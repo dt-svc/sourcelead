@@ -171,7 +171,9 @@ $(document).ready(function(){
  
  <script>
  function showGradePopUp() {
-	    $(".popupWrap").fadeIn(100);
+	    //$(".popupWrap").fadeIn(100);
+	    $("#gradePopup").fadeIn(100);
+	    
 	    $(".mask").show();
 	}
  

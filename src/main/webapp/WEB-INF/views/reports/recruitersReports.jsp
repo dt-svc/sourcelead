@@ -206,6 +206,10 @@ function recruiterReportExport(){
  function resetFilter() {
 	 $("ul#myTeamsUL > li input:checkbox").prop("checked",false);
 	 $("ul#myRolesUL > li input:checkbox").prop("checked",false);
+	 $("#myTeamsInput").val('');
+	 $("#myRolesInput").val('');
+	 myTeamsFunction();
+	 myRolesFunction();
 }
  function myTeamsFunction() {
 	    var input, filter, ul, li, a, i;
