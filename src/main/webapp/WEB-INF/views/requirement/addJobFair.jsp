@@ -91,10 +91,10 @@
 						</div>
 						<div class="col-md-6">
 							<label class="clearfix">Select Client</label>
-							<div class="clearfix">
+							<div class="clearfix dropdown-select">
 								<div class="row">
 									<div class="col-md-12">
-										<select multiple class="chosen-select form-control" name="clientList" field-name="Client" 
+										<select class="form-control" name="clientList" field-name="Client" 
 											id="clientList" ${jobFair.id == 0 ? "disabled='disabled'" : ""}>
 												<c:choose>
 													<c:when test="${jobFair.selectedClient != null && jobFair.selectedClient != ''}">
