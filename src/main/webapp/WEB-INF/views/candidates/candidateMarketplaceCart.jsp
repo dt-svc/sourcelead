@@ -302,9 +302,14 @@ function goToWalletList(){
 
 function getCandidateDetailsFromMarketcart(customDate, fromDate, toDate){
 	var candidateLength = 0;
-	 if(customDate == null){
-		 	customDate = "";
-		 	}
+	 if(customDate == null || customDate == "undefined"){
+			customDate = "";
+			}
+			
+			if(fromDate == null || toDate== null){
+				fromDate = "";
+				toDate = "";
+			}
 	/* var checkedDate = $('input[name=MarketCartDate]:checked').val();
 	var creationStartDate = $("#creationStartDate").val();
 	var creationEndDate = $("#creationEndDate").val();  */
@@ -466,7 +471,11 @@ function deleteAllCandidatesForCheckout(){
 			if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
             }else if(result.response === "SUCCESS") {
-            	window.location.replace("${SourceLeadWeb_atsUrl}/globalMarketplacePage");
+            	getCandidateDetailsFromMarketcart();
+            	updateInvoiceDetails();
+				updateMarketplaceCartCountAndPrice();
+				$("#remove_marketCartDeleteAll_pop").fadeOut(200);
+    			$(".project_inn_mask").fadeOut(200);
             }else{
            	 	showError("Operation failed, please try again");
             }}

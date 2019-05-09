@@ -10,12 +10,6 @@
  };
 </script> 
 
-<style type="text/css">
-.require_wrap_table.chosen-table{
-overflow: visible;
-}
-</style>
-
 <body>
 
   
