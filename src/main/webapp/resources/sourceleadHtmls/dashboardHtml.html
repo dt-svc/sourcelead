@@ -1,9 +1,11 @@
 <!doctype html>
 <html>
+
+
 <script src="/resources/js/dashboard.js"></script>
+
 <script src="/resources/js/masterSideNav.js"></script>
 <script src="/resources/js/masterHeader.js"></script>
-
 
 <style>
 .chosen-container {
@@ -511,7 +513,7 @@ $('#dasboardTaskDatpicker').datepicker({
         	<div class="dashNewWrapHead clearfix">
 				<h4 class="pull-left">Project Requests</h4>
 	     	    <ul class="nav nav-tabs pull-right">
-	     	    	<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
+	     	    	<!-- <sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')"> -->
 				        <li class="active" id="associateDiv"><a  onclick="resourceRequestList('Waiting For Approval')">Associate</a></li>
 				        <li id="newResourceDiv"><a href="javascript:void(0)"  onclick="newResourceRequestList('Waiting For Approval');">New Resource</a></li>
 				       </sec:authorize> 
@@ -945,10 +947,14 @@ width: 100% !important;
 	</section>
 </div>
 <!-- Footer Area -->
-<footer class="footer-area clearfix text-center">
-    <div class="clearfix">&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved</div>
-<!--     <div class="powered-by"> Powered by: businessintelli.com </div>
- -->  </footer>
+<footer class="footer-area clearfix">
+    <div class="col-md-6 text-left">
+    	&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved
+    </div>
+            <div class='col-md-6 text-right'>
+                  <a href="/terms-of-use.html" target="blank" title="Terms of Service">Terms of Service</a> <small class="text-muted">|</small> <a href="/privacy-policy.html" target="blank" title="Privacy Policy">Privacy Policy</a>
+            </div>
+</footer>
   
   <div class='file_mask'>
   </div>
@@ -966,6 +972,122 @@ width: 100% !important;
 	</div>
 	<span></span>
   </div> 
+  <form action="/logout" method="post" id="logoutForm">
+  <input type="hidden" name="userSessionId" value="">
+   <input type="hidden" name="orgLocationId" value="">
+ <input type="hidden" name="" value="">
+</form>
+<form action="/logout" method="post" id="logoutForm">
+ <input type="hidden" name="" value="">
+</form>
 </body>
 
 </html>
+<!-- <script>
+function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId,type,addressId) {
+    initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId,latitudeId,longtitudeId);
+    geolocate(latitudeId,longtitudeId);
+}
+function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId,latitudeId,longtitudeId) {
+
+	if(type == "invite"){
+    	 var input = (document.getElementById(locationId));
+    	    var options = {
+    	    		types: ['geocode'],
+    	        componentRestrictions: {
+    	        	country: ["IN","US","AU","SG","GB","FR"]
+    	        }
+    	    };
+    	    autocomplete = new google.maps.places.Autocomplete(input, options);
+    }else{
+    	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {
+    		types: ['geocode'],
+      
+        });
+    }
+  
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+	  alert("events");
+  place = autocomplete.getPlace();
+  var address = {};
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    switch (addressType) {
+       case "route":
+    	 address.name=place.address_components[i].long_name;
+    	 break;
+      case "locality":
+        address.city = place.address_components[i].long_name;
+        break;
+      case "administrative_area_level_1":
+        address.state = place.address_components[i].long_name;
+        break;
+      case "country":
+        address.country = place.address_components[i].long_name;
+        break;
+      case "postal_code":
+        address.zipcode = place.address_components[i].long_name;
+        
+    }
+  }
+ 
+  $("#"+stateId).val(address.state).change();
+  $("#"+cityId).val(address.city).change();
+  $("#"+zipCodeId).val(address.zipcode).change();
+  $("#"+addressId).val($("#"+locationId).val().replace(", "+$("#"+cityId).val()+", "+$("#"+stateId).val()+", "+$("#"+countryId).val(), ""));
+  $("#"+countryId).val(address.country).change();
+  $("#"+countryId).trigger("chosen:updated");
+
+  $("#"+latitudeId).val(place.geometry.location.lat());
+  $("#"+longtitudeId).val(place.geometry.location.lng());
+  
+  if(type == "invite"){
+	  getTimezonesList();
+  }
+  if(type != "editAssociate"){
+    zipcodeMask(address.country,zipCodeId);	
+  }
+});
+}
+function geolocate(latitudeId,longtitudeId) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            if(latitudeId != null && latitudeId != '' && latitudeId !='undefined'){
+            	$("#"+latitudeId).val(latitude);
+            }
+            if(longtitudeId != null && longtitudeId != '' && longtitudeId != 'undefined'){
+                $("#"+longtitudeId).val(longitude);
+            }
+            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
+        });
+    }
+}
+function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId,addressId){
+	$("#"+locationId).val('');
+	$("#"+stateId).val('');
+	$("#"+cityId).val('');
+	$("#"+zipCodeId).val('');
+	$("#"+addressId).val('');
+	$("#"+countryId).val('');
+	$("#"+countryId).trigger("chosen:updated");
+}
+function zipcodeMask(country,zipCodeId){
+	
+	if(country == "India" || country == "Singapore"){
+		 $("#"+zipCodeId).mask("999999");
+	}else if(country == "United States" || country == "France"){
+		$("#"+zipCodeId).mask("99999");
+	}else if(country == "Australia"){
+		$("#"+zipCodeId).mask("9999");
+	}else if(country == "United Kingdom"){
+		$("#"+zipCodeId).mask("aa99");
+	}else{
+		$("#"+zipCodeId).mask("999999");
+	}
+		     
+}
+
+</script> -->

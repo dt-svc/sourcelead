@@ -723,10 +723,10 @@ $(document).keyup(function(e) {
 			 $(".advancedsearch-mask").fadeIn();
 		}
 		
-		function closeAdsrch(){
+		/* function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
 			$(".advancedsearch-mask").fadeOut();
-		}
+		} */
 </script>
- <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+ <div class="advancedsearch-mask"></div>
 <jsp:include page="../masterFooter.jsp" />

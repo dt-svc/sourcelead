@@ -6,6 +6,9 @@
 <div id="popUp"></div>
 <form id="requirementWorkFlowForm" name="requirementWorkFlowForm">
   <section class="content-wraper">
+   <div class="success_pop" id="selector" >
+	       <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+			</div>
     <section class="content-header clearfix">
       <div class="pull-left">
       
@@ -24,15 +27,19 @@
       
       </div>
     </section>
+    
+    <c:if test="${not empty requirementWorkFlowStagesDTO}">
     <div class="clearfix">
-		
+		 
        <div class="positionRelative reportHead clearfix mb">
         <ul class="pull-right list-unstyled list-inline">
+         <c:if test = "${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
           <li>
           <c:if test="${not empty requirementWorkFlowStagesDTO}">
-          <a class="newAdBtn mr5"  href="${SourceLeadWeb_sourceleadUrl}/addStage?uuid=<c:out value="${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}" />" title="Add">+ Add</a>
+          <a class="newAdBtn mr5"  href="${SourceLeadWeb_sourceleadUrl}/addStage?uuid=<c:out value="${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}" />" title="Add">+ Stage</a>
           </c:if>
           </li>
+         </c:if>
         <li class="">
             <input class="repSearchBar" placeholder="Search" id="searchtext" type="text">
             <span class="repSearchIcon" onclick="getViewWorkflowStagesList();"></span>
@@ -40,7 +47,10 @@
         </ul>
         <div class="clearfix"></div>
       </div>
+       
     </div>
+	</c:if>
+
     
     <c:if test="${not empty requirementWorkFlowStagesDTO}">
     <div class="clearfix backgroundWhite mb">
@@ -49,11 +59,20 @@
           <div class="form-group clearfix">
             <label class="col-md-3">Name<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-9">
-              <input type="text" 
-              value='<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}"/>'
-              class="form-control" id="workFlowName" name="workFlowName" placeholder="WorkFlow Name" field-name="WorkFlow Name"
-								data-validation="required validate_length length1-100">
-            </div>
+									<input type="text"
+										value='<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}"/>'
+										class="form-control" id="workFlowName" name="workFlowName"
+										placeholder="WorkFlow Name" field-name="WorkFlow Name"
+										data-validation="required validate_length length1-100"
+										<c:choose>
+							<c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
+							readonly>
+							</c:when>
+								<c:otherwise>
+							>
+							</c:otherwise>
+						</c:choose>
+								</div>
           </div>
         </div>
         <div class="clearfix mt col-md-6">
@@ -61,9 +80,18 @@
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
               <textarea rows="2" 
-              value = '<c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/>'
+              value = ''
               class="form-control" name="description" id="description" placeholder="Description" field-name="Description"
-								data-validation="validate_length length1-500" data-validation-optional="true"></textarea>
+								data-validation="validate_length length1-500" data-validation-optional="true"
+								<c:choose>
+							<c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
+							readonly> <c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/>
+							</c:when>
+								<c:otherwise>
+							> <c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/>
+							</c:otherwise>
+						</c:choose>
+								</textarea>
             </div>
           </div>
         </div>
@@ -76,7 +104,7 @@
   <!-- dynamic content starts here -->
   
  		 <c:if test="${not empty requirementWorkFlowStagesDTO}"> 
-		<ul class="list-unstyled widgetDivLi">
+		<ul class="list-unstyled widgetDivLi" id = "stageList">
 		
 		<c:forEach var="requirementWorkFlowStages" items="${requirementWorkFlowStagesDTO}">	
 		<li class="widgetDiv mb clearfix">
@@ -115,15 +143,20 @@
 						<span class='submissionShare pull-left'></span>
 					</c:if>
 					
-										
 					<h4 class="pull-left mt10 ml">${requirementWorkFlowStages.stageName}</h4>
 				</div>
 				</div>
 				<div class="col-md-2">
+				
+					<c:if test = "${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
+					
 					<ul class="list-inline list-unstyled pull-right mb0">
 						<c:if test = "${requirementWorkFlowStages.editable == 'Y'}">
 						<li>
-							<a title="Edit" href="${SourceLeadWeb_sourceleadUrl}/addStage"><i class="fa fa-pencil"></i></a>
+							<a title="Edit" 
+							onclick = 'editStage("${requirementWorkFlowStages.uuid}",
+							"${requirementWorkFlowStages.requirementWorkFlowUuid}")'>
+							<i class="fa fa-pencil"></i></a>
 						</li>
 						<li>
 							<a title="Delete" 
@@ -138,7 +171,10 @@
 						</c:if>	
 						
 					</ul>
+					</c:if>
+					
 			</div>
+			
 		</div>
 		<!-- Cardmdoel Widget ends -->
 		</li>
@@ -147,24 +183,45 @@
 		</c:if>
 		
 		<!-- dynamic content ends here -->
-		<c:if test="${not empty requirementWorkFlowStagesDTO}">
-		<div style="display: none;" id = "stagesDto" value = "{requirementWorkFlowStagesDTO}"></div>
-		</c:if>
-		<div class="footerstyelsNew">
-	<div class="clearfix">
-		<div class="pull-right">
-		<input value="Save" id="saveReqWorkFlow" 
-		onclick="saveRequirementWorkFlow('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');"
-		 class="btn btn-primary" type="button">
-		<input value="Cancel" class="btn btn-default ml" type="button" onclick = "cancelViewWorkflow();">
-		</div>
-	</div>
-	</div>
-	</section>
+			<c:if test="${not empty requirementWorkFlowStagesDTO}">
+				<div class="footerstyelsNew">
+					<div class="clearfix">
+						<div class="pull-right">
+						<c:choose>
+							<c:when
+								test="${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
+									
+									<input value="Save" id="saveReqWorkFlow"
+										onclick="saveRequirementWorkFlow('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');"
+										class="btn btn-primary" type="button"> <input
+										value="Cancel" class="btn btn-default ml" type="button"
+										onclick="cancelViewWorkflow();">
+													</c:when>
+							<c:otherwise>
+							<input value="<< Back To Application Workflow" 
+										onclick="cancelViewWorkflow();"
+										class="btn btn-primary" type="button">
+		
+							</c:otherwise>
+						</c:choose>
+
+
+						</div>
+					</div>
+				</div>
+			</c:if>
+
+		</section>
 	</form>
     </div>
   </section>
 </div>
+<script>
+ function editStage(stageUuid, workflowUuid){
+	window.location.href = "${SourceLeadWeb_sourceleadUrl}/editStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid;
+	
+} 
+</script>
 <script>
 
 function cancelViewWorkflow(){
@@ -218,7 +275,7 @@ function deletepopup(stageUuid, stageName, workflowUuid){
 	result = result +" <div class='project_inn_mask'></div>"; 
 	result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +" <p>Do you want to delete "+stageName+"?</p>";
-	result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteRequirementWorkflowStage(\''+stageUuid+'\', \''+workflowUuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteRequirementWorkflowStage(\''+stageUuid+'\', \''+workflowUuid+'\', \''+stageName+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +" </div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -245,14 +302,16 @@ function deletepopup(stageUuid, stageName, workflowUuid){
 	});
 	</script>
 	<script>
-	function deleteRequirementWorkflowStage(stageUuid, workflowUuid){
-		var stageDto = $("#stagesDto").val();
+	function deleteRequirementWorkflowStage(stageUuid, workflowUuid, stageName){
+		 $("#popUp").empty();
+	     $(".project_inn_mask").fadeOut(200);
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/deleteRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid,
 			success : function(dataList){
 				if(dataList == "Success"){
-					location.reload();
+				      $("ul#stageList li:contains('"+stageName+"')").remove();
+				     showSuccessMsg("Successfully Deleted "+stageName);
 				}else{
 					 showError("Operation failed, please try again");
 				}
@@ -265,6 +324,10 @@ function deletepopup(stageUuid, stageName, workflowUuid){
 		 $("#popUp").empty();
 	     $(".project_inn_mask").fadeOut(200);
 	}
-
+	function showSuccessMsg(msg){
+		$('#selector').show();
+		$('#msgDiv').text(msg)
+		setTimeout(function(){ $('#selector').hide();$('#msgDiv').text("") }, 1000);
+	}
 </script>
 <jsp:include page="../masterFooter.jsp" /> 

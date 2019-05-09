@@ -1,4 +1,4 @@
-	var commentUsers = [], selectedUsers = [];
+var commentUsers = [], selectedUsers = [];
 var commentConfig = {};
 
 $(document).ready(function() {

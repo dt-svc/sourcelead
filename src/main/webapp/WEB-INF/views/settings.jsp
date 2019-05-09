@@ -212,7 +212,7 @@
 									<c:if test="${SourceLeadWeb_country == 'United States'}">
 										<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
 										<div class="clearfix text-center">
-											<h4> Us Payroll Configuration</h4>
+											<h4>Payroll Configuration</h4>
 										</div>
 									</c:if>
 								</a>
@@ -222,7 +222,7 @@
 
 										<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
 										<div class="clearfix text-center">
-											<h4>Ind Payroll Configuration</h4>
+											<h4>Payroll Configuration</h4>
 										</div>
 									</c:if>
 								</a>
@@ -269,6 +269,15 @@
 				</sec:authorize>
 				
 				<div class="col-md-2 reportNewCta">
+					<a href="${SourceLeadWeb_sourceleadUrl}/clockInOutConfig">
+							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+					<div class="clearfix text-center">
+						<h4>Clock In - Clock Out</h4>
+					</div>
+				</div>
+				
+				
+					<div class="col-md-2 reportNewCta">
 						<a href="${SourceLeadWeb_sourceleadUrl}/workflowDashboard">
 							<div class="clearfix text-center mb10">
 								<i class="workflowSVG" title="Work Flow"></i>
