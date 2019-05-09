@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigInteger;
+
 import com.bis.sourcelead.annotations.Required;
 
 public class TeamDTO extends TeamMemberDTO{
@@ -17,8 +19,11 @@ public class TeamDTO extends TeamMemberDTO{
 	private String ownerUserId;
 	
 	private String teamId;
-	//private String teamMemberUserId;
+	
 	private String tabType;
+	
+	private BigInteger id;
+	
 	public String getName()
 	{
 		return name;
@@ -66,6 +71,12 @@ public class TeamDTO extends TeamMemberDTO{
 	public void setTabType(String tabType)
 	{
 		this.tabType = tabType;
+	}
+	public BigInteger getId() {
+		return id;
+	}
+	public void setId(BigInteger id) {
+		this.id = id;
 	}
 	
 }

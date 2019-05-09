@@ -2430,7 +2430,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateMarketPlace> getGlobalMarketplaceCandListGridCard(String[] searchCandidateIds, Long orgId,
 			String candidateLocation, String searchValue, CandidateMarketPlaceDTO candidateMarketPlaceDTO,
-			Map<String, Date> dateValue) {
+			Map<String, Date> dateValue,Date[] checkedDateArray) {
 		Session session = this.sessionFactory.getCurrentSession();
 		StringBuilder query1 = new StringBuilder("");
 		List<CandidateMarketPlace> queryList = null;
@@ -2478,9 +2478,16 @@ public class CandidateDaoImpl implements CandidateDao {
 					&& candidateMarketPlaceDTO.getStatus().equals("" + Constants.CANDIDATE_ALL)) {
 				statusQuery.append(" and ((marketplace.candidateId.status = 0) or (marketplace.candidateId.status = 1)) ");
 			}
-			if (!dateValue.isEmpty()) {
+			if (checkedDateArray != null && checkedDateArray.length > 0) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String customStartdate = dateFormat.format(checkedDateArray[0]);
+				String customEnddate = dateFormat.format(checkedDateArray[1]);
+				dateQuery.append("and ( DATE_FORMAT(marketplace.updatedDate, '%Y-%m-%d') between '"
+						+ customStartdate + "' and '" + customEnddate + "') ");
+			}
+			if (!dateValue.isEmpty() && checkedDateArray.length == 0) {
 				dateQuery.append(
-						" and ((marketplace.updatedDate BETWEEN :endDate AND :startDate) OR (marketplace.updatedDate = :endDate) OR (marketplace.updatedDate = :startDate)) ");
+						" and (marketplace.updatedDate BETWEEN :endDate AND :startDate) OR (marketplace.updatedDate = :endDate) OR (marketplace.updatedDate = :startDate) ");
 			}
 			if (candidateMarketPlaceDTO != null && !candidateMarketPlaceDTO.getEmploymentType().equals("")) {
 				employmentTypeQuery.append(" and (marketplace.candidateId.designationType IN (:employmentList)) ");
@@ -3421,6 +3428,22 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public String getCandidatePanNumberByUserId(long userId, Long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate c where c.consultantUser.id=:userId and c.orgLocationId.id =:id";
+						Candidate pan = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("id", id).uniqueResult();
+						if (pan != null) {
+							return pan.getPanNumber();
+						}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId and can.status = 1";
@@ -3498,5 +3521,21 @@ public class CandidateDaoImpl implements CandidateDao {
 			flag = true;
 		}
 		return flag;
+	}
+	
+	@Override
+	@Transactional
+	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate c where c.consultantUser.id=:userId and c.orgLocationId.id =:orgLocationId";
+			Candidate candidate = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocation.getId()).uniqueResult();
+			if (candidate != null) {
+				return commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getDateOfBirth());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
