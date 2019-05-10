@@ -272,6 +272,8 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String ssnNumber;
 	
+	private String employmentType;
+	
 	public String getCandidateId() {
 		return candidateId;
 	}
@@ -1306,6 +1308,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setSsnNumber(String ssnNumber) {
 		this.ssnNumber = ssnNumber;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
 	}
 
 
