@@ -66,5 +66,6 @@
 <script type="text/javascript">
 	$("#yearList").change(function() {
 // 		location.href = 'list?financialYear='+$(this).val();
+		formsDiv($(this).val());
 	});
 </script>
