@@ -206,11 +206,11 @@ function displayAcceptRejectButtonOnHedder() {
 			  $('#paginationDiv').show();
 			  var pageCount = $('#pageCount').val();
 			  var pageSize = $("#pageSize").val();
-			  $('#dataTableSearchExpenses').val('') ;
+			  $('#dataTableSearchTimesheets').val('') ;
 
-			  $('#dataTableSearchExpenses').val(searchData);
+			  $('#dataTableSearchTimesheets').val(searchData);
 			  if (notifyLink != null && notifyLink != '' && notifyLink != 'undefined' && notifyLink){
-				  $('#dataTableSearchExpenses').val('') ;
+				  $('#dataTableSearchTimesheets').val('') ;
 			  }
 			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
 			  var endingRecord = parseInt(pageNo*pageSize);
@@ -237,8 +237,8 @@ function displayAcceptRejectButtonOnHedder() {
 		  else{
 			  $("#tableContent").empty();
 	    	  $("#tableContent").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
-			  $('#dataTableSearchExpenses').val('') ;
-			  $('#dataTableSearchExpenses').val(searchData);
+			  $('#dataTableSearchTimesheets').val('') ;
+			  $('#dataTableSearchTimesheets').val(searchData);
 			  $('#paginationDiv').hide();
 			  
 			  
