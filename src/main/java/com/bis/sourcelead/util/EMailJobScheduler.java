@@ -4600,8 +4600,8 @@ public class EMailJobScheduler {
 	
 	
 	@SuppressWarnings({ "deprecation", "unused" })
-	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
-	//@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
+	//@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
 	@Async
 	public void runApprovedAndPendingLeaveSchedulerEmailReminderAtOrgLevel() {
 		try {
@@ -4744,41 +4744,53 @@ public class EMailJobScheduler {
 										approvePendingInfoGrid.append("</table>");
 
 									
-									  // loop for notify to emails for (String email :
+									  // loop for notify to emails 
 										
-										for(String email : emailReminder.getNotifyTo().split(",")) {
-											User toUser = new User();
-											toUser.setEmail(email.trim());
-											toUser.setFirstName("");
-											toUser.setLastName("");
-											sendConfiguredMailTo(toUser, emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus); 
-										}
- 
-										
-										String[] roleIds = emailReminder.getRoles().split(",");
-										
-										for(String roleType :roleIds) {
-											if(roleType.equalsIgnoreCase("Reporting Manager")) {
-												//sending the mail to reporting manger
-												for(LeaveApproveHierarchy lah : pendingLeave.getApproverHierarchyList()) {
-												sendConfiguredMailTo(lah.getApproverUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
-												}
-											} 
-											else if(roleType.equalsIgnoreCase("Team Leader")) {
-												//Team lead
-												 List<TeamMembers>  teamMemberList = teamMembersService.getTeamMembersListByUserIdAndLocationId(pendingLeave.getUser().getId(),pendingLeave.getOrgLocations().getId());
-												for(TeamMembers team:teamMemberList) {
-													sendConfiguredMailTo(team.getTeamId().getOwnerUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
-												}
-
-											}
-											else if(roleType.equalsIgnoreCase("Project Manager")){
+										if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
+											for(String email : emailReminder.getNotifyTo().split(",")) {
+												User toUser = new User();
+												toUser.setEmail(email.trim());
+												toUser.setFirstName("");
+												toUser.setLastName("");
+												sendConfiguredMailTo(toUser, emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus); 
+											}	
+												
 												//project Manager
 												 List<ProjectMembers> projectMemberList =  projectMembersService.getAllActiveProjectsByUserIdAndOrgLocationId(pendingLeave.getUser().getId(),pendingLeave.getOrgLocations().getId());
 												for(ProjectMembers members :projectMemberList) {
 													List<ProjectApproverHierarchy> projectApproverHierarchy = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(members.getProjects().getId(),members.getProjects().getOrgLocationsId().getId());
 													for(ProjectApproverHierarchy pah:projectApproverHierarchy) {
 														sendConfiguredMailTo(pah.getApproverUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+													}
+												}
+										}
+ 
+										else if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+											String[] roleIds = emailReminder.getRoles().split(",");
+											
+											for(String roleType :roleIds) {
+												if(roleType.equalsIgnoreCase("Reporting Manager")) {
+													//sending the mail to reporting manger
+													for(LeaveApproveHierarchy lah : pendingLeave.getApproverHierarchyList()) {
+													sendConfiguredMailTo(lah.getApproverUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+													}
+												} 
+												else if(roleType.equalsIgnoreCase("Team Leader")) {
+													//Team lead
+													 List<TeamMembers>  teamMemberList = teamMembersService.getTeamMembersListByUserIdAndLocationId(pendingLeave.getUser().getId(),pendingLeave.getOrgLocations().getId());
+													for(TeamMembers team:teamMemberList) {
+														sendConfiguredMailTo(team.getTeamId().getOwnerUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+													}
+	
+												}
+												else if(roleType.equalsIgnoreCase("Project Manager")){
+													//project Manager
+													 List<ProjectMembers> projectMemberList =  projectMembersService.getAllActiveProjectsByUserIdAndOrgLocationId(pendingLeave.getUser().getId(),pendingLeave.getOrgLocations().getId());
+													for(ProjectMembers members :projectMemberList) {
+														List<ProjectApproverHierarchy> projectApproverHierarchy = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(members.getProjects().getId(),members.getProjects().getOrgLocationsId().getId());
+														for(ProjectApproverHierarchy pah:projectApproverHierarchy) {
+															sendConfiguredMailTo(pah.getApproverUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+														}
 													}
 												}
 											}
