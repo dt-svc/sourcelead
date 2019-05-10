@@ -38,7 +38,7 @@ public class CreditDebitNote implements Serializable {
 
 	
 	@Column(name = "INVOICE_BILL_ID")
-	private String invoice;
+	private String invoiceId;
 
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
@@ -100,10 +100,10 @@ public class CreditDebitNote implements Serializable {
 	private String rejectReason;
 	
 	@Column(name = "CREDIT_NOTE_DATE")
-	private Date creditNoteDate;
+	private Date date;
 	
 	@Column(name = "SUB_TOTAL")
-	private BigDecimal subTotal;
+	private BigDecimal balance;
 	
 	@Column(name = "TOTAL")
 	private BigDecimal total;
@@ -196,11 +196,11 @@ public class CreditDebitNote implements Serializable {
 	}
 
 	public String getInvoice() {
-		return invoice;
+		return invoiceId;
 	}
 
 	public void setInvoice(String invoice) {
-		this.invoice = invoice;
+		this.invoiceId = invoice;
 	}
 
 	public OrgLocations getOrgLocations() {
@@ -300,7 +300,7 @@ public class CreditDebitNote implements Serializable {
 		this.referenceNumber = referenceNumber;
 	}
 
-	public String getNoteType() {
+	public String getNoteType() { 
 		return noteType;
 	}
 
@@ -325,19 +325,19 @@ public class CreditDebitNote implements Serializable {
 	}
 
 	public Date getCreditNoteDate() {
-		return creditNoteDate;
+		return date;
 	}
 
 	public void setCreditNoteDate(Date creditNoteDate) {
-		this.creditNoteDate = creditNoteDate;
+		this.date = creditNoteDate;
 	}
 
 	public BigDecimal getSubTotal() {
-		return subTotal;
+		return balance;
 	}
 
 	public void setSubTotal(BigDecimal subTotal) {
-		this.subTotal = subTotal;
+		this.balance = subTotal;
 	}
 
 	public BigDecimal getTotal() {
