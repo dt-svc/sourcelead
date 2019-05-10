@@ -116,6 +116,16 @@ public class Constants {
 	 * "yyyy-MM-dd HH:mm:ss");
 	 */
 	
+	public static final String MAILTOEMPLOYEEWHEN_MANAGERSUBMITEXPENSE = "MailToEmployeeWhenManagerSubmitExpense";
+
+	public static final String MAILTOAPPROVER2WHENAPPROVER1APPROVESTHEEXPENSE = "MailToApprover2WhenApprover1ApprovesTheExpense";
+
+	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_REJECT_THE_EXPENSE = "MailToManager1WhenManager2orAdminRejectTheExpense";
+
+	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_APPROVESTHE_EXPENSE = "MailToManager1WhenManager2orAdminApprovesTheExpense";
+
+
+	
 	public static final String DEFAULT = "Default";
 	public static final String ONBOARD_DOCUMENT_BUSNIESS_LICENSE = "Business License";
 	public static final String BANK_CHEQUE = "Bank Cheque";
@@ -616,10 +626,10 @@ public class Constants {
 	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
-	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title",
-			"Min Experience", "Max Experience", "Min/Max Rate", "Location", "City",	"State", "Country", "Zip Code",	
+	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title*",
+			"Min Experience", "Max Experience", "Min/Max Rate", "Location*", "City",	"State", "Country", "Zip Code",	
 			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
-			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority", "Description", "Attachment", "Manager(Email)", "Approver", "Assign To",
+			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority*", "Description", "Attachment", "Manager(Email)*", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category*", "Work Status*",
@@ -632,9 +642,17 @@ public class Constants {
 	public static final String[] COUNTRY_DROPDOWN = { "India", "Australia", "France", "Singapore",
 			"United Kingdom", "United States" };
 	public static final String[] LEVEL_DROPDOWN = { "Tier-1", "Tier-2", "Tier-3", "Tier-4", "Tier-5" };
+	public static final String[] USER_EXCEL_HEADERS_INDIA = {  "Employee Id","Date Of Join","Email-id","Probationary Period","status","Confirmation Date",
+			"First Name","Middle Name", "Last Name","Work Location","Residence Location","Phone Number","Extension Number","Gender","MaritalStatus","Date Of Birth",
+			"Department","EmpType","Role","Designation","Grade","Reporting Manager","Resource Manager","Shift","Rate",
+			"Daily Hours","Global Manager","Is  send mail to Associate","Allow Employee To Fill","PAN Number","Aadhar Number" };
 	public static final String[] USER_EXCEL_HEADERS = { "Employee Id", "First Name", "Last Name",
 			"Email-id", "Phone Number", "Date Of Join", "Rate", "Role", "Manager",
 			"status" };
+	public static final String[] USER_EXCEL_HEADERS_NOT_INDIA = {	"Employee Id","Date Of Join","Email-id","Probationary Period","status","Confirmation Date",
+			"First Name","Middle Name","Last Name","Work Location","Residence Location","Phone Number","Extension Number","Gender","MaritalStatus","Date Of Birth",	"Department",
+			"EmpType","Role","Designation","Grade","Reporting Manager","Resource Manager","Shift","Rate",
+			"Daily Hours","Global Manager","Is send mail to Associate","Allow Employee To Fill","SSN Number"};
 	public static final String[] DAILY_WISE_LEAVE_REPORT_HEADERS = { "Emp Name", "Emp Type", "Departement",
 			"Role", "Leave Type", "Type", "Duration", "From Date",
 			"To Date", "Applied On", "Reason", "Status", "Approver", "Approved On" };
@@ -721,7 +739,7 @@ public class Constants {
 	public static final String[] DATA_MIGRATION_ASSOCIATE_EXCEL_HEADERS = { "Employee Id" , "First Name*", "Last Name", "Middle Name", "Email Id*", "Phone Number", "Extension",
 			"Rate", "Rate Currency", "Rate Per", "Gender*","Marital Status","Date of Join","Date of Birth","Role*","Day hours(HH:MM)","Manager*(Email)", "Employment type*","Vendor(Email)","Vendor Contact(Email)","Grade","Designation*","Shift*","Department*","Send Mail to User","Is Global Manager"};
 
-	public static final String[] PAYMENT_MODE = {"Savings", "Cheque", "Cash"};
+	public static final String[] PAYMENT_MODE = {"SAVINGS", "CHEQUE", "CASH"};
 	
 	public static final String[] ASSOCIATE_SALARY_PAYTYPE = {"Salary"};
 	
@@ -1472,6 +1490,11 @@ public class Constants {
 	
 	public static final String EMPLOYEE_ON_LEAVE = "EmployeeOnLeave";
 	public static final String APPROVE_PENDING_LEAVES="approvePendingLeaves";
+	
+	public static final String CLOCK_IN = "ClockIn";
+	public static final String CLOCK_OUT = "ClockOut";
+	public static final String PLAY = "play";
+	public static final String PAUSE = "pause";
 
 	
 }
