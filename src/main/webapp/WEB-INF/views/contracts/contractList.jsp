@@ -123,14 +123,6 @@ $(document).ready(function(){
    getStageCounts();
 });
 </script>
-
-<style>
-.CurDiv { position: static !important; float: left;}
-.timesheet_head ul {
-padding: 2px 300px 2px 0px;
-}
-</style>
-
 <section class="content-wraper">
 <section class="content-header clearfix">
  <div class="success_pop" id="contractSelector" style="display: none;"> 
@@ -247,14 +239,15 @@ padding: 2px 300px 2px 0px;
 </section>
  
  
-	<div class="timesheet_head">
+	<div class="timesheet_head timesheet_head_customize">
 		<div class="ContrBut">
 <!-- 		    <input type="hidden" name="tabType" id="tabType" value='Vendor'> -->
 			<!-- <a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
 			<a href="#" id="Client" class="tabActivation" onclick="tabEnable(this);getTemplateList('pending'); ">Clients</a> -->
-			<a href="#" id="Vendor1" class="active tabActivation" onclick="tabEnable(this);Check('Vendors');getTemplateList('Vendor');"></a>
-			<a href="#" id="Client1" class="tabActivation" onclick="tabEnable(this);Check('Clients');getTemplateList('Client');">Clients (${contractsCount.totalDraftClientCount})</a>
-			<a href="#" id="Applicants1" class="tabActivation" onclick="tabEnable(this);Check('Applicants');getTemplateList('Full time offer');">Applicants (${contractsCount.totalDraftApplicantCount})</a>
+			<button type="button" value="Vendor" id="Vendor1" class="tabActivation btn btn-primary btn-sm" onclick="tabEnable(this);Check('Vendors');getTemplateList('Vendor');"> Vendors(${contractsCount.totalDraftVendorCount})</button>
+			<button type="button" value="Client" id="Client1" class="tabActivation btn btn-default btn-sm" onclick="tabEnable(this);Check('Clients');getTemplateList('Client');">Clients (${contractsCount.totalDraftClientCount})</button>
+			<button type="button" value = "Full time offer" id="Applicants1" class="tabActivation btn btn-default btn-sm" onclick="tabEnable(this);Check('Applicants');getTemplateList('Full time offer');">Applicants (${contractsCount.totalDraftApplicantCount})</button>
+		    <input type="hidden" id="errorDiv" value=""/>
 		</div>
 		<ul>
 		
@@ -272,11 +265,11 @@ padding: 2px 300px 2px 0px;
 			<li id="filterContractTypePop"><i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i>
 	           	<div class="statusFiler-1 approved_pop">
 					<ul class="list-unstyled">
-						<li><input id="c1" type="checkbox" name="contractType" value="MSA" onclick="getTemplateList();"><label for="c1">MSA</label></li>
-						<li><input id="c2" type="checkbox" name="contractType" value="SOW" onclick="getTemplateList();"><label for="c2">SOW</label></li>
-						<li><input id="c3" type="checkbox" name="contractType" value="NDA" onclick="getTemplateList();"><label for="c3">NDA</label></li>
-						<li><input id="c4" type="checkbox" name="contractType" value="NSA" onclick="getTemplateList();"><label for="c4">NSA</label></li>
-						<li><input id="c5" type="checkbox" name="contractType" value="Full Time Offer" onclick="getTemplateList();"><label for="c5">Full Time Offer</label></li>
+						<li><input id="c1" type="checkbox" name="contractType" value="MSA" onclick="filterContractsList();"><label for="c1">MSA</label></li>
+						<li><input id="c2" type="checkbox" name="contractType" value="SOW" onclick="filterContractsList();"><label for="c2">SOW</label></li>
+						<li><input id="c3" type="checkbox" name="contractType" value="NDA" onclick="filterContractsList();"><label for="c3">NDA</label></li>
+						<li><input id="c4" type="checkbox" name="contractType" value="NSA" onclick="filterContractsList();"><label for="c4">NSA</label></li>
+						<li><input id="c5" type="checkbox" name="contractType" value="Full Time Offer" onclick="filterContractsList();"><label for="c5">Full Time Offer</label></li>
 					</ul>
 				</div>	                	
 			</li>
@@ -491,6 +484,14 @@ function previewTemplatePDF(uuid, templateName){
     });	
 
 </script>
+
+<script>
+function filterContractsList(){
+	var listType = $("#errorDiv").val(); 
+	getTemplateList(listType);
+}
+</script>
+
 
 <script type="text/javascript">
 function getTemplateList(listType){
@@ -2197,7 +2198,7 @@ function preparedContractListClientWTS(url,tabType){
 	}
 	
 function preparedClientContractListWTS(url,tabType){	
-	var opt="";
+	var opt='';
 	opt = opt +  '<table id="contractListTableWTS1" class="display" cellspacing="0" width="100%" >';
 	opt = opt + '	<thead>';
 	opt = opt + '   <tr>';
@@ -3327,13 +3328,14 @@ function cancelTermination(){
 function tabEnable(local){
 	$('.tabActivation').each(function() {
 		 var localId = this.id;
-		 $("#"+localId).removeClass("active");
+		 $("#"+localId).removeClass("btn-primary").addClass("btn-default");
     });
 	var tabId = local.id;
+	var aa = $("#"+tabId).val();
+	$("#errorDiv").val(aa);
 	$("#tabType").val(tabId);
-	$("#"+tabId).addClass("active");
+	$("#"+tabId).removeClass("btn-default").addClass("btn-primary");
 }
-
 </script>
 
 <script>
