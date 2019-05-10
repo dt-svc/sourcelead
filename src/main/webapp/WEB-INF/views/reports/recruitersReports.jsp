@@ -254,14 +254,15 @@ function recruiterReportExport(){
 		$("div.cand-advsrch-popup").hide();
 		$(".advancedsearch-mask").fadeOut();
 	}
-	function addValidClass(){
+	function addValidClassFrom(){
 		 var StartDate = document.getElementById("ReportStartDate").value;
 		 if(StartDate){
 			 document.getElementById("reportsStartDate").style.display="block";
 		 }
+	}
+	function addValidClassTo(){
 		 
 		 var EndDate = document.getElementById("ReportEndDate").value;
-		
 		 if(EndDate){
 			 document.getElementById("reportsEndDate").style.display="block";
 		 }
@@ -283,7 +284,8 @@ function recruiterReportExport(){
 				dt.setDate(dt.getDate() + 1);
 				$("#ReportEndDate").datepicker("option", "minDate", dt); */
 				$("#ReportEndDate").datepicker("option", "minDate", selected);
-				addValidClass();
+				addValidClassFrom();
+				removeErrMsg();
 			}
 		
 		});
@@ -302,7 +304,8 @@ function recruiterReportExport(){
 				$("#ReportStartDate").datepicker("option", "maxDate", dt);
 				 $( "#ReportStartDate" ).datepicker({  maxDate: new Date() }); */
 				 $("#ReportStartDate").datepicker("option", "maxDate", selected);
-				addValidClass();
+				addValidClassTo();
+				removeErrMsgTo();
 			}
 		});
 		
@@ -324,6 +327,16 @@ function custDates(){
 	}
 }
 </script>
+
+<script>
+  function removeErrMsg(){
+	  document.getElementById("reportsStartDate").style.display="none";
+  }
+  function removeErrMsgTo(){
+	  document.getElementById("reportsEndDate").style.display="none";
+	  
+  }
+  </script>
 
 <script type="text/javascript">
 	function flushCustom() {
@@ -417,7 +430,7 @@ function userDataTableList(){
 		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate+"&orgTeams="+orgTeams+"&userRoleName="+userRoleName+"&searchValue="+searchValueregx;
 		 usersListPagination(url,sourceleadUrl);
 		 if(timePeriod == 'custom'){
-		 $("#customSearch").hide();
+// 		 $("#customSearch").hide();
 		 }
 	 }
 	
