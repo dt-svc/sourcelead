@@ -84,6 +84,7 @@ public class RequirementWorkflowController {
 		ModelAndView modelandview = new ModelAndView();
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
+		requirementWorkFlowService.deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(requirementWorkFlowDTO.getUuid(), orgLocations.getId());
 		modelandview.setViewName("workflow/viewWorkflow");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
 		modelandview.addObject("workflowDescription", requirementWorkFlowStagesDTO.get(0).getWorkflowDescription());
@@ -319,10 +320,11 @@ public class RequirementWorkflowController {
 	   public @ResponseBody ResponseList<String> deleteQuestionnaireTemplateById(@RequestParam(value="templateUuid", required=true) String templateUuid
 			      ,HttpServletRequest request) throws Exception {
 		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");	
 		ResponseList<String> response = new ResponseList<String>();
 		try {
 			if (templateUuid != null ) {
-				String resp = requirementWorkFlowService.deleteQuestionnaireTemplateById(templateUuid);
+				String resp = requirementWorkFlowService.deleteQuestionnaireTemplateById(templateUuid, orgLocationId);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else if (userId == null) {
