@@ -2,9 +2,10 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-	
+	<%-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/requirementWorkflow.js"></script> --%>
 	<script>
-	function getRequirementWorkflowTasks(){
+	
+	function getRequirementWorkflowTasks(currentStageUuid){
 			$("#dynamicWorkflowTask").empty();
 			var result = "";
 		  	var url = "";
@@ -19,11 +20,10 @@
 		  	result = result +"</thead>";
 		  	result = result +"</table>";
 		  	$("#dynamicWorkflowTask").html(result);
-			getDynamicWorkflowTasks();
+			getDynamicWorkflowTasks(currentStageUuid);
 		}
 		
-		function getDynamicWorkflowTasks(){
-
+		function getDynamicWorkflowTasks(currentStageUuid){
 			   var colIndex = 0;
 			    $('#workflowTaskTable').DataTable( { 
 			    	"processing": true,
@@ -31,7 +31,7 @@
 			        "searching": false,
 			        "searchHighlight": true,
 			        "ajax": $.fn.dataTable.pipeline( {
-			            url: sourceleadUrl + "/getWorkflowTaskList",
+			            url: sourceleadUrl + "/getWorkflowTaskList?currentStageUuid="+currentStageUuid,
 			            method: 'GET',
 			            pages: 10
 			        }),
@@ -86,8 +86,8 @@
 			    	  	"data": "description",
 			    	  	"render": function(data, type, workflowTask, meta) {
 			    	  		var result = "";
-			    	  		if(workflowTask.description != null && workflowTask.description !== '' && workflowTask.description != "undefined"){
-			    	  				result = result +"<div class='tbldata-dotdot-vsm'>"+workflowTask.description+"</div>";
+			    	  		if(workflowTask.workFlowTaskDescription != null && workflowTask.workFlowTaskDescription !== '' && workflowTask.workFlowTaskDescription != "undefined"){
+			    	  				result = result +"<div class='tbldata-dotdot-vsm'>"+workflowTask.workFlowTaskDescription+"</div>";
 			    	  		}else{
 		  	            	  		  result = result +"<div>---</div>"; 
 		  	             	}
@@ -125,13 +125,41 @@
   <form id="addStageForm" name="addStageForm">
   <div class="project_wrap clearfix">
   
-    <div class="clearfix mt col-md-6">
+  
+  <c:choose>
+  <c:when test = "${not empty stageName}">
+  <div class="clearfix mt col-md-6">
+      <div class="clearfix row">
+        <div class="form-group clearfix">
+          <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
+				value='<c:out value="${stageName}"/>' data-validation="required validate_length length1-100"">
+			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
+          </div>
+        </div>
+      </div>
+      <div class="clearfix row">
+        <div class="form-group clearfix">
+          <label class="col-md-3">Description</label>
+          <div class="col-md-9">
+            <textarea rows="2"  class="form-control" id="stageDescription" placeholder="Description" field-name="Description"
+								data-validation="validate_length length1-500" data-validation-optional="true"><c:out value="${description}"/></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+		</c:when>
+							<c:otherwise>
+							<div class="clearfix mt col-md-6">
       <div class="clearfix row">
         <div class="form-group clearfix">
           <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-9">
             <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
 								data-validation="required validate_length length1-100"">
+			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
           </div>
         </div>
       </div>
@@ -145,21 +173,90 @@
         </div>
       </div>
     </div>
+							
+							</c:otherwise>
+						</c:choose>
     
+    
+    
+    
+     </form>
    
-    <div class="clearfix" id = "createTaskDiv">
+    <!-- <div class="clearfix" id = "createTaskDiv">
       <h4 class="col-md-9">New Task</h4>
     </div>
     
-     
-    
- 
-  
-  <div id = "dynamicworkflowTask"></div>
+  <div id = "dynamicworkflowTask"></div> -->
 
+
+
+    <div class="clearfix">
+      <h4 class="col-md-9">Assign Task</h4>
+      <div class="col-md-3"> <a href="javascript:void(0)" id = "saveTaskButton" class="btn btn-primary pull-right btn-sm" onClick="createNewtask();">Create New Task</a> </div>
+    </div>
+   
+<div id="createNewtask" style="display: none">
+		<div class="clearfix row">
+		  <div class="form-horizontal mt myForm">
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
+			  <div class="form-group">
+				<label class="col-md-3">Title<span class="text-danger paddingLeft">&nbsp;*</span></label>
+				<div class="col-md-9">
+				<input type='text' class='form-control' id = 'workFlowTaskName'  placeholder='Task Name' field-name='Task Name'>
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label class="col-md-3">Assign To</label>
+				<div class="col-md-9" id = "dynamicUserDiv">
+				  <select class="sel form-control">
+					<option selected>Select</option>
+					<!-- <option>Applicant Owner</option>
+					<option>Job Owner</option>
+					<option>Primary Recruiter</option> -->
+				  </select>
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label class="col-md-3">Priority</label>
+				<div class="col-md-9">
+				  <select class="sel form-control" id ='workflowTaskPriority'>
+					<option selected>Select</option>
+					<option>Urgent</option>
+					<option>High</option>
+					<option>Normal</option>
+					<option>Low</option>
+				  </select>
+				</div>
+			  </div>
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			  <div class="clearfix">
+				<label class="col-md-12">Description</label>
+				<div class="col-md-12 descriptionTxtarea">
+				<textarea class='form-control' cols='2' id='taskDescription'  placeholder='Description'
+				field-name='summerNote' data-validation='validate_length length1-500' data-validation-optional='true' ></textarea>
+				</div>
+			  </div>
+			  <div class="clearfix"></div>
+			</div>
+		  </div>
+		  <div class="clearfix"></div>
+    </div>
+    <div class="footerstyelsNew">
+        <div class="clearfix col-md-12 mb">
+          <div class="pull-right mr">
+            <input value="Save" class="btn btn-primary" onclick = "saveWorkflowTask('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');" 
+            type="button" id = "saveTaskButton">
+            <input value="Cancel" class="btn btn-default ml" onclick = "deleteTask();" type="button">
+          </div>
+        </div>
+      </div>
+  </div>
+  
+  
    
       
-    <div class="footerstyelsNew">
+    <!-- <div class="footerstyelsNew">
         <div class="clearfix col-md-12 mb">
           <div class="pull-right mr">
             <input value="Add Task" class="btn btn-primary" type="button" id = "saveTaskButton" 
@@ -167,7 +264,7 @@
           </div>
         </div>
       </div>
-  
+   -->
   
   
   <div class="project_wrap_table datatable_filter" id = "dynamicWorkflowTask">
@@ -220,9 +317,8 @@
 		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt myForm">
 			<div class="form-group">
           <label class="col-md-3" id="previousStagelabel">Previous Stage</label>
-        <div class="col-md-9">
-        
-          
+        <div class="col-md-9" id = "previousStages">
+      
          <select class="sel form-control" id = "previousStageUuid"
          onchange = 'getNextWorkflowStage(this,"+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+")'>
          <option selected>Select</option>
@@ -271,13 +367,15 @@
         </div>
       </div>
 	  </div>
-	  </form>
+	 
 </section>
 </div>
 <script>
+var currentStageUuid = $("#currentStageUuid").val();
 $(document).ready(function() {
 	getRequirementQuestionnaireTemplates();
-	//getRequirementWorkflowTasks();
+	
+	
 	
 	$("#saveTaskButton").attr("disabled", true);
 	$('#stageName').keyup(function(){
@@ -287,7 +385,61 @@ $(document).ready(function() {
 	    	$("#saveTaskButton").attr("disabled", true);
 	})
 	
+	 if($('#stageName').val().length !=0){
+	    	$("#saveTaskButton").attr("disabled", false);           
+	 }else{
+	    	$("#saveTaskButton").attr("disabled", true);
+	 }
+	
+	getRequirementWorkflowTasks(currentStageUuid);
 });
+
+
+  var stagename = $('#stageName').val();
+ <c:if test="${not empty requirementWorkFlowStagesDTO}">
+var workflowStages = new Array();
+var stageUuid = new Array();
+
+workflowStages.push(
+<c:forEach var="requirementWorkFlowStages" items="${requirementWorkFlowStagesDTO}">
+'${requirementWorkFlowStages.stageName}',
+</c:forEach>
+);
+
+stageUuid.push(
+		<c:forEach var="requirementWorkFlowStages" items="${requirementWorkFlowStagesDTO}">
+		'${requirementWorkFlowStages.uuid}',
+		</c:forEach>
+		);
+
+if(stagename != "" && stagename != "undefined"){
+var stageIndex; 
+workflowStages.forEach(checkStageIndex);
+
+function checkStageIndex(value){
+	var a = workflowStages.indexOf(stagename);
+	stageIndex = a;
+}
+ 
+ var previousStageResult = "";
+var nextstageResult = "";
+
+if(stageIndex > -1) {
+	$("#previousStageUuid option[value='"+stageUuid[stageIndex-1]+"']").attr('selected', 'selected');
+
+if((stageIndex+1) == workflowStages.length){
+	nextstageResult = "<h2>No Stage.</h2>";
+	$("#nextStages").empty().append(nextstageResult);
+	}else{
+		nextstageResult = nextstageResult + "<select class='sel form-control' id = 'workflowStageUuid'>";	
+		nextstageResult = nextstageResult + "<option value = "+stageUuid[stageIndex+1]+">"+workflowStages[stageIndex+1]+"</option>";	
+		nextstageResult = nextstageResult + "</select>";
+		$("#nextStages").empty().append(nextstageResult);
+}
+}
+}
+</c:if>   
+
 </script>
 
 <script>
@@ -321,7 +473,7 @@ function saveRequirementWorkflowStage(workflowUuid){
 	if(stageUuid == null){
 		stageUuid = $("#previousStageUuid").val();
 	}
-
+	var currentStageUuid = $("#currentStageUuid").val();
 	
 	 if ($('#addStageForm').validate(false, validationSettings)) {
 		  var formData = getFormData("addStageForm");
@@ -331,7 +483,7 @@ function saveRequirementWorkflowStage(workflowUuid){
 		type : "GET",
 		 data : formData,
 		url : sourceleadUrl + "/saveRequirementWorkflowStage?description="+description+"&uuid="+stageUuid+
-				"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId,
+				"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid,
 		success : function(dataList) {
 			if (dataList.response === "AWKWARD") {
       	    location.href = "/errorPage";
@@ -341,6 +493,7 @@ function saveRequirementWorkflowStage(workflowUuid){
 					$("#saveStageButton").removeAttr('button').val('Save');	
 					showError("Invalid data");
 				}else{
+					sessionStorage.clear();
 					window.location.replace("${SourceLeadWeb_sourceleadUrl}/workflowList");
 				}
       	} else if (dataList.indexOf('Sign In') !== -1) {
@@ -356,10 +509,11 @@ function saveRequirementWorkflowStage(workflowUuid){
 
 function getNextWorkflowStage(select, worflowUuid){
 	
+	var currentStageUuid = $("#currentStageUuid").val();
 	var stageUuid = select.value;
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/getRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+worflowUuid,
+			url : sourceleadUrl + "/getRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+worflowUuid+"&currentStageUuid="+currentStageUuid,
 			success : function(dataList){
 				var result = "";
 				 result = result + "<select class='sel form-control' id = 'workflowStageUuid'>";
@@ -397,124 +551,83 @@ function getRequirementQuestionnaireTemplates(){
 	 function cancelAddStage(){
 		 window.location.href = "${SourceLeadWeb_sourceleadUrl}/workflowList";
 	 }
+	 
+	 function createNewtask() {
+		 getAllActiveUsersList();
+		 $("#workFlowTaskName").val("");
+			$("#priority").val("");
+			$("#taskDescription").val("");
+			$("#assignToUserId").val("");
+			document.getElementById("createNewtask").style.display = "block";
+		}
+	 
+	 function getAllActiveUsersList(){
+			$.ajax({
+				type : "GET",
+				url : sourceleadUrl + "/getAllActiveUsersList",
+				success : function(dataList){
+					var result = "";
+					result = result + "<select class='sel form-control' id = 'assignToUserId'>";
+					result = result + "<option selected>Select</option>";
+					if(dataList != null && dataList.length > 0){
+						 for(var i = 0 ; i < dataList.length; i++){
+							 result = result + "<option value="+dataList[i].userId+">"+dataList[i].userName+"</option>";
+						 }
+					}
+					result = result + "</select>";
+					$("#dynamicUserDiv").empty().append(result);
+				}
+				});
+		}
+	 
+	 function deleteTask(){
+			$("#createNewtask").hide();
+			$("#workFlowTaskName").val("");
+			$("#priority").val("");
+			$("#summerNote").val("");
+		} 
 </script>
 <script>
-function getAllActiveUsersList(rowId){
+
+ function saveWorkflowTask(worflowUuid){
+	var workFlowTaskName = $("#workFlowTaskName").val();
+	var priority = $("#workflowTaskPriority").val();
+	var taskDescription = $("#taskDescription").val();
+	var assignToUserId = $("#assignToUserId").val();
+	var currentStageUuid = $("#currentStageUuid").val();
+
+	var stageName = $("#stageName").val();
+	var description = $("textarea#stageDescription").val();
+	
+	if(currentStageUuid == ""){
+		currentStageUuid = "Default";
+	}
+	 //var taskList = [workFlowTaskName, priority, taskDescription, assignToUserId];
+	
 	$.ajax({
 		type : "GET",
-		url : sourceleadUrl + "/getAllActiveUsersList",
+		url : sourceleadUrl + "/saveWorkflowTask?requirementWorkFlowUuid="+worflowUuid+"&workFlowTaskName="+workFlowTaskName+"&priority="+priority
+				+"&workFlowTaskDescription="+taskDescription+"&assignToUserId="+assignToUserId+"&currentStageUuid="+currentStageUuid
+				+"&stageName="+stageName+"&description="+description,
 		success : function(dataList){
-			var result = "";
-			result = result + "<select class='sel form-control' id = 'user"+rowId+"' name ='taskList["+rowId+"].assignToUserId' >";
-			result = result + "<option selected>Select</option>";
-			if(dataList != null && dataList.length > 0){
-				 for(var i = 0 ; i < dataList.length; i++){
-					 result = result + "<option value="+dataList[i].userId+">"+dataList[i].userName+"</option>";
-				 }
+			$("#createNewtask").hide();
+			if(dataList.response != null){
+				getRequirementWorkflowTasks(dataList.response);
+				
+				$("#currentStageUuid").val(dataList.response);
+				sessionStorage.setItem("currentStage", $("#currentStageUuid").val());
+				
+				
+			
+			}if(dataList.response == null){
+				showError("Operation failed, please try again");
 			}
-			result = result + "</select>";
-			$("#dynamicUserDiv"+rowId).empty().append(result);
+			 $("#workFlowTaskName").val("");
+				$("#priority").val("");
+				$("#taskDescription").val("");
+				$("#assignToUserId").val("");
 		}
-		});
-}
-</script>
-
-<script>
-function prepareDynamicworkflowTask(rowId){
-	$("#createTaskDiv").hide();
-	var dynamicTask = "";
-	dynamicTask = dynamicTask + "<div class='clearfix mt' id = 'dynamicTaskDiv"+rowId+"'><div class='clearfix'>";
-	dynamicTask = dynamicTask + "<h4 class='col-md-9'>New Task</h4>";
-	dynamicTask = dynamicTask + "<div class='col-md-3'> <a href='javascript:void(0)' class='btn btn-primary pull-right btn-sm' onClick='deletePopup("+rowId+");'>";
-	dynamicTask = dynamicTask + "Delete Task</a> </div>";
-	dynamicTask = dynamicTask + "</div>";
-	dynamicTask = dynamicTask + "<div id='createNewtask"+rowId+"'>";
-
-	dynamicTask = dynamicTask + "<div class='clearfix row'>";
-	dynamicTask = dynamicTask + "<div class='form-horizontal mt myForm'>";
-	dynamicTask = dynamicTask + "<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12 mt'>";
-	dynamicTask = dynamicTask + "<div class='form-group'>";
-	dynamicTask = dynamicTask + "<label class='col-md-3'>Title<span class='text-danger paddingLeft'>&nbsp;*</span></label>";
-	dynamicTask = dynamicTask + "<div class='col-md-9'>";
-	dynamicTask = dynamicTask + "<input type='text' class='form-control' id = 'workFlowTaskName"+rowId+"' name='taskList["+rowId+"].workFlowTaskName' placeholder='Task Name'";
-	dynamicTask = dynamicTask + "field-name='Task Name'";
-	dynamicTask = dynamicTask + "data-validation='required validate_length length1-100'>";
-	dynamicTask = dynamicTask + "</div> </div>";
-	
-	//dynamic user list
-	dynamicTask = dynamicTask + "<div class='form-group'>";
-	dynamicTask = dynamicTask + "<label class='col-md-3'>Assign To</label>";
-	dynamicTask = dynamicTask + "<div class='col-md-9' id = 'dynamicUserDiv"+rowId+"' >";
-	dynamicTask = dynamicTask + "<select class='sel form-control' id = 'user"+rowId+"' name ='taskList["+rowId+"].assignToUserId' >";
-	dynamicTask = dynamicTask + "<option selected>Select</option>";
-	dynamicTask = dynamicTask + " </select>	</div>  </div>";
-	
-	dynamicTask = dynamicTask + "<div class='form-group'>";
-	dynamicTask = dynamicTask + "<label class='col-md-3'>Priority</label>";
-	dynamicTask = dynamicTask + "<div class='col-md-9'>";
-	dynamicTask = dynamicTask + "<select class='sel form-control' id ='priority"+rowId+"' name ='taskList["+rowId+"].priority' >";
-	dynamicTask = dynamicTask + "<option selected>Select</option>";
-	dynamicTask = dynamicTask + "<option value = 'Urgent'>Urgent</option>";
-	dynamicTask = dynamicTask + "<option value = 'High'>High</option>";
-	dynamicTask = dynamicTask + "<option value = 'Normal'>Normal</option>";
-	dynamicTask = dynamicTask + "<option value = 'Low'>Low</option>";
-	dynamicTask = dynamicTask + "</select>";
-	dynamicTask = dynamicTask + "</div> </div> </div>";
-	dynamicTask = dynamicTask + "<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>";
-	dynamicTask = dynamicTask + "<div class='clearfix'>";
-	dynamicTask = dynamicTask + "<label class='col-md-12'>Description</label>";
-	dynamicTask = dynamicTask + "<div class='col-md-12 descriptionTxtarea'>";
-	dynamicTask = dynamicTask + "<textarea class='form-control' cols='2' id='taskDescription"+rowId+"' name ='taskList["+rowId+"].workFlowTaskDescription'  placeholder='Description'";
-	dynamicTask = dynamicTask + "field-name='summerNote' data-validation='validate_length length1-500' data-validation-optional='true' ></textarea>";
-	dynamicTask = dynamicTask + "</div> </div>";
-	dynamicTask = dynamicTask + "<div class='clearfix'></div>";
-	dynamicTask = dynamicTask + "</div> </div>";
-	dynamicTask = dynamicTask + "<div class='clearfix'></div>";
-	dynamicTask = dynamicTask + "</div></div></div>";
-
-	//dynamic user list
-	getAllActiveUsersList(rowId);
-	return dynamicTask;
-}
-
-var rowId = 0;
-var divCount = 0;
-function appendDynamicworkflowTask(){
-	   $("#dynamicworkflowTask").append(prepareDynamicworkflowTask(rowId++)); 
-	   divCount++;
-}
-
-
-function deletePopup(rowId){
-	var result = "";
-	var workFlowTaskName = $("#workFlowTaskName"+rowId).val();
-	$("#popUp").empty();
-	result = result +" <div class='project_inn_mask'></div>"; 
-	result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +" <p>Do you want to delete "+workFlowTaskName+" ?</p>";
-	result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteTask('+rowId+');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
-	result = result +" </div>";
-	$("#popUp").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-	}
-	
-function deleteTask(id){
-	$("#dynamicTaskDiv"+id).remove();
-	   rowId--;
-	   divCount--;
-	  
-		if(divCount == 0){
-				$("#createTaskDiv").show();
-			}
-	   $("#popUp").empty();
-	 $(".project_inn_mask").fadeOut(200);
-	 
+	});
 } 
-	
-function cancelTermination(){
-	 $("#popUp").empty();
-    $(".project_inn_mask").fadeOut(200);
-}
 </script>
 <jsp:include page="../masterFooter.jsp" /> 

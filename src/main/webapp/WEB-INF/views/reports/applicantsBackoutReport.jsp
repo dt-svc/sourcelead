@@ -20,7 +20,7 @@ $(window).load(function() {
       <div class="pull-left">
         <h2>Applicant(s) Backout</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/performanceReportList'/>">Performance Reports</a> &raquo; Applicant(s) BackOut </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Applicant(s) BackOut </div>
    
     </section>
     
@@ -35,9 +35,9 @@ $(window).load(function() {
           <a title="List View" id="listView" class="btn btn-default" ><i class="fa fa-list"></i></a>
 	</div>
 	
-    	<ul class="clearfix pull-right">
+    	<ul class="clearfix pull-right overIndex">
     		<li>
-				<div class="ReqRepHead-chosen repChosen">
+				<div class="ReqRepHead-chosen repChosen choseMini">
 			          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
 			            <c:forEach var="option" items="${requirementsList}">
 							<option value="${option.requirementId}">${option.generatedId} - ${option.jobTitle}</option>
@@ -185,7 +185,7 @@ $(window).load(function() {
 						 	   	        $("#backoutReason").empty();
 						                $("#backoutReason").append(result);
 									}
-			    		}else if (response.indexOf('Sign In') !== -1) {
+			    		}else if (JSON.stringify(response).indexOf('Sign In') != -1) { //  earlier is response.indexOf() which is not preferrable
 			    			location.replace(sourceleadUrl);
 			    		} else {
 			    		    showError("Operation failed, please try again");

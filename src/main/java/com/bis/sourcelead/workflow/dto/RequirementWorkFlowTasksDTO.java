@@ -26,6 +26,15 @@ public class RequirementWorkFlowTasksDTO extends SearchDTO {
 	private String requirementWorkFlowUuid;
 	
 	private String user;
+	
+	private Long StageId;
+	
+	private String currentStageUuid;
+	
+	private String stageName;
+
+	private String description;
+
 
 	public long getId() {
 		return id;
@@ -124,6 +133,38 @@ public class RequirementWorkFlowTasksDTO extends SearchDTO {
 		this.user = user;
 	}
 
+	public String getCurrentStageUuid() {
+		return currentStageUuid;
+	}
+
+	public void setCurrentStageUuid(String currentStageUuid) {
+		this.currentStageUuid = currentStageUuid;
+	}
+
+	public String getStageName() {
+		return stageName;
+	}
+
+	public void setStageName(String stageName) {
+		this.stageName = stageName;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Long getStageId() {
+		return StageId;
+	}
+
+	public void setStageId(Long stageId) {
+		StageId = stageId;
+	}
+	
 	
 
 }
