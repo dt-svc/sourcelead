@@ -205,7 +205,7 @@ public class DataMigrationCommonRestController {
 				}
 			}else {
 				if (StringUtils.isNotBlank(fields.getFieldName()) && !fields.getFieldName().equalsIgnoreCase("panNumber")
-						|| !fields.getFieldName().equalsIgnoreCase("aadharNumber")) {
+						&& !fields.getFieldName().equalsIgnoreCase("aadharNumber")) {
 					formFieldsList.add(fields);
 				}
 			}
@@ -215,7 +215,7 @@ public class DataMigrationCommonRestController {
 		model.setViewName("upload/candidateImportFieldMapping");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("dataWithCellId", dataWithCellId);
-		model.addObject("fields", formFields);
+		model.addObject("fields", formFieldsList);
 		model.addObject("exportFilePath", dataMigrationCommonDTO.getFilePath());
 		model.addObject("uploadType", dataMigrationCommonDTO.getUploadType());
 		model.addObject("headerPosition", dataMigrationCommonDTO.getHeaderPosition());
