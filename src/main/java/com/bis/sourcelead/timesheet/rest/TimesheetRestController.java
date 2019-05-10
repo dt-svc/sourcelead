@@ -429,7 +429,8 @@ public class TimesheetRestController {
 				if(employee == null) {
 					avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
 				}else if(StringUtils.isNotEmpty(employee.getDailyHours())){
-					avgWorkingHoursPerDay = Integer.parseInt(employee.getDailyHours());
+					String [] hrsArray = employee.getDailyHours().split(":");
+					avgWorkingHoursPerDay = Integer.parseInt(hrsArray[0]);
 				}
                 
                 Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,candidate);
@@ -2249,7 +2250,8 @@ public class TimesheetRestController {
 					if(employee == null) {
 						avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
 					}else if(StringUtils.isNotEmpty(employee.getDailyHours())){
-						avgWorkingHoursPerDay = Integer.parseInt(employee.getDailyHours());
+						String [] hrsArray = employee.getDailyHours().split(":");
+						avgWorkingHoursPerDay = Integer.parseInt(hrsArray[0]);
 					}
 					Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,candidate);
 					tedDTO.setEmpLeaveMap(empLeaveMap);	
