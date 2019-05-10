@@ -690,7 +690,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		    long millis=System.currentTimeMillis();  
 	        java.sql.Date date = new java.sql.Date(millis);
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from ClockInOut clk where clk.orgLocations.id =:orgLocationId and clk.userId.id =:user and clk.clockInDate =:currentDate";
+			String query = "from ClockInOut clk where clk.orgLocations.id =:orgLocationId and clk.userId.id =:user and clk.clockInDate =:currentDate and clk.clockOutDate is NULL";
 			clkList = session.createQuery(query).setLong("orgLocationId", loc.getId()).setLong("user", user.getId()).setDate("currentDate", date).list();
 			
 		} catch (Exception e) {
@@ -714,6 +714,26 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			e.printStackTrace();
 		}
 		return breakList;
+	}
+
+	@Override
+	@Transactional
+	public ClockInOut getPreviousClockInData(OrgLocations loginOrgLocation, User user) {
+		List<ClockInOut> clockList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			clockList = session.createQuery("from ClockInOut clk where clk.userId.id = :userId and clk.orgLocations.id =:orgLocationId and clk.clockOutDate is NOT NULL ORDER BY clk.id DESC ")
+			.setLong("userId", user.getId())
+			.setLong("orgLocationId", loginOrgLocation.getId())
+			.setMaxResults(1).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(clockList != null && clockList.size() > 0) {
+			return clockList.get(0);
+		}else {
+			return null;
+		}
 	}
 
 }
