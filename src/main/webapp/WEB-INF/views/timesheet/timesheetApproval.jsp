@@ -56,7 +56,7 @@
 	               var client = $('input[id=client]:checked').val();
 	               var project = $('input[id=project]:checked').val();
 	               
-	               var searchData = $('#dataTableSearchExpenses').val();
+	               var searchData = $('#dataTableSearchTimesheets').val();
 	               var projectName = '';
 	               var stage = $('input[id=stage]:checked').val();
 	               if(filter != null && filter != '' && filter != 'undefined' &&  filter == 'notifyLink'){
