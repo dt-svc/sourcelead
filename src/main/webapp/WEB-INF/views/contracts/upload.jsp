@@ -39,61 +39,6 @@
 });
 </script> 
 
-<style type="text/css">
-.sign-buttons {
-width: 120px; padding: 15px; margin: 0 auto; box-shadow: 2px 2px 2px #909090;
-}
-.sign-buttons ul li {
-border: none; margin: 15px auto; padding: 20px; background-size: 30px;
-width: 50px; height: 50px;
-}
-.icon-addTask {
-float: right;
-}
-.addTask {
-display: none;
-}
-#addSign {
-height: auto; min-height: 200px;
-}
-#backShadow {
-	z-index: 9999;
-}
-#addSign {
-z-index: 9999; padding:20px;
-}
-.signContainer {
-width: 100%;
-}
-.panel-body.panelbody-custom {
-padding: 20px;background-color: #f5f5f5;
-}
-.margnBottom-0{
-margin-bottom: 0 !important;
-}
-.insertSignImg {
-height: 55px !important;
-}
-.insertedSign .delete-sign {
-z-index: 99; top:-5px !important;
-}
-.sign-initial {
-width: 125px !important; height: 35px; line-height: 35px;
-}
-.publicpageHeader {
-	min-height: 50px; background-color: #368ee0; padding:0px;
-}
-.publicpageHeader .publicpage-logo {
-background-color: #fff; height: 50px; padding: 5px 0; text-align: center;
-}
-.publicpageHeader .publicpage-logo img {
-max-height: 100%;
-}
-.side-bar .side-nav ul li span  {
-position: relative;top:8px;
-}
-</style>
-
 <c:if test='${!empty type}'>
 <header class="publicpageHeader">
 <div class="clearfix">
@@ -172,12 +117,12 @@ position: relative;top:8px;
             
             <div>
 
-                <div class="signContainer">
+                <div class="signContainer width100percnt">
                     <div>
                         <iframe id="fuploadframe" name="fuploadframe" src="" height="0px" width="0px" frameborder="0" scrolling="no"></iframe>
                     </div>
                     <div class="row" id="signerType">
-                        <div class="container panel margnBottom-0">
+                        <div class="container panel mb0">
                         <div class="panel-body panelbody-custom">
                             <label for="ddnSignType" class="col-xs-3 text-right mt5">Select signing type</label>
                             <div class="col-xs-6 dropdown-select">
