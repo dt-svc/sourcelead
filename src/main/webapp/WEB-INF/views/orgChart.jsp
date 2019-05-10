@@ -1,6 +1,8 @@
 
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
+<link rel="stylesheet" href="/resources/css/jquery.orgchart.css">
+
 
 <script>
 var atsUrl = '${SourceLeadWeb_atsUrl}';
