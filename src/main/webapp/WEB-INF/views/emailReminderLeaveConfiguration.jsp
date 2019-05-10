@@ -382,9 +382,9 @@ function hideandshowHoliday(){
 								<div id="reminderParent_approve_Pending_Leaves_form" class="clearfix"></div>
 	
 									<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
-										<label class="col-md-3">Notify To<span class="text-danger paddingLeft">*</span></label>
+										<label class="col-md-3">Notify To</label>   <!-- <span class="text-danger paddingLeft">*</span> -->
 										<div class="col-md-9" id="notifyToDiv_approve_Pending_Leaves_form">
-											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${approvePendingLeaves.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
+											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${approvePendingLeaves.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To">  <!-- data-validation="required validate_Space" -->
 										</div>
 										<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="approvePendingLeaves">
 										<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="31">
@@ -596,7 +596,7 @@ function hideandshowHoliday(){
 			if(notifyEmail != null && notifyEmail != "" && notifyEmail != 'undefined'){
 				var emailArray = notifyEmail.split(",");
 				var proceed = true;
-				$('#notifyToDiv'+form).find('p.jquery_form_error_message').remove();
+				$('#notifyToDiv'+form).find('p.jquery_form_error_message').remove(); 
 				$.each(emailArray,function(i){
 				var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 			    	if(! re.test(String($.trim(emailArray[i])).toLowerCase())){
@@ -604,10 +604,10 @@ function hideandshowHoliday(){
 			    		return false;
 			    	}
 				});
-				if(!proceed){
-				$("#notifyToDiv"+form+" :input#notifyTo").after("<p class='jquery_form_error_message'>Invalid entry</span>");
-				return false;
-				}
+ 				if(!proceed){
+ 				$("#notifyToDiv"+form+" :input#notifyTo").after("<p class='jquery_form_error_message'>Invalid entry</span>");
+ 				return false;
+ 				}
 			}
 			$('#'+form+'_btn').prop('disabled', true);
 			var formData = getFormData1(form);
