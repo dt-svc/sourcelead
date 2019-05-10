@@ -339,7 +339,7 @@ function getUsersSearchResult(searchValue){
 										<%-- <a href="<c:url value='${appPath}/uploadForm'/>">Import</a> --%>
 										<div class="immSub">
 											<a href="#">Import</a>
-											<div class="immSubMenu">
+										<div class="immSubMenu immSubMenu-custome">
 
 												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm">Associate Import</a>
 								 
@@ -349,6 +349,7 @@ function getUsersSearchResult(searchValue){
 												</c:if>
 
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+												<a href="${atsUrl}/uploadForm">Associate Import</a>
 												    <a href="${atsUrl}/uploadAssociateBankingDetailsForm">Associate Bank Detail</a>
 												    <a href="${atsUrl}/uploadAssociateInformation">Associate Information</a>
 													<a href="${atsUrl}/uploadAssociateSalary">Associate Salary Import</a>
@@ -436,7 +437,7 @@ function getUsersSearchResult(searchValue){
   </section>
   
       <!-- Content Area Ends--> 
- <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+ <div class="advancedsearch-mask"></div>
       <jsp:include page="../masterFooter.jsp" />
       <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
@@ -660,10 +661,10 @@ function exportUserData(){
 			 $(".advancedsearch-mask").fadeIn();
 		}
 		
-		function closeAdsrch(){
+		/* function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
 			$(".advancedsearch-mask").fadeOut();
-		}
+		} */
 	</script>
 
 
