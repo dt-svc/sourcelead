@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -466,6 +467,7 @@ public class TimesheetApprovalRestController {
 			
 		}
 		private TimesheetApprovalDTO timesheetEmployeeSubmissionDetails(HttpServletRequest request, TimesheetApprovalDTO timesheetApprovalDTO) throws Exception {
+			long methodStartTime = System.nanoTime();
 			int start = timesheetApprovalDTO.getStart();
 			int length = 0;
 			if(timesheetApprovalDTO.getPageNo()<1) {
@@ -610,6 +612,8 @@ public class TimesheetApprovalRestController {
 	        }else {
 	        	timesheetApprovalDTO.setTotalRows(0);
 	        }
+	        long methodEndTime = System.nanoTime();
+	    	System.out.println("Actual Execution Time>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((methodEndTime - methodStartTime), TimeUnit.NANOSECONDS));
 	        return timesheetApprovalDTO;
 	 }
 		

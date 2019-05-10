@@ -102,14 +102,14 @@ $(document).ready(function(){
 		                $("#rejectedCountAnchor").html("Rejected");
 		           }else{
 		         	    $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
-		                 $("#rejectedCountAnchor").html('<a  href="/app/totalTimesheetList/REJECTED">Rejected</a>'); 
+		                 $("#rejectedCountAnchor").html('<a  href="/app/timesheetlistByStatus?status=REJECTED">Rejected</a>'); 
 		           }
 		       	  if(savedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
 		       		  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
 		                $("#savedCountAnchor").html("Draft");
 		            }else{
 		          	  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
-		                $("#savedCountAnchor").html("<a href='/app/totalTimesheetList/DRAFT'>Draft</a>"); 
+		                $("#savedCountAnchor").html("<a href='/app/timesheetlistByStatus?status=DRAFT'>Draft</a>"); 
 		               
 		            }
 		       	 
@@ -118,7 +118,7 @@ $(document).ready(function(){
 		               $("#waitingCountAnchor").html("Submitted");
 		           }else{
 		         	  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
-		                $("#waitingCountAnchor").html('<a  href="/app/totalTimesheetList/SUBMITTED">Waiting</a>'); 
+		                $("#waitingCountAnchor").html('<a  href="/app/timesheetlistByStatus?status=SUBMITTED">Waiting</a>'); 
 		           }
 		       	 
 		       	  if(approvalTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
@@ -126,7 +126,7 @@ $(document).ready(function(){
 		                $("#approvedCountAnchor").html("Approved");
 		           }else{
 		          	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
-		                $("#approvedCountAnchor").html('<a  href="/app/totalTimesheetList/APPROVED">Approved</a>'); 
+		                $("#approvedCountAnchor").html('<a  href="/app/timesheetlistByStatus?status=APPROVED">Approved</a>'); 
 		            }
 		       	 if(timesheetType == "myTimesheets"){
 		       		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheet'/>");
