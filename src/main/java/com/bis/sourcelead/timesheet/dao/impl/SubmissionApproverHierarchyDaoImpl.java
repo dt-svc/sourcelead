@@ -2437,7 +2437,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public ResponseList<TimesheetApprovalSubmissionDetailsDTO> getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(Set<Long> projectIds,Boolean isAdmin,String timesheetFrequency,Date startDate,Date endDate,Long clientId,Long projectId,String status,Long locationsId,Long orgId, Long approverUserId,String searchValue,String projectName,int start, int length,int totalRows,String timesheetFor,String isGlobalUser,String tableFor,Integer tdSpanLength,String dateFormat) throws Exception {
+	public ResponseList<TimesheetApprovalSubmissionDetailsDTO> getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(Set<Long> projectIds,Boolean isAdmin,String timesheetFrequency,Date startDate,Date endDate,Long clientId,Long projectId,String status,Long locationsId,Long orgId, Long approverUserId,String searchValue,String projectName,int start, int length,int totalRows,String isGlobalUser,String tableFor,String dateFormat) throws Exception {
+		long methodStartTime = System.nanoTime();
 		List<BigInteger> countlist = null;  
 		Integer filterCount = 0;
 		ResponseList<TimesheetApprovalSubmissionDetailsDTO> response = new ResponseList<TimesheetApprovalSubmissionDetailsDTO>();
@@ -2450,11 +2451,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		if (endDate != null) {
 			sqlEndDate = new java.sql.Date(endDate.getTime());
 		}
-		
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String startDateStr = sdf.format(startDate);
-		String endDateStr = sdf.format(endDate);
 		
 		String orgDateFormat = "";
 		if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
@@ -2478,10 +2474,14 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		}
 		
 		StringBuilder statusQuery = new StringBuilder();
-		if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
-			statusQuery.append(" SAH.SUBMISSION_APPROVALSTATUS = '" + Submission_ApprovalStatus.getNameByValue(status) + "'");
-		}else if(StringUtils.isNotEmpty(status) && (status.equalsIgnoreCase("All"))){
-			statusQuery.append(" (SAH.SUBMISSION_APPROVALSTATUS = '" + Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL + "' OR SAH.SUBMISSION_APPROVALSTATUS = '" + Submission_ApprovalStatus.APPROVED + "'  OR SAH.SUBMISSION_APPROVALSTATUS = '" + Submission_ApprovalStatus.REJECTED + "')");
+		if(StringUtils.isNotEmpty(tableFor) && tableFor.equalsIgnoreCase("approver")) {
+			if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
+				statusQuery.append(" SAH.SUBMISSION_APPROVALSTATUS = '" + Submission_ApprovalStatus.getNameByValue(status) + "'");
+			}else if(StringUtils.isNotEmpty(status) && (status.equalsIgnoreCase("All"))){
+				statusQuery.append(" (SAH.SUBMISSION_APPROVALSTATUS = '" + Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL + "' OR SAH.SUBMISSION_APPROVALSTATUS = '" + Submission_ApprovalStatus.APPROVED + "'  OR SAH.SUBMISSION_APPROVALSTATUS = '" + Submission_ApprovalStatus.REJECTED + "')");
+			}
+		}else if(StringUtils.isNotEmpty(tableFor) && tableFor.equalsIgnoreCase("dashboard")) {
+			statusQuery.append(" SAH.SUBMISSION_STATUS = '" + Submission_Status.getNameByValue(status) + "'");
 		}
 		
 		StringBuilder filterQuery = new StringBuilder();
@@ -2511,8 +2511,23 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
         				.append("      ELSE  NULL ")
         			    .append( "      END")
         			    .append( "  ) AS clientId,")
-		        	    .append(" DATE_FORMAT('"+sqlStartDate+"',"+orgDateFormat+") as actualStartDate,")
-		        	    .append(" DATE_FORMAT('"+sqlEndDate+"',"+orgDateFormat+") as actualEndDate,")
+        			    .append(" PROJ.INVOICE_FREQUENCY AS dashboardInvoiceFrequency,");
+        			    if(sqlStartDate != null) {
+        			    	outputFieldQuery
+        			    	.append(" DATE_FORMAT('"+sqlStartDate+"',"+orgDateFormat+") as actualStartDate,");
+                         }else {
+                        	 outputFieldQuery
+ 					    	.append(" DATE_FORMAT(SAH.FREQUENCY_START_DATE,"+orgDateFormat+") as actualStartDate,");
+                         }
+		
+						if(sqlEndDate != null) {
+							outputFieldQuery
+					    	.append(" DATE_FORMAT('"+sqlEndDate+"',"+orgDateFormat+") as actualEndDate,");
+				         }else {
+				        	 outputFieldQuery
+						    	.append(" DATE_FORMAT(SAH.FREQUENCY_END_DATE,"+orgDateFormat+") as actualEndDate,");
+				         }
+						outputFieldQuery
 		                .append("  '"+tableFor+"' AS tableFor, ")
 		                .append("   U.ID AS consultantUserId,")
 		                .append("   CAN.WORK_LOCATION AS workLocationId,");
@@ -2665,10 +2680,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		                //ProjectMember should be available with in the frequency or not
 		                newStatusQuery
 		                 .append(" AND PM.ID IN( SELECT PMH.PROJECT_MEMBERS_ID FROM PROJECT_MEMBERS_HISTORY PMH WHERE ")
-		                .append( " (PMH.PROJECT_TERMINATION_DATE IS NOT NULL AND (PMH.PROJECT_ASSIGNED_DATE >='"+startDateStr+"'  AND PMH.PROJECT_TERMINATION_DATE <'"+startDateStr+"')) OR ")
-		                .append( " (PMH.PROJECT_TERMINATION_DATE IS NOT NULL AND (PMH.PROJECT_ASSIGNED_DATE >='"+endDateStr+"'  AND PMH.PROJECT_TERMINATION_DATE <'"+endDateStr+"')) OR ")
-		                .append( " (PMH.PROJECT_TERMINATION_DATE IS NOT NULL AND PMH.PROJECT_TERMINATION_DATE BETWEEN  '"+startDateStr+"' AND '"+endDateStr+"') OR ")
-		                .append( " (PMH.PROJECT_TERMINATION_DATE IS NULL AND (PMH.PROJECT_ASSIGNED_DATE <'"+endDateStr+"')) ")
+		                .append( " (PMH.PROJECT_TERMINATION_DATE IS NOT NULL AND (PMH.PROJECT_ASSIGNED_DATE >='"+sqlStartDate+"'  AND PMH.PROJECT_TERMINATION_DATE <'"+sqlStartDate+"')) OR ")
+		                .append( " (PMH.PROJECT_TERMINATION_DATE IS NOT NULL AND (PMH.PROJECT_ASSIGNED_DATE >='"+sqlEndDate+"'  AND PMH.PROJECT_TERMINATION_DATE <'"+sqlEndDate+"')) OR ")
+		                .append( " (PMH.PROJECT_TERMINATION_DATE IS NOT NULL AND PMH.PROJECT_TERMINATION_DATE BETWEEN  '"+sqlStartDate+"' AND '"+sqlEndDate+"') OR ")
+		                .append( " (PMH.PROJECT_TERMINATION_DATE IS NULL AND (PMH.PROJECT_ASSIGNED_DATE <'"+sqlEndDate+"')) ")
 		                .append( " ) ");
 		    
 					    if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){
@@ -2740,23 +2755,28 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				    	query.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = SAH.PROJECT_CLIENT_ID AND PC.ORG_LOCATIONS_ID = '"+locationsId+"'");
 				    			
 				    }    
-					StringBuilder projectsQuery = new StringBuilder();
+				    StringBuilder projectsQuery = new StringBuilder();
 					if(projectId != null){
-						projectsQuery.append(" SAH.PROJECT_ID  = " + projectId + "");
-					}else {
-						String projectIdString = "";
-						if(projectIds != null && !projectIds.isEmpty()) {
-							projectIdString = StringUtils.join(projectIds, ',').replaceFirst(",", "");
-						}
-						projectsQuery.append(" SAH.PROJECT_ID IN( " + projectIdString + " )");
+						projectsQuery.append(" SAH.PROJECT_ID  = " + projectId + " AND ");
+					}else if(projectIds != null && !projectIds.isEmpty()) {
+						String projectIdString = StringUtils.join(projectIds, ',').replaceFirst(",", "");
+						projectsQuery.append(" SAH.PROJECT_ID IN( " + projectIdString + " ) AND ");
 					}
 				    
 				    query.append("  WHERE  ")
 				         .append(projectsQuery)
-				         .append(" AND PROJ.ID = SAH.PROJECT_ID")
+				         /*.append(" AND PROJ.ID = SAH.PROJECT_ID")
 				    	 .append(" AND SAH.FREQUENCY_START_DATE = '"+sqlStartDate+"' AND  SAH.FREQUENCY_END_DATE = '"+sqlEndDate+"' AND SAH.STATUS != 0   ")
-				    	 .append(" AND SAH.PROJECT_CLIENT_ID = PC.ID AND "+statusQuery+"  AND PROJ.INVOICE_FREQUENCY = '"+timesheetFrequency+"'" );
-					    if(StringUtils.isNotEmpty(filterQuery)) {
+				    	 .append(" AND SAH.PROJECT_CLIENT_ID = PC.ID AND "+statusQuery+"  AND PROJ.INVOICE_FREQUENCY = '"+timesheetFrequency+"'" );*/
+					  
+					    .append("  PROJ.ID = SAH.PROJECT_ID ");
+				         if(StringUtils.isNotEmpty(tableFor) && tableFor.equalsIgnoreCase("approver")) {
+				        	 query.append(" AND SAH.FREQUENCY_START_DATE = '"+sqlStartDate+"' AND  SAH.FREQUENCY_END_DATE = '"+sqlEndDate+"' AND PROJ.INVOICE_FREQUENCY = '"+timesheetFrequency+"'" );
+				         }
+				         query.append(" AND SAH.PROJECT_CLIENT_ID = PC.ID AND ("+statusQuery+") AND SAH.STATUS != '0' ");
+				    
+				    
+				        if(StringUtils.isNotEmpty(filterQuery)) {
 					    	query.append(" AND ").append(filterQuery);
 					    }
 				    query.append(" AND ")
@@ -2790,6 +2810,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			  		  .addScalar("designation", StandardBasicTypes.STRING)
 			  		  .addScalar("project", StandardBasicTypes.STRING)
 			  		  .addScalar("clientId", StandardBasicTypes.LONG)
+			  		  
+			  		  .addScalar("dashboardInvoiceFrequency", StandardBasicTypes.STRING)
 			  		
 			  		  .addScalar("actualStartDate", StandardBasicTypes.STRING)
 			  		  .addScalar("actualEndDate", StandardBasicTypes.STRING)
@@ -2825,6 +2847,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		}
 		response.setData(reportList);
 	    
+		long methodEndTime = System.nanoTime();
+		//System.out.println("Query Execution Time>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((qEndTime - qStartTime), TimeUnit.NANOSECONDS));
+		//System.out.println("Query Count Execution Time>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((countEndTime - countstartTime), TimeUnit.NANOSECONDS));
+		//System.out.println("Query Method Execution Time>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((methodEndTime - methodStartTime), TimeUnit.NANOSECONDS));
 		return response;
      }
 	
