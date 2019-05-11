@@ -20,6 +20,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -2312,8 +2313,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public ResponseList<TimesheetApprovalSubmissionDetailsDTO> getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(Set<Long> projectIds,Boolean isAdmin,String timesheetFrequency,Date startDate,Date endDate,Long clientId,Long projectId,String status,Long locationsId,Long orgId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor,String isGlobalUser,String tableFor,Integer tdSpanLength,String dateFormat) throws Exception {
-		long queryStartTime = System.nanoTime();
+	public ResponseList<TimesheetApprovalSubmissionDetailsDTO> getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(Set<Long> projectIds,Boolean isAdmin,String timesheetFrequency,Date startDate,Date endDate,Long clientId,Long projectId,String status,Long locationsId,Long orgId, Long approverUserId,String searchValue,String projectName,int start, int length,int totalRows,String timesheetFor,String isGlobalUser,String tableFor,Integer tdSpanLength,String dateFormat) throws Exception {
 		List<BigInteger> countlist = null;  
 		Integer filterCount = 0;
 		ResponseList<TimesheetApprovalSubmissionDetailsDTO> response = new ResponseList<TimesheetApprovalSubmissionDetailsDTO>();
@@ -2349,7 +2349,6 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					.append("OR Q1.employeePhoneNo like '%" + searchValue + "%' ")
 					.append("OR Q1.designation like '%" + searchValue + "%' ")
 					.append("OR Q1.project like '%" + searchValue + "%' ")
-					.append("OR Q1.clientName like '%" + searchValue + "%' ")
 					.append("OR Q1.submissionStatus like '%" + searchValue + "%') ");
 
 		}
@@ -2372,56 +2371,27 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			filterQuery.append(" PC.ORG_RELATION_ID = " + clientId + "");
 		}
 		
-		String projectIdString = "";
-		if(projectIds != null && !projectIds.isEmpty()) {
-			projectIdString = StringUtils.join(projectIds, ',').replaceFirst(",", "");
-		}
-		if(projectId != null){
-			if(StringUtils.isNotEmpty(projectName) || clientId != null) {
-				filterQuery.append(" AND ");
-			}
-			filterQuery.append(" PROJ.ID  = " + projectId + "");
-		}else {
-			if(StringUtils.isNotEmpty(projectName) || clientId != null) {
-				filterQuery.append(" AND ");
-			}
-			filterQuery.append(" PROJ.ID IN( " + projectIdString + " )");
-		}
-		
-		
 		StringBuilder outputFieldQuery= new StringBuilder();
 		outputFieldQuery.append(" PM.ID as projectMemberId,")
 		                .append(" PROJ.ID as projectId,") 
 		                .append(" PM.MASTER_CANDIDATE_ID as masterCandidateId,")
-		                .append(" CONCAT(IF(CONSULTANTCAN.FIRST_NAME IS NOT NULL, CONCAT(CONSULTANTCAN.FIRST_NAME,' '),'') ,IF(CONSULTANTCAN.LAST_NAME IS NOT NULL, CONCAT(CONSULTANTCAN.LAST_NAME),'')) as employeeName,")
+		                .append(" CONCAT(IF(CAN.FIRST_NAME IS NOT NULL, CONCAT(CAN.FIRST_NAME,' '),'') ,IF(CAN.LAST_NAME IS NOT NULL, CONCAT(CAN.LAST_NAME),'')) as employeeName,")
 		                .append(" U.FILE_URL as profileImageFileUrl ,")
-		                .append(" CONSULTANTCAN.EMAIL as employeeEmail,")
-		                .append(" CONSULTANTCAN.MOBILE_PHONE as employeePhoneNo,")
+		                .append(" CAN.EMAIL as employeeEmail,")
+		                .append(" CAN.MOBILE_PHONE as employeePhoneNo,")
 		                .append(" CAN.DESIGNATION_TYPE  as designation,")
 		                .append(" PROJ.PROJECT_NAME as project,")
-		                .append( "   (CASE " )
-								.append( "        WHEN PC.ORG_RELATION_ID IS NOT NULL AND ORGRL.LOCATION_ID = "+locationsId+" THEN ( SELECT ORG_NAME FROM ORG_LOCATIONS CLIENTLOC WHERE CLIENTLOC.ID = ORGRL.RESPONDER_LOCATION_ID) ")
-								.append( "        WHEN PC.ORG_RELATION_ID IS NOT NULL AND ORGRL.RESPONDER_LOCATION_ID = "+locationsId+" THEN ( SELECT ORG_NAME FROM ORG_LOCATIONS CLIENTLOC WHERE CLIENTLOC.ID = ORGRL.LOCATION_ID) ")
-								.append( "        ELSE  '--' " )
-								.append( "      END " )
-					            .append( "     ) AS  clientName, ")
-					    .append("    (CASE " )
-							    .append("      WHEN PC.ORG_RELATION_ID IS NOT NULL AND ORGRL.UUID IS NOT NULL ")
-							    .append("      THEN  ORGRL.UUID")
-							    .append("      ELSE  ''")
-							    .append("      END")
-							    .append("  ) AS orgRelationUUID,")
 		                .append("  (CASE " )
-		        			    .append( "      WHEN PC.ORG_RELATION_ID IS NOT NULL AND ORGRL.ID IS NOT NULL ")
-		        			    .append( "      THEN  ORGRL.ID")
-		        				.append("      ELSE  NULL ")
-		        			    .append( "      END")
-		        			    .append( "  ) AS clientId,")
+        			    .append( "      WHEN PC.ORG_RELATION_ID IS NOT NULL ")
+        			    .append( "      THEN PC.ORG_RELATION_ID ")
+        				.append("      ELSE  NULL ")
+        			    .append( "      END")
+        			    .append( "  ) AS clientId,")
 		        	    .append(" DATE_FORMAT('"+sqlStartDate+"',"+orgDateFormat+") as actualStartDate,")
 		        	    .append(" DATE_FORMAT('"+sqlEndDate+"',"+orgDateFormat+") as actualEndDate,")
 		                .append("  '"+tableFor+"' AS tableFor, ")
-		                .append("   CONSULTANTCAN.CONSULTANT_USER_ID AS consultantUserId,")
-		                .append("   CONSULTANTCAN.WORK_LOCATION AS workLocationId,");
+		                .append("   U.ID AS consultantUserId,")
+		                .append("   CAN.WORK_LOCATION AS workLocationId,");
 		        			    
 		StringBuilder parallelApproverCheckQuery= new StringBuilder();  
 		                   parallelApproverCheckQuery
@@ -2432,7 +2402,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		                  .append(" (").append(isAdmin).append(" AND PAH.LEVEL IN(SELECT MAX(PAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID) AND PAH.PROJECT_CLIENTS_ID = PC.ID)")
 		        		  .append("       OR   ")   
 		        		  //isReportingManager
-		        		  .append(" ( PAH.LEVEL = '1' AND PROJ.IS_REPORTING_MANAGER_AS_APPROVER = 'Y' AND  CONSULTANTCAN.CONSULTANT_USER_ID IS NOT NULL AND UR.USER_ID = CONSULTANTCAN.CONSULTANT_USER_ID AND UR.REPORTING_MANAGER_ID = '"+approverUserId+"' AND PAH.PROJECT_CLIENTS_ID = PC.ID)");
+		        		  .append(" ( PAH.LEVEL = '1' AND PROJ.IS_REPORTING_MANAGER_AS_APPROVER = 'Y'  AND UR.USER_ID = U.ID AND UR.REPORTING_MANAGER_ID = '"+approverUserId+"' AND PAH.PROJECT_CLIENTS_ID = PC.ID)");
 		
 	  
 	     //checking with low-level(vendor),highest level manager approval                      
@@ -2512,7 +2482,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	 				    	 .append("  OR     ")
 	 				    	 //isReportingManager
 	 				    	 .append("      (")
-	 				    	 .append(" ( PAH.LEVEL = '1' AND PROJ.IS_REPORTING_MANAGER_AS_APPROVER = 'Y' AND  CONSULTANTCAN.CONSULTANT_USER_ID IS NOT NULL AND UR.USER_ID = CONSULTANTCAN.CONSULTANT_USER_ID AND UR.REPORTING_MANAGER_ID = '"+approverUserId+"' AND PAH.PROJECT_CLIENTS_ID = PC.ID)")
+	 				    	 .append(" ( PAH.LEVEL = '1' AND PROJ.IS_REPORTING_MANAGER_AS_APPROVER = 'Y' AND UR.USER_ID = U.ID AND UR.REPORTING_MANAGER_ID = '"+approverUserId+"' AND PAH.PROJECT_CLIENTS_ID = PC.ID)")
 	 				    	 .append("      )")
 	 				    	 .append(")");
 	                          
@@ -2528,44 +2498,49 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
             .append(" NULL AS rejectedReason")
             
             .append("  FROM USER_ROLE UR,PROJECT_MEMBERS PM ")
-            
-            /*Getting Project Member History*/
-            .append("  INNER JOIN (SELECT ID,PROJECT_MEMBERS_ID,PROJECT_TERMINATION_DATE,PROJECT_ASSIGNED_DATE FROM PROJECT_MEMBERS_HISTORY) AS PMH ON PMH.PROJECT_MEMBERS_ID = PM.ID")
-            
+           
             /*Getting Projects*/
             .append("  INNER JOIN (SELECT ID,INVOICE_FREQUENCY,PROJECT_APPROVAL_TYPE,PROJECT_NAME,IS_REPORTING_MANAGER_AS_APPROVER, WEEK_START_DATE,IS_PROJECT_FOR_TIMESHEETS FROM PROJECTS ) AS PROJ ON PROJ.ID = PM.PROJECT_ID")
-           
-            /*Getting location based candidate*/
-			.append("  LEFT JOIN (SELECT ID,DESIGNATION_TYPE FROM CANDIDATE) AS CAN ON CAN.ID = PM.CANDIDATE_ID")
-           
-			/*Getting consultant user candidate*/
-            .append("  LEFT JOIN (SELECT MASTER_CANDIDATE_ID,CONSULTANT_USER_ID,FIRST_NAME,LAST_NAME,EMAIL,MOBILE_PHONE,WORK_LOCATION FROM CANDIDATE) AS CONSULTANTCAN ON  CONSULTANTCAN.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND  CONSULTANTCAN.CONSULTANT_USER_ID IS NOT NULL ")
+            
+            /*Getting candidate*/
+			.append("  LEFT JOIN (SELECT ID,MASTER_CANDIDATE_ID,DESIGNATION_TYPE,CONSULTANT_USER_ID,FIRST_NAME,LAST_NAME,EMAIL,MOBILE_PHONE,WORK_LOCATION FROM CANDIDATE) AS CAN ON CAN.ID = PM.CANDIDATE_ID")
            
             /*Getting consultant user*/
-            .append("  INNER JOIN (SELECT ID,FILE_URL FROM USER) AS U ON U.ID = CONSULTANTCAN.CONSULTANT_USER_ID ");
+            .append("  LEFT JOIN (SELECT ID,FILE_URL FROM USER) AS U ON U.ID = CAN.CONSULTANT_USER_ID ");
 			 //To get current  orglocation details 
 		    if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
-		    	newStatusQuery.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = PM.PROJECT_CLIENTS_ID AND PC.PROJECT_ID =  PROJ.ID AND (PC.ORG_LOCATIONS_ID = '"+locationsId+"' OR  (PC.ORG_LOCATIONS_ID != '"+locationsId+"' AND PC.ORG_ID = '"+orgId+"'))");
+		    	newStatusQuery.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = PM.PROJECT_CLIENTS_ID  AND (PC.ORG_LOCATIONS_ID = '"+locationsId+"' OR  (PC.ORG_LOCATIONS_ID != '"+locationsId+"' AND PC.ORG_ID = '"+orgId+"'))");
 		    }else {
-		    	newStatusQuery.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = PM.PROJECT_CLIENTS_ID AND PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+locationsId+"'");
+		    	newStatusQuery.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = PM.PROJECT_CLIENTS_ID  AND PC.ORG_LOCATIONS_ID = '"+locationsId+"'");
 		    			
 		    }
 		    //getting project approver hierarchy
-		    newStatusQuery.append(" INNER JOIN (SELECT ID,PROJECT_ID,PROJECT_CLIENTS_ID,APPROVER_USER_ID,STATUS,LEVEL FROM PROJECT_APPROVER_HIERARCHY) AS PAH ON PAH.PROJECT_ID = PROJ.ID AND PAH.PROJECT_CLIENTS_ID = PC.ID ");
-		    /*Getting Org-Relation*/
-		    newStatusQuery.append("  LEFT JOIN (SELECT ID,LOCATION_ID,RESPONDER_LOCATION_ID,UUID FROM ORG_RELATIONS) AS ORGRL ON ORGRL.ID = PC.ORG_RELATION_ID AND PC.ORG_RELATION_ID IS NOT NULL");
-		    
+		    newStatusQuery.append(" INNER JOIN (SELECT ID,PROJECT_ID,PROJECT_CLIENTS_ID,APPROVER_USER_ID,STATUS,LEVEL FROM PROJECT_APPROVER_HIERARCHY) AS PAH ON PAH.PROJECT_ID = PM.PROJECT_ID AND PAH.PROJECT_CLIENTS_ID = PM.PROJECT_CLIENTS_ID ");
+		    StringBuilder projectsQuery = new StringBuilder();
+			if(projectId != null){
+				projectsQuery.append(" PM.PROJECT_ID  = " + projectId + "");
+			}else {
+				String projectIdString = "";
+				if(projectIds != null && !projectIds.isEmpty()) {
+					projectIdString = StringUtils.join(projectIds, ',').replaceFirst(",", "");
+				}
+				projectsQuery.append(" PM.PROJECT_ID IN( " + projectIdString + " )");
+			}
 		    newStatusQuery.append(" WHERE ")
-		 		        .append(" PROJ.IS_PROJECT_FOR_TIMESHEETS = 'Y' ")
-		                .append(" AND ")
+		                 .append(projectsQuery)
+		                 .append(" AND PROJ.ID = PM.PROJECT_ID")
+		 		         .append(" AND PROJ.IS_PROJECT_FOR_TIMESHEETS = 'Y' ");
+		 		       
 		                 //should be a low-level org in the case of client-vendor relationship
-		                .append(" PC.LEVEL IN(SELECT MAX(SUBPC.LEVEL) FROM PROJECT_MEMBERS SUBPM ")
+		 		        newStatusQuery
+		                .append(" AND PC.LEVEL IN(SELECT MAX(SUBPC.LEVEL) FROM PROJECT_MEMBERS SUBPM ")
 		                .append( "              INNER JOIN(SELECT ID,ORG_ID,LEVEL,PROJECT_ID,STATUS FROM PROJECT_CLIENTS) AS SUBPC ON SUBPC.ID = SUBPM.PROJECT_CLIENTS_ID ")
 		                .append( "              INNER JOIN (SELECT ID,ORG_TYPE FROM ORG) AS OG ON OG.ID = SUBPC.ORG_ID     ")
-		                .append("               WHERE SUBPM.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND SUBPC.PROJECT_ID = PROJ.ID AND OG.ORG_TYPE != 'GUEST' AND SUBPC.STATUS != '0' ) ")
+		                .append("               WHERE SUBPM.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND SUBPC.PROJECT_ID = PM.PROJECT_ID AND OG.ORG_TYPE != 'GUEST' AND SUBPC.STATUS != '0' ) ");
 		    
 		                //ProjectMember should be available with in the frequency or not
-		                .append(" AND (")
+		                newStatusQuery
+		                 .append(" AND PM.ID IN( SELECT PMH.PROJECT_MEMBERS_ID FROM PROJECT_MEMBERS_HISTORY PMH WHERE ")
 		                .append( " (PMH.PROJECT_TERMINATION_DATE IS NOT NULL AND (PMH.PROJECT_ASSIGNED_DATE >='"+startDateStr+"'  AND PMH.PROJECT_TERMINATION_DATE <'"+startDateStr+"')) OR ")
 		                .append( " (PMH.PROJECT_TERMINATION_DATE IS NOT NULL AND (PMH.PROJECT_ASSIGNED_DATE >='"+endDateStr+"'  AND PMH.PROJECT_TERMINATION_DATE <'"+endDateStr+"')) OR ")
 		                .append( " (PMH.PROJECT_TERMINATION_DATE IS NOT NULL AND PMH.PROJECT_TERMINATION_DATE BETWEEN  '"+startDateStr+"' AND '"+endDateStr+"') OR ")
@@ -2587,11 +2562,11 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
                        .append("  OR     ")
                        .append(" (").append(isAdmin).append(" AND 1 IN(SELECT MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID) AND PAH.PROJECT_CLIENTS_ID = PC.ID)")
                        .append("  OR     ")
-                       .append(" ( PAH.LEVEL = '1' AND PROJ.IS_REPORTING_MANAGER_AS_APPROVER = 'Y' AND  CONSULTANTCAN.CONSULTANT_USER_ID IS NOT NULL AND UR.USER_ID = CONSULTANTCAN.CONSULTANT_USER_ID AND UR.REPORTING_MANAGER_ID = '"+approverUserId+"' AND PAH.PROJECT_CLIENTS_ID = PC.ID)")
+                       .append(" ( PAH.LEVEL = '1' AND PROJ.IS_REPORTING_MANAGER_AS_APPROVER = 'Y' AND   UR.USER_ID = U.ID AND UR.REPORTING_MANAGER_ID = '"+approverUserId+"' AND PAH.PROJECT_CLIENTS_ID = PC.ID)")
                        .append("");
 		                
 		                //projectmember should  not present in submissionapprover hierarchy 
-		                newStatusQuery.append(" AND  PM.MASTER_CANDIDATE_ID NOT IN(SELECT SAH.MASTER_CANDIDATE_ID FROM SUBMISSION_APPROVER_HIERARCHY SAH WHERE SAH.PROJECT_CLIENT_ID = PC.ID AND SAH.FREQUENCY_START_DATE = '"+sqlStartDate+"' AND  SAH.FREQUENCY_END_DATE = '"+sqlEndDate+"' AND SAH.STATUS != 0 AND SAH.SUBMISSION_APPROVALSTATUS IN('"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"','"+Submission_ApprovalStatus.APPROVED+"','"+Submission_ApprovalStatus.REJECTED+"'))");
+		                newStatusQuery.append(" AND  PM.ID NOT IN(SELECT SAH.PROJECT_MEMBER_ID FROM SUBMISSION_APPROVER_HIERARCHY SAH WHERE SAH.PROJECT_CLIENT_ID = PC.ID AND SAH.FREQUENCY_START_DATE = '"+sqlStartDate+"' AND  SAH.FREQUENCY_END_DATE = '"+sqlEndDate+"' AND SAH.STATUS != 0 AND SAH.SUBMISSION_APPROVALSTATUS IN('"+Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL+"','"+Submission_ApprovalStatus.APPROVED+"','"+Submission_ApprovalStatus.REJECTED+"'))");
 		                newStatusQuery.append(" AND ")
 				    	 .append("   ( CASE ")
 				    	 .append( "        WHEN PROJ.PROJECT_APPROVAL_TYPE ='"+Constants.PARALLEL+"' THEN " )
@@ -2620,32 +2595,42 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		            .append(" SAH.REJECTED_REASON AS rejectedReason")
 			    
 		            .append("  FROM USER_ROLE UR,SUBMISSION_APPROVER_HIERARCHY SAH ")
+		           
+		            /*Getting Projects*/
+		            .append("  INNER JOIN (SELECT ID,INVOICE_FREQUENCY,PROJECT_APPROVAL_TYPE,PROJECT_NAME,IS_REPORTING_MANAGER_AS_APPROVER, WEEK_START_DATE,IS_PROJECT_FOR_TIMESHEETS FROM PROJECTS ) AS PROJ ON PROJ.ID = SAH.PROJECT_ID")
+		            
 		            /*Getting ProjectMember*/
 		            .append("  INNER JOIN (SELECT ID,CANDIDATE_ID,MASTER_CANDIDATE_ID,PROJECT_CLIENTS_ID FROM PROJECT_MEMBERS ) AS PM ON PM.ID = SAH.PROJECT_MEMBER_ID ")
 		            /*Getting consultant UserId*/
 					.append("  LEFT JOIN (SELECT ID,FILE_URL FROM USER) AS U ON U.ID = SAH.CONSULTANT_USER_ID ")
 					
 					 /*Getting location based candidate*/
-					.append("  LEFT JOIN (SELECT ID,DESIGNATION_TYPE FROM CANDIDATE) AS CAN ON CAN.ID = PM.CANDIDATE_ID")
+					.append("  LEFT JOIN (SELECT ID,MASTER_CANDIDATE_ID,DESIGNATION_TYPE,CONSULTANT_USER_ID,FIRST_NAME,LAST_NAME,EMAIL,MOBILE_PHONE,WORK_LOCATION FROM CANDIDATE) AS CAN ON CAN.ID = SAH.CANDIDATE_ID")
 		           
-					/*Getting consultant user candidate*/
-		            .append("  LEFT JOIN (SELECT MASTER_CANDIDATE_ID,CONSULTANT_USER_ID,FIRST_NAME,LAST_NAME,EMAIL,MOBILE_PHONE,WORK_LOCATION FROM CANDIDATE) AS CONSULTANTCAN ON  CONSULTANTCAN.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND  CONSULTANTCAN.CONSULTANT_USER_ID IS NOT NULL ")
-		            
 					/*Getting Approver Hierarchy*/
-					.append("  INNER JOIN (SELECT ID,APPROVER_USER_ID,PROJECT_CLIENTS_ID,STATUS,LEVEL FROM PROJECT_APPROVER_HIERARCHY) AS PAH ON PAH.ID = SAH.HIERARCHY_ID ")
-					/*Getting Project*/
-					.append("  INNER JOIN (SELECT ID,INVOICE_FREQUENCY,PROJECT_APPROVAL_TYPE,PROJECT_NAME,IS_REPORTING_MANAGER_AS_APPROVER,WEEK_START_DATE,IS_PROJECT_FOR_TIMESHEETS FROM PROJECTS ) AS PROJ ON PROJ.ID = SAH.PROJECT_ID ");
+					.append("  INNER JOIN (SELECT ID,APPROVER_USER_ID,PROJECT_CLIENTS_ID,STATUS,LEVEL FROM PROJECT_APPROVER_HIERARCHY) AS PAH ON PAH.ID = SAH.HIERARCHY_ID ");
 					 /*Getting Project Client*/
 				    if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
-				    	query.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = PM.PROJECT_CLIENTS_ID AND PC.PROJECT_ID =  PROJ.ID AND (PC.ORG_LOCATIONS_ID = '"+locationsId+"' OR  (PC.ORG_LOCATIONS_ID != '"+locationsId+"' AND PC.ORG_ID = '"+orgId+"'))");
+				    	query.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = SAH.PROJECT_CLIENT_ID AND (PC.ORG_LOCATIONS_ID = '"+locationsId+"' OR  (PC.ORG_LOCATIONS_ID != '"+locationsId+"' AND PC.ORG_ID = '"+orgId+"'))");
 				    }else {
-				    	query.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = PM.PROJECT_CLIENTS_ID AND PC.PROJECT_ID =  PROJ.ID AND PC.ORG_LOCATIONS_ID = '"+locationsId+"'");
+				    	query.append(" INNER JOIN (SELECT ID,PROJECT_ID,ORG_LOCATIONS_ID,ORG_ID,ORG_RELATION_ID,LEVEL FROM PROJECT_CLIENTS) AS PC ON PC.ID = SAH.PROJECT_CLIENT_ID AND PC.ORG_LOCATIONS_ID = '"+locationsId+"'");
 				    			
 				    }    
-	                /*Getting Org-Relation*/
-				    query.append("  LEFT JOIN (SELECT ID,LOCATION_ID,RESPONDER_LOCATION_ID,UUID FROM ORG_RELATIONS) AS ORGRL ON ORGRL.ID = PC.ORG_RELATION_ID AND PC.ORG_RELATION_ID IS NOT NULL");
+					StringBuilder projectsQuery = new StringBuilder();
+					if(projectId != null){
+						projectsQuery.append(" SAH.PROJECT_ID  = " + projectId + "");
+					}else {
+						String projectIdString = "";
+						if(projectIds != null && !projectIds.isEmpty()) {
+							projectIdString = StringUtils.join(projectIds, ',').replaceFirst(",", "");
+						}
+						projectsQuery.append(" SAH.PROJECT_ID IN( " + projectIdString + " )");
+					}
+				    
 				    query.append("  WHERE  ")
-				    	 .append("SAH.FREQUENCY_START_DATE = '"+sqlStartDate+"' AND  SAH.FREQUENCY_END_DATE = '"+sqlEndDate+"' AND SAH.STATUS != 0   ")
+				         .append(projectsQuery)
+				         .append(" AND PROJ.ID = SAH.PROJECT_ID")
+				    	 .append(" AND SAH.FREQUENCY_START_DATE = '"+sqlStartDate+"' AND  SAH.FREQUENCY_END_DATE = '"+sqlEndDate+"' AND SAH.STATUS != 0   ")
 				    	 .append(" AND SAH.PROJECT_CLIENT_ID = PC.ID AND "+statusQuery+"  AND PROJ.INVOICE_FREQUENCY = '"+timesheetFrequency+"'" );
 					    if(StringUtils.isNotEmpty(filterQuery)) {
 					    	query.append(" AND ").append(filterQuery);
@@ -2670,34 +2655,52 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	      query.append(" )Q1 "+searchQuery+" GROUP BY CONCAT(Q1.projectId,Q1.masterCandidateId,Q1.actualStartDate,Q1.actualEndDate) ");
 	     //System.out.println(query);
 	     
-	     long qstartTime = System.nanoTime();
-		Query result = session.createSQLQuery(query.toString()).setFirstResult(start).setMaxResults(length);
+		 Query result = session.createSQLQuery(query.toString())
+				      .addScalar("projectMemberId", StandardBasicTypes.LONG)
+					  .addScalar("projectId", StandardBasicTypes.LONG)
+					  .addScalar("masterCandidateId", StandardBasicTypes.LONG)
+			  		  .addScalar("employeeName", StandardBasicTypes.STRING)
+			  		  .addScalar("profileImageFileUrl", StandardBasicTypes.STRING)
+			  		  .addScalar("employeeEmail", StandardBasicTypes.STRING)
+			  		  .addScalar("employeePhoneNo", StandardBasicTypes.STRING)
+			  		  .addScalar("designation", StandardBasicTypes.STRING)
+			  		  .addScalar("project", StandardBasicTypes.STRING)
+			  		  .addScalar("clientId", StandardBasicTypes.LONG)
+			  		
+			  		  .addScalar("actualStartDate", StandardBasicTypes.STRING)
+			  		  .addScalar("actualEndDate", StandardBasicTypes.STRING)
+			  		  .addScalar("tableFor", StandardBasicTypes.STRING)
+			  		  .addScalar("consultantUserId", StandardBasicTypes.LONG)
+			  		  .addScalar("workLocationId", StandardBasicTypes.LONG)
+			  		  
+			  		  .addScalar("submissionStatus", StandardBasicTypes.STRING)
+			  		  .addScalar("actionPerformedBy", StandardBasicTypes.STRING)
+			  		  .addScalar("rejectedReason", StandardBasicTypes.STRING)
+		  		     .setFirstResult(start).setMaxResults(length);
 		List<TimesheetApprovalSubmissionDetailsDTO> reportList  = result.setResultTransformer(Transformers.aliasToBean(TimesheetApprovalSubmissionDetailsDTO.class)).list();
-		long qEndTime = System.nanoTime();
 		
-	    long countstartTime = System.nanoTime();
-		String  countQuery = "SELECT COUNT(*) AS TOTAL FROM (" + query.toString() +")Q2;" ;
-		countlist = session.createSQLQuery(countQuery).list();
-		long countEndTime = System.nanoTime();
-		
-		filterCount = countlist.iterator().next().intValue();
 		
 		int totalCount = 0;
-		if(countlist != null && !countlist.isEmpty()) {
-			totalCount = countlist.iterator().next().intValue();
+		if(totalRows <=0) {
+			String  countQuery = "SELECT COUNT(*) AS TOTAL FROM (" + query.toString() +")Q2;" ;
+			countlist = session.createSQLQuery(countQuery).list();
+			filterCount = countlist.iterator().next().intValue();
+			
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		}else {
+			totalCount = totalRows;
+			filterCount = totalRows;
 		}
 		response.setRecordsTotal(totalCount);
-		
 		if(query.toString() != null && ! query.toString().isEmpty()){
 			response.setRecordsFiltered(filterCount);
 		}else {
 			response.setRecordsFiltered(totalCount);
 		}
 		response.setData(reportList);
-		long queryEndTime = System.nanoTime();
-		System.out.println("Query Execution Time>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((qEndTime - qstartTime), TimeUnit.NANOSECONDS));
-		System.out.println("Query Count Execution Time>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((countEndTime - countstartTime), TimeUnit.NANOSECONDS));
-		System.out.println("Query Method Execution Time>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((queryEndTime - queryStartTime), TimeUnit.NANOSECONDS));
+	    
 		return response;
      }
 	

@@ -346,9 +346,9 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	public ResponseList<TimesheetApprovalSubmissionDetailsDTO> getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
 			Set<Long> projectIds,Boolean isAdmin,String timesheetFrequency, Date startDate, Date endDate, Long clientId, Long projectId, String status,
 			Long locationsId, Long orgId, Long approverUserId, String searchValue, String projectName, int start,
-			int length, String timesheetFor, String isGlobalUser, String tableFor,
+			int length,int totalRows, String timesheetFor, String isGlobalUser, String tableFor,
 			Integer tdSpanLength, String dateFormat) throws Exception {
-		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(projectIds,isAdmin,timesheetFrequency, startDate, endDate, clientId, projectId, status, locationsId, orgId, approverUserId, searchValue, projectName, start, length, timesheetFor, isGlobalUser, tableFor, tdSpanLength, dateFormat);
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(projectIds,isAdmin,timesheetFrequency, startDate, endDate, clientId, projectId, status, locationsId, orgId, approverUserId, searchValue, projectName, start, length,totalRows, timesheetFor, isGlobalUser, tableFor, tdSpanLength, dateFormat);
 	}
 
 	@Override
