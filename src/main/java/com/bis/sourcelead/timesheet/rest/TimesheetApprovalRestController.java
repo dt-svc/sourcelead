@@ -467,7 +467,6 @@ public class TimesheetApprovalRestController {
 			
 		}
 		private TimesheetApprovalDTO timesheetEmployeeSubmissionDetails(HttpServletRequest request, TimesheetApprovalDTO timesheetApprovalDTO) throws Exception {
-			long methodStartTime = System.nanoTime();
 			int start = timesheetApprovalDTO.getStart();
 			int length = 0;
 			if(timesheetApprovalDTO.getPageNo()<1) {
@@ -484,9 +483,6 @@ public class TimesheetApprovalRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 			
-			//orgLocations = null;
-			//user = null;
-			
 			Date actualStartDate=null;
 		    Date actualEndDate=null;
 		    try {
@@ -501,31 +497,6 @@ public class TimesheetApprovalRestController {
 	        if(StringUtils.isNotEmpty(timesheetApprovalDTO.getProject()) && !timesheetApprovalDTO.getProject().equalsIgnoreCase("undefined")  && !timesheetApprovalDTO.getProject().equalsIgnoreCase("All")){
 	        	projectId =Long.parseLong(timesheetApprovalDTO.getProject());
 	        }
-	        /*   ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId,projectId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId(),timesheetApprovalDTO.getSearchValue(),timesheetApprovalDTO.getProjectName(),start,length,"",isGlobalAccess);
-	        timesheetApprovalDTO.setTotalRows(projectMembers.getRecordsTotal());
-			
-			int totalRows = projectMembers.getRecordsTotal();
-			if(totalRows > 0) {
-				 int remainder = totalRows % length;
-				 int pageCount = totalRows / length;
-				 if(remainder > 0) {
-					 timesheetApprovalDTO.setPageCount(pageCount+1);
-				 }
-				 else {
-					 timesheetApprovalDTO.setPageCount(pageCount);
-				 }
-			}
-			
-	        if(projectMembers.getData() != null && !projectMembers.getData().isEmpty()){
-	        	int tdSpanLength = 6;
-	        	List<TimesheetApprovalSubmissionDetailsDTO> subDetails = new ArrayList<>();
-	         for (ProjectMembers projectMember : projectMembers.getData()){
-	        	TimesheetApprovalSubmissionDetailsDTO ts = 	getTimesheetApprovalRowDetails(timesheetApprovalDTO, projectMember, orgLocations, actualStartDate, actualEndDate, user, tdSpanLength,isGlobalAccess);
-	        	 ts.setTableFor("approver");
-	        	subDetails.add(ts);
-	         }
-	         timesheetApprovalDTO.setTimesheetSubmission(subDetails);
-	       }*/
 	        
 	        if(timesheetApprovalDTO.getProjectList() != null && !timesheetApprovalDTO.getProjectList().isEmpty()) {
 	        	 Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isAdmin");
@@ -631,8 +602,6 @@ public class TimesheetApprovalRestController {
 	        }else {
 	        	timesheetApprovalDTO.setTotalRows(0);
 	        }
-	        long methodEndTime = System.nanoTime();
-	    	System.out.println("Actual Execution Time>>>>>>>>>>>>>>>>>>>"+TimeUnit.SECONDS.convert((methodEndTime - methodStartTime), TimeUnit.NANOSECONDS));
 	        return timesheetApprovalDTO;
 	 }
 		
