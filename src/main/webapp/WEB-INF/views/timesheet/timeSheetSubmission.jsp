@@ -11,6 +11,7 @@
 					<b class="proj_new Cursor" onClick='addTimeSheetRow();'>Add Row</b>
 	</div>
 </c:if>
+
  <style>
  .commentValidation p{
     padding: 0px 0px 0px 0px !important;
