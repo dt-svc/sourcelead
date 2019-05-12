@@ -1,8 +1,39 @@
 <input type="hidden" id="timesheetApproverCurrentPageNumber">
+<!-- Hidden Div for Timesheet Entry Details popup from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->
+<div class="time_appr_side_wrap">
+	<div class="time_appr_side_wrap_inn">
+	 	 <form id="timesheet_form" name="timesheet_form"> 
+		 	<input type="hidden" id="projectMemberId" name="projectMemberId" value="${timesheetEntryDetailsDTO.projectMemberId}"/>
+	        <input type="hidden" id="projectId" name="projectId" value="${timesheetEntryDetailsDTO.projectId}"/>
+	        <input type="hidden" id="masterCandidateId" name="masterCandidateId" value="${timesheetEntryDetailsDTO.masterCandidateId}"/>
+	        <input type="hidden" id="currentTimeFrequency" name="currentTimeFrequency" value="${timesheetEntryDetailsDTO.currentTimeFrequency}"/>
+            <input type="hidden" id="timesheetFor" name="timesheetFor" value="approver"/>
+            <input type="hidden" name="totalHours" id="totalHours" >
+            <div id="timesheetDivByFrequency">
+                <!-- inner jsp for timesheetentry details   -->
+	 	        <jsp:include page="timesheetApprovalSubmission.jsp"></jsp:include>
+	 	    </div>
+	 	  </form>
+	 	
+	</div>
+</div>	
+<!-- Hidden div's for loading   -->
+<div id="loadTime"></div>
+<div id="loadTime1"></div>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
+<!-- Hidden div for reject reason popup -->
+<div id='rejectedPopup'></div>
+
+<!-- Hidden div for reopen popup -->
+<div id='reOpenPopup'></div>
+
+<!-- Hidden div for reopen-reject reason popup -->
+<div id='reOpenRejectedPopup'></div>
+
+<!-- Hidden div timesheet entries popup close button -->
+<div class="side_mask"><div class="proj_close" onclick="timesheetApprovalTableRowByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectMemberId}','approverClose');"></div></div>	
+<div class="mask_time"></div>
+
 
 <script>
 $(document).ready(function() {
@@ -14,46 +45,23 @@ $(document).ready(function() {
 	});	
 });
 </script>
-<div class="time_appr_side_wrap">
-	<div class="time_appr_side_wrap_inn">
-	 	 <form id="timesheet_form" name="timesheet_form"> 
-		 	<input type="hidden" id="projectMemberId" name="projectMemberId" value="${timesheetEntryDetailsDTO.projectMemberId}"/>
-	        <input type="hidden" id="projectId" name="projectId" value="${timesheetEntryDetailsDTO.projectId}"/>
-	        <input type="hidden" id="masterCandidateId" name="masterCandidateId" value="${timesheetEntryDetailsDTO.masterCandidateId}"/>
-	        <input type="hidden" id="currentTimeFrequency" name="currentTimeFrequency" value="${timesheetEntryDetailsDTO.currentTimeFrequency}"/>
-            <input type="hidden" id="timesheetFor" name="timesheetFor" value="approver"/>
-            <input type="hidden" name="totalHours" id="totalHours" >
-            <div id="timesheetDivByFrequency">
-	 	        <jsp:include page="timeSheetSubmission.jsp"></jsp:include>
-	 	    </div>
-	 	  </form>
-	 	
-	</div>
-</div>	
-<div id="loadTime"></div>
-<div id="loadTime1"></div>
-<div id='rejectedPopup'></div>
-<div id='reOpenPopup'></div>
-<div id='reOpenRejectedPopup'></div>
-<div class="side_mask"><div class="proj_close" onclick="timesheetApprovalTableRowByProjectMemberId('${timesheetApprovalDTO.weekFrequency}','${timesheetSubmission.projectMemberId}','approverClose');"></div></div>	
-<div class="mask_time"></div>
-<script>
-$(document).on("mouseover", ".glyphicon-comment", function() { 
-var localId = $(this).attr('id');
-$("#rejectedMessage"+localId).addClass('app_error_mes_active');
-});	
-$(document).on("mouseleave", ".glyphicon-comment", function() { 
-var localId = $(this).attr('id');
-$("#rejectedMessage"+localId).removeClass('app_error_mes_active');
-});	
-</script> 
+
+
+
+<!-- Getting Timesheet Entry Details from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->
 <script>
 function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,projectMemberId,masterCandidateId,totalHours,from,requestFrom){
+	 $('#hedderAcceptRejectButton').hide();
+	 $('#selectAllTimeSheetCheckBoxForSubmitForApproval').removeProp('checked');
+     $(".checkBoxForSubmitForApproval").each(function () {
+    	$(this).removeProp('checked');
+     }); 
 	if(requestFrom == "notifyLink"){
 		  tableFor = from;
 	 }else{
 		  tableFor = $("#tableFor").val();
 	 }
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 $("#projectMemberId").val('');
 	 $("#projectMemberId").val(projectMemberId);
 	 
@@ -103,10 +111,71 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 	    	selectedRecords[$(this).val()] = $(this).is(":checked");
 	    });
 
-$('.selectpicker').selectpicker('refresh');
-$('.existedProjectTaskId'+projectId).selectpicker('refresh');
+		$('.selectpicker').selectpicker('refresh');
+		$('.existedProjectTaskId'+projectId).selectpicker('refresh');
 }	
 </script>
+
+
+
+<!-- Approving submitted timesheet from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->  
+<script>
+function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
+	 var rowHtmlContent =  $("#row"+projectMemberId).html();
+	 var userName =  '${SourceLeadWeb_userName}';
+	 var locationName =  '${SourceLeadWeb_orgName}';
+	 var actionPerfomedBy = '';
+	 if(userName == '' || userName == 'undefined' || userName == null ){
+		 userName = '';
+	 }else if(locationName == '' || locationName == 'undefined' || locationName == null ){
+		 actionPerfomedBy = userName;
+	 }else{
+		 actionPerfomedBy = userName+'('+locationName+')';
+	 }
+	 var tableFor = $("#tableFor").val();
+	$("#row"+projectMemberId).empty();
+	$("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
+    $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
+    var rejectedReason = '';
+    var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+    $('#hedderAcceptRejectButton').hide();
+    $('#selectAllTimeSheetCheckBoxForSubmitForApproval').removeProp('checked');
+     $.ajax({
+    type: "POST",
+    url: pmsUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
+	    success: function(data) {
+	    	 if (data.response === "AWKWARD") {
+                    location.href = "/errorPage";
+	    	 } else if (data.response === "SUCCESS") {
+	    		 if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard' && from != null && from != '' && from != 'undefined' && from != 'approvalSummary'){
+	        		 var currentPageNumber =  $("#currentPageNumber").val();
+	        		 getStatusListData(""+currentPageNumber+"",0,"");
+	        	 } else if(from != null && from != '' && from != 'undefined' && from == 'approvalSummary'){
+	        		 var currentTimeFrequency = startDate+"To"+endDate;
+	        		 timesheetApprovalTableRowByProjectMemberId(currentTimeFrequency,projectMemberId,tableFor);
+	        	 }
+	        	 else{
+	        		 $("#row"+projectMemberId).empty();
+			    	 $("#row"+projectMemberId).html(rowHtmlContent);
+			    	 $("#status"+projectMemberId).html("Approved");
+			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+actionPerfomedBy+"</b>");
+			    	 $("#row"+projectMemberId).each(function() {
+			    		   $(this).find('input:checkbox:first').remove();
+			    		   var banIcon = '<small class="positionRelative"><i class="fa fa-ban text-danger"></i></small>';
+			    		   $(this).find('td:first-child').html(banIcon);
+         	        });
+	        	   }
+	    	 }else if (result.indexOf('Sign In') !== -1) {
+					location.replace('${SourceLeadWeb_sourceleadUrl}');
+			 }
+        	 
+	    	 
+	    }
+    });   
+}
+</script>
+
+<!-- Rejecting submitted timesheet from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->
 <script>
 function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){ 
     $("#rejectReasonDiv").empty();
@@ -119,59 +188,10 @@ function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 	result = result +'</div>';
 	result = result +'</div>';
 	$("#rejectedPopup").append(result);
-   $(".mask_time").fadeIn(200); 
-$("#reject"+projectMemberId+"panel").slideToggle(200);
+    $(".mask_time").fadeIn(200); 
+    $("#reject"+projectMemberId+"panel").slideToggle(200);
 	
 }
-function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
-	 var rowHtmlContent =  $("#row"+projectMemberId).html();
-	 var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
-	 if(locationName == '' || locationName == 'undefined' || locationName == null ){
-		 locationName = '';
-	 }
-	 var tableFor = $("#tableFor").val();
-	$("#row"+projectMemberId).empty();
-	$("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
-    $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
-    var rejectedReason = '';
-    $('#hedderAcceptRejectButton').hide();
-    $('#selectAllTimeSheetCheckBoxForSubmitForApproval').removeProp('checked');
-     $.ajax({
-    type: "POST",
-    url: pmsUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
-	    success: function(data) {
-	    	 if (data.response === "AWKWARD") {
-                    location.href = "/errorPage";
-	    	 } else if (data.response === "SUCCESS") {
-	    		 if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard' && from != null && from != '' && from != 'undefined' && from != 'approvalSummary'){
-	        		 var currentPageNumber =  $("#currentPageNumber").val();
-	        		 getStatusListData(""+currentPageNumber+"","");
-	        	 } else if(from != null && from != '' && from != 'undefined' && from == 'approvalSummary'){
-	        		 var currentTimeFrequency = startDate+"To"+endDate;
-	        		 timesheetApprovalTableRowByProjectMemberId(currentTimeFrequency,projectMemberId,tableFor);
-	        	 }
-	        	 else{
-	        		 $("#row"+projectMemberId).empty();
-			    	 $("#row"+projectMemberId).html(rowHtmlContent);
-			    	 $("#status"+projectMemberId).html("Approved");
-			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>");
-			    	 $("#row"+projectMemberId).each(function() {
-			    		   $(this).find('input:checkbox:first').remove();
-			    		   var banIcon = '<small class="positionRelative"><i class="fa fa-ban text-danger"></i></small>';
-			    		   $(this).find('td:first-child').html(banIcon);
-         	        });
-	        	   }
-	    	 }else if (result.indexOf('Sign In') !== -1) {
-					location.replace(pmsUrl);
-			 }
-        	 
-	    	 
-	    }
-    });   
-}
-</script>
-
-<script>
 function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from,reason){
 	 var msg = ''; 
 	if(reason != null && reason != 'undefined' && reason != ''){
@@ -181,14 +201,21 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	 }
 	 var tableFor = $("#tableFor").val();
 	 var encodeMsg = msg;
-	 if(encodeMsg !== ""){
+	 if(encodeMsg != null && encodeMsg != '' && encodeMsg != 'undefined'){
 		 var encodeMsg = encodeURIComponent(msg);
 		 $("#rejectReasonDiv").empty();
+		 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	     var rowHtmlContent =  $("#row"+projectMemberId).html();
 	     
-	     var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
-		 if(locationName == '' || locationName == 'undefined' || locationName == null ){
-			 locationName = '';
+	     var userName =  '${SourceLeadWeb_userName}';
+		 var locationName =  '${SourceLeadWeb_orgName}';
+		 var actionPerfomedBy = '';
+		 if(userName == '' || userName == 'undefined' || userName == null ){
+			 userName = '';
+		 }else if(locationName == '' || locationName == 'undefined' || locationName == null ){
+			 actionPerfomedBy = userName;
+		 }else{
+			 actionPerfomedBy = userName+'('+locationName+')';
 		 }
 		 $("#row"+projectMemberId).empty();
 		 $("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
@@ -200,28 +227,28 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	    url: pmsUrl+"/saveSubmissionApprovalStatusByProjectMemberId?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&approvalStatus=REJECTED",       
 	    success: function(data) { 
 	    	 if (data.response === "AWKWARD") {
-                    location.href = "/errorPage";
+                   location.href = "/errorPage";
 	    	 } else if (data.response === "SUCCESS") {
 	  	        if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 	  	    	     var currentPageNumber =  $("#currentPageNumber").val();
-	        		     getStatusListData(""+currentPageNumber+"","");
+	        		     getStatusListData(""+currentPageNumber+"",0,"");
 	  		    }
 	  	   	    else{
 	  	   		  	  $("#row"+projectMemberId).empty();
 	  	 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
 	  	 	    	  $("#status"+projectMemberId).html("Rejected");
 	  	 	    	  $("#action"+projectMemberId).empty();
-	  	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
+	  	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+actionPerfomedBy+"</b>");
 	  	 	    	  $("#row"+projectMemberId).each(function() {
 			    		   $(this).find('input:checkbox:first').remove();
 			    		   var banIcon = '<small class="positionRelative"><i class="fa fa-ban text-danger"></i></small>';
 			    		   $(this).find('td:first-child').html(banIcon);
-       	        	  });
+      	        	  });
 	  	   	     }
 	  	   	     cancelRejectSubmission(projectMemberId);
 	  	   	    pagination();
 	    	 }else if (result.indexOf('Sign In') !== -1) {
-					location.replace(pmsUrl);
+					location.replace('${SourceLeadWeb_sourceleadUrl}');
 			 }
 	      }
 	    }); 
@@ -233,20 +260,33 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 			}
 		}
 	}
-function rejectedMessage(local){ 
+   function rejectedMessage(local){ 
 		    $("#"+local).slideToggle(200);
 		    $(".timesheet_appr_table .glyphicon strong, .timesheet_appr_table .glyphicon").click(function(e) {
 		        e.stopPropagation();
 		    });	
 		    
 		}
-function cancelRejectSubmission(projectMemberId){
+   function cancelRejectSubmission(projectMemberId){
 	 $(".mask_time").fadeOut(200);
 	 $("#reject"+projectMemberId+"panel").slideUp(200);
 	}
 </script>
 
+<!-- Showing reject reason's on mouseover -->
+<script>
+	$(document).on("mouseover", ".glyphicon-comment", function() { 
+		var localId = $(this).attr('id');
+		$("#rejectedMessage"+localId).addClass('app_error_mes_active');
+	});	
+	$(document).on("mouseleave", ".glyphicon-comment", function() { 
+		var localId = $(this).attr('id');
+		$("#rejectedMessage"+localId).removeClass('app_error_mes_active');
+	});	
+</script>
 
+
+<!-- Bulk Approving submitted timesheets from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->  
 <script>
 function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 	var submissionIDs = [];
@@ -264,9 +304,15 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		var endDate = data2[2];
 		var rejectedReason = '';
 		var rowHtmlContent =  $("#row"+projectMemberId).html();
-		var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
-		 if(locationName == '' || locationName == 'undefined' || locationName == null ){
-			 locationName = '';
+		 var userName =  '${SourceLeadWeb_userName}';
+		 var locationName =  '${SourceLeadWeb_orgName}';
+		 var actionPerfomedBy = '';
+		 if(userName == '' || userName == 'undefined' || userName == null ){
+			 userName = '';
+		 }else if(locationName == '' || locationName == 'undefined' || locationName == null ){
+			 actionPerfomedBy = userName;
+		 }else{
+			 actionPerfomedBy = userName+'('+locationName+')';
 		 }
 		 $("#loadingCotentDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		     $.ajax({
@@ -279,7 +325,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 			    	if(data != null && data !='' && data !='undefined'){
 		    			if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 		    				 var currentPageNumber =  $("#currentPageNumber").val();
-		    				 getStatusListData(""+currentPageNumber+"","");
+		    				 getStatusListData(""+currentPageNumber+"",0,"");
 		    				 $('#hedderAcceptRejectButton').attr('style','display:none');
 		    			 }else{
 		    				 var currentPageNumberApprover =  $("#timesheetApproverCurrentPageNumber").val();
@@ -293,7 +339,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 	             	    });
 			    	}
 			    }else if (result.indexOf('Sign In') !== -1) {
-					location.replace(pmsUrl);
+					location.replace('${SourceLeadWeb_sourceleadUrl}');
 				 }
 			  }
 		  });  
@@ -303,6 +349,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 }
 </script>
 
+<!-- Bulk Rejecting submitted timesheets from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->  
 <script>
 function rejectTimeSheetSubmissionBySubmissionId(tableFor){
 	$("#rejectReasonDiv").empty();
@@ -343,11 +390,18 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 	 	if(encodeMsg !== ""){
 		var encodeMsg = encodeURIComponent(msg);
 		$("#rejectReasonDiv").empty();
+		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	    var rowHtmlContent =  $("#row"+projectMemberId).html();
-	    var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
-		if(locationName == '' || locationName == 'undefined' || locationName == null ){
-			 locationName = '';
-		}
+	    var userName =  '${SourceLeadWeb_userName}';
+		 var locationName =  '${SourceLeadWeb_orgName}';
+		 var actionPerfomedBy = '';
+		 if(userName == '' || userName == 'undefined' || userName == null ){
+			 userName = '';
+		 }else if(locationName == '' || locationName == 'undefined' || locationName == null ){
+			 actionPerfomedBy = userName;
+		 }else{
+			 actionPerfomedBy = userName+'('+locationName+')';
+		 }
 		$("#loadingCotentDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;'); 
 	    $.ajax({
 	    type: "POST",
@@ -358,7 +412,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 	    	 } else if (data.response === "SUCCESS") {   
 		    	if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 			    	     var currentPageNumber =  $("#currentPageNumber").val();
-		      		     getStatusListData(""+currentPageNumber+"","");
+		      		     getStatusListData(""+currentPageNumber+"",0,"");
 		      		   	 $(".mask_time").fadeOut(200);
 		      		     $("#rejectpanel").hide();
 		      		  	 $('#hedderAcceptRejectButton').attr('style','display:none');
@@ -376,7 +430,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 	        	    	selectedRecords[$(this).val()] = $(this).is(":checked");
 	        	    });
 		      }else if (result.indexOf('Sign In') !== -1) {
-					location.replace(pmsUrl);
+					location.replace('${SourceLeadWeb_sourceleadUrl}');
 			  }
 	    }
 	    }); 

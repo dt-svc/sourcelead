@@ -5,265 +5,63 @@
 
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 <div class="time_pop" id="timeSheetErrorMsg"></div>
- <c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'approver'}">
-   <div class='data_loading' id="loadTime"></div>
- <div class="pull-left timeAppUse-show col-md-6">
-	    <span class="pull-left">
-	      <img id="userImage" onerror="predefineProfileImage(this);" src="${timesheetEntryDetailsDTO.profileImageFileUrl}" alt="Profile Image"> 
-	     </span>
-		<ul class="col-md-9 margin-top0 list-unstyled padding_left">
-			<li>
-			<c:if test="${not empty timesheetEntryDetailsDTO.employeeName}">
-				<input class="timeUsName padding_left" type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeName}">
-			</c:if>
-			<c:if test="${empty timesheetEntryDetailsDTO.employeeName}">
-				<input class="timeUsName padding_left" type="text" readonly="readonly" value="--">
-			</c:if>
-			</li>
-			<li>
-			<c:if test="${not empty timesheetEntryDetailsDTO.employeeEmail}">
-				<i class="fa fa fa-envelope" title="Email"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeeEmail}">
-			</c:if>
-			<c:if test="${empty timesheetEntryDetailsDTO.employeeEmail}">
-				<i class="fa fa fa-envelope" title="Email"></i><input type="text" readonly="readonly" value="--">
-			</c:if>
-			</li>
-			<li>
-			<c:if test="${not empty timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
-				<i class="fa fa-bar-chart" title="Project"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
-			</c:if>
-			<c:if test="${empty timesheetEntryDetailsDTO.projectNameForSubmissionPageDisplay}">
-				<i class="fa fa-bar-chart" title="Project"></i><input type="text" readonly="readonly" value="--">
-			</c:if>
-			</li>
-			<li>
-			<c:if test="${not empty timesheetEntryDetailsDTO.employeePhoneNo}">
-				<i class="fa fa-phone" title="Phone No"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employeePhoneNo}">
-			</c:if>
-			<c:if test="${empty timesheetEntryDetailsDTO.employeePhoneNo}">
-				<i class="fa fa-phone" title="Phone No"></i><input type="text" readonly="readonly" value="--">
-			</c:if>
-			</li>
-			<li>
-			<c:if test="${not empty timesheetEntryDetailsDTO.employmentTypeForSubmissionPageDisplay}">
-				<i class="fa fa-briefcase" title="Employment Type"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.employmentTypeForSubmissionPageDisplay}">
-			</c:if>
-			<c:if test="${empty timesheetEntryDetailsDTO.employmentTypeForSubmissionPageDisplay}">
-				<i class="fa fa-briefcase" title="Employment Type"></i><input type="text" readonly="readonly" value="--">
-			</c:if>
-			</li>
-			<li>
-			<c:if test="${not empty timesheetEntryDetailsDTO.clientNameForDisplay}">
-				<i class="fa fa-user-plus" title="Client"></i><input type="text" readonly="readonly" value="${timesheetEntryDetailsDTO.clientNameForDisplay}">
-			</c:if>
-			<c:if test="${empty timesheetEntryDetailsDTO.clientNameForDisplay}">
-				<i class="fa fa-user-plus" title="Client"></i><input type="text" readonly="readonly" value="--">
-			</c:if>
-			</li>
-		</ul>
-	<div class="clearfix"></div>
-</div>
-<div class="col-md-6 paddingRight">
- <input type="hidden" id="notificationCurrentFrequency" value="${notificationCurrentFrequency}">
+
+<c:if test="${employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+	<div id="timesheetSubmissionStatusDiv" class="timeNewSe timBtnWidth">
+					<b class="proj_new Cursor" onClick='addTimeSheetRow();'>Add Row</b>
+	</div>
+</c:if>
+ <style>
+ .commentValidation p{
+    padding: 0px 0px 0px 0px !important;
+    font-size: 10px;
+    line-height: 10px;
+    margin-left: -14px;
+ }
  
-<div id="timesheetSubmissionStatusDiv" class="timeNewSe clearfix ${!timesheetSubmissionDTO.reopenAcceptRejectButtonVisible ? 'timeNewStatus':'timesheetApproved-status'}">
-				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'REJECTED'}">
-					<b class="proj_closed pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
-					<i class="glyphicon glyphicon-comment rejectedHover"> 
-					<div class="app_error_mes" id="rejectedMessage">${timesheetSubmissionDTO.rejectedReason}</div> </i>
-				</c:if>
-				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-				    <c:if test="${!empty timesheetSubmissionDTO.reopenRejectedReason}">
-					    <i class='glyphicon glyphicon-comment rejectedHover'>
-					       <div class="app_error_mes" id="rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}">${timesheetSubmissionDTO.reopenRejectedReason}</div>
-					    </i>
-					 </c:if>
-			 	     <c:if test="${timesheetSubmissionDTO.reopenButtonVisible}">
-					     <b class="proj_withdraw pull-right" style="width:40%"  onClick='reOpenMyTimesheet();'>Re-Open</b> 
-					</c:if>
-					<c:if test="${!timesheetSubmissionDTO.reopenAcceptRejectButtonVisible && timesheetSubmissionDTO.reopenRequestSent}">
-					    <i class="pull-right glyphicon glyphicon-comment rejectedHover">
-					    <div class="app_error_mes" id="rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}">${timesheetSubmissionDTO.reopenReason}</div>
-					    </i><p class="pull-right ml" >Re-Open<br>Request sent</p> 
-					</c:if>
-					<c:if test="${timesheetSubmissionDTO.reopenAcceptRejectButtonVisible && timesheetSubmissionDTO.reopenRequestSent}">
-						<i class="pull-right  glyphicon glyphicon-comment rejectedHover">
-						<div class="app_error_mes" id="rejectedMessage${timesheetEntryDetailsDTO.projectMemberId}">${timesheetSubmissionDTO.reopenReason}</div></i>
-						<div class="pull-right  sm text-center reopen"> 
-						    <label class="clearfix reopen-label">RE-OPEN</label>
-						    <i class="reopen-text-success fa fa-check" title="Accept" alt="Accept" onclick="acceptReopenTimeSheetBySuperUser('${timesheetEntryDetailsDTO.projectMemberId}','${timesheetSubmissionDTO.reopenUserId}')"></i>|<i class="reopen-text-danger fa fa-times" title="Reject" alt="Reject" onclick="rejectReopenTimeSheetBySuperUser('${timesheetEntryDetailsDTO.projectMemberId}','${timesheetSubmissionDTO.reopenUserId}')"></i>
-						</div>
-					</c:if>
-					<b class="proj_active pull-right mr" style="width:40%">${timesheetSubmissionDTO.timesheetStatus}</b>
-				</c:if>
-				
-				
-				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW'}">
-					<b class="proj_new pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
-				</c:if>
-				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'DRAFT'}">
-					<b class="proj_draft pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
-				</c:if>
-				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'SUBMITTED'}">
-					<b class="proj_process pull-right">${timesheetSubmissionDTO.timesheetStatus}</b>
-				</c:if>
-				
-</div>
-
-<div class="clearfix"></div>
-<div class="mt pull-right mr10">
-	<table width="100%" class="table table-bordered">
-		<thead>
-		<tr>
-			<th>Previous month<br/>(Approved Hrs)</th><th>Current month Hrs<br/>(${timesheetSubmissionDTO.currentMonthName})</th><th>Project to Date<br/>(Approved Hrs)</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>
-				<div class="week">
-					<span class="draft"><d title="Total-Approved-Hours:${timesheetSubmissionDTO.previousMonthTotalHours}">${timesheetSubmissionDTO.previousMonthTotalHours}</d></span>
-					<div class="progress mb0">
-						<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width: 60%">
-							<d title="Billable:${timesheetSubmissionDTO.previousMonthBillableHours}">${timesheetSubmissionDTO.previousMonthBillableHours}</d>
-						</div>
-						<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width: 40%">
-							<d title="Non-Billable:${timesheetSubmissionDTO.previousMonthNonBillableHours}">${timesheetSubmissionDTO.previousMonthNonBillableHours}</d>
-						</div>
-					</div>
-				</div>
-				</td>
-				<td>
-				<div class="week">
-					<span class="draft">
-					    <span id="monthTotal">
-					       <input type="hidden" id="mTotal" value="${timesheetSubmissionDTO.currentMonthTotalHours}"/>
-					      <d title="Total-Hours:${timesheetSubmissionDTO.currentMonthTotalHours}">${timesheetSubmissionDTO.currentMonthTotalHours}</d>
-					    </span>
-					</span>
-					<div class="progress mb0">
-						<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width: 60%">
-							<span id="monthBillableTotal">
-							   <input type="hidden" id="mBillableTotal" value="${timesheetSubmissionDTO.currentMonthBillableHours}"/>
-							   <d title="Billable:${timesheetSubmissionDTO.currentMonthBillableHours}">${timesheetSubmissionDTO.currentMonthBillableHours}</d>
-							</span>
-						</div>
-						<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width: 40%">
-						    <span id="monthNonBillableTotal">
-						       <input type="hidden" id="mNonBillableTotal" value="${timesheetSubmissionDTO.currentMonthNonBillableHours}"/>
-						       <d title="Non-Billable:${timesheetSubmissionDTO.currentMonthNonBillableHours}">${timesheetSubmissionDTO.currentMonthNonBillableHours}</d>
-						    </span>
-							
-						</div>
-					</div>
-				</div>
-				</td>
-				<td>
-				<div class="week">
-					<span class="draft"><d title="Total-Approved-Hours:${timesheetSubmissionDTO.projectToDateTotalHours}">${timesheetSubmissionDTO.projectToDateTotalHours}</d></span>
-					<div class="progress mb0">
-						<div class="progress-bar progress-bar-striped active progress-bar-info" role="progressbar" style="width: 60%">
-							<d title="Billable:${timesheetSubmissionDTO.projectToDateBillableHours}">${timesheetSubmissionDTO.projectToDateBillableHours}</d>
-						</div>
-						<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar" style="width: 40%">
-							<d title="Non-Billable:${timesheetSubmissionDTO.projectToDateNonBillableHours}">${timesheetSubmissionDTO.projectToDateNonBillableHours}</d>
-						</div>
-					</div>
-				</div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-</div>
-
-
-</div>
-</c:if>
-<c:if test="${timesheetEntryDetailsDTO.timesheetFor == 'user'}">
-             <div id="timesheetSubmissionStatusDiv" class="timeNewSe timBtnWidth">
-				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'REJECTED'}">
-					<b class="proj_closed">${timesheetSubmissionDTO.timesheetStatus}</b>
-					<i class="glyphicon glyphicon-comment rejectedHover"> 
-					<div class="app_error_mes" id="rejectedMessage">${timesheetSubmissionDTO.rejectedReason}</div> </i>
-				</c:if>
-				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-					<b class="proj_active">${timesheetSubmissionDTO.timesheetStatus}</b>
-				</c:if>
-				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW'}">
-					<b class="proj_new">${timesheetSubmissionDTO.timesheetStatus}</b>
-				</c:if>
-				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'DRAFT'}">
-					<b class="proj_draft">${timesheetSubmissionDTO.timesheetStatus}</b>
-				</c:if>
-				<c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'SUBMITTED'}">
-					<b class="proj_process">${timesheetSubmissionDTO.timesheetStatus}</b>
-					<c:if 	test="${timesheetSubmissionDTO.modifyButtonVisible}">
-					    <b class="proj_withdraw"  onClick='withdrawMyTimesheet();'>MODIFY</b>
-					</c:if>
-				</c:if>
-				
-</div>
-</c:if>
-
-
+ </style>
 <div class="clearfix"></div>
 <div id="timesheetNewTabs" class="timesheetNewTabs">
 	<div class="project_side_wrap_inn_tabs">
-	   <input type="hidden" name="timesheetSubmission.id" value="${timesheetSubmissionDTO.id}"/>
-	   <input type="hidden" id="currentTimeSubFrequency" name="currentTimeSubFrequency" value="${timesheetSubmissionDTO.timeSubFrequency}"/>
-		<input type="hidden" id="timeSubFrequency" name="timesheetSubmission.timeSubFrequency" value="${timesheetSubmissionDTO.timeSubFrequency}"/>
-		
-		
 		<ul class="project-tabs-menu">
-		   <c:forEach var="tsf" items="${timesheetEntryDetailsDTO.timeSubFrequencies}">
+		   <c:forEach var="tsf" items="${employeeTimesheetEntryDetailsDTO.timeSubFrequencies}">
 		       <input type='hidden' name='tabDates'  id='tabDates' value='${tsf.key}' >
-			   <li class="${tsf.key ==  timesheetSubmissionDTO.timeSubFrequency ? 'current' : ''} ${fn:contains(timesheetEntryDetailsDTO.filledTimeSubFrequencies, tsf.key) ? 'subColor' : ''}">
-					<a href="#" onclick="timesheetDivByFrequency('${tsf.key}');">${tsf.value}</a>
+		       <c:if test="${tsf.key ==  employeeTimesheetEntryDetailsDTO.currentTimeSubFrequency}">
+		          <input type='hidden' name='currentTimeSubFrequency'  id='currentTimeSubFrequency' value='${tsf.key}' >
+		       </c:if>
+			   <li class="${tsf.key ==  employeeTimesheetEntryDetailsDTO.currentTimeSubFrequency ? 'current' : ''}">
+					<a href="#" onclick="timesheetEntriesDivByTimeSubFrequency('${tsf.key}');">${tsf.value}</a>
 				</li>
 		   </c:forEach>
-		   <c:if 	test="${timesheetSubmissionDTO.timesheetStatus != 'NEW'}">
-					<div class="export dropdown">
-				<p class="dropdown-toggle" data-toggle="dropdown">
-					<i class="glyphicon glyphicon-export"></i>Export <i
-						class="fa fa-caret-down"></i>
-				</p>
-				<ul id="exporrtEntries" class="dropdown-menu dropdown-menu-right">
-					<li onclick='timesheetEntriesExport("pdf");'>
-						<i class="fa fa-file-pdf-o text-danger"></i>&nbsp;PDF
-					</li>
-					<li onclick='timesheetEntriesExport("excel");'>
-						<i class="fa fa-file-excel-o text-primary"></i>&nbsp;Excel</li>
-					<li class="hidden">Word<i class="fa fa-file-word-o"></i></li>
-				</ul>
-			</div>
-			<div class="clearfix"></div>
-		</c:if>
 		   <div class="clearfix"></div>
 		</ul>
-			<div id="timesheetDivByTab">
+		<div id="timesheetDivByTab">
 				<div class="project_tabs">
-					<div id="tab-1" class="project_tabs_inn" style="display: block;">
-						<div class="timesheet_tableNew">
-							<table id="timesheet" cellspacing="0" cellpadding="0" style="display: inline-table;">
-								<tbody>
-									<tr>
-										<th>Tasks</th>
-										<th>Type</th>
-										<th>Hourly Type</th>
-										<th>Ref/Ticket No.</th>
-										<c:forEach var="weekDays" items="${timesheetSubmissionDTO.weekDays}">
-										   <th>${weekDays.dayOfTheDate}<i>${weekDays.date}</i></th>
-										</c:forEach>
-									</tr>
-									 <c:set var="leaveIndex" value="0"/>
-						             <c:if test="${!empty timesheetSubmissionDTO.empLeaveMap}">
-						                <c:forEach var="empLeaveMap" items="${timesheetSubmissionDTO.empLeaveMap}" varStatus="empLeaveMapCount">
+				   <div id="tab-1" class="project_tabs_inn" style="display: block;">
+				    <%-- <input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='${employeeTimesheetEntryDetailsDTO.maxRowCount > 0 ? employeeTimesheetEntryDetailsDTO.maxRowCount : 1}' /> --%>
+				                <div class="timesheet_tableNew">     
+						       	  <div class="tabFixed">            
+						        	<table id="timesheet" cellpadding="0" cellspacing="0">
+						            	<tbody>
+						                	<tr>
+												<th>Projects</th>
+						                       	<th>Tasks </th>
+						                       	<th>Task Type</th>
+						                       	<th>Hourly Type</th>
+						                       	<th>Ref/Ticket No.</th>
+						                        <c:forEach var="weekDays" items="${employeeTimesheetEntryDetailsDTO.weekDays}">
+												   <th>${weekDays.dayOfTheDate}<i>${weekDays.date}</i></th>
+												</c:forEach>
+						                        <th class="timeTabFix">Status</th>              
+						                    </tr>  
+						                     <c:set var="leaveIndex" value="0"/>
+						                     <c:if test="${!empty employeeTimesheetEntryDetailsDTO.empLeaveMap}">
+						                      <c:forEach var="empLeaveMap" items="${employeeTimesheetEntryDetailsDTO.empLeaveMap}" varStatus="empLeaveMapCount">
 						                      <c:set var="leaveIndex" value="${leaveIndex+1}"/>
 							                      <tr id="timesheetRow${leaveIndex}">
-								                      <c:set var="leaveMapArr" value="${fn:split(empLeaveMap.key,'##')}"/>
 							                          <td>
-								                         <div style="position: relative;">${leaveMapArr[0]}
-								                          <c:if test="${empty timeSheetSubmissionStatus || timeSheetSubmissionStatus == 'NEW' || timeSheetSubmissionStatus == 'DRAFT'}">
+								                         <div style="position: relative;">--
+								                          <c:if test="${(empty timeSheetSubmissionStatus || timeSheetSubmissionStatus == 'NEW' || timeSheetSubmissionStatus == 'DRAFT') && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 									                          <c:forEach var="empL" items="${empLeaveMap.value}">
 									                              <c:if test="${empL.holiday eq true}">
 									                                 <input type="button" value="" onClick="alertHolidayDropMessage('${leaveIndex}','${empL.holidayId}','${empL.holidayUserId}','${empL.holidayUserLocationId}')" class="timeRemoveBtn"/>
@@ -272,19 +70,22 @@
 									                       </c:if>
 								                         </div>
 								                      </td>
+								                      <c:set var="leaveMapArr" value="${fn:split(empLeaveMap.key,'##')}"/>
+							                          <td>
+								                            <div>${leaveMapArr[0]}</div>  
+								                      </td>
 								                       <td>
-								                         <span>${leaveMapArr[1]}</span>
-								                          <input type="hidden" id="${leaveIndex}task1IdBillableTypeId" name="${leaveIndex}task1IdBillableTypeId" value="${leaveMapArr[1]}"/>
+								                         <div><span id="${leaveIndex}task1IdBillableTypeId">${leaveMapArr[1]}</span></div>
 								                      </td>
 								                      <td>
-								                         <p>--</p>
-								                      </td>
+								                         <div>--</div>
+								                      </td> 
 								                      <td>
-								                         <p>--</p>
+								                         <div>--</div>
 								                      </td>
 								                      <c:forEach var="empLeave" items="${empLeaveMap.value}" varStatus="empLeaveCount">
 								                        <td>
-								                              <input readonly="readonly" class="inline_field"   value="${empLeave.hours}" placeholder="HH:MM" type="text" id="${leaveIndex}timeSheetDay${empLeaveCount.index+1}Id" >
+								                              <input disabled="disabled"  class="inline_field" value="${empLeave.hours}" placeholder="HH:MM" type="text" id="${leaveIndex}timeSheetDay${empLeaveCount.index+1}Id" >
 											                   <c:if test="${!empty empLeave.leaveReason}">
 	                                                              <div class=" timesheet_comm">                
 											                       <i id="leaveReason${empLeaveCount.index}" class='glyphicon glyphicon-comment com_active' onclick='timesheetComment("leaveReason${empLeaveCount.index}Id");'></i>
@@ -295,327 +96,736 @@
 											                   </c:if>
 											              </td>
 								                      </c:forEach>
+								                      <td  class="timeTabFix" >
+								                        <div>--</div>
+								                      </td>
 							                       </tr>
-						                </c:forEach>
-						              </c:if>
-						            <input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='${fn:length(timesheetSubmissionDTO.empLeaveMap)+fn:length(entriesMap)}' />
-									<c:set var="entryIndex" value="0"/>
-									<c:forEach var="entry" items="${entriesMap}" varStatus="entryCount">
-									    <tr id="timesheetRow${leaveIndex+entryCount.index+1}">
-									      <td id="${leaveIndex+entryCount.index+1}taskTd"> <!-- rowspan="2" -->
-											<div class="taskDropDown">
-											  <c:set var="taskType" value=""/>
-											  <c:set var="taskId" value=""/>
-											  <c:set var="taskName" value=""/>
-											  <c:set var="ticketNumber" value=""/>
-											   <c:set var="hourlyType" value=""/>
-											  <c:if test="${timesheetSubmissionDTO.submitButtonVisible ||  timesheetSubmissionDTO.saveButtonVisible}">
-												   <select id="${leaveIndex+entryCount.index+1}task1Id" name="${leaveIndex+entryCount.index+1}task1Id" title="--select task--"  data-dropup-auto="false" data-size="8" data-live-search="true" class="selectpicker existedProjectTaskId${timesheetEntryDetailsDTO.projectId} timSelWid"  onchange='prepareProjectTaskDetails("${entryIndex}","${leaveIndex+entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
-														<!-- <option value=''>--select task--</option> -->
-														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
-														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
-														       <c:set var="taskId" value="${fn:split(entry.key, '##')[0]}"/>
-														       <c:set var="ticketNumber" value="${fn:split(entry.key, '##')[1]}" />
-														       <c:if test="${pt.id == taskId}">
-															       <c:forEach var="ted" items="${entry.value}">
-														                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
-														           </c:forEach>
-														          <c:set var="taskId" value="${pt.id}" />
-														          <c:set var="taskName" value="${pt.taskName}" />
-														          <c:if test="${not empty pt.generatedId}" >
-															       		<option value='${pt.id},${!empty taskType ? taskType : pt.taskType},${pt.taskName}' selected>${pt.generatedId} -${pt.taskName}</option>
-															       </c:if>
-															        <c:if test="${empty pt.generatedId}" >
-															       		<option value='${pt.id},${!empty taskType ? taskType : pt.taskType},${pt.taskName}' selected>${pt.taskName}</option>
-															       </c:if>
-														       </c:if>
-														       <c:if test="${pt.id != taskId}">
-															       <c:if test="${not empty pt.generatedId}" >
-															       		<option value='${pt.id},${pt.taskType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
-															       </c:if>
-															        <c:if test="${empty pt.generatedId}" >
-															       		<option value='${pt.id},${pt.taskType},${pt.taskName}'>${pt.taskName} </option>
-															       </c:if>
-														       </c:if>
-														   </c:forEach>
-														</c:if>
-													</select>
-													 <c:if test="${entryCount.index == 0}">
-													    <input value="" onclick="addTimeSheetRow('${timesheetEntryDetailsDTO.projectId}','${leaveIndex}')" class="addtaskfield" type="button">
-													 </c:if>
-													 <c:if test="${entryCount.index > 0}">
-													    <input value="" onclick="removeTimeSheetRow('${leaveIndex+entryCount.index+1}');" class="addtaskfield removetaskfield" type="button">
-													 </c:if>
-											  </c:if>
-											   <c:if test="${!timesheetSubmissionDTO.saveButtonVisible}">
-											         <c:if test="${!empty entry.key}">
-											             <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
-											                     <c:set var="taskId" value="${fn:split(entry.key, '##')[0]}"/>
-											                     <c:set var="ticketNumber" value="${fn:split(entry.key, '##')[1] == 'NA' ? '' :fn:split(entry.key, '##')[1]}" />
-											                      <c:set var="hourlyType" value="${fn:split(entry.key, '##')[2] == 'NA' ? '' : fn:split(entry.key, '##')[2]}" />
-															       <c:if test="${pt.id == taskId}">
-															       <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-																	       <c:forEach var="ted" items="${entry.value}">
-																                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
-																           </c:forEach>
-															       </c:if>
-															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
-															             <c:forEach var="ted" items="${entry.value}">
-															                 <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
-									                                      </c:forEach>
-															        </c:if> 
-														           <c:set var="taskId" value="${pt.id}" />
-														           <c:set var="taskName" value="${pt.taskName}" />
-														          <p>${!empty pt.taskName ? pt.taskName : '--'}</p>
-															       </c:if>
-												         </c:forEach>
-												       </c:if>
-											          <c:if test="${empty entry.key}">
-											              <p>--</p>
-											          </c:if>
-											          
-											   </c:if>
+						                       </c:forEach>
+						                    </c:if>
+						                    <input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='${leaveIndex+employeeTimesheetEntryDetailsDTO.maxRowCount > 0 ? leaveIndex+employeeTimesheetEntryDetailsDTO.maxRowCount : 1}' />
+							                <c:set var="entryIndex" value="0"/>
+							                <c:set var="timeSheetSubmissionStatus"/> 
+							                <c:set var="modifyButtonVisible"/>   
+										    <c:forEach var="entry" items="${employeeTimesheetEntryDetailsDTO.submissionList}" varStatus="entryCount">
+									            <c:set var="isMonEditable"/>
+								                <c:set var="isTueEditable"/>     
+								                <c:set var="isWedEditable"/>
+								                <c:set var="isThuEditable"/>
+								                <c:set var="isFriEditable"/>
+								                <c:set var="isSatEditable"/>
+								                <c:set var="isSunEditable"/> 
+								                <c:set var="isTaskCommentsRequired"/> 
+								                <c:set var="isTicketNumberRequired"/> 
+							                    <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
+									               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == statusEntry.key}">
+									                     <c:set var="timeSheetSubmissionStatus" value="${statusEntry.value.timesheetStatus}"/>
+									                     <c:set var="modifyButtonVisible" value="${statusEntry.value.modifyButtonVisible == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isMonEditable" value="${statusEntry.value.monEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isTueEditable" value="${statusEntry.value.tueEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isWedEditable" value="${statusEntry.value.wedEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isThuEditable" value="${statusEntry.value.thuEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isFriEditable" value="${statusEntry.value.friEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isSatEditable" value="${statusEntry.value.satEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isSunEditable" value="${statusEntry.value.sunEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isTaskCommentsRequired" value="${statusEntry.value.taskCommentsRequired == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isTicketNumberRequired" value="${statusEntry.value.ticketNumberRequired == true ? 'Y' : 'N'}"/>
+									               </c:if>
+									            </c:forEach>
+									            <c:if test="${empty entry.projectMemberId}">
+									                     <c:set var="timeSheetSubmissionStatus" value="New"/>
+									                     <c:set var="modifyButtonVisible" value="N"/>
+									                     <c:set var="isMonEditable" value="${employeeTimesheetEntryDetailsDTO.monEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isTueEditable" value="${employeeTimesheetEntryDetailsDTO.tueEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isWedEditable" value="${employeeTimesheetEntryDetailsDTO.wedEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isThuEditable" value="${employeeTimesheetEntryDetailsDTO.thuEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isFriEditable" value="${employeeTimesheetEntryDetailsDTO.friEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isSatEditable" value="${employeeTimesheetEntryDetailsDTO.satEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isSunEditable" value="${employeeTimesheetEntryDetailsDTO.sunEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isTaskCommentsRequired" value="N"/>
+									                     <c:set var="isTicketNumberRequired" value="N"/>
+									               </c:if>
+											    <tr id="timesheetRow${leaveIndex+entryCount.index+1}">
+											        <td id="${leaveIndex+entryCount.index+1}projectTd">
+														<div class="timeAdd" style="position: relative;">
+														    <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+														        <select  id="${leaveIndex+entryCount.index+1}projectMember1Id" title="--select project--" data-live-search="true" data-dropup-auto="false" data-size="8" class='selectpicker smfield existedProjectMembers' name="${leaveIndex+entryCount.index+1}projectMember1Id" onchange="enableOrDisableHours('${entryIndex}','${leaveIndex+entryCount.index+1}projectMember1Id','${leaveIndex+entryCount.index+1}ticketNumber1Id');flushtasks('${leaveIndex+entryCount.index+1}task1Id','${leaveIndex+entryCount.index+1}'); addOrRemoveTimeSheetCommentRow('${leaveIndex+entryCount.index+1}projectMember1Id');getProjectTasks('${leaveIndex+entryCount.index+1}task1Id','${leaveIndex+entryCount.index+1}projectMember1Id');" data-validation="required" field-name="Project">
+																	<!-- <option value=''>--select project--</option>  -->
+															        <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
+															               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == pm.id}">
+															                   <option value='${pm.id}' selected>${pm.projectName}</option> 
+															               </c:if>
+																	        <c:if test="${empty entry.projectMemberId || !empty entry.projectMemberId && entry.projectMemberId != pm.id}">
+																	            <option value='${pm.id}'>${pm.projectName} </option> 
+																	        </c:if>
+																	 </c:forEach>
+															    </select>
+															     <c:if test="${entryCount.index > 0}">
+															       <input value="" onclick="removeTimeSheetRow('${leaveIndex+entryCount.index+1}');" class="timeRemoveBtn" type="button">
+															      </c:if>
+															 </c:if>
+															 <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+															         <c:set var="projectCheck"/>
+															         <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.submittedProjectMembersList}">
+															               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == pm.id}">
+															                  <input type="hidden" class='existedProjectMembers' id="${leaveIndex+entryCount.index+1}projectMember1Id" name="${leaveIndex+entryCount.index+1}projectMember1Id" value="${pm.id}"/>
+															                   <p>${pm.projectName}</p> 
+															                   <c:set var="projectCheck" value="1"/>
+															               </c:if>
+																	 </c:forEach>
+																	 <c:if test="${empty projectCheck}">
+											                           <p>--</p>
+											                          </c:if>
+															 </c:if>
+														</div>
+												      </td>	
+										             <td id="${leaveIndex+entryCount.index+1}taskTd">
+														<div class="taskDropDown">
+														  <c:set var="taskType" value=""/>
+														  <c:set var="taskId" value=""/>
+														  <c:set var="taskName" value=""/>
+														  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+															   <select id="${leaveIndex+entryCount.index+1}task1Id" title="--select task--"  data-dropup-auto="false" data-size="8" data-live-search="true" name="${leaveIndex+entryCount.index+1}task1Id"  class="selectpicker smfield existedProjectTaskId${entry.projectMemberId}"   onchange='prepareProjectTaskDetails("${entryIndex}","${leaveIndex+entryCount.index+1}task1Id","${leaveIndex+entryCount.index+1}projectMember1Id");' data-validation="required" field-name="Task">
+																	 <c:if test="${!empty entry.projectTaskList}">
+																	   <c:forEach var="pt" items="${entry.projectTaskList}">
+																	        <c:if test="${pt.id == entry.projectTaskId}">
+																	          <c:set var="taskId" value="${pt.id}" />
+																	          <c:set var="taskName" value="${pt.taskName}" />
+																	           <c:set var="taskType" value="${entry.projectTaskType}" />
+																	           <c:if test="${not empty pt.generatedId}" >
+																		       		<option value='${pt.id},${pt.billableType},${pt.taskName}' selected> ${pt.generatedId} - ${pt.taskName} </option>
+																		       </c:if>
+																		        <c:if test="${empty pt.generatedId}" >
+																		       		<option value='${pt.id},${pt.billableType},${pt.taskName}' selected>${pt.taskName} </option>
+																		       </c:if>
+																	        </c:if>
+																	       <c:if test="${pt.id != entry.projectTaskId}">
+																		       <c:if test="${not empty pt.generatedId}" >
+																		       		<option value='${pt.id},${pt.billableType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
+																		       </c:if>
+																		        <c:if test="${empty pt.generatedId}" >
+																		       		<option value='${pt.id},${pt.billableType},${pt.taskName}'>${pt.taskName} </option>
+																		       </c:if>
+																	       </c:if>
+																	   </c:forEach>
+																	</c:if>
+																</select>
+														  </c:if>
+														   <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+														            <c:if test="${!empty entry.projectTaskList}">
+																	   <c:forEach var="pt" items="${entry.projectTaskList}">
+																	        <c:if test="${pt.id == entry.projectTaskId}">
+																	          <c:set var="taskId" value="${pt.id}" />
+																	          <c:set var="taskName" value="${pt.taskName}" />
+																	           <c:set var="taskType" value="${entry.projectTaskType}" />
+																	           <c:if test="${not empty pt.generatedId}" >
+																		       		<p> ${pt.generatedId} - ${pt.taskName} </p>
+																		       </c:if>
+																		        <c:if test="${empty pt.generatedId}" >
+																		       		<p>${pt.taskName} </p>
+																		       </c:if>
+																	          </c:if>
+																	   </c:forEach>
+																	</c:if>
+																	<c:if test="${empty taskId}">
+											                           <p>--</p>
+											                        </c:if>
+											               </c:if>
+											               
+														</div>
+												      </td>
+												      <td>
+												        <div>
+												           <span id="${leaveIndex+entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span>
+												        </div>
+												      </td>
+												      <td>
+												          <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' &&  employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+														       <div>
+														          <select id="${leaveIndex+entryCount.index+1}hourlyType1Id" style="width:220px;" data-dropup-auto="false" data-size="8"  class="selectpicker" name="${leaveIndex+entryCount.index+1}hourlyType1Id"  field-name="Hourly Type" onchange='setHourlyType("${entryIndex}","${leaveIndex+entryCount.index+1}hourlyType1Id");' >  
+													                  <option value='Regular' ${!empty entry.hourlyType && entry.hourlyType == 'Regular' ? 'selected' : ''}>Regular</option>
+													                  <option value='Overtime' ${!empty entry.hourlyType && entry.hourlyType == 'Overtime' ? 'selected' : ''}>Overtime</option>
+										                          </select>
+														       </div>
+													       </c:if>
+													        <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+														         <c:if test="${!empty entry.hourlyType}">
+														             <div>${entry.hourlyType}</div>
+														         </c:if>
+														         <c:if test="${empty entry.hourlyType}">
+														             <div>--</div>
+														         </c:if>
+													       </c:if>
+												      </td>
+										              <td>
+										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' &&  employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+													         <div><input type="text" ${!empty isTicketNumberRequired && isTicketNumberRequired == 'Y' ? 'data-validation="required"' : ''}  id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" field-name=" " onblur='setTicketNumber("${entryIndex}","${leaveIndex+entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
+													      </c:if>
+													      <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+													         <c:if test="${!empty entry.ticketNumber}">
+													             <div>${entry.ticketNumber}</div>
+													         </c:if>
+													         <c:if test="${empty entry.ticketNumber}">
+													             <div>--</div>
+													         </c:if>
+													          
+													      </c:if>
+												     </td>
+												     <c:forEach var="te" items="${entry.timesheetEntries}" varStatus="teStatus">
+													      <td class="${modifyButtonVisible == 'Y' ? 'timeModifyBtn':''}"> 
+													           <div class="timeEntry">
+													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
+																   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
+																   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
+																   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].hourlyType" value="${empty entry.hourlyType ? 'Regular' : entry.hourlyType}" /> 
+			                                                       <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].ticketNumber" value="${entry.ticketNumber}" /> 
+			                                                       <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].projectMemberId" value="${entry.projectMemberId}"/>
+													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
+													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
+													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
+													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetStatus" value="${timeSheetSubmissionStatus}"/> 
+													               
+														                 <c:set var="isEditable" value="Y"/>
+														                  <c:if test="${te.dayOfTheDate == 'Mon' && !empty isMonEditable && isMonEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Tue' && !empty isTueEditable && isTueEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Wed' && !empty isWedEditable && isWedEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Thu' && !empty isThuEditable && isThuEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Fri' && !empty isFriEditable && isFriEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Sat' && !empty isSatEditable && isSatEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+														                  <c:if test="${te.dayOfTheDate == 'Sun' && !empty isSunEditable && isSunEditable == 'N'}">
+														                      <c:set var="isEditable" value="N"/>
+														                  </c:if>
+													                   <c:if test="${empty entry.projectMemberId && !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+													                       <c:set var="isEditable" value="N"/>
+													                   </c:if>
+													                <input onblur="editMe(this);" ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'}  ${isTaskCommentsRequired == 'Y' ? 'data-validation-comment="required"':''}
+													                id="${leaveIndex+entryCount.index+1}timeSheetDay${teStatus.index+1}Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
+													                   <%-- <c:if test="${!empty te.comments || (empty te.comments && (!empty isEditable && isEditable == 'Y'))}"> --%>
+                                                                         <div class="timesheet_comm" id="commentDiv${entryIndex}">                
+													                       <i id="commentI${entryIndex}" class='glyphicon ${(!empty te.comments || (empty te.comments && (!empty isEditable && isEditable == 'Y'))) ? "glyphicon-comment":""} ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${leaveIndex+entryCount.index+1}comment${teStatus.index+1}Id");'></i>
+													                       <span class='teskcomment' id='${leaveIndex+entryCount.index+1}comment${teStatus.index+1}Id'>
+													                             <textarea  ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'} onblur="makeActive(this,'commentI${entryIndex}','${leaveIndex+entryCount.index+1}CommentValidation${teStatus.index+1}Id');" name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
+			                                                               </span>
+			                                                             </div>
+													                  <%--  </c:if> --%>
+													                   <div class="commentValidation">
+														                     <input type="hidden" field-name="Comment" ${!empty te.hours && te.hours != 'HH:MM' && te.hours != '00:00' && isTaskCommentsRequired == 'Y' ? 'data-validation="required"':''} id="${leaveIndex+entryCount.index+1}CommentValidation${teStatus.index+1}Id" value="${te.comments}"/>
+														              </div>
+													               </div>
+													              <c:set var="entryIndex" value="${entryIndex+1}"/>
+													      </td>
+											         </c:forEach>
+												     <td class="timeTabFix "> 
+												        <c:if test="${!empty entry.projectMemberId}">
+												             <div>
+													             <c:if test="${timeSheetSubmissionStatus == 'NEW'}">
+													                <b>${timeSheetSubmissionStatus}</b>
+													             </c:if>
+													             <c:if test="${timeSheetSubmissionStatus == 'DRAFT'}">
+													                <b class='projDraft'>${timeSheetSubmissionStatus}</b>
+													             </c:if>
+													             <c:if test="${timeSheetSubmissionStatus == 'SUBMITTED'}">
+													               <b class='projSubmited'>${timeSheetSubmissionStatus}</b>
+													             </c:if>
+													             <c:if test="${timeSheetSubmissionStatus == 'REJECTED'}">
+													                <b class='projReject'>${timeSheetSubmissionStatus}</b>
+													             </c:if>
+													             <c:if test="${timeSheetSubmissionStatus == 'APPROVED'}">
+													                <b class='projActive'>${timeSheetSubmissionStatus}</b>
+													             </c:if>
+													             <c:if test="${modifyButtonVisible == 'Y'}">
+													                <b class="proj_withdraw Cursor"  onClick="withdrawMyTimesheet('${entry.projectMemberId}');">MODIFY</b>
+													              </c:if>
+												             </div>
+												        </c:if>
+												         <c:if test="${empty entry.projectMemberId && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+												            <div><b>New</b></div> 
+												        </c:if> 
+												        <c:if test="${empty entry.projectMemberId && !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+												            <div>--</div> 
+												        </c:if> 
+						                  		    </td> 
+										        </tr>
+										     </c:forEach>
+											
+						                    
+							               <tr class="projTotal">
+											<td rowspan="2">Total</td>
+											<td> <div></div></td>
+					                 		<td> <div></div></td>
+					                 		<td> <div></div></td>
+					                 		<td> <div></div></td>
+											<td>
+												<div >
+												<input type="hidden" id="entryIndexValue" value="${entryIndex}"/>
+													<input disabled id="rowTotal1Id" name="rowTotal1Id"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
+														type="text">
+												</div>
+											</td>
+											<td>
+												<div >
+													<input disabled id="rowTotal2Id" name="rowTotal2Id"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
+														type="text">
+												</div>
+											</td>
+											<td>
+												<div >
+													<input disabled id="rowTotal3Id" name="rowTotal3Id"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
+														type="text">
+												</div>
+											</td>
+											<td>
+												<div >
+													<input disabled id="rowTotal4Id" name="rowTotal4Id"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
+														type="text">
+												</div>
+											</td>
+											<td>
+												<div >
+													<input disabled id="rowTotal5Id" name="rowTotal5Id"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
+														type="text">
+												</div>
+											</td>
+											<td>
+												<div >
+													<input disabled id="rowTotal6Id" name="rowTotal6Id"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
+														type="text">
+												</div>
+											</td>
+											<td>
+												<div >
+													<input disabled id="rowTotal7Id" name="rowTotal7Id"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
+														type="text">
+												</div>
+											</td>
+											<td class="timeTabFix"> <div></div></td> 
+										</tr>                                                                                          
+						                </tbody>
+						            </table>
+						            </div>
+						            </div>
+									    <div class="timesheet_bot">
+									   <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible || !empty employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
+							            <div class="commentFile">
+							                  <h2>
+											    Attachmets & Comments 
+											    <i class="fa fa-info-circle" title="Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps - Allowed Size : 2MB "></i>
+											 </h2>
+											<div class="">
+											    <c:set var="attMaxRowNumber" value="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments ? fn:length(employeeTimesheetEntryDetailsDTO.timsheetAttachments) : 0}"/>
+												<table id="attTimesheet">
+												 <c:if test="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
+												   <c:forEach var="attachment" items="${employeeTimesheetEntryDetailsDTO.timsheetAttachments}" varStatus="attCount">
+											   	      <c:set var="timeSheetSubmissionStatus" value="New"/> 
+												     <tr id="timesheetAttRow${attCount.index}">
+													   <td>
+													       <div class="timeAdd" style="position: relative;">
+															          <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}">
+															             <c:if test="${pm.id == attachment.projectMemberId}">
+															                  <p>${pm.projectName}</p> 
+															                  <input type="hidden" data-rowId="${attCount.index}"  class="existedAttProjectMembers" id='existedAttProjectMember${pm.id}' name="timsheetAttachments[${attCount.index}].projectMemberId" value="${attachment.projectMemberId}" />
+															             </c:if>
+																	 </c:forEach>
+														    </div> 
+														</td>
+														<td>
+	                                                         <div id="attachmentDiv${attCount.index}Id">
+	                                                              <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
+	                                                                       <c:if test="${statusEntry.key == attachment.projectMemberId}">
+	                                                                        <c:set var="timeSheetSubmissionStatus" value="${statusEntry.value.timesheetStatus}"/>
+	                                                                         <input  id="dbIsTimesheetAttachmentRequired${attCount.index}" value="${statusEntry.value.timesheetDocumentRequired == true  ? 1 : 0}" type="hidden">
+	                                                                          <c:if test="${!empty attachment.fileInfo || !statusEntry.value.timesheetDocumentRequired}">
+																	            <input class="timesheetAttValidation" data-rowId="${attCount.index}" name="isTimesheetAttachmentRequired${attCount.index}" id="isTimesheetAttachmentRequired${attCount.index}" value="N" type="hidden">
+																		     </c:if>
+																		     <c:if test="${empty attachment.fileInfo && statusEntry.value.timesheetDocumentRequired}"> 
+																		         <input class="timesheetAttValidation" data-rowId="${attCount.index}" name="isTimesheetAttachmentRequired${attCount.index}" id="isTimesheetAttachmentRequired${attCount.index}" value="Y" type="hidden">
+																		     </c:if>  
+	                                                                       </c:if> 
+	                                                               </c:forEach>
+	                                                               <input type='hidden' name='${attCount.index}maxAttDivRowNumber' id='${attCount.index}maxAttDivRowNumber'  value='${!empty attachment.fileInfo ? fn:length(attachment.fileInfo)+1 : 1}' />
+			                                                        <c:set var="attNumber" value="0"/>
+			                                                        <c:if test="${!empty attachment.fileInfo}">
+			                                                         <input type='hidden' name='${attCount.index}attachMentCount' id='${attCount.index}attachMentCount'  value='${!empty attachment.fileInfo ? fn:length(attachment.fileInfo) : 0}' />
+			                                                         <c:forEach var="finfo" items="${attachment.fileInfo}">
+																		<div id='${finfo.fileDbId}document' class="timeAtt">
+																		    <input type="hidden" name="timsheetAttachments[${attCount.index}].fileInfo[${attNumber}].fileDbId" value="${finfo.fileDbId}">
+			                                                                <input type="hidden" name="timsheetAttachments[${attCount.index}].fileInfo[${attNumber}].fileURL"  value="${finfo.fileURL}">
+																		    <input type="hidden" name="timsheetAttachments[${attCount.index}].fileInfo[${attNumber}].fileName"  value="${finfo.fileName}">
+			                                                               <a  href='${finfo.fileURL}' download><div class="attFile"><i class="fa fa-download"></i>${finfo.fileName}</div></a>
+										                                    <div class="timeAttBtn">
+										                                        <i class="fa fa-eye" onClick="viewFile('${finfo.fileURL}','${finfo.fileName}','${finfo.contentType}');"></i>
+										                                       <c:if test="${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APPROVED'}">
+										                                            <i class="fa fa-trash" onClick='deleteSubmissionDocument("${finfo.fileDbId}","${attCount.index}");'></i>
+										                                       </c:if>
+										                                    </div>
+			                                                            </div>
+			                                                            <c:set var="attNumber" value="${attNumber+1}"/>
+										                              </c:forEach>
+										                              </c:if>
+										                              <c:if test="${empty attachment.fileInfo && !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+										                                  <p> No Attachments Found</p>
+										                              </c:if>
+			                                                         <c:if test="${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APPROVED' }">
+				                                                             <div id="attachmentInnerDiv${attCount.index}Id">
+							                                                          <div id="${attCount.index}AttchmentDiv${attNumber}Id" class="addRowBtn">
+																						  <div class="input-group col-md-12" style="margin:0 auto">
+																							<label class="input-group-btn pull-left"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+																							  <input style="display: none;"  id="${attCount.index}docFile${attNumber}" multiple  onchange="validateUploadFile('${attCount.index}','${attNumber}',this);" class="upload" type="file">
+																							  </span></label>
+																							<input class="form-control input-sm pull-left" style="width:130px;" id="${attCount.index}uploadFile${attNumber}"   placeholder="Attachment" type="text">
+																						  </div>
+																						  <input type="button" value="" onclick="addAttachmentRow('${attCount.index}');" class="addRowIcon"/>
+																						  <input type="hidden" id="timesheetAttValidationInput${attCount.index}" field-name="Attachment"/>
+																					 </div>
+																			</div>
+			                                                          </c:if>
+															 </div>
+														</td>
+														<td>
+															<input type="text" name="timsheetAttachments[${attCount.index}].weekComment" ${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APPROVED' ? '' : 'readonly="readonly"'}  class="form-control  input-sm" value="${attachment.weekComment}" placeholder="Comment" />
+														</td>
+													    </tr>
+												    </c:forEach>
+												 </c:if>
+												  <c:set var="attCount" value="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments ? fn:length(employeeTimesheetEntryDetailsDTO.timsheetAttachments) : 0}"/>
+												  <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}" >
+												      <c:set var="projAttAvailable" value="0"/>
+												      <c:if test="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
+													      <c:forEach var="attachment" items="${employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
+													            <c:if test="${pMember.id == attachment.projectMemberId}">
+													               <c:set var="projAttAvailable" value="1"/>
+													            </c:if>
+													      </c:forEach>
+													  </c:if>
+												      <c:if test="${projAttAvailable == 0}">
+												      <c:set var="timeSheetSubmissionStatus" value="NEW"/>
+									                  <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
+                                                           <c:if test="${statusEntry.key == pMember.id && (statusEntry.value.timesheetStatus != 'SUBMITTED' && statusEntry.value.timesheetStatus != 'APPROVED' )}">
+															     <tr id="timesheetAttRow${attCount}">
+																    <td>
+																       <div class="timeAdd" style="position: relative;">
+															                  <p>${pMember.projectName}</p> 
+															                  <input type="hidden" data-rowId="${attCount}"  class="existedAttProjectMembers" id='existedAttProjectMember${pMember.id}' name="timsheetAttachments[${attCount}].projectMemberId" value="${pMember.id}" />
+																		            
+																	    </div> 
+																	</td>
+																	<td>
+	                                                                   <div id="attachmentDiv${attCount}Id">
+	                                                                        <c:set var="timeSheetSubmissionStatus" value="${statusEntry.value.timesheetStatus}"/>
+			                                                                       <input  id="dbIsTimesheetAttachmentRequired${attCount}" value="${statusEntry.value.timesheetDocumentRequired == true  ? 1 : 0}" type="hidden">
+			                                                                  <c:if test="${!statusEntry.value.timesheetDocumentRequired}">
+																	              <input class="timesheetAttValidation" data-rowId="${attCount}" name="isTimesheetAttachmentRequired${attCount}" id="isTimesheetAttachmentRequired${attCount}" value="N" type="hidden">
+																		     </c:if>
+																		     <c:if test="${statusEntry.value.timesheetDocumentRequired}"> 
+																		         <input class="timesheetAttValidation" data-rowId="${attCount}" name="isTimesheetAttachmentRequired${attCount}" id="isTimesheetAttachmentRequired${attCount}" value="Y" type="hidden">
+																		     </c:if> 
+																		      <input type='hidden' name='${attCount}maxAttDivRowNumber' id='${attCount}maxAttDivRowNumber'  value='1' />
+														                      <div id="attachmentInnerDiv${attCount}Id">
+							                                                          <div id="${attCount}AttchmentDiv0Id" class="addRowBtn">
+																						  <div class="input-group col-md-12" style="margin:0 auto">
+																							<label class="input-group-btn pull-left"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+																							  <input style="display: none;"  id="${attCount}docFile0" multiple  onchange="validateUploadFile('${attCount}','0',this);" class="upload" type="file">
+																							  </span></label>
+																							<input class="form-control input-sm pull-left"  style="width:130px;" id="${attCount}uploadFile0"   placeholder="Attachment" type="text">
+																						  </div>
+																						  <input type="button" value="" onclick="addAttachmentRow('${attCount}');" class="addRowIcon"/>
+																						  <input type="hidden" id="timesheetAttValidationInput${attCount}" field-name="Attachment"/>
+																					 </div>
+																			</div>
+																		</div>
+														             </td>
+														             <td>
+															             <input type="text" name="timsheetAttachments[${attCount}].weekComment"   class="form-control  input-sm" value="" placeholder="Comment" />
+																    </td>
+															    </tr>
+															     <c:set var="attCount" value="${attCount+1}"/>
+                                                           </c:if> 
+                                                       </c:forEach>
+                                                       <c:set var="attMaxRowNumber" value="${attCount}"/>
+                                                      </c:if>
+												  </c:forEach>
+												</table>
+												 <input type='hidden' name='maxAttRowNumber' id='maxAttRowNumber'  value='${!empty attMaxRowNumber ? attMaxRowNumber : 0}' />
 											</div>
-									      </td>
-									      <td> <!-- rowspan="2" -->
-									        <div class='taskDropDown'>
-									          <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-									               <span>${!empty taskType ? taskType : '--'}</span>
-									               <input type="hidden" id="${leaveIndex+entryCount.index+1}task1IdBillableTypeId" name="${leaveIndex+entryCount.index+1}task1IdBillableTypeId" value="${taskType}"/>
-									          </c:if>
-									         <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
-			                                      <select id="${leaveIndex+entryCount.index+1}task1IdBillableTypeId" style="width:220px;" data-dropup-auto="false" data-size="8"  class="selectpicker" name="${leaveIndex+entryCount.index+1}task1IdBillableTypeId"  field-name="Billble Type" onchange="prepareBillableDetails('${entryIndex}','${leaveIndex+entryCount.index+1}task1IdBillableTypeId')">  
-									                  <option value='Billable' ${!empty taskType && taskType == 'Billable' ?'selected':''}>Billable</option>
-									                  <option value='Non-Billable' ${!empty taskType && taskType == 'Non-Billable' ?'selected':''}>Non-Billable</option>
-								                  </select>
-							                  </c:if>
-									        </div>
-									      </td>
-									       <td>
-									        <c:set var="hourlyType" value="${fn:split(entry.key, '##')[2] == 'NA' ? 'Regular' : fn:split(entry.key, '##')[2]}" />
-									         <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-						                           <span>${!empty hourlyType ? hourlyType : '--'}</span>
-									          </c:if>
-									          <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
-									               <div>
-											          <select id="${leaveIndex+entryCount.index+1}hourlyType1Id" style="width:220px;" data-dropup-auto="false" data-size="8"  class="selectpicker" name="${leaveIndex+entryCount.index+1}hourlyType1Id"  field-name="Hourly Type" onchange='setHourlyType("${entryIndex}","${leaveIndex+entryCount.index+1}hourlyType1Id");' >  
-										                  <option value='Regular' ${!empty hourlyType && hourlyType == 'Regular' ? 'selected' : ''}>Regular</option>
-										                  <option value='Overtime' ${!empty hourlyType && hourlyType == 'Overtime' ? 'selected' : ''}>Overtime</option>
-							                          </select>
-											       </div>
+							            </div>  
+							          </c:if> 
+							    	   <div class="timesheet_week_comm">
+							            <div class="totalWrap">
+							                 <ul>
+												<li><span>Billable Hours</span><input
+													id="grandBillableTotal"
+													value="" placeholder="HH/HH" readonly="" type="text"></li>
+												<li><span>Non-Billable Hours</span><input
+													id="grandNonBillableTotal"
+													value="" placeholder="HH/HH" readonly="" type="text"></li>
+												<li><span>Total Hours</span><input id="grandTotal" 
+													value="" placeholder="HH/HH" readonly="" type="text"></li>
+												<div class="clearfix"></div>
+											</ul>
+							            </div>
+							            <div class="clearfix"></div>
+							    	    <div class="timesheet_button clearfix">
+							    	    <c:if test="${employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
+							    	        <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
+							    	         <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+									           <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
 									         </c:if>
-									      </td>	
-									      <td>
-									       <c:set var="ticketNumber" value="${fn:split(entry.key, '##')[1] == 'NA' ? '' : fn:split(entry.key, '##')[1]}" />
-									         <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-									               <span>${!empty ticketNumber ? ticketNumber : '--'}</span>
-									          </c:if>
-									          <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
-									          <div>
-									        	<input type="text"   id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id" value="${ticketNumber}" field-name="" onblur="setTicketNumber('${entryIndex}','${leaveIndex+entryCount.index+1}ticketNumber1Id');" class="timeTick">
-									          </div>
-									         </c:if>
-									      </td>	
-									       <c:forEach var="te" items="${entry.value}" varStatus="teStatus">
-										          <td> 
-										           <div>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
-													    <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].hourlyType" value="${hourlyType}"/>
-                                                       <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].ticketNumber" value="${ticketNumber}" />
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
-										               <input onblur="editMe(this);"  ${te.editable ? '' : 'disabled="disabled"'} id="${leaveIndex+entryCount.index+1}timeSheetDay${teStatus.index+1}Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
-										               <div class='timesheet_comm'>
-										                   <c:if test="${!empty te.comments || (empty te.comments && te.editable)}">
-										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${leaveIndex+entryCount.index+1}comment${teStatus.index+1}Id");'></i>
-										                       <span class='teskcomment' id='${leaveIndex+entryCount.index+1}comment${teStatus.index+1}Id'>
-										                             <textarea ${te.editable ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
-                                                               </span>
-										                   </c:if>
-										                   <c:if test="${empty te.comments && !te.editable}">
-										                      <i class='blankDiv'></i>
-										                   </c:if>
-										               </div>
-										            </div>
-										              <c:set var="entryIndex" value="${entryIndex+1}"/>
-										           </td>
-								        </c:forEach>
-									    </tr>
-									</c:forEach>
-								    <tr class="last_child">
-										<td class="total_field">Total</td>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td>
-											<div class="alignDiv">
-											<input type="hidden" id="entryIndexValue" value="${entryIndex}"/>
-												<input disabled="" id="rowTotal1Id" name="rowTotal1Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-										<td>
-											<div class="alignDiv">
-												<input disabled="" id="rowTotal2Id" name="rowTotal2Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-										<td>
-											<div class="alignDiv">
-												<input disabled="" id="rowTotal3Id" name="rowTotal3Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-										<td>
-											<div class="alignDiv">
-												<input disabled="" id="rowTotal4Id" name="rowTotal4Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-										<td>
-											<div class="alignDiv">
-												<input disabled="" id="rowTotal5Id" name="rowTotal5Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-										<td>
-											<div class="alignDiv">
-												<input disabled="" id="rowTotal6Id" name="rowTotal6Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-										<td>
-											<div class="alignDiv">
-												<input disabled="" id="rowTotal7Id" name="rowTotal7Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							</div>
-							<div class="clearfix"></div>
-							
-							 <div class="timesheet_bot clearfix">
-								<div class="commentFile">
-									<input name="attcahmentMaxRowNumber" id="attcahmentMaxRowNumber" value="1" type="hidden">
-									<input name="fileCounter" id="fileCounter" value="0" type="hidden">
-									<div id="timesheetDocumentsId" class="timesheetDocs">
-									  <c:if test="${timesheetSubmissionDTO.submitButtonVisible}">
-											<div class="commentFile">
-												<span>
-												   <table class="timesheetAttachment" id="attachmentTable" cellspacing="0" cellpadding="0">
-												       <tbody>
-														   <tr id="divAttachmentTsRow0">
-															   <td>
-															     <input name="dbIsTimesheetAttachmentRequired" id="dbIsTimesheetAttachmentRequired" value="${timesheetSubmissionDTO.attachmentRequired ? 1 : 0}" type="hidden">
-															   <div id="0docFileuploadFileGroup">
-																<input name="0docFile" id="0docFile" field-name="Attachment" onchange="validateUploadFile(0)" data-validation-optional="true" class="timesheetAttachmentValidation" type="file">
-																   <i class="fa fa-plus" onclick="addAttachment()"></i>				
-																</div>				
-															   </td>					
-																 	 		
-															</tr>
-														</tbody>
-													</table>
-												 </span>
-												 <i class="fa fa-info-circle" title="Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB "></i>
-											 </div>
-										 </c:if>
-										  <c:if test="${!empty timesheetSubmissionDTO.fileInfo || !timesheetSubmissionDTO.attachmentRequired}">
-										        <input name="isTimesheetAttachmentRequired" id="isTimesheetAttachmentRequired" value="N" type="hidden">
-										  </c:if>
-										  <c:if test="${empty timesheetSubmissionDTO.fileInfo && timesheetSubmissionDTO.attachmentRequired}"> 
-										     <input name="isTimesheetAttachmentRequired" id="isTimesheetAttachmentRequired" value="Y" type="hidden">
-										   </c:if>
-										   <c:forEach var="finfo" items="${timesheetSubmissionDTO.fileInfo}">
-										         <strong id='${finfo.fileDbId}document' class="clearfix">
-												     <a class='downicon downloadInput mb maxWid mr' href='${finfo.fileURL}' download>
-												        <div class="attFile"><i class="fa fa-download"></i>${finfo.fileName}</div>
-												      </a>
-												       <c:if test="${timesheetSubmissionDTO.submitButtonVisible}">
-												          <i title="Delete" class="fa fa-trash cursorPointer text-danger mr" onClick='deleteSubmissionDocument("${finfo.fileDbId}");'></i>
-												       </c:if>
-												       <i title="View" class="fa fa-eye cursorPointer text-primary" onClick="viewFile('${finfo.fileURL}','${finfo.fileName}','${finfo.contentType}');"></i>
-												 </strong>
-										   </c:forEach>
-									</div>
-									  <c:if test="${timesheetSubmissionDTO.weekCommentVisible}">
-										<div class="commentTime pull-right">
-											<textarea class="form-controls" name="timesheetSubmission.weekComment" ${timesheetSubmissionDTO.submitButtonVisible ? '' : 'disabled="disabled"'} id="weekComment" placeholder="comment here">${timesheetSubmissionDTO.weekComment}</textarea>
-										</div>
-									   </c:if>
-								</div>
-								
-								<div class="timesheet_week_comm">
-							<div class="timesheet_button">
-							   <div class="totalWrap pull-left timesheethours-li">
-									<ul>
-										<li><span>Billable Hours</span><input
-											id="grandBillableTotal"
-											value="${timesheetSubmissionDTO.billableHours}" placeholder="HH/HH" readonly="" type="text"></li>
-										<li><span>Non-Billable Hours</span><input
-											id="grandNonBillableTotal"
-											value="${timesheetSubmissionDTO.nonBillableHours}" placeholder="HH/HH" readonly="" type="text"></li>
-										<li><span>Total Hours</span><input id="grandTotal" 
-											value="${timesheetSubmissionDTO.totalHours}" placeholder="HH/HH" readonly="" type="text"></li>
-										<div class="clearfix"></div>
-									</ul>
-								</div>
-								 <c:if test="${!timesheetSubmissionDTO.submitButtonVisible}">
-								   <c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW' || timesheetSubmissionDTO.timesheetStatus == 'DRAFT' || timesheetSubmissionDTO.timesheetStatus == 'SUBMITTED'}">
-								        <input onclick="newSaveTimesheet('Submitted');" value="Save" class="time_btn time_dra" type="button">
-								   </c:if>
-								 </c:if>
-								
-								 <c:if test="${timesheetSubmissionDTO.submitButtonVisible}">
-								    <c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW' || timesheetSubmissionDTO.timesheetStatus == 'DRAFT'}">
-								        <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
-								     </c:if>
-								     <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
-								     <c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'SUBMITTED'}">
-								          <input onclick="newSaveTimesheet('approve');" value="Approve" class="time_btn time_appr" type="button">
-								          <input onclick="approveTimesheet('reject');" value="Reject" class="time_btn time_rej" type="button">
-								     </c:if>
-								     
-							    </c:if>
-							     <c:if test="${timesheetSubmissionDTO.cancelButtonVisible}">
-							       <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />
-							     </c:if>
-							</div>
-							</div>
-							<div class="clearfix"></div>								
-								
-							</div> 
-						
-					</div>
-					<%-- <div id="activityDiv">
-						<jsp:include page="timesheetActivity.jsp"></jsp:include>
-					</div> --%> 				
-	            </div>
-		    </div>
-	    </div>
-	<input type="hidden" name="_ignore"
-		style="border-color: rgb(51, 51, 51);">
-</div>
-
-
-
-
+							    	    </c:if>
+							         </div>              
+							        </div>
+							    	<div class="clearfix"></div>
+							        </div>
+								          </div>
+								        </div>        	
+								   </div>
+								 </div>
+					<input type="hidden" name="_ignore">
+			 </div>
+	        <!-- AddRow Divs  ####-->
+	        <div id="divadttTd0" style="display:none;">   
+	             <div class="timeAdd" style="position: relative;"> 
+	              <select id="REPLACEROWIDprojectMember1Id" title="--select Project--"  name="REPLACEROWIDprojectMember1Id"  class='existedProjectMembers' onchange="flushtasks('REPLACEROWIDtask1Id');enableOrDisableHours('ENTRYINDEX','REPLACEROWIDprojectMember1Id','REPLACEROWIDticketNumber1Id','REPLACEROWID');addOrRemoveTimeSheetCommentRow('REPLACEROWIDprojectMember1Id');getProjectTasks('REPLACEROWIDtask1Id','REPLACEROWIDprojectMember1Id');"  field-name="Project">  
+	               <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
+		                   <option value='${pMember.id}'>${pMember.projectName} </option> 
+		            </c:forEach>
+	              </select>
+	             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="timeRemoveBtn"/>
+	             </div>
+	        </div>
+	         <div id="divadttTd1" style="display:none;">   
+	             <div class="taskDropDown"> 
+	              <select id="REPLACEROWIDtask1Id"  title="--select task--"  name="REPLACEROWIDtask1Id" class="smfield"  field-name="Task" onchange="prepareProjectTaskDetails('ENTRYINDEX','REPLACEROWIDtask1Id','REPLACEROWIDprojectMember1Id')" >  
+	              </select>
+	             </div>
+	        </div>
+	        <div id="divadttTd2" style="display:none;">
+		    	   <span id="REPLACEROWIDtask1IdBillableTypeId" name="REPLACEROWIDtask1IdBillableTypeId" ></span>	
+	   		</div>
+	   		 <div id="divadttTd10" style="display:none;">
+		    	  <div><input type="text" id="REPLACEROWIDticketNumber1Id" name="REPLACEROWIDticketNumber1Id" onblur="setTicketNumber('ENTRYINDEX','REPLACEROWIDticketNumber1Id');" class="timeTick" field-name=" "></div>	
+	   		</div>
+	   		<div id="divadttTd12" style="display:none;">
+	             <div>
+	               <select id="REPLACEROWIDhourlyType1Id" name="REPLACEROWIDhourlyType1Id"  field-name="Hourly Type" onchange="setHourlyType('ENTRYINDEX','REPLACEROWIDhourlyType1Id');">  
+	                      <option value='Regular'>Regular</option>
+		                  <option value='Overtime'>Overtime</option>
+	               </select>
+	             </div>
+   		    </div>
+   		
+	   		<div id="divadttTd11" style="display:none;">
+		    	  <div><b>New</b></div>	
+	   		</div>
+	        <div id="divadttTd3" style="display:none;">
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+		    	   <input type="text" disabled onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay1Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	               <div class="timesheet_comm" id="commentDivENTRYINDEX">
+	                <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment1Id');"></i>
+	                <span class="teskcomment" id="REPLACEROWIDcomment1Id" ><textarea disabled  onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation1Id');" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea1Id" ></textarea></span>
+	               </div>
+	                <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation1Id" field-name='Comment'/>
+	                </div>
+	   		</div>
+	        <div id="divadttTd4" style="display:none;">
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+					  <input type="text" disabled onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay2Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	                  <div class="timesheet_comm" id="commentDivENTRYINDEX">
+	                      <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment2Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDcomment2Id" ><textarea onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation2Id');" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea2Id" ></textarea></span></div>
+	                   <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation2Id" field-name='Comment'/>
+	                  </div>
+	        </div>
+	        <div id="divadttTd5" style="display:none;">
+	                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+					   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+					   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
+	                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+		               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+		               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+		               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+	                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+					  <input type="text" onblur='editMe(this);' disabled  id="REPLACEROWIDtimeSheetDay3Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	                  <div class="timesheet_comm" id="commentDivENTRYINDEX">
+	                  <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment3Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDcomment3Id" ><textarea onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation3Id');" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea3Id"></textarea></span></div>
+	                  <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation3Id" field-name='Comment'/>
+	                  </div>
+	        </div>
+	        <div id="divadttTd6" style="display:none;">
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+					  <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay4Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	                  <div class="timesheet_comm" id="commentDivENTRYINDEX">
+	                  <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment4Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDcomment4Id" ><textarea onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation4Id');" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea4Id"></textarea></span></div>           
+	                   <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation4Id" field-name='Comment'/>
+	                  </div>
+	        </div>
+	        <div id="divadttTd7" style="display:none;">
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+					  <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay5Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	                  <div class="timesheet_comm" id="commentDivENTRYINDEX">
+	                  <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment5Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDcomment5Id" ><textarea  onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation5Id');" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea5Id"></textarea></span></div>  
+	    	          <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation5Id" field-name='Comment'/>
+	                  </div>
+	    	 </div>
+	         <div id="divadttTd8" style="display:none;">
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+				     <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay6Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	                 <div class="timesheet_comm" id="commentDivENTRYINDEX">
+	                 <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment6Id');"></i>
+	                 <span class="teskcomment" id="REPLACEROWIDcomment6Id" ><textarea onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation6Id');" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea6Id"></textarea></span></div>
+	                 <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation6Id" field-name='Comment'/>
+	                  </div>
+	         </div>
+	         <div id="divadttTd9" style="display:none;">
+	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+					 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+					 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hourlyType" value="Regular"/> 
+	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+		             <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+				     <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay7Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	                 <div class="timesheet_comm" id="commentDivENTRYINDEX">
+	                 <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment7Id');"></i>
+	                 <span class="teskcomment" id="REPLACEROWIDcomment7Id" ><textarea onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation7Id');" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea7Id"></textarea></span></div>            
+	    	          <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation7Id" field-name='Comment'/>
+	                  </div>
+	    	 </div>
+	    	 
+	    	  <!--  Add Attachments Divs  ####-->
+            <div id="divComentTd0" style="display:none;">  
+                      <div class="timeAdd" style="position: relative;">
+                          <p>ATTACHMENTPROJECTNAME</p> 
+	                      <input type="hidden" disabled data-rowId="REPLACEROWID" class="ATTACHMENTEXISTEDCLASS"  id='existedAttProjectMemberATTACHMENTPMID' name="timsheetAttachments[REPLACEROWID].projectMemberId" value="ATTACHMENTPMID" />
+                      </div> 
+		             
+	          </div>
+	          <div id="divComentTd1" style="display:none;">  
+	                <div id="attachmentInnerDivREPLACEROWIDId">
+	                    <input  id="dbIsTimesheetAttachmentRequiredREPLACEROWID" disabled type="hidden">
+	                    <input class="timesheetAttValidation" data-rowId="REPLACEROWID" disabled name="isTimesheetAttachmentRequiredREPLACEROWID" id="isTimesheetAttachmentRequiredREPLACEROWID" type="hidden">
+	                    <input type='hidden' name='REPLACEROWIDmaxAttDivRowNumber' disabled id='REPLACEROWIDmaxAttDivRowNumber'  value='1' />
+	                     <div id="REPLACEROWIDAttchmentDiv0Id" class="addRowBtn">
+						  <div class="input-group col-md-12" style="margin:0 auto">
+							<label class="input-group-btn pull-left"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+							  <input style="display: none;" multiple  id="REPLACEROWIDdocFile0"  onchange="validateUploadFile('REPLACEROWID','0',this);"  class="upload" type="file">
+							  </span></label>
+							<input class="form-control input-sm pull-left" style="width:130px;" id="REPLACEROWIDuploadFile0" placeholder="Attachment" type="text">
+						  </div>
+						  <input type="button" value="" onclick="addAttachmentRow('REPLACEROWID');" class="addRowIcon"/>
+						   <input type="hidden" disabled id="timesheetAttValidationInputREPLACEROWID" field-name="Attachment"/>
+					   </div>	
+				   </div>
+	          </div>
+	          <div id="divComentTd2" style="display:none;">   
+	                   <input type="text" name="timsheetAttachments[REPLACEROWID].weekComment" disabled class="form-control input-sm" placeholder="Comment"  />
+	          </div>
+	          
+	          
+	          <div id="divAttachmentTd0" style="display:none;">
+		           <div id="COMMENTROWIDAttchmentDivREPLACEROWIDId" class="addRowBtn">
+						   <div class="input-group col-md-12" style="margin:0 auto">
+							<label class="input-group-btn pull-left"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+							  <input style="display: none;" multiple  id="COMMENTROWIDdocFileREPLACEROWID"  onchange="validateUploadFile('COMMENTROWID','REPLACEROWID',this);"  class="upload" type="file">
+							  </span></label>
+							<input class="form-control input-sm pull-left" style="width:130px;" id="COMMENTROWIDuploadFileREPLACEROWID" placeholder="Attachment" type="text">
+						   </div>
+						   <input type="button" value="" onclick="removeAttRow('COMMENTROWID','REPLACEROWID');" class="addRowIcon removeIcon"/>
+					</div>	
+		    </div>	
+   <script>
+	function timesheetEntriesDivByTimeSubFrequency(currentTimeSubFrequency){ 
+	               var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	               var invoiceFrequency = $("#invoiceFrequency").val();
+	               var currentTimeFrequency = $("#currentTimeFrequency").val();
+	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	        	   $.ajax({
+		      	          type : "POST",
+	        	      	  url: pmsUrl+"/getEmployeeTimesheetEntryDetails?invoiceFrequency="+invoiceFrequency+"&currentTimeFrequency="+currentTimeFrequency+"&currentTimeSubFrequency="+currentTimeSubFrequency+"&timeSheetsFor=user",		
+	        		      success :function(data) {
+	        		    	  $("#timesheetEntriesDiv").empty();
+	        		    	  $("#timesheetEntriesDiv").append(data);
+	        		    	  $("#loadTime").removeAttr('style');
+	        		    	  prepareChosenScripts();
+	        		    	  setTotals();
+	        		      }
+	        	    }); 
+	}
+</script> 
 <script>
 /* this script is for calculate total hours */
 $(document).ready(function() {
-	
+	bodyClick();
 	var invalidDate = "${INVALID_DATA}";
 	var emptyData = "${INVALID_DATA_EMPTY}"
 		var outPut;
@@ -661,7 +871,7 @@ function setTotals(){
 	 var nonBillableTotal;
 	 var nonBillableSum = 0;
 	 var rowNum = $("#maxRowNumber").val();
-	 var jValue = parseInt(rowNum)+1;
+	 var jValue = parseInt(rowNum)+1
 	 for (var i = 1; i < 8; i++){
 		 var bsum = 0;
 		 var nbsum = 0;
@@ -680,7 +890,7 @@ function setTotals(){
 			    	 
 				     bsum = parseFloat(bsum) + parseInt(finalmin);
 				     
-				     var billableType = $("#"+j+"task1IdBillableTypeId").val();
+				     var billableType = $("#"+j+"task1IdBillableTypeId").text();
 				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Billable') {
 				    	 var billableHours = btemp;
 				    	 var billableSplit = billableHours.split(':');
@@ -694,7 +904,7 @@ function setTotals(){
 						 billableSum = parseFloat(billableSum) + parseInt(billableFinalmin1);
 				    }
 				     
-				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && (billableType == 'Non Billable' || billableType == 'Non-Billable' || billableType == 'NonBillable')) {
+				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && (billableType == 'Non-Billable' || billableType == 'Non Billable'|| billableType == 'NonBillable')) {
 				    	 var nonBillableHours = btemp;
 				    	 var nonBillableSplit = nonBillableHours.split(':');
 				    	 var nonBillableFirst = nonBillableSplit[0];
@@ -809,271 +1019,7 @@ function grandTotal(){
 		 total = "00:00"; 
 	 }
 	 $("#grandTotal").val(total);
-	 currentMonthHours();
 }
-function currentMonthHours(){
-	 var total;
-	 var billableTotal;
-	 var billableSum = 0;
-	 var nonBillableTotal;
-	 var nonBillableSum = 0;
-	 var rowNum = $("#maxRowNumber").val();
-	 var jValue = parseInt(rowNum)+1;
-	  var iValue = '${timesheetSubmissionDTO.incrStartsFrom}';
-	 for (var i = parseInt(iValue); i < 8; i++){
-		 var bsum = 0;
-		 var nbsum = 0;
-		 var total = 0;
-		 for (var j = 1; j < jValue; j++){
-			    var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
-			    if (btemp !== undefined && btemp !=='####' && btemp !=='') {
-			    	 var hours = btemp;
-			    	 var split = hours.split(':');
-			    	 var first = split[0];
-			    	 var second = split[1];
-					 
-					 var minute = first * 60;
-					 var minute1 = second;
-					 var finalmin = parseInt(minute) + parseInt(minute1);
-			    	 
-				     bsum = parseFloat(bsum) + parseInt(finalmin);
-				     
-				     var billableType = $("#"+j+"task1IdBillableTypeId").val();
-				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Billable') {
-				    	 var billableHours = btemp;
-				    	 var billableSplit = billableHours.split(':');
-				    	 var billableFirst = billableSplit[0];
-				    	 var billableSecond = billableSplit[1];
-						 
-						 var billableMinute = billableFirst * 60;
-						 var billableMinute1 = billableSecond;
-						 var billableFinalmin1 = parseInt(billableMinute) + parseInt(billableMinute1);
-				    	 
-						 billableSum = parseFloat(billableSum) + parseInt(billableFinalmin1);
-				    }
-				     
-				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && (billableType == 'Non Billable' || billableType == 'Non-Billable' || billableType == 'NonBillable')) {
-				    	 var nonBillableHours = btemp;
-				    	 var nonBillableSplit = nonBillableHours.split(':');
-				    	 var nonBillableFirst = nonBillableSplit[0];
-				    	 var nonBillableSecond = nonBillableSplit[1];
-						 
-						 var nonBillableMinute = nonBillableFirst * 60;
-						 var nonBillableMinute1 = nonBillableSecond;
-						 var nonBillableFinalmin1 = parseInt(nonBillableMinute) + parseInt(nonBillableMinute1);
-				    	 
-						 nonBillableSum = parseFloat(nonBillableSum) + parseInt(nonBillableFinalmin1);
-				    }
-				}
-			    
-		 }
-       }	
-	   //for calculate billable count
-	    if(!isNaN(billableSum)){
-	        var t1 = billableSum; 
-	 		var billableHours = Math.floor(t1 / 60); 
-	 		var billableMinutes = t1 % 60;
-	 		
-	 		if (billableMinutes < 10) {
-	 			billableMinutes = '0' + billableMinutes;
-	 		}
-	 		if (billableHours < 10) {
-	 			billableHours = '0' + billableHours;
-	 		}
-	 		if(!isNaN(billableHours) && !isNaN(billableMinutes)){
-	 			billableTotal = billableHours +":"+ billableMinutes;
-	 		}else{
-	 			billableTotal =  "00:00";
-	 		}
-	 		
-	 		
-	 		 var mhm = '${timesheetSubmissionDTO.currentMonthBillableHours}';
-		   	 var msplit = mhm.split('.');
-		   	 var mHours     = msplit[0];
-		   	 var mMinutes   = msplit[1];
-		   	 
-		 	
-		   	 var asplit = billableTotal.split(':');
-		   	 var aHours     = asplit[0];
-		   	 var aMinutes   = asplit[1];
-		   	 
-		   	 var first = parseInt(mHours)+parseInt(aHours);
-		   	 var second = parseInt(mMinutes)+parseInt(aMinutes);
-		     
-		     
-		   	 var minute2 = first * 60;
-			 var minute3 = second;
-			 
-			 var finalmin1 = parseInt(minute2) + parseInt(minute3);
-			
-		     var t1 = parseInt(finalmin1);
-			 var hours1 = Math.floor(t1 / 60); 
-			 var minutes1 = t1 % 60;
-			 if (minutes1 < 10) {
-				minutes1 = '0' + minutes1;
-			 }
-			 if (hours1 < 10) {
-				hours1 = '0' + hours1;
-			 }
-		
-			 var total1;
-			 if(!isNaN(hours1) && !isNaN(minutes1)){
-				 if(parseInt(minutes1) <10){
-					 minutes1 = parseInt(minutes1);
-				 }
-				 if(parseInt(hours1) <10){
-					 hours1 = parseInt(hours1);
-				 }
-				 total1 = hours1 +"."+ minutes1;
-			 }else{
-				 total1 = "0.0"; 
-			 }
-			 
-	 		$("#monthBillableTotal").empty();
-	 		$("#monthBillableTotal").html('<input type="hidden" id="mBillableTotal" value="'+total1+'"/><d title="Billable: '+total1+'">'+total1+'</d>');
-	    }
-	    
-	  //for calculate non-billable count
-	   if(!isNaN(nonBillableSum)){
-		    var t2 = nonBillableSum; 
-			var nonBillableHours = Math.floor(t2 / 60); 
-			var nonBillableMinutes = t2 % 60;
-			
-			if (nonBillableMinutes < 10) {
-				nonBillableMinutes = '0' + nonBillableMinutes;
-			}
-			if (nonBillableHours < 10) {
-				nonBillableHours = '0' + nonBillableHours;
-			}
-			if(!isNaN(nonBillableHours) && !isNaN(nonBillableMinutes)){
-				nonBillableTotal = nonBillableHours +":"+ nonBillableMinutes;
-			}else{
-				nonBillableTotal =  "00:00";
-			}
-			
-			 var mhm = '${timesheetSubmissionDTO.currentMonthNonBillableHours}';
-		   	 var msplit = mhm.split('.');
-		   	 var mHours     = msplit[0];
-		   	 var mMinutes   = msplit[1];
-		 	
-		   	 var asplit = nonBillableTotal.split(':');
-		   	 var aHours     = asplit[0];
-		   	 var aMinutes   = asplit[1];
-		  
-		   	 var first = parseInt(mHours)+parseInt(aHours);
-		   	 var second = parseInt(mMinutes)+parseInt(aMinutes);
-			 
-		   	 var minute2 = first * 60;
-			 var minute3 = second;
-			 
-			 var finalmin1 = parseInt(minute2) + parseInt(minute3);
-			
-		     var t1 = parseInt(finalmin1);
-			 var hours1 = Math.floor(t1 / 60); 
-			 var minutes1 = t1 % 60;
-			 if (minutes1 < 10) {
-				minutes1 = '0' + minutes1;
-			 }
-			 if (hours1 < 10) {
-				hours1 = '0' + hours1;
-			 }
-			 var total1;
-			 if(!isNaN(hours1) && !isNaN(minutes1)){
-				 if(parseInt(minutes1) <10){
-					 minutes1 = parseInt(minutes1);
-				 }
-				 if(parseInt(hours1) <10){
-					 hours1 = parseInt(hours1);
-				 }
-				 total1 = hours1 +"."+ minutes1;
-			 }else{
-				 total1 = "0.0"; 
-			 }
-			
-			 
-			 $("#monthNonBillableTotal").empty();
-			 $("#monthNonBillableTotal").html('<input type="hidden" id="mNonBillableTotal" value="'+total1+'"/><d title="Non-Billable: '+total1+'">'+total1+'</d>');
-	   }
-	   var timesheetFor = '${timesheetEntryDetailsDTO.timesheetFor}';
-	   if(timesheetFor != null && timesheetFor != 'undefined' && timesheetFor != '' && timesheetFor == 'approver'){
-		   currentMonthTotalHours();
-	   }
-	  
-}
-
-function currentMonthTotalHours(){
-    var total;
-    var bsum = 0;
-    var iValue = '${timesheetSubmissionDTO.incrStartsFrom}';
-    for(var i=parseInt(iValue);i<8;i++){
-  	     var hours = $("#rowTotal"+i+"Id").val();
-	   	 var split = hours.split(':');
-	   	 var first = split[0];
-	   	 var second = split[1];
-		 
-		 var minute = first * 60;
-		 var minute1 = second;
-		 var finalmin = parseInt(minute) + parseInt(minute1);
-	     bsum = parseFloat(bsum) + parseInt(finalmin);
-    }
-     var t = bsum; 
-	 var hours = Math.floor(t / 60); 
-	 var minutes = t % 60;
-	 if (minutes < 10) {
-		minutes = '0' + minutes;
-	 }
-	 if (hours < 10) {
-		hours = '0' + hours;
-	 }
-	 if(!isNaN(hours) && !isNaN(minutes)){
-		 total = hours +":"+ minutes;
-	 }else{
-		 total = "00:00"; 
-	 }
-		
-  	 var mhm = '${timesheetSubmissionDTO.currentMonthTotalHours}';
-  	 var msplit = mhm.split('.');
-  	 var mHours     = msplit[0];
-  	 var mMinutes   = msplit[1];
-	
-  	 var asplit = total.split(':');
-  	 var aHours     = asplit[0];
-  	 var aMinutes   = asplit[1];
- 
-  	 var first = parseInt(mHours)+parseInt(aHours);
-  	 var second = parseInt(mMinutes)+parseInt(aMinutes);
-	 
-  	 var minute2 = first * 60;
-	 var minute3 = second;
-	 
-	 var finalmin1 = parseInt(minute2) + parseInt(minute3);
-	
-    var t1 = parseInt(finalmin1);
-	 var hours1 = Math.floor(t1 / 60); 
-	 var minutes1 = t1 % 60;
-	 if (minutes1 < 10) {
-		minutes1 = '0' + minutes1;
-	 }
-	 if (hours1 < 10) {
-		hours1 = '0' + hours1;
-	 }
-
-	 var total1;
-	 if(!isNaN(hours1) && !isNaN(minutes1)){
-		 if(parseInt(minutes1) <10){
-			 minutes1 = parseInt(minutes1);
-		 }
-		 if(parseInt(hours1) <10){
-			 hours1 = parseInt(hours1);
-		 }
-		 total1 = hours1 +"."+ minutes1;
-	 }else{
-		 total1 = "0.0"; 
-	 }
-	 $("#monthTotal").empty();
-	 $("#monthTotal").html('<input type="hidden" id="mTotal" value="'+total1+'"/><d title="Total-Hours:'+total1+'">'+total1+'</d>');
-}
-
 </script>
 
 <!-- this script is for mask for each entity  -->	
@@ -1131,6 +1077,23 @@ function timesheetComment(local){
 </script>	
 
 <script type="text/javascript">
+function makeActive(local,commentI,commentValidationId){ 
+	var comment = local.value;
+	 $("#"+commentI).removeClass('com_active');
+	if(comment != null && comment != 'undefined' && comment != ''){
+		 $("#"+commentValidationId).val(comment);
+		 $("#"+commentValidationId).next('p').remove();
+		 $("#"+commentValidationId).removeClass('error');
+		 $("#"+commentI).addClass('com_active');
+	}else{
+		 $("#"+commentValidationId).val('');
+		 $("#"+commentValidationId).next('p').remove();
+		 $("#"+commentValidationId).removeClass('error');
+	}
+} 
+</script>
+
+<script type="text/javascript">
 		function bodyClick(){
 		    $(".teskcomment").slideUp(200);   
 		    $("html .timesheet_comm").click(function(event){
@@ -1139,9 +1102,8 @@ function timesheetComment(local){
 		 }
 </script>	
 <script type="text/javascript">
-function withdrawMyTimesheet(){ 
-	/* var frm = $('#timesheet_form').serializeFormJSON(); */
-	 var projectMemberId = $("#projectMemberId").val();
+function withdrawMyTimesheet(projectMemberId){ 
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var timesheetFrequency  = $("#currentTimeFrequency").val();
 	var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
@@ -1150,7 +1112,7 @@ function withdrawMyTimesheet(){
      	  url: pmsUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&dateFormat="+dateFormat,		
 	      success :function(result) {
 	    	  $("#loadTime").removeAttr("style"); 
-	    	  timesheetDivByFrequency();
+	    	  timesheetEntriesDivByTimeFrequency();
 	    	  $("html").trigger('click');
 	    	  maskme();
 	      }
@@ -1158,7 +1120,108 @@ function withdrawMyTimesheet(){
 }
 </script>
 
-
+<script>
+  function addAttachmentRow(rowNum,initAttRowNum){
+	  var attRowNum = $("#"+rowNum+"maxAttDivRowNumber").val();
+	  var maxRowNum = parseInt(attRowNum);
+	  $("#"+rowNum+"maxAttDivRowNumber").val(maxRowNum+1);
+	  var divadAttStr =  document.getElementById("divAttachmentTd0").innerHTML;
+	  divadAttStr = divadAttStr.replace(/COMMENTROWID/g, ( parseInt(rowNum)));
+	  divadAttStr = divadAttStr.replace(/REPLACEROWID/g, (maxRowNum));
+	  $("#attachmentInnerDiv"+parseInt(rowNum)+"Id").append(divadAttStr); 
+  }
+</script>
+<script>
+  function removeAttRow(comNum,rowNum){
+	 $("#"+comNum+"AttchmentDiv"+rowNum+"Id").remove();
+	 $("#timesheet_form input[data-id*='"+comNum+"docFile"+rowNum+"']").remove();
+  }
+</script>
+<script>
+  function removeTimeSheetCommentRow(rowId){
+		 document.getElementById("timesheetAttRow"+rowId).style.display = 'none';
+		 document.getElementById("timesheetAttRow"+rowId).value= '';
+		 var  rId = "timesheetAttRow"+rowId;
+		  var r = document.getElementById("attTimesheet").rows[rId];
+          var count = (r.cells.length);
+	       for(i=0;i<count;i++){
+	        r.deleteCell(0);
+	      } 
+  }
+</script>
+<script>
+   function addOrRemoveTimeSheetCommentRow(pmId) { 
+	   var projectMemberId = $("#"+pmId).val();
+	   if(projectMemberId != null && projectMemberId != '' && projectMemberId != 'undefined' && ($("#existedAttProjectMember"+projectMemberId).val() == '' || $("#existedAttProjectMember"+projectMemberId).val() == null ||  $("#existedAttProjectMember"+projectMemberId).val() == 'undefined')){
+		    var tbl = document.getElementById("attTimesheet");
+		    if(tbl != null && tbl !='' && tbl != 'undefined'){
+		    	var rowNum = $("#maxAttRowNumber").val();
+				var maxRowNum = parseInt(rowNum);
+			   
+				$("#maxAttRowNumber").val(maxRowNum+1); 
+				var row = tbl.insertRow(maxRowNum);
+				row.setAttribute("id", "timesheetAttRow"+maxRowNum);
+				
+				var projectMemberId = $("#"+pmId).val();
+				var projectName = $("#"+pmId+" :selected").text();
+				
+				var cell0 = row.insertCell(0);
+				var divadcmTd0Str = document.getElementById("divComentTd0").innerHTML;
+				divadcmTd0Str = divadcmTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divadcmTd0Str = divadcmTd0Str.replace(/ATTACHMENTPROJECTNAME/g,projectName);
+				divadcmTd0Str = divadcmTd0Str.replace(/ATTACHMENTEXISTEDCLASS/g,"existedAttProjectMembers");
+				divadcmTd0Str = divadcmTd0Str.replace(/ATTACHMENTPMID/g,projectMemberId);
+				divadcmTd0Str = divadcmTd0Str.replace(/disabled/g, ''); 
+				cell0.innerHTML = divadcmTd0Str;
+				
+				var cell1 = row.insertCell(1);
+				var divadcmTd1Str = document.getElementById("divComentTd1").innerHTML;
+				divadcmTd1Str = divadcmTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divadcmTd1Str = divadcmTd1Str.replace(/disabled/g, ''); 
+				cell1.innerHTML = divadcmTd1Str;
+				
+				var cell2 = row.insertCell(2);
+				var divadcmTd2Str = document.getElementById("divComentTd2").innerHTML;
+				divadcmTd2Str = divadcmTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+				divadcmTd2Str = divadcmTd2Str.replace(/disabled/g, ''); 
+				cell2.innerHTML = divadcmTd2Str;
+				
+				
+			    <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
+				    if('${statusEntry.key}' == projectMemberId){
+				    	var timesheetDocumentRequired = '${statusEntry.value.timesheetDocumentRequired}';
+				    	if(timesheetDocumentRequired == "true"){
+				    		$("#dbIsTimesheetAttachmentRequired"+maxRowNum).val('1'); 
+				    		$("#isTimesheetAttachmentRequired"+maxRowNum).val('Y'); 
+				    		$('#timesheetAttValidationInput'+maxRowNum).attr("data-validation","required"); 
+				    	}else{
+				    		$("#dbIsTimesheetAttachmentRequired"+maxRowNum).val('0');
+				    		$("#isTimesheetAttachmentRequired"+maxRowNum).val('N'); 
+				    		$('#timesheetAttValidationInput'+maxRowNum).removeAttr("data-validation"); 
+				    	}
+				    }
+	             </c:forEach>
+		    }
+	   }
+	   var existedProjectMembers = [];
+	   $('.existedProjectMembers').each(function() {
+		     var id =this.id;
+			 var localId = this.value;
+			 if(localId != null &&  localId !='undefined' && localId != '' && id !='REPLACEROWIDprojectMember1Id'){
+				 existedProjectMembers.push(localId);
+			 }
+	   }); 
+	   var deletedAttProjectMembers = [];
+	   $('.existedAttProjectMembers').each(function() {
+		      var localId = this.value;
+		      var id = this.id;
+		      if($.inArray(localId, existedProjectMembers) == -1){
+		    	  var delRowId = $("#"+id).attr('data-rowId');
+		    	  removeTimeSheetCommentRow(delRowId);
+		      }
+	   }); 
+   }
+</script>
 <!-- this script is for add row functionality at Timesheet screen -->
 <script>
 var validationSettings = {
@@ -1167,17 +1230,13 @@ var validationSettings = {
 		scrollToTopOnError : true,
 		dateFormat : 'yyyy/mm/dd' 
 }; 
-function addTimeSheetRow(projectId,leaveIndex) {
-	  
-	 $('#0docFile').removeAttr('data-validation');
-	 $('#0docFile').attr("data-validation-optional","true"); 
-	 /* $('#0docFile').removeClass('error'); */
-	/*  $('#0docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); */ 
-	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){   
-		    var nonLeaveRowId = 0;
+
+function addTimeSheetRow() {
+	  if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){   
 		    var tbl = document.getElementById("timesheet");
 			var rowNum = $("#maxRowNumber").val();
 			var maxRowNum = parseInt(rowNum);
+			
 			maxRowNum = maxRowNum +1;
 			$("#maxRowNumber").val(maxRowNum); 
 			var row = tbl.insertRow(maxRowNum);
@@ -1187,285 +1246,358 @@ function addTimeSheetRow(projectId,leaveIndex) {
 		    
 		    var entryIndex = $("#entryIndexValue").val();
 			var cell0 = row.insertCell(0);
+			var divadttTd00Str = document.getElementById("divadttTd0").innerHTML;
+			divadttTd00Str = divadttTd00Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd00Str = divadttTd00Str.replace(/ENTRYINDEX/g, (entryIndex)); 
+			divadttTd00Str = divadttTd00Str.replace(/disabled/g, ''); 
+			
+			cell0.innerHTML = divadttTd00Str;
+			$("#"+maxRowNum+"projectMember1Id").attr('data-validation','required');
+			$("#"+maxRowNum+"projectMember1Id").addClass('selectpicker');
+			$("#"+maxRowNum+"projectMember1Id").attr('data-live-search','true');
+			$("#"+maxRowNum+"projectMember1Id").attr('data-size',8);
+			
+			
+			
+			var cell1 = row.insertCell(1);
 			var divadttTd0Str = document.getElementById("divadttTd1").innerHTML;
 			divadttTd0Str = divadttTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd0Str = divadttTd0Str.replace(/projectId/g, (projectId)); 
 			divadttTd0Str = divadttTd0Str.replace(/ENTRYINDEX/g, (entryIndex)); 
-			/* cell0.setAttribute("class", "pname");*/
-			cell0.innerHTML = divadttTd0Str;
+			divadttTd0Str = divadttTd0Str.replace(/disabled/g, ''); 
+			cell1.innerHTML = divadttTd0Str;
 			$("#"+maxRowNum+"task1Id").attr('data-validation','required');
 			$("#"+maxRowNum+"task1Id").addClass('selectpicker');
 			$("#"+maxRowNum+"task1Id").attr('data-live-search','true');
-			$("#"+maxRowNum+"task1Id").attr('title','--select task--');
 			$("#"+maxRowNum+"task1Id").attr('data-size',8);
-			
-			var cell1 = row.insertCell(1);
-			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
-			divadttTd1Str = divadttTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd1Str = divadttTd1Str.replace(/projectId/g, (projectId)); 
-			divadttTd1Str = divadttTd1Str.replace(/ENTRYINDEX/g, (entryIndex)); 
-			cell1.innerHTML = divadttTd1Str;
-			$("#"+maxRowNum+"task1IdBillableTypeId").attr('data-validation','required');
-			$("#"+maxRowNum+"task1IdBillableTypeId").addClass('selectpicker');
-			$("#"+maxRowNum+"task1IdBillableTypeId").attr('title','BillableType');
-			$("#"+maxRowNum+"task1IdBillableTypeId").attr('data-size',8);
 			
 			
 			var cell2 = row.insertCell(2);
+			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
+			divadttTd1Str = divadttTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd1Str = divadttTd1Str.replace(/ENTRYINDEX/g, (entryIndex)); 
+			divadttTd1Str = divadttTd1Str.replace(/disabled/g, ''); 
+			cell2.innerHTML = divadttTd1Str;
+			
+			var cell3 = row.insertCell(3);
 			var divadttTd12Str = document.getElementById("divadttTd12").innerHTML;
 			divadttTd12Str = divadttTd12Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd12Str = divadttTd12Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			divadttTd12Str = divadttTd12Str.replace(/disabled/g, ''); 
-			cell2.innerHTML = divadttTd12Str;
+			cell3.innerHTML = divadttTd12Str;
 			$("#"+maxRowNum+"hourlyType1Id").attr('data-validation','required');
 			$("#"+maxRowNum+"hourlyType1Id").addClass('selectpicker');
 			$("#"+maxRowNum+"hourlyType1Id").attr('style','width:220px;');
 			$("#"+maxRowNum+"hourlyType1Id").attr('data-size',8);
 			
 			
-			var cell3 = row.insertCell(3);
+			
+			var cell4 = row.insertCell(4);
 			var divadttTd10Str = document.getElementById("divadttTd10").innerHTML;
 			divadttTd10Str = divadttTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd10Str = divadttTd10Str.replace(/projectId/g, (projectId)); 
 			divadttTd10Str = divadttTd10Str.replace(/ENTRYINDEX/g, (entryIndex)); 
-			cell3.innerHTML = divadttTd10Str;
+			divadttTd10Str = divadttTd10Str.replace(/disabled/g, ''); 
+			cell4.innerHTML = divadttTd10Str;
 			
 			
-		    var cell4 = row.insertCell(4);
+			
+		    var cell5 = row.insertCell(5);
 			var isCell1Disabled = $("#1timeSheetDay1Id").prop('disabled');
-			if(isCell1Disabled){
-				$("#divadttTd3 :input[type=text]").attr('disabled','disabled');
-				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon');
-			}
-			else{
-				$("#divadttTd3 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon glyphicon-comment');
-			} 
 			var divadttTd2Str = document.getElementById("divadttTd3").innerHTML;
 			divadttTd2Str = divadttTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd2Str = divadttTd2Str.replace(/projectId/g, (projectId));
 			divadttTd2Str = divadttTd2Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			
 			var dateValue = $("[name='timesheetSubmission.timesheetEntries[0].date']").val();
 			var dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[0].dayOfTheDate']").val();
 			divadttTd2Str = divadttTd2Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd2Str = divadttTd2Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell4.innerHTML = divadttTd2Str;
+			divadttTd2Str = divadttTd2Str.replace(/disabled/g, ''); 
+			cell5.innerHTML = divadttTd2Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell5 = row.insertCell(5);
-			var isCell2Disabled = $("#1timeSheetDay2Id").prop('disabled');
-			if(isCell2Disabled){
-				$("#divadttTd4 :input[type=text]").attr('disabled','disabled');
-				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon');
-			}
-			else{
-				$("#divadttTd4 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon glyphicon-comment');
-			} 
+			var cell6 = row.insertCell(6);
 			var divadttTd3Str = document.getElementById("divadttTd4").innerHTML;
 			divadttTd3Str = divadttTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd3Str = divadttTd3Str.replace(/projectId/g, (projectId));
 			divadttTd3Str = divadttTd3Str.replace(/ENTRYINDEX/g, (entryIndex)); 
+			divadttTd3Str = divadttTd3Str.replace(/disabled/g, ''); 
 			
 		    dateValue = $("[name='timesheetSubmission.timesheetEntries[1].date']").val();
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[1].dayOfTheDate']").val();
 			divadttTd3Str = divadttTd3Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd3Str = divadttTd3Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell5.innerHTML = divadttTd3Str;
+			cell6.innerHTML = divadttTd3Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell6 = row.insertCell(6);
-			var isCell3Disabled = $("#1timeSheetDay3Id").prop('disabled');
-			if(isCell3Disabled){
-				$("#divadttTd5 :input[type=text]").attr('disabled','disabled');
-				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon');
-			}
-			else{
-				$("#divadttTd5 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon glyphicon-comment');
-			} 
+			var cell7 = row.insertCell(7);
 			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
 			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd4Str = divadttTd4Str.replace(/projectId/g, (projectId));
 			divadttTd4Str = divadttTd4Str.replace(/ENTRYINDEX/g, (entryIndex)); 
-			
+			divadttTd4Str = divadttTd4Str.replace(/disabled/g, '');
 			dateValue = $("[name='timesheetSubmission.timesheetEntries[2].date']").val();
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[2].dayOfTheDate']").val();
 			divadttTd4Str = divadttTd4Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd4Str = divadttTd4Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell6.innerHTML = divadttTd4Str;
+			cell7.innerHTML = divadttTd4Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell7= row.insertCell(7);
-			 var isCell4Disabled = $("#1timeSheetDay4Id").prop('disabled');
-			if(isCell4Disabled){
-				$("#divadttTd6 :input[type=text]").attr("disabled", "disabled");
-				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon');
-			}else{
-				$("#divadttTd6 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon glyphicon-comment');
-			} 
+			var cell8= row.insertCell(8);
 			var divadttTd5Str = document.getElementById("divadttTd6").innerHTML;
 			divadttTd5Str = divadttTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd5Str = divadttTd5Str.replace(/projectId/g, (projectId)); 
 			divadttTd5Str = divadttTd5Str.replace(/ENTRYINDEX/g, (entryIndex));
-			
+			divadttTd5Str = divadttTd5Str.replace(/disabled/g, '');
 			dateValue = $("[name='timesheetSubmission.timesheetEntries[3].date']").val();
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[3].dayOfTheDate']").val();
 			divadttTd5Str = divadttTd5Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd5Str = divadttTd5Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell7.innerHTML = divadttTd5Str;
+			cell8.innerHTML = divadttTd5Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell8 = row.insertCell(8);
-			var isCell5Disabled = $("#1timeSheetDay5Id").prop('disabled'); 
-			 if(isCell5Disabled){
-				$("#divadttTd7 :input[type=text]").attr("disabled", "disabled");
-				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon');
-			}
-			else{
-				$("#divadttTd7 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon glyphicon-comment');
-			}
+			var cell9 = row.insertCell(9);
 			var divadttTd6Str = document.getElementById("divadttTd7").innerHTML; 
 			divadttTd6Str = divadttTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd6Str = divadttTd6Str.replace(/projectId/g, (projectId)); 
 			divadttTd6Str = divadttTd6Str.replace(/ENTRYINDEX/g, (entryIndex));
-			
+			divadttTd6Str = divadttTd6Str.replace(/disabled/g, '');
 			dateValue = $("[name='timesheetSubmission.timesheetEntries[4].date']").val();
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[4].dayOfTheDate']").val();
 			divadttTd6Str = divadttTd6Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd6Str = divadttTd6Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell8.innerHTML = divadttTd6Str;
+			cell9.innerHTML = divadttTd6Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell9 = row.insertCell(9);
-			var isCell6Disabled = $("#1timeSheetDay6Id").prop('disabled');
-			if(isCell6Disabled){
-				$("#divadttTd8 :input[type=text]").attr("disabled", "disabled");
-				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon');
-			}
-			else{
-				$("#divadttTd8 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon glyphicon-comment');
-			} 
+			var cell10 = row.insertCell(10);
 			var divadttTd7Str = document.getElementById("divadttTd8").innerHTML;
 			divadttTd7Str = divadttTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd7Str = divadttTd7Str.replace(/projectId/g, (projectId));
 			divadttTd7Str = divadttTd7Str.replace(/ENTRYINDEX/g, (entryIndex)); 
-			
+			divadttTd7Str = divadttTd7Str.replace(/disabled/g, '');
 			dateValue = $("[name='timesheetSubmission.timesheetEntries[5].date']").val();
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[5].dayOfTheDate']").val();
 			divadttTd7Str = divadttTd7Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd7Str = divadttTd7Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell9.innerHTML = divadttTd7Str;
+			cell10.innerHTML = divadttTd7Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell10 = row.insertCell(10);
-		    var isCell7Disabled = $("#1timeSheetDay7Id").prop('disabled');
-			if(isCell7Disabled){
-				$("#divadttTd9 :input[type=text]").attr("disabled", "disabled");
-				$('.timesheet_comm','#divadttTd9').find('i').attr('class','glyphicon');
-			}else{
-				$("#divadttTd9 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd9').find('i').attr('class','glyphicon glyphicon-comment');
-			} 
+			var cell11 = row.insertCell(11);
 			var divadttTd8Str = document.getElementById("divadttTd9").innerHTML;
 			divadttTd8Str = divadttTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
-			divadttTd8Str = divadttTd8Str.replace(/projectId/g, (projectId));
 			divadttTd8Str = divadttTd8Str.replace(/ENTRYINDEX/g, (entryIndex)); 
-			
+			divadttTd8Str = divadttTd8Str.replace(/disabled/g, '');
 			dateValue = $("[name='timesheetSubmission.timesheetEntries[6].date']").val();
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[6].dayOfTheDate']").val();
 			divadttTd8Str = divadttTd8Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd8Str = divadttTd8Str.replace(/DAYOFTHEDATE/g, (dayOfDate));
-			cell10.innerHTML = divadttTd8Str;
+			cell11.innerHTML = divadttTd8Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
 			$("#entryIndexValue").val(entryIndex);
-		    maskme();
-		    
-			var projectTaskId = maxRowNum+"task1Id"; 
-			getProjectTasks(projectTaskId);  
 			
-			$('.selectpicker').selectpicker('refresh');
+			var cell12 = row.insertCell(12);
+			cell12.className='timeTabFix';
+			var divadttTd11Str = document.getElementById("divadttTd11").innerHTML;
+			divadttTd11Str = divadttTd11Str.replace(/disabled/g, '');
+			cell12.innerHTML = divadttTd11Str;
+		    maskme();
+		    $('.selectpicker').selectpicker('refresh');
 		    $('.selectpicker').selectpicker({dropupAuto: false});
-		   var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
-		   if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
-			 $('#0docFile').removeAttr('data-validation-optional');
-			 $('#0docFile').attr("data-validation","required"); 
-			 $(".time_btn").removeAttr("disabled");
-			 $("#loadTime").removeAttr("style"); 
-		   }
-	    }	
-	}	
+	     } 	
+	 }	
         
         function disableInput(divId){
         	$("#"+divId+" :input").attr("disabled", "disabled");
         } 
        
-        function prepareProjectTaskDetails(entryIndex,projectTaskId){
+        function prepareProjectTaskDetails(entryIndex,projectTaskId,projectMemberId){
         	 if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
+        		   var pmId =   $("#" + projectMemberId).val();
         		   var taskId = $("#" + projectTaskId).val().split(",");
-    			   /* $("#" + projectTaskId + "BillableTypeId").val(taskId[1]); */
-    			   $('select[name="'+ projectTaskId +'BillableTypeId"]').selectpicker('val', taskId[1]);
-    			   setTotals(); 
+    			   $("#" + projectTaskId + "BillableTypeId").html(taskId[1]);
+    			  setTotals(); 
 	  			   var taskDetails = $("#" + projectTaskId).val().split(",");
 	  			   var taskId = taskDetails[0];
 	        	   var taskType   = taskDetails[1];
 	          	   var taskName = taskDetails[2]; 
 	          	   var end = parseInt(entryIndex)+7;
 	          	  for (i = entryIndex; i < end; i++) {
-		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.id']").val(taskId)
-		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskName']").val(taskName)
-		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskType']").val(taskType)
+	          		   $("[name='timesheetSubmission.timesheetEntries["+i+"].projectMemberId']").val(pmId);
+		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.id']").val(taskId);
+		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskName']").val(taskName);
+		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskType']").val(taskType);
 	              } 
         	 }
         }
-        function prepareBillableDetails(entryIndex,billableTypeId){
-        	  var end = parseInt(entryIndex)+7;
-         	  for (i = entryIndex; i < end; i++) {
-         		 $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskType']").val($("#"+ billableTypeId).val());
-         	  }
-         	 setTotals(); 
+        
+        function setTicketNumber(entryIndex,taskNumberId){
+        	if($("#" + taskNumberId).val() != null && $("#" + taskNumberId).val() !="undefined"){
+        		   var end = parseInt(entryIndex)+7;
+	          	  for (i = entryIndex; i < end; i++) {
+	          		   $("[name='timesheetSubmission.timesheetEntries["+i+"].ticketNumber']").val($("#"+taskNumberId).val());
+	              } 
+        	}
         }
+        
+        function setHourlyType(entryIndex,hourlyTypeId){
+        	if($("#" + hourlyTypeId).val() != null && $("#" + hourlyTypeId).val() !="undefined"){
+        		   var end = parseInt(entryIndex)+7;
+	          	  for (i = entryIndex; i < end; i++) {
+	          		   $("[name='timesheetSubmission.timesheetEntries["+i+"].hourlyType']").val($("#"+hourlyTypeId).val());
+	              } 
+        	}
+        }
+        
+        
+        
+        //flush project tasks
+        function flushtasks(projectTaskId){
+        	 $("#"+projectTaskId).next('i').remove();
+        	 $("#"+projectTaskId).empty();
+        	 $("#"+projectTaskId).append("<option value=''>--select task--</option>");
+        }
+        
+       function enableOrDisableHours(entryIndex,pmId,ticketNumberId,rowId){
+    	   var projectMemberId = $("#"+pmId).val();
+		     if(projectMemberId != null && projectMemberId != '' && projectMemberId != 'undefined'){
+                    <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
+                         if('${statusEntry.key}' == projectMemberId){
+                        	   var monEditable = '${statusEntry.value.monEditable}';
+	      	          		   var tueEditable = '${statusEntry.value.tueEditable}';
+	      	                   var wedEditable = '${statusEntry.value.wedEditable}';
+	      	                   var thuEditable = '${statusEntry.value.thuEditable}';
+	      	                   var friEditable = '${statusEntry.value.friEditable}';
+	      	                   var satEditable = '${statusEntry.value.satEditable}';
+	      	                   var sunEditable = '${statusEntry.value.sunEditable}';
+	      	                   var taskCommentsRequired = '${statusEntry.value.taskCommentsRequired}';
+	      	                   var ticketNumberRequired = '${statusEntry.value.ticketNumberRequired}';
+                        	  var end = parseInt(entryIndex)+7;
+                        	  $("#"+ticketNumberId).removeAttr("data-validation");
+                        	  if(ticketNumberRequired != null && ticketNumberRequired != '' && ticketNumberRequired != 'undefined' && ticketNumberRequired == "true"){
+                        		  $("#"+ticketNumberId).attr("data-validation","required");
+                        	  }
+                        	  var count = 1;
+            	          	  for (i = entryIndex; i < end; i++) {
+            	          		  $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").removeAttr("disabled");
+            	          		  $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").val("");
+            	          		  $("#commentDiv"+i).find('i').removeAttr('class');
+            	          		  $("#commentDiv"+i).find('i').attr('class','glyphicon glyphicon-comment');
+            	          		  
+            	          		  $("#"+rowId+"CommentValidation"+i+"Id").removeAttr("data-validation");
+            	          		  $("#"+rowId+"CommentValidation"+i+"Id").next('p').remove();
+            	          		  $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").removeAttr("data-validation-comment");
+            	          		  if(taskCommentsRequired != null && taskCommentsRequired != '' && taskCommentsRequired != 'undefined' && taskCommentsRequired == "true"){
+            	          			$("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("data-validation-comment","required");
+                          	      }
+            	          		
+            	          		  if(count == 1 && monEditable != "true"){
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  }else if(count == 2 && tueEditable != "true"){
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
+            	          			 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  } else if(count == 3 && wedEditable != "true"){
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
+            	          		 	 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  } else if(count == 4 && thuEditable != "true"){
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
+            	          		 	 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  } else if(count == 5 && friEditable != "true"){
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
+            	          		 	 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  } else if(count == 6 && satEditable != "true"){
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
+            	          		 	 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  } else if(count == 7 && sunEditable != "true"){
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
+            	          		 	 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  }
+            	          		 count++;
+            	          		$("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetStatus']").val('${statusEntry.value.timesheetStatus}');
+            	              } 
+                         }
+		                </c:forEach>
+		     }
+       }
 	   //get project tasks 
-	   function getProjectTasks(projectTaskId){
-		   if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
-			   var taskId = $("#" + projectTaskId).val().split(",");
-			   $("#" + projectTaskId + "BillableTypeId").val(taskId[1]);
-			   setTotals(); 
-		   }else{
-			   $("#" + projectTaskId + "BillableTypeId").val(""); 
-			   setTotals(); 
+	   function getProjectTasks(projectTaskId,pmId){
+		   $("#"+projectTaskId).next('i').remove();
+		   var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+		   var projectMemberId = $("#"+pmId).val();
+		   if(projectMemberId != null && projectMemberId != '' && projectMemberId != 'undefined'){
+			   $("#"+projectTaskId).after('<i class="fa fa-spinner fa-pulse"></i>');
+			   if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
+				   var taskId = $("#" + projectTaskId).val().split(",");
+				   $("#" + projectTaskId + "BillableTypeId").html(taskId[1]);
+				   setTotals(); 
+			   }else{
+				   $("#" + projectTaskId + "BillableTypeId").html(""); 
+				  setTotals(); 
+			   }
+			   $("#"+projectTaskId).removeAttr('class');
+			   $("#"+projectTaskId).attr('class','selectpicker smfield existedProjectTaskId'+projectMemberId);
+			   
+			   var avilableProjectTaskIds = [];
+			  /*  $('.existedProjectTaskId'+projectMemberId).each(function() {
+					 var localId = this.value;
+					 if(localId != null &&  localId !='undefined' && localId != ''){
+						 var taskIdArray = localId.split(",");
+						 avilableProjectTaskIds.push(taskIdArray[0]);
+					 }
+			   });  */
+			   $.ajax({
+	   	          type : "POST",
+	 	      	  url: pmsUrl+"/projectTasksByMemberId?projectMemeberId="+projectMemberId+"&avilableProjectTaskIds="+avilableProjectTaskIds,		
+	 		      success :function(data) {
+	 		    	    var json = JSON.parse(data);
+	 		    	    $('.existedProjectTaskId'+projectMemberId).each(function() {
+	 			   				 var localId = this.id;
+	 			   				 var localValue = this.value;
+	 			   				 
+		 			   		    var result = ""; 
+		 			   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){
+		 			   			    $('option', this).not(':eq(0), :selected').remove();
+		 			   		    }else{ 
+		 			   		    	 $("#"+localId).empty();
+		 			   		   		// result = result + "<option value=''>--select task--</option>";
+		 			   		    }
+		  		    	    	for (var i=0; i<json.length; i++)
+		  					 	{
+		  			        		var opt = json[i];
+		  			        		if(opt.generatedId != null && opt.generatedId !='undefined' && opt.generatedId !=''){
+		  			        			result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.generatedId+"-"+opt.taskName+"</option>";
+		  			        		}else{
+		  			        			result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.taskName+"</option>";
+		  			        		}
+		  			        		
+		  						}
+		  		    	    	
+	 				    	 	$("#"+localId).append(result);
+	 				    	 	$("#"+localId).next('i').remove();
+	 			   	   }); 
+	 		    	   $("body").css('overflow-y', 'scroll');
+	 		    	   $('.selectpicker').selectpicker('refresh');
+	 		    	   $('.selectpicker').selectpicker({dropupAuto: false});
+	 		    		    
+	 		    		
+	 		      }
+	 	      	  
+	 	       });  
 		   }
-		   var result = "";
-		   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
-		      var taskId = '${pt.id}';
-		      var taskType = '${pt.taskType}';
-		      var taskName = '${fn:replace(pt.taskName, "'", "`")}';
-		      var generatedId = '${pt.generatedId}';
-		     
-		      if(generatedId != null && generatedId !='undefined' && generatedId !=''){
-        			result = result + "<option value='" +taskId+","+taskType+","+taskName+"'>"+generatedId+"-"+taskName+"</option>";
-              }else{
-        			result = result + "<option value='" +taskId+","+taskType+","+taskName+"'>"+taskName+"</option>";
-        	  }
-		   </c:forEach>
-		   $("#"+projectTaskId).append(result);
 	   }
 </script>
 
 <!-- this script is for remove timesheet -->
 <script type="text/javascript">	
-
 function removeTimeSheetRow(rowId) { 
-	
-			var rowNum = $("#maxRowNumber").val();
-			var maxRowNum = parseInt(rowNum);
-			/* $("#maxRowNumber"+submissionId).val(maxRowNum - 1);  */
-			
 			 document.getElementById("timesheetRow"+rowId).style.display = 'none';
 			 document.getElementById("timesheetRow"+rowId).value= '';
 			 var  rId = "timesheetRow"+rowId;
@@ -1474,6 +1606,7 @@ function removeTimeSheetRow(rowId) {
 		      for(i=0;i<count;i++){
 		        r.deleteCell(0);
 		      } 
+		      addOrRemoveTimeSheetCommentRow('');
 		      setTotals(); 
 		}
 		
@@ -1481,7 +1614,7 @@ function removeTimeSheetRow(rowId) {
 <script type="text/javascript">	
    	    function alertHolidayDropMessage(rowId,holidayId,holidayUserId,holidayUserLocationId){
    		    var message = "<b>Are you sure to remove the holiday<b>";
-   		    $("#timesheetDivByFrequency").append("<div id='choicepopUp'></div>");
+   		    $("#timesheetDivByWeekFrequency").append("<div id='choicepopUp'></div>");
    			var result = "";
    			result = result +"	<div class='project_inn_mask'></div>";
    			result = result +"	  <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -1495,28 +1628,26 @@ function removeTimeSheetRow(rowId) {
    		 }
 </script>	    	 
 		    
- 
+
 <script type="text/javascript">	
 function removeHolidayRow(rowId,holidayId,holidayUserId,holidayUserLocationId) { 
-	         var rowNum = $("#maxRowNumber").val();
-		     var maxRowNum = parseInt(rowNum);
-				
+	         var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			 document.getElementById("timesheetRow"+rowId).style.display = 'none';
 			 document.getElementById("timesheetRow"+rowId).value= '';
 			 var  rId = "timesheetRow"+rowId;
 			  var r = document.getElementById("timesheet").rows[rId];
 	          var count = (r.cells.length);
-	         
 		      for(i=0;i<count;i++){
 		        r.deleteCell(0);
 		      } 
-		      setTotals();
+		      addOrRemoveTimeSheetCommentRow('');
+		      setTotals(); 
 		 	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		  	  $.ajax({
 		 	      type : "POST",
 		      	  url: pmsUrl+"/dropHoliday?${_csrf.parameterName}=${_csrf.token}&holidayId="+holidayId+"&holidayUserId="+holidayUserId+"&holidayUserLocationId="+holidayUserLocationId,		
 		 	      success :function(result) {
-		 	    	   $("#choicepopUp").empty();
+		 	    	  $("#choicepopUp").empty();
 		 	    	  $(".project_inn_mask").fadeOut(200);
 		 	    	  $("#loadTime").removeAttr("style"); 
 		 	      }
@@ -1525,15 +1656,9 @@ function removeHolidayRow(rowId,holidayId,holidayUserId,holidayUserLocationId) {
 		}
 		
 </script>
-
-<!-- this script is for clear timesheet -->
-<script>
-function clearTimesheet(){ 
-		  timesheetDivByFrequency('${timesheetSubmissionDTO.timeSubFrequency}');
-}
-</script>
 <script>
 function editMe(local){
+	
 	     var id = local.id;
 	     var inputValue =  $("#"+id).val();
 		 var split = inputValue.split(':');
@@ -1544,9 +1669,9 @@ function editMe(local){
 		 var min1 = minutes.charAt(0);
 		 var min2 = minutes.charAt(1);
 		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-			 $("#"+id).val("0"+hours1+":00");
-			 setTotals();
-			 checkHours(); 
+			  $("#"+id).val("0"+hours1+":00");
+			  setTotals();
+			  checkHours(); 
 		 }
 		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val("0"+hours2+":00");
@@ -1560,18 +1685,18 @@ function editMe(local){
 		 }
 		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
 			 $("#"+id).val("00:0"+min2);
-			 setTotals();
-			 checkHours(); 
+			  setTotals();
+			  checkHours(); 
 		 }
 		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val(hours+":00");
 			 setTotals();
-			 checkHours(); 
+			checkHours(); 
 		 }
 		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val(hours+":"+"0"+min1);
-			 setTotals();
-			 checkHours(); 
+			setTotals();
+			  checkHours(); 
 		 }
 		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
 			 $("#"+id).val(hours+":"+"0"+min2);
@@ -1590,14 +1715,24 @@ function editMe(local){
 				  minutes = "0"+minutes;
 			  }
 			  $("#"+id).val(hours+":"+minutes);
-			  setTotals();
-			  checkHours(); 
+			 setTotals();
+			   checkHours(); 
 		 }else if(isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
 		     $("#"+id).val("00:00");
-		     setTotals();
+		    setTotals();
 		     checkHours(); 
 		 }
 		 
+		var localValue = $("#"+id).val();
+		 var commentId = id.replace("timeSheetDay","CommentValidation");
+	     $("#"+commentId).next('p').remove();
+		 $("#"+commentId).removeAttr("data-validation");
+		 if(localValue != null && localValue != 'undefined' && localValue != '' && localValue != 'HH:MM' && localValue != '00:00'){
+			 var attr = $("#"+id).attr("data-validation-comment");
+			 if (typeof attr !== typeof undefined && attr !== false && attr == "required") {
+				$("#"+commentId).attr("data-validation","required")
+			 }	
+		 } 
 		 /* else{
 			  $("#"+id).val("00"+":"+"00");
 			 setTotals();
@@ -1696,37 +1831,43 @@ function checkHours(){
 </script>
 <script>
    function rowValidation(){ 
-	     var rowNum = $("#maxRowNumber").val();
-		 var jValue = parseInt(rowNum)+1;
-		 for (var j = 1; j < jValue; j++){
-			 var isEmpty = true;
-			 for (var i = 1; i < 8; i++){
-				 var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
-				 if (btemp !== undefined && btemp !=='####' && btemp !=='') {
-					 isEmpty = false;
-					 break;
+	   rowRemoveError();
+	   if ($('#timesheet_form').validate(false, validationSettings)){ 
+		   var rowNum = $("#maxRowNumber").val();
+			 var jValue = parseInt(rowNum)+1;
+			 for (var j = 1; j < jValue; j++){
+				 var isEmpty = true;
+				 for (var i = 1; i < 8; i++){
+					 var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
+					 if (btemp !== undefined && btemp !=='####' && btemp !=='') {
+						 isEmpty = false;
+						 break;
+					 }
+				 }
+				 if(isEmpty == true){
+					 $("#"+j+"projectMember1Id").find('p.jquery_form_error_message').remove(); 
+					 $("#"+j+"projectMember1Id").after("<p class='jquery_form_error_message'>Atleat One Date Should Be Filled</span>");
+					 $("#"+j+"projectMember1Id").attr('record-exist','yes');
+					 $("#"+j+"projectMember1Id").attr('record-exist-errorMsg','Atleat One Date Should Be Filled');
+				 }else{
+					 $("#"+j+"projectMember1Id").removeAttr( "record-exist record-exist-errormsg");
+					 $("#"+j+"projectMember1Id").find('p.jquery_form_error_message').remove();  
 				 }
 			 }
-			 if(isEmpty == true){
-				 $("#"+j+"taskTd").find('p.jquery_form_error_message').remove(); 
-				 $("#"+j+"task1Id").after("<p class='jquery_form_error_message'>Atleat One Date Should Be Filled</span>");
-				 $("#"+j+"task1Id").attr('record-exist','yes');
-				 $("#"+j+"task1Id").attr('record-exist-errorMsg','Atleat One Date Should Be Filled');
-			 }else{
-				 $("#"+j+"task1Id").removeAttr( "record-exist record-exist-errormsg");
-				 $("#"+j+"taskTd").find('p.jquery_form_error_message').remove();  
-			 }
-		 }
+	   }
+	     
+	   
    }
 
 </script>
+
 <script>
    function rowRemoveError(){ 
 	     var rowNum = $("#maxRowNumber").val();
 		 var jValue = parseInt(rowNum)+1;
 		 for (var j = 1; j < jValue; j++){
-			 $("#"+j+"task1Id").removeAttr( "record-exist record-exist-errormsg");
-			 $("#"+j+"taskTd").find('p.jquery_form_error_message').remove();  
+			 $("#"+j+"projectMember1Id").removeAttr( "record-exist record-exist-errormsg");
+			 $("#"+j+"projectMember1IdS").find('p.jquery_form_error_message').remove();  
 		 }
    }
 </script>
@@ -1785,35 +1926,36 @@ function validate_fileupload(fileName)
 </script>
 
 <script type="text/javascript">
-function validateUploadFile(id)
+function validateUploadFile(rowId,attNumber,item)
 {
-	  var selectedFile = $('#'+id+'docFile').val();
+	  $('#'+rowId+'uploadFile'+attNumber).val(item.value.replace(/C:\\fakepath\\/i, ''));
+	  var selectedFile = $('#'+rowId+'docFile'+attNumber).val();
 	  if(validate_fileupload(selectedFile)){
-		   var docSize = $('#'+id+'docFile')[0].files[0].size;
-	       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+		   var docSize = $('#'+rowId+'docFile'+attNumber)[0].files[0].size;
+	      /*  $("#attachmentInnerDiv"+rowId+"Id").find('p.jquery_form_error_message').remove(); */
 	      if(docSize > 2097152){
-	    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-	    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-			  $('#'+id+'docFile').attr('record-exist','yes');
-			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+	    	  $("#"+rowId+"AttchmentDiv"+attNumber+"Id").find('p.jquery_form_error_message').remove();
+	    	  $('#'+rowId+'uploadFile'+attNumber).after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+	    	  $('#'+rowId+'uploadFile'+attNumber).attr('record-exist','yes');
+	    	  $('#'+rowId+'uploadFile'+attNumber).attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
 	      }else{
-	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
-   		 	 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-   		 	 fileUpload(""+id+"docFile", "timesheetDocuments", "timesheet_form","timesheetSubmission.fileInfo","","");
+	    	 $('#timesheetAttValidationInput'+rowId).removeAttr( "record-exist record-exist-errormsg");
+	    	 $("#"+rowId+"AttchmentDiv"+attNumber+"Id").find('p.jquery_form_error_message').remove();
+	    	 $('#timesheetAttValidationInput'+rowId).val('1');
+	    	 fileUpload(''+rowId+'docFile'+attNumber, "timesheetDocuments", "timesheet_form","timsheetAttachments["+rowId+"].fileInfo","","");
 	      }
 	  }
 	  else{
-		      $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-		      $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
-			  $('#'+id+'docFile').attr('record-exist','yes');
-			  $('#'+id+'docFile').attr('record-exist-errorMsg','Invalid Format'); 
+		      $("#"+rowId+"AttchmentDiv"+attNumber+"Id").find('p.jquery_form_error_message').remove();
+		      $('#'+rowId+'uploadFile'+attNumber).after("<p class='jquery_form_error_message' >Invalid Format</p>");  
+		      $('#'+rowId+'uploadFile'+attNumber).attr('record-exist','yes');
+		      $('#'+rowId+'uploadFile'+attNumber).attr('record-exist-errorMsg','Invalid Format'); 
 	  }
-	
 }
 </script>
 <script type="text/javascript">
    function alertMessage(message,status,savingType){
-   $("#timesheetDivByFrequency").append("<div id='choicepopUp'></div>");
+   $("#timesheetDivByWeekFrequency").append("<div id='choicepopUp'></div>");
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	  <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -1838,29 +1980,23 @@ function cancel(){
 </script>
 <!-- this script is for delete document -->
 <script type="text/javascript">
-function deleteSubmissionDocument(submissionDocumentId){  
-    var projectExistingValue = $("#dbIsTimesheetAttachmentRequired").val();
-    
-    var strongTagCount = document.getElementById('timesheetDocumentsId').getElementsByTagName('strong').length;
-    /*  var startdate; */
-	var navigation;
-    $.ajax({
-          type : "POST",
-      	  url: pmsUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
-	      success :function(result) {
-	    	  $("#"+submissionDocumentId+"document").remove();
-	    	  if(projectExistingValue != null && projectExistingValue != "" && projectExistingValue !="undefined" && projectExistingValue == "1"
-	    			  && strongTagCount != null && strongTagCount != "" && strongTagCount !="undefined" && strongTagCount == 1){
-	    		  $("#isTimesheetAttachmentRequired").val('Y');
-	    	  }
-	      }
-      	  
-    }); 
-	   
+function deleteSubmissionDocument(submissionDocumentId,attDivIndex){  
+    var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+    var projectExistingValue = $("#dbIsTimesheetAttachmentRequired"+attDivIndex).val();
+    var strongTagCount = $("#"+attDivIndex+"attachMentCount").val();
+    strongTagCount = parseInt(strongTagCount);
+    $("#"+submissionDocumentId+"document").remove();
+    strongTagCount = parseInt(strongTagCount)-1;
+    $("#"+attDivIndex+"attachMentCount").val(strongTagCount);
+    if(projectExistingValue != null && projectExistingValue != "" && projectExistingValue !="undefined" && projectExistingValue==1
+		  && strongTagCount != null &&  strongTagCount==0){
+	  $("#isTimesheetAttachmentRequired"+attDivIndex).val('Y');
+    }
 }
 </script>
 <script type="text/javascript">
 function viewSubmissionDocument(submissionDocumentId,title){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		window.open(pmsUrl+'/viewDocument/'+title+'?submissionDocumentId='+submissionDocumentId,title,"height=600,width=600");
 }
 </script>
@@ -1878,6 +2014,7 @@ function timesheetEntriesExport(exportType){
 	var projectMemberId = $("#projectMemberId").val();
 	var startDate = dateFrequency[0];
 	var endDate = dateFrequency[1];
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var status = '${timesheetSubmissionDTO.timesheetStatus}';
 	 var tableFor = $("#tableFor").val();
 	 var requestFrom = "employee";
@@ -1891,91 +2028,32 @@ function timesheetEntriesExport(exportType){
 	}
 }
 </script>
-<script>
-   function approveTimesheet(status){
-	 var tableFor = $("#tableFor").val();
-	 var tdSpan = '';
-	 if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor =='dashboard'){
-		 tableFor = 'approval';
-		 tdSpan ='8' 
-	 }else {
-		 tableFor = 'approval';
-		 tdSpan = '6';
-	 }
-	 var currentTimeFrequency = $("#currentTimeFrequency").val();
-	 var dates = currentTimeFrequency.split("To");
-  	 var projectMemberId = $("#projectMemberId").val();
-  	 
-	 if(status == 'approve'){
-	 }else{
-		  	var result = "";
-			result = result +"	<div class='project_inn_mask'></div>";
-			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-			result = result +"		<p>Reject Reason</p>";
-			result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here'></textarea>";
-			result = result + ' <div id="reOpenReasonDiv"/>';
-			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick="validateRejectReason(\''+projectMemberId+'\',\''+dates[0]+'\',\''+dates[1]+'\','+tdSpan+',\''+tableFor+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelReOpen();"></b>';
-			result = result +"	</div>";
-			$("#reOpenPopup").append(result);
-			$("#remove_user_pop").slideDown(200);
-			$(".project_inn_mask").fadeIn(200); 
-			
-	 }
-  	
-  	
-   }
-   
-   function validateRejectReason(projectMemberId,startDate,endDate,tdSpanSize,from){
-	   var reason = document.getElementById("reOpenReason").value;
-	   if(reason != ""){
-		    $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
-		    $(".side_mask").fadeOut(200); 
-		    $("body").css('overflow-y', 'scroll');
-		    $("#dynamic").removeAttr('style');
-		    cancelReOpen();
-		    saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from,reason);
-	   }
-	  	else{
-	  		$("#reOpenReasonDiv").empty();
-	   		$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-	   	}
-   }
-</script>
 <script type="text/javascript">
 function newSaveTimesheet(status){ 
-	 var savingType = $("#timesheetFor").val();
+	 var savingType = 'user';
 	 $(".time_btn").attr("disabled", "disabled");
 	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
-	 checkHours();
-	 var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
-	 if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
-		 $('#0docFile').removeAttr('data-validation-optional');
-		 $('#0docFile').attr("data-validation","required"); 
-		 $(".time_btn").removeAttr("disabled");
-		 $("#loadTime").removeAttr("style"); 
-	 }
-	 var unfilledDates = [];
-	 $('ul.project-tabs-menu li').each(function() {
-		 var attr = $(this).attr('class');
-		 if (attr!= null && attr != "" && attr != " " && attr !='undefined' && attr != 'hidden') {}
-		 else{
-			 var currentInputValue = $(this).prev("input").val();
-			 if(currentInputValue != null && currentInputValue !='undefined' && currentInputValue != ''){
-				 unfilledDates.push(currentInputValue);
-			 }
-			
-		 }	
-     });
-	
+     checkHours();
+     validateTimesheetHours(status);
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	 }; 
-	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){ 
-		 
-		     if(status != null && status != 'undefined' && status != '' && ((status == 'Submitted' && unfilledDates.length === 0) || (status == 'approve')|| (status == 'Draft'))){
+	  $('.timesheetAttValidation').each(function() {
+		     var id = this.id;
+			 var localValue = this.value;
+			 var dataRowId = $("#"+id).attr('data-rowId');
+			 $('#timesheetAttValidationInput'+dataRowId).removeAttr('data-validation');
+			 if(localValue != null &&  localValue !='undefined' && localValue != '' && localValue == 'Y'){
+				 $('#timesheetAttValidationInput'+dataRowId).attr("data-validation","required"); 
+				 $(".time_btn").removeAttr("disabled");
+				 $("#loadTime").removeAttr("style"); 
+			 }
+	   }); 
+	 if ($('#timesheet_form').validate(false, validationSettings) && !$("#timeSheetErrorMsg").is(':visible')){ 
+		     if(status != null && status != 'undefined' && status != '' && ((status == 'Submitted') || (status == 'Draft'))){
 		    	   timesheetDbSave(status,savingType)
 	        	   return true;
 		     }
@@ -1989,24 +2067,62 @@ function newSaveTimesheet(status){
 		    	 return false;
 		     }
               
-	 	}else{ 
+	 } else{ 
 	 		 $(".time_btn").removeAttr("disabled");
 	 		 $("#loadTime").removeAttr("style"); 
 			return false;
-	   } 
+	   }  
+}
+</script>
+<script>
+function validateTimesheetHours(status){
+	 var timesheetAvgHoursValidation ='${timesheetAvgHoursValidation}'; 
+	 if(status != null && status != 'undefined' && status != '' && status == 'Submitted' && timesheetAvgHoursValidation == 'Y'){
+		 var total = $("#grandTotal").val();
+		 var wokingHoursPerWk ='${minimumWorkingHoursPerWeek}'; 
+		 if(total != "" && total != null && total != 'undefined'){
+			 total = total.replace(":",".")
+			 var grandTotal = parseFloat(total);
+			 if(grandTotal < wokingHoursPerWk){
+				    var outPut = "<p> Week Total Hours Should be Minimum "+wokingHoursPerWk+" <b>X</b></p>";
+					$("#timeSheetErrorMsg").removeAttr('style');
+					$("#timeSheetErrorMsg").attr('style','display:block;');
+					$("#timeSheetErrorMsg").empty();
+					$("#timeSheetErrorMsg").append(outPut);
+					var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
+					$("#hideError").empty();
+					$("#hideError").append(error); 
+			 }else{
+				    $("#timeSheetErrorMsg").removeAttr('style');
+				    $("#timeSheetErrorMsg").attr('style','display:none;');
+					$("#timeSheetErrorMsg").empty();
+					$("#hideError").empty();
+				}
+			 
+			 $(".time_pop b").click(function(){
+					$("#timeSheetErrorMsg").removeAttr('style');
+					$("#timeSheetErrorMsg").attr('style','display:none;');
+				    $("#timeSheetErrorMsg").empty();
+				}); 
+			 
+		 }
+	 }
 }
 </script>
 <script type="text/javascript">
 function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMembersId,from){
 	    $('#notifyLink').val('');
+	    $('#hedderAcceptRejectButton').hide();
+	    $('#selectAllTimeSheetCheckBoxForSubmitForApproval').removeProp('checked');
 		 if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 			 $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
 	    	 $(".side_mask").fadeOut(200); 
      		 $("body").css('overflow-y', 'scroll');
 			 var currentPageNumber =  $("#currentPageNumber").val();
-   		     getStatusListData(""+currentPageNumber+"","");
+   		     getStatusListData(""+currentPageNumber+"",0,"");
 		 }
 		 else if(from != null && from != '' && from != 'undefined' && (from == 'approver' || from == 'approverClose' ||  from == 'dashboardClose')){
+			 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			 var dates = timesheetFrequency.split("To");
 				$.ajax({
 			   	type: "POST",
@@ -2044,79 +2160,25 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
     	 var tableFor = $("#tableFor").val();
     	 var currentTimeSubFrequency = $("#currentTimeSubFrequency").val();
     	 var projectMemberId = $("#projectMemberId").val();
+    	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+    	
+    	  <c:forEach var="oldSubPm" items="${employeeTimesheetEntryDetailsDTO.oldSubmittedProjectMembersList}" varStatus="oldSubPmCount">
+    	      formData.append("oldSubmittedProjectMembersList["+'${oldSubPmCount.index}'+"]", '${oldSubPm}');
+          </c:forEach>
     	 $("#loadTime").removeAttr('style');
     	 $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
-	      var actualStatus = status;
-	      if(actualStatus == 'approve'){
-	    	  status = 'Submitted';
-	      }
-    	 $.ajax({
+	   $.ajax({
 		    type : "POST",
    	        data: formData,
 	        processData: false,
 	        contentType:false,
-	      	  url: pmsUrl+"/saveTimesheetEntries?timesheetSubmission.timesheetStatus="+status+"&timesheetFor="+savingType,		
+	      	  url: pmsUrl+"/saveEmployeeTimesheetEntries?timesheetSubmission.timesheetStatus="+status+"&timesheetFor="+savingType,		
 		      success :function(data) {
-		    	  if(actualStatus == 'approve'){
-		    		  status = actualStatus;
-		    	  }
-		    	  if($("#timesheet_form input[data-id*=docFile]").length > 0) {
-		  			 $("#timesheet_form input[data-id*=docFile]").remove();
-		  		   }
-		    	   
-		    	  if(savingType != null && savingType != '' && savingType != 'undefined'&& savingType == 'approver'){
-		    		  if(status != null && status != 'undefined' && status != '' && status != 'Draft' && status != 'Submitted' && status != 'approve'){
-			    		  timesheetApprovalTableRowByProjectMemberId(currentTimeFrequency,projectMemberId,tableFor);
-			    	  }else if(status == 'approve'){
-			    			 var tdSpan = '';
-			    			 if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor =='dashboard'){
-			    				 tableFor = 'approval';
-			    				 tdSpan ='8' 
-			    			 }else {
-			    				 tableFor = 'approval';
-			    				 tdSpan = '6';
-			    			 }
-			    			 var dates = currentTimeFrequency.split("To");
-			    		     approveSubmissionByProjectMemberId(projectMemberId,dates[0],dates[1],tdSpan,tableFor+"Summary");
-			    		     $(".time_appr_side_wrap").removeClass("time_appr_side_wrap_active");
-			    			 $(".side_mask").fadeOut(200); 
-			    			 $("body").css('overflow-y', 'scroll');
-			    			 $("#dynamic").removeAttr('style');
-			    	  }
-			    	  else{
-			    		  $("#timesheetDivByFrequency").empty();
-				    	  $("#timesheetDivByFrequency").append(data);
-				    	  setTotals();
-        		    	  maskme();
-				    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
-				    		  $("#currentTimeSubFrequency").val('');
-				    		  $("#timeSubFrequency").val('');
-				    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency);
-			            	  $("#timeSubFrequency").val(currentTimeSubFrequency)
-				    	  }
-				    	  $("#loadTime").removeAttr('style');
-			    	  } 
-		    	  }else{
-		    		  if(status == 'approve'){
-		    			     var  tdSpan ='8';
-			    			 var dates = currentTimeFrequency.split("To");
-			    		     approveSubmissionByProjectMemberId(projectMemberId,dates[0],dates[1],tdSpan,tableFor);
-		    		  }else{
-		    			  $("#timesheetDivByFrequency").empty();
-				    	  $("#timesheetDivByFrequency").append(data);
-				    	  setTotals();
-	    		    	  maskme();
-				    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
-				    		  $("#currentTimeSubFrequency").val('');
-				    		  $("#timeSubFrequency").val('');
-				    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency);
-			            	  $("#timeSubFrequency").val(currentTimeSubFrequency);
-				    	  }
-				    	  $("#loadTime").removeAttr('style');
-		    		  }
-		    		  
-		    	  }
-		    	  timesheetActivityList();
+		  		     $("#timesheetEntriesDiv").empty();
+ 		    	     $("#timesheetEntriesDiv").append(data);
+ 		    	     $("#loadTime").removeAttr('style');
+  		    	     prepareChosenScripts();
+  		    	     setTotals();
 		      }
 	      	  
 	    });
@@ -2124,199 +2186,11 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 </script>
 
 
-<script>
-function timesheetActivityList(){
-	var projectMemberId = $("#projectMemberId").val();
-	var timesheetFrequency= $("#currentTimeFrequency").val();
-	$.ajax({
-		    type : "POST",
-	      	url: pmsUrl+"/timesheetActivity?&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency,		
-		    success :function(data) {
-		    	 $('#activityDiv').empty();
-		    	 $('#activityDiv').append(data);
-		    	 
-		    }
-	    });
-}
-
-</script>
-
-<!-- Re-Open Timesheet Scripts Start -->
-<script type="text/javascript">
-function reOpenMyTimesheet(){
-	var projectMemberId = $("#projectMemberId").val();
-	var timesheetFrequency= $("#currentTimeFrequency").val();
-	var totalHours = $("#totalHours").val();
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Re-open message here</p>";
-	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here'></textarea>";
-	result = result + ' <div id="reOpenReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeEmptyLines($(\"#reOpenReason\"));notifyReopenTimeSheet("+projectMemberId+",\""+timesheetFrequency+"\","+totalHours+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
-	result = result +"	</div>";
-	$("#reOpenPopup").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-}
-</script>
-
-<script>
-function notifyReopenTimeSheet(projectMemberId,timesheetFrequency,totalHours){
-	var reason = document.getElementById("reOpenReason").value;
-	if(reason !== ""){
-		$("#reOpenReasonDiv").empty();
-		$.ajax({
-		   	type: "POST",
-		    url: pmsUrl+"/notifyReopenTimeSheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&totalHours="+totalHours,	    	   
-		    success: function(data) {
-		    	if(data.response === "SESSION_TIMEDOUT") {
-		    		location.replace(pmsUrl);
-		    	 } else if (data.response === "AWKWARD") {
-                        location.href = "/errorPage";
-		    	 } else if (data.response === "SUCCESS") {
-			    		cancelReOpen();
-	   			    	timesheetDivAfterSaving();
-		    	 }else if (result.indexOf('Sign In') !== -1) {
-	  					location.replace(pmsUrl);
-				 }
-		    }
-	   });
-	}else{
-		$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-	}
-	  
-}
-</script>
-<script>
-function timesheetDivAfterSaving(){
-	var currentTimeFrequency = ''; 
-	var projectMemberId = '';
-	var currentTimeSubFrequency='';
-	var notificationCurrentFrequency ='${notificationCurrentFrequency}';
-	var notificationProMemberId ='${notificationProMemberId}';
-	var notificationCurrentSubTimeFrequency ='${notificationCurrentSubTimeFrequency}';
-	
-	if(notificationCurrentFrequency != null && notificationCurrentFrequency !='' && notificationCurrentFrequency !='undefined'){
-		currentTimeFrequency = notificationCurrentFrequency;
-	}else{
-		currentTimeFrequency = $("#currentTimeFrequency").val();
-	}
-	if(notificationProMemberId != null && notificationProMemberId !='' && notificationProMemberId !='undefined'){
-		projectMemberId = notificationProMemberId;
-	}else{
-		projectMemberId = $("#projectMemberId").val();
-	}
-	if(notificationCurrentSubTimeFrequency != null && notificationCurrentSubTimeFrequency !='' && notificationCurrentSubTimeFrequency !='undefined'){
-		currentTimeSubFrequency = notificationCurrentSubTimeFrequency;
-	}else{
-		currentTimeSubFrequency= $("#currentTimeSubFrequency").val();
-	}
-	
-	
-	var timeSheetsFor = $("#timesheetFor").val();
-    if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
- 	   subFrParam = "&currentTimeSubFrequency="+currentTimeSubFrequency;
-    }
-    $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
-    $.ajax({
-	          type : "POST",
-	      	  url: pmsUrl+"/getTimesheetSubmissionDetails?projectMembersId="+projectMemberId+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor="+timeSheetsFor+subFrParam,		
-		      success :function(data) {
-		    	  $("#timesheetDivByFrequency").empty();
-		    	  $("#timesheetDivByFrequency").append(data);
-		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
-		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency);
-            	      $("#timeSubFrequency").val(currentTimeSubFrequency);
-		    	  }
-		    	  $("#loadTime").removeAttr('style');
-		      }
-	    }); 
-}
-</script>
-<script>
-function cancelReOpen(){
-$("#reOpenPopup").empty();
-$(".project_inn_mask").fadeOut(200);
-}
-</script>
-
-
-<script>
-function rejectReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
-	var timesheetFrequency = $("#currentTimeFrequency").val(); 
-	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Re-open message here</p>";
-	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here'></textarea>";
-	result = result + ' <div id="reOpenRejectedReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeEmptyLines($(\"#reOpenRejectedReason\"));storeReopenRejectedReason("+projectMemberId+","+reOpenedUserId+",\""+timesheetFrequency+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
-	result = result +"	</div>";
-	$("#reOpenRejectedPopup").append(result);
-	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-}
-</script>
-
-<script>
-function storeReopenRejectedReason(projectMemberId,reOpenedUserId,timesheetFrequency){
-	var superUserId = '${SourceLeadWeb_superUserId}';
-	var reason = document.getElementById("reOpenRejectedReason").value;
-	if(reason != ""){
-		$("#reOpenRejectedReasonDiv").empty();
-		$.ajax({
-		   	type: "POST",
-		   	url : pmsUrl+"/ws/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=reject"+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),	    	   
-		    success: function(data) {
-		    	$("#reOpenRejectedPopup").empty();
-   			 	$(".project_inn_mask").fadeOut(200);
-   			    timesheetDivAfterSaving();
-	    	    $("html").trigger('click');
-	    	    maskme();
-		    }
-	   });
-	}else{
-			$("#reOpenRejectedReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-		}
-	}
-	  
-
-</script>
-
-<script>
-function cancelReOpenRejected(){
-$("#reOpenRejectedPopup").empty();
-$(".project_inn_mask").fadeOut(200);
-}
-</script>
-
-<script>
-function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
-	
-	var timesheetFrequency = '';
-		var notificationCurrentFrequency =  $("#notificationCurrentFrequency").val();
-		if(notificationCurrentFrequency != null && notificationCurrentFrequency !='' && notificationCurrentFrequency !='undefined'){
-		 	 timesheetFrequency = notificationCurrentFrequency;
-		 }else{
-			 timesheetFrequency = $("#currentTimeFrequency").val();			 
-		 }
-	
-	
-	 
-	$.ajax({
-		type : "POST",
-		url : pmsUrl+"/ws/acceptOrRejectReopenTimeSheetBySuperUser?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&reOpenedUserId="+reOpenedUserId+"&timesheetFrequency="+timesheetFrequency+"&type=accept",
-		success : function(data) {
-			timesheetDivAfterSaving();
-		},
-	});
-}
-</script>
 <!-- Re-Open Timesheet Script End -->
 <!-- Tab Switching -->
  <script>
 	function timesheetDivByFrequency(currentTimeSubFrequency){ 
+	               var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	               var projectMemberId = $("#projectMemberId").val();
 	               var currentTimeFrequency = $("#currentTimeFrequency").val();
 	               if(currentTimeFrequency ==  null || currentTimeFrequency == '' || currentTimeFrequency == 'undefined'){
@@ -2337,35 +2211,14 @@ function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
 	        		    	  setTotals();
 	        		    	  maskme();
 	        		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
-	        		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
-		   	            	      $("#timeSubFrequency").val(currentTimeSubFrequency)
+	        		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency);
+		   	            	      $("#timeSubFrequency").val(currentTimeSubFrequency);
 	        		    	  }
 	        		    	  $("#loadTime").removeAttr('style');
 	        		      }
 	        	    }); 
 	}
 </script> 
-<script>
- function setTicketNumber(entryIndex,taskNumberId){
-	if($("#" + taskNumberId).val() != null && $("#" + taskNumberId).val() != "" && $("#" + taskNumberId).val() !="undefined"){
-		   var end = parseInt(entryIndex)+7;
-      	  for (i = entryIndex; i < end; i++) {
-      		   $("[name='timesheetSubmission.timesheetEntries["+i+"].ticketNumber']").val($("#"+taskNumberId).val());
-          } 
-	}
- }
- 
- function setHourlyType(entryIndex,hourlyTypeId){
- 	if($("#" + hourlyTypeId).val() != null && $("#" + hourlyTypeId).val() !="undefined"){
- 		   var end = parseInt(entryIndex)+7;
-       	  for (i = entryIndex; i < end; i++) {
-       		   $("[name='timesheetSubmission.timesheetEntries["+i+"].hourlyType']").val($("#"+hourlyTypeId).val());
-           } 
- 	}
- }
-</script>
-
-
 <script type="text/javascript">
 $(".content-wraper").click(function() {
 	bodyClick();
@@ -2374,3 +2227,4 @@ $('.selectpicker').selectpicker('refresh');
 </script>
 <!-- Tab Switching -->
 <script type="text/javascript"	src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
+
