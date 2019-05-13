@@ -60,7 +60,7 @@ $( document ).ready(function() {
 			  timeSheetSubmissionStatusCount("employes");
 		  }
 		  if(onlyTimesheets == 'true'){
-			     $("#timesheetEmpDiv").remove();
+			     $("#timesheetEmpTab").remove();
 		   }
 	 }
 	 // jobs counts
@@ -86,7 +86,7 @@ $( document ).ready(function() {
 	 if (roleActionsArray.indexOf("ROLE_ADD_EMPLOYEE_EXPENSES") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES")  > -1 
 			 || roleActionsArray.indexOf("ROLE_EXPORT_EMPLOYEE_EXPENSES")  > -1  ){
 		 
-		 $('#expenseEmp').show();
+		 $('#expenseEmpTab').show();
 	 }
      // check the leave role for an user.
 	 if(roleActionsArray.indexOf("ROLE_APPLY_LEAVE") > -1 || roleActionsArray.indexOf("ROLE_APPLY_BEHALF_LEAVE")  > -1 
@@ -97,11 +97,7 @@ $( document ).ready(function() {
 		 $('#leaveEmployee').show();
 		 
 	 }
-    if (roleActionsArray.indexOf("ROLE_ADD_EMPLOYEE_EXPENSES") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES")  > -1 
-			 || roleActionsArray.indexOf("ROLE_EXPORT_EMPLOYEE_EXPENSES")  > -1  ){
-		 
-		 $('#expenseEmp').show();
-	 }
+ 
 	 // check the user has below role or not.
 	 if(roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") > -1){
 	  requirementList(false, -1);//jobs section requirements.
@@ -138,6 +134,9 @@ $( document ).ready(function() {
 	 // getInterviewsDates();;//need to check functionaity is commented dashboardEvents.jsp ====>
 	  getJobFairDates();
 	  getJobFairs();
+	   if (roleActionsArray.indexOf("ROLE_ADD_INTERVIEW") > -1 ){
+			 $('#scheduleIntrviewTab').show();
+		 }
 	  // check the contrats roles
 	  if(roleActionsArray.indexOf("ROLE_VIEW_CONTRACT") > -1){
 		  contractList();
@@ -184,7 +183,7 @@ $('#dasboardTaskDatpicker').datepicker({
     <div class="dashboardWidget-new dashNewWrap mb">
       <div class="dashNewWrapHead clearfix"> <a id="timeSheetLink" href="${SourceLeadWeb_pmsUrl}/timesheet" class="pull-left updateHrefUrl"> Timesheets &nbsp;&nbsp;</a>
         <input type="hidden" value="" id="timesheetSocketsFor">
-        <ul class="nav nav-tabs pull-right" id="timesheetEmpDiv">
+        <ul class="nav nav-tabs pull-right" id="timesheetEmpTab">
           <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');">Self</a></li>
           <li><a data-toggle="tab"  onclick="timeSheetSubmissionStatusCount('employes');">Employees</a></li>
         </ul>
@@ -270,7 +269,7 @@ $('#dasboardTaskDatpicker').datepicker({
       <div class="dashNewWrapHead clearfix"> <a class="pull-left updateHrefUrl" id="expensesLink" href="${SourceLeadWeb_pmsUrl}/expenses">Expenses &nbsp;&nbsp;</a>
         <ul class="nav nav-tabs pull-right">
           <li class="active"><a data-toggle="tab" onclick="expensesCount('myExpenses');">Self</a></li>
-	      <li><a data-toggle="tab" style="display: none;" id="expenseEmp" onclick="expensesCount('employeeExpenses');" >Employees</a></li>
+	      <li><a data-toggle="tab" style="display: none;" id="expenseEmpTab" onclick="expensesCount('employeeExpenses');" >Employees</a></li>
         </ul>
       </div>
       <div id="today-req" class="tab-pane fade in active">
@@ -710,90 +709,85 @@ $('#dasboardTaskDatpicker').datepicker({
       </div>
     </div>
   </div>
-  </sec:authorize>
+  
   
   <div class="clearfix"></div>
   <div class="col-md-12">
-    <div class="mb eventAlert clearfix col-md-12 noPad">
-      <div class="dashNewWrap clearfix mb10">
+         <div class="mb eventAlert clearfix col-md-12 noPad">
+        <div class="dashNewWrap clearfix mb10">
         <div class="dashNewWrapHead event_calendar">
-          <h4 class="pull-left">Events</h4>
-          <button class="btn btn-primary pull-left btn-sm ml mt7" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
-          <ul class="nav nav-tabs pull-right">
-            <li id="jobFairsTab" class="active"><a href="javascript:void(0)" onclick="getJobFairs()">Job Fairs</a></li>
-            <li id="interviewsTab" class=""><a href="javascript:void(0)" onclick="getInterviewsandTasks()">Interviews &amp; Tasks</a></li>
-            <div class="clearfix"></div>
-          </ul>
+            <h4 class="pull-left">Events</h4>
+            <button class="btn btn-primary pull-left btn-sm ml mt7" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
+
+			<div class="dashboardoverIcon pull-right">
+			<a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+			<div class="newActPop">
+				<span>
+						<a href="javascript:void(0)" onclick="exportInterviewsListSheet('Pdf');" title="PDF" >Export PDF</a>
+						<a href="javascript:void(0)" onclick="exportInterviewsListSheet('Excel');" title="Excel">Export Excel</a>					
+				</span>
+			</div>
+		</div>
+
+
+		<ul class="nav nav-tabs pull-right">
+			<li id="jobFairsTab"><a href="javascript:void(0)" onclick="getJobFairs()">Job Fairs</a></li>
+			<li id="interviewsTab" class="active"><a href="javascript:void(0)" onclick="getInterviewsandTasks()">Interviews & Tasks</a></li>
+			<div class="clearfix"></div>
+		</ul>       
+		
+		
+		     
         </div>
         
-        <!-- show Calendar -->
+      <!-- show Calendar -->
         <div class="col-xs-12 col-md-5 mb mt">
-          <div id="eventCalendar" style="display: none;"></div>
-          <div id="jobFairCalendar" style="" class="hasDatepicker">
-            <div class="ui-datepicker-inline ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" style="display: block;">
-              <div class="ui-datepicker-header ui-widget-header ui-helper-clearfix ui-corner-all"><a class="ui-datepicker-prev ui-corner-all" data-handler="prev" data-event="click" title="Prev"><span class="ui-icon ui-icon-circle-triangle-w">Prev</span></a><a class="ui-datepicker-next ui-corner-all" data-handler="next" data-event="click" title="Next"><span class="ui-icon ui-icon-circle-triangle-e">Next</span></a>
-                <div class="ui-datepicker-title">
-                  <select class="ui-datepicker-month" data-handler="selectMonth" data-event="change">
-                  </select>
-                  <select class="ui-datepicker-year" data-handler="selectYear" data-event="change">
-                  </select>
-                </div>
-              </div>
-              <table class="ui-datepicker-calendar">
-                <thead>
-                  <tr>
-                    <th scope="col" class="ui-datepicker-week-end"><span title="Sunday">Su</span></th>
-                    <th scope="col"><span title="Monday">Mo</span></th>
-                    <th scope="col"><span title="Tuesday">Tu</span></th>
-                    <th scope="col"><span title="Wednesday">We</span></th>
-                    <th scope="col"><span title="Thursday">Th</span></th>
-                    <th scope="col"><span title="Friday">Fr</span></th>
-                    <th scope="col" class="ui-datepicker-week-end"><span title="Saturday">Sa</span></th>
-                  </tr>
-                </thead>
-              </table>
-            </div>
-          </div>
+            <div id="eventCalendar"></div>
+            <div id="jobFairCalendar" style="display: none;"></div>
         </div>
-        
-        <!-- show Calendar -->
-        <div class="col-xs-12 col-md-7 mb mt alert alert-dismissable positionRelative" id="dashboardEventsDiv" style="display: none;">
-          <div class="eventHeader">
-            <div class="media">
-              <div class="media-left bg-success paddingRight"> <i class="fa fa-calendar fa-3x"></i> </div>
-              <div class="media-body paddingLeft">
-                <h4 class="media-heading" id="dayOfweek"></h4>
-                <p class="small" id="selectedDate"></p>
-              </div>
-            </div>
-          </div>
-          <div class="eventCalendr_content">
-            <div id="interviewDiv"></div>
-            <div id="taskDiv"></div>
-          </div>
-        </div>
-        <div class="col-xs-12 col-md-7 mb mt alert alert-dismissable positionRelative" id="dashboardJobFairsDiv" style="">
-          <div class="eventHeader">
-            <div class="media">
-              <div class="media-left bg-success paddingRight"> <i class="fa fa-calendar fa-3x"></i> </div>
-              <div class="media-body paddingLeft">
-                <h4 class="media-heading" id="dayOfweekForJobFair">Tuesday</h4>
-                <p class="small" id="selectedDateForJobFair">Nov 20 2018</p>
-              </div>
-            </div>
-          </div>
-          <div class="eventCalendr_content">
-            <div id="fairJobsDiv">
-              <div class="row">
-                <div class="dataTables_empty" style="border: 1px solid #ddd;margin: 0px 15px;"> </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="add_inter_wrap">
-        <div class="new_side_wrap_inn" id="addInterviewDiv"></div>
-      </div>
+
+
+		<!-- show Calendar -->
+            <div class="col-xs-12 col-md-7 mb mt alert alert-dismissable positionRelative" id ="dashboardEventsDiv">
+                  
+                  <div class="eventHeader">                                               
+				        <div class="media">                                               
+				          <div class="media-left bg-success paddingRight">                
+				              <i class="fa fa-calendar fa-3x"></i>                        
+				          </div>                                                          
+				          <div class="media-body paddingLeft">                            
+				            <h4 class="media-heading" id="dayOfweek"></h4>             
+				            <p class="small" id="selectedDate"></p>                    
+				          </div>                                                          
+				        </div>                                                            
+  			  </div>			                                                      
+
+            <div class="eventCalendr_content">
+            	<div id ="interviewDiv"></div>
+           	 	<div id ="taskDiv"></div>
+           	 	</div>
+	     </div>
+
+		<div class="col-xs-12 col-md-7 mb mt alert alert-dismissable positionRelative" id="dashboardJobFairsDiv" style="display: none;">
+			<div class="eventHeader">
+				<div class="media">
+					<div class="media-left bg-success paddingRight">
+						<i class="fa fa-calendar fa-3x"></i>
+					</div>
+					<div class="media-body paddingLeft">
+						<h4 class="media-heading" id="dayOfweekForJobFair"></h4>
+						<p class="small" id="selectedDateForJobFair"></p>
+					</div>
+				</div>
+			</div>
+			<div class="eventCalendr_content">
+				<div id="fairJobsDiv"></div>
+			</div>
+		</div>
+	</div>
+		<div class="add_inter_wrap">
+			<div class="new_side_wrap_inn" id="addInterviewDiv"></div>
+		</div> 
     </div>
   </div>
   <div class="clearfix"></div>
