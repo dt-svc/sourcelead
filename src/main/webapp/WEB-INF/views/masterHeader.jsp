@@ -856,7 +856,9 @@ function preventTabkey(e){
 <!-- Clock In Popup -->
 
 <div class="popupWrap popupWrap2" id="clockPop" >
-<div class="popupHead"><span>Clock In</span><i class="closePop pull-right clPopClose"></i></div>
+<div class="popupHead clearfix"> Clock In
+	<i class="closePop pull-right clPopClose"></i>
+</div>
 <form id="clock_inout_form" name="clock_inout_form">
 <input type="hidden" id="clockInOutId" name="clockInOutId">
 <input type="hidden" id="breakId" name="breakId">
@@ -948,7 +950,29 @@ function preventTabkey(e){
 </div>
 </div> 
 </div>
-<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Time Entry</a></div> 
+<div class="popupHead popHeHight clearfix">
+
+	<ul class="clockDate col-md-12">
+		<li>
+			<span></span>
+			<span>Current</span>
+			<span>Previous</span>
+		</li>
+		<li>
+			<span>Clock In</span>
+			<span id="clockInTimeId"></span>
+			<span id="prevClockInTimeId"></span>
+		</li>
+		<li>
+			<span>Clock Out</span>
+			<span id="clockOutTimeId"></span>
+			<span id="prevClockOutTimeId"></span>
+		</li>
+	</ul>
+
+</div>
+
+<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Activitiy</a></div> 
 </div>
 
 <div>
@@ -1642,6 +1666,11 @@ $("#searchType").selectpicker('refresh');
   <script>
   
 $(document).ready(function(){
+	localStorage.setItem('pauseValue', null);
+	localStorage.setItem('pauseData', null);
+	localStorage.setItem('pause_sec',0);
+	localStorage.setItem('stopwatch_time', null);
+	localStorage.setItem('stopwatch_sec', 0);
 	$("#subMenu").click(function(){
 		$(".subMenuView").slideToggle(100);
 	});
@@ -1979,6 +2008,7 @@ $(".clockSub").slideToggle(10);
 
 	$("#clPop").click(function() {
 	getClockInOutConfiguration();
+	getPreviousClockInData();
 	getTimeReports();
 	});
 $(".clPopClose").click(function() {
@@ -2215,11 +2245,16 @@ function saveClockInOutTime(type){
 	$("#clockInOutId").val(data.id);
 	$('#reset,#pause').attr("disabled",false);
 	$('#start,#play').attr("disabled",true);
+	
+	$("#clockInTimeId").text(' : '+data.clockInDateStr +' '+data.clockInTime);
+	$("#clockOutTimeId").text('');
 	}else{
 	$("#clockInOutId").val('');
 	$('#start').attr("disabled",false);
 	$('.cwob').attr("disabled",false);
 	$('#reset,#play,#pause').attr("disabled",true);
+	
+	$("#clockOutTimeId").text(' : '+data.clockOutDateStr +' '+data.clockOutTime);
 	}
 	},	
 	}); 
@@ -2240,11 +2275,15 @@ function getExistedClockTime(){
 		getGeneralTasks(data);
 		$('#start,#play').attr("disabled",true);
 		$('#reset, #pause').attr("disabled",false);
+		$("#clockInTimeId").text(' : '+data.clockInDateStr +' '+data.clockInTime);
 		
 		getExistedBreakTime(data.id);
 		}else{
 		$('#reset,#play, #pause').attr("disabled",true);
 		$('#start').attr("disabled",false);
+		
+		$("#clockInTimeId").text('');
+		$("#clockOutTimeId").text('');
 		}
 		
 	},	
@@ -2434,6 +2473,26 @@ function showWorkingTime(){
 		},	
 		}); 
 	
+}
+</script>
+
+<script>
+function getPreviousClockInData(){
+	
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getPreviousClockInData", 
+		success :function(data) {
+			if(data != null && data !="" && data != 'undefined' && data.previousClockInStr != null){
+				$("#prevClockInTimeId").text(' : '+data.previousClockInStr +' '+data.previousClockInTime);
+				$("#prevClockOutTimeId").text(' : '+data.previousClockOutStr +' '+data.previousClockOutTime);
+			}else{
+				$("#prevClockInTimeId").text('');
+				$("#prevClockOutTimeId").text('');
+			}
+			
+		},	
+		}); 
 }
 </script>
 

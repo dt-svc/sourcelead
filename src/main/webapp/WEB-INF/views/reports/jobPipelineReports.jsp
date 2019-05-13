@@ -19,6 +19,8 @@ $(document).ready(function() {
 function getJobsReportCustomDates(){
 	 var dateSelection = $("#dateSelection").val(); 
 	 if(dateSelection == 'custom'){
+		 removeErrsgFrom();
+		 removeErrTo();
 		 document.getElementById("customSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
 		 document.getElementById("runPipelineDiv").style.display="none";
@@ -44,7 +46,6 @@ function getJobsReportCustomDates(){
 					dt.setDate(dt.getDate());
 					$("#toDate").datepicker("option", "minDate", dt);
 					removeErrsgFrom();
-					
 				}
 			});
 		  
