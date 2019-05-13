@@ -87,7 +87,7 @@ $(document).ready(function() {
 
 
 
- $(function() {
+ /*$(function() {
             var availableTutorials = [
                "Australia",
                "France",
@@ -104,7 +104,7 @@ $(document).ready(function() {
            });
 
          });
- 
+ */
  
  $(function() {
 	    $('.time_cont_res').hide();

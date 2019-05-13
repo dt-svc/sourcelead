@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -24,17 +23,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.SecurityConfig;
+import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.impl.TimesheetSubmissionsServiceImpl;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.timesheet.service.impl.TimesheetSubmissionsServiceImpl;
 import com.bis.sourcelead.util.CommonUtil;
-
-import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -288,7 +286,7 @@ public class TimesheetSubmissionsServiceTest {
 	
 	//@Test
 	public void getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover() throws Exception{
-		TimeSheetSubmissionCount getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(3l, 3l,"",null);
+		TimeSheetSubmissionCount getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(3l, 3l,3l,"",null,false);
 		assertNotNull(getTimeSheetSubmissionsCount);
 	}
 	
