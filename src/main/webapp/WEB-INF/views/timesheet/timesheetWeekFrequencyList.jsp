@@ -3,9 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
 
     <c:if test="${!empty employeeTimesheetEntryDetailsDTO.weekFrequencyList}">
 	 <div class='timeNewSe timeNewSe_a addicon'>
@@ -17,12 +14,12 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 </div>
 	 </c:if> 
 	 <div id="timesheetDivByWeekFrequency">
-	    <jsp:include page="employeeTimeSheetSubmission.jsp"></jsp:include>
+	    <jsp:include page="timeSheetSubmission.jsp"></jsp:include>
 	 </div> 
 
  <script>
 	function timesheetEntriesDivByTimeFrequency(){ 
-	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	               var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	               var invoiceFrequency = $("#invoiceFrequency").val();
 	               var currentTimeFrequency = $("#currentTimeFrequency").val();
 	               $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');

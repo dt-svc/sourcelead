@@ -9,14 +9,14 @@
           <div class="pull-left">
             <h2>Timesheets</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/app/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Timesheets</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Timesheets</div>
         </section>
 		 <form id="timesheet_form" name="timesheet_form">
 		 	    <div class='timesheet_out' id="timesheet_out">
 				<div class='timesheet_wrap' id='timesheet_wrap'>
 				 <div class='data_loading' id="loadTime"></div>
 				 <div id ="timesheetEntriesDiv">
-		           <jsp:include page="employeeTImesheetInvoiceList.jsp"></jsp:include>
+		           <jsp:include page="timesheetInvoiceList.jsp"></jsp:include>
 		          </div>
 		       </div>
 		  </div>
@@ -27,13 +27,9 @@
 		timesheetEntriesDiv();
 	});
 </script> 
-
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
  <script>
 	function timesheetEntriesDiv(){ 
+	               var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	               $("#timesheetEntriesDiv").empty();
 	               var invoiceFrequency = '';
 	               var currentTimeFrequency = '';
