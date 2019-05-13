@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
 import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
@@ -385,5 +386,17 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 		List<AssociateSalaryInd> associateSalaryIndList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		return associateSalaryIndList;
 		
+	}
+	
+	@Override
+	@Transactional
+	public Response<String> payheadHandlerByOrg(PayrollPayheadDTO payrollPayheadDTO) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Response<String> response = new Response<>();
+		String update ="UPDATE PAYROLL_PAYHEAD p set p.ACTIVE = :active where p.UUID = :uuid and p.ORGLOCATION_ID = :orgLocationId and p.STATUS = '1' ";
+		Query updatequeryString = session.createSQLQuery(update);
+		updatequeryString.setString("active", payrollPayheadDTO.getActive()).setString("uuid", payrollPayheadDTO.getUuid()).setLong("orgLocationId", Long.parseLong(payrollPayheadDTO.getOrgLocationId()));
+		response.setResponse(String.valueOf(updatequeryString.executeUpdate()));
+		return response;
 	}
 }

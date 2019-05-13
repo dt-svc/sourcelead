@@ -14,7 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
@@ -22,7 +21,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
-import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
-import com.bis.sourcelead.dao.TimesheetEntriesDao;
-import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -41,7 +37,6 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
-import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
@@ -49,6 +44,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.timesheet.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -1564,7 +1560,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
 		    	globalUserQuery = " pc.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :locationId)";
 		    }else {
-		    	globalUserQuery = " pc.orgLocationsId.id = :locationId";
+		    	globalUserQuery = " (pm.projectMemberCandidteId.designationType <> 'Offshore C2C' and pc.orgLocationsId.id = :locationId) OR (pm.projectMemberCandidteId.designationType = 'Offshore C2C' and pc.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :locationId))";
 		    }
 		 
 		String query = " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects where  "
@@ -2006,7 +2002,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String 	query ="SELECT projects.ID as projectId, projects.PROJECT_NAME as projectName, emp.EMPLOYEE_ID as employeeId,(SELECT  CONCAT(user.FIRST_NAME,user.LAST_NAME)) as employeeName, pm.PAY_RATE as payRate,"
 				+" pm.PAY_RATE_TYPE as payRateType, pm.PAY_RATE_CURRENCY as payRateCurrency, pm.CURRENT_BILL_RATE as billRate, pm.RATE_TYPE as billRateType,"
 				+" pm.BILL_RATE_CURRENCY as billRateTypeCurrency, "
-				+" ol.ORG_NAME as clientName, ol.ID as orglocationId, orl.ID as orgRelationId"
+				+" ol.ORG_NAME as clientName, ol.ID as orglocationId, orl.ID as orgRelationId,projects.START_DATE as startDate, projects.END_DATE as endDate,emp.HIRE_DATE as associateJoinedDate"
 				 +" from PROJECTS projects,PROJECT_CLIENTS pc,"
 				+" PROJECT_MEMBERS pm,EMPLOYEE emp,USER user, ORG_RELATIONS orl,ORG_LOCATIONS ol"
 				 +" where" 
@@ -2035,7 +2031,12 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			  mts.setProjectId((BigInteger)mm[0]);		
 			  mts.setEmployeeName(mm[3].toString());
 			  mts.setProjectName(mm[1].toString());
-			  mts.setPayRate((double)mm[4]);
+			  
+			  if (mm[4] !=null) {
+				  mts.setPayRate((double)mm[4]);
+			  } else {
+				  mts.setPayRate(0);
+			  }
 			  if (mm[2] != null) {
 				  mts.setEmployeeId(mm[2].toString());
 			  } else {
@@ -2043,12 +2044,27 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			  }
 			  mts.setPayRateType(mm[5].toString());
 			  mts.setPayRateCurrency(mm[6].toString());
-			  mts.setBillRate((double)mm[7]);
+			  
+			  if (mm[7] !=null) {
+				  mts.setBillRate((double)mm[7]);  
+			  }else {
+				  mts.setBillRate(0);
+			  }
 			  mts.setBillRateType(mm[8].toString());
 			  mts.setBillRateTypeCurrency(mm[9].toString());
 			  mts.setClinetName(mm[10].toString());
 			  mts.setOrglocationId((BigInteger)mm[11]);
 			  mts.setOrgRelationId((BigInteger)mm[12]);
+			  if(mm[14] !=null) {
+			  mts.setProjectDuration(mm[13].toString() +"-"+mm[14].toString());
+			  }else {
+				  mts.setProjectDuration(mm[13].toString());  
+			  }
+			  if(mm[15] != null) {
+			  mts.setAssociateJoinedDate(mm[15].toString());
+			  }else {
+				  mts.setAssociateJoinedDate("--");  
+			  }
 			  mts.setMarginRate((double)mm[7] - (double)mm[4] );
 			  totalPayRate+=(double)mm[4];
 			  totalbilRate+=(double)mm[7];
@@ -2091,31 +2107,38 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return pm;  
 	}
 
-
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<CandidateDTO> getAllAvailableAssociates( Long orgLocationId) {
-		Session session = this.sessionFactory.getCurrentSession();
-		Query queryObj = null;
-		List<CandidateDTO> candidateDTOList = null;
-		
-		String query = "SELECT CAND.ID AS candId,"
-				+ " CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName"
-				+ " FROM CANDIDATE CAND, "
-				+ " ORG_LOCATIONS OL, "
-				+ " USER_ROLE UR "
-				+ " WHERE CAND.CONSULTANT_USER_ID = UR.USER_ID AND "
-				+ " CAND.ORG_LOCATION_ID = :orgLocationId AND "
-				+ " (UR.USER_STATE = 'ACTIVE' OR UR.USER_STATE = 'NOT_LOGGEDIN')";
-		
-		
-		queryObj = session.createSQLQuery(query);
-		queryObj.setParameter("orgLocationId", orgLocationId);
-		queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
-		candidateDTOList = queryObj.list();
-		
-		return candidateDTOList;
+	public List<Object[]> getAllAvailableAssociates( Long orgLocationId) {
+	Session session = this.sessionFactory.getCurrentSession();
+	/*String query = "select * from Candidate candidate where candidate.orgLocationId = :orgLocationId";
+	query += " and (case when candidate.parentCandidateId is null then (candidate.isAssociate) else (candidate.parentCandidateId.isAssociate) end) = 'Y'";*/
+
+	String query = "SELECT c.ID, c.FIRST_NAME, c.MIDDLE_NAME, c.LAST_NAME FROM CANDIDATE c where c.ORG_LOCATION_ID = :orgLocationId and case when c.PARENT_CANDIDATE_ID is null then c.IS_ASSOCIATE else (select c1.IS_ASSOCIATE from CANDIDATE c1 where c1.ID=c.PARENT_CANDIDATE_ID) end = 'Y';";
+
+	List<Object[]> list = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
+	return list;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectClientId(Long masterCandidateId, Long projectClientsId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectMembers pm left join fetch pm.projectMemberCandidteId left join fetch pm.projects where  "
+				+ "pm.projectClientsId.id = :projectClientsId and pm.masterCandidateId.id = :masterCandidateId and pm.status = '1' " ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectClientsId", projectClientsId).setLong("masterCandidateId", masterCandidateId).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
+	}
+
+
+
 	
 }
 

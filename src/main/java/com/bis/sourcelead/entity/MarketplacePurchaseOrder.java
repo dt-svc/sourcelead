@@ -66,7 +66,7 @@ public class MarketplacePurchaseOrder implements Serializable {
 	private String tax;
 	
 	@Column(name = "TOTAL_RESUME")
-	private String totalresume;
+	private String totalResume;
 	
 	@Column(name = "PAYMENT_ID", columnDefinition = "TEXT default NULL")
 	private String paymentId;
@@ -189,11 +189,11 @@ public class MarketplacePurchaseOrder implements Serializable {
 	}
 	
 	public String getTotalresume() {
-		return totalresume;
+		return totalResume;
 	}
 
 	public void setTotalresume(String totalresume) {
-		this.totalresume = totalresume;
+		this.totalResume = totalresume;
 	}
 
 	public String getPaymentId() {

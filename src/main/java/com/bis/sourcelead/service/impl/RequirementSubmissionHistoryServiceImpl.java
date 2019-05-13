@@ -21,8 +21,10 @@ import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OfferAcceptanceRateView;
+import com.bis.sourcelead.entity.OfferAcceptanceRateViewForVendor;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RecruiterJobsReportView;
 import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -30,6 +32,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -47,6 +50,9 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	
 	@Autowired
 	private OrgRelationsDao orgRelationsDao;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
 	
 	/**
 	 * updating the Requirement Submission Hostory
@@ -254,7 +260,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	}
 	
 	@Override
-	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateListForVendor(long orgLocationId, long orgRelationId, long spocId, String filterType, String filteredDate) {
+	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateListForVendor(List<Long> parentRequirementIdList, long orgRelationId, long spocId, String filterType, String filteredDate) {
 		ResponseList<OfferAcceptanceRateDTO> responseList = new ResponseList<>();
 		try {
 			int month = 0, year = 0;
@@ -274,21 +280,23 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 					break;
 				}
 			}
-			List<OfferAcceptanceRateView> offerAcceptanceRateViewList = new LinkedList<>();
-			if(orgRelationId > 0) {
-				offerAcceptanceRateViewList = requirementSubmissionHistoryDao.getOfferAcceptanceRateListForVendor(orgRelationId, spocId, month, year, compare);
-			} else {
-				List<OrgRelations> vendorList = orgRelationsDao.getAllVendorsByOrgLocationId(orgLocationId);
-				if(vendorList != null && !vendorList.isEmpty()) {
-					for(OrgRelations orgRelations : vendorList) {
-						List<OfferAcceptanceRateView> oarViewList = requirementSubmissionHistoryDao.getOfferAcceptanceRateListForVendor(orgRelations.getId(), spocId, month, year, compare);
-						if(oarViewList != null && !oarViewList.isEmpty()) {
-							offerAcceptanceRateViewList.addAll(oarViewList);
-						}
+			List<OfferAcceptanceRateViewForVendor> offerAcceptanceRateViewList = new LinkedList<>();
+			String masterUserCode = "";
+			if(orgRelationId > 0 && spocId > 0) {
+				OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+				if(orgSpoc != null) {
+					masterUserCode = "'" + orgSpoc.getVendorUser().getUserCode() + "'";
+				}
+			} else if(orgRelationId > 0) {
+				List<OrgSpoc> orgSpocList = orgSpocService.getAllContactsbyOrgId(orgRelationId);
+				if(orgSpocList != null && !orgSpocList.isEmpty()) {
+					for(OrgSpoc orgSpoc : orgSpocList) {
+						masterUserCode += (masterUserCode.isEmpty() ? "" : ",") + "'" + orgSpoc.getVendorUser().getUserCode() + "'";
 					}
 				}
 			}
-			responseList.setData(convertOfferAcceptanceRateListToDTOList(offerAcceptanceRateViewList, responseList, month, year, compare));
+			offerAcceptanceRateViewList = requirementSubmissionHistoryDao.getOfferAcceptanceRateListForVendor(parentRequirementIdList, masterUserCode, month, year, compare);
+			responseList.setData(convertOfferAcceptanceRateForVendorListToDTOList(offerAcceptanceRateViewList, responseList, month, year, compare));
 			responseList.setResponse(Result.SUCCESS.name());
 		} catch (Exception e) {
 			responseList.setResponse(Result.AWKWARD.name());
@@ -340,6 +348,62 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 			int offerAcceptedCount = 0;
 			int offerRejectedCount = 0;
 			for(OfferAcceptanceRateView oarView : oarList) {
+				offerCount += oarView.getOFFERMADE_COUNT().intValue();
+				offerAcceptedCount += oarView.getOFFERACCEPTED_COUNT().intValue();
+				offerRejectedCount += oarView.getOFFERREJECTED_COUNT().intValue();
+			}
+			offerAcceptanceRateDTO.setOfferDate(date);
+			offerAcceptanceRateDTO.setOfferCount(offerCount);
+			offerAcceptanceRateDTO.setAcceptedCount(offerAcceptedCount);
+			offerAcceptanceRateDTO.setRejectedCount(offerRejectedCount);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return offerAcceptanceRateDTO;
+	}
+	
+	private List<OfferAcceptanceRateDTO> convertOfferAcceptanceRateForVendorListToDTOList(List<OfferAcceptanceRateViewForVendor> offerAcceptanceRateViewList, ResponseList<OfferAcceptanceRateDTO> responseList, int month, int year, boolean compare) {
+		List<OfferAcceptanceRateDTO> offerAcceptanceRateDTOList = new LinkedList<>();
+		try {
+			if(offerAcceptanceRateViewList != null && !offerAcceptanceRateViewList.isEmpty()) {
+				//Grouping & Sorting OfferAcceptanceRateViewList by CreatedYearMonthDate if month > 0 otherwise by CreatedYearMonth
+				Map<String, List<OfferAcceptanceRateViewForVendor>> oarMap = offerAcceptanceRateViewList.stream()
+						.collect(Collectors.groupingBy(compare ? OfferAcceptanceRateViewForVendor::getCreatedYear : month > 0 ? OfferAcceptanceRateViewForVendor::getCreatedYearMonthDate : OfferAcceptanceRateViewForVendor::getCreatedYearMonth))
+						.entrySet().stream().sorted(Map.Entry.comparingByKey())
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+								(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+				if((oarMap != null && oarMap.keySet().size() > 1) || compare) {
+					for(String date : oarMap.keySet()) {
+						offerAcceptanceRateDTOList.add(getOfferAcceptanceRateDTOByOfferAcceptanceRateForVendorViewList(oarMap.get(date), date));
+					}
+					responseList.setResponseMessage(compare ? "compare" : month > 0 ? "month" : "year");
+				} else if(oarMap != null && oarMap.keySet().size() == 1) {
+					Map<String, List<OfferAcceptanceRateViewForVendor>> oarMap2 = oarMap.get(oarMap.keySet().iterator().next())
+							.stream().collect(Collectors.groupingBy(OfferAcceptanceRateViewForVendor::getCreatedYearMonthDate))
+							.entrySet().stream().sorted(Map.Entry.comparingByKey())
+							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+									(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+					if (oarMap2 != null) {
+						for (String date : oarMap2.keySet()) {
+							offerAcceptanceRateDTOList.add(getOfferAcceptanceRateDTOByOfferAcceptanceRateForVendorViewList(oarMap2.get(date), date));
+						}
+						responseList.setResponseMessage("month");
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return offerAcceptanceRateDTOList;
+	}
+	
+	private OfferAcceptanceRateDTO getOfferAcceptanceRateDTOByOfferAcceptanceRateForVendorViewList(List<OfferAcceptanceRateViewForVendor> oarList, String date) {
+		OfferAcceptanceRateDTO offerAcceptanceRateDTO = new OfferAcceptanceRateDTO();
+		try {
+			int offerCount = 0;
+			int offerAcceptedCount = 0;
+			int offerRejectedCount = 0;
+			for(OfferAcceptanceRateViewForVendor oarView : oarList) {
 				offerCount += oarView.getOFFERMADE_COUNT().intValue();
 				offerAcceptedCount += oarView.getOFFERACCEPTED_COUNT().intValue();
 				offerRejectedCount += oarView.getOFFERREJECTED_COUNT().intValue();
