@@ -13,7 +13,7 @@
 		<div class="pull-left">
 			<h2>Offer Acceptance Rate</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Offer Acceptance Rate</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard">Reports Dashboard</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/performanceReportList">Performance Reports</a> &raquo; Offer Acceptance Rate</div>
 	</section>
 	<div class="ReqRepHead clearfix">
 		<!-- <div class="col-md-2 pull-left reqListBtn">
@@ -78,6 +78,7 @@
 </section>
 
 <script type="text/javascript">
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var config = {
 		'.chosen-select' : {},
 		'.chosen-select-deselect' : {
@@ -240,7 +241,7 @@
 		var orgRelationId ="${orgRelationId}";
 		$.ajax({
 			type : "GET",
-			url: sourceleadUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
+			url: vmsUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
 			success :function(json) {
 				var output = "";
 				output = output + "<option value=''>Select Client</option>";
