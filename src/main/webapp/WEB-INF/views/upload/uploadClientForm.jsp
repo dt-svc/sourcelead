@@ -54,7 +54,9 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = ${SourceLeadWeb_vmsUrl}/uploadClientForm">
+
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/uploadClientForm'">
+			
 				</div>
 			  </div>
 			</div>
