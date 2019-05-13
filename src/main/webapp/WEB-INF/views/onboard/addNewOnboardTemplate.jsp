@@ -1315,10 +1315,10 @@ function saveAndFinishOnboardTemplate(templateId) {
   });
     
     
-    // upload file script
+    /* // upload file script
     document.getElementById("uploadBtn").onchange = function () {
     document.getElementById("uploadFile").value = this.value;
-	};
+	}; */
   </script> 
 <script type="text/javascript">
 			var config = {
