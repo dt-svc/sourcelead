@@ -5,18 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
-<style type="text/css">
-.columnfields-custom label {
-width: 100%; clear:both; display: inline-table; display: none;
-}
-.columnfields-custom .col-md-9 {
-width: 100%;
-}
-.columnfields-custom .col-md-9 select {
-width: 100%; padding: 3px 20px 3px 15px;
-}
-</style>
-
 <%-- 
      @author : David Raju.
      this script is for edit Candidate.
@@ -357,25 +345,30 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '</div>';
-							if(json.country == 'India'){
+							if(loginCountryName == 'India'){
 								result = result + '<div class="clearfix mb10" id="errPanNoDiv">';
 								result = result + '<div class="col-md-6 custom-fields">';
-								result = result + '<input class="form-control" id="panNumber" name="panNumber" value="'+panNumber+'" placeholder="Pan Number" type="text" onblur="validatePanNumber();" field-name="Pan Number" data-validation="validate_Space validate_panNumber" data-validation-optional="true" ></input>';
+								result = result + '<input class="form-control" id="panNumber" name="panNumber" value="'+panNumber+'" placeholder="Pan Number" type="text" onblur="validatePanNumber();" field-name="Pan Number" data-validation="validate_Space validate_panNumber"data-validation-optional="true" ></input>';
+								result = result + '<input type="hidden" id="tempPanNumber" value="'+json.panNumber+'" />';
 								result = result + '</div>';
 								
 								result = result + '<div class="col-md-6 custom-fields" id="errAadharNoDiv">';
-								result = result + '<input class="form-control" id="aadharNumber" name="aadharNumber" value="'+aadharNumber+'" placeholder="Aadhar Number" type="text" onblur="validateAadharNumber();" field-name="Aadhar Number" data-validation="validate_Space validate_aadharNumber" data-validation-optional="true" ></input>';
+								result = result + '<input class="form-control" id="aadharNumber" name="aadharNumber" value="'+aadharNumber+'" placeholder="Aadhar Number" type="text" onblur="validateAadharNumber();" field-name="Aadhar Number" data-validation="validate_Space validate_aadharNumber"data-validation-optional="true"></input>';
+								result = result + '<input type="hidden" id="tempAadharNumber" value="'+json.aadharNumber+'" />';
 								result = result + '</div>';
 								result = result + '</div>';
 	              		        }
-							
-								if(json.country == 'United States'){
+								result = result + '</div>';
+								result = result + '<div class="clearfix mb10">';
+								if(loginCountryName == 'United States'){
 									result = result + '<div class="clearfix mb10" id="errSsnNoDiv">';
 									result = result + '<div class="col-md-6 custom-fields">';
 									result = result + '<input class="form-control" id="ssnNumber" name="ssnNumber" value="'+ssnNumber+'" onblur="validateSsnNumberDuplicateChek();" placeholder="000-00-0000" type="text"></input>';
+									result = result + '<input type="hidden" id="tempSsnNumber" value="'+json.ssnNumber+'" />';
 									result = result + '</div>';
 									result = result + '</div>';
 		              		        }
+								result = result + '</div>';
 							result = result + '<div class="clearfix mb10">';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
@@ -2176,10 +2169,13 @@ function showSuccessStatusPopup(status) {
 
  <script type="text/javascript">
 function validatePanNumber() {
-	
-	  var panNumber = document.getElementById("panNumber").value;
+    var panNumber = document.getElementById("panNumber").value;
+    var tempPanNumber = $('#tempPanNumber').val(); 
+	 if(tempPanNumber != panNumber){
+		 $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+		 $("#update_candidate").removeAttr("disabled");
+	if(panNumber != "" && panNumber != null && panNumber != "undefined"){
 	 
-	  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
 		    	 url:atsUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
@@ -2187,15 +2183,17 @@ function validatePanNumber() {
 		        	if(data == true){
 		        		  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
 		        		  $("input#panNumber").after("<p class='jquery_form_error_message'>"+panNumber+" is Already Existed</span>");
-						  $("#store_candidate").attr('disabled','disabled');
+						  $("#update_candidate").attr('disabled','disabled');
 		        	}
 		        	else{
 		        		 $('input#panNumber').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#errPanNoDiv').find('p.jquery_form_error_message').remove(); 
-                        $("#store_candidate").removeAttr("disabled");
+                        $("#update_candidate").removeAttr("disabled");
 		        	}
 		        }
 		    });
+     }
+}
 };
 </script>
 
@@ -2203,8 +2201,14 @@ function validatePanNumber() {
 function validateAadharNumber() {
 	
 	  var aadharNumber = document.getElementById("aadharNumber").value;
+	  
+	  var tempAadharNumber = $('#tempAadharNumber').val(); 
+	if(tempAadharNumber != aadharNumber){
+			 $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
+			 $("#update_candidate").removeAttr("disabled");
 	 
-	  $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
+	  if(aadharNumber != "" && aadharNumber != null && aadharNumber != "undefined"){
+		  
 		 $.ajax({
 		    	type: "GET",
 		    	 url:atsUrl+"/validateAadharNumber?"+tokenParamName+"="+tokenValue+"&aadharNumber="+aadharNumber, 
@@ -2212,15 +2216,18 @@ function validateAadharNumber() {
 		        	if(data == true){
 		        		  $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
 		        		  $("input#aadharNumber").after("<p class='jquery_form_error_message'>"+aadharNumber+" is Already Existed</span>");
-						  $("#store_candidate").attr('disabled','disabled');
+						  $("#update_candidate").attr('disabled','disabled');
 		        	}
 		        	else{
 		        		 $('input#aadharNumber').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#errAadharNoDiv').find('p.jquery_form_error_message').remove(); 
-                        $("#store_candidate").removeAttr("disabled");
+                        $("#update_candidate").removeAttr("disabled");
 		        	}
 		        }
 		    });
+	  }
+	  
+	}
 };
 </script>
 
@@ -2228,8 +2235,13 @@ function validateAadharNumber() {
 function validateSsnNumberDuplicateChek() {
 	
 	  var ssnNumber = document.getElementById("ssnNumber").value;
-	 
-	  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
+	  
+	  var tempSsnNumber = $('#tempSsnNumber').val(); 
+		if(tempSsnNumber != ssnNumber){
+			 $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
+			 $("#update_candidate").removeAttr("disabled");
+	  
+	  if(ssnNumber != "" && ssnNumber != null && ssnNumber != "undefined"){
 		 $.ajax({
 		    	type: "GET",
 		    	 url:atsUrl+"/validateSsnNumber?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber, 
@@ -2237,15 +2249,17 @@ function validateSsnNumberDuplicateChek() {
 		        	if(data == true){
 		        		  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
 		        		  $("input#ssnNumber").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
-						  $("#store_candidate").attr('disabled','disabled');
+						  $("#update_candidate").attr('disabled','disabled');
 		        	}
 		        	else{
 		        		 $('input#ssnNumber').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#errSsnNoDiv').find('p.jquery_form_error_message').remove(); 
-                        $("#store_candidate").removeAttr("disabled");
+                        $("#update_candidate").removeAttr("disabled");
 		        	}
 		        }
 		    });
+	  }
+	}
 };
 </script>
 

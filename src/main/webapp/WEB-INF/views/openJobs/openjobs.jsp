@@ -1305,6 +1305,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 				result = result +'	</div>';
 				result = result +'	<div style="clear:both;"></div>';		
 				result = result +'	</section>'; 
+				document.getElementById("orgProfile").style.display="none";
 				$("#openJobsRequirementsList").hide();
 				$("#openJobsRequirementsSummary").empty();
 				$("#openJobsRequirementsSummary").append(result);  

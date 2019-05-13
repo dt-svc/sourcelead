@@ -1785,7 +1785,9 @@ function checkAllColumns(obj){// updated
 		$('#listSaveButton').removeAttr('onclick');
 		$('#listSaveButton').attr('onClick', 'editAssignedTeamsOrUsers('+reqId+');');
 		getAssignedMembersListForEdit(reqId);
-		
+		buildSummaryButtonsDivHtml(); // added to build the assign pop up . 
+		 //Initially it was prepared with JSTL code. now converted script build code.
+		addAssignToCheckBooxListener();//  adding events to the assign to popup.
 	}
 	var reqUUIDArr = new Array();
 	function selectDeleteJob(event) {
@@ -1854,7 +1856,7 @@ function checkAllColumns(obj){// updated
 		if(reqId != '' && reqId != 'undefined' && reqId != null){
 			$.ajax({
 		           type : "POST",
-		           url: atsUrl+"/getAssignedMembersForEdit?"+tokenParamName+"="+tokenValue+"&reqId="+reqId,    
+		           url: atsUrl+"/getAssignedMembersForEdit?reqId="+reqId,    
 		            success :function(result) {
 			            	var json = result.object;
 			            	if (result.response === "SESSION_TIMEDOUT") {
@@ -1874,6 +1876,7 @@ function checkAllColumns(obj){// updated
 		            	getTeamsList(reqId);
 		            }
 		      }); 
+			
 		}
 	}
 
@@ -2072,6 +2075,7 @@ function filterTeamMembers(){
 	    });
 	    $("#assignToDataTableId").wrap("<div class='modal-body-custom mailerpopup modalAlign'></div>");
 	}
+	  var  addAssignToCheckBooxListener = function(){ // used for check box events on assign to popup
 		$(':checkbox[id=checkAll]').click(function() {
 			//toggle all checkboxes except disabled checkboxes
 			$(':checkbox[name=team]').not("[disabled]").prop('checked', this.checked);
@@ -2081,7 +2085,8 @@ function filterTeamMembers(){
 			//toggle all checkboxes
 			$(':checkbox[name=selectedUser]').prop('checked', this.checked);
 		});
-		
+	  }	
+
 		function getAssignedTeamsOrUsers(){
 			$("#assignedTeamsOrUsers").slideUp();
 			handleTeamRoleClick();
@@ -2395,13 +2400,10 @@ function filterTeamMembers(){
 	 }
 
 	//<!-- For add New Applicant -->
-	    $(".addApplicant_close, .side_mask").click(function() {
-	    	$(".new_side_wrap").removeClass("new_side_wrap_active");
-			$(".side_mask").fadeOut(200);
-			$("body").css('overflow-y', 'auto');
-		});	
 
-
+	   var addListernerPopupClose= function (){
+	
+	   }	
 	<!-- For add New Applicant -->
 	function addApplicantForm(){
 		  var requirementId = $("#requirementId").val();
@@ -3382,3 +3384,34 @@ function filterTeamMembers(){
 		fileUpload("uploadBtn", "addApplicants", "addApplicant_form");
 	}
 // addApplicantFromRequirementList.jsp  End HERE upated.
+// updating catrt count in header view in cart icon count value.
+	function updateMarketplaceCartCountAndPrice(){
+		var totalPriceInCurrency;
+		$.ajax({
+			 	url: sourceleadUrl + "/getMarketplaceCartCountAndPrice",
+		        type: 'GET',
+		        success: function (object) {
+		        	console.log(object)
+		        	if(object != null){
+		        		$("#headerCartCount").html(object[0]);
+		        		$("#cartCount").html(object[0]);
+		        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
+		        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
+		        	}}
+		        });
+		}
+	function buildSummaryButtonsDivHtml(){
+		
+		var summaryButtonsDivHtml ="";
+			if(!jQuery.isEmptyObject(requirementId)){
+			 summaryButtonsDivHtml = summaryButtonsDivHtml + '<button type="button" id = "editAssignedTeamsOrUsersBtn" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="editAssignedTeamsOrUsers('+requirementId+');">Save<span id="assignToSelectedPopupCount"> (0) </span></button>';
+			 summaryButtonsDivHtml = summaryButtonsDivHtml + '<button type="button" id = "resetAssignedTo" class="btn btn-default btn-sm" data-dismiss="modal" onclick="clearAssignedTeamsOrUsers();">Reset</button>';
+			}else{
+				summaryButtonsDivHtml = summaryButtonsDivHtml + ' <button type="button" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="getAssignedTeamsOrUsers();">Assign<span id="assignToSelectedPopupCount"> (0) </span></button>';
+			}
+			if(jQuery.isEmptyObject(requirementId)){
+				summaryButtonsDivHtml = summaryButtonsDivHtml +'<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="clearAssignedTeamsOrUsers();">Reset</button>';
+			}
+		//	console.log(summaryButtonsDivHtml);
+			$('#summaryButtonsDiv').append(summaryButtonsDivHtml);
+		}

@@ -5,18 +5,6 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<style>
-.addUser-org {
-    overflow-x: auto;
-}
-.validation_p p.jquery_form_error_message {
-bottom:-25px !important;
-}
-.settPop .form-control {
-height: auto !important;
-}
-</style>
 <%-- 
      @author : prasadK.
      this script is for display candidate education tab data.

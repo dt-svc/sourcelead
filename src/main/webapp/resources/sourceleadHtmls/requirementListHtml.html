@@ -110,10 +110,12 @@ $(document).ready(function(){
 		} else {
 			requirementListCheck(searchValue,universalRequirementList,"universalSearch",atsUrl);
 		}
-	  
+	  if(roleActionsArray.indexOf("ROLE_VIEW_CART") > -1){
+          updateMarketplaceCartCountAndPrice(); // used to update the cart count in header.
+	 }
 	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") == -1){
 		  $("#jobActions").remove();
-	  }
+	  } 
 	  if(roleActionsArray.indexOf("ROLE_EXPORT_REQUIREMENTS") == -1){
 		  $("#jobExportAndImportActions").remove();
 	  }
@@ -1390,14 +1392,13 @@ top: 18px;height: 32px; line-height: 18px;
 
 <div id="deleteJobPopUpDiv"></div>
  
- 
 <!-- Modal -->
 <div class="modal fade" id="myModal" role="dialog">
 	<div class="modal-dialog modal-lg" style="width: 98%;">
 		<div class="modal-content">
 			<div class="modalHeader">
-				<button type="button" id="assignToPopUpCloseId" class="close" data-dismiss="modal">×</button>
-				<h4 class="modal-title">Assign To<i class="fa fa-info-circle" title="Assign the job to the internal team to process the resources for the job"></i></h4>
+				<button type="button" id="assignToPopUpCloseId" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Assign To<i class='fa fa-info-circle' title='Assign the job to the internal team to process the resources for the job'></i></h4>
 			</div>
 			<div class="modal-body">
 
@@ -1406,8 +1407,10 @@ top: 18px;height: 32px; line-height: 18px;
 					<div class="swaptables">
 						<div class="row positionRelative">
 							<div class="col-md-6 mb5 bootSelectpicker">
-								<div class="btn-group bootstrap-select show-tick"><button type="button" class="btn dropdown-toggle btn-default" data-toggle="dropdown" data-id="teamSelectionCategory" title="--Select Assign Team--"><span class="filter-option pull-left">--Select Assign Team--</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button><div class="dropdown-menu open"><div class="bs-actionsbox"><div class="btn-group btn-group-sm btn-block"><button type="button" class="actions-btn bs-select-all btn btn-default">Select All</button><button type="button" class="actions-btn bs-deselect-all btn btn-default">Deselect All</button></div></div><ul class="dropdown-menu inner" role="menu"></ul></div><select id="teamSelectionCategory" class="selectpicker" multiple="" data-actions-box="true" onchange="filterTeamMembers();" style="display: block !important" title="--Select Assign Team--" tabindex="-98">
-								</select></div>
+								<select id="teamSelectionCategory" class="selectpicker" multiple data-actions-box="true"
+									onchange="filterTeamMembers();" style="display: block !important"
+									title="--Select Assign Team--">
+								</select>
 							</div>
 							<!-- <div class="remove_search fa-pull-right">
 								<input placeholder="Search" type="text">
@@ -1416,7 +1419,9 @@ top: 18px;height: 32px; line-height: 18px;
 
 						<div class="clearfix positionRelative assignTableScroll  assignTableScroll-mnh">
 						<div id="usersGrid-loader"></div>
-							<table id="assignToDataTableId" class="display table table-stripped table-bordered dataTable no-footer" role="grid" aria-describedby="assignToDataTableId_info" style="width: 100%;" cellspacing="0">
+							<table id="assignToDataTableId"
+								class="display table table-stripped table-bordered dataTable no-footer"
+								role="grid" aria-describedby="assignToDataTableId_info" style="width: 100%;" cellspacing="0">
 								<thead>
 									<tr role="row">
 										<th style="vertical-align: middle"><input type="checkbox" id="checkAll"></th>
@@ -1444,7 +1449,10 @@ top: 18px;height: 32px; line-height: 18px;
 					</div>
 					<div class="swaptables">
 						<div class="clearfix mt40 assignTableScroll" style="height:250px; overflow-y:auto;" id="assignToSelectedDataTableDiv">
-							<table id="assignToSelectedDataTableId" class="display table table-stripped table-bordered dataTable no-footer" role="grid" aria-describedby="assignToDataTableId_info" style="width: 100%;" cellspacing="0">
+							<table id="assignToSelectedDataTableId"
+								class="display table table-stripped table-bordered dataTable no-footer"
+								role="grid" aria-describedby="assignToDataTableId_info"
+								style="width: 100%;" cellspacing="0">
 								<thead>
 									<tr role="row">
 										<th style="vertical-align: middle"><input id="checkAllSelected" type="checkbox"></th>
@@ -1470,26 +1478,19 @@ top: 18px;height: 32px; line-height: 18px;
 			</div>
 			<div class="clearfix mb">
 				<div class="pull-right mr" id="summaryButtonsDiv">
-					
-					  
-					  
-					    <button type="button" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="getAssignedTeamsOrUsers();">Assign<span id="assignToSelectedPopupCount"> (0) </span></button>
-					  
-					
-					 
-					<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="clearAssignedTeamsOrUsers();">Reset</button>
-					
 				</div>
 				<div class="pull-right mr" id="listButtonsDiv" style="display: none;">
 					<button type="button" id="listSaveButton" class="btn btn-primary mr5 btn-sm" data-dismiss="modal">Save</button>
+					<button type="button" id = "resetAssignedTo" class="btn btn-default btn-sm" data-dismiss="modal">Reset</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 <!-- Modal Pop ends -->
+<script>
 
-
+</script>
 
 
 <!-- <script type="text/javascript" src="/resources/js/requirementTable.js"></script> -->
@@ -1805,7 +1806,7 @@ top: 18px;height: 32px; line-height: 18px;
 	
 	
 	<div class="side_mask">
-  <div class="proj_close" onclick="activeTab();"></div>
+  <div class="proj_close" ></div> <!-- onclick="activeTab();" -->
 </div>
 	
 	
@@ -2205,10 +2206,14 @@ function importAddApplicantDoc(){
 
 
 <!-- Footer Area -->
-<footer class="footer-area clearfix text-center">
-    <div class="clearfix">© 2017 SourceLead<sup class="paddingRight paddingLeft">®</sup>, All Rights Reserved</div>
-<!--     <div class="powered-by"> Powered by: businessintelli.com </div>
- -->  </footer>
+<footer class="footer-area clearfix">
+    <div class="col-md-6 text-left">
+    	&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved
+    </div>
+            <div class='col-md-6 text-right'>
+                  <a href="/terms-of-use.html" target="blank" title="Terms of Service">Terms of Service</a> <small class="text-muted">|</small> <a href="/privacy-policy.html" target="blank" title="Privacy Policy">Privacy Policy</a>
+            </div>
+</footer>
   
   <div class="file_mask">
   </div>

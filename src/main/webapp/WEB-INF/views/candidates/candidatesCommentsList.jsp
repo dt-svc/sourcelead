@@ -1,12 +1,6 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<style>
-#tab-7 .comments-content textarea {
-	width: 957px;
-    border: none;
-}
-</style>
 
 <script>
 var atsUrl ='${SourceLeadWeb_atsUrl}';
