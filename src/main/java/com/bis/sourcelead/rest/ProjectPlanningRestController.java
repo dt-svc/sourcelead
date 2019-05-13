@@ -742,6 +742,7 @@ public class ProjectPlanningRestController {
 										projectClients.setProjectId(projectPlanningRequest.getProjectId());
 										projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
 										projectClients.setOrgLocationsId(cand.getOrgLocationId());
+										projectClients.setOrgId(cand.getOrgLocationId().getOrg());
 										projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 										projectClients.setStatus(1);
 										
@@ -1006,6 +1007,7 @@ public class ProjectPlanningRestController {
 								 clientCandidate.setOrgLocationId(projectPlanningResourceRequest.getProjectPlanningRequestId().getOrgLocationId());
 								 clientCandidate.setIsAssociate(Constants.NO);
 								 clientCandidate.setDesignationType("Offshore C2C");
+								 clientCandidate.setGeneratedId(candidateService.getCandidateId(projectPlanningResourceRequest.getProjectPlanningRequestId().getOrgLocationId()));
 								 
 								 if(projectPlanningResourceRequest.getBillRate() != null){
 									 clientCandidate.setCurrentRate(projectPlanningResourceRequest.getBillRate().toString());
@@ -1071,6 +1073,7 @@ public class ProjectPlanningRestController {
 									 clientCandidate.setOrgLocationId(clientOrgLoc);
 									 clientCandidate.setIsAssociate(Constants.NO);
 									 clientCandidate.setDesignationType("Offshore C2C");
+									 clientCandidate.setGeneratedId(candidateService.getCandidateId(clientOrgLoc));
 									 
 									 if(projectPlanningResourceRequest.getBillRate() != null){
 										 clientCandidate.setCurrentRate(projectPlanningResourceRequest.getBillRate().toString());
@@ -1588,50 +1591,6 @@ public class ProjectPlanningRestController {
 	      		
 	      		return requestDTOList;
 	    	}
-	        
-	        
-	        
-	        @RequestMapping(value = "/getProjectResourceRequestsCounts", method = RequestMethod.GET)
-			public @ResponseBody ProjectPlanningResourceRequestDTO getProjectResourceRequestsCounts(HttpServletRequest request) throws Exception {
-			   
-        	  OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-      		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			  String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-			  List<ProjectPlanningResourceRequest> projectPlanningRequestList = projectPlanningResourceRequestService.getResourceRequestListByApproverIdAndOrgLocationIdAndStatus(user.getId(), orgLocation.getId(), userRoleName);
-			 
-			  ProjectPlanningResourceRequestDTO projectPlanningResourceRequestDTO = new ProjectPlanningResourceRequestDTO();
-			  
-			  Integer waitingCount = 0;
-			  Integer approvedCount = 0;
-			  Integer rejectedCount = 0;
-			  Integer onholdCount = 0;
-			  
-			  if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0) {
-				  for(ProjectPlanningResourceRequest planningRequest : projectPlanningRequestList){
-					  if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
-						  approvedCount = approvedCount + 1;
-					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
-						  waitingCount = waitingCount + 1;
-					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
-						  rejectedCount = rejectedCount + 1;
-					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
-						  onholdCount = onholdCount + 1;
-					  }
-				  }
-			  }
-			  
-			  projectPlanningResourceRequestDTO.setWaitingCount(waitingCount);
-			  projectPlanningResourceRequestDTO.setApprovedCount(approvedCount);
-			  projectPlanningResourceRequestDTO.setRejectedCount(rejectedCount);
-			  projectPlanningResourceRequestDTO.setOnholdCount(onholdCount);
-			  
-			  return projectPlanningResourceRequestDTO;
-			  
-		    }
-	        
-	        
-	        
-	        
 	        
 	        
 	        @RequestMapping(value = "/getProjectPlanningNewResourceRequestList", method = RequestMethod.GET)
