@@ -20,6 +20,11 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 
 <!-- For add New Applicant -->
 <script>
+$(".addApplicant_close, .side_mask").click(function() {
+ 	$(".new_side_wrap").removeClass("new_side_wrap_active");
+	$(".side_mask").fadeOut(200);
+	$("body").css('overflow-y', 'auto');
+	
 function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	$('.action-pop').slideUp();
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
