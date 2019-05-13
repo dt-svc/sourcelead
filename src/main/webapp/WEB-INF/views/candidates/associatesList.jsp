@@ -14,7 +14,7 @@
 	    var result = "";
 		result = result + '	  <div class="blank-pages-tech">';
 		result = result + '   <p class="text-center text-danger permissondenied mb">';
-		result = result + '       <img src="/resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">';
+		result = result + '       <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">';
 		result = result + '   </p>';
 		result = result + '   <p class="big-txt mt">PERMISSION DENIED</p>';
 		result = result + '   <p class="text-muted">You dont have permission to access this page.</p>';
@@ -63,16 +63,7 @@ name2Flag = true;
 	 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
 };
 </script>
-
-<style type="text/css">
-.candidate_wrap_table table tr td:first-child {
-    padding: 0;
-    text-align: center;
-    width: 200px;
-    padding-right: 5px;
-}
-</style>
-<script type="text/javascript" src="/resources/js/candidateTable.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/candidateTable.js"></script>
 <%-- 
      @author : Laxman.
      this script is for show side bar when you click on the candidate name.
@@ -217,7 +208,7 @@ function candidateSideBar(candidateId){
 						 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 						 result = result+'   <img  id="userImage" data-id="profileImage" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 }else{
-						 result = result+'<img data-id="profileImage" id="userImage" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						 result = result+'<img data-id="profileImage" id="userImage" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';
 
 						 }
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';
@@ -822,7 +813,7 @@ function cancel(candidateId){
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
+					<li><a href="${SourceLeadWeb_atsUrl}/candidateListForReports"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				</ul>
 			</div>
 		</div> --%>  
@@ -1162,7 +1153,7 @@ function cancel(candidateId){
 	          </sec:authorize>
 	          
 	          <sec:authorize access="hasAnyRole('ROLE_ASSOCIATE_ASSIGN_HOTLIST_TO_TEAM')">
-	              <li><a href="<c:url value='${appPath}/assignHotListToTeam'/>" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
+	              <li><a href="${SourceLeadWeb_atsUrl}/assignHotListToTeam" title=""><i class="fa fa-plus"></i>Assign To Team</a></li>
 	           </sec:authorize>
 	          </ul>
            </div>
@@ -2139,7 +2130,7 @@ function minMaxExperience(){
 					       
 					       <div class="col-md-4 mt25">
 	                          <div class="small-widget bg-yellow">
-	                              <a href="<c:url value='${appPath}/associate?type=associateFromCandidate'/>" title="Add from Candidates">
+	                              <a href="${SourceLeadWeb_atsUrl}/associate?type=associateFromCandidate" title="Add from Candidates">
 	                                  <div class="clearfix mb10">
 	                                      <i class="fa fa-user-circle fa-4x"></i>
 	                                      <span class="fa fa-plus"></span>
@@ -2152,7 +2143,7 @@ function minMaxExperience(){
 						  
 						  <div class="col-md-4 mt25">
 	                          <div class="small-widget bgGreen">
-	                               <a href="<c:url value='${appPath}/associate?type=addAssociate'/>"  title="Add Manually">
+	                               <a href="${SourceLeadWeb_atsUrl}/associate?type=addAssociate"  title="Add Manually">
 	                                  <div class="clearfix mb10">
 	                                    <i class="fa fa-black-tie fa-4x"></i>
 	                                      <span class="fa fa-plus"></span>
@@ -2163,7 +2154,7 @@ function minMaxExperience(){
 	                      </div>
                           <div class="col-md-4 mt25">
                            <div class="small-widget bg-purple">
-                            <a href="<c:url value='${appPath}/associate?type=importAssociate'/>"  title="Import Associate">
+                            <a href="${SourceLeadWeb_atsUrl}/associate?type=importAssociate"  title="Import Associate">
                                 <div class="clearfix mb10">
                                 <i class="fa fa-file-text-o fa-4x"></i>
                                     <span class="fa fa-arrow-right"></span>

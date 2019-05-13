@@ -25,7 +25,7 @@
 		result = result + '   <p class="text-muted">You dont have permission to access this page.</p>';
 		result = result + '   <p class="positionRelative move-btn btn-group mt">';
 		result = result + '   <i class="fa fa-home btn btn-primary"></i>';
-		result = result + '   <a href="<c:url value='/dashboard'/>" type="button" class="btn btn-primary">Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>';
+		result = result + '   <a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}" type="button" class="btn btn-primary">Take me home<span>&nbsp;&nbsp;<i class="fa fa-angle-double-right"></i>';
 		result = result + '   </span></a>';
 		result = result + '   </p>';
 		result = result + ' </div>';
@@ -99,15 +99,6 @@ function closeCandiatesSubmitedList() {
 }
 </script>
 
-
-<style type="text/css">
-.candidate_wrap_table table tr td:first-child {
-    padding: 0;
-    text-align: center;
-    width: 200px;
-    padding-right: 5px;
-}
-</style>
 <script>
   var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
@@ -1101,7 +1092,7 @@ function imageCancel(){
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
+					<li><a href="${SourceLeadWeb_atsUrl}/candidateListForReports"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				</ul>
 			</div>
 		</div>   --%> 
@@ -1283,7 +1274,7 @@ function imageCancel(){
 						  <div class="col-md-4">
 							  <label>Notice Period</label>
 							  <div class="clearfix">
-								 <select class="chosen-select" id="noticePeriod" name="noticePeriod" data-placeholder="Notice Period" multiple>
+								 <select class="chosen-select" id="noticePeriod1" name="noticePeriod" data-placeholder="Notice Period" multiple>
 						                 <option value="Immediately available">Immediately available</option>
 						                 <option value="15 Days">15 Days</option>
 						                 <option value="1 Month">1 Month</option>
@@ -2016,10 +2007,10 @@ function savedCommentAndCount(candidateId){
 		  $(".advancedsearch-mask").fadeIn();
 		  $("#candidateFilterPopup").toggle();
 		};
-		function closeAdsrch(){
+		/* function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
 			$(".advancedsearch-mask").fadeOut();
-		};
+		}; */
 	</script>
 <script>
 function getStates(){
@@ -2124,7 +2115,7 @@ function getCities(){
 	    $("#canSkills").val('').trigger("chosen:updated");
 	    $("#canVisa").val('').trigger("chosen:updated");
 	    $("#canTags").val('').trigger("chosen:updated");
-	    $("#noticePeriod").val('').trigger("chosen:updated");
+	    $("#noticePeriod1").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
 	    
 	    $("#anyOfKeyword").empty();
@@ -2481,7 +2472,7 @@ function getCities(){
      
       <div class="pop_mask"></div>
     
-    <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+    <div class="advancedsearch-mask"></div>
     
     <script>
     //addcandidate-popup script
@@ -2525,7 +2516,7 @@ function minMaxExperience(){
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
 	    $("#designation").val('').trigger("chosen:updated");
-	    $("#noticePeriod").val('').trigger("chosen:updated");
+	    $("#noticePeriod1").val('').trigger("chosen:updated");
 	    $("#minExpYears").val('').trigger("chosen:updated");
 	    $("#maxExpYears").val('').trigger("chosen:updated");
 	 /*    $("#country").val('').trigger("chosen:updated"); */
@@ -2565,7 +2556,7 @@ function minMaxExperience(){
 	     $("#maxExpYears").val(''); 
 	     $('#expId').find('p.jquery_form_error_message').remove();
 	     
-	     $("#noticePeriod").val(''); 
+	     $("#noticePeriod1").val(''); 
 	     
 	     $("#country").val(''); 
 	     $("#state").val(''); 

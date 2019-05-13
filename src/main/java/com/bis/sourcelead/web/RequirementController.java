@@ -1611,7 +1611,11 @@ private Sheet createXlsSheet(HSSFWorkbook createExcelworkbook,HSSFSheet createEx
 	 HSSFSheet hidden = null;
 	 for(int i=0; i<jsonarray.length(); i++){
 	        JSONObject obj = jsonarray.getJSONObject(i);
-	        writeRow.createCell(i).setCellValue(obj.getString("label"));
+	        if(obj.has("req") && obj.getString("req").equalsIgnoreCase("1")) {
+	        	writeRow.createCell(i).setCellValue(obj.getString("label")+"*");
+	        }else {
+	        	writeRow.createCell(i).setCellValue(obj.getString("label"));
+	        }
 	     if(obj.has("choices")) {
 	    	 hidden = createExcelworkbook.createSheet("hidden"+i);
 	        	 String choices = obj.getString("choices");

@@ -1,0 +1,2319 @@
+<!DOCTYPE html>
+<!-- saved from url=(0030)http://localhost:8080/app/jobs -->
+<html lang="en">
+<head>
+<script src="/resources/js/masterSideNav.js"></script>
+<script src="/resources/js/masterHeader.js"></script>
+
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><style type="text/css">.pac-container{background-color:#fff;position:absolute!important;z-index:1000;border-radius:2px;border-top:1px solid #d9d9d9;font-family:Arial,sans-serif;box-shadow:0 2px 6px rgba(0,0,0,0.3);-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;overflow:hidden}.pac-logo:after{content:"";padding:1px 1px 1px 0;height:18px;box-sizing:border-box;text-align:right;display:block;background-image:url(https://maps.gstatic.com/mapfiles/api-3/images/powered-by-google-on-white3.png);background-position:right;background-repeat:no-repeat;background-size:120px 14px}.hdpi.pac-logo:after{background-image:url(https://maps.gstatic.com/mapfiles/api-3/images/powered-by-google-on-white3_hdpi.png)}.pac-item{cursor:default;padding:0 4px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;line-height:30px;text-align:left;border-top:1px solid #e6e6e6;font-size:11px;color:#999}.pac-item:hover{background-color:#fafafa}.pac-item-selected,.pac-item-selected:hover{background-color:#ebf2fe}.pac-matched{font-weight:700}.pac-item-query{font-size:13px;padding-right:3px;color:#000}.pac-icon{width:15px;height:20px;margin-right:7px;margin-top:6px;display:inline-block;vertical-align:top;background-image:url(https://maps.gstatic.com/mapfiles/api-3/images/autocomplete-icons.png);background-size:34px}.hdpi .pac-icon{background-image:url(https://maps.gstatic.com/mapfiles/api-3/images/autocomplete-icons_hdpi.png)}.pac-icon-search{background-position:-1px -1px}.pac-item-selected .pac-icon-search{background-position:-18px -1px}.pac-icon-marker{background-position:-1px -161px}.pac-item-selected .pac-icon-marker{background-position:-18px -161px}.pac-placeholder{color:gray}
+</style>
+
+<script type="text/javascript">
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+				});
+</script>
+
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="http://localhost:8080/resources/images/fav.png">
+<title>Welcome to Source Lead</title>
+<style>
+.dashboard-widget.dashboard-widget-icons{
+min-height: 225px !important;
+}
+.dashboard-widget .blank-pages{
+padding: 0;
+min-height: 100px;
+}
+/* .side-bar .side-nav ul li span {
+display: inline-block !important;
+float: none !important;
+} */
+.custom-datatble table{
+ margin-top: 20px !important;
+ }
+ .custom-datatble .dataTables_filter{
+   top: -35px !important;
+    padding: 0 !important;
+ }
+ .dashboard-datepkr{
+       position:relative;
+}
+/* .main-header span.logo i{
+position: relative;
+top:10px;
+} */
+.ui-timepicker-wrapper {
+z-index: 999999;
+width: 11.5%;
+}
+.addTask-widget.addTask-widget-active {
+	z-index:1000 !important;
+}
+.addTask-widget .require_wrap_table {
+	overflow: visible !important;
+}
+
+.newdate {
+	padding: 0px; position: relative;
+}
+.newdate .fa-filter {
+	position: absolute; left: 2px; top: 1px; z-index: 100; font-size: 17px; color: #666; height: 28px; width: 34px;
+	background-color: #f1f1f1; text-align: center; padding: 7px 0px 0px 0px;
+}
+.newdate .dashboard-datepkr {
+	max-width:200px !important; width:200px !important;
+}
+.TaskDate {
+	width: 190px !important; padding: 6px 35px 6px 45px !important; background: #fff !important;
+}
+
+.newdate .fa-calendar {
+	position: absolute; font-size: 16px; color: #666; top: 8px; right: 18px; 
+}
+.pac-container {
+z-index: 1000000000 !important;
+}
+.pac-container::after {
+	display:none;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+	  
+	 // below fucntion is used to build MasterSide Naigation panel.
+	  $("#masterSideNav").html(masterSideNav.masterSideNavPanel());
+	  // below fucntion is used to build MasterHeader panel.
+	  $("#masterHeaderNav").html(masterHeader.masterHeaderPanel());
+	 
+	  $('body').append(advnSearchPopEle);
+	  $('body').append(advnFilterPopEle);
+	  $('.chosen-select').chosen();
+	 
+	  if(viewTab === 'jobFair') {
+			jobFairListCheck();
+		} else {
+			requirementListCheck(searchValue,universalRequirementList,"universalSearch",atsUrl);
+		}
+	  if(roleActionsArray.indexOf("ROLE_VIEW_CART") > -1){
+          updateMarketplaceCartCountAndPrice(); // used to update the cart count in header.
+	 }
+	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") == -1){
+		  $("#jobActions").remove();
+	  } 
+	  if(roleActionsArray.indexOf("ROLE_EXPORT_REQUIREMENTS") == -1){
+		  $("#jobExportAndImportActions").remove();
+	  }
+	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT")  == -1){
+		  $("#jobFairAction").remove();
+	  }
+	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") == -1){
+		  $("#crowdsourcingJobsAction").remove();
+	  }
+	  if(roleActionsArray.indexOf("ROLE_CREATE_REQUIREMENT") == -1 || roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") == -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_REQUIREMENT") == -1){
+		  $("#filter1ApprovedPop").remove();
+	  }
+	    
+	  if(roleActionsArray.indexOf("ROLE_EXPORT_REQUIREMENTS") == -1){
+		  $("#jobFairExportActions").remove();
+	  }
+	  $("#importLink").attr("href", sourceleadUrl + "/uploadJobs"); 
+	  $("#myTaskLink").attr("href", sourceleadUrl + "/jobs#my-task"); 
+	  $("#otherTaskLink").attr("href", sourceleadUrl + "/jobs#other-task");
+	  $("#closedTaskLink").attr("href", sourceleadUrl + "/jobs#closed-task");
+	  
+	  
+});
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+ $("html").click(function(){
+	$(".newActPop").slideUp(200);
+}); 
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+function columPop(){ // updated
+	$(".colPop").show();
+	$(".colPopFot").show();
+}
+function columClose(){// updated
+	$(".colPop").hide();
+}
+$("html").click(function(){// updated
+	$(".colPop").hide();
+});
+$(".refreIcon, .colPop").click(function(e){// updated
+ 	e.stopPropagation();
+});	
+function columHide(){// updated
+	hideColumns=[]; // reset the array object.
+	$(".toggle-vis").each(function() {
+		columClose();// 
+	   var chkdVal= $(this).prop('checked');
+//		alert("chkdVal "+chkdVal);
+	   var column = table.column($(this).attr('data-column'));
+//		   alert("column "+column);
+		  if(chkdVal == true){
+//				  alert("1");
+		         column.visible(true);
+		    }
+		    else{
+//			    	 alert("2");
+		      column.visible(false);
+		      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
+		  }
+    });
+	$(".colPop").hide();
+	
+	reqTable.column(0).visible(false);
+
+}
+function checkAllColumns(obj){// updated
+	var id = obj.id;
+	var chkdVal= $('.toggle-vis:input:checkbox').prop('checked');
+	if(chkdVal == true){
+	if(id =='columnsPickerCheckAll'){
+		$('.toggle-vis:input:checkbox').prop('checked',true);
+	}
+	}
+	else{
+		if(id =='columnsPickerCheckAll'){
+			$('.toggle-vis:input:checkbox').prop('checked',false);
+		}
+	} 
+		
+}
+function filterPop(){ // updated.
+	$("#requirementFilterPopup").toggle();
+	$(".mask").fadeIn();
+};
+function closeFilter(){ // updated.
+	$("#requirementFilterPopup").hide();
+	$(".mask").fadeOut();
+
+}
+
+function getActions(){// // toggle events are not worked properly thats why kept in jsp.
+	$(".action-pop").slideToggle(200);
+	$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, #exportPop, #exportPopJobFair").slideUp(200);
+	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+}
+</script>
+		
+</head>
+<body>
+
+
+
+<div class="wraper"> 
+  <!-- Header Area -->
+   <header class="main-header" id="masterHeaderNav"></header>
+  <aside class="" id="masterSideNav">
+   
+  </aside>
+  <div class="authenticationMask">
+  <div class="signWrapOtp">
+  <div id="directtwoStepAuthDiv">
+  		
+
+
+
+
+
+
+<style>
+.timer{
+    color: #1B232F;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+}
+</style>
+  	</div>
+  </div>
+  </div>
+		 
+		 <div class="addTask"> 
+		 
+		    <div class="clearfix col-xs-12 col-md-12 addTask-widget">
+		    <i class="proj_close taskpop-close"></i>  
+		      <!-- Assign Task Widget tabs -->
+		      <div class="clearfix require_wrap_table dashboard-data" id="myTask">
+		        
+		        <div class="addtsk-btn"> <a href="javascript:void(0)" class="newAdBtn" onclick="showtaskdiv()">+ Task</a> </div>
+		       
+		        <ul class="nav nav-tabs themeTabs">
+		          <li id="myTaskDivId"><a data-toggle="tab" id="myTaskLink" href="" onclick="tasksList(&#39;myTask&#39;);">My Tasks</a></li>
+		          <li id="assignedTasksDivId"><a data-toggle="tab" id="otherTaskLink" href="" onclick="assignedTasksList(&#39;assignedTasks&#39;);">Assigned Tasks</a></li>
+		          <li id="closedTasksDivId"><a data-toggle="tab" id="closedTaskLink" href="" onclick="closedTasksList(&#39;closedTasks&#39;);">Closed Task</a></li>
+		        
+		        </ul>
+				        <div class="tab-content noPad clearfix positionRelative">
+				          <div id="my-task" class="tab-pane fade in active">
+				               <div class="col-md-6 clearfix newdate">
+				                    <i class="fa fa-filter"></i>
+									 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm hasDatepicker" name="myTaskDatpicker" id="myTaskDatpicker" type="text" readonly="readonly">
+									<i class="fa fa-calendar mr"></i></span>
+				               </div>	
+				          
+				            <div class="clearfix require_wrap_table">
+				               <div id="myTasksId" class="datatable_filter dataTablesFilter-relative dataSeaNew"></div>
+				            </div>
+				          </div>
+				          
+				          <div id="other-task" class="tab-pane fade">
+							 <div class="col-md-6 clearfix newdate">
+			                    <i class="fa fa-filter"></i>
+								 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm calendar hasDatepicker" name="assignedTaskDatpicker" id="assignedTaskDatpicker" type="text" readonly="readonly">
+								<i class="fa fa-calendar mr"></i></span>
+				               </div>								
+					            <div class="clearfix require_wrap_table">
+					              <div id="assignedTasksId" class="datatable_filter dataTablesFilter-relative dataSeaNew"></div>
+					            </div>
+				          </div>
+				          
+				          <div id="closed-task" class="tab-pane fade">
+				             <div class="col-md-6 clearfix newdate">
+				                    <i class="fa fa-filter"></i>
+									 <span class="dashboard-datepkr"><input class="form-control TaskDate input-sm hasDatepicker" name="closedTaskDatpicker" id="closedTaskDatpicker" type="text" readonly="readonly">
+									<i class="fa fa-calendar mr"></i></span>
+				               </div>
+				            <div class="clearfix require_wrap_table">
+				               <div id="closedTasksId" class="datatable_filter dataTablesFilter-relative dataSeaNew"></div>
+				            </div>
+				          </div>
+				        </div>
+		      </div>
+		      <!-- Assign Task Widget tabs Ends --> 
+		      
+		      <!-- Add New Task Widget -->
+			      <div class="newTask-widget clearfix">
+			      <form id="task_form" name="task_form" method="post">
+			        <div class="col-md-12 noPad">
+			          
+			          
+			          <div class="popupHead"><span>Add Task</span><i class="closePop pull-right" onclick="taskwidget();"></i></div>
+
+			            <div class="row popupContent">
+			              <div class="col-md-6">
+			                <label>Assign to<span class="text-danger">*</span></label>
+			                <select class="chosen-select" multiple="" data-placeholder="Select User" id="assignTo" name="assignTo" field-name="AssignTo" data-validation="required" style="display: none;">
+				                
+			                </select><div class="chosen-container chosen-container-multi" style="width: 100%;" title="" id="assignTo_chosen"><ul class="chosen-choices"><li class="search-field"><input type="text" value="Select User" class="default" autocomplete="off" style="width: 90px;"></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div></div>
+			              </div>
+			              <div class="col-md-6 dropdown-select">
+			                <label>Priority</label>
+			                <select class="form-control" id="priority" name="priority">
+			                  <option selected="" disabled="">-- Select Priority --</option>
+				              <option>Urgent</option>
+							  <option>High</option>
+							  <option>Normal</option>
+							  <option>Low</option>
+			                </select>
+			              </div>
+			              <div class="col-md-6">
+			                  <div class="row">
+				                  <div class="col-md-6" id="taskDatpickerDiv">
+					                <label>Date<span class="text-danger">*</span></label>
+						                <div class="positionRelative"> 
+						                  <input class="form-control input-sm hasDatepicker" value="" name="taskDatpicker" readonly="readonly" id="taskDatpicker" type="text" field-name="Date" data-validation="required">
+						                  <span class="input-group-addon input-groupAddon icon-Addon"><i class="fa fa-calendar"></i></span>
+						                </div>
+				                   </div>
+				                  <div class="col-md-6">
+					                <label>Time<span class="text-danger">*</span></label>
+						                <div class="positionRelative">
+						                  <input class="form-control input-sm ui-timepicker-input" name="timepicker" id="timepicker" field-name="Time" type="text" data-validation="required" autocomplete="off">
+						                  <span class="input-group-addon input-groupAddon icon-Addon"><i class="fa fa-clock-o"></i></span>
+						                </div>
+				                  </div>
+			                  </div>
+			              </div>
+			                
+			                <div class="col-md-6 dropdown-select">
+			                <label>Repeat</label>
+			                <select class="form-control input-sm" name="repeat" id="repeat">
+			                  <option selected="" disabled="">-- Select Repeat --</option>
+			                  <option>Never</option>
+			                  <option>Daily</option>
+			                  <option>Weekly</option>
+			                  <option>Monthly</option>
+			                  <option>Yearly</option>
+			                </select>
+			              </div>
+			              <div class="col-md-6">
+			                <label>Description</label>
+			                <textarea rows="2" placeholder="Description" class="form-control" name="description" id="description" data-validation="validate_length length10-500" data-validation-optional="true"></textarea>
+			              </div>
+			                <div class="col-md-6">
+			                <label>Subject <span class="text-danger">*</span></label>
+			                <input type="text" class="form-control input-sm" placeholder="Subject" id="subject" name="subject" data-validation="required validate_Space validate_length length2-100" field-name="Subject">
+			              </div>
+			              <div class="col-md-6">
+			                <label class="checkbox-inline">
+			                	<input type="checkbox" value="Email" name="email" checked="">Email
+			                 </label>
+			                <label class="checkbox-inline">
+			                    <input type="checkbox" name="notification" value="Notification">Notification
+			                </label>
+			                 <!-- <label class="checkbox-inline">
+			                  <input type="checkbox" name="chkbox">Pop-up WIndow
+			                </label> -->
+			              </div>
+			              <div class="clearfix"></div>
+			            </div>
+			            
+						<div class="popupFoot text-right">
+				          <button type="button" class="slBtn md colorBtn" onclick="saveTask();">Submit</button>
+				          <button type="button" class="slBtn md" onclick="taskwidget();"> Cancel</button>
+				        </div>			            
+			            
+			          
+			        </div></form>
+			       
+			      </div>
+		      <!-- Add New Task Widget --> 
+		    </div>
+		  </div>
+		  
+
+
+
+<!--  Theme Switcher div  Commented By Mahesh  -->
+
+<!--  Theme Swithcer div ends Commented By Mahesh -->
+
+<!--  Support div -->
+
+<!--  Support div ends  -->
+
+
+<script type="text/javascript">
+	function saveTask() {
+		if ($('#task_form').validate(false, validationSettings)) {
+			 var form = $('#task_form')[0];
+	         var formData = $($('#task_form')[0]).serialize();
+			$.post(sourceleadUrl + "/storeTasks?" + tokenParamName + "=" + tokenValue + "", formData, function(result) {
+				
+				if (result && result.response === "INVALID_DATA") {
+				    showError(result.responseMessage);
+				}else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				}else if (result.response === "SUCCESS") {
+					taskwidget();
+				    document.getElementById("assignedTasksDivId").className = 'active'
+					document.getElementById("closedTasksDivId").removeAttribute("class")
+					document.getElementById("myTaskDivId").removeAttribute("class")
+					$("#closed-task, #my-task").hide();
+				    $("#other-task").show().css("opacity", "1");
+				    assignedTasksList('assignedTasks');
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+			
+			});
+	
+			return true;
+		} else {
+			return false;
+		}
+	}
+	$('body').on('blur', '#task_form', function() {
+		$("#task_form").showHelpOnFocus();
+		$("#task_form").validateOnBlur(false, validationSettings);
+	});
+	
+</script>
+<script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+</script> 
+
+<script type="text/javascript">
+var finalDateFormattask = locationList;
+$('#taskDatpicker').datepicker({
+	dateFormat : finalDateFormattask,
+	 changeMonth: true,
+	changeYear: true, 
+	minDate : 0,
+	onSelect : function(selected) {
+		//var dt = new Date(selected);
+		 var dt = $(this).datepicker('getDate', '+1d');
+		dt.setDate(dt.getDate() + 1);
+		removevalidation();
+	}
+	});
+	
+$('#myTaskDatpicker').datepicker({
+	dateFormat : finalDateFormattask,
+	changeMonth: true,
+	changeYear: true, 
+	onSelect : function(selected) {
+		tasksList('myTask');
+    	}
+	});
+	
+$('#assignedTaskDatpicker').datepicker({
+	dateFormat : finalDateFormattask,
+	changeMonth: true,
+	changeYear: true, 
+	onSelect : function(selected) {
+		assignedTasksList('assignedTasks');
+	   }
+	});
+$('#closedTaskDatpicker').datepicker({
+	dateFormat : finalDateFormattask,
+	changeMonth: true,
+	changeYear: true, 
+	onSelect : function(selected) {
+		closedTasksList('closedTasks');
+	  }
+	});
+	
+$("#timepicker").timepicker({
+	'showDuration': true,
+	'disableTextInput': true
+}); 
+</script>
+<script>
+function removevalidation(){
+	$('#taskDatpickerDiv').find('p.jquery_form_error_message').remove();	
+}
+
+</script>
+
+<script>
+//Collapse div
+$(document).ready(function() {
+$(".collpase-div").click(function(){
+	$(this).next().slideToggle();
+});
+});
+
+//Add Task Div
+ $(".icon-addTask").click(function(){
+	$('.mask').fadeIn(150);
+	$(".addTask-widget").toggleClass("addTask-widget-active");
+	$(".newTask-widget").hide();
+	$("#myTask").show();
+	tasksList('myTask');
+		document.getElementById("myTaskDivId").className = 'active'
+		document.getElementById("closedTasksDivId").removeAttribute("class")
+		document.getElementById("assignedTasksDivId").removeAttribute("class")
+ });
+ 
+
+ // Close New Task div
+ function taskwidget(){
+	 $(".newTask-widget").hide();
+	  $("#myTask").show();
+ };
+ function showtaskdiv(){
+	 assignedUserList()
+	 $("#myTask").hide();
+	 $(".newTask-widget").fadeIn(200);
+	 $(".newTask-widget").val();
+	 $('.newTask-widget').find('p.jquery_form_error_message').remove();	
+	 document.getElementById("task_form").reset();
+	 
+ };
+</script>
+
+
+<script type="text/javascript">
+function assignedUserList(){
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/assignedUserList?=",	    	   
+	    success: function(data) {
+	    	 var json = JSON.parse(data);
+        	 var result = "";
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+			}
+        	 $("#assignTo").empty();
+           	 $("#assignTo").append(result); 
+           	$('#assignTo').trigger("chosen:updated");
+	    }
+   });
+}
+
+</script>
+
+<script type="text/javascript">
+function tasksList(status){
+	$("#closed-task, #other-task").hide();
+    $("#my-task").show().css("opacity", "1");
+	var date = $("#myTaskDatpicker").val();
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getTasksList?=&status="+status+"&date="+date,
+        success: function(data) {
+        	 var json = JSON.parse(data);
+        	 var result = "";
+        	 
+       		result = result + '	 <table id="myTasksPagination">'; 
+        	result = result + '     <thead>';
+        	result = result + '       <tr>';
+        	result = result + '         <th>Subject</th>';
+        	result = result + '         <th>Date &amp; Time</th>';
+        	result = result + '         <th>Owner</th>';
+        	result = result + '         <th>Assigned to</th>';
+        	result = result + '         <th>Description</th>';
+        	result = result + '         <th>Mode</th>';
+        	result = result + '         <th>Status</th>';
+        	result = result + '       </tr>';
+        	result = result + '     </thead>';
+        	result = result + '     <tbody>';
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        	 
+        		if(report.alertType != null && report.alertType != '' && report.alertType != 'undefined'){
+        			alertType = report.alertType;
+        		}else{
+        			alertType = "---";
+        		}
+        		if(report.taskDateStr != null && report.taskDateStr != '' && report.taskDateStr != 'undefined'){
+        			taskDateStr = report.taskDateStr
+        		}else{
+        			taskDateStr = "---";
+        		}
+        		if(report.taskTime != null && report.taskTime != '' && report.taskTime != 'undefined'){
+        			taskTime = report.taskTime;
+        		}else{
+        			taskTime = "---";
+        		}
+        		if(report.description != null && report.description != '' && report.description != 'undefined'){
+        			description = report.description;
+        		}else{
+        			description = "---";
+        		}
+        		result = result + '       <tr>';
+        		result = result + '         <td><div title="'+report.subject+'" class="tbldata-dotdot-vsm">'+report.subject+'</div></td>';
+            	result = result + '         <td><div class="text-center tbldata-dotdot-sm" title="'+taskDateStr+' '+taskTime+'">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + '         <td><div title="'+report.taskOwnerName+'" class="tbldata-dotdot-100">'+report.taskOwnerName+'</div></td>';
+            	result = result + '         <td><div title="'+report.assignedName+'" class="tbldata-dotdot-100">'+report.assignedName+'</div></td>';
+            	result = result + '         <td><div title="'+description+'" class="tbldata-dotdot-100">'+description+'</div></td>';
+            	result = result + '         <td><div class="text-center tbldata-dotdot_80" title="'+alertType+'">'+alertType+'</div></td>';
+            	result = result + '         <td><div class="dropdown-select tblminwidth-100">';
+            	
+       			result = result + ' <select id="myTaskState'+report.id+'" name="myTaskState" onChange="updateMyTaskStatus('+report.id+');">';
+       			result = result  +' <option '+(report.taskStatus == "Open" ? "selected" : '') +'>Open</option>';
+	            result = result  +'	<option '+(report.taskStatus == "Closed" ? "selected" : '') +'>Closed</option>';
+               	result = result + ' </select>';
+            		 
+            	result = result + '           </div></td>';
+            	result = result + '       </tr>';
+			}
+        	result = result + '     </tbody>';
+        	result = result + '   </table>';
+        	
+        	 $("#myTasksId").empty();
+           	 $("#myTasksId").append(result); 
+           	 myTasksPagination();
+        	 
+        }
+	});
+	 
+}
+</script>
+
+
+<script type="text/javascript">
+function assignedTasksList(status){
+	$("#my-task, #closed-task").hide();
+    $("#other-task").show().css("opacity", "1");
+	var date = $("#assignedTaskDatpicker").val();
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getTasksList?=&status="+status+"&date="+date,
+        success: function(data) {
+        	 var json = JSON.parse(data);
+        	 var result = "";
+        	 
+       		 
+       		result = result + '	 <table id="assignedTasksPagination">'; 
+        	result = result + '     <thead>';
+        	result = result + '       <tr>';
+        	result = result + '         <th>Subject</th>';
+        	result = result + '         <th>Date &amp; Time</th>';
+        	result = result + '         <th>Owner</th>';
+        	result = result + '         <th>Assigned to</th>';
+        	result = result + '         <th>Description</th>';
+        	result = result + '         <th>Mode</th>';
+        	result = result + '         <th>Status</th>';
+        	result = result + '       </tr>';
+        	result = result + '     </thead>';
+        	result = result + '     <tbody>';
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        	 
+        		if(report.alertType != null && report.alertType != '' && report.alertType != 'undefined'){
+        			alertType = report.alertType;
+        		}else{
+        			alertType = "---";
+        		}
+        		if(report.taskDateStr != null && report.taskDateStr != '' && report.taskDateStr != 'undefined'){
+        			taskDateStr = report.taskDateStr
+        		}else{
+        			taskDateStr = "---";
+        		}
+        		if(report.taskTime != null && report.taskTime != '' && report.taskTime != 'undefined'){
+        			taskTime = report.taskTime;
+        		}else{
+        			taskTime = "---";
+        		}
+        		if(report.description != null && report.description != '' && report.description != 'undefined'){
+        			description = report.description;
+        		}else{
+        			description = "---";
+        		}
+        		result = result + ' <tr>';
+        		result = result + ' <td><div title="'+report.subject+'" class="tbldata-dotdot-vsm">'+report.subject+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot-sm" title="'+taskDateStr+' '+taskTime+'">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + ' <td><div title="'+report.taskOwnerName+'" class="tbldata-dotdot-100">'+report.taskOwnerName+'</div></td>';
+            	result = result + ' <td><div title="'+report.assignedName+'" class="tbldata-dotdot-100">'+report.assignedName+'</div></td>';
+            	result = result + ' <td><div title="'+description+'" class="tbldata-dotdot-100">'+description+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot_80" title="'+alertType+'">'+alertType+'</div></td>';
+            	result = result + ' <td><div class="dropdown-select tblminwidth-100">';
+            	
+		        result = result + '<select id="assignTaskState'+report.id+'" name="assignTaskState" onchange="updateAssignTaskStatus('+report.id+');">';
+		        result = result  +'<option '+(report.taskStatus == "Open" ? "selected" : '') +'>Open</option>';
+				result = result  +'<option '+(report.taskStatus == "Closed" ? "selected" : '') +'>Closed</option>';
+		        result = result + '</select>';
+            	
+            	result = result + '</div></td>';
+            	result = result + '</tr>';
+			}
+        	result = result + '</tbody>';
+        	result = result + '</table>';
+        	
+       		 $("#assignedTasksId").empty();
+           	 $("#assignedTasksId").append(result); 
+           	 assignedTasksPagination();
+        	
+        	 
+        }
+	});
+	 
+}
+</script>
+
+<script type="text/javascript">
+function closedTasksList(status){
+	$("#my-task, #other-task").hide();
+    $("#closed-task").show().css("opacity", "1");
+	var date = $("#closedTaskDatpicker").val();
+	$.ajax({
+    	type: "POST",
+        url: sourceleadUrl+"/getTasksList?=&status="+status+"&date="+date,
+        success: function(data) {
+        	 var json = JSON.parse(data);
+        	 var result = "";
+        	 
+       		 
+        	result = result + '	 <table id="closedTasksPagination">'; 
+        	result = result + '     <thead>';
+        	result = result + '       <tr>';
+        	result = result + '         <th>Subject</th>';
+        	result = result + '         <th>Date &amp; Time</th>';
+        	result = result + '         <th>Owner</th>';
+        	result = result + '         <th>Assigned to</th>';
+        	result = result + '         <th>Description</th>';
+        	result = result + '         <th>Mode</th>';
+        	result = result + '         <th>Status</th>';
+        	result = result + '       </tr>';
+        	result = result + '     </thead>';
+        	result = result + '     <tbody>';
+        	for (var i=0; i<json.length; i++)
+			{
+        		var report = json[i];
+        	 
+        		if(report.alertType != null && report.alertType != '' && report.alertType != 'undefined'){
+        			alertType = report.alertType;
+        		}else{
+        			alertType = "---";
+        		}
+        		if(report.taskDateStr != null && report.taskDateStr != '' && report.taskDateStr != 'undefined'){
+        			taskDateStr = report.taskDateStr
+        		}else{
+        			taskDateStr = "---";
+        		}
+        		if(report.taskTime != null && report.taskTime != '' && report.taskTime != 'undefined'){
+        			taskTime = report.taskTime;
+        		}else{
+        			taskTime = "---";
+        		}
+        		if(report.description != null && report.description != '' && report.description != 'undefined'){
+        			description = report.description;
+        		}else{
+        			description = "---";
+        		}
+        		result = result + ' <tr>';
+        		result = result + ' <td><div title="'+report.subject+'" class="tbldata-dotdot-vsm">'+report.subject+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot-sm" title="'+taskDateStr+' '+taskTime+'">'+taskDateStr+'  '+taskTime+'</div></td>';
+            	result = result + ' <td><div title="'+report.taskOwnerName+'" class="tbldata-dotdot-100">'+report.taskOwnerName+'</div></td>';
+            	result = result + ' <td><div title="'+report.assignedName+'" class="tbldata-dotdot-100">'+report.assignedName+'</div></td>';
+            	result = result + ' <td><div title="'+description+'" class="tbldata-dotdot-100">'+description+'</div></td>';
+            	result = result + ' <td><div class="text-center tbldata-dotdot_80" title="'+alertType+'">'+alertType+'</div></td>';
+            	result = result + ' <td><div class="dropdown-select tblminwidth-100">';
+		        result = result + report.taskStatus;
+            	
+            	result = result + '</div></td>';
+            	result = result + '</tr>';
+			}
+        	result = result + '</tbody>';
+        	result = result + '</table>';
+        	
+        	$("#closedTasksId").empty();
+          	$("#closedTasksId").append(result); 
+          	 closedTasksPagination();
+        	
+        	 
+        }
+	});
+	 
+}
+</script>
+
+<script>
+   function handle(e){
+       if(e.keyCode === 13){
+           e.preventDefault(); // Ensure it is only this code that rusn
+           universalSearch();
+       }
+   }
+</script>
+ 
+<script>
+function updateMyTaskStatus(taskId){
+ 	var taskStatus = $('#myTaskState'+taskId).val();	
+
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/changeTaskStatus?=&taskId="+taskId+"&taskStatus="+taskStatus,	    	   
+	    success: function(data) {
+	    	assignedTasks();
+	    }
+   });
+}
+</script>
+
+<script>
+function updateAssignTaskStatus(taskId){
+   var taskStatus = $('#assignTaskState'+taskId).val();	
+
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/changeTaskStatus?=&taskId="+taskId+"&taskStatus="+taskStatus,	    	   
+	    success: function(data) {
+	    	assignedTasks();
+	    }
+   });
+}
+</script>
+
+<script>
+function universalSearch(){
+	 var searchType = document.getElementById('searchType').value;
+	 var searchValue = document.getElementById('searchKey').value;
+	 if(sourceleadUrl == ''){
+		 sourceleadUrl = 'http://localhost:8080/app';
+	 }
+	 if(searchType == "Candidate") {
+		 window.location.href = sourceleadUrl + "/candidatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+	 } else if(searchType == "Associate") {
+		 window.location.href = sourceleadUrl + "/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+	 }
+	 else if(searchType == "Requirement") {
+		 window.location.href = sourceleadUrl + "/jobs?searchResult=universalRequirementSearchList&searchValue="+searchValue;
+	 }
+	 else {
+		window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
+	 }
+}
+</script>
+
+
+<script>
+function myTasksPagination(){
+    $('#myTasksPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
+
+<script>
+function assignedTasksPagination(){
+    $('#assignedTasksPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
+<script>
+function closedTasksPagination(){
+    $('#closedTasksPagination').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
+<script>
+$(".nav-tabs").click(function(){
+	$("#myTaskDatpicker, #assignedTaskDatpicker, #closedTaskDatpicker").val('');
+});
+	
+</script>
+
+<script type="text/javascript">
+$('.taskpop-close').click(function (){
+	$(".addTask-widget").removeClass("addTask-widget-active");
+	$(".mask").fadeOut(150);
+});
+</script>
+
+<!-- <script>
+//scroll top top fix Header
+jQuery(window).scroll(function(){
+var top = jQuery(window).scrollTop();
+if(top>25){
+jQuery('.main-header').addClass('navbar-fixed-top');
+} else {
+jQuery('.main-header').removeClass('navbar-fixed-top');}
+});
+</script> -->
+<script>
+/* jQuery(window).scroll(function () {
+if( jQuery(window).scrollTop() > jQuery('.main-header').offset().top + 100 && !(jQuery('.main-header').hasClass('navbar-fixed-top'))){
+jQuery('.main-header').addClass('navbar-fixed-top').animate({"top":"0%"}, 500);
+} else if (jQuery(window).scrollTop() <= 50){
+jQuery('.main-header').removeClass('navbar-fixed-top').css({"top":"-20%"});
+}
+}); */
+
+// Select picker updated script for universalSerch
+
+$("#searchType").selectpicker('refresh');
+</script>
+
+<!-- Task related code Ends -->
+<!--  Company Invite pop -->
+<div class="success_pop" id="inviteCompanyId" style="display: none;">
+   	<i class="fa fa-check-circle"></i><span id="inviteCompanyMsgDiv"></span>
+</div>
+  
+  <div class="mask"></div>
+  
+  
+  <script>
+  
+$(document).ready(function(){
+	$("#subMenu").click(function(){
+		$(".subMenuView").slideToggle(100);
+	});
+	$("#campSubMenu").click(function(){
+		$(".campsubMenuView").slideToggle(100);
+	});	
+});
+</script>
+  
+  <script>
+  function flushInviteCompany(){
+	  document.getElementById("inviteCompany_form").reset();
+	  $("inviteCompany_form").validate().resetForm();
+  }
+  </script> 
+  <script>
+  $("#invitePop").click(function(){
+	  $("#modalInvite").fadeIn(100);
+	  $(".mask").show();
+  });
+  $("#bulkImport").click(function(){
+	  $("#modalBulkImport").fadeIn(100);
+	  $(".mask").show();
+	  });
+  $(".close, .popClose").click(function(){
+	  $("#modalInvite").fadeOut(100);
+	  $("#modalBulkImport").fadeOut(100);
+	  $(".mask").hide();
+	  flushInviteCompany();
+	  flushBulkImportPath();
+ });
+
+  
+  function flushBulkImportPath() {
+	  $("#folderPath").val('');
+  }
+  
+  function processCopiedFiles() {
+	  if ($('#bulkImportForm').validate(false, validationSettings)) {
+		  var val = $("#folderPath").val().trim();
+		  $.post(sourceleadUrl+"/process-uploaded-files", {path: val}, function(data) {
+			  if(data && data.indexOf("Session timedout") !== -1) {
+				  setTimedout('location.href=', 3000);
+			  } else if(data) {
+				  $("#bulkImportStatus").html(data)
+				  if(data.indexOf("Invalid") === -1) {
+					  $("#folderPath").val('');
+				  }
+			  }
+		  });
+	  } else {
+			return false;
+		}
+	 
+  }
+  </script>
+<!--  Company invite pop ends -->
+
+
+<script>
+function saveInviteCompany() {
+	if ($('#inviteCompany_form').validate(false, validationSettings)) {
+			var formData = getFormData("inviteCompany_form");
+			$.ajax({
+					  type : "POST",
+					  data: formData,
+					url : sourceleadUrl+ "/storeInviteCompany?=",
+					success : function(result) {
+						
+						if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							  $("#modalInvite").fadeOut();
+							  $(".mask").hide(); 
+							  $("#inviteCompanyId").removeAttr("style");
+		            		  $("#inviteCompanyId").css({ display: "block" });
+		        			  $("#inviteCompanyMsgDiv").html("Thank you for referring sourcelead");
+		        			  companyMsgFadeinFunction();
+		        			  flushInviteCompany();
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
+	        			  
+					},
+				});
+		return true;
+	} else {
+		return false;
+	}
+}
+$('body').on('blur', '#inviteCompany_form', function() {
+	$("#inviteCompany_form").showHelpOnFocus();
+	$("#inviteCompany_form").validateOnBlur(false, validationSettings);
+});
+</script>
+<script>
+	function companyMsgFadeinFunction() {
+		$("#inviteCompanyId").fadeIn(200);
+        $('#inviteCompanyId').fadeOut(3000);
+	}
+</script>
+
+
+<div id="campaignSender" class="popupWrap popupWrapFixed"></div> 
+
+<div id="campaignRecipient" class="popupWrap popupWrapFixed"></div> 
+
+
+<script>
+function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId,type,addressId) {
+    initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId,latitudeId,longtitudeId);
+    geolocate(latitudeId,longtitudeId);
+}
+function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId,latitudeId,longtitudeId) {
+    if(type == "invite"){
+    	 var input = (document.getElementById(locationId));
+    	    var options = {
+    	    		types: ['geocode'],
+    	        componentRestrictions: {
+    	        	country: ["IN","US","AU","SG","GB","FR"]
+    	        }
+    	    };
+    	    autocomplete = new google.maps.places.Autocomplete(input, options);
+    }else{
+    	autocomplete = new google.maps.places.Autocomplete((document.getElementById(locationId)), {
+    		types: ['geocode'],
+      
+        });
+    }
+   
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+  place = autocomplete.getPlace();
+  var address = {};
+  for (var i = 0; i < place.address_components.length; i++) {
+    var addressType = place.address_components[i].types[0];
+    switch (addressType) {
+       case "route":
+    	 address.name=place.address_components[i].long_name;
+    	 break;
+      case "locality":
+        address.city = place.address_components[i].long_name;
+        break;
+      case "administrative_area_level_1":
+        address.state = place.address_components[i].long_name;
+        break;
+      case "country":
+        address.country = place.address_components[i].long_name;
+        break;
+      case "postal_code":
+        address.zipcode = place.address_components[i].long_name;
+        
+    }
+  }
+ 
+  $("#"+stateId).val(address.state).change();
+  $("#"+cityId).val(address.city).change();
+  $("#"+zipCodeId).val(address.zipcode).change();
+  $("#"+addressId).val($("#"+locationId).val().replace(", "+$("#"+cityId).val()+", "+$("#"+stateId).val()+", "+$("#"+countryId).val(), ""));
+  $("#"+countryId).val(address.country).change();
+  $("#"+countryId).trigger("chosen:updated");
+
+  $("#"+latitudeId).val(place.geometry.location.lat());
+  $("#"+longtitudeId).val(place.geometry.location.lng());
+  
+  if(type == "invite"){
+	  getTimezonesList();
+  }
+  if(type != "editAssociate"){
+    zipcodeMask(address.country,zipCodeId);	
+  }
+});
+}
+function geolocate(latitudeId,longtitudeId) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            if(latitudeId != null && latitudeId != '' && latitudeId !='undefined'){
+            	$("#"+latitudeId).val(latitude);
+            }
+            if(longtitudeId != null && longtitudeId != '' && longtitudeId != 'undefined'){
+                $("#"+longtitudeId).val(longitude);
+            }
+            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
+        });
+    }
+}
+</script>
+<script>
+function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId,addressId){
+	$("#"+locationId).val('');
+	$("#"+stateId).val('');
+	$("#"+cityId).val('');
+	$("#"+zipCodeId).val('');
+	$("#"+addressId).val('');
+	$("#"+countryId).val('');
+	$("#"+countryId).trigger("chosen:updated");
+}
+</script>
+<script>
+function zipcodeMask(country,zipCodeId){
+	
+	if(country == "India" || country == "Singapore"){
+		 $("#"+zipCodeId).mask("999999");
+	}else if(country == "United States" || country == "France"){
+		$("#"+zipCodeId).mask("99999");
+	}else if(country == "Australia"){
+		$("#"+zipCodeId).mask("9999");
+	}else if(country == "United Kingdom"){
+		$("#"+zipCodeId).mask("aa99");
+	}else{
+		$("#"+zipCodeId).mask("999999");
+	}
+		     
+}
+</script>
+
+<script type="text/javascript">
+function verifyEmail2() {
+	var email = document.getElementById("inviteCompanyemail").value;
+	if(email != null && email != ''){
+	      validateEmailForExistenceUniversally(email, '#inviteCompanyemail');
+	}else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
+	}
+}
+
+</script>
+
+<!--  Esc Key function  -->
+
+<script>
+document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    if (evt.keyCode == 27) {
+        $(".mask, .advancedsearch-mask, .location-alert").hide();
+        $(".popupWrap, .popupWrapMid, div.cand-advsrch-popup, .remove_user_pop").fadeOut(100);
+    }
+};
+</script>
+
+<!-- Header Popup search  --> 
+<script>
+$(document).ready(function(){
+	// Settings popup search
+    $("#settingSearch").keyup(function(){
+        var filter = $(this).val(), count = 0;
+        $(".headPopInn ul li").each(function(){
+            if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                $(this).hide();
+            } else {
+                $(this).show();
+                count++;
+            }
+        });
+        
+        if(count == 0) {
+            $(this).parent().parent().find(".noDate").show();
+        } else {
+            $(this).parent().parent().find(".noDate").hide();
+        }  
+    });
+    
+    // Orgs popup search
+    $("#orgsSearch").keyup(function(){
+        var filter = $(this).val(), count = 0;
+        $(".headPopInn ul li").each(function(){
+            if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                $(this).hide();
+            } else {
+                $(this).show();
+                count++;
+            }
+        });
+
+        if(count == 0) {
+            $(this).parent().parent().find(".noDate").show();
+        } else {
+            $(this).parent().parent().find(".noDate").hide();
+        } 
+    
+    });
+});
+</script>
+
+<script>
+function updateMarketplaceCartCountAndPrice(){
+	var totalPriceInCurrency;
+	$.ajax({
+		 	url: sourceleadUrl + "/updateMarketplaceCartCountAndPrice",
+	        type: 'GET',
+	        success: function (object) {
+	        	if(object != null){
+	        		$("#headerCartCount").html(object[0]);
+	        		$("#cartCount").html(object[0]);
+	        		if(object[0] === 0){
+		        		$("#headerCartCount").bind("click", false);
+		        		}else{
+		        		$("#headerCartCount").unbind("click", false);
+			        	}
+	        		totalPriceInCurrency = new Intl.NumberFormat('en-US', { minimumFractionDigits : 2 }).format(object[1]);
+	        		$("#totalPrice").html((object[1] === null || object[0] === 0) ? "0.00" : totalPriceInCurrency);
+	        	}}
+	        });
+	}
+</script>
+
+
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
+<!-- Side Nav Bar -->
+  <!-- Side Nav Bar -->
+  
+  <script>
+$(function(){
+	resizeFunction();
+});
+function resizeFunction() {
+	var sidenavHeight = $(window).innerHeight();
+	$(".sidenav_inner").height(sidenavHeight-75);
+}
+$(window).resize(function(){
+	resizeFunction();
+});
+
+var sessionDataNav = "Requirement";
+
+</script>
+  
+  
+
+
+
+
+
+ 
+
+
+ <script type="text/javascript">
+ var hideColumns = [];
+ var table = "";
+ $(document).ready(function () {
+     $('label.toggle-vis').on('click', function (e) {
+         e.preventDefault();
+         // Get the column API object
+         var column = table.column($(this).attr('data-column'));
+         $(this).toggleClass("active");
+         // Toggle the visibility
+         column.visible(!column.visible());
+     });
+});
+</script>
+<style>
+
+.clsDatePicker {
+	z-index: 100000 !important;
+}
+.side-bar .side-nav ul li span {
+	display: inline-block;
+	float: none;
+}
+
+.project_wrap_table span {
+	display: inline;
+}
+
+.timesheet_out {
+	overflow-x: auto;
+	background: #f5f5f5;
+	box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
+	top: -45px;
+}
+
+.vendor_wrap {
+	box-shadow: none;
+}
+
+.require_wrap_table {
+	overflow: inherit;
+	min-height: 175px;
+}
+
+.require_wrap_table select {
+	width: 100% !important;
+}
+.ref-top{
+top: 18px;height: 32px; line-height: 18px;
+}
+</style>
+<div class="project_inn_mask"></div>
+
+<div id="changeStatusPopup" class="remove_user_pop remove_user_pop_a">
+	<p>Are are sure you want to delete the JobFair?</p>
+	<div>&nbsp;&nbsp;&nbsp;</div>
+	<b>
+		<input id="confirmId" type="button" value="Ok" onclick="changeJobFairStatus()" class="pull-left">
+		<input id="cancelStatusPopup" class="u_can_color" type="button" value="Cancel" onclick="closeChangeStatusPopup()">
+	</b>
+</div>
+
+
+
+
+
+ 
+ 
+ 
+ 
+<script>
+
+
+
+
+ 
+</script>
+
+
+<div id="deleteJobPopUpDiv"></div>
+ 
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+	<div class="modal-dialog modal-lg" style="width: 98%;">
+		<div class="modal-content">
+			<div class="modalHeader">
+				<button type="button" id="assignToPopUpCloseId" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Assign To<i class='fa fa-info-circle' title='Assign the job to the internal team to process the resources for the job'></i></h4>
+			</div>
+			<div class="modal-body">
+
+				<div class="row">
+					<div class="clearfix"></div>
+					<div class="swaptables">
+						<div class="row positionRelative">
+							<div class="col-md-6 mb5 bootSelectpicker">
+								<select id="teamSelectionCategory" class="selectpicker" multiple data-actions-box="true"
+									onchange="filterTeamMembers();" style="display: block !important"
+									title="--Select Assign Team--">
+								</select>
+							</div>
+							<!-- <div class="remove_search fa-pull-right">
+								<input placeholder="Search" type="text">
+							</div> -->
+						</div>
+
+						<div class="clearfix positionRelative assignTableScroll  assignTableScroll-mnh">
+						<div id="usersGrid-loader"></div>
+							<table id="assignToDataTableId"
+								class="display table table-stripped table-bordered dataTable no-footer"
+								role="grid" aria-describedby="assignToDataTableId_info" style="width: 100%;" cellspacing="0">
+								<thead>
+									<tr role="row">
+										<th style="vertical-align: middle"><input type="checkbox" id="checkAll"></th>
+										<th style="vertical-align: middle">Name</th>
+										<th style="vertical-align: middle">Email</th>
+										<th style="vertical-align: middle">Role</th>
+										<th>Active<br>Jobs</th>
+									</tr>
+								</thead>
+								<tbody id="usersGrid">
+								</tbody>
+							</table>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+					<div class="swaptables-buttons">
+						<div class="swaptables-buttons-inner">
+							<div class="btn-arrow clearfix mb">
+								<i class="fa fa-2x fa-arrow-circle-right cursorPointer" onclick="selectAssignUsers();"></i>
+							</div>
+							<div class="btn-arrow clearfix">
+								<i class="fa fa-2x fa-arrow-circle-left cursorPointer" onclick="deSelectAssignUsers();"></i>
+							</div>
+						</div>
+					</div>
+					<div class="swaptables">
+						<div class="clearfix mt40 assignTableScroll" style="height:250px; overflow-y:auto;" id="assignToSelectedDataTableDiv">
+							<table id="assignToSelectedDataTableId"
+								class="display table table-stripped table-bordered dataTable no-footer"
+								role="grid" aria-describedby="assignToDataTableId_info"
+								style="width: 100%;" cellspacing="0">
+								<thead>
+									<tr role="row">
+										<th style="vertical-align: middle"><input id="checkAllSelected" type="checkbox"></th>
+										<th style="vertical-align: middle"><span class="tbldata-dotdot-custom">Name</span></th>
+										<th style="vertical-align: middle"><span class="tbldata-dotdot-100">Email</span></th>
+										<th style="vertical-align: middle"><span class="tbldata-dotdot_80">Role</span></th>
+										<th><span class="tbldata-dotdot_30">Active<br>Jobs</span>
+										</th>
+									</tr>
+								</thead>
+								<tbody id="selectedUsersGrid">
+								</tbody>
+							</table>
+							  <div class="panel-default text-center" id="noAssignedmembers">
+							    <div class="panel-body">
+								    <i class="fa fa-users fa-3x text-muted mt mb"></i>
+									<p>No Assigned Members</p>
+							    </div>
+							  </div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="clearfix mb">
+				<div class="pull-right mr" id="summaryButtonsDiv">
+				</div>
+				<div class="pull-right mr" id="listButtonsDiv" style="display: none;">
+					<button type="button" id="listSaveButton" class="btn btn-primary mr5 btn-sm" data-dismiss="modal">Save</button>
+					<button type="button" id = "resetAssignedTo" class="btn btn-default btn-sm" data-dismiss="modal">Reset</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Modal Pop ends -->
+<script>
+
+</script>
+
+
+<!-- <script type="text/javascript" src="/resources/js/requirementTable.js"></script> -->
+<input type="hidden" name="noReq" id="noReq" value="">
+<input type="hidden" id="requirementEmptyListMessage" name="requirementEmptyListMessage" value="1">
+<div id="popUp"></div>
+<section class="content-wraper">
+	<section class="content-header clearfix">
+		<div class="pull-left" id="crowdsourcingJobsAction">
+        	<h2>Jobs 
+					
+						<a href="/ats/professionalRequirements" class="jobHeadBtn">Crowdsourcing Jobs</a>
+					        	
+        	</h2>
+      	</div>
+		
+		
+		
+		<div class="pull-right brud-crum">
+			<a href="<c:url value='${appPath}/dashboard/5'/>">Home</a> &raquo; Job List
+		</div>
+	</section>
+	<div class="clearfix">
+	<ul class="project-tabs-menu projecttabs-custom clearfix">
+         <li class="current" id="jobsTab"><a href="javascript:void(0)" onclick= requirementListCheck(searchValue,universalRequirementList,'universalSearch',atsUrl);>Jobs</a></li>
+         <li id="jobFairTab"><a href="javascript:void(0)" onclick="jobFairListCheck();">Job Fair</a></li>
+         <div class="clearfix"></div>
+     </ul>
+	</div>
+
+
+<div class="timesheet_out" id="jobsTabContent">
+		
+<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="filtersDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="clearList();"></a>
+      		<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="columIcon"></a>
+      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onclick="openPop();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
+    
+    
+    
+    <div class="colPop">
+	<div class="colPopMid coldropdown-parent">
+	<div class="clearfix">
+		<div class="row">
+				<div class="col-md-10 mb10 mt5 col-md-offset-2">
+<!-- 				<span class="checkbox-new  pull-left mr">
+					<input id="columnsPickerUnCheckAll" class="checkbox-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);"  type="checkbox">
+					<label for="columnsPickerUnCheckAll" class="checkbox-custom-label">Uncheck All</label>
+				</span> -->
+				<span class="checkbox-new pull-left">
+					<input id="columnsPickerCheckAll" class="checkbox-custom toggle-vis" name="columnsPicker" onclick="checkAllColumns(this);" type="checkbox">
+					<label for="columnsPickerCheckAll" class="checkbox-custom-label">Check All</label>
+				</span>
+			</div>
+		</div>
+	<div class="clearfix"></div>
+		<div class="coldropdown-inner">
+		<ul id="jobCustomColumns">
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="a" class="checkbox-custom toggle-vis" name="paidComponent" data-column="2" type="checkbox" checked="" data-name="generatedId">
+					<label for="a" class="checkbox-custom-label">Generated ID</label>
+				</span>
+			</li>
+			
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="c" class="checkbox-custom toggle-vis" name="paidComponent" data-column="4" type="checkbox" checked="" data-name="process">
+					<label for="c" class="checkbox-custom-label">Process</label>
+				</span>
+			</li>
+			
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="d" class="checkbox-custom toggle-vis" name="paidComponent" data-column="5" type="checkbox" checked="" data-name="clientName">
+					<label for="d" class="checkbox-custom-label">Client</label>
+				</span>
+			</li>
+
+			<li>
+				<span class="checkbox-new clearfix">
+					<input id="e" class="checkbox-custom toggle-vis" name="paidComponent" data-column="6" type="checkbox" checked="" data-name="payRate">
+					<label for="e" class="checkbox-custom-label">Pay Rate</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="f" class="checkbox-custom toggle-vis" name="paidComponent" data-column="7" type="checkbox" checked="" data-name="billRate">
+					<label for="f" class="checkbox-custom-label">Bill Rate</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="g" class="checkbox-custom toggle-vis" name="paidComponent" data-column="8" type="checkbox" checked="" data-name="jobType">
+					<label for="g" class="checkbox-custom-label">Type</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="h" class="checkbox-custom toggle-vis" name="paidComponent" data-column="9" type="checkbox" checked="" data-name="location">
+					<label for="h" class="checkbox-custom-label">Location</label>
+				</span>
+			</li>
+			
+							<li>
+				<span class="checkbox-new clearfix">
+					<input id="i" class="checkbox-custom toggle-vis" name="paidComponent" data-column="10" type="checkbox" checked="" data-name="totalApplicants">
+					<label for="i" class="checkbox-custom-label">Applicants</label>
+				</span>
+			</li>
+				
+							
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="s" class="checkbox-custom toggle-vis" name="paidComponent" data-column="20" type="checkbox" checked="" data-name="owner">
+					<label for="s" class="checkbox-custom-label">Owner</label>
+				</span>
+			</li>
+			
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="t" class="checkbox-custom toggle-vis" name="paidComponent" data-column="21" type="checkbox" checked="" data-name="postedOn">
+					<label for="t" class="checkbox-custom-label">PostedOn</label>
+					</span>
+					</li>
+					
+							<li>
+				<span class="checkbox-new clearfix">
+					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="11" type="checkbox" data-name="Shortlisted">
+					<label for="j" class="checkbox-custom-label">Shortlisted</label>
+				</span>
+			</li>
+			
+										<li>
+				<span class="checkbox-new clearfix">
+					<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" data-column="12" type="checkbox" data-name="submitToClient">
+					<label for="k" class="checkbox-custom-label">SubmitToClient</label>
+				</span>
+			</li>
+							<li>
+				<span class="checkbox-new clearfix">
+					<input id="l" class="checkbox-custom toggle-vis" name="paidComponent" data-column="13" type="checkbox" data-name="interview">
+					<label for="l" class="checkbox-custom-label">Interview</label>
+				</span>
+			</li>
+			
+								<li>
+				<span class="checkbox-new clearfix">
+					<input id="m" class="checkbox-custom toggle-vis" name="paidComponent" data-column="14" type="checkbox" data-name="offer">
+					<label for="m" class="checkbox-custom-label">Offer</label>
+				</span>
+			</li>
+			
+										<li>
+				<span class="checkbox-new clearfix">
+					<input id="n" class="checkbox-custom toggle-vis" name="paidComponent" data-column="15" type="checkbox" data-name="onHold">
+					<label for="n" class="checkbox-custom-label">OnHold</label>
+				</span>
+			</li>
+			
+							<li>
+				<span class="checkbox-new clearfix">
+					<input id="o" class="checkbox-custom toggle-vis" name="paidComponent" data-column="16" type="checkbox" data-name="noResponse">
+					<label for="o" class="checkbox-custom-label">NoResponse</label>
+				</span>
+			</li>
+						
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="p" class="checkbox-custom toggle-vis" name="paidComponent" data-column="17" type="checkbox" data-name="joined">
+					<label for="p" class="checkbox-custom-label">Joined</label>
+				</span>
+			</li>
+			
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="q" class="checkbox-custom toggle-vis" name="paidComponent" data-column="18" type="checkbox" data-name="backOut">
+					<label for="q" class="checkbox-custom-label">BackOut</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="r" class="checkbox-custom toggle-vis" name="paidComponent" data-column="19" type="checkbox" data-name="rejected">
+					<label for="r" class="checkbox-custom-label">Rejected</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="u" class="checkbox-custom toggle-vis" name="paidComponent" data-column="22" type="checkbox" data-name="experience">
+					<label for="u" class="checkbox-custom-label">Experience</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="v" class="checkbox-custom toggle-vis" name="paidComponent" data-column="23" type="checkbox" data-name="noOfPositions">
+					<label for="v" class="checkbox-custom-label">NoOfPositions</label>
+				</span>
+			</li>
+			
+				<li>
+				<span class="checkbox-new clearfix">
+					<input id="w" class="checkbox-custom toggle-vis" name="paidComponent" data-column="24" type="checkbox" data-name="industryName">
+					<label for="w" class="checkbox-custom-label">IndustryName</label>
+				</span>
+			</li>
+		</ul></div>
+	</div>
+	<div class="colPopFot">
+		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
+		<a href="javascript:void(0)" onclick="columClose();">Cancel</a>
+	</div>
+</div>				
+			</div> 
+    
+      </span>
+      <span class="pull-left refreIcon">
+      		<button type="button" class="btn btn-danger ml pull-left btn-sm" onclick="jobForceDelete();" id="forceDeleteBtn" style="display:none">Delete</button>
+      </span>
+      <ul class="pull-right list-unstyled list-inline">
+      
+					
+							<div id="filter1ApprovedPop" class="approved_pop">
+								<ul>
+									
+										
+											<li><input id="clientName3" name="clientNameById" value="3" onclick="requirementList(&#39;list&#39;,&#39;http://localhost:8080/app&#39;);" type="checkbox"><label title="servion global solutions">servion global solutions</label></li>
+											
+										
+																
+											<li><input id="clientName3006" name="clientNameById" value="3006" onclick="requirementList(&#39;list&#39;,&#39;http://localhost:8080/app&#39;);" type="checkbox"><label title="truglobal.com">truglobal.com</label></li>
+											
+										
+										
+									
+								</ul>
+						 </div>
+					
+		                    <li id="jobActions">
+								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+								<div class="action-pop">
+									<span> 
+									<a href="/ats/requirement">Job</a>
+									
+										<a id ="importLink" href="">Import</a>
+																		
+									</span>
+								</div>
+							</li>						
+						
+						
+									
+				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a></li>
+				
+				
+				<li id="jobExportAndImportActions"><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>	           	   		
+							
+							 	<a href="javascript:void(0)" onclick="exportToPdf(1);" title="PDF">Export PDF</a>
+								<a href="javascript:void(0)" onclick="exportToExcel(1);" title="Excel">Export Excel</a>					
+							
+						</span>
+					</div>
+				</li>
+		  <li class=""><input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch"><span class="repSearchIcon" onclick=requirementListCheck('','','',atsUrl);></span></li>
+        </ul>
+      </div>		
+		
+<div class="require_wrap_table datatable_filter">
+	<div id="requirementList"></div>
+</div>
+
+</div>
+	<div class="timesheet_out" id="jobFairTabContent" style="display: none;">
+		<div class="vendor_wrap">
+<div class="positionRelative reportHead clearfix">
+      
+      <ul class="pull-right list-unstyled list-inline">
+					
+					
+						<li id="jobFairAction"><a href="/ats/addJobFair" class="newAdBtn">+ Job Fair</a></li>
+										
+									
+					
+						<li id="jobFairExportActions"><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+							<div class="newActPop">
+								<span>
+									 	<a href="javascript:void(0)" onclick="exportToPdf(2);" title="PDF">Export PDF</a>
+										<a href="javascript:void(0)" onclick="exportToExcel(2);" title="Excel">Export Excel</a>					
+								</span>
+							</div>
+						</li>
+					
+				
+		   <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='jobFairDataTableSearch'/><span class="repSearchIcon" onClick="jobFairListCheck();"></span></li>
+        </ul>
+      </div>	
+      	
+			<div class="require_wrap_table datatable_filter">
+				<div id="jobFairList"></div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="side_mask">
+  <div class="proj_close" ></div> <!-- onclick="activeTab();" -->
+</div>
+	
+	
+</section>
+ <div class="advancedsearch-mask" onclick="closeAdsrch()"></div>
+
+
+
+
+
+<style type="text/css">
+.mt10 {
+    margin-top: 10px !important;
+}
+</style>
+
+
+
+<!-- For add New Applicant -->
+
+
+<!-- Country,State,City Script Starts Here -->
+<script type="text/javascript">
+function validate_fileupload(fileName)
+{
+    var allowed_extensions = new Array("docx","doc","pdf","rtf");
+    var file_extension = fileName.split('.').pop(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
+
+    for(var i = 0; i <= allowed_extensions.length; i++)
+    {
+        if(allowed_extensions[i]==file_extension)
+        {
+            return true; // valid file extension
+        }
+    }
+
+    return false;
+}
+</script>
+
+
+<script type="text/javascript">
+ function validateSubmissionCandidateEmail() {
+	 var email =   $("input[name=EmailId]").val();
+	$('#emailDiv').find('p.jquery_form_error_message').remove();
+	 var requirementId = $("#requirementId").val();
+	 if(email != null && email != ""){
+		 $("#save_button").attr("disabled", "disabled");
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateRequirementCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&requirementId="+requirementId, 
+		        success: function(data) {
+		         	if(data == 'true'){
+			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
+			        	  $('.jquery_form_error_message').remove();
+		        		  $("input[name=EmailId]").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+		        		  $("input[name=EmailId]").setAttribute('record-exist','yes');
+		        		  $("input[name=EmailId]").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+		        	}
+		        	else{
+		        		$("#save_button").removeAttr("disabled");
+		        		$("input[name=EmailId]").removeAttr( "record-exist record-exist-errormsg");
+		        		$('.jquery_form_error_message').remove();
+		        		isCoolingOff(requirementId);
+		        	} 
+		        },
+		    });
+	 }
+	 
+ }
+ </script>   
+ 
+ 
+ <script type="text/javascript">
+ function getUserByUserEmail() {
+	 var emailId =   $("input[name=EmailId]").val();
+	 if(emailId != null && emailId != ""){
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+emailId, 
+		        success: function(json) {
+		        		
+		        		if(json.firstName != null && json.firstName != ''){
+		        			$("input[name=FirstName]").val(json.firstName);
+		        			$("input[name=FirstName]").attr("readonly", "readonly");
+		        			$("input[name=FirstName]").find('p.jquery_form_error_message').remove();
+		        		}else{
+		        			$("input[name=FirstName]").removeAttr("readonly", "readonly");
+		        			var firstName = $("input[name=FirstName]");
+		        			if(firstName == ''){
+		        				$("input[name=FirstName]").val('');
+		        			}
+		        			
+		        		}
+		        		
+		        		if(json.lastName != null && json.lastName != ''){
+		        			$("input[name=LastName]").attr("readonly", "readonly");
+		        			$("input[name=LastName]").val(json.lastName);
+		        		}else{
+		        			$("input[name=LastName]").removeAttr("readonly", "readonly");
+		        			
+		        			var lastName = $("input[name=LastName]");
+		        			if(lastName == ''){
+		        				$("input[name=LastName]").val('');
+		        			}
+		        			
+		        			
+		        		}
+		        		
+		        		if(json.mobilePhone != null && json.mobilePhone != ''){
+		        			$("input[name=PhoneNumber]").val(json.mobilePhone);
+		        			$("input[name=PhoneNumber]").attr("readonly", "readonly");
+		        		}else{
+		        			$("input[name=PhoneNumber]").removeAttr("readonly", "readonly");
+		        			
+		        			var phno = $("input[name=PhoneNumber]");
+		        			if(phno == ''){
+		        				$("input[name=PhoneNumber]").val('');
+		        			}
+		        			
+		        			
+		        		}
+		        		
+		        },
+		    });
+	 }else{
+		 $("input[name=FirstName]").attr("disabled", false);
+		 $("input[name=FirstName]").val('');
+		 
+		 $("input[name=LastName]").attr("disabled", false);
+		 $("input[name=LastName]").val('');
+		 
+		 $("input[name=PhoneNumber]").attr("disabled", false);
+		 $("input[name=PhoneNumber]").val('');
+		 
+	 }
+ }
+ </script> 
+ 
+ 
+ <script>
+ function validateCurrentCTC(){
+	 var currentCTC = $("input[name=CurrentCTC]").val();
+	 if(currentCTC){
+		 $("#currentCTCRatePer").removeAttr("data-validation-optional");
+		 $("#currentCTCRatePer").attr("data-validation", "required");
+	 }else{
+		 $("#currentCTCRatePer").removeAttr("data-validation");
+		 $("#currentCTCRatePer").attr("data-validation-optional", "true");
+	 }
+ }
+ </script>
+ 
+  <script>
+ function validateExpectedCTC(){
+	 var expectedCTC = $("input[name=ExpectedCTC]").val();
+	 if(expectedCTC){
+		 $("#expectedCTCRatePer").removeAttr("data-validation-optional");
+		 $("#expectedCTCRatePer").attr("data-validation", "required");
+	 }else{
+		 $("#expectedCTCRatePer").removeAttr("data-validation");
+		 $("#expectedCTCRatePer").attr("data-validation-optional", "true");
+	 }
+ }
+ </script>
+ 
+ <script>
+ function validateExpectedCTCRatePer(){
+	 var expectedCTCRatePer = document.getElementById("expectedCTCRatePer").value;
+	 if(expectedCTCRatePer){
+		 $("input[name=ExpectedCTC]").removeAttr("data-validation-optional");
+		 $("input[name=ExpectedCTC]").attr("data-validation", "required validate_Space validate_float validate_length length1-8");
+	 }else{
+		 $("input[name=ExpectedCTC]").removeAttr("data-validation");
+		 $("input[name=ExpectedCTC]").attr("data-validation-optional", "true");
+		 $("input[name=ExpectedCTC]").attr("data-validation", "validate_Space validate_float validate_length length1-8");
+	 }
+ }
+ </script>
+ 
+ <script>
+ function validateCurrentCTCRatePer(){
+	 var currentCTCRatePer = document.getElementById("currentCTCRatePer").value;
+	 if(currentCTCRatePer){
+		 $("input[name=CurrentCTC]").removeAttr("data-validation-optional");
+		 $("input[name=CurrentCTC]").attr("data-validation", "required validate_Space validate_float validate_length length1-8");
+	 }else{
+		 $("input[name=CurrentCTC]").removeAttr("data-validation");
+		 $("input[name=CurrentCTC]").attr("data-validation-optional", "true");
+		 $("input[name=CurrentCTC]").attr("data-validation", "validate_Space validate_float validate_length length1-8");
+	 }
+ }
+ </script>
+ 
+ 
+ 
+ <script>
+ function changeRateLabels(){
+	 
+	 var currentRate = document.getElementById("currentRate").textContent;
+	 var currentstringLength = currentRate.length; 
+	 var currentRatelastChar = currentRate.charAt(currentstringLength - 1);
+	 
+	 if(currentRatelastChar == "*"){
+		 $("#currentRate").html("Current Rate *"); 
+	 }else{
+		 $("#currentRate").html("Current Rate");
+	 }
+	 
+	 var expectedRate = document.getElementById("expectedRate").textContent;
+	 var expectedstringLength = expectedRate.length; 
+	 var expectedRatelastChar = expectedRate.charAt(expectedstringLength - 1);
+	 
+	 if(expectedRatelastChar == "*"){
+		 $("#expectedRate").html("Expected Rate *"); 
+	 }else{
+		 $("#expectedRate").html("Expected Rate");
+	 }
+	 
+ }
+ </script>
+ 
+ 
+ 
+ <script>
+ function getEmployementType(){
+	 var designationType = document.getElementById("designationType").value;
+	 
+	 if(designationType == 'C2C'){
+		 $("#needApplicantPermit").attr("disabled", "disabled");
+		 document.getElementById("needApplicantPermit").checked = false;
+		 $("#needApplicantPermit").val('N');
+	 }else{
+		 $("#needApplicantPermit").removeAttr("disabled");
+		
+	 }
+	 
+	 if(designationType == 'C2C'){
+		 document.getElementById("vendorsDiv").style.display="";
+		 document.getElementById("vendorContactsDiv").style.display="";
+		 document.getElementById("employmentOtherTypeDiv").style.display="none";
+		
+		 
+		 $('#designationOtherType').removeAttr("data-validation"); 
+		 $('#designationOtherType').attr("data-validation-optional", "true"); 
+		 $('#designationOtherType').attr("data-validation","validate_Space validate_length length2-250"); 
+		 
+		 getVendorsByOrgLocationForAddApplicant();
+	 }
+	 else if(designationType == 'C2C-1099'){
+		 document.getElementById("vendorsDiv").style.display="";
+		 document.getElementById("vendorContactsDiv").style.display="";
+		 document.getElementById("employmentOtherTypeDiv").style.display="none";
+		
+		 
+		 $('#designationOtherType').removeAttr("data-validation"); 
+		 $('#designationOtherType').attr("data-validation-optional", "true"); 
+		 $('#designationOtherType').attr("data-validation","validate_Space validate_length length2-250"); 
+		 
+		 getVendorsByOrgLocationForAddApplicant();
+	 }else if(designationType == 'Other'){
+		 
+		 document.getElementById("vendorsDiv").style.display="none";
+		 document.getElementById("vendorContactsDiv").style.display="none";
+		 document.getElementById("employmentOtherTypeDiv").style.display="";
+		 
+		 
+		 $('#designationOtherType').removeAttr("data-validation-optional"); 
+		 $('#designationOtherType').attr("data-validation","required validate_Space validate_length length2-250"); 
+		 
+	 }
+	 else{
+		 
+		 
+		 document.getElementById("employmentOtherTypeDiv").style.display="none";
+		 document.getElementById("vendorsDiv").style.display="none";
+		 document.getElementById("vendorContactsDiv").style.display="none";
+		 
+		 
+		 $('#designationOtherType').removeAttr("data-validation"); 
+		 $('#designationOtherType').attr("data-validation-optional", "true"); 
+		 $('#designationOtherType').attr("data-validation","validate_Space validate_length length2-250"); 
+		 
+	 }
+	 
+	 
+ }
+ </script>
+ 
+ <script>
+ function getVendorsByOrgLocationForAddApplicant(){
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getVendorsByOrgLocation?"+tokenParamName+"="+tokenValue+"", 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>--Select Vendor--</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+				}
+	        	$("#vendors").empty();
+		        $("#vendors").append(output);
+		        $('#vendors').trigger("chosen:updated"); 
+		        
+	        },
+	    }); 
+	 
+ }
+ </script>
+ 
+ <script>
+ function getAddApplicantVendorContactList(){
+	 var orgRelationID = $('#vendors').val();
+		 $.ajax({
+			    type: "POST",
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
+		        	$('#vendorContact').empty();
+		        	$('#vendorContact').append('<option value="">--Select Vendor contact--</option>');
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
+		            	 $('#vendorContact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+		            } 
+		            $('#vendorContact').trigger("chosen:updated");
+		        }
+		 }); 
+ }
+ </script>
+ <script>
+function uploadAddApplicantCandidateDoc(){
+	fileUpload("newUploadBtn", "addApplicants", "addApplicant_form");
+}
+</script>
+<script>
+function importAddApplicantDoc(){
+	fileUpload("uploadBtn", "addApplicants", "addApplicant_form");
+}
+</script>
+ 
+
+<input type="hidden" name="assignedTeamId" id="assignedTeamId" value="">
+
+
+<script>
+
+</script>
+
+<!--  Filter Pop -->
+
+<!-- <div class="sideMask"></div> -->
+</div><div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div>
+
+	<div class="timesheet_out" id="jobFairTabContent" style="display: none;">
+		<div class="vendor_wrap">
+<div class="positionRelative reportHead clearfix">
+      
+      <ul class="pull-right list-unstyled list-inline">
+					
+						<li><a href="/addJobFair" class="newAdBtn">+ Job Fair</a></li>
+									
+						<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+							<div class="newActPop">
+								<span>
+									 	<a href="javascript:void(0)" onclick="exportToPdf(2);" title="PDF">Export PDF</a>
+										<a href="javascript:void(0)" onclick="exportToExcel(2);" title="Excel">Export Excel</a>					
+								</span>
+							</div>
+						</li>
+				
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='jobFairDataTableSearch'/><span class="repSearchIcon" onClick="jobFairListCheck();"></span></li>
+        </ul>
+      </div>	
+      	
+			<div class="require_wrap_table datatable_filter">
+				<div id="jobFairList"></div>
+			</div>
+		</div>
+	</div>
+<script>
+
+</script>
+<script>
+
+</script>
+<script type="text/javascript">
+	
+</script>
+
+
+
+
+
+
+<!-- Footer Area -->
+<footer class="footer-area clearfix">
+    <div class="col-md-6 text-left">
+    	&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved
+    </div>
+            <div class='col-md-6 text-right'>
+                  <a href="/terms-of-use.html" target="blank" title="Terms of Service">Terms of Service</a> <small class="text-muted">|</small> <a href="/privacy-policy.html" target="blank" title="Privacy Policy">Privacy Policy</a>
+            </div>
+</footer>
+  
+  <div class="file_mask">
+  </div>
+  <!-- <div class="alert alert-danger" role="alert" style='display:none;'>
+	<div>
+		<strong>Alert</strong>
+		<div class="close" data-type="2"></div>
+	</div>
+	<span></span>
+  </div>-->
+  <div class="alert alert-success" role="alert" style="display:none;">
+	<div>
+		<strong>Message</strong>
+		<div class="close" data-type="1"></div>
+	</div>
+	<span></span>
+  </div> 
+  <style type="text/css">
+  	.file_mask {
+  		display: none;
+  		position: fixed;
+  		top: 0;
+  		left: 0;
+  		right: 0;
+  		bottom: 0;
+  		background-color: black;
+  		opacity: .4;
+  		background-image: url('/resources/images/loading.gif');
+  		background-position: center;
+  		background-size: 50px;
+  		background-repeat: no-repeat;
+  		z-index: 100000;
+  	}
+  </style>
+  <!-- Footer Area --> 
+  
+  <script type="text/javascript">
+       //window.scroll for Side Nav
+               $(function() {
+   var sideBar = $(".side-bar");
+   $(window).scroll(function() {
+       var scroll = $(window).scrollTop();
+       if (scroll >= 20) {
+           sideBar.addClass("side-nav-fixed");
+       } else {
+           sideBar.removeClass("side-nav-fixed");
+       }
+   });
+});
+       </script>
+      
+
+<!-- <script>
+$(document).tooltip({
+position: {
+my: "center bottom",
+at: "center top-10",
+collision: "flip",
+using: function( position, feedback ) {
+$( this ).addClass( feedback.vertical )
+.css( position );
+}
+}
+});
+</script> -->
+
+<div id="imagecrop" class="post_popup"></div>
+
+
+<div class="pac-container pac-logo" style="display: none; width: 0px; position: absolute; left: 0px; top: 149px;"></div></body></html>
+<script type="text/javascript">
+$(function() { // updated need to check working properly or not  
+    //Adding Customized Job Title list this method is slead-common.js
+	   tagIt("requirementTitle", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
+    
+	   //Adding Customized Job Id list this method is slead-common.js
+	   tagIt("jobId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Requirement ID:', 'tagItBykeyForSkills','skills','Job Id');
+	   
+	 //Adding Customized Job Id list this method is slead-common.js
+	   tagIt("generatedId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Generated ID:', 'tagItBykeyForSkills','skills','Generated ID');
+	 
+	 //Adding Customized Job Skills list this method is slead-common.js
+	   tagIt("requirementSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
+
+	   tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+
+	   
+});  
+</script>
+<script type="text/javascript">
+function activeTabs(){
+	document.getElementById("tab-1").style.display="none";
+	$("#quickviewTabsdetails").removeClass("active");
+	$("#quickviewTabsqv").addClass("active");
+	$("#quickresume_view").addClass("active in");
+	$("#detailrecommondations").removeClass("active in");
+	
+	$("#pipelineQuickviewTabsdetails").removeClass("active");
+	$("#pipelineQuickviewTabsqv").addClass("active");
+	$("#quickview").addClass("active in");
+	$("#detailview").removeClass("active in");
+}
+</script>

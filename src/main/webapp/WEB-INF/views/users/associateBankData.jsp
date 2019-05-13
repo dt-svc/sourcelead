@@ -187,6 +187,11 @@ function showHideAccountTypes(){
 		$('#bankNameSpanId').attr('style',"display:none");
 		$('#accountNumberSpanId').attr('style',"display:none");
 		$('#routingNumberSpanId').attr('style',"display:none");
+
+		$('#bankName').parent().find('p.jquery_form_error_message').remove();
+		$('#accountNumber').parent().find('p.jquery_form_error_message').remove();
+		$('#routingNumber').parent().find('p.jquery_form_error_message').remove();
+		
 	}
 }
 </script> 

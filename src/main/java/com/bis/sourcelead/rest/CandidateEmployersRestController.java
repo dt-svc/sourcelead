@@ -60,9 +60,6 @@ public class CandidateEmployersRestController {
 	private CandidateEmployersService candidateEmployersService;
 
 	@Autowired
-	private CommonUtil commonUtil;
-
-	@Autowired
 	private CandidateService candidateService;
 
 	@Autowired

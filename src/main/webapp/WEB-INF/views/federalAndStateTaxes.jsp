@@ -158,7 +158,7 @@
 		</div>
 	</div>
  </div>
- <script src="/resources/js/formvalidator.js"></script> 
+ <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script> 
  
  <div id="divDocsTd1" style="display: none; float: left;">
 		  <div class="chosentext-left">

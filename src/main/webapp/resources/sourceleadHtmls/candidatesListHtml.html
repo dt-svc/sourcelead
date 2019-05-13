@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/resources/js/masterSideNav.js"></script>
+<script src="/resources/js/masterHeader.js"></script>
+</head>
+<script>
+$( document ).ready(function() {
+	 // below fucntion is used to build MasterSide Naigation panel.
+	  $("#masterSideNav").html(masterSideNav.masterSideNavPanel());
+	  // below fucntion is used to build MasterHeader panel.
+	  $("#masterHeaderNav").html(masterHeader.masterHeaderPanel());
+	  
+	   candidateListCheck(serachValue,universalCanddateList,candidateKeyword,candidateIdSearchId);
+	    if(candidateUUID != null && candidateUUID != '' && candidateUUID != 'undefined'){
+			candidateQuickViewProfile(candidateUUID);
+		}
+	
+});
+</script>
+ <script type="text/javascript">
+ var config = {
+		  '.chosen-select'           : {},
+		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+		  '.chosen-select-no-single' : {disable_search_threshold:10},
+		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+		  '.chosen-select-width'     : {width:"95%"}
+		}
+
+		for (var selector in config) {
+		  $(selector).chosen(config[selector]);
+		}
+		$('.chosen-select').each(function() {
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+			})
+ </script>
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+</script>
+<body>
+<div class="wraper">
+  <header class="main-header" id="masterHeaderNav"></header>
+  <aside class="" id="masterSideNav">
+   
+  </aside>
+  <section class="content-wraper">
+    <div class="dashboard_loaded">
+      <section class="content-header clearfix">
+   <div class="success_pop" id="candSelector" style="display: none;"> 
+     <i class="fa fa-check-circle"></i><span id="candMsgDiv"></span> 
+   </div>
+    <div class="pull-left">
+      <h2 id="headerLbl">Candidate List</h2>
+    </div>
+    <div class="pull-right brud-crum"><a href="/app/dashboard/1146">Home </a> &raquo; <label id="brudCrumLbl">Candidate List </label> </div>
+  </section>
+    </div>
+  <div class="clearfix">
+    <ul class="project-tabs-menu projecttabs-custom clearfix">
+      <li id="" class="current"><a href="javascript:void(0)" onclick="javascript:goToCandidateList();">Candidate List</a></li>
+      <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
+      <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
+      <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
+      <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
+      <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li>
+      <div class="clearfix"></div>
+    </ul>
+  </div>
+  
+  <div class="timesheet_out" id="candidatesInfoDiv">
+    <div class="positionRelative reportHead clearfix">
+		<span class="pull-left refreIcon" id="advanceSearchDiv">
+			<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetCandidateFilter();"></a>
+			<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onclick="openPop();getSourceleadTags();"> Advanced Search &nbsp; <i class="fa fa-search"></i>
+			</a>
+		</span>
+      <ul class="pull-right list-unstyled list-inline">
+        <li class="tableShare" style="display: none;">
+			<a class="marketplaceIcon mr5" title="Market Place" onclick="callAddToMarket()"></a> <a class="shareIcon mr5" title="Share" href="javascript:void(0)" onclick="shareJob();"></a> <a class="sendIcon mr5" title="Submit" href="javascript:void(0)" onclick="submitCandidatesToJob();"></a>
+		  </li>
+        <li>
+			<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Candidate <i class="fa fa-caret-down"></i></a>
+          <div class="action-pop"> <span> <a href="/app/candidate">Parse Resume</a> <a href="/app/addCandidate">Add Manual</a> <a href="/app/bulk-resume-import.html">Bulk Resume Parsing</a> <a href="uploadCandidateForm">Import XLS</a> </span> </div>
+        </li>
+        <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openCandidateFilterPop();"></a></li>
+        <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+          <div class="newActPop"> <span> <a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a> </span> </div>
+        </li>
+        <li class="">
+          <input type="text" class="repSearchBar" placeholder="Search" id="dataTableSearch">
+          <span class="repSearchIcon" onclick="candidateList();"></span>
+		</li>
+      </ul>
+    </div>
+    <div class="candidate_wrap_table datatable_filter">
+      <div id="candidateList">
+        <div class="tbldata-dotdot-vsm"> </div>
+        <div id="candidatePagination_wrapper" class="dataTables_wrapper no-footer">
+          <div id="candidatePagination_processing" class="dataTables_processing" style="display: none;"><img src="/resources/images/loading.gif" style="width: 75px; height: 75px;"></div>
+          <div style="overflow-x: auto; overflow-y: hidden;">
+            <table id="candidatePagination" class="display dataTable no-footer" role="grid" aria-describedby="candidatePagination_info" style="width: 100%;" width="100%" cellspacing="0">
+              <thead>
+                <tr role="row">
+                  <th><input type="checkbox" id="sharedcheckbox" onclick="toggleShareCandidates(this);">
+					</th>
+                  <th>&nbsp;</th>
+                  <th>Generated ID</th>
+                  <th>Name</th>
+                  <th>Primary Skill</th>
+                  <th>Employment Type</th>
+                  <th>Email</th>
+                  <th>Mobile Number</th>
+                  <th>Location</th>
+                  <th>Last Update</th>
+                  <th>Profile %</th>
+                  <th>No Of Jobs</th>
+                  <th>Created By</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr role="row" class="odd">
+                  <td>
+					  <input type="checkbox"></td>
+                  <td><div class="tblminwidth-75 pull-left">
+                      <div class="iconClass pull-left star-rating">
+                        <input type="checkbox" title="Add as Favourite">
+                        <label></label>
+                      </div>
+                    </div></td>
+                  <td><div><span title="GDFHCD71">GDFHCD71</span></div></td>
+                  <td><div class="proj_show divmax-width" onclick="candidateQuickViewProfile(176379);"><span title="Snigitha ">Snigitha </span><i class="fa fa-binoculars"></i></div></td>
+                  <td><div>--</div></td>
+                  <td><div>W-2</div></td>
+                  <td>
+					  <div><span title="snigitha@yopmail.com">snigitha@yopmail.com</span></div>
+				  </td>
+                  <td><div class="tbldata-dotdot-vsm">889966521</div></td>
+                  <td><div><span title="Hyderabad, Telangana, India">Hyderabad, Telangana, India</span></div></td>
+                  <td class="tblminwidth-75 sorting_1"><div>14-11-2018</div></td>
+                  <td>
+					  <div class="profilePercentageClass176379 tbldata-dotdot-vsm colorRed">
+                      <div id="176379profilePercentage">40%</div>
+                    </div>
+				  </td>
+                  <td><div class="tbldata-dotdot-vsm submittedRequirementCount" id="176379"><a href="#" onclick="getSubmittedJobsList(176379)">
+                      <div id="176379submittedRequirementCount">1</div>
+                      </a></div></td>
+                  <td class=" tblminwidth-75"><div><span title="neha ">neha </span></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+<!-- advanced filter pop up start -->
+  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="candidateFilterPopup">
+	<h5 class="headerAdsrch">Filters
+		<a href="javascript:void(0)" class="close-div" onClick="closeCandidateFilterPop()"><i
+			class="fa fa-close"></i></a>
+	</h5>
+	<div class="addInner">
+		<div class="row">
+			<div class="col-md-2">
+			<div class="row">
+			
+			<div class="col-md-12 mb">
+				<label><strong>All Candidates</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="AllTypeFilter">
+					    <li class="radioIput positionRelative"><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2"   ><label for="candidateAll">All</label></li>
+						<li class="radioIput positionRelative"><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  ><label for="candidateActive">Active</label></li>
+						<li class="radioIput positionRelative" ><input id="candidateInActive" name="candidateStatus" type="radio" value ="0" ><label for="candidateInActive">In Active</label></li>
+                    </ul>
+				 </div>
+				 </div> 
+				 
+				 
+			    <div class="col-md-12 mb">
+				<label><strong>Type</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="TypeFilter">
+					     <li class="radioIput positionRelative" ><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" ><label for="candidateTypeAll">All</label></li>
+						 <li class="radioIput positionRelative" ><input id="onlycandidate" type="radio" name="candidateType" value ="Favourite" ><label for="onlycandidate">Favourite</label></li>
+                    </ul>
+				 </div>
+				 </div>
+				 
+				 
+				 <div class="col-md-12 mb">
+				<label><strong>Candidate Type</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="candidateTypeFilter">
+					    <li class="checkBox positionRelative" ><input  type="checkbox" id="candidateCheck" name="candidateTypeFilter" checked value ="Candidates"  ><label>Candidates</label></li>
+						 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+						<li class="checkBox positionRelative" ><input  type="checkbox" id="associateCheck"  name="candidateTypeFilter"  value ="Associates" ><label>Associates</label></li>
+                   </c:if>
+                    </ul>
+				 </div>
+				 </div>  
+			  </div>
+			</div>
+			
+			<div class="col-md-2">
+				<div class="row">
+			       <div class="col-md-12 mb">
+				     <label><strong>Updated</strong></label>
+					 <div class="clearfix">
+						<ul class="list-unstyled" id="UpdatedFilter">
+						<li class="radioIput positionRelative" ><input id="allCandidates" type="radio" name="upcandidateStatus" value ="all" ><label for="allCandidates">All</label></li>
+                        <li class="radioIput positionRelative" ><input id="candidateToDay" type="radio" name="upcandidateStatus" value ="0"  ><label for="candidateDayAgo">Today</label></li>
+                        <li class="radioIput positionRelative" ><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1" ><label for="candidateDayAgo">1 Day ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3" ><label for="candidate3DayAgo">3 Days ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7" ><label for="candidate1WeekAgo">1 Week ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="14" ><label for="candidate3WeekAgo">2 Weeks ago</label></li>
+						<li class="radioIput positionRelative" ><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30" ><label for="candidateMonthAgo">1 Month ago</label></li>
+	                    <li class="radioIput positionRelative" ><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"><label for="candidate3Months">3 Months ago</label></li>
+	                    
+                        </ul>
+					 </div>
+				 </div>
+				 
+				 <div class="col-md-12 mb">
+				<label><strong>Created By</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="createdByTypeFilter">
+					    <li class="radioIput positionRelative" ><input  type="radio" id="myCandidatesRadio" name="createdByFilter"  value ="myCandidates" checked ><label>My Candidates</label></li>
+						<li class="radioIput positionRelative" ><input  type="radio" id="allCandidatesRadio"  name="createdByFilter"  value ="allCandidates"  ><label>All Candidates</label></li>
+                    </ul>
+				 </div>
+				 </div>  
+			 </div>
+			</div> 
+			
+			<div class="col-md-2">
+				<div class="row">
+					<div class="col-md-12 mb">
+						<label><strong>Employment Type</strong></label>
+						 <div class="clearfix">
+							<ul class="list-unstyled" id="employmentFilter">
+	                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2C"  ><label>C2C</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2C-1099" ><label>C2C-1099</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="W-2" ><label>W-2</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2H"  ><label>C2H</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2H -1099" ><label>C2H -1099</label></li>
+	               			    <li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="Part Time" ><label>Part Time</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="Full Time" ><label>Full Time</label></li>
+	                        </ul>
+						 </div>
+						 </div> 
+				     </div>
+			</div>
+			
+			
+			<div class="col-md-2">
+				<div class="row">
+					<div class="col-md-12 mb">
+						<label><strong>Availability</strong></label>
+						 <div class="clearfix">
+							<ul class="list-unstyled" id="availabilityFilter">
+	                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="Immediately available"  ><label>Immediately available</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="15 Days" ><label>15 Days</label></li>
+								<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="1 Month" ><label>1 Month</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="2 Months"  ><label>2 Months</label></li>
+	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="3 Months" ><label>3 Months</label></li>
+	                        </ul>
+						 </div>
+						 </div> 
+				     </div>
+			</div>
+			
+			<div class="col-md-3">
+					<div class="clearfix dynamic_search filterDynamicsearch">
+						<input type="text" id="mySkillsInput" onkeyup="mySkillsFunction()" placeholder="Skills" title="Type in a skills">
+						<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+					</div>
+					 <div class="clearfix filterSearch-ul">
+						<ul class="list-unstyled positionRelative filterSearch mt5" id="skillsUL">
+							<c:forEach var="skill" items="${skillsList}">
+							<li class="checkBox positionRelative"><input  type="checkbox" name="candidateFilterSkills" value ="${skill.name}" ><label>${skill.name}</label></li>
+							</c:forEach>
+						</ul>
+					 </div> 
+		 </div> 
+			
+		</div>
+		</div>
+		<div class="clearfix advancedsearch-footer">
+			<div class="pull-right mr">
+				<input type="button" value="Apply" id="search_requiremet" onclick="closeCandidateFilterPop();candidateList();" class="btn btn-sm btn-success" />
+				<input type="button" value="Reset" id="clear_search" onclick="resetCandidateFilter();" class="btn btn-sm btn-primary" />
+			</div>
+		</div>
+</div>
+<!-- advanced filter pop End -->
+
+	<div class="clients_side_wrap quickviewTabs">
+		<ul class="nav nav-tabs">
+			<li class="active" id="pipelineQuickviewTabsqv"><a
+				data-toggle="tab" href="#quickview">Quickview</a></li>
+			<li id="pipelineQuickviewTabsdetails"><a data-toggle="tab"
+				id="detailedView" href="#detailview">Detailed View</a></li>
+		</ul>
+		<div class="tab-content">
+			<div id="quickLoading"></div>
+			<div id="quickview" class="tab-pane fade in active">
+				<div id="applicantQuickViewDiv"></div>
+			</div>
+			<div id="detailViewLoading"></div>
+			<div id="detailview" class="tab-pane fade">
+				<div class="clients_side_wrap_inn">
+					<div class="project_side_wrap_inn_tabs">
+						<div id="viewCandidateDiv"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!-- Advanced search filer pop -->
+ <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data'>
+				  <!-- <div class="cand-advsrch-popup cand-advsrchPopup"> -->
+				  <div class="cand-advsrch-popup advancedsearch-popup">
+					  <h5 class="headerAdsrch">Advanced Search
+					  <a href="javascript:void(0)" class="close-div" onclick="closePop();clearCandidateSearchKeys();"><i class="fa fa-close"></i></a>
+					  </h5>
+					  <div class="addInner">
+					  <!-- <div class="candAdvsrchPop"> -->
+					  <div class="row">
+						  <div class="col-md-4">
+							  <label>Any of Keyword</label>
+							  <div class="clearfix">
+							        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
+                                    </select>
+							  	<!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> -->
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>All Keywords</label>
+							  <div class="clearfix">
+							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
+                                 </select>
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>Exclude Keyword</label>
+							  <div class="clearfix">
+							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
+                                 </select>
+							  </div>
+						  </div>
+					  </div>
+					  <div class="row">
+					  <div class="clearfix">
+					  
+					  
+					  <div class="col-md-8">
+						<label>Tags</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Tags" id="canTags" name="candidateTags">
+								</select>
+							 </div>
+						</div>
+						
+						
+						<div class="col-md-8">
+						<label>Immigration Status</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Visa" id="canVisa" name="candidateVisa">
+								<c:forEach var="visa" items="${visaList}">
+								<option value="${visa.name}">${visa.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+					  
+					  <div class="clearfix">
+						<div class="col-md-8 mt5">
+						<label>Skills</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="canSkills" name="candidateSkills">
+								<c:forEach var="skill" items="${skillsList}">
+								<option value="${skill.name}">${skill.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+						
+						<div class="col-md-4">
+						<label>Primary Skill</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Primary Skill" id="primarySkill" name="primarySkill">
+                                 </select>
+							 </div>
+						</div>
+						
+						 
+					 </div>
+						<c:set var="currency" value=""></c:set>
+						<div class="col-md-8">
+							<div class="row">
+								<div class="col-md-6 payrate_p">
+									<label>Rate</label>
+									 <div class="input-group error-field">
+										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
+										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
+										        <option value="">Currency</option>
+										         <option ${currency  == 'INR' ? 'selected' : ''}>INR</option>
+								                 <option ${currency  == 'AUD' ? 'selected' : ''}>AUD</option>
+								                 <option ${currency  == 'USD' ? 'selected' : ''}>USD</option>
+								                 <option ${currency  == 'GBP' ? 'selected' : ''}>GBP</option>
+								                 <option ${currency  == 'SGD' ? 'selected' : ''}>SGD</option>
+								                 <option ${currency  == 'EUR' ? 'selected' : ''}>EUR</option>
+				                            </select>
+										</div>
+										 <div id="minRateDiv">
+									      <input type="text" id="minRate" name="minRate" field-name="Min Rate" data-validation="validate_Space validate_float" data-validation-optional="true"  class="form-control input-sm" placeholder="Min Rate">
+								         </div>
+								    </div>
+								</div> 
+							<div class="col-md-6 payrate_p">
+								<label>&nbsp;</label> 
+								<div class="input-group error-field">
+								 <div id="maxRateDiv">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
+								</div>
+								<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
+									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
+									            <option value="">Rate Type</option>
+										        <option value="Hourly">Hourly</option>
+												<option value="Weekly">Weekly</option>
+												<option value="Bi-weekly">Bi-weekly</option>
+												<option value="Semi-Monthly">Semi-Monthly</option>
+												<option value="Monthly">Monthly</option>
+												<option value="Bi-Monthly">Bi-Monthly</option>
+												<option value="Yearly">Yearly</option>
+				                            </select> 
+									</div>
+								</div>
+							</div>
+						 </div>
+						 </div>
+						 
+						 <div class="clearfix">
+						  <div class="col-md-4">
+						    <label>Designation</label>
+						     <div class="clearfix">
+						             <select class="chosen-select form-control input-sm" multiple data-placeholder="Designation" id="designation" name="designation">
+                                     </select>
+						    </div>
+							</div>
+						 </div>
+						 
+						  <div class="clearfix">
+						  <div class="col-md-4">
+							  <label>Experience</label>
+							  <div class="clearfix row">
+							  <div class="col-md-6">
+								  <select class="chosen-select"  id="minExpYears" name="minExpYears" data-placeholder="Years" onblur="minMaxExperience();">
+									  <option  selected value="">Min Years</option>
+									 <c:forEach begin="0" end="24" varStatus="loop">
+									    <option value="${loop.index}">${loop.index} Years</option>
+									</c:forEach>
+								  </select>
+							  </div>
+							  <div class="col-md-6">
+								  <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months" onblur="minMaxExperience();">
+									  <option  value="">Max Years</option>
+									  <c:forEach begin="0" end="25" varStatus="loop">
+									    <option value="${loop.index}">${loop.index} Years</option>
+									</c:forEach>
+								  </select>
+							  </div>
+							  </div>
+							  <div class="row" id="expId">
+				                  <input type="hidden" name="expValidation" id="expValidation">
+				              </div>
+						  </div>
+						  
+						  <div class="col-md-4">
+							  <label>Notice Period</label>
+							  <div class="clearfix">
+								 <select class="chosen-select" id="noticePeriod" name="noticePeriod" data-placeholder="Notice Period" multiple>
+						                 <option value="Immediately available">Immediately available</option>
+						                 <option value="15 Days">15 Days</option>
+						                 <option value="1 Month">1 Month</option>
+						                 <option value="2 Months">2 Months</option>
+						                 <option value="3 Months">3 Months</option>
+				                </select>
+							  </div>
+						  </div>
+						    <div class="col-md-4">
+						    <label>Employment Type</label>
+						     <div class="clearfix">
+						             <select class="chosen-select form-control" id="designationType" name="designationType">
+						                <option value="">--Select--</option>
+						                 <option>C2C</option>
+						                 <option>W-2</option>
+						                 <option>C2H</option>
+						                 <option>Part Time</option>
+						                 <option>Full Time</option>
+						                 <option>Other</option>
+						             </select>
+						    </div>
+						  </div>
+						  </div>
+						  <div class="clearfix">
+						   <div class="col-md-4">
+							  <label>Country</label>
+							  <div class="clearfix">
+								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
+								    <option value="">--Select country--</option>
+								     <c:forEach var="cntry" items="${countryList}">
+							                      <option value="${cntry.name}">${cntry.name}</option>
+						              </c:forEach>
+				                 </select>
+							  </div>
+						  </div>
+						  
+						  <div class="col-md-4"> 
+							  <label>State</label>
+							  <div class="clearfix">
+								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
+								        <option value="">---select state---</option>
+								        <%-- <c:forEach var="state" items="${statesList}">
+							                     <option value="${state.stateName}">${state.stateName}</option>
+						                </c:forEach> --%>
+                                 </select>
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>City</label>
+							  <div class="clearfix">
+								  <select  class="chosen-select" name="city" id="citySearch" field-name="City"  >
+								      <option value="">---select city---</option>
+                                  </select>
+							  </div>
+						  </div>
+						  </div>
+						  <div class="clearfix">
+					  	<div class="col-md-4">
+							  <label>Education</label>
+							  <div class="clearfix"> 
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Education" id="education" name="education">
+                                       <c:forEach var="edu" items="${educationsList}">
+							                     <option value="${edu.name}">${edu.name}</option>
+						                </c:forEach>
+                                  </select>
+							  </div>
+						  </div> 
+						  <div class="col-md-4">
+							  <label>Exclude Education</label>
+							  <div class="clearfix">
+								   <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Education" id="excludeEducation" name="excludeEducation">
+                                       <c:forEach var="edu" items="${educationsList}">
+							                     <option value="${edu.name}">${edu.name}</option>
+						                </c:forEach>
+                                   </select>
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>Certification</label>
+							  <div class="clearfix">
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Certification" id="certification" name="certification">
+                                  </select>
+							  </div>
+						  </div>
+						  </div>
+						  <div class="clearfix">
+						  <div class="col-md-4">
+							  <label>Employers</label>
+							  <div class="clearfix">
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Employers" id="employers" name="employers">
+                                  </select>
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>Exclude Employers</label>
+							  <div class="clearfix">
+								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
+                                  </select>
+							  </div>
+						  </div>
+						  
+						   <!-- <div class="col-md-4">
+							  <label>Applicant Type</label>
+							  <div class="clearfix">
+								   <select class="chosen-select" name="applicantType" id="applicantType" field-name="Applicant Type"  >
+								      <option value="">---select Applicant Type---</option>
+								      <option value="candidate">Candidate</option>
+									  <option value="consultant">Consultant</option> 
+				                   </select>
+							  </div>
+						  </div> -->
+						  </div>
+					  </div>
+					  </div>
+				  </div>
+				  <div class="clearfix advancedsearch-footer">
+						  <div class="pull-right mr">
+							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); closePop();minMaxExperience();" class="btn btn-sm btn-success"/>
+                               <input type="button"  value="Reset"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
+                               <!--  <input type="button" value="Cancel" onClick="closePop();clearCandidateSearchKeys();" class="btn btn-sm btn-danger"/> -->
+						  </div>
+					  </div>
+				  </div>
+			  </form:form>
+<!-- ends -->
+<div class="cand-advsrch-popup advancedsearch-popup" id="requirementFilterPopup">
+				<h5 class="headerAdsrch">Advanced Search
+					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+						<div class="clearfix">
+							<div class="col-md-4">
+								<label>Generated ID</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Generated ID" id="generatedId" name="generatedId">
+									</select>
+								</div>
+							</div>
+							
+							<div class="col-md-4">
+								<label>Title</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Job Title" id="requirementTitle"
+										name="requirementTitle">
+									</select>
+								</div>
+							</div>
+							
+							<div class="col-md-4">
+							<label>Notice Period</label>
+							<div class="clearfix">
+								<select multiple class="chosen-select form-control"
+									id="noticePeriod" name="noticePeriod"
+									data-validation-optional="true"
+									data-placeholder="Select Notice Period">
+									<option value="Immediately Available">Immediately Available</option>
+									<option value="15 Days">15 Days</option>
+									<option value="1 Month">1 Month</option>
+									<option value="2 Months">2 Months</option>
+									<option value="3 Months">3 Months</option>
+								</select>
+							</div>
+						  </div>
+						  
+						  <div class="col-md-4">
+								<label>Client</label>
+								<div class="clearfix">
+									<select class="chosen-select" id="client" name="client"
+										data-placeholder="Select Client" multiple>
+										<c:forEach var="report" items="${clientsList}">
+											<option value="${report.orgRelId}">${report.clientName}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+							
+						<div class="col-md-4">
+								<label>Posted On</label>
+								<div class="clearfix">
+									<select class="chosen-select" id="updatedOn" name="updatedOn"
+										data-placeholder="Posted On">
+										<option>All</option>
+										<option value="today">Today</option>
+										<option value="yesterday">1 Day Ago</option>
+										<option value="1_week">1 Week Ago</option>
+										<option value="Last_15_days">2 Weeks Ago</option>
+										<option value="1_month">1 Month Ago</option>
+										<option value="3_months">3 Months Ago</option>
+									</select>
+								</div>
+							</div>
+						
+						<div class="col-md-4">
+							<label>Skills</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="requirementSkills" name="requirementSkills">
+								<c:forEach var="skill" items="${skillsList}">
+								<option value="${skill.name}">${skill.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+						  <div class="clearfix"></div>
+						  <div class="col-md-4">
+								<label>Choose City</label>
+								<div class="clearfix">
+								<div class="col-md-14">
+							      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
+								  <i class="fa fa-refresh btn btn-primary refresh-icon refreshIcon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
+								 </div>
+								</div>
+							</div>
+							
+							<div class="col-md-8">
+								<label>Selected Cities</label>
+								<div class="clearfix">
+								   <select class="chosen-select form-control input-sm" multiple
+										data-placeholder="sletected cites" id="city" name="city">
+									</select>
+								</div>
+							</div>
+							
+						</div>
+					  </div>
+				  </div>
+				  
+				  <div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Search" id="search_requiremet"
+								onclick="getRequirementTableList();closePop();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="clearJobAdvSearch();getRequirementTableList();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+					
+			</div>
+<!-- Footer Area -->
+<footer class="footer-area clearfix text-center">
+    <div class="clearfix">&copy; 2017 SourceLead<sup class="paddingRight paddingLeft">&reg;</sup>, All Rights Reserved</div>
+<!--     <div class="powered-by"> Powered by: businessintelli.com </div>
+ -->  </footer>
+  
+  <div class='file_mask'>
+  </div>
+  <!-- <div class="alert alert-danger" role="alert" style='display:none;'>
+	<div>
+		<strong>Alert</strong>
+		<div class="close" data-type="2"></div>
+	</div>
+	<span></span>
+  </div>-->
+  <div class="alert alert-success" role="alert" style='display:none;'>
+	<div>
+		<strong>Message</strong>
+		<div class="close" data-type="1"></div>
+	</div>
+	<span></span>
+  </div> 
+
+
+
+
+
+  
+</body>
+<div class="pop_mask"></div>
+      <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+</html>
+<script>
+$(function() {  
+    //Adding Customized Job Title list this method is slead-common.js
+	   tagIt("requirementTitle", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
+    
+	   
+	 //Adding Customized Job Id list this method is slead-common.js
+	   tagIt("generatedId", 'Press Enter-Key Or Comma(,) Or Tab To Add Add Generated ID:', 'tagItBykeyForSkills','skills','Generated ID');
+	 
+	 //Adding Customized Job Skills list this method is slead-common.js
+	   tagIt("requirementSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
+
+	   tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+
+	   
+});
+$(function() {  // need to check later.
+    //Adding Customized Any KeyWord Title list this method is slead-common.js
+	   tagIt("anyOfKeyword", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','Any Keyword');
+    
+	   //Adding Customized All KeyWord Title list this method is slead-common.js
+	   tagIt("allKeywords", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','All Keywords');
+	   
+	   //Adding Customized Exclude KeyWord Title list this method is slead-common.js
+	   tagIt("excludeKeyWord", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','Exclude Keyword');
+	   
+	   //Adding Customized Designation list this method is slead-common.js
+	   tagIt("designation", 'Press Enter-Key Or Comma(,) Or Tab To Add Designation:', 'tagItBykeyForSkills','skills','Designation');
+	   
+	  //Adding Customized Certification list this method is slead-common.js
+	   tagIt("certification", 'Press Enter-Key Or Comma(,) Or Tab To Add Certification:', 'tagItBykeyForSkills','skills','Certification');
+	  
+	   //Adding Customized Employers list this method is slead-common.js
+	   tagIt("employers", 'Press Enter-Key Or Comma(,) Or Tab To Add Employer:', 'tagItBykeyForSkills','skills','Employers');
+	   
+	   //Adding Customized ExcludeEmployers list this method is slead-common.js
+	   tagIt("excludeEmployers", 'Press Enter-Key Or Comma(,) Or Tab To Add Employer:', 'tagItBykeyForSkills','skills','Exclude Employers');
+	   
+	   //Adding Customized PrimarySkill list this method is slead-common.js
+	   tagIt("primarySkill", 'Press Enter-Key Or Comma(,) Or Tab To Add Peimary Skills:', 'tagItBykeyForSkills','skills','Primary Skill');
+	   
+	 //Adding Customized Skill list this method is slead-common.js
+	   tagIt("canSkills", 'Press Enter-Key Or Comma(,) Or Tab To Add Skills:', 'tagItBykeyForSkills','skills','Skills');
+	 
+	   //Adding Customized Visa list this method is slead-common.js
+	   tagIt("canVisa", 'Press Enter-Key Or Comma(,) Or Tab To Add Visa:', 'tagItBykeyForSkills','skills','Visa');
+	   
+	   tagIt("canTags", 'Press Enter-Key Or Comma(,) Or Tab To Add Tags:', 'tagItBykeyForSkills','skills','Visa');
+	   
+	   //Adding Customized Visa list this method is slead-common.js
+	   tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add Education:', 'tagItBykeyForSkills','skills','Education');
+	   
+	   //Adding Customized Visa list this method is slead-common.js
+	   tagIt("excludeEducation", 'Press Enter-Key Or Comma(,) Or Tab To Add Exclude Education:', 'tagItBykeyForSkills','skills','Exclude Education');
+	 
+	   
+	   
+}); 
+		   
+//Adding Customized Any Of Keyword to the list 
+	    var select, chosen;
+	    select = $("#anyOfKeyword");
+	    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:' });
+	    chosen = select.data('chosen');
+	    chosen.search_field.on('keydown keyup', function(e)
+	    {
+	    	var anyKeyword = this.value.replace(",","");
+	        if (tagItBykeyForSkills(e) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+	        {
+	        	preventTabkey(e); 
+	        	var par = this.parent;
+	            var option = $("<option>").val(anyKeyword).text(anyKeyword);
+	            select.append(option);
+	            select.find(option).prop('selected', true);
+             $("#anyOfKeyword option").each(function(){
+                   $(this).siblings("[value='"+ this.value+"']").remove();
+             });
+     		$("#anyOfKeyword").trigger("chosen:updated");
+     		
+	        }
+	    });
+	    
+	  //Adding Customized Any Of Keyword to the list
+	    var selectone, chosenone;
+	    selectone = $("#allKeywords");
+	    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:' });
+	    chosenone = selectone.data('chosen');
+	    chosenone.search_field.on('keydown keyup', function(e1)
+	    {
+	    	var allKeyword = this.value.replace(",","");
+	        if (tagItBykeyForSkills(e1) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
+	        {
+	        	preventTabkey(e1); 
+	        	var par = this.parent;
+	            var option = $("<option>").val(allKeyword).text(allKeyword);
+	            selectone.append(option);
+	            selectone.find(option).prop('selected', true);
+             $("#allKeywords option").each(function(){
+                   $(this).siblings("[value='"+ this.value+"']").remove();
+             });
+     		$("#allKeywords").trigger("chosen:updated");
+     		
+	        }
+	    });
+	    
+	    
+	    var selecttwo, chosentwo;
+	    selecttwo = $("#excludeKeyWord");
+	    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:' });
+	    chosentwo = selecttwo.data('chosen');
+	    chosentwo.search_field.on('keydown keyup', function(e2)
+	    {
+	    	var excludeKeyword = this.value.replace(",","");
+	        if (tagItBykeyForSkills(e2) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
+	        {
+	        	preventTabkey(e2);
+	        	var par = this.parent;
+	            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
+	            selecttwo.append(option);
+	            selecttwo.find(option).prop('selected', true);
+             $("#excludeKeyWord option").each(function(){
+                   $(this).siblings("[value='"+ this.value+"']").remove();
+             });
+     		$("#excludeKeyWord").trigger("chosen:updated");
+     		
+	        }
+	    });
+	    
+	    var selectthree, chosenthree;
+	    selectthree = $("#designation");
+	    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Designation:' });
+	    chosenthree = selectthree.data('chosen');
+	    chosenthree.search_field.on('keydown keyup', function(e3)
+	    {
+	    	var desg = this.value.replace(",","");
+	        if (tagItBykeyForSkills(e3) && (desg != null  && desg != '' && desg != 'undefined'))
+	        {
+	        	preventTabkey(e3);
+	        	var par = this.parent;
+	            var option = $("<option>").val(desg).text(desg);
+	            selectthree.append(option);
+	            selectthree.find(option).prop('selected', true);
+             $("#designation option").each(function(){
+                   $(this).siblings("[value='"+ this.value+"']").remove();
+             });
+     		$("#designation").trigger("chosen:updated");
+     		
+	        }
+	    });
+	    
+	   	    
+	    var selectsix, chosensix;
+	    selectsix = $("#certification");
+	    selectsix.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Certification:' });
+	    chosensix = selectsix.data('chosen');
+	    chosensix.search_field.on('keydown keyup', function(e6)
+	    {
+	    	var cert = this.value.replace(",","");
+	        if (tagItBykeyForSkills(e6) && (cert != null  && cert != '' && cert != 'undefined'))
+	        {
+	        	preventTabkey(e6);
+	        	var par = this.parent;
+	            var option = $("<option>").val(cert).text(cert);
+	            selectsix.append(option);
+	            selectsix.find(option).prop('selected', true);
+             $("#certification option").each(function(){
+                   $(this).siblings("[value='"+ this.value+"']").remove();
+             });
+     		$("#certification").trigger("chosen:updated");
+     		
+	        }
+	    });
+	    
+	    var selectseven, chosenseven;
+	    selectseven = $("#employers");
+	    selectseven.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Employer:' });
+	    chosenseven = selectseven.data('chosen');
+	    chosenseven.search_field.on('keydown keyup', function(e7)
+	    {
+	    	var emp = this.value.replace(",","");
+	        if (tagItBykeyForSkills(e7) && (emp != null  && emp != '' && emp != 'undefined'))
+	        {
+	        	preventTabkey(e7);
+	        	var par = this.parent;
+	            var option = $("<option>").val(emp).text(emp);
+	            selectseven.append(option);
+	            selectseven.find(option).prop('selected', true);
+             $("#employers option").each(function(){
+                   $(this).siblings("[value='"+ this.value+"']").remove();
+             });
+     		$("#employers").trigger("chosen:updated");
+     		
+	        }
+	    });
+	    
+	    var selectzero, chosenzero;
+	    selectzero = $("#primarySkill");
+	    selectzero.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Primary Skill:' });
+	    chosenzero = selectzero.data('chosen');
+	    chosenzero.search_field.on('keydown keyup', function(e10)
+	    {
+	    	var prmSkill = this.value.replace(",","");
+	        if (tagItBykeyForSkills(e10) && (prmSkill != null  && prmSkill != '' && prmSkill != 'undefined'))
+	        {
+	        	preventTabkey(e10);
+	        	var par = this.parent;
+	            var option = $("<option>").val(prmSkill).text(prmSkill);
+	            selectzero.append(option);
+	            selectzero.find(option).prop('selected', true);
+             $("#primarySkill option").each(function(){
+                   $(this).siblings("[value='"+ this.value+"']").remove();
+             });
+     		$("#primarySkill").trigger("chosen:updated");
+     		
+	        }
+	    });
+	    
+	    var selecteight, choseneight;
+	    selecteight = $("#excludeEmployers");
+	    selecteight.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Employer:' });
+	    choseneight = selecteight.data('chosen');
+	    choseneight.search_field.on('keydown keyup', function(e8)
+	    {
+	    	var excEmp = this.value.replace(",","");
+	        if (tagItBykeyForSkills(e8) && (excEmp != null  && excEmp != '' && excEmp != 'undefined'))
+	        {
+	        	preventTabkey(e8);
+	        	var par = this.parent;
+	            var option = $("<option>").val(excEmp).text(excEmp);
+	            selecteight.append(option);
+	            selecteight.find(option).prop('selected', true);
+             $("#excludeEmployers option").each(function(){
+                   $(this).siblings("[value='"+ this.value+"']").remove();
+             });
+     		$("#excludeEmployers").trigger("chosen:updated");
+     		
+	        }
+	    });
+	    
+	    
+	    //Adding Customized Skills to the list
+     var selectnine, chosennine;
+     selectnine = $("#canSkills");
+     selectnine.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:' });
+	    chosennine = selectnine.data('chosen');
+	    chosennine.search_field.bind(('keydown keyup'), function(e9)
+	    { 
+	    	 
+	    	 var enterSkillsArray = this.value.split(",");
+	    	 if(enterSkillsArray.length > 1){
+     		 for (var i=0; i < enterSkillsArray.length; i++) {
+     			 var option = $("<option>").val(enterSkillsArray[i].replace(",","")).text(enterSkillsArray[i].replace(",",""));
+     			 selectnine.append(option);
+     			 selectnine.find(option).prop('selected', true);
+	        		 $("#canSkills").trigger("chosen:updated");
+              }
+	    	 }else{
+		    	var newSkill = this.value.replace(","," ");
+		    	
+		    	 
+		        if (tagItBykeyForSkills(e9) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+		        {
+		        	preventTabkey(e9); 
+		        	var par = this.parent;
+		        		 var option = $("<option>").val(newSkill.replace(",","")).text(newSkill.replace(",",""));
+		        		 selectnine.append(option);
+		        		 selectnine.find(option).prop('selected', true);
+			        		$("#canSkills").trigger("chosen:updated");
+			        		
+			        		
+		        }
+	    	 }
+	    });
+	    
+	    
+	  //Adding Customized Visa to the list
+		var selectten, chosenten;
+		selectten = $("#canVisa");
+		selectten
+				.chosen({
+					no_results_text : 'Press Enter-Key Or Comma(,) Or Space To Add New Visa:'
+				});
+		chosenten = selectten.data('chosen');
+		chosenten.search_field
+				.bind(
+						('keydown keyup'),
+						function(e10) {
+
+							var enterVisaArray = this.value.split(",");
+							if (enterVisaArray.length > 1) {
+								for (var i = 0; i < enterVisaArray.length; i++) {
+									var option = $("<option>").val(
+											enterVisaArray[i].replace(",", ""))
+											.text(
+													enterVisaArray[i].replace(",",
+															""));
+									selectten.append(option);
+									selectten.find(option).prop('selected', true);
+									$("#canVisa").trigger("chosen:updated");
+								}
+							} else {
+								var newVisa = this.value.replace(",", " ");
+
+								if (tagItBykeyForVisa(e10)
+										&& (newVisa != null && newVisa != '' && newVisa != 'undefined')) {
+									preventTabkey(e10);
+									var par = this.parent;
+									var option = $("<option>").val(
+											newVisa.replace(",", "")).text(
+											newVisa.replace(",", ""));
+									selectten.append(option);
+									selectten.find(option).prop('selected', true);
+									$("#canVisa").trigger("chosen:updated");
+
+								}
+							}
+						}); 
+	    
+	    
+	      $("#country").on('change', function (e) {
+	    	   getStates();
+	       });
+	       $("#state").on('change', function (e) {
+	    	   getCities();
+	       });
+	       
+	       // here call experience validation
+	       $("#maxExpYears").on('change', function (e) {
+	    	   minMaxExperience();
+	       });
+	       
+	       $("#minExpYears").on('change', function (e) {
+	    	   minMaxExperience();
+	       });
+	       
+			/* for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+			}) */
+//addcandidate-popup script
+function addCandidate(){
+ $('.addcandidate-popup').fadeIn(200);
+ $('.pop_mask').fadeIn(200);
+ $('#addmorepop').slideUp(200);
+};
+function closeCandidate(){
+ $('.addcandidate-popup').fadeOut(200);
+ $('.pop_mask').fadeOut(200);
+}
+//Function to validate if maxExpYears  value is more the minExpYears  value
+function minMaxExperience(){
+var maxExpYears = ($('#maxExpYears').val());
+var minExpYears = ($('#minExpYears').val());
+
+if (parseFloat(maxExpYears) <= parseFloat(minExpYears)){
+ $('#expId').find('p.jquery_form_error_message').remove(); 
+	$('input#expValidation').attr('class','error signin_fild');
+	$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
+	$('input#expValidation').attr('record-exist','yes');
+	$('input#expValidation').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+}  else{
+	$('#expId').find('p.jquery_form_error_message').remove(); 
+	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
+	$('#expId').find('p.jquery_form_error_message').remove();
+} 
+}
+
+
+//<!-- This  clearCandidateSearchKeys() method for clear search data-->
+function clearCandidateSearchKeys(){
+	
+ $("#anyOfKeyword").val('').trigger("chosen:updated");
+ $("#allKeywords").val('').trigger("chosen:updated");
+ $("#excludeKeyWord").val('').trigger("chosen:updated");
+ $("#designation").val('').trigger("chosen:updated");
+ $("#noticePeriod").val('').trigger("chosen:updated");
+ $("#minExpYears").val('').trigger("chosen:updated");
+ $("#maxExpYears").val('').trigger("chosen:updated");
+/*    $("#country").val('').trigger("chosen:updated"); */
+ $("#state").val('').trigger("chosen:updated");
+ $("#citySearch").val('').trigger("chosen:updated");
+ $("#education").val('').trigger("chosen:updated");
+ $("#excludeEducation").val('').trigger("chosen:updated");
+ $("#certification").val('').trigger("chosen:updated");
+ $("#employers").val('').trigger("chosen:updated");
+ $("#excludeEmployers").val('').trigger("chosen:updated");
+ $("#applicantType").val('').trigger("chosen:updated");
+ $("#canSkills").val('').trigger("chosen:updated");
+ $("#canVisa").val('').trigger("chosen:updated");
+ $("#canTags").val('').trigger("chosen:updated");
+ $("#primarySkill").val('').trigger("chosen:updated");
+ 
+ $("#designationType").val('').trigger("chosen:updated");
+ 
+ $('#candidatelist_form').find('p.jquery_form_error_message').remove();
+ 
+  $("#anyOfKeyword").empty();
+  $("#allKeywords").empty();
+  $("#excludeKeyWord").empty();
+  $("#designation").empty();
+   $("#minRate").val(''); 
+  
+   
+  $("#currency").val('');
+  $('.selectpicker').selectpicker('refresh');
+  
+  $("#maxRate").val(''); 
+  
+  $("#rateType").val(''); 
+  $('.selectpicker').selectpicker('refresh');
+  
+  $("#minExpYears").val(''); 
+  $("#maxExpYears").val(''); 
+  $('#expId').find('p.jquery_form_error_message').remove();
+  
+  $("#noticePeriod").val(''); 
+  
+  $("#country").val(''); 
+  $("#state").val(''); 
+  $("#citySearch").val(''); 
+  
+  $("#designationType").val(''); 
+  
+  
+  $("#education").val(''); 
+  $("#excludeEducation").val('');
+  $("#certification").val(''); 
+  
+  $("#employers").val(''); 
+  $("#excludeEmployers").val(''); 
+  $("#applicantType").val('');
+  $("#canSkills").val('');
+  $("#canVisa").val('');
+  $("#canTags").val('');
+  $("#primarySkill").val('');
+ 
+}
+</script>
