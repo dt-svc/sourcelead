@@ -39,6 +39,8 @@ public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 	private Map<String, String> documentsMap;
 
 	private List<SourceleadTaxSubmissionDocumentDTO> documentList;
+	
+	private String employeeId;
 
 	public long getId() {
 		return id;
@@ -234,4 +236,11 @@ public class SourceleadTaxITDeclarationSubmissionDTO implements Serializable {
 		this.attachmentRemoveIds = attachmentRemoveIds;
 	}
 
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
 }

@@ -83,6 +83,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Projects;
@@ -434,19 +435,14 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
 					break;
-					
-				case "candidatesUpload":
-					System.out.println(++rw + "Row Validation Entry Starts" + Calendar.getInstance().getTime());
-					dataMigrationDTOJsonCopy.put("inviteEmail", dataMigrationDTO.getInviteEmail());
-					dataMigrationCommonUtil.dataValidationForCandidates(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);
-					System.out.println(++rw + "Row Validation Entry Ends" + Calendar.getInstance().getTime());
-					break;
+									
 					
 				case "timesheetUpload":
 					String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
 					dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy,
 							 objDefaultFormat, user, orgLocation, timeFrequency);
 					break;
+					
 				case "assetUpload":
 					dataMigrationCommonUtil.dataValidationForAssets(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
@@ -704,29 +700,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			break;
 			
 			
-		case "candidatesUpload":
-			
-			try {
-				CandidateDTO candidateDTO = new CandidateDTO();
-				candidateDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), CandidateDTO.class);
-				candidateDTO.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
-				candidateDTO.setUploadId(uploadId);
-				if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
-					candidateDTO.setCountry(orgLocation.getCountry());
-				}
-				    List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
-					Candidate candidate = candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user, vendorsList);
-				
-			}catch (Exception e) {
-				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
-				history.setUploadProcessingStatus("Completed");
-				history.setEndDate(new Date());
-				uploadXlsHistoryService.storeUploadXlsHistory(history);
-				e.printStackTrace();
-			}
-			
-			break;
-			
 		case "submmissionTemplateUpload":
 			
 			try {
@@ -813,21 +786,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			mapper1.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			assetMigDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), AssetsDataImportDTO.class);
 
-		/*	List<AssetAssignDTO> assignAssetList = new ArrayList<>();
-			if (StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("assignAssetStr"))) {
-				String[] assignUsere = dataMigrationDTOJsonCopy.getString("assignAssetStr").split("&");
-				if(assignUsere != null && assignUsere[0] != null) {
-					for (String as : assignUsere) {
-						AssetAssignDTO aDTO = new AssetAssignDTO();
-						String[] email = as.split("#");
-						aDTO.setShiftEmp(email[0]);
-						aDTO.setShift(email[1]);
-						assignAssetList.add(aDTO);
-					}
-				}
-				
-			}
-			assetDTO.setAssignAsset(assignAssetList);*/
+	
 			assetDTO.setCategory(assetMigDTO.getCategory());
 			assetDTO.setWorkingStatus(assetMigDTO.getWorkingStatus());
 			assetDTO.setCpu(assetMigDTO.getCpu());
@@ -1200,6 +1159,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			// immDto.setOpenDate(dataMigrationDTOJsonCopy.getString("lawFirmClient"));
 			// for lca details need to push lca table.
 			// CandidateLcaI94Summary lcaCurrSummary = new CandidateLcaI94Summary();
+			Lca lca = immigrationCommonService.getLcaNumber(dataMigrationDTOJsonCopy.getString("lcaNumber"));
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaStartDate"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaStartDate"))) {
 				immDto.setLcaStartDate(dataMigrationDTOJsonCopy.getString("lcaStartDate"));
@@ -1213,6 +1173,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaNumber"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("lcaNumber"))) {
 				immDto.setLcaNumber(dataMigrationDTOJsonCopy.getString("lcaNumber"));
+				immDto.setLcaId(lca.getId().toString());
 			}
 			
 			if(StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("lcaRate")) 
@@ -1516,12 +1477,18 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		
 	 XlsBulkUploadHistroy history = xlsBulkUploadHistroyService.getXlsBulkUploadHistroyByDocumentKey(documentKey);
 	 if(history != null) {
+		try {
+			
+		 history.setUploadStatus("InProgress");
+		 xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
+		 
 		 ApplicationContext ctx = new AnnotationConfigApplicationContext(CouchbasePropertyPathConfiguration.class);
 	     CouchbaseConnectionConfig couchConfig = ctx.getBean(CouchbaseConnectionConfig.class);
 	     Bucket bucket = couchbaseClusterService.openBucket(couchConfig.getBulkImportsBucket(), couchConfig.getPassword());
 	     
 	     List<String> queueDocumentsList =  userStatsCacheHelper.getCouchbaseQueueDocumentsList(documentKey);
 	     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	     User uploadedUser = history.getCreatedBy();
 	     
 		 List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(history.getOrgLocationId().getId());
 	   
@@ -1541,7 +1508,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 									if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
 										candidateDTO.setCountry(history.getOrgLocationId().getCountry());
 									}
-									candidateService.saveCandidateBulkImports(candidateDTO, history.getOrgLocationId(), user, vendorsList);
+									candidateService.saveCandidateBulkImports(candidateDTO, history.getOrgLocationId(), uploadedUser, vendorsList);
 									 bucket.remove(docs.toString());
 								}else {
 									BulkImportFailureCacheDTO failureCacheDTO = new BulkImportFailureCacheDTO();
@@ -1565,9 +1532,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				
 				BulkImportFailureDocumentsCacheDTO failureDocsDTO = new BulkImportFailureDocumentsCacheDTO();
 				failureDocsDTO.setDocumentType("Candidates Upload Failure");
-				failureDocsDTO.setUserId(user.getId().toString());
+				failureDocsDTO.setUserId(uploadedUser.getId().toString());
 				failureDocsDTO.setOrgLocationId(String.valueOf(history.getOrgLocationId().getId()));
-				failureDocsDTO.setEmail(user.getEmail());
+				failureDocsDTO.setEmail(uploadedUser.getEmail());
 				failureDocsDTO.setFailureList(failureList);
 				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 			    LocalDateTime now = LocalDateTime.now();  
@@ -1586,10 +1553,22 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
 				
 			} catch (Exception e) {
+				history.setUploadStatus("New");
+				xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
 				e.printStackTrace();
 			}
-			
 		}
+	    
+	    history.setUploadStatus("Completed");
+		history.setUpdatedBy(user);
+		history.setUpdatedDate(new Date());
+		xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
+	    
+	 }catch (Exception e) {
+		 history.setUploadStatus("New");
+		 xlsBulkUploadHistroyService.storeXlsBulkUploadHistroy(history);
+		 e.printStackTrace();
+	}
 	    
 	} 
 }

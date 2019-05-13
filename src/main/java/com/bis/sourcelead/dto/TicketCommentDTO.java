@@ -21,6 +21,15 @@ public class TicketCommentDTO implements Serializable {
 	private long updatedById;
 	private String updatedByName;
 	private String updatedDate;
+	private String mentionedUserIds;
+
+	public String getMentionedUserIds() {
+		return mentionedUserIds;
+	}
+
+	public void setMentionedUserIds(String mentionedUserIds) {
+		this.mentionedUserIds = mentionedUserIds;
+	}
 
 	public long getId() {
 		return id;

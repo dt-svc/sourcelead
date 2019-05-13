@@ -16,7 +16,7 @@ import com.bis.sourcelead.dto.Response;
 
 public interface TicketManagementService {
 
-	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations();
+	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations(long orgLocationId);
 
 	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 
@@ -68,7 +68,7 @@ public interface TicketManagementService {
 
 	public List<TicketCommentDTO> getTicketCommentListByTicketId(Long ticketId, long userId, Long orgLocationId, String dateFormat);
 
-	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user);
+	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user, OrgLocations orgLocations);
 
 	public TicketCommentDTO getTicketComment(long ticketCommentId, String dateFormat);
 

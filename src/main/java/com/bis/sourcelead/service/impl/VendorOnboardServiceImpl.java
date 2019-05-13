@@ -839,6 +839,8 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 									 referContacts.setContactUserEmail(orgSpoc.getClientUser().getEmail());
 									 referContacts.setContactUserPhone(orgSpoc.getClientUser().getMobilePhone());
 									 referContacts.setContactUser(orgSpoc.getClientUser());
+									 referContacts.setContactUserUUID(SourceLeadRandomCodeHelper.generateUUID());
+
 									 
 
 									 if(orgSpoc.getOrgRelations().getInitiatorType().equalsIgnoreCase("Client")){
