@@ -303,4 +303,32 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 		return projectsList;
 	}
 	
+	@Override
+	@Transactional
+	public List<ProjectClients> getProjectClientsListByLoginUserAndOrgLocationIdForTimesheetApproval(Long locationsId, Long userId,String isGlobalUser)
+			throws Exception {
+		logger.debug("In getProjectClientsListByProjectId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String globalUserQuery = "";
+		if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+      	  globalUserQuery =   "(pc.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)) ";
+        }else {
+      	  globalUserQuery = " pc.orgLocationsId.id = :locationsId ";
+        }
+		Query candidateListQuery= 
+				session.createQuery(" from ProjectClients pc left join fetch pc.projectId proj left join fetch pc.orgLocationsId "
+				+ " left join fetch pc.orgRelationId  where  "+globalUserQuery+"  and pc.status = '1' and pc.id IN "
+				 +"("
+				 + " select hierarchy.projectClientsId.id from ProjectApproverHierarchy hierarchy  where  "
+				 + "  hierarchy.approverUserId.id = :userId "
+				 + " OR "
+				 + "(proj.isReportingManagerAsApprover = 'Y' and  :userId IN(select userRole.reportingManager.id from UserRole userRole where userRole.user.id IN(select can.consultantUser.id from Candidate can where can.isAssociate = 'Y' and can.masterCandidateId IN(select pm.projectMemberCandidteId.masterCandidateId.id from ProjectMembers pm where pm.projectClientsId.id = pc.id and pm.projects.id = proj.id))))"
+				 + " OR "
+				 + "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = pc.orgLocationsId.id))"
+				 + " ) " );
+		List<ProjectClients> projectClientsList = candidateListQuery.setLong("userId", userId).setLong("locationsId", locationsId).list();
+		return projectClientsList;
+	}
+
+	
 }

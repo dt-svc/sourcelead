@@ -57,6 +57,10 @@ public class ProjectClients implements Serializable{
     @JoinColumn(name = "ORG_LOCATIONS_ID")
     private OrgLocations orgLocationsId;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ORG_ID")
+    private Org orgId;
+    
     @Column(name = "UUID")
     private String uuid;
     
@@ -278,5 +282,15 @@ public class ProjectClients implements Serializable{
 			Set<ExpenseProjectApproverHierarchy> sharedClientProjectExpenseApproverHierarchyList) {
 		this.sharedClientProjectExpenseApproverHierarchyList = sharedClientProjectExpenseApproverHierarchyList;
 	}
+
+	public Org getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Org orgId) {
+		this.orgId = orgId;
+	}
+	
+	
 
 }

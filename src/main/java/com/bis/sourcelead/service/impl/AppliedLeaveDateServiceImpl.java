@@ -48,8 +48,8 @@ public class AppliedLeaveDateServiceImpl implements AppliedLeaveDateService{
 	}
 
 	@Override
-	public Map<String,Float> getAppliedLeaveDateAndHolidayHoursByUserId(Long userId, Date sDate, Date eDate) {
-		return appliedLeaveDateDao.getAppliedLeaveDateAndHolidayHoursByUserId(userId, sDate, eDate);
+	public Map<String,Float> getAppliedLeaveDateAndHolidayHoursByUserId(Long userId,Date sDate,Date eDate,Long worklocationId){
+		return appliedLeaveDateDao.getAppliedLeaveDateAndHolidayHoursByUserId(userId, sDate, eDate, worklocationId);
 	}
 
 	@Override
