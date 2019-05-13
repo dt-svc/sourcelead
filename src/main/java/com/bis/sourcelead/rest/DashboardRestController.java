@@ -246,6 +246,7 @@ public class DashboardRestController {
 
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
 		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		Long masterCandidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "masterCandidateId");
@@ -255,7 +256,7 @@ public class DashboardRestController {
 		}
 		if("employes".equalsIgnoreCase(timesheetType)){
 			 Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isAdmin");
-			 timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),timesheetCountType,isGlobalAccess,isAdmin);
+			 timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),orgId,timesheetCountType,isGlobalAccess,isAdmin);
 		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(masterCandidateId, loginOrgLocations.getId(),timesheetCountType);
 		}
