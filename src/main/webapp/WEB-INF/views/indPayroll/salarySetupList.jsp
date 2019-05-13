@@ -11,25 +11,29 @@
 	});
 </script>
 
-<section class="content-wraper contentWraper">
+<section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
     <h2>Salary Setup</h2>
   </div>
   <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a> &raquo; <a href="<c:url value='${appPath}/payheadList'/>">Payhead List</a> &raquo; Salary Setup</div>
 </section>
+
+
  <div class="clearfix"></div>
  
-  <div class="tablelist-wrap">
+  <div class="project_wrap">
    
-    <div class="timesheet_head minHeight40">
-      <div class="clearfix"></div>
-      <div class="remove_search">
-        <input type="text" placeholder="Search" id="salarySetupDataTableSearch" onblur="getPayRollSalarySetupList();"/>
-      </div>
-    </div>
+   <div class="positionRelative reportHead clearfix">
+	<ul class="pull-right list-unstyled list-inline">
+		<li class="">
+			<input class="repSearchBar" type="text" placeholder="Search" id="salarySetupDataTableSearch" />
+			<span class="repSearchIcon" onclick="getPayRollSalarySetupList();"></span>
+		</li>
+	</ul>
+	</div>
     
-	<div class="styleTables">
+	<div class="require_wrap_table tableFirstSecond">
 		<div id="salarySetupListLoading"></div>
 		<div id="choicepopUp"></div>
 		<div id="payrollSalarySetupList" class="datatable_filter"></div>
@@ -49,14 +53,14 @@
 function salarySetup(event) {
 	$(".salarySetup, .comMask").fadeIn();
 	var uuid = $(event).attr('id');
-    $.ajax({
+     $.ajax({
 			type: "POST",
 		    url: sourceleadUrl+"/getSalarySetupForPayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid, 
 		    success: function(data) {
 		    	$('#salarySetup').empty();
 		    	$('#salarySetup').append(data);
 		    },
-		});
+		}); 
 }
 function closesalarySetup() {
 	$(".salarySetup, .comMask").fadeOut();
@@ -210,7 +214,7 @@ function salarySetupListPagination(url,sourceleadUrl){
    	    	var searchData = $('#salarySetupDataTableSearch').val();
    	    	var regex =  new RegExp(/[\\-]/g);
    	    	if(regex.test(searchData) == false){
-   	    		payrollSalarySetupList();
+   	    		getPayRollSalarySetupList();
    	    	}else{
    	    		$("#salarySetupDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
    	    	}

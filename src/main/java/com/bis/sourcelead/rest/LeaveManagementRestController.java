@@ -2182,7 +2182,7 @@ public class LeaveManagementRestController {
 			 leave.setDeleteReason(reason);
 			 leave.setCancelledBy(user);
 			 leave.setStatus(Constants.LEAVE_CANCELLED);
-			 leaveDao.saveLeave(leave);
+//			 leaveDao.saveLeave(leave);
 			 isCancelled = true;
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
@@ -2199,17 +2199,19 @@ public class LeaveManagementRestController {
 				 Date endDate = c.getTime();
 				 java.sql.Date currentMonthEndDate = new java.sql.Date(endDate.getTime());
 				 List<Leave> leaveList = leaveService.getLeavesListByTypeIdAndDuration(leave.getLeaveType().getId(), leave.getOrgLocations().getId(),leave.getUser().getId(),currentMonthStartDate,currentMonthEndDate);
-				 float extraLeaves = leave.getLeaveType().getNoOfDaysPerPeriod();
-				 Leave updatingLeave = leaveList.get(leaveList.size()-1);
-				 
-				 float cancelledLeave = leave.getNumberOfDays() - leave.getExtraLeavesTaken();
-				 float updateExtraLeave = updatingLeave.getExtraLeavesTaken() - cancelledLeave;
-				 if(updateExtraLeave > 0){
-					 updatingLeave.setExtraLeavesTaken(updateExtraLeave);
-				 }else{
-					 updatingLeave.setExtraLeavesTaken(0);
-				 }
-				 leaveDao.saveLeave(updatingLeave);
+//				if(leaveList != null &&leaveList.size() > 0) {
+					float extraLeaves = leave.getLeaveType().getNoOfDaysPerPeriod();
+					 Leave updatingLeave = leaveList.get(leaveList.size()-1);
+					 
+					 float cancelledLeave = leave.getNumberOfDays() - leave.getExtraLeavesTaken();
+					 float updateExtraLeave = updatingLeave.getExtraLeavesTaken() - cancelledLeave;
+					 if(updateExtraLeave > 0){
+						 updatingLeave.setExtraLeavesTaken(updateExtraLeave);
+					 }else{
+						 updatingLeave.setExtraLeavesTaken(0);
+					 }
+					 leaveDao.saveLeave(updatingLeave);
+//				}
 			 }
 		 }
 		 else{

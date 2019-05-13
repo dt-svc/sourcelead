@@ -1293,11 +1293,16 @@ public class DynamicReport {
 			String dateOfInterview = commonUtil.dateStrFromOrgDateFormatter(interview.getOrgLocationId().getDateFormat(), interview.getInterviewId().getDateOfInterview());
 			
 			// String interviewTime =  commonUtil.dateStrFromOrgDateFormatter(interview.getOrgLocationId().getDateFormat(),interview.getInterviewId().getStartTime());
-			String interviewTimeStr = interview.getInterviewId().getStartTime().toString();
+			/*
+			 * String interviewTimeStr =
+			 * interview.getInterviewId().getStartTime().toString();
+			 * 
+			 * String timeStr[] = interviewTimeStr.split(" ");
+			 * 
+			 * String interviewTime= timeStr[timeStr.length-1].replace(".0", " ");
+			 */
 			
-			String timeStr[] = interviewTimeStr.split(" ");
-			
-			String interviewTime= timeStr[timeStr.length-1].replace(".0", " ");
+			String interviewTime = interview.getStartTimeStr();
 			
 			String interviewType = interview.getInterviewId().getInterviewType();
 			

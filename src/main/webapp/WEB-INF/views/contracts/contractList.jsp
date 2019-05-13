@@ -278,17 +278,17 @@ $(document).ready(function(){
 			<li id="filterContractTypePop-2" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i>
 	           	<div class="statusFiler-3 approved_pop">
 	           		<ul class="list-unstyled" style="display:none" id="waitingLiDiv">
-						<li><input id="status5" type="checkbox" name="contractStatus" value="WAITING_TO_SEND" onclick="getTemplateList();"><label for="status5">Waiting to Send</label></li>
+						<li><input id="status5" type="checkbox" name="contractStatus" value="WAITING_TO_SEND" onclick="filterContractsList();"><label for="status5">Waiting to Send</label></li>
 					</ul>
 					
 					<ul class="list-unstyled" style="display:none" id="signedDiv">
-						<li><input id="status1" type="checkbox" name="contractStatus" value="PENDING" onclick="getTemplateList();"><label for="status1">Pending</label></li>
-						<li><input id="status3" type="checkbox" name="contractStatus" value="WAITING_TO_BE_SIGNED" onclick="getTemplateList();"><label for="status3">Waiting to be Sign</label></li>
+						<li><input id="status1" type="checkbox" name="contractStatus" value="PENDING" onclick="filterContractsList();"><label for="status1">Pending</label></li>
+						<li><input id="status3" type="checkbox" name="contractStatus" value="WAITING_TO_BE_SIGNED" onclick="filterContractsList();"><label for="status3">Waiting to be Sign</label></li>
 					</ul>
 					
 					<ul class="list-unstyled" style="display:none" id="verifyDiv">
-						<li><input id="status2" type="checkbox" name="contractStatus" value="SEND_FOR_VERIFICATION" onclick="getTemplateList();"><label for="status2">Send For Verification</label></li>
-						<li><input id="status4" type="checkbox" name="contractStatus" value="WAITING_TO_BE_VERIFY" onclick="getTemplateList();"><label for="status4">Waiting to be Verify</label></li>
+						<li><input id="status2" type="checkbox" name="contractStatus" value="SEND_FOR_VERIFICATION" onclick="filterContractsList();"><label for="status2">Send For Verification</label></li>
+						<li><input id="status4" type="checkbox" name="contractStatus" value="WAITING_TO_BE_VERIFY" onclick="filterContractsList();"><label for="status4">Waiting to be Verify</label></li>
 					</ul>
 				</div>	                	
 			</li>
