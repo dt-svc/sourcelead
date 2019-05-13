@@ -9,13 +9,12 @@
 
 <script src="/resources/js/jquery.simplePagination.js"></script>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
+<!--###############################  Inner Jsp for Common operation in approval and dashboardcountlist page ############################### -->
 <jsp:include page="timesheetApprovalCommonScripts.jsp" />
-<div id="TimeshgeetStatusListId"></div>
 
+
+
+<div id="TimeshgeetStatusListId"></div>
  <body  onclick="bodyClick();">
  
       <section class="content-wraper">
@@ -24,7 +23,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
             <input type="hidden" id="timesheetPageStatus" value="${status}"/>
             <h2> ${status == 'SUBMITTED' ? 'Waiting For Approval' : (status == 'APPROVED' ? 'Approved List' :(status == 'REJECTED' ? 'Rejected List' :(status == 'DRAFT' ? 'Draft List' :'Timesheet Approval')))}</h2>
           </div>
-            <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  ${status == 'SUBMITTED' ? 'Wait For Approval' : (status == 'APPROVED' ? 'Approved List' :(status == 'REJECTED' ? 'Rejected List' :(status == 'DRAFT' ? 'Draft List' :'Timesheet Approval')))}</div>
+            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  ${status == 'SUBMITTED' ? 'Wait For Approval' : (status == 'APPROVED' ? 'Approved List' :(status == 'REJECTED' ? 'Rejected List' :(status == 'DRAFT' ? 'Draft List' :'Timesheet Approval')))}</div>
             <div class="clearfix"></div>
         </section>
 	<div class="timesheet-content">
@@ -62,7 +61,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						        <th>Stage</th>                 
 						        <th>Action</th>                
 						    </tr>                              
-						   </thead>                               
+						   </thead>   
+						   <!--###############################  list of assigned projectmembers for to fill/approve/reject their timesheets ############################### -->                            
 							<tbody id="timesheetApprList">
 								<jsp:include page="timesheetDashboardTableData.jsp" />
 						   </tbody>                              
@@ -99,7 +99,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 
 <script type="text/javascript">
 window.onload = function () {
-	filter();
+	getTimesheetApprovalListByStatus();
  };
 </script>
 
@@ -107,14 +107,15 @@ window.onload = function () {
 	$("#dataTableSearchExpenses123").keyup(function(event) {
 	    if (event.keyCode === 13) {
 	    	var searchData = $('#dataTableSearchExpenses123').val();
-	    	getStatusListData(1,searchData)
+	    	getStatusListData(1,0,searchData)
 	    	$('#dataTableSearchExpenses123').val(searchData);
 	    }
 	});
 </script>
  <script type="text/javascript">
-function filter(){
+function getTimesheetApprovalListByStatus(){
 	var status = '${status}';
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var pageSize = $("#pageSize").val();
 		$("#TimeshgeetStatusListIdLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		 $.ajax({
@@ -144,11 +145,12 @@ function filter(){
 
 <script>		
 	function getTableDataByPageSize(){
-		  getStatusListData(1);
+		  getStatusListData(1,0,"");
 		}
 	
-				function getStatusListData(pageNo,searchValue){
+				function getStatusListData(pageNo,noOfRecords,searchValue){
 					 var status = '${status}';
+					 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					 var pageSize = $("#pageSize").val();
 					 var start = parseInt(pageNo*pageSize)-parseInt(pageSize);
 					if(searchValue == null || searchValue == '' || searchValue == 'undefined'){
@@ -157,7 +159,7 @@ function filter(){
 					$("#TimeshgeetStatusListIdLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 					$.ajax({
 						    	type: "POST",
-						        url: pmsUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&dashboardTimeStatus="+status+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
+						        url: pmsUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&dashboardTimeStatus="+status+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&totalRows="+noOfRecords+"&searchValue="+searchValue,
 						        success: function(data) {
 						        	   if(data != null && data !='undefined' && data != ''){
 							                	 $("#timesheetApprList").empty();
@@ -209,7 +211,7 @@ function filter(){
 				              ellipsePageSet :false,
 				              cssStyle: 'light-theme',
 				               onPageClick: function (pageNumber, event) {
-				            	   getStatusListData(""+pageNumber+"",searchData);
+				            	   getStatusListData(""+pageNumber+"",""+totalRows+"",searchData);
 				              }
 			      };
 			      $("#pagination-demo").pagination(options);
