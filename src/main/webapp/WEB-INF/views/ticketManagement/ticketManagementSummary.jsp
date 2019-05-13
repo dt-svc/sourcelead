@@ -5,24 +5,27 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+
 <link type="text/css" rel="stylesheet" href="/resources/css/comment/froala_editor.css"/>
 <link type="text/css" rel="stylesheet" href="/resources/css/comment/jquery.atwho.css"/>
 
 
+<script type="text/javascript" src="/resources/js/editor.js"></script>
+<link href="/resources/css/editor.css" type="text/css" rel="stylesheet" />
+
+
 <!-- <script type="text/javascript" src="/resources/js/comment/jquery.atwho.min.js"></script> -->
 <script type="text/javascript" src="/resources/js/comment/jquery.atwho.js"></script>
-<script type="text/javascript" src="/resources/js/comment/froala_editor.min.js"></script>
-
-
+<script type="text/javascript" src="/resources/js/comment/jquery.caret.min.js"></script>
+<!-- <script type="text/javascript" src="/resources/js/comment/froala_editor.min.js"></script> -->
 <script type="text/javascript" src="/resources/js/ticketManagement/ticket.js"></script>
 <script type="text/javascript" src="/resources/js/ticketManagement/ticket_comment.js"></script>
-
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Ticket Summary</h2>
       </div>
-	<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>">Ticket List</a> &raquo; Ticket Summary</div>
+	<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='$${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>">Ticket List</a> &raquo; Ticket Summary</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix">
@@ -38,7 +41,7 @@
                 <div class="project_details col2Custom">
 					<div class="useredit">
 						<div class="width150px">
-							<select class="sel" onchange="changeTicketStatus(this, ${ticketSummary.id});">
+							<select class="sel" onchange="changeTicketStatus(this, ${ticketSummary.id}, ${ticketSummary.ticketStatusId});">
 								<c:forEach items="${statusList}" var="status">
 									<option data-comment="${status.commentRequired}" value="${status.id}" ${status.name == ticketSummary.ticketStatus ? "selected" : ""}>${status.name}</option>
 								</c:forEach>
@@ -120,7 +123,7 @@
 			                    			<div class="col-md-8 tbldata-dotdot-200 inlineBlock">${attachment.fileName}</div>
 			                    			<ul class="list-unstyled list-inline col-md-4 text-center">
 			                    				<li><a href="javascript:void(0)" onclick="viewFile('${attachment.fileUrl}','${attachment.fileName}','${attachment.fileType}');"><i class="fa fa-eye cursorPointer" title="View"></i></a></li>
-			                    				<li><a href="${attachment.fileUrl}" target="_blank"><i class="fa fa-download cursorPointer" title="Download"></i></a></li>
+			                    				<li><a href="${attachment.fileUrl}" download="" class="glyphicon glyphicon-download-alt" title="Download"></a></li>
 			                    			</ul>
 			                    		</div>
 		                    		</div>
@@ -148,15 +151,13 @@
 	                        </span>
                       </form>
                     </div> --%>
-                  </div>
-					
+					</div>
 					<!-- Comments Section -->
 					<!-- <div id="ticketCommentListDivId"></div> -->
 					<div>
 						<ul id="ticketCommentListDivId" class="list-unstyled goalscomments-list"></ul>
 					</div>
 					<!-- Comments Section Ends -->
-					
                 </div>
               </div>
             </div>
@@ -167,20 +168,21 @@
   </section>
   
   <div class="popupWrap" id="ticketCommentPopup" role="dialog">
-	<form role="form" id="ticketComment_form" name="sourceleadTicketComment_form" method="post">
+	<%-- <form role="form" id="ticketComment_form" name="sourceleadTicketComment_form" method="post"> --%>
 		<input type="hidden" id="ticketCommentId" name="id" value="0"/>
 		<div class="ticketCommentCont">
 			<div class="clearfix">
-				<textarea rows="8" class="form-control clearfix mb10 valid error" placeholder="Comments here..." id="ticketComment" name="comment" field-name="Comment" data-validation="required validate_length length1-5000" style="border-color: rgb(204, 204, 204);"></textarea>
+				<!-- <textarea rows="8" class="form-control clearfix mb10 valid error" placeholder="Comments here..." id="ticketComment" name="comment" field-name="Comment" data-validation="required validate_length length1-5000" style="border-color: rgb(204, 204, 204);"></textarea> -->
+				<div contenteditable="true" id="ticketComment" style="height: 100px; border: 1px solid #CECECE;"></div>
 			</div>
 		</div>
 		<div class="popupFoot text-right">
 			<button type="button" class="slBtn md colorBtn" onclick="saveTicketComment('${ticketSummary.id}');">Save</button>
 			<button type="button" class="slBtn md popClose" onclick="closeTicketComment();">Cancel</button>
 		</div>
-	</form>
+	<%-- </form> --%>
 </div>
-
+					
   <script> 
       $("#tab-1").show();
       $(".project-tabs-menu a").click(function(event) {

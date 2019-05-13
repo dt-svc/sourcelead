@@ -1,9 +1,13 @@
 package com.bis.sourcelead.clockInOutService;
 
+import java.sql.Time;
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
+import com.bis.sourcelead.clockInOutEntity.Breaks;
 import com.bis.sourcelead.clockInOutEntity.ClockInOut;
 import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
 import com.bis.sourcelead.dto.ProjectsDTO;
@@ -21,7 +25,7 @@ public interface ClockInOutConfigService {
 
 	public ClockInOutConfig getClockInOutConfigBasedOnOrgLocationId(Long orgLocationId);
 
-	public void saveClockInOutTime(ClockInOutDTO clockInOutDTO, OrgLocations loginOrgLocation, User loginUser);
+	public ClockInOut saveClockInOutTime(ClockInOutDTO clockInOutDTO, OrgLocations loginOrgLocation, User loginUser);
 
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userI);
 
@@ -32,5 +36,17 @@ public interface ClockInOutConfigService {
 	public List<Tasks> getGeneralTasks(Long orgLocationId, Long userId);
 
 	public ClockInOut getExistedClockTime(Long orgLocationId, Long userId);
+
+	public void updateClockInOutTime(ClockInOutDTO clockInOutDTO, OrgLocations loginOrgLocation, User user);
+
+	public Breaks saveBreakTime(ClockInOutDTO clockInOutDTO, Long userId);
+
+	public Breaks getExistedBreakTime(Long clockInOutId);
+
+	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId, String dateFormat, String dayWisetype, String previousDate, String type);
+
+	public ClockInOutUserTimeEntryDTO getTimeReports(OrgLocations loginOrgLocation, User user);
+
+	public String getWorkingTimeByClockId(OrgLocations loginOrgLocation, User user);
 
 }

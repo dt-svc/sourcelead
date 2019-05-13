@@ -22,18 +22,29 @@ public class Breaks {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="CLOCK_INOUT_ID", nullable=false )   
-	private ClockInOut clockInOutId;
+	@Column(name = "CLOCK_INOUT_ID")
+	private Long clockInOutId;
 	
-	@Column(name = "BREAK_DATE")
-	private Date breakDate;
+	@Column(name = "BREAK_START_DATE")
+	private Date breakStartDate;
+	
+	@Column(name = "BREAK_END_DATE")
+	private Date breakEndDate;
+	
+	@Column(name = "BREAK_START_DATETIME")
+	private Date breakStartDateTime;
+	
+	@Column(name = "BREAK_END_DATETIME")
+	private Date breakEndDateTime;
 	
 	@Column(name = "BREAK_START_TIME")
 	private Time breakStartTime;
 	
 	@Column(name = "BREAK_END_TIME")
 	private Time breakEndTime;
+	
+	@Column(name = "TOTAL_BREAK_TIME")
+	private Time totalBreakTime;
 	
 	@Column(name = "COMMENTS",columnDefinition = "TEXT default NULL")
 	private String comments;
@@ -49,6 +60,9 @@ public class Breaks {
 	
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
+	
+	@Column(name = "TOTAL_TIME")
+	private String totalTime;
 
 	public Long getId() {
 		return id;
@@ -58,20 +72,29 @@ public class Breaks {
 		this.id = id;
 	}
 
-	public ClockInOut getClockInOutId() {
+	public Long getClockInOutId() {
 		return clockInOutId;
 	}
 
-	public void setClockInOutId(ClockInOut clockInOutId) {
+	public void setClockInOutId(Long clockInOutId) {
 		this.clockInOutId = clockInOutId;
 	}
 
-	public Date getBreakDate() {
-		return breakDate;
+
+	public Date getBreakStartDate() {
+		return breakStartDate;
 	}
 
-	public void setBreakDate(Date breakDate) {
-		this.breakDate = breakDate;
+	public void setBreakStartDate(Date breakStartDate) {
+		this.breakStartDate = breakStartDate;
+	}
+
+	public Date getBreakEndDate() {
+		return breakEndDate;
+	}
+
+	public void setBreakEndDate(Date breakEndDate) {
+		this.breakEndDate = breakEndDate;
 	}
 
 	public Time getBreakStartTime() {
@@ -129,7 +152,38 @@ public class Breaks {
 	public void setUpdatedBy(Long updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
+
+	public Time getTotalBreakTime() {
+		return totalBreakTime;
+	}
+
+	public void setTotalBreakTime(Time totalBreakTime) {
+		this.totalBreakTime = totalBreakTime;
+	}
+
+	public Date getBreakStartDateTime() {
+		return breakStartDateTime;
+	}
+
+	public void setBreakStartDateTime(Date breakStartDateTime) {
+		this.breakStartDateTime = breakStartDateTime;
+	}
+
+	public Date getBreakEndDateTime() {
+		return breakEndDateTime;
+	}
+
+	public void setBreakEndDateTime(Date breakEndDateTime) {
+		this.breakEndDateTime = breakEndDateTime;
+	}
+
+	public String getTotalTime() {
+		return totalTime;
+	}
+
+	public void setTotalTime(String totalTime) {
+		this.totalTime = totalTime;
+	}
 	
 
 }
