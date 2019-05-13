@@ -5,33 +5,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.invoiceId_Anchor a {
-color:#337ab7 !important;
-}
-.successBtn {
-background-color: #1ab394;
-border-color: #1ab394;
-border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px;
-font-size: 13px; width: 60px;
-}
-.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
-    z-index: 900000 !important;
-}
-.modal{
-z-index: 15000;
-}
-.remove_user_pop.remove_user_pop_a {
-z-index: 18000;
-}
-.popCusDate{
-	right: 16px; bottom: -40px; top: inherit; background: #fff; border: none; padding: 8px 10px 8px 5px;
-}
-</style>
-
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 $(document).ready(function(){
+	$(".ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br").css({'z-index':'900000 !important'});
 	getInvoiceList();
 });
 </script>
@@ -1713,6 +1690,13 @@ function resetInvoiceFilter(){
 	getInvoiceList();
 	
 }
+function resetingInvoiceFilter(){
+	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myInvoiceUL > li input:checkbox").prop("checked",false);
+	document.getElementById("invoiceDateRadio").checked = true;
+	$(".custom_search").empty().hide();
+}
 </script>
 
 
@@ -1815,7 +1799,7 @@ function resetInvoiceFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="getInvoiceList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetInvoiceFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingInvoiceFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>
