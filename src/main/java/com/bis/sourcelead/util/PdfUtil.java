@@ -69,8 +69,8 @@ import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -1431,8 +1431,8 @@ public class PdfUtil {
 		}else {
 			projectTaskArray[2] = "--"; 
 		}
-		if(projectTassks.getTaskAssignedUsers() != null) {
-			String assignedTo = projectTassks.getTaskAssignedUsers().toString().replaceAll("\\[", "").replaceAll("\\]","");
+		if(projectTassks.getAssignedTaskUsers() != null) {
+			String assignedTo = projectTassks.getAssignedTaskUsers().toString().replaceAll("\\[", "").replaceAll("\\]","");
 			projectTaskArray[3] = assignedTo; 
 		}else {
 			projectTaskArray[3] = "--"; 

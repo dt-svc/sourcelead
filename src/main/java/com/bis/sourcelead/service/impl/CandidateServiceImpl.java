@@ -2161,21 +2161,23 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}
 		}
 		
-		if (null != candidateDTO.getDesignationType()) {
-			if(candidateDTO.getDesignationType().equalsIgnoreCase("W2")) {
+		if (null != candidateDTO.getEmploymentType()) {
+			if(candidateDTO.getEmploymentType().equalsIgnoreCase("W2")) {
 				candidateDTO.setDesignationType("W-2");
 			}
 			
-			else if(!candidateDTO.getDesignationType().equalsIgnoreCase("C2C") && 
-					!candidateDTO.getDesignationType().equalsIgnoreCase("C2C-1099") &&
-					!candidateDTO.getDesignationType().equalsIgnoreCase("W-2") && 
-					!candidateDTO.getDesignationType().equalsIgnoreCase("C2H") && 
-					!candidateDTO.getDesignationType().equalsIgnoreCase("C2H -1099") &&
-					!candidateDTO.getDesignationType().equalsIgnoreCase("Part Time") && 
-					!candidateDTO.getDesignationType().equalsIgnoreCase("Full Time") && 
-					!candidateDTO.getDesignationType().equalsIgnoreCase("Off Shore")) {
+			else if(!candidateDTO.getEmploymentType().equalsIgnoreCase("C2C") && 
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("C2C-1099") &&
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("W-2") && 
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("C2H") && 
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("C2H -1099") &&
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("Part Time") && 
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("Full Time") && 
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("Off Shore")) {
 				
 				candidateDTO.setDesignationType("C2C");
+			}else{
+				candidateDTO.setDesignationType(candidateDTO.getEmploymentType());
 			}
 		}
 		
@@ -2318,6 +2320,18 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		candidate.setIsFavourite(0);
 		candidate.setIsFavouriteAssociate(0);
+		
+		if(StringUtils.isNotBlank(candidateDTO.getAadharNumber())) {
+			candidate.setAadharNumber(candidateDTO.getAadharNumber());
+			}
+		
+		if(StringUtils.isNotBlank(candidateDTO.getPanNumber())) {
+			candidate.setPanNumber(candidateDTO.getPanNumber());
+			}
+		
+		if(StringUtils.isNotBlank(candidateDTO.getSsnNumber())) {
+			candidate.setSsnNumber(candidateDTO.getSsnNumber());
+			}
 		
 		MasterCandidate masterCandidate = null;
 		masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
@@ -3391,7 +3405,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}*/
 	
 	@Override
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate, String purchaseOrderToDate, String purchaseOrderFilterDate)  throws Exception{
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,String searchValue, String purchaseOrderFromDate, String purchaseOrderToDate, String purchaseOrderFilterDate)  throws Exception{
 				Date today = new Date();
 				Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
 				Calendar calendar = Calendar.getInstance();
@@ -3447,7 +3461,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 					dateValue.put("fromDate", toDateVal);
 					dateValue.put("toDate", fromDateVal);
 				}
-				ResponseList<MarketplacePurchaseSalesDTO> responseList =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,  purchaseOrderFromDate, purchaseOrderToDate, dateValue);
+				ResponseList<MarketplacePurchaseSalesDTO> responseList =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,orgLocations,searchValue,  purchaseOrderFromDate, purchaseOrderToDate, dateValue);
 		return responseList;
 	}
 
@@ -3774,6 +3788,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
 		return candidateDao.getCandidateDateOfBirthByUserId(userId, orgLocation);
+	}
+
+	@Override
+	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId, Long masterCandidateId)
+			throws Exception {
+		return candidateDao.getConsultantUserByCandidateIdOrMasterCandidateId(candidateId, masterCandidateId);
 	}
 	
 }

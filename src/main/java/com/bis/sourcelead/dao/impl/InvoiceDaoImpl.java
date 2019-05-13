@@ -366,7 +366,12 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 		String qry = "";
 		if (StringUtils.isNotBlank(creditDebitNoteDTO.getSortColumn())) {
-			qry = " order by creditDebitNote." + creditDebitNoteDTO.getSortColumn() + " " + creditDebitNoteDTO.getSortOrder();
+			String sortColumnName = creditDebitNoteDTO.getSortColumn();
+			if(sortColumnName.equalsIgnoreCase("clientName")){
+				qry = " order by creditDebitNote.responderLocation.orgLocationName " + creditDebitNoteDTO.getSortOrder();
+			}else{
+				qry = " order by creditDebitNote." + sortColumnName + " " + creditDebitNoteDTO.getSortOrder();
+			}
 		}
 
 		String query = "from CreditDebitNote creditDebitNote  left join fetch  creditDebitNote.orgRelations left join fetch  creditDebitNote.orgRelations where  creditDebitNote.orgLocations.id =:orgLocationId"
