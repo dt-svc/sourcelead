@@ -65,13 +65,13 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = "/dumpTicketManagementData")
 	@ResponseBody
-	public String dumpTicketManagementPreDefinedValuesToAllOrgLocations(HttpServletRequest request) {
+	public String dumpTicketManagementPreDefinedValuesToAllOrgLocations(HttpServletRequest request, @RequestParam(defaultValue="0") long orgLocationId) {
 		int count = 0;
 		try {
 			if(request.getSession().getAttribute("dumpTicketManagementData") == null || (!(Boolean) request.getSession().getAttribute("dumpTicketManagementData"))) {
 				request.getSession().setAttribute("dumpTicketManagementData", true);
 				System.out.println("-------- Stated Dump of pre-defined Ticket Management values to all OrgLocations --------");
-				count = ticketManagementService.dumpTicketManagementPreDefinedValuesToAllOrgLocations();
+				count = ticketManagementService.dumpTicketManagementPreDefinedValuesToAllOrgLocations(orgLocationId);
 				System.out.println("-------- Completed Dump of pre-defined Ticket Management values to all OrgLocations --------");
 			}
 		} catch (Exception e) {

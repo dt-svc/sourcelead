@@ -1,183 +1,104 @@
-<jsp:include page="masterHeader.jsp" />
-<jsp:include page="masterSideNav.jsp" />
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<!doctype html>
+<%-- <jsp:include page="masterSideNav.jsp" /> --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!-- <link href="/resources/css/jquery-ui.css" rel="stylesheet"> -->
-
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-     <script src="/resources/js/sourcelead.common.js"></script> 
+ <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="bothTimesheets"/>
+ <sec:authorize access="!hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="onlyTimesheets"/>
+ <sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && !hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="onlyApprovalTimesheets"/>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Pragma" content="private">
+<meta http-equiv="Cache-Control" content="private">
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<title>Welcome to Source Lead</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+<link rel="stylesheet" href="/resources/css/chosen.min.css">
+<link href="/resources/css/sourcelead-main.css" rel="stylesheet">
+<link href="/resources/css/sourcelead-bundle.css" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/timesheet.css">
 
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
+<!-- Don't change js file order due to some overlapping issues ordered by prasadk-->
+
+<script src="/resources/js/jquery-1.11.1.min.js"></script>
+<script src="/resources/js/masterHeaderAction.js"></script>
+
+<script src="/resources/js/jquery-ui.js"></script>
+<script src="/resources/js/chosen.jquery.min.js"></script>
+<script src="/resources/js/jquery.dataTables.min.js"></script>
+<script src="/resources/js/jquery.timepicker.js"></script>
+
+<script src="/resources/js/formvalidator.js"></script>
+<script src="/resources/js/bootstrap-select.min.js"></script>
+
+<script src="/resources/js/sourcelead-app.js"></script>
+<script src="/resources/js/masterHeaderAction.js"></script>
+<script src="/resources/js/slead-common.js"></script>
 <style>
-
-.dashboard-widget.dashboard-widget-icons{
-min-height: 125px !important;
+.pac-container {
+z-index: 1000000000 !important;
 }
-.dashboard-widget .blank-pages{
-padding: 0; min-height: 100px;
-}
-
-.custom-datatble table{
-  margin-top: 20px !important;
- }
- .custom-datatble .dataTables_filter{
-   top: -35px !important; padding: 0 !important;
- }
- .dashboard-datepkr{
-       position:relative;
-}
-.ui-timepicker-wrapper {
-z-index: 999999;
-width: 11.5%;
-}
-.pdleft{
-padding-left:0;
-}
-.pdRight{
-padding-right:0;
+.pac-container::after {
+display:none;
 }
 </style>
-
- <style type="text/css">
-.clients_wrap_table {
-overflow-x: auto;
-}
-</style>
-
- <script type="text/javascript">
- $( document ).ready(function() {
-	 var settingsConfigured = '${SourceLeadWeb_settingsConfigured}';
-	 if(settingsConfigured == "N"){
-		configureDiv();
-	 }
-	});
-</script> 
-
-
-<form:form class="login-form clearfix"  id="configure_form"  name="configure_form" method="post" >
-   <div id ="configurePopUpDiv"></div>
-</form:form>
-
+</head>
+<%@page session="true"%>
+    <c:if test="${staticTime == null || staticTime == 0 }">
+    	<c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+    </c:if>
+<!-- 
+JQUERY DOs AND DONTs 
+ONE AND ONLY ONE JQUERY READY
+ALWAYS CACHE VARIABLES LIKE YOU DO IN JAVA
+-->
 <script>
-function logoutForConfigure() {
-	document.getElementById("logoutForm").submit();
-}
+var  tabAccessArray = '${SourceLeadWeb_tabsList}';
+var roleActionsArray = '${SourceLeadWeb_actionsList}';
+var sourceleadUrl ='${sourceleadUrl}';
+var atsUrl = '${SourceLeadWeb_atsUrl}';
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+var userId =  '${SourceLeadWeb_userId}';
+var orgLocationId  = '${SourceLeadWeb_orgLocationId}';
+
+var orgLocationCode = '${SourceLeadWeb_locationCode}';// snigitha copied from the dashboard.js
+var orgCode = '${SourceLeadWeb_orgCode}';// snigitha copied from the dashboard.js
+
+var isAuthenticated = '${SourceLeadWeb_isAuthenticated}'
+var userSessionId = '${SourceLeadWeb_actionUUID}';
+var userImgUrl =  '${SourceLeadWeb_userImgUrl}'; 
+var locationCode ='${SourceLeadWeb_locationCode}';
+var loginUser = '${SourceLeadWeb_loginUserFullName}';
+var locationList = '${SourceLeadWeb_dateFormat}';	
+var country = '${SourceLeadWeb_country}';
+var timezone = '${SourceLeadWeb_timezone}';
+var timezoneId ='${SourceLeadWeb_timeZoneId}'; 
+var candidateId = '${SourceLeadWeb_candidateId}';
+var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
+var userType =  '${SourceLeadWeb_loginUserRole}'; 
+var userSessionId = '${SourceLeadWeb_actionUUID}';
+var loginOrgLocationName = '${SourceLeadWeb_orgName}'; 
+// below are related variable used in showing tabs in dashboard.
+var bothTimesheets ='${bothTimesheets}';
+var onlyTimesheets ='${onlyTimesheets}';
+var onlyApprovalTimesheets ='${onlyApprovalTimesheets}';
+// reruirement list variables.
+var orgATS = '${SourceLeadWeb_ats}';
+var orgVMS = '${SourceLeadWeb_vms}';
+var requirementId = '${requirementId}'; 
+var locationDate = '${SourceLeadWeb_dateFormat}';	
+var searchType = '${searchType}';
+</script>
+<script>
+  $(document).ready(function() {
+	  $('body').load("/resources/sourceleadHtmls/dashboardHtml.html?staticTime=${staticTime}");
+	});
 </script>
 
-
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
-
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
-
-<section class="content-wraper">
-	    <section class="content-header clearfix">
-	      
-	      <c:if test="${!empty param.invitation}">
-	        <div class="success_pop" id="selector"  style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>You accepted invitation successfully.</span>
-			</div>
-	     </c:if>
-	     
-	     <c:if test="${!empty msg}">
-	        <div class="success_pop" id="selector1"  style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
-			</div>
-	     </c:if>
-	    
-	      <div class="pull-left">
-	        <h2>Dashboard<a  onclick="$('#configureDashboard').show();$('.advancedsearch-mask').fadeIn();"><i class="fa fa-cog ml"></i></a></h2>
-	      </div>
-	    </section>
-	    
-	    
-	    <div class="clearfix row">
-	    	
-	      <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
-			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
-	      </sec:authorize>
-	      <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-	      	<c:if test="${userTabs == 'Jobs'}">
-				 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-						<jsp:include page="dashboardRequirement.jsp"></jsp:include> 
-			     </sec:authorize>
-		     </c:if>
-		   </c:forEach>
-			 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES','ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">   
-				     <jsp:include page="expensesDashboardCounts.jsp"></jsp:include>
-			 </sec:authorize>  	
-			
-			<sec:authorize access="hasAnyRole('ROLE_APPLY_LEAVE','ROLE_APPLY_BEHALF_LEAVE','ROLE_APPROVE_LEAVE')">
-				<jsp:include page="leaveManagement.jsp"></jsp:include>
-			</sec:authorize>
-			
-	    		<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-	    		<c:if test="${userTabs == 'Jobs'}">
-	    			<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-					<div class="col-md-12"><jsp:include page="dashboardAssignedRequirements.jsp"></jsp:include> </div>
-					</sec:authorize>
-				</c:if>	
-				</c:forEach>
-					<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_USER','ROLE_VIEW_EDIT_ON_BOARD_USER')">
-					<div class="col-md-12"><jsp:include page="onboardingCandidatesList.jsp"></jsp:include></div> 
-					</sec:authorize>
-					
-					<!-- Candidates for Invoice -->
-			<sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE','ROLE_VIEW_REQUIREMENT')">
-				<jsp:include page="candidatesForInvoiceDashboard.jsp"></jsp:include>
-			</sec:authorize> 
-					
-					<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
-					   <%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
-					    <div class="col-md-12"><jsp:include page="projectResourceRequest.jsp"></jsp:include></div>  
-					    <jsp:include page="projectNewResourceRequest.jsp"></jsp:include>  
-					 </sec:authorize>
-					
-					<sec:authorize access="hasRole('ROLE_BUDGET_APPROVER')">
-					   <jsp:include page="budgetRequest.jsp"></jsp:include>
-					</sec:authorize>
-					
-			    
-			    <c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-			    	<c:if test="${userTabs == 'Jobs'}">
-				    	 <sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-				   	 	 <jsp:include page="dashboardRequirementApprovals.jsp"></jsp:include>
-				   	 	 </sec:authorize>
-			   	 	 </c:if>	
-			   	 </c:forEach>
-		     	
-		     	<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-			     	<c:if test="${userTabs == 'Jobs'}">
-			     		<sec:authorize access="hasAnyRole('ROLE_VIEW_REQUIREMENT')">
-			     		<jsp:include page="dashboardApplicants.jsp"></jsp:include>
-			     		</sec:authorize>
-			     	</c:if>
-		     	</c:forEach>
-		     
-		     <div class="clearfix"></div>
-	     
-<%--        <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
-			<div class='dashNewWrap mb'> 
-				<div class='blank-pages col-md-12'>
-			        <p><i class='fa fa-5x fa-bar-chart'></i></p>
-		        	<p>No Records Found</p>
-				 </div>
-			</div>
-		</sec:authorize>  --%>
-	    
-	    <div class="clearfix"> 
-	     	<div class="col-md-12"><jsp:include page="dashboardEvents.jsp"></jsp:include></div>   
-	   </div>  	
-	     	<sec:authorize access="hasAnyRole('ROLE_VIEW_CONTRACT')">
-				<div class="col-md-12"><jsp:include page="dashboardContracts.jsp"></jsp:include> </div>
-			</sec:authorize>
-
-		<jsp:include page="dashboard_configure_popup.jsp"></jsp:include>
-		</div>
-</section>
-
-<jsp:include page="masterFooter.jsp" />
-<jsp:include page="dashboard_scripts.jsp"/>
