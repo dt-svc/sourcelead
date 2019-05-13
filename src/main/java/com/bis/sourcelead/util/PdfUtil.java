@@ -1431,8 +1431,8 @@ public class PdfUtil {
 		}else {
 			projectTaskArray[2] = "--"; 
 		}
-		if(projectTassks.getTaskAssignedUsers() != null) {
-			String assignedTo = projectTassks.getTaskAssignedUsers().toString().replaceAll("\\[", "").replaceAll("\\]","");
+		if(projectTassks.getAssignedTaskUsers() != null) {
+			String assignedTo = projectTassks.getAssignedTaskUsers().toString().replaceAll("\\[", "").replaceAll("\\]","");
 			projectTaskArray[3] = assignedTo; 
 		}else {
 			projectTaskArray[3] = "--"; 
