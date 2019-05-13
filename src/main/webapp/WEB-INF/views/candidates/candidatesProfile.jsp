@@ -720,46 +720,7 @@ $('body').on('blur', '#terminate_candidate_form', function() {
 	$("#terminate_candidate_form").validateOnBlur(false, validationSettings);
 });
 
-/* 
-function deleteCandidate111(candidateId,candidateType) {
-	if(document.getElementById("rejectReason")!==null) {
-		var reason = document.getElementById("rejectReason").value;
-		reason = reason.replace(/\s/g, "");
-		if(reason.length == 0){
-			$(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
-	    	$(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>Reason is required</p>");
-		}
-		if(reason.match(/^[^\s-](.*)*$/) != null) {
-			$(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
-			$(".rejectErrorMsgs").empty();
-			$.post(atsUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,{},function(result){
-				if (result && result.response === "INVALID_DATA") {
-				    $("#update_candidate").removeAttr("disabled");
-				    $("#update_candidate").removeAttr('button').val('Save');
-				    showError(result.responseMessage);
-				} else if (result.response === "AWKWARD") {
-				    location.href = "/errorPage";
-				} else if (result.response === "SUCCESS") {
-					showSuccessStatusPopup("Candidate marked as teminated");
-					var json = result.object;
-					if(candidateType == 'Associates') {
-						location.replace(atsUrl+"/associatesList");
-					} else {
-						location.replace(atsUrl+"/candidatesList");
-					}
-				} else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
-				} else {
-				    $("#update_candidate").removeAttr("disabled");
-				    showError("Operation failed, please try again");
-				}	
-			});
-			
-		}
-	} else {
-		showError("Reason is required");
-	}
-} */
+
 </script>
 <script>
    function candiateRemoveSpacesForRejectReason() {
@@ -826,8 +787,7 @@ function reActivateCandidateAlertMessage(candidateId){
 	var result = "";
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	/* var message = confirm("You are choosing to ReActivate the Candidate");
-	if (message == true) { */
+	
 		var reactivate = '1';
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(atsUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,{},function(result){
@@ -845,17 +805,6 @@ function reActivateCandidateAlertMessage(candidateId){
 			    showError("Operation failed, please try again");
 			}			
 		});
-		/* $.ajax({
-	        type : "POST",
-	         url: atsUrl+"/reActivateCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&reActivate="+reactivate,        
-	         success :function(data) {
-	               if(data != null && data != 'undefined' && data != ""){
-	            			 location.replace(atsUrl+"/candidatesList");
-	                } 
-	         },
-		}); */ 
-		
-// 	}
 	
 }
 </script>
@@ -1227,12 +1176,7 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 }
 </script>
 
-
 <script>
-
- 
-
-
 function saveCandidateTags(candidateId){
 	 var tagName = $("#tagName").val();
 	 var jsonData = encodeURIComponent(tagName);
@@ -1348,7 +1292,6 @@ function saveCandidateTags(candidateId){
  }  
 </script>
  
-             
             
  <script type="text/javascript">
         var validationSettings = {
@@ -1401,34 +1344,7 @@ function saveCandidateTags(candidateId){
 				    showError("Operation failed, please try again");
 				}
 			});
-			/* $.ajax({
-				type : "POST",
-        	    data: formData,
-				url : sourceleadUrl+"/updateCandidate?"+tokenParamName+"="+tokenValue+"",
-				success : function(result) {
-					if (data.indexOf('Sign In') >= 0) {
-						location.replace(sourceleadUrl);
-					} else if (result && result.response === "INVALID_DATA") {
-					    $("#update_candidate").removeAttr("disabled");
-					    $("#update_candidate").removeAttr('button').val('Save');
-					    showError(result.responseMessage);
-					} else if (result.response === "SUCCESS") {
-					    $("#selector1").removeAttr("style");
-					    $("#selector1").css({ display: "block" });
-					    $("#candMsgDiv").html("Success!!  Candidate Updated");
-					    candUpdateMsgFadeinFunction();
-					    candidateQuickViewProfile(candidateId);
-					} else if (result.response === "SESSION_TIMEDOUT") {
-					    location.href = "/login";
-					} else if (result.response === "AWKWARD") {
-					    location.href = "/errorPage";
-					} else {
-					    $("#update_candidate").removeAttr("disabled");
-					    showError("Invalid data");
-					    showError("Operation failed, please try again");
-					}
-				}
-			}); */
+			
 			return true;
 		 } else { 
 			return false;
@@ -1448,19 +1364,6 @@ function cancelEdit(){
 	$(".location-alert").fadeOut();
 }
 </script>
-
-
-
-<%-- 
-     @author : sarath Kumar.
-     this script is for upDate Candidate Details .
-     1.usage     :  used in candidateProfile() function  line 258
-     2.parameter : csrf token candidateId.
-     3.ajax url implementation in CandidateListRestController.
---%>  
-
-
-
 
 <%-- 
      @author : Venkat Kesav
@@ -1483,8 +1386,6 @@ function removeSkillById(candidateId, skillId){
 		}); 
 }
 </script>
-    
-     
           
 <%-- 
      @author : david sammeta.
@@ -1512,11 +1413,6 @@ function removeSkillById(candidateId, skillId){
 	})(jQuery);
 </script> 
 
-
-
-
-
-
 <%-- 
      @author : sarath kumar.
      this script is for inline edit saving .
@@ -1537,9 +1433,6 @@ function removeSkillById(candidateId, skillId){
 			}); 	 	
 	} 
 </script>
-
-           
-           
 
 <script>
 	function employeeSubmissionProfile(candidateId) {
@@ -1575,12 +1468,7 @@ function removeSkillById(candidateId, skillId){
 									designation = " "; 
 								}
 								
-								/* 
-								 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
-									startMonth=   opt.startMonth;
-								}else{
-									startMonth = " ";
-								} */
+								
 								
 								if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
 									startYear=   opt.startYear;
@@ -1588,11 +1476,7 @@ function removeSkillById(candidateId, skillId){
 									startYear = " ";
 								}
 								
-								/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
-									endMonth = opt.endMonth;  
-								} else {
-									endMonth = " ";
-								} */
+								
 								if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
 									endYear = opt.endYear;  
 								} else {
