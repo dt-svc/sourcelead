@@ -742,6 +742,7 @@ public class ProjectPlanningRestController {
 										projectClients.setProjectId(projectPlanningRequest.getProjectId());
 										projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
 										projectClients.setOrgLocationsId(cand.getOrgLocationId());
+										projectClients.setOrgId(cand.getOrgLocationId().getOrg());
 										projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 										projectClients.setStatus(1);
 										
@@ -837,6 +838,7 @@ public class ProjectPlanningRestController {
 		    		 projectMembersDTO.setBillRate(projectPlanningResourceRequest.getBillRate());
 		    		 projectMembersDTO.setBillRateCurrency(projectPlanningResourceRequest.getBillRateCurrency());
 		    		 projectMembersDTO.setBillRateRateType(projectPlanningResourceRequest.getBillRateType());
+		    		 projectMembersDTO.setPercentageOfWork(projectPlanningResourceRequest.getPercentageOfWork());
 		    		
 		    		 if(projectPlanningResourceRequest.getStartDate() != null) {
 		    			 projectMembersDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projectPlanningResourceRequest.getStartDate()));
@@ -1005,6 +1007,7 @@ public class ProjectPlanningRestController {
 								 clientCandidate.setOrgLocationId(projectPlanningResourceRequest.getProjectPlanningRequestId().getOrgLocationId());
 								 clientCandidate.setIsAssociate(Constants.NO);
 								 clientCandidate.setDesignationType("Offshore C2C");
+								 clientCandidate.setGeneratedId(candidateService.getCandidateId(projectPlanningResourceRequest.getProjectPlanningRequestId().getOrgLocationId()));
 								 
 								 if(projectPlanningResourceRequest.getBillRate() != null){
 									 clientCandidate.setCurrentRate(projectPlanningResourceRequest.getBillRate().toString());
@@ -1070,6 +1073,7 @@ public class ProjectPlanningRestController {
 									 clientCandidate.setOrgLocationId(clientOrgLoc);
 									 clientCandidate.setIsAssociate(Constants.NO);
 									 clientCandidate.setDesignationType("Offshore C2C");
+									 clientCandidate.setGeneratedId(candidateService.getCandidateId(clientOrgLoc));
 									 
 									 if(projectPlanningResourceRequest.getBillRate() != null){
 										 clientCandidate.setCurrentRate(projectPlanningResourceRequest.getBillRate().toString());
@@ -1166,7 +1170,9 @@ public class ProjectPlanningRestController {
 				if(projectPlanningResourceRequest.getEstimatedBudget() != null){
 					projectMembers.setEstimatedBudget(projectPlanningResourceRequest.getEstimatedBudget());
 				}
-				
+				if(projectPlanningResourceRequest.getPercentageOfWork()!=null) {
+					projectMembers.setPercentageOfWork(projectPlanningResourceRequest.getPercentageOfWork());
+				}
 				projectMembers.setProjects(projects);
 				projectMembers.setStatus("1");
 				projectMembers.setCreatedBy(user.getUserCode());

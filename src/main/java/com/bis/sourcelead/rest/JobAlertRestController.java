@@ -48,7 +48,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 public class JobAlertRestController {
 	
-private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
+private static final Logger logger = LoggerFactory.getLogger(JobAlertRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
