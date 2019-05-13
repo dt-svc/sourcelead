@@ -42,7 +42,7 @@ public class CreditDebitNote implements Serializable {
 
 	
 	@Column(name = "INVOICE_BILL_ID")
-	private String invoice;
+	private String invoiceId;
 
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATIONS_ID", nullable = false)
@@ -107,7 +107,7 @@ public class CreditDebitNote implements Serializable {
 	private Date creditNoteDate;
 	
 	@Column(name = "SUB_TOTAL")
-	private BigDecimal subTotal;
+	private BigDecimal balance;
 	
 	@Column(name = "TOTAL")
 	private BigDecimal total;
@@ -125,7 +125,7 @@ public class CreditDebitNote implements Serializable {
 	private String status;
 	
 	@Column(name = "CREATED_DATE")
-	private Date createdDate;
+	private Date date;
 
 	@ManyToOne
 	@JoinColumn(name = "CREATED_BY")
