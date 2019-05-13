@@ -200,11 +200,11 @@ public class CreditDebitNote implements Serializable {
 	}
 
 	public String getInvoice() {
-		return invoice;
+		return invoiceId;
 	}
 
 	public void setInvoice(String invoice) {
-		this.invoice = invoice;
+		this.invoiceId = invoice;
 	}
 
 	public OrgLocations getOrgLocations() {
@@ -337,11 +337,11 @@ public class CreditDebitNote implements Serializable {
 	}
 
 	public BigDecimal getSubTotal() {
-		return subTotal;
+		return balance;
 	}
 
 	public void setSubTotal(BigDecimal subTotal) {
-		this.subTotal = subTotal;
+		this.balance = subTotal;
 	}
 
 	public BigDecimal getTotal() {
@@ -361,11 +361,11 @@ public class CreditDebitNote implements Serializable {
 	}
 
 	public Date getCreatedDate() {
-		return createdDate;
+		return date;
 	}
 
 	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
+		this.date = createdDate;
 	}
 
 	public User getCreatedBy() {
