@@ -17,10 +17,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Approval_Mechanism_Type;
@@ -31,7 +27,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "SUBMISSION_APPROVER_HIERARCHY")
-//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionApproverHierarchy")
 public class SubmissionApproverHierarchy implements  Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -40,6 +35,37 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
+	
+   /*###################################### Fields Added For De-Normalization ###################################*/
+	@ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "PROJECT_ID", nullable = false)
+	private Projects projectId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "PROJECT_MEMBER_ID", nullable = false)
+	private ProjectMembers projectMemberId;
+	
+	@Column(name = "MASTER_CANDIDATE_ID", nullable=false)
+	private Long masterCandidateId;
+	
+	@Column(name = "CANDIDATE_ID", nullable=false)
+	private Long candidateId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "CONSULTANT_USER_ID")
+	private User consultantUser;
+
+	@Column(name = "ORG_LOCATION_ID", nullable=false)
+	private Long orgLocationId;
+
+	@Column(name = "ORG_ID", nullable=false)
+	private Long orgId;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "PROJECT_CLIENT_ID", nullable=false)
+    private ProjectClients projectClientId;
+	
+	/* ######################################***********************************#####################################*/
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -50,6 +76,7 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "SUBMISSION_ID", nullable = false)
 	private TimesheetSubmissions submissionId;
+	
 	
 	@Column(name = "SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
@@ -620,4 +647,67 @@ public class SubmissionApproverHierarchy implements  Serializable{
 		this.timesheetActivityLoginUser = timesheetActivityLoginUser;
 	}
 
+	public User getConsultantUser() {
+		return consultantUser;
+	}
+
+	public void setConsultantUser(User consultantUser) {
+		this.consultantUser = consultantUser;
+	}
+
+	public Projects getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Projects projectId) {
+		this.projectId = projectId;
+	}
+
+	public ProjectMembers getProjectMemberId() {
+		return projectMemberId;
+	}
+
+	public void setProjectMemberId(ProjectMembers projectMemberId) {
+		this.projectMemberId = projectMemberId;
+	}
+
+	public Long getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(Long masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
+
+	public ProjectClients getProjectClientId() {
+		return projectClientId;
+	}
+
+	public void setProjectClientId(ProjectClients projectClientId) {
+		this.projectClientId = projectClientId;
+	}
 }
