@@ -62,6 +62,8 @@
 		              <div class="clearfix">
 							<select class="form-control chosen-select" id="formulaPayhead" name="formulaPayhead">
 								<option value="">Select</option>
+									<%-- <option value="(CTC)">CTC (CTC)</option>
+									<option value="(GROSS)">Gross (GROSS)</option> --%>
 		                			<c:forEach var="list" items="${payheadList}">
 			                			<c:if test="${payrollPayhead.id != list.id}">
 			                				<option value="(${list.shortCode})">${list.name} (${list.shortCode})</option>

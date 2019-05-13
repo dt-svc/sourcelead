@@ -12,13 +12,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 
  
   <jsp:include page="addExpenseEntries.jsp"></jsp:include>
- 
-  <style type="text/css">
-.ReadTextFli {
-	 text-align: -webkit-left;
-}
-</style>
-
  <script type="text/javascript">
 		window.onload = function () {
 			//getClientBasedOnSelectedProject();
@@ -57,7 +50,7 @@ $(document).ready(function(){
 	        <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view">View Expenses</a> &raquo; Edit Expense</div> 
 	    </c:when>    
 	     <c:otherwise>
-	       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/expenses">My Expenses</a> &raquo; Add Exhdgfdpense</div> 
+	       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/expenses">My Expenses</a> &raquo; Add Expense</div> 
 	    </c:otherwise>
 	</c:choose>
     </section>
@@ -73,7 +66,7 @@ $(document).ready(function(){
 	                   <c:if test="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED' and submissionStatus ne 'REOPENED'}">
 						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
-								<option value="">Select Project</option>
+								<option selected="true" disabled="disabled">Select Project</option>
 							</c:if>
 							<c:forEach var="projMembers" items="${expEntry.projectMembersList}">
 							       <option  ${expenses.projectId == projMembers.projectId ? 'selected' : '' } value="${projMembers.id}">${projMembers.projectName}</option>
@@ -83,7 +76,7 @@ $(document).ready(function(){
 						<c:if test="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED' or submissionStatus eq 'REOPENED'}">
 						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required" disabled="disabled">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
-								<option value="">Select Project</option>
+								<option selected="true" disabled="disabled">Select Project</option>
 							</c:if>
 							<c:forEach var="projMembers" items="${expEntry.projectMembersList}">
 							       <option  ${expenses.projectId == projMembers.projectId ? 'selected' : '' } value="${projMembers.id}">${projMembers.projectName}</option>
