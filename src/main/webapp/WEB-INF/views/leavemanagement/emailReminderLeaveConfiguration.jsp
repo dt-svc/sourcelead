@@ -382,9 +382,9 @@ function hideandshowHoliday(){
 								<div id="reminderParent_approve_Pending_Leaves_form" class="clearfix"></div>
 	
 									<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
-										<label class="col-md-3">Notify To<span class="text-danger paddingLeft">*</span></label>
+										<label class="col-md-3">Notify To</label>        <!-- <span class="text-danger paddingLeft">*</span> -->
 										<div class="col-md-9" id="notifyToDiv_approve_Pending_Leaves_form">
-											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${approvePendingLeaves.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
+											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${approvePendingLeaves.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To">      <!-- data-validation="required validate_Space" -->
 										</div>
 										<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="approvePendingLeaves">
 										<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="31">
