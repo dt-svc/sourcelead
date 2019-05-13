@@ -59,15 +59,15 @@ import com.bis.sourcelead.reportsDTO.AssetsReportDTO;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
-import com.bis.sourcelead.service.DayEntryReportsService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.ShiftService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
-import com.bis.sourcelead.service.TimesheetReportService;
+import com.bis.sourcelead.timesheet.service.DayEntryReportsService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetReportService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
@@ -563,6 +563,11 @@ public class HrReportRestController {
 			 if(conPM != null) {
 				 pmUser = conPM.getProjectMemberCandidteId().getConsultantUser();
 			 }
+			 
+			 Long workLocationId = 0l;
+			 if(conPM.getProjectMemberCandidteId() != null && conPM.getProjectMemberCandidteId().getWorkLocation() != null && conPM.getProjectMemberCandidteId().getWorkLocation().getId() != null) {
+				workLocationId = conPM.getProjectMemberCandidteId().getWorkLocation().getId();
+			 }
 		     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate,isGlobalAccess);
 	    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
 		     float monthTotalHours            = 0f;
@@ -586,7 +591,7 @@ public class HrReportRestController {
 		    	    	Float leaveBillableTotal = 0f;
 		    	    	Float leaveNonBillableTotal = 0f;
 			    	    if(consultantUser != null) {
-			    	    	 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(pmUser.getId(), entry.getKey(), entry.getValue());
+			    	    	 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(pmUser.getId(), entry.getKey(), entry.getValue(),workLocationId);
 				    	     if(leaveTotalMap != null && !leaveTotalMap.isEmpty()) {
 				    	    	 leaveTotal = leaveTotalMap.get("TOTAL");
 				    	    	 leaveBillableTotal = leaveTotalMap.get("BILLABLE");
