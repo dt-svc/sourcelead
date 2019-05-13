@@ -169,7 +169,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			Map<String, Long> canMap, Map<Long, String> pfeMap) {
 		if(canMap.get(getCellValueAsString(row.getCell(1), fileName).toLowerCase().trim()) != null) {
 			if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
-				InfoDataDTO.setReason("Email Mandatory");
+				InfoDataDTO.setReason("Email is required");
 				return false;
 			}else if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString()) 
 					&& !validateEmail(getCellValueAsString(row.getCell(1), fileName))){
@@ -177,23 +177,23 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				return false;
 			}else if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
 			         if (row.getCell(2) == null || "".equalsIgnoreCase(row.getCell(2).toString())) {
-			        	 InfoDataDTO.setReason("Uan number Mandatory");
+			        	 InfoDataDTO.setReason("Uan number is required");
 						return false;
 					}else if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString()) && !validateUan(getCellValueAsString(row.getCell(2), fileName))){
-						InfoDataDTO.setReason("Invalid Uan Number");
+						InfoDataDTO.setReason("Uan number should be between 1-12 characters");
 						return false;
 					}else if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString())) {
-						InfoDataDTO.setReason("Pf Number Mandatory");
+						InfoDataDTO.setReason("Pf Number is required");
 						return false;
 					}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validatePf(getCellValueAsString(row.getCell(3), fileName).replaceAll("[^A-Za-z0-9_]" ,""))){
-						InfoDataDTO.setReason("Invalid Pf Number");
+						InfoDataDTO.setReason("Pf number should be between 10-25 characters");
 						return false;
 					}else if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString()) && !validateEsi(getCellValueAsString(row.getCell(4), fileName))){
-						InfoDataDTO.setReason("Invalid Esi Number");
+						InfoDataDTO.setReason("Esi number should be between 10-17 characters");
 						return false;
 				}
 			}else{
-					InfoDataDTO.setReason("Uan number Mandatory");
+					InfoDataDTO.setReason("Uan number is required");
 			     	return false;
 			     }
 			
@@ -218,7 +218,6 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 
 	//=============== Associate banking detail import ====================//
 	
-	
 	 @Override
 	  public AssociateBankErrorData saveImportBankDetails(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception{
 					
@@ -235,7 +234,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		
 		Map<String,  List<String>> accGroupByEmailList = new HashMap<String, List<String>>();
 		canMap.forEach((k, v) -> {
-			   accGroupByEmailList.put(k, paymentDetailsList.stream().filter(t -> t.getEmail().equals(k)).map(PaymentAccount::getAccountNumber).collect(Collectors.toList()));  });
+			   accGroupByEmailList.put(k, paymentDetailsList.stream().filter(t -> t.getEmail() != null && t.getEmail().equals(k) && t.getAccountNumber() != null).map(PaymentAccount::getAccountNumber).collect(Collectors.toList()));  });
 		
 		int insertedCount = 0;
 		try {
@@ -337,45 +336,45 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		{
 			if(map.get(getCellValueAsString(row.getCell(1), fileName).toLowerCase().trim()) != null) {
 				if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
-					bankDataDTO.setReason("Email Mandatory");
+					bankDataDTO.setReason("Email is required");
 					return false;
 				}else if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString()) && !validateEmail(getCellValueAsString(row.getCell(1), fileName))){
 					bankDataDTO.setReason("Invalid Email");
 					return false;
 				}else if(row.getCell(2) != null && !"".equalsIgnoreCase(row.getCell(2).toString())) {
-					if("Savings".equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName))) {
+					if("SAVINGS".equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName))) {
 						if(row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString())) {
-							bankDataDTO.setReason("Bank Name Mandatory");
+							bankDataDTO.setReason("Bank Name is required");
 						}else if (row.getCell(4) == null || "".equalsIgnoreCase(row.getCell(4).toString())) {
-							bankDataDTO.setReason("Bank Account Mandatory");
+							bankDataDTO.setReason("Bank Account is required");
 							return false;
 						}else if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString()) && !validateAccount(getCellValueAsString(row.getCell(4), fileName))){
-							bankDataDTO.setReason("Invalid Bank Account");
+							bankDataDTO.setReason("Bank Account number length should be between 9-15 characters");
 							return false;
 						}else if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString()) && !validateBsrMicr(getCellValueAsString(row.getCell(5), fileName))){
-							bankDataDTO.setReason("Invalid BISR Number");
+							bankDataDTO.setReason("BSR/MICR length should be between 9-15 characters");
 							return false;						
 						}else if(row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString()) && !validateBsrMicr(getCellValueAsString(row.getCell(6), fileName))){
-							bankDataDTO.setReason("Invalid MICR Number");
+							bankDataDTO.setReason("BSR/MICR length should be between 9-15 characters");
 							return false;
 						}else if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString())) {
-							bankDataDTO.setReason("IFSC number Mandatory");
+							bankDataDTO.setReason("IFSC number is required");
 							return false;					
 						}else if(row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString()) && !routingNum(getCellValueAsString(row.getCell(7), fileName))){
-							bankDataDTO.setReason("Invalid IFSC Number");
+							bankDataDTO.setReason("IFSC Code length should be 11 characters");
 							return false;
 						}else if (row.getCell(8) == null || "".equalsIgnoreCase(row.getCell(8).toString())) {
-							bankDataDTO.setReason("First Name mandatory");
+							bankDataDTO.setReason("First Name is required");
 							return false;	
 						}else if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
-							bankDataDTO.setReason("Last Name Mandatory");
+							bankDataDTO.setReason("Last Name is required");
 							return false;
 						}
 					}
 				}
 				
 				if(accGroupByEmailList != null ) {
-					if("Savings".equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName))) {
+					if("SAVINGS".equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName)) && accGroupByEmailList.containsKey(getCellValueAsString(row.getCell(1), fileName).toLowerCase())) {
 					List<String> accountNum =accGroupByEmailList.get(getCellValueAsString(row.getCell(1),fileName).toLowerCase());	
 					if(accountNum != null && accountNum.size() > 0) {
 						 boolean acc = accountNum.contains(getCellValueAsString(row.getCell(4),fileName));
@@ -407,7 +406,6 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			
 			return true;
 		}  
-	
 		
 //=======================Associate salary import=========================//
 		
@@ -426,9 +424,9 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				logger.debug("File Extension is: " + multipartFile.getOriginalFilename());
 				
 				
-				List<Candidate> candidateList =  candidateService.getAllCandidatesByLocation(orgLocation.getId());
+				List<Candidate> candidateList =  candidateService.getAllActiveAssociatesByLocation(orgLocation.getId());
 				Map<String, Long> mapEmailAndId = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getId));
-				Map<String, String> mapEmailAndAssId = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getGeneratedId));
+				//Map<String, String> mapEmailAndAssId = candidateList.stream().collect(Collectors.toMap(Candidate::getEmail, Candidate::getGeneratedId));
 				
 				List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
 				Map<String, String> userGroupNameAndUUID = userGroupList.stream().collect(Collectors.toMap(UserGroup::getGroupName, UserGroup::getGroupUUID));

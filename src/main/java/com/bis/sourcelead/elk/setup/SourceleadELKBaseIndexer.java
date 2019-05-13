@@ -104,6 +104,15 @@ public class SourceleadELKBaseIndexer<T> {
 	}
 	
 	
+	public SearchResponse searchDocumentsResults(String index, String type, int offset, int maxResults,
+			  BoolQueryBuilder query) {
+		SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type)
+				.setQuery(query).setFrom(offset).setSize(maxResults).execute()
+				.actionGet();
+
+		return response;
+	}
+	
 
 	public SearchHits searchDocumentWithMaxResultsForCampaigns(String index, String type, int offset, int maxResults,
 			BoolQueryBuilder query) {

@@ -172,5 +172,7 @@ public interface UserRoleDao {
 	public String getUserRoleUUIDByUserRoleId(Long userRoleId) throws Exception;
 	
 	List<UserRole> getAllUserRolesByRoleId(Long roleId) throws Exception;
+	
+	List<UserDTO> getAllActiveUsersList(Long orgLocationId) throws Exception;
 
 }

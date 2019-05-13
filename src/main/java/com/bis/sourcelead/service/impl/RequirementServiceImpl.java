@@ -1126,15 +1126,14 @@ public class RequirementServiceImpl implements RequirementService {
 			}
 		}
 		// for URL redirections from mail
-		String redirectURL ="";
+		String redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 		Long redirectOrgLocationId = orgLocations.getId();
 		
 		// store recommended customizeScore
 		RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService
 				.saveCustomizeScore(requirement);
 		if (!requirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT)) {			
-			    redirectURL = "/requirementSummary?requirementUUID="+requirement.getRequirementUUID();
-									
+			 								
 			// mailRequirementtoManager(user,user,savedRequirement,location,orgLocations);
 			// send mail to sequential approver1
 			if (StringUtils.isNotBlank(requirementDTO.getSequentialApprover1())) {
@@ -1142,7 +1141,7 @@ public class RequirementServiceImpl implements RequirementService {
 				User approverUser = userService.getUserById(Long.parseLong(approverNames));
 				if (!approverUser.getId().equals(user.getId())) {
 					
-					approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
+					approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations);
 				}
 			}
 			// send mail to parallel approver
@@ -1151,7 +1150,7 @@ public class RequirementServiceImpl implements RequirementService {
 				for (String approver : approvers) {
 					User approverUser = userService.getUserById(Long.parseLong(approver));
 					if (!approverUser.getId().equals(user.getId())) {
-						approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
+						approverEmailScenario(user, approverUser, savedRequirement, location, orgLocations);
 					}
 				}
 			}
@@ -1171,7 +1170,6 @@ public class RequirementServiceImpl implements RequirementService {
 						}
 					}
 					if (!found) {
-						redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 						List<RequirementAssignTo> newlyAddedList = new ArrayList<RequirementAssignTo>();
 						newlyAddedList.add(newList);
 						for (RequirementAssignTo newly : newlyAddedList) {
@@ -1194,7 +1192,6 @@ public class RequirementServiceImpl implements RequirementService {
 			if (!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)) {
 				// Set<RequirementAssignTo> updatedRequirementAssignToList =
 				// savedRequirement.getRequirementAssignTo();
-				redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 				Set<RequirementAssignTo> teamMembers = getRequirementAssignedToTeamByRequirementId(
 						savedRequirement.getId());
 				Set<RequirementAssignTo> updatedRequirementAssignToList = teamMembers;
@@ -1214,7 +1211,6 @@ public class RequirementServiceImpl implements RequirementService {
 			// condition : if login user as team member then mail should not
 			// send
 			if (!savedRequirement.getRequirementSubmissionStatus().equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED)) {
-				redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 				Set<RequirementAssignTo> updatedRequirementAssignToList = savedRequirement.getRequirementAssignTo();
 				if (updatedRequirementAssignToList != null) {
 					for (RequirementAssignTo requirementAssignTo : updatedRequirementAssignToList) {
@@ -1235,11 +1231,9 @@ public class RequirementServiceImpl implements RequirementService {
 			if (savedRequirement.getManagerUserId() != null
 					&& !user.getId().equals(savedRequirement.getManagerUserId().getId())
 					&& savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())) {
-				redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 				mailRequirementtoManager(user, user, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
 			} else if (!savedRequirement.getCreatedDate().equals(savedRequirement.getUpdatedDate())
 					&& !user.getId().equals(savedRequirement.getManagerUserId().getId())) {
-				redirectURL = "/requirementSummary-params-requirementUUID="+savedRequirement.getRequirementUUID();
 				updatedRequirementMailToManager(user, user, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
 			}
 		}
@@ -1805,7 +1799,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public void approverEmailScenario(User loginUser, User approverUser, Requirement requirement,
-			StringBuilder location, OrgLocations loginOrgLocation,String redirectURL,Long redirectOrgLocationId) throws Exception {
+			StringBuilder location, OrgLocations loginOrgLocation) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
@@ -3179,25 +3173,24 @@ public class RequirementServiceImpl implements RequirementService {
 		if (requirement.getPriority() != null && !"".equalsIgnoreCase(requirement.getPriority())) {
 			writeRow.createCell(7).setCellValue(requirement.getPriority());
 		}
-		if (requirement.getSubmissionTemplateId() != null) {
+		/*if (requirement.getSubmissionTemplateId() != null) {
 			writeRow.createCell(8).setCellValue(requirement.getSubmissionTemplateId().getTemplateName());
-		}
+		}*/
 		if (requirement.getClientName() != null && !"".equalsIgnoreCase(requirement.getClientName())) {
-			writeRow.createCell(9).setCellValue(requirement.getClientName());
+			writeRow.createCell(8).setCellValue(requirement.getClientName());
 		}
 		if (requirement.getClientContactName() != null && !"".equalsIgnoreCase(requirement.getClientContactName())) {
-			writeRow.createCell(10).setCellValue(requirement.getClientContactName());
+			writeRow.createCell(9).setCellValue(requirement.getClientContactName());
 		}
 		if (requirement.getClientContactEmail() != null && !"".equalsIgnoreCase(requirement.getClientContactEmail())) {
-			writeRow.createCell(11).setCellValue(requirement.getClientContactEmail());
+			writeRow.createCell(10).setCellValue(requirement.getClientContactEmail());
 		}
 		if (requirement.getRequirementSubmissionStatus() != null
 				&& !"".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())) {
-			writeRow.createCell(12).setCellValue(requirement.getRequirementSubmissionStatus().toString());
+			writeRow.createCell(11).setCellValue(requirement.getRequirementSubmissionStatus().toString());
 		}
-		if (requirement.getCreatedDate() != null && !"".equalsIgnoreCase(requirement.getCreatedDate().toString())) {
-			writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(
-					requirement.getOrgLocationId().getDateFormat(), requirement.getCreatedDate()));
+		if (requirement.getRequirementCreatedDateToString() != null && !"".equalsIgnoreCase(requirement.getRequirementCreatedDateToString().toString())) {
+			writeRow.createCell(12).setCellValue(requirement.getRequirementCreatedDateToString());
 		}
 		return createExcelsheet;
 	}
@@ -4808,6 +4801,12 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		return applicantBackoutDTO;
 	}
+
+	@Override
+	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId, String status) {
+		return requirementDao.getVendorSubmittedCandidates(requirementId, orgRelationId, spocId, status);
+	}
+	
 	
 }
 

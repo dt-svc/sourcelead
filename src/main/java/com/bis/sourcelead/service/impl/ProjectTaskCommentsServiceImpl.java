@@ -2,8 +2,10 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -98,34 +100,47 @@ public class ProjectTaskCommentsServiceImpl implements ProjectTaskCommentsServic
 	}
 
 	private void updatedTaskCommentEmail(ProjectTaskDocumentDTO projectTaskDocumentDTO, TaskDTO taskDTO, User user, OrgLocations loginOrgLocation, ProjectTasks projectTasks) throws Exception {
-		// Assign members Email
-				ProjectTasks projectTask = projectTasksService.getTasksId(projectTaskDocumentDTO.getProjectTaskId());
-				String[] assignid = taskDTO.getAssignValue().split(",");
-				 List<Long> assignUserids = new ArrayList<Long>();
-					 if(!taskDTO.getAssignValue().isEmpty() && assignid.length > 0) {
-						 for(int i=0; i<assignid.length;i++) {
+		ProjectTasks projectTask = projectTasksService.getTasksId(projectTaskDocumentDTO.getProjectTaskId());
+		ProjectAssignTask  assignTasks = null;
+		List<Long> assignUserids = new ArrayList<Long>();
+			//Mentioned UserIds Email 
+			Set<Long> userIdSet = new HashSet<>();
+			String[] mentionedId = projectTaskDocumentDTO.getMentionedUserIds().split(",");
+			 if(!projectTaskDocumentDTO.getMentionedUserIds().isEmpty() && mentionedId.length > 0) {
+				 for(int i=0; i<mentionedId.length;i++) {
+					 if(mentionedId[i] != null && !userIdSet.contains(Long.valueOf(mentionedId[i]))) {
+						 userIdSet.add(Long.valueOf(mentionedId[i]));
+						 assignUserids.add(Long.valueOf(mentionedId[i]));
+					 }
+				 }
+			  }
+			// Assign members Email
+			String[] assignid = taskDTO.getAssignValue().split(",");
+				 if( !taskDTO.getAssignValue().isEmpty() && assignid.length > 0) {
+					 for(int i=0; i<assignid.length;i++) {
+						 if(assignid[i] != null && !assignUserids.contains(Long.valueOf(assignid[i]))) {
 							 assignUserids.add(Long.valueOf(assignid[i]));
 						 }
 					 }
-				ProjectAssignTask  assignTasks = null;
-			   if(assignUserids.size() > 0) {
-				   for (Long assignedMemeber :assignUserids) {
-						  assignTasks = new ProjectAssignTask();
-						 ProjectMembers pm = projectMembersService.getProjectMemberById(assignedMemeber);
-						 assignTasks.setProjectMemberId(pm);
-						  
-						 if(pm.getCandidateId().longValue() != taskDTO.getCandidateId().longValue()) {
-							if(projectTasks.getOwnerUserId() == null) {
-								 sendUpdatedTaskCommentEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,projectTaskDocumentDTO,"assignEmail");
-							}else if( projectTasks.getOwnerUserId() != null && pm.getEmployee() == null) {
-								 sendUpdatedTaskCommentEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,projectTaskDocumentDTO,"assignEmail");
-							}else if( projectTasks.getOwnerUserId() != null && pm.getEmployee().getUser().getId().longValue() != projectTasks.getOwnerUserId().getId().longValue() ) {
-								 sendUpdatedTaskCommentEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,projectTaskDocumentDTO,"assignEmail");
-							}
-						 }
+				 }
+		
+		 if(assignUserids.size() > 0) {
+			   for (Long assignedMemeber :assignUserids) {
+					  assignTasks = new ProjectAssignTask();
+					 ProjectMembers pm = projectMembersService.getProjectMemberById(assignedMemeber);
+					 assignTasks.setProjectMemberId(pm);
+					  
+					 if(pm.getCandidateId().longValue() != taskDTO.getCandidateId().longValue()) {
+						if(projectTasks.getOwnerUserId() == null) {
+							 sendUpdatedTaskCommentEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,projectTaskDocumentDTO,"assignEmail");
+						}else if( projectTasks.getOwnerUserId() != null && pm.getEmployee() == null) {
+							 sendUpdatedTaskCommentEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,projectTaskDocumentDTO,"assignEmail");
+						}else if( projectTasks.getOwnerUserId() != null && pm.getEmployee().getUser().getId().longValue() != projectTasks.getOwnerUserId().getId().longValue() ) {
+							 sendUpdatedTaskCommentEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,projectTaskDocumentDTO,"assignEmail");
+						}
 					 }
-			   }
-			   
+				 }
+		   }
 			   //project Task ownerEmail
 			   if(projectTasks.getOwnerUserId() != null) {
 				   if(user.getId().longValue() != projectTasks.getOwnerUserId().getId().longValue()) {

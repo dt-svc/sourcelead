@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 
@@ -33,14 +32,10 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.CalendarUtil;
-import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 
 @Component
 public class TimesheetEmailUtil {
@@ -50,6 +45,9 @@ public class TimesheetEmailUtil {
 
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
+	
+	@Value("${pmsUrl}")
+	private String pmsUrl;
 
 	@Autowired
 	private ProjectApproverHierarchyService projectApproverHierarchyService;
@@ -107,6 +105,9 @@ public class TimesheetEmailUtil {
 		emailMessage.setToEmail(toEmail);
 		emailMessage.setFromEmail(loginUser.getEmail());
 		emailMessage.setCreatedBy(loginUser.getUserCode());
+		//redirection Url
+		String redirectURL = "/timesheet/";
+		Long redirectOrgLocationId = loginOrgLocation.getId();
 		StringBuilder userNameSB = new StringBuilder();
 		if (loginUser.getLastName() != null && loginUser.getLastName() != "undefined" && loginUser.getLastName() != ""
 				&& !loginUser.getLastName().isEmpty()) {
@@ -135,9 +136,15 @@ public class TimesheetEmailUtil {
 			globalVarsMap.put("RejectedReason", rejectedReason);
 		}
 		StringBuilder loginURLSB = new StringBuilder();
-		globalVarsMap.put("loginURL", loginURLSB.append("<a href='").append(sourceleadLoginUrl).append(
-				"'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
-				.toString());
+		if("REJECTED".equalsIgnoreCase(status)) {
+			globalVarsMap.put("loginURL", loginURLSB.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+					"'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Timesheet Rejected</div></a>")
+					.toString());
+		}else {
+			globalVarsMap.put("loginURL", loginURLSB.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+					"'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Timesheet Approved</div></a>")
+					.toString());
+			}
 
 		EmailScenario emailScenario = null;
 		if ("REJECTED".equalsIgnoreCase(status)) {
@@ -351,6 +358,10 @@ public class TimesheetEmailUtil {
 		   }
 		   
 		}
+		
+		//redirection URL
+		String redirectURL = "/timesheetApproval/";
+		Long redirectOrgLocationId = loginOrgLocation.getId();
 		for (ProjectApproverHierarchy approver : approverHierarchyList) {
 
 			if (!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())) {
@@ -388,8 +399,10 @@ public class TimesheetEmailUtil {
 					}
 					globalVarsMap.put("OrgName", loginOrgLocation.getOrgLocationName());
 					globalVarsMap.put("TimeFrequency", startDateStr + " to " + endDateStr);
-					globalVarsMap.put("loginURL", "<a href='" + sourceleadLoginUrl
-							+ "' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>");
+					StringBuilder linkBuild = new StringBuilder();
+					globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+							"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Timesheet Submission</div></a>")
+							.toString());
 					globalVarsMap.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
 					// setting the Recipient information
 					//InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
@@ -550,6 +563,9 @@ public class TimesheetEmailUtil {
 				 emailMessage.setFromName(loginUser.getFullName());
 				 
 				 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+				 //Redirection URL
+				String redirectURL = "/timesheetApproval/";
+				Long redirectOrgLocationId = orgLocations.getId();
 				 
 				 //ProjectMembers projectMembers = projectMembersDao.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
 				 
@@ -580,7 +596,7 @@ public class TimesheetEmailUtil {
 				 globalVarsMap.put("rejectURL",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectReopenTimeSheet?type=reject&projectMemberId=").append(projectMemberId).append("&userId=").append(pah.getApproverUserId().getId()).append("&timesheetFrequency=").append(timesheetFrequency).append("'style='text-decoration:none; display:inline-block; margin-left:15px; margin-top:20px;'><div style=' width:170px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 				 StringBuilder stringBuildforLink = new StringBuilder();
 				 
-				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append( "'style='text-decoration:none; display:inline-block; margin-left:15px; margin-top:20px;'><div style=' width:170px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+				globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append( "'style='text-decoration:none; display:inline-block; margin-left:15px; margin-top:20px;'><div style=' width:170px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reopen Timesheet</div></a>").toString());
 				 //setting the Recipient information
 				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				 

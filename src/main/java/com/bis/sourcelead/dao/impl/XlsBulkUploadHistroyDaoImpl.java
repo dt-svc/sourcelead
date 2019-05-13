@@ -74,7 +74,7 @@ public class XlsBulkUploadHistroyDaoImpl implements XlsBulkUploadHistroyDao{
 	public XlsBulkUploadHistroy getXlsBulkUploadHistroyByDocumentKey(String documentKey) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from XlsBulkUploadHistroy history left join fetch history.orgLocationId where history.documentKey = :documentKey  ";  
+		String query = "from XlsBulkUploadHistroy history left join fetch history.orgLocationId left join fetch history.createdBy where history.documentKey = :documentKey  ";  
 		List<XlsBulkUploadHistroy> xlsBulkUploadHistroyList =  session.createQuery(query).setString("documentKey", documentKey).list();
 		XlsBulkUploadHistroy xlsBulkUploadHistroy = null;
 		if (xlsBulkUploadHistroyList != null && xlsBulkUploadHistroyList.size() > 0) {
@@ -149,12 +149,13 @@ public class XlsBulkUploadHistroyDaoImpl implements XlsBulkUploadHistroyDao{
 				+" HISTORY.FILE_URL AS fileUrl, "
 				+" HISTORY.DOCUMENT_KEY AS documentKey, "
 				+" HISTORY.UUID AS uuid, "
+				+" HISTORY.UPLOAD_STATUS AS uploadStatus, "
 				+" HISTORY.ORG_LOCATION AS orgName, "
 				+" DATE_FORMAT(HISTORY.CREATED_DATE, '"+locationDateFormat+"') AS date, "
 				+" DATE_FORMAT(HISTORY.CREATED_DATE, '%h:%i:%s %p') AS time "
 				+" FROM XLS_BULK_UPLOAD_HISTORY HISTORY "
 				+" WHERE "
-				+" HISTORY.UPLOAD_TYPE = :uploadType AND HISTORY.UPLOAD_STATUS = 'New' AND "
+				+" HISTORY.UPLOAD_TYPE = :uploadType AND (HISTORY.UPLOAD_STATUS = 'New' OR HISTORY.UPLOAD_STATUS = 'InProgress') AND "
 				+" HISTORY.STATUS = '1' ORDER BY HISTORY.ID DESC";
 		
 		Query queryObj = session.createSQLQuery(query);
