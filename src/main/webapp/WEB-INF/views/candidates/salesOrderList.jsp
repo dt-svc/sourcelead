@@ -39,7 +39,7 @@
               </li>
             <li class="noMar">
 
-                <input class="repSearchBar" placeholder="Search" id="searchByValue" type="text" value="">
+                <input class="repSearchBar" placeholder="Order No" id="searchByValue" type="text" value="">
                 <span class="repSearchIcon" onclick="getDynamicSalesOrderList();"></span>
 
 			</li>
@@ -230,8 +230,8 @@
 	            { "data": "orderNo" },
 	            { "data": "orderDate"},
 	            { "data": "companyName"},
-	            { "data": "noOfResumes" },
-	            { "data": "totalResumePrice" },
+	            { "data": "totalResume" },
+	            { "data": "totalPrice" },
 	            { "data": "paymentStatus"},
 	        ],
 	    
