@@ -3405,7 +3405,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}*/
 	
 	@Override
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate, String purchaseOrderToDate, String purchaseOrderFilterDate)  throws Exception{
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,String searchValue, String purchaseOrderFromDate, String purchaseOrderToDate, String purchaseOrderFilterDate)  throws Exception{
 				Date today = new Date();
 				Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
 				Calendar calendar = Calendar.getInstance();
@@ -3461,7 +3461,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 					dateValue.put("fromDate", toDateVal);
 					dateValue.put("toDate", fromDateVal);
 				}
-				ResponseList<MarketplacePurchaseSalesDTO> responseList =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,  purchaseOrderFromDate, purchaseOrderToDate, dateValue);
+				ResponseList<MarketplacePurchaseSalesDTO> responseList =   candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,orgLocations,searchValue,  purchaseOrderFromDate, purchaseOrderToDate, dateValue);
 		return responseList;
 	}
 
@@ -3788,6 +3788,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
 		return candidateDao.getCandidateDateOfBirthByUserId(userId, orgLocation);
+	}
+
+	@Override
+	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId, Long masterCandidateId)
+			throws Exception {
+		return candidateDao.getConsultantUserByCandidateIdOrMasterCandidateId(candidateId, masterCandidateId);
 	}
 	
 }
