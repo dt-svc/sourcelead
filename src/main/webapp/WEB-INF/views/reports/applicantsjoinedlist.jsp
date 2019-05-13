@@ -154,7 +154,7 @@ function getAppliantJoinedListByRecruiter(){
 // 		 usersListPagination(url,sourceleadUrl);
 			prepareAllDaywiseLeaveReportList(url);
 			if(timePeriod == 'custom'){
-				 $("#customSearch").hide();
+// 				 $("#customSearch").hide();
 			}
 	 }
 }
@@ -1015,12 +1015,13 @@ function candidtaeCancel(){
 }
 </script>
 <script>
-function addValidClass(){
+function addValidClassFrom(){
 	 var StartDate = document.getElementById("ReportStartDate").value;
 	 if(StartDate){
 		 document.getElementById("reportsStartDate").style.display="block";
 	 }
-	 
+}
+function addValidClassTo(){	 
 	 var EndDate = document.getElementById("ReportEndDate").value;
 	
 	 if(EndDate){
@@ -1028,6 +1029,15 @@ function addValidClass(){
 	 }
 }
 </script>
+<script>
+  function removeErrMsg(){
+	  document.getElementById("reportsStartDate").style.display="none";
+  }
+  function removeErrMsgTo(){
+	  document.getElementById("reportsEndDate").style.display="none";
+	  
+  }
+  </script>
 <script>
 	$(function() {
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -1043,7 +1053,8 @@ function addValidClass(){
 				dt.setDate(dt.getDate() + 1);
 				$("#ReportEndDate").datepicker("option", "minDate", dt); */
 				$("#ReportEndDate").datepicker("option", "minDate", selected);
-				addValidClass();
+				addValidClassFrom();
+				removeErrMsg();
 			}
 		
 		});
@@ -1062,7 +1073,8 @@ function addValidClass(){
 				$("#ReportStartDate").datepicker("option", "maxDate", dt);
 				 $( "#ReportStartDate" ).datepicker({  maxDate: new Date() }); */
 				 $("#ReportStartDate").datepicker("option", "maxDate", selected);
-				addValidClass();
+				addValidClassTo();
+				removeErrMsgTo();
 			}
 		});
 		
