@@ -9295,6 +9295,22 @@ content: '\f00c'; color: #f60; border-color: #f60;
 	background-image: url("../images/joinedIC.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
 	background-position: top; background-size: 100%; display: inline-block;
 }
+.noResponseIC {
+	background-image: url("../images/noresponseSVG.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.onHoldIC {
+	background-image: url("../images/onholdSVG.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.rejectIC {
+	background-image: url("../images/rejectedCandidateSVG.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
+.backoutIC {
+	background-image: url("../images/backoutSVG.svg"); background-repeat: no-repeat; width: 35px; height: 35px;
+	background-position: top; background-size: 100%; display: inline-block;
+}
 .jobSucces_list a {
 	position: relative; right:0px; top:0px; color: #f60;
 }
@@ -9942,12 +9958,15 @@ ul.goalsList-list li {
 }
 .workflowSVG {
 	background: url("../images/workflowSVG.svg"); background-repeat: no-repeat; background-size: 42px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
-	}
+}
+.helpDeskSVG {
+	background: url("../images/helpDesksvg.svg"); background-repeat: no-repeat; background-size: 75px; background-position: center; width: 80px; text-align: center; display: block; height: 90px; margin: 8px auto 2px; opacity:0.9;
+}
 .positionRelativeTop10 {
 position: relative; top: 10px;
 }
 .answerQuestionaire {
-	padding-left: 35px;
+	padding-left: 30px;
 }
 .answerQuestionaire ul li {
 	list-style-position: inside;
@@ -9961,12 +9980,109 @@ ul.goalscomments-list li:hover {
 .goals-list:hover .goalsEditDelete {
 	display: block;
 }
->>>>>>> 83ce5837d4bcf7f49e81b16462d98980f74f28e0
+.top-12 {
+	top:-12px;
+}
+.viewEyeicon {
+	position: absolute; right:50px; top:0px; color: #fff; cursor: pointer; z-index: 9999; padding: 11.74px 4px;
+}
+.candidateCustomtextArea {
+	width: 957px !important; border: none !important;
+}
+.addUser-org {
+	overflow-x: auto;
+}
+.columnfields-custom-new label {
+width: 100%; clear:both; display: inline-table; display: none;
+}
+.columnfields-custom-new .col-md-9 {
+width: 100%;
+}
+.columnfields-custom-new .col-md-9 select {
+width: 100%; padding: 3px 20px 3px 15px;
+}
+.reqDocuments.reqDocuments_customs {
+	padding-top: 10px; border: 1px solid #ededed; margin-top: 75px; margin-bottom: 15px; min-height: 150px; border-radius:5px;
+}
+.reqDocuments.reqDocuments_customs table {
+border:1px solid #ddd; width: 100%;
+}
+.reqDocuments.reqDocuments_customs .clients_wrap_table {
+border-bottom:0;
+}
+.glyphicon.glyphicon-custom {
+    color: red; cursor: pointer;
+}
+.edit-status.edit-status-custom {
+top: 20%; right: auto; left: 40%;
+}
+.refresh-icon.refreshIcon.refreshIcon-custom {
+	top: 16px !important;
+}
+.popinnerdiv-innerscroll { min-height: 100px; max-height: 425px; overflow-y:auto; }
+.inlineField, .inlineField:focus {
+	width:100px !important; text-align:center;
+}
+.form-control.formControl-styles {
+	border:none; background: none; font-size:14px; font-weight:600; box-shadow: none;}
+.fa-times.mr6 { margin:6px; }
+.project_wrap_table.tableI table i { font-size: 13px;}
+.successBtn.successBtn-custom { background-color: #1ab394; border-color: #1ab394;
+	border: 1px solid; color: #fff; padding: 1px 5px; border-radius: 3px; font-size: 13px; width: 60px;
+}
+.modal.zIndexStyle { z-index: 15000;}
+.popCusDate{
+	right: 16px; bottom: -40px; top: inherit; background: #fff; border: none; padding: 8px 10px 8px 5px;
+}
+.remove_user_pop.remove_user_pop_a { z-index: 18000; }
+
+.scheduleDateValidation {
+	padding: 0px 0px 0px 0px !important; margin: 0px; font-size: 11px; color: #f12929; font-weight: 500; text-align: center;
+}
+.count.count-values { display: block !important; }
+.billingArea { padding: 10px; }
+.side_mask.side_mask_new { background-color: rgba(0,0,0,0.3); }
+.pop_mask.pop_mask_newstyles { z-index: 99999; }
+.addcandidate-popup.addcandidate-popup-newstyles { z-index: 9999999; }
+.exlpdf_btns.exlpdf_btns_btns table tr td div i { color: #333; }
+.CurDiv { position: static !important; float: left; }
+.timesheet_head.timesheet_head_customize ul { padding: 2px 300px 2px 0px; }
+.publicpageHeader { min-height: 50px; background-color: #368ee0; padding:0px; }
+.publicpageHeader .publicpage-logo { background-color: #fff; height: 50px; padding: 5px 0; text-align: center;
+}
+.publicpageHeader .publicpage-logo img { max-height: 100%; }
+.sign-buttons { width: 120px; padding: 15px; margin: 0 auto; box-shadow: 2px 2px 2px #909090;
+}
+.sign-buttons ul li { border: none; margin: 15px auto; padding: 20px; background-size: 30px;
+width: 50px; height: 50px;
+}
+#addSign { height: auto; min-height: 200px; }
+#backShadow { z-index: 9999; }
+#addSign { z-index: 9999; padding:20px; }
+.ReadTextFli { text-align: -webkit-left; }
+.uploadFile.upload_file span { max-width: 100% !important; width: 100% !important; }
+.uploadFile.upload_file span input { width: 90% !important; }
+.uploadFile.upload_file table i { margin-left:10px; }
+.valid_ation p.jquery_form_error_message { position: absolute; bottom: -13px; left: 0; }
+.valid_ation .positionRelative{ position: relative !important; }
+.dropdown_inr select { height: 34px; color: #fff; }
+.expAddRo, .exp_details { background-color: #f5f5f5; } 
+.exp_details { padding: 15px 0; }
+.moveErrorMsgUp { position: absolute !important; right: -30px !important; top: 5px; }
+.temp_Draft { color:#447fb5; }
+.disabledLink { color: #333; text-decoration : none; pointer-events: none; }
+
+.selfAppraisalWidget ul {
+	
+}
+.selfAppraisalWidget ul li {
+	min-width: 100px; text-align: center; color: #606060;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
 }
-    .universalSrch {
+.universalSrch {
     margin-top: 0px; width: 52% !important;
 }
 .hidden-xs {
@@ -10402,6 +10518,3 @@ display: block;
  .progressCount {
  font-size: 12px; font-weight: 500; color: #368ee0; display: block; padding: 2px 0px 0px 0px;
  }
-.chartDashboard .amcharts-main-div a {
-	display: block !important;
-}
