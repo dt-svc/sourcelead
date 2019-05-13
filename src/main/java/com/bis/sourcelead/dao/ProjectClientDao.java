@@ -8,6 +8,8 @@ public interface ProjectClientDao {
 
     ProjectClients storeProjectClients(ProjectClients projectClients) throws Exception;
 	
+    List<ProjectClients> getProjectClientsListByLoginUserAndOrgLocationIdForTimesheetApproval(Long locationsId, Long userId,String isGlobalUser) throws Exception;
+    
     List<ProjectClients> getProjectClientsListByLoginUserAndOrgLocationId(Long locationsId,Long userId) throws Exception;
     
     List<ProjectClients> getAllProjectClientsForExpensesByApproverUserAndOrgLocationId(Long userId,Long locationsId,String isGlobalUser,String purpose) throws Exception;

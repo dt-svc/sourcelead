@@ -435,19 +435,14 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
 					break;
-					
-				case "candidatesUpload":
-					System.out.println(++rw + "Row Validation Entry Starts" + Calendar.getInstance().getTime());
-					dataMigrationDTOJsonCopy.put("inviteEmail", dataMigrationDTO.getInviteEmail());
-					dataMigrationCommonUtil.dataValidationForCandidates(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);
-					System.out.println(++rw + "Row Validation Entry Ends" + Calendar.getInstance().getTime());
-					break;
+									
 					
 				case "timesheetUpload":
 					String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
 					dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy,
 							 objDefaultFormat, user, orgLocation, timeFrequency);
 					break;
+					
 				case "assetUpload":
 					dataMigrationCommonUtil.dataValidationForAssets(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
@@ -705,29 +700,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			break;
 			
 			
-		case "candidatesUpload":
-			
-			try {
-				CandidateDTO candidateDTO = new CandidateDTO();
-				candidateDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), CandidateDTO.class);
-				candidateDTO.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
-				candidateDTO.setUploadId(uploadId);
-				if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
-					candidateDTO.setCountry(orgLocation.getCountry());
-				}
-				    List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
-					Candidate candidate = candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user, vendorsList);
-				
-			}catch (Exception e) {
-				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
-				history.setUploadProcessingStatus("Completed");
-				history.setEndDate(new Date());
-				uploadXlsHistoryService.storeUploadXlsHistory(history);
-				e.printStackTrace();
-			}
-			
-			break;
-			
 		case "submmissionTemplateUpload":
 			
 			try {
@@ -814,21 +786,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			mapper1.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			assetMigDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), AssetsDataImportDTO.class);
 
-		/*	List<AssetAssignDTO> assignAssetList = new ArrayList<>();
-			if (StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("assignAssetStr"))) {
-				String[] assignUsere = dataMigrationDTOJsonCopy.getString("assignAssetStr").split("&");
-				if(assignUsere != null && assignUsere[0] != null) {
-					for (String as : assignUsere) {
-						AssetAssignDTO aDTO = new AssetAssignDTO();
-						String[] email = as.split("#");
-						aDTO.setShiftEmp(email[0]);
-						aDTO.setShift(email[1]);
-						assignAssetList.add(aDTO);
-					}
-				}
-				
-			}
-			assetDTO.setAssignAsset(assignAssetList);*/
+	
 			assetDTO.setCategory(assetMigDTO.getCategory());
 			assetDTO.setWorkingStatus(assetMigDTO.getWorkingStatus());
 			assetDTO.setCpu(assetMigDTO.getCpu());

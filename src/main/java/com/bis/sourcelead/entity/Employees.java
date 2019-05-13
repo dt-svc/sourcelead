@@ -148,6 +148,28 @@ public class Employees implements Serializable{
 	@JsonProperty
 	private Long empId;
 	
+	@Transient
+	private String panNumber;
+	
+	@Transient
+	private String dateOfBirth;
+	
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
 	public Long getId() {
 		return id;
 	}

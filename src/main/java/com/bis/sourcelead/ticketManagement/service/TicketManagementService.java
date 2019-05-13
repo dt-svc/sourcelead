@@ -16,7 +16,7 @@ import com.bis.sourcelead.dto.Response;
 
 public interface TicketManagementService {
 
-	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations();
+	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations(long orgLocationId);
 
 	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue);
 

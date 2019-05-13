@@ -3173,25 +3173,24 @@ public class RequirementServiceImpl implements RequirementService {
 		if (requirement.getPriority() != null && !"".equalsIgnoreCase(requirement.getPriority())) {
 			writeRow.createCell(7).setCellValue(requirement.getPriority());
 		}
-		if (requirement.getSubmissionTemplateId() != null) {
+		/*if (requirement.getSubmissionTemplateId() != null) {
 			writeRow.createCell(8).setCellValue(requirement.getSubmissionTemplateId().getTemplateName());
-		}
+		}*/
 		if (requirement.getClientName() != null && !"".equalsIgnoreCase(requirement.getClientName())) {
-			writeRow.createCell(9).setCellValue(requirement.getClientName());
+			writeRow.createCell(8).setCellValue(requirement.getClientName());
 		}
 		if (requirement.getClientContactName() != null && !"".equalsIgnoreCase(requirement.getClientContactName())) {
-			writeRow.createCell(10).setCellValue(requirement.getClientContactName());
+			writeRow.createCell(9).setCellValue(requirement.getClientContactName());
 		}
 		if (requirement.getClientContactEmail() != null && !"".equalsIgnoreCase(requirement.getClientContactEmail())) {
-			writeRow.createCell(11).setCellValue(requirement.getClientContactEmail());
+			writeRow.createCell(10).setCellValue(requirement.getClientContactEmail());
 		}
 		if (requirement.getRequirementSubmissionStatus() != null
 				&& !"".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())) {
-			writeRow.createCell(12).setCellValue(requirement.getRequirementSubmissionStatus().toString());
+			writeRow.createCell(11).setCellValue(requirement.getRequirementSubmissionStatus().toString());
 		}
-		if (requirement.getCreatedDate() != null && !"".equalsIgnoreCase(requirement.getCreatedDate().toString())) {
-			writeRow.createCell(13).setCellValue(commonUtil.dateStrFromOrgDateFormatter(
-					requirement.getOrgLocationId().getDateFormat(), requirement.getCreatedDate()));
+		if (requirement.getRequirementCreatedDateToString() != null && !"".equalsIgnoreCase(requirement.getRequirementCreatedDateToString().toString())) {
+			writeRow.createCell(12).setCellValue(requirement.getRequirementCreatedDateToString());
 		}
 		return createExcelsheet;
 	}
