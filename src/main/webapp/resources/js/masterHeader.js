@@ -71,7 +71,7 @@ var masterHeader = new buildMasterHeaderPanel();
 	    else if(loginUserRole == "ROLE_CROWDSOURCING_RECRUITER"){
 	    	masterNavHtml = masterNavHtml+'<b>Freelance Recruiter</b>';
 	    }else{
-	    	masterNavHtml = masterNavHtml+'<b>Admin</b>';
+	    	masterNavHtml = masterNavHtml+'<b>'+userType+'</b>';
 	    }
 	   
 	    masterNavHtml = masterNavHtml+'</div>';

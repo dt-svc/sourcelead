@@ -54,11 +54,14 @@ $( document ).ready(function() {
 			   || roleActionsArray.indexOf("ROLE_VIEW_MEMBER_TIMESHEETS")  > -1 || roleActionsArray.indexOf("ROLE_EXPORT_MEMBER_TIMESHEETS") > -1 ){
 		  if(bothTimesheets == 'true' || onlyTimesheets == 'true'){
 			  timeSheetSubmissionStatusCount("myTimesheets");
-			  $("#timesheetEmpDiv").remove();
+			 
 		  }
 		  else{
 			  timeSheetSubmissionStatusCount("employes");
 		  }
+		  if(onlyTimesheets == 'true'){
+			     $("#timesheetEmpDiv").remove();
+		   }
 	 }
 	 // jobs counts
 	 if(roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") > -1){
@@ -80,11 +83,24 @@ $( document ).ready(function() {
 			   || roleActionsArray.indexOf("ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES")  > -1 || roleActionsArray.indexOf("ROLE_EXPORT_EMPLOYEE_EXPENSES") > -1 ){
 			 expensesCount("myExpenses"); // expenses count self
 	  } 
-	 
+	 if (roleActionsArray.indexOf("ROLE_ADD_EMPLOYEE_EXPENSES") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES")  > -1 
+			 || roleActionsArray.indexOf("ROLE_EXPORT_EMPLOYEE_EXPENSES")  > -1  ){
+		 
+		 $('#expenseEmp').show();
+	 }
      // check the leave role for an user.
 	 if(roleActionsArray.indexOf("ROLE_APPLY_LEAVE") > -1 || roleActionsArray.indexOf("ROLE_APPLY_BEHALF_LEAVE")  > -1 
 			                          || roleActionsArray.indexOf("ROLE_APPROVE_LEAVE") > -1 ){
 	           getSelfTotalCounts(); // leaves counts self count 
+	 }
+	 if(roleActionsArray.indexOf("ROLE_APPROVE_LEAVE")  > -1  ){
+		 $('#leaveEmployee').show();
+		 
+	 }
+    if (roleActionsArray.indexOf("ROLE_ADD_EMPLOYEE_EXPENSES") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES")  > -1 
+			 || roleActionsArray.indexOf("ROLE_EXPORT_EMPLOYEE_EXPENSES")  > -1  ){
+		 
+		 $('#expenseEmp').show();
 	 }
 	 // check the user has below role or not.
 	 if(roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") > -1){
@@ -168,9 +184,9 @@ $('#dasboardTaskDatpicker').datepicker({
     <div class="dashboardWidget-new dashNewWrap mb">
       <div class="dashNewWrapHead clearfix"> <a id="timeSheetLink" href="${SourceLeadWeb_pmsUrl}/timesheet" class="pull-left updateHrefUrl"> Timesheets &nbsp;&nbsp;</a>
         <input type="hidden" value="" id="timesheetSocketsFor">
-        <ul class="nav nav-tabs pull-right">
+        <ul class="nav nav-tabs pull-right" id="timesheetEmpDiv">
           <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');">Self</a></li>
-          <li><a data-toggle="tab" id="timesheetEmpDiv" onclick="timeSheetSubmissionStatusCount('employes');">Employees</a></li>
+          <li><a data-toggle="tab"  onclick="timeSheetSubmissionStatusCount('employes');">Employees</a></li>
         </ul>
       </div>
       <div class="db-widget-sm">
@@ -254,7 +270,7 @@ $('#dasboardTaskDatpicker').datepicker({
       <div class="dashNewWrapHead clearfix"> <a class="pull-left updateHrefUrl" id="expensesLink" href="${SourceLeadWeb_pmsUrl}/expenses">Expenses &nbsp;&nbsp;</a>
         <ul class="nav nav-tabs pull-right">
           <li class="active"><a data-toggle="tab" onclick="expensesCount('myExpenses');">Self</a></li>
-	              <li><a data-toggle="tab" onclick="expensesCount('employeeExpenses');" >Employees</a></li>
+	      <li><a data-toggle="tab" style="display: none;" id="expenseEmp" onclick="expensesCount('employeeExpenses');" >Employees</a></li>
         </ul>
       </div>
       <div id="today-req" class="tab-pane fade in active">
@@ -293,7 +309,7 @@ $('#dasboardTaskDatpicker').datepicker({
         <div class="pull-left balLeaves">Balance Leaves<span class="label label-info" id="selfBalancedCounts" title="Balance Leaves">0</span></div>
         <ul class="nav nav-tabs pull-right">
           <li class="active"><a data-toggle="tab" href="#self">Self</a></li>
-          <li><a data-toggle="tab" href="#employee" onclick="getEmployeeTotalCounts();">Employees</a></li>
+          <li><a data-toggle="tab" href="#employee" id ="leaveEmployee" style = "display:none;" onclick="getEmployeeTotalCounts();">Employees</a></li>
         </ul>
       </div>
       <div class="clearfix">
