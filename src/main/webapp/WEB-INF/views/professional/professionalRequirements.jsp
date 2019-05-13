@@ -209,7 +209,7 @@ window.onload = function () {
 		  
 		  <div class="cand-advsrch">
           <form:form id="professional_requirement_search_form" name="professional_requirement_search_form"  enctype='multipart/form-data' >
-          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();loadChosenRequirementScripts();"><i class="fa fa-close"></i></a>
+          <div class="cand-advsrch-popup popPositionFixed"> <a href="javascript:void(0)" class="close-div" onClick="closePop();loadChosenRequirementScripts();"><i class="fa fa-close"></i></a>
             <div class="row">
               <div class="col-md-4">
                 <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>

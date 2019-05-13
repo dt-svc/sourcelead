@@ -95,7 +95,6 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
-import com.bis.sourcelead.service.ExportTimesheetEntries;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -106,6 +105,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserDroppedHolidaysService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.timesheet.dao.TimeSheetDayEntriesDao;
+import com.bis.sourcelead.timesheet.service.ExportTimesheetEntries;
 import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.timesheet.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.timesheet.service.TimesheetActivityService;
@@ -429,7 +429,8 @@ public class TimesheetRestController {
 				if(employee == null) {
 					avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
 				}else if(StringUtils.isNotEmpty(employee.getDailyHours())){
-					avgWorkingHoursPerDay = Integer.parseInt(employee.getDailyHours());
+					String [] hrsArray = employee.getDailyHours().split(":");
+					avgWorkingHoursPerDay = Integer.parseInt(hrsArray[0]);
 				}
                 
                 Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,candidate);
@@ -2249,7 +2250,8 @@ public class TimesheetRestController {
 					if(employee == null) {
 						avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
 					}else if(StringUtils.isNotEmpty(employee.getDailyHours())){
-						avgWorkingHoursPerDay = Integer.parseInt(employee.getDailyHours());
+						String [] hrsArray = employee.getDailyHours().split(":");
+						avgWorkingHoursPerDay = Integer.parseInt(hrsArray[0]);
 					}
 					Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,candidate);
 					tedDTO.setEmpLeaveMap(empLeaveMap);	

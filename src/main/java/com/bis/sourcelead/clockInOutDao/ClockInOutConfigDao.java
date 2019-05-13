@@ -53,5 +53,7 @@ public interface ClockInOutConfigDao {
 
 	public List<Breaks> getBreakListByClockInId(Long id);
 
+	public ClockInOut getPreviousClockInData(OrgLocations loginOrgLocation, User user);
+
 
 }
