@@ -3428,6 +3428,22 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public String getCandidatePanNumberByUserId(long userId, Long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate c where c.consultantUser.id=:userId and c.orgLocationId.id =:id";
+						Candidate pan = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("id", id).uniqueResult();
+						if (pan != null) {
+							return pan.getPanNumber();
+						}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId and can.status = 1";
@@ -3506,4 +3522,41 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return flag;
 	}
+	
+	@Override
+	@Transactional
+	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate c where c.consultantUser.id=:userId and c.orgLocationId.id =:orgLocationId";
+			Candidate candidate = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocation.getId()).uniqueResult();
+			if (candidate != null) {
+				return commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getDateOfBirth());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		User user = null;
+		String query = "from can.consultantUser Candidate can where can.id = :candidateId";
+		List<User> consultantUserList = session.createQuery(query).setLong("candidateId", candidateId).list();
+		if (consultantUserList != null && !consultantUserList.isEmpty()) {
+			user = consultantUserList.get(0);
+		}else {
+			query = "from can.consultantUser Candidate can where can.masterCandidateId.id = :masterCandidateId and can.consultantUser IS NOT NULL and can.consultantUser != 0";
+			consultantUserList = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).list();
+			if (consultantUserList != null && !consultantUserList.isEmpty()) {
+				user = consultantUserList.get(0);
+			}
+		}
+		return user;
+		
+	}
+
 }

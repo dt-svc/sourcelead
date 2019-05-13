@@ -266,6 +266,8 @@ public interface CandidateDao {
 	
 	public List<Candidate> getAllAssociateByLocation(Long orgLocationId);
 	
+	public String getCandidatePanNumberByUserId(long userId, Long id);
+	
     public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception;
@@ -277,5 +279,9 @@ public interface CandidateDao {
     public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
+	
+	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
+	
+	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
 	
 }

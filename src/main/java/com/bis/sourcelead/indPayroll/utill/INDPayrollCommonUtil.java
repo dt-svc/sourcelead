@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -950,12 +951,17 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		if(assoSal != null && assoSal.getAssociateSalaryPayheadIndList() != null && assoSal.getAssociateSalaryPayheadIndList().size()>0) {
 			AssociateSalaryPayheadInd asph = assoSal.getAssociateSalaryPayheadIndList().stream().filter(h -> h.getPayrollPayhead().getShortCode().equalsIgnoreCase("BA")).findAny().get();
 			if(asph != null) {
-				//List<String> financialYearStr = getFinancialYearByOrgLocationAndDate(asph.getPayrollPayhead().getOrgLocationId(), freqStartDate);
-				//String financialYear = financialYearStr.get(0) + "-" + financialYearStr.get(1);
-				//StateTaxDTO taxDTO = taxService.getStateTaxByStateNameAndFinancialYear(asph.getPayrollPayhead().getOrgLocationId().getState(), financialYear);
+				BigDecimal ptSum = new BigDecimal(
+						assoSal.getAssociateSalaryPayheadIndList()
+						.stream()
+						.filter(p ->p.getMonthly() != null && p.getPayrollPayhead() !=null && p.getPayrollPayhead().getPtApplicable() != null && "Y".equalsIgnoreCase(p.getPayrollPayhead().getPtApplicable()) && Constants.IND_PAYROLL_PAYHEAD_EARNINGS.equalsIgnoreCase(p.getPayrollPayhead().getType()))
+						.mapToDouble(s -> s.getMonthly()
+						.doubleValue()).sum())
+						.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+				
 				try {
 					if(taxDTO != null && taxDTO.getProfessionalTaxList().size()>0) {
-						ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(assoSal.getAnnualSalary()) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(assoSal.getAnnualSalary()) >= 0 ).findAny().get();
+						ProfessionalTaxDTO ptDTO = taxDTO.getProfessionalTaxList().stream().filter(t -> new BigDecimal(t.getAmountFrom()).compareTo(ptSum) <= 0 && new BigDecimal(t.getAmountTo()).compareTo(ptSum) >= 0 ).findAny().get();
 						if(ptDTO != null)
 							ptAmount = Double.valueOf(ptDTO.getAmount());
 					}
@@ -967,6 +973,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		}
 		return ptAmount;
 	}
+	
 	
 	
 	private BigDecimal getProjectInvoiceFrequency(String invoiceFrequency)
@@ -1439,56 +1446,57 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	}
 	
 	@SuppressWarnings("unused")
-	public AssociatePayrollPayheadHistory calculateTDSForEmployee(AssociateSalaryInd assoSal, Employees employee, OrgLocations orgLocation, Date freqStartDate, PreCheckINDPayrollDTO preCheckINDPayrollDTO, IndEmployeePayroll employeePayroll, User loginUser) {
+	public AssociatePayrollPayheadHistory calculateTDSForEmployee(AssociateSalaryInd assoSal, Employees employee, OrgLocations orgLocation, Date freqStartDate, PreCheckINDPayrollDTO preCheckINDPayrollDTO, IndEmployeePayroll employeePayroll, User loginUser) 
+	{
 		AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
+	
+	// TDS process Calculation
+	try {
+		Double tdsYearlyTotal = 0.0;
+		Double tdsMonthlyTotal = 0.0;
+		Double tdsExemptionTotal = 0.0;
+		Double tdsEligibilityTotal = 0.0;
 		
-		// TDS process Calculation
-		try {
-			Double tdsYearlyTotal = 0.0;
-			Double tdsMonthlyTotal = 0.0;
-			Double tdsExemptionTotal = 0.0;
-			Double tdsEligibilityTotal = 0.0;
-			
-			//get yearly taxable amount in current frequency
-			BigDecimal taxableYearlyAmount = new BigDecimal("0.00");
-			for(AssociatePayrollPayheadHistory associatePayrollPayheadHistory : employeePayroll.getAssociatePayrollPayheadHistory()) {
-				if(associatePayrollPayheadHistory.getPayrollPayhead().getTax().equalsIgnoreCase(Constants.TAXABLE)) {
-					if(associatePayrollPayheadHistory.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
-						taxableYearlyAmount = taxableYearlyAmount.add(associatePayrollPayheadHistory.getMonthly().multiply(new BigDecimal(12)));
-					}
-					if(associatePayrollPayheadHistory.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
-						taxableYearlyAmount = taxableYearlyAmount.subtract(associatePayrollPayheadHistory.getMonthly().multiply(new BigDecimal(12)));
-					}
+		//get yearly taxable amount in current frequency
+		BigDecimal taxableYearlyAmount = new BigDecimal("0.00");
+		for(AssociatePayrollPayheadHistory associatePayrollPayheadHistory : employeePayroll.getAssociatePayrollPayheadHistory()) {
+			if(associatePayrollPayheadHistory.getPayrollPayhead().getTax() != null &&  associatePayrollPayheadHistory.getPayrollPayhead().getTax().equalsIgnoreCase(Constants.TAXABLE)) {
+				if(associatePayrollPayheadHistory.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
+					taxableYearlyAmount = taxableYearlyAmount.add(associatePayrollPayheadHistory.getMonthly().multiply(new BigDecimal(12)));
+				}
+				if(associatePayrollPayheadHistory.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
+					taxableYearlyAmount = taxableYearlyAmount.subtract(associatePayrollPayheadHistory.getMonthly().multiply(new BigDecimal(12)));
+				}
+			}
+		}
+		
+		List<String> financialYearStr = this.getFinancialYearByOrgLocationAndDate(orgLocation, freqStartDate);
+		String fromYear = financialYearStr.get(0);
+		String toYear = financialYearStr.get(1);
+		
+		//age calculation
+		int age = 0;
+		if(assoSal.getCandidate().getConsultantUser().getDateOfBirth() != null) {
+			LocalDate today = LocalDate.now();  //Today's date
+			LocalDate birthdate = assoSal.getCandidate().getConsultantUser().getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();	//Birth date
+			Period p = Period.between(birthdate, today);
+			age = p.getYears();
+		}
+		
+		//Eligible percent of tax based on age and salary
+		String[] ageGroup = {""};
+		if(preCheckINDPayrollDTO != null && preCheckINDPayrollDTO.getTdsList() != null && preCheckINDPayrollDTO.getTdsList().size() > 0) {
+			for(Tds tds : preCheckINDPayrollDTO.getTdsList()) {
+				if(age <= 60 && tds.getAge().equalsIgnoreCase("0 - 60 Years") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1) {
+					ageGroup[0] = "0 - 60 Years";
+				}else if(age > 60 && age <= 80 && tds.getAge().equalsIgnoreCase("60 - 80 Years") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1) {
+					ageGroup[0] = "60 - 80 Years";
+				}else if(age > 80 && tds.getAge().equalsIgnoreCase("Above 80") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1){
+					ageGroup[0] = "Above 80";
 				}
 			}
 			
-			List<String> financialYearStr = this.getFinancialYearByOrgLocationAndDate(orgLocation, freqStartDate);
-			String fromYear = financialYearStr.get(0);
-			String toYear = financialYearStr.get(1);
-			
-			//age calculation
-			int age = 0;
-			if(assoSal.getCandidate().getConsultantUser().getDateOfBirth() != null) {
-				LocalDate today = LocalDate.now();  //Today's date
-				LocalDate birthdate = assoSal.getCandidate().getConsultantUser().getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();	//Birth date
-				Period p = Period.between(birthdate, today);
-				age = p.getYears();
-			}
-			
-			//Eligible percent of tax based on age and salary
-			Double taxPercent = 0d;
-			if(preCheckINDPayrollDTO != null && preCheckINDPayrollDTO.getTdsList() != null && preCheckINDPayrollDTO.getTdsList().size() > 0) {
-				for(Tds tds : preCheckINDPayrollDTO.getTdsList()) {
-					if(age <= 60 && tds.getAge().equalsIgnoreCase("0 - 60 Years") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1) {
-						taxPercent = tds.getPercentage();
-					}else if(age > 60 && age <= 80 && tds.getAge().equalsIgnoreCase("60 - 80 Years") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1) {
-						taxPercent = tds.getPercentage();
-					}else if(age > 80 && tds.getAge().equalsIgnoreCase("Above 80") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1){
-						taxPercent = tds.getPercentage();
-					}
-				}
-			}
-			
+			//Calculating 'tdsExemptionTotal' from IT Declaration submission form by employee
 			SourceleadTaxITDeclarationSubmission itDeclarationSubmission = taxService.getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(employee.getUser().getId(), orgLocation.getId(), fromYear + "-" + toYear);
 			if(itDeclarationSubmission != null) {
 				JSONArray jsonArray = new JSONArray(itDeclarationSubmission.getSubmissionItems());
@@ -1513,28 +1521,38 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				}
 			}
 			
-			
-			//TDS amount calculation
+			//'tdsEligibilityTotal' means the value after subtracting 'tdsExemptionTotal' from 'taxableYearlyAmount' (tdsExemptionTotal is calculated from IT Declaration submission form by employee)
 			tdsEligibilityTotal = (taxableYearlyAmount).subtract(new BigDecimal(tdsExemptionTotal)).doubleValue();
-			tdsYearlyTotal = (tdsEligibilityTotal * taxPercent) / 100 ;
-			tdsMonthlyTotal = (tdsYearlyTotal / 12);
 			
-			ph.setIndEmployeePayrollId(employeePayroll);
-			ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("TDS", orgLocation.getId()));
-			ph.setAnnualy(new BigDecimal(tdsYearlyTotal).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-			ph.setMonthly(new BigDecimal(tdsMonthlyTotal).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-			ph.setStatus(Constants.RECORD_ACTIVE);
-			ph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-			ph.setCreatedBy(loginUser);
-			ph.setUpdatedBy(loginUser);
-			ph.setCreatedDate(new Date());
-			ph.setUpdatedDate(new Date());
-		}catch (Exception e) {
-			e.printStackTrace();
+			// get TDS slabs list based on employee age group
+			List<Tds> tdsByAgeGroupList = preCheckINDPayrollDTO.getTdsList().stream().filter(t -> t.getAge().equalsIgnoreCase(ageGroup[0])).collect(Collectors.toList());
+			if(tdsByAgeGroupList != null && tdsByAgeGroupList.size()>0) {
+				for(Tds slabTDS : tdsByAgeGroupList) {
+					if(tdsEligibilityTotal >= slabTDS.getToamount()) {
+						tdsYearlyTotal = tdsYearlyTotal + ((slabTDS.getToamount() - slabTDS.getFromamount() + 1) * (slabTDS.getPercentage()/100));
+					}else if(tdsEligibilityTotal < slabTDS.getToamount().doubleValue() && tdsEligibilityTotal > slabTDS.getFromamount().doubleValue()) {
+						tdsYearlyTotal = tdsYearlyTotal + ((tdsEligibilityTotal - slabTDS.getFromamount() + 1) * (slabTDS.getPercentage()/100));
+					}
+				}
+				tdsMonthlyTotal = (tdsYearlyTotal / 12);
+			}
 		}
 		
-		return ph;
+		ph.setIndEmployeePayrollId(employeePayroll);
+		ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("TDS", orgLocation.getId()));
+		ph.setAnnualy(new BigDecimal(tdsYearlyTotal).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+		ph.setMonthly(new BigDecimal(tdsMonthlyTotal).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+		ph.setStatus(Constants.RECORD_ACTIVE);
+		ph.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		ph.setCreatedBy(loginUser);
+		ph.setUpdatedBy(loginUser);
+		ph.setCreatedDate(new Date());
+		ph.setUpdatedDate(new Date());
+	}catch (Exception e) {
+		e.printStackTrace();
 	}
 	
+	return ph;
+	}
 }
 
