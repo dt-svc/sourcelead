@@ -39,7 +39,13 @@
 				</patternset>
 			</fileset>
 		</copy>
-		
+		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/resources/sourceleadHtmls" includeEmptyDirs="no">
+			<fileset dir="admin/src/main/webapp/resources/sourceleadHtmls">
+				<patternset>
+					<include name="**/*.html"/>
+				</patternset>
+			</fileset>
+		</copy>
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/ats/resources/images" includeEmptyDirs="no">
 			      <fileset dir="ats/src/main/webapp/resources/images">
 						<patternset>
