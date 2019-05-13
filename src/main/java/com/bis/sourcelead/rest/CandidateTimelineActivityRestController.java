@@ -4,8 +4,8 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import org.apache.commons.lang.exception.ExceptionUtils;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.enums.Result;
-import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateTimelineActivityService;
-import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -37,12 +34,6 @@ public class CandidateTimelineActivityRestController {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-
-	@Autowired
-	private CandidateService candidateService;
-
-	@Autowired
-	private UserService userService;
 
 	@Autowired
 	private CommonUtil commonUtil;
