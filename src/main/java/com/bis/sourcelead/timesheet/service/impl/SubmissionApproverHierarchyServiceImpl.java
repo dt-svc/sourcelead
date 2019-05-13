@@ -206,27 +206,6 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 
 	}
 
-	@Override
-	public ResponseList<SubmissionApproverHierarchy> getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(
-			Long userId, Long orgLocationId, String status,String userRole,String search,int start,int length,String isGlobalUser) throws Exception {
-		ResponseList<SubmissionApproverHierarchy> list = new ResponseList<SubmissionApproverHierarchy>();
-	
-         if(status != null){
- 				 if("APPROVED".equalsIgnoreCase(status)){
-     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId,  status,search,start,length,isGlobalUser);
-  				}
-                 if("REJECTED".equalsIgnoreCase(status)){
-     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId, status,search,start,length,isGlobalUser);
-  				}
-                 if("SUBMITTED".equalsIgnoreCase(status)){
-     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId, status,search,start,length,isGlobalUser);
-  				}
-                 if("DRAFT".equalsIgnoreCase(status)){
-     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId, status,search,start,length,isGlobalUser);
-  				}
- 		}
-         return list;
-	}
 
 	@Override
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyByApproverUserId(Long approverUserId) {
@@ -346,9 +325,9 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	public ResponseList<TimesheetApprovalSubmissionDetailsDTO> getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
 			Set<Long> projectIds,Boolean isAdmin,String timesheetFrequency, Date startDate, Date endDate, Long clientId, Long projectId, String status,
 			Long locationsId, Long orgId, Long approverUserId, String searchValue, String projectName, int start,
-			int length, String timesheetFor, String isGlobalUser, String tableFor,
-			Integer tdSpanLength, String dateFormat) throws Exception {
-		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(projectIds,isAdmin,timesheetFrequency, startDate, endDate, clientId, projectId, status, locationsId, orgId, approverUserId, searchValue, projectName, start, length, timesheetFor, isGlobalUser, tableFor, tdSpanLength, dateFormat);
+			int length,int totalRows,  String isGlobalUser, String tableFor,
+			String dateFormat) throws Exception {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(projectIds,isAdmin,timesheetFrequency, startDate, endDate, clientId, projectId, status, locationsId, orgId, approverUserId, searchValue, projectName, start, length,totalRows, isGlobalUser, tableFor, dateFormat);
 	}
 
 	@Override

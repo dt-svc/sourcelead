@@ -149,7 +149,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 	    	 } else if (data.response === "SUCCESS") {
 	    		 if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard' && from != null && from != '' && from != 'undefined' && from != 'approvalSummary'){
 	        		 var currentPageNumber =  $("#currentPageNumber").val();
-	        		 getStatusListData(""+currentPageNumber+"","");
+	        		 getStatusListData(""+currentPageNumber+"",0,"");
 	        	 } else if(from != null && from != '' && from != 'undefined' && from == 'approvalSummary'){
 	        		 var currentTimeFrequency = startDate+"To"+endDate;
 	        		 timesheetApprovalTableRowByProjectMemberId(currentTimeFrequency,projectMemberId,tableFor);
@@ -231,7 +231,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	    	 } else if (data.response === "SUCCESS") {
 	  	        if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 	  	    	     var currentPageNumber =  $("#currentPageNumber").val();
-	        		     getStatusListData(""+currentPageNumber+"","");
+	        		     getStatusListData(""+currentPageNumber+"",0,"");
 	  		    }
 	  	   	    else{
 	  	   		  	  $("#row"+projectMemberId).empty();
@@ -325,7 +325,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 			    	if(data != null && data !='' && data !='undefined'){
 		    			if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 		    				 var currentPageNumber =  $("#currentPageNumber").val();
-		    				 getStatusListData(""+currentPageNumber+"","");
+		    				 getStatusListData(""+currentPageNumber+"",0,"");
 		    				 $('#hedderAcceptRejectButton').attr('style','display:none');
 		    			 }else{
 		    				 var currentPageNumberApprover =  $("#timesheetApproverCurrentPageNumber").val();
@@ -412,7 +412,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 	    	 } else if (data.response === "SUCCESS") {   
 		    	if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 			    	     var currentPageNumber =  $("#currentPageNumber").val();
-		      		     getStatusListData(""+currentPageNumber+"","");
+		      		     getStatusListData(""+currentPageNumber+"",0,"");
 		      		   	 $(".mask_time").fadeOut(200);
 		      		     $("#rejectpanel").hide();
 		      		  	 $('#hedderAcceptRejectButton').attr('style','display:none');
