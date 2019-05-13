@@ -51,7 +51,6 @@ import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationLcaDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportDTO;
-import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
@@ -72,10 +71,8 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidatePassport;
-import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateVisa;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationActivityHistory;
@@ -172,11 +169,6 @@ public class ImmigrationController {
 	@Autowired
 	private OrgLocationService orgLocationService;
 	
-	/*@Autowired
-	LcaActivityCommonUtil lcaActivityCommonUtil;*/
-	
-	
-	// for mobile 
 	
 	@RequestMapping(value = { "/viewImmigration" })
 	public ModelAndView viewImmigration(HttpServletRequest request,
