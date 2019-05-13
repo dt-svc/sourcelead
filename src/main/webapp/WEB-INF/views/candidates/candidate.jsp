@@ -1075,10 +1075,3 @@ $('#ssnNumber').mask('000-00-0000', {
    placeholder: ""
 });
 </script>
-
-<!-- <script>
-	$(".clearUpload").click(function(){
-		$("#uploadFile").val("");
-	        $("#candidate_form input[data-id*=uploadBtn]").remove();
-	});
-</script> -->

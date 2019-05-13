@@ -30,7 +30,6 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.LookUpData;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequestedDocuments;
 import com.bis.sourcelead.entity.User;
