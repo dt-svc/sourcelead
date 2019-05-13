@@ -68,7 +68,7 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 	
 	@Override
 	@Transactional
-	public Map<String,Float> getAppliedLeaveDateAndHolidayHoursByUserId(Long userId,Date sDate,Date eDate)
+	public Map<String,Float> getAppliedLeaveDateAndHolidayHoursByUserId(Long userId,Date sDate,Date eDate,Long worklocationId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date startDate = new java.sql.Date(sDate.getTime());
@@ -105,13 +105,13 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 	                 + "        ELSE ''"
 					 + "      END "
 					 + "     ) AS  nonBillableHrs "
-				     + "      FROM HOLIDAY HD WHERE"
-				     + "         HD.FROM_DATE >= :startDate AND HD.TO_DATE <= :endDate AND HD.STATUS != '0' AND HD.ORGLOCATION_ID IN (SELECT UR.ORG_LOCATIONS_ID FROM USER_ROLE UR WHERE UR.USER_ID = :userId AND UR.USER_STATE = 'ACTIVE' AND UR.IS_PRIMARY = '1') "
+				     + "      FROM HOLIDAY HD WHERE "
+				     + "         HD.FROM_DATE >= :startDate AND HD.TO_DATE <= :endDate AND HD.STATUS != '0' AND HD.ORGLOCATION_ID = :worklocationId AND HD.ID NOT IN(SELECT UDH.HOLIDAY_ID FROM USER_DROPPED_HOLIDAYS UDH WHERE UDH.FROM_DATE = HD.FROM_DATE AND UDH.TO_DATE = HD.TO_DATE AND UDH.USER_ID = :userId AND UDH.STATUS = '1')"
 				     + "       )" ;
 		
 		//LeaveHolidayHoursDTO
 		//from Holiday hday where (hday.fromDate >= :fromDate and hday.fromDate <= :endDate) and hday.orgLocations.id = :orgLocationId and hday.status != '0'
-		Query result  = session.createSQLQuery(query).setLong("userId", userId).setParameter("startDate", startDate).setParameter("endDate", endDate);
+		Query result  = session.createSQLQuery(query).setLong("userId", userId).setLong("worklocationId", worklocationId).setParameter("startDate", startDate).setParameter("endDate", endDate);
 		List<LeaveHolidayHoursDTO> reportList  = result.setResultTransformer(Transformers.aliasToBean(LeaveHolidayHoursDTO.class)).list();
 		Map<String,Float> hoursMap = null;
 		float billableHours = 0f;
@@ -142,7 +142,6 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 		}
 		return hoursMap;
 	}
-	
 	
 	
 	@Override

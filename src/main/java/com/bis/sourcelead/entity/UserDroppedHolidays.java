@@ -13,12 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 @Entity
 @Table(name = "USER_DROPPED_HOLIDAYS")
-//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userDroppedHolidays")
 public class UserDroppedHolidays implements Serializable {
 private static final long serialVersionUID = 1L;
 
@@ -38,6 +34,12 @@ private static final long serialVersionUID = 1L;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "HOLIDAY_ID", nullable = false)
 	private Holiday holiday;
+	
+	@Column(name = "FROM_DATE")
+	private Date fromDate;
+	
+	@Column(name = "TO_DATE")
+	private Date toDate;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -126,7 +128,20 @@ private static final long serialVersionUID = 1L;
 		this.updatedBy = updatedBy;
 	}
 
+	public Date getFromDate() {
+		return fromDate;
+	}
 
-	
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public Date getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
+	}
 	
 }

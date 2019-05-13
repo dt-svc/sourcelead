@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 
@@ -33,14 +32,10 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.CalendarUtil;
-import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.EmailScenerioUtil;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 
 @Component
 public class TimesheetEmailUtil {
