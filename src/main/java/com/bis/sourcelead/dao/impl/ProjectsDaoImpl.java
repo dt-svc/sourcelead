@@ -1773,7 +1773,6 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			
 		}
 		
-		System.out.println(query);
 		
 		/*java.sql.Date fromDate = new java.sql.Date(availableAssociatesDTO.getFromDate().getTime());
 		java.sql.Date toDate = new java.sql.Date(availableAssociatesDTO.getToDate().getTime());*/

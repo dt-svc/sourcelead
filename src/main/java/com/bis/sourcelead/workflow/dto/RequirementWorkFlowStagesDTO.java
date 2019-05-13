@@ -36,6 +36,8 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 	
 	private String currentStageUuid;
 	
+	private String lastStage;
+	
 	public long getId() {
 		return id;
 	}
@@ -154,6 +156,14 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 
 	public void setCurrentStageUuid(String currentStageUuid) {
 		this.currentStageUuid = currentStageUuid;
+	}
+
+	public String getLastStage() {
+		return lastStage;
+	}
+
+	public void setLastStage(String lastStage) {
+		this.lastStage = lastStage;
 	}
 
 	
