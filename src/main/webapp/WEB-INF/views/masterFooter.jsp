@@ -70,13 +70,13 @@
 			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 			  '.chosen-select-width'     : {width:"95%"}
 			}
-			for (var selector in config) {
+			 for (var selector in config) {
 			  $(selector).chosen(config[selector]);
 			}
 			$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				});
+				}); 
 </script>
 <!-- <script>
 $(document).tooltip({
@@ -92,12 +92,12 @@ $( this ).addClass( feedback.vertical )
 });
 </script> -->
 <c:if test='${viewPage == "orgChart"}'>
-	<script src="/resources/js/jquery.orgchart.js"></script>
-	<link href="/resources/css/jquery.orgchart.css" type='text/css' rel='stylesheet'/>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.orgchart.js"></script>
+	<link src="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jquery.orgchart.css" type='text/css' rel='stylesheet'/>
 </c:if>
 
-<script src="/resources/js/cropper.min.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="/resources/css/cropper.min.css" type="text/css" />
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/cropper.min.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/cropper.min.css" type="text/css" />
 <div id='imagecrop' class='post_popup'></div>
 <script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>
 </body>

@@ -249,10 +249,10 @@ public class VendorPerformanceReportRestController {
 								requirement.setRequirementSubmissionStatus(parentRequirement.getRequirementSubmissionStatus());
 								User user = userService.getUserById(parentRequirement.getManagerUserId().getId());
 								//For Applicants Count
-							     RequirementSubmissionsCountDTO totalCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(parentRequirement.getId(), user, orgLocations, "ALL");
-							     requirement.setTotalApplicants(totalCount.getApplicantsCount());
-							     RequirementSubmissionsCountDTO joinedCount = requirementSubmissionService.getAllPipeLineCountsByRequirementIdAndSubmissionStage(parentRequirement.getId(), user, orgLocations, "JOINED");
-							     requirement.setJoinedCount(joinedCount.getJoinedCount().toString());
+								long allCount = requirementService.getVendorSubmittedCandidates(parentRequirement.getId(), orgRelationId, spocId, "ALL");
+							     requirement.setTotalApplicants((int)allCount);
+								long joinedCount = requirementService.getVendorSubmittedCandidates(parentRequirement.getId(), orgRelationId, spocId, "JOINED");
+							     requirement.setJoinedCount(String.valueOf(joinedCount));
 							     // for requirement location
 							     List<String> requirementLocationsList = new ArrayList<>();
 									StringBuilder sb = new StringBuilder();
@@ -266,6 +266,7 @@ public class VendorPerformanceReportRestController {
 						    		requirement.setLocation(sb.toString());
 						    		requirement.setLocationsList(requirementLocationsList);
 								requirement.setJobOwner(user.getFullName());
+								requirement.setReleasedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), requirement.getCreatedDate()));
 							} catch (Exception e) {
 								e.printStackTrace();
 							}

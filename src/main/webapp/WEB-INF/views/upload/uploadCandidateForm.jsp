@@ -102,7 +102,7 @@ window.onload = function () {
 									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
 									type="file" name="file" field-name="File Upload"
 									style="display: none;" id="uploadBtn"
-									data-validation="required validate_xls_importFile">
+									data-validation="required validate_xlsx_importFile">
 								</label>
 								<div class="clearfix"></div>
 								<label id="newUploadFile"></label> 
@@ -112,7 +112,7 @@ window.onload = function () {
 								<input id="uploadFile" placeholder="" disabled="disabled"
 									style="width: 100%;" />
 							</div>
-							 <p class="text-danger small" style="font-size: 12px; display: none;" id="errorImage" ><i class="fa fa-exclamation-triangle" ></i><b>&nbsp;Document size should be less than 8 MB</b></p>
+							 <p class="text-danger small" style="font-size: 12px; display: none;" id="errorImage" ><i class="fa fa-exclamation-triangle" ></i><b>&nbsp;Document size should be less than 6 MB</b></p>
 						</div>
 
 						<!--  Downloaded File show here -->
@@ -188,7 +188,7 @@ function checkInviteEmail(){
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
 	  var sizeinbytes = document.getElementById('uploadBtn').files[0].size;
-	  if(sizeinbytes > 8000000){
+	  if(sizeinbytes > 6000000){
 		  document.getElementById("errorImage").style.display="";
 		  $('#newUploadFile').text('');
 		  $("#upload_button").attr("disabled","disabled");

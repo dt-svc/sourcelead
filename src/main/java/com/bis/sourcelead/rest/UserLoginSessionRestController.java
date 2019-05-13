@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.MobilePushNotificationDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.entity.Candidate;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.MobilePushNotificationService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.SourceleadActionsService;
@@ -80,13 +82,16 @@ private static final Logger logger = LoggerFactory.getLogger(UserLoginSessionRes
 	@Autowired
 	private OrgLocationService orgLocationService;
 	
+	@Autowired
+	private MobilePushNotificationService mobilePushNotificationService;
 		 
 	 @RequestMapping(value = "/rest/", method = RequestMethod.POST)
 	 public void authenticate() {
 	 }
 		 
 	 @RequestMapping(value = "/rest/loginUserProfile", method = RequestMethod.GET)
-	 public UserProfileDTO getLoginUserProfile() {
+	 public UserProfileDTO getLoginUserProfile(@RequestParam(value = "deviceToken", required = false) String deviceToken,
+			 @RequestParam(value = "deviceType", required = false) String deviceType) throws Exception {
 		 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		 User  user = userService.findByUserName(auth.getName());
 		 List<UserRole> userRoleList = null;
@@ -154,7 +159,16 @@ private static final Logger logger = LoggerFactory.getLogger(UserLoginSessionRes
 			 }
          
          userProfileDTO.setOrgLocationsList(orgLocationsList);
-         
+         //Mobile device token information saving  
+         if(deviceToken != null && deviceToken != "" && deviceToken != "undefined" && deviceType != null && deviceType != "" && deviceType != "undefined") {
+        	 Boolean flag = mobilePushNotificationService.validateMobileDevicceTokenByUserIdAndTokeIndAndDeviceType(user.getId(), deviceToken, deviceType);
+        	if(flag == false) {
+        		 MobilePushNotificationDTO mpntd = new MobilePushNotificationDTO();
+	        	 mpntd.setDeviceToken(deviceToken);
+	        	 mpntd.setDeviceType(deviceType);
+	        	 mobilePushNotificationService.saveMobileDeviceTokenInformation(mpntd);
+        	  }
+         }
 		return userProfileDTO;
          
 	 }
@@ -194,7 +208,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserLoginSessionRes
 		 if(StringUtils.isNotEmpty(json)){
 			 String sourceleadUrl = request.getRequestURL().toString().replace("/restAuthenticate","");
 			 //TODO remove this sysout. Just for rest call testing purpose
-			 System.out.println("sourceleadURL =======> "+sourceleadUrl);
+			
 			 JSONObject jsonObject = new JSONObject(json);
 			 if(jsonObject != null && jsonObject.has("username")&& jsonObject.has("password") 
 			    && StringUtils.isNotEmpty(jsonObject.getString("username"))&& StringUtils.isNotEmpty(jsonObject.getString("password")))

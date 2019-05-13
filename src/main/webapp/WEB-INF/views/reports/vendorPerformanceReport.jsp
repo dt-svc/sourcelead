@@ -99,15 +99,36 @@
 		<!--Offer acceptance rate-->
 		<!--Quality Candidates-->
 		<div class="col-md-6">
-			<div id="qualityCandidatesloadingDiv" style="display:none; position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url(&quot;/resources/images/loading.gif&quot;); background-position:center; background-repeat:no-repeat; background-size:75px;"></div>
-			<div class="projectDashboad clearfix positionRelative" style="height: 400px;">
+			<div id="qualityCandidatesloadingDiv"
+				style="display: none; position: absolute; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.8); top: 0px; left: 0px; z-index: 100; background-image: url(&amp;quot;/resources/images/loading.gif&amp;quot;); background-position: center; background-repeat: no-repeat; background-size: 75px;"></div>
+			<div class="projectDashboad clearfix positionRelative"
+				style="height: 400px;">
 				<h4>Quality Candidates</h4>
-				<div class="pull-right" style="position: absolute; right: 15px; top: 50px;">
-					<h5 class="pull-right mr">Total Received:<a href="javascript:void(0)" class="paddingLeft mr paddingLeft mt" id="totalReceivedCandidates">0</a>
+				<div class="pull-right"
+					style="position: absolute; right: 15px; top: 50px; z-index: 99;">
+					<h5 class="pull-right mr">
+						Total Received:<a class="paddingLeft mr paddingLeft mt"
+							id="totalReceivedCandidates">0</a>
+					</h5>
+					<div class="clearfix"></div>
+					<h5 class="pull-right mr">
+						Hired:<a title="Hired" href="javascript:void(0)"
+							class="paddingLeft mr paddingLeft mt"
+							id="hiredReceivedCandidates"
+							onclick="releasedJobsToVendorsApplicantHired();">0</a>
+					</h5>
+					<div class="clearfix"></div>
+					<h5 class="pull-right mr">
+						Rejected:<a title="Rejected" href="javascript:void(0)"
+							class="paddingLeft mr paddingLeft mt"
+							id="rejectedReceivedCandidates"
+							onclick="releasedJobsToVendorsApplicantDecline();">0</a>
 					</h5>
 				</div>
-				<div id="qualityCandidatesChartDiv" style="width: 100%; height: 200px;" class="amchartAnchor-Hide"></div>
-				<div id="qualityCandidatesNoRecordsDiv" class='dataTables_empty' style="height: 335px !important; display: none;"></div>
+				<div id="qualityCandidatesChartDiv"
+					style="width: 100%; height: 200px;" class="amchartAnchor-Hide"></div>
+				<div id="qualityCandidatesNoRecordsDiv" class='dataTables_empty'
+					style="height: 335px !important; display: none;"></div>
 			</div>
 		</div>
 		<!--Quality Candidates-->

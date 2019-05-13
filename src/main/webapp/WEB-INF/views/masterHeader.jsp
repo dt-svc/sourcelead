@@ -7,6 +7,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+
+
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
@@ -38,13 +40,13 @@ $(document).ready(function(){
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
 <title>Welcome to Source Lead</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="/resources/reports/dashboard_3118.css?staticTime=${staticTime}" type="text/css" media="all" />
-<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
-<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/dashboard_3118.css?staticTime=${staticTime}" type="text/css" media="all" />
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
  
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
@@ -53,73 +55,73 @@ $(document).ready(function(){
 
 <!-- This requirement.css for only requirement.jsp  -->
 <c:if test='${viewPage == "requirement/requirement"}'>
-	<link href="/resources/css/requirement.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+	<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/requirement.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 </c:if>
 
 </head>
 
 
-<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
-<script src="/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
  
 <!--  Amcharts -->
 <c:if test='${viewPage == "reports/reportsDashboard"}'>
-	<script src="/resources/amcharts/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="/resources/amcharts/serial.js?staticTime=${staticTime}"></script>
-	<script src="/resources/amcharts/plugins/export/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css?staticTime=${staticTime}" type="text/css" media="all" />
-	<script src="/resources/amcharts/themes/light.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/serial.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/plugins/export/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/plugins/export/export.css?staticTime=${staticTime}" type="text/css" media="all" />
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/themes/light.js?staticTime=${staticTime}"></script>
  
  </c:if>
  
  <c:if test='${viewPage == "reports/applicantsReport"}'>
-	 <script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="/resources/reports/pie.js?staticTime=${staticTime}"></script>
-	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="/resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
-	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
+	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/pie.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/light.js?staticTime=${staticTime}"></script>
 </c:if>
 
 <c:if test='${viewPage == "reports/applicantsReceivedReport"}'>
-	<script src="/resources/reports/highcharts.js"></script>
-	<script src="/resources/reports/exporting.js"></script> 
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/highcharts.js"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/exporting.js"></script> 
 </c:if>
 
 <c:if test='${viewPage == "reports/requirementStageReports" || viewPage == "reports/usersUsageReportList"}'>
-	<script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="/resources/reports/piechart.js?staticTime=${staticTime}"></script>
-	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
-	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/piechart.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/light.js?staticTime=${staticTime}"></script>
 	
 </c:if>
 
 <c:if test='${viewPage == "reports/requirementAssignToReports" || viewPage == "reports/requirementAssignToReports" || viewPage == "reports/vendorsReport" || viewPage == "reports/paidBillReportGraph" || viewPage == "reports/receivedInvoiceReportGraph"}'>
-	 <script src="/resources/js/pie.js?staticTime=${staticTime}"></script> 
-	 <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
-	 <script src="/resources/js/serial.js?staticTime=${staticTime}"></script> 
-	 <script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script> 
-	 <script src="/resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script> 
+	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
+	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/serial.js?staticTime=${staticTime}"></script> 
+	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.min.js?staticTime=${staticTime}"></script> 
+	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/themes/light.js?staticTime=${staticTime}"></script> 
  </c:if>
 
 
 <c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" || viewPage == "reports/perfomanceClientReports"}'>
-	<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
-	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/light.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
  <c:if test='${viewPage == "leavemanagement/applyLeave"}'>
-    <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
+    <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
  
@@ -183,12 +185,100 @@ z-index: 1000000000 !important;
 .pac-container::after {
 	display:none;
 }
+
+
+
+
+
+
+.blink {
+  animation: blinkAnimation 1s infinite;
+  -webkit-animation: blinkAnimation 1s infinite;
+  -moz-animation: blinkAnimation 1s infinite;
+  -ms-animation: blinkAnimation 1s infinite;
+}
+
+
+@keyframes blinkAnimation {
+    0 {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes blinkAnimation {
+    0 {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
+@-moz-keyframes blinkAnimation {
+    0 {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
+@-o-keyframes blinkAnimation {
+    0 {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
+@keyframes blinkAnimation {
+    0 {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
+
 </style>
 
 
 <script type="text/javascript">
 $(document).ready(function(){
+	'<sec:authorize access="hasRole(\'ROLE_VIEW_CART\')">' 
 	updateMarketplaceCartCountAndPrice();
+	'</sec:authorize>';
+// 	getExistedClockTime();
 });
 </script>
 <!-- notification related include jsp -->
@@ -302,6 +392,10 @@ function preventTabkey(e){
 </script>
 
 <body>
+
+
+
+
 <c:url var="logoutUrl" value="${SourceLeadWeb_sourceleadLogoutUrl}"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
   <input type="hidden" name="userSessionId" value="${userLoginSession.id}"/>
@@ -474,7 +568,9 @@ function preventTabkey(e){
 <div class="headNav">
 	<ul>
 	
-	
+	<li id="clPop" class="clPop">
+			<label class="clheadtime" id="stopwatch">00:00:00</label><a href="javascript:void(0)" title="Clock In"><i class="clockAni"><div class="clockAniAct"></div></i></a>
+	</li>
 <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
 
             <li><a id="orgPopId" href="javascript:void(0)" title="Locations"><i class="headNavIcon"></i></a>
@@ -539,7 +635,7 @@ function preventTabkey(e){
          </c:if>
          
          <sec:authorize access="hasAnyRole('ROLE_ADD_TICKET','ROLE_VIEW_TICKET')">
-			<li><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>" title="Ticket Management" ><i class="ticketMgIC"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+			<li><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>" title="Ticket Management"><i class="ticketMgIC"></i></a></li>
 		</sec:authorize>
 		
         <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
@@ -574,7 +670,7 @@ function preventTabkey(e){
 
 
 <ul class="responIcons clearfix">
-	<li><a><img src="/resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
+	<li><a><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
 	<li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>
 </ul>
     
@@ -843,12 +939,113 @@ function preventTabkey(e){
 
 </sec:authorize>
 
+
+
+
+<!-- Clock In Popup -->
+
+<div class="popupWrap popupWrap2" id="clockPop" >
+<div class="popupHead"><span>Clock In</span><i class="closePop pull-right clPopClose"></i></div>
+<form id="clock_inout_form" name="clock_inout_form">
+<input type="hidden" id="clockInOutId" name="clockInOutId">
+<input type="hidden" id="breakId" name="breakId">
+<div class="clockWrap">
+<div class="clockIn clearfix">
+<div class="clockTime pull-left"><p>Clock In</p> <b id="stopwatchPop">00:00:00</b></div>
+
+<div class="pull-right" id="withBreakDiv">
+<a id="start" onclick="obj.event('start');" class="CloIn" href="javascript:void(0)"><img src="/resources/images/clock.png">Start</a>
+<a id="pause" onclick="obj.event('pause');" class="braIn" href="javascript:void(0)"><img src="/resources/images/break.png">Start Break</a>
+<a id="play" onclick="obj.event('play');" class="braOut" href="javascript:void(0)"><img src="/resources/images/break.png">End Break</a>
+<a id="reset" onclick="obj.event('reset');" class="CloOut" href="javascript:void(0)"><img src="/resources/images/clock.png">Clock Out</a>
+</div> 
+
+<div class="pull-right" id="withoutBreakDiv">
+<a id="start" onclick="obj.event('start');" class="CloIn cwob" href="javascript:void(0)"><img src="/resources/images/clock.png">Start</a>
+<a id="reset" onclick="obj.event('reset');" class="CloOut" href="javascript:void(0)"><img src="/resources/images/clock.png">Clock Out</a>
+</div> 
+
+<div class="clearfix"></div> 
+<!--<div>
+<input type="button" id="start" value="Start" onclick="obj.event('start');"/>
+<input type="button" id="pause" value="Start Break" onclick="obj.event('pause');"/>
+<input type="button" id="play" value="End Break" onclick="obj.event('play');"/>-->
+<!-- <input type="button" id="stop" value="Stop" onclick="obj.event('stop')"/> -->
+<!-- <input type="button" id="reset" value="Clock Out" onclick="obj.event('reset');"/>
+</div> --> 
+
+</div>
+<div class="subClock clearfix">
+<!-- <div class="subClockCta">
+<p>Current</p>
+<div class="sclock" id="curDiv">00 : 00</div>
+</div> -->
+<div class="subClockCta">
+<p>Day</p>
+<div class="sclock" id="dayDiv">00 : 00</div>
+</div>
+<div class="subClockCta">
+<p>Week</p>
+<div class="sclock" id="weekDiv">00 : 00</div>
+</div>
+<div class="subClockCta">
+<p>Month</p>
+<div class="sclock" id="monthDiv">00 : 00</div>
+</div> 
+</div>
+<div class="clockinn" id="clockFieldsId">
+<div class="clearfix mb" id="jobDIV">
+<label class="noPad">Jobs</label>
+<div class="clearfix addicon">
+<select class="form-control chosen-select" id="jobDropDownDiv" name="jobs" onchange="updateClockInOutTime();">
+</select>
+</div>
+</div> 
+<div id="projectTaskDIV">
+<div class="clearfix mb">
+<label class="noPad">Project</label>
+<div class="clearfix addicon">
+<select class="form-control chosen-select" id="projectDropDownDiv" name="projects" onchange="getProjectTasksByProject();updateClockInOutTime();">
+</select>
+</div>
+</div> 
+<div class="clearfix mb">
+<label class="noPad">Project Tasks</label>
+<div class="clearfix addicon">
+<select class="form-control chosen-select" id="projectTaskDropDownDiv" name="projectTasks" onchange="updateClockInOutTime();">
+</select>
+</div>
+</div> 
+</div> 
+<div class="clearfix mb" id="generalTaskDIV">
+<label class="noPad">General Tasks</label>
+<div class="clearfix addicon">
+<select class="form-control chosen-select" id="generalTaskDropDownDiv" name="generalTasks" onchange="updateClockInOutTime();">
+</select>
+</div>
+</div> 
+<div class="clearfix" id="commentsDIV">
+<label class="noPad">Comments</label>
+<div class="clearfix addicon">
+<textarea rows="3" class="form-control" name="comments" onblur="updateClockInOutTime();"></textarea>
+</div>
+</div> 
+</div>
+<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Time Entry</a></div> 
+</div>
+
+<div>
+</div></form>
+</div>
+
+
+
 <!--  Theme Switcher div  Commented By Mahesh  -->
 <%--   <sec:authorize access="hasRole('ROLE_COLOUR_THEME')"> 
   <div class="theme-color">
       <span class="icon-theme theme-styels" title="click here">
           <figure class="rotate">
-            <img src="/resources/images/theme-icon.png" class="img-responsive" title="Themes">
+            <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/theme-icon.png" class="img-responsive" title="Themes">
           </figure>
       </span>
     <ul class="list-unstyled">
@@ -985,6 +1182,31 @@ $(document).ready(function() {
 $(".collpase-div").click(function(){
 	$(this).next().slideToggle();
 });
+
+$('.headProfileIcon').click(function(){
+	$("#profilePop").slideToggle(0);
+	 $('#settingPopup, #notificationPopup, #orgPopView').hide();
+});
+$('#settingPopId').click(function(){
+	$("#settingPopup").slideToggle(0);
+	 $('#profilePop, #notificationPopup, #orgPopView').hide();
+});	
+$('#notiPopId').click(function(){
+	$("#notificationPopup").slideToggle(0);
+	 $('#profilePop, #settingPopup, #orgPopView').hide();
+});	
+
+$('#orgPopId').click(function(){
+	$("#orgPopView").slideToggle(0);
+	 $('#profilePop, #settingPopup, #notificationPopup').hide();
+});			
+$('html').click(function(){
+	  $('#profilePop, #settingPopup, #notificationPopup, #orgPopView').hide();
+    });
+$('.headProfile, #settingPopId, #settingPopup, #notiPopId, #notificationPopup, #orgPopId, #orgPopView').click(function(e){
+	e.stopPropagation();
+});		
+
 });
 
 //Add Task Div
@@ -1534,13 +1756,16 @@ $(document).ready(function(){
 	$("#campSubMenu").click(function(){
 		$(".campsubMenuView").slideToggle(100);
 	});	
+	
+	$('#reset,#play, #pause').attr("disabled",true);
+	$('#start').attr("disabled",false);
 });
 </script>
   
   <script>
   function flushInviteCompany(){
 	  document.getElementById("inviteCompany_form").reset();
-	  $("inviteCompany_form").validate().resetForm();
+	  //$("inviteCompany_form").validate().resetForm();
   }
   </script> 
   <script>
@@ -1651,9 +1876,9 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
     	 var input = (document.getElementById(locationId));
     	    var options = {
     	    		types: ['geocode'],
-    	        componentRestrictions: {
+    	        /* componentRestrictions: {
     	        	country: ["IN","US","AU","SG","GB","FR"]
-    	        }
+    	        } */
     	    };
     	    autocomplete = new google.maps.places.Autocomplete(input, options);
     }else{
@@ -1756,7 +1981,7 @@ function zipcodeMask(country,zipCodeId){
 
 
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
-<%-- <script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script> --%>
+<%-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script> --%>
 
 
 <script type="text/javascript">
@@ -1831,7 +2056,7 @@ $(document).ready(function(){
 <script>
 function updateMarketplaceCartCountAndPrice(){
 	var totalPriceInCurrency;
-	var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	$.ajax({
 		 	url: sourceleadUrl + "/getMarketplaceCartCountAndPrice",
 	        type: 'GET',
@@ -1845,3 +2070,454 @@ function updateMarketplaceCartCountAndPrice(){
 	        });
 	}
 </script>
+
+<script>
+// clock in-Out jquery
+
+//clock sub
+$("#clSub").click(function(){
+  $(".clockSub").slideToggle(10);
+});
+
+	/* $(".clockAni").click(function(){
+	$(this).css("background-image","url(/resources/images/clock-ani.gif)");
+	$(".clockAniAct").show();
+	}); */
+
+$("#clPop").click(function() {
+	getClockInOutConfiguration();
+	getTimeReports();
+	});
+$(".clPopClose").click(function() {
+	$(".mask, .popupWrap2").fadeOut();
+});
+
+</script>
+
+<script>
+function getClockInOutConfiguration(){
+	$.ajax({
+	url: sourceleadUrl + "/getClockInOutConfigData",
+	type: 'GET',
+	success: function (json) {
+	if(json != null){
+		if(json.isBreak == true){
+			$(".mask, #clockPop").fadeIn();
+			$("#withBreakDiv").show();
+			$("#withoutBreakDiv").hide();
+		}else{
+			$(".mask, #clockPop").fadeIn();
+			$("#withoutBreakDiv").show();
+			$("#withBreakDiv").hide();
+		}
+	
+// 	$("#clockFieldsId").show();
+	getExistedClockTime();
+	if(!json.isJobChecked){
+	$("#jobDIV").hide();
+	}else{
+	$("#jobDIV").show();
+	getAssignedJobTasks();
+	}
+	if(!json.isProjectTasksChecked){
+	$("#projectTaskDIV").hide();
+	}else{
+	$("#projectTaskDIV").show();
+	getAssignedProjects();
+	}
+	if(!json.isGeneralTaskChecked){
+	$("#generalTaskDIV").hide();
+	} else{
+	$("#generalTaskDIV").show();
+	getGeneralTasks();
+	}
+	if(!json.isClockInComment){
+	$("#commentsDIV").hide();
+	}else{
+	$("#commentsDIV").show();
+	}
+	}else{
+		$(".mask, #clockPop").fadeIn();
+		$("#withoutBreakDiv").show();
+		$("#withBreakDiv").hide();
+	}
+	}
+	});
+
+}
+
+
+function getTimeReports(){
+	$.ajax({
+		url: sourceleadUrl + "/getTimeReports",
+		type: 'GET',
+		success: function (json) {
+			if(json.currentTotTime != null){
+				$("#dayDiv").text(json.currentTotTime);
+			}
+			
+			if(json.weekTotTime != null){
+				$("#weekDiv").text(json.weekTotTime);
+			}
+			
+			if(json.monthTotTime != null){
+				$("#monthDiv").text(json.monthTotTime);
+			}
+			
+		}
+	
+});
+}
+</script>
+
+<script>
+function getAssignedJobTasks(obj){
+	$.ajax({
+	url: sourceleadUrl + "/getAssignedJobs",
+	type: 'GET',
+	success: function (json) {
+	var output = "";
+	output = output + "<option value=''>Select Job</option>";
+	if(json.data != null){
+	for (var i=0; i<json.data.length; i++)
+	{
+	var opt = json.data[i];
+	if(obj != null && obj != '' && obj != 'undefined'){
+	if(obj.jobsTaskId == opt.id){
+	output = output + "<option value='" +opt.id+ "' selected>"+opt.jobTitle+"</option>";
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
+	}
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
+	}
+	}
+	}
+	$("#jobDropDownDiv").empty();
+	$("#jobDropDownDiv").append(output);
+	$('#jobDropDownDiv').trigger("chosen:updated");
+	}
+	});
+}
+</script>
+
+<script>
+function getAssignedProjects(obj){
+	$.ajax({
+	url: sourceleadUrl + "/getAllProjectsForClockInOut",
+	type: 'GET',
+	success: function (json) {
+	var output = "";
+	output = output + "<option value=''>Select Project</option>";
+	if(json.data != null){
+	for (var i=0; i<json.data.length; i++)
+	{
+	var opt = json.data[i];
+	if(obj != null && obj != '' && obj != 'undefined'){
+	if(obj.projectId == opt.id){
+	output = output + "<option value='" +opt.id+ "' selected>"+opt.projectName+"</option>";
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+	}
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+	}
+	}
+	}
+	
+	$("#projectDropDownDiv").empty();
+	$("#projectDropDownDiv").append(output);
+	$('#projectDropDownDiv').trigger("chosen:updated"); 
+	
+	}
+	});
+	getProjectTasksByProject(obj);
+}
+</script>
+
+
+<script>
+function getProjectTasksByProject(obj){
+
+	var projectId = $("#projectDropDownDiv").val();
+	$.ajax({
+	 	url: sourceleadUrl + "/getProjectsTasksByProjectId?&projectId="+projectId,
+        type: 'GET',
+        success: function (json) {
+        	var output = "";
+			output = output + "<option value=''>Select Project Task</option>";
+			if(json != null){
+				for (var i=0; i<json.length; i++)
+				{
+					var opt = json[i];
+					if(obj != null && obj != '' && obj != 'undefined'){
+						if(obj.projectsTaskId == opt.id){
+							output = output + "<option value='" +opt.id+ "' selected>"+opt.taskName+"</option>";
+						}else{
+							output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+					}
+					}else{
+						output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+					}
+				
+				}
+			}
+		$("#projectTaskDropDownDiv").empty();
+		$("#projectTaskDropDownDiv").append(output);
+		$('#projectTaskDropDownDiv').trigger("chosen:updated"); 
+        	}
+        });
+}
+</script>
+
+<script>
+function getGeneralTasks(data){
+	
+	$.ajax({
+	 	url: sourceleadUrl + "/getGeneralTasks",
+        type: 'GET',
+        success: function (json) {
+        	var output = "";
+			output = output + "<option value=''>Select Task</option>";
+			if(json != null){
+				for (var i=0; i<json.length; i++)
+				{
+					var opt = json[i];
+					if(obj != null && obj != '' && obj != 'undefined'){
+						if(obj.generalTaskId == opt.id){
+							output = output + "<option value='" +opt.id+ "' selected>"+opt.subject+"</option>";
+						}else{
+							output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
+					}
+					}else{
+						output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
+					}
+				
+				}
+			}
+		$("#generalTaskDropDownDiv").empty();
+		$("#generalTaskDropDownDiv").append(output);
+		$('#generalTaskDropDownDiv').trigger("chosen:updated"); 
+        	}
+        });
+}
+</script>
+
+<script>
+function saveClockInOutTime(type,totalTime){
+	var formData = getFormData("clock_inout_form");
+	$.ajax({
+	type : "POST",
+	data : formData,
+	url: sourceleadUrl+"/saveClockInOutTime?&type="+type+"&totalTime="+totalTime, 
+	success :function(data) {
+	
+	if(type == 'ClockIn'){
+	$("#clockInOutId").val(data.id);
+	$('#reset,#pause').attr("disabled",false);
+	$('#start,#play').attr("disabled",true);
+	}else{
+	$("#clockInOutId").val('');
+	$('#start').attr("disabled",false);
+	$('.cwob').attr("disabled",false);
+	$('#reset,#play,#pause').attr("disabled",true);
+	}
+	},	
+	}); 
+	
+}
+</script>
+
+<script>
+function getExistedClockTime(){
+	$.ajax({
+	type : "GET",
+	url: sourceleadUrl+"/getExistedClockTime", 
+	success :function(data) {
+		if(data != null && data != '' && data != 'undefined'){
+		$("#clockInOutId").val(data.id);
+		getAssignedJobTasks(data);
+		getAssignedProjects(data);
+		getGeneralTasks(data);
+		$('#start,#play').attr("disabled",true);
+		$('#reset, #pause').attr("disabled",false);
+		
+		getExistedBreakTime(data.id);
+		}else{
+		$('#reset,#play, #pause').attr("disabled",true);
+		$('#start').attr("disabled",false);
+		}
+		
+	},	
+	}); 
+}
+</script>
+
+
+<script>
+function getExistedBreakTime(clockInOutId){
+	$.ajax({
+	type : "GET",
+	url: sourceleadUrl+"/getExistedBreakTime?&clockInOutId="+clockInOutId, 
+	success :function(data) {
+	$("#breakId").val(data.id);
+	$('#start,#pause').attr("disabled",true);
+	$('#reset,#play').attr("disabled",false);
+	},	
+	}); 
+}
+</script>
+
+
+<script type="text/javascript">
+obj = {
+	element : '',
+	currentSec: 0,
+	refreshInterval:0,
+	init: function () {
+	
+	obj.element = $('#stopwatch, #stopwatchPop');
+	
+	var currTime = new Date().getTime() / 1000;
+	currTime = parseInt(currTime);
+	var storedTime = localStorage.getItem('stopwatch_time');
+	var sleepedSec = storedTime==null ? 0 : currTime - parseInt(storedTime);
+	obj.currentSec = localStorage.getItem('stopwatch_sec');
+	obj.currentSec = obj.currentSec ? parseInt(obj.currentSec) + sleepedSec : 0;
+	var pauseValue = localStorage.getItem('pauseValue');
+	if(obj.currentSec && pauseValue != 'pause') {
+		obj.refresh();
+		$('#reset').attr("disabled",true);
+	}else if(pauseValue == 'pause'){
+		var pauseData = localStorage.getItem('pauseData');
+		obj.element.html(pauseData);
+	}
+	
+
+},
+event: function (type) {
+	switch(type) {
+	case 'start':
+	$(".clockAni").css("background-image","url(/resources/images/clock-ani.gif)");
+	$(".clockAniAct").show();
+	obj.element.removeClass('blink');
+	obj.currentSec = 0;
+	obj.refresh();
+	localStorage.setItem('pauseValue', null);
+	localStorage.setItem('pauseData', null);
+	saveClockInOutTime('ClockIn');
+	break;
+	case 'play':
+	$(".clockAni").css("background-image","url(/resources/images/clock-ani.gif)");
+	$(".clockAniAct").show();
+	obj.element.removeClass('blink');
+	localStorage.setItem('pauseValue', null);
+	localStorage.setItem('pauseData', null);
+	var pauseSec = localStorage.getItem('pause_sec');
+	obj.currentSec = pauseSec; 
+	obj.refresh();
+	saveBreakTime('play');
+	break;
+	case 'pause':
+	$(".clockAni").css("background-image","url(/resources/images/clock.jpg)");
+	$(".clockAniAct").hide();
+	obj.element.addClass('blink');
+	localStorage.setItem('pauseValue', 'pause');
+	var totalTime = localStorage.getItem('total_Time');
+	localStorage.setItem('pauseData', totalTime);
+	clearTimeout(obj.refreshInterval);
+	saveBreakTime('pause');
+	break;
+	case 'reset':
+	$(".clockAni").css("background-image","url(/resources/images/clock.jpg)");
+	$(".clockAniAct").hide();
+	clearTimeout(obj.refreshInterval);
+	var totalTime = localStorage.getItem('total_Time');
+	localStorage.setItem('stopwatch_time', null);
+	localStorage.setItem('stopwatch_sec', 0);
+	obj.currentSec = 0;
+	obj.element.html('00:00:00');
+	localStorage.setItem('pauseValue', null);
+	localStorage.setItem('pauseData', null);
+	localStorage.setItem('pause_sec',0);
+	obj.element.removeClass('blink');
+	
+	// $('div > input').attr("disabled",false);
+	saveClockInOutTime('ClockOut',totalTime);
+	window.setTimeout(function() {
+		getTimeReports();
+	}, 200);
+	break;
+	
+	}
+},
+refresh: function(pauseValue,pauseData) {
+
+	var sec = '';
+	sec = obj.currentSec++;
+	var hour = parseInt(sec/3600);
+	sec = sec % 3600;
+	var min = parseInt(sec/60);
+	sec = sec % 60;
+	localStorage.setItem('pause_sec',obj.currentSec);
+	
+	localStorage.setItem('stopwatch_sec', obj.currentSec);
+	obj.element.html((hour > 9 ? hour : '0' + hour) + ':' + (min > 9 ? min : '0' + min) + ':' + (sec > 9 ? sec : '0' + sec));
+	localStorage.setItem('total_Time',(hour > 9 ? hour : '0' + hour) + ':' + (min > 9 ? min : '0' + min) + ':' + (sec > 9 ? sec : '0' + sec));
+	var currTime = new Date().getTime() / 1000;
+	currTime = parseInt(currTime);
+	localStorage.setItem('stopwatch_time', currTime);
+	
+	obj.refreshInterval = setTimeout('obj.refresh()', 1000);
+      
+    }
+}
+
+
+$('document').ready(function () {
+  obj.init();
+});
+
+
+</script>
+
+<script>
+
+function updateClockInOutTime(){
+		var formData = getFormData("clock_inout_form");
+		$.ajax({
+		type : "POST",
+		data : formData,
+		url: sourceleadUrl+"/updateClockInOutTime", 
+		success :function(data) {
+		// $("#clockInOutId").val(data.id);
+		},	
+		}); 
+}
+</script>
+
+<script>
+function saveBreakTime(type){
+		var formData = getFormData("clock_inout_form");
+		$.ajax({
+		type : "POST",
+		data : formData,
+		url: sourceleadUrl+"/saveBreakTime?&type="+type, 
+		success :function(data) {
+		if(type == 'pause'){
+		$("#breakId").val(data.id);
+		$('#start,#pause').attr("disabled",true);
+		$('#reset,#play').attr("disabled",false);
+		}else{
+		$("#breakId").val('');
+		$('#start,#play').attr("disabled",true);
+		$('#reset,#pause').attr("disabled",false);
+		}
+		},	
+		}); 
+}
+</script>
+
+
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
+
