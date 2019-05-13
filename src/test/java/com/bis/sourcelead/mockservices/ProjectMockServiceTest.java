@@ -1,16 +1,10 @@
 package com.bis.sourcelead.mockservices;
-import static org.junit.Assert.assertEquals;
-
-import static org.junit.Assert.assertSame;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.stub;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.doNothing;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
@@ -18,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -28,8 +21,8 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.impl.ProjectMembersServiceImpl;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectMockServiceTest {

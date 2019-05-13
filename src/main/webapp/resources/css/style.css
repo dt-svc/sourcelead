@@ -269,6 +269,15 @@
 	width: 100%
 }
 
+.viewTemplate textarea ~ p.jquery_form_error_message {
+	position: relative;
+	top: 0;
+	left: 28%;
+	font-size: 12px;
+	font-weight: 500;
+	color: red
+}
+
 .viewTemplate .sjfb-field {
 	display: inline-block;
 	width: 45%;
