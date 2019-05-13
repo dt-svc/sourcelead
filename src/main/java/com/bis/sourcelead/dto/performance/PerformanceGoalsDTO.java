@@ -25,6 +25,8 @@ public class PerformanceGoalsDTO implements Serializable{
 	
 	private String goalsAssignTo;
 	
+	private String teamId;
+	
 	private String description;
 	
 	private String staticPath;
@@ -33,11 +35,13 @@ public class PerformanceGoalsDTO implements Serializable{
 
 	private List<FileInfo> uploadedFileInfo;
 	
+	private String goalPercentage;
+	
 	private String uuid;
 	
 	private BigInteger id;
 	
-    private Integer percentageDone;
+    private double percentageDone;
     
     private int start;
 	
@@ -56,6 +60,13 @@ public class PerformanceGoalsDTO implements Serializable{
 	private String goalUUID;
 	
 	private String goalType;
+	
+	private String createdDate;
+	
+	private BigInteger subGoalsCount;
+	
+	private String teamName;
+	
 
 	public Long getGoalId() {
 		return goalId;
@@ -137,11 +148,11 @@ public class PerformanceGoalsDTO implements Serializable{
 		this.uuid = uuid;
 	}
 
-	public Integer getPercentageDone() {
+	public double getPercentageDone() {
 		return percentageDone;
 	}
 
-	public void setPercentageDone(Integer percentageDone) {
+	public void setPercentageDone(double percentageDone) {
 		this.percentageDone = percentageDone;
 	}
 
@@ -223,6 +234,46 @@ public class PerformanceGoalsDTO implements Serializable{
 
 	public void setGoalUUID(String goalUUID) {
 		this.goalUUID = goalUUID;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getGoalPercentage() {
+		return goalPercentage;
+	}
+
+	public void setGoalPercentage(String goalPercentage) {
+		this.goalPercentage = goalPercentage;
+	}
+
+	public BigInteger getSubGoalsCount() {
+		return subGoalsCount;
+	}
+
+	public void setSubGoalsCount(BigInteger subGoalsCount) {
+		this.subGoalsCount = subGoalsCount;
+	}
+
+	public String getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(String teamId) {
+		this.teamId = teamId;
+	}
+
+	public String getTeamName() {
+		return teamName;
+	}
+
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
 	}
 
 	

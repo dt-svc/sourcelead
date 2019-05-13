@@ -24,6 +24,7 @@ import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -62,8 +63,12 @@ public class PerformanceGoals implements Serializable{
 	    @JoinColumn(name="GOAL_ID" )        
 	    private PerformanceGoals goalId;
 		
+		@ManyToOne(fetch = FetchType.LAZY)
+	    @JoinColumn(name="TEAM_ID" )        
+	    private Team teamId;
+		
 		@Column(name = "PERCENTAGE_DONE ")
-		private Integer percentageDone;
+		private double percentageDone;
 		
 		@Column(name = "UUID")
 		private String uuid;
@@ -102,6 +107,10 @@ public class PerformanceGoals implements Serializable{
 		@Transient
 		@JsonProperty
 	    private String goalEndDateStr;
+		
+		@Transient
+		@JsonProperty
+	    private String createdDateStr;
 		
 
 		public Long getId() {
@@ -160,11 +169,11 @@ public class PerformanceGoals implements Serializable{
 			this.goalType = goalType;
 		}
 
-		public Integer getPercentageDone() {
+		public double getPercentageDone() {
 			return percentageDone;
 		}
 
-		public void setPercentageDone(Integer percentageDone) {
+		public void setPercentageDone(double percentageDone) {
 			this.percentageDone = percentageDone;
 		}
 
@@ -265,6 +274,27 @@ public class PerformanceGoals implements Serializable{
 
 		public void setGoalId(PerformanceGoals goalId) {
 			this.goalId = goalId;
+		}
+
+		public String getCreatedDateStr() {
+			String createdDateStr = null;
+			if(createdDate != null){
+				SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+				createdDateStr = dateFormat.format(createdDate);	
+			}
+			return createdDateStr;
+		}
+
+		public void setCreatedDateStr(String createdDateStr) {
+			this.createdDateStr = createdDateStr;
+		}
+
+		public Team getTeamId() {
+			return teamId;
+		}
+
+		public void setTeamId(Team teamId) {
+			this.teamId = teamId;
 		}
 		
 
