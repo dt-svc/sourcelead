@@ -492,7 +492,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		
 		
 		StringBuilder searchCountQuery = new StringBuilder();
-		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
+		if(StringUtils.isNotEmpty(searchValue) && searchValue != null && !searchValue.equalsIgnoreCase("undefined")) {
 		searchCountQuery.append("and( ")
 			             .append("(pm.projectMemberCandidteId.firstName like '" + searchValue + "%' OR pm.projectMemberCandidteId.lastName like '%" + searchValue + "' )")
 						.append("OR (concat(REPLACE(pm.projectMemberCandidteId.firstName,' ',''),REPLACE(pm.projectMemberCandidteId.lastName,' ','')) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
@@ -525,7 +525,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String statusCountQuery = "";
 		
 		StringBuilder searchQuery = new StringBuilder();
-		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
+		if(StringUtils.isNotEmpty(searchValue) && searchValue != null && !searchValue.equalsIgnoreCase("undefined")) {
 		 searchQuery.append("and ( ")
 				    .append("(pm.projectMemberCandidteId.firstName like '" + searchValue + "%' OR pm.projectMemberCandidteId.lastName like '%" + searchValue + "' )")
 					.append("OR (concat(REPLACE(pm.projectMemberCandidteId.firstName,' ',''),REPLACE(pm.projectMemberCandidteId.lastName,' ','')) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
@@ -662,42 +662,45 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			query.setParameter("projectId", projectId);
 		}
 		
-		@SuppressWarnings("unchecked")
-		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId).setFirstResult(start).setMaxResults(length).list();
+		
+		Query queryObject =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId);
+		 if(length > 0) {
+			 queryObject = queryObject.setFirstResult(start).setMaxResults(length);
+		 }
+		 @SuppressWarnings("unchecked")
+		List<ProjectMembers> projectMemberList = queryObject.list();
 		response.setData(projectMemberList);
 		
-		Query countQ = session.createQuery(countQuery);
-		if(startDate != null && endDate != null){
-			countQ.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+		if(length >0 ) {
+			Query countQ = session.createQuery(countQuery);
+			if(startDate != null && endDate != null){
+				countQ.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+			}
+			if(clientId != null){
+				countQ.setParameter("clientId", clientId);
+			}
+			if(projectId != null){
+				countQ.setParameter("projectId", projectId);
+			}
+			if(StringUtils.isNotEmpty(timesheetFrequency)){
+				countQ.setString("timesheetFrequency", timesheetFrequency);
+			}
+			countQ.setLong("locationsId", locationsId).setLong("userId", approverUserId);
+			
+			List<Long> countList  = null;
+			if(countQ != null) {
+				countList  = countQ.list();
+			}
+			int recordsTotal=0;
+			if(countList != null && !countList.isEmpty()) {
+				recordsTotal  =  countList.size();
+			}
+			response.setRecordsTotal(recordsTotal);
+		}else if(projectMemberList != null && !projectMemberList.isEmpty()){
+			response.setRecordsTotal(projectMemberList.size());
+		}else {
+			response.setRecordsTotal(0);
 		}
-		if(clientId != null){
-			countQ.setParameter("clientId", clientId);
-		}
-		if(projectId != null){
-			countQ.setParameter("projectId", projectId);
-		}
-		if(StringUtils.isNotEmpty(timesheetFrequency)){
-			countQ.setString("timesheetFrequency", timesheetFrequency);
-		}
-		countQ.setLong("locationsId", locationsId).setLong("userId", approverUserId);
-		
-		List<Long> countList  = null;
-		if(countQ != null) {
-			countList  = countQ.list();
-		}
-		int recordsTotal=0;
-		if(countList != null && !countList.isEmpty()) {
-			recordsTotal  =  countList.size();
-		}
-		response.setRecordsTotal(recordsTotal);
-		
-		/*if(searchQuery.toString() != null && !searchQuery.toString().isEmpty()){
-			response.setRecordsFiltered(recordsFiltered);
-		}
-		else {
-			response.setRecordsFiltered(recordsTotal);
-		}*/
-		
 		return response;
 	}
 	
