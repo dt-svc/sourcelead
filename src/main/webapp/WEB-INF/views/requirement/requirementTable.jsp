@@ -14,7 +14,7 @@ function jobFairListCheck(){
 	
 	$("#jobsTabContent").hide();
 	$("#jobFairTabContent").show();
-	
+	$("#dataTableSearch").val('');
 	
 	$("#jobFairList").empty();
 	$("#jobFairList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -68,6 +68,7 @@ function jobFairListCheck(){
  	msgFadein1();
 }
 function requirementListCheck(searchValue,universalRequirementSearchList,searchType,atsUrl){
+	$("#jobFairDataTableSearch").val('');
 	viewTab = "jobs";
 	$("#filtersDiv").removeClass("hide_filters");
 	if(universalRequirementSearchList != null && universalRequirementSearchList != '' && universalRequirementSearchList != 'undefined' 
@@ -96,6 +97,7 @@ function requirementListCheck(searchValue,universalRequirementSearchList,searchT
 	} 
 }
 function requirementList(searchType,atsUrl){  
+	
 	    var url = '';
 	    if(searchType == 'list' || searchType == 'universalSearch'){
 	    	var filterStatus = [];
@@ -1129,6 +1131,7 @@ function jpaginationForJobFairs(url){
 	        	   $("#requirementEmptyListMessage").val(2);
 	           		var result = "";
 	       		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
+	       		    	result = result +"<td><a href='<c:url value='/ats/jobFairSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 	       		    	result = result +"<td><a href='${SourceLeadWeb_atsUrl}/jobFairSummary?uuid="+opt.uuid+"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 	       		    '</sec:authorize>';
 		            return result;

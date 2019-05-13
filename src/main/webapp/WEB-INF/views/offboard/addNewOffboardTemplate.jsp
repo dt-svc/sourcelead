@@ -3,15 +3,15 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="/resources/js/formvalidator.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="/resources/css/style.css" />
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css" />
 
-<script src="/resources/js/offboardCheckListBuilder.js" type="text/javascript" ></script> <!-- form builder -->
-<script src="/resources/js/offboardCheckList-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/offboardCheckListBuilder.js" type="text/javascript" ></script> <!-- form builder -->
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/offboardCheckList-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
-<script src="/resources/js/formvalidator.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script>
 
 <section class="content-wraper">
     <div id="loading"></div>
@@ -1599,7 +1599,7 @@ $('#nexttab').on('click', function() {
     
 
   <jsp:include page="../masterFooter.jsp" />
-  <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
+  <div class="backtotop" style="display: none;"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/backtotop.png"></div>  
   
   
 <script>
