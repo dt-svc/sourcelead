@@ -371,9 +371,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 					<div class="pull-right">
 						<input type="button" value="Save" id="store_RequirementTemplate"
 							onclick="storeRequiremetTemplate();" class="btn btn-primary ml">
-						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/template'/>'"
-							class="btn btn-default ml">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/template'" class="btn btn-default ml">
 					</div>
 				</div>
 			</div>
