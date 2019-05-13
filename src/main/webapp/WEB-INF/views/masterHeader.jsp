@@ -1666,6 +1666,11 @@ $("#searchType").selectpicker('refresh');
   <script>
   
 $(document).ready(function(){
+	localStorage.setItem('pauseValue', null);
+	localStorage.setItem('pauseData', null);
+	localStorage.setItem('pause_sec',0);
+	localStorage.setItem('stopwatch_time', null);
+	localStorage.setItem('stopwatch_sec', 0);
 	$("#subMenu").click(function(){
 		$(".subMenuView").slideToggle(100);
 	});

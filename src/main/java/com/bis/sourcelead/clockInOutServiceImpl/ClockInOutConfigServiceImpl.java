@@ -395,9 +395,50 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    	int hr = 0;
 				    	String sum = null;
 				    	
+				    	int brksec = 0;
+				    	int brkmin = 0;
+				    	int brkhr = 0;
+				    	String brksum = null;
+				    	
 				    	for (ClockInOutUserTimeEntryDTO data : uniqueData.getValue()) {
 				    		
+				    		int indBrksec = 0;
+					    	int indBrkmin = 0;
+					    	int indBrkhr = 0;
+				    		String indBrksum = null;
 				    		ClockInOutSubDTO subDto = new ClockInOutSubDTO();
+				    		
+							List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
+							for (Breaks breaks : breakList) {
+								
+								String[] str = breaks.getTotalTime().split(":");
+								brksec += Integer.parseInt(str[2]);
+								indBrksec += Integer.parseInt(str[2]);
+								if(brksec>=60) {
+									brkmin++;
+									brksec = brksec - 60; 
+								}
+								if(indBrksec>=60) {
+									indBrkmin++;
+									indBrksec = indBrksec - 60; 
+								}
+								brkmin += Integer.parseInt(str[1]);
+								indBrkmin += Integer.parseInt(str[1]);
+								if(brkmin>=60) {
+									brkhr++;
+									brkmin = brkmin - 60;
+								}
+								if(indBrkmin>=60) {
+									indBrkhr++;
+									indBrkmin = indBrkmin - 60;
+								}
+								brkhr += Integer.parseInt(str[0]);
+								indBrkhr += Integer.parseInt(str[0]);
+					    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
+					    		indBrksum = df.format(indBrkhr)+":"+df.format(indBrkmin)+":"+df.format(indBrksec);
+							}
+
+							subDto.setIndividualTotBreakTime(indBrksum);
 				    		subDto.setClockInTime(data.getClockInTime());
 				    		subDto.setClockOutTime(data.getClockOutTime());
 				    		subDto.setIndividualNoOfHours(data.getTotalTime());
@@ -434,6 +475,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    	}
 				    	
 				    	main.setTotalTime(sum);
+				    	main.setTotalBreakTime(brksum);
 				    	String tTime [] = sum.toString().split(":");
 		                StringBuilder sb = new StringBuilder();
 		                sb.append(tTime[0]).append(".").append(tTime[1]);
@@ -460,9 +502,53 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    	int hr = 0;
 				    	String sum = null;
 				    	
+				    	int brksec = 0;
+				    	int brkmin = 0;
+				    	int brkhr = 0;
+				    	String brksum = null;
+				    	
 				    	for (ClockInOutUserTimeEntryDTO data : uniqueData.getValue()) {
 				    		
+				    		
+				    		int indBrksec = 0;
+					    	int indBrkmin = 0;
+					    	int indBrkhr = 0;
+				    		String indBrksum = null;
+				    		
 				    		ClockInOutSubDTO subDto = new ClockInOutSubDTO();
+				    		
+				    		
+				    		List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
+							for (Breaks breaks : breakList) {
+								
+								String[] str = breaks.getTotalTime().split(":");
+								brksec += Integer.parseInt(str[2]);
+								indBrksec += Integer.parseInt(str[2]);
+								if(brksec>=60) {
+									brkmin++;
+									brksec = brksec - 60; 
+								}
+								if(indBrksec>=60) {
+									indBrkmin++;
+									indBrksec = indBrksec - 60; 
+								}
+								brkmin += Integer.parseInt(str[1]);
+								indBrkmin += Integer.parseInt(str[1]);
+								if(brkmin>=60) {
+									brkhr++;
+									brkmin = brkmin - 60;
+								}
+								if(indBrkmin>=60) {
+									indBrkhr++;
+									indBrkmin = indBrkmin - 60;
+								}
+								brkhr += Integer.parseInt(str[0]);
+								indBrkhr += Integer.parseInt(str[0]);
+					    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
+					    		indBrksum = df.format(indBrkhr)+":"+df.format(indBrkmin)+":"+df.format(indBrksec);
+							}
+				    		
+							subDto.setIndividualTotBreakTime(indBrksum);
 				    		subDto.setClockInTime(data.getClockInTime());
 				    		subDto.setClockOutTime(data.getClockOutTime());
 				    		subDto.setIndividualNoOfHours(data.getTotalTime());
@@ -497,6 +583,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    	}
 				    	
 				    	main.setTotalTime(sum);
+				    	main.setTotalBreakTime(brksum);
 				    	String tTime [] = sum.toString().split(":");
 		                StringBuilder sb = new StringBuilder();
 		                sb.append(tTime[0]).append(".").append(tTime[1]);

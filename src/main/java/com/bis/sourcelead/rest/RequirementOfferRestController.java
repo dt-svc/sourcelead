@@ -397,7 +397,11 @@ public class RequirementOfferRestController {
 			    	
 			    	  //Changing the status of offerTable 
 					  if(requirementOffers  != null ){
-							  requirementOffers.setOfferStatus("OFFERREJECTED");  
+							  if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+						  requirementOffers.setOfferStatus("OFFERREJECTED"); 
+					  }else{
+						  requirementOffers.setOfferStatus("CLIENT_OFFERREJECTED");   
+					  }  
 						    requirementOffers.setRejectedReason(rejectedReason);
 						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 						    requirementOffersService.saveOfferStatus(requirementOffers);

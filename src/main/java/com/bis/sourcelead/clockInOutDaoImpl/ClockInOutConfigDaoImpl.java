@@ -618,6 +618,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			
 			StringBuilder sb = new StringBuilder();
 			sb.append("SELECT clk.CLOCK_IN_TIME as clockInTime, ") 
+			  .append("clk.ID as id, ")
 			  .append("clk.CLOCK_OUT_TIME as clockOutTime, ")
 			  .append("clk.CLOCK_IN_DATE as clockInDate, ")
 			  .append("clk.CLOCK_OUT_DATE as clockOutDate, ")
