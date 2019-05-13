@@ -1,11 +1,13 @@
 package com.bis.sourcelead.rest.performance;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,13 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.PerformanceBadgesDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.performance.PerformanceCompetenciesDTO;
+import com.bis.sourcelead.dto.TeamDTO;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAttachmentsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsCommentsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceTeamMembersDTO;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
 import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
@@ -30,6 +37,7 @@ import com.bis.sourcelead.entity.performance.PerformanceGoalsAttachments;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.performance.PerformanceGoalsAttachmentsService;
+import com.bis.sourcelead.service.performance.PerformanceGoalsCommentsService;
 import com.bis.sourcelead.service.performance.PerformanceGoalsService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -48,21 +56,33 @@ public class PerformanceGoalsRestController {
 	@Autowired
 	PerformanceGoalsAttachmentsService performanceGoalsAttachmentsService;
 	
-	  @RequestMapping(value = "/getReportingManagersUsersForGoalsAssignment" , method = RequestMethod.GET)
-	   public List<UserRole> getReportingManagersUsersForGoalsAssignment(HttpServletRequest request) throws Exception {
+	@Autowired
+	PerformanceGoalsCommentsService performanceGoalsCommentsService;
+	
+	  @RequestMapping(value = { "/getReportingManagersUsersForGoalsAssignment", "/rest/getReportingManagersUsersForGoalsAssignment" }, method = RequestMethod.GET)
+	   public ResponseList<PerformanceGoalsAssignToDTO> getReportingManagersUsersForGoalsAssignment(HttpServletRequest request) throws Exception {
 		   Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		   Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		   Long userRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userRoleId");
-		   List<UserRole> userRolesList = null;
+		   List<PerformanceGoalsAssignToDTO> userRolesList = null;
+		   ResponseList<PerformanceGoalsAssignToDTO> resObj = new ResponseList<>();
 		   try {
-			  userRolesList = userRoleService.getAllAssignedUsersByReportingManagerId(userId,orgLocationId);
+			  userRolesList = performanceGoalsService.getReportingManagersUsersForAssigningGoals(userId,orgLocationId);
 			  UserRole userRole = userRoleService.getUserRoleById(userRoleId);
-			  userRolesList.add(userRole);
-			
+			  PerformanceGoalsAssignToDTO managerDTO = new PerformanceGoalsAssignToDTO();
+			  managerDTO.setAssignedUserId(BigInteger.valueOf(userRole.getId()));
+			  managerDTO.setAssignedUser(userRole.getUser().getFullName());
+			  userRolesList.add(managerDTO);
+			  resObj.setData(userRolesList);
+			  resObj.setResponse(Result.SUCCESS.name());
+			  resObj.setResponseMessage(Result.SUCCESS.getValue());
 		   }catch (Exception e) {
-			     e.printStackTrace();
+			   e.printStackTrace();
+			   resObj.setResponse(Result.AWKWARD.name());
+			   resObj.setResponseMessage(Result.AWKWARD.getValue());
+			     
 			}
-		   return userRolesList;
+		   return resObj;
 	   }
 	  
 	  
@@ -139,14 +159,15 @@ public class PerformanceGoalsRestController {
 	  
 	  
 	  @RequestMapping(value = { "/getMyTotalGoalsDoNutCharts", "/rest/getMyTotalGoalsDoNutCharts" }, method = RequestMethod.GET)
-		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyTotalGoalsDoNutCharts(HttpServletRequest request){
+		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyTotalGoalsDoNutCharts(@RequestParam(value="performanceGoalType", required = true) String performanceGoalType,
+				HttpServletRequest request){
 		  
 		    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		  
 			 Response<PerformanceGoalsDoNutChartCountsDTO> resObj = new Response<>();
 			 try {
-				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getTotalGoalsDoNutChartCounts(userId, orgLocationId);
+				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getTotalGoalsDoNutChartCounts(userId, orgLocationId, performanceGoalType);
 				 resObj.setObject(totalCountsDTO);
 				 resObj.setResponse(Result.SUCCESS.name());
 				 resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -161,14 +182,15 @@ public class PerformanceGoalsRestController {
 	  
 	  
 	  @RequestMapping(value = { "/getMyInprogressGoalsDoNutCharts", "/rest/getMyInprogressGoalsDoNutCharts" }, method = RequestMethod.GET)
-		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyInprogressGoalsDoNutCharts(HttpServletRequest request){
+		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyInprogressGoalsDoNutCharts(@RequestParam(value="performanceGoalType", required = true) String performanceGoalType,
+				HttpServletRequest request){
 		  
 		    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		  
 			 Response<PerformanceGoalsDoNutChartCountsDTO> resObj = new Response<>();
 			 try {
-				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getInprogressGoalsDoNutChartCounts(userId, orgLocationId);
+				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getInprogressGoalsDoNutChartCounts(userId, orgLocationId, performanceGoalType);
 				 resObj.setObject(totalCountsDTO);
 				 resObj.setResponse(Result.SUCCESS.name());
 				 resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -182,14 +204,15 @@ public class PerformanceGoalsRestController {
 	  
 	  
 	  @RequestMapping(value = { "/getMyCompletedGoalsDoNutCharts", "/rest/getMyCompletedGoalsDoNutCharts" }, method = RequestMethod.GET)
-		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyCompletedGoalsDoNutCharts(HttpServletRequest request){
+		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyCompletedGoalsDoNutCharts(@RequestParam(value="performanceGoalType", required = true) String performanceGoalType,
+				HttpServletRequest request){
 		  
 		    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		  
 			 Response<PerformanceGoalsDoNutChartCountsDTO> resObj = new Response<>();
 			 try {
-				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getCompletedGoalsDoNutChartCounts(userId, orgLocationId);
+				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getCompletedGoalsDoNutChartCounts(userId, orgLocationId, performanceGoalType);
 				 resObj.setObject(totalCountsDTO);
 				 resObj.setResponse(Result.SUCCESS.name());
 				 resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -203,14 +226,15 @@ public class PerformanceGoalsRestController {
 	  
 	  
 	  @RequestMapping(value = { "/getMyOverDueGoalsDoNutCharts", "/rest/getMyOverDueGoalsDoNutCharts" }, method = RequestMethod.GET)
-		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyOverDueGoalsDoNutCharts(HttpServletRequest request){
+		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyOverDueGoalsDoNutCharts(@RequestParam(value="performanceGoalType", required = true) String performanceGoalType,
+				HttpServletRequest request){
 		  
 		    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		  
 			 Response<PerformanceGoalsDoNutChartCountsDTO> resObj = new Response<>();
 			 try {
-				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getOverDueGoalsDoNutChartCounts(userId, orgLocationId);
+				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getOverDueGoalsDoNutChartCounts(userId, orgLocationId, performanceGoalType);
 				 resObj.setObject(totalCountsDTO);
 				 resObj.setResponse(Result.SUCCESS.name());
 				 resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -223,14 +247,15 @@ public class PerformanceGoalsRestController {
 	    }
 	  
 	  @RequestMapping(value = { "/getMyNotStartedGoalsDoNutCharts", "/rest/getMyNotStartedGoalsDoNutCharts" }, method = RequestMethod.GET)
-		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyNotStartedGoalsDoNutCharts(HttpServletRequest request){
+		public Response<PerformanceGoalsDoNutChartCountsDTO> getMyNotStartedGoalsDoNutCharts(@RequestParam(value="performanceGoalType", required = true) String performanceGoalType,
+				HttpServletRequest request){
 		  
 		    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		  
 			 Response<PerformanceGoalsDoNutChartCountsDTO> resObj = new Response<>();
 			 try {
-				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getNotStartedGoalsDoNutChartCounts(userId, orgLocationId);
+				 PerformanceGoalsDoNutChartCountsDTO totalCountsDTO =  performanceGoalsService.getNotStartedGoalsDoNutChartCounts(userId, orgLocationId, performanceGoalType);
 				 resObj.setObject(totalCountsDTO);
 				 resObj.setResponse(Result.SUCCESS.name());
 				 resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -244,7 +269,8 @@ public class PerformanceGoalsRestController {
 	  
 	  
 		 @RequestMapping(value = { "/getPerformanceGoalsList", "/rest/getPerformanceGoalsList" }, method = RequestMethod.GET)
-			public ResponseList<PerformanceGoalsDTO> getPerformanceCompetenceList(PerformanceGoalsDTO performanceGoalsDTO,HttpServletRequest request) throws Exception {
+			public ResponseList<PerformanceGoalsDTO> getPerformanceCompetenceList(PerformanceGoalsDTO performanceGoalsDTO,
+					@RequestParam(value="performanceGoalType", required = true) String performanceGoalType,HttpServletRequest request) throws Exception {
 				
 				Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 				Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
@@ -259,7 +285,7 @@ public class PerformanceGoalsRestController {
 				}
 				performanceGoalsDTO.setSortColumn(tableColumns[sortColumnIndex]);
 				performanceGoalsDTO.setSortOrder(sortColumnOrder);
-				ResponseList<PerformanceGoalsDTO> performanceGoalsList = performanceGoalsService.getPerformanceGoalsList(performanceGoalsDTO, userId, orgLocationId,dateFormat);
+				ResponseList<PerformanceGoalsDTO> performanceGoalsList = performanceGoalsService.getPerformanceGoalsList(performanceGoalsDTO, userId, orgLocationId,dateFormat,performanceGoalType);
 				return performanceGoalsList;
 			}
 		 
@@ -281,6 +307,11 @@ public class PerformanceGoalsRestController {
 						 performanceGoalsDTO.setPercentageDone(performanceGoals.getPercentageDone());
 						 performanceGoalsDTO.setGoalId(performanceGoals.getId());
 						 performanceGoalsDTO.setCreatedDate(performanceGoals.getCreatedDateStr());
+						 
+						 if(performanceGoals.getTeamId() != null) {
+							 performanceGoalsDTO.setTeamId(String.valueOf(performanceGoals.getTeamId().getId()));
+							 performanceGoalsDTO.setTeamName(performanceGoals.getTeamId().getName());
+						 }
 						 
 						 Set<PerformanceGoalsAssignTo> performanceGoalsAssignToSet = performanceGoals.getPerformanceGoalsAssignTo();
 						 if(performanceGoalsAssignToSet != null && !performanceGoalsAssignToSet.isEmpty()) {
@@ -317,10 +348,265 @@ public class PerformanceGoalsRestController {
 					 resObj.setResponseMessage(Result.SUCCESS.getValue());
 				    
 				 }catch (Exception e) {
+					 e.printStackTrace();
 					 resObj.setResponse(Result.AWKWARD.name());
 					 resObj.setResponseMessage(Result.AWKWARD.getValue());
 				}
 				 return resObj;
 		    }
 			 
+		 
+	 	@RequestMapping(value = { "/getPerformanceSubGoalsList", "/rest/getPerformanceSubGoalsList" }, method = RequestMethod.GET)
+		public ResponseList<PerformanceGoalsDTO> getPerformanceSubGoalsList(@RequestParam(value="goalUUID", required=true) String goalUUID,HttpServletRequest request) throws Exception {
+	 		
+	 		ResponseList<PerformanceGoalsDTO> resObj = new ResponseList<>();
+			String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+			 try {
+					 PerformanceGoals performanceGoals = performanceGoalsService.getPerformanceGoalsByUUID(goalUUID);
+					 List<PerformanceGoalsDTO> performanceGoalsList = performanceGoalsService.getPerformanceSubGoalsList(performanceGoals.getId(),dateFormat);
+					 resObj.setData(performanceGoalsList);
+					
+					 resObj.setResponse(Result.SUCCESS.name());
+					 resObj.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+				 	resObj.setResponse(Result.AWKWARD.name());
+				 	resObj.setResponseMessage(Result.AWKWARD.getValue());
+			 }
+			
+			return resObj;
+		}
+	 	
+	 	
+	 	@RequestMapping(value = { "/getPerformanceGoalsAssignToList", "/rest/getPerformanceGoalsAssignToList" }, method = RequestMethod.GET)
+		public ResponseList<PerformanceGoalsAssignToDTO> getPerformanceGoalsAssignToList(@RequestParam(value="goalUUID", required=true) String goalUUID,HttpServletRequest request) throws Exception {
+	 		
+	 		ResponseList<PerformanceGoalsAssignToDTO> resObj = new ResponseList<>();
+			String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+			 try {
+					 List<PerformanceGoalsAssignToDTO> performanceGoalsAssignToList = performanceGoalsService.getPerformanceGoalsAssignedUsersList(goalUUID,dateFormat);
+					 resObj.setData(performanceGoalsAssignToList);
+					
+					 resObj.setResponse(Result.SUCCESS.name());
+					 resObj.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+				 	resObj.setResponse(Result.AWKWARD.name());
+				 	resObj.setResponseMessage(Result.AWKWARD.getValue());
+			 }
+			
+			return resObj;
+		}
+	 	
+	 	@RequestMapping(value = { "/getAllUserListForGoals", "/rest/getAllUserListForGoals" }, method = RequestMethod.GET)
+			public ResponseList<UserDTO> getAllUserListForGoals(HttpServletRequest request) throws Exception {
+		 		
+	 		   Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 		ResponseList<UserDTO> resObj = new ResponseList<>();
+				 try {
+						 List<UserDTO> usersList = userRoleService.getAllActiveUsersList(orgLocationId);
+						 resObj.setData(usersList);
+						
+						 resObj.setResponse(Result.SUCCESS.name());
+						 resObj.setResponseMessage(Result.SUCCESS.getValue());
+						 
+				 }catch (Exception e) {
+					 	resObj.setResponse(Result.AWKWARD.name());
+					 	resObj.setResponseMessage(Result.AWKWARD.getValue());
+				 }
+				
+				return resObj;
+			}
+	 	
+	 	
+	 	@RequestMapping(value = { "/savePerformanceGoalsComments", "/rest/savePerformanceGoalsComments" }, method = RequestMethod.POST)
+		public @ResponseBody Response<PerformanceGoalsCommentsDTO> savePerformanceGoals(PerformanceGoalsCommentsDTO performanceGoalsCommentsDTO,HttpServletRequest request) throws Exception {
+			  Response<PerformanceGoalsCommentsDTO> response = new  Response<>();
+			  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			try {
+			 if(Validator.validate(performanceGoalsCommentsDTO)) {
+				 performanceGoalsCommentsDTO.setCreatedUserId(user.getId());
+				 performanceGoalsCommentsDTO.setCreatedUserName(user.getFullName());
+				 performanceGoalsCommentsService.storePerformanceGoalsComments(performanceGoalsCommentsDTO,orgLocations.getId());
+				 response.setResponse(Result.SUCCESS.name());
+				 response.setResponseMessage(Result.SUCCESS.getValue());
+			 }else {
+	    		 response.setResponse(Result.INVALID_DATA.name());
+				 response.setResponseMessage(Result.INVALID_DATA.getValue());
+	    	 }
+			}catch (Exception e) {
+				e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return response;
+		}
+	 
+	 	
+	 	@RequestMapping(value = { "/getPerformanceGoalsCommentsList", "/rest/getPerformanceGoalsCommentsList" }, method = RequestMethod.GET)
+		public ResponseList<PerformanceGoalsCommentsDTO> getPerformanceGoalsCommentsList(@RequestParam(value="goalId", required=true) Long goalId,HttpServletRequest request) throws Exception {
+	 		
+	 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	 		ResponseList<PerformanceGoalsCommentsDTO> resObj = new ResponseList<>();
+			 try {
+					 List<PerformanceGoalsCommentsDTO> commentsList = performanceGoalsCommentsService.getPerformanceGoalsCommentsList(goalId, orgLocations.getDateFormat());
+					 resObj.setData(commentsList);
+					
+					 resObj.setResponse(Result.SUCCESS.name());
+					 resObj.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+				 	resObj.setResponse(Result.AWKWARD.name());
+				 	resObj.setResponseMessage(Result.AWKWARD.getValue());
+			 }
+			
+			return resObj;
+		}
+	 	
+	 	
+	 	@RequestMapping(value = { "/makeGoalAsCompleted", "/rest/makeGoalAsCompleted" }, method = RequestMethod.POST)
+		public @ResponseBody Response<PerformanceGoalsDTO> makeGoalAsCompleted(@RequestParam(value="goalUUID", required=true) String goalUUID,HttpServletRequest request) throws Exception {
+			  Response<PerformanceGoalsDTO> response = new  Response<>();
+			try {
+			 if(StringUtils.isNoneBlank(goalUUID)) {
+				 PerformanceGoals goals =  performanceGoalsService.getPerformanceGoalsByUUID(goalUUID);
+				 goals.setPercentageDone(100d);
+				 performanceGoalsService.savePerformanceGoals(goals);
+				 
+				 if(goals.getGoalId() != null) {
+					    double percentage = performanceGoalsService.getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(goals.getGoalId().getId());
+						String parentGoalPercentageDone =  String.format("%.2f", percentage);
+						PerformanceGoals parentGoal = performanceGoalsService.getPerformanceGoalsById(goals.getGoalId().getId());
+						parentGoal.setPercentageDone(Double.valueOf(parentGoalPercentageDone));
+						performanceGoalsService.savePerformanceGoals(parentGoal);
+				 }
+				 response.setResponse(Result.SUCCESS.name());
+				 response.setResponseMessage(Result.SUCCESS.getValue());
+			 }else {
+	    		 response.setResponse(Result.INVALID_DATA.name());
+				 response.setResponseMessage(Result.INVALID_DATA.getValue());
+	    	 }
+			}catch (Exception e) {
+				e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return response;
+		}
+	 	
+	 	@RequestMapping(value = { "/getPerformanceGoalsTeamsList", "/rest/getPerformanceGoalsTeamsList" }, method = RequestMethod.GET)
+		public ResponseList<TeamDTO> getPerformanceGoalsTeamsList(HttpServletRequest request) throws Exception {
+	 		
+	 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	 		ResponseList<TeamDTO> resObj = new ResponseList<>();
+	 		
+			 try {
+					 List<TeamDTO> teamList = performanceGoalsService.getPerformanceGoalsTeamList(orgLocations.getId());
+					 resObj.setData(teamList);
+					
+					 resObj.setResponse(Result.SUCCESS.name());
+					 resObj.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+				 	resObj.setResponse(Result.AWKWARD.name());
+				 	resObj.setResponseMessage(Result.AWKWARD.getValue());
+			 }
+			
+			return resObj;
+		}
+	 	
+	 	
+	 	@RequestMapping(value = { "/getPerformanceGoalsTeamsMembersList", "/rest/getPerformanceGoalsTeamsMembersList" }, method = RequestMethod.GET)
+		public ResponseList<PerformanceTeamMembersDTO> getPerformanceGoalsTeamsMembersList(@RequestParam(value="goalUUID", required=true) String goalUUID,HttpServletRequest request) throws Exception {
+	 		
+	 		ResponseList<PerformanceTeamMembersDTO> resObj = new ResponseList<>();
+	 		
+			 try {
+				 if(StringUtils.isNoneBlank(goalUUID)) {
+					 PerformanceGoals goals =  performanceGoalsService.getPerformanceGoalsByUUID(goalUUID);
+					 if(goals.getTeamId() != null) {
+						 List<PerformanceTeamMembersDTO> teamMembersList = performanceGoalsService.getPerformanceTeamMembersByTeamId(goals.getTeamId().getId());
+						 resObj.setData(teamMembersList);
+					 }
+				 }
+					
+					 resObj.setResponse(Result.SUCCESS.name());
+					 resObj.setResponseMessage(Result.SUCCESS.getValue());
+					 
+			 }catch (Exception e) {
+				 	resObj.setResponse(Result.AWKWARD.name());
+				 	resObj.setResponseMessage(Result.AWKWARD.getValue());
+			 }
+			
+			return resObj;
+		}
+	 	
+	 	
+	 	  @RequestMapping(value = { "/savePerformanceTeamSubGoals", "/rest/savePerformanceTeamSubGoals" }, method = RequestMethod.POST)
+			public @ResponseBody Response<PerformanceGoalsDTO> savePerformanceTeamSubGoals(PerformanceGoalsDTO performanceGoalsDTO,HttpServletRequest request) throws Exception {
+				  Response<PerformanceGoalsDTO> response = new  Response<>();
+				  Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+				  Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+				  String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+				try {
+				 if(Validator.validate(performanceGoalsDTO)) {
+					 performanceGoalsDTO.setGoalType("Sub_Goal");
+					 performanceGoalsDTO.setStaticPath(staticPath);
+					 performanceGoalsService.storePerformanceGoals(performanceGoalsDTO, userId, orgLocationId, dateFormat);
+					 response.setResponse(Result.SUCCESS.name());
+					 response.setResponseMessage(Result.SUCCESS.getValue());
+				 }else {
+		    		 response.setResponse(Result.INVALID_DATA.name());
+					 response.setResponseMessage(Result.INVALID_DATA.getValue());
+		    	 }
+				}catch (Exception e) {
+					e.printStackTrace();
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+				return response;
+			}
+	 	  
+	 	 @RequestMapping(value = { "/deletePerformanceGoalByGoalUUID", "/rest/deletePerformanceGoalByGoalUUID" }, method = RequestMethod.POST)
+			public @ResponseBody Response<PerformanceGoalsDTO> deletePerformanceGoalByGoalUUID(@RequestParam(value="goalUUID", required=true) String goalUUID,HttpServletRequest request) throws Exception {
+				  Response<PerformanceGoalsDTO> response = new  Response<>();
+				try {
+				 if(StringUtils.isNoneBlank(goalUUID)) {
+					 PerformanceGoals goals =  performanceGoalsService.getPerformanceGoalsByUUID(goalUUID);
+					 goals.setStatus(Constants.RECORD_INACTIVE);
+					 performanceGoalsService.savePerformanceGoals(goals);
+					 
+					 String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+					 List<PerformanceGoalsDTO> subGoalsList = performanceGoalsService.getPerformanceSubGoalsList(goals.getId(), dateFormat);
+					 if(subGoalsList != null && !subGoalsList.isEmpty()) {
+						 for(PerformanceGoalsDTO goalsDTO : subGoalsList) {
+							 PerformanceGoals subGoal = performanceGoalsService.getPerformanceGoalsById(goalsDTO.getId().longValue());
+							 subGoal.setStatus(Constants.RECORD_INACTIVE);
+							 performanceGoalsService.savePerformanceGoals(subGoal);
+						 }
+					 }
+					 
+					 if(goals.getGoalId() != null) {
+						    double percentage = performanceGoalsService.getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(goals.getGoalId().getId());
+							String parentGoalPercentageDone =  String.format("%.2f", percentage);
+							PerformanceGoals parentGoal = performanceGoalsService.getPerformanceGoalsById(goals.getGoalId().getId());
+							parentGoal.setPercentageDone(Double.valueOf(parentGoalPercentageDone));
+							performanceGoalsService.savePerformanceGoals(parentGoal);
+					 }
+					 
+					 response.setResponse(Result.SUCCESS.name());
+					 response.setResponseMessage(Result.SUCCESS.getValue());
+				 }else {
+		    		 response.setResponse(Result.INVALID_DATA.name());
+					 response.setResponseMessage(Result.INVALID_DATA.getValue());
+		    	 }
+				}catch (Exception e) {
+					e.printStackTrace();
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+				return response;
+			}
+	 	
 }

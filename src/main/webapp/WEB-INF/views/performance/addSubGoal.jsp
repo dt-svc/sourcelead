@@ -44,6 +44,7 @@ window.onload = function () {
 		    	 <form:form id="addSubGoal_form"  name="addSubGoal_form" method="post">
 		    	 	 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt"> 
 		    	 	 <input type="hidden" name="goalUUID" id="goalUUID" />
+		    	 	 <input type="hidden" name="performanceGoalType" id="performanceGoalType" value="Self_Goal" />
 		    	 	 
 		    	 	 	<div class="form-group">
 				          <label class="col-md-3">Goal Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
