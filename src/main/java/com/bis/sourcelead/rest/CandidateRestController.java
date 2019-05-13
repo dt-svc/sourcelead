@@ -11,20 +11,27 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,15 +46,27 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateDocuments;
+import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -82,11 +101,12 @@ import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
-import com.bis.sourcelead.util.CandidateMarketplaceExportUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
 import com.bis.sourcelead.util.ReportsUtil;
+import com.bis.sourcelead.util.CandidateMarketplaceExportUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParser;
 import com.thoughtworks.xstream.XStream;
@@ -113,6 +133,10 @@ public class CandidateRestController {
 	private CandidateService candidateService;
 	@Autowired
 	private CandidateResumesService candidateResumesService;
+	/*
+	 * @Autowired private CandidateSkillsService candidateSkillsService;
+	 */
+
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -137,7 +161,8 @@ public class CandidateRestController {
 	RequirementOfferHistoryService requirementOfferHistoryService;
 	@Autowired
 	private SourceleadResumeParser sourceleadResumeParser;
-	
+	@Autowired
+	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	@Autowired
 	RequirementService requirementService;
 	@Autowired
@@ -1105,18 +1130,20 @@ public class CandidateRestController {
 		 
 		 //response list for purchaseList table
 		 @RequestMapping(value = "/getPurchasedOrderList")
-		 public ResponseList<MarketplacePurchaseSalesDTO> getPurchasedOrderList(MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
-				 				 @RequestParam(value = "purchaseOrderFromDate", required = false)String purchaseOrderFromDate,
-				 				 @RequestParam(value = "purchaseOrderToDate", required = false)String purchaseOrderToDate,
-				 				 @RequestParam(value = "purchaseOrderFilterDate", required = false)String purchaseOrderFilterDate,
-				 				 HttpServletRequest request) throws Exception {
+		 public ResponseList<MarketplacePurchaseSalesDTO> getPurchasedOrderList(
+				 MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,
+				 @RequestParam(value = "searchValue", required = false)String searchValue,
+				 @RequestParam(value = "purchaseOrderFromDate", required = false)String purchaseOrderFromDate,
+				 @RequestParam(value = "purchaseOrderToDate", required = false)String purchaseOrderToDate,
+				 @RequestParam(value = "purchaseOrderFilterDate", required = false)String purchaseOrderFilterDate,
+				 HttpServletRequest request) throws Exception {
 			
 			 ResponseList<MarketplacePurchaseSalesDTO> res = new ResponseList<>();
 			logger.debug("inside PurchaseOrderList  controller =========>");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			marketplacePurchaseSalesDTO.setOrglocationId(orgLocations.getId());
 			try{
-			  	String[] tableColumns = { "orderNo", "createdDate", "companyName", "totalResumes", "totalPrice", "discount"    };
+			  	String[] tableColumns = { "orderNo", "orderDate", "companyName", "totalResume", "totalPrice", "serviceFee","discount","grandTotal","paymentStatus"    };
 			  	int sortColumnIndex = -1; 
 		  		String sortColumnOrder = "desc"; 
 		  		if (marketplacePurchaseSalesDTO.getOrder() != null && !marketplacePurchaseSalesDTO.getOrder().isEmpty()) {
@@ -1131,7 +1158,7 @@ public class CandidateRestController {
 		  			e.printStackTrace();
 		  			return null;
 		  		}
-			ResponseList<MarketplacePurchaseSalesDTO>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations, marketplacePurchaseSalesDTO, purchaseOrderFromDate, purchaseOrderToDate,purchaseOrderFilterDate);
+			ResponseList<MarketplacePurchaseSalesDTO>  marketplacePurchaseOrder = candidateService.getMarketplacePurchaseOrder(orgLocations, marketplacePurchaseSalesDTO,searchValue, purchaseOrderFromDate, purchaseOrderToDate,purchaseOrderFilterDate);
 			return marketplacePurchaseOrder;
 			/*res.setData(marketplacePurchaseOrder);
 			return res;*/
@@ -1417,7 +1444,7 @@ public class CandidateRestController {
 		try{
 			ResponseList<MarketplacePurchaseSalesDTO> responseList = new ResponseList<>();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		  	String[] tableColumns = { "orderNo", "orderDate", "companyName", "noOfResumes", "totalResumePrice", "paymentStatus" };
+		  	String[] tableColumns = { "orderNo", "orderDate", "companyName", "totalResume", "totalPrice", "paymentStatus" };
 		  	int sortColumnIndex = -1; 
 	  		String sortColumnOrder = "desc"; 
 	  		if (marketplacePurchaseSalesDTO.getOrder() != null && !marketplacePurchaseSalesDTO.getOrder().isEmpty()) {
@@ -1487,7 +1514,7 @@ public class CandidateRestController {
 			marketplaceWalletDTO.setOrgLocations(orgLocations);
 			logger.debug("inisde getWalletList  conroller =========> --> ");
 			try {
-				String[] tableColumns = { "openDate", "orderNo", "totalPrice"};
+				String[] tableColumns = { "transactionId", "transactionDate", "description" ,"amount","paymentStatus"};
 																															
 				// entity names
 				int sortColumnIndex = -1; // by default sorting using updated date
