@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
-//import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,10 +62,8 @@ import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadNotesService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.util.CommonUtil;
