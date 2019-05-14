@@ -15,7 +15,7 @@ public interface HolidayDAO {
 
 	List<Holiday> getAllHolidaysList(Long id);
 	
-	List<Holiday> getAllHolidaysListBasedOnYear(Long id,Long reportYear);
+	List<Holiday> getAllHolidaysListBasedOnYear(Long id,Long reportYear,String shiftIds);
 	
 	Holiday getHolidaysById(String holidayId)throws Exception;
 	
@@ -43,7 +43,7 @@ public interface HolidayDAO {
 
 	List<HolidayAndRestrictday> getHolidayByFromToDate(Date startDate, Date endDate, OrgLocations orgLocations);
 	
-	List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date fromDate,  Date endDate,Long orgLocationId,List<Long> excludeIds)throws Exception;
+	public List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date startDate, Date endDate, Long orgLocationId,Long userId,Long workLocationId) throws Exception;
 
 	
 }

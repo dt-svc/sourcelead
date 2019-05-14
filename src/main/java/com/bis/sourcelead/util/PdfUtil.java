@@ -69,8 +69,8 @@ import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -599,10 +599,10 @@ public class PdfUtil {
             PdfPTable table = new PdfPTable(headers.length);
             Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(sbReqStyle.toString(),font));
-	        cell1.setColspan(14);
+	        cell1.setColspan(13);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3,5,5});
+            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3,5});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -713,39 +713,40 @@ public class PdfUtil {
 		}else{
 			requirementArray[7] = "--";
 		}
-		if(requirement.getSubmissionTemplateId() != null ){
+		/*if(requirement.getSubmissionTemplateId() != null ){
 			requirementArray[8] = requirement.getSubmissionTemplateId().getTemplateName();
 		}else{
 			requirementArray[8] = "--";
-		}
+		}*/
 		if(requirement.getClientName() != null && !"".equalsIgnoreCase(requirement.getClientName())){
-			requirementArray[9] = requirement.getClientName();
+			requirementArray[8] = requirement.getClientName();
+		}else{
+			requirementArray[8] = "--";
+		}
+		if(requirement.getClientContactName() != null && !"".equalsIgnoreCase(requirement.getClientContactName())){
+			requirementArray[9] = requirement.getClientContactName();
 		}else{
 			requirementArray[9] = "--";
 		}
-		if(requirement.getClientContactName() != null && !"".equalsIgnoreCase(requirement.getClientContactName())){
-			requirementArray[10] = requirement.getClientContactName();
+		if(requirement.getClientContactEmail() != null && !"".equalsIgnoreCase(requirement.getClientContactEmail())){
+			requirementArray[10] = requirement.getClientContactEmail();
 		}else{
 			requirementArray[10] = "--";
 		}
-		if(requirement.getClientContactEmail() != null && !"".equalsIgnoreCase(requirement.getClientContactEmail())){
-			requirementArray[11] = requirement.getClientContactEmail();
+		if(requirement.getRequirementSubmissionStatus() != null && !"".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
+			requirementArray[11] = requirement.getRequirementSubmissionStatus().toString();
 		}else{
 			requirementArray[11] = "--";
 		}
-		if(requirement.getRequirementSubmissionStatus() != null && !"".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
-			requirementArray[12] = requirement.getRequirementSubmissionStatus().toString();
+		
+		if(requirement.getRequirementCreatedDateToString() != null && !"".equalsIgnoreCase(requirement.getRequirementCreatedDateToString().toString())){
+			requirementArray[12] = requirement.getRequirementCreatedDateToString();
 		}else{
 			requirementArray[12] = "--";
 		}
-		
-		if(requirement.getCreatedDate() != null && !"".equalsIgnoreCase(requirement.getCreatedDate().toString())){
-			requirementArray[13] = commonUtil.dateStrFromOrgDateFormatter(requirement.getOrgLocationId().getDateFormat(), requirement.getCreatedDate());
-		}else{
-			requirementArray[13] = "--";
-		}
 		return requirementArray;
 	}
+	
 	public File getClientVendorPdfFile(java.util.List<OrgRelations> clientsList, String orgName, String[] clientHeaders, String vendorType) throws DocumentException, IOException {
 		Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -1035,7 +1036,7 @@ public class PdfUtil {
 	        document.add(orderedList);
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        int[] columnWidths = new int[]{5, 5, 3,3, 3,3,3,3,3};
-            PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
+            PdfPTable table = getProjectPdfTable(headers,columnWidths,titleName.toString()); 
             java.util.List<String[]> assignedEmpList = new ArrayList<>();
             for(ProjectMembers projectMembers : employeeList){
             	assignedEmpList.add(prepareEmployeeArray(projectMembers,headers));
@@ -1067,6 +1068,30 @@ public class PdfUtil {
 	
 	    
 
+	private PdfPTable getProjectPdfTable(String[] headers, int[] columnWidths, String title) {
+		PdfPTable table = new PdfPTable(headers.length);
+        table.setWidthPercentage(100);
+        try {
+        	    Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+		        PdfPCell cell1 = new PdfPCell(new Phrase(title,font));
+		        cell1.setColspan(9);
+		        headerCellStyle(cell1);
+	            table.addCell(cell1);
+			table.setWidths(columnWidths);
+			for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+	            cell.setBackgroundColor(myColor);
+	            table.addCell(cell);
+	        }
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		return table;
+}
 	private String[] prepareEmployeeArray(ProjectMembers projectMember, String[] headers) {
 			if(projectMember.getProjectMemberCandidteId().getConsultantUser() != null){
 				 UserRole userRole;
@@ -1406,8 +1431,8 @@ public class PdfUtil {
 		}else {
 			projectTaskArray[2] = "--"; 
 		}
-		if(projectTassks.getTaskAssignedUsers() != null) {
-			String assignedTo = projectTassks.getTaskAssignedUsers().toString().replaceAll("\\[", "").replaceAll("\\]","");
+		if(projectTassks.getAssignedTaskUsers() != null) {
+			String assignedTo = projectTassks.getAssignedTaskUsers().toString().replaceAll("\\[", "").replaceAll("\\]","");
 			projectTaskArray[3] = assignedTo; 
 		}else {
 			projectTaskArray[3] = "--"; 

@@ -1,10 +1,12 @@
 package com.bis.sourcelead.dto;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Phone;
 import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.entity.LookUpData;
 
 public class ImmigrationDTO extends SearchDTO {
 
@@ -214,6 +216,13 @@ public class ImmigrationDTO extends SearchDTO {
 	private String prevLcaId;
 	
 	private String lcaCurrLocation;
+	
+	
+	private HashMap<String, Integer> tabRecordCountMap;
+	
+	private String myImmigrationPage;
+	
+	List<LookUpData> uscisStatusList;
     
 	public Long getId() {
 		return id;
@@ -969,6 +978,30 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setPrevLcaId(String prevLcaId) {
 		this.prevLcaId = prevLcaId;
+	}
+
+	public HashMap<String, Integer> getTabRecordCountMap() {
+		return tabRecordCountMap;
+	}
+
+	public void setTabRecordCountMap(HashMap<String, Integer> tabRecordCountMap) {
+		this.tabRecordCountMap = tabRecordCountMap;
+	}
+
+	public String getMyImmigrationPage() {
+		return myImmigrationPage;
+	}
+
+	public void setMyImmigrationPage(String myImmigrationPage) {
+		this.myImmigrationPage = myImmigrationPage;
+	}
+
+	public List<LookUpData> getUscisStatusList() {
+		return uscisStatusList;
+	}
+
+	public void setUscisStatusList(List<LookUpData> uscisStatusList) {
+		this.uscisStatusList = uscisStatusList;
 	}
 	
 	

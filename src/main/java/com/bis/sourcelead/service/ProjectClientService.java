@@ -14,6 +14,8 @@ public interface ProjectClientService {
 	
 	List<ProjectClients> getProjectClientsListByLoginUserAndOrgLocationId(Long orgLocationsId,Long userId) throws Exception;
 	
+	List<ProjectClients> getProjectClientsListByLoginUserAndOrgLocationIdForTimesheetApproval(Long locationsId, Long userId,String isGlobalUser) throws Exception;
+	
 	List<ProjectClients> getAllProjectClientsForExpensesByApproverUserAndOrgLocationId(Long userId,Long orgLocationsId,String isGlobalUser,String purpose) throws Exception;
 	
 	ProjectClients getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(Long projectId,Long orgLocationsId,Long orgRelationId) throws Exception;

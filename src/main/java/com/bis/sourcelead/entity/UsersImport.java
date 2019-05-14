@@ -53,7 +53,11 @@ private String manager;
 
 private String vendor;
 
+private String vendors;
+
 private String vendorContact;
+
+private String vendorcontact;
 
 private String employmentType;
 
@@ -339,4 +343,23 @@ public String getMaritalStatus() {
 public void setMaritalStatus(String maritalStatus) {
 	this.maritalStatus = maritalStatus;
 }
+
+public String getVendors() {
+	return vendors;
+}
+
+public void setVendors(String vendors) {
+	this.vendors = vendors;
+}
+
+public String getVendorcontact() {
+	return vendorcontact;
+}
+
+public void setVendorcontact(String vendorcontact) {
+	this.vendorcontact = vendorcontact;
+}
+
+
+
 }

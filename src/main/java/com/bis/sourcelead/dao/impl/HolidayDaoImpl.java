@@ -24,6 +24,7 @@ import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 @Transactional
+@SuppressWarnings("unchecked")
 public class HolidayDaoImpl  implements HolidayDAO{
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -56,14 +57,26 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).list();
 		return holidayList;
 	}
+	 
 	
 	@Override
-	public List<Holiday> getAllHolidaysListBasedOnYear(Long id,Long reportYear) {
+	public List<Holiday> getAllHolidaysListBasedOnYear(Long id,Long reportYear,String shiftIds) {
 		String status = "1";
 		Session session = this.sessionFactory.getCurrentSession();
-        String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and (year(holiday.fromDate)='"+reportYear+"'  OR year(holiday.toDate)= '"+reportYear+"') ORDER BY holiday.fromDate ASC";
-		//String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and holiday.fromDate >= '"+satrtDate+"' AND holiday.toDate <= '"+endDate+"'";
-		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).list();
+		String subQuery = "";
+		String from = null;
+		List<Holiday> holidayList = null;
+		if(StringUtils.isNotBlank(shiftIds)) {
+			subQuery = " and holiday.id IN (select hs.holiday.id from HolidayShift hs where hs.shift.id IN("+shiftIds+"))";
+		}
+		if(shiftIds != null && shiftIds != "") {
+			from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and (year(holiday.fromDate)='"+reportYear+"'  OR year(holiday.toDate)= '"+reportYear+"') "+subQuery+" ORDER BY holiday.fromDate ASC";
+			holidayList = session.createQuery(from).setLong("id", id).setString("status", status).list();
+		}else {
+			from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and (year(holiday.fromDate)='"+reportYear+"'  OR year(holiday.toDate)= '"+reportYear+"') ORDER BY holiday.fromDate ASC";
+			holidayList = session.createQuery(from).setLong("id", id).setString("status", status).list();
+		}
+         
 		return holidayList;
 	}
 	
@@ -146,7 +159,6 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		return holidayList;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Holiday> getAllHolidaysListByOrgloationIdAndShiftId(Long locationId, String shiftIds) {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -167,7 +179,6 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		return holidayList;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Long> getHolidayShiftCout(Long holidayId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -176,7 +187,6 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		return holidayShiftList;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<HolidayShift> getHolidayShiftListByHolidayId(Long holidayId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -185,7 +195,6 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		return holidayShiftList;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void removeHolidayShiftList(List<Long> shiftIds,Long holidayId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -198,7 +207,6 @@ public class HolidayDaoImpl  implements HolidayDAO{
        }
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void deleteHolidayByHolidayId(Long holidayId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
@@ -225,14 +233,10 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	}
 
 	@Override
-	public List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date startDate, Date endDate, Long orgLocationId,
-			List<Long> excludeIds) throws Exception {
-		if(excludeIds == null || excludeIds.isEmpty()) {
-			excludeIds.add(0l);
-		}
+	public List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date startDate, Date endDate, Long orgLocationId,Long userId,Long workLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Holiday hday where ((hday.fromDate  between  :startDate and :endDate) or (hday.toDate  between  :startDate and :endDate) or (hday.fromDate = :startDate or hday.fromDate = :endDate)or (hday.toDate = :startDate or hday.toDate = :endDate)) and hday.id NOT IN(:excludeIds) and hday.orgLocations.id = :orgLocationId and hday.status != '0'";
-		List<Holiday> holiday = session.createQuery(query).setParameterList("excludeIds",excludeIds).setParameter("startDate", startDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).list();
+		String query = "from Holiday hday where ((hday.fromDate  between  :startDate and :endDate) or (hday.toDate  between  :startDate and :endDate) or (hday.fromDate = :startDate or hday.fromDate = :endDate)or (hday.toDate = :startDate or hday.toDate = :endDate)) and hday.id NOT IN(select udh.holiday.id from UserDroppedHolidays udh where udh.user.id = :userId and udh.orgLocations.id = :workLocationId and udh.toDate = hday.toDate and udh.fromDate = hday.fromDate and udh.status = '1') and hday.orgLocations.id = :orgLocationId and hday.status != '0'";
+		List<Holiday> holiday = session.createQuery(query).setParameter("startDate", startDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).setLong("userId", userId) .setLong("workLocationId", workLocationId).list();
 		if (holiday.size() > 0) {
 			return holiday;
 		}

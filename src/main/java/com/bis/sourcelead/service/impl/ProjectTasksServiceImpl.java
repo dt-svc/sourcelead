@@ -57,6 +57,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
+import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTaskActivityService;
 import com.bis.sourcelead.service.ProjectTaskCustomFieldDataService;
@@ -107,6 +108,8 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	@Autowired
 	PdfUtil pdfUtil;
 	
+	@Autowired
+	ProjectAssignTasksService projectAssignTasksService;
 	
 	@Override
 	public ProjectTasks addTasks(ProjectTasks tasks) throws Exception {
@@ -1199,4 +1202,82 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 	public ResponseList<ProjectTasks> getOverdueTaskReportListByOrglocationId(ProjectTasksDTO  projectTasksDTO,Date[] searchDates) throws Exception {
 		return tasksDao.getOverdueTaskReportListByOrglocationId(projectTasksDTO,searchDates);
 	}
+	
+	
+	
+	
+	@Override
+	public void updateTaskStatusList(TaskDTO taskDTO, OrgLocations loginOrgLocation) throws Exception {
+		User user = userService.getUserById(taskDTO.getUserId());
+	    ProjectTasks projectTasks = tasksDao.getTasksId(taskDTO.getTaskId());
+	    LookUpData  data = lookUpDataService.getTasksById(taskDTO.getTaskStatusId());
+	    
+	    LookUpData  oldData = lookUpDataService.getTasksById(projectTasks.getTaskStatus().getId());
+	    StringBuffer activity = new StringBuffer();
+	    StringBuffer activitySummary = new StringBuffer();
+	    activity.append("Status updated from");
+	    
+		projectTasks.setTaskStatus(data);
+	    projectTasks.setUpdatedDate(commonUtil.currentDate());
+	    tasksDao.updateTasks(projectTasks);
+	   activitySummary.append(oldData.getName()).append(" to ").append(data.getName());
+	   projectTaskActivityService.saveProjectTaskActivitiesByLookupData(activity.toString(), activitySummary.toString(),projectTasks,user,data);
+	
+	   updatedTaskStatusListEmail(taskDTO,activity.toString(),activitySummary.toString(),user,loginOrgLocation,projectTasks);
+		
+	}
+	
+
+	private void updatedTaskStatusListEmail(TaskDTO taskDTO, String activity, String activitySummary,User user,OrgLocations loginOrgLocation, ProjectTasks projectTasks) throws Exception {
+
+		// Assign members Email
+		ProjectTasks projectTask = tasksDao.getTasksId(taskDTO.getTaskId());
+		List<ProjectAssignTask> projectAssignTaskLis = projectAssignTasksService.getProjectAssignTaskListByProjectTaskId(projectTask.getId());
+		 List<Long> assignUserids = new ArrayList<Long>();
+		 if(projectAssignTaskLis != null) {
+			 for(ProjectAssignTask pa:projectAssignTaskLis) {
+				 assignUserids.add(pa.getProjectMemberId().getId());
+			 }
+		 }
+		ProjectAssignTask  assignTasks = null;
+	   if(assignUserids.size() > 0) {
+		   for (Long assignedMemeber :assignUserids) {
+				  assignTasks = new ProjectAssignTask();
+				 ProjectMembers pm = projectMembersService.getProjectMemberById(assignedMemeber);
+				 assignTasks.setProjectMemberId(pm);
+				 if(pm.getCandidateId().longValue() != taskDTO.getCandidateId().longValue()) {
+					if(projectTasks.getOwnerUserId() == null) {
+						 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"assignEmail");
+					}else if(projectTasks.getOwnerUserId() != null && pm.getEmployee() == null) {
+						 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"assignEmail");
+					}else if(projectTasks.getOwnerUserId() != null && pm.getEmployee().getUser().getId().longValue() != projectTasks.getOwnerUserId().getId().longValue()  ) {
+						 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"assignEmail");
+					}
+				 }
+			 }
+	   }
+	   
+	   //project Task ownerEmail
+	   if(projectTasks.getOwnerUserId() != null) {
+		   if(user.getId().longValue() != projectTasks.getOwnerUserId().getId().longValue()) {
+				 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"ownerEmail");
+		   }
+	   }
+	   
+	   
+	//Project Task createby Email
+	   if(projectTask.getCreatedBy() != null) {
+		   if(projectTasks.getOwnerUserId() != null) {
+			   if(!user.getUserCode().equals(projectTask.getCreatedBy()) && !projectTasks.getOwnerUserId().getUserCode().equals(projectTask.getCreatedBy())) {
+					 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"createdByEmail");
+			   }
+		   }else if(!user.getUserCode().equals(projectTask.getCreatedBy())) {
+				 sendUpdatedTaskEmails(assignTasks,taskDTO.getProjectClientUUID(),projectTask,loginOrgLocation,user,activity,activitySummary,"createdByEmail");
+		   }
+	   }
+	   
+	
+		
+	}
+
 }
