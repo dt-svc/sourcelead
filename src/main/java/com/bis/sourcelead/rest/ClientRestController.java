@@ -721,6 +721,7 @@ public class ClientRestController {
 							 referContacts.setLastName(orgSpoc.getVendorUser().getLastName());
 							 referContacts.setContactUserEmail(orgSpoc.getVendorUser().getEmail());
 							 referContacts.setContactUserPhone(orgSpoc.getVendorUser().getMobilePhone());
+							 referContacts.setContactUserUUID(SourceLeadRandomCodeHelper.generateUUID());
 							 referContacts.setContactUser(orgSpoc.getVendorUser());
 							 referContacts.setVendorType(1);
 							 referContacts.setCreatedDate(new Date());
