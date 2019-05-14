@@ -95,6 +95,7 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -202,6 +203,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	private AppliedLeaveDateService appliedLeaveDateService;
+	
+	@Autowired
+	private HolidayService holidayService;
 	
 	
 	@Autowired
@@ -477,8 +481,7 @@ public class TimesheetRestController {
 			List<AppliedLeaveDate> leaveDateList = appliedLeaveDateService.getAppliedLeaveDateByUserId(user.getId(), startDate, endDate);
 			List<Holiday>  holidays = null;
 			if(user != null && candidate != null && candidate.getWorkLocation() != null) {
-				 List<Long> droppedHolidayIds = userDroppedHolidaysService.getDroppedHolidayIdsListByUserIdAndLocationId(user.getId(), candidate.getWorkLocation().getId());
-				 holidays = holidayDAO.getHolidaybyLocationIdAndFromdateForTimesheets(startDate, endDate,candidate.getWorkLocation().getId(),droppedHolidayIds);
+				 holidays = holidayDAO.getHolidaybyLocationIdAndFromdateForTimesheets(startDate, endDate,candidate.getWorkLocation().getId(),user.getId(), candidate.getWorkLocation().getId());
 			}
 			
 			if((leaveDateList != null && !leaveDateList.isEmpty()) || (holidays != null && !holidays.isEmpty())) {
@@ -5792,7 +5795,7 @@ public class TimesheetRestController {
 				userDroppedHolidays = new UserDroppedHolidays();
 			}
 			
-			Holiday holiday = new Holiday();
+			Holiday holiday = holidayService.getHolidaysById(holidayId.toString());
 			holiday.setId(holidayId);
 			userDroppedHolidays.setHoliday(holiday);
 			userDroppedHolidays.setToDate(holiday.getToDate());
