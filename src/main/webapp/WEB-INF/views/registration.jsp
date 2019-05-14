@@ -561,57 +561,7 @@ window.onload = function () {
         </form:form>
         
         
-          <%-- <form:form class="login-form clearfix"  id="recruiterRegistration_form"  name="recruiterRegistration_form" method="post" >    
-	            <div class="row">
-	            <div class="form-group clearfix">
-	                <div class="col-xs-12 col-md-12">
-	                    <i class="fa fa-user"></i>
-	                    <label>First Name <span class="text-danger">*</span></label>
-	                    <input type="text" name="firstName" field-name="First Name" id="recruiterFirstName" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
-	                    <b></b>
-	                </div>
-	                <div class="col-xs-12 col-md-12">
-	                    <i class="fa fa-user"></i>
-	                    <label>Last Name</label>
-	                    <input type="text" name="lastName" field-name="Last Name" id="recruiterLastName" data-validation-optional="true" data-validation="validate_Space validate_AlphaNumber validate_length length1-100">
-	                    <b></b>
-	                </div>
-	                </div>
-	                <div class="form-group clearfix">
-	                <div class="col-xs-12 col-md-12" id="recruiterEmailDiv">
-	                    <i class="fa fa-envelope"></i>
-	                    <label>Email <span class="text-danger">*</span></label>
-	                    <input type="text" name="email" field-name="Email"  id="recruiterEmail"  onblur="validateRecruiterEmail('Recruiter');" data-validation="required validate_Space validate_length length2-100 validate_email" >
-	                    <b></b>
-	                </div>
-	                <div class="col-xs-12 col-md-12 select-field">
-	                    <i class="fa fa-map-marker"></i>
-	                    <select class="form-control chosen-select" name="location" id="recruiterLocation" field-name="Location" data-validation="required">
-	                        <option disabled selected>Location</option>
-	                        <option value="Australia">Australia</option>
-			                <option value="France">France</option>
-			                <option value="India">India</option>
-			                <option value="Singapore">Singapore</option>
-			                <option value="United Kingdom">United Kingdom</option>
-			                <option value="United States">United States</option>
-	                    </select>
-	                    <b></b>
-	                </div>
-	                </div>
-	            <div class="clearfix">
-	            <div class="col-md-12">
-	                 <div class="pull-left">
-	                    <span class="small text-muted">Already have an Account:</span><a href="${sourceleadUrl}" class="btn" title="Login">Login</a><br/>
-	                     <span class="small text-muted">Register With:</span>
-	                </div>
-	                  <div id="recruiterConnect"></div>
-	                <div class="pull-right mt10">
-	                    <button type="submit" class="btn btn-primary btn_styles mr" id="recruiter_register" title="Register">
-	                        <i class="fa fa-paper-plane"></i>Register</button>
-	                </div>
-	            </div>
-	             </div>
-        </form:form> --%>
+          
         </div>
       
       <div id="employee" class="tab-pane fade">

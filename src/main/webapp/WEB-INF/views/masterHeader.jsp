@@ -1130,37 +1130,6 @@ function removevalidation(){
 </script>
 
 <script>
-//Collapse div
-$(document).ready(function() {
-$(".collpase-div").click(function(){
-	$(this).next().slideToggle();
-});
-
-$('.headProfileIcon').click(function(){
-	$("#profilePop").slideToggle(0);
-	 $('#settingPopup, #notificationPopup, #orgPopView').hide();
-});
-$('#settingPopId').click(function(){
-	$("#settingPopup").slideToggle(0);
-	 $('#profilePop, #notificationPopup, #orgPopView').hide();
-});	
-$('#notiPopId').click(function(){
-	$("#notificationPopup").slideToggle(0);
-	 $('#profilePop, #settingPopup, #orgPopView').hide();
-});	
-
-$('#orgPopId').click(function(){
-	$("#orgPopView").slideToggle(0);
-	 $('#profilePop, #settingPopup, #notificationPopup').hide();
-});			
-$('html').click(function(){
-	  $('#profilePop, #settingPopup, #notificationPopup, #orgPopView').hide();
-    });
-$('.headProfile, #settingPopId, #settingPopup, #notiPopId, #notificationPopup, #orgPopId, #orgPopView').click(function(e){
-	e.stopPropagation();
-});		
-
-});
 
 //Add Task Div
  $(".icon-addTask").click(function(){
@@ -2490,6 +2459,7 @@ function saveBreakTime(type){
 </script>
 
 
+
 <script>
 function showWorkingTime(){
 	
@@ -2528,5 +2498,6 @@ function getPreviousClockInData(){
 		}); 
 }
 </script>
+
 
 
