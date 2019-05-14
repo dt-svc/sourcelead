@@ -483,12 +483,13 @@ public class UserRoleServiceImpl implements UserRoleService{
 
 		    if(orgLocations.getCountry().equalsIgnoreCase(Constants.COUNTRY_INDIA)) {
 			if(candidate !=null) { 
-		    if(candidate.getAadharNumber() !=null){
-				 writeRow.createCell(29).setCellValue(candidate.getAadharNumber()); 
-			 }
 			 if(candidate.getPanNumber() != null) {
-				 writeRow.createCell(30).setCellValue(candidate.getPanNumber());
+				 writeRow.createCell(29).setCellValue(candidate.getPanNumber());
 			 }
+			if(candidate.getAadharNumber() !=null){
+				 writeRow.createCell(30).setCellValue(candidate.getAadharNumber()); 
+			 }
+			
 			}
 		    }else {
 		    	if(candidate !=null) {
