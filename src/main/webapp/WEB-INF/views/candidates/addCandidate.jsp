@@ -765,32 +765,7 @@
                 }
 				
 			});
-            /* $.ajax({
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                dataType: 'json',
-                url: sourceleadUrl + "/storeCandidate?" + tokenParamName + "=" + tokenValue + "",
-                success: function (result) {
-                    if (result && result.response === "INVALID_DATA") {
-                        $("#store_candidate").removeAttr("disabled");
-                        $("#store_candidate").removeAttr('button').val('Save');
-                        showError(result.responseMessage);
-                    } else if (result.response === "SUCCESS")
-                        location.replace(sourceleadUrl + "/candidatesList");
-                    else if (result.response === "SESSION_TIMEDOUT") {
-                        location.href = "/login";
-                    } else if (result.response === "AWKWARD") {
-                        location.href = "/errorPage";
-//                        showError(result.responseMessage);
-                    } else {
-                        $("#store_candidate").removeAttr("disabled");
-                        $("#store_candidate").addClass('button').val('Save');
-                        showError("Operation failed, please try again");
-                    }
-                }
-            }); */
+           
             return true;
         } else {
             return false;
