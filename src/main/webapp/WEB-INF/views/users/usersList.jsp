@@ -323,7 +323,9 @@ function getUsersSearchResult(searchValue){
       <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
       
       <div class="positionRelative reportHead clearfix">
-      <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span>
+          <span class="pull-left refreIcon">
+           <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a>
+          </span>
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
@@ -339,12 +341,15 @@ function getUsersSearchResult(searchValue){
 										<%-- <a href="<c:url value='${appPath}/uploadForm'/>">Import</a> --%>
 										<div class="immSub">
 											<a href="#">Import</a>
-											<div class="immSubMenu">
-												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm">Associate Importsss ${SourceleadWeb_sourceleadUrl}</a>
+										<div class="immSubMenu immSubMenu-custome">
+
+												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm">Associate Import</a>
+								 
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 													<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankForm">Associate Bank Details Import</a>
+												   <a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateDeductionContributionDetails">Associate Deduction Contribution Import</a>
 												</c:if>
-												
+
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
 												    <a href="${atsUrl}/uploadAssociateBankingDetailsForm">Associate Bank Detail</a>
 												    <a href="${atsUrl}/uploadAssociateInformation">Associate Information</a>
@@ -364,10 +369,23 @@ function getUsersSearchResult(searchValue){
 				           <li>
 								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 								<div class="action-pop">
-									<span> 
+									<span class="ovrShow"> 
 									<a href="${SourceLeadWeb_atsUrl}/userCreation">Add Associate</a>
 									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+									<div class="immSub">
 										<a href="${SourceLeadWeb_sourceleadUrl}/uploadForm">Import</a>
+											<div class="immSubMenu">
+												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm" title="Associate Import">Associate Import</a>
+												<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankForm" title="Associate Bank Details Import">Associate Bank Details Import</a>
+												<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateDeductionContributionDetails" title="Associate Deduction Contribution Import">Associate Deduction Contribution Import</a>
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+												    <a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankingDetailsForm" title="Associate Bank Detail">Associate Bank Detail</a>
+												   <a href="${sourceleadUrl}/uploadAssociateInformationForm">Associate Information</a> 
+													<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateSalary" title="Associate Salary Import">Associate Salary Import</a>
+													
+												</c:if>
+											</div>
+									</div>
 									</sec:authorize>									
 									</span>
 								</div>
@@ -420,7 +438,7 @@ function getUsersSearchResult(searchValue){
   </section>
   
       <!-- Content Area Ends--> 
- <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+ <div class="advancedsearch-mask"></div>
       <jsp:include page="../masterFooter.jsp" />
       <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
@@ -535,10 +553,20 @@ function resetFilter(){
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
 	$("#dynamicUserDataTableSearch").val('');
+	$("#myManagersInput").val('');
+	$("#myRolesInput").val('');
+	$("#myClientsInput").val('');
+	$("#myTeamsInput").val('');
+	$("#myDepartmentInput").val('');
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
 	
+	myManagersFunction();
+	myRolesFunction();
+	myClientsFunction();
+	myTeamsFunction();
+	myDepartmentFunction();
 	getDynamciUserList();
 }
 </script>
@@ -634,10 +662,10 @@ function exportUserData(){
 			 $(".advancedsearch-mask").fadeIn();
 		}
 		
-		function closeAdsrch(){
+		/* function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
 			$(".advancedsearch-mask").fadeOut();
-		}
+		} */
 	</script>
 
 

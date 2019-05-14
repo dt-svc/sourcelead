@@ -9,38 +9,7 @@
 --%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style>
-#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.tblicons a{
-	font-size:13px;
-	}
-	.tblicons a:first-child{
-	margin-left: 0;
-	}
-	.tblicons .glyphicon-trash{
-	margin-left: 5px;
-	}
-	.tblicons a{
-	margin:0px 8px;
-	padding: 0 !important;
-	} 
-	.vendor_wrap_inn_table table tr th:last-child{
-	width:100px;
-	}
-	.removeIcon{
-	font-size:22px; position:relative; top:-5px; margin-left:15px; color:#F22613; cursor: pointer;
-	}
-	.tblicons_4 {
-	width:100px;
-	}
-	.tblicons_4 a {
-	margin: 0 2px;
-	}
-</style>
+
 
 <script>
 function candidateResume(candidateId){
@@ -535,52 +504,7 @@ function deleteResume(candidateId, resumeId) {
 	    showError("Operation failed, please try again");
 	}
 	 }); 
-	  /* $.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/terminateResume?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
-   		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != ""){
-   		    	 	$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-         			 if(data<50){
-	          			   $("#perVal").removeClass('progress-bar-success');
-	          			  $("#perVal").addClass("progress-bar-danger");
-	          			 }
-	          			 if(data>=50){
-	          				 $("#perVal").removeClass('progress-bar-danger');
-	          				 $("#perVal").addClass("progress-bar-success");
-	          			 }
-
-    			 	$("#disVal").empty();
-    				$("#disVal").append(data+'%');
-    				
-    				
-    				// for quick view bar update
-        			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-          			 if(data<50){
-	          			   $("#quickPerVal").removeClass('progress-bar-success');
-	          			   $("#quickPerVal").addClass("progress-bar-danger");
-	          			 }
-	          			 if(data>=50){
-	          				 $("#quickPerVal").removeClass('progress-bar-danger');
-	          				 $("#quickPerVal").addClass("progress-bar-success");
-	          			 }
-
-        			$("#quickDisVal").empty();
-        			$("#quickDisVal").append(data+'%');
-    				
-        			 $("#selector2").removeAttr("style");
-         			 $("#selector2").css({ display: "block" });
-         			 $("#resMsgDiv").html("Resume deleted");
-        			 $("#popUpDivResume").removeClass("edit-details-active");
-        		     candidateResumesList(candidateId);
-        		     $("#remove_user_pop_resume, .project_inn_mask").fadeOut();
-        		     resMsgFadeinResumes();
-        		     setTimeout(function(){
-				 			candidateList();					 			
-				 	 },100);
-   		    	}
-   		    },
-	     }); */
+	  
 }
 </script>
 
@@ -671,9 +595,3 @@ function uploadCandidateResume(){
 		};
 	})(jQuery);
 </script>
-
-<!-- <script>
-	function clearUpload(){
-		$("#uploadFile").val("");
-	}
-</script> -->

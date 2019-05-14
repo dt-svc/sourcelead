@@ -219,10 +219,10 @@
             <ul class="list-unstyled positionRelative filterSearch" id="">
               <li class="positionRelative mb">
                 <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6"  id= "cartFromDiv">
                 	<input type="text" value="" class="form-control calendar" placeholder="From Date" id="creationStartDate">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6"  id= "cartFromDiv">
                 	<input type="text" value="" class="form-control calendar" placeholder="To Date" id="creationEndDate">
 				</div>
              </div>
@@ -248,7 +248,8 @@
 var atsUrl = '${SourceLeadWeb_atsUrl}';
 $(document).ready(function () {
 	getCandidateDetailsFromMarketcart();
-	updateInvoiceDetails();
+	/* updateInvoiceDetails(); */
+	validateMarketCartFilter();
 
 });
 
@@ -299,16 +300,24 @@ function goToWalletList(){
     location.href = "${SourceLeadWeb_atsUrl}/walletList";
 }
 
-function getCandidateDetailsFromMarketcart(){
+function getCandidateDetailsFromMarketcart(customDate, fromDate, toDate){
 	var candidateLength = 0;
-	var checkedDate = $('input[name=MarketCartDate]:checked').val();
+	 if(customDate == null || customDate == "undefined"){
+			customDate = "";
+			}
+			
+			if(fromDate == null || toDate== null){
+				fromDate = "";
+				toDate = "";
+			}
+	/* var checkedDate = $('input[name=MarketCartDate]:checked').val();
 	var creationStartDate = $("#creationStartDate").val();
-	var creationEndDate = $("#creationEndDate").val(); 
+	var creationEndDate = $("#creationEndDate").val();  */
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	$.ajax({
 		type : "POST",
-		url : atsUrl +"/getCandidateDetailsFromMarketcart?searchValue="+searchValue+"&creationStartDate="+creationStartDate+"&creationEndDate="+creationEndDate+"&checkedDate="+checkedDate,
+		url : atsUrl +"/getCandidateDetailsFromMarketcart?searchValue="+searchValue+"&creationStartDate="+fromDate+"&creationEndDate="+toDate+"&checkedDate="+customDate,
 		async : false,
 		success : function(object) {
 			var result ="";
@@ -365,6 +374,7 @@ function getCandidateDetailsFromMarketcart(){
 				result = result + "</div></div></div></div></div>";
          		}
 			candidateLength =  object.length;
+			updateInvoiceDetails();
 			}
 			else{
 				$(".ulliBorder > li").first().hide();
@@ -461,7 +471,11 @@ function deleteAllCandidatesForCheckout(){
 			if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
             }else if(result.response === "SUCCESS") {
-            	window.location.replace("${SourceLeadWeb_atsUrl}/globalMarketplacePage");
+            	getCandidateDetailsFromMarketcart();
+            	updateInvoiceDetails();
+				updateMarketplaceCartCountAndPrice();
+				$("#remove_marketCartDeleteAll_pop").fadeOut(200);
+    			$(".project_inn_mask").fadeOut(200);
             }else{
            	 	showError("Operation failed, please try again");
             }}
@@ -505,44 +519,57 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		createMarketCartEndDate();
  	 });
 	
-	$("#customDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			$("#customDates").show();
-		}else {
-			$("#customDates").hide();
-		}
-	});	
-	
-	function validateMarketCartFilter(){
-  		var customDate = $("#customDateCheckBox").val();
-  		var otherDate = $('input[name=MarketCartDate]:checked').val();
-  		var fromDate = $("#creationStartDate").val();
-  		var toDate = $("#creationEndDate").val();
-  		if(customDate === "custom"){
-  			if(fromDate === ''){
-  				$("#creationStartDate").focus();
-  			}
-  			if(toDate === '' && fromDate !== ''){
-				$("#creationEndDate").focus();  				
-	  		}
-  	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-  	        	closePop();
-  	        	getCandidateDetailsFromMarketcart();
-        	}
-  			}
-  		if(otherDate != null && otherDate != 'undefined' && otherDate != ''){
-  				closePop();
-	        	getCandidateDetailsFromMarketcart();
-  		}
-  		if(otherDate === '' && customDate != 'custom'){
-  			alert('Kindly Select a Check Box.');
-  		}
-  	}
-	
+  	function validateMarketCartFilter(){ 
+  				
+  				var customDate = $('input[name=MarketCartDate]:checked').val();
+  		  		var fromDate = $("#creationStartDate").val();
+  		  		var toDate = $("#creationEndDate").val();
+  		  	//cartFromDiv, cartToDiv
+  				   if(customDate === "custom"){ 
+  				   if(fromDate === '' && toDate != null){ 
+  				   $('#cartFromDiv').find('p.jquery_form_error_message').remove(); 
+  				   $("input#creationStartDate").after( "<p class='jquery_form_error_message'>From Date is required.</span>"); 
+  				   $("input#creationStartDate").empty(); 
+  				   return false; 
+  				   } 
+  				   if(toDate === '' && fromDate !== ''){ 
+  				   $('#cartToDiv').find('p.jquery_form_error_message').remove(); 
+  				   $("input#creationEndDate").after( "<p class='jquery_form_error_message'>To Date is required.</span>"); 
+  				   $("input#creationEndDate").empty(); 
+  				   return false; 
+  				   } 
+  				   if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && 
+  				   (toDate != '' && toDate != 'undefined' && toDate != null)){ 
+  				   $('#cartFromDiv').find('p.jquery_form_error_message').remove(); 
+  				   $('#cartToDiv').find('p.jquery_form_error_message').remove(); 
+  				   } 
+  				   } 
+  				   else{
+  				   $('#cartFromDiv').find('p.jquery_form_error_message').remove(); 
+  				   $('#cartToDiv').find('p.jquery_form_error_message').remove(); 
+  				   }
+  				   closePop(); 
+  				   getCandidateDetailsFromMarketcart(customDate, fromDate, toDate);
+  				   } 
+  	
+  	 $('input[name=MarketCartDate]').on('change', function() {
+  			   		if($(this).val() == "custom"){
+  			   			$("#customDates").show();
+  				   		$('#creationStartDate').attr('data-validation',"required");
+  				        $('#salesOrderToDate').attr('data-validation',"required");
+  			   		}else{
+  			   			$("#customDates").hide();
+  			   			$('#creationStartDate').removeAttr('data-validation');
+  			   	        $('#creationEndDate').removeAttr('data-validation');
+  			   	     	$('#creationEndDate, #creationStartDate').val('').datepicker('setDate', null);
+  			   		}
+  		});
+  	
 	function resetMarketCartFilter(){
 		emptyMarketCartSearchValues();
 		$("#customDates").hide();
 		$("ul#MarketCartCheckBox > li input:radio").prop("checked", false);
+		$("ul#myRolesUL > li input:checkbox").prop("checked",false);
 	}
 	
 	function emptyMarketCartSearchValues(){

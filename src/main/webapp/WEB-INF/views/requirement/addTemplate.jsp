@@ -34,8 +34,8 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 		
 	});
 </script>
-<script src="/resources/js/editor.js"></script>
-<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/editor.js"></script>
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
@@ -371,9 +371,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 					<div class="pull-right">
 						<input type="button" value="Save" id="store_RequirementTemplate"
 							onclick="storeRequiremetTemplate();" class="btn btn-primary ml">
-						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/template'/>'"
-							class="btn btn-default ml">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/template'" class="btn btn-default ml">
 					</div>
 				</div>
 			</div>

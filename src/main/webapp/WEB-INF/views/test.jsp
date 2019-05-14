@@ -13,26 +13,26 @@
 <meta name="description" content="Sourcelead is an integrated human resource solution which provides an automated process for the talent search. Be it a niche profile or a generic role, you have access to marketplace.">
 <meta name="keywords" content="Application tracking system, ats software, top applicant tracking systems, payroll software, vendor management, client management, onboard candidate, offboard candidate, top hr tracking software"> <meta name="robots" content="index, follow">
 	
-	<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css">
-	<link href="/resources/css/jquery-ui.css" rel="stylesheet">
-	<link rel="stylesheet" href="/resources/css/jquery.timepicker.css">
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap-select.min.css">
+	<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jquery-ui.css" rel="stylesheet">
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jquery.timepicker.css">
 	
-	<link rel="stylesheet" href="/resources/static-web/css/prettyPhoto.css" type="text/css"/>
-	<link rel="stylesheet" href="/resources/static-web/css/owl.carousel.min.css">
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/css/prettyPhoto.css" type="text/css"/>
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/css/owl.carousel.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link href="/resources/static-web/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-	<link href="/resources/static-web/css/animate.css" rel="stylesheet">
-	<link href="/resources/static-web/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/resources/static-web/css/slwebsite.css" rel="stylesheet">
-	<link href="/resources/static-web/css/slwebsite-res.css" rel="stylesheet">
-	<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+	<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/css/animate.css" rel="stylesheet">
+	<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/css/bootstrap.min.css" rel="stylesheet">
+	<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/css/slwebsite.css" rel="stylesheet">
+	<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/css/slwebsite-res.css" rel="stylesheet">
+	<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <!-- <script src="/resources/js/jquery-2.1.4.min.js"></script> --> 
+    <!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-2.1.4.min.js"></script> --> 
     <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115098165-1"></script>
 <script>
@@ -54,7 +54,7 @@ gtag('config', 'UA-115098165-1');
 		
 	    <div class="navbar-header">
 		  <a class="navbar-brand" href="/">
-			<img src="/resources/static-web/images/logo-sourceld.png">
+			<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/static-web/images/logo-sourceld.png">
 		  </a>
 		</div>
 

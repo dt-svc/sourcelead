@@ -18,7 +18,7 @@ var pmsUrl = '${SourceLeadWeb_pmsUrl}';
          <div class="pull-left">
            <h2>Add Associate</h2>
          </div>
-         <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Associates List</a> &raquo; Add Associate </div>
+         <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/usersList">Associates List</a> &raquo; Add Associate </div>
        </section>
       
   <div class="content-area clearfix">
@@ -37,7 +37,7 @@ var pmsUrl = '${SourceLeadWeb_pmsUrl}';
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="create_user" onclick="createAssociate();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/usersList'/>'"  class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href ='${SourceLeadWeb_atsUrl}/usersList'"  class="btn btn-default ml">
                 </div>
               </div>
     </div>
@@ -252,7 +252,7 @@ function getAssociates(){
 	result = result +'<c:forEach var="locations" items="${orgLocationsList}">';
 	result = result +'<li>';
 	result = result +'<input class="ml10" value="${locations.id}" onclick="getOrgLocationRoles();"  checked  name="orgLocations"  type="radio">';
-	result = result +'<label class="radioAlign"><img src="/resources/images/${locations.country}.gif">${locations.orgLocationName}</label>';
+	result = result +'<label class="radioAlign"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/${locations.country}.gif">${locations.orgLocationName}</label>';
 	result = result +'</li>';
 	result = result +'</c:forEach>';
 	result = result +'</ul>';

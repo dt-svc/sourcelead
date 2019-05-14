@@ -12,13 +12,6 @@ $(document).ready(function(){
 	getAssetCategoryList();
 });
 </script> 
-
-<style>
-.table-wrap{
-      overflow-y: visible;
-  }
-</style>
-                         
                          
 <section class="content-wraper">
 <section class="content-header clearfix">

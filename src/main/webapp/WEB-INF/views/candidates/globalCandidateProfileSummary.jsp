@@ -13,7 +13,7 @@
       <div class="pull-left">
         <h2>Profie Summary</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo;<a href="<c:url value='/globalMarketplacePage'/>"> Global Marketplace List</a> &raquo; Profie Summary</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo;<a href="${SourceLeadWeb_atsUrl}/globalMarketplacePage"> Global Marketplace List</a> &raquo; Profie Summary</div>
     </section>
     <div class="clearfix">
     	<div class="clerfix row mt10">
@@ -138,7 +138,7 @@
 											<div class="col-md-12">
 												<div class="media">
 									  <div class="media-left">
-										<img src="/resources/images/professionalExperinece.svg" class="media-object" alt="Image" style="width: 50px;">
+										<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/professionalExperinece.svg" class="media-object" alt="Image" style="width: 50px;">
 									  </div>
 									  	<div class="media-body">
 											<div class="row">
@@ -176,7 +176,7 @@
 							<div class="col-md-12">
 								<div class="media">
 					  <div class="media-left">
-						<img src="/resources/images/graduate-cap.svg" class="media-object" alt="Image" style="width: 50px;">
+						<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/graduate-cap.svg" class="media-object" alt="Image" style="width: 50px;">
 					  </div>
 					  	<div class="media-body">
 							<div class="row">
@@ -214,7 +214,7 @@
 							<div class="col-md-12">
 								<div class="media">
 					  <div class="media-left">
-						<img src="/resources/images/diploma.svg" class="media-object" alt="Image" style="width:50px; height: 50px;">
+						<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/diploma.svg" class="media-object" alt="Image" style="width:50px; height: 50px;">
 					  </div>
 					  	<div class="media-body">
 							<div class="row">

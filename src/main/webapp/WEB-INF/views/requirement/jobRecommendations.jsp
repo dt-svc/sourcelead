@@ -153,7 +153,7 @@ function clientSideBar(candidateId,recScore){
 				               if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 							result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 				               }else{
-							result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+							result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
 		   
 				               }
 							if(recScore != null && recScore != '' && recScore != 'undefined'){

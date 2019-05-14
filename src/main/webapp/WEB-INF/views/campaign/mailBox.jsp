@@ -6,9 +6,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
-<!-- <script src="/resources/js/summernote.js"></script> -->
+<!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/summernote.js"></script> -->
 
-<%-- <link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css"> --%>
+<%-- <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css"> --%>
 
 <style>
     .modal-backdrop{ display: none;    }
@@ -226,17 +226,17 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 					<ul>
 						<li>
 							<a onclick="getEmailSettings('gmail');">
-							<img src="/resources/images/gmail-logo.jpg" alt="" />Gmail
+							<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/gmail-logo.jpg" alt="" />Gmail
 							</a>
 						</li>
 						<li>
 							<a onclick="getEmailSettings('yahoo');">
-							<img src="/resources/images/yahoo-logo.jpg" alt="" />Yahoo
+							<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/yahoo-logo.jpg" alt="" />Yahoo
 							</a>
 						</li>
 						<li>
 							<a onclick="getEmailSettings('others');">
-							<img src="/resources/images/mail-icon.jpg" alt="" />Other
+							<img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/mail-icon.jpg" alt="" />Other
 							</a>
 						</li>
 					</ul>
@@ -329,8 +329,8 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 	<p><span id='emailResponseText'></span><i class="fa fa-close" onclick='textBoxCancel();'></i></p>
 </div>
 
-<script src="/resources/js/nicEdit-latest.js"></script>
-<script src="/resources/js/nicEdit.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/nicEdit-latest.js"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/nicEdit.js"></script>
 
 <script type="text/javascript">
 	var mailType = '${mailType}';
@@ -354,9 +354,13 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  $('#checkAllEmails').removeAttr('checked');
 	  $('#mailboxLabel').html(type);
 	  
-	  if(type == "Trash"){
-		  $('#trashtype').html(' <b>Delete For Ever</b>');
-	  }else{
+	  if(type == "Trash") {
+		  $("#trashtype").removeClass("trashIcon mailIcon");
+		  $("#trashtype").addClass("deleTrash deleteForever");
+		  $('#trashtype').html('<b>Delete For Ever</b>');
+	  } else {
+		  $("#trashtype").addClass("trashIcon mailIcon");
+		  $("#trashtype").removeClass("deleTrash deleteForever");
 		  $('#trashtype').html('');
 	  }
 	  
@@ -875,7 +879,7 @@ function activeEmail(id, ele){
 					 var report = response.data[e];
 					 var margin = report.split("<<>>")[1].split(".").length > 1 ? (report.split("<<>>")[1].split(".").length - (report.split("<<>>")[0] === "INBOX" ? 1 : 2)) : 0;
 					 result = result + "<ul class='nav nav-pills nav-stacked dynMailList' style='margin-left : " + (margin * 20) + "px;'>";
-					 result = result + "<li name='mailFolder' data-index='" + e + "' " + (report.split("<<>>")[2] > 0 ? "class='unseen-text'" : "") + " onClick='readFolder(\"" + report.split("<<>>")[0] + "\",\"" + report.split("<<>>")[1] + "\"," + id + ", 0, 10, " + e + ");'>" + report.split("<<>>")[0] + (report.split("<<>>")[2] > 0 ? " (" + report.split("<<>>")[2] + ")" : "") + "</li>";
+					 result = result + "<li name='mailFolder' data-index='" + e + "' " + (report.split("<<>>")[2] > 0 ? "class='unseen-text'" : "") + " onClick='readFolder(\"" + report.split("<<>>")[0] + "\",\"" + report.split("<<>>")[1] + "\"," + id + ", 0, 10, " + e + ");'>" + report.split("<<>>")[0] + (report.split("<<>>")[2] > 0 ? " (" + report.split("<<>>")[2].trim() + ")" : "") + "</li>";
 					 /* result = result + "<li onClick='readFolder(\"" + report + "\"," + id + ");'>" + report + "</li>"; */
 					 result = result + "</ul>";
 				 }
@@ -1007,7 +1011,7 @@ function prepareDynamicPagination(name, fullName, id, paginator, index) {
 	text += "</div>";
 
 	var unreadCount = paginator.filterType;
-	$("li[data-index='"+ index +"']").html(name + " (" + unreadCount + ")");
+	$("li[data-index='"+ index +"']").html(name + (unreadCount > 0 ? " (" + unreadCount + ")" : ""));
 	var resultsFrom = (paginator.pageNo * paginator.pageSize) + 1;
 	var resultsTo = (paginator.pageNo + 1) * paginator.pageSize > paginator.totalRows ? paginator.totalRows : (paginator.pageNo + 1) * paginator.pageSize;	
 	text += "<div class='dataTables_info pull-left' id='emailMailDetailsPagination_info' role='status' aria-live='polite'>Showing " + resultsFrom + " to " + resultsTo + " of " + paginator.totalRows + " entries</div>";
@@ -1184,7 +1188,7 @@ $(document).ready(function(){
 
 <script>
 function replayToMail(uuid){
-	location.replace(atsUrl+"/composeMail?UUID="+uuid);  
+	location.replace(atsUrl+"/composeMail?UUID="+uuid + "&mailType='reply'");  
 }
 </script>
 
