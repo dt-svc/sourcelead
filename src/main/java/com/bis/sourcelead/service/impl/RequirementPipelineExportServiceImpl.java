@@ -674,6 +674,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		List<RequirementLocations> locationsList;
 		String location = "";
 		StringBuilder requirementBuilder=new StringBuilder();
+		StringBuilder experienceBuilder=new StringBuilder();
 		try {
 			locationsList = requirementLocationService.getRequirementLocationsListByRequirementId(requirement.getId());
 			if(locationsList != null && !locationsList.isEmpty()) {
@@ -716,17 +717,17 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		Cell cell6 = writeRow.createCell(1);
 		if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
 			
-			cell6.setCellValue(requirementBuilder.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString());
+			cell6.setCellValue(experienceBuilder.append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).append(" Years").toString());
 			cell6.setCellStyle(style);
 			
 		}else if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())){
 			
-			cell6.setCellValue(requirementBuilder.append("0 -").append(requirement.getMinExp()).append("years").toString());
+			cell6.setCellValue(experienceBuilder.append("0 -").append(requirement.getMinExp()).append(" Years").toString());
 			cell6.setCellStyle(style);	
 			
 			}else if(requirement.getMaxExp() != null && !"".equalsIgnoreCase(requirement.getMaxExp())){
 				
-				cell6.setCellValue(requirementBuilder.append("0 -").append(requirement.getMaxExp()).append("years").toString());
+				cell6.setCellValue(experienceBuilder.append("0 -").append(requirement.getMaxExp()).append(" Years").toString());
 				cell6.setCellStyle(style);
 				
 			}else{
