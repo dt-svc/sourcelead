@@ -19,7 +19,7 @@ var atsUrl = '${SourceLeadWeb_atsUrl}';
       <div class="pull-left">
         <h2>Marketplace List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_atsUrl}/candidatesList'">Candidates</a> &raquo; Marketplace</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidates</a> &raquo; Marketplace</div>
     </section>
     <div class="timesheet_out">
       <div class="tablelist-wrap">
