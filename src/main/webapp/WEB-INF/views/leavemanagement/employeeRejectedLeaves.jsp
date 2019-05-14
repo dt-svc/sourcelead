@@ -19,7 +19,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Rejected Leaves</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}"> Home</a> &raquo; Rejected Leaves</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}"> Home</a> &raquo;
+        <a href="${SourceLeadWeb_pmsUrl}/leaveManagementReports"> Leave Management</a> &raquo; Rejected Leaves</div>
     </section>
     
 <div class="content-area content-new clearfix">
