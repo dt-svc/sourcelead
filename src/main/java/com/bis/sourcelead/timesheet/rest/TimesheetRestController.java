@@ -6098,7 +6098,7 @@ public class TimesheetRestController {
 				for(TimesheetEntriesDTO te :tsDTO.getTimesheetEntries()) {
 					if(te.getTimesheetTaskDTO() != null && te.getTimesheetTaskDTO().getId() != null) {
 						Date timesheetDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),te.getDate().replaceAll("/", "-"));
-						if(count == 0) {
+						if(count == 0 && tsDTO.getId() != null) {
 							oldDbIdList = timesheetDayEntriesDao.getAllTimeSheetDayEntryIdsBySubmissionIdAndEntryDate(tsDTO.getId(),timesheetDate);
 						}
 						

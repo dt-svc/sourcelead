@@ -291,7 +291,7 @@ public class DashboardRestController {
 				 Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(loginUser.getId(),orgLoc.getId());
 			     timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId(),orgLoc.getOrg().getId(),"All",isGlobalAccess,isAdmin);
 			}else if("myTimesheets".equalsIgnoreCase(timesheetFor)){
-				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(),orgLoc.getOrg().getId(), orgLoc.getId(),"All");
+				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(),orgLoc.getId(),orgLoc.getOrg().getId(),"All");
 			}
 			
 			ExpensesCount expensesCount = new ExpensesCount();
