@@ -116,7 +116,7 @@ public class TimesheetController {
 			SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
 			SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
 			
-			Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
+			Timezone timezone = timeZoneService.getTimezone(Long.valueOf(orgLoc.getTimeZoneId()));
 			Long notificationTo = loginUser.getId();
 			List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
 			calculateDays(notificationList, timezone);
