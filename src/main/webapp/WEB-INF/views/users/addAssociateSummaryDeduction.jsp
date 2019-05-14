@@ -90,10 +90,12 @@ getDeductionType();
               
                 
                <div class="minHeightcol5 mt">
-               <div class="col-md-5" id="dedTypeDiv">
-               <label class="clearfix">Type</label>
-                      <select class="sel" id="dedType" name="dedType" data-validation="required" field-name="Deduction Type" onchange="getDeductionAmount(); resetValues();" onblur="validateDuplicateDeductions();">
+               <div class="col-md-5">
+               <div  id="dedTypeDiv">
+               	<label class="clearfix">Type</label>
+                      <select class="sel" id="dedType" name="dedType" data-validation="required" field-name="Deduction Type" onchange="getDeductionAmount(); resetValues(); validateDuplicateDeductions();">
                       </select>
+                      </div>
                   </div>
                   
                   <div class="col-md-5">
@@ -159,8 +161,8 @@ getDeductionType();
 <script type="text/javascript">
 function validateForm(){
 	  if ($('#associate_deduction_form').validate(false, validationSettings)){  
-		  validateDuplicateDeductions();
-		 /*  saveAssociateDeduction(); */
+// 		  validateDuplicateDeductions();
+// 		  saveAssociateDeduction(); 
 	       return true; 
 	   }else{
 		return false;
@@ -296,12 +298,12 @@ function resetValues(){
 				url: sourceleadUrl+"/validateDeduction?"+tokenParamName+"="+tokenValue+"&dedType="+dedType+"&userId="+userId,
 				success :function(data) {
 					if(data == true){
-						$('#dedType').find('p.jquery_form_error_message').remove();
-						$("#dedType").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
+						$('#dedTypeDiv').find('p.jquery_form_error_message').remove();
+						$("#dedTypeDiv").after("<p class='jquery_form_error_message'>This type is Already Existed</span>");
 						document.getElementById("associate_deduction_save_button").disabled = true;
 						document.getElementById("deductionAddButtonId").disabled = true;
 					}else{
-						$('#dedType').find('p.jquery_form_error_message').remove();
+						$('#dedTypeDiv').parent().find('p.jquery_form_error_message').remove();
 						document.getElementById("associate_deduction_save_button").disabled = false;
 						document.getElementById("deductionAddButtonId").disabled = false;
 					}

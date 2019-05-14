@@ -18,45 +18,45 @@ import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
 public interface RequirementWorkFlowService {
 	RequirementWorkFlow saveRequirementWorkFlowDetails(RequirementWorkFlowDTO requirementWorkFlowDTO, User user, OrgLocations orgLocations) throws Exception;
 	
-	List<RequirementWorkFlow> getRequirementWorkFlowByOrgLocationId(Long orgLocationId)throws Exception;
+	List<RequirementWorkFlow> getRequirementWorkFlowByOrgLocationId(OrgLocations orgLocations)throws Exception;
 	
 	void saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(OrgLocations orgLocations, User user)throws Exception;
 	
-	List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages(Long orgLocationId)throws Exception;
+	List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages(OrgLocations orgLocations)throws Exception;
 	
 	ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowList(RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations)throws Exception;
 
 	RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate template) throws Exception;
 	
-	List<RequirementWorkFlowStagesDTO> getRequirementWorkflowStagesByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, Long orgLocationId)throws Exception;
+	List<RequirementWorkFlowStagesDTO> getRequirementWorkflowStagesByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations)throws Exception;
 
 	ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(RequirementQuestionnaireTemplateDTO questionnaireDTO , String searchValue,  Long orgLocationId);
 
 	RequirementQuestionnaireTemplate getQuestionnaireTemplateByLabelName(Long orgLocationId,  String questinnaireName);
 
-	RequirementWorkFlowDTO getRequirementDefaultWorkflow(Long orgLocationId)throws Exception;
+	RequirementWorkFlowDTO getRequirementDefaultWorkflow(OrgLocations orgLocations)throws Exception;
 
-	String deleteQuestionnaireTemplateById(String templateUuid);
+	String deleteQuestionnaireTemplateById(String templateUuid, Long id)throws Exception;
 
 	RequirementQuestionnaireTemplate getQuestionnaireTemplateById(String templateUuid);
 	
 	void saveRequirementWorkflowStageByWorkflowId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, OrgLocations orgLocations, User user)throws Exception;
 	
-	RequirementWorkFlowStagesDTO getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(String uuid, String workflowUuid, Long orgLocationId, String currentStageUuid)throws Exception;
+	List<RequirementWorkFlowStagesDTO> getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(String uuid, String workflowUuid, OrgLocations orgLocations, String currentStageUuid)throws Exception;
 	
-    RequirementWorkFlowStages getRequirementWorkFlowStagesByUuid(String uuid, Long orgLocationId)throws Exception;
+    RequirementWorkFlowStages getRequirementWorkFlowStagesByUuid(String uuid, OrgLocations orgLocations)throws Exception;
 	
 	RequirementWorkFlowStages saveRequirementWorkFlowStages(RequirementWorkFlowStages requirementWorkFlowStages)throws Exception;
 
 	String deleteRequirementWorkFlowStagesByOrgLocationIdAndUuid(String uuid);
 	
-	List<RequirementWorkFlowStages> getRequirementWorkFlowStagesListByOrgLocationId(Long orgLocationId);
+	List<RequirementWorkFlowStages> getRequirementWorkFlowStagesListByOrgLocationId(OrgLocations orgLocations);
 	
-	void deleteRequirementWorkFlowStagesByuuid(String uuid, Long orgLocationId);
+	void deleteRequirementWorkFlowStagesByuuid(String uuid, OrgLocations orgLocations);
 	
 	List<RequirementQuestionnaireTemplateDTO> getRequirementQuestionnaireTemplates(Long id)throws Exception;
 	
-	String saveRequirementWorkflowStageByWorkflowIdAndOrgLocationId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, RequirementWorkFlowStages requirementWorkFlowStages, Long id, User user)throws Exception;
+	String saveRequirementWorkflowStageByWorkflowIdAndOrgLocationId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, RequirementWorkFlowStages requirementWorkFlowStages, OrgLocations orgLocations, User user)throws Exception;
 
 	ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user)throws Exception;
 	
@@ -65,12 +65,13 @@ public interface RequirementWorkFlowService {
 	void saveRequirementWorkFlowDetailsByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations, User user)throws Exception;
 	void cloneRequirementWorkFlowDetailsByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO,
 			OrgLocations orgLocations, User user) throws Exception;
-	Boolean deleteApplicationWorkFlowByuuid(String workflowuuid, Long orgLocationId) throws Exception;
+	Boolean deleteApplicationWorkFlowByuuid(String workflowuuid, OrgLocations orgLocations) throws Exception;
 	
 	String saveRequirementWorkFlowTask(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user)throws Exception;
 	
-	RequirementWorkFlowStages getRequirementWorkFlowStageForEditStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, Long id)throws Exception;
+	RequirementWorkFlowStages getRequirementWorkFlowStageForEditStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, OrgLocations orgLocations)throws Exception;
 	
-	List<RequirementWorkFlowStagesDTO> getNextRequirementWorkflowStagesByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, Long id)throws Exception;
+	List<RequirementWorkFlowStagesDTO> getNextRequirementWorkflowStagesByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations)throws Exception;
 	
+	void deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(String uuid, Long id)throws Exception;
 }

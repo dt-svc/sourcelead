@@ -220,6 +220,12 @@ public class User implements Serializable{
 	
 	@Transient
 	private String isPrimaryAdmin;
+	
+	@Transient
+	private String locationCode;
+	
+	@Transient
+	private Long orgLocationId;
 
 	@Transient
     private String tempPwd;
@@ -975,6 +981,22 @@ public class User implements Serializable{
 
 	public void setAllowEmployeeToFill(Status allowEmployeeToFill) {
 		this.allowEmployeeToFill = allowEmployeeToFill;
+	}
+
+	public String getLocationCode() {
+		return locationCode;
+	}
+
+	public void setLocationCode(String locationCode) {
+		this.locationCode = locationCode;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	

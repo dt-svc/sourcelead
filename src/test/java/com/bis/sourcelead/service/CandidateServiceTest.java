@@ -612,10 +612,10 @@ public class CandidateServiceTest {
 		String purchaseOrderToDate = "";
 		Map<String, Date> dateValue = new HashMap<>();
 		ResponseList<MarketplacePurchaseSalesDTO> responseList1 = null;
-		when(mockCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,
+		/*when(mockCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,
 				purchaseOrderFromDate, purchaseOrderToDate, dateValue)).thenReturn(responseList);
 		responseList1 = mockCandidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,
-				purchaseOrderFromDate, purchaseOrderToDate, dateValue);
+				purchaseOrderFromDate, purchaseOrderToDate, dateValue);*/
 		assertNotNull(responseList1);
 
 	}

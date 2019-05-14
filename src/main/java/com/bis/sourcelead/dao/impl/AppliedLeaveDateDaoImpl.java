@@ -106,7 +106,7 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 					 + "      END "
 					 + "     ) AS  nonBillableHrs "
 				     + "      FROM HOLIDAY HD WHERE "
-				     + "         HD.FROM_DATE >= :startDate AND HD.TO_DATE <= :endDate AND HD.STATUS != '0' AND HD.ORGLOCATION_ID = :worklocationId AND HD.ID NOT IN(SELECT UDH.HOLIDAY_ID FROM USER_DROPPED_HOLIDAYS UDH WHERE UDH.USER_ID = :userId AND UDH.STATUS = '1')"
+				     + "         HD.FROM_DATE >= :startDate AND HD.TO_DATE <= :endDate AND HD.STATUS != '0' AND HD.ORGLOCATION_ID = :worklocationId AND HD.ID NOT IN(SELECT UDH.HOLIDAY_ID FROM USER_DROPPED_HOLIDAYS UDH WHERE UDH.FROM_DATE = HD.FROM_DATE AND UDH.TO_DATE = HD.TO_DATE AND UDH.USER_ID = :userId AND UDH.STATUS = '1')"
 				     + "       )" ;
 		
 		//LeaveHolidayHoursDTO
@@ -164,8 +164,9 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
     		java.sql.Date startDate = new java.sql.Date(sDate.getTime());
     		java.sql.Date endDate = new java.sql.Date(eDate.getTime());
     	   Session session = this.sessionFactory.getCurrentSession();
-           String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId AND alView.userId =:userId AND (alView.orglocationId = :orgLocationid OR alView.orgId = :orgId) AND date(alView.applyLeaveDate) BETWEEN :startDate and :endDate AND (alView.leaveStatus = 'APPROVED' OR alView.leaveStatus = 'PENDING')";
-           List<AppliedLeaveDateView> appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationId).setLong("userId", userId).setLong("orgId", orgId).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+          
+    	   String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId AND alView.userId =:userId AND (alView.orglocationId = :orgLocationid OR alView.orgId = :orgId) AND date(alView.applyLeaveDate) between :startDate and :endDate AND (alView.leaveStatus = 'APPROVED' OR alView.leaveStatus = 'PENDING')";
+    	   List<AppliedLeaveDateView> appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationId).setLong("userId", userId).setLong("orgId", orgId).setDate("startDate", startDate).setDate("endDate", endDate).list();
            return appliedLeaveList;
        }catch (Exception e) {
     	   e.printStackTrace();

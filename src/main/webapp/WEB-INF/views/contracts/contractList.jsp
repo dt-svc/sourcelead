@@ -123,12 +123,6 @@ $(document).ready(function(){
 });
 </script>
 
-<style>
-.CurDiv { position: static !important; float: left;}
-.timesheet_head ul {
-padding: 2px 300px 2px 0px;
-}
-</style>
 
 <section class="content-wraper">
 <section class="content-header clearfix">
@@ -222,13 +216,13 @@ padding: 2px 300px 2px 0px;
  
  <section class="contrHead"> 
 <ul> 
-<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getIndividualCounts('DRAFT');getTemplateList('main');">Draft (${contractsCount.totalDraftCount})</a></li>
-<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getIndividualCounts('WAITING_TO_SEND');getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Waiting (${contractsCount.totalWTACount})</a></li> 
-<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getIndividualCounts('WAITING_TO_BE_SIGNED');getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
-<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getIndividualCounts('WAITING_TO_BE_VERIFY');getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Counter sign (${contractsCount.totalWTVCount})</a></li>
-<li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this);getIndividualCounts('FINALIZED');getTemplateList('main');">Completed (${contractsCount.totalFinalizedCount})</a></li>
-<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getIndividualCounts('EXPIRED');getTemplateList('main');">Expired (${contractsCount.totalExpiredCount})</a></li>
-<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getIndividualCounts('REJECTED');getTemplateList('main');">Rejected (${contractsCount.totalRejectedCount})</a></li>
+<li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getIndividualCounts('DRAFT');filterContractsList();">Draft (${contractsCount.totalDraftCount})</a></li>
+<li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getIndividualCounts('WAITING_TO_SEND');filterContractsList();"><i class="fa fa-clock-o fa-2"></i>Waiting (${contractsCount.totalWTACount})</a></li> 
+<li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getIndividualCounts('WAITING_TO_BE_SIGNED');filterContractsList();"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li>
+<li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getIndividualCounts('WAITING_TO_BE_VERIFY');filterContractsList();"><i class="fa fa-clock-o fa-2"></i>Counter sign (${contractsCount.totalWTVCount})</a></li>
+<li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this);getIndividualCounts('FINALIZED');filterContractsList();">Completed (${contractsCount.totalFinalizedCount})</a></li>
+<li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getIndividualCounts('EXPIRED');filterContractsList();">Expired (${contractsCount.totalExpiredCount})</a></li>
+<li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getIndividualCounts('REJECTED');filterContractsList();">Rejected (${contractsCount.totalRejectedCount})</a></li>
 <input type="hidden" name="contractStage" id="contractStage" >
 <div class="conBtn">
   <span onclick="addContracts();">+ Contracts</span>
@@ -246,7 +240,7 @@ padding: 2px 300px 2px 0px;
 </section>
  
  
-	<div class="timesheet_head">
+	<div class="timesheet_head timesheet_head_customize">
 		<div class="ContrBut">
 <!-- 		    <input type="hidden" name="tabType" id="tabType" value='Vendor'> -->
 			<!-- <a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
@@ -284,17 +278,17 @@ padding: 2px 300px 2px 0px;
 			<li id="filterContractTypePop-2" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i>
 	           	<div class="statusFiler-3 approved_pop">
 	           		<ul class="list-unstyled" style="display:none" id="waitingLiDiv">
-						<li><input id="status5" type="checkbox" name="contractStatus" value="WAITING_TO_SEND" onclick="getTemplateList();"><label for="status5">Waiting to Send</label></li>
+						<li><input id="status5" type="checkbox" name="contractStatus" value="WAITING_TO_SEND" onclick="filterContractsList();"><label for="status5">Waiting to Send</label></li>
 					</ul>
 					
 					<ul class="list-unstyled" style="display:none" id="signedDiv">
-						<li><input id="status1" type="checkbox" name="contractStatus" value="PENDING" onclick="getTemplateList();"><label for="status1">Pending</label></li>
-						<li><input id="status3" type="checkbox" name="contractStatus" value="WAITING_TO_BE_SIGNED" onclick="getTemplateList();"><label for="status3">Waiting to be Sign</label></li>
+						<li><input id="status1" type="checkbox" name="contractStatus" value="PENDING" onclick="filterContractsList();"><label for="status1">Pending</label></li>
+						<li><input id="status3" type="checkbox" name="contractStatus" value="WAITING_TO_BE_SIGNED" onclick="filterContractsList();"><label for="status3">Waiting to be Sign</label></li>
 					</ul>
 					
 					<ul class="list-unstyled" style="display:none" id="verifyDiv">
-						<li><input id="status2" type="checkbox" name="contractStatus" value="SEND_FOR_VERIFICATION" onclick="getTemplateList();"><label for="status2">Send For Verification</label></li>
-						<li><input id="status4" type="checkbox" name="contractStatus" value="WAITING_TO_BE_VERIFY" onclick="getTemplateList();"><label for="status4">Waiting to be Verify</label></li>
+						<li><input id="status2" type="checkbox" name="contractStatus" value="SEND_FOR_VERIFICATION" onclick="filterContractsList();"><label for="status2">Send For Verification</label></li>
+						<li><input id="status4" type="checkbox" name="contractStatus" value="WAITING_TO_BE_VERIFY" onclick="filterContractsList();"><label for="status4">Waiting to be Verify</label></li>
 					</ul>
 				</div>	                	
 			</li>
@@ -495,6 +489,7 @@ function filterContractsList(){
 
 <script type="text/javascript">
 function getTemplateList(listType){
+	
 	var contractSubmissionType = $("#contractStage").val();
 	if(contractSubmissionType == 'WAITING_TO_BE_SIGNED'){
 		$("#filterContractTypePop-2").css("display", "block");

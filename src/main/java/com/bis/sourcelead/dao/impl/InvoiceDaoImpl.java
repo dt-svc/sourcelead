@@ -366,9 +366,14 @@ public class InvoiceDaoImpl implements InvoiceDao {
 
 		String qry = "";
 		if (StringUtils.isNotBlank(creditDebitNoteDTO.getSortColumn())) {
-			qry = " order by creditDebitNote." + creditDebitNoteDTO.getSortColumn() + " " + creditDebitNoteDTO.getSortOrder();
+			String sortColumnName = creditDebitNoteDTO.getSortColumn();
+			if(sortColumnName.equalsIgnoreCase("clientName")){
+				qry = " order by creditDebitNote.responderLocation.orgLocationName " + creditDebitNoteDTO.getSortOrder();
+			}else{
+				qry = " order by creditDebitNote." + sortColumnName + " " + creditDebitNoteDTO.getSortOrder();
+			}
 		}
-
+		
 		String query = "from CreditDebitNote creditDebitNote  left join fetch  creditDebitNote.orgRelations left join fetch  creditDebitNote.orgRelations where  creditDebitNote.orgLocations.id =:orgLocationId"
 				+ subQuery + " " + subQuery1 + " " + subQuery2+ " and creditDebitNote.createdDate >= :startDateUTC and creditDebitNote.createdDate <= :endDateUTC";
 				
@@ -397,7 +402,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 				String newDate = parsedDate.format(f2);
 				Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
 				java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
-				query1.append(" and (creditDebitNote.creditNoteDate like '%" + sqlDate + "%' )");
+				query1.append(" and (creditDebitNote.date like '%" + sqlDate + "%' )");
 			}else{
 			
 				if (creditDebitNoteDTO.getSearchValue() != null && !"".equalsIgnoreCase(creditDebitNoteDTO.getSearchValue())) {
@@ -406,7 +411,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 							.append("OR creditDebitNote.orgLocations.orgLocationName like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
 							.append("OR creditDebitNote.generatedId like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
 							.append("OR creditDebitNote.total like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
-							.append("OR creditDebitNote.creditNoteDate like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.date like '%" +creditDebitNoteDTO.getSearchValue() + "%' ")
 							.append("OR creditDebitNote.noteStatus like '%" + creditDebitNoteDTO.getSearchValue() + "%' )");
 
 				}
