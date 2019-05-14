@@ -73,7 +73,7 @@ public interface TimesheetSubmissionsService {
 	
 	public Integer getUsersTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus,Long orgLocationId)throws Exception;
 	
-	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(Long userId,Long orgLocationId, String timesheetCountType) throws Exception;
+	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(Long userId,Long orgLocationId,Long orgId, String timesheetCountType) throws Exception;
 	
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long userId,Long orgLocationId,Long orgId,String countType,String isGlobalUser,Boolean isAdmin) throws Exception;
 	
