@@ -14,7 +14,7 @@
 	    var result = "";
 		result = result + '	  <div class="blank-pages-tech">';
 		result = result + '   <p class="text-center text-danger permissondenied mb">';
-		result = result + '       <img src="/resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">';
+		result = result + '       <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/sourcelead-load.png" alt="Source Lead" title="Source Lead">';
 		result = result + '   </p>';
 		result = result + '   <p class="big-txt mt">PERMISSION DENIED</p>';
 		result = result + '   <p class="text-muted">You dont have permission to access this page.</p>';
@@ -63,16 +63,7 @@ name2Flag = true;
 	 candidateListCheck("${serachValue}","${universalCanddateList}","${candidateKeyword}","${candidateIdSearchId}");
 };
 </script>
-
-<style type="text/css">
-.candidate_wrap_table table tr td:first-child {
-    padding: 0;
-    text-align: center;
-    width: 200px;
-    padding-right: 5px;
-}
-</style>
-<script type="text/javascript" src="/resources/js/candidateTable.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/candidateTable.js"></script>
 <%-- 
      @author : Laxman.
      this script is for show side bar when you click on the candidate name.
@@ -217,7 +208,7 @@ function candidateSideBar(candidateId){
 						 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 						 result = result+'   <img  id="userImage" data-id="profileImage" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';
 						 }else{
-						 result = result+'<img data-id="profileImage" id="userImage" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';
+						 result = result+'<img data-id="profileImage" id="userImage" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';
 
 						 }
 						 result = result+'  <div class="btn-group uploadfile uploadfile-candidate">';

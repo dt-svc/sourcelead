@@ -12,7 +12,7 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
- <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+ <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css?staticTime=${staticTime}" />
 <script src="${SourceLeadWeb_atsUrl}/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
 <script src="${SourceLeadWeb_atsUrl}/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 <style type="text/css">
@@ -2446,6 +2446,7 @@ $(document.body).on('change', '#editUploadBtn' ,function(){
 
 
 var editselectedFile = document.getElementById("editUploadBtn");
+if(editselectedFile != null && editselectedFile != '' && editselectedFile != 'undefined'){
 editselectedFile.addEventListener("change", function() {
 	 $("#editUploadFile").focus();
 	 if(validate_fileupload(this.value)){
@@ -2463,6 +2464,7 @@ editselectedFile.addEventListener("change", function() {
 	    }
 	 }
 });
+}
 </script>
 
  <script>

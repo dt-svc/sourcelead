@@ -3,10 +3,10 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link rel="stylesheet" href="/resources/css/chosen.min.css">
-<script src="/resources/js/chosen.jquery.min.js"></script> 
-<script src="/resources/js/jquery-fun.js"></script> 
-<script src="/resources/js/formvalidator.js"></script>
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/chosen.min.css">
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js"></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-fun.js"></script> 
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
@@ -422,7 +422,7 @@ padding-left: 25px;
 					 $("#onboardCandidateSummaryDetailsId").empty();
 	            	 
 	            	 $("#onboardCandidateSummaryDetailsId").append(result);
-	            	 loadOnBoardingTemplates(json.onboardTemplateId);
+// 	            	 loadOnBoardingTemplates(json.onboardTemplateId);
 	        	} else if (response.indexOf('Sign In') !== -1) {
 	        		location.replace(sourceleadUrl);
 	        	} else {
@@ -588,7 +588,7 @@ function getTemplatePolicyDocumentsDetails(){
 		        	} else if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		var json = JSON.parse(response);
+		        		var json = JSON.parse(response.object);
 			        	var result = "";
 			        	result = result +'	 <div class="row">                                                       ';
 			        	if(json.length > 0){

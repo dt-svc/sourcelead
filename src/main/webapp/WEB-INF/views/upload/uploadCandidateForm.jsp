@@ -159,7 +159,7 @@ var uploadflag= true;
 <div class="success_pop" id="selector11" style="display: none;">
     <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 </div>
-<script type="text/javascript" src="/resources/js/xlsupload.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/xlsupload.js"></script>
 
 <script>
 function checkInviteEmail(){

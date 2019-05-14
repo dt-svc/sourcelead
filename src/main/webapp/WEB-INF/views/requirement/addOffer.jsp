@@ -5,7 +5,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<link rel="stylesheet" href="/resources/css/style.css" />
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css" />
 
 <script>
 		$(document).ready(function() {
@@ -69,7 +69,7 @@ function addOffer(requirementId){
 				result= result + '<div class="clearfix mt ">                                                       ';
 				result= result + '<div class="clearfix minHeightcol6">';
 				result= result + '<div class="col-md-12 mb clearfix">  ';
-				result= result + '<label class="clearfix">Applicants</label>';
+				result= result + '<label class="clearfix">Applicants<span class="text-danger">&nbsp;*</span></label>';
 				result= result + '<div class="clearfix reports-head">';
 				result= result + '<select multiple class="blminwidth-50"  id="1applicantId" onchange="selectOfferApplicants()" data-placeholder="Select Applicants" name="1applicantId" field-name="Applicant" data-validation="required" >';
 				result= result + '</select>';
@@ -77,14 +77,14 @@ function addOffer(requirementId){
 				result= result + '</div>';
 				
 				result= result + '<div class="col-md-6 clearfix">';
-				result= result + '<label class="clearfix">Date of Joining</label>';
+				result= result + '<label class="clearfix">Date of Joining<span class="text-danger">&nbsp;*</span></label>';
 				result= result + '<div class="clearfix">';
 				result= result + '<input class="form-control Datepicker calendar" placeholder="Date" name="1joiningDate" id="1joiningDate"  readonly="readonly"  type="text" data-validation="required" field-name="Joining Date" >';
 				result= result + '</div>';
 				result= result + '</div>';
 
 				result= result + '<div class="col-md-6 clearfix">';
-				result= result + '<label class="clearfix">Rate / Salary</label> ';
+				result= result + '<label class="clearfix">Rate / Salary<span class="text-danger">&nbsp;*</span></label> ';
 				result= result + '<div class="clearfix row">';
 				result= result + '<div class="col-md-3">';
 				result= result + '<div class="clearfix">';
@@ -698,14 +698,13 @@ function cancelOfferPopup(){
 
 function NotifyToVendor(){
 	
-	 if (document.getElementById('notifyToVendor').checked){
-	
-		 $("#notifyToVendor").val('Y');	
-	}else {
-		
-		 $("#notifyToVendor").val('N');
-    
-	} 
+	if($("#notifyToVendor").is(':checked')){
+		$("#notifyToVendor").val('Y');	
+		}else {
+
+		$("#notifyToVendor").val('N');
+
+		}
 }
 
 </script>
@@ -713,12 +712,12 @@ function NotifyToVendor(){
 
 <script>
 function NotifyToApplicant(){
-	 if (document.getElementById('notifyToApplicant').checked){
-		 $("#notifyToApplicant").val('Y');	
-	}else {
-		 $("#notifyToApplicant").val('N');
-    
-	} 
+	if($("#notifyToApplicant").is(':checked')){
+		$("#notifyToApplicant").val('Y');	
+		}else {
+		$("#notifyToApplicant").val('N');
+
+		}
 }
 
 </script>

@@ -194,7 +194,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
                if(json.candidate.fileUrl != null && json.candidate.fileUrl !='' && json.candidate.fileUrl !="undefined"){
                result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'"  alt="candidate" title="Candidate"></div>';
                }else{
-               result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="candidate" title="Candidate"></div>';
+               result = result + '<div class="imageParent"><img data-id="profileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofileImg.jpg" alt="candidate" title="Candidate"></div>';
    
                }
                if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
@@ -261,11 +261,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 		       result = result + ' <div class="col-md-8 paddingRight">';
 		       result = result + '<ul class="list-unstyled can-perdt">';
 		       result = result + ' <li><i class="fa fa-envelope-o"></i><a href="#" title="click here">'+json.requirementSubmissionTemplateFields.emailId+'</a></li>';
-		       if(json.requirementSubmissionTemplateFields.phoneNumber != null && json.requirementSubmissionTemplateFields.phoneNumber != '' && json.requirementSubmissionTemplateFields.phoneNumber != 'undefined'){
 		       result = result + '<li><i class="fa fa-phone"></i>'+json.requirementSubmissionTemplateFields.phoneNumber+'</li>';
-		       }else{
-		    	result = result + '<li><i class="fa fa-phone"></i>---</li>';   
-		       }
 		       result = result + '<li><i class="fa fa-location-arrow"></i>';
 		       result = result +city +''+ state +''+ country
 		       result = result +'</li>';
@@ -1158,7 +1154,8 @@ function getOfferDetails(submissionId){
 	                    	 result = result + '<div class="row clearfix">';
 	                    	 result = result + '<div class="action-nav">';
 	                    	 result = result + '<span id="'+report.offerId.id+'offerActionDiv">';
-	                    	 if(report.submissionStatusStr != "REJECTED" && report.offerId.offerStatus != "OFFERACCEPTED"  && report.offerId.offerStatus != "OFFERREJECTED" &&  report.offerId.offerStatus != "CLIENT_OFFERACCEPTED" ){
+	                    	 
+	                    	 if(report.submissionStatusStr != "REJECTED" && report.offerId.offerStatus != "OFFERACCEPTED"  && report.offerId.offerStatus != "OFFERREJECTED" &&  report.offerId.offerStatus != "CLIENT_OFFERACCEPTED" &&  report.offerId.offerStatus != "CLIENT_OFFERREJECTED"){
 	                    		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ACCEPT_OFFER\')">';
 	                    		 	result = result + '<a  href="javascript:void(0)" title="Accept" onClick="acceptingOffer(\''+accept+'\' ,\''+submissionId+'\',\''+report.offerId.id+'\');"   ><i class="fa fa-check text-success"></i></a>';
 	                    		 '</sec:authorize>';
@@ -1171,15 +1168,18 @@ function getOfferDetails(submissionId){
 	                    	 if(report.offerId.offerStatus == "OFFERACCEPTED"){
 	                    		 result = result +' <font color="green" class="brder-int">Offer Accepted</font>';
 	                    	 }
-	                    	 if(report.offerId.offerStatus == "OFFERREJECTED"){
+	                    	 else if(report.offerId.offerStatus == "OFFERREJECTED"){
 	                    		 result = result +' <font color="red" class="brder-int">Offer Rejected</font>';
 	                    	 }
-	                    	 if(report.offerId.offerStatus == "Maybe"){
+	                    	 else if(report.offerId.offerStatus == "Maybe"){
 	                    		 result = result +' <font color="orange" class="brder-int">Maybe</font>';
 	                    	 }
 	                    	 
-	                    	 if(report.offerId.offerStatus == "CLIENT_OFFERACCEPTED"){
+	                    	 else if(report.offerId.offerStatus == "CLIENT_OFFERACCEPTED"){
 	                    		 result = result +' <font color="green" class="brder-int">Client Offer Accepted</font>';
+	                    	 }
+	                    	 else if(report.offerId.offerStatus == "CLIENT_OFFERREJECTED"){
+	                    		 result = result +' <font color="red" class="brder-int">Client Offer Rejected</font>';
 	                    	 }
 	                    	 
 	                    	 if(report.notifyToApplicant == null || report.notifyToApplicant == '' || report.notifyToApplicant =='undefined' || report.notifyToApplicant == 'N'){

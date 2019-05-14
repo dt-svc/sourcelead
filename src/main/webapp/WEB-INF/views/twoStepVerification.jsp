@@ -1,7 +1,7 @@
-<!-- <script src="/resources/js/jquery-1.11.1.min.js"></script> -->
-<!-- <script src="/resources/js/jquery-ui.js"></script> -->
-<!-- <script src="/resources/js/jquery-fun.js"></script> -->
-<!-- <script src="/resources/js/jquery.timepicker.js"></script> -->
+<!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-1.11.1.min.js"></script> -->
+<!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js"></script> -->
+<!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-fun.js"></script> -->
+<!-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js"></script> -->
 
 
 <div id="enrolledLocDiv" style="display:none">

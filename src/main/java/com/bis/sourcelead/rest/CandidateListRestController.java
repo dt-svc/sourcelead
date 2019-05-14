@@ -65,7 +65,6 @@ import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
-import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -74,14 +73,12 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadTags;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.CandidateCustomFieldDataService;
@@ -140,10 +137,7 @@ public class CandidateListRestController {
 
 	@Autowired
 	CandidateDocumentsService candidateDocumentsService;
-
-	/*
-	 * @Autowired CandidateSkillsService candidateSkillsService;
-	 */
+	
 	@Autowired
 	LookUpDataService lookUpDataService;
 
@@ -1033,6 +1027,19 @@ public class CandidateListRestController {
 				candidateDTO.setIsAssociate(can.getIsAssociate());
 				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
+				
+				if(can.getPanNumber() != null) {
+	 				candidateDTO.setPanNumber(can.getPanNumber());
+					}
+					
+				if(can.getAadharNumber() != null) {
+					candidateDTO.setAadharNumber(can.getAadharNumber());
+					}
+					
+				if(can.getSsnNumber() != null) {
+						candidateDTO.setSsnNumber(can.getSsnNumber());
+						}
+					
 				if(can.getConsultantUser() != null) {
 					candidateDTO.setUserId(can.getConsultantUser().getId());
 				}
@@ -1951,9 +1958,10 @@ public class CandidateListRestController {
 	
 	
 	@RequestMapping(value = "/getSourceleadTagsList")
-	public  Set<String>  getSourceleadTagsList(
+	public  List<String>  getSourceleadTagsList(
 			 HttpServletRequest request) throws Exception {
-		 Set<String> tagsList =  (Set<String>) SourceLeadSessionManager.getSessionAttribute(request, "tagsList");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<String> tagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.JOBS.getValue(),loginOrgLocation.getId());
 		return tagsList;
 	}
 	

@@ -16,7 +16,7 @@
     }
  </script>
 
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 <!--   Popup Code  -->
  	<div class="success_pop" id="selector1" style="display: none;">
  			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
