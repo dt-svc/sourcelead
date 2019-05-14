@@ -1237,10 +1237,10 @@ function saveAndFinishOnboardTemplate(templateId){
   });
     
     
-    // upload file script
+    /* // upload file script
     document.getElementById("uploadBtn").onchange = function () {
     document.getElementById("uploadFile").value = this.value;
-	};
+	}; */
   </script> 
 <script type="text/javascript">
 			var config = {
@@ -1282,7 +1282,7 @@ $('#nexttab').on('click', function() {
 });
 </script> --> 
 
-<script>
+<!-- <script>
     //File upload
     $('#file-fr').fileinput({
         language: 'fr',
@@ -1383,7 +1383,7 @@ $('#nexttab').on('click', function() {
          */
     });
 
-    </script>
+    </script> -->
 
   <jsp:include page="../masterFooter.jsp" />
   <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
