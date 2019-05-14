@@ -84,11 +84,12 @@ function timeSheetSubmissionStatusCount(timesheetType) {
 		           }else{
 		          	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
 		                $("#approvedCountAnchor").html('<a  href="'+pmsUrl+'/timesheetlistByStatus?status=APPROVED">Approved</a>'); 
+		                $("#approvedCountAnchor").html('<a  href="'+pmsUrl+'/timesheetlistByStatus?status=APPROVED">Approved</a>'); 
 		            }
 		       	 if(timesheetType == "myTimesheets"){
-		       		 $("#timeSheetLink").attr("href", "<c:url value='"+pmsUrl+"/timesheet'/>");
+		       		 $("#timeSheetLink").attr("href", pmsUrl+"/timesheet");
 		       	 }else{
-		       		 $("#timeSheetLink").attr("href", "<c:url value='"+pmsUrl+"/timesheetApproval'/>");
+		       		 $("#timeSheetLink").attr("href", pmsUrl+"/timesheetApproval'/>");
 		       	 }
 		 		}
 		  }); 
