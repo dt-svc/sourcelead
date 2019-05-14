@@ -2525,5 +2525,4 @@ function saveBreakTime(type){
 </script>
 
 
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script>
 
