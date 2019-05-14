@@ -1001,14 +1001,12 @@ public class PerformanceReportRestController {
 		public ResponseList<ApplicantsBySourceDTO> getApplicantBySourceDetails(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception {
 			
 			ResponseList<ApplicantsBySourceDTO> response = new ResponseList<>();
+			List<ApplicantsBySourceDTO> applicantBySourceList = new ArrayList<>();
 			try{
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 					
-					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
-					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
-					
-					List<ApplicantsBySourceDTO> applicantBySourceList = new ArrayList<>();
 					List<Long> jobIdList = new ArrayList<>();
 					DecimalFormat df = new DecimalFormat("#.00");
 					
@@ -1348,12 +1346,17 @@ public class PerformanceReportRestController {
 							response.setResponseMessage(Result.FAILED.getValue());
 						}
 					 
-					}
-
-				}else if (loginUser == null) {
+					}else if(jobIdList == null || jobIdList.isEmpty()) {
+					    	response.setData(applicantBySourceList); // returning empty data List if jobIdList is empty or null.
+							response.setResponse(Result.SUCCESS.name());
+							response.setResponseMessage(Result.SUCCESS.getValue());
+				    } 
+				}
+				else if (loginUser == null) {
 					response.setResponse(Result.SESSION_TIMEDOUT.name());
 					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-				} else {
+				}
+				else {
 					response.setResponse(Result.INVALID_DATA.name());
 					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
@@ -1428,17 +1431,15 @@ public class PerformanceReportRestController {
 	 
 	 @SuppressWarnings({ "unchecked", "unused" })
 		@RequestMapping(value = "/getApplicantBackoutReport", method = RequestMethod.GET)
-		public Response<ApplicantsBackoutDTO> getApplicantBackoutReport(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception {
+	 public Response<ApplicantsBackoutDTO> getApplicantBackoutReport(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception {
 			
 			Response<ApplicantsBackoutDTO> response = new Response<>();
+			ApplicantsBackoutDTO applicantsBackoutDTOEmpty = new ApplicantsBackoutDTO();
 			try{
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
 					
-					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
-					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
-					
-					
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 					List<Long> jobIdList = new ArrayList<>();
 					if(StringUtils.isNotBlank(jobFilterDTO.getJobIds())) {
 						String[] jobIds = jobFilterDTO.getJobIds().split(",");
@@ -1503,6 +1504,12 @@ public class PerformanceReportRestController {
 						response.setObject(applicantsBackoutDTO);
 						response.setResponse(Result.SUCCESS.name());
 						response.setResponseMessage(Result.SUCCESS.getValue());
+					}else if (applicantsBackoutDTO == null && jobIdList.isEmpty()) {
+						if (response.getObject() == null) { // if jobIdList is empty then sending empty list as a response to service.
+							response.setObject(applicantsBackoutDTOEmpty);
+							response.setResponse(Result.SUCCESS.name());
+							response.setResponseMessage(Result.SUCCESS.getValue());
+						}
 					} else {
 						response.setResponse(Result.FAILED.name());
 						response.setResponseMessage(Result.FAILED.getValue());
