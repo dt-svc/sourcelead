@@ -43,18 +43,18 @@ public class PushNotificationUtill {
         File qa_File = org.springframework.util.ResourceUtils.getFile("classpath:Qa_Sourcelead.p12");
        
         //sourcelead production related IOS .p12 certificate 
-        File pro_File = org.springframework.util.ResourceUtils.getFile("classpath:Pro_Sourcelead.p12");
+        File pro_File = org.springframework.util.ResourceUtils.getFile("classpath:Sourcelead_Production.p12");
 		try {
 	            PushNotificationPayload payload = PushNotificationPayload.complex();
 	            payload.addAlert(mobilePushNotificationDTO.getNotificationDescritpion().replaceAll("&nbsp;", " "));
 	            payload.addSound("default");
 	            payload.addCustomDictionary("id", "1");
         	    String filePath = null;
-            	if (environment.equalsIgnoreCase("prod")) {
+            	/*if (environment.equalsIgnoreCase("prod")) {
             		filePath = pro_File.getPath();
-            	}else {
-            		filePath = qa_File.getPath();
-            	}
+            	}else {*/
+            		filePath = pro_File.getPath();
+//            	}
             	
               //payload means pushNotification meassage body
               //filePah means .12 physical location 
@@ -93,49 +93,57 @@ public class PushNotificationUtill {
     
 	}
 	
-	public final static String AUTH_KEY_FCM = "AAAAcCJ8Zqo:APA91bGcbtil0EWobEobneqgJfaQxt15JAtcnYQ17hZNDqMyHmSN7myt11P0aa4iBqG0O8lbleV2fnS2QCd55wPpCI4h24tYi3KQUgixjRz6-p4tskwezM_f6V4aK2PUVX1Y7Qi81Y07";
 	public final static String API_URL_FCM = "https://fcm.googleapis.com/fcm/send";
-	    
 	@SuppressWarnings("unchecked")
 	public void sendAndriodPushNotification(MobilePushNotificationDTO mobilePushNotificationDTO) throws Exception{
-
-        String authKey = AUTH_KEY_FCM; // You FCM AUTH key
-        String FMCurl = API_URL_FCM;
-
-        URL url = new URL(FMCurl);
+		String authKey = "";
+		if("IOS".equalsIgnoreCase(mobilePushNotificationDTO.getDeviceType())) {
+			 // IOS FCM AUTH key
+			authKey = "AAAAgygCNJE:APA91bEc_HRI7Q16LGmYySQuEncJoG0QR16WOhs5S1uxS6_JbPkMgS0RP5fqMvn1eEvB4JlhtSsvZIHgnF9V5IaS-y6KU-ACOIyUxYwd728K1bF1DoemEE2iJwFaRkRdqw9Zog8EKd7S";
+		}else if("Android".equalsIgnoreCase(mobilePushNotificationDTO.getDeviceType())) {
+			 // Android  FCM AUTH key
+			authKey = "AAAAcCJ8Zqo:APA91bGcbtil0EWobEobneqgJfaQxt15JAtcnYQ17hZNDqMyHmSN7myt11P0aa4iBqG0O8lbleV2fnS2QCd55wPpCI4h24tYi3KQUgixjRz6-p4tskwezM_f6V4aK2PUVX1Y7Qi81Y07";
+		}
+        
+        URL url = new URL(API_URL_FCM);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         conn.setUseCaches(false);
         conn.setDoInput(true);
         conn.setDoOutput(true);
-
+       
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Authorization", "key=" + authKey);
         conn.setRequestProperty("Content-Type", "application/json");
 
-        JSONObject data = new JSONObject();
-        data.put("to", mobilePushNotificationDTO.getDeviceToken().trim());
+        JSONObject json = new JSONObject();
+
+        json.put("to", mobilePushNotificationDTO.getDeviceToken().trim()); //device token information
         JSONObject info = new JSONObject();
-        info.put("title", "Sourcelead Notification"); // Notification title
+        info.put("title", "Leave Approval"); // Notification title
         info.put("body", mobilePushNotificationDTO.getNotificationDescritpion().replaceAll("&nbsp;", " ")); // Notification body
-        data.put("data", info);
-
-        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-        wr.write(data.toString());
-        wr.flush();
-        wr.close();
-
-        int responseCode = conn.getResponseCode();
-        System.out.println("Response Code : " + responseCode);
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
+        info.put("sound", "default"); // notification sound
+        
+        if("IOS".equalsIgnoreCase(mobilePushNotificationDTO.getDeviceType())) {
+        	json.put("data", info); // body information
+        }else if("Android".equalsIgnoreCase(mobilePushNotificationDTO.getDeviceType())) {
+        	json.put("notification", info); // body information
         }
-        in.close();
+        
+        try {
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            wr.write(json.toString());
+            wr.flush();
+            BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+
+            String output;
+            while ((output = br.readLine()) != null) {
+                System.out.println(output);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+       }
+
     }
 	
 }
