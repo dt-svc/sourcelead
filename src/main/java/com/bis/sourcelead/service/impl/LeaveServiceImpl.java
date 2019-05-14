@@ -405,14 +405,19 @@ public class LeaveServiceImpl implements LeaveService {
 			List<Date> dateList = leaveManagementUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(),
 					orgLocations.getDateFormat());
 			dateList.forEach(d -> {
-
+				
+				LeaveType  leaveType = leave.getLeaveType();
+				Boolean includeWeekOffs = false;
+				if(leaveType != null && (leaveType.getIncludeWeekoff().equalsIgnoreCase("Y"))) {
+					includeWeekOffs = true;
+				}
 				String[] strArray = orgLocations.getWeekOffDays().split(",");
 				List<String> weekOffs = new ArrayList<String>(Arrays.asList(strArray));
 				SimpleDateFormat sf = new SimpleDateFormat("E");
 				AppliedLeaveDate appliedLeaveDate = new AppliedLeaveDate();
 				appliedLeaveDate.setApplyLeaveDate(d);
 				float fromMinutes = 0;
-				if (!weekOffs.contains(sf.format(d))) {
+				if (includeWeekOffs || !weekOffs.contains(sf.format(d))) {
 					if (leave.getFromDate().equals(d)) {
 						if (Constants.STATUS_YES.equalsIgnoreCase(leave.getFromHalfDay())) {
 							fromMinutes = leaveManagementUtil.calculateAppliedLeaveMinutes(
