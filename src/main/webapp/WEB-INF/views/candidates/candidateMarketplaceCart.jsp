@@ -569,6 +569,7 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		emptyMarketCartSearchValues();
 		$("#customDates").hide();
 		$("ul#MarketCartCheckBox > li input:radio").prop("checked", false);
+		$("ul#myRolesUL > li input:checkbox").prop("checked",false);
 	}
 	
 	function emptyMarketCartSearchValues(){
