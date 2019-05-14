@@ -84,11 +84,12 @@ function timeSheetSubmissionStatusCount(timesheetType) {
 		           }else{
 		          	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
 		                $("#approvedCountAnchor").html('<a  href="'+pmsUrl+'/timesheetlistByStatus?status=APPROVED">Approved</a>'); 
+		                $("#approvedCountAnchor").html('<a  href="'+pmsUrl+'/timesheetlistByStatus?status=APPROVED">Approved</a>'); 
 		            }
 		       	 if(timesheetType == "myTimesheets"){
-		       		 $("#timeSheetLink").attr("href", "<c:url value='"+pmsUrl+"/timesheet'/>");
+		       		 $("#timeSheetLink").attr("href", pmsUrl+"/timesheet");
 		       	 }else{
-		       		 $("#timeSheetLink").attr("href", "<c:url value='"+pmsUrl+"/timesheetApproval'/>");
+		       		 $("#timeSheetLink").attr("href", pmsUrl+"/timesheetApproval'/>");
 		       	 }
 		 		}
 		  }); 
@@ -5188,7 +5189,7 @@ function getBudgetRequestListCount(){
 	 var approverUserId = userId;
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getBudgetRequestListCount?approverUserId="+approverUserId+"&orgLocationId="+orgLocationId, 
+	        url: pmsUrl+"/getBudgetRequestListCount?approverUserId="+approverUserId+"&orgLocationId="+orgLocationId, 
 	        success: function(json) {
 	        	$("#budgetWaitingCount").html(json.waitingCount);
 	        	$("#budgetApprovedCount").html(json.approvedCount);
@@ -5221,7 +5222,7 @@ function getBudgetRequestList(requestType){ //updated.
 	  }  
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getBudgetRequsetListByBudgetStatusAndOrgLocationId?approverUserId="+approverUserId+"&orgLocationId="+orgLocationId+"&requestType="+requestType, 
+	        url: pmsUrl+"/getBudgetRequsetListByBudgetStatusAndOrgLocationId?approverUserId="+approverUserId+"&orgLocationId="+orgLocationId+"&requestType="+requestType, 
 	        success: function(json) {
 	        	var result = "";
 	        	
@@ -5382,7 +5383,7 @@ function rejectedMessage(local){  // updated.
 function acceptBudgetRequset(budgetRequestedId,requestType){ // updated.
 	 $.ajax({
 				type : "POST",
-				url : sourceleadUrl+"/acceptBudgetRequest?budgetRequestedId="+budgetRequestedId+"&userId="+userId,
+				url : pmsUrl+"/acceptBudgetRequest?budgetRequestedId="+budgetRequestedId+"&userId="+userId,
 				success : function(result) {
 					getBudgetRequestList(requestType);
 					getBudgetRequestListCount();
@@ -5419,7 +5420,7 @@ function saveBudgetReason(budgetRequestedId,requestType){
 	 $.ajax({
 				type : "POST",
 				data :formData,
-				url : sourceleadUrl+"/saveBudgetRequestReason?",
+				url : pmsUrl+"/saveBudgetRequestReason?",
 				success : function(result) {
 					$("#popUp").empty();
 					$(".project_inn_mask").fadeOut(200);
@@ -5555,7 +5556,7 @@ function saveOnHoldBudgetReason(requestType){ // updated.
 	 $.ajax({
 				type : "POST",
 				data :formData,
-				url : sourceleadUrl+"/onHoldBudgetRequest?",
+				url : pmsUrl+"/onHoldBudgetRequest?",
 				success : function(result) {
 					$("#popUp").empty();
 	   			 	//$(".project_inn_mask").fadeOut(200);
