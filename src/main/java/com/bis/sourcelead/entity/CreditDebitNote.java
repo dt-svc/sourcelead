@@ -104,7 +104,7 @@ public class CreditDebitNote implements Serializable {
 	private String rejectReason;
 	
 	@Column(name = "CREDIT_NOTE_DATE")
-	private Date creditNoteDate;
+	private Date date;
 	
 	@Column(name = "SUB_TOTAL")
 	private BigDecimal balance;
@@ -125,7 +125,7 @@ public class CreditDebitNote implements Serializable {
 	private String status;
 	
 	@Column(name = "CREATED_DATE")
-	private Date date;
+	private Date createdDate;
 
 	@ManyToOne
 	@JoinColumn(name = "CREATED_BY")
@@ -329,11 +329,11 @@ public class CreditDebitNote implements Serializable {
 	}
 
 	public Date getCreditNoteDate() {
-		return creditNoteDate;
+		return date;
 	}
 
 	public void setCreditNoteDate(Date creditNoteDate) {
-		this.creditNoteDate = creditNoteDate;
+		this.date = creditNoteDate;
 	}
 
 	public BigDecimal getSubTotal() {
@@ -361,11 +361,11 @@ public class CreditDebitNote implements Serializable {
 	}
 
 	public Date getCreatedDate() {
-		return date;
+		return createdDate;
 	}
 
 	public void setCreatedDate(Date createdDate) {
-		this.date = createdDate;
+		this.createdDate = createdDate;
 	}
 
 	public User getCreatedBy() {
