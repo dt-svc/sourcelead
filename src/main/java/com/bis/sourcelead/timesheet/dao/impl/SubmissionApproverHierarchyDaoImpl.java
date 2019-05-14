@@ -1128,15 +1128,20 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@SuppressWarnings("unchecked")   
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(Long masterCandidateId, String submissionStatus, Long orgLocationId)
+	public Integer getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(Long masterCandidateId, String submissionStatus, Long orgLocationId,Long orgId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
+		 String locationQuery = " and (sah.hierarchyId.projectClientsId.orgLocationsId.id = :locationsId OR (:locationsId NOT IN (select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.submissionId.projects.id and subpm.masterCandidateId.id = sah.submissionId.masterCandidateId.id and subpm.status != 0) and sah.hierarchyId.projectClientsId.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.submissionId.projects.id and subpm.masterCandidateId.id = sah.submissionId.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"') and sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)))";
 		// Getting Max Hierarchy Level for which employee is Assigned
-		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId ";
+		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where subsah.submissionId.id = sah.submissionId.id  "
+			                         +locationQuery;
+		//	+ " (subsah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId OR (subsah.hierarchyId.projectClientsId.id IN( select pm.projectClientsId.id  from ProjectMembers pm where pm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"' and pm.projectClientsId.orgId.id = :orgId ) )) ";
 		String query = "Select Count(*) from  SubmissionApproverHierarchy sah where sah.submissionId.masterCandidateId.id = :masterCandidateId   and ( sah.hierarchyId.level IN("
 				+ subQueryForMaxLevel
-				+ ")) and  sah.submissionStatus = :submissionStatus  and sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId  GROUP BY CONCAT(sah.frequencyStartDate,sah.frequencyEndDate)";
-		List<Long> tslist = session.createQuery(query.toString()).setLong("masterCandidateId", masterCandidateId).setLong("orgLocationId", orgLocationId).setString("submissionStatus", submissionStatus).list();
+				+ ")) and  sah.submissionStatus = :submissionStatus  "
+				+locationQuery
+				+ " GROUP BY CONCAT(sah.frequencyStartDate,sah.frequencyEndDate)";
+		List<Long> tslist = session.createQuery(query.toString()).setLong("masterCandidateId", masterCandidateId).setLong("locationsId", orgLocationId).setString("submissionStatus", submissionStatus).list();
 		Integer count = 0;
 		if (tslist != null && !tslist.isEmpty()) {
 			count = tslist.size();
