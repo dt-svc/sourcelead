@@ -86,9 +86,9 @@
 		           
 		           if(project == null || project == '' || project == 'undefined')
 		        	   project = '';
-		           var searchvalue = $('#dataTableSearchTimesheets').val();
-		   	        if(searchvalue == null ||  searchvalue =='' || searchvalue =='undefined'){
-		   	         searchValue = '';
+		           var searchValue = $('#dataTableSearchTimesheets').val();
+		   	        if(searchValue == null ||  searchValue =='' || searchValue =='undefined'){
+		   	        	searchValue = '';
 		            }
 		           $("#timeApprovaldiv").empty();
 	               $("#loadTimeHead").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');

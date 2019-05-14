@@ -83,9 +83,9 @@ function exportTimeSheetToPdfOrExcel(exportType){
 		if(project!= null && project !='' && project !='undefined'){
 			project = $('input[id=project]:checked').val();
 		}
-	    var searchvalue = $('#dataTableSearchTimesheets').val();
-	    if(searchvalue == null ||  searchvalue =='' || searchvalue =='undefined'){
-	         searchValue = '';
+	    var searchValue = $('#dataTableSearchTimesheets').val();
+	    if(searchValue == null ||  searchValue =='' || searchValue =='undefined'){
+	    	searchValue = '';
          }
 		var weekFrequency = $('input[id=weekFrequency]:checked').val();
 		if(weekFrequency != null && weekFrequency !='undefined'){
