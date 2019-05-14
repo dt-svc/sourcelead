@@ -1,5 +1,6 @@
 package com.bis.sourcelead.reports.dao.Impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -57,12 +58,13 @@ public class TimeToFillDaoImpl implements TimeToFillDao{
 	public List<RequirementSubmissionHistory>  getRequirementHistoryByJobIdsAndStageForTimeToFill(List<Long> jobIdList, Date[] searchDates) throws Exception {
 		
 		logger.debug("In TimeToFillDaoImpl class getRequirementHistoryByJobIdsAndStage method");
-		
+		List<RequirementSubmissionHistory> reqHistoryList = new ArrayList<RequirementSubmissionHistory>();
 		 Session session = this.sessionFactory.getCurrentSession();
 		 String  fromDateStr =commonUtil.elkDateFormatter(searchDates[0]);
 	 	 String  toDateStr  = commonUtil.elkDateFormatter(searchDates[1]);
 		 StringBuilder resultQuery = new StringBuilder("");	
 	     
+		 if(jobIdList.size()>0) {
 	     resultQuery.append("SELECT ");
 	     resultQuery.append(" RH.* ");
 	     resultQuery.append(" FROM ");
@@ -73,7 +75,9 @@ public class TimeToFillDaoImpl implements TimeToFillDao{
 	     resultQuery.append(" AND RS.REQUIREMENT_ID IN (:jobIds) ");
 	     resultQuery.append(" AND DATE_FORMAT(RS.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+fromDateStr+"' AND '"+toDateStr+"' ");
 	     return  session.createSQLQuery(resultQuery.toString()).addEntity(RequirementSubmissionHistory.class).setParameterList("jobIds", jobIdList).list();
-		
+		 }else { // if  jobIdList is empty returning an empty list to the service skipping query call to database.
+			 return reqHistoryList;
+		 }
 	}
 
 	
