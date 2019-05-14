@@ -59,15 +59,15 @@ import com.bis.sourcelead.reportsDTO.AssetsReportDTO;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
-import com.bis.sourcelead.service.DayEntryReportsService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.ShiftService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
-import com.bis.sourcelead.service.TimesheetReportService;
+import com.bis.sourcelead.timesheet.service.DayEntryReportsService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetReportService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
@@ -473,6 +473,7 @@ public class HrReportRestController {
 	}
 	
 	private TimesheetReportsDTO prepareSubmissionDetails(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
+
 		int start = timesheetReportsDTO.getStart();
 		int length = 0;
 		if(timesheetReportsDTO.getPageNo()<1) {
@@ -533,8 +534,10 @@ public class HrReportRestController {
              if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
             	 details.setDesignationType(projectMember.getProjectMemberCandidteId().getDesignationType());
              }
-             if(null != projectMember && projectMember.getEmployee() != null && projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotEmpty(projectMember.getEmployee().getEmployeeId())){
-            	  details.setEmployeeId(projectMember.getEmployee().getEmployeeId());
+             if(consultantUser != null){
+            	   Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(consultantUser.getId(),orgLocations.getId());
+            	   if(employee != null)
+            	   details.setEmployeeId(employee.getEmployeeId());
              }
 		     if(null != projectMember && null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId()){
 		    	 OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
@@ -548,20 +551,27 @@ public class HrReportRestController {
 		     }else{
 		    	 details.setFrequrncy("--"); 
 		     }
-		     if(projectMember.getEmployee() != null && null != projectMember.getEmployee().getRate() && !"".equalsIgnoreCase(projectMember.getEmployee().getRate())){
-		    	 StringBuilder rate = new StringBuilder();
-		    	 if(null != projectMember.getEmployee().getCurrentCurrency() && !"".equalsIgnoreCase(projectMember.getEmployee().getCurrentCurrency())){
-		    		 details.setRate(rate.append(projectMember.getEmployee().getCurrentCurrency()).append("-").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString()); 
+		     
+		     
+	    	 StringBuilder rate = new StringBuilder();
+	    	 if( projectMember.getPayRate() != null && StringUtils.isNotEmpty(projectMember.getPayRateType())) {
+	    		 if(StringUtils.isNotEmpty(projectMember.getPayRateCurrency())){
+		    		 details.setRate(rate.append(projectMember.getPayRateCurrency()).append("-").append(projectMember.getPayRate()).append("/").append(projectMember.getPayRateType()).toString()); 
 		    	 }else{
-		    		 details.setRate(rate.append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString());
-		    	 }
-		     }else{
+		    		 details.setRate(rate.append(projectMember.getPayRate()).append("/").append(projectMember.getPayRateType()).toString());
+		    	 } 
+	    	 }else{
 		    	 details.setRate("--");	 
 		     }
 		     User pmUser = null;
 		     ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
 			 if(conPM != null) {
 				 pmUser = conPM.getProjectMemberCandidteId().getConsultantUser();
+			 }
+			 
+			 Long workLocationId = 0l;
+			 if(conPM.getProjectMemberCandidteId() != null && conPM.getProjectMemberCandidteId().getWorkLocation() != null && conPM.getProjectMemberCandidteId().getWorkLocation().getId() != null) {
+				workLocationId = conPM.getProjectMemberCandidteId().getWorkLocation().getId();
 			 }
 		     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate,isGlobalAccess);
 	    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
@@ -586,7 +596,7 @@ public class HrReportRestController {
 		    	    	Float leaveBillableTotal = 0f;
 		    	    	Float leaveNonBillableTotal = 0f;
 			    	    if(consultantUser != null) {
-			    	    	 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(pmUser.getId(), entry.getKey(), entry.getValue());
+			    	    	 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(pmUser.getId(), entry.getKey(), entry.getValue(),workLocationId);
 				    	     if(leaveTotalMap != null && !leaveTotalMap.isEmpty()) {
 				    	    	 leaveTotal = leaveTotalMap.get("TOTAL");
 				    	    	 leaveBillableTotal = leaveTotalMap.get("BILLABLE");
@@ -730,6 +740,7 @@ public class HrReportRestController {
         	}	
         }
 		return timesheetReportsDTO;
+	
 	}
 	
 	@RequestMapping(value = "/timeSheetReportExportList")   

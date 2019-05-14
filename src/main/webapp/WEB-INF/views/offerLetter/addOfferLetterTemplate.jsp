@@ -52,8 +52,8 @@
 						<div class="form-group">
 			              <label class="col-md-4">Choose Letter Head</label>
 			              <div class="col-md-8">
-			                  <select class="form-control selectpicker" data-live-search="true" title="Select Letterhead" name="letterHead" field-name="Letterhead" >
-			                    <option value="">>>> Select Letterhead <<< </option>
+			                  <select class="form-control selectpicker" data-live-search="true" title="Select Letter Head" name="letterHead" field-name="Letterhead" >
+			                    <!--<option value="">>>> Select Letterhead <<< </option>  -->
 			                    <c:forEach var="letter" items="${letterHeadList}">
 							    <c:if test = "${letter.id == offerLetterTemplate.letterHeadId.id}">
 							         <option selected value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
@@ -83,7 +83,7 @@
 				<div class="row newContrWrap">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<div class="col-md-9 txtEditor_p txtEditorP">
-							<textarea id="txtEditor" name="templateContent" field-name="Template Content" value="" class="form-control newContrtextarea" data-validation="required" >${offerLetterTemplate.templateContent}</textarea>
+						<textarea id="txtEditor" name="templateContent" field-name="Template Content" value="" class="form-control newContrtextarea" data-validation="required validate_length length2-5000" >${offerLetterTemplate.templateContent}</textarea>
 						</div>
 
 						<div class="col-md-3 contrCus">
@@ -253,8 +253,8 @@ function validateOfferLetterTemplateName(){
 	$(document).ready(
 			function() {
 				$("#txtEditor").Editor();
-				$("#txtEditor").find(".Editor-editor").data	- validation('validate_length length2-5000');
-				$("#txtEditor").find(".Editor-editor").data - validation - optional('rule-required', true);
+				//$("#txtEditor").find(".Editor-editor").data	- validation('validate_length length2-5000');
+				//$("#txtEditor").find(".Editor-editor").data - validation - optional('rule-required', true);
 			});
 </script>
 
