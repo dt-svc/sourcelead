@@ -117,17 +117,16 @@ public class PushNotificationUtill {
         conn.setRequestProperty("Content-Type", "application/json");
 
         JSONObject json = new JSONObject();
-
         json.put("to", mobilePushNotificationDTO.getDeviceToken().trim()); //device token information
         JSONObject info = new JSONObject();
-        info.put("title", "Leave Approval"); // Notification title
+        info.put("title", mobilePushNotificationDTO.getNotificationTitle()); // Notification title
         info.put("body", mobilePushNotificationDTO.getNotificationDescritpion().replaceAll("&nbsp;", " ")); // Notification body
         info.put("sound", "default"); // notification sound
         
         if("IOS".equalsIgnoreCase(mobilePushNotificationDTO.getDeviceType())) {
-        	json.put("data", info); // body information
-        }else if("Android".equalsIgnoreCase(mobilePushNotificationDTO.getDeviceType())) {
         	json.put("notification", info); // body information
+        }else if("Android".equalsIgnoreCase(mobilePushNotificationDTO.getDeviceType())) {
+        	json.put("data", info); // body information
         }
         
         try {
