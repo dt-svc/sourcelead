@@ -1,9 +1,13 @@
 package com.bis.sourcelead.clockInOutServiceImpl;
 
-import java.sql.Time;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -36,6 +40,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.geoLocation.GeoIPv4;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -54,7 +59,10 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
-
+	
+	@Autowired
+	private GeoIPv4 geoIPv4;
+	
 	@Override
 	public ClockInOutConfig saveClockInOutConfiguration(ClockInOutConfigDTO clockInOutConfigDTO, OrgLocations loginOrgLocation,Long userId) {
 		
@@ -141,7 +149,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		return clockInOutConfigDao.getClockInOutConfigBasedOnOrgLocationId(orgLocationId);
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "static-access" })
 	@Override
 	public ClockInOut saveClockInOutTime(ClockInOutDTO clockInOutDTO,OrgLocations loginOrgLocation, User loginUser) {
 		
@@ -158,19 +166,40 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				clockInOut.setCreatedBy(loginUser.getId());
 			}
 			
-			java.sql.Time timeValue = null;
-			 
 			
 			clockInOut.setOrgLocations(loginOrgLocation);
 			clockInOut.setUserId(loginUser);
+			
+			
+			ZoneId zoneId = ZoneId.of(loginOrgLocation.getTimezone().getTimeZoneId());
+//			LocalTime localTime = LocalTime.now(zoneId);
+			LocalDateTime ldt = LocalDateTime.now(zoneId);
+			Date currentDate = Date.from( ldt.atZone( ZoneId.systemDefault()).toInstant());
+			
 			DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-			String s = formatter.format(Calendar.getInstance().getTime());
-			timeValue =  new java.sql.Time(formatter.parse(s).getTime());
+			String s = formatter.format(currentDate);
+			java.sql.Time timeValue =  new java.sql.Time(formatter.parse(s).getTime());
 			
 			if(Constants.CLOCK_IN.equalsIgnoreCase(clockInOutDTO.getType())) {
-				clockInOut.setClockInDate(new Date());
-				clockInOut.setClockInDateTime(new Date());
+				
+				clockInOut.setClockInDate(currentDate);
+				clockInOut.setClockInDateTime(currentDate);
 				clockInOut.setClockInTime(timeValue);
+				clockInOut.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), currentDate));
+			
+
+		    	// Find public IP address 
+		    	String systemipaddress = ""; 
+		    	URL url_name = new URL("http://bot.whatismyipaddress.com"); 
+
+		    	BufferedReader sc = 
+		    	new BufferedReader(new InputStreamReader(url_name.openStream())); 
+
+		    	// reads system IPAddress 
+		    	systemipaddress = sc.readLine().trim(); 
+		    	System.out.println(geoIPv4.getLocation(systemipaddress));
+		    	clockInOut.setGeoLocationData(geoIPv4.getLocation(systemipaddress).toString());
+			
 			}
 			
 			if(Constants.CLOCK_OUT.equalsIgnoreCase(clockInOutDTO.getType())) {
@@ -178,7 +207,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(clockInOut.getClockInDateTime());
 				Date date1 = calendar.getTime();
-				Date date2 = new Date();
+				Date date2 = currentDate;
 				
 				
 				long diff = date2.getTime() - date1.getTime();
@@ -199,8 +228,9 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 //				clockInOut.setTotalClockTime(totTime);
 				
 				clockInOut.setClockOutTime(timeValue);
-				clockInOut.setClockOutDate(new Date());
-				clockInOut.setClockOutDateTime(new Date());
+				clockInOut.setClockOutDate(currentDate);
+				clockInOut.setClockOutDateTime(currentDate);
+				clockInOut.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), currentDate));
 				DecimalFormat df = new DecimalFormat("00");
 				clockInOut.setTotalTime(df.format(diffHours)+":"+df.format(diffMinutes)+":"+df.format(diffSeconds));
 
@@ -242,13 +272,21 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	}
 
 	@Override
-	public ClockInOut getExistedClockTime(Long orgLocationId, Long userId) {
-		return clockInOutConfigDao.getExistedClockTime(orgLocationId,userId);
+	public ClockInOut getExistedClockTime(Long orgLocationId, Long userId,String dateFormat) {
+		ClockInOut clk = clockInOutConfigDao.getExistedClockTime(orgLocationId,userId);
+		if(clk != null) {
+			try {
+				clk.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, clk.getClockInDate()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return clk;
 	}
 
 	@Override
 	public void updateClockInOutTime(ClockInOutDTO clockInOutDTO, OrgLocations loginOrgLocation, User user) {
-		ClockInOut clk =  getExistedClockTime(loginOrgLocation.getId(),user.getId());
+		ClockInOut clk =  getExistedClockTime(loginOrgLocation.getId(),user.getId(),loginOrgLocation.getDateFormat());
 		if(clk != null) {
 			saveClockInOutTime(clockInOutDTO,loginOrgLocation,user);
 		}
@@ -256,7 +294,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public Breaks saveBreakTime(ClockInOutDTO clockInOutDTO,Long userId) {
+	public Breaks saveBreakTime(ClockInOutDTO clockInOutDTO,Long userId,OrgLocations loginOrgLocation) {
 		
 		Breaks breaks = null;
 		try {
@@ -274,14 +312,23 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			breaks.setClockInOutId(clockInOutDTO.getClockInOutId());
 		
 			
+//			DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+//			String s = formatter.format(Calendar.getInstance().getTime());
+//			java.sql.Time timeValue =  new java.sql.Time(formatter.parse(s).getTime());
+			
+			ZoneId zoneId = ZoneId.of(loginOrgLocation.getTimezone().getTimeZoneId());
+//			LocalTime localTime = LocalTime.now(zoneId);
+			LocalDateTime ldt = LocalDateTime.now(zoneId);
+			Date currentDate = Date.from( ldt.atZone( ZoneId.systemDefault()).toInstant());
+			
 			DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-			String s = formatter.format(Calendar.getInstance().getTime());
+			String s = formatter.format(currentDate);
 			java.sql.Time timeValue =  new java.sql.Time(formatter.parse(s).getTime());
 			
 			if(Constants.PAUSE.equalsIgnoreCase(clockInOutDTO.getType())) {
 				breaks.setBreakStartTime(timeValue);
-				breaks.setBreakStartDate(new Date());
-				breaks.setBreakStartDateTime(new Date());
+				breaks.setBreakStartDate(currentDate);
+				breaks.setBreakStartDateTime(currentDate);
 			}
 			
 			if(Constants.PLAY.equalsIgnoreCase(clockInOutDTO.getType())) {
@@ -290,7 +337,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(breaks.getBreakStartDateTime());
 				Date date1 = calendar.getTime();
-				Date date2 = new Date();
+				Date date2 = currentDate;
 				
 				
 				long diff = date2.getTime() - date1.getTime();
@@ -310,8 +357,8 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				
 				DecimalFormat df = new DecimalFormat("00");
 				breaks.setTotalTime(df.format(diffHours)+":"+df.format(diffMinutes)+":"+df.format(diffSeconds));
-				breaks.setBreakEndDate(new Date());
-				breaks.setBreakEndDateTime(new Date());
+				breaks.setBreakEndDate(currentDate);
+				breaks.setBreakEndDateTime(currentDate);
 				breaks.setBreakEndTime(timeValue);
 //				breaks.setTotalBreakTime(totTime);
 					
@@ -365,9 +412,50 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    	int hr = 0;
 				    	String sum = null;
 				    	
+				    	int brksec = 0;
+				    	int brkmin = 0;
+				    	int brkhr = 0;
+				    	String brksum = null;
+				    	
 				    	for (ClockInOutUserTimeEntryDTO data : uniqueData.getValue()) {
 				    		
+				    		int indBrksec = 0;
+					    	int indBrkmin = 0;
+					    	int indBrkhr = 0;
+				    		String indBrksum = null;
 				    		ClockInOutSubDTO subDto = new ClockInOutSubDTO();
+				    		
+							List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
+							for (Breaks breaks : breakList) {
+								
+								String[] str = breaks.getTotalTime().split(":");
+								brksec += Integer.parseInt(str[2]);
+								indBrksec += Integer.parseInt(str[2]);
+								if(brksec>=60) {
+									brkmin++;
+									brksec = brksec - 60; 
+								}
+								if(indBrksec>=60) {
+									indBrkmin++;
+									indBrksec = indBrksec - 60; 
+								}
+								brkmin += Integer.parseInt(str[1]);
+								indBrkmin += Integer.parseInt(str[1]);
+								if(brkmin>=60) {
+									brkhr++;
+									brkmin = brkmin - 60;
+								}
+								if(indBrkmin>=60) {
+									indBrkhr++;
+									indBrkmin = indBrkmin - 60;
+								}
+								brkhr += Integer.parseInt(str[0]);
+								indBrkhr += Integer.parseInt(str[0]);
+					    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
+					    		indBrksum = df.format(indBrkhr)+":"+df.format(indBrkmin)+":"+df.format(indBrksec);
+							}
+
+							subDto.setIndividualTotBreakTime(indBrksum);
 				    		subDto.setClockInTime(data.getClockInTime());
 				    		subDto.setClockOutTime(data.getClockOutTime());
 				    		subDto.setIndividualNoOfHours(data.getTotalTime());
@@ -404,6 +492,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    	}
 				    	
 				    	main.setTotalTime(sum);
+				    	main.setTotalBreakTime(brksum);
 				    	String tTime [] = sum.toString().split(":");
 		                StringBuilder sb = new StringBuilder();
 		                sb.append(tTime[0]).append(".").append(tTime[1]);
@@ -430,9 +519,53 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    	int hr = 0;
 				    	String sum = null;
 				    	
+				    	int brksec = 0;
+				    	int brkmin = 0;
+				    	int brkhr = 0;
+				    	String brksum = null;
+				    	
 				    	for (ClockInOutUserTimeEntryDTO data : uniqueData.getValue()) {
 				    		
+				    		
+				    		int indBrksec = 0;
+					    	int indBrkmin = 0;
+					    	int indBrkhr = 0;
+				    		String indBrksum = null;
+				    		
 				    		ClockInOutSubDTO subDto = new ClockInOutSubDTO();
+				    		
+				    		
+				    		List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
+							for (Breaks breaks : breakList) {
+								
+								String[] str = breaks.getTotalTime().split(":");
+								brksec += Integer.parseInt(str[2]);
+								indBrksec += Integer.parseInt(str[2]);
+								if(brksec>=60) {
+									brkmin++;
+									brksec = brksec - 60; 
+								}
+								if(indBrksec>=60) {
+									indBrkmin++;
+									indBrksec = indBrksec - 60; 
+								}
+								brkmin += Integer.parseInt(str[1]);
+								indBrkmin += Integer.parseInt(str[1]);
+								if(brkmin>=60) {
+									brkhr++;
+									brkmin = brkmin - 60;
+								}
+								if(indBrkmin>=60) {
+									indBrkhr++;
+									indBrkmin = indBrkmin - 60;
+								}
+								brkhr += Integer.parseInt(str[0]);
+								indBrkhr += Integer.parseInt(str[0]);
+					    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
+					    		indBrksum = df.format(indBrkhr)+":"+df.format(indBrkmin)+":"+df.format(indBrksec);
+							}
+				    		
+							subDto.setIndividualTotBreakTime(indBrksum);
 				    		subDto.setClockInTime(data.getClockInTime());
 				    		subDto.setClockOutTime(data.getClockOutTime());
 				    		subDto.setIndividualNoOfHours(data.getTotalTime());
@@ -467,6 +600,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    	}
 				    	
 				    	main.setTotalTime(sum);
+				    	main.setTotalBreakTime(brksum);
 				    	String tTime [] = sum.toString().split(":");
 		                StringBuilder sb = new StringBuilder();
 		                sb.append(tTime[0]).append(".").append(tTime[1]);
@@ -912,10 +1046,15 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 //				int hr1 = new Date().getHours() - clockInOut.getClockInTime().getHours();
 //				Time currentTime = new Time(hr1, min1, sec1);
 				
+				ZoneId zoneId = ZoneId.of(loc.getTimezone().getTimeZoneId());
+//				LocalTime localTime = LocalTime.now(zoneId);
+				LocalDateTime ldt = LocalDateTime.now(zoneId);
+				Date currentDate = Date.from( ldt.atZone( ZoneId.systemDefault()).toInstant());
+				
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTime(clockInOut.getClockInDateTime());
 				Date date1 = calendar.getTime();
-				Date date2 = new Date();
+				Date date2 = currentDate;
 				
 				
 				long diff = date2.getTime() - date1.getTime();
@@ -992,6 +1131,20 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		
 		
 		return totSum;
+	}
+
+	@Override
+	public ClockInOutDTO getPreviousClockInData(OrgLocations loginOrgLocation, User user) {
+		
+		ClockInOutDTO clkDto = new ClockInOutDTO();
+		ClockInOut clk = clockInOutConfigDao.getPreviousClockInData(loginOrgLocation,user);
+		if(clk != null) {
+			clkDto.setPreviousClockInStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), clk.getClockInDate()));
+			clkDto.setPreviousClockOutStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), clk.getClockOutDate()));
+			clkDto.setPreviousClockInTime(clk.getClockInTime());
+			clkDto.setPreviousClockOutTime(clk.getClockOutTime());
+		}
+		return clkDto;
 	}
 	
 
