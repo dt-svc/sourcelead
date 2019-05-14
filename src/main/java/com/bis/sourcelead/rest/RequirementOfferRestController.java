@@ -375,30 +375,39 @@ public class RequirementOfferRestController {
 					      setofferStatus ="you have accepted the offer";
 			    }else if(offerStatus.equalsIgnoreCase("Rejected")){
 			    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
-			    		    RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
-				    		if(requirementSubmission.getSourceSubmission() == null){
-				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
-				    		}else{
-				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);
-				    		}
-				    		 requirementSubmission.setRejectedReason(rejectedReason);
-							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-							 
-						    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-							requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.OFFERMADE.toString());
-							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
-							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
+		    		    RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
+						  if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
+			    		}else{
+			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);
+			    		}
+			    		 requirementSubmission.setRejectedReason(rejectedReason);
+						 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+						 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+						 
+					    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+						  if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+						requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.OFFERMADE.toString());
+						requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
+					    }else{
+					    	requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString());
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);	
+					    }
+						requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
+		    	
+		    	  //Changing the status of offerTable 
+				  if(requirementOffers  != null ){
+					  if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+						  requirementOffers.setOfferStatus("OFFERREJECTED"); 
+					  }else{
+						  requirementOffers.setOfferStatus("CLIENT_OFFERREJECTED");   
 					  }
-			    	
-			    	  //Changing the status of offerTable 
-					  if(requirementOffers  != null ){
-						    requirementOffers.setOfferStatus("OFFERREJECTED");
-						    requirementOffers.setRejectedReason(rejectedReason);
-						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
-						    requirementOffersService.saveOfferStatus(requirementOffers);
-				      }
-					  requirementOffersService.sendApplicantOfferRejectMail(requirementOffers);
+					    requirementOffers.setRejectedReason(rejectedReason);
+					    requirementOffers.setUpdatedDate(commonUtil.currentDate());
+					    requirementOffersService.saveOfferStatus(requirementOffers);
+			      }
+				  requirementOffersService.sendApplicantOfferRejectMail(requirementOffers);
+		    }
 					  setofferStatus ="success";
 			    }
 			 }

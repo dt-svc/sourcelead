@@ -480,17 +480,3 @@ function qwikCertificates(candidateId){
      });
 }
 </script>
-<!-- <script>
-function lineclamp() {
-	   var lineheight = parseFloat($('div.trimTxt p').css('line-height'));
-	   alert(lineheight)
-		var articleheight = $('div.trimTxt').height(); 
-		alert(articleheight)
-		var calc = parseInt(articleheight/lineheight);
-		alert(calc)
-		$("div.trimTxt p").css({
-	  	"-webkit-box-orient": "" + calc + ""
-		});
-	}
-</script>
- -->

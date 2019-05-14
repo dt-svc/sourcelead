@@ -87,6 +87,7 @@ var tokenParamName = "${_csrf.parameterName}";
 var tokenValue = "${_csrf.token}";
 //
 
+
 var viewTab = "${viewTab}";
 var searchValue = "${searchValue}"
 var universalRequirementList = "${universalRequirementList}";
@@ -96,6 +97,7 @@ var userType =  '${SourceLeadWeb_loginUserRole}';
 var userSessionId = '${SourceLeadWeb_actionUUID}';
 var loginOrgLocationName = '${SourceLeadWeb_orgName}'; 
 var searchType = '${searchType}';
+var requirementId='${requirement.id}';
 
 	(function($) {
 		$.fn.serializeFormJSON = function() {
@@ -150,6 +152,7 @@ var searchType = '${searchType}';
      });
 });
 </script>
+
 <script>
 // toggle events are not worked properly thats why kept in jsp.
 function selectAllPriority(){
@@ -408,6 +411,14 @@ function getTeamsList(reqId){
 }
 // inlcuded in jsp due to jstl tags inclusion.
 function getAddApplicant(requirementId,reqCoolingOffPeriod){
+	
+   $(".addApplicant_close, .side_mask").click(function() { // event is used for popup close.
+     	$(".new_side_wrap").removeClass("new_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+	});	
+   
+   
 	$('.action-pop').slideUp();
 	var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  var finalDateFormatScript = '';
@@ -707,8 +718,8 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	
 }
 </script>
-<jsp:include page="requirementTable.jsp" />
-<jsp:include page="requirementAssignedTo.jsp"/>
+<%-- <jsp:include page="requirementTable.jsp" />
+<jsp:include page="requirementAssignedTo.jsp"/> --%>
 <!-- <script type="text/javascript" src="/resources/js/requirementTable.js"></script> -->
 <input type="hidden" name="noReq" id="noReq" />
 <input type="hidden" id="requirementEmptyListMessage" name="requirementEmptyListMessage" />
@@ -1284,8 +1295,8 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	
 </section>
  <div class="advancedsearch-mask"></div>
-<jsp:include page="addApplicantFromRequirementList.jsp" />
-
+<%-- <jsp:include page="addApplicantFromRequirementList.jsp" />
+ --%>
 <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
 
 
