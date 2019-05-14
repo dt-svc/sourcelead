@@ -11,7 +11,11 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	<i class="fa fa-check-circle"></i><span>Invoice Template Saved</span>
 </div>
 
+
+
 <section class="content-wraper">
+<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/customizeInvoice?orgLocationId=${orgLocationId}&orgRelationId=${orgRelationId}"> Invoice Templates </a> &raquo; Add Invoice Template
+		</div>
 	<div class="invLeftWrap">
 		<ul class="invTabs clearfix">
 			<li class="current" id="textSettingsTabHead">
