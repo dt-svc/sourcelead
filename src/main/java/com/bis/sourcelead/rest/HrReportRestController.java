@@ -61,10 +61,12 @@ import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesReportService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.ShiftService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.timesheet.service.DayEntryReportsService;
 import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.timesheet.service.TimesheetReportService;
@@ -134,6 +136,12 @@ public class HrReportRestController {
 	
 	@Autowired
 	private ExpensesReportService expensesReportService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	private UserService userService;
 	
 	
 	/**
@@ -252,7 +260,13 @@ public class HrReportRestController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("exportDto",dayWiseTimesheetReoprtsDto);
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		if(orgLocations != null) {
+			orgLocations = orgLocationService.getOrgLocationById(orgLocations.getId());
+		}
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(loginUser != null) {
+			loginUser = userService.getUserById(loginUser.getId());
+		}
 		String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		
 		int start = dayWiseTimesheetReoprtsDto.getStart();
@@ -323,7 +337,13 @@ public class HrReportRestController {
 	@RequestMapping(value="/exportDaywiseTimesheetReport")
 	public void exportDaywiseTimesheetReport(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		if(orgLocations != null) {
+				orgLocations = orgLocationService.getOrgLocationById(orgLocations.getId());
+		}
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(loginUser != null) {
+			loginUser = userService.getUserById(loginUser.getId());
+		}
 		String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		File file = null;
 		if ("excel".equalsIgnoreCase(dayWiseTimesheetReoprtsDto.getExportType())) {
@@ -439,6 +459,9 @@ public class HrReportRestController {
 	private TimesheetReportsDTO prepareDateFrequencyForTimeSheetReports(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
 		int tdSpanLength = 6;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(orgLocations != null) {
+			orgLocations = orgLocationService.getOrgLocationById(orgLocations.getId());
+		}
 		Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(timesheetReportsDTO.getFrequencyMonth(),timesheetReportsDTO.getFrequencyYear());
 		Date startDate = dateList.get("STARTDATE");
 		Date endDate = dateList.get("ENDDATE");
@@ -486,7 +509,13 @@ public class HrReportRestController {
 			length = timesheetReportsDTO.getPageSize();
 		}
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(orgLocations != null) {
+			orgLocations = orgLocationService.getOrgLocationById(orgLocations.getId());
+		}
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(loginUser != null) {
+			loginUser = userService.getUserById(loginUser.getId());
+		}
 		List<TimeReportsSubmissionDetailsDTO> detailsList = new ArrayList<TimeReportsSubmissionDetailsDTO>();
 		
 		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(timesheetReportsDTO.getFrequencyMonth(),timesheetReportsDTO.getFrequencyYear());
@@ -748,7 +777,13 @@ public class HrReportRestController {
 		   File timesheetReportFile = null;
 		   try {
 		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   if(user != null) {
+				user = userService.getUserById(user.getId());
+			}
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   if(orgLocations != null) {
+				orgLocations = orgLocationService.getOrgLocationById(orgLocations.getId());
+			}
 		   String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		   if(timesheetReportsDTO.getExportType().equalsIgnoreCase("pdf")){
 		    timesheetReportFile = timesheetReportService.prepareTimeSheetExport(timesheetReportsDTO,user,orgLocations,isGlobalAccess);
@@ -819,7 +854,13 @@ public class HrReportRestController {
 	public LinkedHashSet<ProjectMembers> getExpensesApprovalList(HttpServletRequest request,@RequestParam(value="datequarterly", required=false) String datequarterly) throws Exception {
 		LinkedHashSet<ProjectMembers> finalProjectMemberList = new LinkedHashSet<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(loginUser != null) {
+			loginUser = userService.getUserById(loginUser.getId());
+		}
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(orgLoc != null) {
+			orgLoc = orgLocationService.getOrgLocationById(orgLoc.getId());
+		}
 		List<ProjectMembers> projectMembers = null;
 	   if(null != datequarterly && !"".equalsIgnoreCase(datequarterly) && !datequarterly.equals("undefined")){
 		String[] dates = datequarterly.split("TO");
@@ -1304,7 +1345,13 @@ public class HrReportRestController {
 			   @RequestParam(value="exportType", required=false) String exportType) throws Exception {
 		File file = null;
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(loginUser != null) {
+			loginUser = userService.getUserById(loginUser.getId());
+		}
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(orgLoc != null) {
+			orgLoc = orgLocationService.getOrgLocationById(orgLoc.getId());
+		}
 		if(exportType.equalsIgnoreCase("pdf")){
 			file = expensesReportService.expensesReportExportListPdf(frequencyMonth,orgLoc,loginUser);
 		}else{

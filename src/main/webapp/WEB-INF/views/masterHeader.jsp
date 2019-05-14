@@ -382,9 +382,8 @@ function preventTabkey(e){
 <script>
 		function logoutFormSubmit() {
 			var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-			var userSessionId = '${SourceLeadWeb_actionUUID}';
-			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId; 
-			document.getElementById("logoutForm").submit();
+			var actionUUID = '${userLoginSession.actionUUID}';
+			window.location.href = sourceleadUrl+"/getActionHistoryList/"+actionUUID; 
 		}
 </script>
 
