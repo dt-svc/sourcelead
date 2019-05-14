@@ -242,10 +242,11 @@ public class TimesheetRestController {
 		ModelAndView model = new ModelAndView();
 		try {
 			TimesheetEntryDetailsDTO tedDTO = getTimesheetEntryDetails(eedDTO, request);
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 				orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
+			}else {
+				orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
 			}
 			Long projectMemberId = eedDTO.getProjectMembersId();
 			if (projectMemberId != null) {
@@ -284,6 +285,8 @@ public class TimesheetRestController {
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
+		}else {
+			orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
 		}
 		try {
 			EmployeeTimesheetEntryDetailsDTO tedDTO = getEmployeeTimesheetEntryDetails(eedDTO, request);
@@ -600,15 +603,21 @@ public class TimesheetRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (loginUser == null && eedDTO.getUserId() != null) {
 			loginUser = userService.getUserById(eedDTO.getUserId());
+		}else {
+			loginUser = userService.getUserById(loginUser.getId());
 		}
+		
+		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
+		}else {
+			orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
 		}
 
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
-		if (candidate == null && loginUser != null && orgLocations != null) {
+		if (loginUser != null && orgLocations != null) {
 			candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLocations.getId());
 		}
 
@@ -634,15 +643,19 @@ public class TimesheetRestController {
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (loginUser == null && eedDTO.getUserId() != null) {
 				loginUser = userService.getUserById(eedDTO.getUserId());
+			}else {
+				loginUser = userService.getUserById(loginUser.getId());
 			}
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 				orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
+			}else {
+				orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
 			}
 	
 			Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
-			if (candidate == null && loginUser != null && orgLocations != null) {
+			if (loginUser != null && orgLocations != null) {
 				candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLocations.getId());
 			}
   	         Map<String,String> frequencyDropDown = timesheetFrequencyGeneratorUtil.getEmployeeTimesheetFrequencyListFromInvoiceFrequency(etd.getInvoiceFrequency(), orgLocations);
@@ -1980,6 +1993,9 @@ public class TimesheetRestController {
 			LinkedList<TimesheetEntriesDTO> entriesList,LinkedList<WeekDaysDTO> weekDaysList, HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		if(orgLocations != null){
+			orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
+		}
 		LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> entriesMap = new LinkedHashMap<>();
 		LinkedHashMap<String, String> valuesMap = new LinkedHashMap<>();
 		LinkedHashMap<String, String> taskTypeMap = new LinkedHashMap<>();
@@ -2105,6 +2121,12 @@ public class TimesheetRestController {
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		if (loginUser != null && orgLocations != null) {
+			orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
+			loginUser = userService.getUserById(loginUser.getId());
+			candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLocations.getId());
+		}
+		
 		try {
 				tedDTO = saveEmployeeTimesheetEntries(tedDTO, request);
 				if(tedDTO.getProjectMembersList() == null || tedDTO.getProjectMembersList().isEmpty()) {
@@ -2768,6 +2790,11 @@ public class TimesheetRestController {
 					"orgLocations");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+			if (loginUser != null && loginOrgLocation != null) {
+				loginOrgLocation = orgLocationService.getOrgLocations(loginOrgLocation.getId());
+				loginUser = userService.getUserById(loginUser.getId());
+				candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), loginOrgLocation.getId());
+			}
 	
 			TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 			eedDTO.setUserId(loginUser.getId());
@@ -2852,6 +2879,9 @@ public class TimesheetRestController {
 			TimeSheetSubmissionDTO tsDTO, HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		if (orgLocations != null) {
+			orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
+		}
 		LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> entriesMap = new LinkedHashMap<>();
 		LinkedHashMap<String, String> valuesMap = new LinkedHashMap<>();
 		LinkedHashMap<String, Integer> weekCountMap = new LinkedHashMap<>();
@@ -2987,6 +3017,12 @@ public class TimesheetRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (orgLocations != null) {
+			orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
+		}
+		if (loginUser != null) {
+			loginUser = userService.getUserById(loginUser.getId());
+		}
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		Map<String, List<WeekDaysDTO>> entriesMap = new LinkedHashMap<>();
 		Float totalHours = 0f;
@@ -3244,15 +3280,19 @@ public class TimesheetRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (loginUser == null && eedDTO.getUserId() != null) {
 			loginUser = userService.getUserById(eedDTO.getUserId());
+		}else {
+			loginUser = userService.getUserById(loginUser.getId());
 		}
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
-		}
-
+		}else
+		{
+	      orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
+	    }
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
-		if (candidate == null && loginUser != null && orgLocations != null) {
+		if (loginUser != null && orgLocations != null) {
 			candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLocations.getId());
 		}
 
@@ -3584,11 +3624,15 @@ public class TimesheetRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (loginUser == null && eedDTO.getUserId() != null) {
 			loginUser = userService.getUserById(eedDTO.getUserId());
+		}else {
+			loginUser = userService.getUserById(loginUser.getId());
 		}
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
+		}else {
+			 orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
 		}
 		ModelAndView model = new ModelAndView();
 		try {
@@ -3683,6 +3727,9 @@ public class TimesheetRestController {
 				@RequestParam(value="timesheetFrequency",required = true)String timesheetFrequency,
 				HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		if(orgLocations != null) {
+			 orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
+		}
 		ModelAndView model = new ModelAndView();
 		ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemberId);
 		TimeSheetSubmissionDTO tsDTO = new TimeSheetSubmissionDTO();
@@ -5150,6 +5197,9 @@ public class TimesheetRestController {
 		 * saving Code
 		 */
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		if(orgLocations != null) {
+			 orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
+		}
 		Boolean isValid = false;
 		ModelAndView model = new ModelAndView();
 		try {
@@ -5266,6 +5316,11 @@ public class TimesheetRestController {
 				"orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		if(loginUser != null && loginOrgLocation != null ) {
+			loginUser = userService.getUserById(loginUser.getId());
+			loginOrgLocation = orgLocationService.getOrgLocations(loginOrgLocation.getId());
+			 candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), loginOrgLocation.getId());
+		}
 		List<Long> timesheetEntryId = new ArrayList<Long>();
 		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
@@ -5788,6 +5843,9 @@ public class TimesheetRestController {
 			throws Exception {
 		   String output = "";
 		   User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		   if(loginUser != null) {
+			   loginUser = userService.getUserById(loginUser.getId());
+		   }
 		try {
 			UserDroppedHolidays userDroppedHolidays = userDroppedHolidaysService.getUserDroppedHolidaysFromUserIdlocationIdAndHolidayId(holidayUserId, holidayUserLocationId, holidayId); 
 			
@@ -5950,6 +6008,10 @@ public class TimesheetRestController {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(loginUser != null && loginOrgLocation != null) {
+				 loginUser = userService.getUserById(loginUser.getId());
+				 loginOrgLocation = orgLocationService.getOrgLocations(loginOrgLocation.getId());
+			}
 			LinkedList<TimeSheetDayEntries> timeSheetDayEntriesList = new LinkedList<>();
 			addTimesheetDayEntriesByProjectIdAndProjectMemberId(timesheetProjectTaskDTO.getProjectId(),
 					timesheetProjectTaskDTO.getProjectTaskMemberId(), timesheetProjectTaskDTO.getTaskUUID(),
@@ -6054,11 +6116,15 @@ public class TimesheetRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (loginUser == null && tsDTO.getUserId() != null) {
 			loginUser = userService.getUserById(tsDTO.getUserId());
+		}else {
+			loginUser = userService.getUserById(loginUser.getId());
 		}
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		if (orgLoc == null && StringUtils.isNotEmpty(tsDTO.getLocationCode())) {
 			orgLoc = orgLocationService.getOrgLocationsByLocationCode(tsDTO.getLocationCode());
+		}else {
+			orgLoc = orgLocationService.getOrgLocations(orgLoc.getId());
 		}
 		String currentTimeFrequency = null;	
 		String currentTimeSubFrequency = null;
@@ -6134,11 +6200,15 @@ public class TimesheetRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (loginUser == null && tsDTO.getUserId() != null) {
 			loginUser = userService.getUserById(tsDTO.getUserId());
+		}else {
+			loginUser = userService.getUserById(loginUser.getId());
 		}
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		if (orgLoc == null && StringUtils.isNotEmpty(tsDTO.getLocationCode())) {
 			orgLoc = orgLocationService.getOrgLocationsByLocationCode(tsDTO.getLocationCode());
+		}else {
+			orgLoc = orgLocationService.getOrgLocations(orgLoc.getId());
 		}
 		if(tsDTO.getSubmissionId() != null) {
 		 TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService.getTimesheetSubmissions(tsDTO.getSubmissionId().toString());
@@ -6550,6 +6620,10 @@ public class TimesheetRestController {
 		try {
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if(loginUser != null && orgLoc != null) {
+				 loginUser = userService.getUserById(loginUser.getId());
+				 orgLoc = orgLocationService.getOrgLocations(orgLoc.getId());
+			}
 			String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 			String isSuperUser = Constants.NO;
 			if (commonUtil.isSuperAdminForProjectMemberToReopenTimesheets(projectMemberId, loginUser, orgLoc,isGlobalAccess)) {
@@ -6599,6 +6673,10 @@ public class TimesheetRestController {
 		try {
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			if(loginUser != null && orgLoc != null) {
+				loginUser = userService.getUserById(loginUser.getId());
+				orgLoc = orgLocationService.getOrgLocations(orgLoc.getId());
+			}
 			User reopenedUser = userService.getUserById(reopenedUserId);
 			// DateFormat format = Constants.DF_DMY;
 			// DateFormat format = LoginSessionController.DATEFORMAT;
@@ -6782,6 +6860,10 @@ public class TimesheetRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(loginUser != null && orgLocations != null) {
+			 loginUser = userService.getUserById(loginUser.getId());
+			 orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
+		}
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		ProjectMembers projectMember = null;
 		if (null != projectMemberId) {
@@ -6828,6 +6910,10 @@ public class TimesheetRestController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
+			if(user !=null && loginOrgLocation != null) {
+				 user = userService.getUserById(user.getId());
+				 loginOrgLocation = orgLocationService.getOrgLocations(loginOrgLocation.getId());
+			}
 			String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 			// SimpleDateFormat simpleDateFormat =
 			// loginOrgLocation.getLocFullFormDateFormatter();
@@ -6908,6 +6994,7 @@ public class TimesheetRestController {
 			@RequestParam(value = "client", required = false) String client,
 			@RequestParam(value = "project", required = false) String project,
 			@RequestParam(value = "stage", required = false) String stage,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
 			@RequestParam(value = "timesheetFrequency", required = false) String timesheetFrequency,
 			@RequestParam(value = "frequencyMonth", required = false) String frequencyMonth,
 			@RequestParam(value = "weekFrequency", required = false) String weekFrequency, HttpServletResponse response)
@@ -6916,6 +7003,10 @@ public class TimesheetRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		if(user != null && orgLocations != null) {
+			user = userService.getUserById(user.getId());
+			orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
+		}
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		// DateFormat df = Constants.DMY;
 		// DateFormat df = LoginSessionController.DATEFORMAT;
@@ -6937,10 +7028,10 @@ public class TimesheetRestController {
 		}
 		if ("pdf".equalsIgnoreCase(exportType)) {
 			file = exportTimesheetEntries.timeSheetApprovelExport(user, orgLocations, stDate, edDate,
-					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess);
+					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess,searchValue);
 		} else {
 			file = exportTimesheetEntries.timeSheetApprovelExportExcel(user, orgLocations, stDate, edDate,
-					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess);
+					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess,searchValue);
 		}
 
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
