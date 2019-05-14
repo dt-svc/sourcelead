@@ -4,6 +4,9 @@ import com.maxmind.geoip.LookupService;
 import java.io.IOException;
 import java.net.InetAddress;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class GeoIPv4 {
 
     private static LookupService lookUp;
