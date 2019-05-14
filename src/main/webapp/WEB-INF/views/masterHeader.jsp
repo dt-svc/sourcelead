@@ -298,9 +298,12 @@ function preventTabkey(e){
 
 <script>
 		function logoutFormSubmit() {
-			var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+			/* var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 			var actionUUID = '${userLoginSession.actionUUID}';
-			window.location.href = sourceleadUrl+"/getActionHistoryList/"+actionUUID; 
+			window.location.href = sourceleadUrl+"/getActionHistoryList/"+actionUUID;  */
+			
+			document.getElementById("logoutForm").submit();
+			
 		}
 </script>
 
