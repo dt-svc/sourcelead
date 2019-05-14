@@ -10,7 +10,7 @@
         </div>
         <div class="pull-right brud-crum">
 				<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo;<a
-					href="${SourceLeadWeb_atsUrl}/globalMarketplacePage"> Marketplace List</a> &raquo; Payment Success
+					href="${SourceLeadWeb_atsUrl}/globalMarketplacePage"> Global Marketplace List </a> &raquo; Payment Success
 			</div>
     </section>
     <div class="scontent-new clearfix">
