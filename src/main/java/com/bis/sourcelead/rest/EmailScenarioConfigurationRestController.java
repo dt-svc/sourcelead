@@ -32,6 +32,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PasswordSecurity;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -53,6 +54,9 @@ public class EmailScenarioConfigurationRestController {
 	
 	@Autowired
 	private EmailScenarioConfigurationDao emailScenarioConfigurationDao;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 		 
 	 @RequestMapping(value = "/saveEmailNotification" , method = RequestMethod.POST)
@@ -111,12 +115,15 @@ public class EmailScenarioConfigurationRestController {
 		 if(emailconfigur != null){
 			 String fromMail=emailScenarioconService.verifyConfgFromMail(orgLocation.getId(),emailconfigur);
 			 if(Constants.EMAIL_SUCCESS.equalsIgnoreCase(fromMail)){
-				 emailconfigur.setStatus("Y");
+				 emailconfigur.setVerifiedStatus(Constants.YES);
+				 emailconfigur.setIsActive(Constants.YES);
 				 emailScenarioConfigurationDao.save(emailconfigur);
 				 returnValue= "success";
 			 }else{
-				 emailconfigur.setStatus("N");
+				 emailconfigur.setVerifiedStatus(Constants.NO);
+				 emailconfigur.setIsActive(Constants.NO);
 				 emailScenarioConfigurationDao.save(emailconfigur);
+				 
 				 returnValue= "failure";
 			 }
 		 }
@@ -156,13 +163,15 @@ public class EmailScenarioConfigurationRestController {
 			 emailConfig.setEmail_UUID(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 			 emailConfig.setCreatedBy(user.getFirstName());
 			 emailConfig.setCreatedDate(new Date());
+			 emailConfig.setUpdatedDate(new Date());
 		 
 		
 		
 		 if(emailConfig != null){
 			 String fromMail=emailScenarioconService.verifyConfgParserMail(orgLocation.getId(),emailConfig);
 			 if(Constants.EMAIL_SUCCESS.equalsIgnoreCase(fromMail)){
-				 emailConfig.setStatus("Y");
+				 emailConfig.setVerifiedStatus(Constants.YES);
+				 emailConfig.setIsActive(Constants.YES);
 				 emailConfig.setEmailPassword(new PasswordSecurity().encrypt(emailConfig.getEmailPassword()));
 				 emailConfig.setUsageType(emailConfigurationDTO.getUsageType());
 				 emailScenarioconService.save(emailConfig); // Saving record when successfully validated.
@@ -285,7 +294,7 @@ public class EmailScenarioConfigurationRestController {
 				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    		if (user != null) {
-		    			List<EmailScenarioConfiguration> parserMailList=emailScenarioconService.getConfParserMailList(orgLocation.getId(),Constants.JOB_PARSING);
+		    			List<EmailScenarioConfiguration> parserMailList=emailScenarioconService.getConfParserMailList(orgLocation.getId(),Constants.RESUME_PARSING , false);
 		    			if(parserMailList != null){
 		    				response.setData(parserMailList);
 		    				response.setResponse(Result.SUCCESS.name());
@@ -473,7 +482,7 @@ public class EmailScenarioConfigurationRestController {
 			return configuredMail;
 		}
 				
-				@RequestMapping(value = "/changeDefaultEmailConfig" , method = RequestMethod.POST)
+		@RequestMapping(value = "/changeDefaultEmailConfig" , method = RequestMethod.POST)
 		public @ResponseBody int changeDefaultEmailConfig(long id, boolean defaultAccount,HttpServletRequest request)
 				throws Exception {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -481,7 +490,16 @@ public class EmailScenarioConfigurationRestController {
 			 int flag=emailScenarioconService.changeDefaultEmailFromMail(id, orgLocation.getId(), defaultAccount);
 			return flag;
 		}
-			
+		@RequestMapping(value = "/changeDefaultParserEmailConfig" , method = RequestMethod.POST)
+		public @ResponseBody int changeDefaultParserEmailConfig(String uuid, boolean activeFlag, HttpServletRequest request)
+				throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 Date updatedDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(),new Date()); //parsing to org specific date format
+			 int flag=emailScenarioconService.changeDefaultParserEmailConfig(uuid, orgLocation.getId(), activeFlag, updatedDate);
+			return flag;
+		}
+						
 				
 		@RequestMapping(value = "/validateParserEmail" , method = RequestMethod.POST)		
 		public Boolean validateParserEmail (@RequestParam(value = "parserEmailId", required = true) String parserEmailId,

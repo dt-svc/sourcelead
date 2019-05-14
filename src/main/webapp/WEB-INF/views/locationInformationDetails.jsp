@@ -22,7 +22,7 @@
 
 <script type="text/javascript">
 function resetInformation(){
-	$("informationDetails_form").validate().resetForm();
+	//$("informationDetails_form").validate().resetForm();
 }
 
 $(function(){

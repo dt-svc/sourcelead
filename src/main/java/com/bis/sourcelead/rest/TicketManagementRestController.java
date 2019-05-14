@@ -65,13 +65,13 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = "/dumpTicketManagementData")
 	@ResponseBody
-	public String dumpTicketManagementPreDefinedValuesToAllOrgLocations(HttpServletRequest request) {
+	public String dumpTicketManagementPreDefinedValuesToAllOrgLocations(HttpServletRequest request, @RequestParam(defaultValue="0") long orgLocationId) {
 		int count = 0;
 		try {
 			if(request.getSession().getAttribute("dumpTicketManagementData") == null || (!(Boolean) request.getSession().getAttribute("dumpTicketManagementData"))) {
 				request.getSession().setAttribute("dumpTicketManagementData", true);
 				System.out.println("-------- Stated Dump of pre-defined Ticket Management values to all OrgLocations --------");
-				count = ticketManagementService.dumpTicketManagementPreDefinedValuesToAllOrgLocations();
+				count = ticketManagementService.dumpTicketManagementPreDefinedValuesToAllOrgLocations(orgLocationId);
 				System.out.println("-------- Completed Dump of pre-defined Ticket Management values to all OrgLocations --------");
 			}
 		} catch (Exception e) {
@@ -560,7 +560,7 @@ public class TicketManagementRestController {
 	 * response.setResponseMessage(Result.AWKWARD.getValue()); } return response; }
 	 */
 
-	@RequestMapping(value = "/changeTicketStatusType", method = RequestMethod.POST)
+	@RequestMapping(value = {"/changeTicketStatusType", "/rest/changeTicketStatusType"}, method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> changeTicketStatusType(HttpServletRequest request, TicketStatusHistoryDTO ticketStatusHistoryDTO) {
 		Response<Boolean> response = new Response<>();
@@ -713,6 +713,12 @@ public class TicketManagementRestController {
 		return response;
 	}
 
+	@RequestMapping(value = {"/rest/changeTicketManagementStatus"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> deleteTicketForMobile(HttpServletRequest request, @RequestParam(defaultValue = "0") long ticketId, @RequestParam(defaultValue = "1") int status) {
+		return deleteTicket(request, ticketId, status);
+	}
+
 
 	@RequestMapping(value = "/rest/ticketSummary")
 	public Response<TicketDTO> getTicketSummary(HttpServletRequest request, @RequestParam(defaultValue = "") String uuid) {
@@ -778,7 +784,8 @@ public class TicketManagementRestController {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				response.setObject(ticketManagementService.saveTicketComment(ticketCommentDTO, user));
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				response.setObject(ticketManagementService.saveTicketComment(ticketCommentDTO, user, loginOrgLocation));
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {

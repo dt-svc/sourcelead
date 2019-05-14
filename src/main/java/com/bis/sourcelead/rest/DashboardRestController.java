@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.UserAccountsDTO;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dto.DashboardCountsDTO;
@@ -102,9 +103,9 @@ import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -112,6 +113,7 @@ import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UserLoginHelper;
+import com.bis.sourcelead.util.dynamicReport.DynamicReport;
 import com.bis.sourcelead.web.DashboardController;
 import com.ibm.icu.util.Calendar;
 
@@ -223,6 +225,9 @@ public class DashboardRestController {
 	 @Autowired
 	 ProjectPlanningResourceRequestService projectPlanningResourceRequestService;
 	 
+	 @Autowired
+	 DynamicReport dynamicReport;
+	 
 	 
 	 @Autowired
 	 private SubmissionTemplateService submissionTemplateService;
@@ -248,10 +253,14 @@ public class DashboardRestController {
 		if(StringUtils.isEmpty(timesheetCountType)) {
 			timesheetCountType = "All";
 		}
+		if(loginOrgLocations != null && (loginOrgLocations.getOrg() == null || loginOrgLocations.getOrg() != null && loginOrgLocations.getOrg().getId() == null)) {
+			loginOrgLocations = orgLocationService.getOrgLocations(loginOrgLocations.getId());
+		}
 		if("employes".equalsIgnoreCase(timesheetType)){
-			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),timesheetCountType,isGlobalAccess);
+			 Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isAdmin");
+			 timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),timesheetCountType,isGlobalAccess,isAdmin);
 		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
-			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(masterCandidateId, loginOrgLocations.getId(),timesheetCountType);
+			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(masterCandidateId, loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),timesheetCountType);
 		}
 		
 		return timeSheetSubmissionCount;
@@ -273,6 +282,8 @@ public class DashboardRestController {
 		Long masterCandidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "masterCandidateId");
 		if(orgLoc == null && StringUtils.isNotEmpty(tedDTO.getLocationCode())){
 			orgLoc = orgLocationService.getOrgLocationsByLocationCode(tedDTO.getLocationCode());
+		}else if(orgLoc != null && (orgLoc.getOrg() == null || orgLoc.getOrg() != null && orgLoc.getOrg().getId() == null)) {
+			orgLoc = orgLocationService.getOrgLocations(orgLoc.getId());
 		}
 		
 		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
@@ -290,10 +301,12 @@ public class DashboardRestController {
 			}
 			 expensesAndTimesheetDashBordCountDTO = new ExpensesAndTimesheetDashBordCountDTO();
 			TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+			
 			if("employes".equalsIgnoreCase(timesheetFor)){
-				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId(),"All",isGlobalAccess);
+				 Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(loginUser.getId(),orgLoc.getId());
+			     timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId(),orgLoc.getOrg().getId(),"All",isGlobalAccess,isAdmin);
 			}else if("myTimesheets".equalsIgnoreCase(timesheetFor)){
-				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(masterCandidateId, orgLoc.getId(),"All");
+				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLoc.getId(),orgLoc.getOrg().getId(),"All");
 			}
 			
 			ExpensesCount expensesCount = new ExpensesCount();
@@ -339,20 +352,6 @@ public class DashboardRestController {
 	
 	
 	
-	
-	
-	
-	/****
-	 * 
-	 * @author: Pavan Jampana 
-	 * This  controller method is  to get Timesheet Submissions list based on status 
-	 */
-	
-	@RequestMapping(value = "/totalTimesheetList/{status}")
-	public @ResponseBody void tiesheetStatusList(@PathVariable("status") String status,HttpServletResponse response) throws Exception {
-		 StringBuilder redirectUrl = new StringBuilder();
-		 response.sendRedirect(redirectUrl.append("/pms/timesheetlistByStatus?status=").append(status).toString());
-	}
 	
 	
 	@RequestMapping(value = "/dashboard/{orgLocationId}/{userId}" , method = RequestMethod.GET)
@@ -1668,10 +1667,8 @@ public class DashboardRestController {
 		return requirementDTOList;
 	}
 	
-	
-	
-		/**
-	 * @author Laxman
+	/**
+	 * @author Mahaveer Manoj
 	 * @param request
 	 * @param dashboardItemsDTO
 	 * @return
@@ -2074,8 +2071,6 @@ public class DashboardRestController {
 
   	}
       
-      
-      
  	 @RequestMapping(value = "/ws/dumpUUIDForUserRoles", method = RequestMethod.GET)
  	 public void dumpUUIDForUserRoles() throws Exception {
  		
@@ -2090,5 +2085,122 @@ public class DashboardRestController {
  			 System.out.println("dumping uuid for userroles ends");
  		 }
  	 }
+ 	 
+ 	 
+ 	@RequestMapping(value = "/getLoginUserMultiAccountsList")
+	public @ResponseBody List<UserAccountsDTO> getLoginUserMultiAccountsList() throws Exception {
+		
+ 		List<UserAccountsDTO> accountsList = userLoginHelper.getUserAccountsList();
+ 		return accountsList;
+	}
+ 	
+ 	@RequestMapping(value = "/getInterviewListExportList")
+	public void getInterviewListExportList(EventsDTO eventsDTO,HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(value="exportType", required=false) String exportType) {
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<RequirementInterviewHistory> requirementInterviewList = new ArrayList<RequirementInterviewHistory>();
+			String currentTime = null;
+			String userType = null;
+			Timezone timezone = null;
+			String userCode = user.getUserCode();
+			Long userId = user.getId();
+			if(loginOrgLocations.getTimezone() != null){
+				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			}
+			
+			Date startUTCDate = null;
+			Date endUTCDate = null;
+			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+			if(StringUtils.isNotBlank(eventsDTO.getDateRange())) {
+				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),eventsDTO.getDateRange());
+				
+				String startTimeTS = Constants.TZ_DF.format(startTime); 
+				String endTimeTS = END_TZ_DF.format(startTime);
+				String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startTimeTS);
+				String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endTimeTS);
+					 startUTCDate = TZ_DF_TS.parse(startDateString);
+					 endUTCDate = TZ_DF_TS.parse(endDateString);
+				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+					userType = Constants.ADMIN;
+						requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, eventsDTO.getDateRange(), currentTime, userType, userId, userCode,startUTCDate,endUTCDate,timezone,user);
+				} 
+				  else{ 
+					  requirementInterviewList = requirementInterviewHistoryService.getAllInterviewAssignedToLoginUser(loginOrgLocations, eventsDTO.getDateRange(), currentTime, userType, userId,userCode,startUTCDate,endUTCDate,timezone,user); 
+					  }
+					 
+				File file = null;
+				if (exportType.equalsIgnoreCase("pdf")) {
+					file = dynamicReport.interviewListPdfExport(requirementInterviewList, loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName());
+				} else {
+					file = dynamicReport.interviewListExcelExport(requirementInterviewList,loginOrgLocations.getDateFormat(),loginOrgLocations.getOrgLocationName());
+				}
+				
+				String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+				if (mimeType == null) {
+					mimeType = "application/octet-stream";
+				}
+				response.setContentType(mimeType);
+				StringBuilder fileNameSB = new StringBuilder();
+				response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+				response.setContentLength((int) file.length());
+				InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+				inputStream.close();
+				response.getOutputStream().close();
+				response.getOutputStream().flush();	
+				if(file!= null){
+					file.delete();
+				}
+	
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+ 	
+ 	
+ 	
+ 	@RequestMapping(value = "/getProjectResourceRequestsCounts", method = RequestMethod.GET)
+	public @ResponseBody ProjectPlanningResourceRequestDTO getProjectResourceRequestsCounts(HttpServletRequest request) throws Exception {
+	   
+	  OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	  String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	  List<ProjectPlanningResourceRequest> projectPlanningRequestList = projectPlanningResourceRequestService.getResourceRequestListByApproverIdAndOrgLocationIdAndStatus(user.getId(), orgLocation.getId(), userRoleName);
+	 
+	  ProjectPlanningResourceRequestDTO projectPlanningResourceRequestDTO = new ProjectPlanningResourceRequestDTO();
+	  
+	  Integer waitingCount = 0;
+	  Integer approvedCount = 0;
+	  Integer rejectedCount = 0;
+	  Integer onholdCount = 0;
+	  
+	  if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0) {
+		  for(ProjectPlanningResourceRequest planningRequest : projectPlanningRequestList){
+			  if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+				  approvedCount = approvedCount + 1;
+			  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
+				  waitingCount = waitingCount + 1;
+			  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
+				  rejectedCount = rejectedCount + 1;
+			  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
+				  onholdCount = onholdCount + 1;
+			  }
+		  }
+	  }
+	  
+	  projectPlanningResourceRequestDTO.setWaitingCount(waitingCount);
+	  projectPlanningResourceRequestDTO.setApprovedCount(approvedCount);
+	  projectPlanningResourceRequestDTO.setRejectedCount(rejectedCount);
+	  projectPlanningResourceRequestDTO.setOnholdCount(onholdCount);
+	  
+	  return projectPlanningResourceRequestDTO;
+	  
+    }
+    
       
 }

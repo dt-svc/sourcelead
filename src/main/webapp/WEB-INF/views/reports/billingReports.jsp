@@ -42,7 +42,7 @@ $(document).ready(function(){
 			<div class="pull-left">
 				<h2>Finance</h2>
 			</div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/financialReportsList'/>">Financial Reports</a> &raquo; Finance</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; Finance</div>
 </section>
 
 
@@ -437,6 +437,7 @@ function getBillingReportsChart(invoiceType,json){
 	 var chartData = [];
 	 
   var firstDate = new Date();
+ if(typeof json.billingGraphBean != 'undefined'){
   for (var i = 0; i < json.billingGraphBean.length; i++) { 
 		 var opt = json.billingGraphBean[i]; 
         chartData.push({
@@ -445,7 +446,8 @@ function getBillingReportsChart(invoiceType,json){
         	year2005: opt.expenses
       });
   }
-	var chart = AmCharts.makeChart("billing_chartdiv", {
+ }
+  var chart = AmCharts.makeChart("billing_chartdiv", {
 		"theme": "light",
 	    "type": "serial",
 	    "dataProvider":chartData ,

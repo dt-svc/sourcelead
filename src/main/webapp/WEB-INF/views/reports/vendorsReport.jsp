@@ -38,7 +38,7 @@
 </section>
 
 
-    <div class="vendor_wrap positionRelative">
+    <div class="positionRelative">
     
     
 <div class="reportHead">
@@ -92,6 +92,7 @@
 <div id="releasedJobsResultDiv"></div>
 <div id="releasedApplicantsDeclineDiv"></div>
 <div id="releasedApplicantsBackOutDiv"></div>
+<div id="releasedApplicantsHiredListDiv"></div>
 </section>   
  
       
@@ -574,7 +575,7 @@ $(".addUser-org").click(function(){
    $("#endDate").click(function(){
 	   $(".endDate").toggle(200);
    });
-   event.preventDefault();
+ //   event.preventDefault(); commented the code not a valid palce to use.
 });
 
 $(".addSkills").click(function(){

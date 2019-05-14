@@ -94,7 +94,7 @@ function logoutForConfigure() {
 	    </section>
 	    
 	    
-	     <div class="clearfix row">
+	    <div class="clearfix row">
 	    	
 	      <sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
 			   <jsp:include page="dashboardTimesheets.jsp"></jsp:include>  
@@ -131,6 +131,7 @@ function logoutForConfigure() {
 			</sec:authorize> 
 					
 					<sec:authorize access="hasRole('ROLE_RESOURCE_REQUEST_APPROVER')">
+					   <%-- <jsp:include page="resourceRequest.jsp"></jsp:include>  --%>
 					    <div class="col-md-12"><jsp:include page="projectResourceRequest.jsp"></jsp:include></div>  
 					    <jsp:include page="projectNewResourceRequest.jsp"></jsp:include>  
 					 </sec:authorize>
@@ -158,17 +159,24 @@ function logoutForConfigure() {
 		     
 		     <div class="clearfix"></div>
 	     
- 
+<%--        <sec:authorize access="!hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS','ROLE_VIEW_REQUIREMENT','ROLE_VIEW_INTERVIEW')">
+			<div class='dashNewWrap mb'> 
+				<div class='blank-pages col-md-12'>
+			        <p><i class='fa fa-5x fa-bar-chart'></i></p>
+		        	<p>No Records Found</p>
+				 </div>
+			</div>
+		</sec:authorize>  --%>
 	    
-	   <div class="clearfix"> 
+	    <div class="clearfix"> 
 	     	<div class="col-md-12"><jsp:include page="dashboardEvents.jsp"></jsp:include></div>   
-	   </div>  	 
-	       	<sec:authorize access="hasAnyRole('ROLE_VIEW_CONTRACT')">
+	   </div>  	
+	     	<sec:authorize access="hasAnyRole('ROLE_VIEW_CONTRACT')">
 				<div class="col-md-12"><jsp:include page="dashboardContracts.jsp"></jsp:include> </div>
 			</sec:authorize>
- 
+
 		<jsp:include page="dashboard_configure_popup.jsp"></jsp:include>
-		</div> 
+		</div>
 </section>
 
 <jsp:include page="masterFooter.jsp" />
