@@ -68,7 +68,11 @@ $(document).ready(function(){
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
+<c:if test='${viewPage != "vendors/vendorsList" && viewPage != "reports/usersUsageReportList"
+            && viewPage != "reports/employeeTasksReportList"  && viewPage != "reports/overdueTaskReport"}'>
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
+</c:if>
+
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
  
 <!--  Amcharts -->
@@ -295,9 +299,8 @@ function preventTabkey(e){
 <script>
 		function logoutFormSubmit() {
 			var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-			var userSessionId = '${SourceLeadWeb_actionUUID}';
-			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId; 
-			document.getElementById("logoutForm").submit();
+			var userSessionId = '${userLoginSession.id}';
+			window.location.href = sourceleadUrl+"/getActionHistoryList/"+userSessionId; 
 		}
 </script>
 
