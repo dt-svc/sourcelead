@@ -248,6 +248,7 @@ function prepareCreditNoteList(url,locationdateForList){
 
 <script>
 function creditNotePagination(url){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var colIndex = 0;
     $('#creditListTable').DataTable( { 
 	  "processing": true,
@@ -335,7 +336,7 @@ function creditNotePagination(url){
             	 if(report.generatedId != null && report.generatedId != '' && report.generatedId != 'undefined'){
             		 
 				    //result = result +'<div class="tbldata-dotdot-vsm" title="'+report.referenceNumber+'">'+report.referenceNumber+'</div>';
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/viewCreditDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" title="'+report.generatedId+'">'+report.generatedId+'</a></div>';				
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="'+vmsUrl+'/viewCreditDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit" title="'+report.generatedId+'">'+report.generatedId+'</a></div>';				
 
   				     
             	 }else{
@@ -878,6 +879,14 @@ function resetInvoiceFilter(){
 	getCreditList();
 	
 }
+function resetingInvoiceFilter(){
+	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myInvoiceUL > li input:checkbox").prop("checked",false);
+	document.getElementById("invoiceDateRadio").checked = true;
+	$(".custom_search").empty().hide();
+	$("#creditDebitDataTableSearch").val('');
+}
 </script>
 
 
@@ -968,7 +977,7 @@ function resetInvoiceFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="getCreditList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetInvoiceFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingInvoiceFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>

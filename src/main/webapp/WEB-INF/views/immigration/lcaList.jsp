@@ -30,6 +30,10 @@
 		<div class="immigraInnWrap">
 		<!-- Filter For Lca -->
 <div class="positionRelative reportHead clearfix">
+	<span class="pull-left refreIcon">
+	     <a href="javascript:void(0)" class="refeIcon" id="resetLCA" title="Refresh" onclick="refreshList();"></a>
+	 </span>    
+     
       <ul class="pull-right list-unstyled list-inline">
         <sec:authorize access="hasRole('ROLE_ADD_LCA')">
 			<li><a href="${SourceLeadWeb_vmsUrl}/immigration/loadNewLCA" class="newAdBtn mr5">+ New </a></li>
@@ -430,7 +434,11 @@
 	   
 	});
 </script>
-
+<script type="text/javascript">
+function refreshList(){
+	location.reload();
+}
+</script>
 <script type="text/javascript">
 function deleteLcaListId(lcaUuid){ // only stauts updated with reason. active 1 , deactive 0.
 	 $(".project_inn_mask").remove();
