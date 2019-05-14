@@ -82,13 +82,15 @@ var timezone = '${SourceLeadWeb_timezone}';
 var timezoneId ='${SourceLeadWeb_timeZoneId}'; 
 var candidateId = '${SourceLeadWeb_candidateId}';
 var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
-var userType =  '${SourceLeadWeb_loginUserRole}'; 
+var userType =  '${SourceLeadWeb_displayName}'; 
 var userSessionId = '${SourceLeadWeb_actionUUID}';
 var loginOrgLocationName = '${SourceLeadWeb_orgName}'; 
 // below are related variable used in showing tabs in dashboard.
 var bothTimesheets ='${bothTimesheets}';
 var onlyTimesheets ='${onlyTimesheets}';
 var onlyApprovalTimesheets ='${onlyApprovalTimesheets}';
+var tokenParamName = "${_csrf.parameterName}";
+var tokenValue = "${_csrf.token}";
 // reruirement list variables.
 var orgATS = '${SourceLeadWeb_ats}';
 var orgVMS = '${SourceLeadWeb_vms}';
