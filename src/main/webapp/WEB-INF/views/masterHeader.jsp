@@ -2443,7 +2443,6 @@ refresh: function(pauseValue,pauseData) {
 
 
 $('document').ready(function () {
-	alert("1")
   obj.init();
 });
 
