@@ -1,6 +1,8 @@
 
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jquery.orgchart.css?staticTime=${staticTime}">
+
 
 <script>
 var atsUrl = '${SourceLeadWeb_atsUrl}';
