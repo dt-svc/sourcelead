@@ -2758,5 +2758,37 @@ public class ReportRestController {
 		return assLoanList;
 	}
 	
+	@RequestMapping(value = "/getLoanAndAdvancesReportExport", method = RequestMethod.GET)
+	public File getLoanAndAdvancesReportExport(LoanAndAdvanceReportDTO loanAndAdvanceReportDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<LoanAndAdvanceReportDTO> assLoanList =  loanAndAdvancesReportService.getLoansAndAdvancesByLoanNameAndOrglocationId(orgLocations.getId(), loanAndAdvanceReportDTO);
+		
+		File file = null;
+	    if(loanAndAdvanceReportDTO.getExportType().equalsIgnoreCase("pdf")) {
+	    	 file=  dynamicReport.loanAndAdvanceReportPDFExport(assLoanList,orgLocations);
+	    }else {
+	    	 file=  dynamicReport.loanAndAdvanceReportExcelExport(assLoanList,orgLocations);
+	    }
+	    
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+		
+		return file;
+	}
 	
 }
