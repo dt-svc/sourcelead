@@ -4,8 +4,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  
 <script>
-   getRejectedEmployeesList();
-});
+$(document).ready(function(){
+	   getRejectedEmployeesList();
+	});
 </script>
 
 <script>
