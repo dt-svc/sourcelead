@@ -60,10 +60,9 @@ function requirementProfile(requirementUUID){
 	var candidateId = '${SourceLeadWeb_candidateId}'
     var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var referUUID = '${referUUID}';
-    
     $.ajax({
 	   	type: "GET",
-	    url: atsUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&referUUID="+referUUID, 	   
+	    url: atsUrl+"/ws/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&referUUID="+referUUID, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var result = "";
@@ -307,7 +306,7 @@ function requirementProfile(requirementUUID){
 function requirementDetails(requirementUUID){
 	$.ajax({
 	   	type: "GET",
-	    url: atsUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
+	    url: atsUrl+"/ws/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
 		    success: function(data) {
 		    	
 		    	var json = JSON.parse(data);
