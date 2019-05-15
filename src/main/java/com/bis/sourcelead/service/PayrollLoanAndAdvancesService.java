@@ -18,4 +18,6 @@ public interface PayrollLoanAndAdvancesService {
 	List<PayrollLoanAndAdvances> getPayrollLoanAndAdvancesByTypeAndOrgLocationId(String type,Long orgLocationId) throws Exception;
 	
 	PayrollLoanAndAdvances getPayrollLoanAndAdvancesById(Long id) throws Exception;
+
+	List<PayrollLoanAndAdvances> getPayrollLoanAndAdvancesByOrgLocationId(Long orgLocationId);
 }
