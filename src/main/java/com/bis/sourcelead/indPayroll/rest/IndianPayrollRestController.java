@@ -870,4 +870,14 @@ public class IndianPayrollRestController {
 	        }
 	        return response;
 	    }
+	  
+	  @RequestMapping (value = "/getLoanNames", method = RequestMethod.GET)
+		@ResponseBody
+		public List<PayrollLoanAndAdvances> getLoanNames(HttpServletRequest request,HttpServletResponse response) throws Exception{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<PayrollLoanAndAdvances> padvList = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesByOrgLocationId(orgLocation.getId()); 
+		 return padvList;
+		
+		}
+	  
 }
