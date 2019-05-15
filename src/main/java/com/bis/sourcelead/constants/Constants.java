@@ -1495,6 +1495,7 @@ public class Constants {
 	public static final String CLOCK_OUT = "ClockOut";
 	public static final String PLAY = "play";
 	public static final String PAUSE = "pause";
+	public static final String LOAN_AND_ADVANCE = "Loan And Advance";
 
 	
 }
