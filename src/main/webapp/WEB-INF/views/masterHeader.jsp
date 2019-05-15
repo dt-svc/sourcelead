@@ -286,13 +286,13 @@ function preventTabkey(e){
 
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','/resources/images/office-image.jpg');
+		$(imageId).attr('src','${SourceLeadWeb_sourceleadDomainUrl}/resources/images/office-image.jpg');
 	}
 </script>
 
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','/resources/images/userprofile-img.png');
+		$(imageId).attr('src','${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofile-img.png');
 	}
 </script>
 
@@ -1907,7 +1907,7 @@ function zipcodeMask(country,zipCodeId){
 </script>
 
 
-<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
+<script type="text/javascript" src='${SourceLeadWeb_sourceleadDomainUrl}/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <%-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script> --%>
 
 
