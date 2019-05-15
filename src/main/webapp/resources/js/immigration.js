@@ -7,6 +7,8 @@ var idNumber = '';
 var familyMemberId = '';
 var templateId='';
 var formNames = [];
+var myImmigrationPage ="";
+
 function Immigration() {
     this.gotoTemplatePreviousPage = function (temp) {
         $("#addNewPetitionTemplateDiv").empty();
