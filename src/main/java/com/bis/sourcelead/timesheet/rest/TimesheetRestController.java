@@ -6098,7 +6098,7 @@ public class TimesheetRestController {
 				for(TimesheetEntriesDTO te :tsDTO.getTimesheetEntries()) {
 					if(te.getTimesheetTaskDTO() != null && te.getTimesheetTaskDTO().getId() != null) {
 						Date timesheetDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),te.getDate().replaceAll("/", "-"));
-						if(count == 0) {
+						if(count == 0 && tsDTO.getId() != null) {
 							oldDbIdList = timesheetDayEntriesDao.getAllTimeSheetDayEntryIdsBySubmissionIdAndEntryDate(tsDTO.getId(),timesheetDate);
 						}
 						
@@ -6908,6 +6908,7 @@ public class TimesheetRestController {
 			@RequestParam(value = "client", required = false) String client,
 			@RequestParam(value = "project", required = false) String project,
 			@RequestParam(value = "stage", required = false) String stage,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
 			@RequestParam(value = "timesheetFrequency", required = false) String timesheetFrequency,
 			@RequestParam(value = "frequencyMonth", required = false) String frequencyMonth,
 			@RequestParam(value = "weekFrequency", required = false) String weekFrequency, HttpServletResponse response)
@@ -6937,10 +6938,10 @@ public class TimesheetRestController {
 		}
 		if ("pdf".equalsIgnoreCase(exportType)) {
 			file = exportTimesheetEntries.timeSheetApprovelExport(user, orgLocations, stDate, edDate,
-					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess);
+					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess,searchValue);
 		} else {
 			file = exportTimesheetEntries.timeSheetApprovelExportExcel(user, orgLocations, stDate, edDate,
-					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess);
+					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess,searchValue);
 		}
 
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
