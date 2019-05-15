@@ -979,7 +979,7 @@ function exportToPdf(type) {
   		
   		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 		if(requirementEmptyMessage > 0) {
-			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?exportType=pdf&searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;
+			window.location.href = atsUrl+"/getRequirementExportListByOrgLocationID?exportType=pdf&searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;
 		} else {
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -995,7 +995,7 @@ function exportToPdf(type) {
 	} else {
 		/* alert("Export JobFair to PDF"); */
 		$(".buttons-pdf").click();
-		window.location.href = sourceleadUrl +"/pdfExportForJobfair?includeInactive=true&searchValue="+$("#jobFairDataTableSearch").val();
+		window.location.href = atsUrl +"/pdfExportForJobfair?includeInactive=true&searchValue="+$("#jobFairDataTableSearch").val();
 	}
 }
 </script>
@@ -1061,7 +1061,7 @@ function exportToExcel(type) {
   		
   		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 		if(requirementEmptyMessage > 0) {
-			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?exportType=xls&searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;	
+			window.location.href = atsUrl+"/getRequirementExportListByOrgLocationID?exportType=xls&searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;	
 		} else {
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
