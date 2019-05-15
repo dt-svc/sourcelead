@@ -12,8 +12,9 @@
 
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+myImmigrationPage = '${myImmigrationPage}';
 </script>
-<%-- <c:set var ="myImmigrationPage" value = "${myImmigrationPage}" scope="session"/> --%>
+<c:set var ="myImmigrationPage" value = "${myImmigrationPage}" scope="session"/>
 <c:set var ="passOnLoadCount" value = "${tabRecordCountMap['Passport']}" scope="request"/>
 <c:set var ="visaOnLoadCount" value = "${tabRecordCountMap['Visa']}" scope="request"/>
 <c:set var ="empOnLoadCount" value  =  "${tabRecordCountMap['Employers']}" scope="request"/>
