@@ -513,19 +513,18 @@ public class ImmigrationController {
 	// end here============================
 	@RequestMapping(value = { "/gotoTemplatePreviousPage" })
 	public ModelAndView loagNewPetitionPageOne(HttpServletRequest request,
-			@RequestParam(value = "status", required = false) String status) {
+			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "templateId", required = false) Long templateId) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		try {
 			if (status.equalsIgnoreCase("templateDetails")) {
-				ImmigrationTemplateDTO dto = (ImmigrationTemplateDTO) request.getSession().getAttribute("templateDTO");
-				// List<Countries> countryList = countriesService.getAllCountries();
-				// List<LookUpData> petitionTypeList =
-				// immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
-				// model.addObject("countriesList", countryList);
-				// model.addObject("petitionTypeList", petitionTypeList);
-				model.addObject("templateDTO", dto);
-				model.setViewName("/immigration/petitionTemplateDetails");
+				if (templateId != null) { // this code for edit mode.
+				  ImmigrationTemplateDTO templateDTO = immigrationTemplateService.getPetitionTemplateDetails(templateId);
+				   model.addObject("templateDTO", templateDTO);
+				   request.getSession().setAttribute("templateDTO", templateDTO);
+				    model.setViewName("/immigration/petitionTemplateDetails");
+				}
 			}
 			if (status.equalsIgnoreCase("tempDetails")) {
 				model.setViewName("/immigration/petitionTemplateDetails");
@@ -540,18 +539,19 @@ public class ImmigrationController {
 				
 				List<LookUpData> petitionerDocsList = lookUpDataService.getLookUpDataByCategory(Constants.PETITIONER_CATEGORY);
 				model.addObject("petitionerDocsList", petitionerDocsList);
+				if(templateId != null) { // this code for edit mode.
+					List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService.getImmigrationTemplateDocsListById(templateId);
 				
-				// dropdown
-				// values in UI.
-				/*
-				 * List<ImmigrationTemplateDTO> templateDTO =
-				 * (List<ImmigrationTemplateDTO>)request.getSession().getAttribute("templateDTO"
-				 * ); model.addObject("templateDTO", );
-				 */
+					request.getSession().setAttribute("templateDocList", docsList);
+				}
 				model.addObject("educationsList", educationsList);
 				
 				model.setViewName("/immigration/petitionTemplateDocDetails");
 			} else if (status.equalsIgnoreCase("formDetails")) {
+				if (templateId != null) { // this code for edit mode.
+					List<ImmigrationTemplateFormDTO> formsList = immigrationTemplateService.getImmigrationTemplateformsListById(templateId);
+					request.getSession().setAttribute("templateFormsList", formsList);
+				}
 				model.setViewName("/immigration/petitionTemplateFormDetails");
 			} else if (status.equalsIgnoreCase("taskList")) {
 				model.setViewName("/immigration/immigrationTemplateTaskList");
@@ -580,7 +580,7 @@ public class ImmigrationController {
 			// mode.
 			try {
 				ImmigrationTemplateDTO templateDTO = immigrationTemplateService.getPetitionTemplateDetails(templateId);
-				List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService.getImmigrationTemplateDocsListById(templateId);
+		/*		List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService.getImmigrationTemplateDocsListById(templateId);
 				for(ImmigrationTemplateDocDTO  itd:docsList) {
 					itd.setDocumentCategory(itd.getDocumentCategory());
 				}
@@ -589,10 +589,10 @@ public class ImmigrationController {
 				List<ImmigrationTemplateFormDTO> formsList = immigrationTemplateService.getImmigrationTemplateformsListById(templateId);
 				logger.debug(
 						" Edit mode templateId templateId -->" + templateId + ", formsList size i " + formsList.size());
-				// templateDTO.setImmigrationDocList(docsList);
+				 templateDTO.setImmigrationDocList(docsList);*/
+				/*request.getSession().setAttribute("templateDocList", docsList);
+				request.getSession().setAttribute("templateFormsList", formsList);*/
 				request.getSession().setAttribute("templateDTO", templateDTO);
-				request.getSession().setAttribute("templateDocList", docsList);
-				request.getSession().setAttribute("templateFormsList", formsList);
 			} catch (Exception e) {
 				logger.error(" Exception caught in edit mode in controller -->" + templateId);
 				e.printStackTrace();
