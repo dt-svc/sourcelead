@@ -1447,8 +1447,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	
 	@SuppressWarnings("unused")
 	public AssociatePayrollPayheadHistory calculateTDSForEmployee(AssociateSalaryInd assoSal, Employees employee, OrgLocations orgLocation, Date freqStartDate, PreCheckINDPayrollDTO preCheckINDPayrollDTO, IndEmployeePayroll employeePayroll, User loginUser) 
-	{
-		AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
+	{AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
 	
 	// TDS process Calculation
 	try {
@@ -1460,11 +1459,11 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		//get yearly taxable amount in current frequency
 		BigDecimal taxableYearlyAmount = new BigDecimal("0.00");
 		for(AssociatePayrollPayheadHistory associatePayrollPayheadHistory : employeePayroll.getAssociatePayrollPayheadHistory()) {
-			if(associatePayrollPayheadHistory.getPayrollPayhead().getTax() != null &&  associatePayrollPayheadHistory.getPayrollPayhead().getTax().equalsIgnoreCase(Constants.TAXABLE)) {
-				if(associatePayrollPayheadHistory.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
+			if(Constants.TAXABLE.equalsIgnoreCase(associatePayrollPayheadHistory.getPayrollPayhead().getTax())) {
+				if(Constants.IND_PAYROLL_PAYHEAD_EARNINGS.equalsIgnoreCase(associatePayrollPayheadHistory.getPayrollPayhead().getType())) {
 					taxableYearlyAmount = taxableYearlyAmount.add(associatePayrollPayheadHistory.getMonthly().multiply(new BigDecimal(12)));
 				}
-				if(associatePayrollPayheadHistory.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
+				if(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION.equalsIgnoreCase(associatePayrollPayheadHistory.getPayrollPayhead().getType())) {
 					taxableYearlyAmount = taxableYearlyAmount.subtract(associatePayrollPayheadHistory.getMonthly().multiply(new BigDecimal(12)));
 				}
 			}
@@ -1484,59 +1483,48 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		}
 		
 		//Eligible percent of tax based on age and salary
-		String[] ageGroup = {""};
+		Double taxPercent = 0d;
 		if(preCheckINDPayrollDTO != null && preCheckINDPayrollDTO.getTdsList() != null && preCheckINDPayrollDTO.getTdsList().size() > 0) {
 			for(Tds tds : preCheckINDPayrollDTO.getTdsList()) {
 				if(age <= 60 && tds.getAge().equalsIgnoreCase("0 - 60 Years") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1) {
-					ageGroup[0] = "0 - 60 Years";
+					taxPercent = tds.getPercentage();
 				}else if(age > 60 && age <= 80 && tds.getAge().equalsIgnoreCase("60 - 80 Years") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1) {
-					ageGroup[0] = "60 - 80 Years";
+					taxPercent = tds.getPercentage();
 				}else if(age > 80 && tds.getAge().equalsIgnoreCase("Above 80") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1){
-					ageGroup[0] = "Above 80";
+					taxPercent = tds.getPercentage();
 				}
 			}
-			
-			//Calculating 'tdsExemptionTotal' from IT Declaration submission form by employee
-			SourceleadTaxITDeclarationSubmission itDeclarationSubmission = taxService.getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(employee.getUser().getId(), orgLocation.getId(), fromYear + "-" + toYear);
-			if(itDeclarationSubmission != null) {
-				JSONArray jsonArray = new JSONArray(itDeclarationSubmission.getSubmissionItems());
-				if (jsonArray != null) {
-					for (int i = 0; i < jsonArray.length(); i++) {
-						JSONObject jsonObject = jsonArray.getJSONObject(i);
-						if (jsonObject.getJSONArray("items") != null) {
-							for (int j = 0; j < jsonObject.getJSONArray("items").length(); j++) {
-								JSONObject itemsJsonObject = jsonObject.getJSONArray("items").getJSONObject(j);
-								itemsJsonObject.get("amount");
-								itemsJsonObject.get("maxLimit");
-								if(StringUtils.isNotBlank(itemsJsonObject.get("amount").toString()) && NumberUtils.isNumber(itemsJsonObject.get("amount").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > 0) {
-									if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
-										tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("maxLimit").toString());
-									}else if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) <= Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
-										tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("amount").toString());
-									}
+		}
+		
+		SourceleadTaxITDeclarationSubmission itDeclarationSubmission = taxService.getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(employee.getUser().getId(), orgLocation.getId(), fromYear + "-" + toYear);
+		if(itDeclarationSubmission != null) {
+			JSONArray jsonArray = new JSONArray(itDeclarationSubmission.getSubmissionItems());
+			if (jsonArray != null) {
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject jsonObject = jsonArray.getJSONObject(i);
+					if (jsonObject.getJSONArray("items") != null) {
+						for (int j = 0; j < jsonObject.getJSONArray("items").length(); j++) {
+							JSONObject itemsJsonObject = jsonObject.getJSONArray("items").getJSONObject(j);
+							itemsJsonObject.get("amount");
+							itemsJsonObject.get("maxLimit");
+							if(StringUtils.isNotBlank(itemsJsonObject.get("amount").toString()) && NumberUtils.isNumber(itemsJsonObject.get("amount").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > 0) {
+								if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
+									tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("maxLimit").toString());
+								}else if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) <= Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
+									tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("amount").toString());
 								}
 							}
 						}
 					}
 				}
 			}
-			
-			//'tdsEligibilityTotal' means the value after subtracting 'tdsExemptionTotal' from 'taxableYearlyAmount' (tdsExemptionTotal is calculated from IT Declaration submission form by employee)
-			tdsEligibilityTotal = (taxableYearlyAmount).subtract(new BigDecimal(tdsExemptionTotal)).doubleValue();
-			
-			// get TDS slabs list based on employee age group
-			List<Tds> tdsByAgeGroupList = preCheckINDPayrollDTO.getTdsList().stream().filter(t -> t.getAge().equalsIgnoreCase(ageGroup[0])).collect(Collectors.toList());
-			if(tdsByAgeGroupList != null && tdsByAgeGroupList.size()>0) {
-				for(Tds slabTDS : tdsByAgeGroupList) {
-					if(tdsEligibilityTotal >= slabTDS.getToamount()) {
-						tdsYearlyTotal = tdsYearlyTotal + ((slabTDS.getToamount() - slabTDS.getFromamount() + 1) * (slabTDS.getPercentage()/100));
-					}else if(tdsEligibilityTotal < slabTDS.getToamount().doubleValue() && tdsEligibilityTotal > slabTDS.getFromamount().doubleValue()) {
-						tdsYearlyTotal = tdsYearlyTotal + ((tdsEligibilityTotal - slabTDS.getFromamount() + 1) * (slabTDS.getPercentage()/100));
-					}
-				}
-				tdsMonthlyTotal = (tdsYearlyTotal / 12);
-			}
 		}
+		
+		
+		//TDS amount calculation
+		tdsEligibilityTotal = (taxableYearlyAmount).subtract(new BigDecimal(tdsExemptionTotal)).doubleValue();
+		tdsYearlyTotal = (tdsEligibilityTotal * taxPercent) / 100 ;
+		tdsMonthlyTotal = (tdsYearlyTotal / 12);
 		
 		ph.setIndEmployeePayrollId(employeePayroll);
 		ph.setPayrollPayhead(payrollPayheadService.getPayrollPayheadByShortCodeAndOrglocation("TDS", orgLocation.getId()));
