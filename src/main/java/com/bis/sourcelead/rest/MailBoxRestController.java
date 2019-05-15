@@ -263,8 +263,9 @@ public class MailBoxRestController {
 
 		hotListEmailCampaignDTO.setStaticPath(staticPath);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		emailService.sendEmail(hotListEmailCampaignDTO, user, orgLocation, multiFile);
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocationId);
+		emailService.sendEmail(hotListEmailCampaignDTO, user, orgLocations, multiFile);
 
 		return "success";
 	}
