@@ -25,17 +25,17 @@ public class ClockInOutUtil {
 	private CommonUtil commonUtil;
 	
 	
-	public Date[] getClockFilterDate(String dateSelection,OrgLocations orgLocations) throws Exception {
+	public Date[] getClockFilterDate(String dateSelection,String timeZoneId) throws Exception {
 		Date[] dates = new Date[2];
 		Date[] searchDates = null;
 		Date startDate = null;
 		Date endDate = null;
 		if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
-			searchDates = today(orgLocations);
+			searchDates = today(timeZoneId);
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_7_DAYS)) {
-			searchDates = currentWeek(orgLocations);
+			searchDates = currentWeek();
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_MONTH)) {
-			searchDates = currentMonthDates(orgLocations);
+			searchDates = currentMonthDates();
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_YEAR)) {
 			searchDates = currentYearDates();
 		}
@@ -48,9 +48,9 @@ public class ClockInOutUtil {
 		return dates;
 	}
 	
-	public Date[] today(OrgLocations orgLocations) throws Exception {
+	public Date[] today(String timeZoneId) throws Exception {
 		
-		DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
+		DateTime zoned = new DateTime(DateTimeZone.forID(timeZoneId));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
 		String startDate = outputFormatter.print(zoned);
@@ -71,7 +71,7 @@ public class ClockInOutUtil {
 	 * @return Date[] Date[0] = start date ,Date[1] = End date
 	 * @throws Exception 
 	 */
-	public Date[] currentWeek(OrgLocations orgLocations) throws Exception {
+	public Date[] currentWeek() throws Exception {
 		
 		Calendar c = Calendar.getInstance(); // this takes current date
 		c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
@@ -93,7 +93,7 @@ public class ClockInOutUtil {
 	 * 
 	 * @return Date[] Date[0] = start date ,Date[1] = End date
 	 */
-	public Date[] currentMonthDates(OrgLocations orgLocations) throws Exception {
+	public Date[] currentMonthDates() throws Exception {
 		
 		Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_MONTH,
@@ -132,25 +132,8 @@ public class ClockInOutUtil {
 
 	}
 	
-public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
-		
-	    DateTime zoned = new DateTime(DateTimeZone.forID(orgLocations.getTimeZoneName()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
-		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
-		String startDate = outputFormatter.print(zoned);
-		Date startDateUTC = TZ_DF_TS.parse(startDate);
-		
-		DateTime oneDayZoned = zoned.minusDays(1);
-		String oneDaysDate = outputFormatter.print(oneDayZoned);
-		Date oneDateUTC = TZ_DF_TS.parse(oneDaysDate);
-		
-		Date[] dates = new Date[2];
-		dates[0] = oneDateUTC;
-		dates[1] = oneDateUTC;
-		return dates;
-	}
 
-public Date[] getClockFilterPreviousDates(String currentDate, Date empJoiningDate, OrgLocations location, String dayWisetype) {
+public Date[] getClockFilterPreviousDates(String currentDate, Date empJoiningDate, String dateFormat, String dayWisetype) {
 	
 	Date[] searchDates = null;
 	String[] str = currentDate.split(" To ");
@@ -159,22 +142,22 @@ public Date[] getClockFilterPreviousDates(String currentDate, Date empJoiningDat
 		
 		if(empJoiningDate != null) {
 			  if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
-		  			searchDates = previousDays(currentDate,location,empJoiningDate);
+		  			searchDates = previousDays(currentDate,dateFormat,empJoiningDate);
 		  		}else if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_7_DAYS)) {
-		  			searchDates = previousWeeks(str[0],location);
+		  			searchDates = previousWeeks(str[0],dateFormat);
 		  		}else if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_MONTH)) {
-		  			searchDates = previousMonthDates(str[0],location);
+		  			searchDates = previousMonthDates(str[0],dateFormat);
 		  		}else if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_YEAR)) {
-		  			searchDates = previousYearDates(str[0],location);
+		  			searchDates = previousYearDates(str[0],dateFormat);
 		  		}
 		}else {
 			searchDates = new Date[2];
 			  if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
-				  searchDates[0] = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
-				  searchDates[1] = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+				  searchDates[0] = commonUtil.orgLocationDateFormat(dateFormat, currentDate);
+				  searchDates[1] = commonUtil.orgLocationDateFormat(dateFormat, currentDate);
 			  }else {
-					searchDates[0] = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[0]);
-					searchDates[1] = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[1]);
+					searchDates[0] = commonUtil.orgLocationDateFormat(dateFormat, str[0]);
+					searchDates[1] = commonUtil.orgLocationDateFormat(dateFormat, str[1]);
 
 			  }
 		}
@@ -186,8 +169,8 @@ public Date[] getClockFilterPreviousDates(String currentDate, Date empJoiningDat
 	return searchDates;
 }
 
-private Date[] previousYearDates(String startDate, OrgLocations location) {
-	Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), startDate);
+private Date[] previousYearDates(String startDate, String dateFormat) {
+	Date current = commonUtil.orgLocationDateFormat(dateFormat, startDate);
 
 	Calendar calendar = Calendar.getInstance();
 	calendar.setTime(current);
@@ -208,9 +191,9 @@ private Date[] previousYearDates(String startDate, OrgLocations location) {
 	return dates;
 }
 
-private Date[] previousMonthDates(String startDate, OrgLocations location) {
+private Date[] previousMonthDates(String startDate, String dateFormat) {
 	
-	Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), startDate);
+	Date current = commonUtil.orgLocationDateFormat(dateFormat, startDate);
 
 	Calendar calendar = Calendar.getInstance();
 	calendar.setTime(current);
@@ -232,10 +215,10 @@ private Date[] previousMonthDates(String startDate, OrgLocations location) {
 	
 }
 
-private Date[] previousWeeks(String startDate, OrgLocations location) {
+private Date[] previousWeeks(String startDate, String dateFormat) {
 	Date[] dates = null;
 	
-	Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), startDate);
+	Date current = commonUtil.orgLocationDateFormat(dateFormat, startDate);
     Calendar c = Calendar.getInstance();
     c.setTime(current);
     int i = c.get(Calendar.DAY_OF_WEEK) - c.getFirstDayOfWeek();
@@ -250,10 +233,10 @@ private Date[] previousWeeks(String startDate, OrgLocations location) {
 	return dates;
 }
 
-private Date[] previousDays(String currentDate, OrgLocations location, Date empJoiningDate) {
+private Date[] previousDays(String currentDate, String dateFormat, Date empJoiningDate) {
 	
 	  Date[] dates = null;
-	  Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+	  Date current = commonUtil.orgLocationDateFormat(dateFormat, currentDate);
 	  if(empJoiningDate != null) {
 		  
 		  Calendar calendar = Calendar.getInstance();
@@ -273,7 +256,7 @@ private Date[] previousDays(String currentDate, OrgLocations location, Date empJ
 	return dates;
 }
 
-public Date[] getClockFilterNextDates(String currentDate, Date empJoiningDate, OrgLocations location, String dayWiseType) {
+public Date[] getClockFilterNextDates(String currentDate, Date empJoiningDate, String dateFormat, String dayWiseType) {
 	
 	Date[] searchDates = null;
 	String[] str = currentDate.split(" To ");
@@ -282,22 +265,22 @@ public Date[] getClockFilterNextDates(String currentDate, Date empJoiningDate, O
 		
 		if(empJoiningDate != null) {
 			  if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
-		  			searchDates = nextDays(currentDate,location,empJoiningDate);
+		  			searchDates = nextDays(currentDate,dateFormat,empJoiningDate);
 		  		}else if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_7_DAYS)) {
-		  			searchDates = nextWeeks(currentDate,location);
+		  			searchDates = nextWeeks(currentDate,dateFormat);
 		  		}else if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_MONTH)) {
-		  			searchDates = nextMonthDates(str[1],location);
+		  			searchDates = nextMonthDates(str[1],dateFormat);
 		  		}else if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_YEAR)) {
-		  			searchDates = nextYearDates(str[1],location);
+		  			searchDates = nextYearDates(str[1],dateFormat);
 		  		}
 		}else {
 			searchDates = new Date[2];
 			  if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
-				  searchDates[0] = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
-				  searchDates[1] = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+				  searchDates[0] = commonUtil.orgLocationDateFormat(dateFormat, currentDate);
+				  searchDates[1] = commonUtil.orgLocationDateFormat(dateFormat, currentDate);
 			  }else {
-					searchDates[0] = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[0]);
-					searchDates[1] = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[1]);
+					searchDates[0] = commonUtil.orgLocationDateFormat(dateFormat, str[0]);
+					searchDates[1] = commonUtil.orgLocationDateFormat(dateFormat, str[1]);
 
 			  }
 		}
@@ -311,9 +294,9 @@ public Date[] getClockFilterNextDates(String currentDate, Date empJoiningDate, O
 	
 }
 
-private Date[] nextYearDates(String startDate, OrgLocations location) {
+private Date[] nextYearDates(String startDate, String dateFormat) {
 	Date[] dates = null;
-	Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), startDate);
+	Date current = commonUtil.orgLocationDateFormat(dateFormat, startDate);
 
 	Calendar calendar = Calendar.getInstance();
     Date curDate = calendar.getTime();
@@ -338,9 +321,9 @@ private Date[] nextYearDates(String startDate, OrgLocations location) {
 	return dates;
 }
 
-private Date[] nextMonthDates(String startDate, OrgLocations location) {
+private Date[] nextMonthDates(String startDate, String dateFormat) {
 	Date[] dates = null;
-	Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), startDate);
+	Date current = commonUtil.orgLocationDateFormat(dateFormat, startDate);
 
 	Calendar calendar = Calendar.getInstance();
     Date curDate = calendar.getTime();
@@ -367,12 +350,12 @@ private Date[] nextMonthDates(String startDate, OrgLocations location) {
 	
 }
 
-private Date[] nextWeeks(String currentDate, OrgLocations location) {
+private Date[] nextWeeks(String currentDate, String dateFormat) {
 	Date[] dates = null;
 	
 	String[] str = currentDate.split(" To ");
 	
-	Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[1]);
+	Date current = commonUtil.orgLocationDateFormat(dateFormat, str[1]);
     Calendar c = Calendar.getInstance();
     Date curDate = c.getTime();
     c.setTime(current);
@@ -382,8 +365,8 @@ private Date[] nextWeeks(String currentDate, OrgLocations location) {
     c.add(Calendar.DATE, 6);
     Date end = c.getTime();
     
-    Date startD = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[0]);
-    Date endD = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[1]);
+    Date startD = commonUtil.orgLocationDateFormat(dateFormat, str[0]);
+    Date endD = commonUtil.orgLocationDateFormat(dateFormat, str[1]);
     
     if(startD.before(curDate) && endD.before(curDate)) {
   	  dates = new Date[2];
@@ -394,12 +377,12 @@ private Date[] nextWeeks(String currentDate, OrgLocations location) {
 	return dates;
 }
 
-private Date[] nextDays(String currentDate, OrgLocations location, Date empJoiningDate) {
+private Date[] nextDays(String currentDate, String dateFormat, Date empJoiningDate) {
 	 Date[] dates = null;
 	 try {
 		 Calendar calendar = Calendar.getInstance();
 		 Date curDate = calendar.getTime();
-		  Date current = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+		  Date current = commonUtil.orgLocationDateFormat(dateFormat, currentDate);
 		  if(empJoiningDate != null) {
 			  
 			  

@@ -43,7 +43,7 @@ public interface ClockInOutConfigService {
 
 	public Breaks getExistedBreakTime(Long clockInOutId);
 
-	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId, String dateFormat, String dayWisetype, String previousDate, String type);
+	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId,String dayWisetype, String previousDate, String type);
 
 	public ClockInOutUserTimeEntryDTO getTimeReports(OrgLocations loginOrgLocation, User user);
 
