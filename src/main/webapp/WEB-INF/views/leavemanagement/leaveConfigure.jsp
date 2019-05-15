@@ -71,19 +71,18 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                       </div>
                   </div>
                       </div>
-              <div class="col-md-3">
+             <%--  <div class="col-md-3">
                   <div class="pull-left mr10">
                       <i class="fa fa-toggle-on fa-2x text-warning"></i>
                   </div>
                   <div class="pull-left">
                       <h4 class="text-warning">Leave Options</h4>
-<!--                       <small class="text-muted">Loremipsum Loremipsum</small> -->
                       <div class="clearfix mt10">
                           <a href="${SourceLeadWeb_pmsUrl}/addOptions" class="btn btn-info btn-sm mr10" title="Add">Add</a>
                           <a href="${SourceLeadWeb_pmsUrl}/viewOptions" class="btn btn-primary btn-sm" title="View">View</a>
                       </div>
-                  </div>
-                      </div>
+                  </div> 
+                      </div>--%>
                      
       </div>
         </div>
