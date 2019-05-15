@@ -271,6 +271,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					<li><a href="#">360 View</a></li>
 					<li><a href="#">Pay History</a></li>
 					<li><a href="#">Bill Histroy</a></li> -->
+					<li><a href='${SourceLeadWeb_sourceleadUrl}/loansAndAdvancesReport'>Loans And Advances Report</a></li> 
 				</ul>
 			</div>
                  <!-- Dropdown -->
@@ -595,7 +596,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				</sec:authorize>    
 
 				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li>           
-
+                <li><a href='${SourceLeadWeb_sourceleadUrl}/loansAndAdvancesReport'>Loans And Advances Report</a></li>
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 
