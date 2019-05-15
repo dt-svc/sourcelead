@@ -253,11 +253,14 @@ public class DashboardRestController {
 		if(StringUtils.isEmpty(timesheetCountType)) {
 			timesheetCountType = "All";
 		}
+		if(loginOrgLocations != null && (loginOrgLocations.getOrg() == null || loginOrgLocations.getOrg() != null && loginOrgLocations.getOrg().getId() == null)) {
+			loginOrgLocations = orgLocationService.getOrgLocations(loginOrgLocations.getId());
+		}
 		if("employes".equalsIgnoreCase(timesheetType)){
 			 Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isAdmin");
 			 timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),timesheetCountType,isGlobalAccess,isAdmin);
 		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
-			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(masterCandidateId, loginOrgLocations.getId(),timesheetCountType);
+			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(masterCandidateId, loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),timesheetCountType);
 		}
 		
 		return timeSheetSubmissionCount;
@@ -279,10 +282,12 @@ public class DashboardRestController {
 		Long masterCandidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "masterCandidateId");
 		if(orgLoc == null && StringUtils.isNotEmpty(tedDTO.getLocationCode())){
 			orgLoc = orgLocationService.getOrgLocationsByLocationCode(tedDTO.getLocationCode());
+		}else if(orgLoc != null && (orgLoc.getOrg() == null || orgLoc.getOrg() != null && orgLoc.getOrg().getId() == null)) {
+			orgLoc = orgLocationService.getOrgLocations(orgLoc.getId());
 		}
 		
 		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
-		if(candidate == null && loginUser != null &&  orgLoc != null) {
+		if(loginUser != null &&  orgLoc != null) {
 			 candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLoc.getId());
 		}
 		if(candidate != null) {
@@ -301,7 +306,7 @@ public class DashboardRestController {
 				 Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(loginUser.getId(),orgLoc.getId());
 			     timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId(),orgLoc.getOrg().getId(),"All",isGlobalAccess,isAdmin);
 			}else if("myTimesheets".equalsIgnoreCase(timesheetFor)){
-				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLoc.getId(),"All");
+				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLoc.getId(),orgLoc.getOrg().getId(),"All");
 			}
 			
 			ExpensesCount expensesCount = new ExpensesCount();
@@ -2156,5 +2161,46 @@ public class DashboardRestController {
 			e.printStackTrace();
 		}
 	}
+ 	
+ 	
+ 	
+ 	@RequestMapping(value = "/getProjectResourceRequestsCounts", method = RequestMethod.GET)
+	public @ResponseBody ProjectPlanningResourceRequestDTO getProjectResourceRequestsCounts(HttpServletRequest request) throws Exception {
+	   
+	  OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	  String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	  List<ProjectPlanningResourceRequest> projectPlanningRequestList = projectPlanningResourceRequestService.getResourceRequestListByApproverIdAndOrgLocationIdAndStatus(user.getId(), orgLocation.getId(), userRoleName);
+	 
+	  ProjectPlanningResourceRequestDTO projectPlanningResourceRequestDTO = new ProjectPlanningResourceRequestDTO();
+	  
+	  Integer waitingCount = 0;
+	  Integer approvedCount = 0;
+	  Integer rejectedCount = 0;
+	  Integer onholdCount = 0;
+	  
+	  if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0) {
+		  for(ProjectPlanningResourceRequest planningRequest : projectPlanningRequestList){
+			  if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
+				  approvedCount = approvedCount + 1;
+			  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
+				  waitingCount = waitingCount + 1;
+			  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
+				  rejectedCount = rejectedCount + 1;
+			  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
+				  onholdCount = onholdCount + 1;
+			  }
+		  }
+	  }
+	  
+	  projectPlanningResourceRequestDTO.setWaitingCount(waitingCount);
+	  projectPlanningResourceRequestDTO.setApprovedCount(approvedCount);
+	  projectPlanningResourceRequestDTO.setRejectedCount(rejectedCount);
+	  projectPlanningResourceRequestDTO.setOnholdCount(onholdCount);
+	  
+	  return projectPlanningResourceRequestDTO;
+	  
+    }
+    
       
 }
