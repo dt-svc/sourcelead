@@ -1181,6 +1181,13 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			throws Exception {
 		return timesheetSubmissionsDao.getWeekCommentByCurrentFrequency(startDate, endDate, projectId, masterCandidateId);
 	}
+
+
+	@Override
+	public void updateWeekCommentForAllSubmissions(String weekComment, Date startDate, Date endDate, Long projectId,
+			Long masterCandidateId) throws Exception {
+		 timesheetSubmissionsDao.updateWeekCommentForAllSubmissions(weekComment, startDate, endDate, projectId, masterCandidateId);
+	}
 	
 	
 

@@ -982,6 +982,30 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			}
 			return weekComment;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void updateWeekCommentForAllSubmissions(String weekComment,Date startDate,Date endDate,Long projectId,Long  masterCandidateId) throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			java.sql.Date sqlStartDate = null;
+			if(startDate != null){
+				sqlStartDate = new java.sql.Date(startDate.getTime());
+			}
+			
+			java.sql.Date sqlEndDate = null;
+			if(endDate != null){
+				sqlEndDate = new java.sql.Date(endDate.getTime());
+			}
+			String qryString = "update TimesheetSubmissions ts set ts.weekcomments= :weekComment where "
+					+ "  ts.masterCandidateId.id  = :masterCandidateId"
+					+ "   and  ts.projects.id = :projectId   "
+					+ "  and ts.startDate BETWEEN '"+sqlStartDate+"' and '"+sqlEndDate+"'";
+			
+			
+			int count = session.createQuery(qryString).setString("weekComment", weekComment).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).executeUpdate();
+	}
+	
 
 
 }
