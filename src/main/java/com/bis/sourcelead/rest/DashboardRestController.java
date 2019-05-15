@@ -2094,7 +2094,7 @@ public class DashboardRestController {
  		return accountsList;
 	}
  	
- 	@RequestMapping(value = "/getInterviewListExportList")
+	@RequestMapping(value = "/getInterviewListExportList")
 	public void getInterviewListExportList(EventsDTO eventsDTO,HttpServletRequest request, HttpServletResponse response,
 			@RequestParam(value="exportType", required=false) String exportType) {
 		try {
@@ -2107,8 +2107,8 @@ public class DashboardRestController {
 			Timezone timezone = null;
 			String userCode = user.getUserCode();
 			Long userId = user.getId();
-			if(loginOrgLocations.getTimezone() != null){
-				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+			if(loginOrgLocations.getTimeZoneId() != null){
+				timezone = timeZoneService.getTimezone(Long.valueOf(loginOrgLocations.getTimeZoneId()));
 			}
 			
 			Date startUTCDate = null;
@@ -2161,7 +2161,7 @@ public class DashboardRestController {
 			e.printStackTrace();
 		}
 	}
- 	
+
  	
  	
  	@RequestMapping(value = "/getProjectResourceRequestsCounts", method = RequestMethod.GET)
