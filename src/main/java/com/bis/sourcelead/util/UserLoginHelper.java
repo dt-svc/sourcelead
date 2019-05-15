@@ -142,6 +142,7 @@ public class UserLoginHelper {
 		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails(userSession.get("orgLocationCode").toString());
 		 SourceLeadSessionManager.setSessionAttribute(req, "actionUUID", userSession.get("actionUUID").toString());
 		 SourceLeadSessionManager.setSessionAttribute(req, "actionId", Long.parseLong(userSession.get("actionId").toString()));
+		 SourceLeadSessionManager.setSessionAttribute(req, "sessionId", userSession.get("sessionId").toString());
 		 
 		 try {
 			
@@ -935,7 +936,7 @@ public class UserLoginHelper {
 		orgLocations.setCountry(orgLocationJson.get("country").toString());
 		orgLocations.setOrgId(Long.valueOf(orgLocationJson.get("orgId").toString()));
 		orgLocations.setOrgLocationName(orgLocationJson.get("orgLocationName").toString());
-		if(orgLocationJson.get("createdDate").toString() != null) {
+		if(orgLocationJson.get("createdDate") != null && orgLocationJson.get("createdDate").toString() != null) {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			 Date date = formatter.parse(orgLocationJson.get("createdDate").toString());
 			orgLocations.setCreatedDate(date);
