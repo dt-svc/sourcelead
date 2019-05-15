@@ -1174,6 +1174,13 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	public TimesheetSubmissions getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(Long projectId,Long masterCanidateId, Date frequencyStartDate, Date frequencyEndDate) {
 		return timesheetSubmissionsDao.getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(projectId,masterCanidateId,frequencyStartDate,frequencyEndDate);
 	}
+
+
+	@Override
+	public String getWeekCommentByCurrentFrequency(Date startDate, Date endDate, Long projectId, Long masterCandidateId)
+			throws Exception {
+		return timesheetSubmissionsDao.getWeekCommentByCurrentFrequency(startDate, endDate, projectId, masterCandidateId);
+	}
 	
 	
 
