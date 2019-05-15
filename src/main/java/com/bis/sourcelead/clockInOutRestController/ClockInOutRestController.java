@@ -91,7 +91,9 @@ public class ClockInOutRestController {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		return clockInOutConfigService.saveClockInOutTime(clockInOutDTO,loginOrgLocation,user);
+		String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+		String timeZoneId = (String) SourceLeadSessionManager.getSessionAttribute(request, "timeZone");
+		return clockInOutConfigService.saveClockInOutTime(clockInOutDTO,loginOrgLocation,user,dateFormat,timeZoneId);
 		
 	}
 	
@@ -193,7 +195,9 @@ public class ClockInOutRestController {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		clockInOutConfigService.updateClockInOutTime(clockInOutDTO,loginOrgLocation,user);
+		String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+		String timeZoneId = (String) SourceLeadSessionManager.getSessionAttribute(request, "timeZone");
+		clockInOutConfigService.updateClockInOutTime(clockInOutDTO,loginOrgLocation,user,dateFormat,timeZoneId);
 		
 	}
 	
@@ -201,7 +205,9 @@ public class ClockInOutRestController {
 	public Breaks saveBreakTime(ClockInOutDTO clockInOutDTO,HttpServletRequest request) {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-		return clockInOutConfigService.saveBreakTime(clockInOutDTO,userId,loginOrgLocation);
+		String timeZoneId = (String) SourceLeadSessionManager.getSessionAttribute(request, "timeZone");
+
+		return clockInOutConfigService.saveBreakTime(clockInOutDTO,userId,loginOrgLocation,timeZoneId);
 		
 	}
 	
@@ -233,7 +239,10 @@ public class ClockInOutRestController {
 		try {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-			response =  clockInOutConfigService.getUserTimeEntries(loginOrgLocation.getId(), userId, loginOrgLocation.getDateFormat(), dayWisetype, currentDate, type);	
+			String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+			String timeZoneId = (String) SourceLeadSessionManager.getSessionAttribute(request, "timeZone");
+
+			response =  clockInOutConfigService.getUserTimeEntries(loginOrgLocation.getId(), userId, dateFormat,timeZoneId, dayWisetype, currentDate, type);	
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -250,16 +259,18 @@ public class ClockInOutRestController {
 		StringBuilder dateStr = new StringBuilder();
 		Date empJoiningDate = (Date) SourceLeadSessionManager.getSessionAttribute(request, "joiningDate");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+		String timeZoneId = (String) SourceLeadSessionManager.getSessionAttribute(request, "timeZone");
 
 		try {
 			Date[] dates = null;
 			
 			if("previous".equalsIgnoreCase(type)) {
-				 dates = clockInOutUtil.getClockFilterPreviousDates(currentDate,empJoiningDate,loginOrgLocation,dayWiseType);
+				 dates = clockInOutUtil.getClockFilterPreviousDates(currentDate,empJoiningDate,dateFormat,dayWiseType);
 			}else if("next".equalsIgnoreCase(type)) {
-				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,empJoiningDate,loginOrgLocation,dayWiseType);
+				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,empJoiningDate,dateFormat,dayWiseType);
 			}else {
-				 dates = clockInOutUtil.getClockFilterDate(type, loginOrgLocation);
+				 dates = clockInOutUtil.getClockFilterDate(type, timeZoneId);
 			}
 			if(dates != null) {
 				if(!"today".equalsIgnoreCase(dayWiseType)) {
@@ -290,7 +301,9 @@ public class ClockInOutRestController {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
-		return clockInOutConfigService.getTimeReports(loginOrgLocation,user);
+		String timeZoneId = (String) SourceLeadSessionManager.getSessionAttribute(req, "timeZone");
+
+		return clockInOutConfigService.getTimeReports(loginOrgLocation,user,timeZoneId);
 	}
 	
 	@RequestMapping(value = "/getWorkingTime",method = RequestMethod.GET)
@@ -298,7 +311,9 @@ public class ClockInOutRestController {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
-		return clockInOutConfigService.getWorkingTimeByClockId(loginOrgLocation,user);
+		String timeZoneId = (String) SourceLeadSessionManager.getSessionAttribute(req, "timeZone");
+
+		return clockInOutConfigService.getWorkingTimeByClockId(loginOrgLocation,user,timeZoneId);
 	}
 	
 	@RequestMapping(value = "/getPreviousClockInData",method = RequestMethod.GET)
@@ -306,7 +321,9 @@ public class ClockInOutRestController {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
-		return clockInOutConfigService.getPreviousClockInData(loginOrgLocation,user);
+		String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(req, "dateFormat");
+
+		return clockInOutConfigService.getPreviousClockInData(loginOrgLocation,user,dateFormat);
 	}
 
 }
