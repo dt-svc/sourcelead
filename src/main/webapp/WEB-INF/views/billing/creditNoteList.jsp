@@ -248,6 +248,7 @@ function prepareCreditNoteList(url,locationdateForList){
 
 <script>
 function creditNotePagination(url){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var colIndex = 0;
     $('#creditListTable').DataTable( { 
 	  "processing": true,
@@ -335,7 +336,7 @@ function creditNotePagination(url){
             	 if(report.generatedId != null && report.generatedId != '' && report.generatedId != 'undefined'){
             		 
 				    //result = result +'<div class="tbldata-dotdot-vsm" title="'+report.referenceNumber+'">'+report.referenceNumber+'</div>';
-					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="<c:url value="/viewCreditDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit"/>" title="'+report.generatedId+'">'+report.generatedId+'</a></div>';				
+					result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor1"><a href="'+vmsUrl+'/viewCreditDebitNote?creditDebitUUID='+report.creditDebitUUID+'&noteType=Credit" title="'+report.generatedId+'">'+report.generatedId+'</a></div>';				
 
   				     
             	 }else{
