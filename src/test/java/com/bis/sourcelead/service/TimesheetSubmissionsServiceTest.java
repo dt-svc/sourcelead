@@ -23,8 +23,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.bis.sourcelead.SecurityConfig;
-import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
@@ -36,7 +34,6 @@ import com.bis.sourcelead.util.CommonUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = {WebAppConfig.class, SecurityConfig.class}, loader = AnnotationConfigWebContextLoader.class)
 public class TimesheetSubmissionsServiceTest {
 
 	
