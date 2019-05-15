@@ -1,6 +1,7 @@
 package com.bis.sourcelead.timesheet.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -102,6 +103,29 @@ public class TimesheetSubmissionsDocumentsDaoImpl implements TimesheetSubmission
 	    List<TimesheetSubmissionsDocumentsHistory> timesheetSubmissionsDocumentsHistoryList = session.createQuery(query.toString()).setLong("submissionId", submissionId).list();
         return timesheetSubmissionsDocumentsHistoryList;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimesheetSubmissionsDocuments> getAllTimesheetSubmissionsDocumentsByProjectIdMasterCandidateIdAndFrequencyStartDateEndDate(
+			Long masterCandidateId, Long projectId, Date freqStartDate, Date freqEndDate) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = null;
+		if(freqStartDate != null){
+			sqlStartDate = new java.sql.Date(freqStartDate.getTime());
+		}
+		
+		java.sql.Date sqlEndDate = null;
+		if(freqEndDate != null){
+			sqlEndDate = new java.sql.Date(freqEndDate.getTime());
+		}
+	    String query = "from TimesheetSubmissionsDocuments tsd "
+	    		+ "     left join fetch tsd.timesheetSubmissions ts "
+	    		+ "   where ts.masterCandidateId.id  = :masterCandidateId "
+	    		+ "   and  ts.projects.id = :projectId "
+	    		+ " and ts.startDate BETWEEN '"+sqlStartDate+"' and '"+sqlEndDate+"' and tsd.status = '1'";
+	    List<TimesheetSubmissionsDocuments> tsDocList = session.createQuery(query.toString()).setLong("masterCandidateId", masterCandidateId).setLong("projectId", projectId).list();
+        return tsDocList;
+	}
 
 
 
@@ -124,6 +148,34 @@ public class TimesheetSubmissionsDocumentsDaoImpl implements TimesheetSubmission
 	    List<Long> timesheetSubmissionsDocumentsHistoryList = session.createQuery(query.toString()).setLong("submissionId", submissionId).list();
         return timesheetSubmissionsDocumentsHistoryList;
 	}
+
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllTimesheetSubmissionsDocumentIdsByProjectIdMasterCandidateIdAndFrequencyStartDateEndDate(
+			Long masterCandidateId, Long projectId, Date freqStartDate, Date freqEndDate) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = null;
+		if(freqStartDate != null){
+			sqlStartDate = new java.sql.Date(freqStartDate.getTime());
+		}
+		
+		java.sql.Date sqlEndDate = null;
+		if(freqEndDate != null){
+			sqlEndDate = new java.sql.Date(freqEndDate.getTime());
+		}
+	    String query = "Select tsd.Id  from TimesheetSubmissionsDocuments tsd "
+	    		+ "   where tsd.timesheetSubmissions.masterCandidateId.id  = :masterCandidateId "
+	    		+ "   and  tsd.timesheetSubmissions.projects.id = :projectId "
+	    		+ " and tsd.timesheetSubmissions.startDate BETWEEN '"+sqlStartDate+"' and '"+sqlEndDate+"' and tsd.status = '1'";
+	    List<Long> timesheetSubmissionsDocumentsHistoryList = session.createQuery(query.toString()).setLong("masterCandidateId", masterCandidateId).setLong("projectId", projectId).list();
+        return timesheetSubmissionsDocumentsHistoryList;
+	}
+
+
+
+	
 
 
 }
