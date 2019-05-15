@@ -1,6 +1,5 @@
-
-var sideNavigtionListener =function (){ 
-		    $('.side-menu').click(function(){
+	$(document).ready(function(e) {
+		$('.side-menu').click(function(){
 			$('.side-bar').toggleClass("side-bar-active");
 			$('.user-panel').toggleClass("user-panel-active");
 			$('.content-wraper').toggleClass("content-wraper-active");
@@ -158,15 +157,15 @@ var sideNavigtionListener =function (){
            $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .campaignsli, .expencesLi").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        
-}   
-  
+       
+    });   
 	
 	
 	
 // New Menu Actions
 	
-var sideNewMenuActionListener =	function (){
-	        $('.menuIcon').click(function(){
+	$(document).ready(function(e) {
+		$('.menuIcon').click(function(){
 			$('.side-bar').toggleClass("side-bar-active");
 			$('.content-wraper').toggleClass("content-wraper-active");
 			$('.footer-area').toggleClass("footer-area-active");
@@ -198,5 +197,6 @@ var sideNewMenuActionListener =	function (){
 			e.stopPropagation();
 		});		
 		
-	 }
+	 }); 
+
 

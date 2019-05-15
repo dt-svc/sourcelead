@@ -287,7 +287,7 @@ public class DashboardRestController {
 		}
 		
 		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
-		if(candidate == null && loginUser != null &&  orgLoc != null) {
+		if(loginUser != null &&  orgLoc != null) {
 			 candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLoc.getId());
 		}
 		if(candidate != null) {

@@ -120,6 +120,7 @@ function actionHistoryList(actionUUID){
 	                    $("#actionHistoryOrgList").append(outPut);
 	                   
 	                    actionHistoryListByOrgLocation(actionUUID, orgLocation);
+	                  
             	     }
           		},
             
@@ -254,6 +255,20 @@ var validationSettings = {
 	
 	<script>
 		function logoutFormSubmit() {
+		/* 	 var sourceleadUrl ='${sourceleadUrl}';
+			 var sessionId = '${sessionId}';
+			
+			  $.ajax({
+		           type : "GET",
+		           url: sourceleadUrl+"/logoutFormSourcelead?sessionId="+sessionId,    
+		            success :function(result) {
+		            	     if(result == 'Success'){
+		            	    	 document.getElementById("logoutForm").submit();
+					    	 }
+		          },
+		            
+		       });  */
+		       
 			document.getElementById("logoutForm").submit();
 		}
 </script>
