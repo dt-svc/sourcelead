@@ -264,7 +264,7 @@ function portletListFilter(requirementStatus){
 	           result = result + '   </div>';
 	           $("#referredByMePortletList").empty();
 	           $("#referredByMePortletList").append(result);
-	    	 rejectedPagenatio();
+	    	 rejectedPagenation();
 		    }
 	  });
 	 
@@ -274,7 +274,7 @@ function portletListFilter(requirementStatus){
   </section>
 
 <script>
-function rejectedPagenatio(){  
+function rejectedPagenation(){  
     $('#professionalDashboardPortletPagenation').DataTable( { 
     	dom: 'Bfrtip',
     	buttons: [
