@@ -881,6 +881,7 @@ public class TimesheetRestController {
 		
 		String[] currentFrequency = currentTimeFrequency.split("To");
 		String currentFrequencyStartDate = currentFrequency[0].trim();
+		String currentFrequencyEndDate   = currentFrequency[1].trim();
 		Date actualTimeStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
 				currentFrequencyStartDate.replaceAll("/", "-"));
 		
@@ -935,28 +936,33 @@ public class TimesheetRestController {
 					ettsDTOMap.put(pm.getId(), etssDTO);
 					if(StringUtils.isEmpty(entryAvailableCheck))
 						continue;
-					if (ts != null) {
-						List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
-						 List<FileInfo> fileInfoList = new ArrayList<>();
-						if (timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()) {
-							 for (TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList) {
-								FileInfo fileInfo = new FileInfo();
-								fileInfo.setFileDbId(tsd.getId().toString());
-								fileInfo.setFileName(tsd.getFileName());
-								fileInfo.setFileURL(tsd.getFileUrl());
-								fileInfo.setStatus(tsd.getStatus());
-								fileInfo.setContentType(tsd.getFileContentType());
-								fileInfoList.add(fileInfo);
+					if (StringUtils.isNotEmpty(currentFrequencyEndDate)) {
+						Date frequencyEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+								currentFrequencyEndDate.replaceAll("/", "-"));
+						if (frequencyEndDate.equals(actualEndDate)) {
+							if (ts != null) {
+								List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
+								 List<FileInfo> fileInfoList = new ArrayList<>();
+								if (timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()) {
+									 for (TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList) {
+										FileInfo fileInfo = new FileInfo();
+										fileInfo.setFileDbId(tsd.getId().toString());
+										fileInfo.setFileName(tsd.getFileName());
+										fileInfo.setFileURL(tsd.getFileUrl());
+										fileInfo.setStatus(tsd.getStatus());
+										fileInfo.setContentType(tsd.getFileContentType());
+										fileInfoList.add(fileInfo);
+									}
+								 }
+								 if((fileInfoList != null && !fileInfoList.isEmpty()) || StringUtils.isNotEmpty(ts.getWeekcomments())) {
+									 EmployeeTimesheetFileInfoDTO etfinfo = new EmployeeTimesheetFileInfoDTO();
+									 etfinfo.setProjectMemberId(pm.getId());
+									 etfinfo.setFileInfo(fileInfoList);
+									 etfinfo.setWeekComment(ts.getWeekcomments());
+									 timesheetAttachments.add(etfinfo);
+								 }
 							}
-						 }
-						 if((fileInfoList != null && !fileInfoList.isEmpty()) || StringUtils.isNotEmpty(ts.getWeekcomments())) {
-							 EmployeeTimesheetFileInfoDTO etfinfo = new EmployeeTimesheetFileInfoDTO();
-							 etfinfo.setProjectMemberId(pm.getId());
-							 etfinfo.setFileInfo(fileInfoList);
-							 etfinfo.setWeekComment(ts.getWeekcomments());
-							 timesheetAttachments.add(etfinfo);
-						 }
-						
+						}
 					}
 					
 					List<ProjectTasks> projectsTasks = projectTasksService.getAllTasksByProjectId(pm.getProjects().getId());
