@@ -190,7 +190,9 @@ $(document).ready(function(){
 	    location.href = "${SourceLeadWeb_atsUrl}/walletList";
 	}
 	function refreshPage(){
-		location.reload();
+		resetPurchaseOrderFilter();
+		$("#purchaseOrderDataTableSearch").val('');
+		getPurchaseOrderList();
 	}
 
   </script>
