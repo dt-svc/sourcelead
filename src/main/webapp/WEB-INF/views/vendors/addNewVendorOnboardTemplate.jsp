@@ -487,14 +487,14 @@ function uploadContractDocument(id){
 
 <script>
 function getAssignToUsersList(){
-	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	//var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var templateId = document.getElementById("taskstemplateId").value;
     $("#taskstemplateId").val(templateId);
     
-// 	var sourceleadUrl = '${sourceleadUrl}';
+ 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 	   	type: "POST",
-	    url: vmsUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
+	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
@@ -773,10 +773,9 @@ function getTemplateDetails(){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var templateId = document.getElementById("templateId").value;
 	if(templateId){
-// 		var sourceleadUrl ='${sourceleadUrl}';
         $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/getVendorOnboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
+	    	 url: vmsUrl+"/getVendorOnboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
 	        success: function(response) {
 	        	
 	        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
@@ -1065,20 +1064,19 @@ function getVendorOnboardingTasksList(){
 	var templateId = document.getElementById("documentstemplateId").value;
 	var onboardTaskDiv = document.getElementById("onboardTaskDiv").value;
 	if(onboardTaskDiv == 'Y'){
-// 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
-	
+	 var result = "";
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "GET",
 	    url: vmsUrl+"/getVendorOnboardTemplateTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(response) {
+	    	
 	    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
     		    showError(response.responseMessage);
     	  	} else if (response.response === "AWKWARD") {
     		    location.href = "/errorPage";
     		} else if (response.response === "SUCCESS") {
-    			 var result = "";
     	        	if(response.data.length > 0){ 
     		        	for (var i=0; i<response.data.length; i++)
     					{
@@ -1128,14 +1126,7 @@ function getVendorOnboardingTasksList(){
     	        		result = result +'<div><h4>No Tasks Found</h4></div>';
     	        	}
     	        	
-    	        	result = result +'<div class="form-footer clearfix mt">';
-    	    		result = result +'<div class="pull-right mr">';
-    	    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
-    	    		result = result +'</div>';
-    	    		result = result +'</div>';
-    	    		
-    	    		 $("#onboardTasksList").empty();
-    	           	 $("#onboardTasksList").append(result); 
+    	        	 
     		}else if (response.indexOf('Sign In') !== -1) {
     			location.replace(vmsUrl);
     		} else {
@@ -1144,6 +1135,15 @@ function getVendorOnboardingTasksList(){
 	    	
 	    }
    }); 
+	
+	result = result +'<div class="form-footer clearfix mt">';
+	result = result +'<div class="pull-right mr">';
+	result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
+	result = result +'</div>';
+	result = result +'</div>';
+	
+	 $("#onboardTasksList").empty();
+   	 $("#onboardTasksList").append(result);
 	
   $("#loading").removeAttr("style");
 	
@@ -1237,10 +1237,10 @@ function saveAndFinishOnboardTemplate(templateId){
   });
     
     
-    // upload file script
+    /* // upload file script
     document.getElementById("uploadBtn").onchange = function () {
     document.getElementById("uploadFile").value = this.value;
-	};
+	}; */
   </script> 
 <script type="text/javascript">
 			var config = {
@@ -1282,7 +1282,7 @@ $('#nexttab').on('click', function() {
 });
 </script> --> 
 
-<script>
+<!-- <script>
     //File upload
     $('#file-fr').fileinput({
         language: 'fr',
@@ -1383,7 +1383,7 @@ $('#nexttab').on('click', function() {
          */
     });
 
-    </script>
+    </script> -->
 
   <jsp:include page="../masterFooter.jsp" />
   <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
