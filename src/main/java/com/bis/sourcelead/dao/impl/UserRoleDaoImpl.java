@@ -161,7 +161,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (userRole != null) {
-				if(StringUtils.isBlank(userRole.getUuid())) {
+				if(StringUtils.isBlank(userRole.getUuid()) || userRole.getUuid() == null) {
 					userRole.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				}
 				session.saveOrUpdate(userRole);
