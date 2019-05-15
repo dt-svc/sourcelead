@@ -543,7 +543,7 @@ public class IndianPayrollRestController {
     
 
 	@SuppressWarnings("null")
-	@RequestMapping(value = { "/app/generateINDPayroll","/app/rest/generateINDPayroll" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/generateINDPayroll","/rest/generateINDPayroll" }, method = RequestMethod.POST)
 	public IndPaysheetFrequencyDTO generateINDPayroll(GenerateINDPayrollDTO generateINDPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
