@@ -39,11 +39,11 @@ public interface ClockInOutConfigService {
 
 	public List<Tasks> getGeneralTasks(Long orgLocationId, Long userId);
 
-	public ClockInOut getExistedClockTime(Long orgLocationId, Long userId);
+	public ClockInOut getExistedClockTime(Long orgLocationId, Long userId, String dateFormat);
 
 	public void updateClockInOutTime(ClockInOutDTO clockInOutDTO, OrgLocations loginOrgLocation, User user);
 
-	public Breaks saveBreakTime(ClockInOutDTO clockInOutDTO, Long userId);
+	public Breaks saveBreakTime(ClockInOutDTO clockInOutDTO, Long userId, OrgLocations loginOrgLocation);
 
 	public Breaks getExistedBreakTime(Long clockInOutId);
 
@@ -51,8 +51,12 @@ public interface ClockInOutConfigService {
 
 	public ClockInOutUserTimeEntryDTO getTimeReports(OrgLocations loginOrgLocation, User user);
 
-	public Time getWorkingTimeByClockId(OrgLocations loginOrgLocation, User user);
 	
 	public List<List<ClockInOutAssociateReportSummaryDTO>> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, Date empJoiningDate, OrgLocations orgLocation);
+
+	public String getWorkingTimeByClockId(OrgLocations loginOrgLocation, User user);
+
+	public ClockInOutDTO getPreviousClockInData(OrgLocations loginOrgLocation, User user);
+
 
 }

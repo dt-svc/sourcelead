@@ -6,7 +6,10 @@ public class ClockInOutSubDTO {
 	
 	private Time clockInTime;
 	private Time clockOutTime;
-	private Time individualNoOfHours;
+	
+	private String individualNoOfHours;
+	private String individualTotBreakTime;
+
 	
 	private String taskName;
 	private String location;
@@ -26,10 +29,10 @@ public class ClockInOutSubDTO {
 	public void setClockOutTime(Time clockOutTime) {
 		this.clockOutTime = clockOutTime;
 	}
-	public Time getIndividualNoOfHours() {
+	public String getIndividualNoOfHours() {
 		return individualNoOfHours;
 	}
-	public void setIndividualNoOfHours(Time individualNoOfHours) {
+	public void setIndividualNoOfHours(String individualNoOfHours) {
 		this.individualNoOfHours = individualNoOfHours;
 	}
 	public String getTaskName() {
@@ -56,7 +59,11 @@ public class ClockInOutSubDTO {
 	public void setClockOutDate(String clockOutDate) {
 		this.clockOutDate = clockOutDate;
 	}
+	public String getIndividualTotBreakTime() {
+		return individualTotBreakTime;
+	}
+	public void setIndividualTotBreakTime(String individualTotBreakTime) {
+		this.individualTotBreakTime = individualTotBreakTime;
+	}
 	
-	
-
 }

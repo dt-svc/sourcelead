@@ -72,6 +72,7 @@ import com.bis.sourcelead.dto.WeekDaysDTO;
 import com.bis.sourcelead.dto.helper.ProjectMemberDTOConverter;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -93,7 +94,8 @@ import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.ExportTimesheetEntries;
+import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -104,6 +106,7 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.UserDroppedHolidaysService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.timesheet.dao.TimeSheetDayEntriesDao;
+import com.bis.sourcelead.timesheet.service.ExportTimesheetEntries;
 import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.timesheet.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.timesheet.service.TimesheetActivityService;
@@ -201,9 +204,15 @@ public class TimesheetRestController {
 	@Autowired
 	private AppliedLeaveDateService appliedLeaveDateService;
 	
+	@Autowired
+	private HolidayService holidayService;
+	
 	
 	@Autowired
 	private HolidayDAO holidayDAO;
+	
+	@Autowired
+	private EmployeesService employeesService;
 
 	/***
 	 * @purpose : Getting ProjectList For Login User (Step - 1)
@@ -390,6 +399,7 @@ public class TimesheetRestController {
 					tedDTO.setSaveButtonVisible(true);
 				}
 				tedDTO.setSubmitButtonVisible(submitButtonVisible);
+				 
 				int workingDaysPerWeek = 0;
 				if(StringUtils.isNotEmpty(orgLocations.getWeekOffDays())) {
 					 String[] strArray = orgLocations.getWeekOffDays().split(",");
@@ -418,11 +428,15 @@ public class TimesheetRestController {
 				}else {
 					workingDaysPerWeek = 5;
 				}
-                
-                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-                if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
-					avgWorkingHoursPerDay = 8; 
+				Integer avgWorkingHoursPerDay = 8;
+				Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(loginUser.getId(),orgLocations.getId());
+				if(employee == null) {
+					avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+				}else if(StringUtils.isNotEmpty(employee.getDailyHours())){
+					String [] hrsArray = employee.getDailyHours().split(":");
+					avgWorkingHoursPerDay = Integer.parseInt(hrsArray[0]);
 				}
+                
                 Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,candidate);
 				tedDTO.setEmpLeaveMap(empLeaveMap);
 				Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
@@ -467,8 +481,7 @@ public class TimesheetRestController {
 			List<AppliedLeaveDate> leaveDateList = appliedLeaveDateService.getAppliedLeaveDateByUserId(user.getId(), startDate, endDate);
 			List<Holiday>  holidays = null;
 			if(user != null && candidate != null && candidate.getWorkLocation() != null) {
-				 List<Long> droppedHolidayIds = userDroppedHolidaysService.getDroppedHolidayIdsListByUserIdAndLocationId(user.getId(), candidate.getWorkLocation().getId());
-				 holidays = holidayDAO.getHolidaybyLocationIdAndFromdateForTimesheets(startDate, endDate,candidate.getWorkLocation().getId(),droppedHolidayIds);
+				 holidays = holidayDAO.getHolidaybyLocationIdAndFromdateForTimesheets(startDate, endDate,candidate.getWorkLocation().getId(),user.getId(), candidate.getWorkLocation().getId());
 			}
 			
 			if((leaveDateList != null && !leaveDateList.isEmpty()) || (holidays != null && !holidays.isEmpty())) {
@@ -2234,10 +2247,14 @@ public class TimesheetRestController {
 					}else {
 						workingDaysPerWeek = 5;
 					}
-	                
-	                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-					if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
-						avgWorkingHoursPerDay = 8; 
+					
+					Integer avgWorkingHoursPerDay = 8;
+					Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(loginUser.getId(),orgLocations.getId());
+					if(employee == null) {
+						avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+					}else if(StringUtils.isNotEmpty(employee.getDailyHours())){
+						String [] hrsArray = employee.getDailyHours().split(":");
+						avgWorkingHoursPerDay = Integer.parseInt(hrsArray[0]);
 					}
 					Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,candidate);
 					tedDTO.setEmpLeaveMap(empLeaveMap);	
@@ -5778,9 +5795,11 @@ public class TimesheetRestController {
 				userDroppedHolidays = new UserDroppedHolidays();
 			}
 			
-			Holiday holiday = new Holiday();
+			Holiday holiday = holidayService.getHolidaysById(holidayId.toString());
 			holiday.setId(holidayId);
 			userDroppedHolidays.setHoliday(holiday);
+			userDroppedHolidays.setToDate(holiday.getToDate());
+			userDroppedHolidays.setFromDate(holiday.getFromDate());
 			User user = new User();
 			user.setId(holidayUserId);
 			userDroppedHolidays.setUser(user);
@@ -6889,6 +6908,7 @@ public class TimesheetRestController {
 			@RequestParam(value = "client", required = false) String client,
 			@RequestParam(value = "project", required = false) String project,
 			@RequestParam(value = "stage", required = false) String stage,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
 			@RequestParam(value = "timesheetFrequency", required = false) String timesheetFrequency,
 			@RequestParam(value = "frequencyMonth", required = false) String frequencyMonth,
 			@RequestParam(value = "weekFrequency", required = false) String weekFrequency, HttpServletResponse response)
@@ -6918,10 +6938,10 @@ public class TimesheetRestController {
 		}
 		if ("pdf".equalsIgnoreCase(exportType)) {
 			file = exportTimesheetEntries.timeSheetApprovelExport(user, orgLocations, stDate, edDate,
-					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess);
+					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess,searchValue);
 		} else {
 			file = exportTimesheetEntries.timeSheetApprovelExportExcel(user, orgLocations, stDate, edDate,
-					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess);
+					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess,searchValue);
 		}
 
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());

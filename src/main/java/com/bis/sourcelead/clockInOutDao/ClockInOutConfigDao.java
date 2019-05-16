@@ -57,5 +57,7 @@ public interface ClockInOutConfigDao {
 	
 	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, Long orgLocationId, Date sendDate);
 
+	public ClockInOut getPreviousClockInData(OrgLocations loginOrgLocation, User user);
+
 
 }
