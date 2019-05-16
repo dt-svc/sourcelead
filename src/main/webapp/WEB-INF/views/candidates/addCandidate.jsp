@@ -1139,26 +1139,6 @@
 
 </script>
 
-<script>
-	$('#panNumber').change(function (event) {     
-		 var regExp = /[A-Z]{5}\d{4}[A-Z]{1}/; 
-		 var txtpan = $(this).val(); 
-		 if (txtpan.length == 10 ) { 
-		  if( txtpan.match(regExp) ){ 
-		   alert('PAN match found');
-		  }
-		  else {
-		   alert("Not a valid PAN number");
-		   event.preventDefault(); 
-		  } 
-		 } 
-		 else { 
-		       alert('Please enter 10 digits for a valid PAN number');
-		       event.preventDefault(); 
-		 } 
-	
-		});
-</script>
 
 <script type="text/javascript">
 function validatePanNumber() {
