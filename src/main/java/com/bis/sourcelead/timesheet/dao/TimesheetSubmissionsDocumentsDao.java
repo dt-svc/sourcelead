@@ -1,5 +1,6 @@
 package com.bis.sourcelead.timesheet.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
@@ -21,4 +22,9 @@ public interface TimesheetSubmissionsDocumentsDao {
 	public List<TimesheetSubmissionsDocumentsHistory> getAllTimesheetSubmissionsDocumentsHistoryByTimesheetActivityId(Long activityId);
 	
 	public List<Long> getAllTimesheetSubmissionsDocumentIdsBySubmissionId(Long submissionId) throws Exception;
+	
+	List<Long> getAllTimesheetSubmissionsDocumentIdsByProjectIdMasterCandidateIdAndFrequencyStartDateEndDate(Long masterCandidateId,Long projectId,Date freqStartDate,Date freqEndDate)throws Exception;
+	
+	public List<TimesheetSubmissionsDocuments> getAllTimesheetSubmissionsDocumentsByProjectIdMasterCandidateIdAndFrequencyStartDateEndDate(Long masterCandidateId, Long projectId, Date freqStartDate, Date freqEndDate) throws Exception;
+			
 }
