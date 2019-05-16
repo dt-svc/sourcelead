@@ -47,6 +47,8 @@ public class ClockInOutUserTimeEntryDTO {
 	
 	private Time yearTotTime;
 	
+	private String totalBreakTime;
+	
 
 	public BigInteger getId() {
 		return id;
@@ -216,5 +218,12 @@ public class ClockInOutUserTimeEntryDTO {
 		this.yearTotTime = yearTotTime;
 	}
 
-	
+	public String getTotalBreakTime() {
+		return totalBreakTime;
+	}
+
+	public void setTotalBreakTime(String totalBreakTime) {
+		this.totalBreakTime = totalBreakTime;
+	}
+
 }

@@ -1,9 +1,7 @@
 package com.bis.sourcelead.clockInOutRestController;
 
-import java.sql.Time;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
-import com.bis.sourcelead.clockInOutDTO.PreviousNextDTO;
 import com.bis.sourcelead.clockInOutEntity.Breaks;
 import com.bis.sourcelead.clockInOutEntity.ClockInOut;
 import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
@@ -38,7 +35,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.sendgrid.Method;
 
 @RestController
 @RequestMapping("/app")
@@ -182,9 +178,9 @@ public class ClockInOutRestController {
 	@RequestMapping(value = {"/getExistedClockTime","/rest/getExistedClockTime"})
 	public ClockInOut getExistedClockTime(HttpServletRequest request) throws Exception {
 
-		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-		return clockInOutConfigService.getExistedClockTime(orgLocationId,userId);
+		return clockInOutConfigService.getExistedClockTime(loginOrgLocation.getId(),userId,loginOrgLocation.getDateFormat());
 	   
 	}
 	
@@ -199,8 +195,10 @@ public class ClockInOutRestController {
 	
 	@RequestMapping(value = {"/saveBreakTime","/rest/saveBreakTime"},method = RequestMethod.POST)
 	public Breaks saveBreakTime(ClockInOutDTO clockInOutDTO,HttpServletRequest request) {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-		return clockInOutConfigService.saveBreakTime(clockInOutDTO,userId);
+
+		return clockInOutConfigService.saveBreakTime(clockInOutDTO,userId,loginOrgLocation);
 		
 	}
 	
@@ -232,7 +230,8 @@ public class ClockInOutRestController {
 		try {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-			response =  clockInOutConfigService.getUserTimeEntries(loginOrgLocation.getId(), userId, loginOrgLocation.getDateFormat(), dayWisetype, currentDate, type);	
+
+			response =  clockInOutConfigService.getUserTimeEntries(loginOrgLocation.getId(), userId, dayWisetype, currentDate, type);	
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -254,11 +253,11 @@ public class ClockInOutRestController {
 			Date[] dates = null;
 			
 			if("previous".equalsIgnoreCase(type)) {
-				 dates = clockInOutUtil.getClockFilterPreviousDates(currentDate,empJoiningDate,loginOrgLocation,dayWiseType);
+				 dates = clockInOutUtil.getClockFilterPreviousDates(currentDate,empJoiningDate,loginOrgLocation.getDateFormat(),dayWiseType);
 			}else if("next".equalsIgnoreCase(type)) {
-				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,empJoiningDate,loginOrgLocation,dayWiseType);
+				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,empJoiningDate,loginOrgLocation.getDateFormat(),dayWiseType);
 			}else {
-				 dates = clockInOutUtil.getClockFilterDate(type, loginOrgLocation);
+				 dates = clockInOutUtil.getClockFilterDate(type, loginOrgLocation.getTimeZoneName());
 			}
 			if(dates != null) {
 				if(!"today".equalsIgnoreCase(dayWiseType)) {
@@ -289,6 +288,7 @@ public class ClockInOutRestController {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
+
 		return clockInOutConfigService.getTimeReports(loginOrgLocation,user);
 	}
 	
@@ -297,7 +297,17 @@ public class ClockInOutRestController {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
+
 		return clockInOutConfigService.getWorkingTimeByClockId(loginOrgLocation,user);
+	}
+	
+	@RequestMapping(value = "/getPreviousClockInData",method = RequestMethod.GET)
+	public ClockInOutDTO getPreviousClockInData(HttpServletRequest req,HttpServletResponse res) {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
+
+		return clockInOutConfigService.getPreviousClockInData(loginOrgLocation,user);
 	}
 
 }
