@@ -7,7 +7,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script src="/resources/js/immigration.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js?staticTime=${staticTime}"></script>
 <title>Insert title here</title>
 <c:set var ="myLcaPage" value ="${myLcaPage}" scope="session"/>
 

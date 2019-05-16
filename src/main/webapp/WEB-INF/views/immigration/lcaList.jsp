@@ -296,7 +296,7 @@
 	 							        break;
 	 							    }
 	 								  if (opt.locationsList[k] !== null && opt.locationsList[k] !== '' && typeof opt.locationsList[k] !== 'undefined') {
-	 									console.log( " test " +opt.locationsList[k]);
+	 									//console.log( " test " +opt.locationsList[k]);
 	 								    result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
 	 								  }
 	 								  
@@ -423,7 +423,7 @@
          }
      });
      
-    $("table").colResizable(); // for resizing columns in tables.
+  //  $("table").colResizable(); // for resizing columns in tables.
  }
 // reActivateLca(lcaUuid)
 </script>
