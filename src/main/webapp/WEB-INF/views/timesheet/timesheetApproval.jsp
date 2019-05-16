@@ -5,9 +5,28 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
+
+<!-- Timesheet Approval Page Section Starts  -->
+ <section class="content-wraper">
+		  <section class="content-header clearfix">
+		       <div class="pull-left"><h2>Timesheets approval</h2></div>
+		            <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » Timesheets approval</div>
+		       <div class="clearfix"></div>
+		   </section>
+		    <div  id="loadTimeHead"></div>
+		   <div id="timesheetApprovalDiv" class="datatable_filter" >
+			   <div class="timesheet_out">
+			     	<div class="timesheet_appr_wrap">
+			     	 <input type='hidden' id='notifyLink' name='notifyLink' value="${notifyLink}"/>
+			     	 <div id="timeApprovaldiv">
+			     	        <!-- Timesheet Approval Details Page will be generated after execution of onload-function timesheetApprovalDetils(filter)  -->
+				     		<jsp:include page="timesheetApprovalDetils.jsp"></jsp:include>
+			         </div>
+	     		</div>
+	     	</div> 
+	 	 </div>
+ </section>
+
 
 <script>
 	$(document).ready(function() {
@@ -24,8 +43,10 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	});
 </script>
 
+<!--Getting timesheetApprovalDetails based on default/filter data  -->
 <script>
 	function timesheetApprovalDetils(filter){ 
+	               var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	               var locationCode ='${SourceLeadWeb_locationCode}';
 	               var userId = '${SourceLeadWeb_user.id}';
 	               
@@ -35,7 +56,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	               var client = $('input[id=client]:checked').val();
 	               var project = $('input[id=project]:checked').val();
 	               
-	               var searchData = $('#dataTableSearchExpenses').val();
 	               var projectName = '';
 	               var stage = $('input[id=stage]:checked').val();
 	               if(filter != null && filter != '' && filter != 'undefined' &&  filter == 'notifyLink'){
@@ -66,12 +86,10 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		           
 		           if(project == null || project == '' || project == 'undefined')
 		        	   project = '';
-		           var searchvalue = '';
-	  	           if(searchData != null && searchData !='' && searchData!='undefined'){
-	  	        	 searchValue = searchData;
-	  	           }else{
-	  	        	 searchValue = '';
-	  	           }
+		            var searchValue = $('#dataTableSearchTimesheets').val();
+		   	        if(searchValue == null ||  searchValue =='' || searchValue =='undefined'){
+		   	        	searchValue = '';
+		            }
 		           $("#timeApprovaldiv").empty();
 	               $("#loadTimeHead").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	               var formData = new FormData();
@@ -95,6 +113,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	        		      success :function(data) {
 	        		    	  $("#loadTimeHead").removeAttr('style');
 	        		    	  $("#timeApprovaldiv").empty();
+	        		    	  /* Returns timesheetApprovalDetils.jsp content */
 	        		    	  $("#timeApprovaldiv").append(data);
 	        		    	  $(".checkBoxForSubmitForApproval").click(function () {
 			             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
@@ -106,26 +125,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	}
 </script> 
 
-<section class="content-wraper">
-		  <section class="content-header clearfix">
-		       <div class="pull-left"><h2>Timesheets approval</h2></div>
-		            <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> » Timesheets approval</div>
-		       <div class="clearfix"></div>
-		   </section>
-		    <div  id="loadTimeHead"></div>
-		   <div id="timesheetApprovalDiv" class="datatable_filter" >
-			   <div class="timesheet_out">
-			     	<div class="timesheet_appr_wrap">
-			     	 <input type='hidden' id='notifyLink' name='notifyLink' value="${notifyLink}"/>
-			     	 <div id="timeApprovaldiv">
-				     		<jsp:include page="timesheetApprovalDetils.jsp"></jsp:include>
-			         </div>
-	     		</div>
-	     	</div> 
-	 	 </div>
-</section>
 
- 
+
+<!--  chosen-select script   -->
 <script type="text/javascript">
          function prepareChosenScripts(){
         	 var config = {
@@ -145,5 +147,4 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
            };
          
 </script> 
-
 <jsp:include page="../masterFooter.jsp" />

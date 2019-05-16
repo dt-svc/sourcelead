@@ -188,26 +188,35 @@ function searchExpensesDataIcon(){
 	 }
   </script>  
   
-   <script>
+<script>
 function changeBillingStatus(id, ele){
-	 var billingStatus = $(ele).val();
-	  $.ajax({
-		    type : "POST",
-		     url: pmsUrl+"/updateBillingStatus?billingStatus="+billingStatus+"&expenseId="+id,      
-		     success :function(data) {
-		    	 if(data && data.response === "SUCCESS") {
-					if(data.object === true)			    		 
-			    	 	getTableDataByPageSize();
-					else
-						alert("please try again...");
-		    	 } else {
-		    		 alert(data.responseMessage);
-		    	 }
-		     
-	 		}
-	 }); 
+var billingStatus = $(ele).val();
+$.ajax({
+type : "POST",
+url: sourceleadUrl+"/updateBillingStatus?billingStatus="+billingStatus+"&expenseId="+id, 
+success: function(data) {
+if(data.response === "SESSION_TIMEDOUT") {
+location.replace(sourceleadUrl);
+} else if (data.response === "AWKWARD") {
+location.href = "/errorPage";
+} else if (data.response === "SUCCESS"){ 
+if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
+var table = $('#example').DataTable();
+table.row('#row'+expenseId).remove().draw( false );
+}
+else{
+$("#row"+expenseId).empty();
+$("#row"+expenseId).html(rowHtmlContent);
+}
+}else if (result.indexOf('Sign In') !== -1) {
+location.replace(sourceleadUrl);
+}
+
+}
+}); 
 }
 
 
 </script>
-                                                                             
+
+                                                                  

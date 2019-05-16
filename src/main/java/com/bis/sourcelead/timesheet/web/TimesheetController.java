@@ -1,4 +1,4 @@
-package com.bis.sourcelead.web;
+package com.bis.sourcelead.timesheet.web;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,12 +34,12 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimeZoneService;
-import com.bis.sourcelead.service.TimesheetEntriesService;
-import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.service.impl.TimeSheetExcelView;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetEntriesService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsDocumentsService;
+import com.bis.sourcelead.timesheet.service.impl.TimeSheetExcelView;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -105,18 +105,18 @@ public class TimesheetController {
 			ModelAndView model = new ModelAndView();
 			
 			commonUtil.highLightMenu(Constants.TimeSheet, request);
-			String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+			String loginLocationCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 			String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
 			String orgCode = loginOrgCode;
-			String locationCode = loginOrgLocation;
+			String locationCode = loginLocationCode;
 			Integer notificationCount = notificationsService.getNotificationsCountByUserId(loginUser.getId(),orgCode,locationCode);
 			SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
 			SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
 			
-			Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLoc.getTimeZoneId()));
+			Timezone timezone = timeZoneService.getTimezone(Long.valueOf(orgLoc.getTimeZoneId()));
 			Long notificationTo = loginUser.getId();
 			List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
 			calculateDays(notificationList, timezone);
