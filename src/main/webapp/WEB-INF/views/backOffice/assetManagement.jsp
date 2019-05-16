@@ -652,6 +652,7 @@ function prepareDynamicAssetList(url){
 	projectAssetPaginations(url);
 }
 function projectAssetPaginations(url){
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var colIndex = 0;
     $('#assetPagination').DataTable( { 
 	  "processing": true,
@@ -693,7 +694,7 @@ function projectAssetPaginations(url){
     	  		var result = "";
     	  	    result = result+'<td>';
     	  	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSET_BASIC_DETAILS\',\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">'; 
-	   	  	     result = result +"<a class='tbldata-dotdot-sm'><a href='<c:url value='/assetManagementSummary?assetUUID="+report.assetUUID+"'/>'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a></a>";
+	   	  	     result = result +"<a class='tbldata-dotdot-sm'><a href='"+atsUrl+"/assetManagementSummary?assetUUID="+report.assetUUID+"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div></a></a>";
 	   	  	  '</sec:authorize>';
 	   	  	  
 		   	   '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_ASSET_BASIC_DETAILS\',\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">'; 
@@ -884,6 +885,7 @@ function prepareDynamicAssignAssetList(url){
 }
 
 function assignAssetPagination(url){
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var colIndex = 0;
     $('#assignAssetPagination').DataTable( { 
 	  "processing": true,
@@ -943,7 +945,7 @@ function assignAssetPagination(url){
 				  	"render": function(data, type, report) {
 				  		var result = "";
 					  		if(report.serialNumber != null && report.serialNumber != "" && report.serialNumber !="undefined"){
-							   	result = result+"<td><a href='<c:url value='/assetManagementSummary?assetUUID="+report.assetUUID+"'/>'><div class='proj_show tbldata-dotdot-vsm'><span class='pull-left' title='"+report.serialNumber+"'>"+report.serialNumber+"</span><i class='fa fa-binoculars'></i></div></a></div></td>";
+							   	result = result+"<td><a href='"+atsUrl+"/assetManagementSummary?assetUUID="+report.assetUUID+"'><div class='proj_show tbldata-dotdot-vsm'><span class='pull-left' title='"+report.serialNumber+"'>"+report.serialNumber+"</span><i class='fa fa-binoculars'></i></div></a></div></td>";
 							   	
 					  		}else{
 							   	result = result+'<td><div class="tbldata-dotdot-vsm">--</div></td>';

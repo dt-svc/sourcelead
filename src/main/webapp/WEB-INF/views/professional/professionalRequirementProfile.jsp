@@ -60,7 +60,6 @@ function requirementProfile(requirementUUID){
 	var candidateId = '${SourceLeadWeb_candidateId}'
     var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var referUUID = '${referUUID}';
-    
     $.ajax({
 	   	type: "GET",
 	    url: atsUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&referUUID="+referUUID, 	   

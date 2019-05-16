@@ -53,7 +53,7 @@ var uploadflag= true;
 					</div>
 					
 						<div class="col-xs-5 col-md-5">
-							<a href="<c:url value='/downloadRequirenetSubmissionTemplateByRequirementId/${requirementId}'/>"
+							<a href="${SourceLeadWeb_atsUrl}/downloadRequirenetSubmissionTemplateByRequirementId/${requirementId}"
 								class="btn btn-success btn-block" title="Submission Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Submission Template
 							</a>
 						</div>
