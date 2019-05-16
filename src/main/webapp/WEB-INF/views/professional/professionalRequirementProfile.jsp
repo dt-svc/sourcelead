@@ -62,7 +62,7 @@ function requirementProfile(requirementUUID){
     var referUUID = '${referUUID}';
     $.ajax({
 	   	type: "GET",
-	    url: atsUrl+"/ws/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&referUUID="+referUUID, 	   
+	    url: atsUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&referUUID="+referUUID, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var result = "";
@@ -306,7 +306,7 @@ function requirementProfile(requirementUUID){
 function requirementDetails(requirementUUID){
 	$.ajax({
 	   	type: "GET",
-	    url: atsUrl+"/ws/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
+	    url: atsUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
 		    success: function(data) {
 		    	
 		    	var json = JSON.parse(data);
