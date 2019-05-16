@@ -3,8 +3,10 @@ package com.bis.sourcelead.clockInOutRestController;
 import java.sql.Time;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -370,10 +372,10 @@ public class ClockInOutRestController {
 	}
 	
 	@RequestMapping(value = "/getAssociateClockInOutReportSummary",method = RequestMethod.POST)
-	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO,HttpServletRequest request,HttpServletResponse response) {
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<ClockInOutAssociateReportSummaryDTO> list = clockInOutConfigService.getAssociateClockInOutReportSummary(clockInOutFiltersDTO, orgLocation);
+	public List<List<ClockInOutAssociateReportSummaryDTO>> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO,HttpServletRequest request,HttpServletResponse response) {
+		Date empJoiningDate = (Date) SourceLeadSessionManager.getSessionAttribute(request, "joiningDate");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<List<ClockInOutAssociateReportSummaryDTO>> list = clockInOutConfigService.getAssociateClockInOutReportSummary(clockInOutFiltersDTO,empJoiningDate, loginOrgLocation);
 		return list;
 	}
-
 }

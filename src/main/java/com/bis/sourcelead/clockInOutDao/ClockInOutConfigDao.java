@@ -55,7 +55,7 @@ public interface ClockInOutConfigDao {
 
 	public List<Breaks> getBreakListByClockInId(Long id);
 	
-	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, Long orgLocationId);
+	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, Long orgLocationId, Date sendDate);
 
 
 }

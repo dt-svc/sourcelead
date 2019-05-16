@@ -3,6 +3,7 @@ package com.bis.sourcelead.clockInOutDTO;
 import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Time;
+import java.util.List;
 
 public class ClockInOutAssociateReportSummaryDTO {
 	
@@ -22,9 +23,9 @@ public class ClockInOutAssociateReportSummaryDTO {
 	//private String projectTaskName;
 	private String comments;
 	private String today;
-	private String currWeek;
-	private String currMonth;
-	private String currYear;
+	private List<String> currWeek;
+	private List<String> currMonth;
+	private List<String> currYear;
 	
 	public BigInteger getId() {
 		return id;
@@ -116,22 +117,22 @@ public class ClockInOutAssociateReportSummaryDTO {
 	public void setToday(String today) {
 		this.today = today;
 	}
-	public String getCurrWeek() {
+	public List<String> getCurrWeek() {
 		return currWeek;
 	}
-	public void setCurrWeek(String currWeek) {
+	public void setCurrWeek(List<String> currWeek) {
 		this.currWeek = currWeek;
 	}
-	public String getCurrMonth() {
+	public List<String> getCurrMonth() {
 		return currMonth;
 	}
-	public void setCurrMonth(String currMonth) {
+	public void setCurrMonth(List<String> currMonth) {
 		this.currMonth = currMonth;
 	}
-	public String getCurrYear() {
+	public List<String> getCurrYear() {
 		return currYear;
 	}
-	public void setCurrYear(String currYear) {
+	public void setCurrYear(List<String> currYear) {
 		this.currYear = currYear;
 	}
 	

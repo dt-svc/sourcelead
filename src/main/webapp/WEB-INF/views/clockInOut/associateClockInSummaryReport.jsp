@@ -285,25 +285,45 @@ function prepareDynamicUserList(timeFrequency, url){
 <script>
 function getAssociateClockInOutReportSummaryList(timeFrequency, json){
     var result = "";
+    var currentDate = $("#frequencyID").html();
     result = result +'<table id="associateClockInOutTableID">';
     result = result +'<thead>';
     result = result +'  <tr>';
     result = result + '<th>Employee Name</th>';
     
-    if(timeFrequency === 'today'){
-    	var currentDate = $("#frequencyID").html();
-    	result = result + '<th>Today <br><div class="fontSmall clearfix mt2">'+currentDate+'</div></th>';
-    }
-    else if(timeFrequency === 'Last_7_days'){
-		result = result + '<th>Mon <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>Tue <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>Wed <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>Thu <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>Fri <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>Sat <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>Sun <br><div class="fontSmall clearfix mt2"></div></th>';
+    var report = json;
+	if(report != null && report != "" && report != "undefined"){
+		for(var key in report){
+			if(key === 'daily'){
+				for(var innerkey in report[key]){
+					result = result + '<th>'+currentDate+' <br><div class="fontSmall clearfix mt2"></div></th>';
+				}
+			}
+			if(key === 'weekly'){
+				for(var innerkey in report[key]){
+					result = result + '<th>'+innerkey+' <br><div class="fontSmall clearfix mt2"></div></th>';
+				}
+			}
+		}
 	}
-    else if(timeFrequency === 'current_month'){
+    
+    
+//     if(timeFrequency === 'today'){
+//     	var currentDate = $("#frequencyID").html();
+//     	result = result + '<th>Today <br><div class="fontSmall clearfix mt2">'+currentDate+'</div></th>';
+//     }
+//     else 
+//     	if(timeFrequency === 'Last_7_days'){
+// 		result = result + '<th>Mon <br><div class="fontSmall clearfix mt2"></div></th>';
+// 		result = result + '<th>Tue <br><div class="fontSmall clearfix mt2"></div></th>';
+// 		result = result + '<th>Wed <br><div class="fontSmall clearfix mt2"></div></th>';
+// 		result = result + '<th>Thu <br><div class="fontSmall clearfix mt2"></div></th>';
+// 		result = result + '<th>Fri <br><div class="fontSmall clearfix mt2"></div></th>';
+// 		result = result + '<th>Sat <br><div class="fontSmall clearfix mt2"></div></th>';
+// 		result = result + '<th>Sun <br><div class="fontSmall clearfix mt2"></div></th>';
+// 	}
+//     else
+   	if(timeFrequency === 'current_month'){
     	var currentDate = $("#frequencyID").html();
     	var sartDate = currentDate.split("To");
     	var endDate = sartDate[1].split("-");
@@ -327,35 +347,42 @@ function getAssociateClockInOutReportSummaryList(timeFrequency, json){
 		result = result + '<th>Nav <br><div class="fontSmall clearfix mt2"></div></th>';
 		result = result + '<th>Dec <br><div class="fontSmall clearfix mt2"></div></th>';
 	}
-    
     result = result +'    </tr>';
     result = result +'</thead>  ';
-    
     result = result +'<tbody>';
     
     for (var i=0; i<json.length; i++)
     {
-        var report = json[i];
+        var reportList = json[i];
+        var len = reportList.length;
         result = result +'<tr>';
-        if(report.firstName != null && report.firstName != "" && report.firstName != "undefined")
-        	 result = result + '<td><div class="tbldata-dotdot inlineBlock">'+report.firstName+' '+report.lastName+'</div></td>';
-        else
-            result = result + '<td>--</td>';
-        
-        if(timeFrequency === 'today'){
-        	result = result + prepareTableBody(report);
+        if(reportList != null && reportList.length > 0){
+	        for(var j=0; j<reportList.length; j++){
+	        	var report = reportList[j];
+	        	
+		        if(report.firstName != null && report.firstName != "" && report.firstName != "undefined")
+		        	 result = result + '<td><div class="tbldata-dotdot inlineBlock">'+report.firstName+' '+report.lastName+'</div></td>';
+		        else
+		            result = result + '<td>--</td>';
+		        
+		        if(timeFrequency === 'today'){
+		        	result = result + prepareTableBody(report);
+		        }
+		        else if(timeFrequency === 'Last_7_days'){
+		        	result = result + prepareTableBody(report);
+		        }
+		        else if(timeFrequency === 'current_month'){
+		        	result = result + prepareTableBody(report);
+		        }
+		        else if(timeFrequency === 'Current_Year'){
+		        	result = result + prepareTableBody(report);
+		        }
+	        }
         }
-        else if(timeFrequency === 'Last_7_days'){
-        	result = result + prepareTableBody(report);
-        }
-        else if(timeFrequency === 'current_month'){
-        	result = result + prepareTableBody(report);
-        }
-        else if(timeFrequency === 'Current_Year'){
-        	result = result + prepareTableBody(report);
+        else{
+        	result = result + '<td>--</td>';
         }
         result = result + '</tr>';
-       	
     }
     
     result = result +'</tbody>';

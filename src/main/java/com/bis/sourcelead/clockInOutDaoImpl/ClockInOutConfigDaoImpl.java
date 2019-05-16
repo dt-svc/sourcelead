@@ -720,7 +720,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 	
 	@Override
 	@Transactional
-	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, Long orgLocationId) {
+	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, Long orgLocationId, Date sendDate) {
 		
 		List<ClockInOutAssociateReportSummaryDTO> associateReportSummaryList = new ArrayList<ClockInOutAssociateReportSummaryDTO>();
 
@@ -733,6 +733,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		List<Long> associateList = new ArrayList<>();
 		List<Long> teamsList = new ArrayList<>();
 		java.sql.Date dateRangeList[] = new java.sql.Date[2];
+		java.sql.Date sqlCurrDate = null;
 		
 		String subQuery = "";
 		
@@ -833,6 +834,11 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
  				subQuery = subQuery + " AND clk.CLOCK_IN_DATE BETWEEN (:dateRangeStart) AND (:dateRangeEnd)";
 			}
 			
+//			if(sendDate != null ) {
+//			        sqlCurrDate = new java.sql.Date(sendDate.getTime());
+//			        subQuery = subQuery + " AND clk.CLOCK_IN_DATE =:dateCurrent";
+//			}
+ 				
 			Query queryObj = session.createSQLQuery(sb.toString()+subQuery);
 			queryObj.setLong("clkOrgLocationID", orgLocationId);
 			queryObj.setLong("uRoleOrgLocationID", orgLocationId);
@@ -861,6 +867,10 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 				else
 					queryObj.setParameter("dateRangeEnd", dateRangeList[0]);
 			}
+			
+//			if(sendDate != null ) {
+//		        queryObj.setParameter("dateCurrent", sqlCurrDate);
+//			}
 				
 			queryObj.setResultTransformer(Transformers.aliasToBean(ClockInOutAssociateReportSummaryDTO.class));
 			associateReportSummaryList = queryObj.list();
