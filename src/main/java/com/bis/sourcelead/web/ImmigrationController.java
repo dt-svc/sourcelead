@@ -513,19 +513,18 @@ public class ImmigrationController {
 	// end here============================
 	@RequestMapping(value = { "/gotoTemplatePreviousPage" })
 	public ModelAndView loagNewPetitionPageOne(HttpServletRequest request,
-			@RequestParam(value = "status", required = false) String status) {
+			@RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "templateId", required = false) Long templateId) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		try {
 			if (status.equalsIgnoreCase("templateDetails")) {
-				ImmigrationTemplateDTO dto = (ImmigrationTemplateDTO) request.getSession().getAttribute("templateDTO");
-				// List<Countries> countryList = countriesService.getAllCountries();
-				// List<LookUpData> petitionTypeList =
-				// immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
-				// model.addObject("countriesList", countryList);
-				// model.addObject("petitionTypeList", petitionTypeList);
-				model.addObject("templateDTO", dto);
-				model.setViewName("/immigration/petitionTemplateDetails");
+				if (templateId != null) { // this code for edit mode.
+				  ImmigrationTemplateDTO templateDTO = immigrationTemplateService.getPetitionTemplateDetails(templateId);
+				   model.addObject("templateDTO", templateDTO);
+				   request.getSession().setAttribute("templateDTO", templateDTO);
+				    model.setViewName("/immigration/petitionTemplateDetails");
+				}
 			}
 			if (status.equalsIgnoreCase("tempDetails")) {
 				model.setViewName("/immigration/petitionTemplateDetails");
@@ -540,18 +539,19 @@ public class ImmigrationController {
 				
 				List<LookUpData> petitionerDocsList = lookUpDataService.getLookUpDataByCategory(Constants.PETITIONER_CATEGORY);
 				model.addObject("petitionerDocsList", petitionerDocsList);
+				if(templateId != null) { // this code for edit mode.
+					List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService.getImmigrationTemplateDocsListById(templateId);
 				
-				// dropdown
-				// values in UI.
-				/*
-				 * List<ImmigrationTemplateDTO> templateDTO =
-				 * (List<ImmigrationTemplateDTO>)request.getSession().getAttribute("templateDTO"
-				 * ); model.addObject("templateDTO", );
-				 */
+					request.getSession().setAttribute("templateDocList", docsList);
+				}
 				model.addObject("educationsList", educationsList);
 				
 				model.setViewName("/immigration/petitionTemplateDocDetails");
 			} else if (status.equalsIgnoreCase("formDetails")) {
+				if (templateId != null) { // this code for edit mode.
+					List<ImmigrationTemplateFormDTO> formsList = immigrationTemplateService.getImmigrationTemplateformsListById(templateId);
+					request.getSession().setAttribute("templateFormsList", formsList);
+				}
 				model.setViewName("/immigration/petitionTemplateFormDetails");
 			} else if (status.equalsIgnoreCase("taskList")) {
 				model.setViewName("/immigration/immigrationTemplateTaskList");
@@ -580,7 +580,7 @@ public class ImmigrationController {
 			// mode.
 			try {
 				ImmigrationTemplateDTO templateDTO = immigrationTemplateService.getPetitionTemplateDetails(templateId);
-				List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService.getImmigrationTemplateDocsListById(templateId);
+		/*		List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService.getImmigrationTemplateDocsListById(templateId);
 				for(ImmigrationTemplateDocDTO  itd:docsList) {
 					itd.setDocumentCategory(itd.getDocumentCategory());
 				}
@@ -589,10 +589,10 @@ public class ImmigrationController {
 				List<ImmigrationTemplateFormDTO> formsList = immigrationTemplateService.getImmigrationTemplateformsListById(templateId);
 				logger.debug(
 						" Edit mode templateId templateId -->" + templateId + ", formsList size i " + formsList.size());
-				// templateDTO.setImmigrationDocList(docsList);
+				 templateDTO.setImmigrationDocList(docsList);*/
+				/*request.getSession().setAttribute("templateDocList", docsList);
+				request.getSession().setAttribute("templateFormsList", formsList);*/
 				request.getSession().setAttribute("templateDTO", templateDTO);
-				request.getSession().setAttribute("templateDocList", docsList);
-				request.getSession().setAttribute("templateFormsList", formsList);
 			} catch (Exception e) {
 				logger.error(" Exception caught in edit mode in controller -->" + templateId);
 				e.printStackTrace();
@@ -875,7 +875,8 @@ public class ImmigrationController {
 			@RequestParam(value = "templateid", required = true) Long templateid,
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
-			@RequestParam(value = "myImmigration", required = false) String myImmigration, HttpServletRequest request)
+			@RequestParam(value = "myImmigration", required = false) String myImmigration, 
+			@RequestParam(value = "myImmigrationPage" , required = true) String myImmigrationPage,	HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -920,7 +921,7 @@ public class ImmigrationController {
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		model.addObject("immigrationCanDocList", immigrationCanDocList);
-		
+		model.addObject("myImmigrationPage", myImmigrationPage);
 		return model;
 	}
 
@@ -1543,7 +1544,9 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/getCandidateFamilyDetails" })
 	public ModelAndView getCandidateFamilyDetails(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
-			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request) {
+			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage,
+			HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		logger.debug(" inisde getCandidateFamilyDetails controller test -->");
 		model.setViewName("/immigration/familyDetailsTab");
@@ -1562,6 +1565,7 @@ public class ImmigrationController {
 				familyObj.setDateOfBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 						familyObj.getDateOfBirth()));
 			}
+			model.addObject("myImmigrationPage", myImmigrationPage);
 			model.addObject("familyList", familyList);
 		} catch (Exception e) {
 			logger.error("Exception caught in controller --->" + e.getMessage());
@@ -1676,7 +1680,9 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/getCandidateEducationList" })
 	public ModelAndView getCandidateEducationList(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
-			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
+			@RequestParam(value = "searchVal", required = false) String searchVal, 
+			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage,
+			HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -1688,12 +1694,15 @@ public class ImmigrationController {
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsDropList", educationsList);
 		model.addObject("candidatesEducationList", candidatesEducationList);
+		model.addObject("myImmigrationPage", myImmigrationPage);
 		return model;
 	}
 
 	@RequestMapping(value = { "/getCandidateEmployerList" })
 	public ModelAndView getCandidateEmployerList(@RequestParam(value = "candidateId", required = true) Long candidateId,
-			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
+			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage,
+			HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -1701,6 +1710,7 @@ public class ImmigrationController {
 		model.setViewName("/immigration/employerDetailsTab");
 		List<CandidateEmployers> candidatesEmployersList = candidateEmployersService
 				.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId), searchVal);
+		model.addObject("myImmigrationPage", myImmigrationPage);
 		model.addObject("candidatesEmployersList", candidatesEmployersList);
 		return model;
 	}
@@ -1708,7 +1718,8 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/getCandidateResidenceList" })
 	public ModelAndView getCandidateResidenceList(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
-			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
+			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "myImmigrationPage" , required = true) String myImmigrationPage, HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -1723,6 +1734,7 @@ public class ImmigrationController {
 					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canRes.getEndDate()));
 
 		}
+		model.addObject("myImmigrationPage", myImmigrationPage);
 		model.addObject("candidatesResidenceList", candidatesResidenceList);
 		return model;
 	}
@@ -1732,7 +1744,8 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/getCandidateVisaDetails" })
 	public ModelAndView getCandidateVisaDetails(
 			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
-			@RequestParam(value = "searchValue", required = true) String searchValue) throws Exception {
+			@RequestParam(value = "searchValue", required = true) String searchValue,
+			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage) throws Exception {
 		ModelAndView model = new ModelAndView();
 		logger.debug(" inisde getCandidateVisaDetails controller test -->");
 		List<ImmigrationVisaDTO> visaList = new ArrayList<ImmigrationVisaDTO>();
@@ -1766,6 +1779,7 @@ public class ImmigrationController {
 			model.addObject("visaList", visaList);
 			model.addObject("countryList", countryList);
 			model.addObject("expiredVisaIdList", expiredVisaIdList);
+			model.addObject("myImmigrationPage", myImmigrationPage);
 			model.setViewName("/immigration/visaDetailsTab");
 		} catch (Exception e) {
 			logger.error("Exception caught in controller --->" + e.getMessage());
@@ -1803,7 +1817,8 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/getCandidatePassportDetails" })
 	public ModelAndView getCandidatePassportVisaDetails(
 			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
-			@RequestParam(value = "searchValue", required = true) String searchValue) throws Exception {
+			@RequestParam(value = "searchValue", required = true) String searchValue,
+			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage) throws Exception {
 		ModelAndView model = new ModelAndView();
 		logger.debug(" inisde getCandidatePassportDetails controller test -->");
 		List<CandidatePassport> PassportList = new ArrayList<CandidatePassport>();
@@ -1833,6 +1848,7 @@ public class ImmigrationController {
 			List<Countries> countryList = countriesService.getAllCountries();
 			model.addObject("PassportList", PassportList);
 			model.addObject("countryList", countryList);
+			model.addObject("myImmigrationPage", myImmigrationPage);
 			model.setViewName("/immigration/passportDetailsTab");
 			
 			
