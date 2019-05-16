@@ -54,8 +54,10 @@ public class PayrollPayheadDTO implements Serializable{
 		private String showInPayslip;
 		
 		private String pfApplicable;
-		
+
 		private String esiApplicable;
+		
+		private String ptApplicable;
 		
 		private String method;
 			
@@ -397,5 +399,11 @@ public class PayrollPayheadDTO implements Serializable{
 		public void setActive(String active) {
 			this.active = active;
 		}
-		
+		public String getPtApplicable() {
+			return ptApplicable;
+		}
+
+		public void setPtApplicable(String ptApplicable) {
+			this.ptApplicable = ptApplicable;
+		}
 }

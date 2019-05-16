@@ -40,7 +40,7 @@ public class CandidateIndexHelper {
 	public CandidateIndex getCandidateIndexFromCandidate(Candidate candidate) throws Exception{
 		CandidateIndex candidateIndex = null;
 		if(null != candidate && null != candidate.getId()){
-			candidate = candidateService.getCandidateByCandidateId(candidate.getId());
+			//candidate = candidateService.getCandidateByCandidateId(candidate.getId());
 			candidateIndex = new CandidateIndex();
 			candidateIndex.setCandidateId(candidate.getId());
 			candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());
