@@ -184,12 +184,14 @@ function saveTicketComment(ticketId) {
 				showError("Operation failed, please try again");
 			}
 		});
+		$("#ticketComment").html
 	} else {
 		alert("Add Comment text");
 	}
 }
 function closeTicketComment() {
 	$("#add-comment").fadeOut();
+	$("#addComment").empty();
 	document.getElementById("ticketComment_form").reset();
 	$("ticketComment_form").validate().resetForm();
 	selectedUsers = [];
@@ -230,7 +232,6 @@ function deleteTicketComment() {
 		} else if (response.response === "AWKWARD") {
 			location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {
-			alert(response.responseMessage);
 			getTicketCommetList(ticketId);
 			closeDeleteCommentPopup();
 		} else if (response.indexOf('Sign In') !== -1) {
