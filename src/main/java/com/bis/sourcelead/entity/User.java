@@ -311,6 +311,11 @@ public class User implements Serializable{
 	@JsonProperty
     private Set<String> tagsList;
 	
+	@Transient
+	private String locationCode;
+
+	@Transient
+	private Long orgLocationId;
 	
 	@Transient
     @JsonProperty
@@ -978,6 +983,22 @@ public class User implements Serializable{
 
 	public void setAllowEmployeeToFill(Status allowEmployeeToFill) {
 		this.allowEmployeeToFill = allowEmployeeToFill;
+	}
+
+	public String getLocationCode() {
+		return locationCode;
+	}
+
+	public void setLocationCode(String locationCode) {
+		this.locationCode = locationCode;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	
