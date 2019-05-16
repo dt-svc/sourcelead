@@ -410,7 +410,7 @@ function removeWhiteSpacesMyExp(rowCount){
 				if(status == 'draft'){
 					$("#draftForApprovalExpensesId" ).addClass('button').val('Processing..');
 				}
-				
+				alert(pmsUrl)
 	     		$.ajax({
 	       	        type : "POST",
 	        	    data: formData,
