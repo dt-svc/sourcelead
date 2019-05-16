@@ -21,6 +21,8 @@ public class ClockInOutDTO {
 	private Time previousClockInTime;
 	private Time previousClockOutTime;
 	
+	private String ipAddress;
+	
 	public Long getClockInOutId() {
 		return clockInOutId;
 	}
@@ -104,6 +106,12 @@ public class ClockInOutDTO {
 	}
 	public void setPreviousClockOutTime(Time previousClockOutTime) {
 		this.previousClockOutTime = previousClockOutTime;
+	}
+	public String getIpAddress() {
+		return ipAddress;
+	}
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
 	}
 	
 }
