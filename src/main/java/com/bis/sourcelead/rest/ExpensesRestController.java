@@ -118,7 +118,8 @@ public class ExpensesRestController {
     public ModelAndView getExpensesListForWeb( ExpensesListUtilDTO elDTO,HttpServletRequest request){
 		 ModelAndView model = new ModelAndView();
 		 try {
-		 OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+				OrgLocations orgLoc = orgLocationService.getOrgLocationById(orgLocId);
 			int start = elDTO.getStart();
 			int length = 0;
 			if(elDTO.getPageNo()<1) {
