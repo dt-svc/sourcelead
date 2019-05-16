@@ -313,6 +313,7 @@ public class RequirementServiceImpl implements RequirementService {
 		Requirement requirement = null;
 		String client = "";
 		String requirementClient = "";
+		orgLocations = orgLocationService.getOrgLocationById(orgLocations.getId());
 		Date date = new Date();
 		StringBuilder location = new StringBuilder();
 		if (StringUtils.isNotBlank(requirementDTO.getRequirementId())) {
