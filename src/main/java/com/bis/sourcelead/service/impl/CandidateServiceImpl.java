@@ -3196,7 +3196,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				String[] endMonth = employers.getEndMonth().split("&");
 				employerDTO.setEndMonth(endMonth[1]);
 			}
-			if(employers.getIsCurrentPosition().equalsIgnoreCase("Y")){
+			if(employers.getIsCurrentPosition() != null && employers.getIsCurrentPosition().equalsIgnoreCase("Y")){
 				employerDTO.setEndMonth("Present");
 				employerDTO.setEndYear("");
 			}
