@@ -394,7 +394,7 @@
 	         ],
 	         "scrollCollapse": false,
 	         "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	         "aaSorting": [],
+	         "aaSorting": [[3,'desc']],
 	         "bLengthChange": true,
 	         "bDestroy": true,
 	         "ordering": true,
