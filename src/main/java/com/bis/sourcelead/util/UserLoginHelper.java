@@ -444,7 +444,7 @@ public class UserLoginHelper {
 						accountsDTO.setDesignation(accountsJson.get("designation").toString());
 					}
 					
-					if(userSession.get("userType") != null) {
+					if(accountsJson.get("userType") != null) {
 						accountsDTO.setUserType(accountsJson.get("userType").toString());
 					}
 				
