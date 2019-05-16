@@ -175,6 +175,7 @@ width: 75px; padding: 0 !important;
 function getJobFairs() {
 	$("#interviewsTab").removeClass("active");
 	$("#dashboardEventsDiv").hide();
+	$(".dashboardoverIcon").hide();
 	
 	$("#jobFairsTab").addClass("active");
 	$("#dashboardJobFairsDiv").show();
@@ -185,6 +186,7 @@ function getJobFairs() {
 function getInterviewsandTasks() {
 	$("#interviewsTab").addClass("active");
 	$("#dashboardEventsDiv").show();
+	$(".dashboardoverIcon").show();
 	
 	$("#jobFairsTab").removeClass("active");
 	$("#dashboardJobFairsDiv").hide();
@@ -1244,9 +1246,8 @@ function feedbackView(interviewId,templateId){
 
 <script>
 function exportInterviewsListSheet(exportType){
-	alert("ssss");
+	
 	var date = getSelectedDateFromCalendar($("#eventCalendar").val());
-	alert("date"+date);
 		window.location.href = sourceleadUrl+"/getInterviewListExportList?"+tokenParamName+"="+tokenValue+"&exportType="+exportType+"&dateRange="+date;
 	}
 </script>
