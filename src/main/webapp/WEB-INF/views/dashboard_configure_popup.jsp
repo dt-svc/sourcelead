@@ -28,13 +28,11 @@
 						<c:set var="index" value="0"></c:set>
 						<!-- Timesheets -->
 						<sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
-							<c:if test = "${SourceLeadWeb_timesheet == 'Y'}">
 								<sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="bothTimesheets"/>
 								<sec:authorize access="!hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="onlyTimesheets"/>
 								<sec:authorize access="hasAnyRole('ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS') && !hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS')" var="onlyApprovalTimesheets"/>
 								<li class="positionRelative" style="width: 48%; height: 30px;"><input class="checkbox-custom" id="cb${index}" type="checkbox" checked="checked" data-order="${index + 1}" data-size="2:1"><label for="cb${index}">${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'My Timesheets' : onlyApprovalTimesheets ? 'Approval Timesheets' : ''}</label><span class="movIcon"></span></li>  
 								<c:set var="index" value="${index +1}"></c:set>
-							</c:if> 
 				      	</sec:authorize>
 				      
 				        <!-- Jobs -->
