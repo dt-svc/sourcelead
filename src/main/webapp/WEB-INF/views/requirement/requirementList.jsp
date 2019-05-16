@@ -726,11 +726,9 @@ function statusvalidating(id){
 	
 </section>
  <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
-<jsp:include page="addApplicantFromRequirementList.jsp" />
-
 <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
 
-
+<jsp:include page="addApplicantFromRequirementList.jsp" />
 <script>
 function filterPop(){
 	$("#requirementFilterPopup").toggle();
