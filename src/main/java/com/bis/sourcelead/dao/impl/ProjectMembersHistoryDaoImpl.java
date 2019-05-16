@@ -354,8 +354,16 @@ public class ProjectMembersHistoryDaoImpl implements ProjectMembersHistoryDao {
 		
 		logger.debug("In ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId method");
         Session session = this.sessionFactory.getCurrentSession();
+        
+   	 String  globalUserQuery = " and  (pm.projectMemberCandidteId.orgLocationId.id = :orgLocationsId  "
+ 			+ "                      OR  ("
+ 			+ "                                  (pm.projectMemberCandidteId.orgLocationId.id  IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = pm.projects.id and subpm.masterCandidateId.id = pm.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"') OR :orgLocationsId NOT IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = pm.projects.id and subpm.masterCandidateId.id = pm.masterCandidateId.id)) "
+ 					+ "                             and pm.projectMemberCandidteId.orgLocationId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :orgLocationsId)"
+ 					+ "                  )"
+ 					+ ") ";
+   	 
         Query projectMembersHistoryListQuery= session.createQuery("from ProjectMembersHistory pmh left join fetch pmh.projectMemberId pm left join fetch pmh.projectMemberId.projectClientsId pc "
-        		+ " left join fetch pc.orgLocationsId where pc.orgLocationsId.id = :orgLocationsId and pmh.projectMemberId.id = :projectMemberId");
+        		+ " left join fetch pc.orgLocationsId where  pmh.projectMemberId.id = :projectMemberId"+globalUserQuery);
 		List<ProjectMembersHistory> projectMembersHistoryList= projectMembersHistoryListQuery.setLong("orgLocationsId", orgLocationId).setLong("projectMemberId", projectMemberId).list();
 		ProjectMembersHistory pmh = null;
 		if(projectMembersHistoryList != null && !projectMembersHistoryList.isEmpty()){

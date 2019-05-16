@@ -955,6 +955,57 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			return null;
 		}
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public String getWeekCommentByCurrentFrequency(Date startDate,Date endDate,Long projectId,Long  masterCandidateId) throws Exception {
+		    // TODO Auto-generated method stub
+	        String weekComment = "";
+			Session session = this.sessionFactory.getCurrentSession();
+			java.sql.Date sqlStartDate = null;
+			if(startDate != null){
+				sqlStartDate = new java.sql.Date(startDate.getTime());
+			}
+			
+			java.sql.Date sqlEndDate = null;
+			if(endDate != null){
+				sqlEndDate = new java.sql.Date(endDate.getTime());
+			}
+			
+			String query = "from TimesheetSubmissions ts where "
+					+ "   ts.masterCandidateId.id  = :masterCandidateId  "
+					+ "  and ts.projects.id = :projectId  "
+					+ "  and ts.startDate BETWEEN '"+sqlStartDate+"' and '"+sqlEndDate+"'  and ts.weekcomments IS NOT NULL ";  
+			List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).list();
+			if(timesheetSubmissionsList != null && !timesheetSubmissionsList.isEmpty()) {
+				weekComment = timesheetSubmissionsList.iterator().next().getWeekcomments();
+			}
+			return weekComment;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void updateWeekCommentForAllSubmissions(String weekComment,Date startDate,Date endDate,Long projectId,Long  masterCandidateId) throws Exception {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			java.sql.Date sqlStartDate = null;
+			if(startDate != null){
+				sqlStartDate = new java.sql.Date(startDate.getTime());
+			}
+			
+			java.sql.Date sqlEndDate = null;
+			if(endDate != null){
+				sqlEndDate = new java.sql.Date(endDate.getTime());
+			}
+			String qryString = "update TimesheetSubmissions ts set ts.weekcomments= :weekComment where "
+					+ "  ts.masterCandidateId.id  = :masterCandidateId"
+					+ "   and  ts.projects.id = :projectId   "
+					+ "  and ts.startDate BETWEEN '"+sqlStartDate+"' and '"+sqlEndDate+"'";
+			
+			
+			int count = session.createQuery(qryString).setString("weekComment", weekComment).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).executeUpdate();
+	}
+	
 
 
 }
