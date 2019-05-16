@@ -436,7 +436,8 @@
 </script>
 <script type="text/javascript">
 function refreshList(){
-	location.reload();
+	$("#lcaSearch").val('');
+	getDynamicLCAList();
 }
 </script>
 <script type="text/javascript">
