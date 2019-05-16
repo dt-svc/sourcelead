@@ -151,7 +151,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 
 	@SuppressWarnings({ "deprecation", "static-access" })
 	@Override
-	public ClockInOut saveClockInOutTime(ClockInOutDTO clockInOutDTO,OrgLocations loginOrgLocation, User loginUser,String dateFormat, String timeZoneId) {
+	public ClockInOut saveClockInOutTime(ClockInOutDTO clockInOutDTO,OrgLocations loginOrgLocation, User loginUser) {
 		
 		ClockInOut clockInOut = null;
 		try {
@@ -171,7 +171,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			clockInOut.setUserId(loginUser);
 			
 			
-			ZoneId zoneId = ZoneId.of(timeZoneId);
+			ZoneId zoneId = ZoneId.of(loginOrgLocation.getTimeZoneName());
 //			LocalTime localTime = LocalTime.now(zoneId);
 			LocalDateTime ldt = LocalDateTime.now(zoneId);
 			Date currentDate = Date.from( ldt.atZone( ZoneId.systemDefault()).toInstant());
@@ -185,7 +185,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				clockInOut.setClockInDate(currentDate);
 				clockInOut.setClockInDateTime(currentDate);
 				clockInOut.setClockInTime(timeValue);
-				clockInOut.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, currentDate));
+				clockInOut.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), currentDate));
 			
 
 		    	// Find public IP address 
@@ -229,7 +229,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				clockInOut.setClockOutTime(timeValue);
 				clockInOut.setClockOutDate(currentDate);
 				clockInOut.setClockOutDateTime(currentDate);
-				clockInOut.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, currentDate));
+				clockInOut.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), currentDate));
 				DecimalFormat df = new DecimalFormat("00");
 				clockInOut.setTotalTime(df.format(diffHours)+":"+df.format(diffMinutes)+":"+df.format(diffSeconds));
 
@@ -284,16 +284,16 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	}
 
 	@Override
-	public void updateClockInOutTime(ClockInOutDTO clockInOutDTO, OrgLocations loginOrgLocation, User user,String dateFormat,String timeZoneId) {
+	public void updateClockInOutTime(ClockInOutDTO clockInOutDTO, OrgLocations loginOrgLocation, User user) {
 		ClockInOut clk =  getExistedClockTime(loginOrgLocation.getId(),user.getId(),loginOrgLocation.getDateFormat());
 		if(clk != null) {
-			saveClockInOutTime(clockInOutDTO,loginOrgLocation,user,dateFormat,timeZoneId);
+			saveClockInOutTime(clockInOutDTO,loginOrgLocation,user);
 		}
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public Breaks saveBreakTime(ClockInOutDTO clockInOutDTO,Long userId,OrgLocations loginOrgLocation,String timeZoneId) {
+	public Breaks saveBreakTime(ClockInOutDTO clockInOutDTO,Long userId,OrgLocations loginOrgLocation) {
 		
 		Breaks breaks = null;
 		try {
@@ -315,7 +315,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 //			String s = formatter.format(Calendar.getInstance().getTime());
 //			java.sql.Time timeValue =  new java.sql.Time(formatter.parse(s).getTime());
 			
-			ZoneId zoneId = ZoneId.of(timeZoneId);
+			ZoneId zoneId = ZoneId.of(loginOrgLocation.getTimeZoneName());
 //			LocalTime localTime = LocalTime.now(zoneId);
 			LocalDateTime ldt = LocalDateTime.now(zoneId);
 			Date currentDate = Date.from( ldt.atZone( ZoneId.systemDefault()).toInstant());
@@ -378,7 +378,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId,String dateFormat,String timeZoneId,String dayWisetype,String currentDate,String type) {
+	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId,String dayWisetype,String currentDate,String type) {
 		
 		DecimalFormat df = new DecimalFormat("00");
 
@@ -387,11 +387,11 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			Date[] dates = null;
 			
 			if("previous".equalsIgnoreCase(type)) {
-				 dates = clockInOutUtil.getClockFilterPreviousDates(currentDate,null,dateFormat,dayWisetype);
+				 dates = clockInOutUtil.getClockFilterPreviousDates(currentDate,null,location.getDateFormat(),dayWisetype);
 			}else if("next".equalsIgnoreCase(type)) {
-				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,null,dateFormat,dayWisetype);
+				 dates = clockInOutUtil.getClockFilterNextDates(currentDate,null,location.getDateFormat(),dayWisetype);
 			}else {
-				 dates = clockInOutUtil.getClockFilterDate(dayWisetype, timeZoneId);
+				 dates = clockInOutUtil.getClockFilterDate(dayWisetype, location.getTimeZoneName());
 			}
 			
 			ResponseList<ClockInOutUserTimeEntryDTO> resList = clockInOutConfigDao.getUserTimeEntries(orgLocationId,userId,dates);
@@ -461,13 +461,13 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    		subDto.setTaskName(data.getProjectTaskName());
 				    		subDto.setLocation(null);
 				    		subDto.setComments(data.getComments());
-				    		subDto.setClockOutDate(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockInDate()));
+				    		subDto.setClockOutDate(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
 				    		subListDto.add(subDto);
 				    		
 				    		main.setClockInDate(data.getClockInDate());
-				    		main.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockInDate()));
+				    		main.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
 				    		main.setGraphForamatDate(commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", data.getClockInDate()));
-				    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockOutDate()));
+				    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockOutDate()));
 						
 //				    		sec += data.getTotalTime().getSeconds();
 //				    		min += data.getTotalTime().getMinutes();
@@ -571,12 +571,12 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    		subDto.setTaskName(data.getProjectTaskName());
 				    		subDto.setLocation(null);
 				    		subDto.setComments(data.getComments());
-				    		subDto.setClockOutDate(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockInDate()));
+				    		subDto.setClockOutDate(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
 				    		subListDto.add(subDto);
 				    		
 				    		main.setClockInDateStr(uniqueData.getKey());
 				    		main.setGraphForamatDate(uniqueData.getKey());
-				    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockOutDate()));
+				    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockOutDate()));
 						
 //				    		sec += data.getTotalTime().getSeconds();
 //				    		min += data.getTotalTime().getMinutes();
@@ -625,7 +625,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public ClockInOutUserTimeEntryDTO getTimeReports(OrgLocations loginOrgLocation, User user,String timeZoneId) {
+	public ClockInOutUserTimeEntryDTO getTimeReports(OrgLocations loginOrgLocation, User user) {
 		
 		DecimalFormat df = new DecimalFormat("00");
 
@@ -633,7 +633,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		
 		try {
 			
-			Date[] currentDates = clockInOutUtil.getClockFilterDate("today", timeZoneId);
+			Date[] currentDates = clockInOutUtil.getClockFilterDate("today", loginOrgLocation.getTimeZoneName());
 			List<ClockInOutUserTimeEntryDTO> list1 = clockInOutConfigDao.getTimeReports(currentDates,loginOrgLocation,user);
 			
 			int sec = 0;
@@ -743,7 +743,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			}
 			dto.setCurrentTotTime(totSum);
 			
-			Date[] currentWeek = clockInOutUtil.getClockFilterDate("Last_7_days", timeZoneId);
+			Date[] currentWeek = clockInOutUtil.getClockFilterDate("Last_7_days", loginOrgLocation.getTimeZoneName());
 			List<ClockInOutUserTimeEntryDTO> list2 = clockInOutConfigDao.getTimeReports(currentWeek,loginOrgLocation,user);
 			
 			int sec2 = 0;
@@ -859,7 +859,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			dto.setWeekTotTime(totSum2);
 			
 			
-			Date[] currentMonth = clockInOutUtil.getClockFilterDate("current_month", timeZoneId);
+			Date[] currentMonth = clockInOutUtil.getClockFilterDate("current_month", loginOrgLocation.getTimeZoneName());
 			List<ClockInOutUserTimeEntryDTO> list3 = clockInOutConfigDao.getTimeReports(currentMonth,loginOrgLocation,user);
 			
 			
@@ -982,7 +982,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public String getWorkingTimeByClockId(OrgLocations loc,User user,String timeZoneId) {
+	public String getWorkingTimeByClockId(OrgLocations loc,User user) {
 		DecimalFormat df = new DecimalFormat("00");
 		
 		List<ClockInOut> list = clockInOutConfigDao.getWorkingTimeByClockId(loc,user);
@@ -1045,7 +1045,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 //				int hr1 = new Date().getHours() - clockInOut.getClockInTime().getHours();
 //				Time currentTime = new Time(hr1, min1, sec1);
 				
-				ZoneId zoneId = ZoneId.of(timeZoneId);
+				ZoneId zoneId = ZoneId.of(loc.getTimeZoneName());
 //				LocalTime localTime = LocalTime.now(zoneId);
 				LocalDateTime ldt = LocalDateTime.now(zoneId);
 				Date currentDate = Date.from( ldt.atZone( ZoneId.systemDefault()).toInstant());
@@ -1133,13 +1133,13 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	}
 
 	@Override
-	public ClockInOutDTO getPreviousClockInData(OrgLocations loginOrgLocation, User user,String dateFormat) {
+	public ClockInOutDTO getPreviousClockInData(OrgLocations loginOrgLocation, User user) {
 		
 		ClockInOutDTO clkDto = new ClockInOutDTO();
 		ClockInOut clk = clockInOutConfigDao.getPreviousClockInData(loginOrgLocation,user);
 		if(clk != null) {
-			clkDto.setPreviousClockInStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, clk.getClockInDate()));
-			clkDto.setPreviousClockOutStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, clk.getClockOutDate()));
+			clkDto.setPreviousClockInStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), clk.getClockInDate()));
+			clkDto.setPreviousClockOutStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), clk.getClockOutDate()));
 			clkDto.setPreviousClockInTime(clk.getClockInTime());
 			clkDto.setPreviousClockOutTime(clk.getClockOutTime());
 		}
