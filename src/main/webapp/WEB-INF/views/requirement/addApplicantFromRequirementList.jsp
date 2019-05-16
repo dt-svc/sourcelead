@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link rel="stylesheet" href="/resources/css/style.css" />
-<link rel="stylesheet" href="/resources/css/chosen.min.css">
+
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css?staticTime=${staticTime}" />
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}resources/css/chosen.min.css">
 <script src="${SourceLeadWeb_atsUrl}/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="${SourceLeadWeb_atsUrl}/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
@@ -21,6 +22,7 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 <!-- For add New Applicant -->
 <script>
 function getAddApplicant(requirementId,reqCoolingOffPeriod){
+	
 	$('.action-pop').slideUp();
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
@@ -321,6 +323,13 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 }
 </script>
 
+<script>
+    $(".addApplicant_close, .side_mask").click(function() {
+    	$(".new_side_wrap").removeClass("new_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+	});	
+</script>
 
 
 <script type="text/javascript">

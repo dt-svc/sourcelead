@@ -10,7 +10,7 @@
     <section class="content-header clearfix">
     <div id="popUpDeleteCart"></div>
     <div class="pull-left">
-      <h2 id="headerLbl">Marketplace List</h2>
+      <h2 id="headerLbl">Global Marketplace List</h2>
     </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 	    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <label id="brudCrumLbl">Global Marketplace List</label> </div>
@@ -1158,14 +1158,14 @@ function resetCandidateFilter(){
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
 	document.getElementById("candidateCheck").checked = true;
-	document.getElementById("myCandidatesRadio").checked = true;
+//	document.getElementById("myCandidatesRadio").checked = true;
 	$("#globalMarketSearh").val("");
 	$("#candidateLocation").val("");
 	//candidateList('gMarketPlace');
 	getGloblaMarketPlaceCandidates('listModel');
 }
 function refreshPage(){
-  location.reload(); // refresh the page.
+	resetCandidateFilter(); // refresh the page.
 }
 </script>
 <script> 

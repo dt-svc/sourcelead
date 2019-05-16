@@ -53,7 +53,7 @@ $(document).ready(function(){
                  </div>
               </li>
             <li class="noMar">
-                <input class="repSearchBar" placeholder="Search" id="purchaseOrderDataTableSearch" type="text">
+                <input class="repSearchBar" placeholder="Order No" id="purchaseOrderDataTableSearch" type="text">
                 <span class="repSearchIcon" onclick="getPurchaseOrderList();"></span>
 			</li>
             </ul>
@@ -190,7 +190,9 @@ $(document).ready(function(){
 	    location.href = "${SourceLeadWeb_atsUrl}/walletList";
 	}
 	function refreshPage(){
-		location.reload();
+		resetPurchaseOrderFilter();
+		$("#purchaseOrderDataTableSearch").val('');
+		getPurchaseOrderList();
 	}
 
   </script>
@@ -555,7 +557,7 @@ function exportToPdf(){
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<div class='modal-body text-center'>";
-			result = result +"		<span>Candidates List is Empty</span>";
+			result = result +"		<span>No Records To Export in Purchase Order.</span>";
 			result = result +"		</div>";
 			result = result +"		<b href='javascript:void(0)'><input class='width100percnt' type='button' value='Ok' onclick='candidateCancel();'></b>";
 			result = result +"	</div>";
@@ -578,7 +580,7 @@ function exportToExcel(){
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<div class='modal-body text-center'>";
-			result = result +"		<span>Candidates List is Empty</span>";
+			result = result +"		<span>No Records To Export in Purchase Order.</span>";
 			result = result +"		</div>";
 			result = result +"		<b href='javascript:void(0)'><input class='width100percnt'  type='button' value='Ok' onclick='candidateCancel();'></b>";
 			result = result +"	</div>";

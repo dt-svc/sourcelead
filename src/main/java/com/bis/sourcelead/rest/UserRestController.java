@@ -113,7 +113,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
-	 
+	@Autowired
+	RolesService roleService;
+	
 	@Autowired
 	UserService userService;
 	
@@ -1712,4 +1714,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		return isFound;
 		
 	}
+	
+	 @RequestMapping(value = "/getOrgLocationRolesList", method = RequestMethod.GET)
+	 public @ResponseBody List<Roles>  getOrgLocationRolesList(@RequestParam(value="orgLocations", required=false) String orgLocations) throws Exception{ 
+		 
+		 List<Roles> rolesList = roleService.getRoles(Long.valueOf(orgLocations));
+		 return rolesList;
+	  }
 }
