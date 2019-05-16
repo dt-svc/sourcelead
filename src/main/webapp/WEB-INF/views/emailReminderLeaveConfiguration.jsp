@@ -206,13 +206,25 @@ function hideandshowHoliday(){
 								<div id="reminderParent_Leave_Configuration_form" class="clearfix"></div>
 	
 									<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
-										<label class="col-md-3">Notify To<span class="text-danger paddingLeft">*</span></label>
-										<div class="col-md-9" id="notifyToDiv_Leave_Configuration_form">
+										<label class="col-md-3">Reminder To<span class="text-danger paddingLeft">*</span></label>
+										<div class="col-md-9">
+											<select  class="chosen-select form-control" multiple name="reminderTo" id="reminderTo" >
+							                        <%-- <c:forEach var="option" items="${rolesList}">
+								                         <c:if test ="${option.roleName != 'ROLE_ADMIN' && option.roleName != 'ROLE_USER' && option.roleName != 'ROLE_MANAGER'}"> 
+															<option value="${option.id}">${option.displayName}</option>
+														 </c:if>
+													</c:forEach> --%>
+													<option value="Reporting Manager">Reporting Manager</option>
+													<option value="Project Manager">Project Manager</option>
+													<option value="Team Leader">Team Leader</option>
+											</select>
+										</div>	
+										<%-- <div class="col-md-9" id="notifyToDiv_Leave_Configuration_form">
 											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${employeeonLeave.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
-										</div>
-										<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="EmployeeOnLeave">
-										<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="31">
-										<input type="text" style="display: none;" class="form-control" name="id" value="${employeeonLeave.id}">
+										</div> --%>
+										<input type="hidden" class="form-control" name="scenarioName" id="scenarionName" value="EmployeeOnLeave">
+										<input type="hidden" class="form-control" name="tabsId" id="tabsId" value="31">
+										<input type="hidden" class="form-control" name="id" value="${employeeonLeave.id}">
 									</div>
 								</div>
 							</div>
@@ -370,9 +382,9 @@ function hideandshowHoliday(){
 								<div id="reminderParent_approve_Pending_Leaves_form" class="clearfix"></div>
 	
 									<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
-										<label class="col-md-3">Notify To<span class="text-danger paddingLeft">*</span></label>
+										<label class="col-md-3">Notify To</label>   <!-- <span class="text-danger paddingLeft">*</span> -->
 										<div class="col-md-9" id="notifyToDiv_approve_Pending_Leaves_form">
-											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${approvePendingLeaves.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
+											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${approvePendingLeaves.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space validate_length length2-100 validate_email">  <!-- data-validation="required validate_Space" -->
 										</div>
 										<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="approvePendingLeaves">
 										<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="31">
@@ -384,7 +396,7 @@ function hideandshowHoliday(){
 							<div class="clearfix footerstyelsNew">
 								<div class="col-lg-12">
 									<div class="pull-right">
-										<input type="button" value="Save" id="approve_Pending_Leaves_form_btn"
+									<input type="button" value="Save" id="approve_Pending_Leaves_form_btn"
 											class="btn btn-primary"
 											onclick="stroeLeaveReminderConfiguration('approve_Pending_Leaves_form');"> 
 											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
@@ -532,15 +544,19 @@ function hideandshowHoliday(){
 										</div>
 									</c:if>
 								<div id="reminderParent_Holiday_form" class="clearfix"></div>
+								
+								<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="HolidayRemainder">
+								<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="31">
+								<input type="text" style="display: none;" class="form-control" name="id" value="${Holiday.id}">
 	
 									<%-- <div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
 										<label class="col-md-3">Notify To<span class="text-danger paddingLeft">*</span></label>
 										<div class="col-md-9" id="notifyToDiv_Holiday_form">
 											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${Holiday.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
-										</div> --%>
+										</div> 
 										<input type="text" style="display: none;" class="form-control" name="scenarioName" id="scenarionName" value="HolidayRemainder">
 										<input type="text" style="display: none;" class="form-control" name="tabsId" id="tabsId" value="31">
-										<input type="text" style="display: none;" class="form-control" name="id" value="${Holiday.id}">
+										<input type="text" style="display: none;" class="form-control" name="id" value="${Holiday.id}"> --%>
 									</div> 
 								</div>
 							</div>
@@ -566,7 +582,9 @@ function hideandshowHoliday(){
   
   
   <script>
-  function stroeLeaveReminderConfiguration(form) { 
+  function stroeLeaveReminderConfiguration(form) {
+	  
+	  var reminderTo = $("#reminderTo").val();
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -578,27 +596,27 @@ function hideandshowHoliday(){
 			if(notifyEmail != null && notifyEmail != "" && notifyEmail != 'undefined'){
 				var emailArray = notifyEmail.split(",");
 				var proceed = true;
-				$('#notifyToDiv'+form).find('p.jquery_form_error_message').remove();
+				$('#notifyToDiv'+form).find('p.jquery_form_error_message').remove(); 
 				$.each(emailArray,function(i){
-					var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-				    if(! re.test(String($.trim(emailArray[i])).toLowerCase())){
-				    	proceed = false;
-				    	return false;
-				    }
+				var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			    	if(! re.test(String($.trim(emailArray[i])).toLowerCase())){
+			    		proceed = false;
+			    		return false;
+			    	}
 				});
-				if(!proceed){
-					$("#notifyToDiv"+form+" :input#notifyTo").after("<p class='jquery_form_error_message'>Invalid entry</span>");
-					return false;
-				}
+ 				if(!proceed){
+ 				$("#notifyToDiv"+form+" :input#notifyTo").after("<p class='jquery_form_error_message'>Invalid entry</span>");
+ 				return false;
+ 				}
 			}
-			
 			$('#'+form+'_btn').prop('disabled', true);
-			var formData = getFormData(form);
-			var adminUrl ='${SourceLeadWeb_sourceleadUrl}';
+			var formData = getFormData1(form);
 			$.ajax({
 				type : "POST",
 				data : formData,
-				url : adminUrl + "/storeLeaveConfigureEmail?${_csrf.parameterName}=${_csrf.token}",
+				processData: false, 
+			 	contentType: false,
+				url : sourceleadUrl + "/storeLeaveConfigureEmail?${_csrf.parameterName}=${_csrf.token}",
 				success : function(result) {
 					if(result.object === 'MissingData'){
 			  			showError("Invalid data");
@@ -608,7 +626,7 @@ function hideandshowHoliday(){
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
-		                	location.replace(adminUrl+"/emailreminderConfigurationDashboard");
+		                	location.replace(sourceleadUrl+"/emailreminderConfigurationDashboard");
 		                	
 		                	
 		                } else if (result.indexOf('Sign In') !== -1) {
@@ -627,6 +645,7 @@ function hideandshowHoliday(){
 </script>
 
 <script type="text/javascript">
+
 			var config = {
 			  '.chosen-select'           : {},
 			  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -645,8 +664,9 @@ function hideandshowHoliday(){
 					$("#cd").click(function(){
 						$(".clientDetails").toggleClass('hidden', 500);
 					});
-	});
-</script> 
+	});			
+</script>
+ 
 <script type="text/javascript">
 $('.clockpicker').clockpicker({
     placement: 'bottom',

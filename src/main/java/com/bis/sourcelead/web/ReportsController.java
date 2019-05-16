@@ -927,5 +927,19 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 	model.setViewName("reports/vendorJobsApplicantHiredList");
 	return model;
 	}
+	
+	@RequestMapping(value = "/loansAndAdvancesReport")
+	public ModelAndView loansAndAdvancesReport(HttpServletRequest request,HttpServletResponse response) throws Exception{
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+	//	List<Candidate>empList = projectMembersService.getAllAvailableAssociates(orgLocations.getId());
+	//	model.addObject("sourceleadUrl", sourceleadUrl);
+	//	model.addObject("empList", empList);
+		model.setViewName("reports/loansAndAdvancesReport");
+	
+		return model;
+
+	}
 
 }
