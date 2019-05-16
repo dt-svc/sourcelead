@@ -119,6 +119,7 @@ function getGroupFrequency(){
 
 <script>
 function runINDPayroll(){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	if ($('#generate_payroll_form').validate(false, validationSettings)){  
 		$('#preCheckPayrollDiv').hide();
 		$('#initiatePayrollEmptyDiv').hide();
