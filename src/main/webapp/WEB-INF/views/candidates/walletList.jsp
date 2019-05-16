@@ -223,7 +223,8 @@
 		location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 	}
 	function refreshPage(){
-		location.reload();
+		$("#walletSearch").val('');
+		getDynamicWalletList();
 	}
 	/* function goToWalletList(){
 		location.href = "/ats/walletList";
