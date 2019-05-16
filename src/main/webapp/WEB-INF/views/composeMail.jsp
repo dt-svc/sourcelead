@@ -28,10 +28,14 @@ display: none;
 </style>
 
  <script>
+ var atsUrl = '${SourceLeadWeb_atsUrl}';
+ </script>
+ 
+
+ <script>
  $(document).ready(function(){
 	 $(".clearUpload").hide();
 	 var UUID = '${UUID}';
-	
 	 if(null != UUID && UUID != '' && UUID != 'undefined'){
 		 
 		 var mailType = '${mailType}';
@@ -208,7 +212,6 @@ $(function() {
   
    <script>
   function loadMailBoxDetails(UUID){
-	  var atsUrl = '${SourceleadWeb_atsUrl}';
 			 $.ajax({
 				 type: "POST",
 			        url: atsUrl+"/getUserMailBoxDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID, 
@@ -256,7 +259,6 @@ $(function() {
   
   <script type="text/javascript">
 	function sendEmails() {
-		 var atsUrl = '${SourceleadWeb_atsUrl}';
 		if ($('#email_form').validate(false, validationSettings)){ 
 				var sourceleadUrl = '${sourceleadUrl}';
 				
@@ -389,7 +391,6 @@ function textBoxCancel(){
   
   <script>
 function getUserList(teamType){  
-	 var atsUrl = '${SourceleadWeb_atsUrl}';
 	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $("#userList").empty(); 
 	  $.ajax({
@@ -544,7 +545,6 @@ function getContactsList(){
 
 <script>
 function contactsDataTableList(){
-	 var atsUrl = '${SourceleadWeb_atsUrl}';
 	 var searchValue = $("#contactsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
 	 var contactsGroups = '';
@@ -674,7 +674,6 @@ function checkContactUsers(ele) {
 
 <script>
 function getTeamsList(teamType){  
-	var atsUrl = '${SourceleadWeb_atsUrl}';
 	  $.ajax({
            type : "POST",
            url: atsUrl+"/getComposeMailTeamsList?${_csrf.parameterName}=${_csrf.token}",    

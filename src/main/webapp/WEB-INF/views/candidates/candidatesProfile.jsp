@@ -358,7 +358,7 @@ function editCandidate(candidateId){
 								result = result + '</div>';
 								result = result + '</div>';
 	              		        }
-								result = result + '</div>';
+								
 								result = result + '<div class="clearfix mb10">';
 								if(loginCountryName == 'United States'){
 									result = result + '<div class="clearfix mb10" id="errSsnNoDiv">';
