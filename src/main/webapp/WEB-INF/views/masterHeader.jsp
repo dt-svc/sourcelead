@@ -873,6 +873,7 @@ function preventTabkey(e){
 </div>
 <form id="clock_inout_form" name="clock_inout_form">
 <input type="hidden" id="clockInOutId" name="clockInOutId">
+<input type="hidden" id="ipAddressId" name="ipAddress">
 <input type="hidden" id="breakId" name="breakId">
 <div class="clockWrap">
 <div class="clockIn clearfix">
@@ -1677,6 +1678,10 @@ $(document).ready(function(){
 	localStorage.setItem('pause_sec',0);
 	localStorage.setItem('stopwatch_time', null);
 	localStorage.setItem('stopwatch_sec', 0);
+	localStorage.clear();
+	 $.getJSON("https://jsonip.com?callback=?", function(data) {
+	        $("#ipAddressId").val(data.ip);
+	      });
 	$("#subMenu").click(function(){
 		$(".subMenuView").slideToggle(100);
 	});
