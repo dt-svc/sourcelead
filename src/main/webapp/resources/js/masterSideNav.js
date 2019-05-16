@@ -17,6 +17,11 @@ function buildMasterSideNavPanel(){
 	      }else{
 	    	  sideNavHtml = sideNavHtml+'<li class="navActive"><a href="'+sourceleadUrl+'/dashboard/'+orgLocationId+'" title="Dashboard"><span class="navIcons"></span><b>Dashboard</b></a></li>'; 
 	      }
+	      
+		  if(roleActionsArray.indexOf("ROLE_ENROLL_ORG") > -1){ 
+			  sideNavHtml = sideNavHtml+'<li class=""><a href="'+sourceleadUrl+'/enrolledOrgsList" title="Orgs"><span class="navIcons orgIcon"></span><b>Orgs</b></a></li>';
+		  }
+	      
 	       
 	       if(tabAccessArray.indexOf("Associates") > -1){
 	    	   sideNavHtml = sideNavHtml+'<li class=""><a href="'+atsUrl+'/usersList" title="Associates"><span class="navIcons assIcon"></span><b>Associates</b></a></li>';
