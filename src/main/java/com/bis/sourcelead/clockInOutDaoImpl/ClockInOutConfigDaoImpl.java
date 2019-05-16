@@ -690,11 +690,11 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		
 		try {
 			
-		    long millis=System.currentTimeMillis();  
-	        java.sql.Date date = new java.sql.Date(millis);
+//		    long millis=System.currentTimeMillis();  
+//	        java.sql.Date date = new java.sql.Date(millis);
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from ClockInOut clk where clk.orgLocations.id =:orgLocationId and clk.userId.id =:user and clk.clockInDate =:currentDate and clk.clockOutDate is NULL";
-			clkList = session.createQuery(query).setLong("orgLocationId", loc.getId()).setLong("user", user.getId()).setDate("currentDate", date).list();
+			String query = "from ClockInOut clk where clk.orgLocations.id =:orgLocationId and clk.userId.id =:user and clk.clockOutDate is NULL";
+			clkList = session.createQuery(query).setLong("orgLocationId", loc.getId()).setLong("user", user.getId()).list();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
