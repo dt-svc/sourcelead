@@ -28,7 +28,6 @@ function candidateDocuments(){
 		result = result  +'     </div>  ';
 	    result = result+'	    </div>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table datatable_filter">';
-		
 		result  = result + '   <div id="candidateDocumentsList"></div>';
 		result  = result + '   </div>';
 	  
@@ -58,35 +57,20 @@ function candDocumentsList(candidateId){
                	 	var result = "";
                	 	result = result +"<table id='candidateDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
                     result = result +"<thead>"; 
-                    result = result +"  <tr>"; 
-                    result = result  + '<th><input type="checkbox" id="checkAllDocuments" onclick="toggleAllDocuments(this);deleteRequestedDoc();"></th>';
+                    result = result +"<tr>"; 
                     result  = result + '<th>Document Type</th>';
                 	result  = result + '<th>Document</th>';
                 	result  = result + '<th>Description</th>';
-                	result  = result + '<th>Upload Status</th>';
-                    result  = result + '<th>Document Status</th>';
                 	result  = result + '<th>Action</th>';
-                    result = result +"  </tr>"; 
+                    result = result +" </tr>"; 
                     result = result +"</thead>";
                     result = result +"<tbody>"; 
                     
                     for (var i = 0; i < response.data.length; i++) { 
                    		var opt = response.data[i];  
                    	 	result  = result + ' <tr>';
-	                   	/* if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected" && opt.requestedDocStatus != "Accepted"){
-	                   		result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
-	                   	} else {
-	                   		result = result +"  <td><div>--</div></td>"; 
-	                   	} */
 	                   	
-	                   	if(opt.isConfidential == 'N' || opt.docUploadStatus =="Requested"|| (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.userCode}' == opt.userIdStr)) {
-                      		result  = result + ' <tr>';
-                      	if(opt.requestDocumentId != null && opt.requestedDocStatus == "Submitted"){
-                      		result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
-                      	} else {
-                      		result = result +"  <td><div>--</div></td>"; 
-                      		}
-	                   	}
+	                   
                    		if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined") {
    	            			if(opt.documentOtherType !=null && opt.documentOtherType !='' && opt.documentOtherType !="undefined"){
    								result = result +"  <td><div title='"+opt.documentOtherType+"' class='tbldata-dotdot-me'>"+opt.documentOtherType+"</div></td>";
@@ -106,35 +90,9 @@ function candDocumentsList(candidateId){
 		                    } else {
 		                    	result  = result + ' <td><div><span>----</span></div></td>';
 		                    }
-							result = result +"  <td><div title='"+opt.docUploadStatus+"'>"+opt.docUploadStatus+"</div></td>"; 
-	                   	if(opt.requestedDocStatus != null && opt.requestedDocStatus != '' && opt.requestedDocStatus != 'undefined') {
-	                   		result = result +"<td>";
-	                   		result = result +"<div title='"+opt.requestedDocStatus+"'>"+opt.requestedDocStatus+" "; 
-	                   		if(opt.requestedDocStatus == "Rejected" && opt.requestedDocRejectedReason != null && opt.requestedDocRejectedReason != '' && opt.requestedDocRejectedReason != 'undefined') {
-					        	result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+"Reason : "+opt.requestedDocRejectedReason+'</p></div></i>';
-					        }
-	                   		result = result +"</div>";
-	                   		result = result +"</td>";
-	                   	} else {
-	                   		result = result +"  <td><div>----</div></td>"; 
-	                   	}
 	                	result = result+'<td><div class="tblicons">';
-// 			           	if(window.candidateStatusGlobal == 0) {
-// 			           		result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
-// 				           	result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
-// 			           	} else {
 			           		var docUUID = opt.documentUUID;
-			           		result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="getDocType();getDocument('+candidateId+', '+opt.id+');addDocument('+candidateId+',\''+docUUID+'\');" title="Edit"></a>';
-// 			           		if(candidateType =="Candidates") {
-// 			           			'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-// 			           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
-// 			           			'</sec:authorize>';
-// 			           		} else {
-// 			           			'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSOCIATE_DOCUMENT\')">';
-			           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
-// 			           			'</sec:authorize>';
-// 			           		}
-// 			           	}
+			           		result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="getDocType(\''+opt.documentType+'\');getDocument('+candidateId+', '+opt.id+');addDocument('+candidateId+',\''+docUUID+'\');" title="Edit"></a>';
 			           	result = result+'</div></td>';
 	                   	result  = result + '</tr>';
 	                    }
@@ -494,7 +452,7 @@ function getDocument(candidateId, documentId){
 </script>
 
 <script>
-function getDocType(){
+function getDocType(documentType){
 	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.get(atsUrl+"/getUserDocumentList", function(result) {
 		var json = result.data;
@@ -503,7 +461,12 @@ function getDocType(){
     	for (var i = 0; i < json.length; i++) { 
     		  var documentList = json[i];
     		  if(documentList != null){
-    			  output = output +'<option value='+documentList.name+'>'+documentList.name+'</option>';
+    			  if(documentType != null && documentType != 'undefined' && documentType  != '' && documentType == documentList.name){
+    				  output = output +'<option value='+documentList.name+' selected>'+documentList.name+'</option>';
+		            	}else{
+		            		 output = output +'<option value='+documentList.name+'>'+documentList.name+'</option>';
+		            	}
+    			  
     		  }
     	  }
     	$("#docName").empty();
