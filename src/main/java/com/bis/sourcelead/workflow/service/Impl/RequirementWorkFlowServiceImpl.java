@@ -46,7 +46,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 	@Override
 	public RequirementWorkFlow saveRequirementWorkFlowDetails(RequirementWorkFlowDTO requirementWorkFlowDTO, User user,
-			OrgLocations orgLocations) throws Exception {
+			OrgLocations orgLocations) {
+		logger.debug("Running saveRequirementWorkFlowDetails Service");
 			RequirementWorkFlow requirementWorkFlow = null;
 			RequirementWorkFlow workFlow = null;
 			try {
@@ -58,7 +59,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				requirementWorkFlow = saveRequirementWorkFlowDetailsInfo(requirementWorkFlowDTO,user,orgLocations);
 				workFlow = requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
 			} catch (Exception e) {
-				logger.error("Exception caugth in savePetitionDetails service" + e.getMessage());
+				logger.error("Exception in savePetitionDetails service" + e);
 				e.printStackTrace();
 			}
 	
@@ -66,8 +67,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 	
 	
-   private RequirementWorkFlow saveRequirementWorkFlowDetailsInfo(RequirementWorkFlowDTO requirementWorkFlowDTO, User user, OrgLocations orgLocations) throws Exception {
-		
+   private RequirementWorkFlow saveRequirementWorkFlowDetailsInfo(RequirementWorkFlowDTO requirementWorkFlowDTO, User user, OrgLocations orgLocations){
+	   try {
+	   logger.debug("Running saveRequirementWorkFlowDetailsInfo Service");
 	   RequirementWorkFlow reqWorkFlow = null;
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		if (requirementWorkFlowDTO.getReqWorkFlowId() != null && StringUtils.isNotEmpty(requirementWorkFlowDTO.getReqWorkFlowId())) {
@@ -124,18 +126,31 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 		reqWorkFlow.setWorkflowStages(requirementWorkFlow);
 		return reqWorkFlow;
-		
+	   }catch(Exception e) {
+		   logger.error(e+" in saveRequirementWorkFlowDetailsInfo Service");
+		   e.printStackTrace();
+		   return null;
+	   }
 	}
 
 	@Override
-	public List<RequirementWorkFlow> getRequirementWorkFlowByOrgLocationId(OrgLocations orgLocations) throws Exception {
+	public List<RequirementWorkFlow> getRequirementWorkFlowByOrgLocationId(OrgLocations orgLocations){
+		logger.debug("Running getRequirementWorkFlowByOrgLocationId Service");
+		try {
 		List<RequirementWorkFlow> requirementWorkFlow = requirementWorkFlowDao
 				.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
 		return requirementWorkFlow;
+		}catch(Exception e) {
+			logger.error(e+" in getRequirementWorkFlowByOrgLocationId Service");
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
-	public void saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(OrgLocations orgLocations, User user) throws Exception {
+	public void saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(OrgLocations orgLocations, User user) {
+		logger.debug("Running saveRequirementDefaultWorkFlowAndStagesByOrgLocationId Service");
+		try {
 		List<RequirementDefaultWorkFlowStages> requirementDefaultWorkFlowStages = requirementWorkFlowDao.getRequirementDefaultWorkFlowStages();
 		RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO(); 
 		RequirementWorkFlow workFlow = null;
@@ -156,20 +171,32 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowDao.saveRequirementWorkFlowDetails(workFlow, orgLocations);
 			
 		}
+		}catch(Exception e) {
+			logger.error(e+" in saveRequirementDefaultWorkFlowAndStagesByOrgLocationId Service");
+			e.printStackTrace();
+		}
 	}
 
 
 	@Override
-	public List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages(OrgLocations orgLocations) throws Exception {
+	public List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages(OrgLocations orgLocations){
+		logger.debug("Running getRequirementDefaultWorkFlowStages Service");
+		try {
 		RequirementWorkFlowDTO requirementWorkFlowDTO = getRequirementDefaultWorkflow(orgLocations);
 		List<RequirementWorkFlowStagesDTO> newDefaultStages = getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
 		return newDefaultStages;
-	}
+		}catch(Exception e) {
+			logger.error(e+" in getRequirementDefaultWorkFlowStages Service");
+			e.printStackTrace();
+			return null;
+		}
+		}
 
 
 	@Override
-	public ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowList(RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations) throws Exception {
-		
+	public ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowList(RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations) {
+		logger.debug("Running getRequirementWorkFlowList Service");
+		try {
 		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(workFlowDTO.getUuid(), orgLocations.getId());
 		
 		if (workFlowDTO.getUuid() != null && workFlowDTO.getStatus() == 1) {
@@ -181,23 +208,43 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
 		}
 		return requirementWorkFlowDao.getRequirementWorkFlowsByOrgLocationId(workFlowDTO, orgLocations);
-	}
+		}catch(Exception e) {
+			logger.error(e+" in getRequirementWorkFlowList Service");
+			e.printStackTrace();
+			return null;
+		}
+		}
 	
 	@Override
-	public RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate template) throws Exception {
+	public RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate template) {
+		logger.debug("Running saveQuestionnaireTemplate Service");
+		try {
        return requirementWorkFlowDao.saveQuestionnaireTemplate(template);
-		
+		}catch(Exception e) {
+			logger.error(e+" in saveQuestionnaireTemplate Service");
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 
 	@Override
 	public ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(
 			RequirementQuestionnaireTemplateDTO questionnaireDto,  String searchValue, Long orgLocationId) {
+		logger.debug("Running getQuestionnaireTemplateListByOrgLocationId Service");
+		try {
 		return requirementWorkFlowDao.getQuestionnaireTemplateListByOrgLocationId(questionnaireDto, searchValue, orgLocationId);
+    }catch(Exception e ) {
+    	logger.error(e+" in getQuestionnaireTemplateListByOrgLocationId Service");
+    	e.printStackTrace();
+    	return null;
     }
+	}
 	
 	
-	public List<RequirementWorkFlowStagesDTO> getRequirementWorkflowStagesByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations) throws Exception {
+	public List<RequirementWorkFlowStagesDTO> getRequirementWorkflowStagesByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations) {
+		logger.debug("Running getRequirementWorkflowStagesByWorkflowUuid Service");
+		try {
 		List<RequirementWorkFlowStages> requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkflowStagesListByUuid(requirementWorkFlowDTO.getUuid(), orgLocations.getId());
 		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(requirementWorkFlowDTO.getUuid(), orgLocations.getId());
 
@@ -217,16 +264,30 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}	
 		}
 		return workFlowStagesDTO;
-	}
+		}catch(Exception e ) {
+			logger.error(e+" in getRequirementWorkflowStagesByWorkflowUuid Service");
+			e.printStackTrace();
+			return null;
+		}
+		}
 
 
 	@Override
 	public RequirementQuestionnaireTemplate getQuestionnaireTemplateByLabelName(Long orgLocationId,
 			String questionnaireName) {
+		logger.debug("Running getQuestionnaireTemplateByLabelName Service");
+		try {
 		return requirementWorkFlowDao.getQuestionnaireTemplateByLabelName(orgLocationId, questionnaireName);
+	}catch(Exception e) {
+		logger.error(e+" in getQuestionnaireTemplateByLabelName Service");
+		e.printStackTrace();
+		return null;
+	}
 	}
 	
-	public RequirementWorkFlowDTO getRequirementDefaultWorkflow(OrgLocations orgLocations)throws Exception {
+	public RequirementWorkFlowDTO getRequirementDefaultWorkflow(OrgLocations orgLocations){
+		logger.debug("Running getRequirementDefaultWorkflow Service");
+		try {
 		RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO();
 		RequirementWorkFlow defaultWorkflow = requirementWorkFlowDao.getRequirementDefaultWorkflow(orgLocations.getId());
 		requirementWorkFlowDTO.setId(defaultWorkflow.getId());
@@ -234,11 +295,18 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		requirementWorkFlowDTO.setDescription(defaultWorkflow.getDescription());
 		requirementWorkFlowDTO.setUuid(defaultWorkflow.getUuid());
 		return requirementWorkFlowDTO;
+	}catch(Exception e) {
+		logger.error(e+" in getRequirementDefaultWorkflow Service");
+		e.printStackTrace();
+		return null;
+	}
 	}
 
 
 	@Override
-	public String deleteQuestionnaireTemplateById(String templateUuid, Long id)throws Exception {
+	public String deleteQuestionnaireTemplateById(String templateUuid, Long id) {
+		logger.debug("Running deleteQuestionnaireTemplateById Service");
+		try {
 		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = requirementWorkFlowDao.getQuestionnaireTemplateById(templateUuid);
 		List<RequirementWorkFlowStages> requirementWorkFlowStages = requirementWorkFlowDao.getRequirementworkflowStageByQuestionnaireId(requirementQuestionnaireTemplate.getId(), id);
 		for(RequirementWorkFlowStages stages : requirementWorkFlowStages) {
@@ -246,16 +314,30 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowDao.saveRequirementWorkFlowStages(stages);
 		}
 		return requirementWorkFlowDao.deleteQuestionnaireTemplateById(requirementQuestionnaireTemplate.getId());
+	}catch(Exception e) {
+		logger.debug(e+" in deleteQuestionnaireTemplateById Service");
+		e.printStackTrace();
+		return null;
+	}
 	}
 
 
 	@Override
 	public RequirementQuestionnaireTemplate getQuestionnaireTemplateById(String templateUuid) {
+		logger.debug("Running getQuestionnaireTemplateById Service");
+		try {
 		return requirementWorkFlowDao.getQuestionnaireTemplateById(templateUuid);
+	}catch(Exception e) {
+		logger.error(e+" in getQuestionnaireTemplateById");
+		e.printStackTrace();
+		return null;
+	}
 	}
 	
 	@Override
-	public void saveRequirementWorkflowStageByWorkflowId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, OrgLocations orgLocations, User user) throws Exception {
+	public void saveRequirementWorkflowStageByWorkflowId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, OrgLocations orgLocations, User user) {
+		logger.debug("Running saveRequirementWorkflowStageByWorkflowId Service");
+		try {
 		List<RequirementWorkFlowStages> workFlowStages = null;
 		/*OrgLocations orgId = new OrgLocations();
 		orgId.setId(id);*/
@@ -286,11 +368,17 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			 workflow.setNoOfStages(workFlowStages.size());
 			 requirementWorkFlowDao.saveRequirementWorkFlowDetails(workflow, orgLocations);
 		}
+		}catch(Exception e) {
+			logger.error(e+" in saveRequirementWorkflowStageByWorkflowId Service");
+			e.printStackTrace();
+		}
 	}
 
 
 	@Override
-	public List<RequirementWorkFlowStagesDTO> getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(String uuid, String workflowUuid, OrgLocations orgLocations, String currentStageuuid) throws Exception {
+	public List<RequirementWorkFlowStagesDTO> getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid(String uuid, String workflowUuid, OrgLocations orgLocations, String currentStageuuid) {
+		logger.debug("Running getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid Service");
+		try {
 		RequirementWorkFlowStages requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkFlowStageByUuidAndWorkflowUuid(uuid, workflowUuid, orgLocations.getId());
 		RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO = new RequirementWorkFlowStagesDTO();
 		if(requirementWorkFlowStages != null) {
@@ -307,48 +395,83 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			workFlowStagesDTO.add(requirementWorkFlowStagesDTO);
 		}	
 		return workFlowStagesDTO;
+	}catch(Exception e) {
+		logger.error(e+" in getRequirementWorkFlowStagesBySeqOrderAndWorkflowUuid Service");
+		e.printStackTrace();
+		return null;
+	}
 	}
 	
 	//delete workflow stage 
 	
 	@Override
-	public RequirementWorkFlowStages getRequirementWorkFlowStagesByUuid(String uuid, OrgLocations orgLocations) throws Exception {
+	public RequirementWorkFlowStages getRequirementWorkFlowStagesByUuid(String uuid, OrgLocations orgLocations){
+		logger.debug("Running getRequirementWorkFlowStagesByUuid Service");
+		try {
 		return requirementWorkFlowDao.getRequirementWorkFlowStagesByUuid(uuid, orgLocations.getId());
+	}catch(Exception e) {
+		logger.error(e+" in getRequirementWorkFlowStagesByUuid Service");
+		e.printStackTrace();
+		return null;
+	}
 	}
 
 	@Override
 	public String deleteRequirementWorkFlowStagesByOrgLocationIdAndUuid(String uuid) {
+		logger.debug("Running deleteRequirementWorkFlowStagesByOrgLocationIdAndUuid Service");
+		try {
 		return requirementWorkFlowDao.deleteRequirementWorkFlowStagesByOrgLocationIdAndUuid(uuid);
+	}catch(Exception e) {
+		logger.error(e+" in deleteRequirementWorkFlowStagesByOrgLocationIdAndUuid Service");
+		e.printStackTrace();
+		return null;
+	}
 	}
 
 
 	@Override
-	public RequirementWorkFlowStages saveRequirementWorkFlowStages(RequirementWorkFlowStages requirementWorkFlowStages)
-			throws Exception {
+	public RequirementWorkFlowStages saveRequirementWorkFlowStages(RequirementWorkFlowStages requirementWorkFlowStages) {
+		logger.debug("Running saveRequirementWorkFlowStages Service");
+		try {
 		return requirementWorkFlowDao.saveRequirementWorkFlowStages(requirementWorkFlowStages);
+	}catch(Exception e) {
+		logger.error(e+" in saveRequirementWorkFlowStages Service");
+		e.printStackTrace();
+		return null;
+	}
 	}
 
 
 	@Override
 	public List<RequirementWorkFlowStages> getRequirementWorkFlowStagesListByOrgLocationId(OrgLocations orgLocations) {
+		logger.debug("Running getRequirementWorkFlowStagesListByOrgLocationId Service");
+		try {
 		return requirementWorkFlowDao.getRequirementWorkFlowStagesListByOrgLocationId(orgLocations.getId());
+	}catch(Exception e) {
+		logger.error(e+" in getRequirementWorkFlowStagesListByOrgLocationId Service");
+		e.printStackTrace();
+		return null;
+	}
 	}
 
 
 	@Override
 	public void deleteRequirementWorkFlowStagesByuuid(String uuid, OrgLocations orgLocations) {
+		logger.debug("Running deleteRequirementWorkFlowStagesByuuid Service");
 		try {
 		RequirementWorkFlowStages requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkFlowStagesByUuid(uuid, orgLocations.getId());
 		requirementWorkFlowDao.deleteRequirementWorkFlowStagesByuuid(requirementWorkFlowStages.getId());
 		}catch(Exception e) {
+			logger.error(e+" in deleteRequirementWorkFlowStagesByuuid Service");
 			e.printStackTrace();
 		}
 	}
 
 
 	@Override
-	public List<RequirementQuestionnaireTemplateDTO> getRequirementQuestionnaireTemplates(Long id) throws Exception {
-		
+	public List<RequirementQuestionnaireTemplateDTO> getRequirementQuestionnaireTemplates(Long id) {
+		logger.debug("Running getRequirementQuestionnaireTemplates Service");
+		try {
 		List<RequirementQuestionnaireTemplateDTO> requirementQuestionnaireTemplateDTO = new ArrayList<>();
 		List<RequirementQuestionnaireTemplate> requirementQuestionnaireTemplate = requirementWorkFlowDao.getRequirementQuestionnaireTemplates(id);
 		RequirementQuestionnaireTemplateDTO questionnaireTemplateDTO = null;
@@ -363,12 +486,18 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 		
 		return requirementQuestionnaireTemplateDTO;
+	}catch(Exception e) {
+		logger.error(e+" in getRequirementQuestionnaireTemplates Service");
+		e.printStackTrace();
+		return null;
+	}
 	}
 
 	
 	@Override
-	public String saveRequirementWorkflowStageByWorkflowIdAndOrgLocationId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, RequirementWorkFlowStages requirementWorkFlowStages, OrgLocations orgLocations, User user) throws Exception{
-		
+	public String saveRequirementWorkflowStageByWorkflowIdAndOrgLocationId(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO, RequirementWorkFlowStages requirementWorkFlowStages, OrgLocations orgLocations, User user) {
+		logger.debug("Running saveRequirementWorkflowStageByWorkflowIdAndOrgLocationId Service");
+		try {
 		RequirementWorkFlowStages workFlowStage =  new RequirementWorkFlowStages();
 		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = new RequirementQuestionnaireTemplate(); 
 		
@@ -441,24 +570,37 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		
 		requirementWorkFlowDao.saveRequirementWorkFlowStagesByOrgLocationId(workFlowStage);		
 		return workFlowStage.getUuid();
+	}catch(Exception e) {
+		logger.error(e+" in saveRequirementWorkflowStageByWorkflowIdAndOrgLocationId Service");
+		e.printStackTrace();
+		return null;
+	}
 	}
 
 
 	@Override
 	public ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(
-			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user) throws Exception {
+			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user) {
+		logger.debug("Running getRequirementWorkFlowTaskList Service");
+		try {
 		RequirementWorkFlowStages requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkFlowStagesByUuid(requirementWorkFlowTasksDTO.getCurrentStageUuid(), orgLocations.getId());
 		if(requirementWorkFlowStages != null) {
 		requirementWorkFlowTasksDTO.setStageId(requirementWorkFlowStages.getId());
 		}
 		return requirementWorkFlowDao.getRequirementWorkFlowTaskList(requirementWorkFlowTasksDTO, orgLocations, user);
+	}catch(Exception e) {
+		logger.error(e+" in getRequirementWorkFlowTaskList Service");
+		e.printStackTrace();
+		return null;
 	}
-
+	}
+	
 
 	@Override
 	public Boolean saveRequirementWorkFlowStagesBySeqOrder(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
-			OrgLocations orgLocations, User user) throws Exception {
-
+			OrgLocations orgLocations, User user) {
+		logger.debug("Running saveRequirementWorkFlowStagesBySeqOrder Service");
+		try {
 		List<RequirementWorkFlowStages> workFlowStages = null;
 		RequirementWorkFlowStages requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkFlowStageByUuidAndWorkflowUuid(requirementWorkFlowStagesDTO.getUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), orgLocations.getId());
 		RequirementWorkFlow workflow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), orgLocations.getId());
@@ -482,13 +624,19 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		 workflow.setNoOfStages(workFlowStages.size());
 		 requirementWorkFlowDao.saveRequirementWorkFlowDetails(workflow, orgLocations);
 		 return true;
+}catch(Exception e) {
+	logger.error(e+" in saveRequirementWorkFlowStagesBySeqOrder Service");
+	e.printStackTrace();
+	return  null;
 }
+	}
 
 
 	@Override
 	public void saveRequirementWorkFlowDetailsByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO,
-			OrgLocations orgLocations, User user) throws Exception {
-
+			OrgLocations orgLocations, User user) {
+		logger.debug("Running saveRequirementWorkFlowDetailsByWorkflowUuid Service");
+		try {
 		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(requirementWorkFlowDTO.getUuid().trim(), orgLocations.getId());
 		
 		requirementWorkFlow.setWorkFlowName(requirementWorkFlowDTO.getWorkFlowName());
@@ -497,18 +645,31 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		requirementWorkFlow.setUpdatedDate(new Date());
 		
 		requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
+	}catch(Exception e) {
+		logger.error(e+" in saveRequirementWorkFlowDetailsByWorkflowUuid Service");
+		e.printStackTrace();
+	}
 	}
 	
 	@Override
-	public Boolean deleteApplicationWorkFlowByuuid(String workflowuuid, OrgLocations orgLocations) throws Exception{
+	public Boolean deleteApplicationWorkFlowByuuid(String workflowuuid, OrgLocations orgLocations) {
+		logger.debug("Running deleteApplicationWorkFlowByuuid Service");
+		try {
 		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(workflowuuid, orgLocations.getId());
 		return requirementWorkFlowDao.deleteApplicationWorkFlowByuuid(requirementWorkFlow.getId());
+	}catch(Exception e) {
+		logger.error(e+" in deleteApplicationWorkFlowByuuid Service");
+		e.printStackTrace();
+		return null;
+	}
 	}
 
 
 	@Override
 	public void cloneRequirementWorkFlowDetailsByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO,
-			OrgLocations orgLocations, User user) throws Exception {
+			OrgLocations orgLocations, User user)  {
+		logger.debug("Running cloneRequirementWorkFlowDetailsByWorkflowUuid Service");
+		try {
 		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(requirementWorkFlowDTO.getUuid(), orgLocations.getId());
 		List<RequirementWorkFlowStages> workFlowStages = requirementWorkFlowDao.getRequirementWorkflowStagesListByUuid(requirementWorkFlow.getUuid(), orgLocations.getId());
 		RequirementWorkFlow workFlow = new RequirementWorkFlow ();
@@ -583,13 +744,17 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	}
 		workFlow.setWorkflowStages(workFlowSet);
 		requirementWorkFlowDao.saveRequirementWorkFlowDetails(workFlow, orgLocations);
+	}catch(Exception e) {
+		logger.error(e+" in cloneRequirementWorkFlowDetailsByWorkflowUuid Service");
+		e.printStackTrace();
 	}
-
+	}
 
 	@Override
 	public String saveRequirementWorkFlowTask(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO,
 			OrgLocations orgLocations, User user) {
 		try {
+			logger.debug("Running saveRequirementWorkFlowTask Service");
 			String Uuid = null;
 		RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO = new RequirementWorkFlowStagesDTO();
 		List<RequirementWorkFlowStages> workflowStages = new ArrayList<>();
@@ -615,6 +780,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		
 		return Uuid;
 	}catch(Exception e) {
+		logger.error(e+" in saveRequirementWorkFlowTask Service");
 		e.printStackTrace();
 		return null;
 	}
@@ -623,16 +789,24 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 	@Override
 	public RequirementWorkFlowStages getRequirementWorkFlowStageForEditStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
-			OrgLocations orgLocations) throws Exception {
-		
+			OrgLocations orgLocations) {
+		logger.debug("Running getRequirementWorkFlowStageForEditStage Service");
+		try {
 		RequirementWorkFlowStages stages = requirementWorkFlowDao.getRequirementWorkFlowStagesByUuid(requirementWorkFlowStagesDTO.getUuid().trim(), orgLocations.getId());
 		return stages;
+	}catch(Exception e) {
+		logger.error(e+" in getRequirementWorkFlowStageForEditStage Service");
+		e.printStackTrace();
+		return null;
+	}
 	}
 
 
 	@Override
 	public List<RequirementWorkFlowStagesDTO> getNextRequirementWorkflowStagesByWorkflowUuid(
-			RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations) throws Exception {
+			RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations) {
+		logger.debug("Running getNextRequirementWorkflowStagesByWorkflowUuid Service");
+		try {
 		List<RequirementWorkFlowStages> requirementWorkFlowStages = requirementWorkFlowDao.getNextRequirementWorkflowStagesListByUuid(requirementWorkFlowDTO, orgLocations.getId());
 		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(requirementWorkFlowDTO.getUuid(), orgLocations.getId());
 
@@ -652,17 +826,27 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}	
 		}
 		return workFlowStagesDTO;
+	}catch(Exception e) {
+		logger.error(e+" in getNextRequirementWorkflowStagesByWorkflowUuid Service");
+		e.printStackTrace();
+		return null;
+	}
 	}
 
 
 	@Override
-	public void deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(String uuid, Long id) throws Exception {
+	public void deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(String uuid, Long id) {
+		logger.debug("Running deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service");
+		try {
 		List<RequirementWorkFlowStages> requirementWorkFlowStages = requirementWorkFlowDao.getInactiveRequirementWorkflowStagesListByUuidAndOrgLocationId(uuid, id);
 		if(requirementWorkFlowStages.size() > 0) {
 		requirementWorkFlowDao.deleteInactiveRequirementWorkflowStagesByStageId(requirementWorkFlowStages);
 	}
+		}catch(Exception e) {
+			logger.error(e+" in deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service");
+			e.printStackTrace();
 		}
-
+	}
 
 	}
 
