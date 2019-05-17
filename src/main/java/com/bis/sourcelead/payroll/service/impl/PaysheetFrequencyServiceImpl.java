@@ -265,7 +265,7 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		 if(StringUtils.isNotBlank(emailScenario.getSignature())){
 			 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
 		 }
-		 String url = sourceleadUrl;
+		 String url = pmsUrl;
         
         String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,emailScenario);
         notificationScenario.setBody(notificationbody);
