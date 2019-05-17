@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+
 
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
@@ -65,7 +68,11 @@ $(document).ready(function(){
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
+<c:if test='${viewPage != "vendors/vendorsList" && viewPage != "reports/usersUsageReportList"
+            && viewPage != "reports/employeeTasksReportList"  && viewPage != "reports/overdueTaskReport"}'>
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
+</c:if>
+
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
  
 <!--  Amcharts -->
@@ -183,12 +190,16 @@ z-index: 1000000000 !important;
 .pac-container::after {
 	display:none;
 }
+
 </style>
 
 
 <script type="text/javascript">
 $(document).ready(function(){
+	'<sec:authorize access="hasRole(\'ROLE_VIEW_CART\')">' 
 	updateMarketplaceCartCountAndPrice();
+	'</sec:authorize>';
+// 	getExistedClockTime();
 });
 </script>
 <!-- notification related include jsp -->
@@ -275,22 +286,24 @@ function preventTabkey(e){
 
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','/resources/images/office-image.jpg');
+		$(imageId).attr('src','${SourceLeadWeb_sourceleadDomainUrl}/resources/images/office-image.jpg');
 	}
 </script>
 
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','/resources/images/userprofile-img.png');
+		$(imageId).attr('src','${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofile-img.png');
 	}
 </script>
 
 <script>
 		function logoutFormSubmit() {
-			var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-			var userSessionId = '${SourceLeadWeb_actionUUID}';
-			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId; 
+			/* var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+			var actionUUID = '${userLoginSession.actionUUID}';
+			window.location.href = sourceleadUrl+"/getActionHistoryList/"+actionUUID;  */
+			
 			document.getElementById("logoutForm").submit();
+			
 		}
 </script>
 
@@ -302,6 +315,10 @@ function preventTabkey(e){
 </script>
 
 <body>
+
+
+
+
 <c:url var="logoutUrl" value="${SourceLeadWeb_sourceleadLogoutUrl}"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
   <input type="hidden" name="userSessionId" value="${userLoginSession.id}"/>
@@ -474,7 +491,9 @@ function preventTabkey(e){
 <div class="headNav">
 	<ul>
 	
-	
+	<li id="clPop">
+			<a href="javascript:void(0)" title="Clock In"><i class="clockAni"><div class="clockAniAct"></div></i></a>
+	</li>
 <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
 
             <li><a id="orgPopId" href="javascript:void(0)" title="Locations"><i class="headNavIcon"></i></a>
@@ -539,7 +558,7 @@ function preventTabkey(e){
          </c:if>
          
          <sec:authorize access="hasAnyRole('ROLE_ADD_TICKET','ROLE_VIEW_TICKET')">
-			<li><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>" title="Ticket Management" ><i class="ticketMgIC"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+			<li><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>" title="Ticket Management"><i class="ticketMgIC"></i></a></li>
 		</sec:authorize>
 		
         <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
@@ -843,6 +862,138 @@ function preventTabkey(e){
 
 </sec:authorize>
 
+
+
+
+<!-- Clock In Popup -->
+
+<div class="popupWrap popupWrap2" id="clockPop" >
+<div class="popupHead clearfix"> Clock In
+	<i class="closePop pull-right clPopClose"></i>
+</div>
+<form id="clock_inout_form" name="clock_inout_form">
+<input type="hidden" id="clockInOutId" name="clockInOutId">
+<input type="hidden" id="ipAddressId" name="ipAddress">
+<input type="hidden" id="breakId" name="breakId">
+<div class="clockWrap">
+<div class="clockIn clearfix">
+<div class="clockTime pull-left">
+<!-- 	<div class="pull-left"><input type="button" value="Show Time" class="newAdBtn mr5" onclick="showWorkingTime();"></div> -->
+	<div class="pull-left"><span class="pull-left mr" id="">
+      		<a href="javascript:void(0)" class="refeIcon" id="" title="Refresh" onclick="showWorkingTime();"></a>
+      </span></div>
+	<b class="pull-left" id="stopwatchPop">00:00:00</b>
+</div>
+
+<div class="pull-right" id="withBreakDiv">
+<a id="start" onclick="obj.event('start');" class="CloIn" href="javascript:void(0)"><img src="/resources/images/clock.png">Start</a>
+<a id="pause" onclick="obj.event('pause');" class="braIn" href="javascript:void(0)"><img src="/resources/images/break.png">Start Break</a>
+<a id="play" onclick="obj.event('play');" class="braOut" href="javascript:void(0)"><img src="/resources/images/break.png">End Break</a>
+<a id="reset" onclick="obj.event('reset');" class="CloOut" href="javascript:void(0)"><img src="/resources/images/clock.png">Clock Out</a>
+</div> 
+
+<div class="pull-right" id="withoutBreakDiv">
+<a id="start" onclick="obj.event('start');" class="CloIn cwob" href="javascript:void(0)"><img src="/resources/images/clock.png">Start</a>
+<a id="reset" onclick="obj.event('reset');" class="CloOut" href="javascript:void(0)"><img src="/resources/images/clock.png">Clock Out</a>
+</div> 
+
+<div class="clearfix"></div> 
+<!--<div>
+<input type="button" id="start" value="Start" onclick="obj.event('start');"/>
+<input type="button" id="pause" value="Start Break" onclick="obj.event('pause');"/>
+<input type="button" id="play" value="End Break" onclick="obj.event('play');"/>-->
+<!-- <input type="button" id="stop" value="Stop" onclick="obj.event('stop')"/> -->
+<!-- <input type="button" id="reset" value="Clock Out" onclick="obj.event('reset');"/>
+</div> --> 
+
+</div>
+<div class="subClock clearfix">
+<!-- <div class="subClockCta">
+<p>Current</p>
+<div class="sclock" id="curDiv">00 : 00</div>
+</div> -->
+<div class="subClockCta">
+<p>Day</p>
+<div class="sclock" id="dayDiv">00 : 00</div>
+</div>
+<div class="subClockCta">
+<p>Week</p>
+<div class="sclock" id="weekDiv">00 : 00</div>
+</div>
+<div class="subClockCta">
+<p>Month</p>
+<div class="sclock" id="monthDiv">00 : 00</div>
+</div> 
+</div>
+<div class="clockinn" id="clockFieldsId">
+<div class="clearfix mb" id="jobDIV">
+<label class="noPad">Jobs</label>
+<div class="clearfix addicon">
+<select class="form-control chosen-select" id="jobDropDownDiv" name="jobs" onchange="updateClockInOutTime();">
+</select>
+</div>
+</div> 
+<div id="projectTaskDIV">
+<div class="clearfix mb">
+<label class="noPad">Project</label>
+<div class="clearfix addicon">
+<select class="form-control chosen-select" id="projectDropDownDiv" name="projects" onchange="getProjectTasksByProject();updateClockInOutTime();">
+</select>
+</div>
+</div> 
+<div class="clearfix mb">
+<label class="noPad">Project Tasks</label>
+<div class="clearfix addicon">
+<select class="form-control chosen-select" id="projectTaskDropDownDiv" name="projectTasks" onchange="updateClockInOutTime();">
+</select>
+</div>
+</div> 
+</div> 
+<div class="clearfix mb" id="generalTaskDIV">
+<label class="noPad">General Tasks</label>
+<div class="clearfix addicon">
+<select class="form-control chosen-select" id="generalTaskDropDownDiv" name="generalTasks" onchange="updateClockInOutTime();">
+</select>
+</div>
+</div> 
+<div class="clearfix" id="commentsDIV">
+<label class="noPad">Comments</label>
+<div class="clearfix addicon">
+<textarea rows="3" class="form-control" name="comments" onblur="updateClockInOutTime();"></textarea>
+</div>
+</div> 
+</div>
+<div class="popupHead popHeHight clearfix">
+
+	<ul class="clockDate col-md-12">
+		<li>
+			<span></span>
+			<span>Current</span>
+			<span>Previous</span>
+		</li>
+		<li>
+			<span>Clock In</span>
+			<span id="clockInTimeId"></span>
+			<span id="prevClockInTimeId"></span>
+		</li>
+		<li>
+			<span>Clock Out</span>
+			<span id="clockOutTimeId"></span>
+			<span id="prevClockOutTimeId"></span>
+		</li>
+	</ul>
+
+</div>
+
+<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Activitiy</a></div> 
+</div>
+
+<div>
+</div></form>
+</div>
+
+
+
 <!--  Theme Switcher div  Commented By Mahesh  -->
 <%--   <sec:authorize access="hasRole('ROLE_COLOUR_THEME')"> 
   <div class="theme-color">
@@ -980,37 +1131,6 @@ function removevalidation(){
 </script>
 
 <script>
-//Collapse div
-$(document).ready(function() {
-$(".collpase-div").click(function(){
-	$(this).next().slideToggle();
-});
-
-$('.headProfileIcon').click(function(){
-	$("#profilePop").slideToggle(0);
-	 $('#settingPopup, #notificationPopup, #orgPopView').hide();
-});
-$('#settingPopId').click(function(){
-	$("#settingPopup").slideToggle(0);
-	 $('#profilePop, #notificationPopup, #orgPopView').hide();
-});	
-$('#notiPopId').click(function(){
-	$("#notificationPopup").slideToggle(0);
-	 $('#profilePop, #settingPopup, #orgPopView').hide();
-});	
-
-$('#orgPopId').click(function(){
-	$("#orgPopView").slideToggle(0);
-	 $('#profilePop, #settingPopup, #notificationPopup').hide();
-});			
-$('html').click(function(){
-	  $('#profilePop, #settingPopup, #notificationPopup, #orgPopView').hide();
-    });
-$('.headProfile, #settingPopId, #settingPopup, #notiPopId, #notificationPopup, #orgPopId, #orgPopView').click(function(e){
-	e.stopPropagation();
-});		
-
-});
 
 //Add Task Div
  $(".icon-addTask").click(function(){
@@ -1372,12 +1492,12 @@ function universalSearch(){
 		 sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	 }
 	 if(searchType == "Candidate") {
-		 window.location.href = sourceleadUrl + "/candidatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+		 window.location.href = "${SourceLeadWeb_atsUrl}/candidatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
 	 } else if(searchType == "Associate") {
-		 window.location.href = sourceleadUrl + "/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+		 window.location.href = "${SourceLeadWeb_atsUrl}/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
 	 }
 	 else if(searchType == "Requirement") {
-		 window.location.href = sourceleadUrl + "/jobs?searchResult=universalRequirementSearchList&searchValue="+searchValue;
+		 window.location.href = "${SourceLeadWeb_atsUrl}/jobsList?searchResult=universalRequirementSearchList&searchValue="+searchValue;
 	 }
 	 else {
 		window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
@@ -1553,19 +1673,31 @@ $("#searchType").selectpicker('refresh');
   <script>
   
 $(document).ready(function(){
+	localStorage.setItem('pauseValue', null);
+	localStorage.setItem('pauseData', null);
+	localStorage.setItem('pause_sec',0);
+	localStorage.setItem('stopwatch_time', null);
+	localStorage.setItem('stopwatch_sec', 0);
+	localStorage.clear();
+	 $.getJSON("https://jsonip.com?callback=?", function(data) {
+	        $("#ipAddressId").val(data.ip);
+	      });
 	$("#subMenu").click(function(){
 		$(".subMenuView").slideToggle(100);
 	});
 	$("#campSubMenu").click(function(){
 		$(".campsubMenuView").slideToggle(100);
 	});	
+	
+	$('#reset,#play, #pause').attr("disabled",true);
+	$('#start').attr("disabled",false);
 });
 </script>
   
   <script>
   function flushInviteCompany(){
 	  document.getElementById("inviteCompany_form").reset();
-	  $("inviteCompany_form").validate().resetForm();
+	  //$("inviteCompany_form").validate().resetForm();
   }
   </script> 
   <script>
@@ -1676,9 +1808,9 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
     	 var input = (document.getElementById(locationId));
     	    var options = {
     	    		types: ['geocode'],
-    	        componentRestrictions: {
+    	        /* componentRestrictions: {
     	        	country: ["IN","US","AU","SG","GB","FR"]
-    	        }
+    	        } */
     	    };
     	    autocomplete = new google.maps.places.Autocomplete(input, options);
     }else{
@@ -1780,7 +1912,7 @@ function zipcodeMask(country,zipCodeId){
 </script>
 
 
-<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
+<script type="text/javascript" src='${SourceLeadWeb_sourceleadDomainUrl}/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <%-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script> --%>
 
 
@@ -1856,7 +1988,7 @@ $(document).ready(function(){
 <script>
 function updateMarketplaceCartCountAndPrice(){
 	var totalPriceInCurrency;
-	var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	$.ajax({
 		 	url: sourceleadUrl + "/getMarketplaceCartCountAndPrice",
 	        type: 'GET',
@@ -1870,3 +2002,439 @@ function updateMarketplaceCartCountAndPrice(){
 	        });
 	}
 </script>
+
+<script>
+// clock in-Out jquery
+
+//clock sub
+$("#clSub").click(function(){
+  $(".clockSub").slideToggle(10);
+});
+
+
+$("#clPop").click(function() {
+	getClockInOutConfiguration();
+	getPreviousClockInData();
+	getTimeReports();
+	});
+$(".clPopClose").click(function() {
+	$(".mask, .popupWrap2").fadeOut();
+});
+
+</script>
+
+<script>
+function getClockInOutConfiguration(){
+	$.ajax({
+	url: sourceleadUrl + "/getClockInOutConfigData",
+	type: 'GET',
+	success: function (json) {
+	if(json != null){
+		if(json.isBreak == true){
+			$(".mask, #clockPop").fadeIn();
+			$("#withBreakDiv").show();
+			$("#withoutBreakDiv").hide();
+		}else{
+			$(".mask, #clockPop").fadeIn();
+			$("#withoutBreakDiv").show();
+			$("#withBreakDiv").hide();
+		}
+	
+	getExistedClockTime();
+	if(!json.isJobChecked){
+	$("#jobDIV").hide();
+	}else{
+	$("#jobDIV").show();
+	getAssignedJobTasks();
+	}
+	if(!json.isProjectTasksChecked){
+	$("#projectTaskDIV").hide();
+	}else{
+	$("#projectTaskDIV").show();
+	getAssignedProjects();
+	}
+	if(!json.isGeneralTaskChecked){
+	$("#generalTaskDIV").hide();
+	} else{
+	$("#generalTaskDIV").show();
+	getGeneralTasks();
+	}
+	if(!json.isClockInComment){
+	$("#commentsDIV").hide();
+	}else{
+	$("#commentsDIV").show();
+	}
+	}else{
+		$(".mask, #clockPop").fadeIn();
+		$("#withoutBreakDiv").show();
+		$("#withBreakDiv").hide();
+	}
+	}
+	});
+
+}
+
+
+function getTimeReports(){
+	$.ajax({
+		url: sourceleadUrl + "/getTimeReports",
+		type: 'GET',
+		success: function (json) {
+			if(json.currentTotTime != null){
+				$("#dayDiv").text(json.currentTotTime);
+			}
+			
+			if(json.weekTotTime != null){
+				$("#weekDiv").text(json.weekTotTime);
+			}
+			
+			if(json.monthTotTime != null){
+				$("#monthDiv").text(json.monthTotTime);
+			}
+			
+		}
+	
+});
+}
+</script>
+
+<script>
+function getAssignedJobTasks(obj){
+	$.ajax({
+	url: sourceleadUrl + "/getAssignedJobs",
+	type: 'GET',
+	success: function (json) {
+	var output = "";
+	output = output + "<option value=''>Select Job</option>";
+	if(json.data != null){
+	for (var i=0; i<json.data.length; i++)
+	{
+	var opt = json.data[i];
+	if(obj != null && obj != '' && obj != 'undefined'){
+	if(obj.jobsTaskId == opt.id){
+	output = output + "<option value='" +opt.id+ "' selected>"+opt.jobTitle+"</option>";
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
+	}
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
+	}
+	}
+	}
+	$("#jobDropDownDiv").empty();
+	$("#jobDropDownDiv").append(output);
+	$('#jobDropDownDiv').trigger("chosen:updated");
+	}
+	});
+}
+</script>
+
+<script>
+function getAssignedProjects(obj){
+	$.ajax({
+	url: sourceleadUrl + "/getAllProjectsForClockInOut",
+	type: 'GET',
+	success: function (json) {
+	var output = "";
+	output = output + "<option value=''>Select Project</option>";
+	if(json.data != null){
+	for (var i=0; i<json.data.length; i++)
+	{
+	var opt = json.data[i];
+	if(obj != null && obj != '' && obj != 'undefined'){
+	if(obj.projectId == opt.id){
+	output = output + "<option value='" +opt.id+ "' selected>"+opt.projectName+"</option>";
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+	}
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+	}
+	}
+	}
+	
+	$("#projectDropDownDiv").empty();
+	$("#projectDropDownDiv").append(output);
+	$('#projectDropDownDiv').trigger("chosen:updated"); 
+	
+	}
+	});
+	getProjectTasksByProject(obj);
+}
+</script>
+
+
+<script>
+function getProjectTasksByProject(obj){
+
+	var projectId = $("#projectDropDownDiv").val();
+	if(projectId != null && projectId != "" && projectId != "undefined"){
+		$.ajax({
+			url: sourceleadUrl + "/getProjectsTasksByProjectId?&projectId="+projectId,
+			type: 'GET',
+			success: function (json) {
+			var output = "";
+			output = output + "<option value=''>Select Project Task</option>";
+			if(json != null){
+			for (var i=0; i<json.length; i++)
+			{
+			var opt = json[i];
+			if(obj != null && obj != '' && obj != 'undefined'){
+			if(obj.projectsTaskId == opt.id){
+			output = output + "<option value='" +opt.id+ "' selected>"+opt.taskName+"</option>";
+			}else{
+			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			}
+			}else{
+			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
+			}
+			
+			}
+			}
+			$("#projectTaskDropDownDiv").empty();
+			$("#projectTaskDropDownDiv").append(output);
+			$('#projectTaskDropDownDiv').trigger("chosen:updated"); 
+			}
+			});
+	}
+}
+</script>
+
+<script>
+function getGeneralTasks(data){
+
+	$.ajax({
+	url: sourceleadUrl + "/getGeneralTasks",
+	type: 'GET',
+	success: function (json) {
+	var output = "";
+	output = output + "<option value=''>Select Task</option>";
+	if(json != null){
+	for (var i=0; i<json.length; i++)
+	{
+	var opt = json[i];
+	if(obj != null && obj != '' && obj != 'undefined'){
+	if(obj.generalTaskId == opt.id){
+	output = output + "<option value='" +opt.id+ "' selected>"+opt.subject+"</option>";
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
+	}
+	}else{
+	output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
+	}
+	
+	}
+	}
+	$("#generalTaskDropDownDiv").empty();
+	$("#generalTaskDropDownDiv").append(output);
+	$('#generalTaskDropDownDiv').trigger("chosen:updated"); 
+	}
+	});
+}
+</script>
+
+<script>
+function saveClockInOutTime(type){
+	var formData = getFormData("clock_inout_form");
+	$.ajax({
+	type : "POST",
+	data : formData,
+	url: sourceleadUrl+"/saveClockInOutTime?&type="+type, 
+	success :function(data) {
+	
+	$("#breakId").val('');
+	if(type == 'ClockIn'){
+	$("#clockInOutId").val(data.id);
+	$('#reset,#pause').attr("disabled",false);
+	$('#start,#play').attr("disabled",true);
+	
+	$("#clockInTimeId").text(' : '+data.clockInDateStr +' '+data.clockInTime);
+	$("#clockOutTimeId").text('');
+	}else{
+	$("#clockInOutId").val('');
+	$('#start').attr("disabled",false);
+	$('.cwob').attr("disabled",false);
+	$('#reset,#play,#pause').attr("disabled",true);
+	
+	$("#clockOutTimeId").text(' : '+data.clockOutDateStr +' '+data.clockOutTime);
+	}
+	},	
+	}); 
+	
+}
+</script>
+
+<script>
+function getExistedClockTime(){
+	$.ajax({
+	type : "GET",
+	url: sourceleadUrl+"/getExistedClockTime", 
+	success :function(data) {
+		if(data != null && data != '' && data != 'undefined'){
+		$("#clockInOutId").val(data.id);
+		getAssignedJobTasks(data);
+		getAssignedProjects(data);
+		getGeneralTasks(data);
+		$('#start,#play').attr("disabled",true);
+		$('#reset, #pause').attr("disabled",false);
+		$("#clockInTimeId").text(' : '+data.clockInDateStr +' '+data.clockInTime);
+		
+		getExistedBreakTime(data.id);
+		}else{
+		$('#reset,#play, #pause').attr("disabled",true);
+		$('#start').attr("disabled",false);
+		
+		$("#clockInTimeId").text('');
+		$("#clockOutTimeId").text('');
+		}
+		
+	},	
+	}); 
+}
+</script>
+
+
+<script>
+function getExistedBreakTime(clockInOutId){
+	$.ajax({
+	type : "GET",
+	url: sourceleadUrl+"/getExistedBreakTime?&clockInOutId="+clockInOutId, 
+	success :function(data) {
+	$("#breakId").val(data.id);
+	$('#start,#pause').attr("disabled",true);
+	$('#reset,#play').attr("disabled",false);
+	},	
+	}); 
+}
+</script>
+
+
+<script type="text/javascript">
+obj = {
+	element : '',
+	init: function () {
+	
+	obj.element = $('#stopwatchPop');
+	
+},
+event: function (type) {
+	switch(type) {
+	case 'start':
+	$(".clockAni").css("background-image","url(/resources/images/clock-ani.gif)");
+	$(".clockAniAct").show();
+	obj.element.removeClass('blink');
+	saveClockInOutTime('ClockIn');
+	break;
+	case 'play':
+	$(".clockAni").css("background-image","url(/resources/images/clock-ani.gif)");
+	$(".clockAniAct").show();
+	saveBreakTime('play');
+	break;
+	case 'pause':
+	$(".clockAni").css("background-image","url(/resources/images/clock.jpg)");
+	$(".clockAniAct").hide();
+	saveBreakTime('pause');
+	break;
+	case 'reset':
+	$(".clockAni").css("background-image","url(/resources/images/clock.jpg)");
+	$(".clockAniAct").hide();
+	obj.element.removeClass('blink');
+	
+	saveClockInOutTime('ClockOut');
+	window.setTimeout(function() {
+		getTimeReports();
+	}, 200);
+	break;
+	
+	}
+},
+
+}
+
+
+$('document').ready(function () {
+  obj.init();
+});
+
+
+</script>
+
+<script>
+
+function updateClockInOutTime(){
+		var formData = getFormData("clock_inout_form");
+		$.ajax({
+		type : "POST",
+		data : formData,
+		url: sourceleadUrl+"/updateClockInOutTime", 
+		success :function(data) {
+		},	
+		}); 
+}
+</script>
+
+<script>
+function saveBreakTime(type){
+		var formData = getFormData("clock_inout_form");
+		$.ajax({
+		type : "POST",
+		data : formData,
+		url: sourceleadUrl+"/saveBreakTime?&type="+type, 
+		success :function(data) {
+		if(type == 'pause'){
+		$("#breakId").val(data.id);
+		$('#start,#pause').attr("disabled",true);
+		$('#reset,#play').attr("disabled",false);
+		}else{
+		$("#breakId").val('');
+		$('#start,#play').attr("disabled",true);
+		$('#reset,#pause').attr("disabled",false);
+		}
+		},	
+		}); 
+}
+</script>
+
+
+
+<script>
+function showWorkingTime(){
+	
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getWorkingTime", 
+		success :function(data) {
+			if(data != null && data !="" && data != 'undefined'){
+				$("#stopwatchPop").text(data);
+			}else{
+				$("#stopwatchPop").text("00:00:00");
+			}
+			
+		},	
+		}); 
+	
+}
+</script>
+
+<script>
+function getPreviousClockInData(){
+	
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getPreviousClockInData", 
+		success :function(data) {
+			if(data != null && data !="" && data != 'undefined' && data.previousClockInStr != null){
+				$("#prevClockInTimeId").text(' : '+data.previousClockInStr +' '+data.previousClockInTime);
+				$("#prevClockOutTimeId").text(' : '+data.previousClockOutStr +' '+data.previousClockOutTime);
+			}else{
+				$("#prevClockInTimeId").text('');
+				$("#prevClockOutTimeId").text('');
+			}
+			
+		},	
+		}); 
+}
+</script>
+
+
+

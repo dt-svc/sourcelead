@@ -19,13 +19,16 @@ $(document).ready(function(){
 	  }
 });
 </script>
+<script>
+   var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
 
  <!-- Timesheets -->
       <div class="col-md-6 mb10">
         <div class="dashboardWidget-new dashNewWrap mb">
         	
         	<div class="dashNewWrapHead clearfix">
-        		<a id="timeSheetLink" href="${SourceLeadWeb_pmsUrl}/timesheet" class="pull-left"> ${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'Timesheets' : onlyApprovalTimesheets ? 'Approval' : ''} &nbsp;&nbsp;</a>
+        		<a id="timeSheetLink" href="<c:url value="/app/timesheet"/>" class="pull-left"> ${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'Timesheets' : onlyApprovalTimesheets ? 'Approval' : ''} &nbsp;&nbsp;</a>
 	        	<input type="hidden" value="" id="timesheetSocketsFor">
 	             <c:if test="${bothTimesheets}">
 		             <ul class="nav nav-tabs pull-right">
@@ -73,8 +76,9 @@ $(document).ready(function(){
 	  $("#waitingLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
 	  $("#draftLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
 	  $("#approvedloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
-	  var sourceleadUrl ='${sourceleadUrl}';
-	  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	  
+	  pmsUrl
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType, 
@@ -103,14 +107,14 @@ $(document).ready(function(){
 		                $("#rejectedCountAnchor").html("Rejected");
 		           }else{
 		         	    $("#rejectTimesheetsSubmissionsCount").html(rejectedTimesheetsSubmissionsCount);
-		                 $("#rejectedCountAnchor").html('<a  href="/app/totalTimesheetList/REJECTED">Rejected</a>'); 
+		                 $("#rejectedCountAnchor").html('<a  href="'+pmsUrl+'/timesheetlistByStatus?status=REJECTED">Rejected</a>'); 
 		           }
 		       	  if(savedTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
 		       		  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
 		                $("#savedCountAnchor").html("Draft");
 		            }else{
 		          	  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
-		                $("#savedCountAnchor").html("<a href='/app/totalTimesheetList/DRAFT'>Draft</a>"); 
+		                $("#savedCountAnchor").html("<a href='"+pmsUrl+"/timesheetlistByStatus?status=DRAFT'>Draft</a>"); 
 		               
 		            }
 		       	 
@@ -119,7 +123,7 @@ $(document).ready(function(){
 		               $("#waitingCountAnchor").html("Submitted");
 		           }else{
 		         	  $("#waitingTimesheetsSubmissionsCount").html(waitingTimesheetsSubmissionsCount);
-		                $("#waitingCountAnchor").html('<a  href="/app/totalTimesheetList/SUBMITTED">Waiting</a>'); 
+		                $("#waitingCountAnchor").html('<a  href="'+pmsUrl+'/timesheetlistByStatus?status=SUBMITTED">Waiting</a>'); 
 		           }
 		       	 
 		       	  if(approvalTimesheetsSubmissionsCount<1 || timesheetType == "myTimesheets"){
@@ -127,12 +131,12 @@ $(document).ready(function(){
 		                $("#approvedCountAnchor").html("Approved");
 		           }else{
 		          	  $("#approvalTimesheetsSubmissionsCount").html(approvalTimesheetsSubmissionsCount);
-		                $("#approvedCountAnchor").html('<a  href="/app/totalTimesheetList/APPROVED">Approved</a>'); 
+		                $("#approvedCountAnchor").html('<a  href="'+pmsUrl+'/timesheetlistByStatus?status=APPROVED">Approved</a>'); 
 		            }
 		       	 if(timesheetType == "myTimesheets"){
-		       		 $("#timeSheetLink").attr("href", ""+pmsUrl+"/timesheet");
+		       		 $("#timeSheetLink").attr("href", "<c:url value='"+pmsUrl+"/timesheet'/>");
 		       	 }else{
-		       		 $("#timeSheetLink").attr("href", ""+pmsUrl+"/timesheetApproval");
+		       		 $("#timeSheetLink").attr("href", "<c:url value='"+pmsUrl+"/timesheetApproval'/>");
 		       	 }
 		 		}
 		  }); 

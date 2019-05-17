@@ -49,6 +49,7 @@ import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.AssociateJoineReportDTO;
 import com.bis.sourcelead.dto.AvailableAssociatesDTO;
+import com.bis.sourcelead.dto.LoanAndAdvanceReportDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
@@ -79,6 +80,7 @@ import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.reports.service.LoanAndAdvancesReportService;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
@@ -251,6 +253,9 @@ public class ReportRestController {
 	
 	@Autowired
 	private ConversionUtil conversionUtil;
+	
+	@Autowired
+	private LoanAndAdvancesReportService loanAndAdvancesReportService;
 	
 	@RequestMapping(value="/updateSourceUserCodeForSubmissionHistory")
 	public String updateSourceUserCodeForSubmissionHistory() {
@@ -740,7 +745,7 @@ public class ReportRestController {
 				LetterHead letterHead = letterHeadService.getLetterheadById(empTemplate.getLetterHead().getId());
 				User user = userService.getUserById(employeeId);
 				String templateContent = reportsUtil.replaceAllTemplatePlaceHolders(empTemplate.getTemplateContent(),empTemplate,toAddress,user,orgLocation);
-				reportsUtil.viewCompleteletterheadData(templateContent,letterHead,response);
+				reportsUtil.viewLetterHeadCompleteletterheadData(templateContent,letterHead,response);
 			    
 			} catch (Exception e) {
 			    e.printStackTrace();
@@ -1453,7 +1458,7 @@ public class ReportRestController {
 								clientIdsList.add(Long.parseLong(clients[i]));
 							}
 						}*/
-					String[] tableColumns = { "employeeId", "employeeName", "clientName", "payRate", "billRate", "Margin"};
+						String[] tableColumns = { "employeeId", "employeeName","associateJoinedDate","projectName","projectDuration", "clientName", "payRate", "billRate", "Margin"};
 					int sortColumnIndex = 1; // by default sorting using updated date
 					String sortColumnOrder = "desc"; // by default descending order
 					
@@ -1580,7 +1585,7 @@ public class ReportRestController {
 				    	    searchDates[1] = endDateUTC;
 						}
 						
-						String[] tableColumns = { "employeeId", "employeeName", "clientName", "payRate", "billRate", "Margin"};
+						String[] tableColumns = { "employeeId", "employeeName","associateJoinedDate","projectName","projectDuration", "clientName", "payRate", "billRate", "Margin"};
 						int sortColumnIndex = 1; // by default sorting using updated date
 						String sortColumnOrder = "desc"; // by default descending order
 						if (marginSheetReportDTO.getOrder() != null && !marginSheetReportDTO.getOrder().isEmpty()) {
@@ -2011,30 +2016,6 @@ public class ReportRestController {
 		}
 		return responseList;
 	}
-
-	@RequestMapping(value = "/offerAcceptanceRateListForVendor")
-	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateListForVendor(HttpServletRequest request,
-			@RequestParam(defaultValue = "") long orgRelationId, @RequestParam(defaultValue = "") long spocId,
-			@RequestParam(defaultValue = "") String filteredDate, @RequestParam(defaultValue = "") String filterType) {
-		ResponseList<OfferAcceptanceRateDTO> responseList = new ResponseList<>();
-		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
-			if (user != null) {
-				responseList = requirementSubmissionHistoryService.getOfferAcceptanceRateListForVendor(orgLocations.getId(), orgRelationId, spocId, filterType, filteredDate);
-			} else {
-				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
-				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			responseList.setResponse(Result.AWKWARD.name());
-			responseList.setResponseMessage(Result.AWKWARD.getValue());
-		}
-		return responseList;
-	}
-	
 	
 	@RequestMapping(value = "/getProjectsList")
 	@ResponseBody
@@ -2099,6 +2080,85 @@ public class ReportRestController {
 		}
 		return file;
 
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/offerAcceptanceRateListForVendor")
+	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateListForVendor(HttpServletRequest request, 
+			@RequestParam(defaultValue = "") long orgRelationId,
+			@RequestParam(defaultValue = "") long spocId,
+			@RequestParam(defaultValue = "") String filteredDate,
+			@RequestParam(defaultValue = "") String filterType) {
+		ResponseList<OfferAcceptanceRateDTO> responseList = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+//			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<Long> jobIdList = new ArrayList<>();
+			if(user != null) {
+				jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(request, "requirementIdsList");
+				if(orgRelationId > 0) {							
+					//above jobIdList is released to vendor job id's
+					//now get the parentJobId based on vendorReleasedJob and get the jobStages for that vendor resubmitted job('submit to client')
+					jobIdList = requirementReportService.getParentRequirementIdListByRequirementIds(jobIdList);
+				}
+				responseList =  requirementSubmissionHistoryService.getOfferAcceptanceRateListForVendor(jobIdList, orgRelationId, spocId, filterType, filteredDate);
+			} else {
+				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return responseList;
+	}
+	
+	@RequestMapping(value = "/getLoanReport", method = RequestMethod.GET)
+	public ResponseList<LoanAndAdvanceReportDTO> getLoanReport(LoanAndAdvanceReportDTO loanAndAdvanceReportDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+//		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		ResponseList<LoanAndAdvanceReportDTO> assLoanList =  loanAndAdvancesReportService.getLoansAndAdvancesByLoanNameAndOrglocationId(orgLocations.getId(), loanAndAdvanceReportDTO);
+		for(LoanAndAdvanceReportDTO lard:assLoanList.getData()) {
+			lard.setFromDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lard.getStartDate()));
+			lard.setToDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lard.getLoanEndDate()));
+		}
+		return assLoanList;
+	}
+	
+	@RequestMapping(value = "/getLoanAndAdvancesReportExport", method = RequestMethod.GET)
+	public File getLoanAndAdvancesReportExport(LoanAndAdvanceReportDTO loanAndAdvanceReportDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<LoanAndAdvanceReportDTO> assLoanList =  loanAndAdvancesReportService.getLoansAndAdvancesByLoanNameAndOrglocationId(orgLocations.getId(), loanAndAdvanceReportDTO);
+		
+		File file = null;
+	    if(loanAndAdvanceReportDTO.getExportType().equalsIgnoreCase("pdf")) {
+	    	 file=  dynamicReport.loanAndAdvanceReportPDFExport(assLoanList,orgLocations);
+	    }else {
+	    	 file=  dynamicReport.loanAndAdvanceReportExcelExport(assLoanList,orgLocations);
+	    }
+	    
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+		
+		return file;
 	}
 	
 

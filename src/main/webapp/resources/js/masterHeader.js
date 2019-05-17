@@ -3,11 +3,11 @@ var masterHeader = new buildMasterHeaderPanel();
  function buildMasterHeaderPanel (){
 	
 	 this.masterHeaderPanel = function(){
-	    var userType = 'Admin'
+	 //   var userType = 'Admin'
 		var fileUrl = '/resources/images/userprofile-img.png'	
 	    var masterNavHtml='';	
 	    var searchValue = '';
-	    var loginOrgLocationName = "BusinessIntelli Solutions";
+	   // var loginOrgLocationName = "BusinessIntelli Solutions";
 	    
 	    
 	    if(loginUserRole != "ROLE_CROWDSOURCING_PROFESSIONAL"  && loginUserRole != "ROLE_CROWDSOURCING_RECRUITER"){
@@ -22,25 +22,25 @@ var masterHeader = new buildMasterHeaderPanel();
 	    	masterNavHtml = masterNavHtml+'<form:form name ="search_form" id="search_form">';	
 	    	masterNavHtml = masterNavHtml+'<div class="uasrch-selectpicker">';	
 	    	masterNavHtml = masterNavHtml+'<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >';	
-	    	masterNavHtml = masterNavHtml+'<option ${searchType == "All" ?"selected":""} value="All">All</option>';	
+	    	masterNavHtml = masterNavHtml+'<option '+(searchType == "All" ?"selected":"")+' value="All">All</option>';	
 	    	 if(tabAccessArray.indexOf("Associates")  > -1){
-	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Users" ?"selected":""} value="Users">Associates</option>';	
+	    		 masterNavHtml = masterNavHtml+'<option  '+(searchType == "Users" ?"selected":"")+' value="Users">Associates</option>';	
 	    	 }
 	    	 
 	    	 if(tabAccessArray.indexOf("Jobs")  > -1){
-	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Requirement" ?"selected":""} value="Users">Requirement</option>';
+	    		 masterNavHtml = masterNavHtml+'<option  '+(searchType == "Requirement" ?"selected":"")+' value="Users">Requirement</option>';
 	    	 }
 	    	 
 	    	 if(tabAccessArray.indexOf("Candidates")  > -1){
-	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Candidate" ?"selected":""} value="Candidate">Candidates</option>';
+	    		 masterNavHtml = masterNavHtml+'<option  '+(searchType ==  "Candidate" ?"selected":"")+' value="Candidate">Candidates</option>';
 	    	 }
 	    	 
 	    	 if(tabAccessArray.indexOf("Clients")  > -1){
-	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Client" ?"selected":""} value="Client">Clients</option>';
+	    		 masterNavHtml = masterNavHtml+'<option  '+(searchType  == "Client" ?"selected":"")+' value="Client">Clients</option>';
 	    	 }
 	    	 
 	    	 if(tabAccessArray.indexOf("Vendors")  > -1){
-	    		 masterNavHtml = masterNavHtml+'<option  ${searchType == "Vendor" ?"selected":""} value="Vendor">Vendors</option>';
+	    		 masterNavHtml = masterNavHtml+'<option  '+(searchType  == "Vendor" ?"selected":"")+' value="Vendor">Vendors</option>';
 	    	 }
 	    	
 	    	 masterNavHtml = masterNavHtml+'</select>';	
@@ -71,7 +71,7 @@ var masterHeader = new buildMasterHeaderPanel();
 	    else if(loginUserRole == "ROLE_CROWDSOURCING_RECRUITER"){
 	    	masterNavHtml = masterNavHtml+'<b>Freelance Recruiter</b>';
 	    }else{
-	    	masterNavHtml = masterNavHtml+'<b>Admin</b>';
+	    	masterNavHtml = masterNavHtml+'<b>'+userType+'</b>';
 	    }
 	   
 	    masterNavHtml = masterNavHtml+'</div>';
@@ -153,6 +153,7 @@ var masterHeader = new buildMasterHeaderPanel();
 	    masterNavHtml = masterNavHtml+'</ul>';
 		
 	    $("#masterHeaderNav").append(masterNavHtml);
+	    $("#searchType").selectpicker('refresh');
 	    sideNewMenuActionListener();
 	 }
 	 
@@ -382,8 +383,7 @@ var masterHeader = new buildMasterHeaderPanel();
 	   
 	   
 	   this.logoutFormSubmit = function(){
-			window.location.href = sourceleadUrl+"/getActionHistoryList?userSessionId="+userSessionId; 
-			document.getElementById("logoutForm").submit();
+		   window.location.href = sourceleadUrl+"/getActionHistoryList/"+userSessionId; 
 	   }
 	   
 	   this.predefineProfileImage = function(imageId){
