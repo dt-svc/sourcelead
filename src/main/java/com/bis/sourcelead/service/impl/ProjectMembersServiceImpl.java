@@ -75,10 +75,10 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadRolesService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -723,7 +723,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			throws Exception {
 		ProjectClients projectClients = null;
 		if(StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
-			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgId(projectId, loginOrgLocation.getOrg().getId());
+			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgId(projectId, loginOrgLocation.getOrgId());
 		}else {
 			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
 		}
@@ -1014,6 +1014,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 									projectClients.setProjectId(projects);
 									projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
 									projectClients.setOrgLocationsId(cand.getOrgLocationId());
+									projectClients.setOrgId(cand.getOrgLocationId().getOrg());
 									projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 									projectClients.setStatus(1);
 									
@@ -1738,6 +1739,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 					pc.setProjectId(projects);
 					pc.setOrgRelationId(clildCandidate.getOrgRelationId());
 					pc.setOrgLocationsId(cand.getOrgLocationId());
+					pc.setOrgId(cand.getOrgLocationId().getOrg());
 					pc.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 					pc.setStatus(1);
 					pc.setCreatedDate(new Date());
@@ -2173,6 +2175,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 									projectClients.setProjectId(projects);
 									projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
 									projectClients.setOrgLocationsId(cand.getOrgLocationId());
+									projectClients.setOrgId(cand.getOrgLocationId().getOrg());
 									projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 									projectClients.setStatus(1);
 									
@@ -2348,6 +2351,12 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	}
 	}
 	return candidateList;
+	}
+
+	@Override
+	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectClientId(Long masterCandidateId,
+			Long projectClientsId) throws Exception {
+		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectClientId(masterCandidateId, projectClientsId);
 	}
 
 

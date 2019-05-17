@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
@@ -48,74 +49,94 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private OrgLocationsDao orgLocationsDao;
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations() {
+	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations(long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "select distinct o from OrgLocations o order by o.id";
-			List<OrgLocations> orgLocationsList = session.createQuery(query).list();
 			User adminUser = userDao.getUserByEmail("info@sourcelead.com");
-			if (adminUser != null && orgLocationsList != null && !orgLocationsList.isEmpty()) {
-				for (OrgLocations orgLocations : orgLocationsList) {
-					// code for adding TicketType records to OrgLocations
-					List<Long> ticketTypeCount = session.createQuery("select count(*) from TicketType t where t.orgLocations.id="+orgLocations.getId()).list();
-					if(ticketTypeCount == null || (!ticketTypeCount.isEmpty() && ticketTypeCount.get(0) == 0)) {
-						for (Ticket_Type t : Ticket_Type.values()) {
-							TicketType ticketType = new TicketType();
-							ticketType.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
-							ticketType.setName(t.name());
-							ticketType.setDescription(t.getValue());
-							ticketType.setStatus(1);
-							ticketType.setOrgLocations(orgLocations);
-							ticketType.setCreatedBy(adminUser.getId());
-							ticketType.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
-							session.saveOrUpdate(ticketType);
-							System.out.println("Added TicketType '" + t.name() + "' for OrgLocation : " + orgLocations.getId());
-						}
-					}
-
-					List<Long> TicketPriorityCount = session.createQuery("select count(*) from TicketPriority p where p.orgLocations.id="+orgLocations.getId()).list();
-					if(TicketPriorityCount == null || (!TicketPriorityCount.isEmpty() && TicketPriorityCount.get(0) == 0)) {
-						// code for adding TicketPriority records to OrgLocations
-						for (Ticket_Priority p : Ticket_Priority.values()) {
-							TicketPriority ticketPriority = new TicketPriority();
-							ticketPriority.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
-							ticketPriority.setName(p.name());
-							ticketPriority.setDescription(p.getValue());
-							ticketPriority.setStatus(1);
-							ticketPriority.setOrgLocations(orgLocations);
-							ticketPriority.setCreatedBy(adminUser.getId());
-							ticketPriority.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
-							session.saveOrUpdate(ticketPriority);
-							System.out.println("Added TicketPriority '" + p.name() + "' for OrgLocation : " + orgLocations.getId());
-						}
-					}
-
-					List<Long> TicketStatusCount = session.createQuery("select count(*) from TicketStatus s where s.orgLocations.id="+orgLocations.getId()).list();
-					if(TicketStatusCount == null || (!TicketStatusCount.isEmpty() && TicketStatusCount.get(0) == 0)) {
-						// code for adding TicketStatus records to OrgLocations
-						for (Ticket_Status s : Ticket_Status.values()) {
-							TicketStatus ticketStatus = new TicketStatus();
-							ticketStatus.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
-							ticketStatus.setName(s.name());
-							ticketStatus.setDescription(s.getValue());
-							ticketStatus.setStatus(1);
-							ticketStatus.setOrgLocations(orgLocations);
-							ticketStatus.setCreatedBy(adminUser.getId());
-							ticketStatus.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
-							session.saveOrUpdate(ticketStatus);
-							System.out.println("Added TicketStatus '" + s.name() + "' for OrgLocation : " + orgLocations.getId());
-						}
-					}
+			if(orgLocationId > 0) {
+				OrgLocations orgLocations = orgLocationsDao.getOrgLocations(orgLocationId);
+				if (adminUser != null && orgLocations != null) {
+					applyTicketManagementPreDefinedData(session, orgLocations, adminUser);
+					return 1;
 				}
-				return orgLocationsList.size();
+			} else {
+				String query = "select distinct o from OrgLocations o order by o.id";
+				List<OrgLocations> orgLocationsList = session.createQuery(query).list();
+				if (adminUser != null && orgLocationsList != null && !orgLocationsList.isEmpty()) {
+					for (OrgLocations orgLocations : orgLocationsList) {
+						applyTicketManagementPreDefinedData(session, orgLocations, adminUser);
+					}
+					return orgLocationsList.size();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void applyTicketManagementPreDefinedData(Session session, OrgLocations orgLocations, User adminUser) {
+		try {
+			// code for adding TicketType records to OrgLocations
+			List<Long> ticketTypeCount = session.createQuery("select count(*) from TicketType t where t.orgLocations.id="+orgLocations.getId()).list();
+			if(ticketTypeCount == null || (!ticketTypeCount.isEmpty() && ticketTypeCount.get(0) == 0)) {
+				for (Ticket_Type t : Ticket_Type.values()) {
+					TicketType ticketType = new TicketType();
+					ticketType.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
+					ticketType.setName(t.name());
+					ticketType.setDescription(t.getValue());
+					ticketType.setStatus(1);
+					ticketType.setOrgLocations(orgLocations);
+					ticketType.setCreatedBy(adminUser.getId());
+					ticketType.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
+					session.saveOrUpdate(ticketType);
+					System.out.println("Added TicketType '" + t.name() + "' for OrgLocation : " + orgLocations.getId());
+				}
+			}
+
+			List<Long> TicketPriorityCount = session.createQuery("select count(*) from TicketPriority p where p.orgLocations.id="+orgLocations.getId()).list();
+			if(TicketPriorityCount == null || (!TicketPriorityCount.isEmpty() && TicketPriorityCount.get(0) == 0)) {
+				// code for adding TicketPriority records to OrgLocations
+				for (Ticket_Priority p : Ticket_Priority.values()) {
+					TicketPriority ticketPriority = new TicketPriority();
+					ticketPriority.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
+					ticketPriority.setName(p.name());
+					ticketPriority.setDescription(p.getValue());
+					ticketPriority.setStatus(1);
+					ticketPriority.setOrgLocations(orgLocations);
+					ticketPriority.setCreatedBy(adminUser.getId());
+					ticketPriority.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
+					session.saveOrUpdate(ticketPriority);
+					System.out.println("Added TicketPriority '" + p.name() + "' for OrgLocation : " + orgLocations.getId());
+				}
+			}
+
+			List<Long> TicketStatusCount = session.createQuery("select count(*) from TicketStatus s where s.orgLocations.id="+orgLocations.getId()).list();
+			if(TicketStatusCount == null || (!TicketStatusCount.isEmpty() && TicketStatusCount.get(0) == 0)) {
+				// code for adding TicketStatus records to OrgLocations
+				for (Ticket_Status s : Ticket_Status.values()) {
+					TicketStatus ticketStatus = new TicketStatus();
+					ticketStatus.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
+					ticketStatus.setName(s.name());
+					ticketStatus.setDescription(s.getValue());
+					ticketStatus.setStatus(1);
+					ticketStatus.setOrgLocations(orgLocations);
+					ticketStatus.setCreatedBy(adminUser.getId());
+					ticketStatus.setCreatedDate(commonUtil.orgLocationCommonDate(new Date(), orgLocations));
+					session.saveOrUpdate(ticketStatus);
+					System.out.println("Added TicketStatus '" + s.name() + "' for OrgLocation : " + orgLocations.getId());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@SuppressWarnings("unchecked")

@@ -142,13 +142,13 @@ import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
-import com.bis.sourcelead.service.TimeSheetDayEntriesService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimeSheetDayEntriesService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.text.DecimalFormat;
@@ -857,6 +857,19 @@ public class CommonUtil {
 		    		for(SubmissionApproverHierarchy sah :sahList){
 		    			sah.setId(null);
 		    			sah.setHeirarchyId(pah);
+		    			//Additional Fields are added for de-normalization
+						sah.setProjectId(sah.getSubmissionId().getProjects());
+						sah.setMasterCandidateId(sah.getSubmissionId().getMasterCandidateId().getId());
+						sah.setProjectClientId(pah.getProjectClientsId());
+						sah.setOrgLocationId(pah.getProjectClientsId().getOrgLocationsId().getId());
+						sah.setOrgId(pah.getProjectClientsId().getOrgLocationsId().getOrg().getId());
+						ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectClientId(sah.getSubmissionId().getMasterCandidateId().getId(), pah.getProjectClientsId().getId());
+						if(pm != null) {
+							sah.setProjectMemberId(pm);
+							sah.setCandidateId(pm.getCandidateId());
+							User consultantUser = candidateService.getConsultantUserByCandidateIdOrMasterCandidateId(pm.getProjectMemberCandidteId().getId(),pm.getProjectMemberCandidteId().getMasterCandidateId().getId());
+							sah.setConsultantUser(consultantUser);
+						}
 		    			freshSahList.add(sah);
 		    		}
 		    		submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(freshSahList);

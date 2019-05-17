@@ -2,7 +2,6 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.dao.ProjectMembersDao;
-import com.bis.sourcelead.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dao.impl.ExpensesDaoImpl;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
@@ -93,11 +91,10 @@ import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.dao.SubmissionApproverHierarchyDao;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.symmetry.ste.STEPayrollCalculator;
-
-import opennlp.tools.parser.Cons;
 
 @Service
 public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
