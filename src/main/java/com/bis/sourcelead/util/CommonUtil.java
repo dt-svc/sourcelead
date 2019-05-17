@@ -68,6 +68,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dao.RequirementOffersDao;
 import com.bis.sourcelead.dao.ShiftDao;
 import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
@@ -104,9 +105,10 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.Shift;
+import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
@@ -140,13 +142,13 @@ import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
-import com.bis.sourcelead.service.TimeSheetDayEntriesService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimeSheetDayEntriesService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.text.DecimalFormat;
@@ -273,6 +275,9 @@ public class CommonUtil {
 	
 	@Autowired
 	ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
+	
+	@Autowired
+	RequirementOffersDao requirementOffersDao;
 	
 	@Autowired
 	PayrollPaySlipIndService payrollPaySlipIndService;
@@ -852,6 +857,19 @@ public class CommonUtil {
 		    		for(SubmissionApproverHierarchy sah :sahList){
 		    			sah.setId(null);
 		    			sah.setHeirarchyId(pah);
+		    			//Additional Fields are added for de-normalization
+						sah.setProjectId(sah.getSubmissionId().getProjects());
+						sah.setMasterCandidateId(sah.getSubmissionId().getMasterCandidateId().getId());
+						sah.setProjectClientId(pah.getProjectClientsId());
+						sah.setOrgLocationId(pah.getProjectClientsId().getOrgLocationsId().getId());
+						sah.setOrgId(pah.getProjectClientsId().getOrgLocationsId().getOrg().getId());
+						ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectClientId(sah.getSubmissionId().getMasterCandidateId().getId(), pah.getProjectClientsId().getId());
+						if(pm != null) {
+							sah.setProjectMemberId(pm);
+							sah.setCandidateId(pm.getCandidateId());
+							User consultantUser = candidateService.getConsultantUserByCandidateIdOrMasterCandidateId(pm.getProjectMemberCandidteId().getId(),pm.getProjectMemberCandidteId().getMasterCandidateId().getId());
+							sah.setConsultantUser(consultantUser);
+						}
 		    			freshSahList.add(sah);
 		    		}
 		    		submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(freshSahList);
@@ -2688,7 +2706,38 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
   public String saveJoinStatusInSubmission(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, Long submissionId, OrgLocations orgLocations, User user) throws Exception {
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		if(!requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.JOINED)) {
-			// to update submission history
+			
+			// update offer status with out offer accepting and update submission and
+			// history
+			if (requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.OFFERMADE)) {
+				RequirementSubmissionHistory requirementSubmissionHistory1 = new RequirementSubmissionHistory();
+				requirementSubmissionHistory1.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+				requirementSubmissionHistory1.setToStage("OFFERACCEPTED");
+				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
+						requirementSubmissionHistory1, requirementSubmission.getCreatedBy());
+				List<RequirementOffers> offersList = requirementOffersDao.getRequirementOfferSubmissionByIdAndOrgLocationId(submissionId, orgLocations.getId());
+				offersList.forEach(requirementOffers -> {
+					if (requirementOffers != null) {
+						if (requirementOffers.getOfferStatus().equalsIgnoreCase("CLIENT_OFFERMADE")) {
+							requirementOffers.setOfferStatus("CLIENT_OFFERACCEPTED");
+						} else {
+							requirementOffers.setOfferStatus("OFFERACCEPTED");
+						}
+
+						requirementOffers.setUpdatedBy(user.getUserCode());
+						requirementOffers.setUpdatedDate(this.currentDate());
+						try {
+							requirementOffersDao.storeRequirementOffers(requirementOffers);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 			requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
 			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());

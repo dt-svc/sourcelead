@@ -7,12 +7,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,7 +29,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
-import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.MarginSheetReportDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
@@ -42,7 +41,6 @@ import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
@@ -77,10 +75,10 @@ import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadRolesService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -1016,6 +1014,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 									projectClients.setProjectId(projects);
 									projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
 									projectClients.setOrgLocationsId(cand.getOrgLocationId());
+									projectClients.setOrgId(cand.getOrgLocationId().getOrg());
 									projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 									projectClients.setStatus(1);
 									
@@ -1740,6 +1739,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 					pc.setProjectId(projects);
 					pc.setOrgRelationId(clildCandidate.getOrgRelationId());
 					pc.setOrgLocationsId(cand.getOrgLocationId());
+					pc.setOrgId(cand.getOrgLocationId().getOrg());
 					pc.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 					pc.setStatus(1);
 					pc.setCreatedDate(new Date());
@@ -2175,6 +2175,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 									projectClients.setProjectId(projects);
 									projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
 									projectClients.setOrgLocationsId(cand.getOrgLocationId());
+									projectClients.setOrgId(cand.getOrgLocationId().getOrg());
 									projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 									projectClients.setStatus(1);
 									
@@ -2335,8 +2336,27 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	}
 
 	@Override
-	public List<CandidateDTO> getAllAvailableAssociates(Long orgLocationId) {
-		return projectMembersDao.getAllAvailableAssociates( orgLocationId);
+
+	public List<Candidate> getAllAvailableAssociates(Long orgLocationId) {
+	List<Candidate> candidateList = new LinkedList<>();
+	List<Object[]> objList = projectMembersDao.getAllAvailableAssociates( orgLocationId);
+	if(objList != null && !objList.isEmpty()) {
+	for(Object[] obj : objList) {
+	Candidate candidate = new Candidate();
+	candidate.setId(Long.parseLong(String.valueOf(obj[0])));
+	candidate.setFirstName(obj[1] != null ? String.valueOf(obj[1]) : null);
+	candidate.setMiddelName(obj[2] != null ? String.valueOf(obj[2]) : null);
+	candidate.setLastName(obj[3] != null ? String.valueOf(obj[3]) : null);
+	candidateList.add(candidate);
+	}
+	}
+	return candidateList;
+	}
+
+	@Override
+	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectClientId(Long masterCandidateId,
+			Long projectClientsId) throws Exception {
+		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectClientId(masterCandidateId, projectClientsId);
 	}
 
 

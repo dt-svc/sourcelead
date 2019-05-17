@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -246,6 +247,8 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 		String query2 = " and  es.isActive ='Y'";
 		if(isactive) query = query +query2;
 		
+		query = query +" order by es.updatedDate desc";
+		
 		List<EmailScenarioConfiguration> emailParserList =  session.createQuery(query.toString())
 				                                                             .setLong("orgLocId", orgLocId)
 				                                                             .setString("parsingType", parsingType).list();
@@ -311,7 +314,7 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public int changeDefaultParserEmailConfig(String uuid, Long orgLocationId, boolean activeFlag) {
+	public int changeDefaultParserEmailConfig(String uuid, Long orgLocationId, boolean activeFlag, Date updatedDate) {
 		int count = -1;
 	    try {
 		Session  session = this.sessionFactory.getCurrentSession();
@@ -322,8 +325,8 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 		else {
 			activeIndicator ="N";
 		}
-		String sqlQuery = "UPDATE EMAIL_SCENARIO_CONFIGURATION SET IS_ACTIVE =:activeIndicator WHERE EMAIL_UUID =:uuid and ORG_lOCATION_ID =:orgLocationId";
-		count = session.createSQLQuery(sqlQuery).setLong("orgLocationId",orgLocationId).setString("uuid",uuid).setString("activeIndicator",activeIndicator).executeUpdate();
+		String sqlQuery = "UPDATE EMAIL_SCENARIO_CONFIGURATION SET IS_ACTIVE =:activeIndicator, UPDATED_DATE =:updatedDate WHERE EMAIL_UUID =:uuid and ORG_lOCATION_ID =:orgLocationId";
+		count = session.createSQLQuery(sqlQuery).setLong("orgLocationId",orgLocationId).setString("uuid",uuid).setString("activeIndicator",activeIndicator).setDate("updatedDate",updatedDate ).executeUpdate();
 		 return count;
 	}catch(Exception e) {
 		logger.error(" Exception caught while updating the EmailScenarioConfiguration "+e.getMessage() );

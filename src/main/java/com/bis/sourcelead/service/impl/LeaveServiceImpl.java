@@ -62,6 +62,7 @@ import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.LeaveTypeImportDTO;
+import com.bis.sourcelead.dto.MobilePushNotificationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
@@ -97,6 +98,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveManagementHistoryService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.MobilePushNotificationService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -196,6 +198,8 @@ public class LeaveServiceImpl implements LeaveService{
     @Autowired
     PdfUtil pdfUtil;
     
+    @Autowired
+	MobilePushNotificationService  mobilePushNotificationService;
     
     private static final Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
     
@@ -403,7 +407,12 @@ public class LeaveServiceImpl implements LeaveService{
 				AppliedLeaveDate appliedLeaveDate = new AppliedLeaveDate();
 				appliedLeaveDate.setApplyLeaveDate(d);
 				 float fromMinutes = 0;
-				 if(!weekOffs.contains(sf.format(d))) {
+				 LeaveType  leaveType = leave.getLeaveType();
+					Boolean includeWeekOffs = false;
+					if(leaveType != null && (leaveType.getIncludeWeekoff().equalsIgnoreCase("Y"))) {
+						includeWeekOffs = true;
+					}
+				 if(includeWeekOffs || !weekOffs.contains(sf.format(d))) {
 					 if(leave.getFromDate().equals(d)){
 							if(Constants.STATUS_YES.equalsIgnoreCase(leave.getFromHalfDay())){
 								fromMinutes = leaveManagementUtil.calculateAppliedLeaveMinutes(leave.getFromDateFromHalfTime(), leave.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leave.getLeaveType());
@@ -1066,6 +1075,11 @@ public class LeaveServiceImpl implements LeaveService{
 		notificationScenario.setBody(notificationbody);
 		emailScenerioUtil.sendNotification(actionLink, loginUser, leaveManagementHistory.getLeaveid().getUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 		
+		//Mobile PushNotification
+   	    MobilePushNotificationDTO mobilePushNotificationDTO = new MobilePushNotificationDTO();
+   	    mobilePushNotificationDTO.setNotificationDescritpion(notificationbody);
+   	    mobilePushNotificationDTO.setUserId(leaveManagementHistory.getLeaveid().getUser());
+		mobilePushNotificationService.saveMobilePushNotification(mobilePushNotificationDTO);
 	}
 
 	@Override
@@ -1508,7 +1522,12 @@ public class LeaveServiceImpl implements LeaveService{
 		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		emailMessage.setOrgLocationId(orgLoc.getId());
-		// setting the class filed values
+		
+		//redirection URLs
+		String redirectURL = "/employeeRequestedLeaves-params-notifyLink=notifyLink-and-leaveUUID=" + leaveDTO.getLeaveUUID()+ "-and-orgLocationId=" + orgLoc.getId();
+		Long redirectOrgLocationId = orgLoc.getId();
+		
+		//setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		LeaveType leaveType = null;
 		if (null != leaveDTO.getLeaveType()) {
@@ -1562,7 +1581,7 @@ public class LeaveServiceImpl implements LeaveService{
 			globalVarsMap.put("toDate", leaveDTO.getToDate());
 		}
 		StringBuilder stringBuildforLink = new StringBuilder();
-		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL="+pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Leave Request</div></a>").toString());
 		// setting the Recipient information
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		EmailScenario notificationScenario = null;

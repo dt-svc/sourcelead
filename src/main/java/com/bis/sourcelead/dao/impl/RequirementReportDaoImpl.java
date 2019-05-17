@@ -418,5 +418,24 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		applicantCount = (ApplicantReceivedReportsDTO) mainQuery.uniqueResult();
 		return applicantCount;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Transactional
+	@Override
+	public List<Long> getParentRequirementIdListByRequirementIds(List<Long> requirementIds) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select distinct(r.parentRequirement.id) from Requirement r where r.id in (:requirementIds)";
+			Query queryObj = session.createQuery(query);
+			queryObj.setParameterList("requirementIds", requirementIds);
+			List<Long> idList = queryObj.list();
+			if(idList != null && !idList.isEmpty()) {
+				return idList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 }

@@ -54,8 +54,10 @@ public class PayrollPayheadDTO implements Serializable{
 		private String showInPayslip;
 		
 		private String pfApplicable;
-		
+
 		private String esiApplicable;
+		
+		private String ptApplicable;
 		
 		private String method;
 			
@@ -90,6 +92,8 @@ public class PayrollPayheadDTO implements Serializable{
 		private BigDecimal totalForfrequencyLevel;
 		
 		private String status;
+		
+		private String active;
 
 		public Long getId() {
 			return id;
@@ -387,5 +391,19 @@ public class PayrollPayheadDTO implements Serializable{
 		public void setStatus(String status) {
 			this.status = status;
 		}
-		
+
+		public String getActive() {
+			return active;
+		}
+
+		public void setActive(String active) {
+			this.active = active;
+		}
+		public String getPtApplicable() {
+			return ptApplicable;
+		}
+
+		public void setPtApplicable(String ptApplicable) {
+			this.ptApplicable = ptApplicable;
+		}
 }

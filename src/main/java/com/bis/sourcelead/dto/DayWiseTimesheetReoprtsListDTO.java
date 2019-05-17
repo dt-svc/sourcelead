@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class DayWiseTimesheetReoprtsListDTO {
 	private BigInteger timeEntryId;
-	private Date timesheetDate;
+	private String timesheetDate;
 	private String employeeName;
 	private String employeeEmail;
 	private String ticketNo;
@@ -110,10 +110,10 @@ public class DayWiseTimesheetReoprtsListDTO {
 	public void setTimeEntryId(BigInteger timeEntryId) {
 		this.timeEntryId = timeEntryId;
 	}
-	public Date getTimesheetDate() {
+	public String getTimesheetDate() {
 		return timesheetDate;
 	}
-	public void setTimesheetDate(Date timesheetDate) {
+	public void setTimesheetDate(String timesheetDate) {
 		this.timesheetDate = timesheetDate;
 	}
 	public String getComments() {
