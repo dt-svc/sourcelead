@@ -51,6 +51,7 @@ window.onload = function () {
 		    	 	 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt"> 
 		    	 	 <input type="hidden" name="goalId" id="goalId" />
 		    	 	 <input type="hidden" name="goalType" id="goalType" />
+		    	 	 <input type="hidden" name="performanceGoalType" id="performanceGoalType" value="Self_Goal" />
 		    	 	 
 		    	 	 	<div class="form-group">
 				          <label class="col-md-3">Goal Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
@@ -77,15 +78,27 @@ window.onload = function () {
 					         </div>
 				        </div>
 				        
-					<div class="form-group">
-						  <label class="col-md-3">Assign To</label>
-						  <div class="col-md-9">
-								<select  multiple class="chosen-select form-control"
-												name="goalsAssignTo" 
-												id="goalsAssignTo" data-validation="required" field-name="Assign To">
-								</select>         	
-						  </div>
+						<div class="form-group">
+							  <label class="col-md-3">Assign To<span class="text-danger paddingLeft">&nbsp;*</span></label>
+							  <div class="col-md-9">
+									<select  multiple class="chosen-select form-control"
+													name="goalsAssignTo" 
+													id="goalsAssignTo" data-validation="required" field-name="Assign To">
+									</select>         	
+							  </div>
 						</div>
+					
+					
+					
+						<div class="form-group" id="percentageDoneDiv" style="display: none;">
+				          <label class="col-md-3">Percentage Done (%)</label>
+				          <div class="col-md-9"><input type="text" class="form-control" name="goalPercentage" id="goalPercentage" onblur="performanceGoals.validateGoalPercentage();" data-validation-optional="ture" field-name="Goal Percentage" ></div>
+				        	<div class="row" id="goalPercentageId">
+			                  <input type="hidden" name="goalPercentageValidation" id="goalPercentageValidation">
+			               </div>
+				        </div>
+					
+					</div>
         
 		    	 	 </div>
 		    	 	 

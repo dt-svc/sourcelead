@@ -3,11 +3,14 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+    <!-- Showing checkbox for submitted timesheets -->
 	<c:if test="${timesheetSubmission.submissionStatus eq 'SUBMITTED FOR APPROVAL'}">
 		<td>
 			<input class="checkBoxForSubmitForApproval"  name="checkBoxForSubmitForApproval" type="checkbox" value="${timesheetSubmission.projectMemberId}!${timesheetSubmission.actualStartDate}!${timesheetSubmission.actualEndDate}!${timesheetSubmission.tdSpanLength}!'approval'" onclick="displayAcceptRejectButtonOnHedder();">
 		</td>
 	</c:if>
+	
+	<!-- disable checkbox for non-submitted timesheets -->
 	<c:if test="${timesheetSubmission.submissionStatus ne 'SUBMITTED FOR APPROVAL'}">
 		<td>
 		     <small class="positionRelative">
@@ -34,7 +37,7 @@
 		
 	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">	
 		<c:if test="${not empty timesheetSubmission.orgRelationUUID}">
-			<td><div title="${timesheetSubmission.clientName}"><a class="aLink" href="/app/clientDashboard?orgRelationUUID=${timesheetSubmission.orgRelationUUID}">${timesheetSubmission.clientName}</a></div></td>
+			<td><div title="${timesheetSubmission.clientName}"><a class="aLink" href="${SourceLeadWeb_vmsUrl}/clientDashboard?orgRelationUUID=${timesheetSubmission.orgRelationUUID}">${timesheetSubmission.clientName}</a></div></td>
 		</c:if>
 		<c:if test="${empty timesheetSubmission.orgRelationUUID}">
 			<td><div title="${timesheetSubmission.clientName}">${timesheetSubmission.clientName}</div></td>

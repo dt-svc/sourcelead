@@ -2,11 +2,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
  <div class='timeNewSe timeNewSe_a addicon'>
    <!--  <input type="hidden" name="timeFrequencies" value="timesheetEntryDetailsDTO.timeFrequencies"/> -->
     <input type="hidden" id="projectId" name="projectId" value="${timesheetEntryDetailsDTO.projectId}"/>
@@ -23,6 +18,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
  </div>
  <script>
 	function timesheetDivByFrequency(currentTimeSubFrequency){ 
+	               var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	               var projectMemberId = $("#projectMemberId").val();
 	               var currentTimeFrequency = $("#currentTimeFrequency").val();
 	               var subFrParam = '';
