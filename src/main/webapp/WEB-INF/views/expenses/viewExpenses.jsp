@@ -84,7 +84,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">
 						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
 						  <c:if test="${pm.projectId == expenses.projectId}">
-						   <a href="<c:url value="/app/clientDashboard?orgRelationUUID=${pm.orgRelationUUID}"/>"> ${pm.clientName}</a>
+						   <a href="${SourceLeadWeb_vmsUrl}/clientDashboard?orgRelationUUID=${project.orgRelationUUID}">${project.client}</a>
 						  </c:if>
 						</c:forEach>
 						</sec:authorize>
