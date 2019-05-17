@@ -270,6 +270,10 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String marketPrice;
 	
+	private String ssnNumber;
+	
+	private String employmentType;
+	
 	public String getCandidateId() {
 		return candidateId;
 	}
@@ -1296,6 +1300,22 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setWorkLocation(Long workLocation) {
 		this.workLocation = workLocation;
+	}
+
+	public String getSsnNumber() {
+		return ssnNumber;
+	}
+
+	public void setSsnNumber(String ssnNumber) {
+		this.ssnNumber = ssnNumber;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
 	}
 
 

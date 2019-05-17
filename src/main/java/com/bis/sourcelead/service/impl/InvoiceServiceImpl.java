@@ -68,14 +68,12 @@ import com.bis.sourcelead.dto.CreditDebitNoteDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteLineItemsDTO;
 import com.bis.sourcelead.dto.CreditDebitNoteListDTO;
 import com.bis.sourcelead.dto.CustomInvoiceTemplateDTO;
-import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.InvoiceExpensesDTO;
 import com.bis.sourcelead.dto.InvoiceLineItemsDTO;
 import com.bis.sourcelead.dto.InvoiceTaxDTO;
 import com.bis.sourcelead.dto.InvoiceTimelineDTO;
-import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SearchDTO;
@@ -84,7 +82,6 @@ import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
 import com.bis.sourcelead.entity.CustomInvoiceTemplate;
-import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -96,7 +93,6 @@ import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.InvoiceTax;
 import com.bis.sourcelead.entity.InvoiceTimelineHistory;
-import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -122,12 +118,11 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
-import com.bis.sourcelead.service.RequirementSubmissionService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimeZoneService;
-import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -357,11 +352,17 @@ public class InvoiceServiceImpl implements InvoiceService {
 		 * if(StringUtils.isNotBlank(invoiceDTO.getAccountDetails())){
 		 * invoice.setAccountDetails(invoiceDTO.getAccountDetails()); }
 		 */
-
+		if(StringUtils.isNotBlank(invoiceDTO.getNotifyToOthers())){
+			invoice.setNotifyToOthers(invoiceDTO.getNotifyToOthers());	
+		}else{
+			invoice.setNotifyToOthers(null);	
+		}
 		if (StringUtils.isNotBlank(invoiceDTO.getPaymentAccount())) {
 			PaymentAccount paymentaccount = new PaymentAccount();
 			paymentaccount.setId(Long.valueOf(invoiceDTO.getPaymentAccount()));
 			invoice.setPaymentAccount(paymentaccount);
+		}else{
+			invoice.setPaymentAccount(null);
 		}
 
 		if (StringUtils.isNotBlank(invoiceDTO.getInvoiceDate())) {
@@ -489,6 +490,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 			// mail scenario for client accept or reject
 			Invoice parentInvoice = saveParentInvoice(invoice, loginOrgCurrencyCode, vendorOrgLocation, user);
 			returnMap = sendInvoiceMail(user, orgLocation, invoice, invoiceType, docusList);
+			//send notifyTo others email 
+			if(StringUtils.isNotBlank(invoiceDTO.getNotifyToOthers())) {
+				for(String notifyToEmail : invoiceDTO.getNotifyToOthers().split(",")) {
+					sendInvoiceMailToOthers(user, orgLocation, invoice, invoiceType, docusList,notifyToEmail);
+				}
+			}
 			if (parentInvoice.getId() != null) {
 				saveInvoiceTimelineHistory(parentInvoice, user, null, null, null, returnMap);
 			}
@@ -1129,6 +1136,105 @@ public class InvoiceServiceImpl implements InvoiceService {
 		 * invoice.getContactUser(), invoice.getResponderLocationId(),
 		 * notificationScenario,new HashMap<String,String>());
 		 */
+		return returnMap;
+	}
+	
+	
+	
+	public Map<String, String> sendInvoiceMailToOthers(User user, OrgLocations orglocations, Invoice invoice,
+			String invoiceType, List<TimesheetSubmissionsDocuments> docusList,String otherMails) throws Exception {
+		Map<String, String> returnMap = null;
+		EmailScenario emailScenario = null;
+		// EmailScenario notificationScenario = null;
+		EmailMessage emailMessage = null;
+		StringBuilder sb1 = new StringBuilder();
+				
+		String UUID = SourceLeadRandomCodeHelper.generateUUID();
+		emailMessage=new EmailMessage();
+		emailMessage.setFirstName(user.getFirstName());
+		emailMessage.setLastName(user.getLastName());
+		emailMessage.setToEmail(otherMails);
+		emailMessage.setFromEmail(user.getEmail());
+		emailMessage.setCreatedBy(user.getUserCode());
+		StringBuilder msgBuild = new StringBuilder();
+		emailMessage
+				.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+
+		String date = (commonUtil.dateStrFromOrgDateFormatter(orglocations.getDateFormat(), invoice.getDueDate()));
+
+		String invoiceDate = (commonUtil.dateStrFromOrgDateFormatter(orglocations.getDateFormat(),
+				invoice.getInvoiceDate()));
+
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		globalVarsMap.put("invoiceID", invoice.getInvoiceId());
+		globalVarsMap.put("LoginUser", user.getFirstName());
+		if (invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)) {
+			
+				globalVarsMap.put("vendorName", "");
+		} else {
+			
+				globalVarsMap.put("clientName", "");
+		}
+		globalVarsMap.put("grandTotal", invoice.getTotal());
+		globalVarsMap.put("dueDate", date);
+		globalVarsMap.put("invoiceDate", invoiceDate);
+		globalVarsMap.put("orgName", orglocations.getOrgLocationName());
+		// globalVarsMap.put("address",invoice.getBillingAddress());
+
+
+		// send mail logic
+
+		ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+		ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
+		EmailAttachment emailAttachment = new EmailAttachment();
+		emailAttachment.setUUID(UUID);
+		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
+		EmailAttachment attachmentZip = zipFiles(docusList);
+		if (null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0
+				&& !invoice.getInvoiceDocumentSet().isEmpty()) {
+			Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+			for (InvoiceDocument doc : documenetSet) {
+				EmailAttachment docAttachment = new EmailAttachment();
+				if (StringUtils.isNotBlank(doc.getFileUrl()))
+
+					docAttachment.setDocFile(commonUtil.readBytesFromFile(ac + doc.getFileUrl()));
+				docAttachment.setName(doc.getFileName());
+				documentList.add(docAttachment);
+			}
+		}
+		if (StringUtils.isNotBlank(invoice.getFileUrl()))
+			emailAttachment.setDocFile(commonUtil.readBytesFromFile(ac + invoice.getFileUrl()));
+		if (StringUtils.isNotBlank(invoice.getFileName()))
+			emailAttachment.setName(invoice.getFileName());
+		attachmentList.add(emailAttachment);
+
+		if (null != attachmentZip) {
+			attachmentList.add(attachmentZip);
+		}
+		if (null != documentList && !documentList.isEmpty() && documentList.size() > 0) {
+			attachmentList.addAll(documentList);
+		}
+
+		// send notification logic
+		EmailScenario notificationScenario = null;
+		if (invoiceType.equalsIgnoreCase("payable")) {
+			returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations,
+					Constants.INVOICE_CLIENT_PAYABLE_MAIL, attachmentList);
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+					Constants.INVOICE_CLIENT_PAYABLE_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+		} else {
+			returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations,
+					Constants.INVOICE_CLIENT_RECEIVABLE_MAIL, attachmentList);
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+					Constants.INVOICE_CLIENT_RECEIVABLE_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+		}
+		
+		sb1.append(emailMessage.getToEmail());
+		
+				returnMap.put("toEmail", sb1.toString());
+				returnMap.put("fromEmail", emailMessage.getFromEmail());
+
 		return returnMap;
 	}
 
@@ -3029,6 +3135,106 @@ public class InvoiceServiceImpl implements InvoiceService {
 			}
 		}
 	}
+	
+	public void sendInvoiceReminderMailToNotifyOthers(User user, OrgLocations orgLocation, Invoice invoice, String invoiceType,
+			List<TimesheetSubmissionsDocuments> docusList,String emailtoOthers) throws Exception {
+		EmailScenario emailScenario = null;
+		Map<String, String> returnMap = null;
+		// EmailScenario notificationScenario = null;
+		
+					String UUID = SourceLeadRandomCodeHelper.generateUUID();
+					EmailMessage emailMessage = new EmailMessage();
+					emailMessage.setFirstName(user.getFirstName());
+					emailMessage.setLastName(user.getLastName());
+					emailMessage.setToEmail(emailtoOthers);
+					emailMessage.setFromEmail(user.getEmail());
+					emailMessage.setCreatedBy(user.getUserCode());
+					StringBuilder msgBuild = new StringBuilder();
+					emailMessage
+							.setFromName(msgBuild.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+					emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			
+					// SimpleDateFormat simpleDateFormat =
+					// orgLocation.getLocFullFormDateFormatter();
+					String date = (commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getDueDate()));
+			
+					// setting the class filed values
+					Map<String, String> globalVarsMap = new HashMap<String, String>();
+					globalVarsMap.put("invoiceID", invoice.getInvoiceId());
+					globalVarsMap.put("LoginUser", user.getFirstName());
+					if (invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)) {
+						globalVarsMap.put("vendorName", "");
+					} else {
+						globalVarsMap.put("clientName", "");
+					}
+					globalVarsMap.put("grandTotal", invoice.getDueAmount());
+					globalVarsMap.put("dueDate", date);
+					globalVarsMap.put("orgName", orgLocation.getOrgLocationName());
+					// globalVarsMap.put("address",invoice.getBillingAddress());
+			
+					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			
+					// send mail logic
+					List<EmailAttachment> attachmentList1 = new ArrayList<>();
+			
+					// send notification logic
+					ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+					ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
+					EmailAttachment emailAttachment = new EmailAttachment();
+					emailAttachment.setUUID(UUID);
+					EmailAttachment attachmentZip = zipFiles(docusList);
+					if (null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0
+							&& !invoice.getInvoiceDocumentSet().isEmpty()) {
+						Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+						for (InvoiceDocument doc : documenetSet) {
+							EmailAttachment docAttachment = new EmailAttachment();
+							String fileUrl = doc.getFileUrl();
+							if (StringUtils.isNotBlank(fileUrl)) {
+								docAttachment.setDocFile(CommonUtil.readBytesFromFile(fileUrl));
+								docAttachment.setName(doc.getFileName());
+								documentList.add(docAttachment);
+							}
+			
+						}
+			
+					}
+					String invoiceFileUrl = invoice.getFileUrl();
+					if (StringUtils.isNotBlank(invoiceFileUrl)) {
+						emailAttachment.setDocFile(CommonUtil.readBytesFromFile(invoiceFileUrl));
+						emailAttachment.setName(invoice.getFileName());
+						attachmentList.add(emailAttachment);
+					}
+					if (attachmentZip != null) {
+						attachmentList.add(attachmentZip);
+					}
+					if (documentList != null && !documentList.isEmpty() && documentList.size() > 0) {
+						attachmentList.addAll(documentList);
+					}
+			
+					EmailScenario notificationScenario = null;
+					if (invoiceType.equalsIgnoreCase("payables")) {
+						
+						returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
+								Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL, attachmentList1);
+						notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+								Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+					} else {
+						returnMap = commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
+								Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL, attachmentList1);
+						notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+								Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+					}
+					returnMap.put("toEmail", emailMessage.getToEmail());
+					returnMap.put("fromEmail", emailMessage.getFromEmail());
+					
+				invoice.setTimelineHistoryReminder("Reminder");
+				saveInvoiceTimelineHistory(invoice, user, null, null, null, returnMap);
+				Invoice childInvoice = invoiceDao.getInvoicetBySelfJoinInvoiceId(invoice.getId());
+				if (childInvoice != null) {
+					childInvoice.setTimelineHistoryReminder("Reminder");
+					saveInvoiceTimelineHistory(childInvoice, user, null, null, null, returnMap);
+				}
+	}
 
 	@Override
 	public Invoice getInvoicetByParentId(Long invoiceId) throws Exception {
@@ -3197,10 +3403,17 @@ public class InvoiceServiceImpl implements InvoiceService {
 			invoice.setPaymentFrequency(null);
 		}
 
+		if(StringUtils.isNotBlank(invoiceDTO.getNotifyToOthers())){
+			invoice.setNotifyToOthers(invoiceDTO.getNotifyToOthers());	
+		}else{
+			invoice.setNotifyToOthers(null);
+		}
 		if (StringUtils.isNotBlank(invoiceDTO.getPaymentAccount())) {
 			PaymentAccount paymentaccount = new PaymentAccount();
 			paymentaccount.setId(Long.valueOf(invoiceDTO.getPaymentAccount()));
 			invoice.setPaymentAccount(paymentaccount);
+		}else{
+			invoice.setPaymentAccount(null);
 		}
 
 		if (StringUtils.isNotBlank(invoiceDTO.getDisCount())) {
@@ -3338,6 +3551,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 		if (Constants.SENT.equalsIgnoreCase(saveType)) {
 			Invoice parentInvoice = saveParentInvoice(invoice, loginOrgCurrencyCode, vendorOrgLocation, user);
 			returnMap = sendInvoiceMail(user, orgLocation, invoice, invoiceType, docusList);
+			//send notifyTo others email 
+			if(StringUtils.isNotBlank(invoiceDTO.getNotifyToOthers())) {
+				for(String notifyToEmail : invoiceDTO.getNotifyToOthers().split(",")) {
+					sendInvoiceMailToOthers(user, orgLocation, invoice, invoiceType, docusList,notifyToEmail);
+				}
+			}
 			if (parentInvoice.getId() != null) {
 				saveInvoiceTimelineHistory(parentInvoice, user, null, null, null, returnMap);
 			}
