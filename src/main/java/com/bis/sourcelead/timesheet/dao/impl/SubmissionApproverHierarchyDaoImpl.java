@@ -1324,7 +1324,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
 			 globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :orgLocationId) ";
 		 }else {
-			 globalUserQuery = " (sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId OR (:orgLocationId NOT IN (select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.submissionId.projects.id and subpm.masterCandidateId.id = sah.submissionId.masterCandidateId.id and subpm.status != 0) and sah.hierarchyId.projectClientsId.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.submissionId.projects.id and subpm.masterCandidateId.id = sah.submissionId.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"') and sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)))";
+			 globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId ";
 		 }
 		 
 		String fillingOptionQuery = " and (sah.submissionApprovalStatus <> '"
