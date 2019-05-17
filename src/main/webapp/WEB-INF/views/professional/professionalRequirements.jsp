@@ -1222,9 +1222,8 @@ function searchRequirement(offset){
 				$("#requirementSearchOffset").val(offset)
 				$('#viewSearchMore').html("View More");
 			}
-
 			$.ajax({
-						type : "GET",
+						type : "POST",
 		        	    data: formData,
 		        	    contentType : 'application/json; charset=utf-8',
 		        	    enctype: 'multipart/form-data',

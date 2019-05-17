@@ -1331,6 +1331,7 @@ public class CandidateOffBoardRestController {
 						candidateTask.setTaskEmail(offboardTasks.getTaskEmail());
 						candidateTask.setDescription(offboardTasks.getDescription());
 						candidateTask.setStatus(Constants.CANDIDATE_ACTIVE);
+						candidateTask.setIsTaskSumbitted(Constants.NO);
 						candidateTask.setCreatedDate(CommonUtil.currentDate());
 						candidateTask.setCreatedBy(user.getUserCode());
 						candidateTask.setUpdatedDate(CommonUtil.currentDate());
@@ -1357,40 +1358,13 @@ public class CandidateOffBoardRestController {
 	@RequestMapping(value = "/saveAndFinishCandidateOffboard", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveAndFinishCandidateOffboard(
 			@RequestParam(value = "offboardId", required = false) Long offboardId,
-			@RequestParam(value = "tasks", required = false) String tasks, HttpServletRequest request) throws Exception {
+			HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				CandidateOffBoarding offBoarding = candidateOffBoardingService.getCandidateOffBoardingById(offboardId);
-				if (!isNullOrEmpty(tasks)) {
-					String[] taksIds = tasks.split(",");
-					for (int i = 0; i < taksIds.length; i++) {
-						OffboardTasks offboardTasks = offboardTasksService.getOffboardTasksByTaskId(Long.valueOf(taksIds[i]));
-						OffboardTasks candidateTask = new OffboardTasks();
-						candidateTask.setTaskName(offboardTasks.getTaskName());
-						candidateTask.setCandidateOffBoardingId(offBoarding);
-						candidateTask.setAssignToUsers(offboardTasks.getAssignToUsers());
-						candidateTask.setAssignToCandidate(offboardTasks.getAssignToCandidate());
-						candidateTask.setPriority(offboardTasks.getPriority());
-						candidateTask.setTaskRepeat(offboardTasks.getTaskRepeat());
-						candidateTask.setDueAfterMonths(offboardTasks.getDueAfterMonths());
-						candidateTask.setDueAfterDays(offboardTasks.getDueAfterDays());
-						candidateTask.setDueAfterHours(offboardTasks.getDueAfterHours());
-						candidateTask.setDueAfterMinutes(offboardTasks.getDueAfterMinutes());
-						candidateTask.setTaskNotification(offboardTasks.getTaskNotification());
-						candidateTask.setTaskEmail(offboardTasks.getTaskEmail());
-						candidateTask.setDescription(offboardTasks.getDescription());
-						candidateTask.setIsTaskSumbitted(Constants.NO);
-						candidateTask.setStatus(Constants.CANDIDATE_ACTIVE);
-						candidateTask.setCreatedDate(CommonUtil.currentDate());
-						candidateTask.setCreatedBy(user.getUserCode());
-						candidateTask.setUpdatedDate(CommonUtil.currentDate());
-						candidateTask.setUpdatedBy(user.getUserCode());
-						offboardTasksService.saveOffboardTasks(candidateTask);
-					}
-				}
 				candidateOffBoardingService.terminateOffboardingUser(offBoarding, user, loginOrgLocation);
 				response.setObject("success");
 				response.setResponse(Result.SUCCESS.name());
