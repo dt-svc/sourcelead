@@ -45,15 +45,15 @@ public class CentralTaxDTO implements Serializable {
 
 	private boolean active;
 
-	private Integer noofEmployees;
+	private Double noofEmployees;
 
-	private Integer employeePf;
+	private Double employeePf;
 
-	private Integer employerPf;
+	private Double employerPf;
 	
-	private Integer esiEmployee;
+	private Double esiEmployee;
 
-	private Integer esiEmployer;
+	private Double esiEmployer;
 	
 	public boolean isActive() {
 		return active;
@@ -187,23 +187,23 @@ public class CentralTaxDTO implements Serializable {
 		return serialVersionUID;
 	}
 
-	public Integer getNoofEmployees() {
+	public Double getNoofEmployees() {
 		return noofEmployees;
 	}
 
-	public Integer getEmployeePf() {
+	public Double getEmployeePf() {
 		return employeePf;
 	}
 
-	public Integer getEmployerPf() {
+	public Double getEmployerPf() {
 		return employerPf;
 	}
 
-	public Integer getEsiEmployee() {
+	public Double getEsiEmployee() {
 		return esiEmployee;
 	}
 
-	public Integer getEsiEmployer() {
+	public Double getEsiEmployer() {
 		return esiEmployer;
 	}
 
@@ -211,23 +211,24 @@ public class CentralTaxDTO implements Serializable {
 		this.sourceleadTaxId = sourceleadTaxId;
 	}
 
-	public void setNoofEmployees(Integer noofEmployees) {
+	public void setNoofEmployees(Double noofEmployees) {
 		this.noofEmployees = noofEmployees;
 	}
 
-	public void setEmployeePf(Integer employeePf) {
+	public void setEmployeePf(Double employeePf) {
 		this.employeePf = employeePf;
 	}
 
-	public void setEmployerPf(Integer employerPf) {
+	public void setEmployerPf(Double employerPf) {
 		this.employerPf = employerPf;
 	}
 
-	public void setEsiEmployee(Integer esiEmployee) {
+	public void setEsiEmployee(Double esiEmployee) {
 		this.esiEmployee = esiEmployee;
 	}
 
-	public void setEsiEmployer(Integer esiEmployer) {
+	public void setEsiEmployer(Double esiEmployer) {
 		this.esiEmployer = esiEmployer;
 	}
+
 }
