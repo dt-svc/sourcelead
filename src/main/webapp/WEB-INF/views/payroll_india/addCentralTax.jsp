@@ -80,13 +80,14 @@
 									<input type="number" id="employeepf" name="employeepf"
 										class="form-control" name="Website" data-validation="validate_length length1-3 "
 										value="${centralTax.employeepf}" placeholder="Enter %" data-validation-optional="true">
+									
 								</div>
 							</div>
 							<div class="col-md-5">
 								<label class="clearfix">Employer</label>
 								<div class="clearfix">
 						
-									<input type="number" id="employerpf" name="employerpf" data-validation="validate_length length1-3 "
+									<input type="number" id="employerpf" name="employerpf" data-validation="required validate_float validate_length length1-5 "
 										class="form-control" name="Website"
 										value="${centralTax.employerpf}" placeholder="Enter %" data-validation-optional="true">
 								</div>
@@ -109,7 +110,7 @@
 							<div class="col-md-5">
 								<label class="clearfix">Employee</label>
 								<div class="clearfix">
-									<input type="number"  id="employeeesi" name="employeeEsi" data-validation="validate_length length1-3 "
+									<input type="number"  id="employeeesi" name="employeeEsi" data-validation="required validate_float validate_length length1-5 "
 										class="form-control" name="Website"
 										value="${centralTax.employeeEsi}" placeholder="Enter" data-validation-optional="true">
 								</div>
@@ -117,7 +118,7 @@
 							<div class="col-md-5">
 								<label class="clearfix">Employer</label>
 								<div class="clearfix">
-									<input type="number" id="employeresi" name="employerEsi" data-validation="validate_length length1-3 "
+									<input type="number" id="employeresi" name="employerEsi" data-validation="required validate_float validate_length length1-5 "
 										class="form-control" name="Website"
 										value="${centralTax.employerEsi}" placeholder="Enter" data-validation-optional="true">
 								</div>

@@ -261,7 +261,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateJoineReports'>Associate Joined Report</a></li>
 				</sec:authorize>  
 				
-				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateClockInSummaryReport'>Associate Clock-In Summary Report</a></li>
+			<%-- 	<li><a href='${SourceLeadWeb_sourceleadUrl}/associateClockInSummaryReport'>Associate Clock-In Summary Report</a></li> --%>
 				
 				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li> 
 
@@ -362,7 +362,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="${SourceLeadWeb_vmsUrl}/petitionReport" class="block">
+                  <a href="${SourceLeadWeb_sourceleadUrl}/immigrationReportsList" class="block">
                   <div class="clearfix text-center mb10"><i class="petitionReport"></i></div>
                   <div class="clearfix text-center"><h4>Immigration Reports</h4></div> </a>
 
