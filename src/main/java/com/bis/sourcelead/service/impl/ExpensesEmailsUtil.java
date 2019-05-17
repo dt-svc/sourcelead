@@ -40,6 +40,9 @@ public class ExpensesEmailsUtil {
     @Value("${sourceleadLoginUrl}")
     private String sourceleadLoginUrl;
     
+    @Value("${pmsUrl}")
+	private String pmsUrl;
+    
 
 
     @Autowired
@@ -152,7 +155,7 @@ public class ExpensesEmailsUtil {
                  notificationScenario.setBody(notificationBody);
                  StringBuilder notificationLink = new StringBuilder();
                  String actionLink="";
-                 actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
+                 actionLink = notificationLink.append(pmsUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
 
                 emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, orgLoc, notificationScenario,new HashMap<String,String>());
         }
@@ -223,7 +226,7 @@ public class ExpensesEmailsUtil {
                  notificationScenario.setBody(notificationBody);
                  StringBuilder notificationLink = new StringBuilder();
                  String actionLink="";
-                 actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
+                 actionLink = notificationLink.append(pmsUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
                 Long candidateId = expenses.getProjectMembers().getCandidateId();
                 Candidate candidate = candidateService.getCandidateById(candidateId);
                 User empUser = userService.getUserById(candidate.getConsultantUser().getId());
@@ -293,7 +296,7 @@ public class ExpensesEmailsUtil {
                  notificationScenario.setBody(notificationBody);
                  StringBuilder notificationLink = new StringBuilder();
                  String actionLink="";
-                 actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenseId.getExpenseId()+"&expenseLocationCode="+expenseId.getLocationsCode()+"&type=view").toString();
+                 actionLink = notificationLink.append(pmsUrl).append("/").append("addApprovalExpense?expenseId="+expenseId.getExpenseId()+"&expenseLocationCode="+expenseId.getLocationsCode()+"&type=view").toString();
                 Long candidateId = expenseId.getProjectMembers().getCandidateId();
                 Candidate candidate = candidateService.getCandidateById(candidateId);
                 User empUser = userService.getUserById(candidate.getConsultantUser().getId());
@@ -366,11 +369,11 @@ public class ExpensesEmailsUtil {
          String actionLink="";
          StringBuilder notificationLink = new StringBuilder();
          if("REJECTED".equalsIgnoreCase(submissionStatusStr)){
-             actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
+             actionLink = notificationLink.append(pmsUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
              notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAILTOMANAGER1WHENMANAGER2ORADMIN_REJECT_THE_EXPENSE,Constants.ENTITY_TYPE_NOTIFICATION);
          }
          if("APPROVED".equalsIgnoreCase(submissionStatusStr)){
-             actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
+             actionLink = notificationLink.append(pmsUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
 
              notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAILTOMANAGER1WHENMANAGER2ORADMIN_APPROVESTHE_EXPENSE,Constants.ENTITY_TYPE_NOTIFICATION);
          }
