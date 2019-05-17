@@ -560,7 +560,7 @@ function downlaodZipfileByDocId(docId){
 		return;
 	$.post("downloadImmigrationDocsZip",{immigrationId: immigrationId, docId: docId}, function(data) { //  passing empty value for immigrationId to do doc level zip download
 		if(data !== "" && data.indexOf("Documents Found") === -1)
-			location.href = '${SourceLeadWeb_vmsUrl}/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
+			location.href = '${SourceLeadWeb_sourceleadUrl}/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
 		else
 			alert("Unable to locate Documents.");
 	});
