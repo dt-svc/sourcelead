@@ -305,7 +305,7 @@ function Immigration() {
                        	candidateUUID = result.data[4];
                        	immiTemplateUUID = result.data[5];
                             if(status == 'saveContinue'){// redirect to petition details tab page.
-                            window.location.href = vmsUrl + immiModulePath + "/viewImmigration?immigrationUUID="+immigrationUUID+"&candidateUUID="+candidateUUID+"&immiTemplateUUID="+immiTemplateUUID;
+                            window.location.href = vmsUrl + immiModulePath + "/viewImmigration?immigrationUUID="+immigrationUUID+"&candidateUUID="+candidateUUID+"&immiTemplateUUID="+immiTemplateUUID+"&myImmigrationPage=N";
                             }
                             if(status == 'sendRequest'){
                             	window.location.href = vmsUrl + immiModulePath + "/viewImmigrationList";
