@@ -397,12 +397,11 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
 		 }
 		
 		 
-		 Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 
 			if(task.getTaskTime() != null){
 			   	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
 				String currentTimeStr = Constants.TZ_DF.format(task.getTaskDate());  
-				String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+				String startTimeUTC= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,orgLocations.getTimeZoneName(), currentTimeStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
 				String convertedDateStr = DF_DMY.format(convertedDate);
