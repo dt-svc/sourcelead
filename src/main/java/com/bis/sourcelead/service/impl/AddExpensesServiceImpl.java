@@ -251,7 +251,9 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
                     }
                     eaHierarchy.setUpdatedDate(expenses.getUpdatedDate());
                     eaHierarchy.setUpdatedBy(expenses.getUpdatedBy());
-                    managers.add(eaHierarchy.getHierarchyId().getApproverUserId());
+                    User managerUser = eaHierarchy.getHierarchyId().getApproverUserId();
+                    managerUser.setLocationCode(eaHierarchy.getHierarchyId().getProjectClientsId().getOrgLocationsId().getLocationCode());
+                    managers.add(managerUser);
                     eaHierarchyList.add(eaHierarchy);
                }
            }
@@ -278,7 +280,10 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
                             eaHierarchy.setUpdatedDate(expenses.getUpdatedDate());
                             eaHierarchy.setUpdatedBy(expenses.getUpdatedBy());
                             eaHierarchy.setStatus(Constants.RECORD_ACTIVE+"");
-                            managers.add(hierarchy.getApproverUserId());
+                            User approverUser = hierarchy.getApproverUserId();
+                            approverUser.setLocationCode(hierarchy.getProjectClientsId().getOrgLocationsId().getLocationCode());
+                            approverUser.setOrgLocationId(hierarchy.getProjectClientsId().getOrgLocationsId().getId());
+                            managers.add(approverUser);
                             eaHierarchyList.add(eaHierarchy);
                         }
                 }
@@ -307,7 +312,10 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
                    &&  projMembers.getProjectMemberCandidteId().getConsultantUser()!= null && projMembers.getProjectMemberCandidteId().getOrgLocationId() != null) {
                UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(projMembers.getProjectMemberCandidteId().getConsultantUser().getId(), projMembers.getProjectMemberCandidteId().getOrgLocationId().getId());
                if(userRole != null && userRole.getReportingManager() != null) {
-                   managers.add(userRole.getReportingManager());
+                   User reportingManagerUser = userRole.getReportingManager();
+                   reportingManagerUser.setLocationCode(userRole.getOrgLocations().getLocationCode());
+                   reportingManagerUser.setOrgLocationId(userRole.getOrgLocations().getId());
+                   managers.add(reportingManagerUser);
                }
            }
        }
