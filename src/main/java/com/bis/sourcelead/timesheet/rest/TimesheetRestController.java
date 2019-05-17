@@ -3503,11 +3503,13 @@ public class TimesheetRestController {
 	}
 
 	private HashMap<String, String> getTimesheetStatusByTimeSubFrequency(ProjectMembers pm, String timesheetFor,
-			String currentTimeFrequency, OrgLocations orgLocations, User loginUser, Boolean isModifyMyTimeSheet,
+			String currentTimeFrequency, OrgLocations orgLoc, User loginUser, Boolean isModifyMyTimeSheet,
 			Boolean isFillMyTimeSheet,String isGlobalAccess) throws Exception {
 		String[] frequency = currentTimeFrequency.split("To");
 		String currentFrequencyStartDate = frequency[0].trim();
 		String currentFrequencyEndDate = frequency[1].trim();
+		
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLoc.getId());
 
 		if (StringUtils.isEmpty(timesheetFor)) {
 			timesheetFor = "user";
