@@ -227,7 +227,7 @@ public class RegistrationRestController {
 					OrgDTO orgDto = new OrgDTO();
 						OrgLocations orglocations = orgLocationService.getPrimaryOrgLocationByOrgId(regOrg.getId());
 						UserRole userRole = null;
-						if(null != regOrg.getUser()){
+						if(null != regOrg.getUser() && null != orglocations){
 							 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(regOrg.getUser().getId(),orglocations.getId());
 						}
 						if(null != userRole){
