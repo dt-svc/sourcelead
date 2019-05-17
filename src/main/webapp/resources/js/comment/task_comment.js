@@ -1,7 +1,6 @@
 var commentUsers = [], selectedUsers = [], commentConfig = {};
 
 function commentMembers(projectId){
-	alert("hello >>>"+projectId);
 	commentUsers = [];
 	selectedUsers = [];
 		$.ajax({

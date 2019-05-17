@@ -200,6 +200,7 @@ $(document).ready(function(){
 	$(".add-ticketcomment").attr('style', "right:30px !important; top:45px");
 });
 $("#addComment").click(function(){
+	$("#ticketComment").empty();
 	$("#ticketCommentPopup, .mask").show();
 });
 function closeTicketComment(){
