@@ -261,7 +261,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateJoineReports'>Associate Joined Report</a></li>
 				</sec:authorize>  
 				
-				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateClockInSummaryReport'>Associate Clock-In Summary Report</a></li>
+			<%-- 	<li><a href='${SourceLeadWeb_sourceleadUrl}/associateClockInSummaryReport'>Associate Clock-In Summary Report</a></li> --%>
 				
 				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li> 
 
