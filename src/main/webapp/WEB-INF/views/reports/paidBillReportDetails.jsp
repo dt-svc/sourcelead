@@ -7,6 +7,14 @@
 <script>
 $(document).ready(function(){
   getPaidBillDetailReport();
+  var financeType = '${billType}';
+  if(financeType === "Payables"){
+  document.getElementById("invoiceIdBr").style.display="none";
+  document.getElementById("BillIdBr").style.display="block"; 
+  }else{
+  document.getElementById("invoiceIdBr").style.display="block";
+  document.getElementById("BillIdBr").style.display="none"; 
+  }
 });
 
 </script>
@@ -19,7 +27,10 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>${orgName }</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Paid Bills</div>
+      <div class="pull-right brud-crum" style="display: none;" id="BillIdBr"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; Paid Bill(s)</div>
+	<div class="pull-right brud-crum" style="display: none;" id="invoiceIdBr"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/financialReportsList'/>">Financial Reports</a> &raquo; Received Invoice(s)</div>
+
+
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
