@@ -2040,7 +2040,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
-		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=all&requirementUUID="+requirement.getRequirementUUID()).toString();		 
+		 String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/").append("requirementSummary?type=all&requirementUUID="+requirement.getRequirementUUID()).toString();		 
 		 
 		//calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario,new HashMap<String,String>());
