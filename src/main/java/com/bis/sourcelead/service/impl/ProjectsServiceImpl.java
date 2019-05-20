@@ -257,20 +257,20 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 @Autowired
 	 ProjectMembersRateHistoryService projectMembersRateHistoryService;
 
-	private UserDTO userStatus;
+	 @Autowired
+	 private PdfUtil pdfUtil;
 	
-	@Autowired
-	private PdfUtil pdfUtil;
+	 @Autowired
+	 private LeaveTypeService leaveTypeService;
 	
-	@Autowired
-	private LeaveTypeService leaveTypeService;
+	 @Autowired
+	 EmailScenarioConfigurationService emailScenarioconService;
 	
-	@Autowired
-	EmailScenarioConfigurationService emailScenarioconService;
+	 @Autowired
+	 ProjectsService projectsService;
 	
-	
-	@Autowired
-	public ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
+	 @Autowired
+	 public ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
 	 
 /*	 @Override
 		public String getProjectId(OrgLocations orgLocations) {
@@ -3630,7 +3630,12 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 
 			private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, ProjectsDTO projects,OrgLocations orgLocations) throws Exception {
 
-			     	 ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+			     	 
+			     	ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+			     	 if(projectClients == null) {
+			     		Projects clientProject = projectsService.getProjectById(projects.getId());
+			     		projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProject.getOrgLocationsId().getId());
+			     	 }
 		
 			     	 if(projects.getProjectSequeneNumber() != null) {
 			     		 writeRow.createCell(0).setCellValue(projects.getProjectSequeneNumber()); 

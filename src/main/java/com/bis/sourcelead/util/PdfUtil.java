@@ -66,6 +66,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
@@ -144,7 +145,11 @@ public class PdfUtil {
 	private OrgSpocService orgSpocService;
 	
 	@Autowired
+	ProjectsService projectsService;
+	
+	@Autowired
 	OrgRelationsService orgRelationsService;
+	
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
 			java.util.List<UserRole> inactiveList, java.util.List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
@@ -1250,7 +1255,10 @@ public class PdfUtil {
 	private String[] prepareProjectsStringArray(ProjectsDTO projects, String[] headers,OrgLocations orgLocations) throws Exception {
 		String projectArray[] = new String[headers.length];
      	 ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
-
+     	 if(projectClients == null) {
+     		Projects clientProject = projectsService.getProjectById(projects.getId());
+     		projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProject.getOrgLocationsId().getId());
+     	 }
      	 if(projects.getProjectSequeneNumber() != null) {
      		projectArray[0] = projects.getProjectSequeneNumber();
      	 }else {
