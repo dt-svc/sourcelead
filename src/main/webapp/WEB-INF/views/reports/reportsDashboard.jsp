@@ -362,7 +362,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="${SourceLeadWeb_vmsUrl}/petitionReport" class="block">
+                  <a href="${SourceLeadWeb_sourceleadUrl}/immigrationReportsList" class="block">
                   <div class="clearfix text-center mb10"><i class="petitionReport"></i></div>
                   <div class="clearfix text-center"><h4>Immigration Reports</h4></div> </a>
 
