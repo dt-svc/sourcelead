@@ -93,7 +93,8 @@ function candDocumentsList(candidateId){
 	                	result = result+'<td><div class="tblicons">';
 			           		var docUUID = opt.documentUUID;
 			           		result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="getDocType(\''+opt.documentType+'\');getDocument('+candidateId+', '+opt.id+');addDocument('+candidateId+',\''+docUUID+'\');" title="Edit"></a>';
-			           	result = result+'</div></td>';
+			           		result = result+' <a class="glyphicon glyphicon-trash" href="javascript:void(0)" onClick="removeDocument('+candidateId+',\''+opt.id+'\');" title="Delete"></a>';
+			           		result = result+'</div></td>';
 	                   	result  = result + '</tr>';
 	                    }
 	                    result = result +" </tbody>";
