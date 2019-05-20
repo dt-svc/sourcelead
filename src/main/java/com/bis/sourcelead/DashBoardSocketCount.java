@@ -132,9 +132,9 @@ public class DashBoardSocketCount {
 			if(dashBoardSocketCountDTO.getSession() != null && dashBoardSocketCountDTO.getSession().isOpen()){
 					String timesheetCountType = Constants.ALL_RECORDS;
 					if("employes".equalsIgnoreCase(dashBoardSocketCountDTO.getTimesheetType())){
-						timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long.parseLong(dashBoardSocketCountDTO.getUserId()), Long.parseLong(dashBoardSocketCountDTO.getOrgLocationId()),timesheetCountType,dashBoardSocketCountDTO.getIsGlobalAccess());
+						timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long.parseLong(dashBoardSocketCountDTO.getUserId()), Long.parseLong(dashBoardSocketCountDTO.getOrgLocationId()),Long.parseLong(dashBoardSocketCountDTO.getOrgLocationId()),timesheetCountType,dashBoardSocketCountDTO.getIsGlobalAccess(),false);
 					}else if("myTimesheets".equalsIgnoreCase(dashBoardSocketCountDTO.getTimesheetType())){
-						timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(Long.parseLong(dashBoardSocketCountDTO.getCandidateId()), Long.parseLong(dashBoardSocketCountDTO.getOrgLocationId()),timesheetCountType);
+						timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(Long.parseLong(dashBoardSocketCountDTO.getCandidateId()), Long.parseLong(dashBoardSocketCountDTO.getOrgLocationId()),Long.parseLong(dashBoardSocketCountDTO.getOrgLocationId()),timesheetCountType);
 					}
 					if(timeSheetSubmissionCount != null && dashBoardSocketCountDTO.getSession().isOpen()) {
 						dashBoardSocketCountDTO.getSession().getBasicRemote().sendText(commonUtil.toJSON(timeSheetSubmissionCount));

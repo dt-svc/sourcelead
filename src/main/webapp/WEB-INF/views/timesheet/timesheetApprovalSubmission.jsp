@@ -2280,7 +2280,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 	    	 $(".side_mask").fadeOut(200); 
      		 $("body").css('overflow-y', 'scroll');
 			 var currentPageNumber =  $("#currentPageNumber").val();
-   		     getStatusListData(""+currentPageNumber+"","");
+   		     getStatusListData(""+currentPageNumber+"",0,"");
 		 }
 		 else if(from != null && from != '' && from != 'undefined' && (from == 'approver' || from == 'approverClose' ||  from == 'dashboardClose')){
 			 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';

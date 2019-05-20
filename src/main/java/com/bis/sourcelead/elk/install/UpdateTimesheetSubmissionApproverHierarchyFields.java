@@ -41,7 +41,7 @@ public void updateSahRecords() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		     System.out.println("----Updating Submission Approver Hierarchy Fields Starts-----");
-			 String sql1 = "SELECT ID,HIERARCHY_ID,SUBMISSION_ID FROM "+dbconfig.getSchema()+".SUBMISSION_APPROVER_HIERARCHY";
+			 String sql1 = "SELECT ID,HIERARCHY_ID,SUBMISSION_ID FROM "+dbconfig.getSchema()+".SUBMISSION_APPROVER_HIERARCHY WHERE  STATUS !='0'";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			 while(rs1.next()){
