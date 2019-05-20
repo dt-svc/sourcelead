@@ -723,7 +723,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			throws Exception {
 		ProjectClients projectClients = null;
 		if(StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
-			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgId(projectId, loginOrgLocation.getOrg().getId());
+			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgId(projectId, loginOrgLocation.getOrgId());
 		}else {
 			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
 		}
