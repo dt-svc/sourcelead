@@ -177,6 +177,7 @@ width: 8%;
   <div id="popUp"></div>
 
   <script>
+  var atsUrl = '${SourceLeadWeb_atsUrl}';
   function addProposeTime(){
 	  var requirementInterviewId  = '${requirementInterviewId}';
 	  var checkMaxTsRowNum = $("#proposeTimeMaxRowNumber").val();
@@ -315,6 +316,7 @@ function cancel(){
 </script>
  <script>
 function saveProposeTime(){
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	if ($('#proposeTime_form').validate(false, validationSettings)){ 
 		var sourceleadUrl ='${sourceleadUrl}';
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
@@ -327,7 +329,7 @@ function saveProposeTime(){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/saveProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+					url : atsUrl+"/saveProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
 					success : function(result) {
 						location.reload();
 					},
