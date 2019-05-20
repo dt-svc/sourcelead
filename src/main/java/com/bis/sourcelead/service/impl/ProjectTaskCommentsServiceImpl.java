@@ -69,7 +69,7 @@ public class ProjectTaskCommentsServiceImpl implements ProjectTaskCommentsServic
 	private String sourceleadUrl;
 	
 	@Value("${pmsUrl}")
-	private String pmsUrlUrl;
+	private String pmsUrl;
 	
 	@Override
 	public ProjectTaskComments saveProjectTaskComments(ProjectTaskComments projectTaskComments) throws Exception {
@@ -230,7 +230,7 @@ public class ProjectTaskCommentsServiceImpl implements ProjectTaskCommentsServic
 		notificationScenario.setOrgCode(loginOrgCode);
 		StringBuilder notificationLink = new StringBuilder();
 		String actionLink = "";
-		actionLink = notificationLink.append(pmsUrlUrl).append("/").append("projectTaskSummary?"
+		actionLink = notificationLink.append(pmsUrl).append("/").append("projectTaskSummary?"
 				+ "taskUUID=" + tasks.getProjectTasksUUID() + "&projectClientUUID="+ projectClientUUID+"&active=notificationComment").toString();
 		if(user != null) {
 			emailScenerioUtil.sendNotification(actionLink, loginUser, user, loginOrgLocation, notificationScenario, new HashMap<String, String>());

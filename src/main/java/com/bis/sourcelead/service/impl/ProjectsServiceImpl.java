@@ -266,8 +266,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 @Autowired
 	 EmailScenarioConfigurationService emailScenarioconService;
 	
-	 @Autowired
-	 ProjectsService projectsService;
 	
 	 @Autowired
 	 public ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
@@ -3633,7 +3631,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			     	 
 			     	ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
 			     	 if(projectClients == null) {
-			     		Projects clientProject = projectsService.getProjectById(projects.getId());
+			     		Projects clientProject = getProjectById(projects.getId());
 			     		projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProject.getOrgLocationsId().getId());
 			     	 }
 		
