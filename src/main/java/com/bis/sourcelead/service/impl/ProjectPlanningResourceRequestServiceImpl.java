@@ -38,6 +38,9 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Value("${pmsUrl}")
+    private String pmsUrl;
+	
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
@@ -275,7 +278,7 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
 		 if(StringUtils.isNotBlank(emailScenario.getSignature())){
 			 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
 		 }
-		 String url = sourceleadUrl;
+		 String url = pmsUrl;
        
         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
        
