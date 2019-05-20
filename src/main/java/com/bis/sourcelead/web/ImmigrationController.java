@@ -2231,7 +2231,8 @@ public class ImmigrationController {
 			@RequestParam(value = "templateId", defaultValue = "0") Long templateId,
 			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
-			@RequestParam(value = "myImmigration", required = false) String myImmigration) throws Exception {
+			@RequestParam(value = "myImmigration", required = false) String myImmigration,
+			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage) throws Exception {
 
 		logger.debug("inside controller method getCandidateImmigrationForms--> ");
 		ModelAndView model = new ModelAndView();
@@ -2240,6 +2241,7 @@ public class ImmigrationController {
 				.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, searchVal,myImmigration);
 		logger.debug("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "
 				+ candidateFormsLst.size());
+		model.addObject("myImmigrationPage", myImmigrationPage);
 		model.addObject("formsList", candidateFormsLst);
 		return model;
 	}
