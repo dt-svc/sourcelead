@@ -132,7 +132,7 @@ function exportTimeSheetReportsToPdf(type){
       if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
    	 frequencyMonth = '';
       var searchValue = $('#dataTableSearchExpenses').val() ;
-	 window.location.href = sourceleadUrl+"/timeSheetReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&exportType="+type+"&searchValue="+searchValue;
+	 window.location.href = '${SourceLeadWeb_sourceleadUrl}'+"/timeSheetReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&exportType="+type+"&searchValue="+searchValue;
 }
 </script>
 
