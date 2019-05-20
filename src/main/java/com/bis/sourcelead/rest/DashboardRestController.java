@@ -312,8 +312,8 @@ public class DashboardRestController {
 			ExpensesCount expensesCount = new ExpensesCount();
 			if("employes".equalsIgnoreCase(expenseFor)){
 				expensesCount = expensesApproverHierarchyService.getExpensesCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId(),isGlobalAccess);
-			}else if("myExpenses".equalsIgnoreCase(expenseFor)){
-				expensesCount = expensesApproverHierarchyService.getExpensesCountByMasterCandidateId(masterCandidateId);
+			}else if("myExpenses".equalsIgnoreCase(expenseFor) && candidate != null ){
+				expensesCount = expensesApproverHierarchyService.getExpensesCountByMasterCandidateId(candidate.getMasterCandidateId().getId());
 			}
 			
 			if(timeSheetSubmissionCount != null) {
