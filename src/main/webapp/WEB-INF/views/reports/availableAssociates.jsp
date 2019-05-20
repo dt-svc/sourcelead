@@ -17,7 +17,7 @@
       <div class="clearfix minHeight mt">
         <div class="clearfix">
           <div class="col-md-5">
-            <div class="form-group row">
+            <div class="form-group row" id="associatesIdDiv">
               <label class="col-md-12 paddingRight">Associate Name</label>
               <div class="col-md-12">
               <select class="chosen-select form-control" data-placeholder="Select Associate" autocomplete="off" onchange="getProjects();" id="associatesId" name="userIds" field-name="Associate" data-validation="required">
@@ -40,7 +40,7 @@
           </div>
            <div class="clearfix"></div>
           <div class="col-md-2">
-            <div class="row">
+            <div class="row" id="fromDateDiv">
               <label class="col-md-12 paddingRight">From</label>
               <div class="col-md-12">
                 <input type="text" class="form-control calendar" name = "fromDate" id="fromDate" field-name="From Date" data-validation="required" readonly>
@@ -48,7 +48,7 @@
             </div>
           </div>
           <div class="col-md-2">
-            <div class="row">
+            <div class="row" id="toDateDiv">
               <label class="col-md-12 paddingRight">To</label>
               <div class="col-md-12">
                 <input type="text" class="form-control calendar" name = "toDate" id="toDate" field-name="To Date" data-validation="required" readonly>
@@ -162,6 +162,9 @@
       
       <script>
       function resetForm(){
+        $('#associatesIdDiv').find('p.jquery_form_error_message').remove();
+    	$('#fromDateDiv').find('p.jquery_form_error_message').remove();
+    	$('#toDateDiv').find('p.jquery_form_error_message').remove();
       	$('#fromDate').val('');
     	$('#toDate').val('');
     	$('#associatesId').val('');
@@ -274,7 +277,6 @@
       
       <script>
       function reportExport(type){
-    	  alert("hjk");
           var associates =$("#associatesId").val();
     	  var projects = $("#projects").val();
     	  var fromDate = $('#fromDate').val();
