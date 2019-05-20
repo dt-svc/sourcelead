@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -48,6 +49,9 @@ public class ConfigurePayrollApproverServiceImpl implements ConfigurePayrollAppr
 	
 	@Autowired
 	ConfigurePayrollApproverDao configurePayrollApproverDao;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
 	
 	@Override
 	public ApproverDTO getPayrollApprover(OrgLocations orgLocation, User loginUser)
@@ -118,7 +122,8 @@ public class ConfigurePayrollApproverServiceImpl implements ConfigurePayrollAppr
 			ConfigurePayrollApprover confPayApprover = null;
 			if(StringUtils.isNoneBlank(payrollApproverDTO.getConfAprrover())){
 				confPayApprover = configurePayrollApproverDao.getConfigurePayrollApproverByLoc(orgLocation);
-				int isDeleted = configurePayrollApproverDao.deletePayrollApprover(payrollApproverDTO.getConfAprrover());
+				configurePayrollApproverDao.deletePayrollApprover(payrollApproverDTO.getConfAprrover());
+				
 			}else {
 				confPayApprover = new ConfigurePayrollApprover();
 				confPayApprover.setCreatedDate(new Date());
@@ -137,6 +142,8 @@ public class ConfigurePayrollApproverServiceImpl implements ConfigurePayrollAppr
 			Set<PayrollApprover> payrollAppr = getPayrollApprover(confPayApprover,payrollApproverDTO.getApprover(),loginUser);
 			confPayApprover.setPayrollApprover(payrollAppr);
 			ConfigurePayrollApprover confp = configurePayrollApproverDao.savePayrollApprover(confPayApprover);
+			setPayrollApproverToCouchbase(payrollApproverDTO.getApprover(),orgLocation.getId());
+			
 			if (confp != null) {
 				res.setResponse(Result.SUCCESS.name());
 				res.setResponseMessage(Result.SUCCESS.getValue());
@@ -149,6 +156,20 @@ public class ConfigurePayrollApproverServiceImpl implements ConfigurePayrollAppr
 		}
 		return res;
 	}
+	
+	
+	
+	private void setPayrollApproverToCouchbase(List<String> approver, Long orgLocationId) {
+		try {
+			for (String usr : approver) {
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(Long.valueOf(usr), orgLocationId);
+				userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * populate Payroll Approvers 
 	 * @param confPayApprover
