@@ -981,18 +981,14 @@ function generateAutomaticInvoice(){
 					$("#selector13").removeAttr("style");
 	    			$("#selector13").css("display", "block");
 	    			$("#msgdiv1").html(json.object.count+" Bill(s) Generated Successfully.");
-					msgFadein();
-            	 location.replace(vmsUrl+"/payablesList");	            	 
+	    			$("#selector13").fadeIn(200);
+	    	        $('#selector13').delay(2000).fadeOut('slow');
+//             	 location.replace(vmsUrl+"/payablesList");	            	 
         },
     });  
 }
 </script>
-<script>
-	function msgFadein() {
-		$("#selector13").fadeIn(200);
-        $('#selector13').delay(2000).fadeOut('slow');
-	}
-</script>
+
 <script>
 function saveReasonforReceivable(invoiceUUID){
 	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
