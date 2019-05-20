@@ -122,6 +122,7 @@ $(document).ready(function() {
  function getDependentFieldList(){
 	 var slDependedntFieldId = $('#slDependedntFieldId').val();
 	 var selectedSectionID = $("#addFieldSection").val();
+	if(selectedSectionID != null){
 	 $.ajax({
 			type : "POST" , 
 				 url: sourceleadUrl+"/getFormFeildsBySectionId?sectionId="+selectedSectionID,
@@ -148,6 +149,7 @@ $(document).ready(function() {
 			        $('#dependentFieldDiv').trigger("chosen:updated");
 				 }
 		  })
+	}
  }
  </script>
  
@@ -156,6 +158,7 @@ $(document).ready(function() {
  function getCustomDependentFieldList(){
 	 var customDependentField = $('#customDependndentFieldId').val();
 	 var selectedSectionID = $("#addFieldSection").val();
+	if(selectedSectionID != null){
 	 $.ajax({
 			type : "POST" , 
 				 url: sourceleadUrl+"/getAllCustomFormFieldsBySectionId?sectionId="+selectedSectionID,
@@ -182,6 +185,7 @@ $(document).ready(function() {
 			        $('#customDependentField').trigger("chosen:updated");
 				 }
 		  })
+ }
  }
  </script>
  
