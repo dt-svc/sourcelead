@@ -2076,7 +2076,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
-	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=waiting").toString();
+	     actionLink = notificationLink.append(vmsUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=waiting").toString();
 //		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, orgLocation, notificationScenario,new HashMap<String,String>());
 		

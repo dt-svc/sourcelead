@@ -3453,6 +3453,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		  
 		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String actionLink="";
+		 StringBuilder actionLinkBuilder = new StringBuilder();
+		 actionLink = actionLinkBuilder.append("").append(atsUrl).append("/")
+					.append("requirementSummary?requirementUUID=" + requirementSubmission.getRequirementUUID()).toString();
 		 emailScenerioUtil.sendNotification(actionLink, loginUser, assignedUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 		
 	}
