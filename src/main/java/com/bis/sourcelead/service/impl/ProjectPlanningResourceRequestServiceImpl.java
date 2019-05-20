@@ -41,6 +41,9 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
+	@Value("${pmsUrl}")
+	private String pmsUrl;
+	
 	@Autowired
 	EmailScenarioService emailScenarioService;
 	
@@ -134,7 +137,7 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
        
         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
         StringBuilder notificationLink = new StringBuilder();
-        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
+        String actionLink = notificationLink.append(pmsUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
         emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 		
@@ -177,7 +180,7 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ONHOLD_BULK_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());
 
         StringBuilder notificationLink = new StringBuilder();
-        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
+        String actionLink = notificationLink.append(pmsUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
         emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 		
@@ -282,7 +285,7 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
        
         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
         StringBuilder notificationLink = new StringBuilder();
-        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
+        String actionLink = notificationLink.append(pmsUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
         emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getProjectPlanningRequestId().getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 	}

@@ -316,7 +316,7 @@ public class TimesheetEmailUtil {
 					paramList.put("timesheetFrequency", projectMember.getProjects().getInvoiceFrequency());
 					paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
 					paramList.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
-					actionLink = actionLinkBuilder.append(sourceleadUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
+					actionLink = actionLinkBuilder.append(pmsUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
 				}
 
 				emailScenerioUtil.sendNotification(actionLink, loginUser, approver.getApproverUserId(),
