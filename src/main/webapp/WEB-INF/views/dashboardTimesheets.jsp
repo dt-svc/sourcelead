@@ -114,7 +114,7 @@ $(document).ready(function(){
 		                $("#savedCountAnchor").html("Draft");
 		            }else{
 		          	  $("#savedTimesheetsSubmissionsCount").html(savedTimesheetsSubmissionsCount);
-		                $("#savedCountAnchor").html("<a href='"+pmsUrl+"timesheetlistByStatus?status=DRAFT'>Draft</a>"); 
+		                $("#savedCountAnchor").html("<a href='"+pmsUrl+"/timesheetlistByStatus?status=DRAFT'>Draft</a>"); 
 		               
 		            }
 		       	 
