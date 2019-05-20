@@ -1987,6 +1987,7 @@ public class UsersListRestController {
 			userRole.setUpdatedBy(user.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
 			userRoleService.addUserRole(userRole);
+			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 			
 			// User role changed mail
 			userRoleUpdateMail(user,userRole,orgLocations,existingRole);
@@ -2489,11 +2490,8 @@ public class UsersListRestController {
 		 */
 		userService.saveOrUpdateUserElkDocument(userRole, employees, loginUser.getUserCode());
 		
-//		int updated = associateBalanceLeaveService.updateAssociateBalanceLeaves(updatedUser,orgLocations,employees,userRole);
-		
-		//below line commented by Pavan jampana 
-		 //associateBalanceLeaveService.updateAssociateDateOfJoinBalanceLeaveType(orgLocations.getId(), updatedUser,Constants.CANDIDATE_ACTIVE,Constants.UPDATE);
-		
+
+		userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 		return "success";
 		}else{
 			return "DataMissing";
