@@ -113,6 +113,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
+	@Value("${pmsUrl}")
+    private String pmsUrl;
+	
 	@Autowired
 	RolesService roleService;
 	
@@ -1114,7 +1117,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 			 User toUser = pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
 	 			 StringBuilder notificationLink = new StringBuilder();
 				 String actionLink="";
-			     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()).toString();
+			     actionLink = notificationLink.append(pmsUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()).toString();
 			     emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getProjectMemberCandidteId().getOrgLocationId(), notificationScenario,new HashMap<String,String>());
 			  
  		       }
