@@ -18,7 +18,6 @@
 <script type="text/javascript" src="/resources/js/comment/jquery.atwho.js"></script>
 <script type="text/javascript" src="/resources/js/comment/jquery.caret.min.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/comment/froala_editor.min.js"></script> -->
-
 <script type="text/javascript" src="/resources/js/ticketManagement/ticket.js"></script>
 <script type="text/javascript" src="/resources/js/ticketManagement/ticket_comment.js"></script>
 <section class="content-wraper">
@@ -124,7 +123,7 @@
 			                    			<div class="col-md-8 tbldata-dotdot-200 inlineBlock">${attachment.fileName}</div>
 			                    			<ul class="list-unstyled list-inline col-md-4 text-center">
 			                    				<li><a href="javascript:void(0)" onclick="viewFile('${attachment.fileUrl}','${attachment.fileName}','${attachment.fileType}');"><i class="fa fa-eye cursorPointer" title="View"></i></a></li>
-			                    				<li><a href="${attachment.fileUrl}" target="_blank"><i class="fa fa-download cursorPointer" title="Download"></i></a></li>
+			                    				<li><a href="${attachment.fileUrl}" download="" class="glyphicon glyphicon-download-alt" title="Download"></a></li>
 			                    			</ul>
 			                    		</div>
 		                    		</div>
@@ -168,13 +167,13 @@
     </div>
   </section>
   
-<div class="popupWrap popupWrapFixed" id="ticketCommentPopup" role="dialog">
+  <div class="popupWrap" id="ticketCommentPopup" role="dialog">
 	<%-- <form role="form" id="ticketComment_form" name="sourceleadTicketComment_form" method="post"> --%>
 		<input type="hidden" id="ticketCommentId" name="id" value="0"/>
 		<div class="ticketCommentCont">
 			<div class="clearfix">
 				<!-- <textarea rows="8" class="form-control clearfix mb10 valid error" placeholder="Comments here..." id="ticketComment" name="comment" field-name="Comment" data-validation="required validate_length length1-5000" style="border-color: rgb(204, 204, 204);"></textarea> -->
-				<div contenteditable="true" id="ticketComment" class="tkt_comment_div"></div>
+				<div contenteditable="true" id="ticketComment" style="height: 100px; border: 1px solid #CECECE;"></div>
 			</div>
 		</div>
 		<div class="popupFoot text-right">
@@ -201,6 +200,7 @@ $(document).ready(function(){
 	$(".add-ticketcomment").attr('style', "right:30px !important; top:45px");
 });
 $("#addComment").click(function(){
+	$("#ticketComment").empty();
 	$("#ticketCommentPopup, .mask").show();
 });
 function closeTicketComment(){

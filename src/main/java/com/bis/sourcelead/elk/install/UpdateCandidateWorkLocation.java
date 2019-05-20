@@ -21,8 +21,8 @@ public class UpdateCandidateWorkLocation {
 	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
- * @author Venkat I
- * this method is using for update email for contacts
+ * @author Naresh Bolisetty
+ * this method is used for update worklocations of candidates
  * @throws IOException
  * @throws SQLException
  */
@@ -30,23 +30,34 @@ public void updateContactEmail() throws IOException, SQLException {
 	Connection conn = null ;
 	Statement stmt1 = null;
 	Statement stmt2 = null;
+	Statement stmt3 = null;
 	try {
 		
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
 			
 		     System.out.println("----Updating Offshore_C2C Candidate Worklocations Starts-----");
-			 String sql1 = "SELECT PARENT_CANDIDATE_ID,WORK_LOCATION FROM "+dbconfig.getSchema()+".CANDIDATE  where DESIGNATION_TYPE IS NOT NULL AND DESIGNATION_TYPE = 'Offshore C2C' ";
+			 String sql1 = "SELECT PARENT_CANDIDATE_ID,ID FROM "+dbconfig.getSchema()+".CANDIDATE  where DESIGNATION_TYPE IS NOT NULL AND DESIGNATION_TYPE = 'Offshore C2C' ";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			 while(rs1.next()){
 				 Long  parentCandidateId = rs1.getLong("PARENT_CANDIDATE_ID");
-				 Long  workLocationId = rs1.getLong("WORK_LOCATION");
-				 if(parentCandidateId != null && workLocationId != null && workLocationId != 0) {
-						    String query1 = " update "+dbconfig.getSchema()+".CANDIDATE set WORK_LOCATION = '"+workLocationId+"' where ID = '"+parentCandidateId+"' ";
-					    	java.sql.PreparedStatement pstmt2 = conn.prepareStatement(query1); 
-							pstmt2.executeUpdate(); 
-				 }
+				 Long  candidateId = rs1.getLong("ID");
+				  sql1 = "SELECT WORK_LOCATION FROM "+dbconfig.getSchema()+".CANDIDATE  where  ID ="+parentCandidateId+"";
+				  stmt3 = conn.createStatement();
+				  ResultSet rs2 = stmt3.executeQuery(sql1);
+				  while(rs2.next()){
+					  Long  workLocationId = rs2.getLong("WORK_LOCATION");
+						 
+						 if(parentCandidateId != null && workLocationId != null && workLocationId != 0) {
+								    String query1 = " update "+dbconfig.getSchema()+".CANDIDATE set WORK_LOCATION = '"+workLocationId+"' where ID = '"+candidateId+"' ";
+							    	java.sql.PreparedStatement pstmt2 = conn.prepareStatement(query1); 
+									pstmt2.executeUpdate(); 
+						 }
+				  }
+				 
+				 
+				
 			}
 			System.out.println("----Updating Offshore_C2C Candidate Worklocations ends-----");
 			

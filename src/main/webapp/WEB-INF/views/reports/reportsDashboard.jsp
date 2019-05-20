@@ -260,13 +260,18 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateJoineReports'>Associate Joined Report</a></li>
 				</sec:authorize>  
+				
+			<%-- 	<li><a href='${SourceLeadWeb_sourceleadUrl}/associateClockInSummaryReport'>Associate Clock-In Summary Report</a></li> --%>
+				
 				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li> 
+
 					<!--<li><a href="#">Bank Report</a></li>
 					 <li><a href="#">Performance</a></li>
 					<li><a href="#">Payrol</a></li>
 					<li><a href="#">360 View</a></li>
 					<li><a href="#">Pay History</a></li>
 					<li><a href="#">Bill Histroy</a></li> -->
+					<li><a href='${SourceLeadWeb_sourceleadUrl}/loansAndAdvancesReport'>Loans And Advances Report</a></li> 
 				</ul>
 			</div>
                  <!-- Dropdown -->
@@ -357,7 +362,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="${SourceLeadWeb_vmsUrl}/petitionReport" class="block">
+                  <a href="${SourceLeadWeb_sourceleadUrl}/immigrationReportsList" class="block">
                   <div class="clearfix text-center mb10"><i class="petitionReport"></i></div>
                   <div class="clearfix text-center"><h4>Immigration Reports</h4></div> </a>
 
@@ -589,7 +594,9 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateJoineReports'>Associate Joined Report</a></li>
 				</sec:authorize>    
+
 				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li>           
+                <li><a href='${SourceLeadWeb_sourceleadUrl}/loansAndAdvancesReport'>Loans And Advances Report</a></li>
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div> 

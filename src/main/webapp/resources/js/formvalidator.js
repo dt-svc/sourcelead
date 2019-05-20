@@ -373,6 +373,38 @@ jQueryFormUtils.validateEmail = function(email) {
     return false;
 };
 
+
+/**
+ * prasad K
+ * Validate pan
+ *
+ * @return {Boolean}
+ */
+jQueryFormUtils.validatePan = function(panNumber) {
+	var regpan = /^([A-Z]){5}([0-9]){4}([A-Z]){1}?$/;
+	if(regpan.test(panNumber)){
+	   return true;
+	} else {
+		 return false;
+	}
+};
+
+/**
+ * prasad K
+ * Validate Aadhar Number
+ *
+ * @return {Boolean}
+ */
+jQueryFormUtils.validateAadhar = function(aadharNumber) {
+	var regpan = /^\d{4}\s?\d{4}\s?\d{4}$/g;
+	if(regpan.test(aadharNumber)){
+	   return true;
+	} else {
+		 return false;
+	}
+};
+
+
 /**
  * Validate phone number, at least 7 digits only 3 hyphen and plus allowed
  *
@@ -1099,6 +1131,10 @@ jQueryFormUtils.validate_xls_importFile = function(val) {
     return val.toLowerCase().match(/(.*)(xls|xlsx)$/) !== null;
 };
 
+jQueryFormUtils.validate_xlsx_importFile = function(val) {
+    return val.toLowerCase().match(/(.*)(xlsx)$/) !== null;
+};
+
 jQueryFormUtils.validatefile_csv = function(val) {
     return val.toLowerCase().match(/(.*)(csv|xsl|txt)$/) !== null;
 };
@@ -1259,6 +1295,15 @@ jQueryFormUtils.validatePercentageOfWork = function(val) {
         else if (validationRules.indexOf('validate_extno') > -1 && !jQueryFormUtils.validateExtNumber(value)) {
             return validationErrorMsg || language.badExtno;
         }
+        
+        // Pan Number
+        else if (validationRules.indexOf('validate_panNumber') > -1 && !jQueryFormUtils.validatePan(value)) {
+            return validationErrorMsg || language.badPan;
+        }
+        // Aadhar Number
+        else if (validationRules.indexOf('validate_aadharNumber') > -1 && !jQueryFormUtils.validateAadhar(value)) {
+            return validationErrorMsg || language.badAadhar;
+        }
 
         // Swedish phone number
         else if (validationRules.indexOf('validate_swemobile') > -1 && !jQueryFormUtils.validateSwedishMobileNumber(value)) {
@@ -1309,6 +1354,13 @@ jQueryFormUtils.validatePercentageOfWork = function(val) {
         else if (validationRules.indexOf('validate_xls_importFile') > -1 && !jQueryFormUtils.validate_xls_importFile(value, validationRules)) {
             return validationErrorMsg || language.badXlsImportFile;
         }
+        
+     // simple File .xlsx
+        else if (validationRules.indexOf('validate_xlsx_importFile') > -1 && !jQueryFormUtils.validate_xlsx_importFile(value, validationRules)) {
+            return validationErrorMsg || language.badXlsxImportFile;
+        }
+        
+        
         
 		 // simple File csv check
         else if (validationRules.indexOf('validatecsv') > -1 && !jQueryFormUtils.validatefile_csv(value, validationRules)) {
@@ -1468,6 +1520,8 @@ jQueryFormUtils.LANG =  {
 	badCphone: 'Phone Number is invalid for the Selected Country',
     badTelephone : 'you entered is in improper format',
     badNumber : 'you entered invalid number',
+    badPan : 'Invalid pan number',
+    badAadhar : 'Invalid aadhar number',
     badExtno : 'Only numbers allowed',
     badSecurityAnswer : 'You have not given a correct answer to the security question',
     badDate : 'You have not given a correct date',
@@ -1512,6 +1566,7 @@ jQueryFormUtils.LANG =  {
 	badPdf:'Invalid Document Type Use .PDF formats only',
 	badImportFile:'Invalid File Type. Use xls,xlsx and csv formats only',
 	badXlsImportFile:'Invalid File Type. Use xls and xlsx formats only',
+	badXlsxImportFile:'Invalid File Type. Use xlsx formats only',
 	badCsv:'Invalid Document Type Use .csv,txt formats only',
 	badMaskPhone:'Invalid characters in phone number',
 	badMaskZipCode:'Invalid characters in Zip Code',

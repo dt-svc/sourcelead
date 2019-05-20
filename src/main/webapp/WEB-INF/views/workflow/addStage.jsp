@@ -2,7 +2,15 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+		<script>
+var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+</script>
+	<script src="/resources/js/requirementWorkflow.js?staticTime=${staticTime}"></script>
+	<link href="/resources/css/summernote.css" rel="stylesheet" type="text/css">
+	<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
+
 <div class="wraper">
+<div id="popUp"></div>
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
@@ -12,13 +20,20 @@
     <a href="${SourceLeadWeb_sourceleadUrl}/workflowList">Application Workflow</a> &raquo;
     Add Stage</div>
   </section>
+  <form id="addStageForm" name="addStageForm">
   <div class="project_wrap clearfix">
-    <div class="clearfix mt col-md-6">
+  
+  
+  <c:choose>
+  <c:when test = "${not empty stageName}">
+  <div class="clearfix mt col-md-6">
       <div class="clearfix row">
         <div class="form-group clearfix">
           <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id = "stageName">
+            <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
+				value='<c:out value="${stageName}"/>' data-validation="required validate_length length1-100"">
+			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
           </div>
         </div>
       </div>
@@ -26,41 +41,50 @@
         <div class="form-group clearfix">
           <label class="col-md-3">Description</label>
           <div class="col-md-9">
-            <textarea rows="2"  class="form-control" id = "description"></textarea>
+            <textarea rows="2"  class="form-control" id="stageDescription" placeholder="Description" field-name="Description"
+								data-validation="validate_length length1-500" data-validation-optional="true"><c:out value="${description}"/></textarea>
           </div>
         </div>
       </div>
     </div>
+    
+		</c:when>
+							<c:otherwise>
+							<div class="clearfix mt col-md-6">
+      <div class="clearfix row">
+        <div class="form-group clearfix">
+          <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
+          <div class="col-md-9">
+            <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
+								data-validation="required validate_length length1-100"">
+			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
+          </div>
+        </div>
+      </div>
+      <div class="clearfix row">
+        <div class="form-group clearfix">
+          <label class="col-md-3">Description</label>
+          <div class="col-md-9">
+            <textarea rows="2"  class="form-control" id="stageDescription" placeholder="Description" field-name="Description"
+								data-validation="validate_length length1-500" data-validation-optional="true"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+							
+							</c:otherwise>
+						</c:choose>
+    
+    
+    
+    
+     </form>
+   
     <div class="clearfix">
-      <h4 class="col-md-9">Assign Taks</h4>
-      <div class="col-md-3"> <a href="javascript:void(0)" class="btn btn-primary pull-right btn-sm" onClick="createNewtask();">Create New Taks</a> </div>
+      <h4 class="col-md-9">Assign Task</h4>
+      <div class="col-md-3"> <a href="javascript:void(0)" id = "saveTaskButton" class="btn btn-primary pull-right btn-sm" onClick="requirementWorkflow.createNewtask();">Create New Task</a> </div>
     </div>
-    <div class="clearfix col-md-12 mt">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Assign Top </th>
-            <th>Priority </th>
-            <th>Description </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><div class="tblminwidth-175 text-left">Recruiter Name</div></td>
-            <td><div class="tblminwidth-175 text-left">1000</div></td>
-            <td><div class="tblminwidth-150 text-left">Client</div></td>
-            <td><div class="tblminwidth-175 text-left">1000</div></td>
-          </tr>
-          <tr>
-            <td><div class="tblminwidth-175 text-left">Recruiter Name</div></td>
-            <td><div class="tblminwidth-175 text-left">1000</div></td>
-            <td><div class="tblminwidth-150 text-left">Client</div></td>
-            <td><div class="tblminwidth-175 text-left">1000</div></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+   
 <div id="createNewtask" style="display: none">
 		<div class="clearfix row">
 		  <div class="form-horizontal mt myForm">
@@ -68,26 +92,26 @@
 			  <div class="form-group">
 				<label class="col-md-3">Title<span class="text-danger paddingLeft">&nbsp;*</span></label>
 				<div class="col-md-9">
-				  <input type="text" class="form-control">
+				<input type='text' class='form-control' id = 'workFlowTaskName'  placeholder='Task Name' field-name='Task Name'>
 				</div>
 			  </div>
 			  <div class="form-group">
 				<label class="col-md-3">Assign To</label>
-				<div class="col-md-9">
+				<div class="col-md-9" id = "dynamicUserDiv">
 				  <select class="sel form-control">
 					<option selected>Select</option>
-					<option>Applicant Owner</option>
+					<!-- <option>Applicant Owner</option>
 					<option>Job Owner</option>
-					<option>Primary Recruiter</option>
+					<option>Primary Recruiter</option> -->
 				  </select>
 				</div>
 			  </div>
 			  <div class="form-group">
 				<label class="col-md-3">Priority</label>
 				<div class="col-md-9">
-				  <select class="sel form-control">
+				  <select class="sel form-control" id ='workflowTaskPriority'>
 					<option selected>Select</option>
-					<option>Urget</option>
+					<option>Urgent</option>
 					<option>High</option>
 					<option>Normal</option>
 					<option>Low</option>
@@ -99,7 +123,8 @@
 			  <div class="clearfix">
 				<label class="col-md-12">Description</label>
 				<div class="col-md-12 descriptionTxtarea">
-				  <textarea placeholder="Description" class="form-control" cols="2" id="summernote"></textarea>
+				<textarea class='form-control' cols='2' id='taskDescription'  placeholder='Description'
+				field-name='summerNote' data-validation='validate_length length1-500' data-validation-optional='true' ></textarea>
 				</div>
 			  </div>
 			  <div class="clearfix"></div>
@@ -110,12 +135,21 @@
     <div class="footerstyelsNew">
         <div class="clearfix col-md-12 mb">
           <div class="pull-right mr">
-            <input value="Save" class="btn btn-primary" type="button">
-            <input value="Cancel" class="btn btn-default ml" type="button">
+            <input value="Save" class="btn btn-primary" onclick = "requirementWorkflow.saveWorkflowTask('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');" 
+            type="button" id = "saveTaskButton">
+            <input value="Cancel" class="btn btn-default ml" onclick = "requirementWorkflow.deleteTask();" type="button">
           </div>
         </div>
       </div>
   </div>
+  
+  
+  <div class="project_wrap_table datatable_filter" id = "dynamicWorkflowTask">
+     <!--
+     dynamic content here
+     -->
+    </div> 
+  
 		<div class="clearfix row">
 		  <div class="form-horizontal mt myForm">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
@@ -123,13 +157,19 @@
 				<label class="col-md-3 paddingRight">Assign Questionare</label>
 				<div class="col-md-9">
 				  <div class="row">
-					<div class="col-md-11">
-					  <select class="sel form-control">
+					
+					 <!-- dynamic stage content starts here -->
+					<div class="col-md-11" id = "questionnaireList">
+					<select class="sel form-control" id = "questionnaireTemplateId">
 						<option selected>Select</option>
+					  <!-- 
 						<option>Question1</option>
 						<option>Question2</option>
-					  </select>
+					   -->
+					   </select>
 					</div>
+					 <!-- dynamic stage content ends here -->
+					
 					<div class="col-md-1"> <a class="fa fa-plus btn btn-default" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire"></a> </div>
 				  </div>
 				</div>
@@ -153,17 +193,19 @@
 		  </div>
 		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt myForm">
 			<div class="form-group">
-          <label class="col-md-3">Previous Stage</label>
-        <div class="col-md-9">
-        
-          <c:if test="${not empty requirementWorkFlowStagesDTO}">  
-         <select class="sel form-control" id = "workflowStageUuid" onchange = 'getNextWorkflowStage(this,"+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+")'>
+          <label class="col-md-3" id="previousStagelabel">Previous Stage</label>
+        <div class="col-md-9" id = "previousStages">
+      
+         <select class="sel form-control" id = "previousStageUuid"
+         onchange = 'requirementWorkflow.getNextWorkflowStage(this,"+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+")'>
          <option selected>Select</option>
+         <c:if test="${not empty requirementWorkFlowStagesDTO}">  
         	<c:forEach var="requirementWorkFlowStages" items="${requirementWorkFlowStagesDTO}">	
          		<option value="${requirementWorkFlowStages.uuid}">${requirementWorkFlowStages.stageName}</option>
      		</c:forEach>
-     		</select>
-     		   </c:if>  
+     		
+     		   </c:if> 
+     		   </select> 
 			  </div>
 			  
 			</div>
@@ -193,55 +235,69 @@
           <div class="pull-right mr">
           
           <c:if test="${not empty requirementWorkFlowStagesDTO}">  
-            <input value="Save" class="btn btn-primary" type="button" onclick = "saveRequirementWorkflowStage(<c:out value="${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}"/>);">
+            <input value="Save" class="btn btn-primary" type="button" id="saveStageButton"
+            onclick = "requirementWorkflow.saveRequirementWorkflowStage('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');">
 		  </c:if>  
           
-            <input value="Cancel" class="btn btn-default ml" type="button">
+            <input value="Cancel" class="btn btn-default ml" type="button" onclick = "requirementWorkflow.cancelAddStage();">
           </div>
         </div>
       </div>
 	  </div>
+	 
 </section>
 </div>
 <script>
-function createNewtask() {
-	document.getElementById("createNewtask").style.display = "block";
+var currentStageUuid = $("#currentStageUuid").val();
+$(document).ready(function() {
+	requirementWorkflow.getRequirementQuestionnaireTemplates();
+	
+	$("#saveTaskButton").attr("disabled", true);
+	$('#stageName').keyup(function(){
+	    if($(this).val().length !=0)
+	    	$("#saveTaskButton").attr("disabled", false);           
+	    else
+	    	$("#saveTaskButton").attr("disabled", true);
+	})
+	
+	 if($('#stageName').val().length !=0){
+	    	$("#saveTaskButton").attr("disabled", false);           
+	 }else{
+	    	$("#saveTaskButton").attr("disabled", true);
+	 }
+	
+	requirementWorkflow.getRequirementWorkflowTasks(currentStageUuid);
+});
+
+
+  var stagename = $('#stageName').val();
+ <c:if test="${not empty requirementWorkFlowStagesDTO}">
+ if(stagename != "" && stagename != "undefined"){
+ var workflowStages = new Array();
+var stageUuid = new Array();
+workflowStages.push(
+<c:forEach var="requirementWorkFlowStages" items="${requirementWorkFlowStagesDTO}">
+'${requirementWorkFlowStages.stageName}',
+</c:forEach>
+);
+
+stageUuid.push(
+		<c:forEach var="requirementWorkFlowStages" items="${requirementWorkFlowStagesDTO}">
+		'${requirementWorkFlowStages.uuid}',
+		</c:forEach>
+		);
+
+var stageIndex; 
+workflowStages.forEach(checkStageIndex);
+
+function checkStageIndex(value){
+	var a = workflowStages.indexOf(stagename);
+	stageIndex = a;
 }
-</script>
-<script>
-function saveRequirementWorkflowStage(){
-	var stageName = $("#stageName").val();
-	var description = $("textarea#description").val();
-	var stageUuid = $("#workflowStageUuid").val();
-	$.ajax({
-		type : "GET",
-		url : sourceleadUrl + "/saveRequirementWorkflowStage?stageName="+stageName+"&description="+description+"&stageUuid="+stageUuid,
-		success : function(dataList) {
-			
-		}
-		});
+ 
+requirementWorkflow.prepareDynamicStages();
+
 }
-
-function getNextWorkflowStage(select, worflowUuid){
-	var stageUuid = select.value;
- 	$.ajax({
-		type : "GET",
-		url : sourceleadUrl + "/getRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+worflowUuid,
-		success : function(dataList){
-			var result = "";
-			result = result + "<select class='sel form-control'>";
-			 result = result + "<option selected>Select</option>";
-			if(dataList != null && dataList.length > 0){
-				 for(var i = 0 ; i < dataList.length; i++){
-					 result = result + "<option value="+dataList[i].uuid+">"+dataList[i].stageName+"</option>";
-				 }
-			}
-			result = result + "</select>";
-			$("#nextStages").empty().append(result);
-		}
-		});
- }
-
-
+</c:if>   
 </script>
 <jsp:include page="../masterFooter.jsp" /> 
