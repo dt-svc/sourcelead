@@ -178,7 +178,7 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
 
         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projects.getOrgLocationsId().getOrg(),projects.getOrgLocationsId(),Constants.BUDGET_REQUEST,new ArrayList<EmailAttachment>());
 //        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.INVITE_USER);
-        actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
+        actionLink = actionLinkBuilder.append("").append(pmsUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
 
         emailScenerioUtil.sendNotification(actionLink, loginUser, approverUse, projects.getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 		
@@ -210,12 +210,12 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         if(projectBudget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_APPROVED)) {
 	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projectBudget.getProjectId().getOrgLocationsId().getOrg(),projectBudget.getProjectId().getOrgLocationsId(),Constants.BUDGET_REQUEST_ACCEPTED,new ArrayList<EmailAttachment>());
         	notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_ACCEPTED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
+			actionLink = actionLinkBuilder.append("").append(pmsUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
         }else if(projectBudget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_REJECTED)) {
         	globalVarsMap.put("reason", projectBudget.getRejectedReason());
 	        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,projectBudget.getProjectId().getOrgLocationsId().getOrg(),projectBudget.getProjectId().getOrgLocationsId(),Constants.BUDGET_REQUEST_REJECTED_EMAIL,new ArrayList<EmailAttachment>());
         	notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BUDGET_REQUEST_REJECTED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-            actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
+            actionLink = actionLinkBuilder.append("").append(pmsUrl).append("/").append("projectSummary?projectUUID="+projectBudget.getProjectId().getProjectUUID()+"&projectClientUUID="+pc.getUuid()+"&tabType=projectMembers").toString();
 
         }else if(projectBudget.getBudgetStatus().equalsIgnoreCase(Constants.BUDGET_REQUEST_ON_HOLD)) {
         	globalVarsMap.put("reason", projectBudget.getRejectedReason());

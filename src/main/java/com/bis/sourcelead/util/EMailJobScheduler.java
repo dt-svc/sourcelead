@@ -1706,7 +1706,7 @@ public class EMailJobScheduler {
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.HOTLIST_ALERT_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION); 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
-		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("/candidatesList").toString();		 
+		 String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/").append("/candidatesList").toString();		 
 		 if(user.getFirstName()!=null){
 		 String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(),globalVarsMap,noificationEmailScenario);
 		 noificationEmailScenario.setBody(notificationbody);
@@ -2922,7 +2922,7 @@ public class EMailJobScheduler {
 						String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 						notificationScenario.setBody(notificationBody);
 						StringBuilder actionLinkBuilder = new StringBuilder();
-						String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("leaveManagementReports").toString();
+						String actionLink = actionLinkBuilder.append("").append(pmsUrl).append("/").append("leaveManagementReports").toString();
 						emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), user, orgLocations,notificationScenario,new HashMap<String,String>());
 					
 					}
@@ -3923,7 +3923,7 @@ public class EMailJobScheduler {
 		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("immigration/viewImmigration?immigrationUUID="+immigration.getImmigrationUuid()+"&candidateUUID="+immigration.getCandidate().getCandidateUUID()+"&immiTemplateUUID="+immigration.getImmigrationTemplateId().getUuid()+"&myImmigrationPage=N").toString();
+		String actionLink = actionLinkBuilder.append("").append(vmsUrl).append("/").append("immigration/viewImmigration?immigrationUUID="+immigration.getImmigrationUuid()+"&candidateUUID="+immigration.getCandidate().getCandidateUUID()+"&immiTemplateUUID="+immigration.getImmigrationTemplateId().getUuid()+"&myImmigrationPage=N").toString();
 		emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), toUserObj, orgLocations,notificationScenario,new HashMap<String,String>());
 		
 	}
@@ -4570,7 +4570,7 @@ public class EMailJobScheduler {
 													notificationScenario);
 											notificationScenario.setBody(notificationBody);
 											StringBuilder actionLinkBuilder = new StringBuilder();
-											String actionLink = actionLinkBuilder.append("").append(sourceleadUrl)
+											String actionLink = actionLinkBuilder.append("").append(pmsUrl)
 													.append("/").append("leaveManagementReports").toString();
 											emailScenerioUtil.sendNotification(actionLink,
 													orgLocations.getOrg().getUser(), user, orgLocations,
