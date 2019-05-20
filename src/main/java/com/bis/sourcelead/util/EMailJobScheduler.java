@@ -1706,7 +1706,7 @@ public class EMailJobScheduler {
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.HOTLIST_ALERT_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION); 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
-		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("/candidatesList").toString();		 
+		 String actionLink = actionLinkBuilder.append("").append(atsUrl).append("/").append("/candidatesList").toString();		 
 		 if(user.getFirstName()!=null){
 		 String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(),globalVarsMap,noificationEmailScenario);
 		 noificationEmailScenario.setBody(notificationbody);
