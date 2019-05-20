@@ -222,7 +222,8 @@
 		location.href = "${appPath}/SalesOrderList";
 	}
 	function refreshPage(){
-		location.reload();
+		$("#walletSearch").val('');
+		getDynamicWalletList();
 	}
 	/* function goToWalletList(){
 		location.href = "${appPath}/walletList";

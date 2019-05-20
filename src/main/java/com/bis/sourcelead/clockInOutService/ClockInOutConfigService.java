@@ -2,10 +2,14 @@ package com.bis.sourcelead.clockInOutService;
 
 import java.sql.Time;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateReportSummaryDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockInOutEntity.Breaks;
 import com.bis.sourcelead.clockInOutEntity.ClockInOut;
@@ -47,8 +51,12 @@ public interface ClockInOutConfigService {
 
 	public ClockInOutUserTimeEntryDTO getTimeReports(OrgLocations loginOrgLocation, User user);
 
+	
+	public List<List<ClockInOutAssociateReportSummaryDTO>> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, Date empJoiningDate, OrgLocations orgLocation);
+
 	public String getWorkingTimeByClockId(OrgLocations loginOrgLocation, User user);
 
 	public ClockInOutDTO getPreviousClockInData(OrgLocations loginOrgLocation, User user);
+
 
 }

@@ -257,7 +257,7 @@ public class LoginSessionController {
 					userLoginSession.getAuthenticated());
 		}
 		
-		Employees emp = employeeService.getEmployeeByUserId(user.getId());
+		Employees emp = employeeService.getEmployeeByUserAndOrgLocationId(user.getId(),orgLocations.getId());
 		if(emp != null) {
 			SourceLeadSessionManager.setSessionAttribute(request, "joiningDate",
 					emp.getHireDate());
