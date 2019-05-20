@@ -27,6 +27,7 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	private String filterProjectId;
     private List<String> jobsTags;
     private String cityName; 
+    private String exportType;
 
 	
 	public String getStatus() {
@@ -160,5 +161,11 @@ public class RequirementSearchDTO extends SearchDTO implements Serializable {
 	public void setCityName(String cityName)
 	{
 		this.cityName = cityName;
+	}
+	public String getExportType() {
+		return exportType;
+	}
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
 	}
 }

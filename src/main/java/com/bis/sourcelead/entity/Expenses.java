@@ -180,6 +180,9 @@ private static final long serialVersionUID = 1L;
 	private String projectName;
 	
 	@Transient
+	private List<User> projectEmp;
+	
+	@Transient
 	private Map<String,String> monthsStringFormat;
 	
 	@Transient
@@ -567,6 +570,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setBillingStatus(String billingStatus) {
 		this.billingStatus = billingStatus;
+	}
+
+	public List<User> getProjectEmp() {
+		return projectEmp;
+	}
+
+	public void setProjectEmp(List<User> projectEmp) {
+		this.projectEmp = projectEmp;
 	}
 
 	

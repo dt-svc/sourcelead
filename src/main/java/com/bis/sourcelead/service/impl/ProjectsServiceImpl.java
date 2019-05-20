@@ -122,10 +122,10 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -257,20 +257,20 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 @Autowired
 	 ProjectMembersRateHistoryService projectMembersRateHistoryService;
 
-	private UserDTO userStatus;
+	 @Autowired
+	 private PdfUtil pdfUtil;
 	
-	@Autowired
-	private PdfUtil pdfUtil;
+	 @Autowired
+	 private LeaveTypeService leaveTypeService;
 	
-	@Autowired
-	private LeaveTypeService leaveTypeService;
+	 @Autowired
+	 EmailScenarioConfigurationService emailScenarioconService;
 	
-	@Autowired
-	EmailScenarioConfigurationService emailScenarioconService;
+	 @Autowired
+	 ProjectsService projectsService;
 	
-	
-	@Autowired
-	public ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
+	 @Autowired
+	 public ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
 	 
 /*	 @Override
 		public String getProjectId(OrgLocations orgLocations) {
@@ -978,6 +978,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			OrgLocations clientOrgLoc = new OrgLocations();
 			clientOrgLoc.setId(clientOrgLocation);
 			projectClients.setOrgLocationsId(clientOrgLoc);
+			projectClients.setOrgId(clientOrgLoc.getOrg());
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setLevel(1);
 			projectClients.setStatus(1);
@@ -1024,6 +1025,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectClients = new ProjectClients();
 			projectClients.setProjectId(projects);
 			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setOrgId(orglocations.getOrg());
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setOrgRelationId(orgRelations);
 			projectClients.setLevel(2);
@@ -1058,6 +1060,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectClients = new ProjectClients();
 			projectClients.setProjectId(projects);
 			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setOrgId(orglocations.getOrg());
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setLevel(1);
 			projectClients.setStatus(1);
@@ -1464,6 +1467,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
 		    		if(null != userRole){
 		    			projectsDTO.setManagerLevel1UserType(userRole.getUserType());
+		    		}else {
+		    			UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(approverHierarchy.getApproverUserId().getId());
+		    			projectsDTO.setManagerLevel1UserType(primaryRole.getUserType());
 		    		}
 		    		projectsDTO.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
@@ -1487,6 +1493,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(expenseApproverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
 			    		if(null != userRole){
 			    			projectsDTO.setExpenseApproverLevel1UserType(userRole.getUserType());
+			    		}else {
+			    			UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(expenseApproverHierarchy.getApproverUserId().getId());
+			    			projectsDTO.setManagerLevel1UserType(primaryRole.getUserType());
 			    		}
 			    		projectsDTO.setExpenseApproverLevel1(expenseApprover.append(expenseApproverHierarchy.getApproverUserId().getFirstName()).append(" ").append(expenseApproverHierarchy.getApproverUserId().getLastName()).toString());
 			    	}
@@ -3053,6 +3062,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 							projectClients = new ProjectClients();
 							projectClients.setProjectId(projects);
 							projectClients.setOrgLocationsId(orglocations);
+							projectClients.setOrgId(orglocations.getOrg());
 							projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 							projectClients.setStatus(1);
 							projectClients.setLevel(2);
@@ -3172,6 +3182,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 					OrgSpoc orgSpoc = orgSpocDao.getGusetClientOrgSpocByOrgRelationId(orgRelationId);
 					projectClients.setProjectId(projects);
 					projectClients.setOrgLocationsId(clientOrgLocations);
+					projectClients.setOrgId(clientOrgLocations.getOrg());
 					projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 					projectClients.setStatus(1);
 					projectClients.setLevel(1);
@@ -3619,7 +3630,12 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 
 			private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, ProjectsDTO projects,OrgLocations orgLocations) throws Exception {
 
-			     	 ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+			     	 
+			     	ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+			     	 if(projectClients == null) {
+			     		Projects clientProject = projectsService.getProjectById(projects.getId());
+			     		projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProject.getOrgLocationsId().getId());
+			     	 }
 		
 			     	 if(projects.getProjectSequeneNumber() != null) {
 			     		 writeRow.createCell(0).setCellValue(projects.getProjectSequeneNumber()); 

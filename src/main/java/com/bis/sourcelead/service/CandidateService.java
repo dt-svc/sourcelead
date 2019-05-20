@@ -309,7 +309,7 @@ public interface CandidateService {
 	
 	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
 
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate, String purchaseOrderToDate, String purchaseOrderFilterDate) throws Exception;
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String searchValue, String purchaseOrderFromDate, String purchaseOrderToDate, String purchaseOrderFilterDate) throws Exception;
 
 	public MarketplacePurchaseSalesDTO getPurchaseDetailByPurchaseUuid(String purchaseUuid, OrgLocations orgLocations)throws Exception;
 	
@@ -335,6 +335,8 @@ public interface CandidateService {
 	
 	public List<Candidate> getAllAssociateByLocation(Long orgLocationId)throws Exception;
 	
+	public String getCandidatePanNumberByUserId(long userId, Long id);
+	
     public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception;
@@ -347,4 +349,8 @@ public interface CandidateService {
 	
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
 
+	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
+	
+	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
+	
 }

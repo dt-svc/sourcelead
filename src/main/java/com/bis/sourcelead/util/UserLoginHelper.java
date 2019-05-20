@@ -142,6 +142,7 @@ public class UserLoginHelper {
 		 JSONObject orgLocations = userStatsCacheHelper.getOrgLocationCacheDetails(userSession.get("orgLocationCode").toString());
 		 SourceLeadSessionManager.setSessionAttribute(req, "actionUUID", userSession.get("actionUUID").toString());
 		 SourceLeadSessionManager.setSessionAttribute(req, "actionId", Long.parseLong(userSession.get("actionId").toString()));
+		 SourceLeadSessionManager.setSessionAttribute(req, "sessionId", userSession.get("sessionId").toString());
 		 
 		 try {
 			
@@ -160,15 +161,7 @@ public class UserLoginHelper {
 			Candidate candidate = getCandidateDetails(userRole);
 			SourceLeadSessionManager.setSessionAttribute(req, "candidate", candidate);
 			
-			if(req.getRequestURI().contains("myImmigration")) {
-
-				req.getSession().setAttribute("myImmigrationPage", "Y");
-
-				}else if(req.getRequestURI().contains("viewImmigrationList")) {
-
-				req.getSession().setAttribute("myImmigrationPage", "N");
-				
-				}
+			
 			
 		} catch (NumberFormatException e1) {
 			e1.printStackTrace();
@@ -443,7 +436,7 @@ public class UserLoginHelper {
 						accountsDTO.setDesignation(accountsJson.get("designation").toString());
 					}
 					
-					if(userSession.get("userType") != null) {
+					if(accountsJson.get("userType") != null) {
 						accountsDTO.setUserType(accountsJson.get("userType").toString());
 					}
 				
@@ -935,7 +928,7 @@ public class UserLoginHelper {
 		orgLocations.setCountry(orgLocationJson.get("country").toString());
 		orgLocations.setOrgId(Long.valueOf(orgLocationJson.get("orgId").toString()));
 		orgLocations.setOrgLocationName(orgLocationJson.get("orgLocationName").toString());
-		if(orgLocationJson.get("createdDate").toString() != null) {
+		if(orgLocationJson.get("createdDate") != null && orgLocationJson.get("createdDate").toString() != null) {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			 Date date = formatter.parse(orgLocationJson.get("createdDate").toString());
 			orgLocations.setCreatedDate(date);
