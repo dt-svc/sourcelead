@@ -1,4 +1,4 @@
-package com.bis.sourcelead.web;
+package com.bis.sourcelead.timesheet.web;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -121,7 +121,7 @@ public class TimesheetApprovalController {
 			ModelAndView model = new ModelAndView();
 			request.setAttribute("status", status);
 			
-			model.setViewName("timesheet/timesheetStatusList");
+			model.setViewName("timesheet/timesheetApprovalDashboardStatusList");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			return model;
 

@@ -110,8 +110,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						<strong>Expense Id:</strong><span>${expenses != null ? expenses.expenseAutoId : ExpensesId}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Purpose:</strong><span>${expenses.expensePurpose}</span><div class="clearfix"></div>
-					</div>
+                  	<strong>Purpose:</strong><span>
+	                    <span title="${expenses.expensePurpose}">${expenses.expensePurpose}</span><div class="clearfix"></div>
+                 	</div>
 					<div class="project_details_cta">
 						<strong>Project Name:</strong><span>${expenses.projectName}</span><div class="clearfix"></div>
 					</div>
@@ -124,7 +125,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
 						 <c:forEach var="project" items="${expEntry.projectsList}">
 						      <c:if test="${project.id == expenses.projectId}">
-						      <a href="<c:url value="${SourceLeadWeb_atsUrl}/clientDashboard?orgRelationUUID=${project.orgRelationUUID}"/>">${project.client}</a>
+						      <a href="${SourceLeadWeb_vmsUrl}/clientDashboard?orgRelationUUID=${project.orgRelationUUID}">${project.client}</a>
 						      </c:if>
 		                  </c:forEach>
 		                </sec:authorize>  

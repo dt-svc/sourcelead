@@ -38,11 +38,6 @@
 		});
 </script>
 
-<script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-</script>
-
-
 <style>
 body {
 background-color:#e1e6fa;
@@ -123,6 +118,7 @@ width: auto;
 
 <script type="text/javascript">
 	function saveRejectedReason() {
+			var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 			var projectMemberId = '${projectMemberId}';
 			var userId = '${userId}';
 			var timesheetFrequency = '${timesheetFrequency}';
