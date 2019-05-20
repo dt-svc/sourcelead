@@ -3280,8 +3280,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			if(marketplaceWalletDTO != null){
 				if (StringUtils.isNotBlank(marketplaceWalletDTO.getSortColumn())) {
 					String sortColumnName = marketplaceWalletDTO.getSortColumn();
-					if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
-						queryBuilder1.append(" order by cmwallet.totalResumePrice "+marketplaceWalletDTO.getSortOrder());
+					if(sortColumnName.equalsIgnoreCase("amount")){
+						queryBuilder1.append(" order by cmwallet.amount "+marketplaceWalletDTO.getSortOrder());
 					}else{
 						queryBuilder1.append(" order by cmwallet." + sortColumnName + " "+marketplaceWalletDTO.getSortOrder());
 					}
