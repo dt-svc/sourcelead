@@ -70,6 +70,7 @@ import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.PaymentAccountService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
@@ -148,6 +149,11 @@ public class IndianPayrollRestController {
 	
 	@Autowired
     private OrgService orgService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	
 	
     @RequestMapping(value = "/save-ind-associate-payment-account", method = RequestMethod.POST)
 	public Response<IndAssociatePaymentAccountDTO> savePaymentAccount(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
@@ -543,10 +549,11 @@ public class IndianPayrollRestController {
     
 
 	@SuppressWarnings("null")
-	@RequestMapping(value = { "/app/generateINDPayroll","/app/rest/generateINDPayroll" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/generateINDPayroll","/rest/generateINDPayroll" }, method = RequestMethod.POST)
 	public IndPaysheetFrequencyDTO generateINDPayroll(GenerateINDPayrollDTO generateINDPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocationId);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = null;
 		try {
@@ -870,4 +877,14 @@ public class IndianPayrollRestController {
 	        }
 	        return response;
 	    }
+	  
+	  @RequestMapping (value = "/getLoanNames", method = RequestMethod.GET)
+		@ResponseBody
+		public List<PayrollLoanAndAdvances> getLoanNames(HttpServletRequest request,HttpServletResponse response) throws Exception{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<PayrollLoanAndAdvances> padvList = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesByOrgLocationId(orgLocation.getId()); 
+		 return padvList;
+		
+		}
+	  
 }

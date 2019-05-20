@@ -28,7 +28,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Requested Leaves</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}"> Home</a> &raquo; Requested Leaves</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}"> Home</a> &raquo;
+		<a href="${SourceLeadWeb_pmsUrl}/leaveManagementReports"> Leave Management</a> &raquo;Requested Leaves</div>
     </section>
     <div id="popUp"></div>
     

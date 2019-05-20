@@ -48,7 +48,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						       <b class='proj_active pull-right'>${submissionStatus}</b>
 						  </c:if>
 						  <c:if test="${submissionStatus == 'REJECTED'}">
-						        <i class='pull-right glyphicon glyphicon-comment rejectedHover'>
+						        <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp colB'>
 					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${expenseApproverHierarchy}</div>
 						      </i>
 						      <b class='proj_closed pull-right' style="width:75% !important;">${submissionStatus}</b>
@@ -84,7 +84,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">
 						 <c:forEach var="pm" items="${expEntry.projectMembersList}">
 						  <c:if test="${pm.projectId == expenses.projectId}">
-						   <a href="<c:url value="/app/clientDashboard?orgRelationUUID=${pm.orgRelationUUID}"/>"> ${pm.clientName}</a>
+						   <a href="${SourceLeadWeb_vmsUrl}/clientDashboard?orgRelationUUID=${project.orgRelationUUID}">${project.client}</a>
 						  </c:if>
 						</c:forEach>
 						</sec:authorize>
@@ -112,7 +112,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					<div class="project_details_cta">
 						<strong>Submitted Amount:</strong><span>${expenses.totalsubmittedAmount}</span><div class="clearfix"></div>
 					</div>
-					<c:if test="${submissionStatus !== 'DRAFT'}">
+					<c:if test="${submissionStatus != 'DRAFT'}">
                         <div class="project_details_cta">
                            <strong>Submitted On:</strong><span>${expenses.submittedDate}</span><div class="clearfix"></div>
                         </div>
@@ -182,7 +182,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 								<li><strong>Description :</strong><span title="${entry.entryDescription}">${entry.entryDescription}</span>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
 								<li><strong>Submitted Amount :</strong><span>${entry.submittedamount}</span><div class="clearfix"></div></li>
+								<c:if test="${submissionStatus == 'APPROVED'}">
 								<li><strong>Approved Amount :</strong><span>${entry.amountRoundOff}</span><div class="clearfix"></div></li>
+								</c:if>
 								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
 								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>
