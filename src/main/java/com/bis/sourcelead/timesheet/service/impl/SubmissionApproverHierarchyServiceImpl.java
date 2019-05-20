@@ -103,7 +103,27 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyBySubmissionId(submissionId);
 	}
 	
+	@Override
+	public ResponseList<SubmissionApproverHierarchy> getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(
+			Long userId, Long orgLocationId, String status,String userRole,String search,int start,int length,String isGlobalUser) throws Exception {
+		ResponseList<SubmissionApproverHierarchy> list = new ResponseList<SubmissionApproverHierarchy>();
 	
+         if(status != null){
+ 				 if("APPROVED".equalsIgnoreCase(status)){
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId,  status,search,start,length,isGlobalUser);
+  				}
+                 if("REJECTED".equalsIgnoreCase(status)){
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId, status,search,start,length,isGlobalUser);
+  				}
+                 if("SUBMITTED".equalsIgnoreCase(status)){
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId, status,search,start,length,isGlobalUser);
+  				}
+                 if("DRAFT".equalsIgnoreCase(status)){
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId, status,search,start,length,isGlobalUser);
+  				}
+ 		}
+         return list;
+	}
 
 	@Override
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForApprover(Long submissionId,
