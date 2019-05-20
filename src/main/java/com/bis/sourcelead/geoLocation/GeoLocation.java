@@ -77,7 +77,7 @@ public class GeoLocation {
 
     @Override
     public String toString() {
-        return "GeoLocation{" +
+        return "{" +
                 "countryCode='" + countryCode + '\'' +
                 ", countryName='" + countryName + '\'' +
                 ", postalCode='" + postalCode + '\'' +

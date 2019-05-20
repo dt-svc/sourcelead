@@ -1492,12 +1492,12 @@ function universalSearch(){
 		 sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	 }
 	 if(searchType == "Candidate") {
-		 window.location.href = sourceleadUrl + "/candidatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+		 window.location.href = "${SourceLeadWeb_atsUrl}/candidatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
 	 } else if(searchType == "Associate") {
-		 window.location.href = sourceleadUrl + "/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+		 window.location.href = "${SourceLeadWeb_atsUrl}/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
 	 }
 	 else if(searchType == "Requirement") {
-		 window.location.href = sourceleadUrl + "/jobs?searchResult=universalRequirementSearchList&searchValue="+searchValue;
+		 window.location.href = "${SourceLeadWeb_atsUrl}/jobsList?searchResult=universalRequirementSearchList&searchValue="+searchValue;
 	 }
 	 else {
 		window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
