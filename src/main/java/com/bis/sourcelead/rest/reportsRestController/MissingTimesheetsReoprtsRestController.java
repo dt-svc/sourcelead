@@ -266,15 +266,21 @@ public class MissingTimesheetsReoprtsRestController {
 					                SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(frequencyStartDate,frequencyEndDate ,pm.getId());
 					                mtr.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), sah.getUpdatedDate()));
 					            	List<ProjectApproverHierarchy> projectApproverHierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(pm.getProjects().getId(),orgLocations.getId()) ;
-							    	String approverName = "";
-							    	String seperator = "";
+							    	String approverName1 = "";
+							    	String approverName2 = "";
 					            	for(ProjectApproverHierarchy pah:projectApproverHierarchyList) {
-							    		if(StringUtils.isNotEmpty(approverName)) {
-							    			seperator =  ",";
-							    		}
-							    		approverName  = approverName +seperator+ pah.getApproverUserId().getFullName();
-							    	}
-					            	mtr.setManagerName(approverName);
+								    		if(pah.getLevel() == 1) {
+								    			approverName1 = pah.getApproverUserId().getFullName();
+								    		}
+								    		else if(pah.getLevel() == 2) {
+								    			approverName2 = pah.getApproverUserId().getFullName();
+								    		}
+					            			
+					            	}
+					            	mtr.setManager1(approverName1);
+					            	mtr.setManager2(approverName2);
+					            	mtr.setApprovalMechanism(pm.getProjects().getProjectApprovalType());
+					            	mtr.setNoOfHours(sah.getSubmissionId().getTotalHours());
 					            	missingTimesheetResultRepotList.add(mtr);
 					            	finalTFMap.put(key, value);
 					            

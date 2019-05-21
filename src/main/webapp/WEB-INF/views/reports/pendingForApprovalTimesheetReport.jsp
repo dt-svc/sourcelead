@@ -140,7 +140,10 @@ function getPendingForApprovalTimesheetReports(){
 		        result = result	+ '    <th>Emp Type</th> ';
 		        result = result	+ '    <th>Project</th>  ';
 		        result = result	+ '    <th>Duration</th>';
-		        result = result	+ '    <th>Manager</th> ';
+		        result = result	+ '    <th>Manager 1</th> ';
+		        result = result	+ '    <th>Manager 2</th> ';
+		        result = result	+ '    <th>Approval Mechanism</th> ';
+		        result = result	+ '    <th>No of hours</th> ';
 		        result = result	+ '    <th>Submitted On</th> ';
 		        result = result	+ '    <th>no.of days</th>';
 		        result = result	+ '  </tr> ';
@@ -170,10 +173,26 @@ function getPendingForApprovalTimesheetReports(){
 	        		  }else{
 	        			  frequency = "--";
 	        		  }
-	        		  if(report.managerName != null && report.managerName != '' && report.managerName != 'undefined'){
-	        			  managerName = report.managerName;
+	        		  if(report.manager1 != null && report.manager1 != '' && report.manager1 != 'undefined'){
+	        			  manager1 = report.manager1;
 	        		  }else{
-	        			  managerName = "--";
+	        			  manager1 = "--";
+	        		  }
+	        		  if(report.manager2 != null && report.manager2 != '' && report.manager2 != 'undefined'){
+	        			  manager2 = report.manager2;
+	        		  }else{
+	        			  manager2 = manager1;
+	        			  manager1 = "--";
+	        		  }
+	        		  if(report.approvalMechanism != null && report.approvalMechanism != '' && report.approvalMechanism != 'undefined'){
+	        			  approvalMechanism = report.approvalMechanism;
+	        		  }else{
+	        			  approvalMechanism = "--";
+	        		  }
+	        		  if(report.noOfHours != null && report.noOfHours != '' && report.noOfHours != 'undefined'){
+	        			  noOfHours = report.noOfHours;
+	        		  }else{
+	        			  noOfHours = "--";
 	        		  }
 	        		  if(report.dueDays != null && report.dueDays != '' && report.dueDays != 'undefined'){
 	        			  dueDays = report.dueDays;
@@ -186,7 +205,10 @@ function getPendingForApprovalTimesheetReports(){
 	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+employeType+' </div></td>';
 	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+projectName+' </div></td>';
 	              result = result	+ '   <td><div class="tbldata-dotdot-me">'+frequency+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+managerName+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+manager1+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+manager2+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+approvalMechanism+' </div></td>';
+	              result = result   + '   <td><div class="tbldata-dotdot-sm">'+noOfHours+' </div></td>';
 	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.submittedOn+' </div></td>';
 	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+dueDays+'  Days</div></td>';
 	              result = result	+ '	</tr>';
