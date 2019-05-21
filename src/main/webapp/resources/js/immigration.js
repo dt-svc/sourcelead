@@ -7,17 +7,19 @@ var idNumber = '';
 var familyMemberId = '';
 var templateId='';
 var formNames = [];
+var myImmigrationPage ="";
+
 function Immigration() {
     this.gotoTemplatePreviousPage = function (temp) {
         $("#addNewPetitionTemplateDiv").empty();
         var cc=$("#countryName").val();
         var pp= $("#petitionTypeTemplate").val();
         if (temp == 'templateDetails') {
-            $("#addNewPetitionTemplateDiv").load(vmsUrl + immiModulePath + "/gotoTemplatePreviousPage?status=templateDetails");
+            $("#addNewPetitionTemplateDiv").load(vmsUrl + immiModulePath + "/gotoTemplatePreviousPage?status=templateDetails&templateId="+immTemplId);
         } else if (temp == 'templateDocs') {
-            $("#addNewPetitionTemplateDiv").load(vmsUrl + immiModulePath + "/gotoTemplatePreviousPage?status=docDetails");
+            $("#addNewPetitionTemplateDiv").load(vmsUrl + immiModulePath + "/gotoTemplatePreviousPage?status=docDetails&templateId="+immTemplId);
         } else if (temp == 'formDetails') {
-            $("#addNewPetitionTemplateDiv").load(vmsUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails");
+            $("#addNewPetitionTemplateDiv").load(vmsUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails&templateId="+immTemplId);
         }
     }
 
@@ -39,7 +41,7 @@ function Immigration() {
                         if (status == 'saveContinue') {
                         	showTemplateMsg("Successfully Saved Template Details.");
                         	$("#addNewPetitionTemplateDiv").empty();
-                            $("#addNewPetitionTemplateDiv").load(vmsUrl + immiModulePath + "/gotoTemplatePreviousPage?status=docDetails");
+                            $("#addNewPetitionTemplateDiv").load(vmsUrl + immiModulePath + "/gotoTemplatePreviousPage?status=docDetails&templateId="+immTemplId);
                         }
 		               
                     }else{
@@ -130,11 +132,11 @@ function Immigration() {
                     	if (status == 'saveContinue') {
                     		showTemplateMsg("Successfully Saved Document Details.");
                             $("#addNewPetitionTemplateDiv").empty();
-                            $("#addNewPetitionTemplateDiv").load(vmsUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails");
+                            $("#addNewPetitionTemplateDiv").load(vmsUrl + immiModulePath + "/gotoTemplatePreviousPage?status=formDetails&templateId="+immTemplId);
                         } else if (status == 'save') {
                         	showTemplateMsg("Successfully Saved Document Details.");
                             $("#addNewPetitionTemplateDiv").empty();
-                            $("#addNewPetitionTemplateDiv").load(vmsUrl + immiModulePath + "/gotoTemplatePreviousPage?status=docDetails");
+                            $("#addNewPetitionTemplateDiv").load(vmsUrl + immiModulePath + "/gotoTemplatePreviousPage?status=docDetails&templateId="+immTemplId);
                         } 
                     }else{
                     	 showError("Operation failed, please try again");
@@ -303,7 +305,7 @@ function Immigration() {
                        	candidateUUID = result.data[4];
                        	immiTemplateUUID = result.data[5];
                             if(status == 'saveContinue'){// redirect to petition details tab page.
-                            window.location.href = vmsUrl + immiModulePath + "/viewImmigration?immigrationUUID="+immigrationUUID+"&candidateUUID="+candidateUUID+"&immiTemplateUUID="+immiTemplateUUID;
+                            window.location.href = vmsUrl + immiModulePath + "/viewImmigration?immigrationUUID="+immigrationUUID+"&candidateUUID="+candidateUUID+"&immiTemplateUUID="+immiTemplateUUID+"&myImmigrationPage=N";
                             }
                             if(status == 'sendRequest'){
                             	window.location.href = vmsUrl + immiModulePath + "/viewImmigrationList";
@@ -526,7 +528,7 @@ function Immigration() {
 
     this.displayPassportDetails=function(candidateId,searchValue){
    		$.ajax({
-           url: vmsUrl + immiModulePath + "/getCandidatePassportDetails?candidateId="+candidateId+ "&searchValue=" + searchValue,
+           url: vmsUrl + immiModulePath + "/getCandidatePassportDetails?candidateId="+candidateId+ "&searchValue=" + searchValue+"&myImmigrationPage="+myImmigrationPage,
            type: "GET",
            success: function (result) {
                $("#passportsTab").html(result);
@@ -537,7 +539,7 @@ function Immigration() {
     
     this.displayVisaDetails=function(candidateId,searchValue){
    		$.ajax({
-           url: vmsUrl + immiModulePath + "/getCandidateVisaDetails?candidateId="+candidateId+ "&searchValue=" + searchValue,
+           url: vmsUrl + immiModulePath + "/getCandidateVisaDetails?candidateId="+candidateId+ "&searchValue=" + searchValue+"&myImmigrationPage="+myImmigrationPage,
            type: "GET",
            success: function (result) {
                $("#visasTab").html(result);
@@ -738,7 +740,7 @@ function Immigration() {
     this.displayFamilyDetails=function(candidateId){
     	var searchVal= $("#familySerach").val();
     	$.ajax({
-            url: vmsUrl + immiModulePath + "/getCandidateFamilyDetails?candidateId="+candidateId+"&searchVal="+searchVal,
+            url: vmsUrl + immiModulePath + "/getCandidateFamilyDetails?candidateId="+candidateId+"&searchVal="+searchVal+"&myImmigrationPage="+myImmigrationPage,
             type: "GET",
             success: function (result) {
                 $("#familiesTab").html(result);
@@ -805,7 +807,8 @@ function Immigration() {
 	
 	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId,searchVal,myImmigrationStatus){
 		$.ajax({
-	        url: vmsUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId+"&searchVal="+searchVal+"&myImmigration="+myImmigrationStatus,
+	        url: vmsUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId+
+	        "&searchVal="+searchVal+"&myImmigration="+myImmigrationStatus+"&myImmigrationPage="+myImmigrationPage,
 	        type: "GET",
 	        success: function (result) {
 	        	console.info(result);
@@ -1036,7 +1039,7 @@ function Immigration() {
 	this.getCandidateEmployerList = function(candidateId){
 		var searchEmployerVal = $("#employersDataSearch").val();
 		$.ajax({
-	        url: vmsUrl + immiModulePath + "/getCandidateEmployerList?candidateId="+candidateId+"&searchVal="+searchEmployerVal,
+	        url: vmsUrl + immiModulePath + "/getCandidateEmployerList?candidateId="+candidateId+"&searchVal="+searchEmployerVal+"&myImmigrationPage="+myImmigrationPage,
 	        type: "GET",
 	        success: function (result) {
 	            $("#employersTab").html(result);
@@ -1049,7 +1052,8 @@ function Immigration() {
 	
 	this.displayImmigrationCandidateDocs = function(candidateId,templateid,immigrationId,searchVal,myImmigrationStatus){
 		$.ajax({
-	        url: vmsUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId+"&searchVal="+searchVal+"&myImmigration="+myImmigrationStatus,
+	        url: vmsUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId+"&searchVal="+searchVal+
+	        "&myImmigration="+myImmigrationStatus+"&myImmigrationPage="+myImmigrationPage,
 	        type: "GET",
 	        success: function (result) {
 	            $("#docsTab").html(result);
@@ -1116,7 +1120,7 @@ function Immigration() {
 	this.getCandidateEducationList = function(candidateId){
 		var searchVal = $("#educationSearchVal").val();
 		$.ajax({
-	        url: vmsUrl + immiModulePath + "/getCandidateEducationList?candidateId="+candidateId+"&searchVal="+searchVal,
+	        url: vmsUrl + immiModulePath + "/getCandidateEducationList?candidateId="+candidateId+"&searchVal="+searchVal+"&myImmigrationPage="+myImmigrationPage,
 	        type: "GET",
 	        success: function (result) {
 	            $("#educationsTab").html(result);
@@ -1189,7 +1193,7 @@ function Immigration() {
 	this.getCandidateResidenceList = function(candidateId){
 		var searchVal= $("#residenceSearch").val();
 		$.ajax({
-	        url: vmsUrl + immiModulePath + "/getCandidateResidenceList?candidateId="+candidateId+"&searchVal="+searchVal,
+	        url: vmsUrl + immiModulePath + "/getCandidateResidenceList?candidateId="+candidateId+"&searchVal="+searchVal+"&myImmigrationPage="+myImmigrationPage,
 	       type: "GET",
 	        success: function (result) {
 	           $("#residencesTab").html(result);

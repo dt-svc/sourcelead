@@ -12,46 +12,7 @@
 
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}"/>
 
-<style type="text/css">
-
-.timesheet_head ul.nav-tabs, .timesheet_head ul.invoiceHdr  {
-padding: 5px; float: none; clear: both;
-}
-.billing_dashboard {
-padding: 0;
-}
-.billing_dashboard h4 {
-text-align: left; padding-left: 10px;
-}
-.clients_side_wrap select {
-min-height: 35px; padding: 1px 25px 1px 15px;
-}
-.billingArea {
-padding: 10px;
-}
-.side_mask {
-background-color: rgba(0,0,0,0.3);
-}
-.pop_mask {
-z-index: 99999;
-}
-.addcandidate-popup {
-z-index: 9999999;
-}
-.exlpdf_btns table tr td div i {
-    color: #333;
-}
-
-</style>
-
-
-
-
-
 <input type="hidden" id="emptyInvoiceId" name="emptyInvoiceId"/>
-<div class="success_pop" id="selector12" style="display: none;">
-		<i class="fa fa-check-circle"></i><span id="msgdiv"></span>
-  </div>
 <script>
 function getClientInvoiceList(orgRelationId,clientLocationId){
 	
@@ -61,7 +22,7 @@ function getClientInvoiceList(orgRelationId,clientLocationId){
 	result = result  +'<div class="">';
 	result = result  +'    <div class="billingArea"> ';  
  	result = result + '			    <div class="clearfix">																																				                   ';
- 	result = result + '			      <div class="billing_dashboard">                                                                                                                                                                             ';
+ 	result = result + '			      <div class="billing_dashboard noPad"">                                                                                                                                                                             ';
  	result = result + '			        <div class="tabbable positionRelative">                                                                                                                                                                    ';
  	result = result + '			          <div class="onboardcreateButtons">                                                                                                                                                                       ';
 
@@ -86,50 +47,50 @@ function getClientInvoiceList(orgRelationId,clientLocationId){
  result = result + '			         <ul class="nav nav-tabs" id="tab_bar">                                                                                                                                                                    ';
  result = result + '			                                                                                                                                                                                                                   ';
  result = result + '			               <li class="active">                                                                                                                                                                                 ';
- result = result + '			                        <h4>Unbilled</h4>                                                                                                                                                                          ';
+ result = result + '			                        <h4 class="ml10">Unbilled</h4>                                                                                                                                                                          ';
  result = result + '			                        <a  data-toggle="tab" class="onboardCount billbg_orange" title="Draft Invoices">                                                                                                           ';
  result = result + '			                            <div class="pull-left">                                                                                                                                                                ';
  result = result + '			                            <strong>${SourceLeadWeb_currencyCode}</strong>                                                                                                                                         ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
  result = result + '			                            <div class="pull-right ml10">                                                                                                                                                          ';
- result = result + '			                            <div class="count" id="unbilledAmoumt"></div>                                                                                                                                          ';
+ result = result + '			                            <div class="count count-values" id="unbilledAmoumt"></div>                                                                                                                                          ';
  result = result + '			                                <h5>Draft Invoices <span class="paddingLeft" id="draftInvoiceCount"></span></h5>                                                                                                   ';
  result = result + '			                                </div>                                                                                                                                                                             ';
  result = result + '			                        </a>                                                                                                                                                                                       ';
  result = result + '			                    </li>                                                                                                                                                                                          ';
  result = result + '			                    <li>                                                                                                                                                                                           ';
- result = result + '			                        <h4>Un Paid</h4>                                                                                                                                                                           ';
+ result = result + '			                        <h4 class="ml10">Un Paid</h4>                                                                                                                                                                           ';
  result = result + '			                        <a  data-toggle="tab" title="UnPaid Overdue Invoices" class="billingbg_red">                                                                                                               ';
  result = result + '			                        <div class="pull-left">                                                                                                                                                                    ';
  result = result + '			                         <strong>${SourceLeadWeb_currencyCode}</strong>                                                                                                                                            ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
  result = result + '			                            <div class="pull-right ml10">                                                                                                                                                          ';
- result = result + '			                            <div class="count" id="dueAfterInvoiceAmount"></div>                                                                                                                                   ';
+ result = result + '			                            <div class="count count-values" id="dueAfterInvoiceAmount"></div>                                                                                                                                   ';
  result = result + '			                        <h5>Overdue Invoices<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>                                                                                                       ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
  result = result + '			                                                                                                                                                                                                                   ';
  result = result + '			                        </a>                                                                                                                                                                                       ';
  result = result + '			                    </li>                                                                                                                                                                                          ';
  result = result + '			                    <li>                                                                                                                                                                                           ';
- result = result + '			                        <h4>&nbsp;</h4>                                                                                                                                                                            ';
+ result = result + '			                        <h4 class="ml10">&nbsp;</h4>                                                                                                                                                                            ';
  result = result + '			                        <a  data-toggle="tab" title="UnPaid Open Invoices" class="billingbgRed">                                                                                                                   ';
  result = result + '			                        <div class="pull-left">                                                                                                                                                                    ';
  result = result + '			                            <strong>${SourceLeadWeb_currencyCode}</strong>                                                                                                                                         ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
  result = result + '			                            <div class="pull-right ml10">                                                                                                                                                          ';
- result = result + '			                            <div class="count" id="dueBeforeInvoiceAmount"></div>                                                                                                                                  ';
+ result = result + '			                            <div class="count count-values" id="dueBeforeInvoiceAmount"></div>                                                                                                                                  ';
  result = result + '			                        <h5>Open Invoices<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>                                                                                                         ';
  result = result + '			                        </div>                                                                                                                                                                                     ';
  result = result + '			                        </a>                                                                                                                                                                                       ';
  result = result + '			                    </li>                                                                                                                                                                                          ';
  result = result + '			                    <li class="billingbg_greens">                                                                                                                                                                  ';
- result = result + '			                        <h4>Paid</h4>                                                                                                                                                                              ';
+ result = result + '			                        <h4 class="ml10">Paid</h4>                                                                                                                                                                              ';
  result = result + '			                        <a  data-toggle="tab" title="Paid Invoices" class="billbg_green">                                                                                                                          ';
  result = result + '			                        <div class="pull-left">                                                                                                                                                                    ';
  result = result + '			                           <strong>${SourceLeadWeb_currencyCode}</strong>                                                                                                                                          ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
  result = result + '			                            <div class="pull-right ml10">                                                                                                                                                          ';
- result = result + '			                            <div class="count" id="paidInvoiceAmount"></div>                                                                                                                                       ';
+ result = result + '			                            <div class="count count-values" id="paidInvoiceAmount"></div>                                                                                                                                       ';
  result = result + '			                        <h5>Paid Invoices<span class="paddingLeft" id="paidInvoiceCount"></span></h5>                                                                                                              ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
  result = result + '			                        </a>                                                                                                                                                                                       ';
@@ -155,7 +116,7 @@ function getClientInvoiceList(orgRelationId,clientLocationId){
  result = result + '			            <div class="tab-pane active" id="unbilled">                                                                                                                                                            ';
  result = result + '			              <div class="timesheet_out">                                                                                                                                                                       ';
  result = result + '			                <div class="clearfix">                                                                                                                                                                             ';
- result = result + '			                  <div class="timesheet_head timesheetHead-UL"> ';
+ result = result + '			                  <div class="timesheet_head timesheetHead-UL timesheet_head-newstyle"> ';
  
 result = result + ' <div class="pull-left cand-advsrch advsrch_chosen">';
 result = result + ' <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetInvoiceFilter('+orgRelationId+','+clientLocationId+');" title="Refresh">';
@@ -205,7 +166,7 @@ result = result + '</div>';
  result = result + '			      </div>                   																																								                        ';                                                                                                                                                            
  result = result  +'  <div class="clearfix"></div> ';
  result = result + '</ul>';
- result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table exlpdf_btns">';
+ result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table exlpdf_btns exlpdf_btns_btns">';
  result  = result + '   <div id="clientInvoiceList" ></div>';
  result  = result + '   </div>';
  result = result+'	    </div>';
@@ -675,18 +636,14 @@ function generateAutomaticInvoice(){
 					$("#selector12").removeAttr("style");
 					$("#selector12").css("display", "block");
 					$("#msgdiv").html(json.object.count+" Invoice(s) Generated Successfully.");
-					msgFadein();
-            	 location.replace(vmsUrl+"/invoiceList");	            	 
+					$("#selector12").fadeIn(200);
+			        $('#selector12').delay(2000).fadeOut('slow');
+//             	 location.replace(vmsUrl+"/invoiceList");	            	 
         },
     });  
 }
 </script>
-<script>
-	function msgFadein() {
-		$("#selector12").fadeIn(200);
-        $('#selector12').delay(2000).fadeOut('slow');
-	}
-</script>
+
 
 <script>
 function clientInvoicePagination(){  
@@ -722,7 +679,7 @@ function clientInvoicePagination(){
 </script>
 
 <!-- modal pop -->
-<div class="side_mask" style="display: none"></div>
+<div class="side_mask side_mask_new" style="display: none"></div>
 <div class="modal modal_invoice datatable_filter" style="display: none;">
    <div id="linkPopup" ></div>
 </div>
@@ -731,13 +688,13 @@ function clientInvoicePagination(){
 
  <!-- Add invoice Popup -->
 		  <div id="createInvoiceDiv"></div>
-		  <div class="pop_mask"></div>
+		  <div class="pop_mask pop_mask_newstyles"></div>
 		  <script>
 		    //addcandidate-popup script
 		    function createBill(orgRelationId){
 		        
 		   	 var result = '';
-		        result = result +'<div class="addcandidate-popup">';
+		        result = result +'<div class="addcandidate-popup addcandidate-popup-newstyles">';
 			  result = result +'  <div class="row">';
 			  result = result +'    <div class="col-md-offset-0 col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>';
 			  result = result +'    <div class="col-md-4 mt25">';

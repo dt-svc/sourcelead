@@ -30,6 +30,10 @@
 		<div class="immigraInnWrap">
 		<!-- Filter For Lca -->
 <div class="positionRelative reportHead clearfix">
+	<span class="pull-left refreIcon">
+	     <a href="javascript:void(0)" class="refeIcon" id="resetLCA" title="Refresh" onclick="refreshList();"></a>
+	 </span>    
+     
       <ul class="pull-right list-unstyled list-inline">
         <sec:authorize access="hasRole('ROLE_ADD_LCA')">
 			<li><a href="${SourceLeadWeb_vmsUrl}/immigration/loadNewLCA" class="newAdBtn mr5">+ New </a></li>
@@ -292,7 +296,7 @@
 	 							        break;
 	 							    }
 	 								  if (opt.locationsList[k] !== null && opt.locationsList[k] !== '' && typeof opt.locationsList[k] !== 'undefined') {
-	 									console.log( " test " +opt.locationsList[k]);
+	 									//console.log( " test " +opt.locationsList[k]);
 	 								    result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
 	 								  }
 	 								  
@@ -419,7 +423,7 @@
          }
      });
      
-    $("table").colResizable(); // for resizing columns in tables.
+  //  $("table").colResizable(); // for resizing columns in tables.
  }
 // reActivateLca(lcaUuid)
 </script>
@@ -430,7 +434,12 @@
 	   
 	});
 </script>
-
+<script type="text/javascript">
+function refreshList(){
+	$("#lcaSearch").val('');
+	getDynamicLCAList();
+}
+</script>
 <script type="text/javascript">
 function deleteLcaListId(lcaUuid){ // only stauts updated with reason. active 1 , deactive 0.
 	 $(".project_inn_mask").remove();

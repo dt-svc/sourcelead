@@ -721,6 +721,7 @@ public class ClientRestController {
 							 referContacts.setLastName(orgSpoc.getVendorUser().getLastName());
 							 referContacts.setContactUserEmail(orgSpoc.getVendorUser().getEmail());
 							 referContacts.setContactUserPhone(orgSpoc.getVendorUser().getMobilePhone());
+							 referContacts.setContactUserUUID(SourceLeadRandomCodeHelper.generateUUID());
 							 referContacts.setContactUser(orgSpoc.getVendorUser());
 							 referContacts.setVendorType(1);
 							 referContacts.setCreatedDate(new Date());
@@ -1133,9 +1134,9 @@ public class ClientRestController {
 				
 				Map<Long, String[]> clientData = null;
 				if(orgRelation.getResponderLocationId().getId().longValue() != orgLocation.getId().longValue()) {
-		 				clientData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getResponderLocationId().getOrg().getId(),formFieldId,orgLocation.getOrg().getId());
+		 				clientData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getResponderLocationId().getOrg().getId(),formFieldId,orgLocation.getOrgId());
 		 			}else if(orgRelation.getLocationId().getId().longValue() != orgLocation.getId().longValue()) {
-		 				clientData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getLocationId().getOrg().getId(),formFieldId,orgLocation.getOrg().getId());
+		 				clientData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getLocationId().getOrg().getId(),formFieldId,orgLocation.getOrgId());
 		 			}
 			 Map<String,String> dataMap = new HashMap<>();
 			 if(clientData!= null && !clientData.isEmpty()) {
