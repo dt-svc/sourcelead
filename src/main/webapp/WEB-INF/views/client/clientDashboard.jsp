@@ -353,6 +353,9 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 				<h1 id="clientNameDiv"></h1>
 				<div class="proj_close">
 					<i></i>
+					<div class="success_pop" id="selector12" style="display: none;">
+						<i class="fa fa-check-circle"></i><span id="msgdiv"></span>
+  					</div>
 				</div>
 				<div id="clientSideDiv"></div>
 				
