@@ -53,9 +53,9 @@ private static final Logger logger = LoggerFactory.getLogger(RequirementWorkFlow
 public RequirementWorkFlow saveRequirementWorkFlowDetails(RequirementWorkFlow requirementWorkFlow,
 		OrgLocations orgLocations) {
 	logger.debug("saveRequirementWorkFlowDetails starts");
-	Session session = this.sessionFactory.getCurrentSession();
+	
 	try {
-		
+		Session session = this.sessionFactory.getCurrentSession();
 		if (requirementWorkFlow != null) {
 			session.saveOrUpdate(requirementWorkFlow);
 		}
@@ -114,18 +114,6 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		}
 	}
 
-/*	@Override
-	public RequirementWorkFlowStages saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages){
-		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			session.saveOrUpdate(requirementWorkFlowStages);
-			return requirementWorkFlowStages;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-
-	} */    
 	@Override
 	public RequirementWorkFlowStages saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages){
 		logger.debug("Running saveRequirementWorkFlowStagesByOrgLocationId DAO");
@@ -143,7 +131,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	
 	@Override
 	public ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowsByOrgLocationId(
-			RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations) throws Exception {
+			RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations) {
 		logger.debug("Running getRequirementWorkFlowsByOrgLocationId DAO");
 		try{
 			Session session = this.sessionFactory.getCurrentSession();
@@ -236,7 +224,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}
 
 	@Override
-	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesListByUuid(String uuid, Long orgLocationId) throws Exception {
+	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesListByUuid(String uuid, Long orgLocationId)  {
 		logger.debug("Running getRequirementWorkflowStagesListByUuid DAO");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -384,7 +372,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public RequirementWorkFlowStages getRequirementWorkFlowStageByUuidAndWorkflowUuid(String uuid, String workflowUuid, Long orgLocationId) throws Exception {
+	public RequirementWorkFlowStages getRequirementWorkFlowStageByUuidAndWorkflowUuid(String uuid, String workflowUuid, Long orgLocationId)  {
 		logger.debug("Running getRequirementWorkFlowStageByUuidAndWorkflowUuid DAO");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -400,7 +388,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesBySeqOrderAndWorkflowUuid(String workflowUuid, Integer id, Long orgLocationId) throws Exception {
+	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesBySeqOrderAndWorkflowUuid(String workflowUuid, Integer id, Long orgLocationId)  {
 		logger.debug("Running getRequirementWorkflowStagesBySeqOrderAndWorkflowUuid DAO");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -417,14 +405,19 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	
 	//delete workflow stage
 	@Override
-	public RequirementWorkFlowStages getRequirementWorkFlowStagesByUuid(String uuid, Long orgLocationId) throws Exception {
+	public RequirementWorkFlowStages getRequirementWorkFlowStagesByUuid(String uuid, Long orgLocationId) {
 		logger.debug("Running getRequirementWorkFlowStagesByUuid DAO");
+		try {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementWorkFlowStages stages where stages.uuid =:uuid and stages.orgLocationId.id =:orgLocationId";
 		RequirementWorkFlowStages requirementWorkFlowStages = (RequirementWorkFlowStages)session.createQuery(query).setParameter("uuid", uuid).setLong("orgLocationId", orgLocationId).uniqueResult();
 		return requirementWorkFlowStages;
+	}catch(Exception e) {
+		logger.error(e+" in getRequirementWorkFlowStagesByUuid DAO");
+		e.printStackTrace();
+		return null;
 	}
-
+	}
 	@Override
 	public String deleteRequirementWorkFlowStagesByOrgLocationIdAndUuid(String uuid) {
 		logger.debug("Running deleteRequirementWorkFlowStagesByOrgLocationIdAndUuid DAO");
@@ -442,16 +435,15 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}
 
 	@Override
-	public RequirementWorkFlowStages saveRequirementWorkFlowStages(RequirementWorkFlowStages requirementWorkFlowStages)
-			throws Exception {
+	public RequirementWorkFlowStages saveRequirementWorkFlowStages(RequirementWorkFlowStages requirementWorkFlowStages){
 		logger.debug("Running saveRequirementWorkFlowStages DAO");
-		Session session = this.sessionFactory.getCurrentSession();
 		try {
+			Session session = this.sessionFactory.getCurrentSession();
 			if(requirementWorkFlowStages != null) {
 				session.saveOrUpdate(requirementWorkFlowStages);
 			}
 		} catch (Exception exception) {
-			logger.error("Exception caught while  saveCandidateLcaJobDetails information " + exception.getMessage());
+			logger.error("Exception caught while  saveRequirementWorkFlowStages information " + exception.getMessage());
 			exception.printStackTrace();
 		}
 		return requirementWorkFlowStages;
@@ -504,7 +496,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}
 
 	@Override
-	public void saveRequirementWorkFlowTask(RequirementWorkFlowTasks requirementWorkFlowTasks) throws Exception {
+	public void saveRequirementWorkFlowTask(RequirementWorkFlowTasks requirementWorkFlowTasks) {
 		logger.debug("Running saveRequirementWorkFlowTask DAO");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -517,7 +509,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 
 	@Override
 	public ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(
-			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user) throws Exception {
+			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user){
 		logger.debug("Running getRequirementWorkFlowTaskList DAO");
 		try{
 			Session session = this.sessionFactory.getCurrentSession();
@@ -613,7 +605,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 
 	@Override
 	public List<RequirementWorkFlowStages> getNextRequirementWorkflowStagesListByUuid(
-			RequirementWorkFlowDTO requirementWorkFlowDTO, Long id) throws Exception {
+			RequirementWorkFlowDTO requirementWorkFlowDTO, Long id) {
 		logger.debug("Running getNextRequirementWorkflowStagesListByUuid DAO");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -633,7 +625,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 	}
 
 	@Override
-	public List<RequirementWorkFlowStages> getInactiveRequirementWorkflowStagesListByUuidAndOrgLocationId(String uuid, Long id) throws Exception {
+	public List<RequirementWorkFlowStages> getInactiveRequirementWorkflowStagesListByUuidAndOrgLocationId(String uuid, Long id) {
 		logger.debug("Running getInactiveRequirementWorkflowStagesListByUuidAndOrgLocationId DAO");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -667,8 +659,7 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		}
 
 	@Override
-	public List<RequirementWorkFlowStages> getRequirementworkflowStageByQuestionnaireId(Long id, Long orgLocationId)
-			throws Exception {
+	public List<RequirementWorkFlowStages> getRequirementworkflowStageByQuestionnaireId(Long id, Long orgLocationId) {
 		logger.debug("Running getRequirementworkflowStageByQuestionnaireId DAO");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
