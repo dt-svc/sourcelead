@@ -14,11 +14,7 @@ width: 100% !important;
 }
 </style>
 <div id="loading"></div>
-<script type="text/javascript">
-window.onload = function () {
-	cscInit();
- };
-</script>
+
 
 <div id="popUp"></div>	
 
