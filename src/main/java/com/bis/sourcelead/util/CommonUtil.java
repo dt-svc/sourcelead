@@ -200,6 +200,9 @@ public class CommonUtil {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${pmsUrl}")
+    private String pmsUrl;
+	
 	@Autowired
 	EmailScenarioService emailScenarioService;
 	
@@ -2410,7 +2413,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,new ArrayList<EmailAttachment>());
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
-	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()+"&tabType=team").toString();
+	     actionLink = notificationLink.append(pmsUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()+"&tabType=team").toString();
 
 		 emailScenerioUtil.sendNotification(actionLink, loginUser,user, projectApproverHierarchy.getProjectId().getOrgLocationsId(), notificationScenario,new HashMap<String,String>());
 		 }
