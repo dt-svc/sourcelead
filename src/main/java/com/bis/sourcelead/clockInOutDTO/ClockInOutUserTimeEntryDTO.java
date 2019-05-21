@@ -49,6 +49,8 @@ public class ClockInOutUserTimeEntryDTO {
 	
 	private String totalBreakTime;
 	
+	private String geoLocationData;
+	
 
 	public BigInteger getId() {
 		return id;
@@ -224,6 +226,14 @@ public class ClockInOutUserTimeEntryDTO {
 
 	public void setTotalBreakTime(String totalBreakTime) {
 		this.totalBreakTime = totalBreakTime;
+	}
+
+	public String getGeoLocationData() {
+		return geoLocationData;
+	}
+
+	public void setGeoLocationData(String geoLocationData) {
+		this.geoLocationData = geoLocationData;
 	}
 
 }
