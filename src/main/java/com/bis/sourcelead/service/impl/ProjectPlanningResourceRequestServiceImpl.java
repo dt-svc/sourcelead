@@ -44,9 +44,6 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
-	@Value("${pmsUrl}")
-	private String pmsUrl;
-	
 	@Autowired
 	EmailScenarioService emailScenarioService;
 	
