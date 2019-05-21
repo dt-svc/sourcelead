@@ -113,6 +113,9 @@ public class ProjectsRestController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 
+	@Value("${pmsUrl}")
+    private String pmsUrl;
+	
 	@Autowired
 	EmailScenarioService emailScenarioService;
 
@@ -1840,7 +1843,7 @@ public class ProjectsRestController {
 			 User toUser = pmh.getProjectMemberId().getProjectMemberCandidteId().getConsultantUser();
 			 StringBuilder notificationLink = new StringBuilder();
 			 String actionLink="";
-		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()).toString();
+		     actionLink = notificationLink.append(pmsUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()).toString();
 		     emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getProjectMemberCandidteId().getOrgLocationId(), notificationScenario,new HashMap<String,String>());
 		  
 	       }
