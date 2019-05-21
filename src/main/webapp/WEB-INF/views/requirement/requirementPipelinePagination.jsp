@@ -5,7 +5,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-
+<div id="popupSaveId" class="popupWrap popupWrap2" style="display: none;"></div>
 
 <script>
 	function requirementPipelinePagination(url, requirementId, submissionType) {
@@ -13,6 +13,8 @@
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var clientSubmissions = '${clientSubmissions}';
 		var isSpocActive = '${isSpocActive}';
+		var isManager = '${isManager}';
+		var isAdmin = '${isAdmin}';
 		var colIndex = 0;
 		$('#requirementsPagination')
 				.DataTable(
@@ -373,6 +375,11 @@
 												result = result
 														+ '         <td><div><span>--</span></div></td>';
 											}
+											if(opt.orgName == null || opt.orgName == ''){
+												 if(isManager == "true" || isAdmin == "true"){
+												result = result '<i class="fa fa-pencil pull-left ml10 mt2 cursorPointer" onClick="applicantsourceHandler('requirementId','opt.id');"></i>';
+												 }
+												 }
 											return result;
 										}
 									},
@@ -649,4 +656,71 @@
 			 getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
 		 }
 	}
+</script>
+
+<script type="text/javascript">
+
+function updateUserPop(submissionId){
+$("#popupSaveId").empty();
+var result = "";	
+result = result +'<div class="clearfix">                                 ';
+result = result +'<div class="popupHead clearfix"> Assign Employee                                                                      ';
+result = result +'	<i class="closePop pull-right clPopClose" onClick="applicantsourceHandlerClose()"></i>                              ';
+result = result +'</div>                                                                                                                ';
+result = result +'<div class="clockWrap">                                                                                               ';
+result = result +'	<label>Assign Employee</label>                                                                                      ';
+result = result +'	<div class="mt5 width100percnt">                                                                                    ';
+result = result +'	<select class="chosen-select width100percnt" data-placeholder="Select Assign Employee" id="assignedNewPerson">      ';
+result = result +'		<option>Employee</option>                                                                                       ';
+result = result +'	</select>                                                                                                           ';
+result = result +'	</div>                                                                                                              ';
+result = result +'</div>                                                                                                                ';
+result = result +'<div class="col-md-12 mb">                                                                                            ';
+result = result +'	<div class="pull-right">                                                                                            ';
+result = result +'		<button type="button" class="btn btn-primary" onclick="applicantsourceSave('+submissionId+')">Assign</button>                   ';
+result = result +'	        <button type="button" class="btn btn-default ml" onClick="applicantsourceHandlerClose()">Cancel</button>    ';
+result = result +'	 </div>                                                                                                             ';
+result = result +'</div>                                                                                                                ';
+result = result +'</div>                                                                                                                ';
+$("#popupSaveId").append(result);
+$('#assignedNewPerson').chosen();
+}
+</script>
+	
+<script>
+function applicantsourceHandler(reqId,submissionId) {
+	$(".mask, .popupWrap2").fadeIn();
+	updateUserPop(submissionId);
+	if(reqId != '' && reqId != 'undefined' && reqId != null){
+		$.ajax({
+	           type : "POST",
+	           url: sourceleadUrl"/updateApplicantSourceMember?&reqId="+reqId,    
+	            success :function(data) {
+		                var json = JSON.parse(data);
+	                $('#assignedNewPerson').empty();
+	                $('#assignedNewPerson').append('<option value="">--Select Assign Employee--</option>');
+	                for (var i = 0; i < json.length; i) {
+	                    var opt = json[i];
+	                    $('#assignedNewPerson').append('<option value='+opt.assignedUserIdTemp+' >'+opt.assignedUserName+'</option>');
+	                }
+	                $('#assignedNewPerson').trigger("chosen:updated");
+	            },
+	      }); 
+	}
+}
+function applicantsourceHandlerClose() {
+	$(".mask, .popupWrap2").fadeOut();
+}
+function applicantsourceSave(submissionId){
+	var userId = $("#assignedNewPerson").val();
+	if(userId !=null && userId !=''){
+	$.ajax({
+        type : "POST",
+        url: sourceleadUrl"/editApplicantSourceName?&submissionId="+submissionId"&userId="+userId,    
+         success :function(response) {
+        	 applicantsourceHandlerClose();
+         },
+   }); 
+	}
+}
 </script>
