@@ -1,31 +1,17 @@
 package com.bis.sourcelead.util;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.lf5.util.ResourceUtils;
-import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.dto.MobilePushNotificationDTO;
-import com.bis.sourcelead.entity.MobileDeviceTokenInformaion;
 import com.bis.sourcelead.service.MobilePushNotificationService;
-
-import javapns.Push;
-import javapns.communication.exceptions.CommunicationException;
-import javapns.communication.exceptions.KeystoreException;
-import javapns.notification.PushNotificationPayload;
-import javapns.notification.PushedNotification;
-import javapns.notification.ResponsePacket;
 
 @Component
 public class PushNotificationUtill {
