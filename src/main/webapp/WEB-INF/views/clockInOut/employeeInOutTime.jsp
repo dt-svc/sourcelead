@@ -312,7 +312,7 @@ function getUserTimeEntriesPagination(url){
    		    		
 	            	  result = result + '    <td>&nbsp;</td>   ';
 	            	  
-	            	  result = result + '    <td>&nbsp;</td>  ';
+	            	  result = result + '    <td>'+report.geoLocationData+'</td>  ';
 	            	  
                 	  result = result + '    <td>&nbsp;</td>              ';
                 	  
