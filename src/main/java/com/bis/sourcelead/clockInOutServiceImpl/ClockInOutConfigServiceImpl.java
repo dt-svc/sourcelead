@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -371,7 +372,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		return clockInOutConfigDao.getExistedBreakTime(clockInOutId);
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "unused" })
 	@Override
 	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId,String dayWisetype,String currentDate,String type) {
 		
@@ -412,6 +413,20 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    	String brksum = null;
 				    	
 				    	for (ClockInOutUserTimeEntryDTO data : uniqueData.getValue()) {
+				    		
+				    		
+				    		if(data.getGeoLocationData() != null) {
+				    			JSONObject jsonObj = new JSONObject(data.getGeoLocationData());
+				    			if(jsonObj.has("city") && jsonObj.getString("city") != ""){
+									main.setGeoLocationData(jsonObj.getString("city")+", "+jsonObj.getString("countryName"));
+								}else {
+									main.setGeoLocationData(jsonObj.getString("countryName"));
+
+								}
+				    		}else {
+								main.setGeoLocationData("--");
+				    		}
+				    		
 				    		
 				    		int indBrksec = 0;
 					    	int indBrkmin = 0;
