@@ -709,8 +709,8 @@ function toggleAssociates(source) {
 			
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
-			startDateText = startDateText+"<div  class='tbldata-dotdot-100' id='"+maxRowNum+"startDate' >";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  data-validation="required" field-name="Start Date" value="'+projectStartDate+'" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
+			startDateText = startDateText+"<div  class='tbldata-dotdot-vsm' id='"+maxRowNum+"startDate' >";
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  field-name="Start Date" placeholder="Start Date" data-validation="required"  field-name="Start Date" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
