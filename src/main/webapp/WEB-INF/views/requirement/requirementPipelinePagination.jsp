@@ -13,6 +13,8 @@
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var clientSubmissions = '${clientSubmissions}';
 		var isSpocActive = '${isSpocActive}';
+		var isManager = '${isManager}';
+		var isAdmin = '${isAdmin}';
 		var colIndex = 0;
 		$('#requirementsPagination')
 				.DataTable(
@@ -370,11 +372,17 @@
 														+ opt.createdUser + ''
 														+ orgName + '<br/>'
 														+ candidateSource
-														+ '</span><i class="fa fa-pencil pull-left ml10 mt2 cursorPointer" onClick="applicantsourceHandler('+requirementId+','+opt.id+');"></i></div></td>';
+														+ '</span>'
+														+'</div></td>';
 											} else {
 												result = result
 														+ '         <td><div><span>--</span></div></td>';
 											}
+											if(opt.orgName == null || opt.orgName == ''){
+											 if(isManager == "true" || isAdmin == "true"){
+											result = result +'<i class="fa fa-pencil pull-left ml10 mt2 cursorPointer" onClick="applicantsourceHandler('+requirementId+','+opt.id+');"></i>';
+											 }
+											 }
 											return result;
 										}
 									},
@@ -751,7 +759,7 @@
 <script type="text/javascript">
 
 function updateUserPop(submissionId){
-	$("#popupSaveId").empty();
+$("#popupSaveId").empty();
 var result = "";	
 result = result +'<div class="clearfix">                                 ';
 result = result +'<div class="popupHead clearfix"> Assign Employee                                                                      ';
