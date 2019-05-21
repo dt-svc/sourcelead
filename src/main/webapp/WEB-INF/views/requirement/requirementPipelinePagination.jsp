@@ -811,7 +811,7 @@ function applicantsourceHandlerClose() {
 }
 function applicantsourceSave(submissionId){
 	var userId = $("#assignedNewPerson").val();
-	if(submissionId !=null && submissionId !=''){
+	if(userId !=null && userId !=''){
 	$.ajax({
         type : "POST",
         url: atsUrl+"/editApplicantSourceName?&submissionId="+submissionId+"&userId="+userId,    
