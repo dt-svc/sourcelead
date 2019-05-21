@@ -1,8 +1,6 @@
 package com.bis.sourcelead.clockInOutDaoImpl;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -43,7 +41,6 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
-import com.bis.sourcelead.payroll.dto.IntiateUSPayrollDTO;
 import com.bis.sourcelead.service.OrgLocationService;
 
 @SuppressWarnings("unchecked")
@@ -721,7 +718,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 	
 	@Override
 	@Transactional
-	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, Long orgLocationId, Date sendDate) {
+	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, OrgLocations orgLocation, Date sendDate) {
 		
 		List<ClockInOutAssociateReportSummaryDTO> associateReportSummaryList = new ArrayList<ClockInOutAssociateReportSummaryDTO>();
 
@@ -754,13 +751,13 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			.append("uRole.ROLE_ID as roleId,")
 			.append("emp.DEPARTMENT_ID as depId,")
 			.append("clk.CLOCK_OUT_DATE as clockOutDate,")
-			.append("clk.TOTAL_CLOCK_TIME as totalTime,")
+			.append("clk.TOTAL_TIME as totalTime,")
 			//.append("task.TASK_NAME as projectTaskName,")
 			.append("clk.COMMENTS as comments ")
-			.append("FROM sourcelead.CLOCK_INOUT clk LEFT JOIN USER usr ON clk.USER_ID = usr.ID ")
+			.append("FROM CLOCK_INOUT clk LEFT JOIN USER usr ON clk.USER_ID = usr.ID ")
 			.append("LEFT JOIN USER_ROLE uRole ON clk.USER_ID = uRole.USER_ID ")
 			.append("LEFT JOIN EMPLOYEE emp ON clk.USER_ID = emp.USER_ID ")
-			.append("LEFT JOIN team_members tm ON clk.USER_ID = tm.MEMBER_USER_ID ")
+			.append("LEFT JOIN TEAM_MEMBERS tm ON clk.USER_ID = tm.MEMBER_USER_ID ")
 			.append("where clk.ORG_LOCATION_ID = :clkOrgLocationID ")
 			.append("AND uRole.ORG_LOCATIONS_ID = :uRoleOrgLocationID ")
 			.append("AND emp.ORG_LOCATIONS_ID = :empOrgLocationID");
@@ -827,7 +824,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			if(clockInOutFiltersDTO.getCurrentDate() != null && !clockInOutFiltersDTO.getCurrentDate().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getCurrentDate())) {
 				String[] currDates = clockInOutFiltersDTO.getCurrentDate().split("To");
 				for(int i=0; i < currDates.length; i++) {
-			        SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
+			        SimpleDateFormat sdf1 = new SimpleDateFormat(orgLocation.getDateFormat());
 			        java.util.Date date = sdf1.parse(currDates[i]);
 			        java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
 					dateRangeList[i] = sqlStartDate;
@@ -841,9 +838,9 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 //			}
  				
 			Query queryObj = session.createSQLQuery(sb.toString()+subQuery);
-			queryObj.setLong("clkOrgLocationID", orgLocationId);
-			queryObj.setLong("uRoleOrgLocationID", orgLocationId);
-			queryObj.setLong("empOrgLocationID", orgLocationId);
+			queryObj.setLong("clkOrgLocationID", orgLocation.getId());
+			queryObj.setLong("uRoleOrgLocationID", orgLocation.getId());
+			queryObj.setLong("empOrgLocationID", orgLocation.getId());
 			
 			if(clockInOutFiltersDTO.getOrgDepartments() != null && !clockInOutFiltersDTO.getOrgDepartments().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getOrgDepartments()))
 				queryObj.setParameterList("deptList", deptList);
