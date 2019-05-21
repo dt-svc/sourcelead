@@ -15,6 +15,46 @@ public class MissingTimesheetResultRepotDTO {
 	private Long dueDays;
 	
 	private String submittedOn;
+	
+	private String manager1;
+	
+	private String manager2;
+	
+	private String approvalMechanism;
+	
+	private String noOfHours;
+
+	public String getNoOfHours() {
+		return noOfHours;
+	}
+
+	public void setNoOfHours(String noOfHours) {
+		this.noOfHours = noOfHours;
+	}
+
+	public String getApprovalMechanism() {
+		return approvalMechanism;
+	}
+
+	public void setApprovalMechanism(String approvalMechanism) {
+		this.approvalMechanism = approvalMechanism;
+	}
+
+	public String getManager1() {
+		return manager1;
+	}
+
+	public void setManager1(String manager1) {
+		this.manager1 = manager1;
+	}
+
+	public String getManager2() {
+		return manager2;
+	}
+
+	public void setManager2(String manager2) {
+		this.manager2 = manager2;
+	}
 
 	public String getEmployeName() {
 		return employeName;
