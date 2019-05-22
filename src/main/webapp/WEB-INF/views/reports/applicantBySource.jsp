@@ -520,7 +520,6 @@ function getCustomDates(){
 			 for(var i=0; i < response.data.length ; i++){
 				 var applicantSource = response.data[i];
 				 
-	   					console.log(applicantSource);
 				 result = result +"<tr>"; 
 				
 				 result = result +"<td>"; 
