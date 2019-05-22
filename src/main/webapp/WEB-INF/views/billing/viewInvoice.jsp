@@ -396,7 +396,6 @@ function submitFilterActions(){
 function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus,namesStatus){
 	var invoiceUUID ='${invoiceUUID}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
-	console.log(dateRange);
 	$.ajax({
 	  	type: "GET",
 	    url: vmsUrl+"/getInvoiceTimelineHistory?"+tokenParamName+"="+tokenValue+"&locationId="+locationId+"&invoiceUUID="+invoiceUUID+"&searchVal="+searchVal+"&orderVal="+order+"&dateRange="+dateRange+"&checkedStatus="+checkedStatus+"&namesStatus="+namesStatus,
