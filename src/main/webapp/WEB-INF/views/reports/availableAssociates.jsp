@@ -104,7 +104,6 @@
 				 
 				 var projects = "";
 				 for(var e in response.data) {
-					 console.log("jjj>>>"+response.data[e].id)
 					 projects += "<option value="+response.data[e].id+">"+response.data[e].projectName+"</option>";
 				 }
 		        $("#projects").append(projects);
