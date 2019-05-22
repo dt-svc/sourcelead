@@ -38,6 +38,9 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Value("${pmsUrl}")
+    private String pmsUrl;
+	
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
@@ -134,7 +137,7 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
        
         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
         StringBuilder notificationLink = new StringBuilder();
-        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
+        String actionLink = notificationLink.append(pmsUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
         emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 		
@@ -177,7 +180,7 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ONHOLD_BULK_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());
 
         StringBuilder notificationLink = new StringBuilder();
-        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
+        String actionLink = notificationLink.append(pmsUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
         emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 		
@@ -272,7 +275,7 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
 		 if(StringUtils.isNotBlank(emailScenario.getSignature())){
 			 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
 		 }
-		 String url = sourceleadUrl;
+		 String url = pmsUrl;
        
         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
        
@@ -282,7 +285,7 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
        
         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
         StringBuilder notificationLink = new StringBuilder();
-        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
+        String actionLink = notificationLink.append(pmsUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
         emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getProjectPlanningRequestId().getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 	}
