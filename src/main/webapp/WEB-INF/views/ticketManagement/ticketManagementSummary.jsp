@@ -25,7 +25,7 @@
       <div class="pull-left">
         <h2>Ticket Summary</h2>
       </div>
-	<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='$${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>">Ticket List</a> &raquo; Ticket Summary</div>
+	<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>">Ticket List</a> &raquo; Ticket Summary</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix">
