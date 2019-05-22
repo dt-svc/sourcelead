@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -1145,13 +1146,13 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		List<ClockInOutAssociateReportSummaryDTO> listOfDTO = new ArrayList<ClockInOutAssociateReportSummaryDTO>();
 		List<ClockInOutAssociateReportSummaryDTO> emptyList = new ArrayList<ClockInOutAssociateReportSummaryDTO>();
 		ClockInOutAssociateReportSummaryDTO associateReportDTO = new ClockInOutAssociateReportSummaryDTO();
-		List<ClockInOutAssociateReportSummaryDTO> getAssociateReportList = clockInOutConfigDao.getAssociateClockInOutReportSummary(clockInOutFiltersDTO, orgLocation.getId(), null);
+		List<ClockInOutAssociateReportSummaryDTO> getAssociateReportList = clockInOutConfigDao.getAssociateClockInOutReportSummary(clockInOutFiltersDTO, orgLocation, null);
 		
 		if(getAssociateReportList.size()>0) {
 			
 			 Calendar cal = Calendar.getInstance();
 				String[] currDates = clockInOutFiltersDTO.getCurrentDate().split("To");
-				SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
+				SimpleDateFormat sdf1 = new SimpleDateFormat(orgLocation.getDateFormat());
 				Date date = new Date();
 				
 				try {
@@ -1168,19 +1169,36 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				masterList.add(listOfDTO);
 			}
 			else if("Last_7_days".equals(clockInOutFiltersDTO.getDayWisetype())) {
-				
-				for(int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i++) {
-				    cal.set(Calendar.DAY_OF_WEEK, i);
-				    int day = cal.get(Calendar.DAY_OF_WEEK);
-				    Date sendDate = cal.getTime();
 				    
+				
+				Date s = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), currDates[0]);
+				Date e = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), currDates[1]);
+				LocalDate start = LocalDate.fromDateFields(s);
+				LocalDate end = LocalDate.fromDateFields(e);
+				List<LocalDate> totalDates = new ArrayList<>();
+				while (!start.isAfter(end)) {
+				    totalDates.add(start);
+				    start = start.plusDays(1);
+				}
+				
+				for (LocalDate localDate : totalDates) {
+					System.out.println(localDate);
+				}
+				
+				
+			  	for(int i = Calendar.MONDAY; i >= Calendar.SUNDAY; i--) {
+				    cal.set(Calendar.DAY_OF_WEEK, i+1);
+				    int day = cal.get(Calendar.DAY_OF_WEEK) - 1;
+				    Date sendDate = cal.getTime();
+				
 				    for(ClockInOutAssociateReportSummaryDTO associate : getAssociateReportList) {
+				    	
 				    
 			    	java.sql.Date sdDate = associate.getClockInDate();
 			    	java.sql.Date currDate = new java.sql.Date(sendDate.getTime());
 			    	
 			        switch (day) {
-			            case 1:
+			            case 0:
 				            {
 				                System.out.print("Sunday");
 				                if (currDate.compareTo(sdDate) == 0) {
@@ -1192,7 +1210,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 						    	}
 				            }
 			                break;
-			            case 2:
+			            case 1:
 			                {
 				                System.out.print("Monday");
 				                if (currDate.compareTo(sdDate) == 0) {
@@ -1204,10 +1222,10 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 					    		}
 				            }
 			                break;
-			            case 3:
+			            case 2:
 			                {
 				                System.out.print("Tuesday");
-				                if (currDate.compareTo(sdDate) == 0) {
+				                if (currDate.compareTo(sdDate) == 1) {
 				                	associateReportDTO.setClockInDate(associate.getClockInDate());
 									listOfDTO.add(associate);
 						        }
@@ -1216,10 +1234,10 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 						    		}
 				            }
 			                break;
-			            case 4:
+			            case 3:
 			                {
 				                System.out.print("Wednesday");
-				                if (currDate.compareTo(sdDate) == 0) {
+				                if (currDate.compareTo(sdDate) == 1) {
 				                	associateReportDTO.setClockInDate(associate.getClockInDate());
 									listOfDTO.add(associate);
 						        }
@@ -1228,7 +1246,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 						    	}
 				            }
 			                break;
-			            case 5:
+			            case 4:
 			                {
 				                System.out.print("Thursday");
 				                if (currDate.compareTo(sdDate) == 0) {
@@ -1240,7 +1258,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 						    	}
 				            }
 			                break;
-			            case 6:
+			            case 5:
 			                {
 				                System.out.print("Friday");
 				                if (currDate.compareTo(sdDate) == 0) {
@@ -1252,7 +1270,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 						    	}
 				            }
 			                break;
-			            case 7:
+			            case 6:
 			                {
 				                System.out.print("Saturday");
 				                if (currDate.compareTo(sdDate) == 0) {
