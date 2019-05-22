@@ -796,5 +796,16 @@ public class CandidateController {
 	    	}
 		  
 	}
+	    
+	    @RequestMapping(value = "/candidateSourceList")
+		public ModelAndView candidateSourceList(HttpServletRequest request, HttpServletResponse response)
+		{
+			ModelAndView model = new ModelAndView();
+			 
+			model.setViewName("candidates/candidateSourceList");
+			
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			return model;
+		}
 	
 }
