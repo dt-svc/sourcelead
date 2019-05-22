@@ -42,13 +42,13 @@ $( document ).ready(function() {
         <div class="row min">
             <div class="col-md-5">
              <div class="row">
-            	  <div class="col-md-6">
+            	  <div class="col-md-6" id="fromDateDiv">
               <label class="clearfix">From Date<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix input-group errorInptgroup">
                 <input type="text" readonly class="form-control calendar" name="startDate" value="" field-name="From Date" id="fromDate" placeholder="From Date" data-validation="required" onclick="datePickeerTest();">
               </div> 
               </div>
-            	  <div class="col-md-6">
+            	  <div class="col-md-6" id="toDateDiv">
               <label class="clearfix">To Date<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix input-group errorInptgroup">
                 <input type="text" readonly class="form-control calendar" name="endDate" value="" field-name="To Date" id="toDate" placeholder="To Date" data-validation="required" onclick="datePickeerTest();">
@@ -774,6 +774,8 @@ function reportCollapse() {
 	//$("#leaveReportsList").slideUp();
 }
 function resetReportCollapse() {
+	$('#fromDateDiv').find('p.jquery_form_error_message').remove();
+	$('#toDateDiv').find('p.jquery_form_error_message').remove();
 	$("#hearderId").hide();
 	document.getElementById("showReport").style.display="none";
 // 	document.getElementById("hearderId").style.display="none";
