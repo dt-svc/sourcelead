@@ -215,6 +215,10 @@ public class ClientServiceImpl implements ClientService {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	
+	@Value("${vmsUrl}")
+    private String vmsUrl;
+	
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
@@ -1789,9 +1793,9 @@ public class ClientServiceImpl implements ClientService {
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = "";
 		if("Client".equalsIgnoreCase(type))
-			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
+			actionLink = actionLinkBuilder.append("").append(vmsUrl).append("/").append("clientDashboard?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
 		else
-			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
+			actionLink = actionLinkBuilder.append("").append(vmsUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
 		String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(), globalVarsMap,noificationEmailScenario);
 		noificationEmailScenario.setBody(notificationbody);
 
@@ -1852,9 +1856,9 @@ public class ClientServiceImpl implements ClientService {
 		//&clientOrgLocationId="+orgSpoc.getOrgRelations().getResponderLocationId()+"&orgRelationId="+orgSpoc.getOrgRelations().getId()+"&clientName="+"reject client"
 		String actionLink = "";
 		if("Client".equalsIgnoreCase(type))
-			  actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpoc.getOrgRelations().getUUID()).toString();
+			  actionLink = actionLinkBuilder.append("").append(vmsUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpoc.getOrgRelations().getUUID()).toString();
 		else
-			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard?contactsTab=contactsTab&orgRelationUUID="+orgSpoc.getOrgRelations().getUUID()).toString();
+			actionLink = actionLinkBuilder.append("").append(vmsUrl).append("/").append("clientDashboard?contactsTab=contactsTab&orgRelationUUID="+orgSpoc.getOrgRelations().getUUID()).toString();
 		 String rejectActionLink = "";
 		String spocUUID = "";
 		String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(), globalVarsMap,noificationEmailScenario);

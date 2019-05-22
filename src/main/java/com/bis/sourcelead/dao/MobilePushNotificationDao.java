@@ -21,6 +21,8 @@ public interface MobilePushNotificationDao {
 
 	 List<MobileDeviceTokenInformaion> mobileDeviceTokenInformaionList(Long userId,String deviceType)throws Exception;
 
+	 List<MobileDeviceTokenInformaion> mobileDeviceTokenInformaionLisByUserId(Long userId)throws Exception;
+
 	 MobileDeviceTokenInformaion getMobileDeviceTokenInformaionByUserId(Long userId)throws Exception;
 
      void deleteMobileDeviceTokenInformationByTokenId(String tokenId)throws Exception;

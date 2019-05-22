@@ -1324,7 +1324,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
 			 globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :orgLocationId) ";
 		 }else {
-			 globalUserQuery = " (sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId OR (:orgLocationId NOT IN (select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.submissionId.projects.id and subpm.masterCandidateId.id = sah.submissionId.masterCandidateId.id and subpm.status != 0) and sah.hierarchyId.projectClientsId.orgLocationsId.id IN(select subpm.projectMemberCandidteId.orgLocationId.id from ProjectMembers subpm where subpm.projects.id = sah.submissionId.projects.id and subpm.masterCandidateId.id = sah.submissionId.masterCandidateId.id and subpm.projectMemberCandidteId.designationType = '"+Constants.OFFSHORE_C2C+"') and sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)))";
+			 globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId ";
 		 }
 		 
 		String fillingOptionQuery = " and (sah.submissionApprovalStatus <> '"
@@ -2703,7 +2703,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			}else {
 				String projectIdString = "";
 				if(projectIds != null && !projectIds.isEmpty()) {
-					projectIdString = StringUtils.join(projectIds, ',').replaceFirst(",", "");
+					projectIdString = StringUtils.join(projectIds, ',');
 				}
 				projectsQuery.append(" PM.PROJECT_ID IN( " + projectIdString + " )");
 			}
@@ -2801,7 +2801,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					if(projectId != null){
 						projectsQuery.append(" SAH.PROJECT_ID  = " + projectId + " AND ");
 					}else if(projectIds != null && !projectIds.isEmpty()) {
-						String projectIdString = StringUtils.join(projectIds, ',').replaceFirst(",", "");
+						String projectIdString = StringUtils.join(projectIds, ',');
 						projectsQuery.append(" SAH.PROJECT_ID IN( " + projectIdString + " ) AND ");
 					}
 				    
