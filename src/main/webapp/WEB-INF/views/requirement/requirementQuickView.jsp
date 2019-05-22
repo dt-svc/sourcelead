@@ -841,7 +841,6 @@ function importApplicantsToJob(requirementId){
 
 <script>
 function getCustomDependentField(sectionId){
-	console.log(atsUrl);
 	var requirementId = '${requirement.id}';
 	var type= 'view';
 	 $.ajax({
