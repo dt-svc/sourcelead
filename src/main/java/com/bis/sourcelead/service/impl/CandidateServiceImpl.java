@@ -3810,6 +3810,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
        	    	candidateSource = new CandidateSource();
     	    }
         	candidateSource.setName(candidateSourceDTO.getName());
+        	candidateSource.setDescription(candidateSourceDTO.getDescription());
         	candidateSource.setStatus(Constants.CANDIDATE_ACTIVE);
         	candidateSource.setCreatedBy(user);
         	candidateSource.setOrgLocationId(orgLocationId);
