@@ -64,6 +64,8 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
+	@Value("${pmsUrl}")
+	private String pmsUrl;
 	
 	@Autowired
 	private EmailScenarioService emailScenarioService;
@@ -403,7 +405,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projects.getProjectUUID()+"&projectClientUUID="+projectMembers.getProjectClientUUID()).toString();
+		String actionLink = actionLinkBuilder.append("").append(pmsUrl).append("/").append("projectSummary?projectUUID="+projects.getProjectUUID()+"&projectClientUUID="+projectMembers.getProjectClientUUID()).toString();
 	
 		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
@@ -443,7 +445,7 @@ public class ProjectQuestionnaireServiceImpl implements ProjectQuestionnaireServ
 			notificationScenario.setOrgCode(loginOrgCode);
 			//String url = null;
 			StringBuilder actionLinkBuilder = new StringBuilder();
-			String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projects.getProjectUUID()+"&projectClientUUID="+pc.getUuid()).toString();
+			String actionLink = actionLinkBuilder.append("").append(pmsUrl).append("/").append("projectSummary?projectUUID="+projects.getProjectUUID()+"&projectClientUUID="+pc.getUuid()).toString();
 			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 		}
 }
