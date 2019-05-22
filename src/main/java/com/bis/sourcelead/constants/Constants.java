@@ -1434,6 +1434,7 @@ public class Constants {
 	public static final String EMPLOYEE_PAYROLL_REPORTS = "Employee PayRoll";
 	public static final String CONTRIBUTION_SUMMARY_REPORTS = "Contribution Summary Reports";
 	public static final String CONTRACT_EMPLOYEE_PAYROLL = "Contract Employee PayRoll";
+	public static final String LOAN_AND_ADVANCE = "Loan And Advance";
 	
 
 	public static final String PURCHASED_CANDIDATE_DETAILS_TO_CONTRIBUTOR = "purchasedCandidateDetailsToContributor";
@@ -1493,5 +1494,6 @@ public class Constants {
 	public static final String DEDUCT_AMOUNT= "Deduct Amount";
 	public static final String CONTRIBUTE_AMOUNT = "Contribute Amount";
 	
+	public static final String NOTIFICATION_LEAVE_TITLE = "Leave Status";
 	
 }

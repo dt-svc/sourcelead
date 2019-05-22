@@ -397,7 +397,11 @@ public class RequirementOfferRestController {
 			    	
 			    	  //Changing the status of offerTable 
 					  if(requirementOffers  != null ){
-							  requirementOffers.setOfferStatus("OFFERREJECTED");  
+							  if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
+						  requirementOffers.setOfferStatus("OFFERREJECTED"); 
+					  }else{
+						  requirementOffers.setOfferStatus("CLIENT_OFFERREJECTED");   
+					  }  
 						    requirementOffers.setRejectedReason(rejectedReason);
 						    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 						    requirementOffersService.saveOfferStatus(requirementOffers);
@@ -563,6 +567,8 @@ public class RequirementOfferRestController {
 							requirementSubmissionService.sendEmailtoAssignedMemberApplicantAuthorization(loginOrg, user, requirementSubmission, orgLocation);
 						}
 						else if (StringUtils.equalsIgnoreCase(status, "rejected")) {
+							ApplicantSubmissionStatus previousStatus = requirementSubmission.getSubmissionStatus();
+							requirementSubmission.setPreviousSubmissionStatus(previousStatus);
 							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 							requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""	+ user.getLastName());
 							requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
