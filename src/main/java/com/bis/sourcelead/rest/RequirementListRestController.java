@@ -1147,8 +1147,7 @@ public class RequirementListRestController {
 		boolQueryBuilderForCount.must(QueryBuilders.matchQuery("orgLocationId", orgLocation.getId()));
 	 
 		
-		if(StringUtils.isNotEmpty(search.getSearchType())  
-				&& StringUtils.isNotEmpty(search.getSearchValue())){
+		if(StringUtils.isNotEmpty(search.getSearchValue())){
 			    ArrayList<String> anyKeyWordArray = getSearchKeywordsFromChosenSelectField(search.getSearchValue());
 				if(anyKeyWordArray != null && !anyKeyWordArray.isEmpty()){
 					 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -1267,9 +1266,7 @@ public class RequirementListRestController {
 				}
 				
 				boolQueryBuilder.must(reqStatusBoolQueryBuilder);
-				if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
-					boolQueryBuilderForCount.must(reqStatusBoolQueryBuilder);
-				}
+				
 			} 
 
 		}
@@ -1290,9 +1287,7 @@ public class RequirementListRestController {
 			
 			
 			boolQueryBuilder.must(reqAssignToBoolQueryBuilder);
-			if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
-				boolQueryBuilderForCount.must(reqAssignToBoolQueryBuilder);
-			}
+			
 		}
 
 		
@@ -1326,9 +1321,7 @@ public class RequirementListRestController {
 					BoolQueryBuilder clientBoolQueryBuilder = new BoolQueryBuilder();
 					clientBoolQueryBuilder.must(QueryBuilders.matchPhraseQuery("isClientJob", "Y"));
 					boolQueryBuilder.must(clientBoolQueryBuilder);
-					if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
-						boolQueryBuilderForCount.must(clientBoolQueryBuilder);
-					}
+					
 				}
 				
 				//filter for Normal jobs
@@ -1336,9 +1329,7 @@ public class RequirementListRestController {
 					BoolQueryBuilder nonClientBoolQueryBuilder = new BoolQueryBuilder();
 					nonClientBoolQueryBuilder.must(QueryBuilders.matchQuery("isClientJob", "N"));
 					boolQueryBuilder.must(nonClientBoolQueryBuilder);
-					if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
-						boolQueryBuilderForCount.must(nonClientBoolQueryBuilder);
-					}
+					
 				}
 				
 			
@@ -1366,9 +1357,7 @@ public class RequirementListRestController {
 					employerBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("client", keywd));
 				}
 				boolQueryBuilder.must(employerBoolQueryBuilder);
-				if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
-					boolQueryBuilderForCount.must(employerBoolQueryBuilder);
-				}
+				
 
 			}
 
@@ -1387,9 +1376,7 @@ public class RequirementListRestController {
 							
 						}
 						boolQueryBuilder.must(projectBoolQueryBuilder);
-						if(StringUtils.isNotEmpty(search.getSearchType()) && search.getSearchType().equalsIgnoreCase("list")){
-							boolQueryBuilderForCount.must(projectBoolQueryBuilder);
-						}
+						
 					}
 				}
 				

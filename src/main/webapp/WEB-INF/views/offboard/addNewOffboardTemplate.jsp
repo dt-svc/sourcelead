@@ -1494,7 +1494,7 @@ $('#nexttab').on('click', function() {
 });
 </script> --> 
 
-<script>
+<!-- <script>
     //File upload
     $('#file-fr').fileinput({
         language: 'fr',
@@ -1595,7 +1595,7 @@ $('#nexttab').on('click', function() {
          */
     });
 
-    </script>
+    </script> -->
     
 
   <jsp:include page="../masterFooter.jsp" />
