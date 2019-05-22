@@ -564,7 +564,6 @@ function sideBar(requirementId,type){
 					
 					 var candidateId = '${candidateId}';
 					 var submissionId = '${submissionId}';
-					 
 					 if(candidateId != null && candidateId != '' && candidateId != 'undefined' && 
 							 submissionId != null && submissionId != '' && submissionId != 'undefined'){
 						 applicantQuickViewProfile(submissionId,candidateId); 
