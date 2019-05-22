@@ -94,6 +94,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
+	@Value("${pmsUrl}")
+	private String pmsUrl;
 	
 	@Autowired
 	public SubmissionApproverHierarchyService submissionApproverHierarchyService;
@@ -1971,7 +1973,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projects.getProjectUUID()+"&projectClientUUID="+projectMembers.getProjectClientUUID()).toString();
+		String actionLink = actionLinkBuilder.append("").append(pmsUrl).append("/").append("projectSummary?projectUUID="+projects.getProjectUUID()+"&projectClientUUID="+projectMembers.getProjectClientUUID()).toString();
 	
 		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
