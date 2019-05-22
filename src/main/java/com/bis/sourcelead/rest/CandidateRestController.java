@@ -1590,7 +1590,7 @@ public class CandidateRestController {
 			try {
 				if (user != null && Validator.validate(canSourceDTO)) {
 				
-					candidateService.storeCandidateSourec(canSourceDTO, user, orgLocations);
+					candidateService.storeCandidateSource(canSourceDTO, user, orgLocations);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 					
