@@ -402,6 +402,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		workFlowStage.setRequirementQuestionnaireTemplateId(requirementQuestionnaireTemplate);
 		}
 		
+		if(requirementWorkFlowStagesDTO.getCommentRequired() != null && !requirementWorkFlowStagesDTO.getCommentRequired().equals("")) {
+			workFlowStage.setCommentRequired(requirementWorkFlowStagesDTO.getCommentRequired());
+		}
+		
 		workFlowStage.setOrgLocationId(orgLocations);
 		workFlowStage.setConfigureType(Constants.CLIENT);
 		workFlowStage.setEditable(Constants.YES);
@@ -415,7 +419,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		Set<RequirementWorkFlowTasks> requirementWorkFlowTasks = new HashSet<RequirementWorkFlowTasks>();
 		
 		if(requirementWorkFlowStagesDTO.getTaskList() != null && requirementWorkFlowStagesDTO.getTaskList().size() > 0) {
-			workFlowStage.setStatus(Constants.RECORD_INACTIVE);
 			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTO = requirementWorkFlowStagesDTO.getTaskList();
 			for(RequirementWorkFlowTasksDTO workFlowTasksDTO : requirementWorkFlowTasksDTO) {
 				RequirementWorkFlowTasks tasks = new RequirementWorkFlowTasks();
