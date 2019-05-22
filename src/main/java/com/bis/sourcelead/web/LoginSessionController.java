@@ -232,6 +232,7 @@ public class LoginSessionController {
 				request.getSession().removeAttribute("userRoleId");
 			} else {
 				userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+				orgLocations = userRole.getOrgLocations();
 			}
 		} else {
 			userRole = userRoleService.getUserRoleById(userRoleId);
