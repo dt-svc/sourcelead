@@ -807,7 +807,8 @@ function Immigration() {
 	
 	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId,searchVal,myImmigrationStatus){
 		$.ajax({
-	        url: vmsUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId+"&searchVal="+searchVal+"&myImmigration="+myImmigrationStatus,
+	        url: vmsUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId+
+	        "&searchVal="+searchVal+"&myImmigration="+myImmigrationStatus+"&myImmigrationPage="+myImmigrationPage,
 	        type: "GET",
 	        success: function (result) {
 	        	console.info(result);
