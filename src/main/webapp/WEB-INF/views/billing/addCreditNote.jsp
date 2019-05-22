@@ -407,7 +407,6 @@ $('body').on('blur', '#creditNote_form', function() {
 
 var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.;
 function cloneRows(){
-   console.log("rowId value is --->"+rowId);
    $("#tableId").append(prepareDynamicRoweDiv(rowId++)); 
 }
 
