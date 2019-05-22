@@ -61,6 +61,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
@@ -82,6 +83,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -3794,6 +3796,30 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId, Long masterCandidateId)
 			throws Exception {
 		return candidateDao.getConsultantUserByCandidateIdOrMasterCandidateId(candidateId, masterCandidateId);
+	}
+	
+	
+	@Override
+	public CandidateSource storeCandidateSource(CandidateSourceDTO candidateSourceDTO, User user, OrgLocations orgLocationId) throws Exception {
+
+		    CandidateSource candidateSource = null;
+       
+        	if(StringUtils.isNotBlank(candidateSourceDTO.getCandSourceId())){
+        		candidateSource = candidateDao.getCandidateSourceByOrgLocationIdandCandidateSourceId(candidateSourceDTO.getCandSourceId(), orgLocationId);
+       	    }else{
+       	    	candidateSource = new CandidateSource();
+    	    }
+        	candidateSource.setName(candidateSourceDTO.getName());
+        	candidateSource.setStatus(Constants.CANDIDATE_ACTIVE);
+        	candidateSource.setCreatedBy(user);
+        	candidateSource.setOrgLocationId(orgLocationId);
+        	candidateSource.setCreatedDate(commonUtil.currentDate());
+        	candidateSource.setUpdatedBy(user);
+        	candidateSource.setUpdatedDate(commonUtil.currentDate());
+		
+        	candidateSource = candidateDao.storeCandidateSource(candidateSource);
+		
+		    return candidateSource;
 	}
 	
 }
