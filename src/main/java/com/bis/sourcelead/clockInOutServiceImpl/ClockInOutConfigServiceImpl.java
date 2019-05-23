@@ -14,16 +14,22 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateListDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateReportSummaryDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutSubDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
@@ -43,6 +49,7 @@ import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Service
 public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
@@ -1131,6 +1138,167 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	}
 	
 
-	
+	@Override
+	public List<List<ClockInOutAssociateReportSummaryDTO>> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, Date empJoiningDate, OrgLocations orgLocation) {
+		// TODO Auto-generated method stub
 
+		List<List<ClockInOutAssociateReportSummaryDTO>> masterList = new ArrayList<List<ClockInOutAssociateReportSummaryDTO>>();
+		List<ClockInOutAssociateReportSummaryDTO> listOfDTO = new ArrayList<ClockInOutAssociateReportSummaryDTO>();
+		List<ClockInOutAssociateReportSummaryDTO> emptyList = new ArrayList<ClockInOutAssociateReportSummaryDTO>();
+		ClockInOutAssociateReportSummaryDTO associateReportDTO = new ClockInOutAssociateReportSummaryDTO();
+		List<ClockInOutAssociateReportSummaryDTO> getAssociateReportList = clockInOutConfigDao.getAssociateClockInOutReportSummary(clockInOutFiltersDTO, orgLocation, null);
+		
+		if(getAssociateReportList.size()>0) {
+			
+			 Calendar cal = Calendar.getInstance();
+				String[] currDates = clockInOutFiltersDTO.getCurrentDate().split("To");
+				SimpleDateFormat sdf1 = new SimpleDateFormat(orgLocation.getDateFormat());
+				Date date = new Date();
+				
+				try {
+		    		date = sdf1.parse(currDates[0]);
+				} catch (Exception e) {
+		    		e.printStackTrace();
+				}
+			
+			if("today".equals(clockInOutFiltersDTO.getDayWisetype())) {
+			for(ClockInOutAssociateReportSummaryDTO associate : getAssociateReportList) {
+					associateReportDTO.setClockInDate(associate.getClockInDate());
+					listOfDTO.add(associate);
+				}
+				masterList.add(listOfDTO);
+			}
+			else if("Last_7_days".equals(clockInOutFiltersDTO.getDayWisetype())) {
+				    
+				
+				Date s = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), currDates[0]);
+				Date e = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), currDates[1]);
+				LocalDate start = LocalDate.fromDateFields(s);
+				LocalDate end = LocalDate.fromDateFields(e);
+				List<LocalDate> totalDates = new ArrayList<>();
+				while (!start.isAfter(end)) {
+				    totalDates.add(start);
+				    start = start.plusDays(1);
+				}
+				
+				for (LocalDate localDate : totalDates) {
+					System.out.println(localDate);
+				}
+				
+				
+			  	for(int i = Calendar.MONDAY; i >= Calendar.SUNDAY; i--) {
+				    cal.set(Calendar.DAY_OF_WEEK, i+1);
+				    int day = cal.get(Calendar.DAY_OF_WEEK) - 1;
+				    Date sendDate = cal.getTime();
+				
+				    for(ClockInOutAssociateReportSummaryDTO associate : getAssociateReportList) {
+				    	
+				    
+			    	java.sql.Date sdDate = associate.getClockInDate();
+			    	java.sql.Date currDate = new java.sql.Date(sendDate.getTime());
+			    	
+			        switch (day) {
+			            case 0:
+				            {
+				                System.out.print("Sunday");
+				                if (currDate.compareTo(sdDate) == 0) {
+				                	associateReportDTO.setClockInDate(associate.getClockInDate());
+									listOfDTO.add(associate);
+						        }
+						    	else {
+						    		listOfDTO.add(null);
+						    	}
+				            }
+			                break;
+			            case 1:
+			                {
+				                System.out.print("Monday");
+				                if (currDate.compareTo(sdDate) == 0) {
+				                	associateReportDTO.setClockInDate(associate.getClockInDate());
+									listOfDTO.add(associate);
+						        }
+						    	else {
+						    		listOfDTO.add(null);
+					    		}
+				            }
+			                break;
+			            case 2:
+			                {
+				                System.out.print("Tuesday");
+				                if (currDate.compareTo(sdDate) == 1) {
+				                	associateReportDTO.setClockInDate(associate.getClockInDate());
+									listOfDTO.add(associate);
+						        }
+						    	else {
+					    			listOfDTO.add(null);
+						    		}
+				            }
+			                break;
+			            case 3:
+			                {
+				                System.out.print("Wednesday");
+				                if (currDate.compareTo(sdDate) == 1) {
+				                	associateReportDTO.setClockInDate(associate.getClockInDate());
+									listOfDTO.add(associate);
+						        }
+						    	else {
+						    		listOfDTO.add(null);
+						    	}
+				            }
+			                break;
+			            case 4:
+			                {
+				                System.out.print("Thursday");
+				                if (currDate.compareTo(sdDate) == 0) {
+				                	associateReportDTO.setClockInDate(associate.getClockInDate());
+									listOfDTO.add(associate);
+						        }
+						    	else {
+						    		listOfDTO.add(null);
+						    	}
+				            }
+			                break;
+			            case 5:
+			                {
+				                System.out.print("Friday");
+				                if (currDate.compareTo(sdDate) == 0) {
+				                	associateReportDTO.setClockInDate(associate.getClockInDate());
+									listOfDTO.add(associate);
+						        }
+						    	else {
+						    		listOfDTO.add(null);
+						    	}
+				            }
+			                break;
+			            case 6:
+			                {
+				                System.out.print("Saturday");
+				                if (currDate.compareTo(sdDate) == 0) {
+				                	associateReportDTO.setClockInDate(associate.getClockInDate());
+									listOfDTO.add(associate);
+						        }
+						    	else {
+						    		listOfDTO.add(null);
+						    	}
+				            }
+			        }
+				    System.out.println(cal.getTime());//Returns Date
+					}
+				}
+				
+				
+//				for(ClockInOutAssociateReportSummaryDTO associate : getAssociateReportList) {
+//					associateReportDTO.setClockInDate(associate.getClockInDate());
+//					listOfDTO.add(associate);
+//				}
+				masterList.add(listOfDTO);
+			}
+		}
+		else {
+			emptyList.add(null);
+			masterList.add(emptyList);
+		}
+		
+		return masterList;
+		}
 }
