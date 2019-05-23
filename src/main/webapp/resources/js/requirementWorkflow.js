@@ -907,4 +907,22 @@ function RequirementWorkflow(){
 				 }
 				 }
 				 
+				 this.validateWorkflowName = function(workflowUuid){
+					 var workFlowName = $("#workFlowName").val();
+					 $.ajax({
+						 type: "GET",
+						 url : sourceleadUrl+"/validateWorkflowName?workflowUuid="+workflowUuid+"&workFlowName="+workFlowName,
+						 success:function(dataList){
+							 if (dataList.response =="true") {
+				                    if ($('#workflowNameDiv').find('p.jquery_form_error_message').length === 0)
+				                        $("#workFlowName").after("<p class='jquery_form_error_message'>" + workFlowName + " Already Exists</span>");
+				                    $("#saveReqWorkFlow").attr("disabled", "disabled");
+				                } else {
+				                    $('#workflowNameDiv').find('p.jquery_form_error_message').remove();
+				                    $("#saveReqWorkFlow").removeAttr("disabled");
+				                }
+						 }
+					 })
+				 }
+				 
 }

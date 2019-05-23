@@ -659,6 +659,22 @@ public class RequirementWorkflowController {
 			return modelandview;
 		}
 		
+		@RequestMapping(value = "/validateWorkflowName")
+		@ResponseBody
+		public Response<Boolean> validateWorkflowName(
+				@RequestParam(value = "workFlowName", required = true)String workFlowName,
+				@RequestParam(value = "workflowUuid", required = true)String workflowUuid,
+				HttpServletRequest request) throws Exception{
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			Boolean flag ;
+			Response<Boolean> response = new Response<Boolean>();
+			logger.debug("before validateWorkflowName for "+orgLocationId+" orgLocation");
+			flag = requirementWorkFlowService.validateWorkflowName(orgLocationId, workFlowName, workflowUuid);
+			response.setResponse(flag.toString());
+			logger.debug("after validateWorkflowName for "+orgLocationId+" orgLocation");
+			return response;
+			
+		}
 		
 		
 }
