@@ -94,6 +94,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
+	@Value("${pmsUrl}")
+	private String pmsUrl;
 	
 	@Autowired
 	public SubmissionApproverHierarchyService submissionApproverHierarchyService;
@@ -723,7 +725,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			throws Exception {
 		ProjectClients projectClients = null;
 		if(StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
-			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgId(projectId, loginOrgLocation.getOrg().getId());
+			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgId(projectId, loginOrgLocation.getOrgId());
 		}else {
 			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
 		}
@@ -1971,7 +1973,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projects.getProjectUUID()+"&projectClientUUID="+projectMembers.getProjectClientUUID()).toString();
+		String actionLink = actionLinkBuilder.append("").append(pmsUrl).append("/").append("projectSummary?projectUUID="+projects.getProjectUUID()+"&projectClientUUID="+projectMembers.getProjectClientUUID()).toString();
 	
 		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}

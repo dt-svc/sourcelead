@@ -40,6 +40,8 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
+	@Value("${pmsUrl}")
+	private String pmsUrl;
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
@@ -180,7 +182,7 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
         notificationScenario.setBody(notificationbody);
        
         StringBuilder notificationLink = new StringBuilder();
-        String actionLink = notificationLink.append(sourceleadUrl).append("/").append("newRequestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
+        String actionLink = notificationLink.append(pmsUrl).append("/").append("newRequestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
         emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 		
