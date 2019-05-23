@@ -231,6 +231,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			return null;
 		}
 	}
+	
+	@Override
+	public RequirementQuestionnaireTemplate getQuestionnaireByTemplateId(long templateId) throws Exception {
+		
+       return requirementWorkFlowDao.getQuestionnaireByTemplateId(templateId);
+		
+	}
 
 
 	@Override
