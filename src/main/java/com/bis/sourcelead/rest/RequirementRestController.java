@@ -1311,6 +1311,22 @@ public class RequirementRestController {
 		return response;
 	}
 	
+	
+	
+	@RequestMapping(value = "/updateApplicantSourceMember", method = RequestMethod.POST)
+	public String updateApplicantSourceMember(@RequestParam(value = "reqId", required = false) String reqId, HttpServletRequest request) throws Exception {
+		String resultJson = null;
+		List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(reqId));
+		for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
+			requirementAssignTo.setAssignedUserName(requirementAssignTo.getAssignUserId().getFullName());
+			requirementAssignTo.setAssignedUserIdTem(requirementAssignTo.getAssignUserId().getId());
+		}
+		
+		resultJson = toJSON(requirementAssignToList);
+		return resultJson;
+
+	}
+	
 	@RequestMapping(value = "/getAssignedMembersForEdit", method = RequestMethod.POST)
 	public @ResponseBody Response<String> getAssignedMembersForEdit(@RequestParam(value = "reqId", required = false) String reqId, HttpServletRequest request) throws Exception
 	{
