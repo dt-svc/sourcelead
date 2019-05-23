@@ -1497,5 +1497,6 @@ public class Constants {
 	public static final String PAUSE = "pause";
 	public static final String LOAN_AND_ADVANCE = "Loan And Advance";
 
+	public static final String NOTIFICATION_LEAVE_TITLE = "Leave Status";
 	
 }
