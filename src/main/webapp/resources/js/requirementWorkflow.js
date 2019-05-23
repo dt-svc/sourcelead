@@ -3,6 +3,7 @@ var requirementWorkflow = new RequirementWorkflow();
 var iconSpan = "";
 var editAndDeleteAnchor = "";
 var lastStage = "";
+var commentReq = "";
 
 function RequirementWorkflow(){
 	
@@ -572,7 +573,8 @@ function RequirementWorkflow(){
 						type : "GET",
 						 data : formData,
 						url : sourceleadUrl + "/saveRequirementWorkflowStage?description="+description+"&uuid="+stageUuid+
-								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+"&lastStage="+lastStage,
+								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+
+								"&lastStage="+lastStage+"&commentRequired="+commentReq,
 						success : function(dataList) {
 							if (dataList.response === "AWKWARD") {
 				      	    location.href = "/errorPage";
@@ -706,7 +708,7 @@ function RequirementWorkflow(){
 						currentStageUuid = "Default";
 					}
 					$.ajax({
-						type : "GET",
+						type : "POST",
 						url : sourceleadUrl + "/saveWorkflowTask?requirementWorkFlowUuid="+worflowUuid+"&workFlowTaskName="+workFlowTaskName+"&priority="+priority
 								+"&workFlowTaskDescription="+taskDescription+"&assignToUserId="+assignToUserId+"&currentStageUuid="+currentStageUuid
 								+"&stageName="+stageName+"&description="+description,

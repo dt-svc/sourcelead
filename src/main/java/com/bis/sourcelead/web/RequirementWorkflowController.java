@@ -603,7 +603,7 @@ public class RequirementWorkflowController {
 			return userRoleListDTO;
 		}
 		
-		@RequestMapping(value = "/saveWorkflowTask")
+		@RequestMapping(value = "/saveWorkflowTask", method = RequestMethod.POST)
 		public @ResponseBody  Response<String> saveWorkflowTask(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO,
 				HttpServletRequest request)throws Exception{
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
@@ -651,11 +651,14 @@ public class RequirementWorkflowController {
 			modelandview.setViewName("workflow/addStage");
 			modelandview.addObject("stageName", stages.getStageName());
 			modelandview.addObject("description", stages.getDescription());
+			modelandview.addObject("commentRequired", stages.getCommentRequired());
 			modelandview.addObject("currentStageUuid", requirementWorkFlowStagesDTO.getUuid().trim());
 			modelandview.addObject("workflowUuid", requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid());
 			modelandview.addObject("requirementWorkFlowStagesDTO", stagesDTO);
 			logger.debug("after  editStage>>> orgLocationid "+orgLocations.getId());
 			return modelandview;
 		}
+		
+		
 		
 }
