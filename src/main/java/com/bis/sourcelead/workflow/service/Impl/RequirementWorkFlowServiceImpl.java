@@ -875,6 +875,27 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		logger.debug("Finished deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service for "+id+" orgLocation");
 	}
 
+	@Override
+	public Boolean validateWorkflowName(Long id, String name, String uuid)  {
+		logger.debug("Started validateWorkflowName Service for "+id+" orgLocation and "+name+" workflow");
+		Boolean flag = null;
+		List<RequirementWorkFlow> workflow= new ArrayList<RequirementWorkFlow>();
+		try {
+			workflow = requirementWorkFlowDao.validateWorkflowName(id, name, uuid);
+			if(workflow != null && workflow.size() > 0) {
+				flag = true;
+			}else {
+				flag = false;
+			}
+			logger.debug("Finished validateWorkflowName Service for "+id+" orgLocation and "+name+" workflow");
+			return flag;
+		}catch(Exception e) {
+			logger.error(e+" in validateWorkflowName Service for "+id+" orgLocation and "+name+" workflow");
+			e.printStackTrace();
+			return flag;
+		}
+	}
+	
 	}
 
 
