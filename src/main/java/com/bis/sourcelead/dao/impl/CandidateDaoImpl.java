@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -41,6 +39,7 @@ import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
@@ -49,6 +48,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -3578,5 +3578,39 @@ public class CandidateDaoImpl implements CandidateDao {
 		return user;
 		
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public CandidateSource storeCandidateSource(CandidateSource candidateSource) throws Exception {
+		
+		logger.debug("Storing CandidateSource");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (candidateSource != null) {
+				session.saveOrUpdate(candidateSource);
+			}
+			logger.debug("candidateSource Stored Successfully");
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"candidateSource"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return candidateSource;
+	}
+
+	@Override
+	public CandidateSource getCandidateSourceByOrgLocationIdandCandidateSourceId(String candSourceId,
+			OrgLocations orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateSource  cs where cs.id = :candSourceId and cs.orgLocationId= :orgLocationId";
+		List<CandidateSource> candSourceList =  session.createQuery(query.toString()).setString("candSourceId", candSourceId).setParameter("orgLocationId", orgLocationId)
+				.list();
+		CandidateSource candSource = null;
+		if (candSourceList != null && candSourceList.size() > 0) {
+			candSource = (CandidateSource) candSourceList.iterator().next();
+		}
+		return candSource;
+	}
+
+	
 
 }
