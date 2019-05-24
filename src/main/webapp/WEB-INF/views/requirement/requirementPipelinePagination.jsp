@@ -556,6 +556,7 @@
 													if (opt.previousSubmissionStatus != null
 															&& opt.previousSubmissionStatus == 'INTERVIEW'
 															&& opt.submissionStatus != 'SELECTED_ON_INTERVIEW'
+															&& opt.submissionStatus != 'SUBMIT_TO_CLIENT'
 															&& opt.submissionStatus != 'OFFERMADE'
 															&& opt.submissionStatus != 'OFFERACCEPTED') {
 														result = result
