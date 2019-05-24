@@ -126,6 +126,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
@@ -350,7 +351,11 @@ public class RequirementServiceImpl implements RequirementService {
 		}else {
 			requirement.setProfilePercentage(orgLocations.getProfilePercentage());
 		}
-		
+		if (StringUtils.isNotBlank(requirementDTO.getWorkflow())) {
+			RequirementWorkFlow workflow = new RequirementWorkFlow();
+			workflow.setId(Long.parseLong(requirementDTO.getWorkflow()));
+			requirement.setWorkflowId(workflow);
+		}
 		if (orgLocations != null) {
 			requirement.setOrgLocationId(orgLocations);
 		}
