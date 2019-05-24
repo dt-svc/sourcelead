@@ -32,6 +32,8 @@ public interface RequirementWorkFlowDao {
 	ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowsByOrgLocationId(RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations)throws Exception;
 
 	RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate template) throws Exception;
+	
+	RequirementQuestionnaireTemplate getQuestionnaireByTemplateId(long templateId) throws Exception;
 
 	ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(RequirementQuestionnaireTemplateDTO questionnaireDto, String searchValue, Long orgLocationId);
 	
@@ -79,4 +81,6 @@ public interface RequirementWorkFlowDao {
 	void deleteInactiveRequirementWorkflowStagesByStageId(List<RequirementWorkFlowStages> requirementWorkFlowStage)throws Exception;
 
 	List<RequirementWorkFlowStages> getRequirementworkflowStageByQuestionnaireId(Long id, Long orgLocationId)throws Exception;
+	
+	List<RequirementWorkFlow> validateWorkflowName(Long id, String name, String uuid)throws Exception;
 }

@@ -231,6 +231,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			return null;
 		}
 	}
+	
+	@Override
+	public RequirementQuestionnaireTemplate getQuestionnaireByTemplateId(long templateId) throws Exception {
+		
+       return requirementWorkFlowDao.getQuestionnaireByTemplateId(templateId);
+		
+	}
 
 
 	@Override
@@ -541,6 +548,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		workFlowStage.setRequirementQuestionnaireTemplateId(requirementQuestionnaireTemplate);
 		}
 		
+		if(requirementWorkFlowStagesDTO.getCommentRequired() != null && !requirementWorkFlowStagesDTO.getCommentRequired().equals("")) {
+					workFlowStage.setCommentRequired(requirementWorkFlowStagesDTO.getCommentRequired());
+			}
+		
 		workFlowStage.setOrgLocationId(orgLocations);
 		workFlowStage.setConfigureType(Constants.CLIENT);
 		workFlowStage.setEditable(Constants.YES);
@@ -554,7 +565,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		Set<RequirementWorkFlowTasks> requirementWorkFlowTasks = new HashSet<RequirementWorkFlowTasks>();
 		
 		if(requirementWorkFlowStagesDTO.getTaskList() != null && requirementWorkFlowStagesDTO.getTaskList().size() > 0) {
-			workFlowStage.setStatus(Constants.RECORD_INACTIVE);
 			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTO = requirementWorkFlowStagesDTO.getTaskList();
 			for(RequirementWorkFlowTasksDTO workFlowTasksDTO : requirementWorkFlowTasksDTO) {
 				RequirementWorkFlowTasks tasks = new RequirementWorkFlowTasks();
@@ -865,6 +875,27 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		logger.debug("Finished deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service for "+id+" orgLocation");
 	}
 
+	@Override
+	public Boolean validateWorkflowName(Long id, String name, String uuid)  {
+		logger.debug("Started validateWorkflowName Service for "+id+" orgLocation and "+name+" workflow");
+		Boolean flag = null;
+		List<RequirementWorkFlow> workflow= new ArrayList<RequirementWorkFlow>();
+		try {
+			workflow = requirementWorkFlowDao.validateWorkflowName(id, name, uuid);
+			if(workflow != null && workflow.size() > 0) {
+				flag = true;
+			}else {
+				flag = false;
+			}
+			logger.debug("Finished validateWorkflowName Service for "+id+" orgLocation and "+name+" workflow");
+			return flag;
+		}catch(Exception e) {
+			logger.error(e+" in validateWorkflowName Service for "+id+" orgLocation and "+name+" workflow");
+			e.printStackTrace();
+			return flag;
+		}
+	}
+	
 	}
 
 
