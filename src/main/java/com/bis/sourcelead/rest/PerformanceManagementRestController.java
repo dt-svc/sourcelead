@@ -429,6 +429,25 @@ public class PerformanceManagementRestController {
      }
    
    
+   @RequestMapping(value = "/getRatingLevelsList", method = RequestMethod.GET)
+	public ResponseList<PerformanceRatingLevelDTO> getRatingLevelsList(HttpServletRequest request){
+   	 ResponseList<PerformanceRatingLevelDTO> resObj = new ResponseList<>();
+		 try {
+			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			 String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+			 List<PerformanceRatingLevelDTO> competenciesTagDTOList =  performanceRatingLevelService.getPerformanceRatingLevelsListByOrgLocationId(orgLocationId,dateFormat);
+			 resObj.setData(competenciesTagDTOList);
+			 resObj.setResponse(Result.SUCCESS.name());
+			 resObj.setResponseMessage(Result.SUCCESS.getValue());
+		    
+		 }catch (Exception e) {
+			 resObj.setResponse(Result.AWKWARD.name());
+			 resObj.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		 return resObj;
+   }
+   
+   
    
 	 @RequestMapping(value = "/getPerformanceCompetenceList", method = RequestMethod.GET)
 	public ResponseList<PerformanceCompetenciesDTO> getPerformanceCompetenceList(PerformanceCompetenciesDTO performanceCompetenciesDTO,HttpServletRequest request) throws Exception {

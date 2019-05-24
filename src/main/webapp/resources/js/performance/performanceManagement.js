@@ -313,7 +313,7 @@ function PerformanceManagement(){
 	   		     success :function(response) {
 	   		    	    $("#performanceManagementDiv").empty();  
 	   		    	    $("#performanceManagementDiv").append(response);
-	   		    	   // getCompetenceList();
+	   		    	    getRatingScaleLevelsList();
 	   				},
 	   			}); 
 	   }
