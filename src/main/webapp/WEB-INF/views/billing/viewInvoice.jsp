@@ -1598,6 +1598,7 @@ function getInvoiceTagsList(){
         url: vmsUrl+"/getInvoiceTags?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,        
         success :function(json) {
         	var result = "";
+        	if(json.tagsList !=null && json.tagsList !='' && json.tagsList !='undefined'){
 			$.each( json.tagsList, function( i, tags ) {
 			  var existed = 0;
                 if(json.invoiceTags != null && json.invoiceTags != 'undefined' && json.invoiceTags != '') {
@@ -1614,6 +1615,7 @@ function getInvoiceTagsList(){
                 	result = result + ' <option value="'+tags+'">'+tags+'</option>';
                 }
 			});
+        	}
             $("#invoiceTagName").empty();
             $("#invoiceTagName").append(result);
             $("#invoiceTagName").chosen().trigger("chosen:updated")
