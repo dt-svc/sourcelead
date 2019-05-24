@@ -28,6 +28,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceCompetenciesDTO;
+import com.bis.sourcelead.dto.performance.PerformanceRatingLevelDTO;
 import com.bis.sourcelead.dto.performance.PerformanceTagCompetenciesDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateServic
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
 import com.bis.sourcelead.service.performance.PerformanceCompetenciesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
+import com.bis.sourcelead.service.performance.PerformanceRatingLevelService;
 import com.bis.sourcelead.service.performance.PerformanceTagCompetenciesService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -80,6 +82,9 @@ public class PerformanceManagementRestController {
 	
 	@Autowired
 	PerformanceTagCompetenciesService performanceTagCompetenciesService;
+	
+	@Autowired
+	PerformanceRatingLevelService performanceRatingLevelService;
 	
     @RequestMapping(value = "/savePerformanceBudgetDetails", method = RequestMethod.POST)
 	public Response<PerformanceBadgesDTO> savePerformanceBudgetDetails(HttpServletRequest request, 
@@ -398,6 +403,31 @@ public class PerformanceManagementRestController {
   		}
   		 return resObj;
       }
+   
+   @RequestMapping(value = "/savePerformanceRatingScale", method = RequestMethod.POST)
+ 	public Response<PerformanceRatingLevelDTO> savePerformanceCompetence(HttpServletRequest request, 
+ 			PerformanceRatingLevelDTO PerformanceRatingLevelDTO){
+ 		 Response<PerformanceRatingLevelDTO> resObj = new Response<>();
+ 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+ 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+ 		 try {
+ 			 if(Validator.validate(PerformanceRatingLevelDTO)){
+ 				performanceRatingLevelService.storePerformanceRatingScale(PerformanceRatingLevelDTO, orgLocation.getId(), user.getId());
+ 			 resObj.setResponse(Result.SUCCESS.name());
+ 			 resObj.setResponseMessage(Result.SUCCESS.getValue());
+ 		    }
+ 			 else {
+ 				 resObj.setResponse(Result.INVALID_DATA.name());
+ 				 resObj.setResponseMessage(Result.INVALID_DATA.getValue());
+ 				
+ 	    	 }
+ 		 }catch (Exception e) {
+ 			 resObj.setResponse(Result.AWKWARD.name());
+ 			 resObj.setResponseMessage(Result.AWKWARD.getValue());
+ 		}
+ 		 return resObj;
+     }
+   
    
    
 	 @RequestMapping(value = "/getPerformanceCompetenceList", method = RequestMethod.GET)
