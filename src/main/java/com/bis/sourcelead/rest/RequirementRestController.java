@@ -1754,4 +1754,18 @@ public class RequirementRestController {
 		return null;
 	}
 	
+	@RequestMapping(value = "/updateApplicantSourceMember", method = RequestMethod.POST)
+		public String updateApplicantSourceMember(@RequestParam(value = "reqId", required = false) String reqId, HttpServletRequest request) throws Exception {
+		String resultJson = null;
+			List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(reqId));
+			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
+				requirementAssignTo.setAssignedUserName(requirementAssignTo.getAssignUserId().getFullName());
+				requirementAssignTo.setAssignedUserIdTemp(requirementAssignTo.getAssignUserId().getId());
+			}
+			
+			resultJson = toJSON(requirementAssignToList);
+			return resultJson;
+	
+		}
+	
 }

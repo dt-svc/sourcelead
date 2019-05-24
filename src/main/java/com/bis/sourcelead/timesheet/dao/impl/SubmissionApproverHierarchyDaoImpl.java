@@ -2716,7 +2716,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			}else {
 				String projectIdString = "";
 				if(projectIds != null && !projectIds.isEmpty()) {
-					projectIdString = StringUtils.join(projectIds, ',').replaceFirst(",", "");
+					projectIdString = StringUtils.join(projectIds, ',');
 				}
 				projectsQuery.append(" PM.PROJECT_ID IN( " + projectIdString + " )");
 			}
@@ -2814,7 +2814,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					if(projectId != null){
 						projectsQuery.append(" SAH.PROJECT_ID  = " + projectId + " AND ");
 					}else if(projectIds != null && !projectIds.isEmpty()) {
-						String projectIdString = StringUtils.join(projectIds, ',').replaceFirst(",", "");
+						String projectIdString = StringUtils.join(projectIds, ',');
 						projectsQuery.append(" SAH.PROJECT_ID IN( " + projectIdString + " ) AND ");
 					}
 				    
