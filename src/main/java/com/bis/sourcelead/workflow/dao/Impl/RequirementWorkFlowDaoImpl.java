@@ -222,6 +222,21 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		return requirementQuestionnaireTemplate;
 		
 	}
+	
+	
+	@Override
+	public RequirementQuestionnaireTemplate getQuestionnaireByTemplateId(long templateId) throws Exception {
+		RequirementQuestionnaireTemplate template = null;
+		logger.info("inside getting template by id " + templateId);
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			template = (RequirementQuestionnaireTemplate) session.get(RequirementQuestionnaireTemplate.class,templateId);
+		} catch (Exception e) {
+			logger.error("Exception caught while getting template by id " + templateId);
+			e.printStackTrace();
+		}
+		return template;
+	}
 
 	@Override
 	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesListByUuid(String uuid, Long orgLocationId)  {
@@ -675,6 +690,29 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		
 	}
 
-	
+	@Override
+	public List<RequirementWorkFlow> validateWorkflowName(Long id, String name, String uuid){
+		logger.debug("Running validateWorkflowName DAO");
+		StringBuilder queryBuilder1 = new StringBuilder("");
+		List<RequirementWorkFlow> workflow = new ArrayList<RequirementWorkFlow>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			if(uuid != null && !StringUtils.isBlank(uuid)) {
+				queryBuilder1.append(" and requirementWorkFlow.uuid <> :uuid");
+			}
+			String queryString = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id = :id and requirementWorkFlow.workFlowName = :name";
+			Query query = session.createQuery(queryString + queryBuilder1);
+			if(uuid != null && !StringUtils.isBlank(uuid)) {
+				query.setParameter("uuid", uuid);
+			}
+			workflow = query.setParameter("id", id).setParameter("name", name).list();
+			return workflow;
+		} catch (Exception e) {
+			logger.error(e +" in validateWorkflowName DAO");
+			e.printStackTrace();
+			return workflow;
+		}
+		
+	}
 
 }
