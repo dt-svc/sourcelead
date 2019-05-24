@@ -38,6 +38,8 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 	
 	private String lastStage;
 	
+	private String commentRequired;
+	
 	public long getId() {
 		return id;
 	}
@@ -166,6 +168,13 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 		this.lastStage = lastStage;
 	}
 
-	
+	public String getCommentRequired() {
+		return commentRequired;
+	}
+
+	public void setCommentRequired(String commentRequired) {
+		this.commentRequired = commentRequired;
+	}
+
 
 }
