@@ -10,21 +10,6 @@
 <script src="/resources/js/jquery.mask.min.js"></script>
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
-<style type="text/css">
-.inline_field, .inline_field:focus {
-	width:100px !important; text-align:center;
-}
-.timesheet_week_comm .form-group {
-margin-bottom: 0;
-}
-.timesheet_week_comm.invoiceDocs_add span .fa-times {
-    margin: 6px;
-}
-.project_wrap_table table i{
-    font-size: 13px;
-}    
-</style>
-
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -145,7 +130,7 @@ function errRemoveClientContact(){
 										placeholder="Invoice Date" id="invoiceDate" readonly
 										data-validation="required" field-name="Invoice Date">
 									<span class="input-group-addon" onClick="clearInvoiceDate();"><i
-										class="colorRed fa fa-times cursorPointer"></i></span>
+										class="colorRed fa fa-times mr6 cursorPointer"></i></span>
 								</div>
 							</div>
 						</div>
@@ -174,7 +159,7 @@ function errRemoveClientContact(){
 										name="dueDate" value="" placeholder="Due Date" readonly
 										data-validation="required" field-name="Due Date"> <span
 										class="input-group-addon" onClick="clearDueDate();"><i
-										class="colorRed fa fa-times cursorPointer"></i></span>
+										class="colorRed fa fa-times cursorPointer mr6"></i></span>
 								</div>
 							</div>
 						</div>
@@ -320,7 +305,7 @@ function errRemoveClientContact(){
 		var clientCurrency = $("#clientCurrency").val(); 
 		var currencyCode = '${SourceLeadWeb_currencyCode}';
 		 var result = '';
-		 result = result +'  <div class="project_wrap_table mt25 invoice_table table_custompadding" id="invoiceTable">';
+		 result = result +'  <div class="project_wrap_table tableI mt25 invoice_table table_custompadding" id="invoiceTable">';
 		 result = result +'  <input type="hidden" id="maxTsRowNum" name="maxTsRowNum" value="0" />';
 		 result = result +'  <table width="100%">';
 		 result = result +'  <thead id="addInvoiceTbl">';
@@ -387,7 +372,7 @@ function errRemoveClientContact(){
          result = result +'  <div class="timesheet_week_comm invoiceDocs invoiceDocs_add width100percnt" >';
          result = result +'  <div id="0invoicedocFileuploadFileGroup"> ';
          result = result +'  <span>';
-         result = result +'  <input type="file"  id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);"><i class="fa fa-times" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOver="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
+         result = result +'  <input type="file"  id="0invoicedocFile" field-name="Attachment"  class="timesheetAttachmentValidation" onchange="attachFile(0);"><i class="fa fa-times mr6" mouseOver="Clear" title="Clear" onClick="remove()"></i><i class="fa fa-plus" mouseOver="Add" title="Add" onClick="addInvoiceAttachment()"></i>';
          result = result +'  </span> </div>';
          result = result +'  </div>';
          result = result +'  </td>';
@@ -1408,11 +1393,11 @@ function calculateDiscount(){
 
 <div id="divInvoiceAttachmentTd1" style="display: none; float: left;">
 	<div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add width100percnt">
-		<div class="form-group" id="REPLACEROWIDinvoicedocFileuploadFileGroup">
+		<div class="form-group mb0" id="REPLACEROWIDinvoicedocFileuploadFileGroup">
 			<span> <input type="file" name='REPLACEROWIDinvoicedocFile'
 				id='REPLACEROWIDinvoicedocFile'
 				onchange='attachFile(REPLACEROWID);validateContractsUploadFile(REPLACEROWID)'> <i
-				class="fa fa-times" mouseOver="Delete" title="Delete"
+				class="fa fa-times mr6" mouseOver="Delete" title="Delete"
 				onclick="removeInvoiceAttachmentRow(REPLACEROWID);"></i>
 			</span>
 		</div>
@@ -1998,7 +1983,7 @@ function maskme(){
     $.mask.definitions['m'] = "[0-9]";
     $.mask.definitions['P'] = "[AaPp]";
     $.mask.definitions['p'] = "[Mm]";
-    $(".inline_field").mask("Hhh:Mm"); 
+    $(".inlineField").mask("Hhh:Mm"); 
     
     $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
     	

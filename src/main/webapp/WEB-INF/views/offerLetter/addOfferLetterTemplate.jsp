@@ -22,7 +22,8 @@
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>
-			&raquo;<a href="${SourceLeadWeb_sourceleadUrl}/viewOfferLetterTemplate"> Offer Letter
+			&raquo;  <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo;
+			         <a href="${SourceLeadWeb_sourceleadUrl}/viewOfferLetterTemplate"> Offer Letter
 				Template List</a> &raquo; Add Offer Letter Template
 		</div>
 	</section>
@@ -52,8 +53,8 @@
 						<div class="form-group">
 			              <label class="col-md-4">Choose Letter Head</label>
 			              <div class="col-md-8">
-			                  <select class="form-control selectpicker" data-live-search="true" name="letterHead" field-name="Letterhead" >
-			                    <option value="">>>> Select Letterhead <<< </option>
+			                  <select class="form-control selectpicker" data-live-search="true" title="Select Letter Head" name="letterHead" field-name="Letterhead" >
+<!-- 			                    <option value="">>>> Select Letterhead <<< </option> -->
 			                    <c:forEach var="letter" items="${letterHeadList}">
 							    <c:if test = "${letter.id == offerLetterTemplate.letterHeadId.id}">
 							         <option selected value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>

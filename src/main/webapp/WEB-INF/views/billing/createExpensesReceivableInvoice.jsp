@@ -8,13 +8,6 @@
 <script src="/resources/js/jquery.mask.min.js"></script>
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
-<style type="text/css">
-.inline_field, .inline_field:focus {
-	width:100px !important; text-align:center;
-}
-.form-control.formControl {
-border:none; background: none; font-size:14px; font-weight:600; box-shadow: none;}
-</style>
 <script>
 $(document).ready(function(){
 	populateInlineItemsGrid();
@@ -1986,7 +1979,7 @@ function maskme(){
     $.mask.definitions['m'] = "[0-9]";
     $.mask.definitions['P'] = "[AaPp]";
     $.mask.definitions['p'] = "[Mm]";
-    $(".inline_field").mask("Hhh:Mm"); 
+    $(".inlineField").mask("Hhh:Mm"); 
 	
 //     $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 //     $(this).val($(this).val().replace(/[^0-9\.]/g,''));

@@ -600,10 +600,10 @@ public class PdfUtil {
             PdfPTable table = new PdfPTable(headers.length);
             Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(sbReqStyle.toString(),font));
-	        cell1.setColspan(14);
+	        cell1.setColspan(13);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3,5,5});
+            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3,3,5});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -714,36 +714,36 @@ public class PdfUtil {
 		}else{
 			requirementArray[7] = "--";
 		}
-		if(requirement.getSubmissionTemplateId() != null ){
+		/*if(requirement.getSubmissionTemplateId() != null ){
 			requirementArray[8] = requirement.getSubmissionTemplateId().getTemplateName();
 		}else{
 			requirementArray[8] = "--";
-		}
+		}*/
 		if(requirement.getClientName() != null && !"".equalsIgnoreCase(requirement.getClientName())){
-			requirementArray[9] = requirement.getClientName();
+			requirementArray[8] = requirement.getClientName();
+		}else{
+			requirementArray[8] = "--";
+		}
+		if(requirement.getClientContactName() != null && !"".equalsIgnoreCase(requirement.getClientContactName())){
+			requirementArray[9] = requirement.getClientContactName();
 		}else{
 			requirementArray[9] = "--";
 		}
-		if(requirement.getClientContactName() != null && !"".equalsIgnoreCase(requirement.getClientContactName())){
-			requirementArray[10] = requirement.getClientContactName();
+		if(requirement.getClientContactEmail() != null && !"".equalsIgnoreCase(requirement.getClientContactEmail())){
+			requirementArray[10] = requirement.getClientContactEmail();
 		}else{
 			requirementArray[10] = "--";
 		}
-		if(requirement.getClientContactEmail() != null && !"".equalsIgnoreCase(requirement.getClientContactEmail())){
-			requirementArray[11] = requirement.getClientContactEmail();
+		if(requirement.getRequirementSubmissionStatus() != null && !"".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
+			requirementArray[11] = requirement.getRequirementSubmissionStatus().toString();
 		}else{
 			requirementArray[11] = "--";
 		}
-		if(requirement.getRequirementSubmissionStatus() != null && !"".equalsIgnoreCase(requirement.getRequirementSubmissionStatus().toString())){
-			requirementArray[12] = requirement.getRequirementSubmissionStatus().toString();
+		
+		if(requirement.getRequirementCreatedDateToString() != null && !"".equalsIgnoreCase(requirement.getRequirementCreatedDateToString().toString())){
+			requirementArray[12] = requirement.getRequirementCreatedDateToString();
 		}else{
 			requirementArray[12] = "--";
-		}
-		
-		if(requirement.getCreatedDate() != null && !"".equalsIgnoreCase(requirement.getCreatedDate().toString())){
-			requirementArray[13] = commonUtil.dateStrFromOrgDateFormatter(requirement.getOrgLocationId().getDateFormat(), requirement.getCreatedDate());
-		}else{
-			requirementArray[13] = "--";
 		}
 		return requirementArray;
 	}
@@ -1432,8 +1432,8 @@ public class PdfUtil {
 		}else {
 			projectTaskArray[2] = "--"; 
 		}
-		if(projectTassks.getTaskAssignedUsers() != null) {
-			String assignedTo = projectTassks.getTaskAssignedUsers().toString().replaceAll("\\[", "").replaceAll("\\]","");
+		if(projectTassks.getAssignedTaskUsers() != null) {
+			String assignedTo = projectTassks.getAssignedTaskUsers().toString().replaceAll("\\[", "").replaceAll("\\]","");
 			projectTaskArray[3] = assignedTo; 
 		}else {
 			projectTaskArray[3] = "--"; 

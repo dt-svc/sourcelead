@@ -6,18 +6,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.collapse-div-adduser select{
-width: 100% !important;
-    padding-right: 10px !important;
-    padding-left: 10px !important;
-    border:1px solid #ccc !important
-}
-</style>
-
 <script>
 function clientContacts(orgRelationID,clientLocationId){
-	
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
 	result  = result + '<div class="success_pop" id="clientTerminateMsgDiv" style="display: none;">';
@@ -34,7 +24,7 @@ function clientContacts(orgRelationID,clientLocationId){
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-		result  = result + '   <div id="clientContactList" class="datatable_filter"></div>';
+		result  = result + '   <div id="clientContactListDiv" class=""></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
 	result = result+'	    </div>';
@@ -61,7 +51,7 @@ function clientContacts(orgRelationID,clientLocationId){
 	    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Client", 
 	        success: function(json) {
 	      
-    			$("#clientContactList").empty();
+    			$("#clientContactListDiv").empty();
 				var result = "";
 				result = result +"<table id='clientContactsPagination' class='display' cellspacing='0' width='100%' >"; 
 	        	result = result +'<thead>';
@@ -200,12 +190,12 @@ function clientContacts(orgRelationID,clientLocationId){
 			    result = result + '	<p>User delete message here ....</p>';
 			    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
 			    result = result + '</div>';
-			    $("#clientContactList").append(result); 
+			    $("#clientContactListDiv").append(result); 
 	    	    clientMsgFadein();
  				contactPagination();
-    		$("#tab-4").empty();  
+    /* 		$("#tab-4").empty();  
     		$("#tab-2-addContact").empty();  
-    	    $("#tab-2-addContact").append(result);
+    	    $("#tab-2-addContact").append(res);
     		$("#tab-2").empty();  
     	    $("#tab-2").append(result);  
     	    $("#testDiv").show();
@@ -221,7 +211,7 @@ function clientContacts(orgRelationID,clientLocationId){
 								"display", "none");
 						$(tab).fadeIn();
 					});
-    	    contactPagination();
+    	    contactPagination(); */
 	        },
 	    });
 	}
@@ -245,7 +235,9 @@ function contactPagination(){
              "sZeroRecords": "", "sEmptyTable": ""
          }
        
-    } );
+    });
+    $('#clientContactsPagination_wrapper').wrap("<div class='datatable_filter project_tabs_inn_table vendor_wrap_inn_table'></div>");
+    $('#clientContactsPagination_filter').attr("style", "position:relative !important; top:0px !important; margin-top:10px !important;");
 }
 </script>
 

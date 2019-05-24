@@ -227,7 +227,7 @@
 							<div class="col-md-9">
 								<input class="form-control" id="panNumber" name="panNumber"
 									placeholder="Pan Number" type="text" field-name="Pan Number" data-validation="validate_Space validate_panNumber"
-									data-validation-optional="true" onkeyup="validatePanNumber();" onblur="validatePanNumber();"></input>
+									data-validation-optional="true"  onblur="validatePanNumber();"></input>
 							</div>
 						</div>
 						
@@ -236,7 +236,7 @@
 							<div class="col-md-9">
 								<input class="form-control" id="aadharNumber" name="aadharNumber"
 									placeholder="Aadhar Number" type="text" field-name="Aadhar Number" data-validation="validate_Space validate_aadharNumber"
-									data-validation-optional="true" onkeyup="validateAadharNumber();" onblur="validateAadharNumber();"></input>
+									data-validation-optional="true"  onblur="validateAadharNumber();"></input>
 							</div>
 						</div>
 					</c:if>
@@ -246,7 +246,7 @@
 							<div class="col-md-9">
 								<input class="form-control" id="ssnNumber" name="ssnNumber"
 									placeholder="000-00-0000" type="text"field-name="SSN Number" data-validation="validate_Space validate_length length9"
-									data-validation-optional="true" onkeyup="validateSsnNumberDuplicateChek();" onblur="validateSsnNumberDuplicateChek();"></input>
+									data-validation-optional="true"  onblur="validateSsnNumberDuplicateChek();"></input>
 							</div>
 						</div>
 						
@@ -1206,13 +1206,14 @@
 function validatePanNumber() {
 	
 	  var panNumber = document.getElementById("panNumber").value;
-	 
 	  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
+	  if (panNumber != null && panNumber != "") {
 		 $.ajax({
 		    	type: "GET",
 		    	 url:sourceleadUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
 		        success: function(data) {
 		        	if(data == true){
+		        		
 		        		  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
 		        		  $("input#panNumber").after("<p class='jquery_form_error_message'>"+panNumber+" is Already Existed</span>");
 						  $("#store_candidate").attr('disabled','disabled');
@@ -1224,6 +1225,7 @@ function validatePanNumber() {
 		        	}
 		        }
 		    });
+	  }
 };
 </script>
 
@@ -1234,6 +1236,7 @@ function validateAadharNumber() {
 	  var aadharNumber = document.getElementById("aadharNumber").value;
 	 
 	  $('#errAadharNoDiv').find('p.jquery_form_error_message').remove();
+	  if (aadharNumber != null && aadharNumber != "") {
 		 $.ajax({
 		    	type: "GET",
 		    	 url:sourceleadUrl+"/validateAadharNumber?"+tokenParamName+"="+tokenValue+"&aadharNumber="+aadharNumber, 
@@ -1250,6 +1253,7 @@ function validateAadharNumber() {
 		        	}
 		        }
 		    });
+	  }
 };
 </script>
 
@@ -1259,6 +1263,7 @@ function validateSsnNumberDuplicateChek() {
 	  var ssnNumber = document.getElementById("ssnNumber").value;
 	 
 	  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
+	  if (ssnNumber != null && ssnNumber != "") {
 		 $.ajax({
 		    	type: "GET",
 		    	 url:sourceleadUrl+"/validateSsnNumber?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber, 
@@ -1275,6 +1280,7 @@ function validateSsnNumberDuplicateChek() {
 		        	}
 		        }
 		    });
+	  }
 };
 </script>
 

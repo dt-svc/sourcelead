@@ -62,6 +62,7 @@ import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.LeaveTypeImportDTO;
+import com.bis.sourcelead.dto.MobilePushNotificationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AppliedLeaveDate;
@@ -97,6 +98,7 @@ import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveManagementHistoryService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.MobilePushNotificationService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -195,6 +197,9 @@ public class LeaveServiceImpl implements LeaveService {
 
 	@Autowired
 	PdfUtil pdfUtil;
+	
+	 @Autowired
+	 MobilePushNotificationService  mobilePushNotificationService;
 
 	private static final Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
 
@@ -400,14 +405,19 @@ public class LeaveServiceImpl implements LeaveService {
 			List<Date> dateList = leaveManagementUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(),
 					orgLocations.getDateFormat());
 			dateList.forEach(d -> {
-
+				
+				LeaveType  leaveType = leave.getLeaveType();
+				Boolean includeWeekOffs = false;
+				if(leaveType != null && (leaveType.getIncludeWeekoff().equalsIgnoreCase("Y"))) {
+					includeWeekOffs = true;
+				}
 				String[] strArray = orgLocations.getWeekOffDays().split(",");
 				List<String> weekOffs = new ArrayList<String>(Arrays.asList(strArray));
 				SimpleDateFormat sf = new SimpleDateFormat("E");
 				AppliedLeaveDate appliedLeaveDate = new AppliedLeaveDate();
 				appliedLeaveDate.setApplyLeaveDate(d);
 				float fromMinutes = 0;
-				if (!weekOffs.contains(sf.format(d))) {
+				if (includeWeekOffs || !weekOffs.contains(sf.format(d))) {
 					if (leave.getFromDate().equals(d)) {
 						if (Constants.STATUS_YES.equalsIgnoreCase(leave.getFromHalfDay())) {
 							fromMinutes = leaveManagementUtil.calculateAppliedLeaveMinutes(
@@ -1038,6 +1048,7 @@ public class LeaveServiceImpl implements LeaveService {
 		return carryForwardLeaves;
 	}
 
+	@SuppressWarnings("null")
 	private void sendApprovedAndRejectedLeaveMailToEmployee(OrgLocations orgLocations, User loginUser,
 			LeaveManagementHistory leaveManagementHistory, Long redirectOrgLocationId, String redirectURL)
 			throws Exception {
@@ -1129,7 +1140,12 @@ public class LeaveServiceImpl implements LeaveService {
 		notificationScenario.setBody(notificationbody);
 		emailScenerioUtil.sendNotification(actionLink, loginUser, leaveManagementHistory.getLeaveid().getUser(),
 				orgLocations, notificationScenario, new HashMap<String, String>());
-
+		
+		//Mobile PushNotification
+   	    MobilePushNotificationDTO mobilePushNotificationDTO = new MobilePushNotificationDTO();
+   	    mobilePushNotificationDTO.setNotificationDescritpion(notificationbody);
+   	    mobilePushNotificationDTO.setUserId(leaveManagementHistory.getLeaveid().getUser());
+		mobilePushNotificationService.saveMobilePushNotification(mobilePushNotificationDTO);
 	}
 
 	@Override

@@ -142,6 +142,7 @@ function showHideSalaryDIV(){
 
 <script>
 function getPayFreqHours(){
+	$('#standardHours').parent().find('p.jquery_form_error_message').remove();
 	var payFrequency = $("#payFrequency").val();
 	//Annual Monthly Bi-Weekly Weekly
 	if(payFrequency === 'Annual'){

@@ -122,9 +122,15 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 <script>
 function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){
 	 var rowHtmlContent =  $("#row"+projectMemberId).html();
-	 var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
-	 if(locationName == '' || locationName == 'undefined' || locationName == null ){
-		 locationName = '';
+	 var userName =  '${SourceLeadWeb_userName}';
+	 var locationName =  '${SourceLeadWeb_orgName}';
+	 var actionPerfomedBy = '';
+	 if(userName == '' || userName == 'undefined' || userName == null ){
+		 userName = '';
+	 }else if(locationName == '' || locationName == 'undefined' || locationName == null ){
+		 actionPerfomedBy = userName;
+	 }else{
+		 actionPerfomedBy = userName+'('+locationName+')';
 	 }
 	 var tableFor = $("#tableFor").val();
 	$("#row"+projectMemberId).empty();
@@ -143,7 +149,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 	    	 } else if (data.response === "SUCCESS") {
 	    		 if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard' && from != null && from != '' && from != 'undefined' && from != 'approvalSummary'){
 	        		 var currentPageNumber =  $("#currentPageNumber").val();
-	        		 getStatusListData(""+currentPageNumber+"","");
+	        		 getStatusListData(""+currentPageNumber+"",0,"");
 	        	 } else if(from != null && from != '' && from != 'undefined' && from == 'approvalSummary'){
 	        		 var currentTimeFrequency = startDate+"To"+endDate;
 	        		 timesheetApprovalTableRowByProjectMemberId(currentTimeFrequency,projectMemberId,tableFor);
@@ -152,7 +158,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 	        		 $("#row"+projectMemberId).empty();
 			    	 $("#row"+projectMemberId).html(rowHtmlContent);
 			    	 $("#status"+projectMemberId).html("Approved");
-			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>");
+			    	 $("#action"+projectMemberId).html("<h3>Approved</h3><b class='Rname'>By :"+actionPerfomedBy+"</b>");
 			    	 $("#row"+projectMemberId).each(function() {
 			    		   $(this).find('input:checkbox:first').remove();
 			    		   var banIcon = '<small class="positionRelative"><i class="fa fa-ban text-danger"></i></small>';
@@ -201,9 +207,15 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 		 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	     var rowHtmlContent =  $("#row"+projectMemberId).html();
 	     
-	     var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
-		 if(locationName == '' || locationName == 'undefined' || locationName == null ){
-			 locationName = '';
+	     var userName =  '${SourceLeadWeb_userName}';
+		 var locationName =  '${SourceLeadWeb_orgName}';
+		 var actionPerfomedBy = '';
+		 if(userName == '' || userName == 'undefined' || userName == null ){
+			 userName = '';
+		 }else if(locationName == '' || locationName == 'undefined' || locationName == null ){
+			 actionPerfomedBy = userName;
+		 }else{
+			 actionPerfomedBy = userName+'('+locationName+')';
 		 }
 		 $("#row"+projectMemberId).empty();
 		 $("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
@@ -219,14 +231,14 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	    	 } else if (data.response === "SUCCESS") {
 	  	        if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 	  	    	     var currentPageNumber =  $("#currentPageNumber").val();
-	        		     getStatusListData(""+currentPageNumber+"","");
+	        		     getStatusListData(""+currentPageNumber+"",0,"");
 	  		    }
 	  	   	    else{
 	  	   		  	  $("#row"+projectMemberId).empty();
 	  	 	    	  $("#row"+projectMemberId).html(rowHtmlContent);
 	  	 	    	  $("#status"+projectMemberId).html("Rejected");
 	  	 	    	  $("#action"+projectMemberId).empty();
-	  	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+locationName+"</b>");
+	  	 	    	  $("#action"+projectMemberId).append("<h3 class='reje_color'>Rejected</h3><i class='glyphicon glyphicon-comment' id='"+projectMemberId+"' onclick='rejectedMessage(\"rejectedMessage"+projectMemberId+"\");'><div class='app_error_mes' id='rejectedMessage"+projectMemberId+"'>"+msg+"</div></i><b class='Rname'>By :"+actionPerfomedBy+"</b>");
 	  	 	    	  $("#row"+projectMemberId).each(function() {
 			    		   $(this).find('input:checkbox:first').remove();
 			    		   var banIcon = '<small class="positionRelative"><i class="fa fa-ban text-danger"></i></small>';
@@ -292,9 +304,15 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		var endDate = data2[2];
 		var rejectedReason = '';
 		var rowHtmlContent =  $("#row"+projectMemberId).html();
-		var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
-		 if(locationName == '' || locationName == 'undefined' || locationName == null ){
-			 locationName = '';
+		 var userName =  '${SourceLeadWeb_userName}';
+		 var locationName =  '${SourceLeadWeb_orgName}';
+		 var actionPerfomedBy = '';
+		 if(userName == '' || userName == 'undefined' || userName == null ){
+			 userName = '';
+		 }else if(locationName == '' || locationName == 'undefined' || locationName == null ){
+			 actionPerfomedBy = userName;
+		 }else{
+			 actionPerfomedBy = userName+'('+locationName+')';
 		 }
 		 $("#loadingCotentDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		     $.ajax({
@@ -307,7 +325,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 			    	if(data != null && data !='' && data !='undefined'){
 		    			if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 		    				 var currentPageNumber =  $("#currentPageNumber").val();
-		    				 getStatusListData(""+currentPageNumber+"","");
+		    				 getStatusListData(""+currentPageNumber+"",0,"");
 		    				 $('#hedderAcceptRejectButton').attr('style','display:none');
 		    			 }else{
 		    				 var currentPageNumberApprover =  $("#timesheetApproverCurrentPageNumber").val();
@@ -374,10 +392,16 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 		$("#rejectReasonDiv").empty();
 		var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	    var rowHtmlContent =  $("#row"+projectMemberId).html();
-	    var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
-		if(locationName == '' || locationName == 'undefined' || locationName == null ){
-			 locationName = '';
-		}
+	    var userName =  '${SourceLeadWeb_userName}';
+		 var locationName =  '${SourceLeadWeb_orgName}';
+		 var actionPerfomedBy = '';
+		 if(userName == '' || userName == 'undefined' || userName == null ){
+			 userName = '';
+		 }else if(locationName == '' || locationName == 'undefined' || locationName == null ){
+			 actionPerfomedBy = userName;
+		 }else{
+			 actionPerfomedBy = userName+'('+locationName+')';
+		 }
 		$("#loadingCotentDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;'); 
 	    $.ajax({
 	    type: "POST",
@@ -388,7 +412,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 	    	 } else if (data.response === "SUCCESS") {   
 		    	if(tableFor != null && tableFor != '' && tableFor != 'undefined' && tableFor == 'dashboard'){
 			    	     var currentPageNumber =  $("#currentPageNumber").val();
-		      		     getStatusListData(""+currentPageNumber+"","");
+		      		     getStatusListData(""+currentPageNumber+"",0,"");
 		      		   	 $(".mask_time").fadeOut(200);
 		      		     $("#rejectpanel").hide();
 		      		  	 $('#hedderAcceptRejectButton').attr('style','display:none');

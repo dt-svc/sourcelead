@@ -42,7 +42,7 @@
 				   <td><div class="tblminwidth-50" title="${loanAdv.scheduler}">${loanAdv.scheduler}</div></td>
 				   <td><div class="tblminwidth-30" title="${loanAdv.noOfSchedules}">${loanAdv.noOfSchedules}</div></td>
 				   <td><div class="tblminwidth-50" title="${loanAdv.effectiveDateStr}">${loanAdv.effectiveDateStr}</div></td>
-				   <td><div class="tblminwidth-50" title="${loanAdv.deductAmount}">${loanAdv.deductAmount}</div></td>
+				   <td><div class="tblminwidth-50" title="${loanAdv.deductAmount}">$ ${loanAdv.deductAmount}</div></td>
 				   <td><div class="tblminwidth-50" title="${loanAdv.approverName}">${loanAdv.approverName}</div></td>
 				   <td><div class="tblminwidth-50"><a href="javascript:void(0)" onclick="editLoanAndAdvance('${loanAdv.id}')">Edit</a>
 				     |&nbsp;<a href="javascript:void(0)" onclick="deleteLoanAndAdvance('${loanAdv.id}')">Delete</a>

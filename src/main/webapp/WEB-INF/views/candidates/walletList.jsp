@@ -51,6 +51,9 @@
 			 <div class="clearfix"></div>
 	<div class="col-md-12 cartInvoiceTable backgroundWhite mt">
 		<div class="positionRelative reportHead clearfix mt">
+		     <span class="pull-left refreIcon mb10">
+				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a>
+			  </span>
             <ul class="pull-right list-unstyled list-inline noPad">
          <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
 				<li>
@@ -60,7 +63,7 @@
 				  <a href="javascript:void(0)" title="Sorting" class="assenDesendingIC"></a>
 			</li>
             <li class="noMar">
-                <input class="repSearchBar" placeholder="Search" id="walletSearch" type="text">
+                <input class="repSearchBar" placeholder="Transaction Id"  id="walletSearch" type="text">
                 <span class="repSearchIcon" onclick="getDynamicWalletList();"></span>
 			</li>
             </ul>
@@ -218,6 +221,9 @@
 	function goToSalesOrderList(){
 		location.href = "${appPath}/SalesOrderList";
 	}
+	function refreshPage(){
+		location.reload();
+	}
 	/* function goToWalletList(){
 		location.href = "${appPath}/walletList";
 	} */
@@ -315,6 +321,7 @@
 	        	 {
 	                 "targets": colIndex++,
 	                 "data": "transactionId",
+	                 "sortable": false,
 	                 "render": function (data, type, opt, meta) {
 	                     var result = "";
 	                     if (opt.transactionId !== null && opt.transactionId !== '' && opt.transactionId !== 'undefined') {
@@ -387,7 +394,7 @@
 	         ],
 	         "scrollCollapse": false,
 	         "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	         "aaSorting": [],
+	         "aaSorting": [[3,'desc']],
 	         "bLengthChange": true,
 	         "bDestroy": true,
 	         "ordering": true,

@@ -4,14 +4,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
- <style>
-.moveErrorMsgUp{
-    position: absolute !important;
-    right: -30px !important;
-    top: 5px;
-}
-</style>
- 
 <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -105,9 +97,10 @@
 					<div class="project_details_cta">
 						<strong>Expense Id:</strong><span>${expenses != null ? expenses.expenseAutoId : ExpensesId}</span><div class="clearfix"></div>
 					</div>
-					<div class="project_details_cta">
-						<strong>Purpose:</strong><span>${expenses.expensePurpose}</span><div class="clearfix"></div>
-					</div>
+					 <div class="project_details_cta">
+						<strong>Purpose:</strong><span>
+							<span title="${expenses.expensePurpose}">${expenses.expensePurpose}</span><div class="clearfix"></div>
+					</div> 
 					<div class="project_details_cta">
 						<strong>Project Name:</strong><span>${expenses.projectName}</span><div class="clearfix"></div>
 					</div>
