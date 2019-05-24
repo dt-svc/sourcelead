@@ -1078,6 +1078,7 @@ public class LeaveServiceImpl implements LeaveService{
 		//Mobile PushNotification
    	    MobilePushNotificationDTO mobilePushNotificationDTO = new MobilePushNotificationDTO();
    	    mobilePushNotificationDTO.setNotificationDescritpion(notificationbody);
+   	    mobilePushNotificationDTO.setNotificationTitle(Constants.NOTIFICATION_LEAVE_TITLE);
    	    mobilePushNotificationDTO.setUserId(leaveManagementHistory.getLeaveid().getUser());
 		mobilePushNotificationService.saveMobilePushNotification(mobilePushNotificationDTO);
 	}

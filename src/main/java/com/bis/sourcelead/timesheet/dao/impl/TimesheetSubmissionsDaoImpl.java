@@ -997,13 +997,20 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 			if(endDate != null){
 				sqlEndDate = new java.sql.Date(endDate.getTime());
 			}
-			String qryString = "update TimesheetSubmissions ts set ts.weekcomments= :weekComment where "
+			String qryString = "from TimesheetSubmissions ts left join fetch ts.projectMembers left join fetch ts.projects left join fetch ts.masterCandidateId where "
 					+ "  ts.masterCandidateId.id  = :masterCandidateId"
 					+ "   and  ts.projects.id = :projectId   "
 					+ "  and ts.startDate BETWEEN '"+sqlStartDate+"' and '"+sqlEndDate+"'";
 			
 			
-			int count = session.createQuery(qryString).setString("weekComment", weekComment).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).executeUpdate();
+			List<TimesheetSubmissions> submissionList =  session.createQuery(qryString).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).list();
+			if(submissionList != null && !submissionList.isEmpty()) {
+				for(TimesheetSubmissions submissions : submissionList) {
+					submissions.setWeekcomments(weekComment);
+					submissions.setUpdatedDate(new Date());
+					session.saveOrUpdate(submissions);
+				}
+			}
 	}
 	
 
