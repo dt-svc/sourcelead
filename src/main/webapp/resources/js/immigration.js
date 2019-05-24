@@ -1327,7 +1327,7 @@ function Immigration() {
 			  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
 				 $.ajax({
 				    	type: "GET",
-				    	 url:sourceleadUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&country="+country+"&id="+id, 
+				    	 url:vmsUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&country="+country+"&id="+id, 
 				        success: function(data) {
 				        	if(data == true){
 				        		   $("input#visaNumber").after("<p class='jquery_form_error_message'>"+visaNumber+" is Already Existed With Active Details.</span>");
