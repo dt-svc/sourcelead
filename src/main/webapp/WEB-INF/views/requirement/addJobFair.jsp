@@ -252,7 +252,6 @@
 		} else {		
 			$("#requirementsList option").each(function () {
 				if($(this).val() === id) {
-					/* console.log($(this).text() + " " + $(this).val()); */
 					if(removedFlag) {
 						$("#selectedJobsDiv").find("div[data-requirement_id=" + $(this).val() + "]").remove();
 						if($(".multiJob").length === 0) {
