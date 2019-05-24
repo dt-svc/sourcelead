@@ -27,7 +27,9 @@ public class AssociatePayrollPayheadHistoryDTO  extends SearchDTO{
     
     private BigDecimal monthlyOld;
 	private BigDecimal annualyOld;
+	private String paySlip;
   	
+	
 	public Long getId() {
 		return id;
 	}
@@ -141,5 +143,11 @@ public class AssociatePayrollPayheadHistoryDTO  extends SearchDTO{
 	}
 	public void setAnnualyOld(BigDecimal annualyOld) {
 		this.annualyOld = annualyOld;
+	}
+	public String getPaySlip() {
+		return paySlip;
+	}
+	public void setPaySlip(String paySlip) {
+		this.paySlip = paySlip;
 	}
 }
