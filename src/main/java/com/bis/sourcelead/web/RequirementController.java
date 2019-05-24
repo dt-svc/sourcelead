@@ -113,6 +113,9 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
+import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 //import org.apache.commons.collections.ListUtils;
 import com.ibm.icu.util.Calendar;
 
@@ -210,6 +213,9 @@ public class RequirementController {
 	
 	@Autowired
 	private JobCustomFieldDataService jobCustomFieldDataService;
+	
+	@Autowired
+	private RequirementWorkFlowService requirementWorkFlowService;
 	
 	@Autowired
     EmailReminderService emailReminderService;
@@ -583,6 +589,8 @@ public class RequirementController {
 		List<SubmissionTemplate>   submissionTempletesList = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(orgLocations.getId(),"Submission");
 		model.addObject("submissionTempletesList", submissionTempletesList);
 		
+		List<RequirementWorkFlow>   workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
+		model.addObject("workflowList", workflowList);
 		
 		//client submission template 
 		if(null != requirement.getClientId()){
