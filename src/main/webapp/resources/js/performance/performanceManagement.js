@@ -318,6 +318,47 @@ function PerformanceManagement(){
 	   			}); 
 	   }
    
+   this.addNewRatingScale = function(){
+	   	$.ajax({
+	   		  type: "GET",
+	   		    url: sourceleadUrl+"/addNewRatingScale",
+	   		     success :function(response) {
+	   		    	    $("#performanceManagementDiv").empty();  
+	   		    	    $("#performanceManagementDiv").append(response);
+	   		    	    performanceManagement.getPerformanceScaleLevels();
+	   		    	    performanceManagement.scaleDescriptionEditor();
+	   				},
+	   			}); 
+	   }
+   
+   this.scaleDescriptionEditor = function(){
+	    $("#txtEditor").Editor();
+		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-4000');
+		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
+   }
+   
+   
+   this.getPerformanceScaleLevels = function(){
+		  
+		  $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getPerformanceScaleLevels", 
+		        success: function(json) {
+		        	var output = "";
+		        	
+		        	output = output + "<option value=''>--Select Level--</option>";
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
+			        		
+					}
+		        	$("#performanceScaleLevel").empty();
+			        $("#performanceScaleLevel").append(output);
+		        },
+		    });
+	  }
+   
    this.tagPerformanceCompetence = function(tagCompetenceId){
 	   $.ajax({
  		  type: "GET",

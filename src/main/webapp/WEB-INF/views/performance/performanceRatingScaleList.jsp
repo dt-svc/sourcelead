@@ -47,8 +47,8 @@ padding: 0px 240px 8px 0px;
 				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
 				<div class="action-pop">
 					<span> 
-				          <a onclick="performanceManagement.addRatingScaleLevels();" title="Create offboard">Add Rating Scale</a>
-				          <a onclick="performanceManagement.performanceRatingScaleList();" title="Create onboard">Rating Scale List</a> 
+				          <a onclick="performanceManagement.addRatingScaleLevels();" >Add Rating Level</a>
+				          <a onclick="performanceManagement.addNewRatingScale();">Add Rating Scale</a> 
 					</span>
 				</div>
 			</li>
@@ -79,7 +79,7 @@ padding: 0px 240px 8px 0px;
      
      
      
-     <script>
+<script>
 function getRatingScaleLevelsList(){
 	 $("#ratingScaleId").removeClass();
 	 $("#ratingScaleId").addClass("positionRelative reportHead competencePaddingRight clearfix");

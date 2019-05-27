@@ -448,6 +448,20 @@ public class PerformanceManagementRestController {
    }
    
    
+
+   @RequestMapping(value = "/getPerformanceScaleLevels", method = RequestMethod.GET)
+	public List<PerformanceRatingLevelDTO> getPerformanceScaleLevels(HttpServletRequest request){
+	   List<PerformanceRatingLevelDTO> competenciesTagDTOList = null;
+		 try {
+			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			 String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+			 competenciesTagDTOList =  performanceRatingLevelService.getPerformanceRatingLevelsListByOrgLocationId(orgLocationId,dateFormat);
+			 
+		 }catch (Exception e) {
+			 e.printStackTrace();
+		}
+		 return competenciesTagDTOList;
+   }
    
 	 @RequestMapping(value = "/getPerformanceCompetenceList", method = RequestMethod.GET)
 	public ResponseList<PerformanceCompetenciesDTO> getPerformanceCompetenceList(PerformanceCompetenciesDTO performanceCompetenciesDTO,HttpServletRequest request) throws Exception {

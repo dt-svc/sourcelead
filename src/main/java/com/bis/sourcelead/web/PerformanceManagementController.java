@@ -166,6 +166,16 @@ public class PerformanceManagementController {
 		return model;
 	}
 	
+	@RequestMapping(value = "/addNewRatingScale")
+	public ModelAndView addNewRatingScale(HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("performance/addNewRatingScale");
+		return model;
+	}
+	
+	
+	
 	@RequestMapping(value = "/tagPerformanceCompetence")
 	public ModelAndView tagPerformanceCompetence(HttpServletRequest request) throws Exception
 	{

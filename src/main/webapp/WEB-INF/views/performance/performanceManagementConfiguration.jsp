@@ -68,7 +68,8 @@ var locationDateFormat = '${SourceLeadWeb_dateFormat}';
     
 <jsp:include page="../performance/addNewPerformanceBadge.jsp" />   
 <jsp:include page="../performance/addNewPerformanceCompetence.jsp" />   
-<jsp:include page="../performance/addNewRatingScaleLevels.jsp" />     
+<jsp:include page="../performance/addNewRatingScaleLevels.jsp" /> 
+
   
 </section>
 
