@@ -76,4 +76,9 @@ public interface RequirementWorkFlowService {
 	List<RequirementWorkFlowStagesDTO> getNextRequirementWorkflowStagesByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations)throws Exception;
 	
 	void deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(String uuid, Long id)throws Exception;
+	
+	Boolean validateWorkflowName(Long id, String name, String uuid)throws Exception;
+	
+	Boolean validateWorkflowStageName(Long id, String name, String uuid, String stageUuid)throws Exception;
+	
 }
