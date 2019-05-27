@@ -443,7 +443,7 @@ public class PayrollController {
 		   		payrollList.add(indEmployeePayroll.getObject());
 		   		INDPayrollDTO indPayrollDTO = iNDPayrollCommonUtil.getINDPayrollDTOFromIndEmployeePayroll(payrollList, indEmployeePayroll.getObject().getIndPaysheetFrequency().getOrgLocation()).iterator().next();
 		   		List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList = indPayrollDTO.getPayHeadHistoryDTOList();
-			
+	 		
 		   	if(associatePayrollPayheadDTOList != null && !associatePayrollPayheadDTOList.isEmpty()) {
 				List<AssociatePayrollPayheadHistoryDTO> earningList = associatePayrollPayheadDTOList
 						.stream()
