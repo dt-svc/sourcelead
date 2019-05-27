@@ -8,12 +8,6 @@
 
 <script src="/resources/js/formvalidator.js"></script>
 
-<style>
-.timesheet_week_comm strong input.dele  {
-width : 6% !important;
-}
-</style>
-
 <section class="content-wraper">
     <div id="loading"></div>
     <section class="content-header clearfix">
@@ -79,7 +73,7 @@ width : 6% !important;
                   </label>
                   <label class="col-md-4 control-label mt10">These contracts will be added to this offer:</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
-                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm timesheetWeek_comm onboardDocs">
 				        <span class="uploadAttachments"> 
 			              <div id="savedContractsAttachments"></div>
 				        </span>
@@ -93,7 +87,7 @@ width : 6% !important;
                   </label>
                   <label class="col-md-4 control-label mt10">These forms will be added to this offer:</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
-                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm timesheetWeek_comm onboardDocs">
 				        <span class="uploadAttachments"> 
 			              <div id="savedFormsAttachments"></div>
 				        </span>
@@ -107,7 +101,7 @@ width : 6% !important;
                   </label>
                   <label class="col-md-4 control-label mt10">These policies will be added to this offer:</label>
                      <div id="timesheetDocumentsId" class="timesheetDocs">
-                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm timesheetWeek_comm onboardDocs">
 				        <span class="uploadAttachments"> 
 			              <div id="savedPociliesAttachments"></div>
 				        </span>
@@ -120,7 +114,7 @@ width : 6% !important;
                 <div class="form-group">
                   <label class="col-md-4 control-label mt10">These files will be available in the portal:</label>
                   <div id="timesheetDocumentsId" class="timesheetDocs">
-                      <div class="col-md-7 commentFile timesheet_week_comm onboardDocs">
+                      <div class="col-md-7 commentFile timesheet_week_comm timesheetWeek_comm onboardDocs">
 				        <span class="uploadAttachments"> 
 			             <div id="savedSupportedAttachments"></div>
 				        </span>

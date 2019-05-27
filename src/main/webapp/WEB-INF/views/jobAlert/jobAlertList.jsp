@@ -4,15 +4,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<style>
-.ratetype p {
-    left: -45px !important;
-    position: absolute;
-    bottom: -14px;
-}
-</style>
-
 <script>
 	function alertMsgFadeinFunction() {
 		$("#jobAlert1").fadeIn(200);
@@ -155,7 +146,7 @@ function createAlert(){
 					 result = result +'         <div class="form-group clearfix">';
 					 result = result +'         	<label class="col-md-3">Salary/Rate</label>';
 					 result = result +'	<div class="col-md-9">';
-					 result = result +'            <div class="input-group er ratetype">';
+					 result = result +'            <div class="input-group er ratetype-validation">';
 					 result = result +'               <div class="input-group-btn tblminwidth-75">';
 					 result = result +'                 <select class="btn-primary select_picker form-control" id="rateCurrency" name="rateCurrency">';
 					 result = result +'                <option ${currencyCode  == "INR" ? "selected" : ''}>INR</option>';
@@ -168,7 +159,7 @@ function createAlert(){
 					 result = result +'               </div>';
 					 
 					 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" onblur="getRate();" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control" placeholder="Rate">';
-					 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype">';
+					 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype-validation">';
 					 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" data-validation-optional="true" field-name="Rate Type">';
 					 result = result +'                   <option value="">Rate Per</option>';
 					 result = result +'                   <option >Hourly</option>';
@@ -582,7 +573,7 @@ function editAlert(jobAlertUUID){
         		 result = result +'         <div class="form-group clearfix">';
         		 result = result +'         	<label class="col-md-3">Salary/Rate</label>';
         		 result = result +'	<div class="col-md-9">';
-        		 result = result +'            <div class="input-group er ratetype">';
+        		 result = result +'            <div class="input-group er ratetype-validation">';
         		 result = result +'               <div class="input-group-btn tblminwidth-75">';
         		 result = result +'                <select class="btn-primary select_picker form-control" id="rateCurrency" name="rateCurrency">';
         		 
@@ -626,7 +617,7 @@ function editAlert(jobAlertUUID){
         		 result = result +'               </div>';
         		 
         		 result = result +'<input type="text" id="currentRate" name="rate" onblur="getRate();" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="'+rate+'" class="form-control" placeholder="Rate">';
-        		 result = result +'<div class="input-group-btn tblminwidth-75 ratetype">';
+        		 result = result +'<div class="input-group-btn tblminwidth-75 ratetype-validation">';
         		 result = result +'<select class="btn-primary select_picker form-control" id="rateType" data-validation-optional="true" name="rateType" field-name="Rate Type">';
         		 result = result +'<option value="">Rate Per</option>';
         		 
