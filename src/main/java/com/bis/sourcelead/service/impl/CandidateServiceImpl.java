@@ -61,6 +61,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
@@ -83,6 +84,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -3794,6 +3796,50 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId, Long masterCandidateId)
 			throws Exception {
 		return candidateDao.getConsultantUserByCandidateIdOrMasterCandidateId(candidateId, masterCandidateId);
+	}
+
+	@Override
+	public CandidateVerificationConfig saveDuplicateCheckConfig(CandidateVerificationConfigDTO candidateVerificationConfigDTO, OrgLocations loginOrgLocation,
+			User userId) {
+		CandidateVerificationConfig candidateVerificationConfig = new CandidateVerificationConfig();
+		if(Constants.STATUS_YES.equalsIgnoreCase(candidateVerificationConfigDTO.getEmail())) {
+			candidateVerificationConfig.setEmail(true);
+		}else {
+			candidateVerificationConfig.setEmail(false);
+		}
+		if(Constants.STATUS_YES.equalsIgnoreCase(candidateVerificationConfigDTO.getPanNumber())) {
+			candidateVerificationConfig.setPanNumber(true);
+		}else {
+			candidateVerificationConfig.setPanNumber(false);
+		}
+		if(Constants.STATUS_YES.equalsIgnoreCase(candidateVerificationConfigDTO.getPhoneNumber())) {
+			candidateVerificationConfig.setMobilePhone(true);
+		}else {
+			candidateVerificationConfig.setMobilePhone(false);
+		}
+		if(Constants.STATUS_YES.equalsIgnoreCase(candidateVerificationConfigDTO.getSsnNumber())) {
+			candidateVerificationConfig.setSsnNumber(true);
+		}else {
+			candidateVerificationConfig.setSsnNumber(false);
+		}
+		if(Constants.STATUS_YES.equalsIgnoreCase(candidateVerificationConfigDTO.getAadharNumber())) {
+			candidateVerificationConfig.setAadharNumber(true);
+		}else {
+			candidateVerificationConfig.setAadharNumber(false);
+		}
+		candidateVerificationConfig.setCreatedDate(new Date());
+		candidateVerificationConfig.setCreatedBy(userId.getId());
+		candidateVerificationConfig.setUpdatedDate(new Date());
+		candidateVerificationConfig.setUpdatedBy(userId.getId());
+		candidateVerificationConfig.setStatus(1);
+		candidateVerificationConfig.setOrgLocationId(loginOrgLocation);
+		candidateVerificationConfig.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		return candidateDao.saveDuplicateCheckConfig(candidateVerificationConfig);
+	}
+
+	@Override
+	public CandidateVerificationConfig getCandidateVerificationConfig(Long orgLocationId) {
+		return candidateDao.getCandidateVerificationConfigBy(orgLocationId);	
 	}
 	
 }
