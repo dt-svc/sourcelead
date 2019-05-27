@@ -77,6 +77,7 @@ public class RequirementHelper {
 			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			requirementIndex.setUrl(requirement.getUrl());
+			requirementIndex.setWorkflowId(requirement.getWorkflowId().getId());
 			requirementIndex.setGeneratedId(requirement.getGeneratedId());
 			if(requirement.getIsClientJob() !=null){
 				requirementIndex.setIsClientJob(requirement.getIsClientJob());
