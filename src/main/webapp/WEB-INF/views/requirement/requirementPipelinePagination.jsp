@@ -788,7 +788,7 @@ $('#assignedNewPerson').chosen();
 	
 <script>
 function applicantsourceHandler(reqId,submissionId) {
-	$(".mask, .popupWrap2").fadeIn();
+	$(".mask, #popupSaveId").fadeIn();
 	updateUserPop(submissionId);
 	if(reqId != '' && reqId != 'undefined' && reqId != null){
 		$.ajax({
@@ -808,7 +808,7 @@ function applicantsourceHandler(reqId,submissionId) {
 	}
 }
 function applicantsourceHandlerClose() {
-	$(".mask, .popupWrap2").fadeOut();
+	$(".mask, #popupSaveId").fadeOut();
 }
 function applicantsourceSave(submissionId){
 	var userId = $("#assignedNewPerson").val();
