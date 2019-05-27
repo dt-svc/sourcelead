@@ -159,6 +159,7 @@ function getTableDataByPageSizeEmployee(){
 	  var projectMemberListIdDto = $('#projectMemberListIdDto').val();
 	  var startDateDto = $('#startDateDto').val();
 	  var endDateDto = $('#endDateDto').val();
+	  var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	  
 	  if(projectIdDto != null && projectIdDto !='' && projectIdDto !='undefined'){
 		  projectIds  =  JSON.parse(projectIdDto);  ;
@@ -174,7 +175,7 @@ function getTableDataByPageSizeEmployee(){
 	  var exportType = type;
 		
 		if(startDate != null && startDate !='' && startDate !='undefined' && endDate != null && endDate !='' && endDate !='undefined'){
-			window.location.href = pmsUrl+"/exportDaywiseTimesheetReport?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&exportType="+exportType+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList;
+			window.location.href = sourceleadUrl+"/exportDaywiseTimesheetReport?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&exportType="+exportType+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList;
 		}
 	}
  </script>
