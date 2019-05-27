@@ -546,13 +546,13 @@
 														result = result
 																+ "<option value='Status'>Submission</option>";
 													}
-													if (opt.previousSubmissionStatus != null
+													/* if (opt.previousSubmissionStatus != null
 															&& opt.previousSubmissionStatus == 'SHORTLIST') {
 														'<sec:authorize access="hasRole(\'ROLE_SHORTLIST\')">';
 														result = result
 																+ "<option value='shortlist'>Shortlist</option>";
 														'</sec:authorize>';
-													}
+													} */
 													if (opt.previousSubmissionStatus != null
 															&& opt.previousSubmissionStatus == 'INTERVIEW'
 															&& opt.submissionStatus != 'SELECTED_ON_INTERVIEW'
@@ -562,13 +562,13 @@
 														result = result
 																+ "<option value='Interview'>INTERVIEW</option>";
 													}
-													if (opt.previousSubmissionStatus != null
+													/* if (opt.previousSubmissionStatus != null
 															&& opt.previousSubmissionStatus == 'SELECTED_ON_INTERVIEW'
 															&& opt.submissionStatus != 'SELECTED_ON_INTERVIEW') {
 
 														result = result
 																+ "<option value='Selected on Interview'>Selected on Interview</option>";
-													}
+													} */
 													if (opt.previousSubmissionStatus != null
 															&& opt.previousSubmissionStatus == 'OFFERMADE'
 															&& opt.submissionStatus != 'JOINED') {
@@ -607,29 +607,30 @@
 																+ "<option value='NoResponse'>NoResponse</option>";
 													}
 
-													if (opt.submissionStatus == 'SELECTED_ON_INTERVIEW' && opt.previousSubmissionStatus != 'CLIENT_INTERVIEW') {
+													if (opt.submissionStatus == 'SELECTED_ON_INTERVIEW' && opt.previousSubmissionStatus !=null) {
 														result = result
 																+ "<option value='On Hold'>On Hold</option>";
 														result = result
 																+ "<option value='NoResponse'>NoResponse</option>";
 													}
 
-													if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW'
-															&& opt.submissionStatus != 'SUBMIT_TO_CLIENT'
+													if (opt.submissionStatus == 'CLIENT_INTERVIEW'
 															&& opt.submissionStatus != 'ONHOLD'
 															&& opt.submissionStatus != 'JOINED'
 															&& opt.submissionStatus != 'NORESPONSE') {
 														result = result
 																+ "<option value='On Hold'>On Hold</option>";
+														result = result
+														+ "<option value='NoResponse'>NoResponse</option>";
 													}
-													if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW'
+													/* if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW'
 															&& opt.submissionStatus != 'SUBMIT_TO_CLIENT'
 															&& opt.submissionStatus != 'NORESPONSE'
 															&& opt.submissionStatus != 'JOINED'
 															&& opt.submissionStatus != 'ONHOLD') {
 														result = result
 																+ "<option value='NoResponse'>NoResponse</option>";
-													}
+													} */
 													result = result
 															+ "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERMADE'
