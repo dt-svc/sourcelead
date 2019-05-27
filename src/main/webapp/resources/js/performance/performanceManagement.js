@@ -393,7 +393,7 @@ function PerformanceManagement(){
  	  $(".mask, #competenceModalTasktype").fadeIn();
    }
   
-  this.addRatingScale = function() {
+  this.addRatingScaleLevels = function() {
  	  $(".mask, #ratingScaleModalTasktype").fadeIn();
    }
    

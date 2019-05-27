@@ -60,7 +60,7 @@ var locationDateFormat = '${SourceLeadWeb_dateFormat}';
 				      <div class="col-md-3 perfDashCta">
 					<img src="/resources/images/rating-scale.svg" alt=""/>
 					<h3>Rating Scale</h3>
-					<span><a onclick="performanceManagement.addRatingScale();" class="colB">Add</a><a onclick="performanceManagement.performanceRatingScaleList();" class="">View</a></span>
+					<span><a onclick="performanceManagement.addRatingScaleLevels();" class="colB">Add</a><a onclick="performanceManagement.performanceRatingScaleList();" class="">View</a></span>
 				</div>
 				  
 	    	</div>
@@ -68,7 +68,7 @@ var locationDateFormat = '${SourceLeadWeb_dateFormat}';
     
 <jsp:include page="../performance/addNewPerformanceBadge.jsp" />   
 <jsp:include page="../performance/addNewPerformanceCompetence.jsp" />   
-<jsp:include page="../performance/addNewRatingScale.jsp" />     
+<jsp:include page="../performance/addNewRatingScaleLevels.jsp" />     
   
 </section>
 
