@@ -12,18 +12,18 @@
 
     
  <div class="project_wrap clearfix">
-<form:form id="createPerformacneScale_form"  name="createPerformacneScale_form" method="post">
+<form:form id="ratingScale_form"  name="ratingScale_form" method="post">
     <div class="clearfix newAddWidth">
     <div class="form-horizontal mt myForm">
 
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt"> 
     <div class="form-group">
         <label class="col-md-3">Rating Name</label>
-        <div class="col-md-9"><input type="text" class="form-control"></div>
+        <div class="col-md-9"><input type="text" class="form-control" id="ratingName" name="ratingName" field-name="Rating Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250"></div>
     </div>
     <div class="form-group">
         <label class="col-md-3">Short code</label>
-        <div class="col-md-9"><input type="text" class="form-control"></div>
+        <div class="col-md-9"><input type="text" class="form-control" id="shortCode" name="shortCode" field-name="Short Code " data-validation="required validate_Space validate_AlphaNumber validate_length length1-5" ></div>
     </div>
     
     
@@ -31,7 +31,7 @@
         <label class="col-md-3">Level</label>
         <div class="col-md-9">
             <select class="chosen-select form-control"
-            name="performanceScaleLevel" id="performanceScaleLevel" field-name="Level" data-validation="required">
+            name="ratingLevelId" id="performanceScaleLevel" field-name="Level" data-validation="required">
                 
             </select>             
         </div>
@@ -39,7 +39,7 @@
     <div class="form-group">
         <label class="col-md-3">Value</label>
         <div class="col-md-9">
-         	<input type="text" class="form-control">
+         	<input type="text" class="form-control" id="ratingScaleValue" name="ratingScaleValue" field-name="Value" data-validation="required validate_Space validate_int" />
         </div>
     </div>       
     </div>
@@ -62,7 +62,7 @@
     <div class="footerstyelsNew">
 	<div class="clearfix">
 		<div class="pull-right mr">
-			<button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="performanceManagement.saveCompetenceTagging();" >Save</button>
+			<button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="performanceManagement.savePerformanceRatingScale();" >Save</button>
 	           <button type="button" class="slBtn md popClose"  onclick="performanceManagement.performanceCompetenceList();" >Cancel</button>
 		</div>
 	</div>

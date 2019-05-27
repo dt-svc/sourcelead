@@ -404,15 +404,15 @@ public class PerformanceManagementRestController {
   		 return resObj;
       }
    
-   @RequestMapping(value = "/savePerformanceRatingScale", method = RequestMethod.POST)
- 	public Response<PerformanceRatingLevelDTO> savePerformanceCompetence(HttpServletRequest request, 
+   @RequestMapping(value = "/savePerformanceRatingLevel", method = RequestMethod.POST)
+ 	public Response<PerformanceRatingLevelDTO> savePerformanceRatingLevel(HttpServletRequest request, 
  			PerformanceRatingLevelDTO PerformanceRatingLevelDTO){
  		 Response<PerformanceRatingLevelDTO> resObj = new Response<>();
  		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		 try {
  			 if(Validator.validate(PerformanceRatingLevelDTO)){
- 				performanceRatingLevelService.storePerformanceRatingScale(PerformanceRatingLevelDTO, orgLocation.getId(), user.getId());
+ 				performanceRatingLevelService.storePerformanceRatingLevel(PerformanceRatingLevelDTO, orgLocation.getId(), user.getId());
  			 resObj.setResponse(Result.SUCCESS.name());
  			 resObj.setResponseMessage(Result.SUCCESS.getValue());
  		    }
@@ -427,6 +427,31 @@ public class PerformanceManagementRestController {
  		}
  		 return resObj;
      }
+   
+   
+   @RequestMapping(value = "/savePerformanceRatingScale", method = RequestMethod.POST)
+	public Response<PerformanceRatingLevelDTO> savePerformanceRatingScale(HttpServletRequest request, 
+			PerformanceRatingLevelDTO PerformanceRatingLevelDTO){
+		 Response<PerformanceRatingLevelDTO> resObj = new Response<>();
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 try {
+			 if(Validator.validate(PerformanceRatingLevelDTO)){
+				performanceRatingLevelService.storePerformanceRatingLevel(PerformanceRatingLevelDTO, orgLocation.getId(), user.getId());
+			 resObj.setResponse(Result.SUCCESS.name());
+			 resObj.setResponseMessage(Result.SUCCESS.getValue());
+		    }
+			 else {
+				 resObj.setResponse(Result.INVALID_DATA.name());
+				 resObj.setResponseMessage(Result.INVALID_DATA.getValue());
+				
+	    	 }
+		 }catch (Exception e) {
+			 resObj.setResponse(Result.AWKWARD.name());
+			 resObj.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		 return resObj;
+    }
    
    
    @RequestMapping(value = "/getRatingLevelsList", method = RequestMethod.GET)

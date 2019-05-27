@@ -125,6 +125,51 @@ function PerformanceManagement(){
 		});
 	
 	
+	this.savePerformanceRatingLevel  = function (){
+		 var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+		 
+		 if ($('#ratingLevel_form').validate(false, validationSettings)){ 
+		        var formData = getFormData("ratingLevel_form");
+		        $("#ratingScaleLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		         $.ajax({
+			    	type: "POST",
+			    	data: formData,
+			    	 url: sourceleadUrl+"/savePerformanceRatingLevel?",
+			        success: function(response) {
+			        	$("#ratingScaleLoading").removeAttr('style');
+			        	//performanceManagement.performanceCompetenceList();
+			        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	     	    		    showError(response.responseMessage);
+	     	    		}
+			        	else if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		performanceManagement.closeRatingScalePopup();
+			        		$(".mask, #ratingScaleModalTasktype").fadeOut();
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+			        },
+			    });  
+		        return true;
+		  } else {
+			return false;
+		  }
+	}
+
+	$('body').on('blur', '#ratingLevel_form', function() {
+			$("#ratingLevel_form").showHelpOnFocus();
+			$("#ratingLevel_form").validateOnBlur(false, validationSettings);  
+		});
+	
+	
 	this.savePerformanceRatingScale  = function (){
 		 var validationSettings = {
 			        errorMessagePosition : 'element',
@@ -142,15 +187,13 @@ function PerformanceManagement(){
 			    	 url: sourceleadUrl+"/savePerformanceRatingScale?",
 			        success: function(response) {
 			        	$("#ratingScaleLoading").removeAttr('style');
-			        	//performanceManagement.performanceCompetenceList();
 			        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 	     	    		    showError(response.responseMessage);
 	     	    		}
 			        	else if (response.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
 			        	} else if (response.response === "SUCCESS") {
-			        		performanceManagement.closeRatingScalePopup();
-			        		$(".mask, #ratingScaleModalTasktype").fadeOut();
+			        		
 			        	} else if (response.indexOf('Sign In') !== -1) {
 			        		location.replace(sourceleadUrl);
 			        	} else {
@@ -355,9 +398,11 @@ function PerformanceManagement(){
 					}
 		        	$("#performanceScaleLevel").empty();
 			        $("#performanceScaleLevel").append(output);
+			        $('#performanceScaleLevel').chosen();
 		        },
 		    });
 	  }
+   
    
    this.tagPerformanceCompetence = function(tagCompetenceId){
 	   $.ajax({
@@ -476,7 +521,7 @@ function PerformanceManagement(){
 	      $(".mask, #ratingScaleModalTasktype").fadeOut();
 	 	  $('#ratingScaleNameDiv').find('p.jquery_form_error_message').remove();
 	 	  $('#ratingScaleDescriptionDiv').find('p.jquery_form_error_message').remove();
-	 	  document.getElementById("ratingScale_form").reset();
+	 	  document.getElementById("ratingLevel_form").reset();
    }
    
    

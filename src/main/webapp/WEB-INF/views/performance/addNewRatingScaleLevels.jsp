@@ -6,9 +6,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <div class="popupWrap" id="ratingScaleModalTasktype">
-      <div class="popupHead"><span>Add Rating Scale</span><i class="closePop pull-right popClose" onclick="performanceManagement.closeRatingScalePopup();"></i></div>
+      <div class="popupHead"><span>Add Rating Level</span><i class="closePop pull-right popClose" onclick="performanceManagement.closeRatingScalePopup();"></i></div>
          <div id="ratingScaleLoading"></div>
-        <form:form id="ratingScale_form" name="ratingScale_form" method="post">
+        <form:form id="ratingLevel_form" name="ratingLevel_form" method="post">
 	        <div class="popupContent">
 	        <input type="hidden" name="ratingScaleId" id="ratingScaleId"/>
 	            <div class="clearfix mb" id="ratingScaleNameDiv">
@@ -29,7 +29,7 @@
 	        </div>
         
 	        <div class="popupFoot text-right">
-	           <button type="button" class="slBtn md colorBtn" id="savePerformanceRatingScale" onclick="performanceManagement.savePerformanceRatingScale();" >Save</button>
+	           <button type="button" class="slBtn md colorBtn" id="savePerformanceRatingScale" onclick="performanceManagement.savePerformanceRatingLevel();" >Save</button>
 	           <button type="button" class="slBtn md popClose"  onclick="performanceManagement.closeRatingScalePopup();" >Cancel</button>
 	        </div>
 	 </form:form>
