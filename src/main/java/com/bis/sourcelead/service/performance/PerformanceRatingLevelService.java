@@ -8,7 +8,7 @@ import com.bis.sourcelead.entity.performance.PerformanceRatingLevel;
 
 public interface PerformanceRatingLevelService {
 
-	PerformanceRatingLevel storePerformanceRatingScale(PerformanceRatingLevelDTO performanceRatingLevelDTO,Long orgLocationId,Long userId) throws Exception;
+	PerformanceRatingLevel storePerformanceRatingLevel(PerformanceRatingLevelDTO performanceRatingLevelDTO,Long orgLocationId,Long userId) throws Exception;
 
 	List<PerformanceRatingLevelDTO> getPerformanceRatingLevelsListByOrgLocationId(Long orgLocationId,String dateFormat) throws Exception;
 }

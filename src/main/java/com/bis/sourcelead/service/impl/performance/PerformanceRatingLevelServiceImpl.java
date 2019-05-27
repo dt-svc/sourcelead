@@ -22,7 +22,7 @@ public class PerformanceRatingLevelServiceImpl implements PerformanceRatingLevel
 	PerformanceRatingLevelDao performanceRatingLevelDao;
 
 	@Override
-	public PerformanceRatingLevel storePerformanceRatingScale(PerformanceRatingLevelDTO performanceRatingLevelDTO,Long orgLocationId,Long userId)
+	public PerformanceRatingLevel storePerformanceRatingLevel(PerformanceRatingLevelDTO performanceRatingLevelDTO,Long orgLocationId,Long userId)
 			throws Exception {
 		
 		OrgLocations orgLcoations = new OrgLocations();
@@ -42,7 +42,7 @@ public class PerformanceRatingLevelServiceImpl implements PerformanceRatingLevel
 		performanceRatingLevel.setOrgLocationId(orgLcoations);
 		performanceRatingLevel.setStatus(Constants.RECORD_ACTIVE);
 		
-		return performanceRatingLevelDao.savePerformanceRatingScale(performanceRatingLevel);
+		return performanceRatingLevelDao.savePerformanceRatingLevel(performanceRatingLevel);
 	}
 
 	@Override

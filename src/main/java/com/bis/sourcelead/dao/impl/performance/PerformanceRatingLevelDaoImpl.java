@@ -53,7 +53,7 @@ public class PerformanceRatingLevelDaoImpl implements PerformanceRatingLevelDao 
 	private String schema;
 
 	@Override
-	public PerformanceRatingLevel savePerformanceRatingScale(PerformanceRatingLevel PerformanceRatingLevel)
+	public PerformanceRatingLevel savePerformanceRatingLevel(PerformanceRatingLevel PerformanceRatingLevel)
 			throws Exception {
 		logger.debug("Adding PerformanceRatingScale");
 		Session session = this.sessionFactory.getCurrentSession();

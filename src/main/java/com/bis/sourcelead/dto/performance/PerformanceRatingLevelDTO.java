@@ -11,7 +11,7 @@ public class PerformanceRatingLevelDTO implements Serializable{
 
 	    private static final long serialVersionUID = 1L;
 	    
-	    private Long ratingScaleId;
+	    private Long ratingLevelId;
 	    
 	    private BigInteger id;
 	 
@@ -31,13 +31,12 @@ public class PerformanceRatingLevelDTO implements Serializable{
 		
 
 		
-
-		public Long getRatingScaleId() {
-			return ratingScaleId;
+		public Long getRatingLevelId() {
+			return ratingLevelId;
 		}
 
-		public void setRatingScaleId(Long ratingScaleId) {
-			this.ratingScaleId = ratingScaleId;
+		public void setRatingLevelId(Long ratingLevelId) {
+			this.ratingLevelId = ratingLevelId;
 		}
 
 		public String getName() {
