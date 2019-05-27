@@ -62,12 +62,13 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
       <div class="clearfix mt col-md-6">
           <div class="form-group clearfix">
             <label class="col-md-3">Name<span class="text-danger paddingLeft">*</span></label>
-            <div class="col-md-9">
+            <div class="col-md-9" id = "workflowNameDiv">
 									<input type="text"
 										value='<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}"/>'
 										class="form-control" id="workFlowName" name="workFlowName"
 										placeholder="WorkFlow Name" field-name="WorkFlow Name"
 										data-validation="required validate_length length1-100"
+										onkeyup="requirementWorkflow.validateWorkflowName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
 										<c:choose>
 							<c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
 							readonly>
