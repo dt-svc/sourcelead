@@ -1385,6 +1385,8 @@ public class RequirementRestController {
 	public @ResponseBody Response<String> submitRecommendationCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId, 
 			@RequestParam(value = "candidateIds", required = false) String candidateIds,
 			@RequestParam(value = "candidateResume", required = false) String candidateResume,
+			@RequestParam(value = "N", required = false) String needApplicantPermit,
+			@RequestParam(value = "N", required = false) String notifyToApplicant,
 			HttpServletRequest request)throws Exception {
 		Response<String> response = new Response<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1527,6 +1529,13 @@ public class RequirementRestController {
 									array.put(ectcItem);
 								}
 								
+								if(needApplicantPermit != null && !needApplicantPermit.isEmpty() && needApplicantPermit.equalsIgnoreCase("Y")) {
+									labelItems.put("needApplicantPermit", "Y");
+								}
+								
+								if(notifyToApplicant != null && !notifyToApplicant.isEmpty() && notifyToApplicant.equalsIgnoreCase("Y")) {
+									labelItems.put("notifyToApplicant", "Y");
+								}
 								
 								String con = array.toString();
 								RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(labelItems,loginUser, orgLocation, con, loginUserRole);
