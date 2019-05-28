@@ -2062,8 +2062,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 			 
 			for(RequirementSubmission reqSubmission : applicants){
 				 if (reqSubmission.getRequirement().getClientId() != null && reqSubmission.getJoinedDate() != null) {
-						
-					 	int result = Integer.parseInt(reqSubmission.getRequirement().getClientId().getPaymentTerm());
+						String payment[] = reqSubmission.getRequirement().getClientId().getPaymentTerm().split(" ");
+					 	int result = Integer.parseInt(payment[0]);
 						Date generatedInvoiceDate = CalendarUtil.addDaysForGenerateInvoice(reqSubmission.getJoinedDate(), result);
 						DateTime dtOrg = new DateTime(generatedInvoiceDate);
 						reqSubmission.setInvoiceGenerateDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), dtOrg.toDate()));

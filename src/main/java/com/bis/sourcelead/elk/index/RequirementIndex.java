@@ -211,6 +211,18 @@ public class RequirementIndex implements Serializable {
 	
 	private String process;
 	
+   //WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
+	private Long workflowId;
+	
+	
+	public Long getWorkflowId() {
+		return workflowId;
+	}
+
+	public void setWorkflowId(Long workflowId) {
+		this.workflowId = workflowId;
+	}
+
 	public String getPrimaryRecruiterUserId() {
 		return primaryRecruiterUserId;
 	}

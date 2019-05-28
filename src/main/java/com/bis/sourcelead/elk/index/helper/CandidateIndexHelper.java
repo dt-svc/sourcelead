@@ -43,7 +43,12 @@ public class CandidateIndexHelper {
 			//candidate = candidateService.getCandidateByCandidateId(candidate.getId());
 			candidateIndex = new CandidateIndex();
 			candidateIndex.setCandidateId(candidate.getId());
-			candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());
+			if(null != candidate.getOrgLocationId()){
+				candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());
+			}else {
+				candidateIndex.setOrgLocationId(0L);
+			}
+			
 			candidateIndex.setFirstName(commonUtil.firstLetterCapitalizedString(candidate.getFirstName()));
 			candidateIndex.setLastName(commonUtil.firstLetterCapitalizedString(candidate.getLastName()));
 			candidateIndex.setMiddleName(candidate.getMiddelName());
