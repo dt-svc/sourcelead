@@ -28,6 +28,8 @@ public interface RequirementWorkFlowService {
 
 	RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate template) throws Exception;
 	
+	RequirementQuestionnaireTemplate getQuestionnaireByTemplateId(long templateId) throws Exception;
+	
 	List<RequirementWorkFlowStagesDTO> getRequirementWorkflowStagesByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations)throws Exception;
 
 	ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(RequirementQuestionnaireTemplateDTO questionnaireDTO , String searchValue,  Long orgLocationId);
@@ -74,4 +76,15 @@ public interface RequirementWorkFlowService {
 	List<RequirementWorkFlowStagesDTO> getNextRequirementWorkflowStagesByWorkflowUuid(RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations)throws Exception;
 	
 	void deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(String uuid, Long id)throws Exception;
+	
+	Boolean validateWorkflowName(Long id, String name, String uuid)throws Exception;
+	
+	String validateWorkflowStageName(Long id, String name, String uuid, String stageUuid)throws Exception;
+	
+	RequirementWorkFlow getRequirementWorkFlowByOrgLocId(Long orgLocationId)throws Exception;
+	
+	RequirementWorkFlow saveRequirementWorkFlowDetailsInfo(RequirementWorkFlowDTO requirementWorkFlowDTO, User user, OrgLocations orgLocations);
+	
+	void saveWorkflowIdInAllOrgsForRequirement(RequirementWorkFlow requirementWorkFlow, OrgLocations orgLocations)throws Exception;
+	
 }
