@@ -543,7 +543,7 @@ function Tax() {
 				$(".success_pop").css("display","block");
 				$(".success_pop span").html((type === 3 ? "Form Section" : "Form Section Item")+" made as " + (status === 1 ? "inactive" : "active" ) + " successfully....");
         		setTimeout(function() {
-        			tax.getDynamicTaxForm($("#taxFormId").val(), true);
+        			tax.getDynamicTaxForm($("#sectionTaxFormId").val(), true);
         			$(".success_pop").css("display","none");
 		 		},1000);
 			} else if (response.indexOf('Sign In') !== -1) {
@@ -629,10 +629,10 @@ function Tax() {
 			if(status === "success") {
 				$("#loading").removeAttr("style");
 				
-				$(".edit_sec_name").click(function(){
+				/*$(".edit_sec_name").click(function(){
 					$(this).parents("tr").find(".editElementDiv").hide();
 					$(this).parents("tr").find(".saveElementDiv").show();
-				});
+				});*/
 				$(".saveSectionName").click(function(){
 					var id = $(this).parents("th").find("input[name='id']").val();
 					if($("#section_" + id + "_name_form").validate(false, validationSettings)) {
@@ -690,6 +690,21 @@ function Tax() {
 }
 //IT Declaration Form events
 function addSection() {
+	$("#taxFormTitle").html("New Section");
+	$("#sectionId").val(0);
+	$("#sectionTaxFormId").val(0);
+	$("#sectionName").val("");
+	$("#sectionMaxLimit").val("");
+	$("#sectionDescription").val("");
+	$(".comMask, .section").fadeIn();
+}
+function editSection(id, taxFormId, name, maxLimit, description) {
+	$("#taxFormTitle").html("Edit Section (" + name + ")");
+	$("#sectionId").val(id);
+	$("#sectionTaxFormId").val(taxFormId);
+	$("#sectionName").val(name);
+	$("#sectionMaxLimit").val(maxLimit);
+	$("#sectionDescription").val(description);
 	$(".comMask, .section").fadeIn();
 }
 function modalClose() {
@@ -697,7 +712,7 @@ function modalClose() {
 }
 function addSectionItem(sectionId, sectionName){
 	$(".addSectionItemPopup").data("sectionId", sectionId);
-	$(".addSectionItemPopup").find("h4").html(sectionName);
+	$(".addSectionItemPopup").find("h4").html("New Section Item (" + sectionName + ")");
 	$("#taxSectionId").val(sectionId);
 	$(".comMask, .addSectionItemPopup").fadeIn();
 }
@@ -705,7 +720,7 @@ function addITDeclarationSection() {
 	if($('#itDeclarationSectionForm').validate(false, validationSettings)) {
 		$("#addITDeclarationSectionBtn").attr("disabled","disabled");
 		var formData = getFormData("itDeclarationSectionForm");
-		callAddITDeclarationSectionRestService(formData, 1);
+		callAddITDeclarationSectionRestService(formData, $("#sectionId").val() === "0" ? 1 : 2);
 		return true;
 	} else {
 		return false;
@@ -724,9 +739,9 @@ function callAddITDeclarationSectionRestService(formData, type) {
         	} else if (response.response === "SUCCESS") {
     			modalClose();
 				$(".success_pop").css("display","block");
-        		$(".success_pop span").html("Tax Section " + (type === 1 ? "added" : "name updated") + " successfully....");
+        		$(".success_pop span").html("Tax Section " + (type === 1 ? "added" : "updated") + " successfully....");
         		setTimeout(function() {
-        			tax.getDynamicTaxForm($("#taxFormId").val(), true);
+        			tax.getDynamicTaxForm($("#sectionTaxFormId").val(), true);
         			$(".success_pop").css("display","none");
 		 		},1000);
         	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
@@ -767,7 +782,7 @@ function callAddITDeclarationSectionItemRestService(formData, type) {
 				$(".success_pop").css("display","block");
         		$(".success_pop span").html("Tax Section Item " + (type === 1 ? "added" : "updated") + " successfully....");
         		setTimeout(function() {
-        			tax.getDynamicTaxForm($("#taxFormId").val(), true);
+        			tax.getDynamicTaxForm($("#sectionTaxFormId").val(), true);
         			$(".success_pop").css("display","none");
 		 		},1000);
         	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
@@ -821,7 +836,7 @@ function callAddITChallanSectionRestService(formData, type) {
 				$(".success_pop").css("display","block");
         		$(".success_pop span").html("Tax Section " + (type === 1 ? "added" : "name updated") + " successfully....");
         		setTimeout(function() {
-        			tax.getDynamicTaxForm($("#taxFormId").val(), true);
+        			tax.getDynamicTaxForm($("#sectionTaxFormId").val(), true);
         			$(".success_pop").css("display","none");
 		 		},1000);
         	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
@@ -871,7 +886,7 @@ function callAddITChallanSectionItemRestService(formData, type) {
 				$(".success_pop").css("display","block");
         		$(".success_pop span").html("Tax Section Item " + (type === 1 ? "added" : "updated") + " successfully....");
         		setTimeout(function() {
-        			tax.getDynamicTaxForm($("#taxFormId").val(), true);
+        			tax.getDynamicTaxForm($("#sectionTaxFormId").val(), true);
         			$(".success_pop").css("display","none");
 		 		},1000);
         	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
