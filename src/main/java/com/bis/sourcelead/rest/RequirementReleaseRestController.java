@@ -509,6 +509,9 @@ public class RequirementReleaseRestController {
 		requirement.setNoticePeriod(parentRequirement.getNoticePeriod());
 		requirement.setFileContentType(parentRequirement.getFileContentType());
 		requirement.setUrl(parentRequirement.getUrl());
+		if(parentRequirement.getWorkflowId() !=null){
+		requirement.setWorkflowId(parentRequirement.getWorkflowId());
+		}
 		if(parentRequirement.getMedicalClearence() != null){
 		requirement.setMedicalClearence(parentRequirement.getMedicalClearence());
 		}
