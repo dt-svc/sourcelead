@@ -10,7 +10,7 @@
 <script src="/resources/js/formvalidator.js"></script>
 
 <script>
-var sourceleadUrl = '${sourceleadUrl}';
+var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 </script>
 
 
@@ -61,6 +61,7 @@ $(document).ready(function() {
 
 <script>  
 	function timesheetReportsDiv(searchData){ 
+		       var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
                var frequencyYear = $("#frequencyYear").val();
                if(frequencyYear == null || frequencyYear == '' || frequencyYear == 'undefined')
             	   frequencyYear = '';
