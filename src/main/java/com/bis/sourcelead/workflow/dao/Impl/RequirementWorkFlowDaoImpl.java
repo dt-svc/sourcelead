@@ -733,4 +733,20 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		}
 	}
 
+	@Override
+	public RequirementWorkFlow getRequirementWorkFlowByOrgLocId(Long orgLocationId) throws Exception {
+		logger.debug("Running getRequirementWorkFlowByOrgLocId DAO");
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id =:id order by id asc";
+			RequirementWorkFlow requirementWorkFlow = (RequirementWorkFlow)session.createQuery(query).setParameter("id", orgLocationId).uniqueResult();
+			return requirementWorkFlow;
+		} catch (Exception e) {
+			logger.error(e+" in getRequirementWorkFlowByOrgLocId DAO");
+			e.printStackTrace();
+			return null;
+	
+	}
+	}
+
 }
