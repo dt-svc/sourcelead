@@ -273,9 +273,9 @@ public class RequirementWorkflowController {
 
 		try {
 			RequirementQuestionnaireTemplate template = null;
-			templateId = ""; // as of now marked as empty value for testing.
 			if (StringUtils.isNotBlank(templateId)) {
 			//   template = performanceFeedbackTemplateService.getPerformanceFeedbackTemplateById(Long.parseLong(templateId));
+				template=requirementWorkFlowService.getQuestionnaireByTemplateId(Long.parseLong(templateId));
 			} else {
 				template = new RequirementQuestionnaireTemplate();
 				template.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());

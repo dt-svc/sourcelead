@@ -524,18 +524,18 @@
 													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SUBMISSION' && opt.submissionStatus  != 'SHORTLIST' && opt.submissionStatus  != 'INTERVIEW' && opt.submissionStatus  != 'SUBMIT_TO_CLIENT' && opt.submissionStatus  != 'CLIENT_INTERVIEW'){
 														result = result + "<option value='Status'>Submission</option>";
 													}
-													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SHORTLIST'){
+													/*if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SHORTLIST'){
 														'<sec:authorize access="hasRole(\'ROLE_SHORTLIST\')">';
 														result = result + "<option value='shortlist'>Shortlist</option>";
 														'</sec:authorize>';
-													}
+													}*/
 													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'INTERVIEW' && opt.submissionStatus != 'SELECTED_ON_INTERVIEW' && opt.submissionStatus != 'OFFERMADE' && opt.submissionStatus != 'OFFERACCEPTED'){
 														result = result + "<option value='Interview'>INTERVIEW</option>";
 													}
-													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SELECTED_ON_INTERVIEW' && opt.submissionStatus != 'SELECTED_ON_INTERVIEW'){
+													/*if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SELECTED_ON_INTERVIEW' && opt.submissionStatus != 'SELECTED_ON_INTERVIEW'){
 													
 														result = result + "<option value='Selected on Interview'>Selected on Interview</option>";
-													}
+													}*/
 													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'OFFERMADE' && opt.submissionStatus != 'JOINED'){
 														result = result + "<option value='Offer Made'>OFFERMADE</option>";
 													}
@@ -559,17 +559,18 @@
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 													}
 													
-													if(opt.previousSubmissionStatus != 'CLIENT_INTERVIEW' && opt.submissionStatus == 'SELECTED_ON_INTERVIEW'){
+													if(opt.previousSubmissionStatus != null && opt.submissionStatus == 'SELECTED_ON_INTERVIEW'){
 														result = result + "<option value='On Hold'>On Hold</option>";
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 													}
 													
 													 if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW' && opt.submissionStatus != 'SUBMIT_TO_CLIENT' && opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'NORESPONSE'){	
 														result = result + "<option value='On Hold'>On Hold</option>";
-														}
-													if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW' && opt.submissionStatus != 'SUBMIT_TO_CLIENT' && opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'ONHOLD'){	
 														result = result + "<option value='NoResponse'>NoResponse</option>";
-														} 
+														}
+													/*if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW' && opt.submissionStatus != 'SUBMIT_TO_CLIENT' && opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'ONHOLD'){	
+														result = result + "<option value='NoResponse'>NoResponse</option>";
+														}*/ 
 													result = result + "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED' || opt.submissionStatus == 'JOINED'
 														 || opt.submissionStatus == 'CLIENT_OFFERMADE' || opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
@@ -689,7 +690,7 @@ $('#assignedNewPerson').chosen();
 	
 <script>
 function applicantsourceHandler(reqId,submissionId) {
-	$(".mask, .popupWrap2").fadeIn();
+	$(".mask, #popupSaveId").fadeIn();
 	updateUserPop(submissionId);
 	if(reqId != '' && reqId != 'undefined' && reqId != null){
 		$.ajax({
@@ -709,7 +710,7 @@ function applicantsourceHandler(reqId,submissionId) {
 	}
 }
 function applicantsourceHandlerClose() {
-	$(".mask, .popupWrap2").fadeOut();
+	$(".mask, #popupSaveId").fadeOut();
 }
 function applicantsourceSave(submissionId){
 	var userId = $("#assignedNewPerson").val();
