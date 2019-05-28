@@ -2204,6 +2204,23 @@ $(document).ready(function () {
 										</select>
 									</div>
 								</div>
+								<!--  added for workflow integration for job start here  -->
+								<div class="form-group">
+									<label class="col-md-3">Workflow<span
+										class="text-danger paddingLeft">*</span></label>
+									<div class="col-md-9">
+
+										<select class="chosen-select form-control"
+											data-validation="required" field-name="Workflow"
+											name="workflow" id="workflowId">
+											<c:forEach var="workflow" items="${workflowList}">
+													<option value="${workflow.id}"
+														${workflow.configureType=='Default'? 'selected' : ''}>${workflow.workFlowName}</option>
+											</c:forEach>
+										</select>
+									</div>
+								</div>
+								<!--  added for workflow integration for job end here -->
 								<div class="form-group" id="internalSubmissionFrom">
 									<label class="col-md-3">Application Form<span
 										class="text-danger paddingLeft">* </span><i
@@ -2549,7 +2566,6 @@ function validateProfilePercentage(){
 			$("#primaryRecruiterUserId").parent().find("p").remove();
 		}
 	}
-	
 	function getSavedJobFairsForRequirement() {
 		if(requirementId > 0) {
 			$.ajax({
