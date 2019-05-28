@@ -98,7 +98,7 @@ public class PerformanceRatingLevelDaoImpl implements PerformanceRatingLevelDao 
 				+" DATE_FORMAT(RATING_LEVEL.CREATED_DATE, '%h:%i:%s %p') AS time "
 				+" FROM PERFORMANCE_RATING_LEVEL RATING_LEVEL "
 				+" WHERE "
-				+" RATING_LEVEL.ORG_LOCATION_ID = :orgLocationId  "
+				+" RATING_LEVEL.ORG_LOCATION_ID = :orgLocationId AND RATING_LEVEL.STATUS = '1' "
 				+" ORDER BY RATING_LEVEL.ID DESC";
 		
 		Query queryObj = session.createSQLQuery(query);

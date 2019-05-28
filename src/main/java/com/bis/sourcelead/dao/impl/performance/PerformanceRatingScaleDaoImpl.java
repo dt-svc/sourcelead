@@ -102,7 +102,7 @@ public class PerformanceRatingScaleDaoImpl implements PerformanceRatingScaleDao 
 					+" DATE_FORMAT(RATING_SCALE.CREATED_DATE, '%h:%i:%s %p') AS time "
 					+" FROM PERFORMANCE_RATING_SCALE RATING_SCALE, PERFORMANCE_RATING_LEVEL RATING_LEVEL "
 					+" WHERE RATING_SCALE.RATING_LEVEL_ID = RATING_LEVEL.ID AND "
-					+" RATING_SCALE.ORG_LOCATION_ID = :orgLocationId  "
+					+" RATING_SCALE.ORG_LOCATION_ID = :orgLocationId AND RATING_SCALE.STATUS = '1' "
 					+" ORDER BY RATING_SCALE.ID DESC";
 			
 

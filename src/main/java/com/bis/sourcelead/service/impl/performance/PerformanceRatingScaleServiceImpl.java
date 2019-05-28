@@ -44,6 +44,7 @@ public class PerformanceRatingScaleServiceImpl implements PerformanceRatingScale
 		performanceRatingScale.setRatingLevelId(ratingLevel);
 		performanceRatingScale.setRatingScaleValue(performanceRatingScaleDTO.getRatingScaleValue());
 		performanceRatingScale.setShortCode(performanceRatingScaleDTO.getShortCode());
+		performanceRatingScale.setDescription(performanceRatingScaleDTO.getDescription());
 		performanceRatingScale.setOrgLocationId(orgLcoations);
 		performanceRatingScale.setStatus(Constants.RECORD_ACTIVE);
 		performanceRatingScaleDao.savePerformanceRatingScale(performanceRatingScale);
