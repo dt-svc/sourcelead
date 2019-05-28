@@ -153,7 +153,6 @@ function RequirementWorkflow(){
 		        ],
 		        "columnDefs": [ {
 		    	  	"targets": colIndex++,
-		    	  	"sortable": false,
 		    	  	"data": "workFlowName",
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
@@ -166,7 +165,6 @@ function RequirementWorkflow(){
 		    	  	}
 		        },{
 		    	  	"targets": colIndex++,
-		    	  	"sortable": false,
 		    	  	"data": "noOfStages",
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
@@ -179,7 +177,6 @@ function RequirementWorkflow(){
 		    	  	}
 		        },{
 		    	  	"targets": colIndex++,
-		    	  	"sortable": false,
 		    	  	"data": "status",
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
@@ -197,7 +194,8 @@ function RequirementWorkflow(){
 		    	  	}
 		        },{
 		    	  	"targets": colIndex++,
-		    	  	"sortable": false,
+		    	  	 bSortable: false,
+	                 aTargets: [ -1 ],
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
 		    	  		
@@ -208,7 +206,7 @@ function RequirementWorkflow(){
 	        ],
 		        "scrollCollapse": false,
 		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-		    	"aaSorting": [[2,'desc']],
+		    	/*"aaSorting": [[0,'desc']],*/
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"ordering": true,
@@ -231,7 +229,7 @@ function RequirementWorkflow(){
 
 	this.checkDefaultWorkflow = function(configureType, uuid, workFlowName){
 		var result = "";
-		result = result +"<div class='tbldata-dotdot-verybig'><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")' title='view'>"+workFlowName+"</a></div>";
+		result = result +"<div class='tbldata-dotdot-200'><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")' title='view'>"+workFlowName+"</a></div>";
 		return result;
 	}
 
@@ -770,7 +768,6 @@ function RequirementWorkflow(){
 				 	        ],
 				 	        "columnDefs": [ {
 				 	    	  	"targets": colIndex++,
-				 	    	  	"sortable": false,
 				 	    	  	"data": "name",
 				 	    	  	"render": function(data, type, workflow, meta) {
 				 	    	  		var result = "";
@@ -783,7 +780,6 @@ function RequirementWorkflow(){
 				 	    	  	}
 				 	        },{
 				 	    	  	"targets": colIndex++,
-				 	    	  	"sortable": false,
 				 	    	  	"data": "description",
 				 	    	  	"render": function(data, type, workflow, meta) {
 				 	    	  		var result = "";
@@ -796,7 +792,6 @@ function RequirementWorkflow(){
 				 	    	  	}
 				 	        },{
 				 	    	  	"targets": colIndex++,
-				 	    	  	"sortable": false,
 				 	    	  	"data": "createdBy",
 				 	    	  	"render": function(data, type, workflow, meta) {
 				 	    	  		var result = "";
