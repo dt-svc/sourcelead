@@ -6,4 +6,6 @@ import com.bis.sourcelead.entity.performance.PerformanceRatingScale;
 public interface PerformanceRatingScaleService {
 
 	PerformanceRatingScale storePerformanceRatingScale(PerformanceRatingScaleDTO performanceRatingScaleDTO,Long orgLocationId,Long userId) throws Exception;
+	
+	PerformanceRatingScale savePerformanceRatingScale(PerformanceRatingScale performanceRatingScale) throws Exception;
 }

@@ -1,5 +1,8 @@
 package com.bis.sourcelead.dao.impl.performance;
 
+import java.text.MessageFormat;
+
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.performance.PerformanceRatingScaleDao;
+import com.bis.sourcelead.entity.performance.PerformanceRatingScale;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -42,6 +47,23 @@ public class PerformanceRatingScaleDaoImpl implements PerformanceRatingScaleDao 
 
 	@Value("${jdbc.schema}")
 	private String schema;
+
+	@Override
+	public PerformanceRatingScale savePerformanceRatingScale(PerformanceRatingScale performanceRatingScale)
+			throws Exception {
+		logger.debug("Adding PerformanceRatingScale");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (performanceRatingScale != null) {
+				session.saveOrUpdate(performanceRatingScale);
+			}
+			logger.debug("PerformanceRatingScale Added Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PERFORMANCE_RATING_SCALE"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return performanceRatingScale;
+	}
 	
 
 
