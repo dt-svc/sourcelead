@@ -715,4 +715,38 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		
 	}
 
+	@Override
+	public List<RequirementWorkFlowStages> validateWorkflowStageName(Long id, String name, Long workflowId,
+			String stageUuid) throws Exception {
+		logger.debug("Running validateWorkflowName DAO");
+		List<RequirementWorkFlowStages> workflowstages = new ArrayList<RequirementWorkFlowStages>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String queryString = "from RequirementWorkFlowStages stage where stage.orgLocationId.id = :id and stage.stageName = :name and "
+					+ " stage.requirementWorkFlowId.id = :workflowId and stage.uuid <> :stageUuid";
+			workflowstages = session.createQuery(queryString).setParameter("id", id).setParameter("name", name).setParameter("workflowId", workflowId).setParameter("stageUuid", stageUuid).list();
+			return workflowstages;
+		} catch (Exception e) {
+			logger.error(e +" in validateWorkflowName DAO");
+			e.printStackTrace();
+			return workflowstages;
+		}
+	}
+
+	@Override
+	public RequirementWorkFlow getRequirementWorkFlowByOrgLocId(Long orgLocationId) throws Exception {
+		logger.debug("Running getRequirementWorkFlowByOrgLocId DAO");
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id =:id order by id asc";
+			RequirementWorkFlow requirementWorkFlow = (RequirementWorkFlow)session.createQuery(query).setParameter("id", orgLocationId).uniqueResult();
+			return requirementWorkFlow;
+		} catch (Exception e) {
+			logger.error(e+" in getRequirementWorkFlowByOrgLocId DAO");
+			e.printStackTrace();
+			return null;
+	
+	}
+	}
+
 }
