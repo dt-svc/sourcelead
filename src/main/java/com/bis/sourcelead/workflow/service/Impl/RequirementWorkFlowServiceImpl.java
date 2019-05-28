@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -68,7 +69,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 	
 	
-   private RequirementWorkFlow saveRequirementWorkFlowDetailsInfo(RequirementWorkFlowDTO requirementWorkFlowDTO, User user, OrgLocations orgLocations){
+   public RequirementWorkFlow saveRequirementWorkFlowDetailsInfo(RequirementWorkFlowDTO requirementWorkFlowDTO, User user, OrgLocations orgLocations){
 	   logger.debug("Started saveRequirementWorkFlowDetailsInfo Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
 	   try {
 	   RequirementWorkFlow reqWorkFlow = null;
@@ -743,6 +744,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			
 			requirementWorkFlowStages.setEditable(workFlowStages.get(i).getEditable());
 			requirementWorkFlowStages.setStatus(workFlowStages.get(i).getStatus());
+			requirementWorkFlowStages.setCommentRequired(workFlowStages.get(i).getCommentRequired());
 			requirementWorkFlowStages.setCreatedDate(new Date());
 			requirementWorkFlowStages.setCreatedBy(user);
 			requirementWorkFlowStages.setUpdatedDate(new Date());
@@ -900,17 +902,23 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public Boolean validateWorkflowStageName(Long id, String name, String uuid, String stageUuid) throws Exception {
+	public String validateWorkflowStageName(Long id, String name, String uuid, String stageUuid) throws Exception {
 		logger.debug("Started validateWorkflowStageName Service for "+id+" orgLocation and "+name+" stage");
-		Boolean flag = null;
+		String nonSpecialChars = "^(?!_)(?!.*__)(?!-)(?!.*--)[\\w .-]+(?<!-)(?<!_)$";
+		String flag = null;
+		Boolean nonSpecialFlag = false;
 		Long workflowId = null;
 		Iterator<RequirementWorkFlowStages> i = null;
 		List<RequirementWorkFlowStages> workflowStages= new ArrayList<RequirementWorkFlowStages>();
 		try {
+			if(name != null && !StringUtils.isBlank(name)) {
+				nonSpecialFlag = Pattern.matches(nonSpecialChars, name);
+			}
+			if(nonSpecialFlag == true) {
 			workflowStages = requirementWorkFlowDao.getRequirementWorkflowStagesListByUuid(uuid, id);
 			if(stageUuid == null && StringUtils.isBlank(stageUuid)) {
 			if(workflowStages == null || workflowStages.size() == 0) {
-				flag = false;
+				flag = "false";
 			}
 			if(workflowStages != null && workflowStages.size() > 0) {
 				if(name != null && !StringUtils.isBlank(name)) {
@@ -918,24 +926,27 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 					while(i.hasNext()) {
 						RequirementWorkFlowStages stage = i.next();
 						if(stage.getStageName().equalsIgnoreCase(name)) {
-							flag = true;
+							flag = "true";
 							break;
 						}else {
-							flag = false;
+							flag = "false";
 						}
 					}
 				}else {
-					flag = false;
+					flag = "false";
 				}
 			}
 			}else {
 				workflowId = workflowStages.get(0).getRequirementWorkFlowId().getId();
 				workflowStages = requirementWorkFlowDao.validateWorkflowStageName(id, name, workflowId, stageUuid);
 				if(workflowStages != null && workflowStages.size() > 0) {
-					flag = true;
+					flag = "true";
 				}else {
-					flag = false;
+					flag = "false";
 				}
+			}
+			}else {
+				flag = "special";
 			}
 			logger.debug("Finished validateWorkflowStageName Service for "+id+" orgLocation and "+name+" stage");
 			return flag;
@@ -944,6 +955,18 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			e.printStackTrace();
 			return flag;
 		}
+	}
+
+
+	@Override
+	public RequirementWorkFlow getRequirementWorkFlowByOrgLocId(Long orgLocationId) throws Exception {
+		return requirementWorkFlowDao.getRequirementWorkFlowByOrgLocId(orgLocationId);
+	}
+
+
+	@Override
+	public void saveWorkflowIdForAllOrgsInRequirement(RequirementWorkFlow requirementWorkFlow, OrgLocations orgLocations) throws Exception {
+		requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
 	}
 	
 	}
