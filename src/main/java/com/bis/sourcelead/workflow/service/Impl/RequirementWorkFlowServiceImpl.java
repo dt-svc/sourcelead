@@ -5,6 +5,7 @@ package com.bis.sourcelead.workflow.service.Impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -117,6 +118,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				
 				requirementWorkFlowStages.setEditable(requirementDefaultWorkFlowStages.get(i).getEditable());
 				requirementWorkFlowStages.setStatus(requirementDefaultWorkFlowStages.get(i).getStatus());
+				requirementWorkFlowStages.setCommentRequired(Constants.YES);
 				requirementWorkFlowStages.setCreatedDate(new Date());
 				requirementWorkFlowStages.setCreatedBy(user);
 				requirementWorkFlowStages.setUpdatedDate(new Date());
@@ -548,6 +550,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		workFlowStage.setRequirementQuestionnaireTemplateId(requirementQuestionnaireTemplate);
 		}
 		
+		if(requirementWorkFlowStagesDTO.getCommentRequired() != null && !requirementWorkFlowStagesDTO.getCommentRequired().equals("")) {
+					workFlowStage.setCommentRequired(requirementWorkFlowStagesDTO.getCommentRequired());
+			}
+		
 		workFlowStage.setOrgLocationId(orgLocations);
 		workFlowStage.setConfigureType(Constants.CLIENT);
 		workFlowStage.setEditable(Constants.YES);
@@ -561,7 +567,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		Set<RequirementWorkFlowTasks> requirementWorkFlowTasks = new HashSet<RequirementWorkFlowTasks>();
 		
 		if(requirementWorkFlowStagesDTO.getTaskList() != null && requirementWorkFlowStagesDTO.getTaskList().size() > 0) {
-			workFlowStage.setStatus(Constants.RECORD_INACTIVE);
 			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTO = requirementWorkFlowStagesDTO.getTaskList();
 			for(RequirementWorkFlowTasksDTO workFlowTasksDTO : requirementWorkFlowTasksDTO) {
 				RequirementWorkFlowTasks tasks = new RequirementWorkFlowTasks();
@@ -872,6 +877,75 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		logger.debug("Finished deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service for "+id+" orgLocation");
 	}
 
+	@Override
+	public Boolean validateWorkflowName(Long id, String name, String uuid)  {
+		logger.debug("Started validateWorkflowName Service for "+id+" orgLocation and "+name+" workflow");
+		Boolean flag = null;
+		List<RequirementWorkFlow> workflow= new ArrayList<RequirementWorkFlow>();
+		try {
+			workflow = requirementWorkFlowDao.validateWorkflowName(id, name, uuid);
+			if(workflow != null && workflow.size() > 0) {
+				flag = true;
+			}else {
+				flag = false;
+			}
+			logger.debug("Finished validateWorkflowName Service for "+id+" orgLocation and "+name+" workflow");
+			return flag;
+		}catch(Exception e) {
+			logger.error(e+" in validateWorkflowName Service for "+id+" orgLocation and "+name+" workflow");
+			e.printStackTrace();
+			return flag;
+		}
+	}
+
+
+	@Override
+	public Boolean validateWorkflowStageName(Long id, String name, String uuid, String stageUuid) throws Exception {
+		logger.debug("Started validateWorkflowStageName Service for "+id+" orgLocation and "+name+" stage");
+		Boolean flag = null;
+		Long workflowId = null;
+		Iterator<RequirementWorkFlowStages> i = null;
+		List<RequirementWorkFlowStages> workflowStages= new ArrayList<RequirementWorkFlowStages>();
+		try {
+			workflowStages = requirementWorkFlowDao.getRequirementWorkflowStagesListByUuid(uuid, id);
+			if(stageUuid == null && StringUtils.isBlank(stageUuid)) {
+			if(workflowStages == null || workflowStages.size() == 0) {
+				flag = false;
+			}
+			if(workflowStages != null && workflowStages.size() > 0) {
+				if(name != null && !StringUtils.isBlank(name)) {
+					i = workflowStages.iterator();
+					while(i.hasNext()) {
+						RequirementWorkFlowStages stage = i.next();
+						if(stage.getStageName().equalsIgnoreCase(name)) {
+							flag = true;
+							break;
+						}else {
+							flag = false;
+						}
+					}
+				}else {
+					flag = false;
+				}
+			}
+			}else {
+				workflowId = workflowStages.get(0).getRequirementWorkFlowId().getId();
+				workflowStages = requirementWorkFlowDao.validateWorkflowStageName(id, name, workflowId, stageUuid);
+				if(workflowStages != null && workflowStages.size() > 0) {
+					flag = true;
+				}else {
+					flag = false;
+				}
+			}
+			logger.debug("Finished validateWorkflowStageName Service for "+id+" orgLocation and "+name+" stage");
+			return flag;
+		}catch(Exception e) {
+			logger.error(e+" in validateWorkflowStageName Service for "+id+" orgLocation and "+name+" stage");
+			e.printStackTrace();
+			return flag;
+		}
+	}
+	
 	}
 
 
