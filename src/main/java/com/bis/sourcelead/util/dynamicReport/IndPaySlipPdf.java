@@ -204,25 +204,44 @@ public class IndPaySlipPdf {
 		   		List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList = indPayrollDTO.getPayHeadHistoryDTOList();
 		   		if(associatePayrollPayheadDTOList != null && !associatePayrollPayheadDTOList.isEmpty()) {
 					//Earning list
-		   			List<AssociatePayrollPayheadHistoryDTO> earningList = associatePayrollPayheadDTOList.stream().filter(app -> (app.getPayrollPayheadType().equals("Earnings") && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0))).collect(Collectors.toList());
-					for(AssociatePayrollPayheadHistoryDTO apph:earningList) {
-						IndPayrollPaySlipEarning ippe = new IndPayrollPaySlipEarning();
-			   			ippe.setEarnings(apph.getPayrollPayheadName());
-			   			ippe.setAmount(apph.getMonthly());
-			   			ippe.setGrossSalary(apph.getMonthly());
-			   			earningTotal = earningTotal.add(apph.getMonthly());
-			   			tableItems1.add(ippe);
+		   			List<AssociatePayrollPayheadHistoryDTO> earningList = associatePayrollPayheadDTOList
+		   					    .stream()
+		   				    	.filter(app -> (app.getPayrollPayheadType().equals("Earnings") && app.getPaySlip().equals("Y") && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0)))
+		   					    .collect(Collectors.toList());
+		   			
+		   			IndPayrollPaySlipEarning ippe = null;
+		   			if(!earningList.isEmpty() && earningList.size() > 0) {
+						for(AssociatePayrollPayheadHistoryDTO apph:earningList) {
+							ippe = new IndPayrollPaySlipEarning();
+				   			ippe.setEarnings(apph.getPayrollPayheadName());
+				   			ippe.setAmount(apph.getMonthly());
+				   			ippe.setGrossSalary(apph.getMonthly());
+				   			earningTotal = earningTotal.add(apph.getMonthly());
+				   			tableItems1.add(ippe);
+						}
+					}else {
+						tableItems1.add(ippe);
 					}
 					
 					//Deducation list
-					List<AssociatePayrollPayheadHistoryDTO> decuctionList =  associatePayrollPayheadDTOList.stream().filter(app -> app.getPayrollPayheadType().equals("Deduction") && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0)).collect(Collectors.toList());
-					for(AssociatePayrollPayheadHistoryDTO apph:decuctionList) {
-						IndPayrollPaySlipDeduction ippd = new IndPayrollPaySlipDeduction();
-						ippd.setDeduction(apph.getPayrollPayheadName());
-						ippd.setDeductionAmount(apph.getMonthly());
-						deducationTotal = deducationTotal.add(apph.getMonthly());
-			   			tableItems2.add(ippd);
+					List<AssociatePayrollPayheadHistoryDTO> decuctionList =  associatePayrollPayheadDTOList
+						    	.stream()
+							    .filter(app -> app.getPayrollPayheadType().equals("Deduction") && app.getPaySlip().equals("Y")  && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0))
+							    .collect(Collectors.toList());
+					
+					IndPayrollPaySlipDeduction ippd = null;
+					if(!decuctionList.isEmpty() && decuctionList.size() > 0) {
+						for(AssociatePayrollPayheadHistoryDTO apph:decuctionList) {
+							ippd = new IndPayrollPaySlipDeduction();
+							ippd.setDeduction(apph.getPayrollPayheadName());
+							ippd.setDeductionAmount(apph.getMonthly());
+							deducationTotal = deducationTotal.add(apph.getMonthly());
+				   			tableItems2.add(ippd);
+						}
+					}else {
+						tableItems2.add(ippd);
 					}
+				
 				 }
 		   		
 		   		//Earning Tabel content
