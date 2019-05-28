@@ -23,6 +23,48 @@ public class MissingTimesheetResultRepotDTO {
 	private String approvalMechanism;
 	
 	private String noOfHours;
+	
+	private String approved_By;
+	
+	private String approvedDate;
+	
+	private String empId;
+	
+	private String projectFrequency;
+	
+	
+	public String getProjectFrequency() {
+		return projectFrequency;
+	}
+
+	public void setProjectFrequency(String projectFrequency) {
+		this.projectFrequency = projectFrequency;
+	}
+
+	public String getEmpId() {
+		return empId;
+	}
+
+	public void setEmpId(String empId) {
+		this.empId = empId;
+	}
+
+	public String getApprovedDate() {
+		return approvedDate;
+	}
+
+	public void setApprovedDate(String approvedDate) {
+		this.approvedDate = approvedDate;
+	}
+
+	public String getApproved_By() {
+		return approved_By;
+	}
+
+	public void setApproved_By(String approved_By) {
+		this.approved_By = approved_By;
+	}
+
 
 	public String getNoOfHours() {
 		return noOfHours;
