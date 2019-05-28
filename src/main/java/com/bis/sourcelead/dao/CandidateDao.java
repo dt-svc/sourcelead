@@ -23,6 +23,7 @@ import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
+import com.bis.sourcelead.entity.SourceleadDeletedCandidates;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
 
@@ -282,11 +283,13 @@ public interface CandidateDao {
 	
 	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
 	
+
 	public CandidateSource storeCandidateSource(CandidateSource candidateSource) throws Exception;
 
 	public CandidateSource getCandidateSourceByOrgLocationIdandCandidateSourceId(String candSourceId,
 			OrgLocations orgLocationId);
 
-	
+	public void saveSourceleadDeletedCandidate(SourceleadDeletedCandidates sourceleadDeletedCandidates) throws Exception;
+
 	
 }
