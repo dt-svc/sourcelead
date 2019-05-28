@@ -15,6 +15,9 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 <div class="success_pop" id="selector" >
 	       <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 			</div>
+<div class="success_pop" id="selector" >
+	       <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+			</div>
   <section class="content-header clearfix">
     <div class="pull-left">
       <h2>Add Stage</h2>
@@ -33,8 +36,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
       <div class="clearfix row">
         <div class="form-group clearfix">
           <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
-          <div class="col-md-9">
+          <div class="col-md-9" id = "StageNameDiv">
             <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
+            onkeyup="requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
+            onblur= "requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
 				value='<c:out value="${stageName}"/>' data-validation="required validate_length length1-100"">
 			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
           </div>
@@ -57,8 +62,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
       <div class="clearfix row">
         <div class="form-group clearfix">
           <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
-          <div class="col-md-9">
+          <div class="col-md-9" id = "StageNameDiv">
             <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
+            onkeyup="requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
+			onblur= "requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
 								data-validation="required validate_length length1-100"">
 			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
           </div>
@@ -284,12 +291,6 @@ $(document).ready(function() {
 	    else
 	    	$("#saveTaskButton").attr("disabled", true);
 	})
-	
-	 if($('#stageName').val().length !=0){
-	    	$("#saveTaskButton").attr("disabled", false);           
-	 }else{
-	    	$("#saveTaskButton").attr("disabled", true);
-	 }
 	
 	requirementWorkflow.getRequirementWorkflowTasks(currentStageUuid);
 });

@@ -663,7 +663,7 @@ public class RequirementWorkflowController {
 		@ResponseBody
 		public Response<Boolean> validateWorkflowName(
 				@RequestParam(value = "workFlowName", required = true)String workFlowName,
-				@RequestParam(value = "workflowUuid", required = true)String workflowUuid,
+				@RequestParam(value = "workflowUuid", required = false)String workflowUuid,
 				HttpServletRequest request) throws Exception{
 			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
 			Boolean flag ;
@@ -676,5 +676,22 @@ public class RequirementWorkflowController {
 			
 		}
 		
+		@RequestMapping(value = "/validateWorkflowStageName")
+		@ResponseBody
+		public Response<String> validateWorkflowStageName(
+				@RequestParam(value = "stageName", required = true)String stageName,
+				@RequestParam(value = "workflowUuid", required = true)String workflowUuid,
+				@RequestParam(value = "currentStageUuid", required = false)String stageUuid,
+				HttpServletRequest request) throws Exception{
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			String flag ;
+			Response<String> response = new Response<String>();
+			logger.debug("before validateWorkflowStageName for "+orgLocationId+" orgLocation");
+			flag = requirementWorkFlowService.validateWorkflowStageName(orgLocationId, stageName, workflowUuid, stageUuid);
+			response.setResponse(flag);
+			logger.debug("after validateWorkflowStageName for "+orgLocationId+" orgLocation");
+			return response;
+			
+		}
 		
 }
