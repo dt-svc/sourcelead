@@ -11,7 +11,7 @@
 		<a href="javascript:void(0)" title="Add New Section"
 			onClick="addSection();"
 			class="pull-right btn btn-success btnSuccess mb"> <i
-			class="fa fa-plus"></i> Add Section
+			class="fa fa-plus"></i> Section
 		</a>
 	</div>
 </c:if>
@@ -29,32 +29,32 @@
 		<table class="table table-itdeclaration table-bordered">
 			<thead>
 				<tr>
-					<th colspan="4" class="text-info">
+					<th colspan="4" class="text-info noPad">
 						<div class="row">
-							<div class="col-md-4">
+							<div class="col-md-10 padding_right">
 								<div class="parentDiv">
-									<div class="editElementDiv">
+									<div class="editElementDiv secHead clearfix">
 										<span class="edit-element">${section.name}</span>
+										<span class="edit-element limit">${section.maxLimit}</span>
 										<c:if test="${isEditable}">
 											<div class="faPencil">
-												<a
-													class="fa fa-pencil edit_sec_name mr10 ${section.active ? '' : 'disableBtn'}"
-													title="Edit Section Name"></a>
+												<a class="secHeadBtn ${section.active ? '' : 'disableBtn'}"
+													title="Edit Section Name" onclick="editSection(${section.id}, ${section.taxFormId}, '${section.name}', '${section.maxLimit}', '${section.description}')">Edit</a>
 												<c:choose>
 													<c:when test="${section.active}">
-														<a class="fa fa-trash text-danger" title="Delete Section"
-															onclick="tax.showChangeStatusPopup(${section.id}, 3, 1)"></a>
+														<a class="secHeadBtn" title="Delete Section"
+															onclick="tax.showChangeStatusPopup(${section.id}, 3, 1)">Inactive</a>
 													</c:when>
 													<c:otherwise>
-														<a class="fa fa-edit text-danger" title="Activate Section"
-															onclick="tax.showChangeStatusPopup(${section.id}, 3, 0)"></a>
+														<a class="secHeadBtn" title="Activate Section"
+															onclick="tax.showChangeStatusPopup(${section.id}, 3, 0)">Active</a>
 													</c:otherwise>
 												</c:choose>
 											</div>
 										</c:if>
 									</div>
 
-									<div class="row saveElementDiv">
+									<%-- <div class="row saveElementDiv">
 										<form id="section_${section.id}_name_form">
 											<div class="col-md-10 paddigRight">
 												<input type="hidden" value="${section.id}" name="id">
@@ -63,6 +63,9 @@
 													class="form-control input-sm" placeholder="Enter"
 													name="name" type="text" value="${section.name}"
 													data-old_value="${section.name}">
+												<input class="form-control input-sm" placeholder="Max Limit" data-validation="required validate_float validate_length length1-10"
+													name="maxLimit" type="text" value="${section.maxLimit}"
+													data-old_value="${section.maxLimit}">
 											</div>
 											<div class="col-md-2 text-left paddingLeft">
 												<a
@@ -72,16 +75,16 @@
 													title="Save Name"></a>
 											</div>
 										</form>
-									</div>
+									</div> --%>
 
 								</div>
 							</div>
 							<c:if test="${isEditable}">
-								<div class="col-md-2 col-md-offset-6 ${section.active ? '' :'disableBtn'}">
-									<a href="javascript:void(0)" class="anchor-black"
-										title="Add Custom Item"
-										onClick="addSectionItem(${section.id},'${section.name}');"><i
-										class="fa fa-plus paddingRight"></i>Add Section Item</a>
+								<div class="col-md-2 padding_left ${section.active ? '' :'disableBtn'}">
+									<div class="secHead">
+										<a href="javascript:void(0)" class="secHeadBtn2" title="Add Custom Item" onClick="addSectionItem(${section.id},'${section.name}');">
+										<i class="fa fa-plus paddingRight"></i>Section Item</a>
+									</div>
 								</div>
 							</c:if>
 						</div>
@@ -89,7 +92,7 @@
 					</th>
 				</tr>
 				<c:if test="${section.sectionItemList.size() > 0}">
-					<tr ${section.active ? '' : "class='disableBtn'"}>
+					<tr class="tabHeadColor" ${section.active ? '' : "class='disableBtn'"}>
 						<th>Items</th>
 						<th>Max Limit</th>
 						<th>Description</th>
@@ -213,23 +216,30 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" onClick="modalClose();">&times;</button>
-				<h4 class="modal-title">Add Section</h4>
+				<h4 class="modal-title" id="taxFormTitle">Section</h4>
 			</div>
 			<form action="" id="itDeclarationSectionForm">
-				<input type="hidden" value="${form.id}" name="taxFormId"
-					id="taxFormId">
+				<input type="hidden" value="0" name="id" id="sectionId">
+				<input type="hidden" value="${form.id}" name="taxFormId" id="sectionTaxFormId">
 				<div class="modal-body">
 					<div class="form-group">
 						<label>Section Name</label>
 						<div class="clearfix">
-							<input type="text" class="form-control" name="name"
+							<input type="text" class="form-control" name="name" id="sectionName"
 								field-name="SectionName" data-validation="required">
+						</div>
+					</div>
+					<div class="form-group">
+						<label>Max Limit</label>
+						<div class="clearfix">
+							<input type="text" class="form-control" name="maxLimit" id="sectionMaxLimit"
+								field-name="Max Limit" data-validation="required validate_float validate_length length1-20">
 						</div>
 					</div>
 					<div class="form-group">
 						<label>Description</label>
 						<div class="clearfix">
-							<textarea class="form-control" rows="2" name="description"
+							<textarea class="form-control" rows="2" name="description" id="sectionDescription"
 								field-name="Description" data-validation="required"></textarea>
 						</div>
 					</div>
@@ -269,7 +279,7 @@
 						<label>Max Limit</label>
 						<div class="clearfix">
 							<input type="text" class="form-control" name="maxLimit"
-								field-name="Max Limit" data-validation="required">
+								field-name="Max Limit" data-validation="required validate_float validate_length length1-20">
 						</div>
 					</div>
 					<div class="form-group">
