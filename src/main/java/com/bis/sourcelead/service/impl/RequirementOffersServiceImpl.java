@@ -313,12 +313,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           String submissionStatus = "";
 					           if(jsonObj.has("clientOffer") && jsonObj.getString("clientOffer").equalsIgnoreCase(Constants.YES)){
 					        	   if(requirementSubmission.getSourceSubmission() != null) {
+					        		   requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 					        		   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
 					        	   }else {
+					        		   requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 					        		   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
 					        	   }
 					        	  
 					           }else {
+				        		   requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
 					           }
 					           submissionStatus = requirementSubmission.getSubmissionStatus().getValue();

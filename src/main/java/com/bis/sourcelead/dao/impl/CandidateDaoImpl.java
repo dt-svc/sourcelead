@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -41,6 +39,7 @@ import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
@@ -49,11 +48,14 @@ import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
+import com.bis.sourcelead.entity.SourceleadDeletedCandidates;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
+import com.bis.sourcelead.entity.TicketType;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -3578,5 +3580,105 @@ public class CandidateDaoImpl implements CandidateDao {
 		return user;
 		
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateSource> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CandidateSource t where t.orgLocations.id=" + orgLocationId;
+			if(status >= 0) {
+				query += " and t.status=" + status;
+			}
+			if(searchValue != null && !searchValue.isEmpty()) {
+				query += " and (t.name like '%" + searchValue + "%' or t.description like '%" + searchValue + "%')";
+			}
+			query += " order by t.id desc";
+			return session.createQuery(query).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public long saveCandidateSource(CandidateSource candidateSource) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(candidateSource);
+			return candidateSource.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateSource getCandidateSourceById(Long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(CandidateSource.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public long getCandidateSourceByOrgLocationId(String name,long userId, long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query= "select cs.id from CandidateSource cs where cs.name=:name and cs.orgLocations.id=:orgLocationsId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("name", name);
+			queryObj.setLong("orgLocationsId", orgLocationId);
+			List<Long> candidateSourceIdlist = queryObj.list();
+			if(candidateSourceIdlist != null && !candidateSourceIdlist.isEmpty()) 
+				return candidateSourceIdlist.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean deleteCandidateSourceById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			CandidateSource candidateSource = session.get(CandidateSource.class, id);
+			if (null != candidateSource) {
+				session.delete(candidateSource);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+
+
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveSourceleadDeletedCandidate(SourceleadDeletedCandidates sourceleadDeletedCandidates)
+			throws Exception {
+		logger.debug("Storing SourceleadDeletedCandidates");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (sourceleadDeletedCandidates != null) {
+				session.saveOrUpdate(sourceleadDeletedCandidates);
+			}
+			logger.debug("SourceleadDeletedCandidates Stored Successfully");
+		} catch (Exception exception) {
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "SourceleadDeletedCandidates"));
+			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+		}
+	}
+
 
 }
