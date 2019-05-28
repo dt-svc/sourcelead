@@ -354,8 +354,34 @@ public interface CandidateService {
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
 	
 	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
+	//CandidateSource storeCandidateSource(CandidateSourceDTO candidateSourceDTO, User user, OrgLocations orgLocationId)throws Exception;
+			
 
-	CandidateSource storeCandidateSource(CandidateSourceDTO candidateSourceDTO, User user, OrgLocations orgLocationId)
-			throws Exception;
+	//public List<CandidateSourceDTO> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue) throws Exception;
+
+	public long saveCandidateSource(CandidateSourceDTO candidateSourceDTO, User user, OrgLocations loginOrgLocation);
+
+	public List<CandidateSourceDTO> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+
+	public CandidateSourceDTO getCandidateSourceById(long id, long userId, OrgLocations loginOrgLocation);
+
+	public Boolean deleteCandidateSourceById(long Id);
+
+	
+	
+
+	
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+	
 	
 }

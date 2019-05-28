@@ -22,11 +22,11 @@ public class CandidateSource implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
-	private Long id;
+	private long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
-	private OrgLocations orgLocationId;
+	@JoinColumn(name = "ORG_LOCATION_ID", referencedColumnName = "ID")
+	private OrgLocations orgLocations;
 
 	@Column(name = "NAME")
 	private String name;
@@ -59,13 +59,6 @@ public class CandidateSource implements Serializable {
 		this.id = id;
 	}
 
-	public OrgLocations getOrgLocationId() {
-		return orgLocationId;
-	}
-
-	public void setOrgLocationId(OrgLocations orgLocationId) {
-		this.orgLocationId = orgLocationId;
-	}
 
 	public String getName() {
 		return name;
@@ -125,6 +118,14 @@ public class CandidateSource implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public OrgLocations getOrgLocations() {
+		return orgLocations;
+	}
+
+	public void setOrgLocations(OrgLocations orgLocations) {
+		this.orgLocations = orgLocations;
 	}
 	
 	

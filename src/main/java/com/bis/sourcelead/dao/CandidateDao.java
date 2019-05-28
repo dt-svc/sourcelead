@@ -282,10 +282,21 @@ public interface CandidateDao {
 	
 	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
 	
-	public CandidateSource storeCandidateSource(CandidateSource candidateSource) throws Exception;
 
-	public CandidateSource getCandidateSourceByOrgLocationIdandCandidateSourceId(String candSourceId,
-			OrgLocations orgLocationId);
+	public List<CandidateSource> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+
+	public long saveCandidateSource(CandidateSource candidateSource);
+
+	public CandidateSource getCandidateSourceById(Long id);
+
+	public long getCandidateSourceByOrgLocationId(String name,long userId, long orgLocationId);
+
+	public boolean deleteCandidateSourceById(long id);
+
+	
+
+	
+	
 
 	
 	
