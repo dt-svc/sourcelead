@@ -98,6 +98,7 @@ public class PerformanceRatingScaleDaoImpl implements PerformanceRatingScaleDao 
 					+" RATING_SCALE.RATING_SCALE_VALUE AS ratingScaleValue, "
 					+" RATING_SCALE.UUID AS uuid, "
 					+" RATING_LEVEL.LEVEL_NAME AS levelName, "
+					+" RATING_LEVEL.ID AS levelId, "
 					+" DATE_FORMAT(RATING_SCALE.CREATED_DATE, '"+locationDateFormat+"') AS date, "
 					+" DATE_FORMAT(RATING_SCALE.CREATED_DATE, '%h:%i:%s %p') AS time "
 					+" FROM PERFORMANCE_RATING_SCALE RATING_SCALE, PERFORMANCE_RATING_LEVEL RATING_LEVEL "

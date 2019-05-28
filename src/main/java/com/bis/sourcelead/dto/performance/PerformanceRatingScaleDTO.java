@@ -37,6 +37,18 @@ public class PerformanceRatingScaleDTO implements Serializable {
 		
 		private String levelName;
 		
+		private BigInteger levelId;
+		
+		
+		
+
+		public BigInteger getLevelId() {
+			return levelId;
+		}
+
+		public void setLevelId(BigInteger levelId) {
+			this.levelId = levelId;
+		}
 
 		public String getLevelName() {
 			return levelName;
