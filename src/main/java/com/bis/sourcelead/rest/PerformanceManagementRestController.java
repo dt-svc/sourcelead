@@ -29,6 +29,7 @@ import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceCompetenciesDTO;
 import com.bis.sourcelead.dto.performance.PerformanceRatingLevelDTO;
+import com.bis.sourcelead.dto.performance.PerformanceRatingScaleDTO;
 import com.bis.sourcelead.dto.performance.PerformanceTagCompetenciesDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -45,6 +46,7 @@ import com.bis.sourcelead.service.performance.PerformanceBadgesService;
 import com.bis.sourcelead.service.performance.PerformanceCompetenciesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
 import com.bis.sourcelead.service.performance.PerformanceRatingLevelService;
+import com.bis.sourcelead.service.performance.PerformanceRatingScaleService;
 import com.bis.sourcelead.service.performance.PerformanceTagCompetenciesService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -85,6 +87,9 @@ public class PerformanceManagementRestController {
 	
 	@Autowired
 	PerformanceRatingLevelService performanceRatingLevelService;
+	
+	@Autowired
+	PerformanceRatingScaleService performanceRatingScaleService;
 	
     @RequestMapping(value = "/savePerformanceBudgetDetails", method = RequestMethod.POST)
 	public Response<PerformanceBadgesDTO> savePerformanceBudgetDetails(HttpServletRequest request, 
@@ -406,13 +411,13 @@ public class PerformanceManagementRestController {
    
    @RequestMapping(value = "/savePerformanceRatingLevel", method = RequestMethod.POST)
  	public Response<PerformanceRatingLevelDTO> savePerformanceRatingLevel(HttpServletRequest request, 
- 			PerformanceRatingLevelDTO PerformanceRatingLevelDTO){
+ 			PerformanceRatingLevelDTO performanceRatingLevelDTO){
  		 Response<PerformanceRatingLevelDTO> resObj = new Response<>();
  		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		 try {
- 			 if(Validator.validate(PerformanceRatingLevelDTO)){
- 				performanceRatingLevelService.storePerformanceRatingLevel(PerformanceRatingLevelDTO, orgLocation.getId(), user.getId());
+ 			 if(Validator.validate(performanceRatingLevelDTO)){
+ 				performanceRatingLevelService.storePerformanceRatingLevel(performanceRatingLevelDTO, orgLocation.getId(), user.getId());
  			 resObj.setResponse(Result.SUCCESS.name());
  			 resObj.setResponseMessage(Result.SUCCESS.getValue());
  		    }
@@ -430,14 +435,14 @@ public class PerformanceManagementRestController {
    
    
    @RequestMapping(value = "/savePerformanceRatingScale", method = RequestMethod.POST)
-	public Response<PerformanceRatingLevelDTO> savePerformanceRatingScale(HttpServletRequest request, 
-			PerformanceRatingLevelDTO PerformanceRatingLevelDTO){
-		 Response<PerformanceRatingLevelDTO> resObj = new Response<>();
+	public Response<PerformanceRatingScaleDTO> savePerformanceRatingScale(HttpServletRequest request, 
+			PerformanceRatingScaleDTO performanceRatingScaleDTO){
+		 Response<PerformanceRatingScaleDTO> resObj = new Response<>();
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 try {
-			 if(Validator.validate(PerformanceRatingLevelDTO)){
-				performanceRatingLevelService.storePerformanceRatingLevel(PerformanceRatingLevelDTO, orgLocation.getId(), user.getId());
+			 if(Validator.validate(performanceRatingScaleDTO)){
+			 performanceRatingScaleService.storePerformanceRatingScale(performanceRatingScaleDTO, orgLocation.getId(), user.getId());
 			 resObj.setResponse(Result.SUCCESS.name());
 			 resObj.setResponseMessage(Result.SUCCESS.getValue());
 		    }

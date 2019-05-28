@@ -7,7 +7,7 @@
 
 <section class="content-header clearfix">
      <div class="pull-left"><h2>Add Rating Scale</h2></div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration'/>">Configuration</a> &raquo; <a onclick="performanceManagement.performanceCompetenceList();">Competence List</a> &raquo; Add Competence</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration'/>">Configuration</a> &raquo; <a onclick="performanceManagement.performanceRatingScaleList();">Rating Scale List</a> &raquo; Add Rating Scale</div>
   </section>
 
     
@@ -63,7 +63,7 @@
 	<div class="clearfix">
 		<div class="pull-right mr">
 			<button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="performanceManagement.savePerformanceRatingScale();" >Save</button>
-	           <button type="button" class="slBtn md popClose"  onclick="performanceManagement.performanceCompetenceList();" >Cancel</button>
+	           <button type="button" class="slBtn md popClose"  onclick="performanceManagement.performanceRatingScaleList();" >Cancel</button>
 		</div>
 	</div>
 	</div>
