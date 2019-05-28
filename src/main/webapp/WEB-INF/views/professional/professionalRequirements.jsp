@@ -55,7 +55,7 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 var atsUrl = '${SourceLeadWeb_atsUrl}';
-var sourceleadUrl ='${sourceleadUrl}';
+var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
 function setPostValues(title,link,picture,description,comment){
 	 if (title) {
@@ -867,7 +867,6 @@ function requirementsList(offset){
 	if(requirementType == 'ReferredToMe' || requirementType == 'ReferredByMe'){
 		document.getElementById("advancedSearch").style.display="none";
 	}
-	
 	closePop();
 	loadChosenRequirementScripts();
 	$("#requirementsListLoading").attr('style','position:absolute; width:100%; height:30%; background-color:rgba(255,255,255,0.8); top:248px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
