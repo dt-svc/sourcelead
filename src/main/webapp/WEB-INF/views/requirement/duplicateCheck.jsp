@@ -6,6 +6,13 @@
 var atsUrl = '${SourceLeadWeb_atsUrl}';
 var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 </script>
+
+<script>
+	$(document).ready(function() {
+		alert("hi");
+		getDuplicateConfigData();
+	});
+</script>
   <section class="content-wraper">
     <section class="content-header clearfix">
        <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Submission List</div>
@@ -13,6 +20,7 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
     
     <!-- checkbox div -->
     <form name="duplicate_check_form" id="duplicate_check_form">
+    <input type="hidden" id="configId" name="duplicateConfigID"/>
     <div id="configLoading"></div>
         <div class="col-md-12 mb">
           <div class="checkbox-new mt">
@@ -73,6 +81,7 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	 var email 		= $('#email').val();
 	 var phoneNumber=$('#phoneNumber').val();
 	 var panNumber	=$('#panNumber').val();
+	 var id = $('#configId').val();
 	if($('#ssnNumber').val()== undefined || $('#ssnNumber').val()== null){
 	  var ssnNumber 	='N';
 	  }else{
@@ -82,14 +91,60 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	 $("#configLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
      $.ajax({
  	      type: "POST",
-       	  url:atsUrl+"/saveDuplicateCheckConfig?email="+email+"&phoneNumber="+phoneNumber+"&panNumber="+panNumber+"&ssnNumber="+ssnNumber+"&aadharNumber="+aadharNumber,
+       	  url:atsUrl+"/saveDuplicateCheckConfig?email="+email+"&phoneNumber="+phoneNumber+"&panNumber="+panNumber+"&ssnNumber="+ssnNumber+"&aadharNumber="+aadharNumber+"&id="+id,
          	success: function(json) {
-         		location.reload();
+         		getDuplicateConfigData();
 	        },  
      });
 	 
  }
  
+ </script>
+   <script>
+   function getDuplicateConfigData(){
+	   var sourceleadUrl ='${sourceleadUrl}';
+	     $.ajax({
+	 	      type: "GET",
+	       	  url:atsUrl+"/getDuplicateConfigData",
+	         	success: function(data) {
+	         		$("#configId").val(data.id);
+// 	         		displayAlreadyDuplicateConfigData(data);
+		        },  
+	     });   
+   }
+   </script>
+   <script>
+ function displayAlreadyDuplicateConfigData(data){
+	 if(data.email == true){
+		 $("#email").prop("checked", true);
+	 }else{
+		 $("#email").prop("checked", true);
+	 }
+		 if(data.phoneNumber == true){
+			 $("phoneNumber").prop("checked", true);
+		 }else{
+			 $("phoneNumber").prop("checked", false);
+		 }
+		 
+		 if(data.panNumber == true){
+			 $("panNumber").prop("checked", true);
+		 }else{
+			 $("panNumber").prop("checked", false);
+		 }
+		 
+		 if(data.ssnNumber == true){
+			 $("ssnNumber").prop("checked", true);
+		 }else{
+			 $("ssnNumber").prop("checked", false);
+		 }
+		 
+		 if(data.aadharNumber == true){
+			 $("aadharNumber").prop("checked", true);
+		 }else{
+			 $("aadharNumber").prop("checked", false);
+		 }
+ }
+
  </script>
   <script>
    $('#email').change(function(){

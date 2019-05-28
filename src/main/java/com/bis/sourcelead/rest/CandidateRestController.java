@@ -1602,6 +1602,13 @@ public class CandidateRestController {
 			return candidateService.saveDuplicateCheckConfig(candidateVerificationConfigDTO,loginOrgLocation,user);
 			
 		}
+	    @RequestMapping(value = {"/getDuplicateConfigData"},method = RequestMethod.GET)
+		public CandidateVerificationConfig getDuplicateConfigData(CandidateVerificationConfigDTO candidateVerificationConfigDTO,HttpServletRequest request) {
+			
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			return candidateService.getCandidateVerificationConfig(loginOrgLocation.getId());
+				
+		}
 
 }
 
