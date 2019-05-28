@@ -55,6 +55,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.SourceleadDeletedCandidates;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
+import com.bis.sourcelead.entity.TicketType;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -3580,39 +3581,87 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional(rollbackFor = { Exception.class })	
-	public CandidateSource storeCandidateSource(CandidateSource candidateSource) throws Exception {
-		
-		logger.debug("Storing CandidateSource");
-		Session session = this.sessionFactory.getCurrentSession();
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateSource> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
 		try {
-			if (candidateSource != null) {
-				session.saveOrUpdate(candidateSource);
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CandidateSource t where t.orgLocations.id=" + orgLocationId;
+			if(status >= 0) {
+				query += " and t.status=" + status;
 			}
-			logger.debug("candidateSource Stored Successfully");
-		} catch (Exception exception) {
-			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"candidateSource"));
-				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+			if(searchValue != null && !searchValue.isEmpty()) {
+				query += " and (t.name like '%" + searchValue + "%' or t.description like '%" + searchValue + "%')";
+			}
+			query += " order by t.id desc";
+			return session.createQuery(query).list();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return candidateSource;
+		return null;
 	}
-
 	@Override
-	public CandidateSource getCandidateSourceByOrgLocationIdandCandidateSourceId(String candSourceId,
-			OrgLocations orgLocationId) {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateSource  cs where cs.id = :candSourceId and cs.orgLocationId= :orgLocationId";
-		List<CandidateSource> candSourceList =  session.createQuery(query.toString()).setString("candSourceId", candSourceId).setParameter("orgLocationId", orgLocationId)
-				.list();
-		CandidateSource candSource = null;
-		if (candSourceList != null && candSourceList.size() > 0) {
-			candSource = (CandidateSource) candSourceList.iterator().next();
+	@Transactional(rollbackFor = { Exception.class })
+	public long saveCandidateSource(CandidateSource candidateSource) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(candidateSource);
+			return candidateSource.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return candSource;
+		return 0;
 	}
 
 	
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateSource getCandidateSourceById(Long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(CandidateSource.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public long getCandidateSourceByOrgLocationId(String name,long userId, long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query= "select cs.id from CandidateSource cs where cs.name=:name and cs.orgLocations.id=:orgLocationsId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("name", name);
+			queryObj.setLong("orgLocationsId", orgLocationId);
+			List<Long> candidateSourceIdlist = queryObj.list();
+			if(candidateSourceIdlist != null && !candidateSourceIdlist.isEmpty()) 
+				return candidateSourceIdlist.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public boolean deleteCandidateSourceById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			CandidateSource candidateSource = session.get(CandidateSource.class, id);
+			if (null != candidateSource) {
+				session.delete(candidateSource);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+
+
+	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -3630,5 +3679,6 @@ public class CandidateDaoImpl implements CandidateDao {
 			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
 		}
 	}
+
 
 }

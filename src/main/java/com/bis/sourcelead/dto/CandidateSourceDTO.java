@@ -12,7 +12,7 @@ public class CandidateSourceDTO{
    
 	private String description; 
 	
-	private String status;
+	private Integer status;
 	
 	private String createdDate;
 
@@ -54,12 +54,11 @@ public class CandidateSourceDTO{
 		this.description = description;
 	}
 
-	public String getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
-
-	public void setStatus(String status) {
-		this.status = status;
+	public void setStatus(Integer integer) {
+		this.status = integer;
 	}
 
 	public String getCreatedDate() {
