@@ -924,17 +924,24 @@ function RequirementWorkflow(){
 				 
 				 this.validateWorkflowStageName = function(workflowUuid){
 					 var stageName = $("#stageName").val();
-					 if(stageName != null){
+					
+					 if(stageName != null && stageName.length > 0){
 					 $.ajax({
 						 type: "GET",
 						 url : sourceleadUrl+"/validateWorkflowStageName?workflowUuid="+workflowUuid+"&stageName="+stageName+"&currentStageUuid="+currentStageUuid,
 						 success:function(dataList){
-							 if (dataList.response =="true") {
-				                    if ($('#StageNameDiv').find('p.jquery_form_error_message').length === 0)
-				                        $("#stageName").after("<p class='jquery_form_error_message'>" + stageName + " Already Exists</span>");
+							 
+							 if (dataList.response =="true" || dataList.response =="special") {
+								 $('#StageNameDiv').find('p.jquery_form_error_message').remove();
+								 if ($('#StageNameDiv').find('p.jquery_form_error_message').length === 0)
+				                 if(dataList.response =="true"){
+									 $("#stageName").after("<p class='jquery_form_error_message'>" + stageName + " Already Exists</span>");
+				                 }if(dataList.response =="special"){
+								 $("#stageName").after("<p class='jquery_form_error_message'> No Special Characters !</span>");
+				                 }
 				                    $("#saveStageButton").attr("disabled", "disabled");
 				                    $("#saveTaskButton").attr("disabled", "disabled");
-				                } else {
+				                 }else {
 				                    $('#StageNameDiv').find('p.jquery_form_error_message').remove();
 				                    $("#saveStageButton").removeAttr("disabled");
 				                    $("#saveTaskButton").removeAttr("disabled");
