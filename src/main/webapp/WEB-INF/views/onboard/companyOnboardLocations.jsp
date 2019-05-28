@@ -35,23 +35,6 @@ window.onload = function () {
  };
 </script>
 
-<style type="text/css">
-.selectChosen .chosen-container {
-width: 100% !important;
-}
-.icon1 {
-right: 15px;
-}
-
-.pac-container {
-z-index: 1000000000 !important;
-}
-.pac-container::after {
-	display:none;
-}
-
-</style>
-
 <script>
   function navtoggle(elementRef){
 	  

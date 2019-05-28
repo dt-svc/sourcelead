@@ -524,6 +524,7 @@ public class TaxServiceImpl implements TaxService {
 			}
 			if (section != null) {
 				section.setName(sectionDTO.getName());
+				section.setMaxLimit(new BigDecimal(sectionDTO.getMaxLimit()));
 				section.setDescription(sectionDTO.getDescription());
 				section.setActive(true);
 				section.setSourceleadTaxForm(taxDao.getTaxFormType(sectionDTO.getTaxFormId()));
@@ -583,6 +584,7 @@ public class TaxServiceImpl implements TaxService {
 								SourceleadTaxITDeclarationDTO taxSectionDTO = new SourceleadTaxITDeclarationDTO();
 								taxSectionDTO.setId(taxSection.getId());
 								taxSectionDTO.setName(taxSection.getName());
+								taxSectionDTO.setMaxLimit(taxSection.getMaxLimit() + "");
 								taxSectionDTO.setDescription(taxSection.getDescription());
 								taxSectionDTO.setActive(taxSection.isActive());
 								if (taxSection.getSourceleadTaxForm() != null) {

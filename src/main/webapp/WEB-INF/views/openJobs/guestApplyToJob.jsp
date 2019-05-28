@@ -32,34 +32,6 @@
 <script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
 <script src="/resources/js/guestUserSubmissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->	
 
-
-<style>
-.viewTemplate {
-background-color: #fff !important;
-}
-.new_side_wrap_inn.applytoJobDiv {
-margin: 20px auto; padding-bottom: 15px;
-}
-.applytoJobDiv .form-footer {
-	display: inline-block; width: 100%; padding: 20px 0; min-height: 30px; line-height: 30px;
-}
-.pac-container {
-z-index: 1000000000 !important;
-}
-.pac-container::after {
-	display:none;
-}
-.profile-show {
-	border: 1px solid #ededed; padding: 2px 15px; margin-top: 15px; background-color: #f5f5f5;
-}
-.profile-show ul li {
-padding-right:15px; border-right:1px solid #ededed;
-}
-.profile-show ul li:last {
-border-right:none;
-}
-</style>
-
 <script>
 jQuery(document).ready(function($) { 
 	var requirementId = '${reqId}';
@@ -246,7 +218,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '</div>';
 		
 		
-		result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div> <div id="emailDiv"></div>';
+		result = result + '<div id="sjfb-fields" class="viewTemplate backgroundWhite"> <div id="loading"></div> <div id="emailDiv"></div>';
 		
 		result = result + '</div>';
 		

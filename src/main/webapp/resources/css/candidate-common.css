@@ -1,1 +1,73 @@
-@charset "utf-8";.er .bootstrap-select:not ([class*=col-] ):not ([class*=form-control] ):not (.input-group-btn ),.er .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn){width:100px}.pras.req-title p,.ratetype p{bottom:-14px}.selp-custom-min .open{z-index:999999999!important}.experienceMonths .disabled{display:block!important}.er .btn-default{background:#337ab7;border:1px solid #ccc;color:#fff;text-shadow:none}.clsDatePicker{z-index:100000!important}#uploadFileGroup p.jquery_form_error_message{position:absolute;left:0;bottom:-16px}.pras.req-title p,.ratetype p{bottom:-14px}.selp-custom-min .btn-default{-webkit-border-radius:0 3px 3px 0;-moz-border-radius:0 3px 3px 0;-ms-border-radius:0 3px 3px 0;border-radius:0 3px 3px 0}.ratetype p{left:0!important;position:absolute}.exprience .select-field select{background-position:96% center!important}.require_wrap_details{text-align:left}.ratetype-right p.jquery_form_error_message{bottom:-14px;left:-30px!important;position:absolute}
+@charset "utf-8"; 
+
+.er .bootstrap-select:not ([class*=col-] ):not ([class*=form-control] ):not 
+	(.input-group-btn ),.er .bootstrap-select:not ([class*=col-] ):not ([class*=form-control]
+	):not (.input-group-btn ){
+	width: 100px;
+}
+
+.pras.req-title p, .ratetype p {
+	bottom: -14px
+}
+
+.selp-custom-min .open {
+	z-index: 999999999 !important
+}
+
+.experienceMonths .disabled {
+	display: block !important
+}
+
+.er .btn-default {
+	background: #337ab7;
+	border: 1px solid #ccc;
+	color: #fff;
+	text-shadow: none
+}
+
+.clsDatePicker {
+	z-index: 100000 !important
+}
+
+#uploadFileGroup p.jquery_form_error_message {
+	position: absolute;
+	left: 0;
+	bottom: -16px
+}
+
+.pras.req-title p, .ratetype p {
+	bottom: -14px
+}
+
+.selp-custom-min .btn-default {
+	-webkit-border-radius: 0 3px 3px 0;
+	-moz-border-radius: 0 3px 3px 0;
+	-ms-border-radius: 0 3px 3px 0;
+	border-radius: 0 3px 3px 0
+}
+
+.ratetype p {
+	left: 0 !important;
+	position: absolute
+}
+
+.exprience .select-field select {
+	background-position: 96% center !important
+}
+
+.require_wrap_details {
+	text-align: left
+}
+
+.ratetype-right p.jquery_form_error_message {
+	bottom: -14px;
+	left: -30px !important;
+	position: absolute
+}
+.er .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
+	width:100px;
+}
+.require_wrap_details {
+text-align:left;
+}
+.ratetype.ratetypeError p { bottom: -14px; left:0px !important; position: absolute; }
