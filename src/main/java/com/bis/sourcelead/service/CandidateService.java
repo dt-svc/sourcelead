@@ -28,6 +28,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
+import com.bis.sourcelead.entity.SourceleadDeletedCandidates;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
 
@@ -110,6 +111,8 @@ public interface CandidateService {
 	public List<Candidate> getAllRequestedCandidatesForCampaign(List<Long> candidateId)throws Exception;
 	
 	public void saveOrUpdateCandidateElkDocument(Candidate candidate) throws Exception;
+	
+	public void deleteCandidateElkDocument(Candidate candidate) throws Exception;
 	
 	public Long getCandidatesCountByOrgLocationID(Long orgLocationId, String candidateStatus);
 	
@@ -383,5 +386,7 @@ public interface CandidateService {
 
 	
 	
+	
+	public void saveSourceleadDeletedCandidate(SourceleadDeletedCandidates sourceleadDeletedCandidates) throws Exception;
 	
 }

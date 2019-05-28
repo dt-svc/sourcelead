@@ -53,6 +53,7 @@ import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
+import com.bis.sourcelead.entity.SourceleadDeletedCandidates;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.TicketType;
 import com.bis.sourcelead.entity.User;
@@ -3659,5 +3660,25 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return false;
 
+
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveSourceleadDeletedCandidate(SourceleadDeletedCandidates sourceleadDeletedCandidates)
+			throws Exception {
+		logger.debug("Storing SourceleadDeletedCandidates");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (sourceleadDeletedCandidates != null) {
+				session.saveOrUpdate(sourceleadDeletedCandidates);
+			}
+			logger.debug("SourceleadDeletedCandidates Stored Successfully");
+		} catch (Exception exception) {
+			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "SourceleadDeletedCandidates"));
+			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+		}
+	}
+
+
 }
