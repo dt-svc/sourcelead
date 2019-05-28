@@ -611,6 +611,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					payHeadHistoryDTO.setPayrollPayheadType(payHeadHistory.getPayrollPayhead().getType());
 					payHeadHistoryDTO.setPayrollPayheadName(payHeadHistory.getPayrollPayhead().getName());
 					payHeadHistoryDTO.setPayrollPayheadShortCode(payHeadHistory.getPayrollPayhead().getShortCode());
+					payHeadHistoryDTO.setPaySlip(payHeadHistory.getPayrollPayhead().getShowInPayslip());
 				}
 				payHeadHistoryDTO.setMonthly(payHeadHistory.getMonthly());
 				payHeadHistoryDTO.setAnnualy(payHeadHistory.getAnnualy());
