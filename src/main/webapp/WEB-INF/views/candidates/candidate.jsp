@@ -70,7 +70,17 @@
           </div>
         </div>
         <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
-        
+        <div class="form-group">
+						<label class="col-md-3">Source</label>
+						<div class="col-md-9">
+							<select class="sel form-control" name="candidateSource" field-name="Source" id="candidateSource" data-validation="required">
+								<option value="">Select Source</option>
+							<c:forEach items="${sourceCandidateList}" var="candidateSource">
+								<option value="${candidateSource.id}" >${candidateSource.name}</option>
+							</c:forEach>
+							</select>
+						</div>
+				</div>
         <div class="form-group">
           <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
