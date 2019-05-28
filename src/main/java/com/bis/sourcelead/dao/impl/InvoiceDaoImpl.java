@@ -411,7 +411,7 @@ public class InvoiceDaoImpl implements InvoiceDao {
 							.append("OR creditDebitNote.orgLocations.orgLocationName like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
 							.append("OR creditDebitNote.generatedId like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
 							.append("OR creditDebitNote.total like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
-							.append("OR creditDebitNote.creditNoteDate like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
+							.append("OR creditDebitNote.date like '%" + creditDebitNoteDTO.getSearchValue() + "%' ")
 							.append("OR creditDebitNote.noteStatus like '%" + creditDebitNoteDTO.getSearchValue() + "%' )");
 
 				}
