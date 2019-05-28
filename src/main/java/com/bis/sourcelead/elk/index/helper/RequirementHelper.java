@@ -153,9 +153,12 @@ public class RequirementHelper {
 				requirementIndex.setTags(requirement.getJobsTags());
 			}
 			
+			if(requirement.getRequirementSubmissionStatus() != null) {
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
+			}
 			// requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus().toString());
 			requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus() != null ? requirement.getRequirementSubmissionPreviousStatus().name() : "");
+			
 			
 			StringBuilder country = new StringBuilder();
 			StringBuilder state = new StringBuilder();
@@ -239,8 +242,12 @@ public class RequirementHelper {
 			requirementIndex.setCreatedDate(reqcreatedDate);
 			String reqUpDatedDate = dateFormat.format(requirement.getCreatedDate());
 			requirementIndex.setUpdatedDate(reqUpDatedDate);
+			User ownerUser = new User();
+			if(null != requirement && null != requirement.getManagerUserId() && null != requirement.getManagerUserId().getId()) {
 			Long userId = requirement.getManagerUserId().getId();
-			User ownerUser = userService.getUserById(userId);
+			ownerUser = userService.getUserById(userId);
+			}
+
 			StringBuilder sbilder = new StringBuilder();
 			if (ownerUser != null) {
 				if (ownerUser.getFirstName() != null && ownerUser.getLastName() != null) {

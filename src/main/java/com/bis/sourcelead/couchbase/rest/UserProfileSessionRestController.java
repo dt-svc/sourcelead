@@ -3,7 +3,6 @@ package com.bis.sourcelead.couchbase.rest;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.couchbase.OrgLocationCacheDTO;
 import com.bis.sourcelead.couchbase.UserRoleSessionProfileDTO;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
+import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
@@ -25,7 +25,6 @@ import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
@@ -60,6 +59,9 @@ public class UserProfileSessionRestController {
 	
 	@Autowired
 	RequirementService requirementService;
+	
+	@Autowired
+	private RequirementElkUtil requirementElkUtil;
 	
 	 @RequestMapping(value = "/ws/storeOrgLocationsInCouch", method = RequestMethod.GET)
 	 public void storeOrgLocationsInCouch() throws Exception {
@@ -127,44 +129,41 @@ public class UserProfileSessionRestController {
 		Iterator<OrgLocations> i = null;
 		Iterator<Requirement> i1 = null;
 		RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO();
-		RequirementWorkFlow workFlow = null;
+		RequirementWorkFlow workFlow = new RequirementWorkFlow();
 		User user = new User();
+		OrgLocations org = new OrgLocations();
+		Requirement requirement = new Requirement();
 		try {
 			orgLocationsList = orgLocationService.getAllOrgLocations();
 			System.out.println("number of orgLocations - " + orgLocationsList.size());
 			i = orgLocationsList.iterator();
-			while (i.hasNext()) {
-				OrgLocations org = i.next();
-				if (org.getId() != null) {
-					System.out.println("saving workflow for - " + org.getId()+" orgLocation");
-					requirementList = requirementService.getAllRequirementsByOrglocationId(org.getId());
-					if (requirementList != null && requirementList.size() > 0) {
-						i1 = requirementList.iterator();
-					}
-					workFlow = requirementWorkFlowService.getRequirementWorkFlowByOrgLocId(org.getId());
-						if (workFlow != null && i1 != null) {
-							while (i1.hasNext()) {
-								Requirement requirement = i1.next();
-								if (requirement.getWorkflowId() == null) {
-									requirement.setWorkflowId(workFlow);
-									requirementService.updateRequirement(requirement);
-								}
-							}
+			if (i != null) {
+				while (i.hasNext()) {
+					org = i.next();
+					if (org != null && org.getId() != null) {
+						workFlow = requirementWorkFlowService.getRequirementWorkFlowByOrgLocId(org.getId());
+						if (workFlow == null) {
+							System.out.println("saving workflow for - " + org.getId() + " orgLocation");
+							user = org.getUser();
+							requirementWorkFlowDTO.setWorkFlowName(Constants.DEFAULT_JOB_WORKFLOW);
+							requirementWorkFlowDTO.setDescription(Constants.DEFAULT_JOB_WORKFLOW);
+							requirementWorkFlowDTO.setConfigureType(Constants.DEFAULT);
+							workFlow = requirementWorkFlowService.saveRequirementWorkFlowDetailsInfo(requirementWorkFlowDTO, user, org);
+							workFlow.setConfigureType(Constants.DEFAULT);
+							requirementWorkFlowService.saveWorkflowIdInAllOrgsForRequirement(workFlow, org);
 						}
-					if (workFlow == null) {
-						user = org.getUser();
-						requirementWorkFlowDTO.setWorkFlowName(Constants.DEFAULT_JOB_WORKFLOW);
-						requirementWorkFlowDTO.setDescription(Constants.DEFAULT_JOB_WORKFLOW);
-						requirementWorkFlowDTO.setConfigureType(Constants.DEFAULT);
-						workFlow = requirementWorkFlowService.saveRequirementWorkFlowDetailsInfo(requirementWorkFlowDTO, user, org);
-						workFlow.setConfigureType(Constants.DEFAULT);
-						requirementWorkFlowService.saveWorkflowIdForAllOrgsInRequirement(workFlow, org);
+						requirementList = requirementService.getAllRequirementsByOrglocationId(org.getId());
+						if (requirementList != null && requirementList.size() > 0) {
+							i1 = requirementList.iterator();
+						}
 						if (workFlow != null && i1 != null) {
 							while (i1.hasNext()) {
-								Requirement requirement = i1.next();
-								if (requirement.getWorkflowId() == null) {
+								requirement = i1.next();
+								if (requirement != null && requirement.getWorkflowId() == null) {
+									System.out.println("saving workflowId in " + requirement.getId()+ " requirement for - " + org.getId() + " orgLocation");
 									requirement.setWorkflowId(workFlow);
 									requirementService.updateRequirement(requirement);
+									requirementElkUtil.saveElkRequirement(requirement, null);
 								}
 							}
 						}
@@ -173,7 +172,7 @@ public class UserProfileSessionRestController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e + " in saveWorkflowIdForAllOrgsInRequirement");
+			System.out.println(e + " in saveWorkflowIdForAllOrgsInRequirement for " + org.getId() + " orgLocation");
 		}
 		System.out.println("Finished saving workflowId in requirement table for all orgs.");
 	}

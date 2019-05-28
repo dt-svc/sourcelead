@@ -274,6 +274,18 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String employmentType;
 	
+	private String candidateSource;
+	
+	private List<CandidateSourceDTO> candidateSourceList;
+	
+	public List<CandidateSourceDTO> getCandidateSourceList() {
+		return candidateSourceList;
+	}
+
+	public void setCandidateSourceList(List<CandidateSourceDTO> candidateSourceList) {
+		this.candidateSourceList = candidateSourceList;
+	}
+
 	public String getCandidateId() {
 		return candidateId;
 	}
@@ -1316,6 +1328,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setEmploymentType(String employmentType) {
 		this.employmentType = employmentType;
+	}
+
+	public String getCandidateSource() {
+		return candidateSource;
+	}
+
+	public void setCandidateSource(String candidateSource) {
+		this.candidateSource = candidateSource;
 	}
 
 
