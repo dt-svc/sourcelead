@@ -396,7 +396,6 @@ function submitFilterActions(){
 function timelineHistoryFunction(searchVal, order,dateRange,checkedStatus,namesStatus){
 	var invoiceUUID ='${invoiceUUID}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
-	console.log(dateRange);
 	$.ajax({
 	  	type: "GET",
 	    url: vmsUrl+"/getInvoiceTimelineHistory?"+tokenParamName+"="+tokenValue+"&locationId="+locationId+"&invoiceUUID="+invoiceUUID+"&searchVal="+searchVal+"&orderVal="+order+"&dateRange="+dateRange+"&checkedStatus="+checkedStatus+"&namesStatus="+namesStatus,
@@ -1599,6 +1598,7 @@ function getInvoiceTagsList(){
         url: vmsUrl+"/getInvoiceTags?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,        
         success :function(json) {
         	var result = "";
+        	if(json.tagsList !=null && json.tagsList !='' && json.tagsList !='undefined'){
 			$.each( json.tagsList, function( i, tags ) {
 			  var existed = 0;
                 if(json.invoiceTags != null && json.invoiceTags != 'undefined' && json.invoiceTags != '') {
@@ -1615,6 +1615,7 @@ function getInvoiceTagsList(){
                 	result = result + ' <option value="'+tags+'">'+tags+'</option>';
                 }
 			});
+        	}
             $("#invoiceTagName").empty();
             $("#invoiceTagName").append(result);
             $("#invoiceTagName").chosen().trigger("chosen:updated")
