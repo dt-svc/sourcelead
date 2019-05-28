@@ -965,7 +965,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public void saveWorkflowIdForAllOrgsInRequirement(RequirementWorkFlow requirementWorkFlow, OrgLocations orgLocations) throws Exception {
+	public void saveWorkflowIdInAllOrgsForRequirement(RequirementWorkFlow requirementWorkFlow, OrgLocations orgLocations) throws Exception {
 		requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
 	}
 	
