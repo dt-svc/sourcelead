@@ -52,7 +52,7 @@ public class Candidate implements Serializable {
 	private Candidate parentCandidateId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
+	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocationId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
