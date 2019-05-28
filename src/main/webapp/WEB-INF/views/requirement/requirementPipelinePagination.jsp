@@ -377,7 +377,7 @@
 											}
 											if(opt.orgName == null || opt.orgName == ''){
 												 if(isManager == "true" || isAdmin == "true"){
-												result = result '<i class="fa fa-pencil pull-left ml10 mt2 cursorPointer" onClick="applicantsourceHandler('+requirementId+','+opt.id+');"></i>';
+												result = result+ '<i class="fa fa-pencil pull-left ml10 mt2 cursorPointer" onClick="applicantsourceHandler('+requirementId+','+opt.id+');"></i>';
 												 }
 												 }
 											return result;
@@ -717,7 +717,7 @@ function applicantsourceSave(submissionId){
 	if(userId !=null && userId !=''){
 	$.ajax({
         type : "POST",
-        url: sourceleadUrl+"/editApplicantSourceName?&submissionId="+submissionId"&userId="+userId,    
+        url: sourceleadUrl+"/editApplicantSourceName?&submissionId="+submissionId+"&userId="+userId,    
          success :function(response) {
         	 applicantsourceHandlerClose();
          },
