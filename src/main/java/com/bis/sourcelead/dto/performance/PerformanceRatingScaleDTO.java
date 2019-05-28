@@ -19,8 +19,7 @@ public class PerformanceRatingScaleDTO implements Serializable {
 		private String ratingLevelId;
 	    
 	    @Required(desc="ratingScaleValue")
-		private String ratingScaleValue;
-	    
+		private Integer ratingScaleValue;
 	    
 	    @Required(desc="shortCode")
 		private String shortCode;
@@ -35,6 +34,17 @@ public class PerformanceRatingScaleDTO implements Serializable {
 		private String date;
 		
 		private String time;
+		
+		private String levelName;
+		
+
+		public String getLevelName() {
+			return levelName;
+		}
+
+		public void setLevelName(String levelName) {
+			this.levelName = levelName;
+		}
 
 		public Long getRatingScaleId() {
 			return ratingScaleId;
@@ -68,11 +78,11 @@ public class PerformanceRatingScaleDTO implements Serializable {
 			this.ratingLevelId = ratingLevelId;
 		}
 
-		public String getRatingScaleValue() {
+		public Integer getRatingScaleValue() {
 			return ratingScaleValue;
 		}
 
-		public void setRatingScaleValue(String ratingScaleValue) {
+		public void setRatingScaleValue(Integer ratingScaleValue) {
 			this.ratingScaleValue = ratingScaleValue;
 		}
 

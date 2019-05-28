@@ -1,11 +1,13 @@
 package com.bis.sourcelead.service.impl.performance;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.impl.performance.PerformanceRatingScaleDaoImpl;
 import com.bis.sourcelead.dao.performance.PerformanceRatingScaleDao;
 import com.bis.sourcelead.dto.performance.PerformanceRatingScaleDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -40,7 +42,7 @@ public class PerformanceRatingScaleServiceImpl implements PerformanceRatingScale
 		PerformanceRatingLevel ratingLevel = new PerformanceRatingLevel();
 		ratingLevel.setId(Long.valueOf(performanceRatingScaleDTO.getRatingLevelId()));
 		performanceRatingScale.setRatingLevelId(ratingLevel);
-		performanceRatingScale.setRatingScaleValue(Integer.parseInt(performanceRatingScaleDTO.getRatingScaleValue()));
+		performanceRatingScale.setRatingScaleValue(performanceRatingScaleDTO.getRatingScaleValue());
 		performanceRatingScale.setShortCode(performanceRatingScaleDTO.getShortCode());
 		performanceRatingScale.setOrgLocationId(orgLcoations);
 		performanceRatingScale.setStatus(Constants.RECORD_ACTIVE);
@@ -53,6 +55,14 @@ public class PerformanceRatingScaleServiceImpl implements PerformanceRatingScale
 	public PerformanceRatingScale savePerformanceRatingScale(PerformanceRatingScale performanceRatingScale)
 			throws Exception {
 		return performanceRatingScaleDao.savePerformanceRatingScale(performanceRatingScale);
+	}
+
+	@Override
+	public List<PerformanceRatingScaleDTO> getPerformanceRatingScaleListByOrgLocationId(Long orgLocationId,
+			String dateFormat) throws Exception {
+		
+		return performanceRatingScaleDao.getPerformanceRatingScaleListByOrgLocationId(orgLocationId, dateFormat); 
+
 	}
 
 }
