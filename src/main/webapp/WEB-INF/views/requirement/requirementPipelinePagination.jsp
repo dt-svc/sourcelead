@@ -700,7 +700,7 @@ function applicantsourceHandler(reqId,submissionId) {
 		                var json = JSON.parse(data);
 	                $('#assignedNewPerson').empty();
 	                $('#assignedNewPerson').append('<option value="">--Select Assign Employee--</option>');
-	                for (var i = 0; i < json.length; i) {
+	                for (var i = 0; i < json.length; i++) {
 	                    var opt = json[i];
 	                    $('#assignedNewPerson').append('<option value='+opt.assignedUserIdTemp+' >'+opt.assignedUserName+'</option>');
 	                }
