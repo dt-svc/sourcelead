@@ -13,7 +13,7 @@ padding: 0px 240px 4px 0px;
 
 <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Performance Competence</h2>
+        <h2>Performance Rating Scale</h2>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
       <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/settings'/>">Settings</a> &raquo;

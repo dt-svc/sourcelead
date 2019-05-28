@@ -1,8 +1,12 @@
 package com.bis.sourcelead.rest;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -465,8 +469,8 @@ public class PerformanceManagementRestController {
 		 try {
 			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 			 String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
-			 List<PerformanceRatingLevelDTO> competenciesTagDTOList =  performanceRatingLevelService.getPerformanceRatingLevelsListByOrgLocationId(orgLocationId,dateFormat);
-			 resObj.setData(competenciesTagDTOList);
+			 List<PerformanceRatingLevelDTO> ratingLevelDTOList =  performanceRatingLevelService.getPerformanceRatingLevelsListByOrgLocationId(orgLocationId,dateFormat);
+			 resObj.setData(ratingLevelDTOList);
 			 resObj.setResponse(Result.SUCCESS.name());
 			 resObj.setResponseMessage(Result.SUCCESS.getValue());
 		    
@@ -484,8 +488,8 @@ public class PerformanceManagementRestController {
   		 try {
   			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
   			 String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
-  			 List<PerformanceRatingScaleDTO> competenciesTagDTOList = performanceRatingScaleService.getPerformanceRatingScaleListByOrgLocationId(orgLocationId,dateFormat);
-  			 resObj.setData(competenciesTagDTOList);
+  			 List<PerformanceRatingScaleDTO> scalesDTOList = performanceRatingScaleService.getPerformanceRatingScaleListByOrgLocationId(orgLocationId,dateFormat);
+  			 resObj.setData(scalesDTOList);
   			 resObj.setResponse(Result.SUCCESS.name());
   			 resObj.setResponseMessage(Result.SUCCESS.getValue());
   		    
@@ -499,16 +503,37 @@ public class PerformanceManagementRestController {
 
    @RequestMapping(value = "/getPerformanceScaleLevels", method = RequestMethod.GET)
 	public List<PerformanceRatingLevelDTO> getPerformanceScaleLevels(HttpServletRequest request){
-	   List<PerformanceRatingLevelDTO> competenciesTagDTOList = null;
-		 try {
+	  
+	   List<PerformanceRatingLevelDTO> levelDTOList = new CopyOnWriteArrayList<>();
+		
+	   try {
 			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 			 String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
-			 competenciesTagDTOList =  performanceRatingLevelService.getPerformanceRatingLevelsListByOrgLocationId(orgLocationId,dateFormat);
+			 
+			 Map<BigInteger, BigInteger > levelMap = new HashMap<BigInteger,BigInteger>();
+			 
+			 List<PerformanceRatingLevelDTO> ratingLevelDTOList =  performanceRatingLevelService.getPerformanceRatingLevelsListByOrgLocationId(orgLocationId,dateFormat);
+			 List<PerformanceRatingScaleDTO> scalesDTOList = performanceRatingScaleService.getPerformanceRatingScaleListByOrgLocationId(orgLocationId,dateFormat);
+			 
+			 if(scalesDTOList != null && !scalesDTOList.isEmpty()) {
+				 for(PerformanceRatingScaleDTO scalesDTO : scalesDTOList ) {
+					 levelMap.put(scalesDTO.getId(), scalesDTO.getLevelId());
+				 }
+			 }
+			 
+			 if(ratingLevelDTOList != null && !ratingLevelDTOList.isEmpty()){
+				 for(PerformanceRatingLevelDTO ratingLevelDTO : ratingLevelDTOList) {
+					 if(levelMap.get(ratingLevelDTO.getId()) == null) {
+						 levelDTOList.add(ratingLevelDTO); 
+					 }
+				
+				 }
+			 }
 			 
 		 }catch (Exception e) {
 			 e.printStackTrace();
 		}
-		 return competenciesTagDTOList;
+		 return levelDTOList;
    }
    
 	 @RequestMapping(value = "/getPerformanceCompetenceList", method = RequestMethod.GET)
