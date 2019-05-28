@@ -65,6 +65,7 @@ public class AddElkCandidate{
 			    	candidateIndex.setOrgLocationId(rs.getLong("ORG_LOCATION_ID"));
 					candidateIndex.setFirstName(firstLetterCapitalizedString(rs.getString("FIRST_NAME")));
 					candidateIndex.setLastName(firstLetterCapitalizedString(rs.getString("LAST_NAME")));
+					candidateIndex.setIsSharedInMarketplace(rs.getString("IS_SHARED_IN_MARKETPLACE")); // Added by SRINIVAS SABBU ON 24-MAY-2019.
 					String createdBy = null ;
 					Long orgLocationId = rs.getLong("ORG_LOCATION_ID");
 					
