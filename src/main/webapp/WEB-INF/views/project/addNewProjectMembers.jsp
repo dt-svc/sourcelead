@@ -5,13 +5,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style>
-.text-muted {
-    color: #ededed !important; 
-}
-</style>
-
-
     <script type="text/javascript">
 		window.onload = function () {
 			getAssignedMembers();
