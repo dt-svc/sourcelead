@@ -21,16 +21,6 @@ $(document).ready(function() {
     </section>
     <div class="clearfix">
 		
-      <%--  <div class="positionRelative reportHead clearfix mb">
-        <ul class="pull-right list-unstyled list-inline">
-          <li><a class="newAdBtn mr5" href="${SourceLeadWeb_sourceleadUrl}/addStage" title="Add">+ Add</a></li>
-        <li class="">
-            <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-            <span class="repSearchIcon" onclick="getDynamciUserList();"></span>
-		</li>
-        </ul>
-        <div class="clearfix"></div>
-      </div> --%>
     </div>
     
     <form id="requirementWorkFlowForm" name="requirementWorkFlowForm">
@@ -39,9 +29,9 @@ $(document).ready(function() {
       <div class="clearfix mt col-md-6">
           <div class="form-group clearfix">
             <label class="col-md-3">Name<span class="text-danger paddingLeft">*</span></label>
-            <div class="col-md-9">
+            <div class="col-md-9" id = "workflowNameDiv">
               <input type="text" class="form-control" id="workFlowName" name="workFlowName" placeholder="WorkFlow Name" field-name="WorkFlow Name"
-								data-validation="required validate_length length1-100">
+				data-validation="required validate_length length1-100" onkeyup="requirementWorkflow.validateWorkflowName();">
             </div>
           </div>
         </div>
