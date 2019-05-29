@@ -554,9 +554,13 @@ function PerformanceManagement(){
    
    this.closeRatingScalePopup = function(){
 	      $(".mask, #ratingScaleModalTasktype").fadeOut();
-	 	  $('#ratingScaleNameDiv').find('p.jquery_form_error_message').remove();
-	 	  $('#ratingScaleDescriptionDiv').find('p.jquery_form_error_message').remove();
+	      $("#ratingLevelName").val('');
+	 	  $("#ratingLevelDescription").val('');
+	 	  $('#ratingLevelNameDiv').find('p.jquery_form_error_message').remove();
+	 	  $('#ratingLevelDescriptionDiv').find('p.jquery_form_error_message').remove();
 	 	  document.getElementById("ratingLevel_form").reset();
+	 	  $("#savePerformanceRatingLevel").removeAttr("disabled");
+	 	  
    }
    
    
