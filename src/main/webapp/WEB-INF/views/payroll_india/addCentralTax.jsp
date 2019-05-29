@@ -63,7 +63,7 @@
 								<div class="clearfix">
 							<input type="number" class="form-control" id="ceilvaluepf"
 								name="ceilvaluepf"  data-validation="validate_length length1-10 "
-								value="${centralTax.ceilvaluepf}" placeholder="Enter">
+								 data-validation-optional="true" value="${centralTax.ceilvaluepf}" placeholder="Enter">
 						</div>
 							</div>
 							<div class="col-md-5">
