@@ -151,6 +151,10 @@ function editCandidate(candidateId){
             			 	if(json.ssnNumber != null && json.ssnNumber != '' && json.ssnNumber != 'undefined'){
             			 		ssnNumber = json.ssnNumber;            			 		
             			 	}
+            			 	var candidateSource = '';
+            			 	if(json.candidateSource != null && json.candidateSource != '' && json.candidateSource != 'undefined'){
+            			 		candidateSource = json.candidateSource;            			 		
+            			 	}
             			 	
             			 	
 							var result ='';
@@ -562,9 +566,22 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10 mt">';
 							result = result + '<div class="col-md-6">';
 							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true">'+summary+'</textarea>';
-							result = result + ' </div>'; 
+							result = result + ' </div>';
+							result = result + '<div class="col-md-6">';
+							
+							result = result + '<label class="text-muted fontSmall">Source</label>';
+							result = result + '<select class="form-control valid width100percnt" name="candidateSource" field-name="Source" id="candidateSource" data-validation="required">';
+							var candidateSourceList = json.candidateSourceList;
+							for(var e in candidateSourceList) {
+								result = result + '<option value="'+candidateSourceList[e].id+'" '+(candidateSourceList[e].id == json.candidateSource ? "selected" : "")+'>'+ candidateSourceList[e].name +'</option>';
+							}
+							result = result + '</select>';
+							
+							result = result + ' </div>';
+							
 							result = result + ' </div>'; 
 							result = result + '</div>';
+							
 							
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';

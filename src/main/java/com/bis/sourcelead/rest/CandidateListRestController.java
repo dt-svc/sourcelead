@@ -59,6 +59,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CandidateSearchDTO;
+import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
@@ -68,6 +69,7 @@ import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
@@ -886,8 +888,8 @@ public class CandidateListRestController {
 	public @ResponseBody Response<CandidateDTO> getCandidateById(@RequestParam(value = "candidateId", required = false) String candidateId,
 			HttpServletRequest request) throws Exception {
 		Response<CandidateDTO> response = new Response<>();
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if (loginUser != null) {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (user != null) {
 			try {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
@@ -895,7 +897,12 @@ public class CandidateListRestController {
 				CandidateDTO candidateDTO = new CandidateDTO();
 
 				Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-
+				
+				/*
+				 * CandidateSourceDTO
+				 * candidateSource=candidateService.getCandidateSourceById(candidateSource.getId
+				 * ().longValue(),user.getId(), loginOrgLocation);
+				 */
 				int percentage = candidateService.getCandidatePercentage(can, loginOrgLocation);
 
 				LinkedHashSet<String> lhs = new LinkedHashSet<String>();
@@ -1027,6 +1034,12 @@ public class CandidateListRestController {
 				candidateDTO.setIsAssociate(can.getIsAssociate());
 				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
+				
+				if(null != can.getCandidateSource()) {
+					candidateDTO.setCandidateSource(can.getCandidateSource());
+					List<CandidateSourceDTO> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationId(loginOrgLocation.getId(), 1, null);
+					candidateDTO.setCandidateSourceList(candidateSourceList);
+				}
 				
 				if(can.getPanNumber() != null) {
 	 				candidateDTO.setPanNumber(can.getPanNumber());
