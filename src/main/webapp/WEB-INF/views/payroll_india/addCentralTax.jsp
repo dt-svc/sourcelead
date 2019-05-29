@@ -62,7 +62,7 @@
 								
 								<div class="clearfix">
 							<input type="number" class="form-control" id="ceilvaluepf"
-								name="ceilvaluepf"  data-validation="validate_length length1-10 "
+								name="ceilvaluepf" field-name="CeilValue" data-validation="validate_length length1-10 "
 								 data-validation-optional="true" value="${centralTax.ceilvaluepf}" placeholder="Enter">
 						</div>
 							</div>
@@ -87,7 +87,7 @@
 								<label class="clearfix">Employer</label>
 								<div class="clearfix">
 						
-									<input type="number" id="employerpf" name="employerpf"  field-name="Employer Pf" data-validation=" validate_float validate_length length1-5 "
+									<input type="number" id="employerpf" name="employerpf" data-validation=" validate_float validate_length length1-5 "
 										class="form-control" name="Website"
 										value="${centralTax.employerpf}" placeholder="Enter %">
 								</div>
