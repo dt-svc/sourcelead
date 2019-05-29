@@ -66,4 +66,16 @@ public class PerformanceRatingScaleServiceImpl implements PerformanceRatingScale
 
 	}
 
+	@Override
+	public boolean isRatingScaleNameExisted(Long orgLocationId, String ratingScaleName) throws Exception {
+	
+		return performanceRatingScaleDao.isRatingScaleNameExisted(orgLocationId, ratingScaleName);
+	}
+
+	@Override
+	public boolean isRatingShortCodeExisted(Long orgLocationId, String ratingShortCode) throws Exception {
+		
+		return performanceRatingScaleDao.isRatingShortCodeExisted(orgLocationId, ratingShortCode);
+	}
+
 }

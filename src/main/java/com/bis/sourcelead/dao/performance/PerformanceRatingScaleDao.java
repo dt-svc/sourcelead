@@ -10,4 +10,8 @@ public interface PerformanceRatingScaleDao {
 	PerformanceRatingScale savePerformanceRatingScale(PerformanceRatingScale performanceRatingScale) throws Exception;
 	
 	List<PerformanceRatingScaleDTO> getPerformanceRatingScaleListByOrgLocationId(Long orgLocationId,String dateFormat) throws Exception;
+	
+	boolean isRatingScaleNameExisted(Long orgLocationId, String ratingScaleName) throws Exception;
+	
+	boolean isRatingShortCodeExisted(Long orgLocationId, String ratingScaleName) throws Exception;
 }

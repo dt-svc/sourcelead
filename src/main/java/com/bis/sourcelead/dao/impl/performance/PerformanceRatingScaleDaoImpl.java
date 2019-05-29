@@ -116,4 +116,52 @@ public class PerformanceRatingScaleDaoImpl implements PerformanceRatingScaleDao 
 		
 	}
 
+
+	@Override
+	public boolean isRatingScaleNameExisted(Long orgLocationId, String ratingScaleName) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		boolean flag = false;
+		
+		query =  "SELECT "
+				+" LOWER(RATING_SCALE.RATING_NAME) AS ratingName "
+				+" FROM PERFORMANCE_RATING_SCALE RATING_SCALE "
+				+" WHERE "
+				+" RATING_SCALE.ORG_LOCATION_ID = :orgLocationId AND RATING_SCALE.STATUS = '1' ";
+	
+		List<String> scaleNamesList = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
+	    if(scaleNamesList != null &&  !scaleNamesList.isEmpty() ) {
+		  if(scaleNamesList.contains(ratingScaleName.toLowerCase()) == true) {
+			  flag = true;
+		  }
+	  }
+	
+	return flag;
+	}
+
+
+	@Override
+	public boolean isRatingShortCodeExisted(Long orgLocationId, String ratingShortCode) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		boolean flag = false;
+
+		query =  "SELECT "
+				+" LOWER(RATING_SCALE.SHORT_CODE) AS shortCode "
+				+" FROM PERFORMANCE_RATING_SCALE RATING_SCALE "
+				+" WHERE "
+				+" RATING_SCALE.ORG_LOCATION_ID = :orgLocationId AND RATING_SCALE.STATUS = '1' ";
+		
+		List<String> shortCodeList = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
+	    if(shortCodeList != null &&  !shortCodeList.isEmpty() ) {
+		  if(shortCodeList.contains(ratingShortCode.toLowerCase()) == true) {
+			  flag = true;
+		  }
+	  }
+		
+		return flag;
+	}
+
 }
