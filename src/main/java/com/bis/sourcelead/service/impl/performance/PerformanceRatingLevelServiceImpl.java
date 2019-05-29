@@ -25,21 +25,27 @@ public class PerformanceRatingLevelServiceImpl implements PerformanceRatingLevel
 	public PerformanceRatingLevel storePerformanceRatingLevel(PerformanceRatingLevelDTO performanceRatingLevelDTO,Long orgLocationId,Long userId)
 			throws Exception {
 		
-		OrgLocations orgLcoations = new OrgLocations();
-		orgLcoations.setId(orgLocationId);
+		
+		PerformanceRatingLevel performanceRatingLevel  = null;
 		
 		User user = new User();
 		user.setId(userId);
 		
-		PerformanceRatingLevel performanceRatingLevel = new PerformanceRatingLevel();
-		performanceRatingLevel.setCreatedBy(user);
-		performanceRatingLevel.setCreatedDate(new Date());
-		performanceRatingLevel.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-		
-		
+		if(performanceRatingLevelDTO.getRatingLevelId() != null) {
+			performanceRatingLevel = performanceRatingLevelDao.getPerformanceRatingLevelById(performanceRatingLevelDTO.getRatingLevelId());
+			performanceRatingLevel.setUpdatedBy(user);
+			performanceRatingLevel.setUpdatedDate(new Date());
+		}else {
+			performanceRatingLevel = new PerformanceRatingLevel();
+			performanceRatingLevel.setCreatedBy(user);
+			performanceRatingLevel.setCreatedDate(new Date());
+			performanceRatingLevel.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			OrgLocations orgLcoations = new OrgLocations();
+			orgLcoations.setId(orgLocationId);
+			performanceRatingLevel.setOrgLocationId(orgLcoations);
+		}
 		performanceRatingLevel.setLevelName(performanceRatingLevelDTO.getName());
 		performanceRatingLevel.setDescription(performanceRatingLevelDTO.getDescription());
-		performanceRatingLevel.setOrgLocationId(orgLcoations);
 		performanceRatingLevel.setStatus(Constants.RECORD_ACTIVE);
 		
 		return performanceRatingLevelDao.savePerformanceRatingLevel(performanceRatingLevel);
@@ -55,6 +61,12 @@ public class PerformanceRatingLevelServiceImpl implements PerformanceRatingLevel
 	public boolean isRatingLevelNameExisted(Long orgLocationId, String ratingLevelName) throws Exception {
 	
 		return performanceRatingLevelDao.isRatingLevelNameExisted(orgLocationId, ratingLevelName);
+	}
+
+	@Override
+	public PerformanceRatingLevelDTO getPerformanceRatingLevelDetailsById(Long ratingLevelId) throws Exception {
+		
+		return performanceRatingLevelDao.getPerformanceRatingLevelDetailsById(ratingLevelId);
 	}
 
 
