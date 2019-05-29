@@ -41,6 +41,7 @@ import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceCompetencies;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
+import com.bis.sourcelead.entity.performance.PerformanceRatingLevel;
 import com.bis.sourcelead.entity.performance.PerformanceTagCompetencies;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.DepartmentService;
@@ -661,4 +662,19 @@ public class PerformanceManagementRestController {
 	 	   return resObj;
 	    }
 
+	    @RequestMapping(value = "/deletePerformanceRatingLevel", method = RequestMethod.POST)
+	  	public String deletePerformanceRatingLevel(HttpServletRequest request, 
+	  			@RequestParam(value = "ratingLevelId", required = true) Long ratingLevelId){
+	  		 String resObj = null;
+	  		 try {
+	 			PerformanceRatingLevel performanceRatingLevel = performanceRatingLevelService.getPerformanceRatingLevelById(ratingLevelId);
+	 			performanceRatingLevel.setStatus(Constants.RECORD_INACTIVE);
+	 			performanceRatingLevelService.savePerformanceRatingLevel(performanceRatingLevel);
+	  			resObj = Result.SUCCESS.name();
+	  		    
+	  		 }catch (Exception e) {
+	  			resObj = Result.AWKWARD.name();
+	  		}
+	  		 return resObj;
+	    }
 }
