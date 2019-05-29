@@ -770,9 +770,15 @@
 			    <div class="action-pop">
 					<span class="width175">
 							<sec:authorize access="hasAnyRole('ROLE_ADD_APPLICANT')">
-							      <a href="javascript:void(0)" title="" onclick="getAddApplicant('${requirement.id}');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>
-							      <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Bulk Applicants</a>
-							      <a href="javascript:void(0)" title="" onclick="importApplicantsToJob('${requirement.id}');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Import Bulk Applicants</a>
+								<div class="immSub">
+									<a href="javascript:void(0)"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>
+							    	<div class="immSubMenu immSubMenu-custome">
+										<a href="javascript:void(0)" title="" onclick="getAddApplicant('${requirement.id}');">Add Applicant Form</a>
+									    <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();">Add Bulk Applicants</a>
+									    <a href="javascript:void(0)" title="" onclick="importApplicantsToJob('${requirement.id}');">Import Bulk Applicants</a>
+									    <a href="javascript:void(0)" title="" onclick="bulkResumeParsing('${requirement.requirementUUID}');">Bulk Resume Parsing</a>
+									</div>
+								</div>
 							</sec:authorize>
 							<sec:authorize access="hasAnyRole('ROLE_SHORTLIST')">
 							      <a href="javascript:void(0)" title="" onclick="candidateShortList('${requirement.id}');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>
@@ -834,6 +840,10 @@ function importApplicantsToJob(requirementId){
 				},
 			});
 }
+
+function bulkResumeParsing(requirementUUID) {
+	location.href = sourceleadUrl + "/bulk-resume-import.html?requirementUUID=" + requirementUUID;
+}	
 </script>
 
 

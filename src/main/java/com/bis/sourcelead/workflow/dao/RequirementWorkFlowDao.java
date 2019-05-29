@@ -32,6 +32,8 @@ public interface RequirementWorkFlowDao {
 	ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowsByOrgLocationId(RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations)throws Exception;
 
 	RequirementQuestionnaireTemplate saveQuestionnaireTemplate(RequirementQuestionnaireTemplate template) throws Exception;
+	
+	RequirementQuestionnaireTemplate getQuestionnaireByTemplateId(long templateId) throws Exception;
 
 	ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(RequirementQuestionnaireTemplateDTO questionnaireDto, String searchValue, Long orgLocationId);
 	

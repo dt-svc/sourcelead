@@ -567,6 +567,8 @@ public class RequirementOfferRestController {
 							requirementSubmissionService.sendEmailtoAssignedMemberApplicantAuthorization(loginOrg, user, requirementSubmission, orgLocation);
 						}
 						else if (StringUtils.equalsIgnoreCase(status, "rejected")) {
+							ApplicantSubmissionStatus previousStatus = requirementSubmission.getSubmissionStatus();
+							requirementSubmission.setPreviousSubmissionStatus(previousStatus);
 							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
 							requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""	+ user.getLastName());
 							requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);

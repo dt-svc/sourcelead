@@ -189,8 +189,11 @@ $(document).ready(function(){
 	    location.href = "${appPath}/walletList";
 	}
 	function refreshPage(){
-		location.reload();
+		resetPurchaseOrderFilter();
+		$("#purchaseOrderDataTableSearch").val('');
+		getPurchaseOrderList();
 	}
+	
 
   </script>
   
