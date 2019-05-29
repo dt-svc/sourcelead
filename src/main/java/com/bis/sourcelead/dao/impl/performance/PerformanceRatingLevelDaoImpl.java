@@ -115,14 +115,14 @@ public class PerformanceRatingLevelDaoImpl implements PerformanceRatingLevelDao 
 		String query = null;
 		boolean flag = false;
 		query =  "SELECT "
-				+" RATING_LEVEL.LEVEL_NAME AS name "
+				+" LOWER(RATING_LEVEL.LEVEL_NAME) AS name "
 				+" FROM PERFORMANCE_RATING_LEVEL RATING_LEVEL "
 				+" WHERE "
 				+" RATING_LEVEL.ORG_LOCATION_ID = :orgLocationId AND RATING_LEVEL.STATUS = '1' ";
 		
 		List<String> levelNamesList = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
 		    if(levelNamesList != null &&  !levelNamesList.isEmpty() ) {
-			  if(levelNamesList.contains(ratingLevelName) == true) {
+			  if(levelNamesList.contains(ratingLevelName.toLowerCase()) == true) {
 				  flag = true;
 			  }
 		  }
