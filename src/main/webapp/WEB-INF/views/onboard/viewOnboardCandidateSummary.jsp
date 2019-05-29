@@ -9,17 +9,7 @@
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
-<style type="text/css">
-.onboardLabel p {
-margin-bottom: 0; margin-top: 7px;
-}
-.onboardLabel label.control-label:after{
-content:":";
-padding-left: 25px;	
-}
-</style>
- <script> 
+<script> 
 	$(document).ready(function(){
 		onboardCandidateSummaryDetails();
 	});
@@ -114,7 +104,7 @@ padding-left: 25px;
 		        		zipCode = "";
 		        	}
 		        	 var result = "";
-					 result = result +'	 <div class="col-md-12 onboardLabel">                                                                                          ';
+					 result = result +'	 <div class="col-md-12 onboardLabel onboard_Label">                                                                                          ';
 					 result = result +'   <div class="form-horizontal">                                                                                   ';
 					 result = result +'     <p><strong>Employee Details</strong></p>                                                                      ';
 					 result = result +'     <div class="form-group">                                                                                      ';
