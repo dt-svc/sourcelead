@@ -1483,6 +1483,8 @@ public class DynamicReport {
 		DRDataSource dataSource = new DRDataSource("Employee_id","Employee_Name","Employee_Type","Project_Name", "Project_Frequency","Approval_Mechanism","Duration","Manager_1","Manager_2","No_Of_Hours","Submitted_On","Approved_By","Approved_On","No_Of_Days_Pending");
 		try {
 			for (MissingTimesheetResultRepotDTO mtrd : missingTimesheetResultRepotList) {
+				String Manager_1 = "";
+				String Manager_2= "";
 				String Employee_id       = mtrd.getEmpId();		
 				String Employee_Name 	 = mtrd.getEmployeName();
 				String Employee_Type 	 = mtrd.getEmployeType();
@@ -1490,8 +1492,15 @@ public class DynamicReport {
 				String Project_Frequency = mtrd.getProjectFrequency();
 				String Approval_Mechanism = mtrd.getApprovalMechanism();
 				String Duration          = mtrd.getFrequency();
-				String Manager_1 		 = mtrd.getManager1();
-				String Manager_2 		 = mtrd.getManager2();
+				if(mtrd.getManager2() != null && mtrd.getManager2() != "") {
+					 Manager_1 		 = mtrd.getManager1();
+					 Manager_2 		 = mtrd.getManager2();
+					}
+					else{
+						Manager_1 		 = mtrd.getManager1();
+						Manager_2 = Manager_1;
+						Manager_1 ="--";
+					}
 				String No_Of_Hours 		 = mtrd.getNoOfHours();
 				String Submitted_On 	 = mtrd.getSubmittedOn();
 				String Approved_By 		 = mtrd.getApproved_By();
