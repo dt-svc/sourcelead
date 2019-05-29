@@ -190,7 +190,7 @@ function getTableDataTimeSheetReports(pageNo){
 		  var projectMemberListIdDto = $('#projectMemberListIdDto').val();
 		  var startDateDto = $('#startDateDto').val();
 		  var endDateDto = $('#endDateDto').val();
-		  
+		  var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';  
 		  if(projectIdDto != null && projectIdDto !='' && projectIdDto !='undefined'){
 			  projectIds  =  JSON.parse(projectIdDto);  ;
 		  }
@@ -211,7 +211,7 @@ function getTableDataTimeSheetReports(pageNo){
 	    	searchValue = '';
 	      }
 		  $.ajax({
-	            url: pmsUrl+"/dayEntriesReportList?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
+	            url: sourceleadUrl+"/dayEntriesReportList?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
 	            type: "POST",
 	            success: function (data) {
 	            	 $("#dayEntryformData").hide();
