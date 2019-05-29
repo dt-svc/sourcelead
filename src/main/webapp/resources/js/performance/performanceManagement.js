@@ -142,7 +142,7 @@ function PerformanceManagement(){
 			    	 url: sourceleadUrl+"/savePerformanceRatingLevel?",
 			        success: function(response) {
 			        	$("#ratingScaleLoading").removeAttr('style');
-			        	//performanceManagement.performanceCompetenceList();
+			        	performanceManagement.performanceRatingScaleList();
 			        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 	     	    		    showError(response.responseMessage);
 	     	    		}
@@ -645,8 +645,9 @@ function PerformanceManagement(){
    
    this.closeRatingScalePopup = function(){
 	      $(".mask, #ratingScaleModalTasktype").fadeOut();
+	      $("#ratingLevelId").val('');
 	      $("#ratingLevelName").val('');
-	 	  $("#ratingLevelDescription").val('');
+ 	 	  $("textarea[id='ratingLevelDescription']").text('');
 	 	  $('#ratingLevelNameDiv').find('p.jquery_form_error_message').remove();
 	 	  $('#ratingLevelDescriptionDiv').find('p.jquery_form_error_message').remove();
 	 	  document.getElementById("ratingLevel_form").reset();
@@ -735,6 +736,36 @@ function PerformanceManagement(){
  			        		 $("#competenceName").val(response.object.name);
  			        		 $("textarea[id='competenceDescription']").text(response.object.description);
  			        		 $("#competenceLoading").removeAttr('style');
+ 			        	} else if (response.indexOf('Sign In') !== -1) {
+ 			        		location.replace(sourceleadUrl);
+ 			        	} else {
+ 			        	    showError("Operation failed, please try again");
+ 			        	}
+ 			    	  
+ 					},
+ 				}); 
+   }
+   
+   
+   this.editPerformanceRatingLevel = function(ratingLevelId){
+	   performanceManagement.addRatingScaleLevels();
+ 	  $("#ratingScaleLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 		$.ajax({
+ 			  type: "GET",
+ 			    url: sourceleadUrl+"/getPerformanceLevelDetailsById?ratingLevelId="+ratingLevelId,
+ 			     success :function(response) {
+ 			    	 
+ 			    		if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+ 	     	    		    showError(response.responseMessage);
+ 	     	    		    $("#ratingScaleLoading").removeAttr('style');
+ 	     	    		}
+ 			        	else if (response.response === "AWKWARD") {
+ 			        	    location.href = "/errorPage";
+ 			        	} else if (response.response === "SUCCESS") {
+ 			        		 $("#ratingLevelId").val(ratingLevelId);
+ 			        		 $("#ratingLevelName").val(response.object.name);
+ 			        		 $("textarea[id='ratingLevelDescription']").text(response.object.description);
+ 			        		 $("#ratingScaleLoading").removeAttr('style');
  			        	} else if (response.indexOf('Sign In') !== -1) {
  			        		location.replace(sourceleadUrl);
  			        	} else {

@@ -95,6 +95,7 @@ public class PerformanceManagementRestController {
 	@Autowired
 	PerformanceRatingScaleService performanceRatingScaleService;
 	
+	
     @RequestMapping(value = "/savePerformanceBudgetDetails", method = RequestMethod.POST)
 	public Response<PerformanceBadgesDTO> savePerformanceBudgetDetails(HttpServletRequest request, 
 			PerformanceBadgesDTO performanceBadgesDTO){
@@ -592,6 +593,25 @@ public class PerformanceManagementRestController {
 			}
 			 return resObj;
 	    }
+	    
+	    
+	    @RequestMapping(value = "/getPerformanceLevelDetailsById", method = RequestMethod.GET)
+		public Response<PerformanceRatingLevelDTO> getPerformanceLevelDetailsById(HttpServletRequest request, 
+				@RequestParam(value = "ratingLevelId", required = true) Long ratingLevelId){
+			 Response<PerformanceRatingLevelDTO> resObj = new Response<>();
+			 try {
+				 PerformanceRatingLevelDTO ratingLevelDTO =  performanceRatingLevelService.getPerformanceRatingLevelDetailsById(ratingLevelId);
+				 resObj.setObject(ratingLevelDTO);
+				 resObj.setResponse(Result.SUCCESS.name());
+				 resObj.setResponseMessage(Result.SUCCESS.getValue());
+			    
+			 }catch (Exception e) {
+				 resObj.setResponse(Result.AWKWARD.name());
+				 resObj.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			 return resObj;
+	    }
+	    
 	    
 	    
 	    @RequestMapping(value = "/savePerformanceTagCompetencies", method = RequestMethod.POST)

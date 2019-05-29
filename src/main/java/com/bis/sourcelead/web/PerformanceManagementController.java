@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.performance.PerformanceRatingLevelDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
@@ -234,11 +235,19 @@ public class PerformanceManagementController {
 		
 		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
 		
-		PerformanceRatingLevel performanceRatingLevel = null;
 		String result = null;
-		
 		if(ratingLevelId != null){
-			
+			 PerformanceRatingLevelDTO ratingLevelDTO =  performanceRatingLevelService.getPerformanceRatingLevelDetailsById(ratingLevelId);
+			 if(ratingLevelDTO.getName().toLowerCase().equalsIgnoreCase(ratingLevelName)) {
+				 result = "valid";
+			 }else {
+				 boolean flag  = performanceRatingLevelService.isRatingLevelNameExisted(orgLocationId, ratingLevelName);
+					if(flag == true){
+						result = "invalid";
+					}else{
+						result = "valid";
+					} 
+			 }
 		}
 		else{
 			boolean flag  = performanceRatingLevelService.isRatingLevelNameExisted(orgLocationId, ratingLevelName);
