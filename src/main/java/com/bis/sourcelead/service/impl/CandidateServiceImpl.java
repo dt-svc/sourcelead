@@ -3538,6 +3538,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
 		return candidateDao.getCandidateDetailsBySsnNoAndId(ssnNumber, orgLocationId);
 	}
+	
+	@Override
+	public List<Candidate> getCandidatesForUpdateWorkLocation(Long masterCandidateId, Long orgId) throws Exception {
+		return candidateDao.getCandidatesForUpdateWorkLocation(masterCandidateId, orgId);
+	}
 
 	@Override
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception {
@@ -3554,6 +3559,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			throws Exception {
 		return candidateDao.getConsultantUserByCandidateIdOrMasterCandidateId(candidateId, masterCandidateId);
 	}
+
 	
 	
 }
