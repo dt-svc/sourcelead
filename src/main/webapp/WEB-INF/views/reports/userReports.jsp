@@ -14,12 +14,6 @@
 <script src="/resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
-<style>
-#billing_chartdiv {
-  	width:100%; height:300px;
-}																		
-</style>
-
 <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
