@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -191,8 +192,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				clockInOut.setClockInDateTime(currentDate);
 				clockInOut.setClockInTime(timeValue);
 				clockInOut.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), currentDate));
-			
-
 		    	clockInOut.setGeoLocationData(geoIPv4.getLocation(clockInOutDTO.getIpAddress()).toString());
 			
 			}
@@ -236,8 +235,8 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			clockInOut.setProjectId(clockInOutDTO.getProjects());
 			clockInOut.setProjectsTaskId(clockInOutDTO.getProjectTasks());
 			clockInOut.setGeneralTaskId(clockInOutDTO.getGeneralTasks());
-			
 			clockInOut = clockInOutConfigDao.saveClockInOutTime(clockInOut);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -376,8 +375,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	@Override
 	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId,String dayWisetype,String currentDate,String type) {
 		
-		DecimalFormat df = new DecimalFormat("00");
-
 		try {
 			OrgLocations location = orgLocationService.getOrgLocations(orgLocationId);
 			Date[] dates = null;
@@ -392,245 +389,284 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			
 			ResponseList<ClockInOutUserTimeEntryDTO> resList = clockInOutConfigDao.getUserTimeEntries(orgLocationId,userId,dates);
 			
-			ResponseList<ClockInOutUserTimeEntryDTO> resMainList = new ResponseList<>();
-			List<ClockInOutUserTimeEntryDTO> mainList = new ArrayList<>();
+			ResponseList<ClockInOutUserTimeEntryDTO> response = new ResponseList<>();
+			List<ClockInOutUserTimeEntryDTO> mainList = null;
 			
 			if(!"Current_Year".equalsIgnoreCase(type)) {
-				  Map<java.sql.Date, List<ClockInOutUserTimeEntryDTO>> uniqueList = resList.getData().stream().collect(Collectors.groupingBy(ClockInOutUserTimeEntryDTO::getClockInDate));
-				    for (Entry<java.sql.Date, List<ClockInOutUserTimeEntryDTO>> uniqueData : uniqueList.entrySet()) {
-				    	
-				    	List<ClockInOutSubDTO> subListDto = new ArrayList<>();
-				    	ClockInOutUserTimeEntryDTO main = new ClockInOutUserTimeEntryDTO();
-				    	
-				    	int sec = 0;
-				    	int min = 0;
-				    	int hr = 0;
-				    	String sum = null;
-				    	
-				    	int brksec = 0;
-				    	int brkmin = 0;
-				    	int brkhr = 0;
-				    	String brksum = null;
-				    	
-				    	for (ClockInOutUserTimeEntryDTO data : uniqueData.getValue()) {
-				    		
-				    		
-				    		if(data.getGeoLocationData() != null) {
-				    			JSONObject jsonObj = new JSONObject(data.getGeoLocationData());
-				    			if(jsonObj.has("city") && jsonObj.getString("city") != ""){
-									main.setGeoLocationData(jsonObj.getString("city")+", "+jsonObj.getString("countryName"));
-								}else {
-									main.setGeoLocationData(jsonObj.getString("countryName"));
-
-								}
-				    		}else {
-								main.setGeoLocationData("--");
-				    		}
-				    		
-				    		
-				    		int indBrksec = 0;
-					    	int indBrkmin = 0;
-					    	int indBrkhr = 0;
-				    		String indBrksum = null;
-				    		ClockInOutSubDTO subDto = new ClockInOutSubDTO();
-				    		
-							List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
-							for (Breaks breaks : breakList) {
-								
-								String[] str = breaks.getTotalTime().split(":");
-								brksec += Integer.parseInt(str[2]);
-								indBrksec += Integer.parseInt(str[2]);
-								if(brksec>=60) {
-									brkmin++;
-									brksec = brksec - 60; 
-								}
-								if(indBrksec>=60) {
-									indBrkmin++;
-									indBrksec = indBrksec - 60; 
-								}
-								brkmin += Integer.parseInt(str[1]);
-								indBrkmin += Integer.parseInt(str[1]);
-								if(brkmin>=60) {
-									brkhr++;
-									brkmin = brkmin - 60;
-								}
-								if(indBrkmin>=60) {
-									indBrkhr++;
-									indBrkmin = indBrkmin - 60;
-								}
-								brkhr += Integer.parseInt(str[0]);
-								indBrkhr += Integer.parseInt(str[0]);
-					    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
-					    		indBrksum = df.format(indBrkhr)+":"+df.format(indBrkmin)+":"+df.format(indBrksec);
-							}
-
-							subDto.setIndividualTotBreakTime(indBrksum);
-				    		subDto.setClockInTime(data.getClockInTime());
-				    		subDto.setClockOutTime(data.getClockOutTime());
-				    		subDto.setIndividualNoOfHours(data.getTotalTime());
-				    		subDto.setTaskName(data.getProjectTaskName());
-				    		subDto.setLocation(null);
-				    		subDto.setComments(data.getComments());
-				    		subDto.setClockOutDate(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
-				    		subListDto.add(subDto);
-				    		
-				    		main.setClockInDate(data.getClockInDate());
-				    		main.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
-				    		main.setGraphForamatDate(commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", data.getClockInDate()));
-				    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockOutDate()));
-						
-//				    		sec += data.getTotalTime().getSeconds();
-//				    		min += data.getTotalTime().getMinutes();
-//				    		hr += data.getTotalTime().getHours();
-//				    		sum = new Time(hr, min, sec);
-				    		
-				    		
-				    		String[] str = data.getTotalTime().split(":");
-				    		sec += Integer.parseInt(str[2]);
-							if(sec>=60) {
-								min++;
-								sec = sec - 60; 
-							}
-							min += Integer.parseInt(str[1]);
-							if(min>=60) {
-								hr++;
-								min = min - 60;
-							}
-							hr += Integer.parseInt(str[0]);
-				    		sum = df.format(hr)+":"+df.format(min)+":"+df.format(sec);
-				    	}
-				    	
-				    	main.setTotalTime(sum);
-				    	main.setTotalBreakTime(brksum);
-				    	String tTime [] = sum.toString().split(":");
-		                StringBuilder sb = new StringBuilder();
-		                sb.append(tTime[0]).append(".").append(tTime[1]);
-				    	main.setGraphTotalTime(sb.toString());
-				    	main.setSubList(subListDto);
-				    	main.setType(type);
-				    	mainList.add(main);
-				    	Collections.sort(mainList, new Comparator<ClockInOutUserTimeEntryDTO>() {
-				    	    public int compare(ClockInOutUserTimeEntryDTO m1, ClockInOutUserTimeEntryDTO m2) {
-				    	        return m1.getClockInDate().compareTo(m2.getClockInDate());
-				    	    }
-				    	});
-						
-					}	
+				mainList = getEmployeeTotalWorkHoursPerDay(resList,type,location);
 			}else {
-				 Map<String, List<ClockInOutUserTimeEntryDTO>> uniqueList = resList.getData().stream().collect(Collectors.groupingBy(ClockInOutUserTimeEntryDTO::getYearMonth));
-				    for (Entry<String, List<ClockInOutUserTimeEntryDTO>> uniqueData : uniqueList.entrySet()) {
-				    	
-				    	List<ClockInOutSubDTO> subListDto = new ArrayList<>();
-				    	ClockInOutUserTimeEntryDTO main = new ClockInOutUserTimeEntryDTO();
-				    	
-				    	int sec = 0;
-				    	int min = 0;
-				    	int hr = 0;
-				    	String sum = null;
-				    	
-				    	int brksec = 0;
-				    	int brkmin = 0;
-				    	int brkhr = 0;
-				    	String brksum = null;
-				    	
-				    	for (ClockInOutUserTimeEntryDTO data : uniqueData.getValue()) {
-				    		
-				    		
-				    		int indBrksec = 0;
-					    	int indBrkmin = 0;
-					    	int indBrkhr = 0;
-				    		String indBrksum = null;
-				    		
-				    		ClockInOutSubDTO subDto = new ClockInOutSubDTO();
-				    		
-				    		
-				    		List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
-							for (Breaks breaks : breakList) {
-								
-								String[] str = breaks.getTotalTime().split(":");
-								brksec += Integer.parseInt(str[2]);
-								indBrksec += Integer.parseInt(str[2]);
-								if(brksec>=60) {
-									brkmin++;
-									brksec = brksec - 60; 
-								}
-								if(indBrksec>=60) {
-									indBrkmin++;
-									indBrksec = indBrksec - 60; 
-								}
-								brkmin += Integer.parseInt(str[1]);
-								indBrkmin += Integer.parseInt(str[1]);
-								if(brkmin>=60) {
-									brkhr++;
-									brkmin = brkmin - 60;
-								}
-								if(indBrkmin>=60) {
-									indBrkhr++;
-									indBrkmin = indBrkmin - 60;
-								}
-								brkhr += Integer.parseInt(str[0]);
-								indBrkhr += Integer.parseInt(str[0]);
-					    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
-					    		indBrksum = df.format(indBrkhr)+":"+df.format(indBrkmin)+":"+df.format(indBrksec);
-							}
-				    		
-							subDto.setIndividualTotBreakTime(indBrksum);
-				    		subDto.setClockInTime(data.getClockInTime());
-				    		subDto.setClockOutTime(data.getClockOutTime());
-				    		subDto.setIndividualNoOfHours(data.getTotalTime());
-				    		subDto.setTaskName(data.getProjectTaskName());
-				    		subDto.setLocation(null);
-				    		subDto.setComments(data.getComments());
-				    		subDto.setClockOutDate(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
-				    		subListDto.add(subDto);
-				    		
-				    		main.setClockInDateStr(uniqueData.getKey());
-				    		main.setGraphForamatDate(uniqueData.getKey());
-				    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockOutDate()));
-						
-//				    		sec += data.getTotalTime().getSeconds();
-//				    		min += data.getTotalTime().getMinutes();
-//				    		hr += data.getTotalTime().getHours();
-//				    		sum = new Time(hr, min, sec);
-				    		
-				    		String[] str = data.getTotalTime().split(":");
-				    		sec += Integer.parseInt(str[2]);
-							if(sec>=60) {
-								min++;
-								sec = sec - 60; 
-							}
-							min += Integer.parseInt(str[1]);
-							if(min>=60) {
-								hr++;
-								min = min - 60;
-							}
-							hr += Integer.parseInt(str[0]);
-				    		sum = df.format(hr)+":"+df.format(min)+":"+df.format(sec);
-				    	}
-				    	
-				    	main.setTotalTime(sum);
-				    	main.setTotalBreakTime(brksum);
-				    	String tTime [] = sum.toString().split(":");
-		                StringBuilder sb = new StringBuilder();
-		                sb.append(tTime[0]).append(".").append(tTime[1]);
-				    	main.setGraphTotalTime(sb.toString());
-				    	main.setSubList(subListDto);
-				    	main.setType(type);
-				    	mainList.add(main);
-						
-					}	
+				mainList = getEmployeeTotalWorkHoursPerMonth(resList,type,location);
 			}
-		  
-		    resMainList.setData(mainList);
-		    resMainList.setRecordsTotal(mainList.size());
-		    resMainList.setRecordsFiltered(mainList.size());
-			return resMainList;
+		    response.setData(mainList);
+		    response.setRecordsTotal(mainList.size());
+		    response.setRecordsFiltered(mainList.size());
+			return response;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 		
+	}
+
+	/**
+	 * Getting EMployee working Hours Per Month
+	 * @param resList
+	 * @param type
+	 * @param location
+	 * @return List<ClockInOutUserTimeEntryDTO>
+	 */
+	private List<ClockInOutUserTimeEntryDTO> getEmployeeTotalWorkHoursPerMonth(ResponseList<ClockInOutUserTimeEntryDTO> resList, String type, OrgLocations location)
+	{
+		DecimalFormat df = new DecimalFormat("00");
+		List<ClockInOutUserTimeEntryDTO> mainList = new ArrayList<>();
+		try {
+			 Map<String, List<ClockInOutUserTimeEntryDTO>> uniqueList = resList.getData().stream().collect(Collectors.groupingBy(ClockInOutUserTimeEntryDTO::getYearMonth));
+			    for (Entry<String, List<ClockInOutUserTimeEntryDTO>> uniqueData : uniqueList.entrySet()) {
+			    	
+			    	List<ClockInOutSubDTO> subListDto = new ArrayList<>();
+			    	ClockInOutUserTimeEntryDTO main = new ClockInOutUserTimeEntryDTO();
+			    	
+			    	int sec = 0;
+			    	int min = 0;
+			    	int hr = 0;
+			    	String sum = null;
+			    	
+			    	int brksec = 0;
+			    	int brkmin = 0;
+			    	int brkhr = 0;
+			    	String brksum = null;
+			    	
+			    	for (ClockInOutUserTimeEntryDTO data : uniqueData.getValue()) {
+			    		
+			    		
+			    		int indBrksec = 0;
+				    	int indBrkmin = 0;
+				    	int indBrkhr = 0;
+			    		String indBrksum = null;
+			    		
+			    		ClockInOutSubDTO subDto = new ClockInOutSubDTO();
+			    		
+			    		
+			    		List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
+						for (Breaks breaks : breakList) {
+							
+							String[] str = breaks.getTotalTime().split(":");
+							brksec += Integer.parseInt(str[2]);
+							indBrksec += Integer.parseInt(str[2]);
+							if(brksec>=60) {
+								brkmin++;
+								brksec = brksec - 60; 
+							}
+							if(indBrksec>=60) {
+								indBrkmin++;
+								indBrksec = indBrksec - 60; 
+							}
+							brkmin += Integer.parseInt(str[1]);
+							indBrkmin += Integer.parseInt(str[1]);
+							if(brkmin>=60) {
+								brkhr++;
+								brkmin = brkmin - 60;
+							}
+							if(indBrkmin>=60) {
+								indBrkhr++;
+								indBrkmin = indBrkmin - 60;
+							}
+							brkhr += Integer.parseInt(str[0]);
+							indBrkhr += Integer.parseInt(str[0]);
+				    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
+				    		indBrksum = df.format(indBrkhr)+":"+df.format(indBrkmin)+":"+df.format(indBrksec);
+						}
+			    		
+						subDto.setIndividualTotBreakTime(indBrksum);
+			    		subDto.setClockInTime(data.getClockInTime());
+			    		subDto.setClockOutTime(data.getClockOutTime());
+			    		subDto.setIndividualNoOfHours(data.getTotalTime());
+			    		subDto.setTaskName(data.getProjectTaskName());
+			    		subDto.setLocation(null);
+			    		subDto.setComments(data.getComments());
+			    		subDto.setClockOutDate(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
+			    		subListDto.add(subDto);
+			    		
+			    		main.setClockInDateStr(uniqueData.getKey());
+			    		main.setGraphForamatDate(uniqueData.getKey());
+			    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockOutDate()));
+					
+//			    		sec += data.getTotalTime().getSeconds();
+//			    		min += data.getTotalTime().getMinutes();
+//			    		hr += data.getTotalTime().getHours();
+//			    		sum = new Time(hr, min, sec);
+			    		
+			    		String[] str = data.getTotalTime().split(":");
+			    		sec += Integer.parseInt(str[2]);
+						if(sec>=60) {
+							min++;
+							sec = sec - 60; 
+						}
+						min += Integer.parseInt(str[1]);
+						if(min>=60) {
+							hr++;
+							min = min - 60;
+						}
+						hr += Integer.parseInt(str[0]);
+			    		sum = df.format(hr)+":"+df.format(min)+":"+df.format(sec);
+			    	}
+			    	
+			    	main.setTotalTime(sum);
+			    	main.setTotalBreakTime(brksum);
+			    	String tTime [] = sum.toString().split(":");
+	                StringBuilder sb = new StringBuilder();
+	                sb.append(tTime[0]).append(".").append(tTime[1]);
+			    	main.setGraphTotalTime(sb.toString());
+			    	main.setSubList(subListDto);
+			    	main.setType(type);
+			    	mainList.add(main);
+					
+				}	
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mainList;
+	}
+
+	
+	/**
+	 *  Getting EMployee working Hours Per Day
+	 *  
+	 * @param resList
+	 * @param type
+	 * @param location
+	 * @return
+	 */
+	private List<ClockInOutUserTimeEntryDTO> getEmployeeTotalWorkHoursPerDay(ResponseList<ClockInOutUserTimeEntryDTO> resList, String type, OrgLocations location)
+	{
+		DecimalFormat df = new DecimalFormat("00");
+		List<ClockInOutUserTimeEntryDTO> mainList = new ArrayList<>();
+		try {
+			Map<java.sql.Date, List<ClockInOutUserTimeEntryDTO>> uniqueList = resList.getData().stream().collect(Collectors.groupingBy(ClockInOutUserTimeEntryDTO::getClockInDate));
+		    for (Entry<java.sql.Date, List<ClockInOutUserTimeEntryDTO>> uniqueData : uniqueList.entrySet()) {
+		    	
+		    	List<ClockInOutSubDTO> subListDto = new ArrayList<>();
+		    	ClockInOutUserTimeEntryDTO main = new ClockInOutUserTimeEntryDTO();
+		    	
+		    	int sec = 0;
+		    	int min = 0;
+		    	int hr = 0;
+		    	String sum = null;
+		    	
+		    	int brksec = 0;
+		    	int brkmin = 0;
+		    	int brkhr = 0;
+		    	String brksum = null;
+		    	
+		    	for (ClockInOutUserTimeEntryDTO data : uniqueData.getValue()) {
+		    		
+		    		
+		    		if(data.getGeoLocationData() != null) {
+		    			JSONObject jsonObj = new JSONObject(data.getGeoLocationData());
+		    			if(jsonObj.has("city") && jsonObj.getString("city") != ""){
+							main.setGeoLocationData(jsonObj.getString("city")+", "+jsonObj.getString("countryName"));
+						}else {
+							main.setGeoLocationData(jsonObj.getString("countryName"));
+
+						}
+		    		}else {
+						main.setGeoLocationData("--");
+		    		}
+		    		
+		    		
+		    		int indBrksec = 0;
+			    	int indBrkmin = 0;
+			    	int indBrkhr = 0;
+		    		String indBrksum = null;
+		    		ClockInOutSubDTO subDto = new ClockInOutSubDTO();
+		    		
+					List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
+					for (Breaks breaks : breakList) {
+						
+						String[] str = breaks.getTotalTime().split(":");
+						brksec += Integer.parseInt(str[2]);
+						indBrksec += Integer.parseInt(str[2]);
+						if(brksec>=60) {
+							brkmin++;
+							brksec = brksec - 60; 
+						}
+						if(indBrksec>=60) {
+							indBrkmin++;
+							indBrksec = indBrksec - 60; 
+						}
+						brkmin += Integer.parseInt(str[1]);
+						indBrkmin += Integer.parseInt(str[1]);
+						if(brkmin>=60) {
+							brkhr++;
+							brkmin = brkmin - 60;
+						}
+						if(indBrkmin>=60) {
+							indBrkhr++;
+							indBrkmin = indBrkmin - 60;
+						}
+						brkhr += Integer.parseInt(str[0]);
+						indBrkhr += Integer.parseInt(str[0]);
+			    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
+			    		indBrksum = df.format(indBrkhr)+":"+df.format(indBrkmin)+":"+df.format(indBrksec);
+					}
+
+					subDto.setIndividualTotBreakTime(indBrksum);
+		    		subDto.setClockInTime(data.getClockInTime());
+		    		subDto.setClockOutTime(data.getClockOutTime());
+		    		subDto.setIndividualNoOfHours(data.getTotalTime());
+		    		subDto.setTaskName(data.getProjectTaskName());
+		    		subDto.setLocation(null);
+		    		subDto.setComments(data.getComments());
+		    		subDto.setClockOutDate(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
+		    		subListDto.add(subDto);
+		    		
+		    		main.setClockInDate(data.getClockInDate());
+		    		main.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
+		    		main.setGraphForamatDate(commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", data.getClockInDate()));
+		    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockOutDate()));
+				
+//		    		sec += data.getTotalTime().getSeconds();
+//		    		min += data.getTotalTime().getMinutes();
+//		    		hr += data.getTotalTime().getHours();
+//		    		sum = new Time(hr, min, sec);
+		    		
+		    		
+		    		String[] str = data.getTotalTime().split(":");
+		    		sec += Integer.parseInt(str[2]);
+					if(sec>=60) {
+						min++;
+						sec = sec - 60; 
+					}
+					min += Integer.parseInt(str[1]);
+					if(min>=60) {
+						hr++;
+						min = min - 60;
+					}
+					hr += Integer.parseInt(str[0]);
+		    		sum = df.format(hr)+":"+df.format(min)+":"+df.format(sec);
+		    	}
+		    	
+		    	main.setTotalTime(sum);
+		    	main.setTotalBreakTime(brksum);
+		    	String tTime [] = sum.toString().split(":");
+                StringBuilder sb = new StringBuilder();
+                sb.append(tTime[0]).append(".").append(tTime[1]);
+		    	main.setGraphTotalTime(sb.toString());
+		    	main.setSubList(subListDto);
+		    	main.setType(type);
+		    	mainList.add(main);
+		    	Collections.sort(mainList, new Comparator<ClockInOutUserTimeEntryDTO>() {
+		    	    public int compare(ClockInOutUserTimeEntryDTO m1, ClockInOutUserTimeEntryDTO m2) {
+		    	        return m1.getClockInDate().compareTo(m2.getClockInDate());
+		    	    }
+		    	});
+				
+			}	
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mainList;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -1172,6 +1208,22 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	            return null;
 	        }
 	    }
-	
+
+	@Override
+	public String getTotalClockInOutHours(OrgLocations location, Long userId, Long projectId, Long projectTaskId)
+	{
+		String totalHours = "";
+		try {
+			Date[] dates = clockInOutUtil.getClockFilterDate(Constants.REPORT_FILTER_TODAY, location.getTimeZoneName());
+			ResponseList<ClockInOutUserTimeEntryDTO> resList = clockInOutConfigDao.getEmployeeTimeEntriesByProjectIdTaskId(location.getId(), userId, dates, projectId, projectTaskId);
+			List<ClockInOutUserTimeEntryDTO> mainList = getEmployeeTotalWorkHoursPerDay(resList, "", location);
+			if (mainList != null && mainList.size() > 0) {
+				totalHours = mainList.get(0).getTotalTime();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return totalHours;
+	}
 
 }
