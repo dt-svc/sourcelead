@@ -115,6 +115,7 @@ function Immigration() {
         if ($('#PetitionTemplateDocDetails').validate(false, validationSettings)) {
             var formData = getFormData("PetitionTemplateDocDetails");
             var returnType = immigration.CheckDuplicateDocsByCategory();
+           
             if(returnType == false){
             	return false;
             }
@@ -1327,7 +1328,7 @@ function Immigration() {
 			  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
 				 $.ajax({
 				    	type: "GET",
-				    	 url:sourceleadUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&country="+country+"&id="+id, 
+				    	 url:vmsUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&country="+country+"&id="+id, 
 				        success: function(data) {
 				        	if(data == true){
 				        		   $("input#visaNumber").after("<p class='jquery_form_error_message'>"+visaNumber+" is Already Existed With Active Details.</span>");
@@ -1773,6 +1774,7 @@ function Immigration() {
 				result = result + ' <div id="reasonForTemplateDiv"/>';
 				result = result +"		<b href='javascript:void(0)'><button id='confirm-id' class='btn btn-primary btn-block mt' type='button' value='Ok' onclick='immigration.hidePopupMessage();'>OK</button></b>";
 				result = result +"	</div>";
+				$("#popUp").empty();
 				$("#popUp").append(result);
 				$("#remove_immigration_pop").slideDown(200);
 				$(".project_inn_mask").fadeIn(200);
