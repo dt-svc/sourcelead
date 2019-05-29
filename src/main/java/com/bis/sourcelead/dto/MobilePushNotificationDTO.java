@@ -17,6 +17,7 @@ public class MobilePushNotificationDTO {
 	
 	private MobileDeviceTokenInformaion deviceId;
 	
+	private String notificationTitle;
 
 	public User getUserId() {
 		return userId;
@@ -64,5 +65,13 @@ public class MobilePushNotificationDTO {
 
 	public void setDeviceId(MobileDeviceTokenInformaion deviceId) {
 		this.deviceId = deviceId;
+	}
+
+	public String getNotificationTitle() {
+		return notificationTitle;
+	}
+
+	public void setNotificationTitle(String notificationTitle) {
+		this.notificationTitle = notificationTitle;
 	}
 }
