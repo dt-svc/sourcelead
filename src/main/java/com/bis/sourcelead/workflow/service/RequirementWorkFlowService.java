@@ -78,4 +78,13 @@ public interface RequirementWorkFlowService {
 	void deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(String uuid, Long id)throws Exception;
 	
 	Boolean validateWorkflowName(Long id, String name, String uuid)throws Exception;
+	
+	String validateWorkflowStageName(Long id, String name, String uuid, String stageUuid)throws Exception;
+	
+	RequirementWorkFlow getRequirementWorkFlowByOrgLocId(Long orgLocationId)throws Exception;
+	
+	RequirementWorkFlow saveRequirementWorkFlowDetailsInfo(RequirementWorkFlowDTO requirementWorkFlowDTO, User user, OrgLocations orgLocations);
+	
+	void saveWorkflowIdInAllOrgsForRequirement(RequirementWorkFlow requirementWorkFlow, OrgLocations orgLocations)throws Exception;
+	
 }
