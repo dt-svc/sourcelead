@@ -48,6 +48,7 @@ import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -1577,29 +1578,55 @@ public class CandidateRestController {
 			}
 			return flag;
 		} 
-	    
-	    
-	    @RequestMapping(value = { "/saveCandidateSource" }, method = RequestMethod.POST)
-		public Response<String> saveCandidateSource(CandidateSourceDTO canSourceDTO, HttpServletRequest request) {
-			
-	    	Response<String> response = new Response<>();
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
-			CandidateSource candidateSource = null;
+	    @RequestMapping(value = {"/getCandidateSourceList", "/rest/getCandidateSourceList"}, method = RequestMethod.POST)
+		@ResponseBody
+		public ResponseList<CandidateSourceDTO> getCandidateSourceList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
+			ResponseList<CandidateSourceDTO> responseList = new ResponseList<>();
 			try {
-				if (user != null && Validator.validate(canSourceDTO)) {
-				
-					candidateService.storeCandidateSource(canSourceDTO, user, orgLocations);
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
-					
-				} else if (user == null) {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if (null != user) {
+					boolean forMobile = request.getRequestURI().contains("rest");
+					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					List<CandidateSourceDTO> candidateSourceDTO = candidateService.getCandidateSourceListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue);
+					responseList.setData(candidateSourceDTO);
+					responseList.setRecordsTotal(candidateSourceDTO.size());
+					responseList.setRecordsFiltered(candidateSourceDTO.size());
+					responseList.setResponse(Result.SUCCESS.name());
+					responseList.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+					responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				responseList.setResponse(Result.AWKWARD.name());
+				responseList.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return responseList;
+		}
+	    @RequestMapping(value = "/saveCandidateSource", method = RequestMethod.POST)
+		@ResponseBody
+		public Response<Long> saveCandidateSource(HttpServletRequest request, CandidateSourceDTO candidateSourceDTO) {
+			Response<Long> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (null != user) {
+					long result = candidateService.saveCandidateSource(candidateSourceDTO,user, loginOrgLocation);
+					if(result == -1) {
+						response.setResponse(Result.DUPLICATE_NAME.name());
+						response.setResponseMessage(Result.DUPLICATE_NAME.getValue());
+					} else if(result > 0) {
+						response.setObject(result);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						response.setResponse(Result.FAILED.name());
+						response.setResponseMessage(Result.FAILED.getValue());
+					}
+				} else {
 					response.setResponse(Result.SESSION_TIMEDOUT.name());
 					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-				} else {
-					response.setResponse(Result.INVALID_DATA.name());
-					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -1607,8 +1634,52 @@ public class CandidateRestController {
 				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
 			return response;
-			
 		}
+	    @RequestMapping(value = "/getCandidateSourceById", method = RequestMethod.POST)
+		@ResponseBody
+		public Response<CandidateSourceDTO> getCandidateSourceDataById(HttpServletRequest request, long candidateSourceId) throws Exception {
+			Response<CandidateSourceDTO> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (null != user) {
+					response.setObject(candidateService.getCandidateSourceById(candidateSourceId, user.getId(), loginOrgLocation));
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return response;
+		}
+	    
+	@RequestMapping(value = "/deleteCandidateSourceById", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> deleteCandidateSourceById(HttpServletRequest request, long candidateSourceId) throws Exception {
+
+		Response<Boolean> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (null != user) {
+				response.setObject(candidateService.deleteCandidateSourceById(candidateSourceId));
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
 
 }
 
