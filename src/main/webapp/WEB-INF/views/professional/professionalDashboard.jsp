@@ -8,12 +8,6 @@
 <script src="resources/js/light.js?staticTime=${staticTime}"></script>
 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> --%>
 
-<style>
-dataTables_empty {
-    height: 285px !important;
-}
-</style>
-
 <script>
 var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
