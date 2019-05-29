@@ -70,6 +70,9 @@ public class ImmigrationListExportView implements Serializable {
 	@Column(name = "LCA_END_DATE")	
 	private Date lcaEndDate;
 	
+	@Column(name = "LCA_TITLE")	
+	private String lcaTitle;
+	
 	@Column(name = "FIRST_NAME")
 	private String firstName;
 
@@ -596,6 +599,14 @@ public class ImmigrationListExportView implements Serializable {
 
 	public void setVisaStatus(String visaStatus) {
 		this.visaStatus = visaStatus;
+	}
+
+	public String getLcaTitle() {
+		return lcaTitle;
+	}
+
+	public void setLcaTitle(String lcaTitle) {
+		this.lcaTitle = lcaTitle;
 	}
 
 
