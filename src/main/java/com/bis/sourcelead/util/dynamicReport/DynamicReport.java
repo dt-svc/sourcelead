@@ -1492,7 +1492,7 @@ public class DynamicReport {
 				String Project_Frequency = mtrd.getProjectFrequency();
 				String Approval_Mechanism = mtrd.getApprovalMechanism();
 				String Duration          = mtrd.getFrequency();
-				if(mtrd.getManager2() != null && mtrd.getManager2() != "") {
+				if(mtrd.getManager2() != null && !"".equalsIgnoreCase(mtrd.getManager2())) {
 					 Manager_1 		 = mtrd.getManager1();
 					 Manager_2 		 = mtrd.getManager2();
 					}
