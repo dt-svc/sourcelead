@@ -5,29 +5,9 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
- <style>
- 
- .clsDatePicker {
-   z-index: 100000 !important;
-}
-/* .side-bar .side-nav ul li span{
-  display: inline-block;
-  float: none;
-} */
-/* .project_wrap_table span{
-display: inline;
-} */
- </style>
 <style type="text/css">
-.project_wrap {
-overflow-x: auto;
-}
-.proj_show span {
-	padding: 0px 15px 0px 0px;
-}
-.proj_show i {
-	position: absolute; right: 0px;
-}
+.proj_show span { padding: 0px 15px 0px 0px; }
+.proj_show i { position: absolute; right: 0px; }
 </style>
 <script>
 	// Close Advanced Search
