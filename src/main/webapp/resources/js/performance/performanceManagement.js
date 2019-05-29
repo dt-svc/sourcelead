@@ -248,6 +248,97 @@ function PerformanceManagement(){
 		});
 	
 	
+
+	this.validateRatingScaleName = function(){
+		var ratingScaleName = document.getElementById("ratingScaleName").value.trim(); 
+		var ratingScaleId = $("#ratingScaleId").val();
+		if(ratingScaleId == 'undefined' || ratingScaleId == null){
+			ratingScaleId = '';
+		}
+		
+		if(ratingScaleName != null && ratingScaleName != '' && ratingScaleName != 'undefined'){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/validateRatingScaleName?ratingScaleName="+ratingScaleName+"&ratingScaleId="+ratingScaleId,
+		        success: function(result) {
+		        	if (result == 'invalid') {
+		        		$("#savePerformanceRatingScale").attr("disabled", "disabled");
+		        		$('#ratingScaleNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#ratingScaleName").after( "<p class='jquery_form_error_message'>" + ratingScaleName + " is Already Existed</span>");
+						document.getElementById("ratingScaleName").setAttribute( 'record-exist', 'yes');
+						document.getElementById("ratingScaleName").setAttribute( 'record-exist-errorMsg', ratingScaleName +"  already existed");
+		        	}else{
+		        		$('input#ratingScaleName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#ratingScaleName').attr('class','valid form-control');
+						$('#ratingScaleNameDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#savePerformanceRatingScale").removeAttr("disabled")
+		        	}
+		        }
+			 });
+		}
+	}
+	
+	
+	this.validateRatingShortCode = function(){
+		var ratingShortCode = document.getElementById("ratingShortCode").value.trim(); 
+		var ratingScaleId = $("#ratingScaleId").val();
+		if(ratingScaleId == 'undefined' || ratingScaleId == null){
+			ratingScaleId = '';
+		}
+		
+		if(ratingShortCode != null && ratingShortCode != '' && ratingShortCode != 'undefined'){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/validateRatingShortCode?ratingShortCode="+ratingShortCode+"&ratingScaleId="+ratingScaleId,
+		        success: function(result) {
+		        	if (result == 'invalid') {
+		        		$("#savePerformanceRatingScale").attr("disabled", "disabled");
+		        		$('#ratingShortCodeDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#ratingShortCode").after( "<p class='jquery_form_error_message'>" + ratingShortCode + " is Already Existed</span>");
+						document.getElementById("ratingShortCode").setAttribute( 'record-exist', 'yes');
+						document.getElementById("ratingShortCode").setAttribute( 'record-exist-errorMsg', ratingShortCode +"  already existed");
+		        	}else{
+		        		$('input#ratingShortCode').removeAttr("class record-exist record-exist-errormsg");
+						$('input#ratingShortCode').attr('class','valid form-control');
+						$('#ratingShortCodeDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#savePerformanceRatingScale").removeAttr("disabled")
+		        	}
+		        }
+			 });
+		}
+	}
+	
+	
+	
+	 this.validateRatingScaleValue = function(){
+			var ratingScaleValue = $('#ratingScaleValue').val();
+			
+			 if(ratingScaleValue > 100 || ratingScaleValue < 0){
+				 if(ratingScaleValue < 0){
+					    $('#ratingScaleValueId').find('p.jquery_form_error_message').remove(); 
+						$('input#ratingScaleValueValidation').attr('class','error signin_fild');
+						$("input#ratingScaleValueValidation").after("<p class='jquery_form_error_message'>Scale value should not in negitive</p>");
+						$('input#ratingScaleValueValidation').attr('record-exist','yes');
+						$('input#ratingScaleValueValidation').attr('record-exist-errorMsg','Scale value should not in negitive'); 
+				 }else{
+					    $('#ratingScaleValueId').find('p.jquery_form_error_message').remove(); 
+						$('input#ratingScaleValueValidation').attr('class','error signin_fild');
+						$("input#ratingScaleValueValidation").after("<p class='jquery_form_error_message'>Scale value should not more than 100</p>");
+						$('input#ratingScaleValueValidation').attr('record-exist','yes');
+						$('input#ratingScaleValueValidation').attr('record-exist-errorMsg','Scale value should not more than 100'); 
+				 }
+			 }else{
+				 
+			     $('#ratingScaleValueId').find('p.jquery_form_error_message').remove(); 
+		    	 $('input#ratingScaleValueValidation').removeAttr( "class record-exist record-exist-errormsg");
+				 $('#ratingScaleValueId').find('p.jquery_form_error_message').remove();
+			 }
+		}
+	 
+	
+	
 	this.getBadgesList = function(){
     	$.ajax({
     		  type: "GET",

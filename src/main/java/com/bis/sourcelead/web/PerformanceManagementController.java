@@ -1,11 +1,9 @@
 package com.bis.sourcelead.web;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,23 +16,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceCompetencies;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceRatingLevel;
+import com.bis.sourcelead.entity.performance.PerformanceRatingScale;
 import com.bis.sourcelead.service.DepartmentService;
-import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateService;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
 import com.bis.sourcelead.service.performance.PerformanceCompetenciesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
 import com.bis.sourcelead.service.performance.PerformanceRatingLevelService;
+import com.bis.sourcelead.service.performance.PerformanceRatingScaleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -70,6 +66,9 @@ public class PerformanceManagementController {
 	
 	@Autowired
 	PerformanceRatingLevelService performanceRatingLevelService;
+	
+	@Autowired
+	PerformanceRatingScaleService performanceRatingScaleService;
 	
 	
 	
@@ -254,6 +253,58 @@ public class PerformanceManagementController {
 		
 	}
 	
+	
+
+	@RequestMapping(value = "/validateRatingScaleName", method = RequestMethod.GET)
+	@ResponseBody String validateRatingScaleName(@RequestParam(value = "ratingScaleName", required = true) String ratingScaleName,
+			@RequestParam(value = "ratingScaleId", required = false) Long ratingScaleId,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
+		
+		PerformanceRatingScale performanceRatingScale = null;
+		String result = null;
+		
+		if(ratingScaleId != null){
+			
+		}
+		else{
+			boolean flag  = performanceRatingScaleService.isRatingScaleNameExisted(orgLocationId, ratingScaleName);
+			if(flag == true){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
+		
+	}
+	
+	
+	@RequestMapping(value = "/validateRatingShortCode", method = RequestMethod.GET)
+	@ResponseBody String validateRatingShortCode(@RequestParam(value = "ratingShortCode", required = true) String ratingShortCode,
+			@RequestParam(value = "ratingScaleId", required = false) Long ratingScaleId,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
+		
+		PerformanceRatingScale performanceRatingScale = null;
+		String result = null;
+		
+		if(ratingScaleId != null){
+			
+		}
+		else{
+			boolean flag  = performanceRatingScaleService.isRatingShortCodeExisted(orgLocationId, ratingShortCode);
+			if(flag == true){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
+		
+	}
 	
 	
 	

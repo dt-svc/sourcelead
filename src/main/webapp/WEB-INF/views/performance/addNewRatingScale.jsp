@@ -15,15 +15,17 @@
 <form:form id="ratingScale_form"  name="ratingScale_form" method="post">
     <div class="clearfix newAddWidth">
     <div class="form-horizontal mt myForm">
-
+    <input type="hidden" name="ratingScaleId" id="ratingScaleId" /> 
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt"> 
-    <div class="form-group">
+    <div class="form-group" id ="ratingScaleNameDiv"> 
         <label class="col-md-3">Rating Name</label>
-        <div class="col-md-9"><input type="text" class="form-control" id="ratingName" name="ratingName" field-name="Rating Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250"></div>
+        <div class="clearfix">
+        <div class="col-md-9"><input type="text" class="form-control" id="ratingScaleName" name="ratingName" onblur="performanceManagement.validateRatingScaleName();" field-name="Rating Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250"></div>
     </div>
-    <div class="form-group">
+          </div>
+    <div class="form-group" id ="ratingShortCodeDiv">
         <label class="col-md-3">Short code</label>
-        <div class="col-md-9"><input type="text" class="form-control" id="shortCode" name="shortCode" field-name="Short Code " data-validation="required validate_Space validate_AlphaNumber validate_length length1-5" ></div>
+        <div class="col-md-9"><input type="text" class="form-control" id="ratingShortCode" name="shortCode"  onblur="performanceManagement.validateRatingShortCode();" field-name="Short Code " data-validation="required validate_Space validate_AlphaNumber validate_length length1-5" ></div>
     </div>
     
     
@@ -37,9 +39,12 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="col-md-3">Value</label>
+        <label class="col-md-3" id="ratingScaleValueDiv">Value</label>
         <div class="col-md-9">
-         	<input type="text" class="form-control" id="ratingScaleValue" name="ratingScaleValue" field-name="Value" data-validation="required validate_Space validate_int" />
+         	<input type="text" class="form-control" id="ratingScaleValue" name="ratingScaleValue" field-name="Value" onblur="performanceManagement.validateRatingScaleValue();" data-validation="required validate_Space validate_int" />
+         	<div class="row" id="ratingScaleValueId">
+                  <input type="hidden" name="ratingScaleValueValidation" id="ratingScaleValueValidation">
+            </div>
         </div>
     </div>       
     </div>
@@ -62,7 +67,7 @@
     <div class="footerstyelsNew">
 	<div class="clearfix">
 		<div class="pull-right mr">
-			<button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="performanceManagement.savePerformanceRatingScale();" >Save</button>
+			<button type="button" class="slBtn md colorBtn" id="savePerformanceRatingScale" onclick="performanceManagement.savePerformanceRatingScale();" >Save</button>
 	           <button type="button" class="slBtn md popClose"  onclick="performanceManagement.performanceRatingScaleList();" >Cancel</button>
 		</div>
 	</div>
