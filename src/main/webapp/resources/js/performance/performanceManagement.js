@@ -170,6 +170,39 @@ function PerformanceManagement(){
 		});
 	
 	
+	
+
+	this.validateRatingLevelName = function(){
+		var ratingLevelName = document.getElementById("ratingLevelName").value.trim(); 
+		var ratingLevelId = $("#ratingLevelId").val();
+		if(ratingLevelId == 'undefined' || ratingLevelId == null){
+			ratingLevelId = '';
+		}
+		
+		if(ratingLevelName != null && ratingLevelName != '' && ratingLevelName != 'undefined'){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/validateRatingLevelName?ratingLevelName="+ratingLevelName+"&ratingLevelId="+ratingLevelId,
+		        success: function(result) {
+		        	if (result == 'invalid') {
+		        		$("#savePerformanceRatingLevel").attr("disabled", "disabled");
+		        		$('#ratingLevelNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#ratingLevelName").after( "<p class='jquery_form_error_message'>" + ratingLevelName + " is Already Existed</span>");
+						document.getElementById("ratingLevelName").setAttribute( 'record-exist', 'yes');
+						document.getElementById("ratingLevelName").setAttribute( 'record-exist-errorMsg', ratingLevelName +"  already existed");
+		        	}else{
+		        		$('input#ratingLevelName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#ratingLevelName').attr('class','valid form-control');
+						$('#ratingLevelNameDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#savePerformanceRatingLevel").removeAttr("disabled")
+		        	}
+		        }
+			 });
+		}
+	}
+	
+	
 	this.savePerformanceRatingScale  = function (){
 		 var validationSettings = {
 			        errorMessagePosition : 'element',

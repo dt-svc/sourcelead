@@ -26,6 +26,7 @@ import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceCompetencies;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
+import com.bis.sourcelead.entity.performance.PerformanceRatingLevel;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RolesService;
@@ -33,6 +34,7 @@ import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateServic
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
 import com.bis.sourcelead.service.performance.PerformanceCompetenciesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
+import com.bis.sourcelead.service.performance.PerformanceRatingLevelService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -65,6 +67,9 @@ public class PerformanceManagementController {
 	
 	@Autowired
 	PerformanceCompetenciesService performanceCompetenciesService;
+	
+	@Autowired
+	PerformanceRatingLevelService performanceRatingLevelService;
 	
 	
 	
@@ -221,6 +226,36 @@ public class PerformanceManagementController {
 		return result;
 		
 	}
+	
+	
+
+	@RequestMapping(value = "/validateRatingLevelName", method = RequestMethod.GET)
+	@ResponseBody String validateRatingLevelName(@RequestParam(value = "ratingLevelName", required = true) String ratingLevelName,
+			@RequestParam(value = "ratingLevelId", required = false) Long ratingLevelId,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
+		
+		PerformanceRatingLevel performanceRatingLevel = null;
+		String result = null;
+		
+		if(ratingLevelId != null){
+			
+		}
+		else{
+			boolean flag  = performanceRatingLevelService.isRatingLevelNameExisted(orgLocationId, ratingLevelName);
+			if(flag == true){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
+		
+	}
+	
+	
+	
 	
 	
 }

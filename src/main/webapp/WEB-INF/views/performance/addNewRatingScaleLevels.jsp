@@ -10,26 +10,26 @@
          <div id="ratingScaleLoading"></div>
         <form:form id="ratingLevel_form" name="ratingLevel_form" method="post">
 	        <div class="popupContent">
-	        <input type="hidden" name="ratingScaleId" id="ratingScaleId"/>
-	            <div class="clearfix mb" id="ratingScaleNameDiv">
+	        <input type="hidden" name="ratingLevelId" id="ratingLevelId"/>
+	            <div class="clearfix mb" id="ratingLevelNameDiv">
 	                <label class="noPad">Name<span class="text-danger">&nbsp;*</span></label>
 	                <div class="clearfix">
-			                    <input type="text" id="ratingScaleName" name="name" onblur="performanceManagement.validateRatingScaleName();" class="form-control" placeholder="Name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250">
+			                    <input type="text" id="ratingLevelName" name="name" onblur="performanceManagement.validateRatingLevelName();" class="form-control" placeholder="Name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250">
 	                </div>
 	                 
 	            </div>
 	
-	            <div class="clearfix mb" id="ratingScaleDescriptionDiv">
+	            <div class="clearfix mb" id="ratingLevelDescriptionDiv">
 	                <label class="noPad">Description<span class="text-danger">&nbsp;*</span></label>
 	                <div class="clearfix">
-						<textarea field-name="Description" id="ratingScaleDescription"  name="description" class="form-control" data-validation="required validate_Space validate_length length1-5000" rows="2"></textarea>
+						<textarea field-name="Description" id="ratingLevelDescription"  name="description" class="form-control" data-validation="required validate_Space validate_length length1-5000" rows="2"></textarea>
 	                </div>
 	            </div>
 	
 	        </div>
         
 	        <div class="popupFoot text-right">
-	           <button type="button" class="slBtn md colorBtn" id="savePerformanceRatingScale" onclick="performanceManagement.savePerformanceRatingLevel();" >Save</button>
+	           <button type="button" class="slBtn md colorBtn" id="savePerformanceRatingLevel" onclick="performanceManagement.savePerformanceRatingLevel();" >Save</button>
 	           <button type="button" class="slBtn md popClose"  onclick="performanceManagement.closeRatingScalePopup();" >Cancel</button>
 	        </div>
 	 </form:form>
