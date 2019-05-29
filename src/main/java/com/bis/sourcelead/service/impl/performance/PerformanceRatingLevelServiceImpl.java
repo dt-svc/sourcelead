@@ -51,6 +51,12 @@ public class PerformanceRatingLevelServiceImpl implements PerformanceRatingLevel
 		return performanceRatingLevelDao.getPerformanceRatingLevelsListByOrgLocationId(orgLocationId, dateFormat);
 	}
 
+	@Override
+	public boolean isRatingLevelNameExisted(Long orgLocationId, String ratingLevelName) throws Exception {
+	
+		return performanceRatingLevelDao.isRatingLevelNameExisted(orgLocationId, ratingLevelName);
+	}
+
 
 	
 }

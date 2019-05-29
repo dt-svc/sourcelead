@@ -11,4 +11,7 @@ public interface PerformanceRatingLevelDao {
 	PerformanceRatingLevel savePerformanceRatingLevel(PerformanceRatingLevel PerformanceRatingLevel) throws Exception;
 	
 	List<PerformanceRatingLevelDTO> getPerformanceRatingLevelsListByOrgLocationId(Long orgLocationId,String dateFormat) throws Exception;
+	
+	boolean isRatingLevelNameExisted(Long orgLocationId, String ratingLevelName) throws Exception;
+
 }
