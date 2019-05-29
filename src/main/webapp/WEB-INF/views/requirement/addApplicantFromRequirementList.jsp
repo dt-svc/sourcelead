@@ -7,12 +7,6 @@
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.mt10 {
-    margin-top: 10px !important;
-}
-</style>
-
 <script>
 var atsUrl ='${SourceLeadWeb_atsUrl}';
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
