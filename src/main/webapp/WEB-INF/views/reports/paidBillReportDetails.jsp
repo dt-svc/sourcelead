@@ -195,6 +195,7 @@ function getPaidBillDetailReport(){
 <script>
 function getPaidBillDetailReportList(url){
 	$("#paidBillReportDetailId").empty();
+	var financeType = '${billType}';
  	    var result = "";
  	    /* result = result +" <div class='remove_search'>";
  	    result = result +" <input type='text' placeholder='Search' id='dataTableSearch'/>";
@@ -203,7 +204,11 @@ function getPaidBillDetailReportList(url){
         result = result +"<thead>"; 
         result = result + '<tr>';
         result = result + '<th>Project Name</th>';
+        if(financeType === "Payables"){
 		result = result + '<th>Bill Date</th>';
+        }else{
+        result = result + '<th>Invoice Date</th>';	
+        }
 		result = result + '<th>Pay Date</th>';
 		result = result + '<th>Amount</th>';
 		result = result + '</tr>';
