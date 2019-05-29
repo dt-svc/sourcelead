@@ -1,17 +1,7 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<style type="text/css">
-.chosen-container {
-    width: 100% !important;
-}
-.validationError p.jquery_form_error_message {
-width: 75px; padding: 0 !important;
-}
-.col-md-2 {
-    width: 29.666667%;
-  }
-</style>
+
  <!-- Applicant Authorization -->
       <div class="dashboard-widget clearfix mb eventAlert">
         <div class="row">
@@ -85,10 +75,10 @@ window.onload = function() {
 					 result = result + '                  <img src="/resources/images/interview_icons.png" class="img-responsive" width="40">    ';
 					 result = result + '                  </figure>                                                                   ';
 					 result = result + '                      <div class="pull-left event_details form-horizontal">                   ';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Job Title   :</label> <a href="'+sourceleadUrl+'/requirementProfile/'+report.requirementUUID+'"><span title ="'+report.requirementTitle+'">'+report.requirementTitle+'</span></a></p>';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Company Name:</label>'+report.companyName+' </p>    ';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Interview Type:</label> '+interviewType+'</p>    ';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Location:</label>'+location+'</p>    ';
+					 result = result + '                          <p><label class="text-muted small col-md-2 col-md2-customized">Job Title   :</label> <a href="'+sourceleadUrl+'/requirementProfile/'+report.requirementUUID+'"><span title ="'+report.requirementTitle+'">'+report.requirementTitle+'</span></a></p>';
+					 result = result + '                          <p><label class="text-muted small col-md-2 col-md2-customized">Company Name:</label>'+report.companyName+' </p>    ';
+					 result = result + '                          <p><label class="text-muted small col-md-2 col-md2-customized">Interview Type:</label> '+interviewType+'</p>    ';
+					 result = result + '                          <p><label class="text-muted small col-md-2 col-md2-customized">Location:</label>'+location+'</p>    ';
 					 result = result + ' 								</div>                                                                         ';
 					 result = result + '                      </div>                                                                                   ';
 					 result = result + '              </div>                                                                                           ';
