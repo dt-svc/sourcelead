@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -922,15 +923,12 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			}
 			if(workflowStages != null && workflowStages.size() > 0) {
 				if(name != null && !StringUtils.isBlank(name)) {
-					i = workflowStages.iterator();
-					while(i.hasNext()) {
-						RequirementWorkFlowStages stage = i.next();
-						if(stage.getStageName().equalsIgnoreCase(name)) {
-							flag = "true";
-							break;
-						}else {
-							flag = "false";
-						}
+					Stream<RequirementWorkFlowStages> stageStream = workflowStages.stream().filter(stage -> stage.getStageName().equalsIgnoreCase(name));
+					if(stageStream.count() > 0) {
+						return "true";
+					}
+					else {
+						flag = "false";
 					}
 				}else {
 					flag = "false";
