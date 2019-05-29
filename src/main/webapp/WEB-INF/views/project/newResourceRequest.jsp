@@ -22,12 +22,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			}
 		 };
    </script>
-   
-<style type="text/css">
-.ReadTextFli {
-	text-align: center;
-}
-</style>
 
    <div id="resourceInfoRow" style="display: none; float: left;">
        <div class="addResource add-resource">
@@ -243,10 +237,10 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			            <tfoot class="table-footer">
 			                <tr>
 			                    <td><strong>Total</strong></td>
-			                    <td><input type="text" value="00" class="ReadTextFli" readonly name="totalResourcesValue" id="totalResourcesId"></td>
+			                    <td><input type="text" value="00" class="ReadTextFli ReadTextFliTxtCenter" readonly name="totalResourcesValue" id="totalResourcesId"></td>
 			                    <td colspan="5"></td>
-			                    <td><input type="text" value="00" class="ReadTextFli" name="totalEstHours" readonly id="totalEstHours"></td>
-			                    <td><input type="text" value="00" class="ReadTextFli" name="totalEstBudget" readonly id="totalEstBudget"></td>
+			                    <td><input type="text" value="00" class="ReadTextFli ReadTextFliTxtCenter" name="totalEstHours" readonly id="totalEstHours"></td>
+			                    <td><input type="text" value="00" class="ReadTextFli ReadTextFliTxtCenter" name="totalEstBudget" readonly id="totalEstBudget"></td>
 			                    <td></td>
 			                </tr>
 			            </tfoot>
