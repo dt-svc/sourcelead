@@ -244,7 +244,7 @@ function getRatingScaleList(){
 		    			        		    result = result + '<td><div class="tbldata-dotdot-me">'+report.date+' / '+report.time+'</div></td>';
 		    			        		    result = result+'<td>';
 		    			        		    result = result+'<div class="tblminwidth-50 pull-left ml">'; 
-		    			        		    result = result	+'<div class="pull-left"><a><i class="fa fa-pencil text-success" onclick="#"></i></a></div>';
+		    			        		    result = result	+'<div class="pull-left"><a><i class="fa fa-pencil text-success" onclick="performanceManagement.addNewRatingScale(\''+report.id+'\')"></i></a></div>';
 		    			        		    result = result	+'<div class="pull-left mt2 ml5"><a><i class="fa fa-trash text-danger" onclick="performanceManagement.deletePerformanceRatingScale(\''+report.id+'\');"></i></a></div>';
 		    			        		    result = result+'</div></td>';
 		    			        		    result = result + '</tr>';

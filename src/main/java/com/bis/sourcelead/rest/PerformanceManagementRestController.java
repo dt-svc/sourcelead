@@ -505,7 +505,7 @@ public class PerformanceManagementRestController {
    
 
    @RequestMapping(value = "/getPerformanceScaleLevels", method = RequestMethod.GET)
-	public List<PerformanceRatingLevelDTO> getPerformanceScaleLevels(HttpServletRequest request){
+	public List<PerformanceRatingLevelDTO> getPerformanceScaleLevels(@RequestParam(value="ratingLevelId", required=false) Long ratingLevelId,HttpServletRequest request){
 	  
 	   List<PerformanceRatingLevelDTO> levelDTOList = new CopyOnWriteArrayList<>();
 		
@@ -531,6 +531,14 @@ public class PerformanceManagementRestController {
 					 }
 				
 				 }
+			 }
+			 
+			 if(ratingLevelId != null && ratingLevelId != 0L) {
+				 PerformanceRatingLevel ratingLevel = performanceRatingLevelService.getPerformanceRatingLevelById(ratingLevelId);
+				 PerformanceRatingLevelDTO levelDTO = new PerformanceRatingLevelDTO();
+				 levelDTO.setId(BigInteger.valueOf(ratingLevel.getId()));
+				 levelDTO.setName(ratingLevel.getLevelName());
+				 levelDTOList.add(levelDTO);
 			 }
 			 
 		 }catch (Exception e) {
@@ -697,4 +705,21 @@ public class PerformanceManagementRestController {
 		    }  
 	    
 	    
+
+	    @RequestMapping(value = "/getPerformanceRatingScaleDetailsById", method = RequestMethod.GET)
+		public Response<PerformanceRatingScaleDTO> getPerformanceRatingScaleDetailsById(HttpServletRequest request, 
+				@RequestParam(value = "ratingScaleId", required = true) Long ratingScaleId){
+			 Response<PerformanceRatingScaleDTO> resObj = new Response<>();
+			 try {
+				 PerformanceRatingScaleDTO scaleDTO =  performanceRatingScaleService.getPerformanceRatingScaleDTOByScaleId(ratingScaleId);
+				 resObj.setObject(scaleDTO);
+				 resObj.setResponse(Result.SUCCESS.name());
+				 resObj.setResponseMessage(Result.SUCCESS.getValue());
+			    
+			 }catch (Exception e) {
+				 resObj.setResponse(Result.AWKWARD.name());
+				 resObj.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			 return resObj;
+	    }
 }

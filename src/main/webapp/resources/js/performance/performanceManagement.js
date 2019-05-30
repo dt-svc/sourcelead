@@ -487,15 +487,24 @@ function PerformanceManagement(){
 	   			}); 
 	   }
    
-   this.addNewRatingScale = function(){
+   this.addNewRatingScale = function(ratingScaleId){
 	   	$.ajax({
 	   		  type: "GET",
 	   		    url: sourceleadUrl+"/addNewRatingScale",
 	   		     success :function(response) {
 	   		    	    $("#performanceManagementDiv").empty();  
 	   		    	    $("#performanceManagementDiv").append(response);
-	   		    	    performanceManagement.getPerformanceScaleLevels();
-	   		    	    performanceManagement.scaleDescriptionEditor();
+	   		    	    
+	   		    	   if(ratingScaleId != null && ratingScaleId != 'undefined' && ratingScaleId != ''){
+ 		    	    	 performanceManagement.editPerformanceRatingScale(ratingScaleId);
+ 		    	       }
+	   		    	   
+		   		    	 if(ratingScaleId == null || ratingScaleId == 'undefined' || ratingScaleId == ''){
+		   		    		performanceManagement.getPerformanceScaleLevels();  
+		   		    	 }
+ 		    	    
+ 		    	       
+	   		    	   performanceManagement.scaleDescriptionEditor();
 	   				},
 	   			}); 
 	   }
@@ -507,11 +516,58 @@ function PerformanceManagement(){
    }
    
    
-   this.getPerformanceScaleLevels = function(){
+   
+   this.editPerformanceRatingScale = function(ratingScaleId){
 		  
+	 	  $("#ratingListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$.ajax({
+				  type: "GET",
+				    url: sourceleadUrl+"/getPerformanceRatingScaleDetailsById?ratingScaleId="+ratingScaleId,
+				     success :function(response) {
+				    	 
+				    		if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+		     	    		    showError(response.responseMessage);
+		     	    		    $("#ratingListLoading").removeAttr('style');
+		     	    		}
+				        	else if (response.response === "AWKWARD") {
+				        	    location.href = "/errorPage";
+				        	} else if (response.response === "SUCCESS") {
+				        		$("#ratingScaleId").val(ratingScaleId);
+				        		$("#ratingScaleName").val(response.object.ratingName);
+				        		$("#ratingShortCode").val(response.object.shortCode);
+				        		$("#ratingScaleValue").val(response.object.ratingScaleValue);
+				        		
+				        		
+				        		 if(response.object.description != null 
+				        				 && response.object.description != ''
+				        					 && response.object.description != 'undefined'){
+				        			 $("textarea[name=description]").val(response.object.description);
+						        	 $(".Editor-editor").html(response.object.description);
+				        		 }
+				        		 
+				        		performanceManagement.getPerformanceScaleLevels(response.object.levelId);  
+				        		 
+				        		$("#ratingListLoading").removeAttr('style');
+				        	} else if (response.indexOf('Sign In') !== -1) {
+				        		location.replace(sourceleadUrl);
+				        	} else {
+				        	    showError("Operation failed, please try again");
+				        	}
+				    	  
+						},
+					});
+	  }
+
+   
+   
+   this.getPerformanceScaleLevels = function(levelId){
+	   if(levelId == null || levelId == 'undefined' || levelId == ''){
+		   levelId = 0;
+	   }
+	   
 		  $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getPerformanceScaleLevels", 
+		        url: sourceleadUrl+"/getPerformanceScaleLevels?ratingLevelId="+levelId, 
 		        success: function(json) {
 		        	var output = "";
 		        	
@@ -519,7 +575,12 @@ function PerformanceManagement(){
 		        	for (var i=0; i<json.length; i++)
 					{
 		        		var opt = json[i];
-		        		output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
+		        		
+		        		if(levelId != null && levelId != 'undefined' && levelId != '' && levelId == opt.id){
+		        			output = output + "<option value='" +opt.id+ "' selected>"+opt.name+"</option>";
+		        		}else{
+		        			output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
+		        		}
 			        		
 					}
 		        	$("#performanceScaleLevel").empty();

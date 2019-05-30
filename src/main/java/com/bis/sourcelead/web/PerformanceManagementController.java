@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.performance.PerformanceRatingLevelDTO;
+import com.bis.sourcelead.dto.performance.PerformanceRatingScaleDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
@@ -270,11 +271,20 @@ public class PerformanceManagementController {
 		
 		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
 		
-		PerformanceRatingScale performanceRatingScale = null;
 		String result = null;
 		
 		if(ratingScaleId != null){
-			
+			PerformanceRatingScaleDTO ratingScaleDTO = performanceRatingScaleService.getPerformanceRatingScaleDTOByScaleId(ratingScaleId);
+			 if(ratingScaleDTO.getRatingName().toLowerCase().equalsIgnoreCase(ratingScaleName)) {
+				 result = "valid";
+			 }	else{
+					boolean flag  = performanceRatingScaleService.isRatingScaleNameExisted(orgLocationId, ratingScaleName);
+					if(flag == true){
+						result = "invalid";
+					}else{
+						result = "valid";
+					}
+				}
 		}
 		else{
 			boolean flag  = performanceRatingScaleService.isRatingScaleNameExisted(orgLocationId, ratingScaleName);
@@ -296,11 +306,20 @@ public class PerformanceManagementController {
 		
 		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
 		
-		PerformanceRatingScale performanceRatingScale = null;
 		String result = null;
 		
 		if(ratingScaleId != null){
-			
+			PerformanceRatingScaleDTO ratingScaleDTO = performanceRatingScaleService.getPerformanceRatingScaleDTOByScaleId(ratingScaleId);
+			 if(ratingScaleDTO.getShortCode().toLowerCase().equalsIgnoreCase(ratingShortCode)) {
+				 result = "valid";
+			 }	else{
+					boolean flag  = performanceRatingScaleService.isRatingShortCodeExisted(orgLocationId, ratingShortCode);
+					if(flag == true){
+						result = "invalid";
+					}else{
+						result = "valid";
+					}
+				}
 		}
 		else{
 			boolean flag  = performanceRatingScaleService.isRatingShortCodeExisted(orgLocationId, ratingShortCode);
