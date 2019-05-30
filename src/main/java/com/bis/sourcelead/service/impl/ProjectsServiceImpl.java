@@ -73,6 +73,7 @@ import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -973,8 +974,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 			projectClients = new ProjectClients();
 			projectClients.setProjectId(projects);
-			OrgLocations clientOrgLoc = new OrgLocations();
-			clientOrgLoc.setId(clientOrgLocation);
+			OrgLocations clientOrgLoc = orgLocationService.getOrgLocationById(clientOrgLocation);
 			projectClients.setOrgLocationsId(clientOrgLoc);
 			projectClients.setOrgId(clientOrgLoc.getOrg());
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -1023,7 +1023,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectClients = new ProjectClients();
 			projectClients.setProjectId(projects);
 			projectClients.setOrgLocationsId(orglocations);
-			projectClients.setOrgId(orglocations.getOrg());
+			Org org = new Org();
+			org.setId(orglocations.getOrgId());
+			projectClients.setOrgId(org);
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setOrgRelationId(orgRelations);
 			projectClients.setLevel(2);
@@ -1058,7 +1060,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectClients = new ProjectClients();
 			projectClients.setProjectId(projects);
 			projectClients.setOrgLocationsId(orglocations);
-			projectClients.setOrgId(orglocations.getOrg());
+			Org org = new Org();
+			org.setId(orglocations.getOrgId());
+			projectClients.setOrgId(org);
 			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			projectClients.setLevel(1);
 			projectClients.setStatus(1);
@@ -3060,7 +3064,9 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 							projectClients = new ProjectClients();
 							projectClients.setProjectId(projects);
 							projectClients.setOrgLocationsId(orglocations);
-							projectClients.setOrgId(orglocations.getOrg());
+							Org org = new Org();
+							org.setId(orglocations.getOrgId());
+							projectClients.setOrgId(org);
 							projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 							projectClients.setStatus(1);
 							projectClients.setLevel(2);
@@ -4136,8 +4142,13 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 
 	@Override
 	public List<Projects> getProjectsListByCanddateIdAndOrgId(String associatesId, Long orglocationId) {
-		// TODO Auto-generated method stub
 		return projectsDao.getProjectsListByCanddateIdAndOrgId(associatesId,orglocationId);
+	}
+
+	@Override
+	public ProjectMembers isUserAssignedToProject(User userId, Long orgLocationId, Long projectId)
+	{
+		return projectsDao.isUserAssignedToProject(userId,orgLocationId,projectId);
 	}
 	
 }	
