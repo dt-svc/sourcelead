@@ -78,4 +78,9 @@ public class PerformanceRatingScaleServiceImpl implements PerformanceRatingScale
 		return performanceRatingScaleDao.isRatingShortCodeExisted(orgLocationId, ratingShortCode);
 	}
 
+	@Override
+	public PerformanceRatingScale getPerformanceRatingScaleByID(Long ratingScaleId) throws Exception {
+		return performanceRatingScaleDao.getPerformanceRatingScaleByID(ratingScaleId);
+	}
+
 }

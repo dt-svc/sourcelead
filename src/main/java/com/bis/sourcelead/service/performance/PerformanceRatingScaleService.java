@@ -16,4 +16,6 @@ public interface PerformanceRatingScaleService {
 	boolean isRatingScaleNameExisted(Long orgLocationId, String ratingScaleName) throws Exception;
 	
 	boolean isRatingShortCodeExisted(Long orgLocationId, String ratingShortCode) throws Exception;
+	
+	PerformanceRatingScale getPerformanceRatingScaleByID(Long ratingScaleId) throws Exception;
 }

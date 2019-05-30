@@ -14,4 +14,7 @@ public interface PerformanceRatingScaleDao {
 	boolean isRatingScaleNameExisted(Long orgLocationId, String ratingScaleName) throws Exception;
 	
 	boolean isRatingShortCodeExisted(Long orgLocationId, String ratingScaleName) throws Exception;
+	
+	PerformanceRatingScale getPerformanceRatingScaleByID(Long ratingScaleId) throws Exception;
+	
 }

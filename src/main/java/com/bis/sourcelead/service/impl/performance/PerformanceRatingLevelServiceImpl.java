@@ -69,6 +69,17 @@ public class PerformanceRatingLevelServiceImpl implements PerformanceRatingLevel
 		return performanceRatingLevelDao.getPerformanceRatingLevelDetailsById(ratingLevelId);
 	}
 
+	@Override
+	public PerformanceRatingLevel getPerformanceRatingLevelById(Long ratingLevelId) throws Exception {
+		return performanceRatingLevelDao.getPerformanceRatingLevelById(ratingLevelId);
+	}
+
+	@Override
+	public PerformanceRatingLevel savePerformanceRatingLevel(PerformanceRatingLevel PerformanceRatingLevel)
+			throws Exception {
+		return performanceRatingLevelDao.savePerformanceRatingLevel(PerformanceRatingLevel);
+	}
+
 
 	
 }

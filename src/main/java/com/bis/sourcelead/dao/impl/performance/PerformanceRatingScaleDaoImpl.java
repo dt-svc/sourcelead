@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl.performance;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.performance.PerformanceRatingScaleDao;
 import com.bis.sourcelead.dto.performance.PerformanceRatingLevelDTO;
 import com.bis.sourcelead.dto.performance.PerformanceRatingScaleDTO;
+import com.bis.sourcelead.entity.performance.PerformanceRatingLevel;
 import com.bis.sourcelead.entity.performance.PerformanceRatingScale;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -162,6 +164,24 @@ public class PerformanceRatingScaleDaoImpl implements PerformanceRatingScaleDao 
 	  }
 		
 		return flag;
+	}
+
+
+	@Override
+	public PerformanceRatingScale getPerformanceRatingScaleByID(Long ratingScaleId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceRatingScale> performanceRatingScale = new ArrayList<PerformanceRatingScale>();
+		logger.debug("getPerformanceRatingScaleByID  start");
+		performanceRatingScale = session.createQuery("from PerformanceRatingScale ratingScale where ratingScale.id = :ratingScaleId " ).setLong( "ratingScaleId", ratingScaleId).list();
+		logger.debug("getPerformanceRatingScaleByID  end");
+		if (performanceRatingScale.size() > 0) {
+			return performanceRatingScale.get(0);
+		}
+			     else {
+					return null;
+				}
+
 	}
 
 }
