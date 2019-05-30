@@ -690,12 +690,20 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
             </c:if>
-            
+            <div class="newRepListCta">
+                <h2><a href="javascript:void(0)">Immigration Reports</a></h2>
+                <ul class="repSearchList">
+                    <li><a href="${SourceLeadWeb_vmsUrl}/petitionReport">Petition Report</a></li>
+					<li><a href="${SourceLeadWeb_vmsUrl}/petitionAttorneyReport">Petition Attorney Report</a></li>
+					<li><a href="${SourceLeadWeb_vmsUrl}/lcaReport">LCA Report</a></li>
+                </ul>
+                <div class="noDate noDateSm" style="display: none;"></div>
+            </div>
             <div class="clearfix mt mb"></div>
                                    
         </div>
         
-        
+      
         
         </div>
         <!--  List View End  --> 
