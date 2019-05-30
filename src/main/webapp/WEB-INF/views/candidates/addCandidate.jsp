@@ -76,6 +76,19 @@
 			<div class="row form-horizontal mt myForm">
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
+				<div class="form-group">
+						<label class="col-md-3">Source</label>
+						<div class="col-md-9">
+							<select class="sel form-control" name="candidateSource" field-name="Source" id="candidateSource" data-validation="required">
+								<option value="">Select Source</option>
+							<c:forEach items="${sourceCandidateList}" var="candidateSource">
+								<option value="${candidateSource.id}" >${candidateSource.name}</option>
+							</c:forEach>
+							</select>
+						</div>
+				</div>
+
+
 					<div class="form-group">
 						<label class="col-md-3">First Name<span
 							class="text-danger">&nbsp;*</span></label>
