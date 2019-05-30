@@ -10370,18 +10370,6 @@ table#assignEmployeePagination tr th { width:auto !important; height: auto; line
 position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px; }
 .member_rate_history_pop { top:30% !important; left: 25%; margin: 0px auto; z-index: 15500; width: 850px; position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px;
 }
-.col-md-2.col-md2-29 { width: 29.666667%; }
-.reportsCount.req_Crowd.req_crowd ul li { width: 25% !important; }
-.approvedPop.approved_pop { position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none; background-color: #fff; }
-.approvedPop.approved_pop ul { width:100% !important; float: none; padding: 0; }
-.approvedPop.approved_pop ul li { clear: both; width: 100%; margin: 0; }
-.approvedPop1 { position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none; background-color: #fff; }
-.approvedPop1 ul { width:100% !important; float: none; padding: 0; }
-.approvedPop1 ul li { clear: both; width: 100%; margin: 0; }
-.collapse-div-adduser.orgsummary-adduser.orgsummary-adduser-custom { left: 165px; top: 97px; }
-.billing_chartdiv { width:100%; height:300px; }
-.borderYellow { border-color: #FFFF00; }
-.borderOrange { border-color: rgb(255, 102, 0); }
 
 
 @media (max-width: 320px) {
