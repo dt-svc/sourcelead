@@ -42,9 +42,11 @@ import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocuments;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
@@ -1788,6 +1790,27 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		}
 		return null;
 		}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ProjectMembers isUserAssignedToProject(User user, Long orgLocationId,Long projectId)
+	{
+		ProjectMembers projectMember = null;;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<ProjectMembers> assignedList = session.createQuery("from ProjectMembers pm where pm.projectMemberCandidteId.consultantUser.id = :userId AND pm.projectMemberCandidteId.orgLocationId.id =:orglocationId AND pm.projects.id = :projectId AND pm.status = 1")
+													   .setLong("userId", user.getId())
+													   .setLong("orglocationId", orgLocationId)
+													   .setLong("projectId", projectId).list();
+			if (assignedList != null && assignedList.size() > 0) {
+				projectMember = assignedList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return projectMember;
+	}
 
 }
 
