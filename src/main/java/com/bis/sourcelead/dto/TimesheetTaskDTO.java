@@ -21,6 +21,8 @@ public class TimesheetTaskDTO implements Serializable{
 
 	private String generatedId;
 	
+	private String hourlyType;
+	
 	public Long getId() {
 		return id;
 	}
@@ -59,6 +61,16 @@ public class TimesheetTaskDTO implements Serializable{
 
 	public void setTicketNumber(String ticketNumber) {
 		this.ticketNumber = ticketNumber;
+	}
+
+	public String getHourlyType()
+	{
+		return hourlyType;
+	}
+
+	public void setHourlyType(String hourlyType)
+	{
+		this.hourlyType = hourlyType;
 	}
 
 	

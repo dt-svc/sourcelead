@@ -532,7 +532,7 @@ public class TaxDaoImpl implements TaxDao {
 			if (!financialYear.isEmpty()) {
 				query += (query.contains("where") ? " and " : " where ") + "it.financialYear=:financialYear";
 			}
-			if (!searchValue.isEmpty()) {
+			if (searchValue != null && !searchValue.isEmpty()) {
 				query += (query.contains("where") ? " and " : " where ") + "(it.user.firstName like '%" + searchValue + "%' or it.user.lastName like '%" + searchValue + "%')";
 			}
 			query += " order by it.id desc";
