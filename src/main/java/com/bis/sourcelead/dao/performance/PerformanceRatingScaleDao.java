@@ -17,4 +17,6 @@ public interface PerformanceRatingScaleDao {
 	
 	PerformanceRatingScale getPerformanceRatingScaleByID(Long ratingScaleId) throws Exception;
 	
+	PerformanceRatingScaleDTO getPerformanceRatingScaleDTOByScaleId(Long ratingScaleId) throws Exception;
+	
 }

@@ -184,4 +184,31 @@ public class PerformanceRatingScaleDaoImpl implements PerformanceRatingScaleDao 
 
 	}
 
+
+	@Override
+	public PerformanceRatingScaleDTO getPerformanceRatingScaleDTOByScaleId(Long ratingScaleId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceRatingScaleDTO> ratingScaleDTOList = null;
+		
+		String query =  "SELECT "
+					+" RATING_SCALE.RATING_NAME AS ratingName, "           
+					+" RATING_SCALE.SHORT_CODE AS shortCode, "
+					+" RATING_SCALE.DESCRIPTION AS description, "
+					+" RATING_SCALE.RATING_SCALE_VALUE AS ratingScaleValue, "
+					+" RATING_SCALE.UUID AS uuid, "
+					+" RATING_LEVEL.ID AS levelId "
+					+" FROM PERFORMANCE_RATING_SCALE RATING_SCALE, PERFORMANCE_RATING_LEVEL RATING_LEVEL "
+					+" WHERE RATING_SCALE.RATING_LEVEL_ID = RATING_LEVEL.ID AND "
+					+" RATING_SCALE.ID = :ratingScaleId ";
+			
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("ratingScaleId", ratingScaleId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceRatingScaleDTO.class));
+		ratingScaleDTOList = queryObj.list();
+		return ratingScaleDTOList.get(0);
+		
+		
+	}
+
 }

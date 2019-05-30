@@ -27,16 +27,27 @@ public class PerformanceRatingScaleServiceImpl implements PerformanceRatingScale
 	public PerformanceRatingScale storePerformanceRatingScale(PerformanceRatingScaleDTO performanceRatingScaleDTO,
 			Long orgLocationId, Long userId) throws Exception {
 		
-		OrgLocations orgLcoations = new OrgLocations();
-		orgLcoations.setId(orgLocationId);
 		
 		User user = new User();
 		user.setId(userId);
 		
-		PerformanceRatingScale performanceRatingScale = new PerformanceRatingScale();
-		performanceRatingScale.setCreatedBy(user);
-		performanceRatingScale.setCreatedDate(new Date());
-		performanceRatingScale.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		PerformanceRatingScale performanceRatingScale = null;
+		
+		if(performanceRatingScaleDTO.getRatingScaleId() != null) {
+			performanceRatingScale = getPerformanceRatingScaleByID(performanceRatingScaleDTO.getRatingScaleId());
+		}else {
+			performanceRatingScale = new PerformanceRatingScale();
+			performanceRatingScale.setCreatedBy(user);
+			performanceRatingScale.setCreatedDate(new Date());
+			performanceRatingScale.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			
+			OrgLocations orgLcoations = new OrgLocations();
+			orgLcoations.setId(orgLocationId);
+			performanceRatingScale.setOrgLocationId(orgLcoations);
+			
+			performanceRatingScale.setStatus(Constants.RECORD_ACTIVE);
+		}
+		
 		
 		performanceRatingScale.setRatingName(performanceRatingScaleDTO.getRatingName());
 		PerformanceRatingLevel ratingLevel = new PerformanceRatingLevel();
@@ -45,8 +56,6 @@ public class PerformanceRatingScaleServiceImpl implements PerformanceRatingScale
 		performanceRatingScale.setRatingScaleValue(performanceRatingScaleDTO.getRatingScaleValue());
 		performanceRatingScale.setShortCode(performanceRatingScaleDTO.getShortCode());
 		performanceRatingScale.setDescription(performanceRatingScaleDTO.getDescription());
-		performanceRatingScale.setOrgLocationId(orgLcoations);
-		performanceRatingScale.setStatus(Constants.RECORD_ACTIVE);
 		performanceRatingScaleDao.savePerformanceRatingScale(performanceRatingScale);
 		
 		return performanceRatingScale;
@@ -81,6 +90,11 @@ public class PerformanceRatingScaleServiceImpl implements PerformanceRatingScale
 	@Override
 	public PerformanceRatingScale getPerformanceRatingScaleByID(Long ratingScaleId) throws Exception {
 		return performanceRatingScaleDao.getPerformanceRatingScaleByID(ratingScaleId);
+	}
+
+	@Override
+	public PerformanceRatingScaleDTO getPerformanceRatingScaleDTOByScaleId(Long ratingScaleId) throws Exception {
+		return performanceRatingScaleDao.getPerformanceRatingScaleDTOByScaleId(ratingScaleId);
 	}
 
 }

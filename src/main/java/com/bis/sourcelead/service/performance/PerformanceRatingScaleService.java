@@ -18,4 +18,6 @@ public interface PerformanceRatingScaleService {
 	boolean isRatingShortCodeExisted(Long orgLocationId, String ratingShortCode) throws Exception;
 	
 	PerformanceRatingScale getPerformanceRatingScaleByID(Long ratingScaleId) throws Exception;
+	
+	PerformanceRatingScaleDTO getPerformanceRatingScaleDTOByScaleId(Long ratingScaleId) throws Exception;
 }
