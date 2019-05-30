@@ -17,7 +17,7 @@ padding: 0px 240px 4px 0px;
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
       <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/settings'/>">Settings</a> &raquo;
-      <a href="${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration">Performance Management</a> &raquo; Performance Competence <span id = "fname"></a> </div>
+      <a href="${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration">Performance Management</a> &raquo; Performance Rating Scale <span id = "fname"></a> </div>
 </section>
 
 <div class="clearfix">
@@ -245,7 +245,7 @@ function getRatingScaleList(){
 		    			        		    result = result+'<td>';
 		    			        		    result = result+'<div class="tblminwidth-50 pull-left ml">'; 
 		    			        		    result = result	+'<div class="pull-left"><a><i class="fa fa-pencil text-success" onclick="#"></i></a></div>';
-		    			        		    result = result	+'<div class="pull-left mt2 ml5"><a><i class="fa fa-trash text-danger" onclick="#"></i></a></div>';
+		    			        		    result = result	+'<div class="pull-left mt2 ml5"><a><i class="fa fa-trash text-danger" onclick="performanceManagement.deletePerformanceRatingScale(\''+report.id+'\');"></i></a></div>';
 		    			        		    result = result+'</div></td>';
 		    			        		    result = result + '</tr>';
 		    					          

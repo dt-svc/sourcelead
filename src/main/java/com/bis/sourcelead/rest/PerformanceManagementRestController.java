@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceCompetencies;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceRatingLevel;
+import com.bis.sourcelead.entity.performance.PerformanceRatingScale;
 import com.bis.sourcelead.entity.performance.PerformanceTagCompetencies;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.DepartmentService;
@@ -519,7 +520,7 @@ public class PerformanceManagementRestController {
 			 
 			 if(scalesDTOList != null && !scalesDTOList.isEmpty()) {
 				 for(PerformanceRatingScaleDTO scalesDTO : scalesDTOList ) {
-					 levelMap.put(scalesDTO.getId(), scalesDTO.getLevelId());
+					 levelMap.put(scalesDTO.getLevelId(), scalesDTO.getLevelId());
 				 }
 			 }
 			 
@@ -677,4 +678,23 @@ public class PerformanceManagementRestController {
 	  		}
 	  		 return resObj;
 	    }
+	    
+	    
+	    @RequestMapping(value = "/deletePerformanceRatingScale", method = RequestMethod.POST)
+		  	public String deletePerformanceRatingScale(HttpServletRequest request, 
+		  			@RequestParam(value = "ratingScaleId", required = true) Long ratingScaleId){
+		  		 String resObj = null;
+		  		 try {
+		  			PerformanceRatingScale performanceRatingScale = performanceRatingScaleService.getPerformanceRatingScaleByID(ratingScaleId);
+		  			performanceRatingScale.setStatus(Constants.RECORD_INACTIVE);
+		 			performanceRatingScaleService.savePerformanceRatingScale(performanceRatingScale);
+		  			resObj = Result.SUCCESS.name();
+		  		    
+		  		 }catch (Exception e) {
+		  			resObj = Result.AWKWARD.name();
+		  		}
+		  		 return resObj;
+		    }  
+	    
+	    
 }
