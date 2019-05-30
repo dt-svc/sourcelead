@@ -209,6 +209,10 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "masterCandidateId", Long.parseLong(userRole.get("masterCandidateId").toString()));
 		  }
 		  
+		  if(userRole.get("shiftId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "shiftId", Long.parseLong(userRole.get("shiftId").toString()));
+		  }
+		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.get("roleName"));
 		  
 		  if(userRole.get("roleName").toString().equalsIgnoreCase("ROLE_ADMIN")) {
