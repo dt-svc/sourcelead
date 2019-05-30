@@ -1111,7 +1111,7 @@ function resetBeneficiaryDetails(){
 	$("#experienceYears").val("");
 	$("#experienceMonths").val("");
 	$("#birthDate").val("");
-	
+	$("#ssnNumber").val("");
 }
 	 $("#candidateNameEmail").autocomplete({ 
 			minLength: 2, 
@@ -1143,6 +1143,7 @@ function resetBeneficiaryDetails(){
 				    		$("#email").val(candidateObj.email);
 				    		$("#mobile").val(candidateObj.mobilePhone);
 				    		$("#alternateMobile").val(candidateObj.alternateMobilePhone);
+				    		$("#ssnNumber").val(candidateObj.ssnNumber);
 				    		
 				    		// gender radio button  
 				    		$('input[name="gender"]').prop('checked', false); // reset the value 
