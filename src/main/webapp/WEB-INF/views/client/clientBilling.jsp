@@ -13,9 +13,6 @@
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}"/>
 
 <input type="hidden" id="emptyInvoiceId" name="emptyInvoiceId"/>
-<div class="success_pop" id="selector12" style="display: none;">
-		<i class="fa fa-check-circle"></i><span id="msgdiv"></span>
-  </div>
 <script>
 function getClientInvoiceList(orgRelationId,clientLocationId){
 	
@@ -639,18 +636,14 @@ function generateAutomaticInvoice(){
 					$("#selector12").removeAttr("style");
 					$("#selector12").css("display", "block");
 					$("#msgdiv").html(json.object.count+" Invoice(s) Generated Successfully.");
-					msgFadein();
-            	 location.replace(vmsUrl+"/invoiceList");	            	 
+					$("#selector12").fadeIn(200);
+			        $('#selector12').delay(2000).fadeOut('slow');
+//             	 location.replace(vmsUrl+"/invoiceList");	            	 
         },
     });  
 }
 </script>
-<script>
-	function msgFadein() {
-		$("#selector12").fadeIn(200);
-        $('#selector12').delay(2000).fadeOut('slow');
-	}
-</script>
+
 
 <script>
 function clientInvoicePagination(){  
