@@ -354,16 +354,13 @@ public class TaxSubmissionController {
 			File file = null;
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails = taxService
-					.getITDeclarationSubmissionDetails(formId);
+			SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails = taxService.getITDeclarationSubmissionDetails(formId);
 			User user = taxService.getEmployeeDetails(sourceleadTaxITDeclarationSubmissionDetails.getUser().getId());
 			if (sourceleadTaxITDeclarationSubmissionDetails != null) {
 				if (exportType.equalsIgnoreCase("excel")) {
-					file = taxService.exportItDeclarationSubmissionExcel(sourceleadTaxITDeclarationSubmissionDetails,
-							loginUser, orgLoc, user);
+					file = taxService.exportItDeclarationSubmissionExcel(sourceleadTaxITDeclarationSubmissionDetails, loginUser, orgLoc.getId(), user);
 				} else {
-					file = taxService.exportItDeclarationSubmissionPdf(sourceleadTaxITDeclarationSubmissionDetails,
-							loginUser, orgLoc, user);
+					file = taxService.exportItDeclarationSubmissionPdf(sourceleadTaxITDeclarationSubmissionDetails, loginUser, orgLoc.getId(), user);
 				}
 			}
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
@@ -372,8 +369,7 @@ public class TaxSubmissionController {
 			}
 			response.setContentType(mimeType);
 			StringBuilder fileName = new StringBuilder();
-			response.setHeader("Content-Disposition",
-					fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
 			response.setContentLength((int) file.length());
 			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
