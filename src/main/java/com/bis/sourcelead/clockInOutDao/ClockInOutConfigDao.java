@@ -55,5 +55,8 @@ public interface ClockInOutConfigDao {
 
 	public ClockInOut getPreviousClockInData(OrgLocations loginOrgLocation, User user);
 
+	public ResponseList<ClockInOutUserTimeEntryDTO> getEmployeeTimeEntriesByProjectIdTaskId(Long locationId, Long userId, Date[] dates, Long projectId, Long projectTaskId);
+
+
 
 }

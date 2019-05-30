@@ -1,11 +1,15 @@
 package com.bis.sourcelead.clockInOutRestController;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,16 +29,25 @@ import com.bis.sourcelead.clockInOutUtil.ClockInOutUtil;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TimeSheetSubmissionDayEntryDTO;
+import com.bis.sourcelead.dto.TimesheetEntriesDTO;
+import com.bis.sourcelead.dto.TimesheetTaskDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.rest.TaskRestController;
+import com.bis.sourcelead.service.ProjectTasksService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.timesheet.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.google.api.client.util.Clock;
 
 @RestController
 @RequestMapping("/app")
@@ -51,6 +64,16 @@ public class ClockInOutRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private ProjectsService projectsService;
+	
+	@Autowired
+	private TimeSheetDayEntriesService timeSheetDayEntriesService;
+	
+	@Autowired
+	private ProjectTasksService projectTasksService;
+	
 	
 	@RequestMapping(value = "/clockInOutConfig")
 	public ModelAndView redirect(HttpServletRequest request) {
@@ -87,7 +110,44 @@ public class ClockInOutRestController {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		return clockInOutConfigService.saveClockInOutTime(clockInOutDTO,loginOrgLocation,user);
+		ClockInOut clockInOut =  clockInOutConfigService.saveClockInOutTime(clockInOutDTO,loginOrgLocation,user);
+		
+		if(Constants.CLOCK_OUT.equalsIgnoreCase(clockInOutDTO.getType())) {
+			if(clockInOut.getProjectId() != null) {
+				String totalRTime = clockInOutConfigService.getTotalClockInOutHours(loginOrgLocation,user.getId(),clockInOut.getProjectId(),clockInOut.getProjectsTaskId());
+				ProjectMembers projectMember = projectsService.isUserAssignedToProject(clockInOut.getUserId(),clockInOut.getOrgLocations().getId(),clockInOut.getProjectId());
+				String totalHours = totalRTime.substring(0, 5);
+				Map<String, String> freqMap = timeSheetDayEntriesService.getTimesheetFrequency(clockInOut.getClockOutDate(),loginOrgLocation,projectMember.getProjects());
+			    Date frequencyStartDate = null;
+				Date frequencyEndDate   = null;
+				Date subFrequencyStartDate = null;
+				Date subFrequencyEndDate   = null;
+				if (freqMap.get("timesheetFreq") != null) {
+					String timeFrequency = freqMap.get("timesheetFreq");
+					String[] frequency = timeFrequency.split("To");
+					String startDate = frequency[0].trim();
+					String endDate = frequency[1].trim();
+					frequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate.replaceAll("/", "-"));
+					frequencyEndDate =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate.replaceAll("/", "-"));
+				}	
+				if (freqMap.get("timesheetSubFreq") != null) {
+					String subFrequency = freqMap.get("timesheetSubFreq");
+					String[] frequency = subFrequency.split("To");
+					String startDate = frequency[0].trim();
+					String endDate = frequency[1].trim();
+					subFrequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate.replaceAll("/", "-"));
+					subFrequencyEndDate =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate.replaceAll("/", "-"));
+							
+				}	
+			    try {
+					timeSheetDayEntriesService.addTimesheetDayEntry(projectMember.getId(), subFrequencyStartDate, subFrequencyEndDate, frequencyStartDate, frequencyEndDate, clockInOut.getUserId().getId(), clockInOut.getClockOutDate(),totalHours, null, null, clockInOut.getProjectsTaskId(), loginOrgLocation.getDateFormat(),"Regular");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		return clockInOut;
 		
 	}
 	

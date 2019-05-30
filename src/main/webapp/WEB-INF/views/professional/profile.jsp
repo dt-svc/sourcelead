@@ -5,14 +5,6 @@
 
 <link href="/resources/css/crowdsourcingstyles.css?staticTime=${staticTime}" rel="stylesheet">
 
-<style>
-.margin-down{
-    margin-bottom: 100px;
-}
-.reportsH.profileanchor a {
-position: relative; top:-5px
-}
-</style>
 <script> 
 $(document).ready(function(){
 	getProfessionalInfo();
@@ -294,7 +286,7 @@ function getProfessionalInfo(){
 				 result = result +'	</div>';
 				
 				 if('${candidateResumeCount}' > 0){
-				 result = result +' <section class="clearfix mt25 margin-down">';
+				 result = result +' <section class="clearfix mt25 margin-down100">';
 				 result = result +'<div class="project_side_wrap_inn_tabs">';
 			     result = result +'   <ul class="project-tabs-menu">';
 			     result = result +'     <li class="current"><a href="#tab-1" onclick="professionalProfile('+candidateId+');">Profile</a></li>';
