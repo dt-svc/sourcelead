@@ -360,11 +360,9 @@ public class TaxSubmissionController {
 			User user = taxService.getEmployeeDetails(sourceleadTaxITDeclarationSubmissionDetails.getUser().getId());
 			if (sourceleadTaxITDeclarationSubmissionDetails != null) {
 				if (exportType.equalsIgnoreCase("excel")) {
-					file = taxService.exportItDeclarationSubmissionExcel(sourceleadTaxITDeclarationSubmissionDetails,
-							loginUser, orgLoc, user);
+					file = taxService.exportItDeclarationSubmissionExcel(sourceleadTaxITDeclarationSubmissionDetails, loginUser, orgLoc.getId(), user);
 				} else {
-					file = taxService.exportItDeclarationSubmissionPdf(sourceleadTaxITDeclarationSubmissionDetails,
-							loginUser, orgLoc, user);
+					file = taxService.exportItDeclarationSubmissionPdf(sourceleadTaxITDeclarationSubmissionDetails, loginUser, orgLoc.getId(), user);
 				}
 			}
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());

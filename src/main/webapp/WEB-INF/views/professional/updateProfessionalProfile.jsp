@@ -2,11 +2,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
  <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/crowdsourcingstyles.css?staticTime=${staticTime}" rel="stylesheet">
-<style>
-.margin-down{
-    margin-bottom: 100px;
-}
-</style>
  <!--  <script> 
 $(document).ready(function(){
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';

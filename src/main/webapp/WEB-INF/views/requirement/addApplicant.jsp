@@ -15,11 +15,6 @@
  <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css?staticTime=${staticTime}" />
 <script src="${SourceLeadWeb_atsUrl}/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
 <script src="${SourceLeadWeb_atsUrl}/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
-<style type="text/css">
-.mt10 {
-    margin-top: 10px !important;
-}
-</style>
 
 <script>
 var atsUrl ='${SourceLeadWeb_atsUrl}';
