@@ -3691,8 +3691,8 @@ public class TimesheetRestController {
 				timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
 				timesheetEntryDetailsDTO.setEmployeePhoneNo(pm.getProjectMemberCandidteId().getMobilePhone());
 				timesheetEntryDetailsDTO.setProjectNameForSubmissionPageDisplay(pm.getProjects().getProjectName());
-				timesheetEntryDetailsDTO.setEmploymentTypeForSubmissionPageDisplay(
-						pm.getProjectMemberCandidteId().getDesignationType());
+				timesheetEntryDetailsDTO.setEmploymentTypeForSubmissionPageDisplay(pm.getProjectMemberCandidteId().getDesignationType());
+						
 
 				if (pm.getProjectClientsId().getOrgRelationId() != null) {
 					OrgRelations orgRelations = orgRelationsService
@@ -5232,6 +5232,7 @@ public class TimesheetRestController {
 
 		return tsDTO;
 	}
+	
 
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/saveTimesheetEntries", method = RequestMethod.POST)
@@ -5245,7 +5246,6 @@ public class TimesheetRestController {
 		if(orgLocations != null) {
 			 orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
 		}
-		Boolean isValid = false;
 		ModelAndView model = new ModelAndView();
 		try {
 			outerLoop:{
@@ -5260,7 +5260,6 @@ public class TimesheetRestController {
 							}
 							
 						}
-						isValid = true;
 						/*if valid Data*/
 						tedDTO = saveTimesheetEntries(tedDTO, request);
 						
@@ -5272,7 +5271,6 @@ public class TimesheetRestController {
 		     }
 		
 		
-		if(!isValid) {
 			/*if invalid Data*/
 			TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 			eedDTO.setCurrentTimeFrequency(tedDTO.getCurrentTimeFrequency());
@@ -5323,7 +5321,6 @@ public class TimesheetRestController {
 					}
 			}
 			tedDTO.setTimesheetSubmission(tsDTO);
-		}
 		model.addObject("timesheetSubmissionDTO", tedDTO.getTimesheetSubmission());
 		LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(
 				tedDTO.getTimesheetSubmission(), request);
