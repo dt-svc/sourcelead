@@ -368,21 +368,23 @@
 													&& opt.createdUser != ''
 													&& opt.createdUser != 'undefined') {
 												result = result
-														+ '         <td><div><span title="'+opt.createdUser+''+orgName+''+candidateSource+'" class="pull-left">'
+														+ '         <td><div><div class="tbldata-dotdot-vsm pull-left" title="'+opt.createdUser+''+orgName+''+candidateSource+'" class="pull-left">'
 														+ opt.createdUser + ''
 														+ orgName + '<br/>'
 														+ candidateSource
-														+ '</span>'
-														+'</div></td>';
+														+ '</div>'
+														if(opt.orgName == null || opt.orgName == ''){
+															 if(isManager == "true" || isAdmin == "true"){
+															result = result +'<i class="fa fa-pencil pull-left ml10 mt2 cursorPointer" onClick="applicantsourceHandler('+requirementId+','+opt.id+');"></i>';
+															 }
+															 }
+														+'</div>';
+												+'</td>';
 											} else {
 												result = result
 														+ '         <td><div><span>--</span></div></td>';
 											}
-											if(opt.orgName == null || opt.orgName == ''){
-											 if(isManager == "true" || isAdmin == "true"){
-											result = result +'<i class="fa fa-pencil pull-left ml10 mt2 cursorPointer" onClick="applicantsourceHandler('+requirementId+','+opt.id+');"></i>';
-											 }
-											 }
+											
 											return result;
 										}
 									},
