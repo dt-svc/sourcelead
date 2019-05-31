@@ -1463,6 +1463,36 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
   }
   
   
+  this.enableSelfAppraisalPeriod = function(){
+	  
+	  $("#selfAppraisalStartDate").val("");
+	  $("#selfAppraisalEndDate").val("");
+	  
+	  var isChecked = $("#isSelfAppraisalRequired").is(":checked");
+	  if(isChecked){
+		  $("#selfAppraisalStartDate").removeAttr("disabled");
+	  }else{
+		  $("#selfAppraisalStartDate").attr("disabled", "disabled");
+		  $("#selfAppraisalEndDate").attr("disabled", "disabled");
+	  }
+  }
+  
+  
+  this.enableReportingManagerAppraisalPeriod = function(){
+	  
+	  $("#appraisalApprovingStartDate").val("");
+	  $("#appraisalApprovingEndDate").val("");
+	  
+	  var isChecked = $("#isReportingManagerAppraisalRequired").is(":checked");
+	  if(isChecked){
+		  $("#appraisalApprovingStartDate").removeAttr("disabled");
+	  }else{
+		  $("#appraisalApprovingStartDate").attr("disabled", "disabled");
+		  $("#appraisalApprovingEndDate").attr("disabled", "disabled");
+	  }
+  }
+  
+  
   this.clearAppraisalStartDate = function(){
 	  $("#appraisalStartDate").val("");
 	  $("#appraisalEndDate").val("");

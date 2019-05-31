@@ -132,12 +132,16 @@
 			        
 					
 					<div class="form-group width100percnt">
-			          <label class="col-md-3">Self Appraisal</label>
-			          <div class="col-md-9">
+					<div class="col-md-1 noPad">
+						<input id="isSelfAppraisalRequired" class="checkbox-custom" name="isSelfAppraisalRequired" value="N" onclick="performanceManagement.enableSelfAppraisalPeriod();" type="checkbox"/>
+						<label for="isSelfAppraisalRequired" class="checkbox-custom-label pull-right"/>
+					</div>
+		            <label class="col-md-3 noPad">Self Appraisal </label>
+			          <div class="col-md-8">
 						  			  <div class="row">
 							  <div class="col-md-6" id="selfAppraisalStartDateDiv">
 								  <div class="input-group">
-									  <input type="text" class="form-control calendar" value="" id="selfAppraisalStartDate" name="selfAppraisalStartDate" field-name="Self Appraisal Start Date" data-validation-optional="true" readonly="readonly" >
+									  <input type="text" class="form-control calendar" disabled value="" id="selfAppraisalStartDate" name="selfAppraisalStartDate" field-name="Self Appraisal Start Date" data-validation-optional="true" readonly="readonly" >
 									  <span class="input-group-addon" onClick="performanceManagement.clearSelfAppraisalStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 								  </div>
 							  </div>
@@ -156,12 +160,16 @@
             
             <div class="col-md-6">
             <div class="form-group width100percnt">
-			          <label class="col-md-3">Review Period</label>
-			          <div class="col-md-9">
+            <div class="col-md-1 noPad">
+						<input id="isReportingManagerAppraisalRequired" class="checkbox-custom" name="isReportingManagerAppraisalRequired" value="N" onclick="performanceManagement.enableReportingManagerAppraisalPeriod();" type="checkbox"/>
+						<label for="isReportingManagerAppraisalRequired" class="checkbox-custom-label pull-right"/>
+					  </div>
+			          <label class="col-md-3 noPad">Reporting Manager</label>
+			          <div class="col-md-8">
 						  <div class="row">
 							 <div class="col-md-6" id="appraisalApprovingStartDateDiv">
 								  <div class="input-group">
-									 <input type="text" class="form-control calendar" value="" id="appraisalApprovingStartDate" name="appraisalApprovingStartDate" field-name="Self Appraisal Start Date" data-validation-optional="true" readonly="readonly" >
+									 <input type="text" class="form-control calendar" disabled value="" id="appraisalApprovingStartDate" name="appraisalApprovingStartDate" field-name="Self Appraisal Start Date" data-validation-optional="true" readonly="readonly" >
 								     <span class="input-group-addon" onClick="performanceManagement.clearAppraisalApprovingStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 								  </div>
 							 </div>
