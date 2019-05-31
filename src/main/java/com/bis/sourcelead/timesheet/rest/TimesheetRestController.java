@@ -284,6 +284,9 @@ public class TimesheetRestController {
 				"orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		if (loginUser != null && orgLocations != null) {
+			candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLocations.getId());
+		}
 		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		}else {
