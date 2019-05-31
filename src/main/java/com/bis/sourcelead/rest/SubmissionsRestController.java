@@ -1473,7 +1473,7 @@ public class SubmissionsRestController {
 		return response;
 	}
 
-	@RequestMapping(value = "/editApplicantSourceName", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/editApplicantSourceName", method = RequestMethod.POST)
 	public @ResponseBody Response<String> editApplicantSourceName(@RequestParam(value = "submissionId", required = false) Long submissionId, 
 			@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
 	{
