@@ -125,7 +125,218 @@ function PerformanceManagement(){
 		});
 	
 	
+	this.savePerformanceRatingLevel  = function (){
+		 var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+		 
+		 if ($('#ratingLevel_form').validate(false, validationSettings)){ 
+		        var formData = getFormData("ratingLevel_form");
+		        $("#ratingScaleLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		         $.ajax({
+			    	type: "POST",
+			    	data: formData,
+			    	 url: sourceleadUrl+"/savePerformanceRatingLevel?",
+			        success: function(response) {
+			        	$("#ratingScaleLoading").removeAttr('style');
+			        	performanceManagement.performanceRatingScaleList();
+			        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	     	    		    showError(response.responseMessage);
+	     	    		}
+			        	else if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		performanceManagement.closeRatingScalePopup();
+			        		$(".mask, #ratingScaleModalTasktype").fadeOut();
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+			        },
+			    });  
+		        return true;
+		  } else {
+			return false;
+		  }
+	}
+
+	$('body').on('blur', '#ratingLevel_form', function() {
+			$("#ratingLevel_form").showHelpOnFocus();
+			$("#ratingLevel_form").validateOnBlur(false, validationSettings);  
+		});
 	
+	
+	
+
+	this.validateRatingLevelName = function(){
+		var ratingLevelName = document.getElementById("ratingLevelName").value.trim(); 
+		var ratingLevelId = $("#ratingLevelId").val();
+		if(ratingLevelId == 'undefined' || ratingLevelId == null){
+			ratingLevelId = '';
+		}
+		
+		if(ratingLevelName != null && ratingLevelName != '' && ratingLevelName != 'undefined'){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/validateRatingLevelName?ratingLevelName="+ratingLevelName+"&ratingLevelId="+ratingLevelId,
+		        success: function(result) {
+		        	if (result == 'invalid') {
+		        		$("#savePerformanceRatingLevel").attr("disabled", "disabled");
+		        		$('#ratingLevelNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#ratingLevelName").after( "<p class='jquery_form_error_message'>" + ratingLevelName + " is Already Existed</span>");
+						document.getElementById("ratingLevelName").setAttribute( 'record-exist', 'yes');
+						document.getElementById("ratingLevelName").setAttribute( 'record-exist-errorMsg', ratingLevelName +"  already existed");
+		        	}else{
+		        		$('input#ratingLevelName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#ratingLevelName').attr('class','valid form-control');
+						$('#ratingLevelNameDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#savePerformanceRatingLevel").removeAttr("disabled")
+		        	}
+		        }
+			 });
+		}
+	}
+	
+	
+	this.savePerformanceRatingScale  = function (){
+		 var validationSettings = {
+			        errorMessagePosition : 'element',
+			       borderColorOnError : '',
+					scrollToTopOnError : true,
+					dateFormat : 'yyyy/mm/dd' 
+		         }; 
+		 
+		 if ($('#ratingScale_form').validate(false, validationSettings)){ 
+			    var desc = $("#txtEditor").val($('.Editor-editor').html()); 
+		        var formData = getFormData("ratingScale_form");
+		        $("#ratingScaleLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		         $.ajax({
+			    	type: "POST",
+			    	data: formData,
+			    	 url: sourceleadUrl+"/savePerformanceRatingScale?",
+			        success: function(response) {
+			        	$("#ratingScaleLoading").removeAttr('style');
+			        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	     	    		    showError(response.responseMessage);
+	     	    		}
+			        	else if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		performanceManagement.performanceRatingScaleList();
+			        		
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+			        },
+			    });  
+		        return true;
+		  } else {
+			return false;
+		  }
+	}
+
+	$('body').on('blur', '#ratingScale_form', function() {
+			$("#ratingScale_form").showHelpOnFocus();
+			$("#ratingScale_form").validateOnBlur(false, validationSettings);  
+		});
+	
+	
+
+	this.validateRatingScaleName = function(){
+		var ratingScaleName = document.getElementById("ratingScaleName").value.trim(); 
+		var ratingScaleId = $("#ratingScaleId").val();
+		if(ratingScaleId == 'undefined' || ratingScaleId == null){
+			ratingScaleId = '';
+		}
+		
+		if(ratingScaleName != null && ratingScaleName != '' && ratingScaleName != 'undefined'){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/validateRatingScaleName?ratingScaleName="+ratingScaleName+"&ratingScaleId="+ratingScaleId,
+		        success: function(result) {
+		        	if (result == 'invalid') {
+		        		$("#savePerformanceRatingScale").attr("disabled", "disabled");
+		        		$('#ratingScaleNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#ratingScaleName").after( "<p class='jquery_form_error_message'>" + ratingScaleName + " is Already Existed</span>");
+						document.getElementById("ratingScaleName").setAttribute( 'record-exist', 'yes');
+						document.getElementById("ratingScaleName").setAttribute( 'record-exist-errorMsg', ratingScaleName +"  already existed");
+		        	}else{
+		        		$('input#ratingScaleName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#ratingScaleName').attr('class','valid form-control');
+						$('#ratingScaleNameDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#savePerformanceRatingScale").removeAttr("disabled")
+		        	}
+		        }
+			 });
+		}
+	}
+	
+	
+	this.validateRatingShortCode = function(){
+		var ratingShortCode = document.getElementById("ratingShortCode").value.trim(); 
+		var ratingScaleId = $("#ratingScaleId").val();
+		if(ratingScaleId == 'undefined' || ratingScaleId == null){
+			ratingScaleId = '';
+		}
+		
+		if(ratingShortCode != null && ratingShortCode != '' && ratingShortCode != 'undefined'){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/validateRatingShortCode?ratingShortCode="+ratingShortCode+"&ratingScaleId="+ratingScaleId,
+		        success: function(result) {
+		        	if (result == 'invalid') {
+		        		$("#savePerformanceRatingScale").attr("disabled", "disabled");
+		        		$('#ratingShortCodeDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#ratingShortCode").after( "<p class='jquery_form_error_message'>" + ratingShortCode + " is Already Existed</span>");
+						document.getElementById("ratingShortCode").setAttribute( 'record-exist', 'yes');
+						document.getElementById("ratingShortCode").setAttribute( 'record-exist-errorMsg', ratingShortCode +"  already existed");
+		        	}else{
+		        		$('input#ratingShortCode').removeAttr("class record-exist record-exist-errormsg");
+						$('input#ratingShortCode').attr('class','valid form-control');
+						$('#ratingShortCodeDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#savePerformanceRatingScale").removeAttr("disabled")
+		        	}
+		        }
+			 });
+		}
+	}
+	
+	
+	
+	 this.validateRatingScaleValue = function(){
+			var ratingScaleValue = $('#ratingScaleValue').val();
+			
+			 if(ratingScaleValue > 100 || ratingScaleValue < 0){
+				 if(ratingScaleValue < 0){
+					    $('#ratingScaleValueId').find('p.jquery_form_error_message').remove(); 
+						$('input#ratingScaleValueValidation').attr('class','error signin_fild');
+						$("input#ratingScaleValueValidation").after("<p class='jquery_form_error_message'>Scale value should not in negitive</p>");
+						$('input#ratingScaleValueValidation').attr('record-exist','yes');
+						$('input#ratingScaleValueValidation').attr('record-exist-errorMsg','Scale value should not in negitive'); 
+				 }else{
+					    $('#ratingScaleValueId').find('p.jquery_form_error_message').remove(); 
+						$('input#ratingScaleValueValidation').attr('class','error signin_fild');
+						$("input#ratingScaleValueValidation").after("<p class='jquery_form_error_message'>Scale value should not more than 100</p>");
+						$('input#ratingScaleValueValidation').attr('record-exist','yes');
+						$('input#ratingScaleValueValidation').attr('record-exist-errorMsg','Scale value should not more than 100'); 
+				 }
+			 }else{
+				 
+			     $('#ratingScaleValueId').find('p.jquery_form_error_message').remove(); 
+		    	 $('input#ratingScaleValueValidation').removeAttr( "class record-exist record-exist-errormsg");
+				 $('#ratingScaleValueId').find('p.jquery_form_error_message').remove();
+			 }
+		}
+	 
 	
 	
 	this.getBadgesList = function(){
@@ -264,6 +475,121 @@ function PerformanceManagement(){
    			}); 
    }
    
+   this.performanceRatingScaleList = function(){
+	   	$.ajax({
+	   		  type: "GET",
+	   		    url: sourceleadUrl+"/performanceRatingScaleList",
+	   		     success :function(response) {
+	   		    	    $("#performanceManagementDiv").empty();  
+	   		    	    $("#performanceManagementDiv").append(response);
+	   		    	    getRatingScaleList();
+	   				},
+	   			}); 
+	   }
+   
+   this.addNewRatingScale = function(ratingScaleId){
+	   	$.ajax({
+	   		  type: "GET",
+	   		    url: sourceleadUrl+"/addNewRatingScale",
+	   		     success :function(response) {
+	   		    	    $("#performanceManagementDiv").empty();  
+	   		    	    $("#performanceManagementDiv").append(response);
+	   		    	    
+	   		    	   if(ratingScaleId != null && ratingScaleId != 'undefined' && ratingScaleId != ''){
+ 		    	    	 performanceManagement.editPerformanceRatingScale(ratingScaleId);
+ 		    	       }
+	   		    	   
+		   		    	 if(ratingScaleId == null || ratingScaleId == 'undefined' || ratingScaleId == ''){
+		   		    		performanceManagement.getPerformanceScaleLevels();  
+		   		    	 }
+ 		    	    
+ 		    	       
+	   		    	   performanceManagement.scaleDescriptionEditor();
+	   				},
+	   			}); 
+	   }
+   
+   this.scaleDescriptionEditor = function(){
+	    $("#txtEditor").Editor();
+		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-4000');
+		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
+   }
+   
+   
+   
+   this.editPerformanceRatingScale = function(ratingScaleId){
+		  
+	 	  $("#ratingListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$.ajax({
+				  type: "GET",
+				    url: sourceleadUrl+"/getPerformanceRatingScaleDetailsById?ratingScaleId="+ratingScaleId,
+				     success :function(response) {
+				    	 
+				    		if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+		     	    		    showError(response.responseMessage);
+		     	    		    $("#ratingListLoading").removeAttr('style');
+		     	    		}
+				        	else if (response.response === "AWKWARD") {
+				        	    location.href = "/errorPage";
+				        	} else if (response.response === "SUCCESS") {
+				        		$("#ratingScaleId").val(ratingScaleId);
+				        		$("#ratingScaleName").val(response.object.ratingName);
+				        		$("#ratingShortCode").val(response.object.shortCode);
+				        		$("#ratingScaleValue").val(response.object.ratingScaleValue);
+				        		
+				        		
+				        		 if(response.object.description != null 
+				        				 && response.object.description != ''
+				        					 && response.object.description != 'undefined'){
+				        			 $("textarea[name=description]").val(response.object.description);
+						        	 $(".Editor-editor").html(response.object.description);
+				        		 }
+				        		 
+				        		performanceManagement.getPerformanceScaleLevels(response.object.levelId);  
+				        		 
+				        		$("#ratingListLoading").removeAttr('style');
+				        	} else if (response.indexOf('Sign In') !== -1) {
+				        		location.replace(sourceleadUrl);
+				        	} else {
+				        	    showError("Operation failed, please try again");
+				        	}
+				    	  
+						},
+					});
+	  }
+
+   
+   
+   this.getPerformanceScaleLevels = function(levelId){
+	   if(levelId == null || levelId == 'undefined' || levelId == ''){
+		   levelId = 0;
+	   }
+	   
+		  $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getPerformanceScaleLevels?ratingLevelId="+levelId, 
+		        success: function(json) {
+		        	var output = "";
+		        	
+		        	output = output + "<option value=''>--Select Level--</option>";
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		var opt = json[i];
+		        		
+		        		if(levelId != null && levelId != 'undefined' && levelId != '' && levelId == opt.id){
+		        			output = output + "<option value='" +opt.id+ "' selected>"+opt.name+"</option>";
+		        		}else{
+		        			output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
+		        		}
+			        		
+					}
+		        	$("#performanceScaleLevel").empty();
+			        $("#performanceScaleLevel").append(output);
+			        $('#performanceScaleLevel').chosen();
+		        },
+		    });
+	  }
+   
    
    this.tagPerformanceCompetence = function(tagCompetenceId){
 	   $.ajax({
@@ -339,6 +665,10 @@ function PerformanceManagement(){
   this.addNewCompetence = function() {
  	  $(".mask, #competenceModalTasktype").fadeIn();
    }
+  
+  this.addRatingScaleLevels = function() {
+ 	  $(".mask, #ratingScaleModalTasktype").fadeIn();
+   }
    
    this.closeBadgePopup = function(){
  	  $(".mask, #modalTasktype").fadeOut();
@@ -372,6 +702,18 @@ function PerformanceManagement(){
 	 	  document.getElementById("competence_form").reset();
 
 	 		
+   }
+   
+   this.closeRatingScalePopup = function(){
+	      $(".mask, #ratingScaleModalTasktype").fadeOut();
+	      $("#ratingLevelId").val('');
+	      $("#ratingLevelName").val('');
+ 	 	  $("textarea[id='ratingLevelDescription']").text('');
+	 	  $('#ratingLevelNameDiv').find('p.jquery_form_error_message').remove();
+	 	  $('#ratingLevelDescriptionDiv').find('p.jquery_form_error_message').remove();
+	 	  document.getElementById("ratingLevel_form").reset();
+	 	  $("#savePerformanceRatingLevel").removeAttr("disabled");
+	 	  
    }
    
    
@@ -464,6 +806,87 @@ function PerformanceManagement(){
  					},
  				}); 
    }
+   
+   
+   this.editPerformanceRatingLevel = function(ratingLevelId){
+	   performanceManagement.addRatingScaleLevels();
+ 	  $("#ratingScaleLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 		$.ajax({
+ 			  type: "GET",
+ 			    url: sourceleadUrl+"/getPerformanceLevelDetailsById?ratingLevelId="+ratingLevelId,
+ 			     success :function(response) {
+ 			    	 
+ 			    		if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+ 	     	    		    showError(response.responseMessage);
+ 	     	    		    $("#ratingScaleLoading").removeAttr('style');
+ 	     	    		}
+ 			        	else if (response.response === "AWKWARD") {
+ 			        	    location.href = "/errorPage";
+ 			        	} else if (response.response === "SUCCESS") {
+ 			        		 $("#ratingLevelId").val(ratingLevelId);
+ 			        		 $("#ratingLevelName").val(response.object.name);
+ 			        		 $("textarea[id='ratingLevelDescription']").text(response.object.description);
+ 			        		 $("#ratingScaleLoading").removeAttr('style');
+ 			        	} else if (response.indexOf('Sign In') !== -1) {
+ 			        		location.replace(sourceleadUrl);
+ 			        	} else {
+ 			        	    showError("Operation failed, please try again");
+ 			        	}
+ 			    	  
+ 					},
+ 				}); 
+   }
+   
+   
+   this.deletePerformanceRatingLevel = function(ratingLevelId){
+		$.ajax({
+			  type: "POST",
+			    url: sourceleadUrl+"/deletePerformanceRatingLevel?ratingLevelId="+ratingLevelId,
+			     success :function(response) {
+			    	 
+			    	 if (response && (response === "INVALID_DATA" || response === "INVALID_USER")) {
+	     	    		    showError("Invalid User");
+	     	    		}
+			        	else if (response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response === "SUCCESS") {
+			        		performanceManagement.performanceRatingScaleList();
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+			    	  
+					},
+				});
+  }
+   
+  
+   this.deletePerformanceRatingScale = function(ratingScaleId){
+		$.ajax({
+			  type: "POST",
+			    url: sourceleadUrl+"/deletePerformanceRatingScale?ratingScaleId="+ratingScaleId,
+			     success :function(response) {
+			    	 
+			    	 if (response && (response === "INVALID_DATA" || response === "INVALID_USER")) {
+	     	    		    showError("Invalid User");
+	     	    		}
+			        	else if (response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response === "SUCCESS") {
+			        		performanceManagement.performanceRatingScaleList();
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+			    	  
+					},
+				});
+ }
+  
+   
+   
    
    this.deleteCompetence = function(competenceId){
 		$.ajax({

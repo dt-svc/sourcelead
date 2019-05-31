@@ -489,45 +489,31 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<!-- <li><a href="#">Invoice Report By Customer / Project</a></li>
 				<li><a href="#">Bill Report By Customer / Project</a></li> -->
 				<sec:authorize access="hasRole('ROLE_A_R_AGING')">
-				<c:if test="${SourceLeadWeb_ats == 'Y'}">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/arAgingReport'>A/R Aging</a></li>
-				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_A_P_AGING')">
-				<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/apAgingReport'>A/P Aging</a></li>
-				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_INVOICE')">
-					<c:if test="${SourceLeadWeb_ats == 'Y'}">
 					<li><a href='${SourceLeadWeb_sourceleadUrl}/missingInvoiceReport'>Missing Invoice(s)</a></li>
-					</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_RECEIVED_INVOICES')">
-				<c:if test="${SourceLeadWeb_ats == 'Y'}">
 			     <li><a href='${SourceLeadWeb_sourceleadUrl}/receivedInvoiceReport'>Received Invoice(s)</a></li>    
-			     </c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_BILL')">
-				<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/missingBillReport'>Missing Bill(s)</a></li>
-				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_PAID_BILL')">
-					<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				    <li><a href='${SourceLeadWeb_sourceleadUrl}/paidBillReport'>Paid Bill(s)</a></li>
-				    </c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MARGIN_SHEET_REPORT')">
-				<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/marginSheetReports'>MarginSheetReport</a></li>
-				</c:if>
 				</sec:authorize>
 				
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/assetmanagementGrowth'>Asset Growth</a></li>
