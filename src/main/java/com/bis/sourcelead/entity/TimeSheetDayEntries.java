@@ -46,7 +46,6 @@ public class TimeSheetDayEntries implements Serializable{
 	private ProjectTasks projectTask;
 	
 	@NotNull
-    @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
 	@Column(name = "TIMESHEET_DATE")
 	private Date timesheetDate;
 	
