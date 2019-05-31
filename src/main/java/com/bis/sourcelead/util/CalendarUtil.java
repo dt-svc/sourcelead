@@ -1222,6 +1222,86 @@ public  class CalendarUtil {
 		}
 		return null;
 	}
+	
+	public static String getMonthStartDateAndEndDateWithPrefixByMonth(String month, int year, boolean getStartDate) {
+		try {
+			int calendarMonth = 0;
+			switch (month.toUpperCase()) {
+			case "JANUARY":
+				calendarMonth = 0;
+				break;
+			case "FEBUARY":
+				calendarMonth = 1;
+				break;
+			case "MARCH":
+				calendarMonth = 2;
+				break;
+			case "APRIL":
+				calendarMonth = 3;
+				break;
+			case "MAY":
+				calendarMonth = 4;
+				break;
+			case "JUNE":
+				calendarMonth = 5;
+				break;
+			case "JULY":
+				calendarMonth = 6;
+				break;
+			case "AUGUST":
+				calendarMonth = 7;
+				break;
+			case "SEPTEMBER":
+				calendarMonth = 8;
+				break;
+			case "OCTOBER":
+				calendarMonth = 9;
+				break;
+			case "NOVEMBER":
+				calendarMonth = 10;
+				break;
+			case "DECEMBER":
+				calendarMonth = 11;
+				break;
+			default:
+				break;
+			}
+
+			Calendar c = Calendar.getInstance();
+			c.set(Calendar.YEAR, year);
+			c.set(Calendar.MONDAY, calendarMonth);
+			int startDate = c.getActualMinimum(Calendar.DAY_OF_MONTH);
+			int endDate = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+			if(getStartDate) {
+				return startDate + getDatePrefix(startDate);
+			} else {
+				return endDate + getDatePrefix(endDate);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
+	public static String getDatePrefix(int date) {
+		try {
+			if (date == 1 || date == 21 || date == 31) {
+				return "st";
+			} else if (date == 2 || date == 22) {
+				return "nd";
+			} else if (date == 3 || date == 23) {
+				return "rd";
+			}
+			return "th";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(getMonthStartDateAndEndDateWithPrefixByMonth("May", 2019, true));
+	}	
  
 }
 
