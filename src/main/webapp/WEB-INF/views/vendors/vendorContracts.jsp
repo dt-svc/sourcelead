@@ -19,10 +19,6 @@ float:none;
 float:none;
 }
 
-.addUser-org {
-    overflow-x: auto;
-}
-
 #uploadFileGroup p.jquery_form_error_message{
 	position: absolute;
 	left:0;
