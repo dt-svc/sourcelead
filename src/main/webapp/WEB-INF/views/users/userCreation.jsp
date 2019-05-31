@@ -42,13 +42,6 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			 </c:forEach>
 	});
 </script>
-<style type="text/css">
-.ratetype p {
-    left: 0 !important;
-    position: absolute;
-    bottom: -14px;
-}
-</style>
   <!-- Content Area -->
   <section class="content-wraper contentWraper">
         <section class="content-header clearfix">
@@ -489,7 +482,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                  <div class="form-group">
                      <label class="col-md-3">Rate</label>
                      <div class="col-md-9">
-                         <div class="input-group er ratetype">
+                         <div class="input-group er ratetype ratetype-error-styles">
 							<div class="input-group-btn tblminwidth-75 displyBlock">
 							 <select class="selectpicker" id="currentCurrency" name="currentCurrency">
 								<option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>

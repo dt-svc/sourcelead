@@ -6,19 +6,6 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<style type="text/css">
-.center-div {
-	width: 300px;
-	height: 30px;
-	margin: 10px 220px 0;
-}
-
-.center-div input {
-	border: none;
-	background: transparent
-}
-</style>
-
 <!-- <script type="text/javascript">
 var uploadflag= true;
 		window.onload = function () {

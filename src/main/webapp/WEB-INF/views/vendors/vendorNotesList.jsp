@@ -6,45 +6,10 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
-.edit-details {
-text-align:left;
-}
-.edit-details ul {
-float:none;
-}
-.edit-details ul li {
-float:none;
-}
-
-.addUser-org {
-    overflow-x: auto;
-}
-
-
-#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.tblicons a{
-	font-size:13px;
-	}
-	.tblicons a:first-child{
-	margin-left: 0;
-	}
-	.tblicons .glyphicon-trash{
-	margin-left: 5px;
-	}
-	.tblicons a{
-	margin:0px 8px;
-	padding: 0 !important;
-	} 
-	.vendor_wrap_inn_table table tr th:last-child{
-	width:100px;
-	}
-	.removeIcon{
-	font-size:22px; position:relative; top:-5px; margin-left:15px; color:#F22613; cursor: pointer;
-	}
+.edit-details { text-align:left; }
+.edit-details ul { float:none; }
+.edit-details ul li { float:none; }
+.addUser-org { overflow-x: auto; }
 </style>
 
 <div id="deleteDocpopUp"></div>
@@ -66,7 +31,7 @@ function vendorNotesList(orgRelationId,vendorLocationId){
 		
 		result = result + '</ul>';
 		result = result  +'  <div class="clearfix"></div> ';
-		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table vendor_wrap_inn_table_last_child">';
 		result  = result + '   <div id="vendorNotesListDiv" ></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
@@ -102,7 +67,7 @@ function vendorNotes(orgRelationId){
 //     '${SourceLeadWeb_user.id}' 
 
 	 output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
-	  output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+	  output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table vendor_wrap_inn_table_last_child">';
      for(var i=0;i<json.length;i++){
        	var report = json[i];
        	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
