@@ -244,6 +244,7 @@ public class TimesheetRestController {
 		try {
 			TimesheetEntryDetailsDTO tedDTO = getTimesheetEntryDetails(eedDTO, request);
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Long shiftId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "shiftId");
 			if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 				orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 			}else {
@@ -255,7 +256,7 @@ public class TimesheetRestController {
 				ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
 				if(conPM != null) {
 					User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
-	                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser,conPM.getProjectMemberCandidteId());
+	                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser,conPM.getProjectMemberCandidteId(),shiftId);
 	                tsDTO.setEmpLeaveMap(empLeaveMap);
 				}
 				
@@ -284,9 +285,13 @@ public class TimesheetRestController {
 				"orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+
 		if (loginUser != null && orgLocations != null) {
 			candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLocations.getId());
 		}
+
+		Long shiftId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "shiftId");
+
 		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		}else {
@@ -444,7 +449,7 @@ public class TimesheetRestController {
 					avgWorkingHoursPerDay = Integer.parseInt(hrsArray[0]);
 				}
                 
-                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,candidate);
+                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,candidate,shiftId);
 				tedDTO.setEmpLeaveMap(empLeaveMap);
 				Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
 				model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
@@ -475,7 +480,7 @@ public class TimesheetRestController {
 
 	}
 	
-	public Map<String,List<EmployeeLeaveDTO>> getEmpLeaveList(List<WeekDaysDTO> weekDays,String currentTimeSubFrequency,OrgLocations loc,User user,Candidate candidate) throws Exception {
+	public Map<String,List<EmployeeLeaveDTO>> getEmpLeaveList(List<WeekDaysDTO> weekDays,String currentTimeSubFrequency,OrgLocations loc,User user,Candidate candidate, Long shiftId) throws Exception {
 		Map<String,List<EmployeeLeaveDTO>> empLeaveMap = new ConcurrentHashMap<>();
 		Date startDate = null;
 		Date endDate = null;
@@ -488,7 +493,7 @@ public class TimesheetRestController {
 			List<AppliedLeaveDate> leaveDateList = appliedLeaveDateService.getAppliedLeaveDateByUserId(user.getId(), startDate, endDate);
 			List<Holiday>  holidays = null;
 			if(user != null && candidate != null && candidate.getWorkLocation() != null) {
-				 holidays = holidayDAO.getHolidaybyLocationIdAndFromdateForTimesheets(startDate, endDate,candidate.getWorkLocation().getId(),user.getId(), candidate.getWorkLocation().getId());
+				 holidays = holidayDAO.getHolidaybyLocationIdAndFromdateForTimesheets(startDate, endDate,candidate.getWorkLocation().getId(),user.getId(), candidate.getWorkLocation().getId(),shiftId);
 			}
 			
 			if((leaveDateList != null && !leaveDateList.isEmpty()) || (holidays != null && !holidays.isEmpty())) {
@@ -2131,6 +2136,8 @@ public class TimesheetRestController {
 		ModelAndView model = new ModelAndView();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		Long shiftId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "shiftId");
+		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		if (loginUser != null && orgLocations != null) {
@@ -2290,7 +2297,7 @@ public class TimesheetRestController {
 						String [] hrsArray = employee.getDailyHours().split(":");
 						avgWorkingHoursPerDay = Integer.parseInt(hrsArray[0]);
 					}
-					Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,candidate);
+					Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tedDTO.getWeekDays(),tedDTO.getCurrentTimeSubFrequency(), orgLocations,loginUser,candidate,shiftId);
 					tedDTO.setEmpLeaveMap(empLeaveMap);	
 							
 					Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
@@ -3651,6 +3658,8 @@ public class TimesheetRestController {
 			HttpServletRequest request) throws Exception {
 
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long shiftId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "shiftId");
+		
 		if (loginUser == null && eedDTO.getUserId() != null) {
 			loginUser = userService.getUserById(eedDTO.getUserId());
 		}else {
@@ -3722,7 +3731,7 @@ public class TimesheetRestController {
 				ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMemberId);
 				if(conPM != null) {
 					User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
-	                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser,conPM.getProjectMemberCandidteId());
+	                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser,conPM.getProjectMemberCandidteId(),shiftId);
 	                tsDTO.setEmpLeaveMap(empLeaveMap);
 				}
 				model.addObject("timesheetSubmissionDTO", tsDTO);
@@ -5239,6 +5248,7 @@ public class TimesheetRestController {
 		 * saving Code
 		 */
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Long shiftId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "shiftId");
 		if(orgLocations != null) {
 			 orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
 		}
@@ -5293,7 +5303,7 @@ public class TimesheetRestController {
 			ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(pm.getId());
 			if(conPM != null) {
 				User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
-                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser,conPM.getProjectMemberCandidteId());
+                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), orgLocations,consultantUser,conPM.getProjectMemberCandidteId(),shiftId);
                 tsDTO.setEmpLeaveMap(empLeaveMap);
 			 }
 			if (pm.getProjectClientsId().getOrgRelationId() != null) {
@@ -5354,6 +5364,7 @@ public class TimesheetRestController {
 				"orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		Long shiftId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "shiftId");
 		if(loginUser != null && loginOrgLocation != null ) {
 			loginUser = userService.getUserById(loginUser.getId());
 			loginOrgLocation = orgLocationService.getOrgLocations(loginOrgLocation.getId());
@@ -5837,7 +5848,7 @@ public class TimesheetRestController {
 			ProjectMembers conPM =  projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
 			if(conPM != null) {
 				User consultantUser = conPM.getProjectMemberCandidteId().getConsultantUser();
-                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), loginOrgLocation,consultantUser,conPM.getProjectMemberCandidteId());
+                Map<String,List<EmployeeLeaveDTO>> empLeaveMap = getEmpLeaveList(tsDTO.getWeekDays(),eedDTO.getCurrentTimeSubFrequency(), loginOrgLocation,consultantUser,conPM.getProjectMemberCandidteId(),shiftId);
                 tsDTO.setEmpLeaveMap(empLeaveMap);
 			 }
 			tedDTO.setTimesheetSubmission(tsDTO);
