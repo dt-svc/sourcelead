@@ -1,6 +1,9 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
   <!-- Header Area -->
   <script type="text/javascript">
 var atsUrl = '${SourceLeadWeb_atsUrl}';
@@ -9,7 +12,6 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 
 <script>
 	$(document).ready(function() {
-		alert("hi");
 		getDuplicateConfigData();
 	});
 </script>
@@ -80,6 +82,7 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var email 		= $('#email').val();
 	 var phoneNumber=$('#phoneNumber').val();
+	 
 	 var panNumber	=$('#panNumber').val();
 	 var id = $('#configId').val();
 	if($('#ssnNumber').val()== undefined || $('#ssnNumber').val()== null){
@@ -102,13 +105,12 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
  </script>
    <script>
    function getDuplicateConfigData(){
-	   var sourceleadUrl ='${sourceleadUrl}';
 	     $.ajax({
 	 	      type: "GET",
 	       	  url:atsUrl+"/getDuplicateConfigData",
 	         	success: function(data) {
 	         		$("#configId").val(data.id);
-// 	         		displayAlreadyDuplicateConfigData(data);
+        		displayAlreadyDuplicateConfigData(data);
 		        },  
 	     });   
    }
@@ -120,28 +122,32 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	 }else{
 		 $("#email").prop("checked", true);
 	 }
-		 if(data.phoneNumber == true){
-			 $("phoneNumber").prop("checked", true);
+		 if(data.mobilePhone == true){
+			 $("#phoneNumber").prop("checked", true);
+			 $("#phoneNumber").val('Yes');
 		 }else{
-			 $("phoneNumber").prop("checked", false);
+			 $("#phoneNumber").prop("checked", false);
 		 }
 		 
 		 if(data.panNumber == true){
-			 $("panNumber").prop("checked", true);
+			 $("#panNumber").prop("checked", true);
+			 $("#panNumber").val('Yes');
 		 }else{
-			 $("panNumber").prop("checked", false);
+			 $("#panNumber").prop("checked", false);
 		 }
 		 
 		 if(data.ssnNumber == true){
-			 $("ssnNumber").prop("checked", true);
+			 $("#ssnNumber").prop("checked", true);
+			 $("#ssnNumber").val('Yes');
 		 }else{
-			 $("ssnNumber").prop("checked", false);
+			 $("#ssnNumber").prop("checked", false);
 		 }
 		 
 		 if(data.aadharNumber == true){
-			 $("aadharNumber").prop("checked", true);
+			 $("#aadharNumber").prop("checked", true);
+			 $("#aadharNumber").val('Yes');
 		 }else{
-			 $("aadharNumber").prop("checked", false);
+			 $("#aadharNumber").prop("checked", false);
 		 }
  }
 

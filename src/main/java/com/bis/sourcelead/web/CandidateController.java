@@ -797,7 +797,7 @@ public class CandidateController {
 		  
 	}
 	    
-	    @RequestMapping(value = "/duplicateCheck")
+	    @RequestMapping(value = "/candidateDuplicateVerification")
 		public ModelAndView redirect(HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -807,7 +807,7 @@ public class CandidateController {
             model.addObject("loginCountryName", countries.getName());
             model.addObject("currencyCode", countries.getCurrency());
 			
-			model.setViewName("requirement/duplicateCheck");
+			model.setViewName("requirement/candidateDuplicateVerification");
 			}
 			return model;
 		}
