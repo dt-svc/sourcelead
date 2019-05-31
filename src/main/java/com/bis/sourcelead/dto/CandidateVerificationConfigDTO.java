@@ -1,45 +1,26 @@
 package com.bis.sourcelead.dto;
 
-import java.math.BigInteger;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.bis.sourcelead.annotations.CleanHtml;
-import com.bis.sourcelead.annotations.Email;
-import com.bis.sourcelead.annotations.Phone;
-import com.bis.sourcelead.annotations.Required;
-import com.bis.sourcelead.entity.OrgLocations;
-public class CandidateVerificationConfigDTO{
+public class CandidateVerificationConfigDTO {
 
 	private Long id;
-	
-	private String panNumber;
-	
-	private String aadharNumber;
-
+	private boolean emailRequired;
 	private String email;
-
-	private String status;
-
-	private String createdDate;
-
-	private String createdBy;
-
-	private String updatedDate;
-
-	private String updatedBy;
-
+	private boolean phoneRequired;
 	private String phoneNumber;
-
-	private Long orgLocationId;
-	 
-	 private Long userId;
-	 
+	private boolean panRequired;
+	private String panNumber;
+	private boolean aadharRequired;
+	private String aadharNumber;
+	private boolean ssnRequired;
 	private String ssnNumber;
-	
+	private long userId;
 	private String uuid;
+	private String status;
+	private String createdDate;
+	private String createdBy;
+	private String updatedDate;
+	private String updatedBy;
+	private long orgLocationId;
 
 	public Long getId() {
 		return id;
@@ -49,20 +30,12 @@ public class CandidateVerificationConfigDTO{
 		this.id = id;
 	}
 
-	public String getPanNumber() {
-		return panNumber;
+	public boolean isEmailRequired() {
+		return emailRequired;
 	}
 
-	public void setPanNumber(String panNumber) {
-		this.panNumber = panNumber;
-	}
-
-	public String getAadharNumber() {
-		return aadharNumber;
-	}
-
-	public void setAadharNumber(String aadharNumber) {
-		this.aadharNumber = aadharNumber;
+	public void setEmailRequired(boolean emailRequired) {
+		this.emailRequired = emailRequired;
 	}
 
 	public String getEmail() {
@@ -73,6 +46,85 @@ public class CandidateVerificationConfigDTO{
 		this.email = email;
 	}
 
+	public boolean isPhoneRequired() {
+		return phoneRequired;
+	}
+
+	public void setPhoneRequired(boolean phoneRequired) {
+		this.phoneRequired = phoneRequired;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public boolean isPanRequired() {
+		return panRequired;
+	}
+
+	public void setPanRequired(boolean panRequired) {
+		this.panRequired = panRequired;
+	}
+
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
+	public boolean isAadharRequired() {
+		return aadharRequired;
+	}
+
+	public void setAadharRequired(boolean aadharRequired) {
+		this.aadharRequired = aadharRequired;
+	}
+
+	public String getAadharNumber() {
+		return aadharNumber;
+	}
+
+	public void setAadharNumber(String aadharNumber) {
+		this.aadharNumber = aadharNumber;
+	}
+
+	public boolean isSsnRequired() {
+		return ssnRequired;
+	}
+
+	public void setSsnRequired(boolean ssnRequired) {
+		this.ssnRequired = ssnRequired;
+	}
+
+	public String getSsnNumber() {
+		return ssnNumber;
+	}
+
+	public void setSsnNumber(String ssnNumber) {
+		this.ssnNumber = ssnNumber;
+	}
+
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 
 	public String getStatus() {
 		return status;
@@ -114,46 +166,12 @@ public class CandidateVerificationConfigDTO{
 		this.updatedBy = updatedBy;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-
-	public Long getOrgLocationId() {
+	public long getOrgLocationId() {
 		return orgLocationId;
 	}
 
-	public void setOrgLocationId(Long orgLocationId) {
+	public void setOrgLocationId(long orgLocationId) {
 		this.orgLocationId = orgLocationId;
 	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public String getSsnNumber() {
-		return ssnNumber;
-	}
-
-	public void setSsnNumber(String ssnNumber) {
-		this.ssnNumber = ssnNumber;
-	}
-
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
-	
-
 
 }

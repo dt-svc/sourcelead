@@ -899,13 +899,31 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,
-			OrgLocations loginOrgLocation) throws Exception {
+			OrgLocations loginOrgLocation,CandidateVerificationConfig candidateVerificationConfig) throws Exception {
 		  Session session = this.sessionFactory.getCurrentSession();
 //		    List<Long> candidatesCount = null;
+		  String statusSubQuery = "";
+			String statusSubQuery1 = "";
+			String statusSubQuery2 = "";
+			String statusSubQuery3 = "";
+			String statusSubQuery4 = "";
 
-		  String statusSubQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id) and reqSub.submissionStatus <> 'REJECTED'";
-		  
-		  
+		   statusSubQuery = " reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id) and reqSub.submissionStatus <> 'REJECTED'";
+		  if(candidateVerificationConfig != null) {
+		  if(candidateVerificationConfig.getAadharNumber() == true){
+			 	statusSubQuery1 = " OR reqSub.candidate.aadharNumber IN(select tempReqSub.candidate.aadharNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+			}
+			else if(candidateVerificationConfig.getPanNumber() == true){
+					statusSubQuery2 = " OR reqSub.candidate.panNumber IN(select tempReqSub.candidate.panNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+			}
+			else if(candidateVerificationConfig.getMobilePhone()== true){
+			 statusSubQuery3 = " OR reqSub.candidate.mobilePhone IN(select tempReqSub.candidate.mobilePhone from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+			}
+			else if(candidateVerificationConfig.getSsnNumber()== true){
+				 statusSubQuery4 = " OR reqSub.candidate.ssnNumber IN(select tempReqSub.candidate.ssnNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+			}
+		  }
+			statusSubQuery = "and reqSub.submissionStatus <> 'REJECTED' and ("+statusSubQuery+statusSubQuery1+statusSubQuery2+statusSubQuery3+statusSubQuery4+")";
 		  
 		  Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
 			String[] releasedBy =null;
@@ -3470,6 +3488,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					response.setRecordsTotal(count);
 			}else{
 					String statusSubQuery = "";
+					String emailSubQuery = "";
 					String statusSubQuery1 = "";
 					String statusSubQuery2 = "";
 					String statusSubQuery3 = "";
@@ -3480,19 +3499,22 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						statusSubQuery = " and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' "
 								+ " OR reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED') "; 
 					}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(requirementSubmissionsDTO.getSubmissionType())){
-						statusSubQuery = " and reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
-						 if(candidateVerificationConfig.getAadharNumber() == true){
+						emailSubQuery = "reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+						if(candidateVerificationConfig !=null) {
+						if(candidateVerificationConfig.getAadharNumber() == true){
 							statusSubQuery1 = " or reqSub.candidate.aadharNumber IN(select tempReqSub.candidate.aadharNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
 						}
 						else if(candidateVerificationConfig.getPanNumber() == true){
 							statusSubQuery2 = " or reqSub.candidate.panNumber IN(select tempReqSub.candidate.panNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
 						}
-						else if(candidateVerificationConfig.getMobilePhone()== true && Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(requirementSubmissionsDTO.getSubmissionType())){
+						else if(candidateVerificationConfig.getMobilePhone()== true){
 							statusSubQuery3 = " or reqSub.candidate.mobilePhone IN(select tempReqSub.candidate.mobilePhone from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
 						}
 						else if(candidateVerificationConfig.getSsnNumber()== true){
 							statusSubQuery4 = " or reqSub.candidate.ssnNumber IN(select tempReqSub.candidate.ssnNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
 						}
+						}
+						statusSubQuery = " and reqSub.submissionStatus <> 'REJECTED' and ("+emailSubQuery+statusSubQuery1+statusSubQuery2+statusSubQuery3+statusSubQuery4+")";
 					}
 					
 					else{
@@ -3588,7 +3610,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						}
 						String whereCondition = "";
 						if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(requirementSubmissionsDTO.getSubmissionType())){
-							 whereCondition = subQuery+statusSubQuery+statusSubQuery1+statusSubQuery2+statusSubQuery3+statusSubQuery4+" and reqSub.submissionStatus <> 'REJECTED'";
+							 whereCondition = subQuery+statusSubQuery;
 						}else {
 							 whereCondition = subQuery+statusSubQuery;	
 						}

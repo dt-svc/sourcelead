@@ -4,8 +4,11 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.CandidateConfigurationDTO;
+import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.OfferAcceptanceRateView;
 import com.bis.sourcelead.entity.OfferAcceptanceRateViewForVendor;
 import com.bis.sourcelead.entity.RecruiterJobsReportView;
@@ -46,4 +49,8 @@ public interface RequirementSubmissionHistoryDao {
 	public List<OfferAcceptanceRateView> getOfferAcceptanceRateList(String userCode, long orgLocationId, String selectedClients, int month, int year, boolean compare);
 	
 	public List<OfferAcceptanceRateViewForVendor> getOfferAcceptanceRateListForVendor(List<Long> parentRequirementIdList, String masterUserCode, int month, int year, boolean compare);
+
+	RequirementSubmissionHistory isInCoolingOffPeriodByLocationID(CandidateVerificationConfig candidateVerificationConfig, CandidateConfigurationDTO candidateConfigurationDTO,
+			Long orgLocationId, String reqCoolingOffPeriod, Long requirementId) throws Exception;
+
 }

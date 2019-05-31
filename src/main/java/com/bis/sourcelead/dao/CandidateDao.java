@@ -288,5 +288,7 @@ public interface CandidateDao {
 	public CandidateVerificationConfig saveDuplicateCheckConfig(CandidateVerificationConfig candidateVerificationConfig);
 
 	public CandidateVerificationConfig getCandidateVerificationConfigBy(Long orgLocationId);
+
+	public CandidateVerificationConfig getCandidateVerificationConfigByIdAndOrglocationId(Long orgLocationId, Long id);
 	
 }

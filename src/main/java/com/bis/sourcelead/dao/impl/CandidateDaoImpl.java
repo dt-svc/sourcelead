@@ -3617,5 +3617,14 @@ public class CandidateDaoImpl implements CandidateDao {
 		return candidateVerificationConfig;
 	}
 
+	@Override
+	@Transactional
+	public CandidateVerificationConfig getCandidateVerificationConfigByIdAndOrglocationId(Long orgLocationId, Long id) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from CandidateVerificationConfig can where can.orgLocationId=:orgLocationId and can.status = 1 and can.id=:id";
+		CandidateVerificationConfig candidateVerificationConfig = (CandidateVerificationConfig) session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("id", id).uniqueResult();
+		return candidateVerificationConfig;
+	}
+
 
 }

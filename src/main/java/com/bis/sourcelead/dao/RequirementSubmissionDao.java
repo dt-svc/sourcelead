@@ -95,10 +95,11 @@ public interface RequirementSubmissionDao {
 	 * @param requirementId
 	 * @param user
 	 * @param loginOrgLocation
+	 * @param candidateVerificationConfig 
 	 * @return
 	 * @throws Exception
 	 */
-	Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,OrgLocations loginOrgLocation)throws Exception;
+	Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,OrgLocations loginOrgLocation, CandidateVerificationConfig candidateVerificationConfig)throws Exception;
 	
 	RequirementSubmission getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(Long vendorSubmissionId, Long vendororgLocationsId);
 	

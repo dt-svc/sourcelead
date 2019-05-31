@@ -3801,7 +3801,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	@Override
 	public CandidateVerificationConfig saveDuplicateCheckConfig(CandidateVerificationConfigDTO candidateVerificationConfigDTO, OrgLocations loginOrgLocation,
 			User userId) {
-		CandidateVerificationConfig candidateVerificationConfig = new CandidateVerificationConfig();
+		CandidateVerificationConfig candidateVerificationConfig = null;
+		if(candidateVerificationConfigDTO.getId() != null) {
+			candidateVerificationConfig = candidateDao.getCandidateVerificationConfigByIdAndOrglocationId(loginOrgLocation.getId(),candidateVerificationConfigDTO.getId());
+			candidateVerificationConfig.setUpdatedDate(new Date());
+			candidateVerificationConfig.setUpdatedBy(userId.getId());
+		}else {
+			candidateVerificationConfig = new CandidateVerificationConfig();
+			candidateVerificationConfig.setCreatedDate(new Date());
+			candidateVerificationConfig.setCreatedBy(userId.getId());
+		}
+		
 		if(Constants.STATUS_YES.equalsIgnoreCase(candidateVerificationConfigDTO.getEmail())) {
 			candidateVerificationConfig.setEmail(true);
 		}else {

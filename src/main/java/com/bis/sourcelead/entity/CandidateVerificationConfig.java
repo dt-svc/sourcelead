@@ -20,7 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "CANDIDATE_VERIFICATION_CONF")
+@Table(name = "CANDIDATE_VERIFICATION_CONFIG")
 public class CandidateVerificationConfig implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
