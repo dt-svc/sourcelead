@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
-import com.bis.sourcelead.dto.ImmigrationCandidateDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -19,14 +18,14 @@ import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
+import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
-import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
+import com.bis.sourcelead.entity.SourceleadDeletedCandidates;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.CandidateService;
 
 public interface CandidateDao {
 	public Candidate storeCandidate(Candidate candidate) throws Exception;
@@ -276,6 +275,8 @@ public interface CandidateDao {
 	
 	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception;
 	
+	public List<Candidate> getCandidatesForUpdateWorkLocation(Long masterCandidateId,Long orgId) throws Exception;
+	
     public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
@@ -283,5 +284,17 @@ public interface CandidateDao {
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
 	
 	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
-	
+
+	public List<CandidateSource> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+
+	public long saveCandidateSource(CandidateSource candidateSource);
+
+	public CandidateSource getCandidateSourceById(Long id);
+
+	public long getCandidateSourceByOrgLocationId(String name,long userId, long orgLocationId);
+
+	public boolean deleteCandidateSourceById(long id);
+
+	public void saveSourceleadDeletedCandidate(SourceleadDeletedCandidates sourceleadDeletedCandidates) throws Exception;
+
 }

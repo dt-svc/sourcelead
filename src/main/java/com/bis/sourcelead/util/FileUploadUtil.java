@@ -24,6 +24,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
@@ -718,11 +719,12 @@ public class FileUploadUtil {
 	
 
 
-	public static void processResumeFiles(Map<String, List<ResumeParserJsonUtil>> parsedList, 
+	public static String processResumeFiles(Map<String, List<ResumeParserJsonUtil>> parsedList, 
 			List<FileInfo> fileInfoList, HttpSession session, String uploadid, String staticPath, 
 			SourceleadResumeParser sourceleadResumeParser,
 			CandidateService candidateService, CandidateResumesService candidateResumeService,
-			String country, OrgLocations loginOrgLocation, String sourceleadUrl, User user) {
+			String country, OrgLocations loginOrgLocation, String sourceleadUrl, User user,
+			Long requirementId, String needApplicantPermit, String notifyToApplicant) {
 		List<ResumeParserJsonUtil> successList = new ArrayList<>();
 		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
 		List<ResumeParserJsonUtil> existedList = new ArrayList<>();
@@ -731,6 +733,7 @@ public class FileUploadUtil {
 		parsedList.put("existed", existedList);
 		int i = 1;
 		int count = fileInfoList.size();
+		String candidateIds = "";
 		for (FileInfo fileInfo : fileInfoList) {
 			if(session != null) {
 				session.setAttribute("uploadstatus" + uploadid,
@@ -758,6 +761,7 @@ public class FileUploadUtil {
 					FileUploadUtil.moveFile(staticPath, fileInfo, "resumes-existed-" + uploadid);
 					addToResponse(0, session, uploadid, resume, fileInfo, count, i++, sourceleadUrl, candidateService);
 					existedList.add(resume);
+					candidateIds += (candidateIds.isEmpty() ? "" : ",") + c.getId();
 					continue;
 				} else if (flag) {
 					CandidateResumeDTO candidateResumeDTO = new CandidateResumeDTO();
@@ -768,6 +772,7 @@ public class FileUploadUtil {
 					candidateResumeService.storeCandidateResume(candidateResumeDTO, user, c, null, loginOrgLocation);
 					addToResponse(2, session, uploadid, resume, fileInfo, count, i++, sourceleadUrl, candidateService);
 					successList.add(resume);
+					candidateIds += (candidateIds.isEmpty() ? "" : ",") + c.getId();
 				} else {
 					CandidateDTO candidateDto = new CandidateDTO();
 					candidateDto.setEmail(resume.getEmail());
@@ -790,7 +795,11 @@ public class FileUploadUtil {
 					candidateDto.setFirstName(name1.contains(".") ? name1.substring(0, name1.lastIndexOf(".")) : name1);
 					candidateDto.setLastName(name1.contains(".") ? name1.substring(name1.lastIndexOf(".") + 1) : "");
 					candidateDto.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
-					candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
+					Candidate storedCandidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
+					if(requirementId > 0) {
+						candidateIds += (candidateIds.isEmpty() ? "" : ",") + storedCandidate.getId();
+						System.out.println("Add Applicant for requirement " + requirementId + " to newly imported candidate");
+					}
 					addToResponse(1, session, uploadid, resume, fileInfo, count, i++, sourceleadUrl, candidateService);
 					successList.add(resume);
 				}
@@ -806,6 +815,15 @@ public class FileUploadUtil {
 				failedList.add(resume);
 			}
 		}
+		/*try {
+			if (requirementId > 0 && requirementRestController != null && !candidateIds.isEmpty()) {
+				requirementRestController.submitRecommendationCandidates(requirementId, candidateIds, "Y", needApplicantPermit, notifyToApplicant, request);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
+		
+		return candidateIds;
 	}
 	
 	public static void processConfiguredEmailShedulerForResumesParsing(List<FileInfo> fileInfoList, String staticPath, 

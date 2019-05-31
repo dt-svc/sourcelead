@@ -52,7 +52,7 @@ public class Candidate implements Serializable {
 	private Candidate parentCandidateId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
+	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocationId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -289,6 +289,9 @@ public class Candidate implements Serializable {
 	@Column(name = "PRIMARY_SKILL")
 	private String primarySkill;
 
+	@Column(name = "CANDIDATE_SOURCE")
+	private String candidateSource;
+	
 	@Column(name = "LINKEDIN_PROFILE_URL")
 	private String linkedUrl;
 
@@ -1953,5 +1956,12 @@ public class Candidate implements Serializable {
 		this.ssnNumber = ssnNumber;
 	}
 
+	public String getCandidateSource() {
+		return candidateSource;
+	}
+
+	public void setCandidateSource(String candidateSource) {
+		this.candidateSource = candidateSource;
+	}
 	
 }

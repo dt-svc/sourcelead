@@ -161,6 +161,8 @@ public interface ProjectsService {
 		File getProjectReportListOfExcel(List<ProjectReportDTO> projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess) throws Exception;
 
 		List<Projects> getProjectsListByCanddateIdAndOrgId(String associates, Long orgLocatonId);
+
+		ProjectMembers isUserAssignedToProject(User userId, Long orgLocationId, Long projectId);
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		
