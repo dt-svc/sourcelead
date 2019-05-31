@@ -1,166 +1,330 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script>
-var atsUrl ='${SourceLeadWeb_atsUrl}';
-</script>
-
-
-<!-- Content Area -->
-  <section class="content-wraper">
+<section class="content-wraper">
+	<div class="success_pop" >
+		<i class="fa fa-check-circle"></i><span></span>
+	</div>
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Candidate Source</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Candidate Source</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a> &raquo; Candidate Source List</div>
     </section>
-    <div class="project_wrap clearfix">
-      <div class="timesheet_out" id="payrollRegister" style="display: block;">
-        <div class="clearfix">
-          <div class="positionRelative reportHead clearfix">
-            <ul class="pull-right list-unstyled list-inline">
-				<li>
-				<a class="newAdBtn mr5" title="Add" onClick="addsourceHandler();">+ Source</a>	
-					
-				</li>
-              <li class="">
-                <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
-            </ul>
-          </div>
-          <div class="require_wrap_table clearfix">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Description</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-					  <div class="tbldata-dotdot-verybig" title="Rajkumar Santhoshi Konidala"><a href="javascript:void(0)">Ramkumar Joshi Anamma</a></div>
-					</td>
-                <td>
-					<div class="tbldata-dotdot-verybig" title="Get more fox in your inbox.  Sign up for user tips, booster packs and internet intel.">
-						  Get more fox in your inbox.  Sign up for user tips, booster packs and internet intel.
-					</div>
-				</td>
-                  <td>
-                  <div class="width90px">
-                  	<ul class="list-inline list-unstyled">
-                  		<li><a href="javascript:void(0)"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>
-                  		<li><i class="fa fa-trash cursorPointer" title="Delete"></i></li>
-                  	</ul>	
-                  </div>
-                  </td>
-                </tr>
-				  <tr>
-          <td>
-					  <div class="tbldata-dotdot-verybig"><a href="questionnaire-view.html">Sample2</a></div>
-					</td>
-                <td>
-					<div class="tbldata-dotdot-verybig" title="Get more fox in your inbox.  Sign up for user tips, booster packs and internet intel.">
-						  Get more fox in your inbox.  Sign up for user tips, booster packs and internet intel.
-					</div>
-				</td>
-                  <td>
-                  <div class="width90px">
-                  	<ul class="list-inline list-unstyled">
-                  		<li><a href="editworkflow.html"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>
-                  		<li><i class="fa fa-trash cursorPointer" title="Delete"></i></li>
-                  	</ul>	
-                  </div>
-                  </td>
-                </tr>
-             </tbody>
-            </table>
-          </div>
-          <nav>
-            <ul id="paging" class="pagination">
-              <li><a href="#">Previous</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li class="disabled"><a href="#">6</a></li>
-              <li data-page="last"><a href="#">Next</a></li>
-            </ul>
-            <div class="clearfix"></div>
-          </nav>
+    <div class="content-area content-new clearfix timesheet_out">
+      <div class="clearfix mt mb">
+      <div class="clearfix">
+			<!-- <div class="project_tabs projectTabsborder"> -->
+				<div id="tab-1">
+		          <div class="positionRelative reportHead clearfix">
+		            <ul class="pull-right list-unstyled list-inline">
+		            <li><a class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>
+		              <li>
+		                <input class="repSearchBar" placeholder="Search" id="candidateSourceTableSearch" type="text">
+		                <span class="repSearchIcon" onclick="getCandidateSourceList();"></span>
+		              </li>
+			        </ul>
+		          </div>
+		           <div class="candidate_wrap_table datatable_filter" id="candidateSourceParentList"></div>
+			</div>
+		  <!-- </div> -->
         </div>
       </div>
-      
-      <!-- Content Area Ends--> 
-     </div>
-  </section> 
-      
-      
-      <!-- Source popup -->
+    </div>
+  </section>
+
 <div class="mask"></div>
-<div class="popupWrap popupWrap2" id="addSource" style="display: none;">
-    <div class="popupHead clearfix"> Add Source
-      <i class="closePop pull-right clPopClose" onClick="closesourceHandler();"></i>
-    </div>
-    <div class="clockWrap">
 
-      <div class="form-group">
-        <label class="clearfix">Name</label>
-        <input type="text" class="form-control">
-      </div>
-      <div class="form-group">
-          <label class="clearfix">Description</label>
-          <textarea class="form-control" rows="3"></textarea>
-        </div>
+<div class="popupWrap" id="modalTasktype">
+	<div class="popupHead">
+		<span id="candidateSourceFormHead">Add Type</span><i class="closePop pull-right popClose"></i>
+	</div>
+	<form id="addCandidatesourceForm" name="" action="" method="post">
+		<div class="popupContent">
+			<input type="hidden" id="candidateSourceId" name="id" value="0"/>
+			<div class="clearfix mb">
+				<label class="noPad">Name <b class="valStar">*</b></label>
+				<div class="clearfix">
+					<input class="form-control" placeholder="Name" name="name" type="text" id="candidateSourceName" field-name="Name" data-validation="required validate_length length1-100">
+				</div>
+			</div>
+			<div class="clearfix mb">
+				<label class="noPad">Description</label>
+				<div class="clearfix">
+					<textarea placeholder="Description" name="description" id="candidateSourceDesc" class="form-control" rows="2" data-validation="validate_length length0-1000"></textarea>
+				</div>
+			</div>
+		</div>
+		<div class="popupFoot text-right">
+			<button type="button" class="slBtn md colorBtn" onclick="saveCandidateSource();">Save</button>
+			<button type="button" class="slBtn md popClose" onclick="cancelCandidateSource();">Cancel</button>
+		</div>
+	</form>
+</div>
 
-
-      <div class="clearfix"></div>
-      <div class="clearfix mt">
-        <div class="pull-right">
-          <button type="buton" class="btn btn-primary mr">Save</button>
-          <button type="buton" class="btn btn-default" onClick="closesourceHandler();">Cancel</button>
-        </div>
-      </div>
-
-    </div>
-    </div>
-<!-- -->
+<div id='deletePopup' class='remove_user_pop remove_user_pop_a'>
+	<p> Is Delete Candidate Source?</p>
+	<div>&nbsp;&nbsp;&nbsp;</div>
+	<b>
+		<input id="confirmDeleteId" type="button" value="Ok" onclick="deleteCandidateSource();" class="pull-left">
+		<input class="u_can_color" type="button" value="Cancel" onClick="closeDeletePopup();">
+	</b>
+</div>
 
 <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-				$(document).ready(function(){
-					$("#cd").click(function(){
-						$(".clientDetails").toggleClass('hidden', 500);
-					});
-	
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
+	$(document).ready(function() {
+		getCandidateSourceList();
 	});
+	
+	function candidateSourcePagination(url){
+		var colIndex = 0;
+	    $('#cnadidateSourceTable').DataTable( {
+	    	"processing": true,
+	       "serverSide": true,
+	       "searching": true,
+	       "searchHighlight": true,
+	       "ajax": $.fn.dataTable.pipeline( {
+	           url: url,
+	           method: 'POST',
+	           pages: 1
+	       }),
+	       "columns": [
+	    	   {"data": "id"},
+	           {"data": "name"},
+	           {"data": "description"},
+	           {"data": "actions" }
+	       	],
+		       "columnDefs": [
+	    	   {
+		            "targets": colIndex++,
+		            "data": "id",
+		            "visible": false,
+		            "render": function ( data, type, opt, meta ) {
+		            		var result = "";
+	           		   if(opt.id != null && opt.id != '' && opt.id != 'undefined') {
+		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.id+'</div></td>';
+	           		   } else {
+							result = result +"<td><div>-----</div></td>";
+	           	       }
+			           		return result;
+		             }
+		        },
+	            {
+		            "targets": colIndex++,
+		            "data": "name",
+		            "sortable": true,
+		            "render": function ( data, type, opt, meta ) {
+		            		var result = "";
+	           		   if(opt.name != null && opt.name != '' && opt.name != 'undefined') {
+		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.name+'</div></td>';
+	           		   } else {
+							result = result +"<td><div>-----</div></td>";
+	           	       }
+			           		return result;
+		             }
+		        },
+		        {
+		            "targets": colIndex++,
+		            "data": "description",
+		            "sortable": false,
+		            "render": function ( data, type, opt, meta ) {
+		            		var result = "";
+	           		   if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
+		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.description+'</div></td>';
+	           		   } else {
+							result = result +"<td><div>-----</div></td>";
+	           	       }
+			                return result;
+		             }
+		        },
+		        {
+		            "targets": colIndex++,
+		            "data": "actions",
+		            "sortable": false,
+		            "render": function ( data, type, opt, meta ) {
+		            	var result = '<div class=" widthIcon widthIcon-three">';
+			            	result +='	<div class="text-center">';
+			            	result +='		<a href="javascript:void(0)" title="Edit Candidate Source" onclick="editCandidateSource(\'' + opt.id + '\')">';
+			            	result +='		<i class="fa fa-pencil"></i>';
+			            	result +='		</a>';
+			            	result +='	</div>';
+			            	result +='	<div class="text-center">';
+			            	result +='		<a href="javascript:void(0)" title="Delete Candidate Source" onclick="showDeleteCandidateSource(' + opt.id + ')">';
+			            	result +='		<i class="fa fa-trash"></i>';
+			            	result +='		</a>';
+			            	result +='	</div>';
+		            	result +='</div>';
+	           	        return result;
+		             }
+		        }
+	           ],
+		    	"scrollCollapse": false,
+		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+		    	"aaSorting": [[1,'desc']],
+		    	"bLengthChange": true,
+		    	"bDestroy": true,
+		    	"ordering": true,
+		    	"createdRow": function ( row, data, index ) {
+		    		row.setAttribute('id',"ticketType_"+data.id);
+	    	    },
+		    	"initComplete": function( settings, json ) {
+		    		 $('#candidateSourceTableSearch').removeAttr('disabled');
+		    	},
+		    	"oLanguage": {
+		     		"sSearch": "",
+		     		 "sZeroRecords": "", "sEmptyTable": "", 
+		     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+		     },
+		     drawCallback: function(){
+	   	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+	   	    	setTimeout(function () {
+	   	  		var body = $( table.table().body() );
+	   	 	        body.unhighlight();
+	   	 	        body.highlight($("#candidateSourceTableSearch").val());   
+	   	 			
+	   	 			}, 1000);
+	   	      });
+	   	   	}
+	   });
+	   $("#cnadidateSourceTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
+	   $("input[type=search]").hide();
+	}
 </script>
-
 <script>
-function addsourceHandler() {
-  $(".mask, #addSource").fadeIn();
+var atsUrl = '${SourceLeadWeb_atsUrl}';
+$(document).ready(function() {
+	$("#addPop").click(function() {
+		$("#candidateSourceFormHead").html("Add Type");
+		$(".mask, #modalTasktype").fadeIn();
+	});
+	$(".popClose").click(function() {
+		cancelCandidateSource();
+		
+	});
+	if(document.getElementById("uploadBtn") !== null) {
+		document.getElementById("uploadBtn").onchange = function () {
+		    $('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+		};
+	}
+	$("#candidateSourceTableSearch").keyup(function(e) {
+		if(e.which === 13) {
+			getCandidateSourceList();
+		}
+	});
+	
+});
+function cancelCandidateSource() {
+	$("#candidateSourceId").val(0);
+	if(document.getElementById("addCandidatesourceForm") !== null)
+		document.getElementById("addCandidatesourceForm").reset();
+	$(".mask, #modalTasktype").fadeOut();
+	$(".location-alert").fadeOut();
 }
-function closesourceHandler() {
-  $(".mask, #addSource").fadeOut();
+
+function getCandidateSourceList() {
+	$("#candidateSourceParentList").empty();
+	var text = "<table style='width: 100%;' id='cnadidateSourceTable'>";
+	text += " <thead>";
+	text += "    <tr>";
+	text += "      	<th>Id</th>";
+	text += "      	<th>Type</th>";
+	text += "      	<th>Description</th>";
+	text += "      	<th>Action</th>";
+	text += "    </tr>";
+	text += "  </thead>";
+	text += "  <tbody id='candidateSourceList'>";
+	text += "  </tbody>";
+	text += "</table>";
+	$("#candidateSourceParentList").append(text);
+	candidateSourcePagination(atsUrl + "/getCandidateSourceList?searchValue=" + $("#candidateSourceTableSearch").val());
+}
+
+function saveCandidateSource() {
+	if ($('#addCandidatesourceForm').validate(false, validationSettings)){
+		var formData = getFormData("addCandidatesourceForm");
+		$.post(atsUrl + "/saveCandidateSource", formData, function(response) {
+			if (response && (response.response === "INVALID_DATA" || response.response === "DUPLICATE_NAME")) {
+				showError(response.responseMessage);
+			} else if (response.response === "AWKWARD") {
+				location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
+				if(response.object > 0) {
+					$(".success_pop span").html(" saved successfully...");
+					$(".success_pop").show();
+					cancelCandidateSource();
+					setTimeout(function() {
+						getCandidateSourceList();
+						$(".success_pop").hide();
+			 		}, 1000);
+				}
+			} else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
+		});
+	}
+}
+
+function editCandidateSource(id){
+	$.ajax({
+		type : "POST",
+ 		url : atsUrl+ "/getCandidateSourceById?candidateSourceId="+id,
+		success : function(response) {
+			if (response && response.response === "INVALID_DATA") {
+				showError(response.responseMessage);
+			} else if (response.response === "AWKWARD") {
+				location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
+				var data = response.object;
+				$("#candidateSourceFormHead").html("Edit Type");
+				$("#candidateSourceId").val(data.id);
+				$("#candidateSourceName").val(data.name);
+				$("#candidateSourceDesc").val(data.description);
+				$(".mask, #modalTasktype").fadeIn();
+			} else if (response.indexOf('Sign In') !== -1) {
+				location.replace(atsUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
+		}
+	});
+}
+
+function deleteCandidateSource() {
+	var id = $("#confirmDeleteId").data("id");
+	var status = $("#confirmDeleteId").data("status");
+	$.post(atsUrl + "/deleteCandidateSourceById?candidateSourceId="+ id + "&status=" + status, function(response) {
+		if (response && response.response === "INVALID_DATA") {
+			showError(response.responseMessage);
+		} else if (response.response === "AWKWARD") {
+			location.href = "/errorPage";
+		} else if (response.response === "SUCCESS") {
+			if(response.object === true) {
+				closeDeletePopup();
+				location.reload();
+			}
+		} else if (response.indexOf('Sign In') !== -1) {
+			location.replace(atsUrl);
+		} else {
+			showError("Operation failed, please try again");
+		}
+	});
+}
+
+ function showDeleteCandidateSource(id, status) {
+	$("#confirmDeleteId").data("id", id);
+	$("#confirmDeleteId").data("status", status);
+	$("#deletePopup").slideDown(200);
+	$(".mask").fadeIn(200);
+}  
+function closeDeletePopup() {
+	$("#deletePopup").slideUp(200);
+	$(".mask").fadeOut(200);
 }
 </script>
-
-<jsp:include page="masterFooter.jsp" />	
-
+<jsp:include page="../masterFooter.jsp" />	
