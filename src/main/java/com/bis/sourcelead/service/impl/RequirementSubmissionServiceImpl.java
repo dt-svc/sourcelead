@@ -2304,7 +2304,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 CandidateConfigurationDTO candidateConfigurationDTO = new CandidateConfigurationDTO();
 			 candidateConfigurationDTO.setEmail(submission.getCandidate().getEmail());
 			 candidateConfigurationDTO.setPhoneNumber(submission.getCandidate().getMobilePhone());
-			    
+			 candidateConfigurationDTO.setAadharNumber(submission.getCandidate().getAadharNumber()); 
+			 candidateConfigurationDTO.setPanNumber(submission.getCandidate().getPanNumber());
+			 candidateConfigurationDTO.setSsnNumber(submission.getCandidate().getSsnNumber());
 			 CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(parentrequirement.getOrgLocationId().getId());
 			// requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(submission.getCandidate().getEmail(), requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
 				requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByLocationID(candidateVerificationConfig,candidateConfigurationDTO, requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());

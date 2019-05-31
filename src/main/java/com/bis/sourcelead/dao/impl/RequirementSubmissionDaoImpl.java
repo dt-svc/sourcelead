@@ -913,13 +913,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		  if(candidateVerificationConfig.getAadharNumber() == true){
 			 	statusSubQuery1 = " OR reqSub.candidate.aadharNumber IN(select tempReqSub.candidate.aadharNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
 			}
-			else if(candidateVerificationConfig.getPanNumber() == true){
+		   if(candidateVerificationConfig.getPanNumber() == true){
 					statusSubQuery2 = " OR reqSub.candidate.panNumber IN(select tempReqSub.candidate.panNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
 			}
-			else if(candidateVerificationConfig.getMobilePhone()== true){
+			if(candidateVerificationConfig.getMobilePhone()== true){
 			 statusSubQuery3 = " OR reqSub.candidate.mobilePhone IN(select tempReqSub.candidate.mobilePhone from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
 			}
-			else if(candidateVerificationConfig.getSsnNumber()== true){
+			if(candidateVerificationConfig.getSsnNumber()== true){
 				 statusSubQuery4 = " OR reqSub.candidate.ssnNumber IN(select tempReqSub.candidate.ssnNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
 			}
 		  }
@@ -3504,16 +3504,17 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						if(candidateVerificationConfig.getAadharNumber() == true){
 							statusSubQuery1 = " or reqSub.candidate.aadharNumber IN(select tempReqSub.candidate.aadharNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
 						}
-						else if(candidateVerificationConfig.getPanNumber() == true){
+						if(candidateVerificationConfig.getPanNumber() == true){
 							statusSubQuery2 = " or reqSub.candidate.panNumber IN(select tempReqSub.candidate.panNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
 						}
-						else if(candidateVerificationConfig.getMobilePhone()== true){
+						 if(candidateVerificationConfig.getMobilePhone()== true){
 							statusSubQuery3 = " or reqSub.candidate.mobilePhone IN(select tempReqSub.candidate.mobilePhone from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
 						}
-						else if(candidateVerificationConfig.getSsnNumber()== true){
+						if(candidateVerificationConfig.getSsnNumber()== true){
 							statusSubQuery4 = " or reqSub.candidate.ssnNumber IN(select tempReqSub.candidate.ssnNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
 						}
 						}
+						
 						statusSubQuery = " and reqSub.submissionStatus <> 'REJECTED' and ("+emailSubQuery+statusSubQuery1+statusSubQuery2+statusSubQuery3+statusSubQuery4+")";
 					}
 					

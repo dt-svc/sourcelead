@@ -143,6 +143,7 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		String statusSubQuery2 = "";
 		String statusSubQuery3 = "";
 		String statusSubQuery4 = "";
+		String statusSubQuery5 = "";
 		
 		String query = " FROM RequirementSubmissionHistory rsh where rsh.submissionId.orgLocations.id =:orgLocationId ";
 		
@@ -155,23 +156,23 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 				statusSubQuery3 = " or rsh.submissionId.candidate.panNumber =:panNumber";
 			}
 		 else if(candidateVerificationConfig.getAadharNumber() == true){
-				statusSubQuery3 = " or rsh.submissionId.candidate.aadharNumber =:aadharNumber";
+				statusSubQuery4 = " or rsh.submissionId.candidate.aadharNumber =:aadharNumber";
 			}
 		 else if(candidateVerificationConfig.getSsnNumber() == true){
-				statusSubQuery3 = " or rsh.submissionId.candidate.ssnNumber =:ssnNumber";
+				statusSubQuery5 = " or rsh.submissionId.candidate.ssnNumber =:ssnNumber";
 			}
 		
 		List<RequirementSubmissionHistory> requirementHistoryList = null;
 		
-		String finalQuery =query+" and ("+statusSubQuery1+statusSubQuery2+") ORDER BY rsh.createdDate asc";
+		String finalQuery =query+" and ("+statusSubQuery1+statusSubQuery2+statusSubQuery3+statusSubQuery4+statusSubQuery5+") ORDER BY rsh.createdDate asc";
 		if(candidateVerificationConfig.getMobilePhone() == true){
 			 requirementHistoryList = session.createQuery(finalQuery).setString("email", candidateConfigurationDTO.getEmail()).setString("mobilePhone", candidateConfigurationDTO.getPhoneNumber()).setLong("orgLocationId", orgLocationId).list();
 		}else if(candidateVerificationConfig.getPanNumber() == true) {
 			 requirementHistoryList = session.createQuery(finalQuery).setString("email", candidateConfigurationDTO.getEmail()).setString("panNumber", candidateConfigurationDTO.getPanNumber()).setLong("orgLocationId", orgLocationId).list();
 		}else if(candidateVerificationConfig.getAadharNumber() == true) {
-			 requirementHistoryList = session.createQuery(finalQuery).setString("email", candidateConfigurationDTO.getEmail()).setString("panNumber", candidateConfigurationDTO.getAadharNumber()).setLong("orgLocationId", orgLocationId).list();
+			 requirementHistoryList = session.createQuery(finalQuery).setString("email", candidateConfigurationDTO.getEmail()).setString("aadharNumber", candidateConfigurationDTO.getAadharNumber()).setLong("orgLocationId", orgLocationId).list();
 		}else if(candidateVerificationConfig.getSsnNumber() == true) {
-			 requirementHistoryList = session.createQuery(finalQuery).setString("email", candidateConfigurationDTO.getEmail()).setString("panNumber", candidateConfigurationDTO.getSsnNumber()).setLong("orgLocationId", orgLocationId).list();
+			 requirementHistoryList = session.createQuery(finalQuery).setString("email", candidateConfigurationDTO.getEmail()).setString("ssnNumber", candidateConfigurationDTO.getSsnNumber()).setLong("orgLocationId", orgLocationId).list();
 		}
 		else {
 			 requirementHistoryList = session.createQuery(finalQuery).setString("email", candidateConfigurationDTO.getEmail()).setLong("orgLocationId", orgLocationId).list();
