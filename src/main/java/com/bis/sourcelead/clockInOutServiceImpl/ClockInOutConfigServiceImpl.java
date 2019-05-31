@@ -144,6 +144,13 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			clockInOut.setIsAutomaticCheckOut(false);
 		}
 		
+		if(Constants.STATUS_YES.equalsIgnoreCase(clockInOutConfigDTO.getIsTimesheetFill())) {
+			clockInOut.setIsTimesheetFill(true);
+		}else {
+			clockInOut.setIsTimesheetFill(false);
+		}
+		
+		
 		clockInOut.setOrgLocationId(loginOrgLocation);
 		
 		return clockInOutConfigDao.saveClockInOutConfiguration(clockInOut);
