@@ -54,6 +54,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 	</div>
 </div>
 <script>
+ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 $(document).ready(function(){
 	datatableBody();
 });
@@ -85,6 +86,7 @@ function datatableBody(){
     	  getTableData(1);
       }
 	  function getTableData(pageNo) {
+		  var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 		  $("#reportTableData").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
           var frequencyYear = $("#frequencyYear").val();
           var pageSize = $("#pageSize").val();
