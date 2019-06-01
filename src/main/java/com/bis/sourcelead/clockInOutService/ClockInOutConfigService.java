@@ -1,7 +1,5 @@
 package com.bis.sourcelead.clockInOutService;
 
-import java.sql.Time;
-import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
@@ -50,5 +48,7 @@ public interface ClockInOutConfigService {
 	public String getWorkingTimeByClockId(OrgLocations loginOrgLocation, User user);
 
 	public ClockInOutDTO getPreviousClockInData(OrgLocations loginOrgLocation, User user);
+
+	public String getTotalClockInOutHours(OrgLocations loginOrgLocation, Long userId, Long projectId, Long projectTaskId);
 
 }
