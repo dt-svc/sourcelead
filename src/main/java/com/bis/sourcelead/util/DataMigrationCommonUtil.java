@@ -1291,7 +1291,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					averageHours = getAverageHours(weekCount,importTimeSheet,0,timeFrequency);
 				  }
 				  ProjectTasks projectTasks = projectTasksService.getProjectTasksByUUID(projectTaskUUID);
-				  TimeSheetDayEntries  timesheetDayEntries = timesheetDayEntriesDao.getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(timesheetSubmissions.getId(), projectTasks.getId(), weekStartDate);
+				  TimeSheetDayEntries  timesheetDayEntries = timesheetDayEntriesDao.getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(timesheetSubmissions.getId(), projectTasks.getId(), weekStartDate,"Regular");
 				  if(timesheetDayEntries == null){
 					 timesheetDayEntries = new TimeSheetDayEntries();
 					 timesheetDayEntries.setBillableHours("00:00");

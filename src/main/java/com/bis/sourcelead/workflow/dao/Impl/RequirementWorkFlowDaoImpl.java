@@ -255,7 +255,7 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:uuid and requirementWorkFlowStages.orgLocationId.id =:orgLocationId "
-					+ " and requirementWorkFlowStages.status = 1 ORDER BY requirementWorkFlowStages.seqOrder ASC";
+					+ " and requirementWorkFlowStages.status = 1 and requirementWorkFlowStages.configureType <> '"+Constants.INACTIVE+"' ORDER BY requirementWorkFlowStages.seqOrder ASC";
 			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("uuid", uuid).setLong("orgLocationId", orgLocationId).list();
 			return requirementWorkFlowStages;
 		} catch (Exception e) {
@@ -667,7 +667,7 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:uuid and requirementWorkFlowStages.orgLocationId.id =:orgLocationId "
-					+ " and requirementWorkFlowStages.status = 0";
+					+ " and requirementWorkFlowStages.status = 0 and requirementWorkFlowStages.configureType='"+Constants.INACTIVE+"'";
 			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("uuid", uuid).setLong("orgLocationId", id).list();
 			return requirementWorkFlowStages;
 		} catch (Exception e) {
@@ -761,7 +761,7 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id =:id order by id asc";
-			RequirementWorkFlow requirementWorkFlow = (RequirementWorkFlow)session.createQuery(query).setParameter("id", orgLocationId).uniqueResult();
+			RequirementWorkFlow requirementWorkFlow = (RequirementWorkFlow)session.createQuery(query).setParameter("id", orgLocationId).setMaxResults(1).uniqueResult();
 			return requirementWorkFlow;
 		} catch (Exception e) {
 			logger.error(e+" in getRequirementWorkFlowByOrgLocId DAO");
