@@ -219,13 +219,7 @@ function getVendorDetails(){
 
 
 <style>
-.clsDatePicker {
-	z-index: 100000 !important;
-}
-
-.ui-front {
-	z-index: 9999999;
-}
+.ui-front { z-index: 9999999; }
 </style>
 
 
