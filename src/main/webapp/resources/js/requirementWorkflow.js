@@ -542,6 +542,14 @@ function RequirementWorkflow(){
 					var stageUuid = $("#workflowStageUuid").val();
 					var qTemplateId = $("#questionnaireTemplateId").val();
 					
+					var requiredStatsList = $('input[name=list_required]:checked').val();
+					var chosenColumns = [];
+					$('#chosecolumnsID input:checked').each(function() {
+						chosenColumns.push($(this).val());
+					});
+					
+					var chosenColumnJson = JSON.stringify(chosenColumns);
+					
 					 var previousStageUuid = $("#previousStageUuid").val();
 					
 					
@@ -572,7 +580,7 @@ function RequirementWorkflow(){
 						 data : formData,
 						url : sourceleadUrl + "/saveRequirementWorkflowStage?description="+description+"&uuid="+stageUuid+
 								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+
-								"&lastStage="+lastStage+"&commentRequired="+commentReq,
+								"&lastStage="+lastStage+"&commentRequired="+commentReq+"&requiredStatsList="+requiredStatsList+"&chosenColumnJson="+chosenColumnJson,
 						success : function(dataList) {
 							if (dataList.response === "AWKWARD") {
 				      	    location.href = "/errorPage";
@@ -948,6 +956,24 @@ function RequirementWorkflow(){
 				                }
 						 }
 					 })
+					 }
+				 }
+				 
+				 this.selectChosenColumns = function(){
+					 $("ul#chosenColumnList > li input:checkbox").prop("checked",true);
+				 }
+				 
+				 this.resetChosenColumns = function(){
+					 $("ul#chosenColumnList > li input:checkbox").prop("checked",false);
+					$("#applicantname").prop("checked", true);
+					$("#applicantmailid").prop("checked", true);
+					$("#applicantphonenumber").prop("checked", true);
+				 }
+				 
+				 this.prepareChosenColumnList = function(chosenColumns){
+					var chosenColumnArr = chosenColumns.split(',');
+					for(var i = 0; i < chosenColumnArr.length; i++){
+						$("#"+chosenColumnArr[i].replace(/[^a-zA-Z]/g, "").toLowerCase()).prop("checked", true);
 					 }
 				 }
 }
