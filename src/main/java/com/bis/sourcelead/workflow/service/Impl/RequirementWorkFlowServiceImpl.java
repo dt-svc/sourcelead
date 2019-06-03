@@ -121,6 +121,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				requirementWorkFlowStages.setEditable(requirementDefaultWorkFlowStages.get(i).getEditable());
 				requirementWorkFlowStages.setStatus(requirementDefaultWorkFlowStages.get(i).getStatus());
 				requirementWorkFlowStages.setCommentRequired(Constants.YES);
+				requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
 				requirementWorkFlowStages.setCreatedDate(new Date());
 				requirementWorkFlowStages.setCreatedBy(user);
 				requirementWorkFlowStages.setUpdatedDate(new Date());
@@ -539,9 +540,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		else {
 			workFlowStage.setStageName(requirementWorkFlowStagesDTO.getStageName());
 			workFlowStage.setDescription(requirementWorkFlowStagesDTO.getDescription());
-			workFlowStage.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-			workFlowStage.setStatus(Constants.RECORD_ACTIVE);
-		}
+			if(!requirementWorkFlowStagesDTO.getCurrentStageUuid().equals(Constants.DEFAULT)) {
+				workFlowStage.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				workFlowStage.setStatus(Constants.RECORD_ACTIVE);
+			}
+			}
 		if(requirementWorkFlowStages != null && !requirementWorkFlowStagesDTO.getCurrentStageUuid().equals(Constants.DEFAULT)) {
 			workFlowStage.setRequirementWorkFlowId(requirementWorkFlowStages.getRequirementWorkFlowId());
 			workFlowStage.setSeqOrder(requirementWorkFlowStages.getSeqOrder());
@@ -555,6 +558,22 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		if(requirementWorkFlowStagesDTO.getCommentRequired() != null && !requirementWorkFlowStagesDTO.getCommentRequired().equals("")) {
 					workFlowStage.setCommentRequired(requirementWorkFlowStagesDTO.getCommentRequired());
 			}
+		
+		if(requirementWorkFlowStagesDTO.getRequiredStatsList() != null && !requirementWorkFlowStagesDTO.getRequiredStatsList().equals("")) {
+			if(StringUtils.equals(requirementWorkFlowStagesDTO.getRequiredStatsList(), Constants.ON)){
+				requirementWorkFlowStagesDTO.setRequiredStatsList(Constants.YES);
+			}
+			else{
+				requirementWorkFlowStagesDTO.setRequiredStatsList(Constants.NO);
+			}
+			workFlowStage.setRequiredStatsList(requirementWorkFlowStagesDTO.getRequiredStatsList());
+		}
+		
+		if(requirementWorkFlowStagesDTO.getRequiredStatsList() != null && !requirementWorkFlowStagesDTO.getRequiredStatsList().equalsIgnoreCase(Constants.NO)) {
+		if(requirementWorkFlowStagesDTO.getChosenColumns() != null && !requirementWorkFlowStagesDTO.getChosenColumns().equals("")) {
+			workFlowStage.setChosenColumns(requirementWorkFlowStagesDTO.getChosenColumns());
+		}
+		}
 		
 		workFlowStage.setOrgLocationId(orgLocations);
 		workFlowStage.setConfigureType(Constants.CLIENT);
@@ -570,6 +589,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		
 		if(requirementWorkFlowStagesDTO.getTaskList() != null && requirementWorkFlowStagesDTO.getTaskList().size() > 0) {
 			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTO = requirementWorkFlowStagesDTO.getTaskList();
+			workFlowStage.setConfigureType(Constants.INACTIVE);
 			for(RequirementWorkFlowTasksDTO workFlowTasksDTO : requirementWorkFlowTasksDTO) {
 				RequirementWorkFlowTasks tasks = new RequirementWorkFlowTasks();
 				tasks.setRequirementWorkFlowStagesId(workFlowStage);
@@ -746,6 +766,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStages.setEditable(workFlowStages.get(i).getEditable());
 			requirementWorkFlowStages.setStatus(workFlowStages.get(i).getStatus());
 			requirementWorkFlowStages.setCommentRequired(workFlowStages.get(i).getCommentRequired());
+			requirementWorkFlowStages.setRequiredStatsList(workFlowStages.get(i).getRequiredStatsList());
+			requirementWorkFlowStages.setChosenColumns(workFlowStages.get(i).getChosenColumns());
 			requirementWorkFlowStages.setCreatedDate(new Date());
 			requirementWorkFlowStages.setCreatedBy(user);
 			requirementWorkFlowStages.setUpdatedDate(new Date());
