@@ -5,16 +5,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.edit-details { text-align:left; }
-.edit-details ul { float:none; }
-.edit-details ul li { float:none; }
-.addUser-org { overflow-x: auto; }
-</style>
-
 <div id="deleteDocpopUp"></div>
 
 <script>
+$(".addUser-org").css({"overflow-x": "auto"});
 function vendorNotesList(orgRelationId,vendorLocationId){
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
@@ -26,7 +20,7 @@ function vendorNotesList(orgRelationId,vendorLocationId){
 	    
 	    result = result  +'    	<a href="javascript:void(0)" onClick="addNotes('+orgRelationId+','+vendorLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Note</a>                                                            ';
 		 
-		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
+		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4 editDetails"> ';
 		result = result  +'     </div>  ';
 		
 		result = result + '</ul>';
