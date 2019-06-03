@@ -1098,7 +1098,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		String subQueryForMaxLevel = " select MAX(subsah.hierarchyId.level) from  SubmissionApproverHierarchy subsah  where subsah.submissionId.id = sah.submissionId.id and "+userQuery;
 		String query = " Select Count (*) from  SubmissionApproverHierarchy sah  where sah.submissionId.masterCandidateId.id = :masterCandidateId   and ( sah.hierarchyId.level IN("
 				+ subQueryForMaxLevel
-				+ ")) and  sah.submissionApprovalStatus = :submissionStatus and "+userQuery+" GROUP BY CONCAT(sah.frequencyStartDate,sah.frequencyEndDate)";
+				+ ")) and  sah.submissionApprovalStatus = :submissionStatus and "+userQuery+" GROUP BY CONCAT(sah.submissionId.projects.id,sah.frequencyStartDate,sah.frequencyEndDate)";
 		List<Long> tslist = session.createQuery(query.toString()).setLong("masterCandidateId", masterCandidateId).setLong("orgLocationId", orgLocationId).setString("submissionStatus", submissionStatus).list();
 		Integer count = 0;
 		if (tslist != null && !tslist.isEmpty()) {
@@ -1140,7 +1140,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				+ subQueryForMaxLevel
 				+ ")) and  sah.submissionStatus = :submissionStatus  "
 				+locationQuery
-				+ " GROUP BY CONCAT(sah.frequencyStartDate,sah.frequencyEndDate)";
+				+ " GROUP BY CONCAT(sah.submissionId.projects.id,sah.frequencyStartDate,sah.frequencyEndDate)";
 		List<Long> tslist = session.createQuery(query.toString()).setLong("masterCandidateId", masterCandidateId).setLong("locationsId", orgLocationId).setString("submissionStatus", submissionStatus).list();
 		Integer count = 0;
 		if (tslist != null && !tslist.isEmpty()) {
@@ -2963,5 +2963,22 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		}
 		return weekTotalsMap;
 	}
-	/*============================================================== Query Change ================================================================*/
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForPendinApproveTimesheetsByProjectMemberId(Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = null;
+		try {
+			java.sql.Date sqlStartDate = new java.sql.Date(frequencyStartDate.getTime());
+			java.sql.Date sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
+			Query submissionApproverHierarchyListQuery = session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm where pm.id = :projectMemberId and sah.frequencyStartDate = :sqlStartDate and sah.frequencyEndDate = :sqlEndDate");
+			submissionApproverHierarchyList = submissionApproverHierarchyListQuery.setLong("projectMemberId", projectMemberId).setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).list();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return submissionApproverHierarchyList;
+	}	
 }

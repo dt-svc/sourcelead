@@ -7,27 +7,6 @@ window.onload = function () {
 	getDynamicOrgList();
  };
 </script>
-<style type="text/css">
-#loadMoreDiv{
-text-align: center;
-font-size: 18px;
-font-weight: bold;
-vertical-align: middle;
-padding: 20px 15px;
-clear: both;
-display: inline-block;
-margin: auto;
-width: 100%;
-
-}
-#loadMoreDiv .fa-spinner{
-margin-right: 15px;
-}
-
-.reportsCount.req_Crowd ul li {
-    width: 25% !important;
-}
-</style>
 <script>
 	function predefineOrgImage(imageId){
 		$(imageId).attr('src','/resources/images/office-image.jpg');
@@ -55,7 +34,7 @@ margin-right: 15px;
       </div>
        <div class="pull-right brud-crum"><a href="${appPath}/dashboard">Home</a> &raquo; Orgs List </div>
       <div class="clearfix"></div> 
-      <div class="reportsCount req_Crowd clearfix">
+      <div class="reportsCount req_Crowd req_crowd clearfix">
           <ul class="clearfix">
           <li id="crowd"><label class="mr10"><span><i class="fa fa-registered"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio" checked name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/enrolledOrgsList'/>'" >&nbsp;Registered Companies</label></b></li>
           <li id="crowd"><label class="mr10"><span><i class="fa fa-cubes"></i></span><b id="savedActive"><input class="myCheckbox valid" type="radio" name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/requestedOrgs'/>'" >&nbsp;Registration Requests</label></b></li>

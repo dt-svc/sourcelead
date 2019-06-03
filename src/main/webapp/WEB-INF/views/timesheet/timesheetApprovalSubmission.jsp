@@ -559,7 +559,7 @@
 								 <!--###################################### save/submit/approve/reject/cancel buttons section  ######################################-->
 								 <c:if test="${!timesheetSubmissionDTO.submitButtonVisible}">
 								   <c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW' || timesheetSubmissionDTO.timesheetStatus == 'DRAFT' || timesheetSubmissionDTO.timesheetStatus == 'SUBMITTED'}">
-								        <input onclick="saveTimesheet('Submitted');" value="Save" class="time_btn time_dra" type="button">
+								        <input onclick="saveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
 								   </c:if>
 								 </c:if>
 								
