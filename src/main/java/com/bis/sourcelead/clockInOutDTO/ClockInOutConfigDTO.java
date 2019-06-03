@@ -12,6 +12,7 @@ public class ClockInOutConfigDTO {
 	private String isClockInComment;
 	private String isBreak;
 	private String isAutomaticCheckOut;
+	private String isTimesheetFill;
 	
 	private Long clockInOutId;
 	
@@ -81,5 +82,14 @@ public class ClockInOutConfigDTO {
 	public void setClockInOutId(Long clockInOutId) {
 		this.clockInOutId = clockInOutId;
 	}
+	public String getIsTimesheetFill()
+	{
+		return isTimesheetFill;
+	}
+	public void setIsTimesheetFill(String isTimesheetFill)
+	{
+		this.isTimesheetFill = isTimesheetFill;
+	}
+	
 
 }
