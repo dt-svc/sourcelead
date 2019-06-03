@@ -116,10 +116,9 @@ public class TimesheetController {
 			SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
 			SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
 			
-			Timezone timezone = timeZoneService.getTimezone(Long.valueOf(orgLoc.getTimeZoneId()));
 			Long notificationTo = loginUser.getId();
 			List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(notificationTo,orgCode,locationCode);
-			calculateDays(notificationList, timezone);
+			calculateDays(notificationList, orgLoc.getTimeZoneName());
 			SourceLeadSessionManager.removeSessionAttribute(request, "notificationList");
 			SourceLeadSessionManager.setSessionAttribute(request, "notificationList",notificationList);
 			
@@ -267,7 +266,7 @@ public class TimesheetController {
 		return str == null || "".equals(str.trim());
 	}
 	
-	private void calculateDays(List<Notifications> notificationList, Timezone timezone) throws ParseException {
+	private void calculateDays(List<Notifications> notificationList, String timezone) throws ParseException {
 		for (Notifications notifications : notificationList) {
 			long diff = CommonUtil.currentDate().getTime() - notifications.getCreatedDate().getTime();
 		    long diffSeconds = diff / 1000 % 60;
@@ -286,7 +285,7 @@ public class TimesheetController {
 			}else{
 				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
 				String currentTimeStr = Constants.TZ_DF.format(notifications.getCreatedDate());
-				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+				String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone, currentTimeStr);
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
 				String commonDateFormat = standardFormat.format(converteDate);
