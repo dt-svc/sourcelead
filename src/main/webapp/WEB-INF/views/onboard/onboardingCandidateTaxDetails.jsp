@@ -45,15 +45,6 @@
  var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 </script>
 
-<style>
-.pac-container::after {
-	display:none;
-}
-</style>
-
-
-
-
 <div class="wraper"> 
   <!--   Welcome Screens   -->
   

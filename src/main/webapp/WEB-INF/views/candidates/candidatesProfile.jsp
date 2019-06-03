@@ -151,6 +151,10 @@ function editCandidate(candidateId){
             			 	if(json.ssnNumber != null && json.ssnNumber != '' && json.ssnNumber != 'undefined'){
             			 		ssnNumber = json.ssnNumber;            			 		
             			 	}
+            			 	var candidateSource = '';
+            			 	if(json.candidateSource != null && json.candidateSource != '' && json.candidateSource != 'undefined'){
+            			 		candidateSource = json.candidateSource;            			 		
+            			 	}
             			 	
             			 	
 							var result ='';
@@ -562,9 +566,22 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10 mt">';
 							result = result + '<div class="col-md-6">';
 							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true">'+summary+'</textarea>';
-							result = result + ' </div>'; 
+							result = result + ' </div>';
+							result = result + '<div class="col-md-6">';
+							
+							result = result + '<label class="text-muted fontSmall">Source</label>';
+							result = result + '<select class="form-control valid width100percnt" name="candidateSource" field-name="Source" id="candidateSource" data-validation="validate_Space" data-validation-optional="true">';
+							var candidateSourceList = json.candidateSourceList;
+							for(var e in candidateSourceList) {
+								result = result + '<option value="'+candidateSourceList[e].id+'" '+(candidateSourceList[e].id == json.candidateSource ? "selected" : "")+'>'+ candidateSourceList[e].name +'</option>';
+							}
+							result = result + '</select>';
+							
+							result = result + ' </div>';
+							
 							result = result + ' </div>'; 
 							result = result + '</div>';
+							
 							
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
@@ -722,46 +739,6 @@ $('body').on('blur', '#terminate_candidate_form', function() {
 
 
 </script>
-
-
-<script>
-
-function deleteCandidatePermanently(candidateId){
-	if ($('#delete_candidate_form').validate(false, validationSettings)) {
-		var reason = document.getElementById("rejectReason").value;
-		if(reason.length > 250){
-			$(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>The values should be between 2-250 characters</p>");
-		}else{
-			$(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
-			$("#candidatePermanentDelete").attr("disabled", "disabled");
-			$("#candidatePermanentDelete").addClass('button').val('Processing..');
-			 $.ajax({  
-		         type : "POST",
-		         url: atsUrl+"/deleteCandidatePermanentlyByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason,        
-		         success :function(result) {
-		        	 if (result.response === "SUCCESS") {
-							showSuccessStatusPopup("Candidate deleted permanently");
-							location.replace(atsUrl+"/candidatesList");
-						}
-		       },
-		    });
-			
-		}
-	
-		return true;
-	}else {
-		return false;
-	}
-}
-$('body').on('blur', '#delete_candidate_form', function() {
-	$("#delete_candidate_form").showHelpOnFocus();
-	$("#delete_candidate_form").validateOnBlur(false, validationSettings);
-});
-
-
-</script>
-
-
 <script>
    function candiateRemoveSpacesForRejectReason() {
 	    var output = document.getElementById("rejectReason").value;
@@ -835,6 +812,43 @@ function deleteCandidateAlertMessage(candidateId){
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
+</script>
+
+<script>
+
+function deleteCandidatePermanently(candidateId){
+	if ($('#delete_candidate_form').validate(false, validationSettings)) {
+		var reason = document.getElementById("rejectReason").value;
+		if(reason.length > 250){
+			$(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>The values should be between 2-250 characters</p>");
+		}else{
+			$(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+			$("#candidatePermanentDelete").attr("disabled", "disabled");
+			$("#candidatePermanentDelete").addClass('button').val('Processing..');
+			 $.ajax({  
+		         type : "POST",
+		         url: atsUrl+"/deleteCandidatePermanentlyByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason,        
+		         success :function(result) {
+		        	 if (result.response === "SUCCESS") {
+							showSuccessStatusPopup("Candidate deleted permanently");
+							location.replace(atsUrl+"/candidatesList");
+						}
+		       },
+		    });
+			
+		}
+	
+		return true;
+	}else {
+		return false;
+	}
+}
+$('body').on('blur', '#delete_candidate_form', function() {
+	$("#delete_candidate_form").showHelpOnFocus();
+	$("#delete_candidate_form").validateOnBlur(false, validationSettings);
+});
+
+
 </script>
 
 
@@ -911,7 +925,7 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 									   '</sec:authorize>'; 
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 									   if(isAssociate != "Y"){
-										   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+										   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
 										   result = result + ' <a href="javascript:void(0)" onClick="deleteCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Delete</a>';
 									   }
 									   '</sec:authorize>';

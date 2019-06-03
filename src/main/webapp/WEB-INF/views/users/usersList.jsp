@@ -343,7 +343,7 @@ function getUsersSearchResult(searchValue){
 											<a href="#">Import</a>
 										<div class="immSubMenu immSubMenu-custome">
 
-												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm">Associate Import</a>
+												<a href="${SourceLeadWeb_sourceleadUrl}/uploadForm">Associate Import</a>
 								 
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 													<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankForm">Associate Bank Details Import</a>
