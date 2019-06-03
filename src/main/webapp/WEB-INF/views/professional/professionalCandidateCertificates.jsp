@@ -3,12 +3,6 @@
 <meta http-equiv="Expires" content="0">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
- 
-<style>
-.clsDatePicker {
-	z-index: 100000 !important;
-}
-</style>
 <script>
 function closeCertificatePopup(){
 	 $("#popUpDivEmp").removeClass("edit-details-active");

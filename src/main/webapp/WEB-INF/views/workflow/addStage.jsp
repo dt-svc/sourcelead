@@ -180,7 +180,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					</div>
 					 <!-- dynamic stage content ends here -->
 					
-					<div class="col-md-1"> <a class="fa fa-plus btn btn-default" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire"></a> </div>
+					<div class="col-md-1"> <a class="fa fa-plus btn btn-default" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire" target="_blank"></a> </div>
 				  </div>
 				</div>
 			  </div>
@@ -205,6 +205,136 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			</div>
 		  </div>
 		</div>
+		<div class="clearfix mb">
+		  
+		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <div class="clearfix">
+              <div class="checkbox-new">
+              <c:choose>
+  				<c:when test = "${requiredList == 'Y'}">
+                <input id="columnsCHkbx" class="checkbox-custom" name="list_required" type="checkbox" checked>
+                </c:when>
+                <c:otherwise>
+                <input id="columnsCHkbx" class="checkbox-custom" name="list_required" type="checkbox">
+                </c:otherwise>
+                </c:choose>
+                <label for="columnsCHkbx" class="checkbox-custom-label"></label>
+                <span class="ml10">Required Stats/List</span>
+              </div>
+      </div>
+      </div>
+      
+      <c:choose>
+  	<c:when test = "${requiredList == 'Y'}">
+      <div class="clearfix col-xs-12 col-sm-12 col-md-12 col-lg-12 chosecolumnsID" id="chosecolumnsID">
+      </c:when>
+      <c:otherwise>
+      <div class="clearfix col-xs-12 col-sm-12 col-md-12 col-lg-12 chosecolumnsID" id="chosecolumnsID" style="display: none;">
+      </c:otherwise>
+      </c:choose>
+      
+          <ul class="list-unstyled" id = "chosenColumnList">
+                  <li>
+                    <div class="checkbox-new clearfix">
+                        <input id="applicantname" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Applicant Name" disabled = "disabled" checked>
+                        <label for="applicantName" class="checkbox-custom-label"></label>
+                        <span class="ml10">Applicant Name *</span>
+                      </div>
+                    </li>
+                    <li>
+                        <div class="checkbox-new clearfix">
+                            <input id="applicantmailid" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Applicant Mail Id" disabled = "disabled" checked>
+                            <label for="applicantmailid" class="checkbox-custom-label"></label>
+                            <span class="ml10">Applicant Mail Id *</span>
+                          </div>
+                        </li>
+                        <li>
+                            <div class="checkbox-new clearfix">
+                                <input id="applicantphonenumber" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Phone Number" disabled = "disabled" checked>
+                                <label for="applicantphonenumber" class="checkbox-custom-label"></label>
+                                <span class="ml10">Phone Number *</span>
+                              </div>
+                            </li>
+                            <li>
+                                <div class="checkbox-new clearfix">
+                                    <input id="alternatenumber" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Alternate Number">
+                                    <label for="alternatenumber" class="checkbox-custom-label"></label>
+                                    <span class="ml10">Alternate Number</span>
+                                  </div>
+                                </li>
+                                <li>
+                                    <div class="checkbox-new clearfix">
+                                        <input id="location" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "location">
+                                        <label for="location" class="checkbox-custom-label"></label>
+                                        <span class="ml10">Location</span>
+                                      </div>
+                                    </li>
+                                    <li>
+                                        <div class="checkbox-new clearfix">
+                                            <input id="dob" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "DOB">
+                                            <label for="dob" class="checkbox-custom-label"></label>
+                                            <span class="ml10">DOB</span>
+                                          </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-new clearfix">
+                                                <input id="experience" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Experience">
+                                                <label for="experience" class="checkbox-custom-label"></label>
+                                                <span class="ml10">Experience</span>
+                                              </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-new clearfix">
+                                                <input id="currentctc" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Current CTC">
+                                                <label for="currentctc" class="checkbox-custom-label"></label>
+                                                <span class="ml10">Current CTC</span>
+                                              </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-new clearfix">
+                                                <input id="rateexpectedctc" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Rate [Expected CTC]">
+                                                <label for="rateexpectedctc" class="checkbox-custom-label"></label>
+                                                <span class="ml10">Rate [Expected CTC]</span>
+                                              </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-new clearfix">
+                                                <input id="education" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Education">
+                                                <label for="education" class="checkbox-custom-label"></label>
+                                                <span class="ml10">Education</span>
+                                              </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-new clearfix">
+                                                <input id="noticeperiod" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Notice Period">
+                                                <label for="noticeperiod" class="checkbox-custom-label"></label>
+                                                <span class="ml10">Notice Period</span>
+                                              </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-new clearfix">
+                                                <input id="appliedon" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Applied on">
+                                                <label for="appliedon" class="checkbox-custom-label"></label>
+                                                <span class="ml10">Applied on</span>
+                                              </div>
+                                        </li>
+                                        <li>
+                                            <div class="checkbox-new clearfix">
+                                                <input id="source" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Source">
+                                                <label for="source" class="checkbox-custom-label"></label>
+                                                <span class="ml10">Source</span>
+                                              </div>
+                                        </li>
+      </div>
+<div class="clearfix"></div>
+<div class="clearfix col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <div class="pull-right">
+    <button type="button" class="btn btn-primary mr" onclick = "requirementWorkflow.selectChosenColumns();">Select All</button>
+    <button type="button" class="btn btn-default" onclick = "requirementWorkflow.resetChosenColumns();">Reset</button>
+  </div>
+</div>
+
+    </div>
 		<div class="clearfix row">
 		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<h4 class="col-md-9">Action Buttons</h4>
@@ -301,6 +431,7 @@ $(document).ready(function() {
  if(stagename != "" && stagename != "undefined"){
  var workflowStages = new Array();
 var stageUuid = new Array();
+var chosenColumns = '${chosenColumns}';
 workflowStages.push(
 <c:forEach var="requirementWorkFlowStages" items="${requirementWorkFlowStagesDTO}">
 '${requirementWorkFlowStages.stageName}',
@@ -321,9 +452,15 @@ function checkStageIndex(value){
 	stageIndex = a;
 }
  
+ 
 requirementWorkflow.prepareDynamicStages();
-
+requirementWorkflow.prepareChosenColumnList(chosenColumns);
 }
 </c:if>   
+</script>
+<script>
+$("#columnsCHkbx").click(function(){
+  $("#chosecolumnsID").toggle();
+})
 </script>
 <jsp:include page="../masterFooter.jsp" /> 
