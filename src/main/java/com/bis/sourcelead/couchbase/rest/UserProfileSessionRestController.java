@@ -168,7 +168,6 @@ public class UserProfileSessionRestController {
 									System.out.println("saving workflowId in " + requirement.getId()+ " requirement for - " + orgLocation.getId() + " orgLocation");
 									requirement.setWorkflowId(workFlow);
 									requirementService.updateRequirement(requirement);
-									requirementElkUtil.saveElkRequirement(requirement, null);
 									requirementCount++;
 								}
 							}
