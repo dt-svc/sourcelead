@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -61,11 +62,13 @@ import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
+import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -82,6 +85,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.Countries;
@@ -101,9 +105,11 @@ import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadDeletedCandidates;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.Tabs;
+import com.bis.sourcelead.entity.TicketType;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
@@ -454,6 +460,9 @@ public class CandidateServiceImpl implements CandidateService {
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
 			candidate.setCandidateResumes(candidateResumesList);
 				}
+			}
+		if(candidateDto.getCandidateSource()  != null) {
+			candidate.setCandidateSource(candidateDto.getCandidateSource());
 			}
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		
@@ -876,6 +885,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		 //Elastic Search Document Saving
 		CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+	}
+	
+	@Override
+	public void deleteCandidateElkDocument(Candidate candidate) throws Exception{
+		 //Elastic Search Document Saving
+		CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+		sourceleadELKBaseIndexer.deleteElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 	}
 
 	@Override
@@ -3787,6 +3803,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
+	public List<Candidate> getCandidatesForUpdateWorkLocation(Long masterCandidateId, Long orgId) throws Exception {
+		return candidateDao.getCandidatesForUpdateWorkLocation(masterCandidateId, orgId);
+	}
+	
+	@Override
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
 		return candidateDao.getCandidateDateOfBirthByUserId(userId, orgLocation);
 	}
@@ -3798,6 +3819,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
+<<<<<<< HEAD
 	public CandidateVerificationConfig saveDuplicateCheckConfig(CandidateVerificationConfigDTO candidateVerificationConfigDTO, OrgLocations loginOrgLocation,
 			User userId) {
 		CandidateVerificationConfig candidateVerificationConfig = null;
@@ -3853,5 +3875,96 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidateVerificationConfigBy(orgLocationId);	
 	}
 	
+	public void saveSourceleadDeletedCandidate(SourceleadDeletedCandidates sourceleadDeletedCandidates)
+			throws Exception {
+		candidateDao.saveSourceleadDeletedCandidate(sourceleadDeletedCandidates);
+		
+	}
+	
+	@Override
+	public long saveCandidateSource(CandidateSourceDTO candidateSourceDTO, User user, OrgLocations loginOrgLocation) {
+
+	try {
+		CandidateSource candidateSource = null;
+		long saveCandidateSourceId  = candidateDao.getCandidateSourceByOrgLocationId(candidateSourceDTO.getName(),user.getId(), loginOrgLocation.getId());
+		if(saveCandidateSourceId > 0 && saveCandidateSourceId != candidateSourceDTO.getId()) {
+			return -1;
+		}
+		if (candidateSourceDTO.getId() > 0) {
+			candidateSource = candidateDao.getCandidateSourceById(candidateSourceDTO.getId());
+			candidateSource.setUpdatedBy(user);
+			candidateSource.setUpdatedDate(new Date());
+		} else {
+			candidateSource = new CandidateSource();
+			candidateSource.setCreatedBy(user);
+			candidateSource.setCreatedDate(new Date());
+			
+			candidateSource.setStatus(1);
+			candidateSource.setOrgLocations(loginOrgLocation);
+		}
+		candidateSource.setName(candidateSourceDTO.getName());
+		candidateSource.setDescription(candidateSourceDTO.getDescription());
+		return candidateDao.saveCandidateSource(candidateSource);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return 0;
+	
 }
+
+	
+
+	@Override
+	public List<CandidateSourceDTO> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status,String searchValue) {
+		List<CandidateSourceDTO> candidateSourceDTOList = new LinkedList<>();
+		try {
+			List<CandidateSource> candidateSourceList = candidateDao.getCandidateSourceListByOrgLocationId(orgLocationId, status, searchValue);
+			if (null != candidateSourceList && !candidateSourceList.isEmpty()) {
+				for (CandidateSource candidateSource : candidateSourceList) {
+					CandidateSourceDTO candidateSourceDTO = new CandidateSourceDTO();
+					candidateSourceDTO.setId(candidateSource.getId());
+					
+					candidateSourceDTO.setName(candidateSource.getName());
+					candidateSourceDTO.setDescription(candidateSource.getDescription());
+					candidateSourceDTO.setStatus(candidateSource.getStatus());
+					
+					candidateSourceDTOList.add(candidateSourceDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return candidateSourceDTOList;
+	}
+
+	@Override
+	public CandidateSourceDTO getCandidateSourceById(long id, long userId, OrgLocations loginOrgLocation) {
+		CandidateSourceDTO candidateSourceDTO = new CandidateSourceDTO();
+		try {
+			CandidateSource candidateSource = candidateDao.getCandidateSourceById(id);
+			if (null != candidateSource ) {
+				candidateSourceDTO.setId(candidateSource.getId());
+				candidateSourceDTO.setName(candidateSource.getName());
+				candidateSourceDTO.setDescription(candidateSource.getDescription());
+				candidateSourceDTO.setStatus(candidateSource.getStatus());
+				/*candidateSourceDTO.setOrgLocationsId(candidateSource.getOrgLocations().getId());
+				candidateSourceDTO.setCreatedBy(candidateSource.getCreatedBy());
+				candidateSourceDTO.setCreatedDate(candidateSource.getCreatedDate());
+				candidateSourceDTO.setUpdatedBy(candidateSource.getUpdatedBy());
+				candidateSourceDTO.setUpdatedDate(candidateSource.getUpdatedDate());*/
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return candidateSourceDTO;
+	}
+
+	@Override
+	public Boolean deleteCandidateSourceById(long id) {
+			return candidateDao.deleteCandidateSourceById(id);
+		}
+	}
+
+	
+
 

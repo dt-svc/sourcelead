@@ -1,4 +1,4 @@
-package com.bis.sourcelead.constants;
+	package com.bis.sourcelead.constants;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -1328,7 +1328,7 @@ public class Constants {
 	public static final String REPORT_FILTER_1_WEEK = "1_week";
 	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
-	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On","Location"};
+	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Id","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On","Location"};
 	
     public static final String BOOLEAN_TRUE = "true";
     public static final String LOCAL_TAX_YES = "YES";
@@ -1497,5 +1497,6 @@ public class Constants {
 	public static final String PAUSE = "pause";
 	public static final String LOAN_AND_ADVANCE = "Loan And Advance";
 
+	public static final String NOTIFICATION_LEAVE_TITLE = "Leave Status";
 	
 }

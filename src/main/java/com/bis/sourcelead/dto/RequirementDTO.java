@@ -227,6 +227,8 @@ public class RequirementDTO extends CommonDTO {
 	private String startDateStr;
 	
 	private String endDateStr;
+	
+	private String workflow;
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
@@ -1610,6 +1612,14 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setEndDateStr(String endDateStr) {
 		this.endDateStr = endDateStr;
+	}
+
+	public String getWorkflow() {
+		return workflow;
+	}
+
+	public void setWorkflow(String workflow) {
+		this.workflow = workflow;
 	}
 	
 	
