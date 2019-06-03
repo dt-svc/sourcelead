@@ -169,7 +169,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				  <div class="row">
 					
 					 <!-- dynamic stage content starts here -->
-					<div class="col-md-11" id = "questionnaireList">
+					<div class="col-md-9 padding_right" id = "questionnaireList">
 					<select class="sel form-control" id = "questionnaireTemplateId">
 						<option selected>Select</option>
 					  <!-- 
@@ -178,12 +178,16 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					   -->
 					   </select>
 					</div>
+					<span class="cursorPointer btn btn-primary pull-left" onclick="requirementWorkflow.getRequirementQuestionnaireTemplates();"><i class="fa fa-refresh "></i></span>
 					 <!-- dynamic stage content ends here -->
 					
-					<div class="col-md-1"> <a class="fa fa-plus btn btn-default" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire" target="_blank"></a> </div>
+					<div class="col-md-1"> <a class="fa fa-plus btn btn-default minHeBtn" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire" target="_blank"></a> </div>
 				  </div>
 				</div>
 			  </div>
+			  
+			  
+			  
 			  <div class="clearfix"></div>
 			  <div class="form-group">
 				<label class="col-md-3">Add Comment</label>
