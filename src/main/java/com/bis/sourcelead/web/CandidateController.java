@@ -225,6 +225,7 @@ public class CandidateController {
 		 	logger.debug("Display the candiade page");
 		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			ModelAndView model = new ModelAndView();
+			model.addObject("sourceCandidateList", candidateService.getCandidateSourceListByOrgLocationId(orgLocations.getId(), 1, null));
 			model.setViewName("candidates/candidate");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
@@ -257,7 +258,7 @@ public class CandidateController {
 				ModelAndView model = new ModelAndView();
 				model.setViewName("candidates/addCandidate");
 				model.addObject("sourceleadUrl", sourceleadUrl);
-				
+				model.addObject("sourceCandidateList", candidateService.getCandidateSourceListByOrgLocationId(orgLocations.getId(), 1, null));
 				Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 				if(null != countries){
 	            model.addObject("loginCountryName", countries.getName());
@@ -809,6 +810,16 @@ public class CandidateController {
 			
 			model.setViewName("requirement/candidateDuplicateVerification");
 			}
+			
+	    @RequestMapping(value = "/candidateSourceList")
+		public ModelAndView candidateSourceList(HttpServletRequest request, HttpServletResponse response)
+		{
+			ModelAndView model = new ModelAndView();
+			 
+			model.setViewName("candidates/candidateSourceList");
+			
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			
 			return model;
 		}
 	

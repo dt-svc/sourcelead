@@ -44,15 +44,6 @@
  var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
 
-<style>
-.pac-container::after {
-	display:none;
-}
-</style>
-
-
-
-
 <div class="wraper"> 
   <!--   Welcome Screens   -->
   
