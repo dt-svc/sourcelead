@@ -3657,6 +3657,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		
 		OrgLocations orgLocation = orgLocationsDao.getOrgLocations(orgLocationId);
 		Workbook createExcelworkbook =  new XSSFWorkbook();
+
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
         
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -3697,8 +3698,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				writeRow.createCell(0).setCellValue("--");
 			}
 			if(candidate.getOrderDate() !=null && !"".equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getOrderDate()))) {
-				
-				writeRow.createCell(1).setCellValue(candidate.getOrderDate());}
+				writeRow.createCell(1).setCellValue(candidate.getOrderDate().toString());
+				}
 			else {
 				writeRow.createCell(1).setCellValue("--");
 			}
