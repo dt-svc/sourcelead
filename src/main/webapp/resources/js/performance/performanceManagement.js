@@ -1258,7 +1258,7 @@ function PerformanceManagement(){
 						
 						var isResMngChecked = $("#isResourceManagerAppraisalRequired").is(":checked");
 						if(isResMngChecked){
-							resMngText = "<div class='categorySubCta'><span>Resource Manager</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='ResourceMngcategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+							resMngText = "<div class='categorySubCta'><span>Resource Manager</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='resourceMngcategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
 						}
 						 
 						
@@ -1275,6 +1275,9 @@ function PerformanceManagement(){
 						text += reportingMngText
 						text += resMngText
 						text += "</div>";
+						text += "<div class='clearfix mxrateerror' id='categoryPercentageDiv"+$(this).val()+"'>";
+						text += "<input type='hidden' name='categoryPercent"+$(this).val()+"' id='percentageCatgValidation"+$(this).val()+"'>";
+						text += "</div>";
 						text += "<div class='row mxrateerror' id='percentageDiv"+$(this).val()+"'>";
 						text += "<input type='hidden' name='percent"+$(this).val()+"' id='percentageValidation"+$(this).val()+"'>";
 						text += "</div>";
@@ -1285,6 +1288,35 @@ function PerformanceManagement(){
 				}
 			});
 		}
+  }
+  
+  
+  
+  this.validateCategoryPercentageTotalSumValue = function(){
+	  var percentage = 0;
+	  $(".multiTemplates").each(function() {	
+		  percentage = Number($("#percent"+$(this).data("template_id")).val());
+		  var selfPercentage = $("#selfCategoryPercent"+$(this).data("template_id")).val();
+		  var peerPercentage = $("#peerCategoryPercent"+$(this).data("template_id")).val();
+		  var reportingMngPercentage = $("#reportingMngCategoryPercent"+$(this).data("template_id")).val();
+		  var resourceMngPercentage = $("#resourceMngcategoryPercent"+$(this).data("template_id")).val();
+		  var totalPercentage = Number(selfPercentage)+Number(peerPercentage)+Number(reportingMngPercentage)+Number(resourceMngPercentage);
+		  
+		  if(totalPercentage > percentage){
+			    $('#categoryPercentageDiv'+$(this).data("template_id")).find('p.jquery_form_error_message').remove(); 
+			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('class','error signin_fild');
+			    $('#percentageCatgValidation'+$(this).data("template_id")).after("<p class='jquery_form_error_message'>Total percentage should not more than given category Percentage</p>");
+			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('record-exist','yes');
+			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('record-exist-errorMsg','Total percentage should not more than given category Percentage'); 
+			    $("#savePerformanceBudget").attr("disabled", "disabled");
+		  }else{
+			     $('#categoryPercentageDiv'+$(this).data("template_id")).find('p.jquery_form_error_message').remove(); 
+				 $('input#percentageValidation'+$(this).data("template_id")).removeAttr( "class record-exist record-exist-errormsg");
+				 $('#categoryPercentageDiv'+$(this).data("template_id")).find('p.jquery_form_error_message').remove();
+				 $("#savePerformanceBudget").removeAttr("disabled");
+		  }
+		  
+	  });
   }
   
   
