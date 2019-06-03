@@ -729,7 +729,7 @@ public class Constants {
 
 	public static final String[] IMMIGRATION_LIST_EXCEL_HEADERS = { "ID", "Country", "Beneficiary First Name", "Beneficiary Last Name", "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number", "I-20 SEVIS Number If Student", "EAD Number If Student",
 			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Visa Status", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
-			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
+			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate"};
 
 	public static final String[] DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Payment Mode*","Bank Name*","Account Number*","BSR Number","MICR Code","IFSC Code*",
 			"First Name*","Last Name*",};
