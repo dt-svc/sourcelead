@@ -971,6 +971,40 @@ function PerformanceManagement(){
 		  });
 	   
 	   
+		$(function() {
+			  $('#appraisalProcessStartDate').datepicker({
+			      dateFormat: finalDateFormat,
+			      changeMonth: true,
+			  	  changeYear: true, 
+			  	  minDate:0,
+			  	  onSelect : function(selected) {
+			  		var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate() + 1);
+					$("#appraisalProcessEndDate").datepicker("option", "minDate", dt);
+					performanceManagement.validAppraisalDates();
+					$("#appraisalProcessEndDate").removeAttr("disabled");
+			 	  }
+			  });
+		  });
+		
+		
+		
+		$(function() {
+			  $('#appraisalProcessEndDate').datepicker({
+			      dateFormat: finalDateFormat,
+			      changeMonth: true,
+			  	  changeYear: true, 
+			  	  minDate:0,
+			  	  onSelect : function(selected) {
+			  		var dt = $(this).datepicker('getDate', '-1d');
+					dt.setDate(dt.getDate() - 1);
+					$("#appraisalProcessStartDate").datepicker("option", "maxDate", dt);
+					performanceManagement.validAppraisalDates();
+			 	  }
+			  });
+	  });
+	   
+	   
 	   
 	    $(function() {
 			  $('#selfAppraisalStartDate').datepicker({
@@ -1041,10 +1075,8 @@ function PerformanceManagement(){
 	  });
 		
 		
-		
-		
 		$(function() {
-			  $('#appraisalProcessStartDate').datepicker({
+			  $('#peerReviewStartDate').datepicker({
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
@@ -1052,9 +1084,9 @@ function PerformanceManagement(){
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
-					$("#appraisalProcessEndDate").datepicker("option", "minDate", dt);
+					$("#peerReviewEndDate").datepicker("option", "minDate", dt);
 					performanceManagement.validAppraisalDates();
-					$("#appraisalProcessEndDate").removeAttr("disabled");
+					$("#peerReviewEndDate").removeAttr("disabled");
 			 	  }
 			  });
 		  });
@@ -1062,7 +1094,7 @@ function PerformanceManagement(){
 		
 		
 		$(function() {
-			  $('#appraisalProcessEndDate').datepicker({
+			  $('#peerReviewEndDate').datepicker({
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
@@ -1070,7 +1102,41 @@ function PerformanceManagement(){
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '-1d');
 					dt.setDate(dt.getDate() - 1);
-					$("#appraisalProcessStartDate").datepicker("option", "maxDate", dt);
+					$("#peerReviewStartDate").datepicker("option", "maxDate", dt);
+					performanceManagement.validAppraisalDates();
+			 	  }
+			  });
+	  });
+		
+		
+	$(function() {
+			  $('#resourceManagerReviewStartDate').datepicker({
+			      dateFormat: finalDateFormat,
+			      changeMonth: true,
+			  	  changeYear: true, 
+			  	  minDate:0,
+			  	  onSelect : function(selected) {
+			  		var dt = $(this).datepicker('getDate', '+1d');
+					dt.setDate(dt.getDate() + 1);
+					$("#resourceManagerReviewEndDate").datepicker("option", "minDate", dt);
+					performanceManagement.validAppraisalDates();
+					$("#resourceManagerReviewEndDate").removeAttr("disabled");
+			 	  }
+			  });
+		  });
+		
+		
+		
+	$(function() {
+			  $('#resourceManagerReviewEndDate').datepicker({
+			      dateFormat: finalDateFormat,
+			      changeMonth: true,
+			  	  changeYear: true, 
+			  	  minDate:0,
+			  	  onSelect : function(selected) {
+			  		var dt = $(this).datepicker('getDate', '-1d');
+					dt.setDate(dt.getDate() - 1);
+					$("#resourceManagerReviewStartDate").datepicker("option", "maxDate", dt);
 					performanceManagement.validAppraisalDates();
 			 	  }
 			  });
@@ -1121,6 +1187,26 @@ function PerformanceManagement(){
 	 var appraisalProcessEndDate = document.getElementById("appraisalProcessEndDate").value;
 		 if(appraisalProcessEndDate){
 			 $('#appraisalProcessEndDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+	 var peerReviewStartDate = document.getElementById("peerReviewStartDate").value;
+		 if(peerReviewStartDate){
+			 $('#peerReviewStartDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+	 var peerReviewEndDate = document.getElementById("peerReviewEndDate").value;
+		 if(peerReviewEndDate){
+			 $('#peerReviewEndDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+	 var resourceManagerReviewStartDate = document.getElementById("resourceManagerReviewStartDate").value;
+		 if(resourceManagerReviewStartDate){
+			 $('#resourceManagerReviewStartDateDiv').find('p.jquery_form_error_message').remove(); 
+		 }
+		 
+	 var resourceManagerReviewEndDate = document.getElementById("resourceManagerReviewEndDate").value;
+		 if(resourceManagerReviewEndDate){
+			 $('#resourceManagerReviewEndDateDiv').find('p.jquery_form_error_message').remove(); 
 		 }
   }
   
@@ -1471,9 +1557,24 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 	  var isChecked = $("#isSelfAppraisalRequired").is(":checked");
 	  if(isChecked){
 		  $("#selfAppraisalStartDate").removeAttr("disabled");
+		  
+		  $("#selfAppraisalStartDate").removeAttr("data-validation-optional");
+		  $("#selfAppraisalStartDate").attr("data-validation","required");
+		  $("#selfAppraisalEndDate").removeAttr("data-validation-optional");
+		  $("#selfAppraisalEndDate").attr("data-validation","required");
 	  }else{
 		  $("#selfAppraisalStartDate").attr("disabled", "disabled");
 		  $("#selfAppraisalEndDate").attr("disabled", "disabled");
+		  
+		  $("#selfAppraisalStartDate").removeAttr("data-validation");
+		  $("#selfAppraisalStartDate").attr("data-validation-optional","true");
+		  $("#selfAppraisalEndDate").removeAttr("data-validation");
+		  $("#selfAppraisalEndDate").attr("data-validation-optional","true");
+		  $('#selfAppraisalStartDateDiv').find('p.jquery_form_error_message').remove(); 
+		  $('#selfAppraisalEndDateDiv').find('p.jquery_form_error_message').remove(); 
+		  
+		  $("input[id$='selfAppraisalStartDate'], input[id$='selfAppraisalEndDate']").datepicker( "option", "maxDate", null );
+		  $("input[id$='selfAppraisalStartDate'], input[id$='selfAppraisalEndDate']").datepicker( "option", "minDate", null );
 	  }
   }
   
@@ -1486,11 +1587,85 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 	  var isChecked = $("#isReportingManagerAppraisalRequired").is(":checked");
 	  if(isChecked){
 		  $("#appraisalApprovingStartDate").removeAttr("disabled");
+		  
+		  $("#appraisalApprovingStartDate").removeAttr("data-validation-optional");
+		  $("#appraisalApprovingStartDate").attr("data-validation","required");
+		  $("#appraisalApprovingEndDate").removeAttr("data-validation-optional");
+		  $("#appraisalApprovingEndDate").attr("data-validation","required");
 	  }else{
 		  $("#appraisalApprovingStartDate").attr("disabled", "disabled");
 		  $("#appraisalApprovingEndDate").attr("disabled", "disabled");
+		  
+		  $("#appraisalApprovingStartDate").removeAttr("data-validation");
+		  $("#appraisalApprovingStartDate").attr("data-validation-optional","true");
+		  $("#appraisalApprovingEndDate").removeAttr("data-validation");
+		  $("#appraisalApprovingEndDate").attr("data-validation-optional","true");
+		  $('#appraisalApprovingStartDateDiv').find('p.jquery_form_error_message').remove(); 
+		  $('#appraisalApprovingEndDateDiv').find('p.jquery_form_error_message').remove(); 
+		  
+		  $("input[id$='appraisalApprovingStartDate'], input[id$='appraisalApprovingEndDate']").datepicker( "option", "maxDate", null );
+		  $("input[id$='appraisalApprovingStartDate'], input[id$='appraisalApprovingEndDate']").datepicker( "option", "minDate", null );
 	  }
   }
+  
+  
+this.enablePeerReviewPeriod = function(){
+	  
+	  $("#peerReviewStartDate").val("");
+	  $("#peerReviewEndDate").val("");
+	  
+	  var isChecked = $("#isPeerReviewRequired").is(":checked");
+	  if(isChecked){
+		  $("#peerReviewStartDate").removeAttr("disabled");
+		  
+		  $("#peerReviewStartDate").removeAttr("data-validation-optional");
+		  $("#peerReviewStartDate").attr("data-validation","required");
+		  $("#peerReviewEndDate").removeAttr("data-validation-optional");
+		  $("#peerReviewEndDate").attr("data-validation","required");
+	  }else{
+		  $("#peerReviewStartDate").attr("disabled", "disabled");
+		  $("#peerReviewEndDate").attr("disabled", "disabled");
+		  
+		  $("#peerReviewStartDate").removeAttr("data-validation");
+		  $("#peerReviewStartDate").attr("data-validation-optional","true");
+		  $("#peerReviewEndDate").removeAttr("data-validation");
+		  $("#peerReviewEndDate").attr("data-validation-optional","true");
+		  $('#peerReviewStartDateDiv').find('p.jquery_form_error_message').remove(); 
+		  $('#peerReviewEndDateDiv').find('p.jquery_form_error_message').remove(); 
+		  
+		  $("input[id$='peerReviewStartDate'], input[id$='peerReviewEndDate']").datepicker( "option", "maxDate", null );
+		  $("input[id$='peerReviewStartDate'], input[id$='peerReviewEndDate']").datepicker( "option", "minDate", null );
+	  }
+  }
+
+this.enableResourceManagerAppraisalPeriod = function(){
+	  
+	  $("#resourceManagerReviewStartDate").val("");
+	  $("#resourceManagerReviewEndDate").val("");
+	  
+	  var isChecked = $("#isResourceManagerAppraisalRequired").is(":checked");
+	  if(isChecked){
+		  $("#resourceManagerReviewStartDate").removeAttr("disabled");
+		  
+		  $("#resourceManagerReviewStartDate").removeAttr("data-validation-optional");
+		  $("#resourceManagerReviewStartDate").attr("data-validation","required");
+		  $("#resourceManagerReviewEndDate").removeAttr("data-validation-optional");
+		  $("#resourceManagerReviewEndDate").attr("data-validation","required");
+	  }else{
+		  $("#resourceManagerReviewStartDate").attr("disabled", "disabled");
+		  $("#resourceManagerReviewEndDate").attr("disabled", "disabled");
+		  
+		  $("#resourceManagerReviewStartDate").removeAttr("data-validation");
+		  $("#resourceManagerReviewStartDate").attr("data-validation-optional","true");
+		  $("#resourceManagerReviewEndDate").removeAttr("data-validation");
+		  $("#resourceManagerReviewEndDate").attr("data-validation-optional","true");
+		  $('#resourceManagerReviewStartDateDiv').find('p.jquery_form_error_message').remove(); 
+		  $('#resourceManagerReviewEndDateDiv').find('p.jquery_form_error_message').remove(); 
+		  
+		  $("input[id$='resourceManagerReviewStartDate'], input[id$='resourceManagerReviewEndDate']").datepicker( "option", "maxDate", null );
+		  $("input[id$='resourceManagerReviewStartDate'], input[id$='resourceManagerReviewEndDate']").datepicker( "option", "minDate", null );
+	  }
+}
   
   
   this.clearAppraisalStartDate = function(){
@@ -1548,6 +1723,35 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 	  $("#appraisalProcessEndDate").val("");
 	  $("input[id$='appraisalProcessStartDate'], input[id$='appraisalProcessEndDate']").datepicker( "option", "maxDate", null );
   }
+  
+  this.clearPeerReviewStartDate = function(){
+	  $("#peerReviewStartDate").val("");
+	  $("#peerReviewEndDate").val("");
+	  $("#peerReviewEndDate").attr("disabled", "disabled");
+	  
+	  $("input[id$='peerReviewStartDate'], input[id$='peerReviewEndDate']").datepicker( "option", "maxDate", null );
+	  $("input[id$='peerReviewStartDate'], input[id$='peerReviewEndDate']").datepicker( "option", "minDate", null );
+  }
+  
+  this.clearPeerReviewEndDate = function(){
+	  $("#peerReviewEndDate").val("");
+	  $("input[id$='peerReviewStartDate'], input[id$='peerReviewEndDate']").datepicker( "option", "maxDate", null );
+  }
+  
+  this.clearResourceManagerReviewStartDate = function(){
+	  $("#resourceManagerReviewStartDate").val("");
+	  $("#resourceManagerReviewEndDate").val("");
+	  $("#resourceManagerReviewEndDate").attr("disabled", "disabled");
+	  
+	  $("input[id$='resourceManagerReviewStartDate'], input[id$='resourceManagerReviewEndDate']").datepicker( "option", "maxDate", null );
+	  $("input[id$='resourceManagerReviewStartDate'], input[id$='resourceManagerReviewEndDate']").datepicker( "option", "minDate", null );
+  }
+  
+  this.clearResourceManagerReviewEndDate = function(){
+	  $("#resourceManagerReviewEndDate").val("");
+	  $("input[id$='resourceManagerReviewStartDate'], input[id$='resourceManagerReviewEndDate']").datepicker( "option", "maxDate", null );
+  }
+  
   
   this.changeDescriptionDisplayStatus = function(){
 	  var isChecked = $("#descriptionDisplay").is(":checked");

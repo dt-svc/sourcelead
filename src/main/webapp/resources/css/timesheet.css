@@ -8899,3 +8899,8 @@ position: fixed; left: 0px !important; right: 0px !important; margin: 0px auto; 
 .secHeadBtn2 {display: block; color: #fff; line-height: 28px; text-align: center;}
 .secHeadBtn:hover, .secHeadBtn2:hover { color: #fff !important;}
 .tabHeadColor { background-color: #f1f1f1;}
+
+ .valMsgPosition { position: relative;}
+ .valMsgPosition p { position: absolute; left: -15px; top: 40px;}
+ .myForm h2 span {font-size: 13px; font-weight: 500; color: #b13535; display: inline-block;}
+ .myForm h2 span i {display: inline-block; padding: 0px 5px 0px 0px;}
