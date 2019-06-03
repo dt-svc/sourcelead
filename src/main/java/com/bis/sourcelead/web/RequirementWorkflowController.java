@@ -249,7 +249,7 @@ public class RequirementWorkflowController {
 		try {
 			
 			String[] tableColumns = { "workFlowName", "noOfStages", "status"};
-		  	int sortColumnIndex = 1; 
+		  	int sortColumnIndex = -1; 
 	  		String sortColumnOrder = "desc"; 
  	  		if (requirementWorkFlowDTO.getOrder() != null && !requirementWorkFlowDTO.getOrder().isEmpty()) {
 	  		sortColumnIndex = Integer.parseInt(requirementWorkFlowDTO.getOrder().get(0).get("column"));
@@ -257,9 +257,10 @@ public class RequirementWorkflowController {
 	  		}
  	  		    if (sortColumnIndex != -1) {
  	  			 requirementWorkFlowDTO.setSortOrder(sortColumnOrder);
+ 	  			  requirementWorkFlowDTO.setSortColumn(tableColumns[sortColumnIndex]);
  	  		    }
 	  		
-	  			requirementWorkFlowDTO.setSortColumn(tableColumns[sortColumnIndex]);
+	  			
 	  			
 			responseList = requirementWorkFlowService.getRequirementWorkFlowList(requirementWorkFlowDTO, orgLocations);
 		}catch(Exception e) {
