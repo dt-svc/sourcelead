@@ -30,6 +30,7 @@
  <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
  <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
  <script src="/resources/js/slead-common.js"></script> 
+ 
 <script>
 		$(document).ready(function() { 
 			getAllCampaignJobs();
