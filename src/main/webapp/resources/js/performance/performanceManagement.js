@@ -1235,11 +1235,45 @@ function PerformanceManagement(){
 						$("#selectedTemplatesDiv").find("div[data-template_id=" + $(this).val() + "]").remove();
 						return;
 					} else {
-						var text="<div class='multiTemplates positionRelative' id="+$(this).val()+" data-template_id=" + $(this).val() + ">";
+						
+						var selfRevText = "";
+						var peerRevText = "";
+						var reportingMngText = "";
+						var resMngText = "";
+						
+						var isSelfChecked = $("#isSelfAppraisalRequired").is(":checked");
+						if(isSelfChecked){
+							selfRevText = "<div class='categorySubCta'><span>Self Appraisal</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='selfCategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+						}
+						
+						var isPeerChecked = $("#isPeerReviewRequired").is(":checked");
+						if(isPeerChecked){
+							peerRevText = "<div class='categorySubCta'><span>Peer Review</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='peerCategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+						}
+						
+						var isRepMngChecked = $("#isReportingManagerAppraisalRequired").is(":checked");
+						if(isRepMngChecked){
+							reportingMngText = "<div class='categorySubCta'><span>Reporting Manager</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='reportingMngCategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+						}
+						
+						var isResMngChecked = $("#isResourceManagerAppraisalRequired").is(":checked");
+						if(isResMngChecked){
+							resMngText = "<div class='categorySubCta'><span>Resource Manager</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='ResourceMngcategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+						}
+						 
+						
+						var text="<div class='multiTemplates positionRelative categorySub' id="+$(this).val()+" data-template_id=" + $(this).val() + ">";
 						text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeSelectedJobDiv(this)'></i>";
-						text += "<div class='multiJobTitle clearfix'>";
-						text += "<h2 class='pull-left'>" + $(this).text() + "</h2>";
-						text += "<span class='pull-right mr'><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validatePercentageTotalSumValue();' id='percent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></span>";
+						text += "<div class='multiJobTitle categorySubHead clearfix'>";
+						text += "" + $(this).text() + "";
+						text += "<span class='pull-right mr'><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validatePercentageTotalSumValue();' id='percent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'>";
+						text += "</span>";
+						text += "</div>";
+						text += "<div class='clearfix'>";
+						text += selfRevText
+						text += peerRevText
+						text += reportingMngText
+						text += resMngText
 						text += "</div>";
 						text += "<div class='row mxrateerror' id='percentageDiv"+$(this).val()+"'>";
 						text += "<input type='hidden' name='percent"+$(this).val()+"' id='percentageValidation"+$(this).val()+"'>";
@@ -1315,10 +1349,10 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 						$("#selectedComptenciesDiv").find("div[data-template_id=" + $(this).val() + "]").remove();
 						return;
 					} else {
-						var text="<div class='multiCompetencies positionRelative' id="+$(this).val()+" data-template_id=" + $(this).val() + ">";
+						var text="<div class='multiCompetencies positionRelative categorySub' id="+$(this).val()+" data-template_id=" + $(this).val() + ">";
 						text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeAppriasalCompetenceDiv(this)'></i>";
-						text += "<div class='multiJobTitle clearfix'>";
-						text += "<h2 class='pull-left'>" + $(this).text() + "</h2>";
+						text += "<div class='multiJobTitle categorySubHead clearfix'>";
+						text += "" + $(this).text() + "";
 						text += "<span class='pull-right mr'><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validatePercentageTotalSumValue();' id='competenciesPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></span>";
 						text += "</div>";
 						text += "<div class='row mxrateerror' id='percentageDiv"+$(this).val()+"'>";
@@ -1344,7 +1378,7 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
   this.editSelectedApprisalCompetenciesRows = function(id,templateName,percentage){
 	    var text="<div class='multiCompetencies positionRelative' id="+id+" data-template_id=" + id + ">";
 		text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeAppriasalCompetenceDiv(this)'></i>";
-		text += "<div class='multiJobTitle clearfix'>";
+		text += "<div class='multiJobTitle categorySubHead clearfix'>";
 		text += "<h2 class='pull-left'>" + templateName + "</h2>";
 		text += "<span class='pull-right mr'><input type='text' value='"+percentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validatePercentageTotalSumValue();' id='competenciesPercent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></span>";
 		text += "</div>";
@@ -2119,10 +2153,10 @@ this.enableResourceManagerAppraisalPeriod = function(){
   
   
   this.editSelectedTemplateRows = function(id,templateName,percentage){
-	    var text="<div class='multiTemplates positionRelative' id="+id+" data-template_id=" + id + ">";
+	    var text="<div class='multiTemplates positionRelative categorySub' id="+id+" data-template_id=" + id + ">";
 		text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeSelectedJobDiv(this)'></i>";
-		text += "<div class='multiJobTitle clearfix'>";
-		text += "<h2 class='pull-left'>" + templateName + "</h2>";
+		text += "<div class='multiJobTitle categorySubHead clearfix'>";
+		text += "" + templateName + "";
 		text += "<span class='pull-right mr'><input type='text' value='"+percentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validatePercentageTotalSumValue();' id='percent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></span>";
 		text += "</div>";
 		text += "<div class='row mxrateerror' id='percentageDiv"+id+"'>";
@@ -2181,10 +2215,10 @@ this.updateSelectedCompetenceRows = function(id,removedFlag){
 						return;
 					} else {
 
-						var text="<div class='multiTemplates positionRelative' id="+$(this).val()+" data-template_id=" + $(this).val() + ">";
+						var text="<div class='multiTemplates positionRelative categorySub' id="+$(this).val()+" data-template_id=" + $(this).val() + ">";
 						text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeCompetenceDiv(this)'></i>";
-						text += "<div class='multiJobTitle clearfix'>";
-						text += "<h2 class='pull-left'>" + $(this).text() + "</h2>";
+						text += "<div class='multiJobTitle categorySubHead clearfix'>";
+						text += "" + $(this).text() + "";
 						text += "<span class='pull-right mr'><input type='text' onblur='performanceManagement.validateWeightage("+$(this).val()+");' id='weightage"+$(this).val()+"' class='form-control' field-name='Weightage' placeholder='Weightage' data-validation='validate_int required'></span>";
 						text += "</div>";
 						text += "<div class='row mxrateerror' id='weightageDiv"+$(this).val()+"'>";
@@ -2274,10 +2308,10 @@ this.closeCompetenceDiv = function(ele) {
   
   
  this.editSelectedCompetenciesRows = function(id,competenceName,weightage){
-	    var text="<div class='multiTemplates positionRelative' id="+id+" data-template_id=" + id + ">";
+	    var text="<div class='multiTemplates positionRelative categorySub' id="+id+" data-template_id=" + id + ">";
 		text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeCompetenceDiv(this)'></i>";
-		text += "<div class='multiJobTitle clearfix'>";
-		text += "<h2 class='pull-left'>" + competenceName + "</h2>";
+		text += "<div class='multiJobTitle categorySubHead clearfix'>";
+		text += "" + competenceName + "";
 		text += "<span class='pull-right mr'><input type='text' value='"+weightage+"' onblur='performanceManagement.validateWeightage("+id+");' id='weightage"+id+"' class='form-control' field-name='Percentage' placeholder='Weightage' data-validation='validate_int required'></span>";
 		text += "</div>";
 		text += "<div class='row mxrateerror' id='weightageDiv"+id+"'>";
