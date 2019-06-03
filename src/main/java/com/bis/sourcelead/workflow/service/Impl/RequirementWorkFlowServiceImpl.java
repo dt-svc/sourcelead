@@ -158,21 +158,14 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	public void saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(OrgLocations orgLocations, User user) {
 		logger.debug("Started saveRequirementDefaultWorkFlowAndStagesByOrgLocationId Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
 		try {
-		List<RequirementDefaultWorkFlowStages> requirementDefaultWorkFlowStages = requirementWorkFlowDao.getRequirementDefaultWorkFlowStages();
-		RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO(); 
-		RequirementWorkFlow workFlow = null;
-		//setting default value to display in jsp.
-		Integer workflowSize = requirementDefaultWorkFlowStages.size();
-		StringBuilder jobWorkflow = new StringBuilder(Constants.DEFAULT_JOB_WORKFLOW);
-		requirementWorkFlowDTO.setWorkFlowName(jobWorkflow.toString());
-		requirementWorkFlowDTO.setDescription(jobWorkflow.toString());
-		requirementWorkFlowDTO.setNoOfStages(workflowSize.toString());
-		requirementWorkFlowDTO.setConfigureType(Constants.DEFAULT);
-		
-		// saving and fetching a new default workflow for an org..
 		List<RequirementWorkFlow> requirementWorkFlow= requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
 		if (requirementWorkFlow.size() == 0) {
-			
+			RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO(); 
+			RequirementWorkFlow workFlow = null;
+			StringBuilder jobWorkflow = new StringBuilder(Constants.DEFAULT_JOB_WORKFLOW);
+			requirementWorkFlowDTO.setWorkFlowName(jobWorkflow.toString());
+			requirementWorkFlowDTO.setDescription(jobWorkflow.toString());
+			requirementWorkFlowDTO.setConfigureType(Constants.DEFAULT);
 			workFlow = saveRequirementWorkFlowDetailsInfo(requirementWorkFlowDTO,user,orgLocations);
 			workFlow.setConfigureType(Constants.DEFAULT);
 			requirementWorkFlowDao.saveRequirementWorkFlowDetails(workFlow, orgLocations);
