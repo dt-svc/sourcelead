@@ -39,6 +39,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <div class="col-md-9" id = "StageNameDiv">
             <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
             onkeyup="requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
+            onblur= "requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
 				value='<c:out value="${stageName}"/>' data-validation="required validate_length length1-100"">
 			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
           </div>
@@ -64,6 +65,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <div class="col-md-9" id = "StageNameDiv">
             <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
             onkeyup="requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
+			onblur= "requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
 								data-validation="required validate_length length1-100"">
 			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
           </div>
@@ -178,7 +180,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					</div>
 					 <!-- dynamic stage content ends here -->
 					
-					<div class="col-md-1"> <a class="fa fa-plus btn btn-default" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire"></a> </div>
+					<div class="col-md-1"> <a class="fa fa-plus btn btn-default" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire" target="_blank"></a> </div>
 				  </div>
 				</div>
 			  </div>
@@ -289,12 +291,6 @@ $(document).ready(function() {
 	    else
 	    	$("#saveTaskButton").attr("disabled", true);
 	})
-	
-	 if($('#stageName').val().length !=0){
-	    	$("#saveTaskButton").attr("disabled", false);           
-	 }else{
-	    	$("#saveTaskButton").attr("disabled", true);
-	 }
 	
 	requirementWorkflow.getRequirementWorkflowTasks(currentStageUuid);
 });
