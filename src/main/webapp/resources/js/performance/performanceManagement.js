@@ -1293,13 +1293,17 @@ function PerformanceManagement(){
   
   
   this.validateCategoryPercentageTotalSumValue = function(){
-	  var percentage = 0;
-	  var selfPercentage = 0;
-	  var peerPercentage = 0;
-	  var reportingMngPercentage = 0;
-	  var resourceMngPercentage = 0;
+	  
+	 
 	  
 	  $(".multiTemplates").each(function() {	
+		  
+		  var percentage = 0;
+		  var selfPercentage = 0;
+		  var peerPercentage = 0;
+		  var reportingMngPercentage = 0;
+		  var resourceMngPercentage = 0;
+		  
 		   percentage = Number($("#percent"+$(this).data("template_id")).val());
 		   
 		   var selfCatg = $("#selfCategoryPercent"+$(this).data("template_id")).val();
@@ -1323,6 +1327,7 @@ function PerformanceManagement(){
 		   }
 		  
 		   var totalPercentage = Number(selfPercentage)+Number(peerPercentage)+Number(reportingMngPercentage)+Number(resourceMngPercentage);
+		   
 		  
 		  if(totalPercentage > percentage){
 			    $('#categoryPercentageDiv'+$(this).data("template_id")).find('p.jquery_form_error_message').remove(); 
@@ -1340,7 +1345,7 @@ function PerformanceManagement(){
 			    $("#savePerformanceBudget").attr("disabled", "disabled");
 		  }else{
 			     $('#categoryPercentageDiv'+$(this).data("template_id")).find('p.jquery_form_error_message').remove(); 
-				 $('input#percentageValidation'+$(this).data("template_id")).removeAttr( "class record-exist record-exist-errormsg");
+				 $('input#percentageCatgValidation'+$(this).data("template_id")).removeAttr( "class record-exist record-exist-errormsg");
 				 $('#categoryPercentageDiv'+$(this).data("template_id")).find('p.jquery_form_error_message').remove();
 				 $("#savePerformanceBudget").removeAttr("disabled");
 		  }
@@ -1548,7 +1553,7 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 			var con = JSON.stringify(templates);
 			$("#jsonCategoriesString").val(con);
 	        var appraisalFormData = getFormData1("createAppraisal_form");
-	        $("#appraisalDetailsLoading").attr('style','position:absolute; width:100%; height:200%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $("#appraisalDetailsLoading").attr('style','position:absolute; width:100%; height:350%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 		    	type: "POST",
 		    	 processData: false,
@@ -1663,9 +1668,12 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 		  $("#selfAppraisalStartDate").attr("data-validation","required");
 		  $("#selfAppraisalEndDate").removeAttr("data-validation-optional");
 		  $("#selfAppraisalEndDate").attr("data-validation","required");
+		  $("#isSelfAppraisalRequired").val("Y");
+		  
 	  }else{
 		  $("#selfAppraisalStartDate").attr("disabled", "disabled");
 		  $("#selfAppraisalEndDate").attr("disabled", "disabled");
+		  $("#isSelfAppraisalRequired").val("N");
 		  
 		  $("#selfAppraisalStartDate").removeAttr("data-validation");
 		  $("#selfAppraisalStartDate").attr("data-validation-optional","true");
@@ -1702,9 +1710,14 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 		  $("#appraisalApprovingStartDate").attr("data-validation","required");
 		  $("#appraisalApprovingEndDate").removeAttr("data-validation-optional");
 		  $("#appraisalApprovingEndDate").attr("data-validation","required");
+		  
+		  $("#isReportingManagerAppraisalRequired").val("Y");
+		  
 	  }else{
 		  $("#appraisalApprovingStartDate").attr("disabled", "disabled");
 		  $("#appraisalApprovingEndDate").attr("disabled", "disabled");
+		  
+		  $("#isReportingManagerAppraisalRequired").val("N");
 		  
 		  $("#appraisalApprovingStartDate").removeAttr("data-validation");
 		  $("#appraisalApprovingStartDate").attr("data-validation-optional","true");
@@ -1740,9 +1753,14 @@ this.enablePeerReviewPeriod = function(){
 		  $("#peerReviewStartDate").attr("data-validation","required");
 		  $("#peerReviewEndDate").removeAttr("data-validation-optional");
 		  $("#peerReviewEndDate").attr("data-validation","required");
+		  
+		  $("#isPeerReviewRequired").val("Y");
+		  
 	  }else{
 		  $("#peerReviewStartDate").attr("disabled", "disabled");
 		  $("#peerReviewEndDate").attr("disabled", "disabled");
+		  
+		  $("#isPeerReviewRequired").val("N");
 		  
 		  $("#peerReviewStartDate").removeAttr("data-validation");
 		  $("#peerReviewStartDate").attr("data-validation-optional","true");
@@ -1773,6 +1791,8 @@ this.enableResourceManagerAppraisalPeriod = function(){
 	  if(isChecked){
 		  $("#resourceManagerReviewStartDate").removeAttr("disabled");
 		  
+		  $("#isResourceManagerAppraisalRequired").val("Y");
+		  
 		  $("#resourceManagerReviewStartDate").removeAttr("data-validation-optional");
 		  $("#resourceManagerReviewStartDate").attr("data-validation","required");
 		  $("#resourceManagerReviewEndDate").removeAttr("data-validation-optional");
@@ -1780,6 +1800,8 @@ this.enableResourceManagerAppraisalPeriod = function(){
 	  }else{
 		  $("#resourceManagerReviewStartDate").attr("disabled", "disabled");
 		  $("#resourceManagerReviewEndDate").attr("disabled", "disabled");
+		  
+		  $("#isResourceManagerAppraisalRequired").val("N");
 		  
 		  $("#resourceManagerReviewStartDate").removeAttr("data-validation");
 		  $("#resourceManagerReviewStartDate").attr("data-validation-optional","true");
@@ -1967,6 +1989,12 @@ this.enableResourceManagerAppraisalPeriod = function(){
 			        		 $("#appraisalEndDate").removeAttr("disabled");
 			        		 $("#appraisalEndDate").val(response.object.appraisalEndDate);
 			        		 
+			        		 if(response.object.isSelfAppraisalRequired == 'Y'){
+			        			 document.getElementById("isSelfAppraisalRequired").checked = true;
+			        			 $("#isSelfAppraisalRequired").val("Y");
+			        			 $("#selfAppraisalStartDate").removeAttr("disabled");
+			        		 }
+			        		 
 			        		 if(response.object.selfAppraisalStartDate != null 
 			        				 && response.object.selfAppraisalStartDate != ''
 			        					 && response.object.selfAppraisalStartDate != 'undefined'){
@@ -1978,6 +2006,13 @@ this.enableResourceManagerAppraisalPeriod = function(){
 			        				 && response.object.selfAppraisalEndDate != ''
 			        					 && response.object.selfAppraisalEndDate != 'undefined'){
 			        			 $("#selfAppraisalEndDate").val(response.object.selfAppraisalEndDate);
+			        		 }
+			        		 
+			        		 
+			        		 if(response.object.isReportingManagerAppraisalRequired == 'Y'){
+			        			 document.getElementById("isReportingManagerAppraisalRequired").checked = true;
+			        			 $("#isReportingManagerAppraisalRequired").val("Y");
+			        			 $("#appraisalApprovingStartDate").removeAttr("disabled");
 			        		 }
 			        		 
 			        		 if(response.object.appraisalApprovingStartDate != null 
@@ -2001,6 +2036,45 @@ this.enableResourceManagerAppraisalPeriod = function(){
 			        			 $("#appraisalProcessStartDate").val(response.object.appraisalProcessStartDate);
 			        		 }
 			        		 
+			        		 if(response.object.isPeerReviewRequired == 'Y'){
+			        			 document.getElementById("isPeerReviewRequired").checked = true; 
+			        			 $("#isPeerReviewRequired").val("Y");
+			        			 $("#peerReviewStartDate").removeAttr("disabled");
+			        		 }
+			        		 
+			        		 if(response.object.peerReviewStartDate != null 
+			        				 && response.object.peerReviewStartDate != ''
+			        					 && response.object.peerReviewStartDate != 'undefined'){
+			        			 $("#peerReviewEndDate").removeAttr("disabled");
+			        			 $("#peerReviewStartDate").val(response.object.peerReviewStartDate);
+			        		 }
+			        		 
+			        		 if(response.object.peerReviewEndDate != null 
+			        				 && response.object.peerReviewEndDate != ''
+			        					 && response.object.peerReviewEndDate != 'undefined'){
+			        			 $("#peerReviewEndDate").val(response.object.peerReviewEndDate);
+			        		 }
+			        		 
+			        		 
+			        		 if(response.object.isResourceManagerAppraisalRequired == 'Y'){
+			        			 document.getElementById("isResourceManagerAppraisalRequired").checked = true; 
+			        			 $("#isResourceManagerAppraisalRequired").val("Y");
+			        			 $("#resourceManagerReviewStartDate").removeAttr("disabled");
+			        		 }
+			        		 
+			        		 if(response.object.resourceManagerReviewStartDate != null 
+			        				 && response.object.resourceManagerReviewStartDate != ''
+			        					 && response.object.resourceManagerReviewStartDate != 'undefined'){
+			        			 $("#resourceManagerReviewEndDate").removeAttr("disabled");
+			        			 $("#resourceManagerReviewStartDate").val(response.object.resourceManagerReviewStartDate);
+			        		 }
+			        		 
+			        		 if(response.object.resourceManagerReviewEndDate != null 
+			        				 && response.object.resourceManagerReviewEndDate != ''
+			        					 && response.object.resourceManagerReviewEndDate != 'undefined'){
+			        			 $("#resourceManagerReviewEndDate").val(response.object.resourceManagerReviewEndDate);
+			        		 }
+			        		 
 			        		 if(response.object.appraisalProcessEndDate != null 
 			        				 && response.object.appraisalProcessEndDate != ''
 			        					 && response.object.appraisalProcessEndDate != 'undefined'){
@@ -2021,11 +2095,14 @@ this.enableResourceManagerAppraisalPeriod = function(){
 					        	 $(".Editor-editor").html(response.object.description);
 			        		 }
 			        		 
-			        		 
 			        		 performanceManagement.departmentsList(response.object.appraisalDepartment);
 			        		 performanceManagement.rolesList(response.object.appraisalRoles);
 			        		 performanceManagement.employeeTypeList(response.object.appraisalEmpType);
 			        		 var percentageMap = new Map();
+			        		 var selfPercentage = 0;
+			        		 var peerPercentage = 0;
+			        		 var reportingMgrPercentage = 0;
+			        		 var resourceMgrPercentage = 0;
 			        		 var competenciesPercentageMap = new Map();
 			        		 if(response.object.jsonCategoriesString != null 
 			        				 && response.object.jsonCategoriesString != '' 
@@ -2041,6 +2118,22 @@ this.enableResourceManagerAppraisalPeriod = function(){
 				        					  document.getElementById("fedbackCategoriesDiv").style.display="";
 				        				   	  $('#appraisalCategories').attr("data-validation","required"); 
 				        				   	  $('#appraisalCategories').removeAttr('data-validation-optional');
+				        				   	  
+				        				   	  if(v['self'] != 'undefined'){
+				        				   		selfPercentage = v['self'];
+				        				   	  }
+				        				   	  
+				        				   	 if(v['peer'] != 'undefined'){
+				        				   		peerPercentage = v['peer'];
+					        				   	  }
+				        				   	 
+				        				   	 if(v['resourceManager'] != 'undefined'){
+				        				   		resourceMgrPercentage = v['resourceManager'];
+					        				   	  }
+				        				   	 
+				        				   	 if(v['reportingManager'] != 'undefined'){
+				        				   		reportingMgrPercentage = v['reportingManager'];
+					        				   	  }
 				        				   	
 				        				  }
 				        				  
@@ -2077,7 +2170,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
 			        		}
 			        		 
 			        		 if(percentageMap.size > 0){
-			        			 performanceManagement.feedbackCategoriesList(response.object.appraisalCategories,percentageMap);
+			        			 performanceManagement.feedbackCategoriesList(response.object.appraisalCategories,percentageMap,selfPercentage,peerPercentage,resourceMgrPercentage,reportingMgrPercentage);
 			        		 }else{
 			        			 performanceManagement.feedbackCategoriesList();
 			        		 }
@@ -2220,8 +2313,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
   }
   
   
-  this.feedbackCategoriesList = function(categoriesIds,percentageMap){
-	  
+  this.feedbackCategoriesList = function(categoriesIds,percentageMap,selfPercentage,peerPercentage,resourceMgrPercentage,reportingMgrPercentage){
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getFeedBackCategoriesListForPerformanceAppraisal", 
@@ -2233,7 +2325,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
 		        		if(categoriesIds != null && categoriesIds != '' && categoriesIds != 'undefined'){
 		        			var categIds = categoriesIds.split(",");
 		        			if (categIds.indexOf(opt.templateId.toString()) > -1) {
-		        				performanceManagement.editSelectedTemplateRows(opt.templateId,opt.templateName,percentageMap.get(opt.templateId));
+		        				performanceManagement.editSelectedTemplateRows(opt.templateId,opt.templateName,percentageMap.get(opt.templateId),selfPercentage,peerPercentage,resourceMgrPercentage,reportingMgrPercentage);
 		        				output = output + "<option value='" +opt.templateId+ "' selected>"+opt.templateName+"</option>";
 		        			}else{
 		        				output = output + "<option value='" +opt.templateId+ "'>"+opt.templateName+"</option>";
@@ -2252,12 +2344,48 @@ this.enableResourceManagerAppraisalPeriod = function(){
   }
   
   
-  this.editSelectedTemplateRows = function(id,templateName,percentage){
+  this.editSelectedTemplateRows = function(id,templateName,percentage,selfPercentage,peerPercentage,resourceMgrPercentage,reportingMgrPercentage){
+	  
+	    var selfRevText = "";
+		var peerRevText = "";
+		var reportingMngText = "";
+		var resMngText = "";
+		
+		var isSelfChecked = $("#isSelfAppraisalRequired").is(":checked");
+		if(isSelfChecked){
+			selfRevText = "<div class='categorySubCta' id='selfCategoryPercentDiv"+id+"'><span>Self Appraisal</span><input type='text' value='"+selfPercentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='selfCategoryPercent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+		}
+		
+		var isPeerChecked = $("#isPeerReviewRequired").is(":checked");
+		if(isPeerChecked){
+			peerRevText = "<div class='categorySubCta' id='peerCategoryPercentDiv"+id+"'><span>Peer Review</span><input type='text' value='"+peerPercentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='peerCategoryPercent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+		}
+		
+		var isRepMngChecked = $("#isReportingManagerAppraisalRequired").is(":checked");
+		if(isRepMngChecked){
+			reportingMngText = "<div class='categorySubCta' id='reportingMngCategoryPercentDiv"+id+"'><span>Reporting Manager</span><input type='text' value='"+resourceMgrPercentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='reportingMngCategoryPercent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+		}
+		
+		var isResMngChecked = $("#isResourceManagerAppraisalRequired").is(":checked");
+		if(isResMngChecked){
+			resMngText = "<div class='categorySubCta' id='resourceMngcategoryPercentDiv"+id+"'><span>Resource Manager</span><input type='text' value='"+reportingMgrPercentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='resourceMngcategoryPercent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+		}
+		
+		
 	    var text="<div class='multiTemplates positionRelative categorySub' id="+id+" data-template_id=" + id + ">";
 		text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeSelectedJobDiv(this)'></i>";
 		text += "<div class='multiJobTitle categorySubHead clearfix'>";
 		text += "" + templateName + "";
 		text += "<span class='pull-right mr'><input type='text' value='"+percentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validatePercentageTotalSumValue();' id='percent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></span>";
+		text += "</div>";
+		text += "<div class='clearfix'>";
+		text += selfRevText
+		text += peerRevText
+		text += reportingMngText
+		text += resMngText
+		text += "</div>";
+		text += "<div class='clearfix mxrateerror' id='categoryPercentageDiv"+id+"'>";
+		text += "<input type='hidden' name='categoryPercent"+id+"' id='percentageCatgValidation"+id+"'>";
 		text += "</div>";
 		text += "<div class='row mxrateerror' id='percentageDiv"+id+"'>";
 		text += "<input type='hidden' name='percent"+id+"' id='percentageValidation"+id+"'>";
