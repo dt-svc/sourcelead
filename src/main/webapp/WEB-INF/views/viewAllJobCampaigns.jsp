@@ -35,6 +35,7 @@
 			getAllCampaignJobs();
 		});
 </script>
+
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
 </script>
