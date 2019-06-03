@@ -62,7 +62,7 @@
 		</div>
 		<div class="col-xs-12 col-sm-6 col-md-6">
 		<div class="form-group row">
-		<label class="col-md-3">Billing Address</label>
+		<label class="col-md-3">Invoice Address</label>
 		<div class="col-md-9">
 		<input type="text" class="form-control" value="${creditDebitNote.billingAddress}" id="billingAddress" name="billingAddress" field-name="Billing Address" placeholder="Billing Address" data-validation="validate_length length2-100" data-validation-optional="true">
 		</div>
@@ -407,7 +407,6 @@ $('body').on('blur', '#creditNote_form', function() {
 
 var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.;
 function cloneRows(){
-   console.log("rowId value is --->"+rowId);
    $("#tableId").append(prepareDynamicRoweDiv(rowId++)); 
 }
 
