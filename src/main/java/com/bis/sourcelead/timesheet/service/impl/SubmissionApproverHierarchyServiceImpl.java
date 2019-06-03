@@ -157,6 +157,29 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	
 
 	@Override
+	public ResponseList<SubmissionApproverHierarchy> getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(
+			Long userId, Long orgLocationId, String status,String userRole,String search,int start,int length,String isGlobalUser) throws Exception {
+		ResponseList<SubmissionApproverHierarchy> list = new ResponseList<SubmissionApproverHierarchy>();
+	
+         if(status != null){
+ 				 if("APPROVED".equalsIgnoreCase(status)){
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId,  status,search,start,length,isGlobalUser);
+  				}
+                 if("REJECTED".equalsIgnoreCase(status)){
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId, status,search,start,length,isGlobalUser);
+  				}
+                 if("SUBMITTED".equalsIgnoreCase(status)){
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId, status,search,start,length,isGlobalUser);
+  				}
+                 if("DRAFT".equalsIgnoreCase(status)){
+     				list = submissionApproverHierarchyDao.getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(userId, orgLocationId, status,search,start,length,isGlobalUser);
+  				}
+ 		}
+         return list;
+	}
+	
+
+	@Override
 	public Float getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(Long userId, Long projectId,
 			String approvalStatus) {
 		return submissionApproverHierarchyDao.getTotalApprovedOrRejectedHoursByuserIdAndProjectIdForApprover(userId, projectId, approvalStatus);
@@ -337,7 +360,11 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(projectId, pmMasterCandidateId, startDate, endDate, format, dateFormat);
 	}
 
-	
+	@Override
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForPendinApproveTimesheetsByProjectMemberId(
+			Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId) {
+		return  submissionApproverHierarchyDao.getSubmissionApproverHierarchyForPendinApproveTimesheetsByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
+	}
 	
 
 }

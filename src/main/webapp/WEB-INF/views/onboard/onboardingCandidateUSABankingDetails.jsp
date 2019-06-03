@@ -43,15 +43,6 @@
  var sourceleadUrl ='${sourceleadUrl}';
 </script>
 
-<style>
-.pac-container::after {
-	display:none;
-}
-</style>
-
-
-
-
 <div class="wraper"> 
   <!--   Welcome Screens   -->
   
