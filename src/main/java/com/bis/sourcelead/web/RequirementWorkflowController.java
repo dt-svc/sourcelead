@@ -251,14 +251,16 @@ public class RequirementWorkflowController {
 			String[] tableColumns = { "workFlowName", "noOfStages", "status"};
 		  	int sortColumnIndex = -1; 
 	  		String sortColumnOrder = "desc"; 
-	  		if (requirementWorkFlowDTO.getOrder() != null && !requirementWorkFlowDTO.getOrder().isEmpty()) {
+ 	  		if (requirementWorkFlowDTO.getOrder() != null && !requirementWorkFlowDTO.getOrder().isEmpty()) {
 	  		sortColumnIndex = Integer.parseInt(requirementWorkFlowDTO.getOrder().get(0).get("column"));
 	  		sortColumnOrder = requirementWorkFlowDTO.getOrder().get(0).get("dir"); 
-	  		requirementWorkFlowDTO.setSortOrder(sortColumnOrder);
 	  		}
-	  		if (sortColumnIndex != -1){
+ 	  		    if (sortColumnIndex != -1) {
+ 	  			 requirementWorkFlowDTO.setSortOrder(sortColumnOrder);
+ 	  		    }
+	  		
 	  			requirementWorkFlowDTO.setSortColumn(tableColumns[sortColumnIndex]);
-	  		}
+	  			
 			responseList = requirementWorkFlowService.getRequirementWorkFlowList(requirementWorkFlowDTO, orgLocations);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -289,9 +291,9 @@ public class RequirementWorkflowController {
 
 		try {
 			RequirementQuestionnaireTemplate template = null;
-			templateId = ""; // as of now marked as empty value for testing.
 			if (StringUtils.isNotBlank(templateId)) {
 			//   template = performanceFeedbackTemplateService.getPerformanceFeedbackTemplateById(Long.parseLong(templateId));
+				template=requirementWorkFlowService.getQuestionnaireByTemplateId(Long.parseLong(templateId));
 			} else {
 				template = new RequirementQuestionnaireTemplate();
 				template.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -658,4 +660,38 @@ public class RequirementWorkflowController {
 			return modelandview;
 		}
 		
+		@RequestMapping(value = "/validateWorkflowName")
+		@ResponseBody
+		public Response<Boolean> validateWorkflowName(
+				@RequestParam(value = "workFlowName", required = true)String workFlowName,
+				@RequestParam(value = "workflowUuid", required = false)String workflowUuid,
+				HttpServletRequest request) throws Exception{
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			Boolean flag ;
+			Response<Boolean> response = new Response<Boolean>();
+			logger.debug("before validateWorkflowName for "+orgLocationId+" orgLocation");
+			flag = requirementWorkFlowService.validateWorkflowName(orgLocationId, workFlowName, workflowUuid);
+			response.setResponse(flag.toString());
+			logger.debug("after validateWorkflowName for "+orgLocationId+" orgLocation");
+			return response;
+			
+		}
+		
+		@RequestMapping(value = "/validateWorkflowStageName")
+		@ResponseBody
+		public Response<String> validateWorkflowStageName(
+				@RequestParam(value = "stageName", required = true)String stageName,
+				@RequestParam(value = "workflowUuid", required = true)String workflowUuid,
+				@RequestParam(value = "currentStageUuid", required = false)String stageUuid,
+				HttpServletRequest request) throws Exception{
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			String flag ;
+			Response<String> response = new Response<String>();
+			logger.debug("before validateWorkflowStageName for "+orgLocationId+" orgLocation");
+			flag = requirementWorkFlowService.validateWorkflowStageName(orgLocationId, stageName, workflowUuid, stageUuid);
+			response.setResponse(flag);
+			logger.debug("after validateWorkflowStageName for "+orgLocationId+" orgLocation");
+			return response;
+			
+		}
 }
