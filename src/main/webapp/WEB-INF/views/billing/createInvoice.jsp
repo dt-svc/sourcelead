@@ -781,8 +781,8 @@ if(selectedTextInvoice =='percentage'){
 				var text = "";
 				var cell0 = row.insertCell(0);
 				text = text+"<div  class='inputCustom'>";
-				text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" placeholder="Start Date">';
-				text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" placeholder="End Date">';
+				text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" readonly="readonly" placeholder="Start Date">';
+				text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" readonly="readonly" placeholder="End Date">';
 				text = text+'</div>';
 				cell0.innerHTML = text;
 				
@@ -967,8 +967,8 @@ function cancelDelDoc(){
 			var text = "";
 			var cell0 = row.insertCell(0);
 			text = text+"<div  class='inputCustom'>";
-			text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" placeholder="Start Date">';
-			text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" placeholder="End Date">';
+			text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" readonly="readonly" placeholder="Start Date">';
+			text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" readonly="readonly" placeholder="End Date">';
 			text = text+'</div>';
 			cell0.innerHTML = text;
 			

@@ -265,19 +265,19 @@ public class ImmigrationController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (forward.equalsIgnoreCase("petitionDetails")) {
 			model.setViewName("/immigration/petitionDetails");
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
-			OrgLocations orgLocation =orgLocationService.getOrgLocations(orgLocations.getId());
+			Long orgLocationsId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
+			OrgLocations orgLocation =orgLocationService.getOrgLocations(orgLocationsId);
+			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocation);
 			model.addObject("orgLocationInfo", orgLocation);
 			if (!StringUtils.isEmpty(immigrationUUID)) {
 				Long immigrationId = immigrationCommonService.getImmigrationIdByUUID(immigrationUUID);
 				ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,
-						orgLocations);
+						orgLocation);
 				model.addObject("immigrationDTO", immigrationDTO);
-				List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations,null);
+				List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocation,null);
 				model.addObject("templateList", templateList);
 			}else {
-				List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations, 1L);
+				List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocation, 1L);
 				model.addObject("templateList", templateList);
 			}
 			
