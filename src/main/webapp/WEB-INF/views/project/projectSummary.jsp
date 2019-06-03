@@ -4,10 +4,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
- <style>
- .clsDatePicker { z-index: 100000 !important;}
-.user_summary_edit_cta { margin: 0.1% 2%;}
- </style>
  
  <!-- <script>
 	$(document).ready(function() {
