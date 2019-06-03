@@ -1302,22 +1302,22 @@ function PerformanceManagement(){
 	  $(".multiTemplates").each(function() {	
 		   percentage = Number($("#percent"+$(this).data("template_id")).val());
 		   
-		   var selfCatg = $("#selfCategoryPercent"+$(this).data("template_id")).val();;
+		   var selfCatg = $("#selfCategoryPercent"+$(this).data("template_id")).val();
 		   if(selfCatg != null && selfCatg != '' && selfCatg != 'undefined'){
 			   selfPercentage = $("#selfCategoryPercent"+$(this).data("template_id")).val();
 		   }
 		   
 		   var peerCatg = $("#peerCategoryPercent"+$(this).data("template_id")).val();;
 		   if(peerCatg != null && peerCatg != '' && peerCatg != 'undefined'){
-			   peerPercentage = $("#peerCategoryPercent"+$(this).data("template_id")).val();
+			   peerPercentage = $("#peerCategoryPercent"+$(this).data("template_id")).val()
 		   }
 		   
-		   var reportingMngCatg = $("#reportingMngCategoryPercent"+$(this).data("template_id")).val();;
+		   var reportingMngCatg = $("#reportingMngCategoryPercent"+$(this).data("template_id")).val();
 		   if(reportingMngCatg != null && reportingMngCatg != '' && reportingMngCatg != 'undefined'){
 			   reportingMngPercentage = $("#reportingMngCategoryPercent"+$(this).data("template_id")).val();
 		   }
 		   
-		   var resourceMngCatg = $("#resourceMngcategoryPercent"+$(this).data("template_id")).val();;
+		   var resourceMngCatg = $("#resourceMngcategoryPercent"+$(this).data("template_id")).val();
 		   if(resourceMngCatg != null && resourceMngCatg != '' && resourceMngCatg != 'undefined'){
 			   resourceMngPercentage = $("#resourceMngcategoryPercent"+$(this).data("template_id")).val();
 		   }
@@ -1681,6 +1681,7 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 			 var selfCatg =  $("#selfCategoryPercentDiv"+$(this).data("template_id"));
 			 if(selfCatg != null && selfCatg != 'undefined' && selfCatg != ''){
 				 $("#selfCategoryPercentDiv"+$(this).data("template_id")).remove();
+				 performanceManagement.validateCategoryPercentageTotalSumValue();
 			 }
 		  });
 		  
@@ -1719,6 +1720,7 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 				 var reportingMngCatg =  $("#reportingMngCategoryPercentDiv"+$(this).data("template_id"));
 				 if(reportingMngCatg != null && reportingMngCatg != 'undefined' && reportingMngCatg != ''){
 					 $("#reportingMngCategoryPercentDiv"+$(this).data("template_id")).remove();
+					 performanceManagement.validateCategoryPercentageTotalSumValue();
 				 }
 			  });
 	  }
@@ -1756,6 +1758,7 @@ this.enablePeerReviewPeriod = function(){
 				 var peerCatg =  $("#peerCategoryPercentDiv"+$(this).data("template_id"));
 				 if(peerCatg != null && peerCatg != 'undefined' && peerCatg != ''){
 					 $("#peerCategoryPercentDiv"+$(this).data("template_id")).remove();
+					 performanceManagement.validateCategoryPercentageTotalSumValue();
 				 }
 			  });
 	  }
@@ -1792,6 +1795,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
 				 var resourceMngCatg =  $("#resourceMngcategoryPercentDiv"+$(this).data("template_id"));
 				 if(resourceMngCatg != null && resourceMngCatg != 'undefined' && resourceMngCatg != ''){
 					 $("#resourceMngcategoryPercentDiv"+$(this).data("template_id")).remove();
+					 performanceManagement.validateCategoryPercentageTotalSumValue();
 				 }
 			  });
 	  }

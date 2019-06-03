@@ -278,7 +278,7 @@
 		</div>
 		
 		<div class="clearfix mb">
-			<div class="col-md-6">
+			<div class="">
 				<div class="clearfix" id="selectedTemplatesDiv">
 				</div>
 			</div>

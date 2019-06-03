@@ -8905,7 +8905,7 @@ position: fixed; left: 0px !important; right: 0px !important; margin: 0px auto; 
  .myForm h2 span {font-size: 13px; font-weight: 500; color: #b13535; display: inline-block;}
  .myForm h2 span i {display: inline-block; padding: 0px 5px 0px 0px;}
 
- .categorySub { background-color: #f1f1f1; padding: 5px; margin-bottom: 5px;}
+ .categorySub { background-color: #f1f1f1; padding: 5px; margin: 0px 10px 10px 0px; float: left; width: 44%;}
 .categorySubHead {
      font-size: 15px; font-weight: 500; color: #454545; padding: 5px 5px 5px 7px !important; line-height: 35px; 
   }
