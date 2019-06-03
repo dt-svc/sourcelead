@@ -1243,22 +1243,22 @@ function PerformanceManagement(){
 						
 						var isSelfChecked = $("#isSelfAppraisalRequired").is(":checked");
 						if(isSelfChecked){
-							selfRevText = "<div class='categorySubCta'><span>Self Appraisal</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='selfCategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+							selfRevText = "<div class='categorySubCta' id='selfCategoryPercentDiv"+$(this).val()+"'><span>Self Appraisal</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='selfCategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
 						}
 						
 						var isPeerChecked = $("#isPeerReviewRequired").is(":checked");
 						if(isPeerChecked){
-							peerRevText = "<div class='categorySubCta'><span>Peer Review</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='peerCategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+							peerRevText = "<div class='categorySubCta' id='peerCategoryPercentDiv"+$(this).val()+"'><span>Peer Review</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='peerCategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
 						}
 						
 						var isRepMngChecked = $("#isReportingManagerAppraisalRequired").is(":checked");
 						if(isRepMngChecked){
-							reportingMngText = "<div class='categorySubCta'><span>Reporting Manager</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='reportingMngCategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+							reportingMngText = "<div class='categorySubCta' id='reportingMngCategoryPercentDiv"+$(this).val()+"'><span>Reporting Manager</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='reportingMngCategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
 						}
 						
 						var isResMngChecked = $("#isResourceManagerAppraisalRequired").is(":checked");
 						if(isResMngChecked){
-							resMngText = "<div class='categorySubCta'><span>Resource Manager</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='resourceMngcategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+							resMngText = "<div class='categorySubCta' id='resourceMngcategoryPercentDiv"+$(this).val()+"'><span>Resource Manager</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='resourceMngcategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
 						}
 						 
 						
@@ -1294,13 +1294,35 @@ function PerformanceManagement(){
   
   this.validateCategoryPercentageTotalSumValue = function(){
 	  var percentage = 0;
+	  var selfPercentage = 0;
+	  var peerPercentage = 0;
+	  var reportingMngPercentage = 0;
+	  var resourceMngPercentage = 0;
+	  
 	  $(".multiTemplates").each(function() {	
-		  percentage = Number($("#percent"+$(this).data("template_id")).val());
-		  var selfPercentage = $("#selfCategoryPercent"+$(this).data("template_id")).val();
-		  var peerPercentage = $("#peerCategoryPercent"+$(this).data("template_id")).val();
-		  var reportingMngPercentage = $("#reportingMngCategoryPercent"+$(this).data("template_id")).val();
-		  var resourceMngPercentage = $("#resourceMngcategoryPercent"+$(this).data("template_id")).val();
-		  var totalPercentage = Number(selfPercentage)+Number(peerPercentage)+Number(reportingMngPercentage)+Number(resourceMngPercentage);
+		   percentage = Number($("#percent"+$(this).data("template_id")).val());
+		   
+		   var selfCatg = $("#selfCategoryPercent"+$(this).data("template_id")).val();;
+		   if(selfCatg != null && selfCatg != '' && selfCatg != 'undefined'){
+			   selfPercentage = $("#selfCategoryPercent"+$(this).data("template_id")).val();
+		   }
+		   
+		   var peerCatg = $("#peerCategoryPercent"+$(this).data("template_id")).val();;
+		   if(peerCatg != null && peerCatg != '' && peerCatg != 'undefined'){
+			   peerPercentage = $("#peerCategoryPercent"+$(this).data("template_id")).val();
+		   }
+		   
+		   var reportingMngCatg = $("#reportingMngCategoryPercent"+$(this).data("template_id")).val();;
+		   if(reportingMngCatg != null && reportingMngCatg != '' && reportingMngCatg != 'undefined'){
+			   reportingMngPercentage = $("#reportingMngCategoryPercent"+$(this).data("template_id")).val();
+		   }
+		   
+		   var resourceMngCatg = $("#resourceMngcategoryPercent"+$(this).data("template_id")).val();;
+		   if(resourceMngCatg != null && resourceMngCatg != '' && resourceMngCatg != 'undefined'){
+			   resourceMngPercentage = $("#resourceMngcategoryPercent"+$(this).data("template_id")).val();
+		   }
+		  
+		   var totalPercentage = Number(selfPercentage)+Number(peerPercentage)+Number(reportingMngPercentage)+Number(resourceMngPercentage);
 		  
 		  if(totalPercentage > percentage){
 			    $('#categoryPercentageDiv'+$(this).data("template_id")).find('p.jquery_form_error_message').remove(); 
@@ -1308,6 +1330,13 @@ function PerformanceManagement(){
 			    $('#percentageCatgValidation'+$(this).data("template_id")).after("<p class='jquery_form_error_message'>Total percentage should not more than given category Percentage</p>");
 			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('record-exist','yes');
 			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('record-exist-errorMsg','Total percentage should not more than given category Percentage'); 
+			    $("#savePerformanceBudget").attr("disabled", "disabled");
+		  }else if(totalPercentage < percentage){
+			    $('#categoryPercentageDiv'+$(this).data("template_id")).find('p.jquery_form_error_message').remove(); 
+			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('class','error signin_fild');
+			    $('#percentageCatgValidation'+$(this).data("template_id")).after("<p class='jquery_form_error_message'>Total percentage should not less than given category Percentage</p>");
+			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('record-exist','yes');
+			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('record-exist-errorMsg','Total percentage should not less than given category Percentage'); 
 			    $("#savePerformanceBudget").attr("disabled", "disabled");
 		  }else{
 			     $('#categoryPercentageDiv'+$(this).data("template_id")).find('p.jquery_form_error_message').remove(); 
@@ -1474,11 +1503,17 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 	  if ($('#createAppraisal_form').validate(false, validationSettings)){ 
 		  var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 		   var templates = [];
-			$(".multiTemplates").each(function() {				
+			$(".multiTemplates").each(function() {		
+				
+				 
 				templates.push({
 					type : "feedbackTemplate",
 					templateId : $(this).data("template_id") ? $(this).data("template_id") : 0,
-					percentage : $("#percent"+$(this).data("template_id")).val()
+					percentage : $("#percent"+$(this).data("template_id")).val(),
+					self : $("#selfCategoryPercent"+$(this).data("template_id")).val(),
+					peer : $("#peerCategoryPercent"+$(this).data("template_id")).val(),
+					resourceManager : $("#reportingMngCategoryPercent"+$(this).data("template_id")).val(),
+					reportingManager : $("#resourceMngcategoryPercent"+$(this).data("template_id")).val()
 				});
 			});
 			
@@ -1641,6 +1676,14 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 		  
 		  $("input[id$='selfAppraisalStartDate'], input[id$='selfAppraisalEndDate']").datepicker( "option", "maxDate", null );
 		  $("input[id$='selfAppraisalStartDate'], input[id$='selfAppraisalEndDate']").datepicker( "option", "minDate", null );
+		  
+		  $(".multiTemplates").each(function() {	
+			 var selfCatg =  $("#selfCategoryPercentDiv"+$(this).data("template_id"));
+			 if(selfCatg != null && selfCatg != 'undefined' && selfCatg != ''){
+				 $("#selfCategoryPercentDiv"+$(this).data("template_id")).remove();
+			 }
+		  });
+		  
 	  }
   }
   
@@ -1671,6 +1714,13 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 		  
 		  $("input[id$='appraisalApprovingStartDate'], input[id$='appraisalApprovingEndDate']").datepicker( "option", "maxDate", null );
 		  $("input[id$='appraisalApprovingStartDate'], input[id$='appraisalApprovingEndDate']").datepicker( "option", "minDate", null );
+		  
+		  $(".multiTemplates").each(function() {	
+				 var reportingMngCatg =  $("#reportingMngCategoryPercentDiv"+$(this).data("template_id"));
+				 if(reportingMngCatg != null && reportingMngCatg != 'undefined' && reportingMngCatg != ''){
+					 $("#reportingMngCategoryPercentDiv"+$(this).data("template_id")).remove();
+				 }
+			  });
 	  }
   }
   
@@ -1701,6 +1751,13 @@ this.enablePeerReviewPeriod = function(){
 		  
 		  $("input[id$='peerReviewStartDate'], input[id$='peerReviewEndDate']").datepicker( "option", "maxDate", null );
 		  $("input[id$='peerReviewStartDate'], input[id$='peerReviewEndDate']").datepicker( "option", "minDate", null );
+		  
+		  $(".multiTemplates").each(function() {	
+				 var peerCatg =  $("#peerCategoryPercentDiv"+$(this).data("template_id"));
+				 if(peerCatg != null && peerCatg != 'undefined' && peerCatg != ''){
+					 $("#peerCategoryPercentDiv"+$(this).data("template_id")).remove();
+				 }
+			  });
 	  }
   }
 
@@ -1730,6 +1787,13 @@ this.enableResourceManagerAppraisalPeriod = function(){
 		  
 		  $("input[id$='resourceManagerReviewStartDate'], input[id$='resourceManagerReviewEndDate']").datepicker( "option", "maxDate", null );
 		  $("input[id$='resourceManagerReviewStartDate'], input[id$='resourceManagerReviewEndDate']").datepicker( "option", "minDate", null );
+		  
+		  $(".multiTemplates").each(function() {	
+				 var resourceMngCatg =  $("#resourceMngcategoryPercentDiv"+$(this).data("template_id"));
+				 if(resourceMngCatg != null && resourceMngCatg != 'undefined' && resourceMngCatg != ''){
+					 $("#resourceMngcategoryPercentDiv"+$(this).data("template_id")).remove();
+				 }
+			  });
 	  }
 }
   
