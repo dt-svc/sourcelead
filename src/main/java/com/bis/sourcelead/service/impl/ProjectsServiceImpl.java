@@ -3998,11 +3998,12 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	@Override
 	public Map<String, List<AvailableAssociatesDTO>> getAvailableAssociatesReport(
 			AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
-		Map<String, List<AvailableAssociatesDTO>> map = new HashMap<>();
+		Map<String, List<AvailableAssociatesDTO>> map = null;
 		try {
 			List<Object[]> objectList = projectsDao.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations);
 			List<AvailableAssociatesDTO> availableAssociatesDTOList = new ArrayList<>();
 			if (objectList != null && !objectList.isEmpty()) {
+				map = new HashMap<>();
 				for (Object[] obj : objectList) {
 					AvailableAssociatesDTO dto = new AvailableAssociatesDTO();
 					SimpleDateFormat dateForm1 = new SimpleDateFormat(orgLocations.getDateFormat());

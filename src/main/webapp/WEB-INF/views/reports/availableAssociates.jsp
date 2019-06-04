@@ -316,11 +316,11 @@ $("#toDate").datepicker();
 								text += "</tbody>";
 								text += "</table>";
 								$("#exportOptions").show();
-								$("#availableAssociatesReporttableList")
-										.empty();
+								$("#availableAssociatesReporttableList").empty();
 								$("#availableAssociatesReporttableList")
 										.append(text);
 							} else {
+								$("#availableAssociatesReporttableList").empty();
 								$("#availableAssociatesReporttableList")
 										.append(
 												"<div class='dataTables_empty'></div>");
