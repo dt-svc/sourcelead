@@ -1468,7 +1468,7 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
   
   
   this.editSelectedApprisalCompetenciesRows = function(id,templateName,percentage){
-	    var text="<div class='multiCompetencies positionRelative' id="+id+" data-template_id=" + id + ">";
+	    var text="<div class='multiCompetencies positionRelative categorySub' id="+id+" data-template_id=" + id + ">";
 		text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeAppriasalCompetenceDiv(this)'></i>";
 		text += "<div class='multiJobTitle categorySubHead clearfix'>";
 		text += "<h2 class='pull-left'>" + templateName + "</h2>";
