@@ -428,7 +428,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 		   }
 		   
 		   if(userRoles.getDesignation() != null) {
-		    	writeRow.createCell(19).setCellValue(userRoles.getDepartment());
+		    	writeRow.createCell(19).setCellValue(userRoles.getDesignation());
 		    }
 			
 			if(userRoles.getGradeId() != null) {
