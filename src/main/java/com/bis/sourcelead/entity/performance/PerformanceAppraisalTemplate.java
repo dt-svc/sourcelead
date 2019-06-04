@@ -48,11 +48,17 @@ public class PerformanceAppraisalTemplate implements Serializable{
 	@Column(name = "EMPLOYEE_TYPE", columnDefinition = "TEXT default NULL")
 	private String employeeType ;
 	
+	@Column(name = "IS_SELF_REVIEW_REQUIRED")
+	private String isSelfReviewRequired;
+	
 	@Column(name = "SELF_APPRAISAL_START_DATE")
 	private Date selfAppraisalStartDate;
 	
 	@Column(name = "SELF_APPRAISAL_END_DATE")
 	private Date selfAppraisalEndDate;
+	
+	@Column(name = "IS_REPORTING_MANAGER_REVIEW_REQUIRED")
+	private String isReportingManagerReviewRequired;
 	
 	@Column(name = "APPROVING_FROM_START_DATE")
 	private Date approvingFromStartDate;
@@ -65,6 +71,24 @@ public class PerformanceAppraisalTemplate implements Serializable{
 	
 	@Column(name = "PROCESS_PERIOD_END_DATE")
 	private Date processPeriodEndDate;
+	
+	@Column(name = "IS_PEER_REVIEW_REQUIRED")
+	private String isPeerReviewRequried;
+	
+	@Column(name = "PEER_REVIEW_START_DATE")
+	private Date peerReviewStartDate;
+	
+	@Column(name = "PEER_REVIEW_END_DATE")
+	private Date peerReviewEndDate;
+	
+	@Column(name = "IS_RESOURCE_MANAGER_REVIEW_REQUIRED")
+	private String isResourceManagerReviewRequried;
+	
+	@Column(name = "RESOURCE_MANAGER_REVIEW_START_DATE")
+	private Date resourceManagerReviewStartDate;
+	
+	@Column(name = "RESOURCE_MANAGER_REVIEW_END_DATE")
+	private Date resourceManagerReviewEndDate;
 	
 	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
 	private String description ;
@@ -136,6 +160,22 @@ public class PerformanceAppraisalTemplate implements Serializable{
 	@Transient
 	@JsonProperty
 	private String processPeriodEndDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String peerReviewStartDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String peerReviewEndDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String resourceManagerReviewStartDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String resourceManagerReviewEndDateStr;
 	
 	
 
@@ -439,6 +479,127 @@ public class PerformanceAppraisalTemplate implements Serializable{
 
 	public void setCompetencies(String competencies) {
 		this.competencies = competencies;
+	}
+
+	public String getIsSelfReviewRequired() {
+		return isSelfReviewRequired;
+	}
+
+	public void setIsSelfReviewRequired(String isSelfReviewRequired) {
+		this.isSelfReviewRequired = isSelfReviewRequired;
+	}
+
+	public String getIsReportingManagerReviewRequired() {
+		return isReportingManagerReviewRequired;
+	}
+
+	public void setIsReportingManagerReviewRequired(String isReportingManagerReviewRequired) {
+		this.isReportingManagerReviewRequired = isReportingManagerReviewRequired;
+	}
+
+	public String getIsPeerReviewRequried() {
+		return isPeerReviewRequried;
+	}
+
+	public void setIsPeerReviewRequried(String isPeerReviewRequried) {
+		this.isPeerReviewRequried = isPeerReviewRequried;
+	}
+
+	public Date getPeerReviewStartDate() {
+		return peerReviewStartDate;
+	}
+
+	public void setPeerReviewStartDate(Date peerReviewStartDate) {
+		this.peerReviewStartDate = peerReviewStartDate;
+	}
+
+	public Date getPeerReviewEndDate() {
+		return peerReviewEndDate;
+	}
+
+	public void setPeerReviewEndDate(Date peerReviewEndDate) {
+		this.peerReviewEndDate = peerReviewEndDate;
+	}
+
+	public String getIsResourceManagerReviewRequried() {
+		return isResourceManagerReviewRequried;
+	}
+
+	public void setIsResourceManagerReviewRequried(String isResourceManagerReviewRequried) {
+		this.isResourceManagerReviewRequried = isResourceManagerReviewRequried;
+	}
+
+	public Date getResourceManagerReviewStartDate() {
+		return resourceManagerReviewStartDate;
+	}
+
+	public void setResourceManagerReviewStartDate(Date resourceManagerReviewStartDate) {
+		this.resourceManagerReviewStartDate = resourceManagerReviewStartDate;
+	}
+
+	public Date getResourceManagerReviewEndDate() {
+		return resourceManagerReviewEndDate;
+	}
+
+	public void setResourceManagerReviewEndDate(Date resourceManagerReviewEndDate) {
+		this.resourceManagerReviewEndDate = resourceManagerReviewEndDate;
+	}
+
+	public String getPeerReviewStartDateStr() {
+
+		if(peerReviewStartDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			peerReviewStartDateStr = dateFormat.format(peerReviewStartDate);	
+		}
+		return peerReviewStartDateStr;
+	
+		
+	}
+
+	public void setPeerReviewStartDateStr(String peerReviewStartDateStr) {
+		this.peerReviewStartDateStr = peerReviewStartDateStr;
+	}
+
+	public String getPeerReviewEndDateStr() {
+		
+		if(peerReviewEndDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			peerReviewEndDateStr = dateFormat.format(peerReviewEndDate);	
+		}
+		return peerReviewEndDateStr;
+		
+	}
+
+	public void setPeerReviewEndDateStr(String peerReviewEndDateStr) {
+		this.peerReviewEndDateStr = peerReviewEndDateStr;
+	}
+
+	public String getResourceManagerReviewStartDateStr() {
+		
+		if(resourceManagerReviewStartDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			resourceManagerReviewStartDateStr = dateFormat.format(resourceManagerReviewStartDate);	
+		}
+		return resourceManagerReviewStartDateStr;
+		
+	}
+
+	public void setResourceManagerReviewStartDateStr(String resourceManagerReviewStartDateStr) {
+		this.resourceManagerReviewStartDateStr = resourceManagerReviewStartDateStr;
+	}
+
+	public String getResourceManagerReviewEndDateStr() {
+		
+		if(resourceManagerReviewEndDate != null){
+			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
+			resourceManagerReviewEndDateStr = dateFormat.format(resourceManagerReviewEndDate);	
+		}
+		return resourceManagerReviewEndDateStr;
+		
+	}
+
+	public void setResourceManagerReviewEndDateStr(String resourceManagerReviewEndDateStr) {
+		this.resourceManagerReviewEndDateStr = resourceManagerReviewEndDateStr;
 	}
 	
 	
