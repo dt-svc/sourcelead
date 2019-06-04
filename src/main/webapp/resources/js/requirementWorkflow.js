@@ -170,7 +170,7 @@ function RequirementWorkflow(){
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
 	              		if(workflow.description != null && workflow.description != '' && workflow.description != "undefined"){
-	              			result = requirementWorkflow.checkDefaultWorkflow(workflow.configureType, workflow.uuid, workflow.description); 
+	              			result = result +"<div class='tbldata-dotdot-vsm'>"+workflow.description+"</div>";
 	  	              	}else{
 	  	            	  		result = result +"<div>---</div>";
 	  	             	}
