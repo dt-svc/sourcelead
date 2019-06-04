@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -947,8 +948,13 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		if(assoSal != null && assoSal.getAssociateSalaryPayheadIndList() != null && assoSal.getAssociateSalaryPayheadIndList().size()>0) {
 			AssociateSalaryPayheadInd asph = assoSal.getAssociateSalaryPayheadIndList().stream().filter(h -> h.getPayrollPayhead().getShortCode().equalsIgnoreCase("BA")).findAny().get();
 			if(asph != null) {
-				
-				BigDecimal ptSum = new BigDecimal(assoSal.getAssociateSalaryPayheadIndList().stream().filter(p -> "Y".equalsIgnoreCase(p.getPayrollPayhead().getPtApplicable()) && Constants.IND_PAYROLL_PAYHEAD_EARNINGS.equalsIgnoreCase(p.getPayrollPayhead().getType())).mapToDouble(s -> s.getMonthly().doubleValue()).sum()).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+				BigDecimal ptSum = new BigDecimal(
+						assoSal.getAssociateSalaryPayheadIndList()
+						.stream()
+						.filter(p ->p.getMonthly() != null && p.getPayrollPayhead() !=null && p.getPayrollPayhead().getPtApplicable() != null && "Y".equalsIgnoreCase(p.getPayrollPayhead().getPtApplicable()) && Constants.IND_PAYROLL_PAYHEAD_EARNINGS.equalsIgnoreCase(p.getPayrollPayhead().getType()))
+						.mapToDouble(s -> s.getMonthly()
+						.doubleValue()).sum())
+						.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 				
 				try {
 					if(taxDTO != null && taxDTO.getProfessionalTaxList().size()>0) {
@@ -1441,7 +1447,8 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	}
 	
 	@SuppressWarnings("unused")
-	public AssociatePayrollPayheadHistory calculateTDSForEmployee(AssociateSalaryInd assoSal, Employees employee, OrgLocations orgLocation, Date freqStartDate, PreCheckINDPayrollDTO preCheckINDPayrollDTO, IndEmployeePayroll employeePayroll, User loginUser) {
+	public AssociatePayrollPayheadHistory calculateTDSForEmployee(AssociateSalaryInd assoSal, Employees employee, OrgLocations orgLocation, Date freqStartDate, PreCheckINDPayrollDTO preCheckINDPayrollDTO, IndEmployeePayroll employeePayroll, User loginUser) 
+	{
 		AssociatePayrollPayheadHistory ph = new AssociatePayrollPayheadHistory();
 		
 		// TDS process Calculation
@@ -1454,11 +1461,11 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			//get yearly taxable amount in current frequency
 			BigDecimal taxableYearlyAmount = new BigDecimal("0.00");
 			for(AssociatePayrollPayheadHistory associatePayrollPayheadHistory : employeePayroll.getAssociatePayrollPayheadHistory()) {
-				if(associatePayrollPayheadHistory.getPayrollPayhead().getTax().equalsIgnoreCase(Constants.TAXABLE)) {
-					if(associatePayrollPayheadHistory.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_EARNINGS)) {
+				if(Constants.TAXABLE.equalsIgnoreCase(associatePayrollPayheadHistory.getPayrollPayhead().getTax())) {
+					if(Constants.IND_PAYROLL_PAYHEAD_EARNINGS.equalsIgnoreCase(associatePayrollPayheadHistory.getPayrollPayhead().getType())) {
 						taxableYearlyAmount = taxableYearlyAmount.add(associatePayrollPayheadHistory.getMonthly().multiply(new BigDecimal(12)));
 					}
-					if(associatePayrollPayheadHistory.getPayrollPayhead().getType().equalsIgnoreCase(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION)) {
+					if(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION.equalsIgnoreCase(associatePayrollPayheadHistory.getPayrollPayhead().getType())) {
 						taxableYearlyAmount = taxableYearlyAmount.subtract(associatePayrollPayheadHistory.getMonthly().multiply(new BigDecimal(12)));
 					}
 				}
@@ -1536,6 +1543,6 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		}
 		
 		return ph;
-	}
+		}
 }
 

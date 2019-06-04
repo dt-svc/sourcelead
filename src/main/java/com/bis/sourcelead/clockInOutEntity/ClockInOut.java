@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -19,7 +20,12 @@ import org.hibernate.annotations.FetchMode;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * @author rakshith
+ *
+ */
 @Entity
 @Table(name = "CLOCK_INOUT")
 public class ClockInOut {
@@ -38,6 +44,12 @@ public class ClockInOut {
 	
 	@Column(name = "CLOCK_OUT_DATE")
 	private Date clockOutDate;
+	
+	@Column(name = "CLOCK_IN_DATETIME")
+	private Date clockInDateTime;
+	
+	@Column(name = "CLOCK_OUT_DATETIME")
+	private Date clockOutDateTime;
 	
 	@Column(name = "CLOCK_IN_TIME")
 	private Time clockInTime;
@@ -78,6 +90,17 @@ public class ClockInOut {
 	
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
+	
+	@Column(name = "TOTAL_TIME")
+	private String totalTime;
+	
+	@JsonProperty
+	@Transient
+	private String clockInDateStr;
+	
+	@JsonProperty
+	@Transient
+	private String clockOutDateStr;
 
 	public Long getId()
 	{
@@ -237,6 +260,46 @@ public class ClockInOut {
 
 	public void setTotalClockTime(Time totalClockTime) {
 		this.totalClockTime = totalClockTime;
+	}
+
+	public String getTotalTime() {
+		return totalTime;
+	}
+
+	public void setTotalTime(String totalTime) {
+		this.totalTime = totalTime;
+	}
+
+	public Date getClockInDateTime() {
+		return clockInDateTime;
+	}
+
+	public void setClockInDateTime(Date clockInDateTime) {
+		this.clockInDateTime = clockInDateTime;
+	}
+
+	public Date getClockOutDateTime() {
+		return clockOutDateTime;
+	}
+
+	public void setClockOutDateTime(Date clockOutDateTime) {
+		this.clockOutDateTime = clockOutDateTime;
+	}
+
+	public String getClockInDateStr() {
+		return clockInDateStr;
+	}
+
+	public void setClockInDateStr(String clockInDateStr) {
+		this.clockInDateStr = clockInDateStr;
+	}
+
+	public String getClockOutDateStr() {
+		return clockOutDateStr;
+	}
+
+	public void setClockOutDateStr(String clockOutDateStr) {
+		this.clockOutDateStr = clockOutDateStr;
 	}
 
 }

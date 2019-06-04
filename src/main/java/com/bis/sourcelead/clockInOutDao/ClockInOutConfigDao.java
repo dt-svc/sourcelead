@@ -3,6 +3,8 @@ package com.bis.sourcelead.clockInOutDao;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateReportSummaryDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockInOutEntity.Breaks;
 import com.bis.sourcelead.clockInOutEntity.ClockInOut;
@@ -48,6 +50,14 @@ public interface ClockInOutConfigDao {
 	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(Long orgLocationId, Long userId, Date[] dates);
 
 	public List<ClockInOutUserTimeEntryDTO> getTimeReports(Date[] dates, OrgLocations loginOrgLocation, User user);
+
+	public List<ClockInOut> getWorkingTimeByClockId(OrgLocations loc, User user);
+
+	public List<Breaks> getBreakListByClockInId(Long id);
+	
+	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, OrgLocations orgLocation, Date sendDate);
+
+	public ClockInOut getPreviousClockInData(OrgLocations loginOrgLocation, User user);
 
 
 }

@@ -559,7 +559,7 @@
 								 <!--###################################### save/submit/approve/reject/cancel buttons section  ######################################-->
 								 <c:if test="${!timesheetSubmissionDTO.submitButtonVisible}">
 								   <c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW' || timesheetSubmissionDTO.timesheetStatus == 'DRAFT' || timesheetSubmissionDTO.timesheetStatus == 'SUBMITTED'}">
-								        <input onclick="saveTimesheet('Submitted');" value="Save" class="time_btn time_dra" type="button">
+								        <input onclick="saveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
 								   </c:if>
 								 </c:if>
 								
@@ -2280,7 +2280,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 	    	 $(".side_mask").fadeOut(200); 
      		 $("body").css('overflow-y', 'scroll');
 			 var currentPageNumber =  $("#currentPageNumber").val();
-   		     getStatusListData(""+currentPageNumber+"","");
+   		     getStatusListData(""+currentPageNumber+"",0,"");
 		 }
 		 else if(from != null && from != '' && from != 'undefined' && (from == 'approver' || from == 'approverClose' ||  from == 'dashboardClose')){
 			 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';

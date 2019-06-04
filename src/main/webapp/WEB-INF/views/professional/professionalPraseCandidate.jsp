@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 	<script type="text/javascript">
 		window.onload = function () {
 			initLocationAuto('profileLocation','profileCountry','profileState','profileCity','profileZipCode','profileLatitude','profileLongitude','','address');
@@ -14,44 +15,6 @@
 			document.getElementById("candidate_form").reset();
 		});
 	</script>
-	 
-	<style>
-	
-	.er .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
-	width:100px;
-	}
-	.er .btn-default{
-	background:#337ab7;
-	color:#fff;
-	text-shadow: none;
-	}
-	.clsDatePicker {
-		z-index: 100000 !important;
-	}
-	#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.selp-custom-min .btn-default{
-	/* z-index: -55 !important; */
-	-webkit-border-radius:0 3px 3px 0;
-	-moz-border-radius:0 3px 3px 0;
-	-ms-border-radius:0 3px 3px 0;
-	border-radius:0 3px 3px 0;
-	}
-	.selp-custom-min .open {
-	z-index: 999999999 !important;
-	}
-	.ratetype p {
-	bottom: -14px;
-	left:0px !important;
-	position: absolute;
-	}
-	.pras.req-title p{
-	bottom:-14px;
-	}
-	</style>
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -239,7 +202,7 @@
         
         <div class="form-group">
          <label class="col-md-3">Designation</label>
-         <div class="col-md-9 ratetype">
+         <div class="col-md-9 ratetype ratetypeError">
              <input type="text" id="designation" name="designation" value="${designation}" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true"  value="" class="form-control">
          </div>
        </div>
@@ -296,7 +259,7 @@
        <div class="form-group">
             <label class="col-md-3">Current Rate</label>
             <div class="col-md-9">
-             <div class="input-group er ratetype">
+             <div class="input-group er ratetype ratetypeError">
                 <div class="input-group-btn tblminwidth-75">
                   
                   <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
@@ -312,7 +275,7 @@
                 
                 </div>
                  <input type="text" id="currentRate" name="currentRate" value="${currentRate}" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
-                <div class="input-group-btn tblminwidth-75 ratetype">
+                <div class="input-group-btn tblminwidth-75 ratetype ratetypeError">
                   <select class="selectpicker" id="currentRateType" name="currentRateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
                     <option ${currentRateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>
@@ -334,7 +297,7 @@
         <div class="form-group">
             <label class="col-md-3">Expected Rate</label>
             <div class="col-md-9">
-             <div class="input-group er ratetype">
+             <div class="input-group er ratetype ratetypeError">
                 <div class="input-group-btn tblminwidth-75">
                   
                   <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
@@ -350,7 +313,7 @@
                 
                 </div>
                  <input type="text" id="expectedRate" name="expectedRate" value="${expectedRate}" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control">
-                <div class="input-group-btn tblminwidth-75 ratetype">
+                <div class="input-group-btn tblminwidth-75 ratetype ratetypeError">
                   <select class="selectpicker" id="rateType" name="rateType" field-name="Rate Type">
                     <option value="">Rate Per</option>
                     <option ${rateType  == 'Hourly' ? 'selected' : ''}>Hourly</option>

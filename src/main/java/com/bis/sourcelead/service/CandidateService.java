@@ -315,7 +315,7 @@ public interface CandidateService {
 	
 	public void deleteAllCandidatesFromMarketcart(Long orgLocationId)throws Exception;
 
-	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate, String purchaseOrderToDate, String purchaseOrderFilterDate) throws Exception;
+	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations, MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,  String searchValue,String purchaseOrderFromDate, String purchaseOrderToDate, String purchaseOrderFilterDate) throws Exception;
 
 	public MarketplacePurchaseSalesDTO getPurchaseDetailByPurchaseUuid(String purchaseUuid, OrgLocations orgLocations)throws Exception;
 	
@@ -353,10 +353,14 @@ public interface CandidateService {
 	
 	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception;
 	
+	public List<Candidate> getCandidatesForUpdateWorkLocation(Long masterCandidateId,Long orgId) throws Exception;
+	
     public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
 	
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
+	
+	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
 
 }

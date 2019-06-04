@@ -1,10 +1,14 @@
 package com.bis.sourcelead.timesheet.dao;
 
+import java.text.DateFormat;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TimesheetApprovalSubmissionDetailsDTO;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -71,7 +75,7 @@ public interface SubmissionApproverHierarchyDao {
 	
 	public List<SubmissionApproverHierarchy>  getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLogin(Long userId, String submissionStatus); 
 	
-	public Integer getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(Long masterCandidateId, String submissionStatus, Long orgLocationId);
+	public Integer getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(Long masterCandidateId, String submissionStatus, Long orgLocationId,Long orgId);
 
 	public List<SubmissionApproverHierarchy>  getTotalApprovedOrRejectedListByuserIdAndProjectIdForApprover(Long userId,Long projectId, String approvalStatus);
 
@@ -81,7 +85,7 @@ public interface SubmissionApproverHierarchyDao {
 	
 	ResponseList<SubmissionApproverHierarchy> getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(Long userId, Long orgLocationId, String submissionStatus,String searchValue,int start,int length,String isGlobalUser);
 	
-	public Integer getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(Long userId, Long orgLocationId, String submissionStatus,String isGlobalUser);
+	public Integer getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(Long approverUserId,Boolean isAdmin,Long locationsId,Long orgId,String submissionStatus,String isGlobalUser);
 	
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyForEmployeeByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId);
 	
@@ -119,6 +123,10 @@ public interface SubmissionApproverHierarchyDao {
 	public Map<String,SubmissionApproverHierarchy> getTotalHoursByProjectIdAndLocationIdApprovalStatusStartDateEndDate(Long loginOrgLocationId,Long projectId,Date startDate,Date endDate)  throws Exception;
 
 	public Boolean isMissingTimesheetPerProjectByMasterCandidateIdAndProjectId(Date frequencyStartDate, Date frequencyEndDate,Long masterCandidateId, Long projectId);
+	
+	public ResponseList<TimesheetApprovalSubmissionDetailsDTO> getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(Set<Long> projectIds,Boolean isAdmin,String timesheetFrequency,Date startDate,Date endDate,Long clientId,Long projectId,String status,Long locationsId,Long orgId,Long approverUserId,String searchValue,String projectName,int start, int length,int totalRows,String isGlobalUser,String tableFor,String dateFormat) throws Exception;
 
+	public LinkedHashMap<Date, Float> getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(Long projectId, Long pmMasterCandidateId, Date startDate, Date endDate,DateFormat format,String dateFormat) throws Exception;
 
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForPendinApproveTimesheetsByProjectMemberId(Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId);
 }

@@ -65,8 +65,7 @@ $(document).ready(function() {
   	           frequencyMonth = $(".time_months[data-year="+frequencyYear+"]").find("select").val();
   	           if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
   	        	 frequencyMonth = '';
-  	           
-  	           var searchvalue = '';
+  	           var searchvalue = $('#dataTableSearchTimesheetReports').val();
   	           if(searchData != null && searchData !='' && searchData!='undefined'){
   	        	 searchValue = searchData;
   	           }else{

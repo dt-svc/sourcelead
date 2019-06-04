@@ -89,6 +89,7 @@
 					<c:choose>
 					  <c:when test="${!empty requirement.id}">
 					    <button type="button" id = "editAssignedTeamsOrUsersBtn" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="editAssignedTeamsOrUsers('${requirement.id}');">Save<span id="assignToSelectedPopupCount"> (0) </span></button>
+					  <button type="button" id = "resetAssignedTo" class="btn btn-default btn-sm" data-dismiss="modal" onclick="clearAssignedTeamsOrUsers();">Reset</button>
 					  </c:when>
 					  <c:otherwise>
 					    <button type="button" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="getAssignedTeamsOrUsers();">Assign<span id="assignToSelectedPopupCount"> (0) </span></button>
@@ -100,6 +101,9 @@
 				</div>
 				<div class="pull-right mr" id="listButtonsDiv" style="display: none;">
 					<button type="button" id="listSaveButton" class="btn btn-primary mr5 btn-sm" data-dismiss="modal">Save</button>
+					<button type="button" id = "resetAssignedTo" class="btn btn-default btn-sm" data-dismiss="modal">Reset</button>
+					
+					
 				</div>
 			</div>
 		</div>
@@ -444,16 +448,16 @@ function paginations(){
 	}
 	
 	function clearAssignedTeamsOrUsers(){
-		$("#assignToSelectedPopupCount").text(" (0) ");
+	 	$("#assignToSelectedPopupCount").text(" (0) ");
 		$("#assignedTeamId").val('');
 		$("#selectedUsersGrid").empty();
-		$("#assignedTeamsOrUsers").empty();
-		$(".showGrid").text('0');
+		$("#assignedTeamsOrUsers").empty(); 
+		 $(".showGrid").text('0');
 		$("#showGrid").prop('disabled', 'disabled');
 		teamRoleIds = [];
 		selectAssignUsersIds = [];
 		$("#teamSelectionCategory").empty();
-		$("#usersGrid").empty();
+		$("#usersGrid").empty(); 
 	}
 	
 	function editAssignedTeamsOrUsers(requirementId){

@@ -163,7 +163,7 @@ public class LeaveDaoImpl implements LeaveDao{
 			}
 			
 			if(StringUtils.isNotBlank(leaveDTO.getSearchValue())){
-				if (leaveDTO.getSearchValue().contains("/") || leaveDTO.getSearchValue().contains("-")) {
+				if ((leaveDTO.getSearchValue().contains("/") || leaveDTO.getSearchValue().contains("-")) &&  leaveDTO.getSearchValue().contains("/p")){
 					String convertedDate = leaveDTO.getSearchValue();
 					if (leaveDTO.getSearchValue().contains("/")) {
 						convertedDate = leaveDTO.getSearchValue().replaceAll("/", "-");
@@ -1028,15 +1028,15 @@ public class LeaveDaoImpl implements LeaveDao{
 	public int deleteApproversByLeaveId(Long leaveId) {
 		int isDeleted = 0;
 		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			String query = "delete from LeaveApproveHierarchy lah where lah.leaveid.id =:leaveId";
-			Query qry = session.createQuery(query).setLong("leaveId", leaveId);
-			int i = qry.executeUpdate();
-			return i;
+			if(leaveId != null) {
+				Session session = this.sessionFactory.getCurrentSession();
+				String query = "delete from LeaveApproveHierarchy lah where lah.leaveid.id =:leaveId";
+				Query qry = session.createQuery(query).setLong("leaveId", leaveId);
+				int i = qry.executeUpdate();
+				return i;	
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("Delete Approvers By Leave Id Failed Due to "
-					+ e.getLocalizedMessage());
 		}
 		return isDeleted;
 	}

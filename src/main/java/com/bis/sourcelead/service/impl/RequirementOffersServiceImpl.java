@@ -311,12 +311,15 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           String submissionStatus = "";
 					           if(jsonObj.has("clientOffer") && jsonObj.getString("clientOffer").equalsIgnoreCase(Constants.YES)){
 					        	   if(requirementSubmission.getSourceSubmission() != null) {
+									   requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 					        		   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
 					        	   }else {
+									   requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 					        		   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
 					        	   }
 					        	  
 					           }else {
+								   requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
 					           }
 					           submissionStatus = requirementSubmission.getSubmissionStatus().getValue();
@@ -1040,7 +1043,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	    		    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 			        requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
 	    		    
-	    		    if(requirementSubmission.getSourceSubmission() == null){
+	    		    if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
 		    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
 		    		}else{
 		    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);
@@ -1062,7 +1065,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	    	
 	    	  //Changing the status of offerTable 
 			  if(requirementOffers  != null ){
-				    requirementOffers.setOfferStatus("OFFERREJECTED");
+				   if(requirementOffers.getOfferStatus().equalsIgnoreCase("CLIENT_OFFERMADE")) {
+		    		  requirementOffers.setOfferStatus("CLIENT_OFFERREJECTED");
+		    	  }else {
+		    		  requirementOffers.setOfferStatus("OFFERREJECTED");
+		    	  }
 				    requirementOffers.setUpdatedBy(loginUser.getUserCode());
 				    requirementOffers.setUpdatedDate(commonUtil.currentDate());
 				    if(!"".equalsIgnoreCase(reason) && !reason.isEmpty()){

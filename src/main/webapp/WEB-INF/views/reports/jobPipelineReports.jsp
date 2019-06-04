@@ -19,6 +19,8 @@ $(document).ready(function() {
 function getJobsReportCustomDates(){
 	 var dateSelection = $("#dateSelection").val(); 
 	 if(dateSelection == 'custom'){
+		 removeErrsgFrom();
+		 removeErrTo();
 		 document.getElementById("customSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
 		 document.getElementById("runPipelineDiv").style.display="none";
@@ -44,7 +46,6 @@ function getJobsReportCustomDates(){
 					dt.setDate(dt.getDate());
 					$("#toDate").datepicker("option", "minDate", dt);
 					removeErrsgFrom();
-					
 				}
 			});
 		  
@@ -95,10 +96,10 @@ function getJobsReportCustomDates(){
         	<a title="List View" id="ListView" class="btn btn-default"><i class="fa fa-list"></i></a>
 		</div>
 	
-    	<ul class="clearfix pull-right">
+    	<ul class="clearfix pull-right overIndex">
     	<li id="vendorFiletPopup"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openFilterPop();"></a></li>
     		<li>
-				<div class="ReqRepHead-chosen repChosen">
+				<div class="ReqRepHead-chosen repChosen choseMini">
 					<select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
 			            <%-- <c:forEach var="option" items="${requirementsList}">
 							<option value="${option.requirementId}">${option.generatedId} - ${option.jobTitle}</option>

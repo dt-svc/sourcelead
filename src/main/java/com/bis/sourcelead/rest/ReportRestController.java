@@ -1510,10 +1510,14 @@ public class ReportRestController {
 			try {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				EmployeeVerificationTemplate empTemplate = employeeVerificationTemplateService.getEmploymentVerificationtemplateByTemplateUUID(templateUUID);
-				LetterHead letterHead = letterHeadService.getLetterheadById(empTemplate.getLetterHead().getId());
-				User user = userService.getUserById(employeeId);
-				String templateContent = reportsUtil.replaceAllTemplatePlaceHolders(empTemplate.getTemplateContent(),empTemplate,toAddress,user,orgLocation);
-				reportsUtil.viewLetterHeadCompleteletterheadData(templateContent,letterHead,response);
+				LetterHead letterHead = null;
+				if(empTemplate.getLetterHead() != null) {
+				 letterHead = letterHeadService.getLetterheadById(empTemplate.getLetterHead().getId());
+				 User user = userService.getUserById(employeeId);
+				 String templateContent = reportsUtil.replaceAllTemplatePlaceHolders(empTemplate.getTemplateContent(),empTemplate,toAddress,user,orgLocation);
+				 reportsUtil.viewLetterHeadCompleteletterheadData(templateContent,letterHead,response);
+				}
+				
 			    
 			} catch (Exception e) {
 			    e.printStackTrace();
@@ -2689,16 +2693,20 @@ public class ReportRestController {
 	}
 	
 	@RequestMapping(value = "/getLoanReport", method = RequestMethod.GET)
-	public ResponseList<LoanAndAdvanceReportDTO> getLoanReport(LoanAndAdvanceReportDTO loanAndAdvanceReportDTO,HttpServletRequest request,HttpServletResponse response) {
+	public ResponseList<LoanAndAdvanceReportDTO> getLoanReport(LoanAndAdvanceReportDTO loanAndAdvanceReportDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
 		
 //		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		ResponseList<LoanAndAdvanceReportDTO> assLoanList =  loanAndAdvancesReportService.getLoansAndAdvancesByLoanNameAndOrglocationId(orgLocations.getId(), loanAndAdvanceReportDTO);
-		
+		for(LoanAndAdvanceReportDTO lard:assLoanList.getData()) {
+			lard.setFromDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lard.getStartDate()));
+			lard.setToDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), lard.getLoanEndDate()));
+		}
 		return assLoanList;
 	}
 	
+<<<<<<< HEAD
 
 
 	@RequestMapping(value = "/prepareReport")
@@ -2738,19 +2746,40 @@ public class ReportRestController {
 				file = projectsService.availableAssociatereportReportListOfExcel(res.getObject(), user, orgLocations);
 			}
 		}
+=======
+	@RequestMapping(value = "/getLoanAndAdvancesReportExport", method = RequestMethod.GET)
+	public File getLoanAndAdvancesReportExport(LoanAndAdvanceReportDTO loanAndAdvanceReportDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<LoanAndAdvanceReportDTO> assLoanList =  loanAndAdvancesReportService.getLoansAndAdvancesByLoanNameAndOrglocationId(orgLocations.getId(), loanAndAdvanceReportDTO);
+		
+		File file = null;
+	    if(loanAndAdvanceReportDTO.getExportType().equalsIgnoreCase("pdf")) {
+	    	 file=  dynamicReport.loanAndAdvanceReportPDFExport(assLoanList,orgLocations);
+	    }else {
+	    	 file=  dynamicReport.loanAndAdvanceReportExcelExport(assLoanList,orgLocations);
+	    }
+	    
+>>>>>>> a9b861382643262bfb19a00dfd5e20691a6040bd
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";
 		}
 		response.setContentType(mimeType);
+<<<<<<< HEAD
 		StringBuilder fileName = new StringBuilder();
 		response.setHeader("Content-Disposition",
 				fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+=======
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+>>>>>>> a9b861382643262bfb19a00dfd5e20691a6040bd
 		response.setContentLength((int) file.length());
 		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 		FileCopyUtils.copy(inputStream, response.getOutputStream());
 		inputStream.close();
 		response.getOutputStream().close();
+<<<<<<< HEAD
 		response.getOutputStream().flush();
 		if (file != null) {
 			file.delete();
@@ -2760,5 +2789,14 @@ public class ReportRestController {
 	}
 
 	
+=======
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+		
+		return file;
+	}
+>>>>>>> a9b861382643262bfb19a00dfd5e20691a6040bd
 	
 }

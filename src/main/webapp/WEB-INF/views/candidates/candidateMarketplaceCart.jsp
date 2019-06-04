@@ -309,12 +309,15 @@ function getCandidateDetailsFromMarketcart(customDate, fromDate, toDate){
 	var creationStartDate = $("#creationStartDate").val();
 	var creationEndDate = $("#creationEndDate").val(); 
 	*/
-	 if(customDate == null){
+	 if(customDate == null || customDate == "undefined"){
 	customDate = "";
 	}
-	 /*else{
-		customDate = "";
-	} */	 
+	
+	if(fromDate == null || toDate== null){
+		fromDate = "";
+		toDate = "";
+	}
+	
 	var searchValue = $("#dynamicUserDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	$.ajax({
@@ -473,7 +476,11 @@ function deleteAllCandidatesForCheckout(){
 			if (result.response === "AWKWARD") {
                 location.href = "/errorPage";
             }else if(result.response === "SUCCESS") {
-            	window.location.replace("${appPath}/globalMarketplacePage");
+            	getCandidateDetailsFromMarketcart();
+            	updateInvoiceDetails();
+				updateMarketplaceCartCountAndPrice();
+				$("#remove_marketCartDeleteAll_pop").fadeOut(200);
+    			$(".project_inn_mask").fadeOut(200);
             }else{
            	 	showError("Operation failed, please try again");
             }}
@@ -517,40 +524,6 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		createMarketCartEndDate();
  	 });
 	
-	/* $("#customDateCheckBox").click(function() {
-		if($(this).is(":checked")){
-			$("#customDates").show();
-		}else {
-			$("#customDates").hide();
-		}
-	});	 */
-	
-	/* function validateMarketCartFilter(){
-  		var customDate = $("#customDateCheckBox").val();
-  		var customDate = $('input[name=MarketCartDate]:checked').val();
-  		var fromDate = $("#creationStartDate").val();
-  		var toDate = $("#creationEndDate").val();
-  		if(customDate === "custom"){
-  			if(fromDate === ''){
-  				$("#creationStartDate").focus();
-  			}
-  			if(toDate === '' && fromDate !== ''){
-				$("#creationEndDate").focus();  				
-	  		}
-  	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-  	        	closePop();
-  	        	getCandidateDetailsFromMarketcart();
-        	}
-  			}
-  		if(otherDate != null && otherDate != 'undefined' && otherDate != ''){
-  				closePop();
-	        	getCandidateDetailsFromMarketcart();
-  		}
-  		if(otherDate === '' && customDate != 'custom'){
-  			alert('Kindly Select a Check Box.');
-  		}
-  	}
-	 */
 	function validateMarketCartFilter(){ 
 		
 		var customDate = $('input[name=MarketCartDate]:checked').val();
@@ -601,6 +574,7 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		emptyMarketCartSearchValues();
 		$("#customDates").hide();
 		$("ul#MarketCartCheckBox > li input:radio").prop("checked", false);
+		$("ul#myRolesUL > li input:checkbox").prop("checked",false);
 	}
 	
 	function emptyMarketCartSearchValues(){
@@ -636,7 +610,10 @@ $("#trashHdr").click(function() {
 	 $("#deleteAll").toggle();
 })
 function refreshPage(){
-  location.reload(); // refresh the page.
+	resetMarketCartFilter();
+	$("#dynamicUserDataTableSearch").val('');
+	getCandidateDetailsFromMarketcart();
+   // refresh the page.
 }
 function predefineProfileImage(imageId){
 	$(imageId).attr('src','/resources/images/userprofileImg.jpg');
