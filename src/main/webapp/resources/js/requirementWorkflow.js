@@ -123,6 +123,7 @@ function RequirementWorkflow(){
 	  	result = result +"<thead>";
 	  	result = result +"<tr>"
 	  	result = result +"<th>Name</th>";
+	  	result = result +"<th>Description</th>";
 	  	result = result +"<th>Stages</th>";
 	  	result = result +"<th>Status</th>";
 	  	result = result +"<th>Action</th>";  
@@ -148,6 +149,7 @@ function RequirementWorkflow(){
 		        }),
 		        "columns": [
 		        	{ "data": "workFlowName" },
+		        	{ "data": "description" },
 		        	{ "data": "noOfStages" },
 		        	{ "data": "status" }
 		        ],
@@ -163,8 +165,18 @@ function RequirementWorkflow(){
 	  	             	}
 	  	             	 return result;
 		    	  	}
-		        },{
-		    	  	"targets": colIndex++,
+		        },{"targets": colIndex++,
+		    	  	"data": "description",
+		    	  	"render": function(data, type, workflow, meta) {
+		    	  		var result = "";
+	              		if(workflow.description != null && workflow.description != '' && workflow.description != "undefined"){
+	              			result = result +"<div class='tbldata-dotdot-vsm'>"+workflow.description+"</div>";
+	  	              	}else{
+	  	            	  		result = result +"<div>---</div>";
+	  	             	}
+	  	             	 return result;
+		    	  	}
+		        },{"targets": colIndex++,
 		    	  	"data": "noOfStages",
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
