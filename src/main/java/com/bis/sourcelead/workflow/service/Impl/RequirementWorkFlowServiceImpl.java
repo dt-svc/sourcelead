@@ -155,34 +155,30 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	}
 
 	@Override
-	public void saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(OrgLocations orgLocations, User user) {
+	public RequirementWorkFlow saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(OrgLocations orgLocations, User user) {
 		logger.debug("Started saveRequirementDefaultWorkFlowAndStagesByOrgLocationId Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
-		try {
-		List<RequirementDefaultWorkFlowStages> requirementDefaultWorkFlowStages = requirementWorkFlowDao.getRequirementDefaultWorkFlowStages();
-		RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO(); 
 		RequirementWorkFlow workFlow = null;
-		//setting default value to display in jsp.
-		Integer workflowSize = requirementDefaultWorkFlowStages.size();
-		StringBuilder jobWorkflow = new StringBuilder(Constants.DEFAULT_JOB_WORKFLOW);
-		requirementWorkFlowDTO.setWorkFlowName(jobWorkflow.toString());
-		requirementWorkFlowDTO.setDescription(jobWorkflow.toString());
-		requirementWorkFlowDTO.setNoOfStages(workflowSize.toString());
-		requirementWorkFlowDTO.setConfigureType(Constants.DEFAULT);
-		
-		// saving and fetching a new default workflow for an org..
+		try {
 		List<RequirementWorkFlow> requirementWorkFlow= requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
 		if (requirementWorkFlow.size() == 0) {
+			RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO(); 
 			
+			StringBuilder jobWorkflow = new StringBuilder(Constants.DEFAULT_JOB_WORKFLOW);
+			requirementWorkFlowDTO.setWorkFlowName(jobWorkflow.toString());
+			requirementWorkFlowDTO.setDescription(jobWorkflow.toString());
+			requirementWorkFlowDTO.setConfigureType(Constants.DEFAULT);
 			workFlow = saveRequirementWorkFlowDetailsInfo(requirementWorkFlowDTO,user,orgLocations);
 			workFlow.setConfigureType(Constants.DEFAULT);
-			requirementWorkFlowDao.saveRequirementWorkFlowDetails(workFlow, orgLocations);
+			workFlow = requirementWorkFlowDao.saveRequirementWorkFlowDetails(workFlow, orgLocations);
 			
 		}
 		}catch(Exception e) {
 			logger.error(e+" in saveRequirementDefaultWorkFlowAndStagesByOrgLocationId Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
 			e.printStackTrace();
+			return null;
 		}
 		logger.debug("Finished saveRequirementDefaultWorkFlowAndStagesByOrgLocationId Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
+		return workFlow;
 	}
 
 
