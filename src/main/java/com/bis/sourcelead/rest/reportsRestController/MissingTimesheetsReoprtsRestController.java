@@ -1,5 +1,10 @@
 package com.bis.sourcelead.rest.reportsRestController;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,15 +15,21 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AvailableAssociatesDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
+import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -28,6 +39,9 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reportsDTO.MissingTimesheetRepotDTO;
 import com.bis.sourcelead.reportsDTO.MissingTimesheetResultRepotDTO;
+import com.bis.sourcelead.reportsDTO.PendingForExpenseApprovalReportDTO;
+import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -36,6 +50,7 @@ import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.timesheet.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
@@ -54,6 +69,8 @@ public class MissingTimesheetsReoprtsRestController {
 	
 	@Autowired
 	UserRoleService userRoleService;
+	@Autowired
+	ExpensesService expensesService;
 	
 	@Autowired
 	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
@@ -72,6 +89,12 @@ public class MissingTimesheetsReoprtsRestController {
 	
 	@Autowired
 	ReportsUtil reportsUtil;
+	
+	@Autowired
+	PdfUtil pdfUtil;
+	
+	@Autowired
+	ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
 	
 
 	@RequestMapping(value = "/getMissingTimesheetReoportsList", method = RequestMethod.POST)
@@ -289,4 +312,144 @@ public class MissingTimesheetsReoprtsRestController {
 
 	}
 
+	
+	@RequestMapping(value ="/getpendingForExpenseReportList", method = RequestMethod.POST)
+	public  @ResponseBody List<PendingForExpenseApprovalReportDTO> getpendingForApprovalExpenseReportList(MissingTimesheetRepotDTO missingTimesheetRepotDTO,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+        Date[] searchDates = null;
+        if(StringUtils.isNotBlank(missingTimesheetRepotDTO.getDateSelection())){
+        	if(!missingTimesheetRepotDTO.getDateSelection().equalsIgnoreCase("custom")) {
+    			searchDates = reportsUtil.getJobFilterDate(missingTimesheetRepotDTO.getDateSelection(),orgLocations);
+    		}else {
+    			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+    			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+    			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+    			Date fromDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), missingTimesheetRepotDTO.getFromDate());
+       	        Date toDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), missingTimesheetRepotDTO.getToDate());
+    			String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+    			String customEndTimeStr = TZ_DF_CED.format(toDate);
+    			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+    			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+    			fromDate = TZ_DF_TS.parse(startDateString);
+    			toDate = TZ_DF_TS.parse(endDateString);
+    			
+       	    searchDates = new Date[2];
+       	    searchDates[0] = fromDate;
+       	    searchDates[1] = toDate;
+    		}
+        }
+		
+		List<Projects> projectList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+		ArrayList<Long> projectIds = new ArrayList<>();
+		String projectIdString = "";
+		if(StringUtils.isNotBlank(missingTimesheetRepotDTO.getProjectIds())) {
+			String[] projectIdsStr = missingTimesheetRepotDTO.getProjectIds().split(",");
+			for(int i=0; i<projectIdsStr.length; i++) {
+				projectIds.add(Long.parseLong(projectIdsStr[i]));
+				projectIdString += (projectIdString.isEmpty() ? "" : ",") + projectIdsStr[i];
+			}
+		}
+		else {
+			if(projectList != null && !projectList.isEmpty()) {
+				for(Projects pr :projectList) {
+					projectIds.add(pr.getId());
+					projectIdString += (projectIdString.isEmpty() ? "" : ",") + pr.getId();
+				}
+			}
+		}
+		List<PendingForExpenseApprovalReportDTO> pendingForExpenseApprovalReportDTO = new ArrayList<>();
+		Date frequencyStartDate = searchDates[0];
+	        Date frequencyEndDate = searchDates[1];
+		List <PendingForExpenseApprovalReportDTO> exp = expensesService.getPendingForApprovalExpenseReportByProjectIds(projectIdString, frequencyStartDate, frequencyEndDate,orgLocations.getDateFormat());
+		return exp;
+
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/reportExport")
+	public File epensePendingapprovalreportForExport(MissingTimesheetRepotDTO missingTimesheetRepotDTO,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+        Date[] searchDates = null;
+        if(StringUtils.isNotBlank(missingTimesheetRepotDTO.getDateSelection())){
+        	if(!missingTimesheetRepotDTO.getDateSelection().equalsIgnoreCase("custom")) {
+    			searchDates = reportsUtil.getJobFilterDate(missingTimesheetRepotDTO.getDateSelection(),orgLocations);
+    		}else {
+    			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+    			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+    			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+    			Date fromDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), missingTimesheetRepotDTO.getFromDate());
+       	        Date toDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), missingTimesheetRepotDTO.getToDate());
+    			String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+    			String customEndTimeStr = TZ_DF_CED.format(toDate);
+    			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+    			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+    			fromDate = TZ_DF_TS.parse(startDateString);
+    			toDate = TZ_DF_TS.parse(endDateString);
+    			
+       	    searchDates = new Date[2];
+       	    searchDates[0] = fromDate;
+       	    searchDates[1] = toDate;
+    		}
+        }
+		
+		List<Projects> projectList = projectsService.getProjectByOrgLocationsId(orgLocations.getId());
+		ArrayList<Long> projectIds = new ArrayList<>();
+		String projectIdString = "";
+		if(StringUtils.isNotBlank(missingTimesheetRepotDTO.getProjectIds())) {
+			String[] projectIdsStr = missingTimesheetRepotDTO.getProjectIds().split(",");
+			for(int i=0; i<projectIdsStr.length; i++) {
+				projectIds.add(Long.parseLong(projectIdsStr[i]));
+				projectIdString += (projectIdString.isEmpty() ? "" : ",") + projectIdsStr[i];
+			}
+		}
+		else {
+			if(projectList != null && !projectList.isEmpty()) {
+				for(Projects pr :projectList) {
+					projectIds.add(pr.getId());
+					projectIdString += (projectIdString.isEmpty() ? "" : ",") + pr.getId();
+				}
+			}
+		}
+		List<PendingForExpenseApprovalReportDTO> pendingForExpenseApprovalReportDTO = new ArrayList<>();
+		Date frequencyStartDate = searchDates[0];
+	        Date frequencyEndDate = searchDates[1];
+		List <PendingForExpenseApprovalReportDTO> exp = expensesService.getPendingForApprovalExpenseReportByProjectIds(projectIdString, frequencyStartDate, frequencyEndDate,orgLocations.getDateFormat());
+		File file = null;
+		if (exp != null ) {
+
+			if (missingTimesheetRepotDTO.getType().equalsIgnoreCase("pdf")) {
+				file = pdfUtil.expensependingApprovalReportListOfPdf(exp, user, orgLocations);
+			} else {
+				file = pdfUtil.expensependingApprovalReportListOfExcel(exp, user, orgLocations);
+			}
+		}
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+		return file;
+
+	}
+	
+	
+	
 }
