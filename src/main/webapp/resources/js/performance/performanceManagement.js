@@ -401,6 +401,18 @@ function PerformanceManagement(){
   				},
   			}); 
     }
+    
+    this.assignAppraisalCycle = function(uuid){
+    	$.ajax({
+  		  type: "GET",
+  		    url: sourceleadUrl+"/getPerformanceAppraisalAssignToList?uuid="+uuid,
+  		     success :function(response) {
+  		    	    $("#performanceManagementDiv").empty();  
+  		    	    $("#performanceManagementDiv").append(response);
+  		    	    getAppraisalAssignToList(uuid);
+  				},
+  			}); 
+    }
 
 
     this.getFeedbackList = function(){
