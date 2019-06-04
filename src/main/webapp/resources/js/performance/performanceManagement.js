@@ -696,17 +696,6 @@ function PerformanceManagement(){
  	  
    }
    
-   this.closeBadgePopup = function(){
-	 	  $(".mask, #modalTasktype").fadeOut();
-	 	  $('#badgeNameDiv').find('p.jquery_form_error_message').remove();
-	 	  $('#badgeImageDiv').find('p.jquery_form_error_message').remove();
-	 	  $('#badgeDescriptionDiv').find('p.jquery_form_error_message').remove();
-	 	  $('#uploadBtn').val('');
-	 		 document.getElementById("performance_badge_form").reset();
-	 		 document.getElementById("badgeImg").src = '/resources/images/rewards_badges.svg';
-	 	  
-	   }
-   
    this.closeCompetencePopup = function(){
 	      $(".mask, #competenceModalTasktype").fadeOut();
 	 	  $('#competenceNameDiv').find('p.jquery_form_error_message').remove();
