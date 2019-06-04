@@ -563,7 +563,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		if(projectMember.getProjectMemberCandidteId()!= null) {
 			 consultantUser = consultantProjectMembers.getProjectMemberCandidteId().getConsultantUser(); 
 			 Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(consultantUser.getId(),orgLocations.getId());
-	     if(employee != null) {
+	     if(employee != null && StringUtils.isNotEmpty(employee.getEmployeeId())) {
 	    	 writeRow.createCell(0).setCellValue(sbid.append(employee.getEmployeeId()).toString());
 			 createExcelsheet.autoSizeColumn(0);
 	     }
