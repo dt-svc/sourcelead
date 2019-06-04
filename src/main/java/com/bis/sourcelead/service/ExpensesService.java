@@ -1,9 +1,11 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Expenses;
@@ -11,6 +13,7 @@ import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.PendingForExpenseApprovalReportDTO;
 
 public interface ExpensesService {
 	
@@ -49,6 +52,8 @@ public interface ExpensesService {
 	public boolean changeExpenseBillingStatus(long expenseId, String billingStatus);
 
 	public List<Expenses> getAllExpenses();
+
+	public List<PendingForExpenseApprovalReportDTO> getPendingForApprovalExpenseReportByProjectIds(String projectIds, Date frequencyStartDate,Date frequencyEndDate,String dateFormat);
 	
 	
 }
