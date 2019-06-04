@@ -66,6 +66,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
             <thead>
               <tr>
                 <th>Date</th>
+                <th>Employee Id</th>
                 <th>Employee Name</th>
                 <th>Employee Email</th>
                 <th>Ticket No</th>
@@ -82,6 +83,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
             <c:forEach var="entryList" items="${dayWiseTimesheetReoprtsList}">
 	            <tr>
 	                <td><div class="tblminwidth-75">${entryList.timesheetDate}</div></td>
+	                <td><div class="tbldata-dotdot-vsm" title="${entryList.employeeId}">${entryList.employeeId != null && entryList.employeeId != '' ? entryList.employeeId : "----"}</div></td>
 	                <td><div class="tbldata-dotdot-vsm" title="${entryList.employeeName}">${entryList.employeeName}</div></td>
 	                <td><div class="tbldata-dotdot-vsm" title="${entryList.employeeEmail}">${entryList.employeeEmail}</div></td>
 	                <td><div class="tblminwidth-75">${!empty entryList.ticketNo ? entryList.ticketNo : '--'}</div></td>
@@ -159,6 +161,7 @@ function getTableDataByPageSizeEmployee(){
 	  var projectMemberListIdDto = $('#projectMemberListIdDto').val();
 	  var startDateDto = $('#startDateDto').val();
 	  var endDateDto = $('#endDateDto').val();
+	  var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	  
 	  if(projectIdDto != null && projectIdDto !='' && projectIdDto !='undefined'){
 		  projectIds  =  JSON.parse(projectIdDto);  ;
@@ -174,7 +177,7 @@ function getTableDataByPageSizeEmployee(){
 	  var exportType = type;
 		
 		if(startDate != null && startDate !='' && startDate !='undefined' && endDate != null && endDate !='' && endDate !='undefined'){
-			window.location.href = pmsUrl+"/exportDaywiseTimesheetReport?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&exportType="+exportType+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList;
+			window.location.href = sourceleadUrl+"/exportDaywiseTimesheetReport?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&exportType="+exportType+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList;
 		}
 	}
  </script>
@@ -189,7 +192,7 @@ function getTableDataTimeSheetReports(pageNo){
 		  var projectMemberListIdDto = $('#projectMemberListIdDto').val();
 		  var startDateDto = $('#startDateDto').val();
 		  var endDateDto = $('#endDateDto').val();
-		  
+		  var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';  
 		  if(projectIdDto != null && projectIdDto !='' && projectIdDto !='undefined'){
 			  projectIds  =  JSON.parse(projectIdDto);  ;
 		  }
@@ -210,7 +213,7 @@ function getTableDataTimeSheetReports(pageNo){
 	    	searchValue = '';
 	      }
 		  $.ajax({
-	            url: pmsUrl+"/dayEntriesReportList?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
+	            url: sourceleadUrl+"/dayEntriesReportList?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
 	            type: "POST",
 	            success: function (data) {
 	            	 $("#dayEntryformData").hide();

@@ -287,7 +287,22 @@
 						</div>
 					</a>
 				</div>
-
+				
+				
+				<!-- Candidate Configuration -->
+				 <div class="col-md-2 reportNewCta"> 
+	            <!-- DropDown -->
+	            <div class="dropdown pull-right report-dropdown"> <span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown"> <span class="caret cursorPointer"></span> </span>
+	              <ul class="dropdown-menu minHeight50 maxHeight250">
+	                <li><a href="${SourceLeadWeb_atsUrl}/candidateSourceList">Source</a></li>
+	              </ul>
+	            </div>
+	            <!-- Dropdown -->
+	            <div class="clearfix text-center mb10"><i class="userconfigSVG"></i></div>
+	            <div class="clearfix text-center">
+	              <h4><a href="#">Candidate</a></h4>
+	            </div>
+	          </div>
 				
 				 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 					<div class="col-md-2 reportNewCta">
@@ -299,7 +314,6 @@
 					</div>	
 				</sec:authorize>
 				
-				
 			  <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 				<div class="col-md-2 reportNewCta">
 					<a href="${SourceLeadWeb_sourceleadUrl}/emailTemplates">
@@ -310,13 +324,19 @@
 				</div>
 				
 				
+				
+				
 				<div class="col-md-2 reportNewCta">
-					<a href="${SourceLeadWeb_sourceleadUrl}/orgBulkUploads">
-							<div class="clearfix text-center mb10"><i class="fa fa-upload" aria-hidden="true"></i></div>
-					<div class="clearfix text-center">
-						<h4>Bulk Uploads</h4>
-					</div>
-				</div>
+							<a href="${SourceLeadWeb_sourceleadUrl}/orgBulkUploads">
+								<div class="clearfix text-center mb10">
+									<i class="bulkUploadSVG"></i>
+								</div>
+								<div class="clearfix text-center">
+									<h4>Bulk Uploads</h4>
+								</div>
+							</a>
+						</div>
+						
 			</sec:authorize>		  		  	  
 			      	   
       	  </div>

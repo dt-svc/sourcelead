@@ -6,13 +6,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
-<style>
-#billing_chartdiv {
-  	width:100%; height:300px;
-}																		
-</style>
-
 <script type="text/javascript">
 window.onload = function() { 
 	getDayWiseReports();

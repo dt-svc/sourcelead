@@ -10,7 +10,7 @@
 <script src="/resources/js/formvalidator.js"></script>
 
 <script>
-var sourceleadUrl = '${sourceleadUrl}';
+var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 </script>
 
 
@@ -61,6 +61,7 @@ $(document).ready(function() {
 
 <script>  
 	function timesheetReportsDiv(searchData){ 
+		       var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
                var frequencyYear = $("#frequencyYear").val();
                if(frequencyYear == null || frequencyYear == '' || frequencyYear == 'undefined')
             	   frequencyYear = '';
@@ -132,7 +133,7 @@ function exportTimeSheetReportsToPdf(type){
       if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
    	 frequencyMonth = '';
       var searchValue = $('#dataTableSearchExpenses').val() ;
-	 window.location.href = sourceleadUrl+"/timeSheetReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&exportType="+type+"&searchValue="+searchValue;
+	 window.location.href = '${SourceLeadWeb_sourceleadUrl}'+"/timeSheetReportExportList?${_csrf.parameterName}=${_csrf.token}&frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth+"&exportType="+type+"&searchValue="+searchValue;
 }
 </script>
 

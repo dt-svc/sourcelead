@@ -112,14 +112,12 @@ $(document).ready(function(){
           <div class="clearfix minHeight40">
           <h4 class="pull-left">Total : <span id ="totalCalAmount">0.00</span></h4>
           	<div class="remove_search pull-right">
-                  <input placeholder="Search" type="text">
+                  <input placeholder="Search" type="text" id='dataTableSearch'/>
                 </div>
           </div>
           
           
-           <div class='remove_search'>
- 		 <input type='text' placeholder='Search' id='dataTableSearch'/>
- 		</div> 
+       
       <div id="paidBillReportDetailId" class="datatable_filter tableStyles">
         </div>
           
@@ -197,6 +195,7 @@ function getPaidBillDetailReport(){
 <script>
 function getPaidBillDetailReportList(url){
 	$("#paidBillReportDetailId").empty();
+	var financeType = '${billType}';
  	    var result = "";
  	    /* result = result +" <div class='remove_search'>";
  	    result = result +" <input type='text' placeholder='Search' id='dataTableSearch'/>";
@@ -205,7 +204,11 @@ function getPaidBillDetailReportList(url){
         result = result +"<thead>"; 
         result = result + '<tr>';
         result = result + '<th>Project Name</th>';
+        if(financeType === "Payables"){
 		result = result + '<th>Bill Date</th>';
+        }else{
+        result = result + '<th>Invoice Date</th>';	
+        }
 		result = result + '<th>Pay Date</th>';
 		result = result + '<th>Amount</th>';
 		result = result + '</tr>';

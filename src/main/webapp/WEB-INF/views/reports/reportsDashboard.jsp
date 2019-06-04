@@ -265,7 +265,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateJoineReports'>Associate Joined Report</a></li>
 				</sec:authorize>  
 				
-				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateClockInSummaryReport'>Associate Clock-In Summary Report</a></li>
+			<%-- 	<li><a href='${SourceLeadWeb_sourceleadUrl}/associateClockInSummaryReport'>Associate Clock-In Summary Report</a></li> --%>
 				
 				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li> 
 
@@ -366,7 +366,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="${SourceLeadWeb_vmsUrl}/petitionReport" class="block">
+                  <a href="${SourceLeadWeb_sourceleadUrl}/immigrationReportsList" class="block">
                   <div class="clearfix text-center mb10"><i class="petitionReport"></i></div>
                   <div class="clearfix text-center"><h4>Immigration Reports</h4></div> </a>
 
@@ -493,45 +493,31 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<!-- <li><a href="#">Invoice Report By Customer / Project</a></li>
 				<li><a href="#">Bill Report By Customer / Project</a></li> -->
 				<sec:authorize access="hasRole('ROLE_A_R_AGING')">
-				<c:if test="${SourceLeadWeb_ats == 'Y'}">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/arAgingReport'>A/R Aging</a></li>
-				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_A_P_AGING')">
-				<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/apAgingReport'>A/P Aging</a></li>
-				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_INVOICE')">
-					<c:if test="${SourceLeadWeb_ats == 'Y'}">
 					<li><a href='${SourceLeadWeb_sourceleadUrl}/missingInvoiceReport'>Missing Invoice(s)</a></li>
-					</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_RECEIVED_INVOICES')">
-				<c:if test="${SourceLeadWeb_ats == 'Y'}">
 			     <li><a href='${SourceLeadWeb_sourceleadUrl}/receivedInvoiceReport'>Received Invoice(s)</a></li>    
-			     </c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_BILL')">
-				<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/missingBillReport'>Missing Bill(s)</a></li>
-				</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_PAID_BILL')">
-					<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				    <li><a href='${SourceLeadWeb_sourceleadUrl}/paidBillReport'>Paid Bill(s)</a></li>
-				    </c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MARGIN_SHEET_REPORT')">
-				<c:if test="${SourceLeadWeb_vms == 'Y'}">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/marginSheetReports'>MarginSheetReport</a></li>
-				</c:if>
 				</sec:authorize>
 				
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/assetmanagementGrowth'>Asset Growth</a></li>
@@ -694,12 +680,20 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
             </c:if>
-            
+            <div class="newRepListCta">
+                <h2><a href="javascript:void(0)">Immigration Reports</a></h2>
+                <ul class="repSearchList">
+                    <li><a href="${SourceLeadWeb_vmsUrl}/petitionReport">Petition Report</a></li>
+					<li><a href="${SourceLeadWeb_vmsUrl}/petitionAttorneyReport">Petition Attorney Report</a></li>
+					<li><a href="${SourceLeadWeb_vmsUrl}/lcaReport">LCA Report</a></li>
+                </ul>
+                <div class="noDate noDateSm" style="display: none;"></div>
+            </div>
             <div class="clearfix mt mb"></div>
                                    
         </div>
         
-        
+      
         
         </div>
         <!--  List View End  --> 

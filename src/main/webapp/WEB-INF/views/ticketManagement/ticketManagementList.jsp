@@ -6,15 +6,25 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script type="text/javascript" src="/resources/js/ticketManagement/ticket.js"></script>
 
+<script>
+function resetFilter(){
+	$("#ticketListSearch").val('');
+	getTicketManagementList();
+}
+
+</script>
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Ticket Management</h2>
       </div>
-	<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Ticket List</div>
+	<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/ticketManagementList'/>">Ticket List</a> &raquo; Ticket Summary</div>
     </section>
     <div class="content-area clearfix timesheet_out">
           <div class="positionRelative reportHead clearfix">
+          <span class="pull-left refreIcon">
+           <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a>
+          <div></div></span>
             <ul class="pull-right list-unstyled list-inline">
             <sec:authorize access="hasRole('ROLE_ADD_TICKET')">
               <li><a href="${SourceLeadWeb_sourceleadUrl}/addTicket" class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>

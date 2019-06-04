@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -101,6 +102,25 @@ public class DataMigrationCommonRestController {
 		model.setViewName("upload/uploadCandidateForm");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		sessionData.setNav(Constants.Candidates);
+		return model;
+
+	}
+   
+   
+	@PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
+	@RequestMapping(value = "/uploadForm")
+	public ModelAndView fileUploadForm(HttpServletRequest request) {
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
+				.getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Users);
+
+		request.getSession().setAttribute("sessionData", sessionData);
+		ModelAndView model = new ModelAndView();
+		model.setViewName("upload/uploadForm");
+		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 
 	}

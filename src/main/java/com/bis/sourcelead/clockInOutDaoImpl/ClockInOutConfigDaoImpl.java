@@ -35,6 +35,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
@@ -623,6 +624,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			  .append("clk.CLOCK_IN_DATE as clockInDate, ")
 			  .append("clk.CLOCK_OUT_DATE as clockOutDate, ")
 			  .append("clk.TOTAL_TIME as totalTime, ")
+			  .append("clk.GEO_LOCATION_DATA as geoLocationData, ")
 			  .append("task.TASK_NAME as projectTaskName, ")
 			  .append("DATE_FORMAT(clk.CLOCK_IN_DATE, '%Y-%m') as yearMonth, ")
 			  .append("clk.COMMENTS as comments ")
@@ -734,5 +736,50 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			return null;
 		}
 	}
+
+	@Override
+	@Transactional
+	public ResponseList<ClockInOutUserTimeEntryDTO> getEmployeeTimeEntriesByProjectIdTaskId(Long locationId, Long userId, Date[] dates, Long projectId, Long projectTaskId)
+	{
+		ResponseList<ClockInOutUserTimeEntryDTO> resList = new ResponseList<>();
+		List<ClockInOutUserTimeEntryDTO> clockInOutList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT clk.CLOCK_IN_TIME as clockInTime, ") 
+			  .append("clk.ID as id, ")
+			  .append("clk.CLOCK_OUT_TIME as clockOutTime, ")
+			  .append("clk.CLOCK_IN_DATE as clockInDate, ")
+			  .append("clk.CLOCK_OUT_DATE as clockOutDate, ")
+			  .append("clk.TOTAL_TIME as totalTime, ")
+			  .append("clk.GEO_LOCATION_DATA as geoLocationData, ")
+			  .append("task.TASK_NAME as projectTaskName, ")
+			  .append("DATE_FORMAT(clk.CLOCK_IN_DATE, '%Y-%m') as yearMonth, ")
+			  .append("clk.COMMENTS as comments ")
+			  .append("FROM CLOCK_INOUT clk ")
+			  .append("LEFT JOIN PROJECT_TASKS task ON clk.PROJECTS_TASK_ID = task.ID ")
+			  .append("where clk.USER_ID = :userId ")
+			  .append("AND clk.ORG_LOCATION_ID = :orgLocationId ")
+			  .append("AND clk.PROJECT_ID = :projectId ")
+			  .append("AND clk.PROJECTS_TASK_ID = :projectTaskId ")
+			  .append("AND clk.CLOCK_OUT_DATE >= :clockOutDate ")
+			  .append("AND clk.TOTAL_TIME is not null ");
+			Query queryObj = session.createSQLQuery(sb.toString());
+			queryObj.setLong("orgLocationId", locationId);
+			queryObj.setLong("projectId", projectId);
+			queryObj.setLong("projectTaskId", projectTaskId);
+			queryObj.setLong("userId", userId);
+			queryObj.setDate("clockOutDate", dates[0]);//  
+			queryObj.setResultTransformer(Transformers.aliasToBean(ClockInOutUserTimeEntryDTO.class));
+			clockInOutList = queryObj.list();
+			resList.setData(clockInOutList);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resList;
+	}
+
+	
 
 }

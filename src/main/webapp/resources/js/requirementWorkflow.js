@@ -3,6 +3,7 @@ var requirementWorkflow = new RequirementWorkflow();
 var iconSpan = "";
 var editAndDeleteAnchor = "";
 var lastStage = "";
+var commentReq = "";
 
 function RequirementWorkflow(){
 	
@@ -152,7 +153,6 @@ function RequirementWorkflow(){
 		        ],
 		        "columnDefs": [ {
 		    	  	"targets": colIndex++,
-		    	  	"sortable": false,
 		    	  	"data": "workFlowName",
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
@@ -165,7 +165,6 @@ function RequirementWorkflow(){
 		    	  	}
 		        },{
 		    	  	"targets": colIndex++,
-		    	  	"sortable": false,
 		    	  	"data": "noOfStages",
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
@@ -178,7 +177,6 @@ function RequirementWorkflow(){
 		    	  	}
 		        },{
 		    	  	"targets": colIndex++,
-		    	  	"sortable": false,
 		    	  	"data": "status",
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
@@ -196,7 +194,8 @@ function RequirementWorkflow(){
 		    	  	}
 		        },{
 		    	  	"targets": colIndex++,
-		    	  	"sortable": false,
+		    	  	 bSortable: false,
+	                 aTargets: [ -1 ],
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
 		    	  		
@@ -207,7 +206,7 @@ function RequirementWorkflow(){
 	        ],
 		        "scrollCollapse": false,
 		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-		    	"aaSorting": [[2,'desc']],
+		    	/*"aaSorting": [[0,'desc']],*/
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"ordering": true,
@@ -230,7 +229,7 @@ function RequirementWorkflow(){
 
 	this.checkDefaultWorkflow = function(configureType, uuid, workFlowName){
 		var result = "";
-		result = result +"<div class='tbldata-dotdot-verybig'><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")' title='view'>"+workFlowName+"</a></div>";
+		result = result +"<div class='tbldata-dotdot-200'><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")' title='view'>"+workFlowName+"</a></div>";
 		return result;
 	}
 
@@ -543,6 +542,14 @@ function RequirementWorkflow(){
 					var stageUuid = $("#workflowStageUuid").val();
 					var qTemplateId = $("#questionnaireTemplateId").val();
 					
+					var requiredStatsList = $('input[name=list_required]:checked').val();
+					var chosenColumns = [];
+					$('#chosecolumnsID input:checked').each(function() {
+						chosenColumns.push($(this).val());
+					});
+					
+					var chosenColumnJson = JSON.stringify(chosenColumns);
+					
 					 var previousStageUuid = $("#previousStageUuid").val();
 					
 					
@@ -572,7 +579,8 @@ function RequirementWorkflow(){
 						type : "GET",
 						 data : formData,
 						url : sourceleadUrl + "/saveRequirementWorkflowStage?description="+description+"&uuid="+stageUuid+
-								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+"&lastStage="+lastStage,
+								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+
+								"&lastStage="+lastStage+"&commentRequired="+commentReq+"&requiredStatsList="+requiredStatsList+"&chosenColumnJson="+chosenColumnJson,
 						success : function(dataList) {
 							if (dataList.response === "AWKWARD") {
 				      	    location.href = "/errorPage";
@@ -706,7 +714,7 @@ function RequirementWorkflow(){
 						currentStageUuid = "Default";
 					}
 					$.ajax({
-						type : "GET",
+						type : "POST",
 						url : sourceleadUrl + "/saveWorkflowTask?requirementWorkFlowUuid="+worflowUuid+"&workFlowTaskName="+workFlowTaskName+"&priority="+priority
 								+"&workFlowTaskDescription="+taskDescription+"&assignToUserId="+assignToUserId+"&currentStageUuid="+currentStageUuid
 								+"&stageName="+stageName+"&description="+description,
@@ -768,7 +776,6 @@ function RequirementWorkflow(){
 				 	        ],
 				 	        "columnDefs": [ {
 				 	    	  	"targets": colIndex++,
-				 	    	  	"sortable": false,
 				 	    	  	"data": "name",
 				 	    	  	"render": function(data, type, workflow, meta) {
 				 	    	  		var result = "";
@@ -781,7 +788,6 @@ function RequirementWorkflow(){
 				 	    	  	}
 				 	        },{
 				 	    	  	"targets": colIndex++,
-				 	    	  	"sortable": false,
 				 	    	  	"data": "description",
 				 	    	  	"render": function(data, type, workflow, meta) {
 				 	    	  		var result = "";
@@ -794,7 +800,6 @@ function RequirementWorkflow(){
 				 	    	  	}
 				 	        },{
 				 	    	  	"targets": colIndex++,
-				 	    	  	"sortable": false,
 				 	    	  	"data": "createdBy",
 				 	    	  	"render": function(data, type, workflow, meta) {
 				 	    	  		var result = "";
@@ -905,4 +910,70 @@ function RequirementWorkflow(){
 				 }
 				 }
 				 
+				 this.validateWorkflowName = function(workflowUuid){
+					 var workFlowName = $("#workFlowName").val();
+					 if(workFlowName != null)
+					 $.ajax({
+						 type: "GET",
+						 url : sourceleadUrl+"/validateWorkflowName?workflowUuid="+workflowUuid+"&workFlowName="+workFlowName,
+						 success:function(dataList){
+							 if (dataList.response =="true") {
+				                    if ($('#workflowNameDiv').find('p.jquery_form_error_message').length === 0)
+				                        $("#workFlowName").after("<p class='jquery_form_error_message'>" + workFlowName + " Already Exists</span>");
+				                    $("#saveReqWorkFlow").attr("disabled", "disabled");
+				                } else {
+				                    $('#workflowNameDiv').find('p.jquery_form_error_message').remove();
+				                    $("#saveReqWorkFlow").removeAttr("disabled");
+				                }
+						 }
+					 })
+					 
+				 }
+				 
+				 this.validateWorkflowStageName = function(workflowUuid){
+					 var stageName = $("#stageName").val();
+					
+					 if(stageName != null && stageName.length > 0){
+					 $.ajax({
+						 type: "GET",
+						 url : sourceleadUrl+"/validateWorkflowStageName?workflowUuid="+workflowUuid+"&stageName="+stageName+"&currentStageUuid="+currentStageUuid,
+						 success:function(dataList){
+							 
+							 if (dataList.response =="true" || dataList.response =="special") {
+								 $('#StageNameDiv').find('p.jquery_form_error_message').remove();
+								 if ($('#StageNameDiv').find('p.jquery_form_error_message').length === 0)
+				                 if(dataList.response =="true"){
+									 $("#stageName").after("<p class='jquery_form_error_message'>" + stageName + " Already Exists</span>");
+				                 }if(dataList.response =="special"){
+								 $("#stageName").after("<p class='jquery_form_error_message'> No Special Characters !</span>");
+				                 }
+				                    $("#saveStageButton").attr("disabled", "disabled");
+				                    $("#saveTaskButton").attr("disabled", "disabled");
+				                 }else {
+				                    $('#StageNameDiv').find('p.jquery_form_error_message').remove();
+				                    $("#saveStageButton").removeAttr("disabled");
+				                    $("#saveTaskButton").removeAttr("disabled");
+				                }
+						 }
+					 })
+					 }
+				 }
+				 
+				 this.selectChosenColumns = function(){
+					 $("ul#chosenColumnList > li input:checkbox").prop("checked",true);
+				 }
+				 
+				 this.resetChosenColumns = function(){
+					 $("ul#chosenColumnList > li input:checkbox").prop("checked",false);
+					$("#applicantname").prop("checked", true);
+					$("#applicantmailid").prop("checked", true);
+					$("#applicantphonenumber").prop("checked", true);
+				 }
+				 
+				 this.prepareChosenColumnList = function(chosenColumns){
+					var chosenColumnArr = chosenColumns.split(',');
+					for(var i = 0; i < chosenColumnArr.length; i++){
+						$("#"+chosenColumnArr[i].replace(/[^a-zA-Z]/g, "").toLowerCase()).prop("checked", true);
+					 }
+				 }
 }

@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +49,8 @@ public class RequirementWorkflowController {
 	@Autowired
 	private UserRoleService userRoleService;
 
+	private static final Logger logger = LoggerFactory.getLogger(RequirementWorkflowController.class);
+	
 	@RequestMapping(value = "/workflowDashboard")
 	public ModelAndView workflowDashboard(HttpServletRequest request) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
@@ -61,6 +65,7 @@ public class RequirementWorkflowController {
 		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		User user = new User();
 		user.setId(userId);
+		logger.debug("creating defalut workflow for the  orglocation id "+orgLocations.getId());
 		requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		modelandview.setViewName("workflow/defaultWorkflow");
 		return modelandview;
@@ -74,6 +79,7 @@ public class RequirementWorkflowController {
 		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		User user = new User();
 		user.setId(userId);
+		logger.debug("before saving default workflow for the orglocation id: >>> "+orgLocations.getId());
 		requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		return modelandview;
 	}
@@ -84,6 +90,7 @@ public class RequirementWorkflowController {
 		ModelAndView modelandview = new ModelAndView();
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
+		logger.debug("before calling deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId >>> "+orgLocations.getId());
 		requirementWorkFlowService.deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(requirementWorkFlowDTO.getUuid(), orgLocations.getId());
 		modelandview.setViewName("workflow/viewWorkflow");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
@@ -100,7 +107,7 @@ public class RequirementWorkflowController {
 		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		User user = new User();
 		user.setId(userId);
-		
+		logger.debug("inside add stage for the workflow >>> "+orgLocations.getId());
 		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
 		
 		modelandview.setViewName("workflow/addStage");
@@ -112,6 +119,7 @@ public class RequirementWorkflowController {
 	@RequestMapping(value = "/questionnaireList")
 	public ModelAndView goToquestionnaireList(HttpServletRequest request) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
+		logger.debug("inside goToquestionnaireList>>> ");
 		modelandview.setViewName("workflow/questionnaireList");
 		return modelandview;
 	}
@@ -124,7 +132,7 @@ public class RequirementWorkflowController {
 																	HttpServletRequest request) throws Exception{
 		 ResponseList<RequirementQuestionnaireTemplateDTO>responseList = null;
 		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
-		
+		logger.debug("inside getQuestionnaireList>>> "+orgLocationId);
 	try {
 			String[] tableColumns = { "name", "description", "createdBy"};
 		  	int sortColumnIndex = -1; 
@@ -142,11 +150,13 @@ public class RequirementWorkflowController {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+	   logger.debug("after getQuestionnaireList>>> "+orgLocationId);
 		return responseList;
 	}
 	@RequestMapping(value = "/addQuestionnaire")
 	public ModelAndView addQuestionnaire(HttpServletRequest request) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
+		logger.debug(" inside addQuestionnaire >>>>>>>>>>>>>");
 		modelandview.setViewName("workflow/addQuestionnaire");
 		return modelandview;
 	}
@@ -155,11 +165,13 @@ public class RequirementWorkflowController {
 		ModelAndView modelandview = new ModelAndView();
 		modelandview.addObject("templateUuid",templateUuid);
 		modelandview.setViewName("workflow/addQuestionnaire");
+		logger.debug("after editQuestionnaireList>>> ");
 		return modelandview;
 	}
 	 @RequestMapping(value = "/loadSavedQuestionnaireTemplate" , method = RequestMethod.GET)
 	   public @ResponseBody RequirementQuestionnaireTemplate loadSavedquestionnaireTemplate(@RequestParam(value="templateUuid", required=true) String templateUuid,HttpServletRequest request) throws Exception {
-		  RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
+		 logger.debug("inside loadSavedquestionnaireTemplate>>> templateUuid "+templateUuid);
+		 RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
 			return questionnaireTemplate;
 	    
 	   }
@@ -173,7 +185,7 @@ public class RequirementWorkflowController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 RequirementWorkFlow requirementWorkFlow = null;
-	
+		 logger.debug("inside saveWorkFlowDetailsPage>>> orgLocationid "+orgLocations.getId());
 		try {
 			if (user != null && Validator.validate(requirementWorkFlowDTO)) {
 				
@@ -192,7 +204,7 @@ public class RequirementWorkflowController {
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			e.printStackTrace();
 		}
-		
+		 logger.debug("after saveWorkFlowDetailsPage>>> orgLocationid "+orgLocations.getId());
 		return response;
 	}
 	
@@ -202,6 +214,7 @@ public class RequirementWorkflowController {
 		RequirementWorkFlowDTO workFlowDTO = null;
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		try {
+			 logger.debug("inside createRequirementDefaultWorkFlow>>> templateUuid "+orgLocations.getId());
 			workFlowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow(orgLocations);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -215,6 +228,7 @@ public class RequirementWorkflowController {
 		List<RequirementWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		try {
+			 logger.debug("inside createRequirementDefaultWorkFlowStages>>> orgLocationid "+orgLocations.getId());
 			requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages(orgLocations);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -231,23 +245,28 @@ public class RequirementWorkflowController {
 		ResponseList<RequirementWorkFlowDTO> responseList = new ResponseList<>();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 logger.debug("before getWorkflowList>>> orgLocationid "+orgLocations.getId());
 		try {
 			
 			String[] tableColumns = { "workFlowName", "noOfStages", "status"};
 		  	int sortColumnIndex = -1; 
 	  		String sortColumnOrder = "desc"; 
-	  		if (requirementWorkFlowDTO.getOrder() != null && !requirementWorkFlowDTO.getOrder().isEmpty()) {
+ 	  		if (requirementWorkFlowDTO.getOrder() != null && !requirementWorkFlowDTO.getOrder().isEmpty()) {
 	  		sortColumnIndex = Integer.parseInt(requirementWorkFlowDTO.getOrder().get(0).get("column"));
 	  		sortColumnOrder = requirementWorkFlowDTO.getOrder().get(0).get("dir"); 
-	  		requirementWorkFlowDTO.setSortOrder(sortColumnOrder);
 	  		}
-	  		if (sortColumnIndex != -1){
-	  			requirementWorkFlowDTO.setSortColumn(tableColumns[sortColumnIndex]);
-	  		}
+ 	  		    if (sortColumnIndex != -1) {
+ 	  			 requirementWorkFlowDTO.setSortOrder(sortColumnOrder);
+ 	  			  requirementWorkFlowDTO.setSortColumn(tableColumns[sortColumnIndex]);
+ 	  		    }
+	  		
+	  			
+	  			
 			responseList = requirementWorkFlowService.getRequirementWorkFlowList(requirementWorkFlowDTO, orgLocations);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+		 logger.debug("after getWorkflowList>>> orgLocationid "+orgLocations.getId());
 		return responseList;
 		
 	}
@@ -267,15 +286,15 @@ public class RequirementWorkflowController {
 		User user = new User();
 		user.setId(userId);
 		String result = null;
-
+		logger.debug("before saveQuestionnaireTemplate>>> orgLocationid "+orgLocations.getId());
 		String json1 = "{" + json + "}";
 		JSONObject jsonObj = new JSONObject(json1);
 
 		try {
 			RequirementQuestionnaireTemplate template = null;
-			templateId = ""; // as of now marked as empty value for testing.
 			if (StringUtils.isNotBlank(templateId)) {
 			//   template = performanceFeedbackTemplateService.getPerformanceFeedbackTemplateById(Long.parseLong(templateId));
+				template=requirementWorkFlowService.getQuestionnaireByTemplateId(Long.parseLong(templateId));
 			} else {
 				template = new RequirementQuestionnaireTemplate();
 				template.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -294,6 +313,7 @@ public class RequirementWorkflowController {
 			template.setUpdatedDate(new Date());
 		 	requirementWorkFlowService.saveQuestionnaireTemplate(template);
 			result = Result.SUCCESS.name();
+			logger.debug("after saveQuestionnaireTemplate>>> orgLocationid "+orgLocations.getId());
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -322,6 +342,7 @@ public class RequirementWorkflowController {
 		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");	
 		ResponseList<String> response = new ResponseList<String>();
+		logger.debug("before deleteQuestionnaireTemplateById>>> orgLocationid "+orgLocationId);
 		try {
 			if (templateUuid != null ) {
 				String resp = requirementWorkFlowService.deleteQuestionnaireTemplateById(templateUuid, orgLocationId);
@@ -339,42 +360,48 @@ public class RequirementWorkflowController {
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			e.printStackTrace();
 		}
-		
+		logger.debug("after deleteQuestionnaireTemplateById>>> orgLocationid "+orgLocationId);
 		return response;
 
 	}
 		
-		@RequestMapping(value = "/saveRequirementWorkflowStage")
-		public @ResponseBody Response<String> saveRequirementWorkflowStage(HttpServletRequest request,
-				RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO) {
-			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
-			Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-			User user = new User();
-			user.setId(userId);
-			Response<String> response = new Response<>();
-				try {
-					if (user != null && null != requirementWorkFlowStagesDTO) {
-						requirementWorkFlowService.saveRequirementWorkflowStageByWorkflowId(requirementWorkFlowStagesDTO, orgLocations, user);
-						response.setResponse(Result.SUCCESS.name());
-						response.setResponseMessage(Result.SUCCESS.getValue());
-					} else if(user == null) {
-						response.setResponse(Result.SESSION_TIMEDOUT.name());
-						response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+	@RequestMapping(value = "/saveRequirementWorkflowStage")
+	public @ResponseBody Response<String> saveRequirementWorkflowStage(HttpServletRequest request,
+			@RequestParam(value = "chosenColumnJson", required = false) String chosenColumnJson,
+			RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO) {
+		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
+		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		User user = new User();
+		user.setId(userId);
+		Response<String> response = new Response<>();
+		logger.debug("before saveRequirementWorkflowStage>>> orgLocationid "+orgLocations.getId());
+			try {
+				if (user != null && null != requirementWorkFlowStagesDTO) {
+					if(chosenColumnJson != null && StringUtils.isNotBlank(chosenColumnJson))
+					{
+						requirementWorkFlowStagesDTO.setChosenColumns(chosenColumnJson);
 					}
-					else {
-						response.setObject("DataMissing");
-						response.setResponse(Result.INVALID_DATA.name());
-						response.setResponseMessage(Result.INVALID_DATA.getValue());
-					}
-				
-					}catch (Exception e) {
-					e.printStackTrace();
-					response.setResponse(Result.AWKWARD.name());
-					response.setResponseMessage(Result.AWKWARD.getValue());
+					requirementWorkFlowService.saveRequirementWorkflowStageByWorkflowId(requirementWorkFlowStagesDTO, orgLocations, user);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else if(user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+				else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
 			
-			return response;
-		}
+				}catch (Exception e) {
+				e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			logger.debug("after saveRequirementWorkflowStage>>> orgLocationid "+orgLocations.getId());
+		return response;
+	}
 		
 		@RequestMapping(value = "/getRequirementWorkflowStage")
 		public @ResponseBody List<RequirementWorkFlowStagesDTO> getRequirementWorkflowStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
@@ -386,7 +413,7 @@ public class RequirementWorkflowController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
+			logger.debug("after getRequirementWorkflowStage>>> orgLocationid "+orgLocations.getId());
 			return requirementDefaultWorkFlowStagesDTO;
 		}
 		
@@ -396,7 +423,7 @@ public class RequirementWorkflowController {
 				HttpServletRequest request) throws Exception {
 		
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
-			
+			logger.debug("before deleteWorkflowStage>>> orgLocationid "+orgLocations.getId());
 			requirementWorkFlowService.deleteRequirementWorkFlowStagesByuuid(uuid, orgLocations);
 			
 			
@@ -408,6 +435,7 @@ public class RequirementWorkflowController {
 				requirementWorkFlowService.saveRequirementWorkFlowStages(stage);
 				
 			}
+			logger.debug("after  deleteWorkflowStage>>> orgLocationid "+orgLocations.getId());
 			return "success";
 		}
 		
@@ -415,12 +443,13 @@ public class RequirementWorkflowController {
 		public @ResponseBody List<RequirementQuestionnaireTemplateDTO> getRequirementQuestionnaireTemplates(HttpServletRequest request){
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			List<RequirementQuestionnaireTemplateDTO> requirementQuestionnaireTemplateDTO = null;
+			logger.debug("before getRequirementQuestionnaireTemplates>>> orgLocationid "+orgLocations.getId());
 			try {
 				requirementQuestionnaireTemplateDTO = requirementWorkFlowService.getRequirementQuestionnaireTemplates(orgLocations.getId());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
+			logger.debug("after getRequirementQuestionnaireTemplates>>> orgLocationid "+orgLocations.getId());
 			return requirementQuestionnaireTemplateDTO;
 		}
 		
@@ -434,6 +463,7 @@ public class RequirementWorkflowController {
 			Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 			User user = new User();
 			user.setId(userId);
+			logger.debug("before getWorkflowTaskList>>> orgLocationid "+orgLocations.getId());
 			try {
 				
 				String[] tableColumns = { "workFlowTaskName", "assignToUserId", "priority", "description"};
@@ -451,6 +481,7 @@ public class RequirementWorkflowController {
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
+			logger.debug("after getWorkflowTaskList>>> orgLocationid "+orgLocations.getId());
 			return responseList;
 		
 }
@@ -463,10 +494,12 @@ public class RequirementWorkflowController {
 			User user = new User();
 			user.setId(userId);
 			Boolean flag;
+			logger.debug("before deleteRequirementWorkflowStage>>> orgLocationid "+orgLocations.getId());
 			flag = requirementWorkFlowService.saveRequirementWorkFlowStagesBySeqOrder(requirementWorkFlowStagesDTO, orgLocations, user);
 			if(flag == true) {
 				return Constants.SUCCESS;
 			}
+			logger.debug("afer deleteRequirementWorkflowStage>>> orgLocationid "+orgLocations.getId());
 			return Constants.FAILED;
 		}
 
@@ -481,6 +514,7 @@ public class RequirementWorkflowController {
 			Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 			User user = new User();
 			user.setId(userId);		
+			logger.debug("before  saveWorkFlowDetails>>> orgLocationid "+orgLocations.getId());
 			try {
 				if (user != null && Validator.validate(requirementWorkFlowDTO)) {
 					
@@ -499,7 +533,7 @@ public class RequirementWorkflowController {
 				response.setResponseMessage(Result.AWKWARD.getValue());
 				e.printStackTrace();
 			}
-			
+			logger.debug("after  saveWorkFlowDetails>>> orgLocationid "+orgLocations.getId());
 			return response;
 		}
 		
@@ -512,7 +546,8 @@ public class RequirementWorkflowController {
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 			Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 			User user = new User();
-			user.setId(userId);		
+			user.setId(userId);	
+			logger.debug("before  cloneWorkFlowDetails>>> orgLocationid "+orgLocations.getId());
 			try {
 				if (user != null && Validator.validate(requirementWorkFlowDTO)) {
 					
@@ -531,7 +566,7 @@ public class RequirementWorkflowController {
 				response.setResponseMessage(Result.AWKWARD.getValue());
 				e.printStackTrace();
 			}
-			
+			logger.debug("after  cloneWorkFlowDetails>>> orgLocationid "+orgLocations.getId());
 			return response;
 		}
 		
@@ -539,6 +574,7 @@ public class RequirementWorkflowController {
 		public @ResponseBody String removeWorkFlowEntry(@RequestParam(value = "workflowuuid", required = false) String workflowuuid, HttpServletRequest request) throws Exception {
 			
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
+			logger.debug("inside  removeWorkFlowEntry>>> orgLocationid "+orgLocations.getId());
 			Boolean flag = requirementWorkFlowService.deleteApplicationWorkFlowByuuid(workflowuuid, orgLocations);
 			if(flag == true) {
 				return Constants.SUCCESS;
@@ -552,6 +588,7 @@ public class RequirementWorkflowController {
 		public @ResponseBody List<UserRoleDTO> getAllActiveUsersList(HttpServletRequest request){
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 			List<UserRoleDTO> userRoleListDTO = new ArrayList<>();
+			logger.debug("inside  getAllActiveUsersList>>> orgLocationid "+orgLocations.getId());
 			try {
 				List<UserRole> userRoleList = userRoleService.getAllActiveUsersListByOrgLocationId(orgLocations.getId());
 				
@@ -570,7 +607,7 @@ public class RequirementWorkflowController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
+			logger.debug("after  getAllActiveUsersList>>> orgLocationid "+orgLocations.getId());
 			return userRoleListDTO;
 		}
 		
@@ -583,6 +620,7 @@ public class RequirementWorkflowController {
 			user.setId(userId);
 			Response<String> response = new Response<>();
 			String Uuid;
+			logger.debug("inside  saveWorkflowTask>>> orgLocationid "+orgLocations.getId());
 			try {
 				if (user != null && Validator.validate(requirementWorkFlowTasksDTO)) {
 					Uuid = requirementWorkFlowService.saveRequirementWorkFlowTask(requirementWorkFlowTasksDTO, orgLocations, user);
@@ -600,6 +638,7 @@ public class RequirementWorkflowController {
 				response.setResponseMessage(Result.AWKWARD.getValue());
 				e.printStackTrace();
 			}
+			logger.debug("after  saveWorkflowTask>>> orgLocationid "+orgLocations.getId());
 			return response;
 			
 		}
@@ -612,7 +651,7 @@ public class RequirementWorkflowController {
 			RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO();
 			requirementWorkFlowDTO.setUuid(requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid());
 			requirementWorkFlowDTO.setCurrentStageUuid(requirementWorkFlowStagesDTO.getUuid().trim());
-			
+			logger.debug("before  editStage>>> orgLocationid "+orgLocations.getId());
 			RequirementWorkFlowStages stages = requirementWorkFlowService.getRequirementWorkFlowStageForEditStage(requirementWorkFlowStagesDTO, orgLocations);
 			
 			List<RequirementWorkFlowStagesDTO> stagesDTO = requirementWorkFlowService.getNextRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
@@ -620,10 +659,48 @@ public class RequirementWorkflowController {
 			modelandview.setViewName("workflow/addStage");
 			modelandview.addObject("stageName", stages.getStageName());
 			modelandview.addObject("description", stages.getDescription());
+			modelandview.addObject("commentRequired", stages.getCommentRequired());
+			modelandview.addObject("requiredList", stages.getRequiredStatsList());
+			modelandview.addObject("chosenColumns", stages.getChosenColumns());
 			modelandview.addObject("currentStageUuid", requirementWorkFlowStagesDTO.getUuid().trim());
 			modelandview.addObject("workflowUuid", requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid());
 			modelandview.addObject("requirementWorkFlowStagesDTO", stagesDTO);
+			logger.debug("after  editStage>>> orgLocationid "+orgLocations.getId());
 			return modelandview;
 		}
 		
+		@RequestMapping(value = "/validateWorkflowName")
+		@ResponseBody
+		public Response<Boolean> validateWorkflowName(
+				@RequestParam(value = "workFlowName", required = true)String workFlowName,
+				@RequestParam(value = "workflowUuid", required = false)String workflowUuid,
+				HttpServletRequest request) throws Exception{
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			Boolean flag ;
+			Response<Boolean> response = new Response<Boolean>();
+			logger.debug("before validateWorkflowName for "+orgLocationId+" orgLocation");
+			flag = requirementWorkFlowService.validateWorkflowName(orgLocationId, workFlowName, workflowUuid);
+			response.setResponse(flag.toString());
+			logger.debug("after validateWorkflowName for "+orgLocationId+" orgLocation");
+			return response;
+			
+		}
+		
+		@RequestMapping(value = "/validateWorkflowStageName")
+		@ResponseBody
+		public Response<String> validateWorkflowStageName(
+				@RequestParam(value = "stageName", required = true)String stageName,
+				@RequestParam(value = "workflowUuid", required = true)String workflowUuid,
+				@RequestParam(value = "currentStageUuid", required = false)String stageUuid,
+				HttpServletRequest request) throws Exception{
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			String flag ;
+			Response<String> response = new Response<String>();
+			logger.debug("before validateWorkflowStageName for "+orgLocationId+" orgLocation");
+			flag = requirementWorkFlowService.validateWorkflowStageName(orgLocationId, stageName, workflowUuid, stageUuid);
+			response.setResponse(flag);
+			logger.debug("after validateWorkflowStageName for "+orgLocationId+" orgLocation");
+			return response;
+			
+		}
 }
