@@ -341,8 +341,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, UserRole userRoles,OrgLocations orgLocations) throws Exception {
 //		 Set<Employees> employeeSet = userRoles.getUser().getEmployee();
 		 Employees employee = employeesService.getEmployeeByUserId(userRoles.getUser().getId());
-		 if(employee.getUser().getId() != null) {
-			 writeRow.createCell(0).setCellValue(employee.getUser().getId());
+		 if(employee.getEmployeeId() != null) {
+			 writeRow.createCell(0).setCellValue(employee.getEmployeeId());
 		 }
 		 
 		  if(employee.getHireDate() !=null){
