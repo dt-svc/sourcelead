@@ -170,7 +170,7 @@ function RequirementWorkflow(){
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
 	              		if(workflow.description != null && workflow.description != '' && workflow.description != "undefined"){
-	              			result = result +"<div class='tbldata-dotdot-vsm'>"+workflow.description+"</div>";
+	              			result = result +"<div class='tbldata-dotdot-vsm'><span title='"+workflow.description+"'>"+workflow.description+"</span></div>";
 	  	              	}else{
 	  	            	  		result = result +"<div>---</div>";
 	  	             	}
@@ -181,7 +181,7 @@ function RequirementWorkflow(){
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
 		    	  		if(workflow.noOfStages != null && workflow.noOfStages != '' && workflow.noOfStages != "undefined"){
-	              			result = result +"<div class='tbldata-dotdot-vsm'>"+workflow.noOfStages+"</div>";
+	              			result = result +"<div class='tbldata-dotdot-vsm'><span title='"+workflow.noOfStages+"'>"+workflow.noOfStages+"</span></div>";
 	  	              	}else{
 	  	            	  		result = result +"<div>---</div>";
 	  	             	}
@@ -194,10 +194,10 @@ function RequirementWorkflow(){
 		    	  		var result = "";
 		    	  		if(workflow.status != null && workflow.status !== '' && workflow.status != "undefined"){
 		    	  			if(workflow.status == 1){
-		    	  				result = result +"<div class='tbldata-dotdot-vsm'>Active</div>";
+		    	  				result = result +"<div class='tbldata-dotdot-vsm'title = 'Active'>Active</div>";
 		    	  			}	
 		    	  			else{
-		    	  				result = result +"<div class='tbldata-dotdot-vsm'>In-Active</div>";
+		    	  				result = result +"<div class='tbldata-dotdot-vsm' title = 'In-Active'>In-Active</div>";
 		    	  			}	
 		    	  		}else{
 	  	            	  		  result = result +"<div>---</div>"; 
@@ -241,7 +241,7 @@ function RequirementWorkflow(){
 
 	this.checkDefaultWorkflow = function(configureType, uuid, workFlowName){
 		var result = "";
-		result = result +"<div class='tbldata-dotdot-200'><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")' title='view'>"+workFlowName+"</a></div>";
+		result = result +"<div class='tbldata-dotdot-200'><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")' title="+workFlowName+">"+workFlowName+"</a></div>";
 		return result;
 	}
 
@@ -792,7 +792,7 @@ function RequirementWorkflow(){
 				 	    	  	"render": function(data, type, workflow, meta) {
 				 	    	  		var result = "";
 				               		if(workflow.name != null && workflow.name != '' && workflow.name != "undefined"){
-				               			result = result +"<div class ='tbldata-dotdot-me'>"+workflow.name+"</div>";
+				               			result = result +"<div class ='tbldata-dotdot-200'><span title='"+workflow.name+"'>"+workflow.name+"</span></div>";
 				   	              	}else{
 				   	            	  		result = result +"<div>---</div>";
 				   	             	}
@@ -804,7 +804,7 @@ function RequirementWorkflow(){
 				 	    	  	"render": function(data, type, workflow, meta) {
 				 	    	  		var result = "";
 				 	    	  		if(workflow.description != null && workflow.description != '' && workflow.description != "undefined"){
-				               			result = result +"<div class='tbldata-dotdot-verybig'>"+workflow.description+"</div>";
+				               			result = result +"<div class='tbldata-dotdot-200'><span title='"+workflow.description+"'>"+workflow.description+"</span></div>";
 				   	              	}else{
 				   	            	  		result = result +"<div>---</div>";
 				   	             	}
@@ -817,7 +817,7 @@ function RequirementWorkflow(){
 				 	    	  		var result = "";
 				 	    	  		var workflowStatus;
 				 	    	  		if(workflow.createdBy != null && workflow.createdBy != '' && workflow.createdBy != "undefined"){
-				               			result = result +"<div class='tbldata-dotdot-vsm'>"+workflow.createdBy+"</div>";
+				               			result = result +"<div class='tbldata-dotdot-vsm'><span title='"+workflow.createdBy+"'>"+workflow.createdBy+"</span></div>";
 				   	              	}else{
 				   	            	  		result = result +"<div>---</div>";
 				   	             	}
