@@ -3663,7 +3663,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		 StringBuilder excelSheet = new StringBuilder();
 		 Sheet createExcelsheet;		
-			 createExcelsheet = createExcelworkbook.createSheet(excelSheet.append("").append("Purchased Candidate").append(dateFormat.format(new Date())).toString());	 
+			 createExcelsheet = createExcelworkbook.createSheet(excelSheet.append("").append("Purchased Candidate").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), new Date())).toString());	 
 		
 		 
     	Row writeRow = null;
@@ -3697,8 +3697,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			else {
 				writeRow.createCell(0).setCellValue("--");
 			}
-			if(candidate.getOrderDate() !=null && !"".equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getOrderDate()))) {
-				writeRow.createCell(1).setCellValue(candidate.getOrderDate().toString());
+			if(candidate.getOrderDate() !=null) {
+				writeRow.createCell(1).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getOrderDate()));
 				}
 			else {
 				writeRow.createCell(1).setCellValue("--");
