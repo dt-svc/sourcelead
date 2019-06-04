@@ -385,6 +385,14 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		  return model;		
 	 }	
 
+	 @RequestMapping(value = "/immigrationReportsList")
+		public ModelAndView immigrationReportsList() throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/immigrationReportsList");
+		  return model;		
+	 }	
+	 
 	 /**
 	  * returns requirement assign to reports jsp page
 	  * @return ModelAndView

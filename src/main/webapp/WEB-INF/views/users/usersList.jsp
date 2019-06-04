@@ -325,6 +325,9 @@ function getUsersSearchResult(searchValue){
       
       <div class="positionRelative reportHead clearfix">
 <!--       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
+              <span class="pull-left refreIcon mb10">
+				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a>
+			  </span>
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
 		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
@@ -543,12 +546,16 @@ function myDepartmentFunction() {
         }
     }
 }
-
+function refreshPage(){
+	location.reload(); 
+}
 $(document).keyup(function(e) {
 	  if (e.keyCode === 27) {
 		  closePop();
 	  }
 	});
+	
+
 
 </script>
 

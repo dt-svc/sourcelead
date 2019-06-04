@@ -769,7 +769,12 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setCountry(orgLocations.getCountry());
 				candidate.setIsAssociate(Constants.YES);
 				candidate.setEmail(user.getEmail());
-				candidate.setDesignationType(userImport.getEmploymentType());
+				if(StringUtils.isNotBlank(userImport.getDesignationType())) {
+					candidate.setDesignationType(userImport.getDesignationType());
+				}else {
+					candidate.setDesignationType(userImport.getEmploymentType());
+				}
+				
 				candidate.setStatus(Constants.RECORD_ACTIVE);
 				candidate.setWorkLocation(orgLocations);
 				candidate.setCreatedBy(user.getUserCode());
@@ -819,7 +824,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		    	 }
 		    	 
 		    	 candidate.setParentCandidateId(vendorCandidate);
-		    	 candidate.setDesignationType(userImport.getEmploymentType());
+		    	 if(StringUtils.isNotBlank(userImport.getDesignationType())) {
+						candidate.setDesignationType(userImport.getDesignationType());
+					}else {
+						candidate.setDesignationType(userImport.getEmploymentType());
+					}
 		    	 candidate.setOrgRelationId(orgRelations);
 		    	 candidate.setSpocId(orgspoc);
 		    }
@@ -1982,8 +1991,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 		}
 		
-		if("C2C".equalsIgnoreCase(userImport.getEmploymentType())) {
-			Map<String,Long> vendors = getVendorAndVendorContacts(userImport.getEmploymentType(), userImport.getVendor(), userImport.getVendorContact(), orgLocations.getId());
+		if("C2C".equalsIgnoreCase(userImport.getDesignationType())) {
+			Map<String,Long> vendors = getVendorAndVendorContacts(userImport.getDesignationType(), userImport.getVendors(), userImport.getVendorcontact(), orgLocations.getId());
 			if(vendors != null) {
 				orgRelation = orgRelationsService.getOrRelationsById(vendors.get("vendorId"));
 				employee.setOrgRelationId(orgRelation);

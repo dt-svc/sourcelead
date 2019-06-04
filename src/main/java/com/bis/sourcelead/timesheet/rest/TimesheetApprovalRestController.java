@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -152,13 +153,6 @@ public class TimesheetApprovalRestController {
 				    }
 			     }
 			}
-			
-			
-			 
-			/*if(StringUtils.isNotEmpty(timesheetApprovalDTO.getWeekFrequency())){
-				timesheetApprovalDTO.setWeekFrequency("");
-			 }*/
-			
 			LinkedHashSet<String> timesheetFrequencyList = new LinkedHashSet<>();
 			timesheetFrequencyList.add("Weekly");
 			timesheetFrequencyList.add("Bi-Weekly");
@@ -341,9 +335,9 @@ public class TimesheetApprovalRestController {
 		{
 			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			 List<ProjectClients> projectClientList = projectClientService.getProjectClientsListByLoginUserAndOrgLocationId(orgLocations.getId(), user.getId());
-	 		 Map<Long,String> clientMap = new HashMap<>();
-	 		 clientMap.put(null, "All");
+			 String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+			 List<ProjectClients> projectClientList = projectClientService.getProjectClientsListByLoginUserAndOrgLocationIdForTimesheetApproval(orgLocations.getId(), user.getId(),isGlobalUser);
+			 Map<Long,String> clientMap = new HashMap<>();
 	                if(projectClientList != null && !projectClientList.isEmpty()){
 	                	    projectClientList.forEach(projectClient ->{
 	               	        	if(projectClient.getOrgRelationId() != null && projectClient.getOrgRelationId().getLocationId() != null && projectClient.getOrgRelationId().getLocationId().getId() != null && projectClient.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
@@ -357,16 +351,22 @@ public class TimesheetApprovalRestController {
 	        						}
 	        					}
 	               	        });
+	                	    
+	                	    if(clientMap != null && !clientMap.isEmpty()) {
+	                	    	 clientMap.put(null, "All");
+	                	    }
 	                	    timesheetApprovalDTO.setClientList(clientMap);
 	                	    
 								
 	               }
-	                Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+	               /* Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 					String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
-					 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-	                List<Projects> projectsList =projectsDao.getProjectsListByUserIdAndOrgLocationIdAndStatus(user.getId(), orgLocations.getId(), orgLocations.getOrg().getId(), candidateId, userRole, isGlobalAccess);
-	               LinkedHashMap<Long,String> projectMap = new LinkedHashMap<>();
-	   	 		   projectMap.put(null, "All");
+					 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");*/
+					 List<Projects> projectsList = new ArrayList<>();
+					 if(projectClientList != null && !projectClientList.isEmpty()) {
+						 projectsList =  projectClientList.stream().map(client->client.getProjectId()).collect(Collectors.toList());
+					 }
+	                LinkedHashMap<Long,String> projectMap = new LinkedHashMap<>();
 	                if(projectsList != null && !projectsList.isEmpty()){
 	                	projectsList.forEach(project ->{
 	                		projectMap.put(project.getId(), project.getProjectName());
@@ -427,9 +427,6 @@ public class TimesheetApprovalRestController {
 			return timesheetApprovalDTO;
 		}
 		
-		
-		
-		
 		@RequestMapping(value = "/timesheetEmployeeSubmissionDetails", method = RequestMethod.POST ) 
 		public ModelAndView timesheetEmployeeSubmissionDetailsWeb(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
@@ -438,6 +435,22 @@ public class TimesheetApprovalRestController {
 				 if(orgLocations == null && StringUtils.isNotEmpty(timesheetApprovalDTO.getLocationCode())){
 					orgLocations = orgLocationService.getOrgLocationsByLocationCode(timesheetApprovalDTO.getLocationCode());
 				 }
+				 
+				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				 String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+				 List<ProjectClients> projectClientList = projectClientService.getProjectClientsListByLoginUserAndOrgLocationIdForTimesheetApproval(orgLocations.getId(), user.getId(),isGlobalUser);
+				 List<Projects> projectsList = new ArrayList<>();
+				 if(projectClientList != null && !projectClientList.isEmpty()) {
+					 projectsList =  projectClientList.stream().map(client->client.getProjectId()).collect(Collectors.toList());
+				 }
+                LinkedHashMap<Long,String> projectMap = new LinkedHashMap<>();
+   	 		    projectMap.put(null, "All");
+                if(projectsList != null && !projectsList.isEmpty()){
+                	projectsList.forEach(project ->{
+                		projectMap.put(project.getId(), project.getProjectName());
+                	});
+                	timesheetApprovalDTO.setProjectList(projectMap);
+                }
 				timesheetApprovalDTO = dataTableWeekDateList(request, timesheetApprovalDTO,orgLocations);
 				timesheetApprovalDTO = timesheetEmployeeSubmissionDetails(request,timesheetApprovalDTO);
 				model.addObject("timesheetApproval", timesheetApprovalDTO);
@@ -466,9 +479,6 @@ public class TimesheetApprovalRestController {
 			OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(timesheetApprovalDTO.getLocationCode());
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
-			
-			//orgLocations = null;
-			//user = null;
 			
 			Date actualStartDate=null;
 		    Date actualEndDate=null;
@@ -499,7 +509,6 @@ public class TimesheetApprovalRestController {
 					 timesheetApprovalDTO.setPageCount(pageCount);
 				 }
 			}
-			
 	        if(projectMembers.getData() != null && !projectMembers.getData().isEmpty()){
 	        	int tdSpanLength = 6;
 	        	List<TimesheetApprovalSubmissionDetailsDTO> subDetails = new ArrayList<>();
@@ -512,6 +521,7 @@ public class TimesheetApprovalRestController {
 	       }
 	        return timesheetApprovalDTO;
 	   }
+		
 		
 	@RequestMapping(value = "/timesheetApprovalRowDetails", method = RequestMethod.POST ) 
 	public ModelAndView timesheetApprovalRowDetailsWeb(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
@@ -675,20 +685,10 @@ public class TimesheetApprovalRestController {
 			     }
 			     if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.REJECTED){
 			          	 ts.setRejectedReason(sah.getRejectedReason());
-			          	 if(sah.getActionPerformedByOrgLocationId() != null) {
-			          		 OrgLocations orglocation = orgLocationService.getOrgLocations(sah.getActionPerformedByOrgLocationId());
-			          		ts.setActionPerformedBy(orglocation.getOrgLocationName());
-			          	 }else {
-			          		ts.setActionPerformedBy(sah.getActionPerformedBy());
-			          	 }
+			          	 ts.setActionPerformedBy(sah.getActionPerformedBy());
 			     }
 			     if(sah.getSubmissionApprovalStatus() == Submission_ApprovalStatus.APPROVED){
-			    	 if(sah.getActionPerformedByOrgLocationId() != null) {
-		          		 OrgLocations orglocation = orgLocationService.getOrgLocations(sah.getActionPerformedByOrgLocationId());
-		          		 	ts.setActionPerformedBy(orglocation.getOrgLocationName());
-		          	 }else {
-			   	            ts.setActionPerformedBy(sah.getActionPerformedBy());
-		          	 }
+			    	 ts.setActionPerformedBy(sah.getActionPerformedBy());
 			     }  
 		     return ts;
        }
@@ -708,50 +708,50 @@ public class TimesheetApprovalRestController {
 			return model;
 			
 		}
+		public TimesheetApprovalDTO getTimesheetListByStatus(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception{
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+			String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+       	    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+       	    int start = timesheetApprovalDTO.getStart();
+			int length = 0;
+			if(timesheetApprovalDTO.getPageNo()<1) {
+				timesheetApprovalDTO.setPageNo(1);
+			}
+			if(timesheetApprovalDTO.getPageSize()<1) {
+				length = 10;
+				timesheetApprovalDTO.setPageSize(10);
+			}else {
+				length = timesheetApprovalDTO.getPageSize();
+			}
+		    ResponseList<SubmissionApproverHierarchy> list  =	submissionApproverHierarchyService.getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(user.getId(), loginOrgLocations.getId(), timesheetApprovalDTO.getDashboardTimeStatus(), userRole,timesheetApprovalDTO.getSearchValue(),start,length,isGlobalAccess);
+		    int tdSpanLength = 8;
+		    if(list != null && !list.getData().isEmpty())
+		    {
+		    	timesheetApprovalDTO.setTotalRows(list.getRecordsTotal());
+		    	List<TimesheetApprovalSubmissionDetailsDTO> subDetails = new ArrayList<>();
+		    	for(SubmissionApproverHierarchy submissionApproverHierarchy:list.getData()) {
+		    	 Date actualStartDate =submissionApproverHierarchy.getFrequencyStartDate();
+		    	 Date actualEndDate =submissionApproverHierarchy.getFrequencyEndDate();
+		    	 if(actualStartDate != null && actualEndDate != null){
+			    	 timesheetApprovalDTO.setFrequencyStartDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate));
+					 timesheetApprovalDTO.setFrequencyEndDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
+			    	 timesheetApprovalDTO = dataTableWeekDateList(request, timesheetApprovalDTO,loginOrgLocations);
+					 ProjectMembers projectMember = projectMembersService.getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getMasterCandidateId().getId(),submissionApproverHierarchy.getSubmissionId().getProjectMembers().getProjects().getId(),loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),isGlobalAccess);
+					 TimesheetApprovalSubmissionDetailsDTO timeSub = getTimesheetApprovalRowDetails(timesheetApprovalDTO, projectMember, loginOrgLocations, actualStartDate, actualEndDate, user, tdSpanLength,isGlobalAccess);
+					  timeSub.setDashboardInvoiceFrequency(projectMember.getProjects().getInvoiceFrequency());
+					  timeSub.setCurrentTimeFrequency(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)+"To"+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
+					  timeSub.setDashboardDateList(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)+" To "+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
+					  timeSub.setTableFor("dashboard");
+			          subDetails.add(timeSub);
+		 		    }
+		    	 	timesheetApprovalDTO.setTimesheetSubmission(subDetails);
+		 		   }
+		 		     	
+		 		 }
+			     return timesheetApprovalDTO;
+	}
 	
 		
-		public TimesheetApprovalDTO getTimesheetListByStatus(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception{
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
-				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-	       	    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-	       	    int start = timesheetApprovalDTO.getStart();
-				int length = 0;
-				if(timesheetApprovalDTO.getPageNo()<1) {
-					timesheetApprovalDTO.setPageNo(1);
-				}
-				if(timesheetApprovalDTO.getPageSize()<1) {
-					length = 10;
-					timesheetApprovalDTO.setPageSize(10);
-				}else {
-					length = timesheetApprovalDTO.getPageSize();
-				}
-			    ResponseList<SubmissionApproverHierarchy> list  =	submissionApproverHierarchyService.getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(user.getId(), loginOrgLocations.getId(), timesheetApprovalDTO.getDashboardTimeStatus(), userRole,timesheetApprovalDTO.getSearchValue(),start,length,isGlobalAccess);
-			    int tdSpanLength = 8;
-			    if(list != null && !list.getData().isEmpty())
-			    {
-			    	timesheetApprovalDTO.setTotalRows(list.getRecordsTotal());
-			    	List<TimesheetApprovalSubmissionDetailsDTO> subDetails = new ArrayList<>();
-			    	for(SubmissionApproverHierarchy submissionApproverHierarchy:list.getData()) {
-			    	 Date actualStartDate =submissionApproverHierarchy.getFrequencyStartDate();
-			    	 Date actualEndDate =submissionApproverHierarchy.getFrequencyEndDate();
-			    	 if(actualStartDate != null && actualEndDate != null){
-				    	 timesheetApprovalDTO.setFrequencyStartDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate));
-						 timesheetApprovalDTO.setFrequencyEndDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
-				    	 timesheetApprovalDTO = dataTableWeekDateList(request, timesheetApprovalDTO,loginOrgLocations);
-						 ProjectMembers projectMember = projectMembersService.getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getMasterCandidateId().getId(),submissionApproverHierarchy.getSubmissionId().getProjectMembers().getProjects().getId(),loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),isGlobalAccess);
-						 TimesheetApprovalSubmissionDetailsDTO timeSub = getTimesheetApprovalRowDetails(timesheetApprovalDTO, projectMember, loginOrgLocations, actualStartDate, actualEndDate, user, tdSpanLength,isGlobalAccess);
-						  timeSub.setDashboardInvoiceFrequency(projectMember.getProjects().getInvoiceFrequency());
-						  timeSub.setCurrentTimeFrequency(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)+"To"+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
-						  timeSub.setDashboardDateList(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)+" To "+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
-						  timeSub.setTableFor("dashboard");
-				          subDetails.add(timeSub);
-			 		    }
-			    	 	timesheetApprovalDTO.setTimesheetSubmission(subDetails);
-			 		   }
-			 		     	
-			 		 }
-				     return timesheetApprovalDTO;
-		}
 }

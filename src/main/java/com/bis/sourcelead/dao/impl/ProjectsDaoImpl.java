@@ -1773,14 +1773,24 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 			 * queryObj.setString("fromDate", fromDate); queryObj.setString("toDate",
 			 * toDate);
 			 */
-
-			return queryObj.list();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+		
+		
+		/*java.sql.Date fromDate = new java.sql.Date(availableAssociatesDTO.getFromDate().getTime());
+		java.sql.Date toDate = new java.sql.Date(availableAssociatesDTO.getToDate().getTime());*/
+		
+		Query queryObj = session.createQuery(query);
+//		queryObj.setLong("orgLocations", orgLocations.getId());
+		/*queryObj.setString("fromDate", fromDate);
+		queryObj.setString("toDate", toDate);*/
+		
+		
+		return queryObj.list();
+	} catch (Exception e) {
+		e.printStackTrace();
 	}
-
+	return null;
+	
+}
 	@Override
 	@Transactional
 	public List<Projects> getProjectsListByCanddateIdAndOrgId(String associatesId, Long orglocationId) {

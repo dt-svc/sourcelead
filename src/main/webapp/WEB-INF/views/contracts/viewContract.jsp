@@ -6,17 +6,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
 
-<style type="text/css">
-.chosen-container {
-    width: 100% !important;        
-}
-
-.fullWid {width: 100% !important;}
-.viewontracts .tab-content {
-background-color: #fff;
-}
-</style>
-
 <script type="text/javascript">
 $(document).ready(function(){
 	getContractTagsList();
@@ -55,7 +44,7 @@ $(document).ready(function(){
 		   <li id="candDetailView" onclick="addContractNotes();"><a data-toggle="tab" href="#notes" >Notes</a></li>
 		 </ul>
 		
-		 <div class="tab-content">
+		 <div class="tab-content backgroundWhite">
 		   <div id="contractDetails" class="tab-pane fade in active">
 		   
 		        <div id="loading"></div>
@@ -569,7 +558,7 @@ function displyContract(stage){
 			
 			if(null != json.initiatorType && "Client" == json.initiatorType && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
 				'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\',\'ROLE_VIEW_EDIT_VENDOR\')">';
 				result = result +	'		<div class="col-md-8 col-sm-8">: <a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+json.orgRelationUUID+'" title="'+json.contractWith+'">'+json.contractWith+'</a></div>';
 				'</sec:authorize>';
@@ -583,7 +572,7 @@ function displyContract(stage){
 			
 			if(null != json.initiatorType && "Vendor" == json.initiatorType && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
 				'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
 				result = result +	'		<div class="col-md-8 col-sm-8">: <a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+json.contractWith+'"> '+json.contractWith+'</a></div>';
 				'</sec:authorize>';

@@ -2395,7 +2395,6 @@ public class UsersListRestController {
 			candidate.setGender(addUserDTO.getGender());
 			candidate.setMobilePhone(addUserDTO.getPhoneNumber());
 			candidate.setMaritalStatus(addUserDTO.getMaritalStatus());
-			
 			if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
 			   candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
 			   candidate.setResidenceCountry(addUserDTO.getResidenceCountry());
@@ -2434,9 +2433,22 @@ public class UsersListRestController {
 			if(StringUtils.isNotBlank(addUserDTO.getAadharNumber())){
 				   candidate.setAadharNumber(addUserDTO.getAadharNumber());
 			}
-			   
+			if(StringUtils.isNotBlank(addUserDTO.getSsn())){  
+			candidate.setSsnNumber(addUserDTO.getSsn());
+			}
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			
+			//For offshoreC2C candidates
+			if(candidate != null && candidate.getWorkLocation() != null) {
+				List<Candidate> candidatesList = candidateService.getCandidatesForUpdateWorkLocation(candidate.getMasterCandidateId().getId(), orgLocations.getOrg().getId());
+				if(candidatesList != null && !candidatesList.isEmpty()) {
+					for(Candidate offshoreCandiate : candidatesList) {
+						offshoreCandiate.setWorkLocation(candidate.getWorkLocation());
+						candidateService.saveOrUpdateCandidate(offshoreCandiate);
+					}
+				}
+			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getVendors())){
 				if(currentVendorOrgRelation == null || (currentVendorOrgRelation != null && !currentVendorOrgRelation.getId().equals(orgRelation.getId()))) {

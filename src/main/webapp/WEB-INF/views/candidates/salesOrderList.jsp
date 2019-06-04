@@ -59,7 +59,7 @@
 									title="Excel">Export Excel</a> </span>
 							</div></li>
 						<li class="noMar"><input class="repSearchBar"
-							placeholder="Search" id="searchByValue" type="text" value="">
+							placeholder="Order No" id="searchByValue" type="text" value="">
 							<span class="repSearchIcon" onclick="getDynamicSalesOrderList();"></span>
 
 						</li>
@@ -254,8 +254,8 @@
 	            { "data": "orderNo" },
 	            { "data": "orderDate"},
 	            { "data": "companyName"},
-	            { "data": "noOfResumes" },
-	            { "data": "totalResumePrice" },
+	            { "data": "totalResume" },
+	            { "data": "totalPrice" },
 	            { "data": "paymentStatus"},
 	        ],
 	    
@@ -408,8 +408,11 @@
 	function goToWalletList(){
 	    location.href = "${appPath}/walletList";
 	}
-	function refreshPage(){
-		location.reload();
+ 	function refreshPage(){
+		resetSalesOrderFilter();
+		$("#searchByValue").val('');
+		getDynamicSalesOrderList();
+		
 	}
   </script>
 <script>

@@ -11,8 +11,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -850,11 +854,25 @@ public class RequirementRestController {
 	 	if(loginUser != null) {
 			try {
 
-			    // This is made static as requirment action id is 146
-				
 				List<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
+				List<User> assignedUserList = new CopyOnWriteArrayList<>();
+		    	  HashMap<Long,User> userMap = new HashMap<>();
+				    if(usersList != null && usersList.size() > 0) {
+				    	for(User assignedUser : usersList) {
+				    		
+				    		User tempUser = userMap.get(assignedUser.getId());
+				    		if(tempUser == null) {
+				    			userMap.put(assignedUser.getId(),assignedUser);
+					    		assignedUserList.add(assignedUser);
+				    		}else {
+				    			assignedUserList.remove(assignedUser);
+								continue;
+				    		}
+				    		
+				    	}
+				    }
 				
-				response.setData(usersList);
+				response.setData(assignedUserList);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch (Exception e) {
@@ -1367,6 +1385,8 @@ public class RequirementRestController {
 	public @ResponseBody Response<String> submitRecommendationCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId, 
 			@RequestParam(value = "candidateIds", required = false) String candidateIds,
 			@RequestParam(value = "candidateResume", required = false) String candidateResume,
+			@RequestParam(value = "N", required = false) String needApplicantPermit,
+			@RequestParam(value = "N", required = false) String notifyToApplicant,
 			HttpServletRequest request)throws Exception {
 		Response<String> response = new Response<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1509,6 +1529,13 @@ public class RequirementRestController {
 									array.put(ectcItem);
 								}
 								
+								if(needApplicantPermit != null && !needApplicantPermit.isEmpty() && needApplicantPermit.equalsIgnoreCase("Y")) {
+									labelItems.put("needApplicantPermit", "Y");
+								}
+								
+								if(notifyToApplicant != null && !notifyToApplicant.isEmpty() && notifyToApplicant.equalsIgnoreCase("Y")) {
+									labelItems.put("notifyToApplicant", "Y");
+								}
 								
 								String con = array.toString();
 								RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(labelItems,loginUser, orgLocation, con, loginUserRole);
@@ -1735,5 +1762,19 @@ public class RequirementRestController {
 		}
 		return null;
 	}
+	
+	@RequestMapping(value = "/updateApplicantSourceMember", method = RequestMethod.POST)
+		public String updateApplicantSourceMember(@RequestParam(value = "reqId", required = false) String reqId, HttpServletRequest request) throws Exception {
+		String resultJson = null;
+			List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(reqId));
+			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
+				requirementAssignTo.setAssignedUserName(requirementAssignTo.getAssignUserId().getFullName());
+				requirementAssignTo.setAssignedUserIdTemp(requirementAssignTo.getAssignUserId().getId());
+			}
+			
+			resultJson = toJSON(requirementAssignToList);
+			return resultJson;
+	
+		}
 	
 }

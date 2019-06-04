@@ -54,7 +54,7 @@
 </script>
 
 <style>
-body {
+/* body {
 background-color:#e1e6fa;
 }
 .project_wrap_table table {
@@ -64,7 +64,7 @@ background-color:#e1e6fa;
 }
 .project_wrap_table table tr td:last-child {
 width: auto;
-}
+} */
 </style>
 <body>
 <div class="wraper"> 

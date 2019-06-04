@@ -6,6 +6,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<link href="/resources/css/bootstrap-colorpicker.min.css" rel="stylesheet">
 
 <style type="text/css">
 .selectChosen .chosen-container {
@@ -2161,7 +2162,7 @@ function loadSignature(){
 					for (var i=0; i<=json.signatureList.length; i++)
  					{
 						var opt = json.signatureList[i];
-						//$('#cp'+opt.id+'').colorpicker();
+						$('#cp'+opt.id+'').colorpicker();
  					}
 					
 					
@@ -2179,9 +2180,7 @@ function resetDocument(){
 function resetEmailConfguration(){
 	//$("email_configuration_form").validate().resetForm();
 }
-function colourpicker(){
-	//$('#cp2, #cp3').colorpicker();
-}
+
 </script>
 
 
@@ -4120,6 +4119,7 @@ function loadEmailConfig(){
 }
 
 </script> -->
+<script src="/resources/js/bootstrap-colorpicker.min.js"></script>
 
 <jsp:include page="masterFooter.jsp" />
 

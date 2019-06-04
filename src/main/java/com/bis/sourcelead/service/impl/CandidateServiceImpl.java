@@ -410,12 +410,12 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setGeneratedId(getCandidateId(orgLocations));
 		}
         
-		if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+		if("India".equalsIgnoreCase(orgLocations.getCountry())) {
 			candidate.setAadharNumber(candidateDto.getAadharNumber());
 			candidate.setPanNumber(candidateDto.getPanNumber());
 			}
 		
-		if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
+		if("United States".equalsIgnoreCase(orgLocations.getCountry())) {
 			candidate.setSsnNumber(candidateDto.getSsnNumber());;
 			}
 		candidate = getCandidateDetails(candidate, candidateDto, user, orgLocations, activitySummary);
@@ -1761,6 +1761,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 							vendorCandidate.setOrgLocationId(orgLocations);
 							vendorCandidate.setIsAssociate(Constants.YES);
 							vendorCandidate.setDesignationType("Offshore C2C");
+							vendorCandidate.setGeneratedId(getCandidateId(orgLocations));
 							
 							if(associateDTO.getBillRate() != null){
 								vendorCandidate.setCurrentRate(associateDTO.getBillRate().toString());
@@ -1913,21 +1914,23 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}
 		}
 		
-		if (null != candidateDTO.getDesignationType()) {
-			if(candidateDTO.getDesignationType().equalsIgnoreCase("W2")) {
+		if (null != candidateDTO.getEmploymentType()) {
+			if(candidateDTO.getEmploymentType().equalsIgnoreCase("W2")) {
 				candidateDTO.setDesignationType("W-2");
 			}
 			
-			else if(!candidateDTO.getDesignationType().equalsIgnoreCase("C2C") && 
-					!candidateDTO.getDesignationType().equalsIgnoreCase("C2C-1099") &&
-					!candidateDTO.getDesignationType().equalsIgnoreCase("W-2") && 
-					!candidateDTO.getDesignationType().equalsIgnoreCase("C2H") && 
-					!candidateDTO.getDesignationType().equalsIgnoreCase("C2H -1099") &&
-					!candidateDTO.getDesignationType().equalsIgnoreCase("Part Time") && 
-					!candidateDTO.getDesignationType().equalsIgnoreCase("Full Time") && 
-					!candidateDTO.getDesignationType().equalsIgnoreCase("Off Shore")) {
+			else if(!candidateDTO.getEmploymentType().equalsIgnoreCase("C2C") && 
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("C2C-1099") &&
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("W-2") && 
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("C2H") && 
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("C2H -1099") &&
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("Part Time") && 
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("Full Time") && 
+					!candidateDTO.getEmploymentType().equalsIgnoreCase("Off Shore")) {
 				
 				candidateDTO.setDesignationType("C2C");
+			}else{
+				candidateDTO.setDesignationType(candidateDTO.getEmploymentType());
 			}
 		}
 		
@@ -2070,6 +2073,18 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		candidate.setIsFavourite(0);
 		candidate.setIsFavouriteAssociate(0);
+		
+		if(StringUtils.isNotBlank(candidateDTO.getAadharNumber())) {
+			candidate.setAadharNumber(candidateDTO.getAadharNumber());
+			}
+		
+		if(StringUtils.isNotBlank(candidateDTO.getPanNumber())) {
+			candidate.setPanNumber(candidateDTO.getPanNumber());
+			}
+		
+		if(StringUtils.isNotBlank(candidateDTO.getSsnNumber())) {
+			candidate.setSsnNumber(candidateDTO.getSsnNumber());
+			}
 		
 		MasterCandidate masterCandidate = null;
 		masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
@@ -2946,6 +2961,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		List<CandidateEmployers> candidateEmployers = candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
 		List<CandidateEmployerDTO> candidateEmployerDTOs = new ArrayList<>();
+		
 		for(CandidateEmployers employers : candidateEmployers){
 			CandidateEmployerDTO employerDTO = new CandidateEmployerDTO();
 			BeanUtils.copyProperties(employers, employerDTO);
@@ -2957,12 +2973,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				String[] endMonth = employers.getEndMonth().split("&");
 				employerDTO.setEndMonth(endMonth[1]);
 			}
-			if(employers.getIsCurrentPosition().equalsIgnoreCase("Y")){
+			if(employers.getIsCurrentPosition() != null && employers.getIsCurrentPosition().equalsIgnoreCase("Y")){
 				employerDTO.setEndMonth("Present");
 				employerDTO.setEndYear("");
 			}
 			candidateEmployerDTOs.add(employerDTO);
 		}
+		
 		marketPlaceDTO.setCandidateEmployers(candidateEmployerDTOs);
 		List<CandidateEducation> educations = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(marketPlace.getCandidateId().getId(), marketPlace.getOrgLocationId().getId());
 		List<CandidateEducationDTO> educationDTOs = new ArrayList<>();
@@ -3141,7 +3158,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	
 	@Override
 	public ResponseList<MarketplacePurchaseSalesDTO> getMarketplacePurchaseOrder(OrgLocations orgLocations,
-			MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO, String purchaseOrderFromDate,
+			MarketplacePurchaseSalesDTO marketplacePurchaseSalesDTO,  String searchValue,String purchaseOrderFromDate,
 			String purchaseOrderToDate, String purchaseOrderFilterDate) throws Exception {
 		Date today = new Date();
 		Date formattedDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), today);
@@ -3198,7 +3215,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			dateValue.put("fromDate", toDateVal);
 			dateValue.put("toDate", fromDateVal);
 		}
-		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO, purchaseOrderFromDate, purchaseOrderToDate,dateValue);
+		ResponseList<MarketplacePurchaseSalesDTO> responseList = candidateDao.getMarketplacePurchaseOrder(orgLocations.getId(), marketplacePurchaseSalesDTO,orgLocations, searchValue, purchaseOrderFromDate, purchaseOrderToDate,dateValue);
 		return responseList;
 	}
 
@@ -3521,6 +3538,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
 		return candidateDao.getCandidateDetailsBySsnNoAndId(ssnNumber, orgLocationId);
 	}
+	
+	@Override
+	public List<Candidate> getCandidatesForUpdateWorkLocation(Long masterCandidateId, Long orgId) throws Exception {
+		return candidateDao.getCandidatesForUpdateWorkLocation(masterCandidateId, orgId);
+	}
 
 	@Override
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception {
@@ -3531,6 +3553,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
 		return candidateDao.getCandidateDateOfBirthByUserId(userId, orgLocation);
 	}
+
+	@Override
+	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId, Long masterCandidateId)
+			throws Exception {
+		return candidateDao.getConsultantUserByCandidateIdOrMasterCandidateId(candidateId, masterCandidateId);
+	}
+
 	
 	
 }
