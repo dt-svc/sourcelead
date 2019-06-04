@@ -57,7 +57,7 @@
         
         <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
         <div class="col-md-12 clearfix">
-        <div class="well positionRelative">
+        <div class="well positionRelative errorInptgroup">
           <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
             <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
               <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
@@ -69,11 +69,11 @@
          </div>
           </div>
         </div>
-        <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
-        <div class="form-group">
+           
+            <div class="form-group">
 						<label class="col-md-3">Source</label>
 						<div class="col-md-9">
-							<select class="sel form-control" name="candidateSource" field-name="Source" id="candidateSource" data-validation="required">
+							<select class="width100percnt selectpicker" data-live-search="true" name="candidateSource" field-name="Source" id="candidateSource" data-validation="validate_Space" data-validation-optional="true">
 								<option value="">Select Source</option>
 							<c:forEach items="${sourceCandidateList}" var="candidateSource">
 								<option value="${candidateSource.id}" >${candidateSource.name}</option>
@@ -81,6 +81,7 @@
 							</select>
 						</div>
 				</div>
+				
         <div class="form-group">
           <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
@@ -1084,4 +1085,7 @@ $('#ssnNumber').mask('000-00-0000', {
     },
    placeholder: ""
 });
+
+$('#candidateSource').selectpicker('refresh');
+
 </script>

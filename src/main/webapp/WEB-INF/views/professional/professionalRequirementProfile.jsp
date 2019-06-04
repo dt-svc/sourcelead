@@ -4,20 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
- <style type="text/css">
- .require_wrap_details_cta b {
-    width: 150px;
-}
-.require_wrap_details.require_textarea textarea {
-height: 225px;
-}
-.profile_details h4 {width: 68%;}
-ul.can-perdt li span { max-width: 80%;}
-ul.can-perdt li {
-clear:both;
-}
- </style>
-
 <script>
 $(document).ready(function() {
 	 var requirementUUID = '${requirementUUID}'; 
@@ -156,7 +142,7 @@ function requirementProfile(requirementUUID){
 
 		    	result = result +'	<div class="timesheet_out">';
 				 result = result +'    <div class="clients_side_wrap_inn no_pad">';
-				 result = result +'      <div class="profile_details requirement_details requirement_details_a clearfix">';
+				 result = result +'      <div class="profile_details profile_detailsh4 requirement_details requirement_details_a clearfix">';
 				
 				 
 				 if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType != 'Other'){
@@ -193,7 +179,7 @@ function requirementProfile(requirementUUID){
 				 result = result +'                <div class="canDetails clearfix">';
 				 result = result +'                  <div class="row">';
 				 result = result +'                    <div class="col-md-12">';
-				 result = result +'                      <ul class="list-unstyled can-perdt">';
+				 result = result +'                      <ul class="list-unstyled can-perdt canPerdt">';
 				 
 				 result = result +'                        <li><i class="fa fa-building" title="Company"></i><span>'+json.postedOrgName+'</span></li>';
 				 if((json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && (json.minExp != null) && json.minExp != '' && json.minExp != 'undefined')){
@@ -319,13 +305,13 @@ function requirementDetails(requirementUUID){
 				 result = result +'              <div class="RDdetails">'+description+'</div>';
 				 result = result +'              <h2>Other details:</h2>';
 				 result = result +'              <div class="require_one">';
-				 result = result +'                <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+positions+'</span>';
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>No. of positions:</b> <span>'+positions+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Education:</b> <span title="'+education+'">'+education+'</span>';
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Education:</b> <span title="'+education+'">'+education+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Industry:</b> <span title="'+industryName+'">'+industryName+'</span>';
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Industry:</b> <span title="'+industryName+'">'+industryName+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 
@@ -372,65 +358,65 @@ function requirementDetails(requirementUUID){
 				
 				 
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt ml10" href=\"'+json.fileURL+'\"></a><a class="fa fa-eye ml10" onClick="viewFile(\''+json.fileURL+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"></a> ';
+		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile require_wrap_details_ctaB150"><b>Attachment:</b><span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt ml10" href=\"'+json.fileURL+'\"></a><a class="fa fa-eye ml10" onClick="viewFile(\''+json.fileURL+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"></a> ';
 		            	result = result +'                  <div class="clearfix"></div>';
 						 result = result +'                </div>';   
 				 }
 		            else{
-		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';
+		            result = result +'<div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Attachment:</b> <span> -- </span>';
 		            result = result +'                  <div class="clearfix"></div>';
 					 result = result +'                </div>';
 		            }
 				 if(json.visaType != null && json.visaType != '' && json.visaType != 'undefined')
 					{
-					 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+json.visaType+'">'+json.visaType+'</span>';
+					 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Immigration Type:</b> <span title="'+json.visaType+'">'+json.visaType+'</span>';
 					 result = result +'                  <div class="clearfix"></div>';
 					 result = result +'                </div>';
 					}
 				 else{
-					 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="--">--</span>';
+					 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Immigration Type:</b> <span title="--">--</span>';
 					 result = result +'                  <div class="clearfix"></div>';
 					 result = result +'                </div>';
 				 }
 				  
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Medical Clearence:</b> <span title="'+medicalClearence+'">'+medicalClearence+'</span>';
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Medical Clearence:</b> <span title="'+medicalClearence+'">'+medicalClearence+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 					 
 				 
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Security Clearance:</b> <span title="'+securityClearance+'">'+securityClearance+'</span>';
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Security Clearance:</b> <span title="'+securityClearance+'">'+securityClearance+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 					 
 				 
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Over Time:</b> <span title="'+overTime+'">'+overTime+'</span>';
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Over Time:</b> <span title="'+overTime+'">'+overTime+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 					 
 				 
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Background Check:</b> <span title="'+backgroundCheck+'">'+backgroundCheck+'</span>';
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Background Check:</b> <span title="'+backgroundCheck+'">'+backgroundCheck+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 					 
 				 if(json.gender != null && json.gender != '' && json.gender != 'undefined')
 					{
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Gender:</b> <span title="'+json.gender+'">'+json.gender+'</span>';
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Gender:</b> <span title="'+json.gender+'">'+json.gender+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 					}
 				 else{
-					 result = result +'                <div class="require_wrap_details_cta"> <b>Gender:</b> <span title="--">--</span>';
+					 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Gender:</b> <span title="--">--</span>';
 					 result = result +'                  <div class="clearfix"></div>';
 					 result = result +'                </div>'; 
 				 }
 				 if(json.experienceLevel != null && json.experienceLevel != '' && json.experienceLevel != 'undefined')
 					{
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Experience Level:</b> <span title="'+json.experienceLevel.name+'">'+json.experienceLevel.name+'</span>';
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Experience Level:</b> <span title="'+json.experienceLevel.name+'">'+json.experienceLevel.name+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 					}
 				 else{
-					 result = result +'                <div class="require_wrap_details_cta"> <b>Experience Level:</b> <span title="--">--</span>';
+					 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Experience Level:</b> <span title="--">--</span>';
 					 result = result +'                  <div class="clearfix"></div>';
 					 result = result +'                </div>'; 
 				 }
