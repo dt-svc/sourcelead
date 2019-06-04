@@ -16,18 +16,6 @@
 <script src="/resources/js/amcharts.js"></script> 
 <script src="/resources/js/serial.js"></script> 
 
-<style>
-#billing_chartdiv {
-  	width:100%; height:300px;
-}	
-.borderYellow {
-border-color: #FFFF00;
-}				
-.borderOrange {
-border-color: rgb(255, 102, 0);
-}													
-</style>
-
 <script> 
 $(document).ready(function(){
 	var invoiceTYpe = "Receivable";
@@ -126,7 +114,7 @@ $(document).ready(function(){
               <div class="col-md-9 RepoPad">
 		<div class="project_side_wrap_inn_tabs">
           <div class="clearfix">
-            <div id="billing_chartdiv">
+            <div id="billing_chartdiv" class="billing_chartdiv">
             
             <!-- <div id="tab-1" class="project_tabs_inn datatable_filter">
             </div> -->
