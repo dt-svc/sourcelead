@@ -730,7 +730,6 @@ function RequirementWorkflow(){
 						
 						if ($('#addTaskForm').validate(false, validationSettings)) {
 							  var formData = getFormData("addTaskForm");
-							console.log(formData);
 						$.ajax({
 							type : "POST",
 							data : formData,
