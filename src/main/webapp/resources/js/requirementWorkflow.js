@@ -170,7 +170,7 @@ function RequirementWorkflow(){
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
 	              		if(workflow.description != null && workflow.description != '' && workflow.description != "undefined"){
-	              			result = result +"<div class='tbldata-dotdot-200'><span title='"+workflow.description+"'>"+workflow.description+"</span></div>";
+	              			result = result +"<div class='tbldata-dotdot-vsm'><span title='"+workflow.description+"'>"+workflow.description+"</span></div>";
 	  	              	}else{
 	  	            	  		result = result +"<div>---</div>";
 	  	             	}
@@ -194,7 +194,7 @@ function RequirementWorkflow(){
 		    	  		var result = "";
 		    	  		if(workflow.status != null && workflow.status !== '' && workflow.status != "undefined"){
 		    	  			if(workflow.status == 1){
-		    	  				result = result +"<div class='tbldata-dotdot-vsm' title = 'Active'>Active</div>";
+		    	  				result = result +"<div class='tbldata-dotdot-vsm'title = 'Active'>Active</div>";
 		    	  			}	
 		    	  			else{
 		    	  				result = result +"<div class='tbldata-dotdot-vsm' title = 'In-Active'>In-Active</div>";
@@ -817,7 +817,7 @@ function RequirementWorkflow(){
 				 	    	  		var result = "";
 				 	    	  		var workflowStatus;
 				 	    	  		if(workflow.createdBy != null && workflow.createdBy != '' && workflow.createdBy != "undefined"){
-				               			result = result +"<div class='tbldata-dotdot-vms'><span title='"+workflow.createdBy+"'>"+workflow.createdBy+"</span></div>";
+				               			result = result +"<div class='tbldata-dotdot-vsm'><span title='"+workflow.createdBy+"'>"+workflow.createdBy+"</span></div>";
 				   	              	}else{
 				   	            	  		result = result +"<div>---</div>";
 				   	             	}
