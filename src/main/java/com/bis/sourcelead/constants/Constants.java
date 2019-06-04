@@ -127,6 +127,7 @@ public class Constants {
 
 	
 	public static final String DEFAULT = "Default";
+	public static final String ON = "on";
 	public static final String ONBOARD_DOCUMENT_BUSNIESS_LICENSE = "Business License";
 	public static final String BANK_CHEQUE = "Bank Cheque";
 	public static final String REGISTRATION_OR_INCORPORATION_OF_RECORDING = "Registration or Incorporation of recording";
