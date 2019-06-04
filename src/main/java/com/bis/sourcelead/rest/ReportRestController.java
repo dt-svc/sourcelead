@@ -66,6 +66,7 @@ import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
@@ -2654,59 +2655,6 @@ public class ReportRestController {
 	return list;
 
 	}
-			
-	@RequestMapping(value = "/prepareReport")
-	public ResponseList<AvailableAssociatesDTO> prepareReport(AvailableAssociatesDTO availableAssociatesDTO,
-			HttpServletRequest request, HttpServletResponse response) {
-		ResponseList<AvailableAssociatesDTO> responseList = new ResponseList<>();
-		try {
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			responseList.setData(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
-			responseList.setResponse(Result.SUCCESS.name());
-			responseList.setResponseMessage(Result.SUCCESS.getValue());
-		} catch (Exception e) {
-			responseList.setResponse(Result.AWKWARD.name());
-			responseList.setResponse(Result.AWKWARD.getValue());
-			e.printStackTrace();
-		}
-		return responseList;
-	}
-		
-	@ResponseBody
-	@RequestMapping(value = "/availableAssociatereportExport")
-	public File availableAssociatereportForExport(HttpServletRequest request, HttpServletResponse response, AvailableAssociatesDTO availableAssociatesDTO) throws Exception {
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<AvailableAssociatesDTO> reportList = new ResponseList<>();
-		File file = null;
-		reportList.setData(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
-		if (reportList.getData() != null && !reportList.getData().isEmpty()) {
-
-			if (availableAssociatesDTO.getType().equalsIgnoreCase("pdf")) {
-				file = pdfUtil.availableAssociatereportReportListOfPdf(reportList.getData(), user, orgLocations);
-			} else {
-				file = projectsService.availableAssociatereportReportListOfExcel(reportList.getData(), user, orgLocations);
-			}
-		}
-		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
-		}
-		response.setContentType(mimeType);
-		StringBuilder fileName = new StringBuilder();
-		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
-		response.setContentLength((int) file.length());
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
-		inputStream.close();
-		response.getOutputStream().close();
-		response.getOutputStream().flush();
-		if (file != null) {
-			file.delete();
-		}
-		return file;
-
-	}
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/offerAcceptanceRateListForVendor")
@@ -2750,6 +2698,67 @@ public class ReportRestController {
 		
 		return assLoanList;
 	}
+	
+
+
+	@RequestMapping(value = "/prepareReport")
+	public Response<Map<String, List<AvailableAssociatesDTO>>> prepareReport(
+			AvailableAssociatesDTO availableAssociatesDTO, HttpServletRequest request) {
+		Response<Map<String, List<AvailableAssociatesDTO>>> response = new Response<>();
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			response.setObject(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponse(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		return response;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/availableAssociatereportExport")
+	public File availableAssociatereportForExport(HttpServletRequest request, HttpServletResponse response,
+			AvailableAssociatesDTO availableAssociatesDTO) throws Exception {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		Response<Map<String, List<AvailableAssociatesDTO>>> res = new Response<>();
+		File file = null;
+		res.setObject(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
+		if (res.getObject() != null && !res.getObject().isEmpty()) {
+
+			if (availableAssociatesDTO.getType().equalsIgnoreCase("pdf")) {
+				// file = pdfUtil.availableAssociatereportReportListOfPdf(res.getObject(), user,
+				// orgLocations);
+			} else {
+				file = projectsService.availableAssociatereportReportListOfExcel(res.getObject(), user, orgLocations);
+			}
+		}
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileName = new StringBuilder();
+		response.setHeader("Content-Disposition",
+				fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+		if (file != null) {
+			file.delete();
+		}
+		return file;
+
+	}
+
 	
 	
 }
