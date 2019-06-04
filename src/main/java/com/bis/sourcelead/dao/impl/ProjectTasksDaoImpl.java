@@ -702,5 +702,22 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		response.setData(projectTasksList);
 		return response;
 	}
-	 
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectTasks getTasksById(Long projectsTaskId)
+	{
+		ProjectTasks projectTasks = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from ProjectTasks pt where pt.projectsTaskId = :projectsTaskId ";
+			List<ProjectTasks> projectTasksList = session.createQuery(query.toString()).setLong("projectsTaskId", projectsTaskId).list();
+			if (projectTasksList != null && projectTasksList.size() > 0) {
+				projectTasks = projectTasksList.get(0);
+			}
+		} catch (Exception e) {
+		}
+		return projectTasks;
+	}
 }

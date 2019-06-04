@@ -86,6 +86,7 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 			template.setEmployeeType(null);
 		}
 		
+		template.setIsSelfReviewRequired(performanceAppraisalTemplateDTO.getIsSelfAppraisalRequired());
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getSelfAppraisalStartDate())) {
 			template.setSelfAppraisalStartDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getSelfAppraisalStartDate()));
 		}else {
@@ -98,6 +99,7 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 			template.setSelfAppraisalEndDate(null);
 		}
 		
+		template.setIsReportingManagerReviewRequired(performanceAppraisalTemplateDTO.getIsReportingManagerAppraisalRequired());
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalApprovingStartDate())) {
 			template.setApprovingFromStartDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getAppraisalApprovingStartDate()));
 		}else {
@@ -120,6 +122,34 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 			template.setProcessPeriodEndDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getAppraisalProcessEndDate()));
 		}else {
 			template.setProcessPeriodEndDate(null);
+		}
+		
+		template.setIsResourceManagerReviewRequried(performanceAppraisalTemplateDTO.getIsResourceManagerAppraisalRequired());
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getResourceManagerReviewStartDate())) {
+			template.setResourceManagerReviewStartDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getResourceManagerReviewStartDate()));
+		}else {
+			template.setResourceManagerReviewStartDate(null);
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getResourceManagerReviewEndDate())) {
+			template.setResourceManagerReviewEndDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getResourceManagerReviewEndDate()));
+		}else {
+			template.setResourceManagerReviewEndDate(null);
+		}
+		
+		template.setIsPeerReviewRequried(performanceAppraisalTemplateDTO.getIsPeerReviewRequired());
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getPeerReviewStartDate())) {
+			template.setPeerReviewStartDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getPeerReviewStartDate()));
+		}else {
+			template.setPeerReviewStartDate(null);
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getPeerReviewEndDate())) {
+			template.setPeerReviewEndDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getPeerReviewEndDate()));
+		}else {
+			template.setPeerReviewEndDate(null);
 		}
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getDescriptionDisplay())) {
@@ -174,6 +204,8 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 			   templateDTO.setAppraisalEmpType(template.getEmployeeType());
 		   }
 		   
+		   templateDTO.setIsSelfAppraisalRequired(template.getIsSelfReviewRequired());
+		   
 		   if(StringUtils.isNotBlank(template.getSelfAppraisalStartDateStr())) {
 			   templateDTO.setSelfAppraisalStartDate(template.getSelfAppraisalStartDateStr());
 		   }
@@ -181,6 +213,8 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		   if(StringUtils.isNotBlank(template.getSelfAppraisalEndDateStr())) {
 			   templateDTO.setSelfAppraisalEndDate(template.getSelfAppraisalStartDateStr());
 		   }
+		   
+		   templateDTO.setIsReportingManagerAppraisalRequired(template.getIsReportingManagerReviewRequired());
 		   
 		   if(StringUtils.isNotBlank(template.getApprovingFromStartDateStr())) {
 			   templateDTO.setAppraisalApprovingStartDate(template.getApprovingFromStartDateStr());
@@ -197,6 +231,26 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		   
 		   if(StringUtils.isNotBlank(template.getProcessPeriodEndDateStr())) {
 			   templateDTO.setAppraisalProcessEndDate(template.getProcessPeriodEndDateStr());
+		   }
+		   
+		   templateDTO.setIsPeerReviewRequired(template.getIsPeerReviewRequried());
+		   
+		   if(StringUtils.isNotBlank(template.getPeerReviewStartDateStr())) {
+			   templateDTO.setPeerReviewStartDate(template.getPeerReviewStartDateStr());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getPeerReviewEndDateStr())) {
+			   templateDTO.setPeerReviewEndDate(template.getPeerReviewEndDateStr());
+		   }
+		   
+		   templateDTO.setIsResourceManagerAppraisalRequired(template.getIsResourceManagerReviewRequried());
+		   
+		   if(StringUtils.isNotBlank(template.getResourceManagerReviewStartDateStr())) {
+			   templateDTO.setResourceManagerReviewStartDate(template.getResourceManagerReviewStartDateStr());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getResourceManagerReviewEndDateStr())) {
+			   templateDTO.setResourceManagerReviewEndDate(template.getResourceManagerReviewEndDateStr());
 		   }
 		   
 		   if(StringUtils.isNotBlank(template.getDescriptionDisplay())) {
