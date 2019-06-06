@@ -51,7 +51,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.util.SourceleadResumeParser;
+import com.bis.sourcelead.util.SourceleadResumeParserNew;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -116,7 +116,7 @@ public class AssociatesRestController {
 	RequirementOfferHistoryService requirementOfferHistoryService; 
 	
 	@Autowired
-	private SourceleadResumeParser sourceleadResumeParser;
+	private SourceleadResumeParserNew sourceleadResumeParser;
 	
     @Autowired
     private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
