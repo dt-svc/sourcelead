@@ -210,7 +210,7 @@ public class MailBoxController {
 	
 	
 	@PreAuthorize("hasRole('ROLE_MAIL_BOX')")
-	@RequestMapping(value = "/ats/forwardEmail")
+	@RequestMapping(value = "/forwardEmail")
  	public ModelAndView forwardEmail(HttpServletRequest request,@RequestParam(value="UUID", required=false) String UUID,
  			@RequestParam(value="mailType", required=false) String mailType) {
 		    ModelAndView model = new ModelAndView();
