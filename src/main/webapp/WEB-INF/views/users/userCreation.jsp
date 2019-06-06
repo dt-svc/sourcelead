@@ -42,13 +42,6 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			 </c:forEach>
 	});
 </script>
-<style type="text/css">
-.ratetype p {
-    left: 0 !important;
-    position: absolute;
-    bottom: -14px;
-}
-</style>
   <!-- Content Area -->
   <section class="content-wraper contentWraper">
         <section class="content-header clearfix">
@@ -344,7 +337,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                <div class="form-group">
                   <label class="col-md-3">Department <span class="text-danger">*</span></label>
                   <div class="col-md-9 chooRadius" id="chosen-role">
-                   <div class="input-group col-md-10 pull-left">
+                   <div class="input-group col-md-10 pull-left errorInptgroup">
                          <select class="form-control chosen-select" id="department" name="department" field-name="Department" onchange="getReportingManager()" data-validation="required" >
 			              </select>
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="getDepartmentsList();"><i class="fa fa-refresh "></i></span>
@@ -489,7 +482,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                  <div class="form-group">
                      <label class="col-md-3">Rate</label>
                      <div class="col-md-9">
-                         <div class="input-group er ratetype">
+                         <div class="input-group er ratetype ratetype-error-styles">
 							<div class="input-group-btn tblminwidth-75 displyBlock">
 							 <select class="selectpicker" id="currentCurrency" name="currentCurrency">
 								<option ${currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
@@ -688,7 +681,7 @@ function calculateSSNLength(length,ssnNumber){
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: atsUrl+"/validateSSNDuplicate?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber+"&userId="+associateId, 
+		    	url: atsUrl+"/validateSsnNumber?ssnNumber="+ssnNumber+"&candidateId="+associateId, 
 		        success: function(data) {
 		        	if(data == true){
 		        		  $('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
