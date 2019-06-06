@@ -64,6 +64,23 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private List<DepartmentDTO> departmentList;
 	
+	private String isSelfAppraisalRequired;
+	
+	private String isReportingManagerAppraisalRequired;
+	
+	private String isResourceManagerAppraisalRequired;
+	
+	private String isPeerReviewRequired;
+	
+	private String peerReviewStartDate;
+	
+	private String peerReviewEndDate;
+	
+	private String resourceManagerReviewStartDate;
+	
+	private String resourceManagerReviewEndDate;
+	
+	
 	
 	public Long getAppraisalTemplateId() {
 		return appraisalTemplateId;
@@ -257,7 +274,69 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 		this.comptencyCategories = comptencyCategories;
 	}
 
-	
+	public String getIsSelfAppraisalRequired() {
+		return isSelfAppraisalRequired;
+	}
+
+	public void setIsSelfAppraisalRequired(String isSelfAppraisalRequired) {
+		this.isSelfAppraisalRequired = isSelfAppraisalRequired;
+	}
+
+	public String getIsReportingManagerAppraisalRequired() {
+		return isReportingManagerAppraisalRequired;
+	}
+
+	public void setIsReportingManagerAppraisalRequired(String isReportingManagerAppraisalRequired) {
+		this.isReportingManagerAppraisalRequired = isReportingManagerAppraisalRequired;
+	}
+
+	public String getIsResourceManagerAppraisalRequired() {
+		return isResourceManagerAppraisalRequired;
+	}
+
+	public void setIsResourceManagerAppraisalRequired(String isResourceManagerAppraisalRequired) {
+		this.isResourceManagerAppraisalRequired = isResourceManagerAppraisalRequired;
+	}
+
+	public String getIsPeerReviewRequired() {
+		return isPeerReviewRequired;
+	}
+
+	public void setIsPeerReviewRequired(String isPeerReviewRequired) {
+		this.isPeerReviewRequired = isPeerReviewRequired;
+	}
+
+	public String getPeerReviewStartDate() {
+		return peerReviewStartDate;
+	}
+
+	public void setPeerReviewStartDate(String peerReviewStartDate) {
+		this.peerReviewStartDate = peerReviewStartDate;
+	}
+
+	public String getPeerReviewEndDate() {
+		return peerReviewEndDate;
+	}
+
+	public void setPeerReviewEndDate(String peerReviewEndDate) {
+		this.peerReviewEndDate = peerReviewEndDate;
+	}
+
+	public String getResourceManagerReviewStartDate() {
+		return resourceManagerReviewStartDate;
+	}
+
+	public void setResourceManagerReviewStartDate(String resourceManagerReviewStartDate) {
+		this.resourceManagerReviewStartDate = resourceManagerReviewStartDate;
+	}
+
+	public String getResourceManagerReviewEndDate() {
+		return resourceManagerReviewEndDate;
+	}
+
+	public void setResourceManagerReviewEndDate(String resourceManagerReviewEndDate) {
+		this.resourceManagerReviewEndDate = resourceManagerReviewEndDate;
+	}
 
 	
 }
