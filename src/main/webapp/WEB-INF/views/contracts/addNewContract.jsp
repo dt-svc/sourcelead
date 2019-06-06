@@ -538,7 +538,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
              <div  class="clearfix"></div>
           <div class="form-group row" id="parallelAppDiv" style="display:block">
               <label class="col-md-4">Signing Authority<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8 chosenmbNone">
                   <select multiple class="chosen-select form-control" id="parallelOwner" name="parallelOwner" data-placeholder="Select signing authority" data-validation="required" field-name="Owner">
                   <%-- <c:forEach var="user" items="${userList}">
 	                  <c:if test = "${!empty contract.parallelOwnerId}">
