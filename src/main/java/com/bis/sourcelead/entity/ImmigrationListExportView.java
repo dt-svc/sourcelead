@@ -122,6 +122,9 @@ public class ImmigrationListExportView implements Serializable {
 	@Column(name = "LCA_RATE")
 	private String lcaRate;
 	
+	@Column(name = "LCA_TITLE")
+	private String lcaTitle;
+	
 	@Column(name = "EMPLOYER_LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String employerLocation;
 	
@@ -598,5 +601,12 @@ public class ImmigrationListExportView implements Serializable {
 		this.visaStatus = visaStatus;
 	}
 
+	public String getLcaTitle() {
+		return lcaTitle;
+	}
+
+	public void setLcaTitle(String lcaTitle) {
+		this.lcaTitle = lcaTitle;
+	}
 
 }

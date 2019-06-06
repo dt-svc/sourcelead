@@ -17,23 +17,8 @@
 <script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
 
 <style type="text/css">
-.add_inter table tr td {
- vertical-align: middle;
-}
-.timesheet_week_comm {
-float: none !important; width: auto;
-}
-.timesheet_week_comm.mail-attach table tr {
-width: 100%;
-}
-.timesheet_week_comm span input, .commentFile span input {
-width: 80%;
-}
-ul.tagit li.tagit-choice .tagit-close .text-icon {
-visibility: hidden;
-}
-ul.tagit li.tagit-choice .tagit-close:before {
-content:"x"; z-index: 999; position: absolute; right: 0; top: -5px; color: red;
+ul.tagit li.tagit-choice .tagit-close .text-icon { visibility: hidden; }
+ul.tagit li.tagit-choice .tagit-close:before { content:"x"; z-index: 999; position: absolute; right: 0; top: -5px; color: red;
 }
 </style>
 <script>
@@ -438,7 +423,7 @@ function addEmailtemplate(requirementId){
 						result = result +'			</div>';
 						result = result +'			 <div class="clearfix mb12" id="uploadResumeDiv">';
 						result = result +'                 <div class="col-md-9">';
-						result = result +'						<div class="timesheet_week_comm mail-attach" id="uploadFileGroup">';
+						result = result +'						<div class="timesheet_week_comm mail-attach timesheet_week_comm_div" id="uploadFileGroup">';
 						result = result +'	                          <table class="timesheetAttachment" id="attachmentTable">';
 						result = result +'							  <tr id="divAttachmentTsRow0">';
 						result = result +'							  		<td>';

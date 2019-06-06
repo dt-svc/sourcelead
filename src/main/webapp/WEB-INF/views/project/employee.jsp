@@ -7,33 +7,6 @@
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
-<style type="text/css">
-.side-bar-active .subMenu{
-    display: none;
-}
-.side-bar-active .fa-fw {
-  position: absolute !important; right: 0 !important;
-}
-.countShow {
-display: none;  border: none; min-width: 10px; text-align: center; cursor: pointer; max-width: 25px;
-margin-top: 0; 
-}
-.remove_user_pop.remove_user_pop_a {
-top:20% !important;
-left: 115px !important;
-}
-.prRight.prRight_new {
-    right: 280px; top: 40px;
-}
-</style>
- <style type="text/css">
- table#assignEmployeePagination tr th {
- width:auto !important; height: auto; line-height: auto; vertical-align: middle; text-align:center;
- }
- #assignEmployeePagination_wrapper .dataTables_filter {
- 	top:75px !important;
- }
- </style>
            
 <div class="side_mask">
     <div class="proj_close"></div>

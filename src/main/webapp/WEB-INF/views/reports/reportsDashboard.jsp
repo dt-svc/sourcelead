@@ -206,7 +206,7 @@
                 <sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
 				<li><a href="${appPath}/pendingForApprovalReport">Pending for Approval</a></li>
 				</sec:authorize>
-				
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/pendingForExpenseApprovalReport">Pending for Approval Expenses</a></li>
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
 				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
 				</sec:authorize>
@@ -356,7 +356,7 @@
 				</ul>
 			</div>
                  <!-- Dropdown -->
-                  <a href="${appPath}/petitionReport" class="block">
+                  <a href="${appPath}/immigrationReportsList" class="block">
                   <div class="clearfix text-center mb10"><i class="petitionReport"></i></div>
                   <div class="clearfix text-center"><h4>Immigration Reports</h4></div> </a>
 
