@@ -2134,7 +2134,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	List<Object[]> list = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
 	return list;
 	}
-	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectClientId(Long masterCandidateId, Long projectClientsId)

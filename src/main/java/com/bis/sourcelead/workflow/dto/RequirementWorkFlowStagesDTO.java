@@ -40,6 +40,10 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 	
 	private String commentRequired;
 	
+	private String requiredStatsList;
+	
+	private String chosenColumns ;
+	
 	public long getId() {
 		return id;
 	}
@@ -176,5 +180,21 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 		this.commentRequired = commentRequired;
 	}
 
+	public String getRequiredStatsList() {
+		return requiredStatsList;
+	}
 
+	public void setRequiredStatsList(String requiredStatsList) {
+		this.requiredStatsList = requiredStatsList;
+	}
+
+	public String getChosenColumns() {
+		return chosenColumns;
+	}
+
+	public void setChosenColumns(String chosenColumns) {
+		this.chosenColumns = chosenColumns;
+	}
+
+	
 }
