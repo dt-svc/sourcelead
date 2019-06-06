@@ -679,7 +679,7 @@ function calculateSSNLength(length,ssnNumber){
          //$("#create_user" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateSSNDuplicate?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber+"&userId="+associateId, 
+		        url: sourceleadUrl+"/validateSsnNumber?ssnNumber="+ssnNumber+"&candidateId="+associateId, 
 		        success: function(data) {
 		        	if(data == true){
 		        		  $('#ssnNumberDiv').find('p.jquery_form_error_message').remove();
