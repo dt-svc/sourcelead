@@ -23,7 +23,9 @@ public class Constants {
 	public static final String[] FONT_FAMILY = { "Arial", "Comisc", "Comic Sans MS", "Courier New",
 			"Georgia", "Monotype", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana",
 			"Impace" };
-	public static final String[] AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS = {"Employee Name", "Project Name", "Project Duration","Associate Duration", "Availability %","No.of Hours",};
+	public static final String[] AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS = { "Project Name", "Project Duration","Associate Duration", "Availability %","No.of Hours",};
+	
+	public static final String[] EXPENSE_PENDING_APPROVAL_REPORT_EXPORT_HEADDERS = { "Emp_ID", "Emp_Name","Emp_Type", "Project","Duration","Approval Mechanism","Manager1","Manager2","Submitted Amount","Submitted on","Approved By"};
 	
 	public static final String[] FONT_SIZE = { "8px", "9px", "10px", "11px", "12px", "13px", "14px",
 			"15px", "16px", "17px", "18px", "19px", "20px", "21px", "221px", "23px", "24px" };
@@ -730,7 +732,7 @@ public class Constants {
 
 	public static final String[] IMMIGRATION_LIST_EXCEL_HEADERS = { "ID", "Country", "Beneficiary First Name", "Beneficiary Last Name", "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number", "I-20 SEVIS Number If Student", "EAD Number If Student",
 			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Visa Status", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
-			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
+			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate"};
 
 	public static final String[] DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Payment Mode*","Bank Name*","Account Number*","BSR Number","MICR Code","IFSC Code*",
 			"First Name*","Last Name*",};
