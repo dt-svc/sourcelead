@@ -2395,9 +2395,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		empList = session.createSQLQuery(queryString).setParameter("lcaId", lcaId).setResultTransformer(Transformers.aliasToBean(LcaDetailsDTO.class)).list();
 		for(LcaDetailsDTO obj : empList) {
 			if(orgLocations.getId().equals(obj.getOrgLocationId())) {
-			obj.setAttorneyName(obj.getVendor());
+			obj.setAttorneyName(obj.getClient());
 			}else {
-				obj.setAttorneyName(obj.getClient());
+				obj.setAttorneyName(obj.getVendor());
 			}
 		}
 		

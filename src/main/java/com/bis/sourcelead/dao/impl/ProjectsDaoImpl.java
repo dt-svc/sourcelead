@@ -42,9 +42,11 @@ import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocuments;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
@@ -1692,19 +1694,28 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
         
         int noOfHours =((orgLocations.getAverageWorkingHours())*(orgLocations.getWorkingDaysPerWeek()));
          
+        
+   /*   //To get candidate work location
+		+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
+	    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
+	    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
+	    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND ACANLOC.IS_ASSOCIATE = 'Y' AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"*/
+        
+        
         String query = "select pm.id as id,"
                 /*+ " pm.employee.employeeId as empId,"
                 + " pm.employee.user.firstName as empName,"*/
-                + " pm.id as empId,"
-                + " pm.id as empName,"
+                + " pm.employee.id as empId,"
+                + " concat(pm.projectMemberCandidteId.firstName,' ',(case when pm.projectMemberCandidteId.lastName is null then '' else pm.projectMemberCandidteId.lastName end)) as empName,"
                 + " pm.projects.projectName as projectName,"
                 + " pm.projects.startDate as projectStartDate,"
                 + " pm.projects.endDate as projectEndDate ,"
                 + " pm.projectAssignedDate as empStartDate,"
                 + " pm.projectEndDate as empEndDate,"
                 + "  pm.percentageOfWork as availableHours,"
-                + "  (( pm.percentageOfWork)/100) * " + noOfHours + " as hoursperWeek"
-                + " from ProjectMembers pm"
+                + "  (( pm.percentageOfWork)/100) * " + noOfHours + " as hoursperWeek,"
+                + "  pm.masterCandidateId.id as masterCandidateId"
+                + " from ProjectMembers pm "
 //                + " where pm.projects.orgLocationsId=:orgLocations"
                 + "";
             
@@ -1777,10 +1788,9 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	@Transactional
 	public List<Projects> getProjectsListByCanddateIdAndOrgId(String associatesId, Long orglocationId) {
 		try {
-			Long candidateId = Long.valueOf(associatesId);
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select pm.projects from ProjectMembers pm  where pm.status = '1' and pm.projectMemberCandidteId.id  In(:candidateId) ";
-		List<Projects> projectsList = session.createQuery(query.toString()).setParameter("candidateId", candidateId).list();
+		String query = "select pm.projects from ProjectMembers pm  where pm.status = '1' and pm.projectMemberCandidteId.id in(" + associatesId+  ") ";
+		List<Projects> projectsList = session.createQuery(query).list();
 		return projectsList;
 
 		} catch (Exception e) {
@@ -1788,6 +1798,27 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		}
 		return null;
 		}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public ProjectMembers isUserAssignedToProject(User user, Long orgLocationId,Long projectId)
+	{
+		ProjectMembers projectMember = null;;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<ProjectMembers> assignedList = session.createQuery("from ProjectMembers pm where pm.projectMemberCandidteId.consultantUser.id = :userId AND pm.projectMemberCandidteId.orgLocationId.id =:orglocationId AND pm.projects.id = :projectId AND pm.status = 1")
+													   .setLong("userId", user.getId())
+													   .setLong("orglocationId", orgLocationId)
+													   .setLong("projectId", projectId).list();
+			if (assignedList != null && assignedList.size() > 0) {
+				projectMember = assignedList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return projectMember;
+	}
 
 }
 

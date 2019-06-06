@@ -353,6 +353,8 @@ public interface CandidateService {
     public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
+	
+	public List<Candidate> getCandidatesForUpdateWorkLocation(Long masterCandidateId,Long orgId) throws Exception;
 
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
 	

@@ -106,6 +106,8 @@ public class DataMigrationDTO extends CommonDTO {
 	private String projectClientID;
 	
 	private String docFile;
+	
+	private String workflow; // added on 3-6-19 SRINIVAS SABBU for job import functionality.
 
 	/*Timesheets*/
 	
@@ -2511,6 +2513,14 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setVendor(String vendor) {
 		this.vendor = vendor;
+	}
+
+	public String getWorkflow() {
+		return workflow;
+	}
+
+	public void setWorkflow(String workflow) {
+		this.workflow = workflow;
 	}
    
 }

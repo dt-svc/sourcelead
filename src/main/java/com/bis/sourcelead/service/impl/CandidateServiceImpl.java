@@ -3802,6 +3802,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 	
 	@Override
+	public List<Candidate> getCandidatesForUpdateWorkLocation(Long masterCandidateId, Long orgId) throws Exception {
+		return candidateDao.getCandidatesForUpdateWorkLocation(masterCandidateId, orgId);
+	}
+	
+	@Override
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation) {
 		return candidateDao.getCandidateDateOfBirthByUserId(userId, orgLocation);
 	}
