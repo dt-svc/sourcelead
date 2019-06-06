@@ -4,6 +4,8 @@ var iconSpan = "";
 var editAndDeleteAnchor = "";
 var lastStage = "";
 var commentReq = "";
+var questionnaireId = null;
+var questionnaireName = null;
 
 function RequirementWorkflow(){
 	
@@ -656,7 +658,11 @@ function RequirementWorkflow(){
 							result = result + "<option selected>Select</option>";
 							if(dataList != null && dataList.length > 0){
 								 for(var i = 0 ; i < dataList.length; i++){
-									 result = result + "<option value="+dataList[i].id+">"+dataList[i].name+"</option>";
+									 if(questionnaireId != null && dataList[i].id == questionnaireId){
+										 result = result + "<option selected value="+questionnaireId+">"+questionnaireName+"</option>";
+									 }else{
+										 result = result + "<option value="+dataList[i].id+">"+dataList[i].name+"</option>";
+								 }
 								 }
 							}
 							result = result + "</select>";
@@ -676,7 +682,6 @@ function RequirementWorkflow(){
 							$("#taskDescription").val("");
 							$("#assignToUserId").val("");
 							/*$('#taskDescription').summernote();*/
-							$("#saveStageButton").attr("disabled", "disabled");
 							document.getElementById("createNewtask").style.display = "block";
 						}
 					 
@@ -685,6 +690,7 @@ function RequirementWorkflow(){
 								type : "GET",
 								url : sourceleadUrl + "/getAllActiveUsersList",
 								success : function(dataList){
+									 $("#saveStageButton").attr("disabled", "disabled");
 									var result = "";
 									result = result + "<select class='sel form-control' name = 'assignToUserId' id = 'assignToUserId' field-name='Assign To' data-validation='required'>";
 									result = result + "<option selected='' value=''>Select</option>";
