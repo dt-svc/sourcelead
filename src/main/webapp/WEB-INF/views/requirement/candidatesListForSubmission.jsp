@@ -5,15 +5,6 @@
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/slead-common.js" type="text/javascript" ></script> <!-- form generator -->
 
-<style>
-.refresh-icon.refreshIcon {
- top: 16px !important;
-}
-.mt2 {
-    margin-top: 4px !important;
-}
-</style>
-
 <div id="candidateRejectedDiv" class="project_tabs clearfix"></div> 
 <div class="proMask">
 <div class="progress progress-striped active">
@@ -114,7 +105,7 @@
 								<div class="clearfix">
 								<div class="col-md-14">
 							      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
-								  <i class="fa fa-refresh btn btn-primary refresh-icon refreshIcon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
+								  <i class="fa fa-refresh btn btn-primary refresh-icon refreshIcon mr ref-top refreshIcontop16" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
 								 </div>
 								</div>
 							</div>
@@ -210,7 +201,7 @@ function submitCandidatesToJob(){
 
     	 result = result +'<div class="slider round" title="Attach Applicants Resume"></div>';
     	 result = result +'</label>';
-    	 result = result +"<span class='paddingLeft mt2'>Attach Resume</span></div>";
+    	 result = result +"<span class='paddingLeft mt4'>Attach Resume</span></div>";
     	 
 		result = result +" <div class='mr pull-left'>";
 		result = result +" <input type='button' value='Submit' onclick='submitApplicantsToJob()' class='btn btn-primary btn-sm'>";
@@ -402,7 +393,7 @@ function candidatesListPagination(url,atsUrl){
 	        			result = result +'<div class="pull-left mt3"><td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+opt.id+'" data-id="'+opt.id+'" value="'+opt.id+'" onchange="checkShareCandidates(this)"/></td></div>';
     	  		
 	        			if(opt.isAssociate == 'Y'){
-			            	  result = result +"<i class='fa fa-black-tie pull-right mt2' title='Added as Associate'></i> ";  
+			            	  result = result +"<i class='fa fa-black-tie pull-right mt4' title='Added as Associate'></i> ";  
 			             }
 	        			 result = result +"</div>";
 	        			return result; 
