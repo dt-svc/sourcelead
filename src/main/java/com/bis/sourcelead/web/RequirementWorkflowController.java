@@ -659,6 +659,10 @@ public class RequirementWorkflowController {
 			modelandview.setViewName("workflow/addStage");
 			modelandview.addObject("stageName", stages.getStageName());
 			modelandview.addObject("description", stages.getDescription());
+			if(stages.getRequirementQuestionnaireTemplateId() != null) {
+			modelandview.addObject("questionnaireId",stages.getRequirementQuestionnaireTemplateId().getId());
+			modelandview.addObject("questionnaireName",stages.getRequirementQuestionnaireTemplateId().getName());
+			}
 			modelandview.addObject("commentRequired", stages.getCommentRequired());
 			modelandview.addObject("requiredList", stages.getRequiredStatsList());
 			modelandview.addObject("chosenColumns", stages.getChosenColumns());
