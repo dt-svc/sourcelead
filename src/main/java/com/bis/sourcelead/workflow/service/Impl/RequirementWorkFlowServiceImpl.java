@@ -199,17 +199,19 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowList(RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations) {
+	public ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowList(RequirementWorkFlowDTO workFlowDTO, OrgLocations orgLocations, User user ) {
 		logger.debug("Started getRequirementWorkFlowList Service for "+orgLocations.getId()+" orgLocation");
 		try {
 		RequirementWorkFlow requirementWorkFlow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(workFlowDTO.getUuid(), orgLocations.getId());
 		
 		if (workFlowDTO.getUuid() != null && workFlowDTO.getStatus() == 1) {
 			requirementWorkFlow.setStatus(Constants.RECORD_INACTIVE);
+			requirementWorkFlow.setUpdatedBy(user);
 			requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
 		}
 		if (workFlowDTO.getUuid() != null && workFlowDTO.getStatus() == 0) {
 			requirementWorkFlow.setStatus(Constants.RECORD_ACTIVE);
+			requirementWorkFlow.setUpdatedBy(user);
 			requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
 		}
 		logger.debug("Finished getRequirementWorkFlowList Service for "+orgLocations.getId()+" orgLocation");

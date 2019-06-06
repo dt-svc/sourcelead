@@ -2,8 +2,17 @@ package com.bis.sourcelead.workflow.dto;
 
 import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.dto.SearchDTO;
+import com.bis.sourcelead.entity.User;
 
 public class RequirementWorkFlowDTO extends SearchDTO{
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 
 	private long id;
 	
@@ -27,6 +36,8 @@ public class RequirementWorkFlowDTO extends SearchDTO{
 	private String stageUuid;
 	
 	private String currentStageUuid;
+	
+	private String updatedBy;
 	
 	public long getId() {
 		return id;
