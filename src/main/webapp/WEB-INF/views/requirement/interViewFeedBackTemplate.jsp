@@ -26,35 +26,11 @@ $(function(){
 </script>
 
 <style>
-.viewTemplate .sjfb-field {
-	float: left; min-height: 36px; margin-bottom: 15px;
-}
-.viewTemplate .sjfb-field textarea {
-	max-height: 65px;
-}
-.viewTemplate .sjfb-field  {
-	width: 80%; margin: 0 0 10px 15px;
-}
-.viewTemplate .sjfb-field:nth-child(2n+2) {
-    margin-left: 15px;
-}
-.viewTemplate .sjfb-field label {
-	float: left; width: 30%;
-}
-.sjfb-radio .choices-radio, .sjfb-checkbox .choices-checkbox {
-	float: left; width: 70%;
-}
-.sjfb-radio .choices-radio label, .sjfb-checkbox .choices-checkbox label {
-	min-width: 20%; width: 25%; max-width: 50%; position:relative; padding-right: 10px; padding-left: 30px;
-}
 .choices input[type="checkbox"], .choices input[type="radio"] {
 	float: left; position: absolute; left:0;
 }
-.viewTemplate .sjfb-field select {
+.viewTemplate.viewTemplate_interviewfbt .sjfb-field select {
  	-webkit-appearance: none; -moz-appearance: none; -ms-appearance: none; -o-appearance: none;
-}
-.viewTemplate .sjfb-field select::-ms-expand {
-    display: none;
 }
 </style>
 
@@ -133,7 +109,7 @@ $(function(){
 		result = result + '<h2>'+templateName+'</h2>';
         result = result + '</div>';
 
-        result = result + '<div id="interviewsjfb-fields" class="viewTemplate">';
+        result = result + '<div id="interviewsjfb-fields" class="viewTemplate viewTemplate_interviewfbt">';
         
         result = result + '</div>';
         result = result + '<div class="form-footer clearfix">';
@@ -684,14 +660,14 @@ function generateTemplateForm(sourceleadUrl,templateId) {
 
                      case 'radio':
                          return '' +
-                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-radio">' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-radio sjfbRadio">' +
                              '<label></label>' +
                              '<div class="choices choices-radio"></div>' +
                              '</div>';
 
                      case 'checkbox':
                          return '' +
-                             '<div id="sjfb-checkbox-' + uniqueID + '" class="sjfb-field sjfb-checkbox">' +
+                             '<div id="sjfb-checkbox-' + uniqueID + '" class="sjfb-field sjfb-checkbox sjfbCheckbox">' +
                              '<label class="sjfb-label"></label>' +
                              '<div class="choices choices-checkbox"></div>' +
                              '</div>';

@@ -155,15 +155,12 @@ public interface ProjectsService {
 		//public File getProjectReportListOfExcel(ProjectReportDTO projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess);
 
 		File getProjectReportListOfExcel(List<ProjectReportDTO> projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess) throws Exception;
-
-
-		List<AvailableAssociatesDTO> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations);
-
-		File availableAssociatereportReportListOfExcel(List<AvailableAssociatesDTO> data, User user,
-				OrgLocations orgLocations) throws FileNotFoundException;
+		
+		Map<String, List<AvailableAssociatesDTO>> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations);
 		
 		List<Projects> getProjectsListByCanddateIdAndOrgId(String associates, Long orgLocatonId);
 
+		File availableAssociatereportReportListOfExcel(Map<String, List<AvailableAssociatesDTO>> object, User user,OrgLocations orgLocations);
 
 //		public String getProjectId(OrgLocations orgLocations);
 		

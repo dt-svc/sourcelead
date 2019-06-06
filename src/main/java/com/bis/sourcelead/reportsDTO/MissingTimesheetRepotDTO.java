@@ -18,8 +18,18 @@ public class MissingTimesheetRepotDTO {
 	private int pageNo;
 	private int pageSize;
 	private int pageCount;
-
+	private String type;
+	
+	
  
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public String getDateSelection() {
 		return dateSelection;
 	}
