@@ -8,53 +8,18 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
-.viewTemplate .sjfb-field{
-margin: 0;
-}
-.positionRelative {
-position: relative;
-}
-.container.container-wraper{
-	padding: 15px;
-	box-sizing: border-box;
-	border: 1px solid #ccc;
-	background: #fafafa;
-	border-radius:5px;
-	margin-top: 25px;
-}
-.container-wraper h3 {
-	margin: 0; margin-bottom: 10px; font-size: 20px;
-}
-.container-wraper .viewTemplate .sjfb-field{
-	display: inline-flex; margin-bottom: 15px; padding: 0 15px;
-}
-.container-wraper .viewTemplate .sjfb-field label {
-	font-size:14px !important; font-weight: 600; max-width: inherit; padding-right: 15px; width: 25%;
-}
+
 .choices, .form-control {
  width: 75%;
  }
-/* .container-wraper viewTemplate .sjfb-field{
-	width: 48.5%;
-} */
-.ml{
-margin-left: 15px;
-}
+
 .choices label {
 width: auto !important; padding-right: 15px;
 }
 .choices input[type="checkbox"], .choices input[type="radio"]{
  margin-right: 10px; position: relative; top: 1px;
 }
-.stickyfooter {
-	position: absolute; bottom: 0; width: 100%; height: 40px; line-height: 40px; background-color: #f5f5f5; padding:0;
-}
-.viewTemplate .sjfb-field, choices choices-radio {
-    width: 50%;
- }
- /* .viewTemplate textarea + p.jquery_form_error_message{
-top:70px !important;
-} */
+
 .required-field {
 position: relative;
 }
@@ -282,7 +247,7 @@ function interviewTemplateForm(){
 		
 		result = result + '<form id="interviewTemplate_form" name="interviewTemplate_form" enctype="multipart/form-data" method="post">';
 		result = result + '<div class="form-horizontal clearfix">';
-		result = result + '<div id="interviewsjfb-fields" class="viewTemplate">';
+		result = result + '<div id="interviewsjfb-fields" class="viewTemplate view_templateDiv">';
 		result = result + '</div>';
 		result = result + '</div>';
 		
@@ -419,8 +384,8 @@ $('body').on('blur', '#interviewTemplate_form', function() {
 
 <section class="content-wraper clearfix">
   <!-- Header Area -->
-   <div id="interviewTemplateFormDiv" class="container container-wraper positionRelative interFeedback" style="display: none;"> </div> 
-   <div id="cancelFeedbackDiv" class="container container-wraper positionRelative interFeedback" style="display: none;"> </div>
+   <div id="interviewTemplateFormDiv" class="container container-wraper containerWrraper positionRelative interFeedback" style="display: none;"> </div> 
+   <div id="cancelFeedbackDiv" class="container container-wraper containerWrraper positionRelative interFeedback" style="display: none;"> </div>
    <div id="viewInterviewTemplateList" class="container interFeedback"></div>
    <div id="viewInterviewTemplateNo" class="container interFeedback"></div>
  </section>  

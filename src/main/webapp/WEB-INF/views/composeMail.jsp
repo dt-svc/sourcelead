@@ -9,22 +9,8 @@
 
 
 <style>
-.modal-backdrop{
-display: none;
-}
-
-.nicEdit-main {
-	overflow: auto !important;
-}
-
-.mt40{
- margin-top: 50px !important;
-}
-.compose-mail .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
-    height: 35px;
-    line-height: 35px;
-    width: 500px !important;
-}
+.modal-backdrop { display: none; }
+.nicEdit-main { overflow: auto !important; }
 </style>
 
  <script>
@@ -75,7 +61,7 @@ display: none;
     <div id="mailLoading"></div>
      <div id ="popUp"></div>
       <div id ="textBoxPopUp"></div>
-      <div class="form-horizontal compose-mail col-md-10 col-md-offset-1">
+      <div class="form-horizontal compose-mail compose_Mail col-md-10 col-md-offset-1">
        <form:form id="email_form" name="email_form" >
         <div class="col-md-12 clearfix">
           <label class="col-md-2 control-label text-muted small">From</label>
