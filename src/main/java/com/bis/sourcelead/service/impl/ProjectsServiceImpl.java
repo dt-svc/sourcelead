@@ -4149,10 +4149,6 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				return createExcelsheet;
 			}
 
-	@Override
-	public List<Projects> getProjectsListByCanddateIdAndOrgId(String associatesId, Long orglocationId) {
-		return projectsDao.getProjectsListByCanddateIdAndOrgId(associatesId,orglocationId);
-	}
 
 	@Override
 	public ProjectMembers isUserAssignedToProject(User userId, Long orgLocationId, Long projectId)
