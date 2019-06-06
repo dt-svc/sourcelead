@@ -5,26 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
-<style type="text/css">
-.pras.req-title p{
-bottom:-14px;
-}
-.ratetype p {
-bottom: -14px !important;
-left:-20px !important;
-}
-.pras.req-title p{
-bottom:-2px;
-}
-.form-control {
-padding: 6px 12px !important; height: 34px !important;
-}
-.bootstrap-select {
-width: 100% !important;
-}
-</style>
-
-
 
 <script>
 var atsUrl ='${SourceLeadWeb_atsUrl}';
