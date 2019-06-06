@@ -9,17 +9,8 @@
 
 
 <style>
-.modal-backdrop{
-display: none;
-}
-
-.nicEdit-main {
-	overflow: auto !important;
-}
-
-.mt40{
- margin-top: 50px !important;
-}
+.modal-backdrop { display: none; }
+.nicEdit-main { overflow: auto !important; }
 </style>
 
 
