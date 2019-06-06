@@ -257,9 +257,10 @@ public class RequirementWorkflowController {
 	  		}
  	  		    if (sortColumnIndex != -1) {
  	  			 requirementWorkFlowDTO.setSortOrder(sortColumnOrder);
+ 	  			  requirementWorkFlowDTO.setSortColumn(tableColumns[sortColumnIndex]);
  	  		    }
 	  		
-	  			requirementWorkFlowDTO.setSortColumn(tableColumns[sortColumnIndex]);
+	  			
 	  			
 			responseList = requirementWorkFlowService.getRequirementWorkFlowList(requirementWorkFlowDTO, orgLocations);
 		}catch(Exception e) {
@@ -658,6 +659,8 @@ public class RequirementWorkflowController {
 			modelandview.setViewName("workflow/addStage");
 			modelandview.addObject("stageName", stages.getStageName());
 			modelandview.addObject("description", stages.getDescription());
+			modelandview.addObject("questionnaireId",stages.getRequirementQuestionnaireTemplateId().getId());
+			modelandview.addObject("questionnaireName",stages.getRequirementQuestionnaireTemplateId().getName());
 			modelandview.addObject("commentRequired", stages.getCommentRequired());
 			modelandview.addObject("requiredList", stages.getRequiredStatsList());
 			modelandview.addObject("chosenColumns", stages.getChosenColumns());
