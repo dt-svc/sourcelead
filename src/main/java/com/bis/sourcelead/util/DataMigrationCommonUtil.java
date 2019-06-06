@@ -94,6 +94,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.timesheet.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
+import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 /**
@@ -202,6 +204,9 @@ public class DataMigrationCommonUtil {
 	
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	RequirementWorkFlowService requirementWorkflowService;
 	
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
@@ -563,6 +568,19 @@ public class DataMigrationCommonUtil {
 					dataMigrationDTOJsonCopy.put("projectClientID", projects.getId().toString());
 				}else{
 					errorSet.put("projectClientID", dataMigrationDTOJsonCopy.getString("projectClientID")+" is invalid Project");
+				}
+			}
+			if(!dataMigrationDTOJsonCopy.getString("workflow").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("workflow"))) {
+				List<RequirementWorkFlow> workflowList = requirementWorkflowService.getRequirementWorkFlowByOrgLocationId(orgLocation);
+				boolean found = false;
+				for(RequirementWorkFlow workflow: workflowList) {
+					if(workflow.getWorkFlowName().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("workflow").trim())) {
+						dataMigrationDTOJsonCopy.put("workflow", workflow.getId().toString());
+						found = true;
+					}
+				}
+				if(!found){
+					errorSet.put("workflow", dataMigrationDTOJsonCopy.getString("workflow")+" is invalid Workflow");
 				}
 			}
 			
