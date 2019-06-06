@@ -81,7 +81,7 @@ myImmigrationPage = '${myImmigrationPage}';
 		<div class="immigraHead">
 			<ul class="immigraTabs">
               <li class="current"><a href="#detailsTab"><i class="fa fa-check-circle-o"></i>Details</a></li>
-              <li><a href="#passportsTab" class="${passOnLoadCount==null?'disabledLink':''}"><i id ="passportfilled" class="fa fa-check-circle-o"></i>Passport</a></li>
+              <li><a href="#passportsTab"><i id ="passportfilled" class="fa fa-check-circle-o"></i>Passport</a></li>
               <li><a href="#visasTab"  id="visaInfoTab" class="${visaOnLoadCount==null?'disabledLink':''}"><i id ="visafilled" class="fa fa-check-circle-o"></i>Visa</a></li>
             
               <li><a href="#lcaTab" id="lcaInfoTab" class="${lcaOnLoadCount==null?'disabledLink':''}"><i id ="lcafilled" class="fa fa-check-circle-o"></i>LCA</a></li>
