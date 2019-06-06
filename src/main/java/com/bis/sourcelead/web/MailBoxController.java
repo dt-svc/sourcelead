@@ -171,7 +171,7 @@ public class MailBoxController {
  			return model;
  	}
 
-	@RequestMapping(value = "/ats/emailSettings")
+	@RequestMapping(value = "/emailSettings")
 	@ResponseBody
 	public ModelAndView emailSettings(HttpServletRequest request, @RequestParam(defaultValue = "others") String source) {
 		ModelAndView model = new ModelAndView();
