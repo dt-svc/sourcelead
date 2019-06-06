@@ -415,7 +415,12 @@ $(document).ready(function() {
 				requirementWorkflow.showSuccessMsg("Comment Turned On");
 			}
 		})
-	requirementWorkflow.getRequirementQuestionnaireTemplates();
+		
+		questionnaireId = '${questionnaireId}';
+		questionnaireName = '${questionnaireName}';
+		
+		requirementWorkflow.getRequirementQuestionnaireTemplates();
+	
 	
 	if($('#stageName').val().length == 0){
 		$("#saveTaskButton").attr("disabled", true);

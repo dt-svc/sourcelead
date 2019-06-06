@@ -86,7 +86,7 @@ function reloadFunction(){
      
    <div class="vendor_wrap mt">
 	<div class="tableStyles overflow_inherint">
-      <div class="clearfix datatable_filter positionRelative mt10 exportButton_custom">
+      <div class="clearfix datatable_filter positionRelative mt10  project_tabs_inn_table">
       	<div class="positionRelative timesheet_head clearfix">
       	<ul class="pull-right list-unstyled list-inline">
 				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
@@ -99,7 +99,9 @@ function reloadFunction(){
 				</li>
         </ul>
       	</div>
+      	<div class="candidate_wrap_table datatable_filter">
          <div id="pendingForApprovalTimesheetDiv"></div>
+         </div>
       </div>
 
 	<div class="clearfix"></div>
@@ -146,7 +148,7 @@ function getPendingForApprovalTimesheetReports(){
 		   	url: sourceleadUrl+"/getpendingForApprovalTimesheetReportList?${_csrf.parameterName}=${_csrf.token}&projectIds="+projectIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
 		    success: function(data) {
 		    	var result = "";
-		    	result = result	+ '<table class="table table-bordered noMar" id="pendingForApprovalTimesheet">';
+		    	result = result	+ '<table class="table table-bordered noMar" id="pendingForApprovalTimesheet" >';
 		        result = result	+ '<thead> ';
 		        result = result	+ '  <tr>  ';
 		        result = result	+ '    <th>Emp Name</th> ';
@@ -160,7 +162,7 @@ function getPendingForApprovalTimesheetReports(){
 		        result = result	+ '    <th>Approved By</th> ';
 		        result = result	+ '    <th>Approved Date</th> ';
 		        result = result	+ '    <th>Submitted On</th> ';
-		        result = result	+ '    <th>no.of days</th>';
+		        result = result	+ '    <th>No.of days</th>';
 		        result = result	+ '  </tr> ';
 		        result = result	+ '  </thead>';
 		        result = result +'<tbody>';
@@ -226,18 +228,18 @@ function getPendingForApprovalTimesheetReports(){
 	        		  }
 		    	   
 		    	  result = result	+ '<tr>';
-				  result = result	+ '	  <td><div class="tbldata-dotdot-sm">'+employeName+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+employeType+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+projectName+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-me">'+frequency+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+manager1+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+manager2+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+approvalMechanism+' </div></td>';
-	              result = result   + '   <td><div class="tbldata-dotdot-sm">'+noOfHours+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+approved_By+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+approvedDate+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.submittedOn+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+dueDays+'  Days</div></td>';
+				  result = result	+ '	  <td><div class="tbldata-dotdot-sm" title="'+employeName+'">'+employeName+'</div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+employeType+'">'+employeType+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+projectName+'">'+projectName+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-me" title="'+frequency+'">'+frequency+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+manager1+'">'+manager1+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+manager2+'">'+manager2+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+approvalMechanism+'">'+approvalMechanism+' </div></td>';
+	              result = result   + '   <td><div class="tbldata-dotdot-sm" title="'+noOfHours+'">'+noOfHours+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+approved_By+'">'+approved_By+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+approvedDate+'">'+approvedDate+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+report.submittedOn+'">'+report.submittedOn+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-vsm" title="'+dueDays+' Days">'+dueDays+'  Days</div></td>';
 	              result = result	+ '	</tr>';
    				}
 		        result = result +'</tbody>';
@@ -254,12 +256,10 @@ function getPendingForApprovalTimesheetReports(){
 
 <script>
 function dynamicMissingTimesheetReportPagination(){  
-    $('#pendingForApprovalTimesheet').DataTable( {
-    	"dom": 'Bfrtip',
-    	"responsive": true,
+    
+    $('#pendingForApprovalTimesheet').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"buttons": ['excel', 'pdf'],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
@@ -267,10 +267,8 @@ function dynamicMissingTimesheetReportPagination(){
      		"sSearch": "",
      		"sZeroRecords": "", "sEmptyTable": ""
      	}
-    });
+    } );
     $('#pendingForApprovalTimesheet').wrap("<div class='overflow_Auto width100percnt'></div>");
-    $("#pendingForApprovalTimesheetDiv").find('a.buttons-excel').prop("title", "Export to Excel");
-	$("#pendingForApprovalTimesheetDiv").find('a.buttons-pdf').prop("title", "Export to PDF");
 }
 </script>
 
