@@ -54,7 +54,7 @@
 			<div class="clearfix mb">
 				<label class="noPad">Description</label>
 				<div class="clearfix">
-					<textarea placeholder="Description" name="description" id="candidateSourceDesc" class="form-control" rows="2" data-validation="validate_Space validate_length length1-5000"></textarea>
+					<textarea placeholder="Description" name="description" id="candidateSourceDesc" class="form-control" rows="2" data-validation="validate_Space validate_length length1-5000" data-validation-optional="true"></textarea>
 				</div>
 			</div>
 		</div>
