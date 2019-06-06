@@ -30,6 +30,9 @@ public class PerformanceAppraisalPeers implements Serializable{
 	@Column(name = "PEER_USER_ID", columnDefinition = "TEXT default NULL")
 	private String peerUserId;
 	
+	@Column(name = "PEER_COUNT ")
+	private Integer peerCount;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="USER_ID", nullable=false )        
     private User userId;
@@ -74,6 +77,23 @@ public class PerformanceAppraisalPeers implements Serializable{
 
 	public void setPeerUserId(String peerUserId) {
 		this.peerUserId = peerUserId;
+	}
+	
+
+	public User getUserId() {
+		return userId;
+	}
+
+	public void setUserId(User userId) {
+		this.userId = userId;
+	}
+
+	public Integer getPeerCount() {
+		return peerCount;
+	}
+
+	public void setPeerCount(Integer peerCount) {
+		this.peerCount = peerCount;
 	}
 
 	public OrgLocations getOrgLocationId() {
