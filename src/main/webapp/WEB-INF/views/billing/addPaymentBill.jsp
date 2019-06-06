@@ -300,7 +300,6 @@ $('#paymentDate').datepicker({
 		$("input[id^=totalAmountRow]").each(function() {
 			 if($(this).next('p').length >0){
 				 Duevalidate = false;
-				 console.log(" inside Duevalidate"+Duevalidate)
 				 return false;
 			  }	 
 		  });

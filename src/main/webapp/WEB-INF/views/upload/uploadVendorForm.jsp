@@ -3,18 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<style type="text/css">
-.center-div{
-width:300px;
-height:30px;
-margin:10px 220px 0;
-}
-.center-div input {
-	border:none;
-	background:transparent
-}
-</style>
   
  <script>
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
