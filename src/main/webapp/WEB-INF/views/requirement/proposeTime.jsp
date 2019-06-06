@@ -30,30 +30,6 @@
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/moment.min.js"></script>
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/datetime-moment.js"></script>
 
-
-<style>
-body {
-background-color:#e1e6fa;
-}
-.project_wrap_table table {
-	border: 1px solid #fff;
-	border-bottom: 1px solid #909090;
-	margin-bottom: 10px;
-}
-.project_wrap_table table tr td:last-child {
-width: auto;
-}
-.tentative-user{
-	 background-color:#f0ad4e;
-	 border: 1px solid #f0ad4e;
-	 -webkit-box-shadow: 0 8px 6px -8px #505050;
-	-moz-box-shadow: 0 8px 6px -8px #505050;
-	box-shadow: 0 8px 6px -8px #505050;
-}
-.ui-timepicker-wrapper {
-width: 8%;
-}
-</style>
 <body>
 <div class="wraper"> 
   <!-- Header Area -->
@@ -177,6 +153,7 @@ width: 8%;
   <div id="popUp"></div>
 
   <script>
+  var atsUrl = '${SourceLeadWeb_atsUrl}';
   function addProposeTime(){
 	  var requirementInterviewId  = '${requirementInterviewId}';
 	  var checkMaxTsRowNum = $("#proposeTimeMaxRowNumber").val();
@@ -315,6 +292,7 @@ function cancel(){
 </script>
  <script>
 function saveProposeTime(){
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	if ($('#proposeTime_form').validate(false, validationSettings)){ 
 		var sourceleadUrl ='${sourceleadUrl}';
 		sourceleadUrl = sourceleadUrl.split("/app")[0];
@@ -327,7 +305,7 @@ function saveProposeTime(){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/saveProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+					url : atsUrl+"/saveProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
 					success : function(result) {
 						location.reload();
 					},

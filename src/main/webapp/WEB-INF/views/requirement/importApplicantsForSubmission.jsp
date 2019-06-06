@@ -4,20 +4,6 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<style type="text/css">
-.center-div {
-	width: 300px;
-	height: 30px;
-	margin: 10px 220px 0;
-}
-
-.center-div input {
-	border: none;
-	background: transparent
-}
-  
-</style>
-
 <script type="text/javascript">
 var uploadflag= true;
 		function getSubmissionsUploadedHistory() {
@@ -53,7 +39,7 @@ var uploadflag= true;
 					</div>
 					
 						<div class="col-xs-5 col-md-5">
-							<a href="<c:url value='/downloadRequirenetSubmissionTemplateByRequirementId/${requirementId}'/>"
+							<a href="${SourceLeadWeb_atsUrl}/downloadRequirenetSubmissionTemplateByRequirementId/${requirementId}"
 								class="btn btn-success btn-block" title="Submission Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Submission Template
 							</a>
 						</div>

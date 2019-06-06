@@ -166,8 +166,8 @@
 		</div>
         
         <div class="popupFoot text-right">
-          <button type="button" class="slBtn md colorBtn" onclick="getWalletFilter();">Save</button>
-          <button type="button" class="slBtn md popClose" onclick="cancelWalletFilter();"> Cancel</button>
+          <button type="button" class="slBtn md colorBtn" onclick="getWalletFilter();">Apply</button>
+          <button type="button" class="slBtn md popClose" onclick="cancelWalletFilter();"> Reset</button>
         </div>
         
         <div>
@@ -223,7 +223,8 @@
 		location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 	}
 	function refreshPage(){
-		location.reload();
+		$("#walletSearch").val('');
+		getDynamicWalletList();
 	}
 	/* function goToWalletList(){
 		location.href = "/ats/walletList";

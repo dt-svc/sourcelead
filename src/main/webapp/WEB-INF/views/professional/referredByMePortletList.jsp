@@ -2,17 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- <style type="text/css">
- .require_wrap_details_cta b {
-    width: 110px;
-}
-.top_o {
-top:0 !important;
-}
-.repoPositi .dataTables_filter {
-    top: 0px !important;
-}
- </style>
  
  <script>
  var atsUrl = '${SourceLeadWeb_atsUrl}';
@@ -56,11 +45,11 @@ $(document).ready(function() {
       <h2>Referred By Me</h2>
     </div>
      <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-       <div class="pull-right brud-crum"><a href="${appPath}/professionalDashboard">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
+       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/professionalDashboard">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
      </c:if>
      
      <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-       <div class="pull-right brud-crum"><a href="${appPath}/recruiterDashboard">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
+       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
      </c:if>
     
   </section>
@@ -156,7 +145,7 @@ function portletListFilter(requirementStatus){
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result =""; 
-	    	   result = result + '<div class="require_wrap_table overflow-data filter-position repoPositi">';
+	    	   result = result + '<div class="require_wrap_table overflow-data filter-position repoPositi repo_positi">';
 	    	   result = result + '<div class="clerfix">';
 	    	   result = result + '<table id="professionalDashboardPortletPagenation" class="display" cellspacing="0" width="100%"">';
 	           result = result + '<thead>';
@@ -211,7 +200,7 @@ function portletListFilter(requirementStatus){
 		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+report.candidateName+'">'+report.candidateName+'</div></td>';
 		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+candidateEmail+'">'+candidateEmail+'</div></td>';
 		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+phoneNumber+'">'+phoneNumber+'</div></td>';
-		        	   result = result +'         <td><a href="<c:url value="/app/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   result = result +'         <td><a href="<c:url value="${SourceLeadWeb_atsUrl}/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+requirementSubmissionStatus+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-100">'+referredOn+'</div></td>';
@@ -250,7 +239,7 @@ function portletListFilter(requirementStatus){
 		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+report.candidateName+'">'+report.candidateName+'</div></td>';
 		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+candidateEmail+'">'+candidateEmail+'</div></td>';
 		        	   result = result +'         <td><div class="tbldata-50" title="'+phoneNumber+'">'+phoneNumber+'</div></td>';
-		        	   result = result +'         <td><a href="<c:url value="/app/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   result = result +'         <td><a href="<c:url value="${SourceLeadWeb_atsUrl}/requirementProfile/'+report.requirementUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+report.requirementState+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-100">'+referredOn+'</div></td>';
 		        	   result = result +'         </tr>';
@@ -264,7 +253,7 @@ function portletListFilter(requirementStatus){
 	           result = result + '   </div>';
 	           $("#referredByMePortletList").empty();
 	           $("#referredByMePortletList").append(result);
-	    	 rejectedPagenatio();
+	    	 rejectedPagenation();
 		    }
 	  });
 	 
@@ -274,7 +263,7 @@ function portletListFilter(requirementStatus){
   </section>
 
 <script>
-function rejectedPagenatio(){  
+function rejectedPagenation(){  
     $('#professionalDashboardPortletPagenation').DataTable( { 
     	dom: 'Bfrtip',
     	buttons: [

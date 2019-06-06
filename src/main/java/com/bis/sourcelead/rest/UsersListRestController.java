@@ -1987,6 +1987,7 @@ public class UsersListRestController {
 			userRole.setUpdatedBy(user.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
 			userRoleService.addUserRole(userRole);
+			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 			
 			// User role changed mail
 			userRoleUpdateMail(user,userRole,orgLocations,existingRole);
@@ -2124,7 +2125,9 @@ public class UsersListRestController {
 			Long existingReportingManager=null;
 			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
 				User reportingManager = new User();
-				existingReportingManager = userRole.getReportingManager().getId(); 
+				if(userRole.getReportingManager() != null) {
+					existingReportingManager = userRole.getReportingManager().getId(); 
+				}
 				reportingManager.setId(Long.parseLong(addUserDTO.getReportingManager()));
 				userRole.setReportingManager(reportingManager);
 			} else {
@@ -2429,7 +2432,7 @@ public class UsersListRestController {
 		    }
 			
 			if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
-				 OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+				   OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
 				   candidate.setWorkLocation(workLocation);
 			}
 			
@@ -2446,6 +2449,17 @@ public class UsersListRestController {
 			   
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			
+			//For offshoreC2C candidates
+			if(candidate != null && candidate.getWorkLocation() != null) {
+				List<Candidate> candidatesList = candidateService.getCandidatesForUpdateWorkLocation(candidate.getMasterCandidateId().getId(), orgLocations.getOrg().getId());
+				if(candidatesList != null && !candidatesList.isEmpty()) {
+					for(Candidate offshoreCandiate : candidatesList) {
+						offshoreCandiate.setWorkLocation(candidate.getWorkLocation());
+						candidateService.saveOrUpdateCandidate(offshoreCandiate);
+					}
+				}
+			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getVendors())){
 				if(currentVendorOrgRelation == null || (currentVendorOrgRelation != null && !currentVendorOrgRelation.getId().equals(orgRelation.getId()))) {
@@ -2489,11 +2503,8 @@ public class UsersListRestController {
 		 */
 		userService.saveOrUpdateUserElkDocument(userRole, employees, loginUser.getUserCode());
 		
-//		int updated = associateBalanceLeaveService.updateAssociateBalanceLeaves(updatedUser,orgLocations,employees,userRole);
-		
-		//below line commented by Pavan jampana 
-		 //associateBalanceLeaveService.updateAssociateDateOfJoinBalanceLeaveType(orgLocations.getId(), updatedUser,Constants.CANDIDATE_ACTIVE,Constants.UPDATE);
-		
+
+		userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 		return "success";
 		}else{
 			return "DataMissing";

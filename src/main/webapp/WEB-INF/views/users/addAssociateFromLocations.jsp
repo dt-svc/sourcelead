@@ -300,7 +300,7 @@ function getOrgLocationRoles(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "GET",
-	        url: pmsUrl+"/getOrgLocationRoles?${_csrf.parameterName}=${_csrf.token}&orgLocations="+orgLocations, 
+	        url: atsUrl+"/getOrgLocationRolesList?${_csrf.parameterName}=${_csrf.token}&orgLocations="+orgLocations, 
 	        success: function(json) {
 	        	
 	        	var output = "";

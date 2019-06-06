@@ -268,7 +268,7 @@ public class ProfessionalRequirementsController {
 
 		}
 	 
-	    @RequestMapping(value = "/ws/getRequirementProfessionalProfileDetails" , method = RequestMethod.GET)
+	    @RequestMapping(value = "/getRequirementProfessionalProfileDetails" , method = RequestMethod.GET)
 		public  @ResponseBody String getRequirementProfessionalProfileDetails(@RequestParam(value="requirementUUID", required=false) String  requirementUUID,
 				@RequestParam(value="referUUID", required=false) String  referUUID,HttpServletRequest request) throws Exception {
 		        String resultJson;

@@ -64,44 +64,6 @@ $(document).ready(function() {
 });
 </script>
 
-
-<style>
-
-.clsDatePicker {
-	z-index: 100000 !important;
-}
-.side-bar .side-nav ul li span {
-	display: inline-block;
-	float: none;
-}
-
-.project_wrap_table span {
-	display: inline;
-}
-
-.timesheet_out {
-	overflow-x: auto;
-	background: #f5f5f5;
-	box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
-	top: -45px;
-}
-
-.vendor_wrap {
-	box-shadow: none;
-}
-
-.require_wrap_table {
-	overflow: inherit;
-	min-height: 175px;
-}
-
-.require_wrap_table select {
-	width: 100% !important;
-}
-.ref-top{
-top: 18px;height: 32px; line-height: 18px;
-}
-</style>
 <script>
  window.onload = function() {
 	 var viewTab = "${viewTab}";
@@ -432,7 +394,7 @@ function statusvalidating(id){
 </div>
 </form:form>
 
-<div class="timesheet_out overflow_inherint" id="jobsTabContent">
+<div class="timesheet_out timesheet_out_divstyles overflow_inherint" id="jobsTabContent">
 		
 <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon" id="filtersDiv">
@@ -681,14 +643,14 @@ function statusvalidating(id){
         </ul>
       </div>		
 		
-<div class="require_wrap_table datatable_filter">
+<div class="require_wrap_table datatable_filter require_wrap_table_customized_styles">
 	<div id="requirementList"></div>
 </div>
 
 </div>
 	
-	<div class="timesheet_out" id="jobFairTabContent" style="display: none;">
-		<div class="vendor_wrap">
+	<div class="timesheet_out timesheet_out_divstyles" id="jobFairTabContent" style="display: none;">
+		<div class="vendor_wrap vendor_wrap_box-shadow">
 <div class="positionRelative reportHead clearfix">
       
       <ul class="pull-right list-unstyled list-inline">
@@ -712,7 +674,7 @@ function statusvalidating(id){
         </ul>
       </div>	
       	
-			<div class="require_wrap_table datatable_filter">
+			<div class="require_wrap_table datatable_filter require_wrap_table_customized_styles">
 				<div id="jobFairList"></div>
 			</div>
 		</div>
@@ -725,12 +687,10 @@ function statusvalidating(id){
 	
 	
 </section>
- <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
-<jsp:include page="addApplicantFromRequirementList.jsp" />
-
+ <div class="advancedsearch-mask"></div>
 <input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
 
-
+<jsp:include page="addApplicantFromRequirementList.jsp" />
 <script>
 function filterPop(){
 	$("#requirementFilterPopup").toggle();
@@ -979,7 +939,7 @@ function exportToPdf(type) {
   		
   		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 		if(requirementEmptyMessage > 0) {
-			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?exportType=pdf&searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;
+			window.location.href = atsUrl+"/getRequirementExportListByOrgLocationID?exportType=pdf&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;
 		} else {
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -995,7 +955,7 @@ function exportToPdf(type) {
 	} else {
 		/* alert("Export JobFair to PDF"); */
 		$(".buttons-pdf").click();
-		window.location.href = sourceleadUrl +"/pdfExportForJobfair?includeInactive=true&searchValue="+$("#jobFairDataTableSearch").val();
+		window.location.href = atsUrl +"/pdfExportForJobfair?includeInactive=true&searchValue="+$("#jobFairDataTableSearch").val();
 	}
 }
 </script>
@@ -1061,7 +1021,7 @@ function exportToExcel(type) {
   		
   		var requirementEmptyMessage = $("#requirementEmptyListMessage").val();
 		if(requirementEmptyMessage > 0) {
-			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?exportType=xls&searchType="+searchType+"&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;	
+			window.location.href = atsUrl+"/getRequirementExportListByOrgLocationID?exportType=xls&filterStatus="+filterStatus+"&filterClients="+filterClients+"&searchValue="+searchValue+"&filterPriority="+filterPriority+"&filterJobType="+filterJobType+"&filterAssignTo="+filterAssignTo+"&filterSpecJobs="+filterSpecJobs+"&filterProjectId="+filterProjects+"&city="+city;	
 		} else {
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1120,10 +1080,10 @@ function getActions(){
 			 $(".advancedsearch-mask").fadeIn();
 			 $("#requirementFilterPopup").toggle();
 		}
-		function closeAdsrch(){
+		/* function closeAdsrch(){
 			$("div.cand-advsrch-popup").fadeOut();
 			$(".advancedsearch-mask").fadeOut();
-		};
+		}; */
 	</script>
 
 <script>
@@ -1265,7 +1225,7 @@ function refreshGoogleApiCity(cityId){
 
 
 
-<!-- <div class="sideMask"></div> -->
+<div class="sideMask"></div>
 <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="requirementFilterPopup">
 <h5 class="headerAdsrch">Filters <a href="javascript:void(0)" class="close-div" onClick="closeFilter()"><i class="fa fa-close"></i></a></h5>
 <div class="addInner">

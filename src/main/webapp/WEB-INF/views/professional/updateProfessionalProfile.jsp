@@ -2,11 +2,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
  <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/crowdsourcingstyles.css?staticTime=${staticTime}" rel="stylesheet">
-<style>
-.margin-down{
-    margin-bottom: 100px;
-}
-</style>
  <!--  <script> 
 $(document).ready(function(){
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
@@ -23,7 +18,7 @@ $(document).ready(function(){
 				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
                           <div class="col-md-6 mt">
 	                        <div class="small-widget bg-purple">
-	                            <a href="<c:url value='${appPath}/professionalPraseCandidate'/>"  title="Parse Resume">
+	                            <a href="<c:url value='${SourceLeadWeb_atsUrl}/professionalPraseCandidate'/>"  title="Parse Resume">
 	                                <div class="clearfix mb10">
 	                                <i class="fa fa-file-text-o fa-4x"></i>
 	                                    <span class="fa fa-arrow-right"></span>
@@ -34,7 +29,7 @@ $(document).ready(function(){
 					  </div>
 					  <div class="col-md-6 mt">
                           <div class="small-widget bg-yellow">
-                              <a href="<c:url value='${appPath}/professionalAddProfile'/>" title="Add Profile">
+                              <a href="<c:url value='${SourceLeadWeb_atsUrl}/professionalAddProfile'/>" title="Add Profile">
                                   <div class="clearfix mb10">
                                       <i class="fa fa-user-circle fa-4x"></i>
                                       <span class="fa fa-plus"></span>

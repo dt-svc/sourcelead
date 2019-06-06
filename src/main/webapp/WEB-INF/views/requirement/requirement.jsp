@@ -997,7 +997,7 @@ $(document).ready(function () {
 														class="fa fa-folder-open-o"></i>&nbsp;Browse File <input
 														type="file" id="uploadBtn" class="hidden upload">
 												</span>
-												</label> <input type="text" class="form-control input-sm" readonly
+												</label> <input type="text" class="form-control" readonly
 													id="uploadFile" name="docFile"
 													placeholder="Upload File ..." field-name="Upload Resume"
 													data-validation="validate_docimgpdf"
@@ -2204,6 +2204,23 @@ $(document).ready(function () {
 										</select>
 									</div>
 								</div>
+								<!--  added for workflow integration for job start here  -->
+								<div class="form-group">
+									<label class="col-md-3">Workflow<span
+										class="text-danger paddingLeft">*</span></label>
+									<div class="col-md-9">
+
+										<select class="chosen-select form-control"
+											data-validation="required" field-name="Workflow"
+											name="workflow" id="workflowId">
+											<c:forEach var="workflow" items="${workflowList}">
+													<option value="${workflow.id}"
+														${workflow.configureType=='Default'? 'selected' : ''}>${workflow.workFlowName}</option>
+											</c:forEach>
+										</select>
+									</div>
+								</div>
+								<!--  added for workflow integration for job end here -->
 								<div class="form-group" id="internalSubmissionFrom">
 									<label class="col-md-3">Application Form<span
 										class="text-danger paddingLeft">* </span><i
@@ -2344,7 +2361,7 @@ $(document).ready(function () {
 			<form role="form" id="team_form" name="team_form" method="post">
 				<div class="modal-content" id="assignTeamDiv">
 					<div class="modal-header">
-						<button data-dismiss="modal" class="close" type="button">ï¿½</button>
+						<button data-dismiss="modal" class="close" type="button"><i class="fa fa-times"></i></button>
 						<h4 class="modal-title">Add Team</h4>
 					</div>
 					<div class="modal-body clearfix">
@@ -2549,7 +2566,6 @@ function validateProfilePercentage(){
 			$("#primaryRecruiterUserId").parent().find("p").remove();
 		}
 	}
-	
 	function getSavedJobFairsForRequirement() {
 		if(requirementId > 0) {
 			$.ajax({
