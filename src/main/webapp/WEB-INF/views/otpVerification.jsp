@@ -13,11 +13,7 @@
 <style>
 
 .timer{
-    color: #1B232F;
-    font-family: Verdana, Arial, sans-serif;
-    font-size: 18px;
-    font-weight: bold;
-    text-decoration: none;
+    color: #1B232F; font-family: Verdana, Arial, sans-serif; font-size: 18px; font-weight: bold; text-decoration: none;
 }
 
 

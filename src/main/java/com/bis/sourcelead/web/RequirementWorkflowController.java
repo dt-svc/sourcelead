@@ -257,9 +257,10 @@ public class RequirementWorkflowController {
 	  		}
  	  		    if (sortColumnIndex != -1) {
  	  			 requirementWorkFlowDTO.setSortOrder(sortColumnOrder);
+ 	  			  requirementWorkFlowDTO.setSortColumn(tableColumns[sortColumnIndex]);
  	  		    }
 	  		
-	  			requirementWorkFlowDTO.setSortColumn(tableColumns[sortColumnIndex]);
+	  			
 	  			
 			responseList = requirementWorkFlowService.getRequirementWorkFlowList(requirementWorkFlowDTO, orgLocations);
 		}catch(Exception e) {

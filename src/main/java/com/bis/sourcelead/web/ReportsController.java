@@ -877,6 +877,19 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		
 	}
 
+	@RequestMapping(value = "/pendingForExpenseApprovalReport")
+	public ModelAndView pendingForExpenseApprovalReport(HttpServletRequest request) throws Exception
+	{
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 ModelAndView model = new ModelAndView();
+		 List<Projects> projectList = projectsService.getAllProjectByOrgLocationsId(orgLocation.getId());
+		 model.addObject("projectList", projectList);
+		 model.setViewName("reports/pendingForExpenseApprovalReport");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 return model;
+	}
+	
+	
 	@RequestMapping(value = "/releasedJobsListByOrgRelationId")
 	public ModelAndView releasedJobsListByOrgRelationId(@RequestParam(value="orgRelationId", required=true)Long orgRelationId,
 			@RequestParam(value="spocId", required=true)Long spocId,
