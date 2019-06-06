@@ -90,7 +90,7 @@
 	       "ajax": $.fn.dataTable.pipeline( {
 	           url: url,
 	           method: 'POST',
-	           pages: 1
+	           pages: 20
 	       }),
 	       "columns": [
 	    	   {"data": "id"},
@@ -169,7 +169,7 @@
 		    	"bDestroy": true,
 		    	"ordering": true,
 		    	"createdRow": function ( row, data, index ) {
-		    		row.setAttribute('id',"ticketType_"+data.id);
+		    		row.setAttribute('id',"candidateSource_"+data.id);
 	    	    },
 		    	"initComplete": function( settings, json ) {
 		    		 $('#candidateSourceTableSearch').removeAttr('disabled');
