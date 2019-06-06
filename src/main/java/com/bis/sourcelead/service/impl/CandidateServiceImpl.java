@@ -1518,6 +1518,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}else{
 			candidate.setPanNumber(null);
 		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+			candidate.setSsnNumber(addUserDTO.getSsn());
+	    }
+		
 		if(StringUtils.isNotBlank(candidateDTO.getAadharNumber())){
 			candidate.setAadharNumber(candidateDTO.getAadharNumber());
 		}else{
