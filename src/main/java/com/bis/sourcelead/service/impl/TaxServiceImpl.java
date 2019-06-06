@@ -1580,7 +1580,7 @@ public class TaxServiceImpl implements TaxService {
 			long orgLocationId, User user) throws Exception {
 		File file = null;
 		try {
-			OrgLocations orgLoc = orgLocationsDao.getOrgLocations(orgLocationId);
+			 OrgLocations orgLoc = orgLocationsDao.getOrgLocations(orgLocationId);
 			 Candidate can = candidateService.getCandidateByConsultantUserId(user.getId(), orgLoc.getId());
 			if(orgLoc != null) {
 				Workbook createExcelworkbook = new XSSFWorkbook();
@@ -1591,7 +1591,7 @@ public class TaxServiceImpl implements TaxService {
 				createExcelsheet = getItDeclarationSubmissionExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook, sourceleadTaxITDeclarationSubmissionDetails, orgLoc, user,can);
 				
 				
-				// this code for writing data
+				//for writing data in body
 				int row = 11;
 				JSONArray submissionItemsArray = new JSONArray(sourceleadTaxITDeclarationSubmissionDetails.getSubmissionItems());
 				if (submissionItemsArray != null) {
@@ -1619,7 +1619,7 @@ public class TaxServiceImpl implements TaxService {
 					}
 					
 	
-					//for footer
+					//for adding footer
 					int lastRow = createExcelsheet.getLastRowNum() +1 ;
 					createExcelsheet = getItDeclarationSubmissionExcelSheetWithFooter(createExcelsheet, writeRow, createExcelworkbook, sourceleadTaxITDeclarationSubmissionDetails, orgLoc, user,lastRow);
 					
@@ -1652,25 +1652,23 @@ public class TaxServiceImpl implements TaxService {
 			Workbook createExcelworkbook,
 			SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, OrgLocations orgLoc,
 			User user, int rowNum) {
-			String[] headers = null;
-		    headers = Constants.IT_DECRALARATION_FOOTER;
+		String[] headers = null;
+		headers = Constants.IT_DECRALARATION_FOOTER;
 		
 		CellStyle style4 = createExcelworkbook.createCellStyle();
 		style4.setFillForegroundColor(IndexedColors.WHITE.getIndex());
 		style4.setFillPattern(CellStyle.SOLID_FOREGROUND);
 		style4.setAlignment(CellStyle.ALIGN_JUSTIFY);
 	    style4.setVerticalAlignment(CellStyle.VERTICAL_JUSTIFY);
-	    
-	    style4.setBorderLeft(CellStyle.BORDER_THICK);
-	    style4.setLeftBorderColor(IndexedColors.BLACK.getIndex());
-	    style4.setBorderRight(CellStyle.BORDER_THICK);
-	    style4.setRightBorderColor(IndexedColors.BLACK.getIndex());
-
 		org.apache.poi.ss.usermodel.Font font4 = createExcelworkbook.createFont();
 		font4.setColor(IndexedColors.BLACK.getIndex());
 		font4.setItalic(true);
 		style4.setFont(font4);
 		
+		CellStyle style45 = createExcelworkbook.createCellStyle();
+		style45.setBorderLeft(CellStyle.BORDER_THIN);
+		style45.setLeftBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+		    
 		
 		CellStyle style5 = createExcelworkbook.createCellStyle();
 		org.apache.poi.ss.usermodel.Font font5 = createExcelworkbook.createFont();
@@ -1699,7 +1697,14 @@ public class TaxServiceImpl implements TaxService {
 		Cell cell5 = writeRow.createCell(0);
 		cell5.setCellValue("1. " +headers[1]);
 		cell5.setCellStyle(style4);
-
+		Cell cell50 = writeRow.createCell(5);
+		cell50.setCellStyle(style45);
+		writeRow = createExcelsheet.createRow(rowNum + 4);
+		Cell cell56 = writeRow.createCell(5);
+		cell56.setCellStyle(style45);
+		writeRow = createExcelsheet.createRow(rowNum + 5);
+		Cell cell57 = writeRow.createCell(5);
+		cell57.setCellStyle(style45);
 		
 		createExcelsheet.addMergedRegion(new CellRangeAddress(rowNum + 7, rowNum + 8, 0, 4));
 		createExcelsheet.addMergedRegion(new CellRangeAddress(rowNum + 9, rowNum + 9, 0, 4));
@@ -1709,6 +1714,12 @@ public class TaxServiceImpl implements TaxService {
 		Cell cell17 = writeRow.createCell(0);
 		cell17.setCellValue("2. " +headers[2]);
 		cell17.setCellStyle(style4);
+		Cell cell55 = writeRow.createCell(5);
+		cell55.setCellStyle(style45);
+		writeRow = createExcelsheet.createRow(rowNum + 8);
+		Cell cell58 = writeRow.createCell(5);
+		cell58.setCellStyle(style45);
+		
 		
 		createExcelsheet.addMergedRegion(new CellRangeAddress(rowNum +10 , rowNum + 10, 0, 4));
 		createExcelsheet.addMergedRegion(new CellRangeAddress(rowNum + 11, rowNum + 11, 0, 4));
@@ -1718,6 +1729,8 @@ public class TaxServiceImpl implements TaxService {
 		Cell cell19 = writeRow.createCell(0);
 		cell19.setCellValue("3. " +headers[3]);
 		cell19.setCellStyle(style4);
+		Cell cell54 = writeRow.createCell(5);
+		cell54.setCellStyle(style45);
 		
 		
 		createExcelsheet.addMergedRegion(new CellRangeAddress(rowNum + 12, rowNum + 12, 0, 4));
@@ -1731,7 +1744,7 @@ public class TaxServiceImpl implements TaxService {
 		writeRow = createExcelsheet.createRow(rowNum + 13);
 		createExcelsheet.setColumnWidth(0, 10000);
 		Cell cell22 = writeRow.createCell(0);
-		cell22.setCellValue(headers[5]);
+		cell22.setCellValue(headers[5] +" -  " + commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), new Date()) );
 		cell22.setCellStyle(style6);
 		
 		
@@ -1739,13 +1752,12 @@ public class TaxServiceImpl implements TaxService {
 		writeRow = createExcelsheet.createRow(rowNum + 14);
 		createExcelsheet.setColumnWidth(0, 10000);
 		Cell cell23 = writeRow.createCell(0);
-		cell23.setCellValue(headers[6]);
+		cell23.setCellValue(headers[6] +" -  " +(orgLoc.getCity() != null ? orgLoc.getCity() : ""));
 		cell23.setCellStyle(style6);
 		Cell cell26 = writeRow.createCell(2);
 		cell26.setCellValue(headers[7]);
 		cell26.setCellStyle(style6);
-		
-		
+	
 		
 				return createExcelsheet;
 		
@@ -1782,18 +1794,29 @@ public class TaxServiceImpl implements TaxService {
 		    font2.setItalic(true);
 			style2.setFont(font2);
 					
-			
-			String finYear = sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear();
-			
+			    int startYear = Integer.parseInt(sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear().split("-")[0]);
+				String startDay = "";
+				if(orgLoc.getStartMonth() != null && !orgLoc.getStartMonth().isEmpty()) {
+					String 	fromDate = CalendarUtil.getMonthStartDateAndEndDateWithPrefixByMonth(orgLoc.getStartMonth(), startYear, true);
+		        	startDay = fromDate.split(" ")[0].substring(0, fromDate.toString().split(" ")[0].length() - 2);	
+		        }else startDay ="__";
+				
+				int endYear = Integer.parseInt(sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear().split("-")[1]);
+				String endDay ="";
+				if(orgLoc.getEndMonth() != null && !orgLoc.getEndMonth().isEmpty()) {
+					String	toDate = CalendarUtil.getMonthStartDateAndEndDateWithPrefixByMonth(orgLoc.getEndMonth(), endYear, false);
+					 endDay = toDate.toString().split(" ")[0].substring(0, toDate.toString().split(" ")[0].length() - 2);
+				}else endDay ="__";
+				
+											
 			writeRow = createExcelsheet.createRow(0);
 			Cell cell1 = writeRow.createCell(0);
-			cell1.setCellValue(Constants.IT_DECRALARATION_HEADER1 +finYear);
+			cell1.setCellValue(Constants.IT_DECRALARATION_HEADER1 +startYear+"-"+endYear);
 			cell1.setCellStyle(style1);
-			createExcelsheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 3));
-				
-			String[] year = finYear.split("-");			
-			String Header2 = Constants.IT_DECRALARATION_HEADER2 +year[0] +" to 31/03/" +year[1] +" for Income Tax purpose)";
+			createExcelsheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 3));			
+			String Header2 = Constants.IT_DECRALARATION_HEADER2 +startDay+"/"+orgLoc.getStartMonth() != null ? orgLoc.getStartMonth().toString() : "__"+"/"+startYear+" to " +endDay +"/"+orgLoc.getEndMonth() != null ? orgLoc.getEndMonth().toString() : "__"+"/"+endYear +" for Income Tax purpose)";
 			
+				
 			writeRow = createExcelsheet.createRow(2);
 			createExcelsheet.setColumnWidth(0, 30000);
 			Cell cell2 = writeRow.createCell(0);
@@ -1808,7 +1831,7 @@ public class TaxServiceImpl implements TaxService {
 			cell3.setCellValue("Employee Code :");
 			cell3.setCellStyle(style);
 			Cell cell4 = writeRow.createCell(1);
-			cell4.setCellValue(user.getEmploymentType() != null ? user.getEmploymentType().toString() :"-NA-");
+			cell4.setCellValue(user.getEmploymentType() != null ? user.getEmploymentType().toString() :"---");
 			cell4.setCellStyle(style);
 	
 			writeRow = createExcelsheet.createRow(4);
@@ -1818,7 +1841,7 @@ public class TaxServiceImpl implements TaxService {
 			cell5.setCellValue("Employee Name :");
 			cell5.setCellStyle(style);
 			Cell cell6 = writeRow.createCell(1);
-			cell6.setCellValue(user.getFullName() != null ? user.getFullName().toString() : "-NA-");
+			cell6.setCellValue(user.getFullName() != null ? user.getFullName().toString() : "---");
 			cell6.setCellStyle(style);
 	
 			writeRow = createExcelsheet.createRow(5);
@@ -1828,7 +1851,7 @@ public class TaxServiceImpl implements TaxService {
 			cell7.setCellValue("Employee Designation : ");
 			cell7.setCellStyle(style);
 			Cell cell8 = writeRow.createCell(1);
-			cell8.setCellValue(user.getJobTitle() != null ? user.getJobTitle().toString() : "-NA-");
+			cell8.setCellValue(can.getDesignation() != null ? can.getDesignation().toString() : "---");
 			cell8.setCellStyle(style);
 	
 			writeRow = createExcelsheet.createRow(6);
@@ -1838,7 +1861,7 @@ public class TaxServiceImpl implements TaxService {
 			cell9.setCellValue("Employee PAN : ");
 			cell9.setCellStyle(style);
 			Cell cell10 = writeRow.createCell(1);
-			cell10.setCellValue(can.getPanNumber() != null ? can.getPanNumber().toString() : "-NA-" );
+			cell10.setCellValue(can.getPanNumber() != null ? can.getPanNumber().toString() : "---" );
 			cell10.setCellStyle(style);
 	
 			writeRow = createExcelsheet.createRow(7);
@@ -1847,8 +1870,9 @@ public class TaxServiceImpl implements TaxService {
 			Cell cell11 = writeRow.createCell(0);
 			cell11.setCellValue("Employee DOB : ");
 			cell11.setCellStyle(style);
-			Cell cell12 = writeRow.createCell(1);
-			cell12.setCellValue(user.getDateOfBirth() != null ? user.getDateOfBirth().toString() : "-NA-");
+			Cell cell12 = writeRow.createCell(1);			
+			String[] a = can.getDateOfBirth().toString().split("\\s+");			
+			cell12.setCellValue( commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), commonUtil.stringToDate( a[0]))  != null ?  commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), commonUtil.stringToDate( a[0])): "---");
 			cell12.setCellStyle(style);
 	
 			writeRow = createExcelsheet.createRow(8);
@@ -1858,14 +1882,12 @@ public class TaxServiceImpl implements TaxService {
 			cell13.setCellValue("Gender : ");
 			cell13.setCellStyle(style);
 			Cell cell14 = writeRow.createCell(1);
-			cell14.setCellValue(user.getGender() != null && !user.getGender().isEmpty() ? user.getGender() : "-NA-");
+			cell14.setCellValue(user.getGender() != null && !user.getGender().isEmpty() ? user.getGender() : "---");
 			cell14.setCellStyle(style);
 			
 			String[] headers = null;
 			headers = Constants.IT_DECLARATION_SUBMISSION_FORM;
 			createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 10);
-
-		//  createExcelsheet.addMergedRegion(new CellRangeAddress(0, 3, 0, 4));
 			
 		   return createExcelsheet;
 	}
