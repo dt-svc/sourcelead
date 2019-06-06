@@ -1648,6 +1648,7 @@ public class TaxServiceImpl implements TaxService {
 		return createExcelsheet;
 	}
 
+	//footers
 	private Sheet getItDeclarationSubmissionExcelSheetWithFooter(Sheet createExcelsheet, Row writeRow,
 			Workbook createExcelworkbook,
 			SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, OrgLocations orgLoc,
@@ -1758,11 +1759,11 @@ public class TaxServiceImpl implements TaxService {
 		cell26.setCellValue(headers[7]);
 		cell26.setCellStyle(style6);
 	
-		
 				return createExcelsheet;
 		
 	}
 	
+	//headers
 	private Sheet getItDeclarationSubmissionExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow,
 			Workbook createExcelworkbook,
 			SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, OrgLocations orgLoc,
@@ -1784,7 +1785,6 @@ public class TaxServiceImpl implements TaxService {
 			font1.setBold(true);
 			style1.setFont(font1);
 		
-		
 		    CellStyle style2 = createExcelworkbook.createCellStyle();
 		    style2.setAlignment(CellStyle.ALIGN_CENTER);
 		    style2.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
@@ -1793,7 +1793,8 @@ public class TaxServiceImpl implements TaxService {
 		    font2.setFontHeightInPoints((short) 9);
 		    font2.setItalic(true);
 			style2.setFont(font2);
-					
+				
+			//to find start date and end date of the month
 			    int startYear = Integer.parseInt(sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear().split("-")[0]);
 				String startDay = "";
 				if(orgLoc.getStartMonth() != null && !orgLoc.getStartMonth().isEmpty()) {
@@ -1813,10 +1814,10 @@ public class TaxServiceImpl implements TaxService {
 			Cell cell1 = writeRow.createCell(0);
 			cell1.setCellValue(Constants.IT_DECRALARATION_HEADER1 +startYear+"-"+endYear);
 			cell1.setCellStyle(style1);
-			createExcelsheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 3));			
-			String Header2 = Constants.IT_DECRALARATION_HEADER2 +startDay+"/"+orgLoc.getStartMonth() != null ? orgLoc.getStartMonth().toString() : "__"+"/"+startYear+" to " +endDay +"/"+orgLoc.getEndMonth() != null ? orgLoc.getEndMonth().toString() : "__"+"/"+endYear +" for Income Tax purpose)";
 			
-				
+			
+			createExcelsheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 3));			
+			String Header2 = Constants.IT_DECRALARATION_HEADER2 +startDay+"/"+ (orgLoc.getStartMonth() != null ? orgLoc.getStartMonth().toString() : "__")+"/"+startYear+" to " +endDay +"/"+(orgLoc.getEndMonth() != null ? orgLoc.getEndMonth().toString() : "__")+"/"+endYear +" for Income Tax purpose)";
 			writeRow = createExcelsheet.createRow(2);
 			createExcelsheet.setColumnWidth(0, 30000);
 			Cell cell2 = writeRow.createCell(0);
@@ -1870,9 +1871,14 @@ public class TaxServiceImpl implements TaxService {
 			Cell cell11 = writeRow.createCell(0);
 			cell11.setCellValue("Employee DOB : ");
 			cell11.setCellStyle(style);
-			Cell cell12 = writeRow.createCell(1);			
-			String[] a = can.getDateOfBirth().toString().split("\\s+");			
-			cell12.setCellValue( commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), commonUtil.stringToDate( a[0]))  != null ?  commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), commonUtil.stringToDate( a[0])): "---");
+			Cell cell12 = writeRow.createCell(1);	
+			if(can.getDateOfBirth() != null) {
+				String a = can.getDateOfBirth().toString().split("\\s+")[0];			
+				cell12.setCellValue( commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), commonUtil.stringToDate(a)));
+			}else {
+				cell12.setCellValue("---");
+			}
+			
 			cell12.setCellStyle(style);
 	
 			writeRow = createExcelsheet.createRow(8);
