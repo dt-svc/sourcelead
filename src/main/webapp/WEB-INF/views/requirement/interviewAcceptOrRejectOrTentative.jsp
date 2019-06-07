@@ -60,29 +60,7 @@
 		});
 </script>
 
-<style>
-body {
-background-color:#e1e6fa;
-}
-.project_wrap_table table {
-	border: 1px solid #fff;
-	border-bottom: 1px solid #909090;
-	margin-bottom: 10px;
-}
-.project_wrap_table table tr td:last-child {
-width: auto;
-}
-.tentative-user{
-	 background-color:#f0ad4e;
-	 border: 1px solid #f0ad4e;
-	 -webkit-box-shadow: 0 8px 6px -8px #505050;
-	-moz-box-shadow: 0 8px 6px -8px #505050;
-	box-shadow: 0 8px 6px -8px #505050;
-}
-.ui-timepicker-wrapper {
-width: 8%;
-}
-</style>
+
 <body>
 <div class="wraper"> 
   <!-- Header Area -->
