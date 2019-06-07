@@ -307,6 +307,14 @@ public class SourceleadResumeParserNew {
 			System.out.println("State : " + state);
 			jsonUtil.setState(state);
 			
+			//Gender
+			String gender = getGenderFromTextFile(resumeData);
+			System.out.println("Gender : " + gender);
+			
+			//Employeers
+			String employeers = getKeywordsFromTextFile(resumeData, "companies.txt");
+			System.out.println("Employeers : " + employeers);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -593,47 +601,66 @@ public class SourceleadResumeParserNew {
 		return designation;
 	}*/
 	
-	public static String getExperienceFromTextFile(String text) throws Exception {
-		Pattern p = Pattern.compile("\\d+\\W+\\s+(?:months?|years?) | "
-				+ "\\d+\\s+years?\\s+(?:and\\s*)?\\d+\\s+months?|\\d+\\s+(?:months?|years?) |"
-				+ " \\d+\\.?\\d*\\W+\\s+(?:months?|years?) |\\d+\\.?\\d*\\s+(?:months?|years?)|"
-				+ "\\d+\\W*((?i)plus(?-i))\\W*\\s+(?:months?|years?)");
-
-		Matcher found = p.matcher(text);
-		String experience = "";
+	private String getExperienceFromTextFile(String text) {
 		String years = "", months = "";
-		if (found.find()) {
-			experience = found.group(0).trim();
-		} else {
-			String exp = "\\w+\\s+\\bplus\\b+\\s+(?:months?|years?)";
-			Pattern t = Pattern.compile(exp);
-			Matcher n = t.matcher(text);
+		try {
+			Pattern p = Pattern.compile("\\d+\\W+\\s+(?:months?|years?) | "
+					+ "\\d+\\s+years?\\s+(?:and\\s*)?\\d+\\s+months?|\\d+\\s+(?:months?|years?) |"
+					+ " \\d+\\.?\\d*\\W+\\s+(?:months?|years?) |\\d+\\.?\\d*\\s+(?:months?|years?)|"
+					+ "\\d+\\W*((?i)plus(?-i))\\W*\\s+(?:months?|years?)");
+	
+			Matcher found = p.matcher(text);
+			String experience = "";
+			if (found.find()) {
+				experience = found.group(0).trim();
+			} else {
+				String exp = "\\w+\\s+\\bplus\\b+\\s+(?:months?|years?)";
+				Pattern t = Pattern.compile(exp);
+				Matcher n = t.matcher(text);
+				if (n.find()) {
+					experience = n.group(0).trim();
+				}
+			}
+			if(!experience.isEmpty()) {
+				String[] expArray = experience.split("\\.");
+				years = expArray[0].trim();
+				years = years.length() > 2 ? years.substring(0, 2) : years;
+				if(expArray.length > 1) {
+					months = expArray[1].trim();
+					months = months.length() > 2 ? months.substring(0, 2) : months;
+				}
+			}
+	
+			String r="(\\d+\\.?\\d*)";
+			Pattern t = Pattern.compile(r);
+			Matcher n = t.matcher(years);
 			if (n.find()) {
-				experience = n.group(0).trim();
+				years = n.group(0);
 			}
-		}
-		if(!experience.isEmpty()) {
-			String[] expArray = experience.split("\\.");
-			years = expArray[0].trim();
-			years = years.length() > 2 ? years.substring(0, 2) : years;
-			if(expArray.length > 1) {
-				months = expArray[1].trim();
-				months = months.length() > 2 ? months.substring(0, 2) : months;
+			
+			Matcher m = t.matcher(months);
+			if (m.find()) {
+				months = m.group(0);
 			}
-		}
-
-		String r="(\\d+\\.?\\d*)";
-		Pattern t = Pattern.compile(r);
-		Matcher n = t.matcher(years);
-		if (n.find()) {
-			years = n.group(0);
-		}
-		
-		Matcher m = t.matcher(months);
-		if (m.find()) {
-			months = m.group(0);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return years + ":" + months;
-	}	
+	}
+	
+	private String getGenderFromTextFile(String text) {
+		String gender = "";
+		try {
+			String r="^(?:m|M|male|Male|f|F|female|Female)$";
+			Pattern t = Pattern.compile(r);
+			Matcher n = t.matcher(text);
+			if (n.find()) {
+				gender = n.group(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return gender;
+	}
 
 }
