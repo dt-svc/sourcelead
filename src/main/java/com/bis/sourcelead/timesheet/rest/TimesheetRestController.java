@@ -2486,6 +2486,8 @@ public class TimesheetRestController {
                    if(StringUtils.isEmpty(weekComment) && frequencyStartDate != null && frequencyEndDate != null) {
 						String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
 						if(StringUtils.isNotEmpty(comment));
+						timesheetSubmissions.setWeekcomments(comment);
+					}else {
 						timesheetSubmissions.setWeekcomments(weekComment);
 					}
 					
@@ -2513,7 +2515,9 @@ public class TimesheetRestController {
 				if(StringUtils.isEmpty(weekComment)  && frequencyStartDate != null && frequencyEndDate != null) {
 						String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
 						if(StringUtils.isNotEmpty(comment));
-						timesheetSubmissions.setWeekcomments(weekComment);
+						timesheetSubmissions.setWeekcomments(comment);
+			     }else {
+			    	 timesheetSubmissions.setWeekcomments(weekComment);
 			     }
 				
 
@@ -5447,6 +5451,8 @@ public class TimesheetRestController {
 						String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
 						if(StringUtils.isNotEmpty(comment));
 						timesheetSubmissions.setWeekcomments(comment);
+					}else {
+						timesheetSubmissions.setWeekcomments(tsDTO.getWeekComment());
 					}
 					submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(new ArrayList<>(freshSaHierarchyList));
 					timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
@@ -5480,6 +5486,8 @@ public class TimesheetRestController {
 					String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
 					if(StringUtils.isNotEmpty(comment));
 					timesheetSubmissions.setWeekcomments(comment);
+				}else {
+					timesheetSubmissions.setWeekcomments(tsDTO.getWeekComment());
 				}
 				
 				ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
@@ -6259,6 +6267,8 @@ public class TimesheetRestController {
 						String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
 						if(StringUtils.isNotEmpty(comment));
 						timesheetSubmissions.setWeekcomments(comment);
+					}else {
+						timesheetSubmissions.setWeekcomments(tsDTO.getWeekComment());
 					}
 					timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
 					timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());

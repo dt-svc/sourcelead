@@ -12,20 +12,8 @@
 
 
 <style type="text/css">
-.require_wrap_details{
-text-align:left;
-}
-#skillName {
-width: 100%;
-}
-
-.iconpostion {
-position: relative; top:7px;
-}
-.chosen-container {
-    width: 100% !important;
-
-}
+#skillName { width: 100%; }
+.chosen-container { width: 100% !important; }
 </style>
 
 
@@ -664,7 +652,7 @@ function candidateProfile(candidateId){
 
 							}
 							result = result + '<div id="profileEditPopup"></div>';
-							result = result +'<div class="require_wrap_details">';	 
+							result = result +'<div class="require_wrap_details require_wrap_details_text_left">';	 
 							result = result +'		<h1>Summary:</h1>';
 							result = result +'	    <textarea placeholder="Enter description" readonly>'+summary+'</textarea>';
 							
