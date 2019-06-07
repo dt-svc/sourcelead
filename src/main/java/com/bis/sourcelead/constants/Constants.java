@@ -629,10 +629,11 @@ public class Constants {
 	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
+	// "Workflow" removed from the below list as it planned for next build SRINIVA SABBU 07- JUNE-2019.
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title*",
 			"Min Experience", "Max Experience", "Min/Max Rate", "Location*", "City",	"State", "Country", "Zip Code",	
 			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
-			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority*","Description", "Workflow", "Attachment", "Manager(Email)*", "Approver", "Assign To",
+			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority*","Description", "Attachment", "Manager(Email)*", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category*", "Work Status*",
