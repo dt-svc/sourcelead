@@ -202,6 +202,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<li><a href="${SourceLeadWeb_sourceleadUrl}/expensesReportsList">Expense(s)</a></li>
 				</sec:authorize>
 				
+				 <sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/pendingForExpenseApprovalReport">Pending for Approval Expenses</a></li>
+				</sec:authorize>
+				
 				<sec:authorize access="hasRole('ROLE_MISSING_TIMESHEETS')">
                 <li><a href="${SourceLeadWeb_sourceleadUrl}/missingTimesheetsReport">Missing Timesheet(s)</a></li>
                 </sec:authorize>
