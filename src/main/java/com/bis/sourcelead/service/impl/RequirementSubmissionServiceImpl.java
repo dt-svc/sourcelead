@@ -741,14 +741,17 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 default:
 					 reqCoolingOffPeriodDays = "0";
 			 }*/
-			 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
-                 if(jsonObj.getString("needApplicantPermit").equals("Y")){
-                     requirementSubmission.setNeedApplicantPermit("Y");
-                     requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
-                 }
-             }else{
-                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+		
+		 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
+             if(jsonObj.getString("needApplicantPermit").equals("Y")){
+                 requirementSubmission.setNeedApplicantPermit("Y");
+                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
              }
+         }
+		else{
+                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+             }	 
+		
 			 /*requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
@@ -3832,7 +3835,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("requirementId")));
 			 requirementSubmission.setRequirement(requirement);
 			 requirementSubmission.setSubmissionTemplateJsonString(requirement.getSubmissionTemplateJsonString());
-			 
 		 }
 		 
 		 if(jsonObj.has("candidateId") && !isNullOrEmpty(jsonObj.getString("candidateId"))){
@@ -5060,8 +5062,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation) throws Exception
 	{
-		CandidateVerificationConfig candidateVerificationConfig =new CandidateVerificationConfig();
-		candidateVerificationConfig = candidateService.getCandidateVerificationConfig(orgLocation.getId());
+		CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(orgLocation.getId());
 		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation,candidateVerificationConfig);
 	}
 	

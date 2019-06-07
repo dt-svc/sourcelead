@@ -3819,7 +3819,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
-<<<<<<< HEAD
+
 	public CandidateVerificationConfig saveDuplicateCheckConfig(CandidateVerificationConfigDTO candidateVerificationConfigDTO, OrgLocations loginOrgLocation,
 			User userId) {
 		CandidateVerificationConfig candidateVerificationConfig = null;
