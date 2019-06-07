@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -273,14 +274,29 @@ public class SourceleadResumeParserNew {
 			
 			Set<String> phoneNumberSet = new LinkedHashSet<>();
 			phoneNumberSet.add(getMobileNumber(resumeData));
+			
 			jsonUtil.setPhoneNumbers(phoneNumberSet);
 			jsonUtil.setSkills(getSkillsFromTextFile(resumeData));
-			jsonUtil.setDesignation(getDesignationFromTextFile(resumeData));
+			jsonUtil.setDesignation(getKeywordsFromTextFile(resumeData, "designation.txt"));
 			
+			//Experience
 			String experience = getExperienceFromTextFile(resumeData);
-//			jsonUtil.setTotalYearsExp(experience.split(":")[0]);
-//			jsonUtil.setTotalMonthsExp(experience.split(":")[1]);
-			System.out.println("Exp : " + experience);
+			jsonUtil.setTotalYearsExp(experience.split(":").length > 0 && !experience.split(":")[0].isEmpty() ? Integer.parseInt(experience.split(":")[0]) : 0);
+			jsonUtil.setTotalMonthsExp(experience.split(":").length > 1 && !experience.split(":")[1].isEmpty() ? Integer.parseInt(experience.split(":")[1]) : 0);
+			
+			//Education
+			String eduSSC = getKeywordsFromTextFile(resumeData, "education_SSC.txt");
+			String edueIntermediate = getKeywordsFromTextFile(resumeData, "education_intermediate.txt");
+			String eduUG = getKeywordsFromTextFile(resumeData, "education_ug.txt");
+			String eduPG = getKeywordsFromTextFile(resumeData, "education_pg.txt");
+			
+			Set<String> educationsSet = new LinkedHashSet<>();
+			educationsSet.add(eduSSC);
+			educationsSet.add(edueIntermediate);
+			educationsSet.add(eduUG);
+			educationsSet.add(eduPG);
+			
+			jsonUtil.setEducations(educationsSet);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -481,11 +497,14 @@ public class SourceleadResumeParserNew {
 	}
 	
 	@SuppressWarnings("resource")
-	private String getKeywordsFromTextFile(String parsedString, String textFile, String textFileLocation) {
+	private String getKeywordsFromTextFile(String parsedString, String textFile) {
 		String result = "";
 		Set<String> keywordsSet = new HashSet<>();
 		try {
-			File file = new File(textFileLocation, textFile);
+			String fn = "/dictionary/" + textFile;
+			URL url = getClass().getResource(fn);
+			File file = new File(url.toURI());
+			
 			String keywords = "";
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			while (br.readLine() != null) {
@@ -512,7 +531,9 @@ public class SourceleadResumeParserNew {
 //		String skills = "";
 		Set<String> skillsSet = new HashSet<>();
 		try {
-			File file = new File(textFileLocation, "Skills.txt");
+			String fn = "/dictionary/skills.txt";
+			URL url = getClass().getResource(fn);
+			File file = new File(url.toURI());
 			String skillKeywords = "";
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			while (br.readLine() != null) {
@@ -533,12 +554,14 @@ public class SourceleadResumeParserNew {
 		return skillsSet;
 	}
 	
-	@SuppressWarnings("resource")
+	/*@SuppressWarnings("resource")
 	private String getDesignationFromTextFile(String parsedString) {
 		String designation = "";
 		Set<String> designationSet = new HashSet<>();
 		try {
-			File file = new File(textFileLocation, "designation.txt");
+			String fn = "/dictionary/designation.txt";
+			URL url = getClass().getResource(fn);
+			File file = new File(url.toURI());
 			String designationKeywords = "";
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			while (br.readLine() != null) {
@@ -559,7 +582,7 @@ public class SourceleadResumeParserNew {
 			e.printStackTrace();
 		}
 		return designation;
-	}
+	}*/
 	
 	public static String getExperienceFromTextFile(String text) throws Exception {
 		Pattern p = Pattern.compile("\\d+\\W+\\s+(?:months?|years?) | "
@@ -588,6 +611,18 @@ public class SourceleadResumeParserNew {
 				months = expArray[1].trim();
 				months = months.length() > 2 ? months.substring(0, 2) : months;
 			}
+		}
+
+		String r="(\\d+\\.?\\d*)";
+		Pattern t = Pattern.compile(r);
+		Matcher n = t.matcher(years);
+		if (n.find()) {
+			years = n.group(0);
+		}
+		
+		Matcher m = t.matcher(months);
+		if (m.find()) {
+			months = m.group(0);
 		}
 		return years + ":" + months;
 	}	
