@@ -227,8 +227,8 @@ public class RequirementDTO extends CommonDTO {
 	private String startDateStr;
 	
 	private String endDateStr;
-	
-	private String workflow;
+	// below lines is commented for to move in next release build.!--//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
+	//private String workflow;
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
@@ -1614,13 +1614,13 @@ public class RequirementDTO extends CommonDTO {
 		this.endDateStr = endDateStr;
 	}
 
-	public String getWorkflow() {
+/*	public String getWorkflow() {
 		return workflow;
 	}
 
 	public void setWorkflow(String workflow) {
 		this.workflow = workflow;
-	}
+	}*/
 	
 	
 }

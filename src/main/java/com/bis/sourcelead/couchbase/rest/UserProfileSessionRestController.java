@@ -120,8 +120,9 @@ public class UserProfileSessionRestController {
 			 System.out.println("Uploading userprofile details to Couchbase ends");
 		 }
 	 }
-	 
-	@RequestMapping(value = "/ws/saveWorkflowIdForAllOrgsInRequirement", method = RequestMethod.GET)
+	 //WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
+	// below lines is commented for to move in next release build.
+	/*@RequestMapping(value = "/ws/saveWorkflowIdForAllOrgsInRequirement", method = RequestMethod.GET)
 	public void saveWorkflowIdForAllOrgsInRequirement() {
 		System.out.println("Started saving workflowId in requirement table for all orgs.");
 		List<OrgLocations> orgLocationsList = new ArrayList<OrgLocations>();
@@ -192,5 +193,5 @@ public class UserProfileSessionRestController {
 				exceptionList1.forEach(System.out::println);
 			}
 		}
-	}
+	}*/
 }
