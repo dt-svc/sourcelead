@@ -2,8 +2,11 @@ package com.bis.sourcelead.clockInOutUtil;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import org.joda.time.DateTime;
@@ -408,5 +411,159 @@ private Date[] nextDays(String currentDate, String dateFormat, Date empJoiningDa
 	return dates;
 }
 
+public List<String> getAllDatesBetweenTwoDates(OrgLocations orgLocation, Date[] dateArray) throws Exception {
+	
+	List<String> dates = new ArrayList<>();
+	dates.add("Employee Name");
+	Calendar calendar = new GregorianCalendar();
+    calendar.setTime(dateArray[0]);
+
+    while (calendar.getTime().before(dateArray[1]) || calendar.getTime().equals(dateArray[1]))
+    {
+        Date result = calendar.getTime();
+        dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), result));
+        calendar.add(Calendar.DATE, 1);
+    }
+    return dates;
+}
+
+public List<String> getAllMonthsOfCurrentYear(OrgLocations orgLocation,Date[] dateArray) {
+	
+	
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+	
+	List<String> dates = new ArrayList<>();
+	dates.add("Employee Name");
+	 Calendar calendar = new GregorianCalendar();
+	    calendar.setTime(dateArray[0]);
+	     
+	    Calendar endCalendar = new GregorianCalendar();
+	    endCalendar.setTime(dateArray[1]);
+	 
+	    while (calendar.before(endCalendar)) {
+	        Date result = calendar.getTime();
+	        String convertedDate = sdf.format(result);
+	        dates.add(convertedDate);
+	        calendar.add(Calendar.MONTH, 1);
+	    }
+	return dates;
+}
+
+public Date[] getClockFilterPreviousDates(String currentDate, Date empJoiningDate, OrgLocations location, String dayWisetype) {
+	
+	Date[] searchDates = null;
+	String[] str = currentDate.split(" To ");
+	
+	try {
+		
+		if(empJoiningDate != null) {
+			  if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+		  			searchDates = previousDays(currentDate,location.getDateFormat(),empJoiningDate);
+		  		}else if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_7_DAYS)) {
+		  			searchDates = previousWeeks(str[0],location.getDateFormat());
+		  		}else if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_MONTH)) {
+		  			searchDates = previousMonthDates(str[0],location.getDateFormat());
+		  		}else if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_YEAR)) {
+		  			searchDates = previousYearDates(str[0],location.getDateFormat());
+		  		}
+		}else {
+			searchDates = new Date[2];
+			  if(dayWisetype.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+				  searchDates[0] = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+				  searchDates[1] = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+			  }else {
+					searchDates[0] = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[0]);
+					searchDates[1] = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[1]);
+
+			  }
+		}
+	    	  
+	      
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return searchDates;
+}
+
+public Date[] getClockFilterNextDates(String currentDate, Date empJoiningDate, OrgLocations location, String dayWiseType) {
+	
+	Date[] searchDates = null;
+	String[] str = currentDate.split(" To ");
+	
+	try {
+		
+		if(empJoiningDate != null) {
+			  if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+		  			searchDates = nextDays(currentDate,location.getDateFormat(),empJoiningDate);
+		  		}else if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_7_DAYS)) {
+		  			searchDates = nextWeeks(currentDate,location.getDateFormat());
+		  		}else if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_MONTH)) {
+		  			searchDates = nextMonthDates(str[1],location.getDateFormat());
+		  		}else if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_CURRENT_YEAR)) {
+		  			searchDates = nextYearDates(str[1],location.getDateFormat());
+		  		}
+		}else {
+			searchDates = new Date[2];
+			  if(dayWiseType.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+				  searchDates[0] = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+				  searchDates[1] = commonUtil.orgLocationDateFormat(location.getDateFormat(), currentDate);
+			  }else {
+					searchDates[0] = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[0]);
+					searchDates[1] = commonUtil.orgLocationDateFormat(location.getDateFormat(), str[1]);
+
+			  }
+		}
+	    	  
+	      
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return searchDates;
+	
+	
+}
+
+/**
+ * Get from and to date of current week
+ * @return Date[] Date[0] = start date ,Date[1] = End date
+ * @throws Exception 
+ */
+public Date[] currentWeek(OrgLocations orgLocations) throws Exception {
+	
+	Calendar c = Calendar.getInstance(); // this takes current date
+	c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+	
+	Date oneWeekDateUTC = c.getTime();
+	c.add(Calendar.DATE, 6);
+	Date startDateUTC = c.getTime();
+	Date[] dates = new Date[2];
+	dates[0] = oneWeekDateUTC;
+	dates[1] = startDateUTC;
+	return dates;
+	
+	
+}
+
+/**
+ * Get from and to date of current Month
+ * 
+ * @return Date[] Date[0] = start date ,Date[1] = End date
+ */
+public Date[] currentMonthDates(OrgLocations orgLocations) throws Exception {
+	
+	Calendar calendar = Calendar.getInstance();
+    calendar.set(Calendar.DAY_OF_MONTH,
+            calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+	
+	Date startDate = calendar.getTime();
+	calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+	Date toDate = calendar.getTime();
+	
+	Date[] dates = new Date[2];
+	dates[0] = startDate;
+	dates[1] = toDate;
+	
+	return dates;
+}
 	
 }
