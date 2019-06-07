@@ -292,18 +292,24 @@ function getAssociateClockInOutReportSummaryList(timeFrequency, json){
     result = result + '<th>Employee Name</th>';
     
     var report = json;
+    alert("report========="+report)
 	if(report != null && report != "" && report != "undefined"){
 		for(var key in report){
-			if(key === 'daily'){
+			 alert("key========="+key)
+// 			if(key === 'today'){
+			if(timeFrequency === 'today'){
 				for(var innerkey in report[key]){
 					result = result + '<th>'+currentDate+' <br><div class="fontSmall clearfix mt2"></div></th>';
 				}
 			}
-			if(key === 'weekly'){
+// 			}
+// 			if(key === 'weekly'){
+			if(timeFrequency === 'Last_7_days'){
 				for(var innerkey in report[key]){
 					result = result + '<th>'+innerkey+' <br><div class="fontSmall clearfix mt2"></div></th>';
 				}
 			}
+// 			}
 		}
 	}
     
@@ -327,7 +333,6 @@ function getAssociateClockInOutReportSummaryList(timeFrequency, json){
     	var currentDate = $("#frequencyID").html();
     	var sartDate = currentDate.split("To");
     	var endDate = sartDate[1].split("-");
-    	alert("endDate : "+endDate[0]);
 		for (var i=1; i<=endDate[0]; i++)
         {
 			result = result + '<th>'+i+'<br><div class="fontSmall clearfix mt2"></div></th>';
@@ -354,7 +359,9 @@ function getAssociateClockInOutReportSummaryList(timeFrequency, json){
     for (var i=0; i<json.length; i++)
     {
         var reportList = json[i];
+        alert("reportList===="+reportList)
         var len = reportList.length;
+        alert("length===="+reportList.length)
         result = result +'<tr>';
         if(reportList != null && reportList.length > 0){
 	        for(var j=0; j<reportList.length; j++){
@@ -584,7 +591,6 @@ function getCurrentDates(type){
 		type : "GET",
 		url : sourceleadUrl+ "/getCurrentDates?type="+type+"&currentDate="+currentDate+"&filterType="+dayWisetype,
 		success : function(dates) {
-			
 			if(dates != null && dates != "" && dates != "undefined"){
 				$("#frequencyID").html(dates);
 				getDynamciUserList(type);

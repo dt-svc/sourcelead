@@ -35,6 +35,7 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
+import com.bis.sourcelead.reportsDTO.MissingTimesheetResultRepotDTO;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -1426,6 +1427,103 @@ public class DynamicReport {
 			  strFromDate = commonUtil.dateStrFromOrgDateFormatter(dateFormat, laad.getStartDate());
 			  strToDate = commonUtil.dateStrFromOrgDateFormatter(dateFormat, laad.getLoanEndDate());
 			dataSource.add(empId,laad.getFirstName(),laad.getLoanAndAdvType(),laad.getLoanName(), strFromDate, strToDate,laad.getLoanTotalAmount(),laad.getLoanPaidAmount(),laad.getLoanPendingAmount(),laad.getLoanNoOfSchedules(),laad.getLoanDeductAmount(),laad.getLoanAndAdvStatus());
+		}
+		return dataSource;
+	}
+	
+	public File timesheetsPendingPdfExport(List<MissingTimesheetResultRepotDTO> missingTimesheetResultRepotList, OrgLocations orgLocations) {
+		File file = null;
+		try {
+			StringBuilder tmSbPdf = new StringBuilder();
+			file = File.createTempFile(tmSbPdf.append("TimesheetsPending").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()))
+					.toString(), ".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate).title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle)
+					.setHorizontalAlignment(HorizontalAlignment.CENTER))
+			.columns(col.column("Employee id", "Employee_id", type.stringType()),
+					col.column("Employee Name", "Employee_Name", type.stringType()),
+					col.column("Employee Type", "Employee_Type", type.stringType()),
+					col.column("Project Name", "Project_Name", type.stringType()),
+					col.column("Project Frequency", "Project_Frequency", type.stringType()),
+					col.column("Approval Mechanism", "Approval_Mechanism", type.stringType()),
+					col.column("Duration", "Duration", type.stringType()),
+					col.column("Manager 1", "Manager_1", type.stringType()),
+					col.column("Manager 2", "Manager_2", type.stringType()),
+					col.column("No of Hours", "No_Of_Hours", type.stringType()),
+					col.column("Submitted on", "Submitted_On", type.stringType()),
+					col.column("Approved by", "Approved_By", type.stringType()),
+					col.column("Approved on", "Approved_On", type.stringType()),
+					col.column("No of days Pending", "No_Of_Days_Pending", type.stringType()))
+					.pageFooter(Templates.footerComponent).setDataSource(createTimesheetsApprovePendingDataSource(missingTimesheetResultRepotList)).toPdf(pdfExporter);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	
+	
+	public File timesheetsPendingExcelExport(List<MissingTimesheetResultRepotDTO> missingTimesheetResultRepotList, OrgLocations orgLocations) {
+		File file = null;
+			try {
+				StringBuilder fileExcelSb = new StringBuilder();
+				file = File.createTempFile(fileExcelSb.append("TimesheetsPending").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date())).toString(), ".xls");
+				file.setReadable(true);
+				JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file).setDetectCellType(true).setIgnorePageMargins(true).setWhitePageBackground(false).setRemoveEmptySpaceBetweenColumns(true);
+				report().setTemplate(Templates.reportTemplate).setColumnTitleStyle(Templates.columnTitleStyle)
+				.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1").ignorePageWidth().ignorePagination()
+				.columns(col.column("Employee id", "Employee_id", type.stringType()),
+						col.column("Employee Name", "Employee_Name", type.stringType()),
+						col.column("Employee Type", "Employee_Type", type.stringType()),
+						col.column("Project Name", "Project_Name", type.stringType()),
+						col.column("Project Frequency", "Project_Frequency", type.stringType()),
+						col.column("Approval Mechanism", "Approval_Mechanism", type.stringType()),
+						col.column("Duration", "Duration", type.stringType()),
+						col.column("Manager 1", "Manager_1", type.stringType()),
+						col.column("Manager 2", "Manager_2", type.stringType()),
+						col.column("No of Hours", "No_Of_Hours", type.stringType()),
+						col.column("Submitted on", "Submitted_On", type.stringType()),
+						col.column("Approved by", "Approved_By", type.stringType()),
+						col.column("Approved on", "Approved_On", type.stringType()),
+						col.column("No of days Pending", "No_Of_Days_Pending", type.stringType()))
+						.setDataSource(createTimesheetsApprovePendingDataSource(missingTimesheetResultRepotList)).toXls(xlsExporter);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		return file;
+	}
+	
+	private DRDataSource createTimesheetsApprovePendingDataSource(List<MissingTimesheetResultRepotDTO> missingTimesheetResultRepotList) {
+		DRDataSource dataSource = new DRDataSource("Employee_id","Employee_Name","Employee_Type","Project_Name", "Project_Frequency","Approval_Mechanism","Duration","Manager_1","Manager_2","No_Of_Hours","Submitted_On","Approved_By","Approved_On","No_Of_Days_Pending");
+		try {
+			for (MissingTimesheetResultRepotDTO mtrd : missingTimesheetResultRepotList) {
+				String Manager_1 = "";
+				String Manager_2= "";
+				String Employee_id       = mtrd.getEmpId();		
+				String Employee_Name 	 = mtrd.getEmployeName();
+				String Employee_Type 	 = mtrd.getEmployeType();
+				String Project_Name  	 = mtrd.getProjectName();
+				String Project_Frequency = mtrd.getProjectFrequency();
+				String Approval_Mechanism = mtrd.getApprovalMechanism();
+				String Duration          = mtrd.getFrequency();
+				if(mtrd.getManager2() != null && !"".equalsIgnoreCase(mtrd.getManager2())) {
+				 Manager_1 		 = mtrd.getManager1();
+				 Manager_2 		 = mtrd.getManager2();
+				}
+				else{
+					Manager_1 		 = mtrd.getManager1();
+					Manager_2 = Manager_1;
+					Manager_1 ="--";
+				}
+				String No_Of_Hours 		 = mtrd.getNoOfHours();
+				String Submitted_On 	 = mtrd.getSubmittedOn();
+				String Approved_By 		 = mtrd.getApproved_By();
+				String Approved_On		 = mtrd.getApprovedDate();
+				String No_Of_Days_Pending= mtrd.getDueDays().toString();
+				dataSource.add(Employee_id,Employee_Name,Employee_Type,Project_Name,Project_Frequency,Approval_Mechanism,Duration,Manager_1,Manager_2,No_Of_Hours,Submitted_On,Approved_By,Approved_On,No_Of_Days_Pending);
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return dataSource;
 	}

@@ -13,7 +13,7 @@ public class ClockInOutAssociateReportSummaryDTO {
 	private BigInteger depId;
 	private Time clockInTime;
 	private Time clockOutTime;
-	private Time totalTime;
+	private String totalTime;
 	private Date clockInDate;
 	private Date clockOutDate;
 	private String yearDate;
@@ -63,10 +63,10 @@ public class ClockInOutAssociateReportSummaryDTO {
 	public void setClockOutTime(Time clockOutTime) {
 		this.clockOutTime = clockOutTime;
 	}
-	public Time getTotalTime() {
+	public String getTotalTime() {
 		return totalTime;
 	}
-	public void setTotalTime(Time totalTime) {
+	public void setTotalTime(String totalTime) {
 		this.totalTime = totalTime;
 	}
 	public Date getClockInDate() {
