@@ -758,7 +758,7 @@ function getEmailDetails(uuid,type) {
 			    result = result +'<h4>'+opt.subject+'</h4>';
 			    result = result +'<div class="mailCcFrom">';
 			    result = result +'<p><span>From</span> '+opt.fromMail+'</p>';
-			    result = result +'<p class="wordWrap-breakword"><span>To</span> '+opt.toMail+'</p>'; 
+			    result = result +'<p><span>To</span> '+opt.toMail+'</p>'; 
 			    result = result +'</div>';
 			    
 			    
