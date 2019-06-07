@@ -1,9 +1,12 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
   <!-- Header Area -->
   <script type="text/javascript">
 var atsUrl = '${SourceLeadWeb_atsUrl}';
@@ -26,7 +29,7 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
     <div id="configLoading"></div>
         <div class="col-md-12 mb">
           <div class="checkbox-new mt">
-            <input id="email" class="checkbox-custom" name="email" type="checkbox" checked value="Yes">
+            <input id="email" class="checkbox-custom" name="email" type="checkbox"  checked value="Yes" disabled="true" >
             <label for="email" class="checkbox-custom-label"></label>
             <span class="ml10">Email</span> </div>
             <div class="clearfix"></div>
@@ -56,7 +59,7 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
             <div class="clearfix"></div>
         </div>
        	</c:if>
-
+ <c:if test="${loginCountryName == 'India' }">
         <div class="col-md-12 mb">
           <div class="checkbox-new mt">
             <input id="aadharNumber" class="checkbox-custom" name="aadharNumber" type="checkbox" value="No">
@@ -64,12 +67,13 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
             <span class="ml10">Aadhaar Number</span> </div>
             <div class="clearfix"></div>
         </div>
+        </c:if>
 
 
         <div class="clearfix mt col-md-10 mb">
           <div class="pull-right">
-            <button type="buton" class="btn btn-primary mr" onclick="saveDuplicateCheckConfig();">Save</button>
-            <button type="buton" class="btn btn-default">Cancel</button>
+            <button type="button" class="btn btn-primary mr" onclick="saveDuplicateCheckConfig();">Save</button>
+            <button type="button" class="btn btn-default">Cancel</button>
           </div>
         </div>
         </div>
@@ -79,14 +83,13 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 
 <script>
  function saveDuplicateCheckConfig(){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	 var email 		= $('#email').val();
 	 var phoneNumber=$('#phoneNumber').val();
-	 
 	 var panNumber	=$('#panNumber').val();
 	 var id = $('#configId').val();
 	if($('#ssnNumber').val()== undefined || $('#ssnNumber').val()== null){
-	  var ssnNumber 	='N';
+	  var ssnNumber 	='No';
 	  }else{
 		  var ssnNumber = $('#ssnNumber').val(); 
 	  }
@@ -96,7 +99,7 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
  	      type: "POST",
        	  url:atsUrl+"/saveDuplicateCheckConfig?email="+email+"&phoneNumber="+phoneNumber+"&panNumber="+panNumber+"&ssnNumber="+ssnNumber+"&aadharNumber="+aadharNumber+"&id="+id,
          	success: function(json) {
-         		getDuplicateConfigData();
+         		location.replace(sourceleadUrl+"/settings")
 	        },  
      });
 	 

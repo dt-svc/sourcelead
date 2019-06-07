@@ -810,6 +810,10 @@ public class CandidateController {
 			
 			model.setViewName("requirement/candidateDuplicateVerification");
 			}
+			return model;
+			
+			}
+			
 			
 	    @RequestMapping(value = "/candidateSourceList")
 		public ModelAndView candidateSourceList(HttpServletRequest request, HttpServletResponse response)
