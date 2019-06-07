@@ -277,7 +277,7 @@
 				</div>
 				
 
-				<div class="col-md-2 reportNewCta">
+				<%-- <div class="col-md-2 reportNewCta">
 					<a href="${SourceLeadWeb_sourceleadUrl}/workflowDashboard">
 						<div class="clearfix text-center mb10">
 							<i class="workflowSVG" title="Work Flow"></i>
@@ -286,7 +286,7 @@
 							<h4>Workflow</h4>
 						</div>
 					</a>
-				</div>
+				</div> --%>
 				
 				
 				<!-- Candidate Configuration -->
