@@ -1,8 +1,5 @@
 package com.bis.sourcelead.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-@JsonIgnoreProperties(ignoreUnknown=true)
 public class DataMigrationCommonDTO extends CommonDTO {
 	private String filePath;
 	private String uploadType;
