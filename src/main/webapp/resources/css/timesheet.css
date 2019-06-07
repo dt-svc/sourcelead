@@ -11,7 +11,7 @@ a { cursor:pointer;}
 .timesheet_head { height:auto; position: relative;}
 .timesheet_head a { color: #454545;}
 .timesheet_head ul { margin:0px 0px; padding: 2px 235px 2px 0px; float:right; height:auto; /*margin-top: 5px;*/}
-.timesheet_head ul.no_search {padding: 2px 15px 2px 0px;}  
+.timesheet_head ul.no_search {padding: 2px 15px 2px 0px;}   
 .timesheet_head ul li {
     list-style-type:none; float:right; padding:5px 5px; margin:5px 0px 5px 5px; position:relative;
     font-weight:500; color:#999; cursor: pointer;}
@@ -3082,15 +3082,9 @@ contrHead ul li a.draft:after {
     padding: 0px; margin: 0px 0px; position: static; top: 0px; font-size: 14px; color: #17324c; cursor: pointer;
     left: 0px;
 } 
-
-.depPW {
-    width: 400px;
-}
- 
-.posiF {
-    position: fixed !important;
-}
- 
+.depPW { width: 400px;}
+.posiF { position: fixed !important;}
+.posiR { position: relative !important;}
 .remove_user_pop input.fullBtn {
     width:100%; background:#4caf54;
 }
@@ -6991,6 +6985,14 @@ max-width: 100% !important;
 	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
 	background: url(../images/payrepicon.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
 }
+.addfoldIcon {
+	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
+	background: url(../images/addfoldericon.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
+}
+.addreportIcon {
+	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
+	background: url(../images/addreporticon.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
+}
 .payReport-rupee {
 	width: 100px; text-align: center; display: block; height: 55px; margin: 8px auto 2px;
 	background: url(../images/payrepicon-rupee.svg); background-repeat: no-repeat; background-size: 60px; background-position: center;
@@ -8874,6 +8876,17 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .gridList .checkbox-custom + .checkbox-custom-label:before, .radio-custom + .radio-custom-label:before {
     border-radius: 50%; width: 20px; height: 20px;
 }
+
+.secHead { background-color: #6C7686; padding: 5px 15px; height: 40px;}
+.secHead .edit-element{  float: left; width: 38%; color: #fff; line-height: 30px;}
+.secHead .limit { width: 30%;}
+.secHead .faPencil { float: left; width: 25%;  text-align: center; position: inherit !important; top: 0px;}
+.secHeadBtn {
+    display: inline-block; border: 1px solid #fff; font-size: 13px; color: #fff; padding: 1px 15px; border-radius: 5px; margin: 4px 5px 0px 0px;
+}
+.secHeadBtn2 {display: block; color: #fff; line-height: 28px; text-align: center;}
+.secHeadBtn:hover, .secHeadBtn2:hover { color: #fff !important;}
+.tabHeadColor { background-color: #f1f1f1;}
  
 /* Css added by veda */
 .popPositionFixed{
@@ -8887,27 +8900,70 @@ position: fixed; left: 0px !important; right: 0px !important; margin: 0px auto; 
 .clockDate li:first-child { border-top: none; padding:5px 0px;}
 .clockDate li:first-child span { padding: 0px 0px 0px 10px; font-size: 13px; color: #666;}
 .clockDate li span { display: inline-block; width: 39%; font-size: 14px; color: #454545;}
-.clockDate li span:first-child { display: inline-block; width: 20%;}
+.clockDate li span:first-child { display: inline-block; width: 20%;} 
 
-.secHead { background-color: #6C7686; padding: 5px 15px; height: 40px;}
-.secHead .edit-element{  float: left; width: 38%; color: #fff; line-height: 30px;}
-.secHead .limit { width: 30%;}
-.secHead .faPencil { float: left; width: 25%;  text-align: center; position: inherit !important; top: 0px;}
-.secHeadBtn {
-	display: inline-block; border: 1px solid #fff; font-size: 13px; color: #fff; padding: 1px 15px; border-radius: 5px; margin: 4px 5px 0px 0px;
+.minHeFol { min-height: 300px;}
+
+.foldListOut { min-height: 300px; padding: 20px 0px 20px 60px;}
+.foldList { border: 1px solid #ccc; margin: 20px 0px 0px 0px;}
+.foldList ul { margin: 0px 0px; padding: 10px;}
+.foldList ul li { list-style-type: none; float: none; display: block; padding: 7px 8px;}
+.foldList ul li .checkbox-custom {padding: 0px 0px 0px 10px;}
+.foldList ul li .checkbox-custom + .checkbox-custom-label:before, .radio-custom + .radio-custom-label:before {
+    margin: 0px 10px 0px 0px !important;
 }
-.secHeadBtn2 {display: block; color: #fff; line-height: 28px; text-align: center;}
-.secHeadBtn:hover, .secHeadBtn2:hover { color: #fff !important;}
-.tabHeadColor { background-color: #f1f1f1;}
+.foldListbg { border: 1px solid #dedede; background-color: #f5f5f5; float: left; width: 320px; min-height: 400px;}
+.foldArwDiv {
+    float: left; width: 120px; min-height: 400px;
+    background: url("../images/arrow-big.svg"); background-repeat: no-repeat; background-size: 40px; background-position: center;
+}
+.adFolBtn { position: absolute; right: -45px; top: 0px; }
 
- .valMsgPosition { position: relative;}
- .valMsgPosition p { position: absolute; left: -15px; top: 40px;}
- .myForm h2 span {font-size: 13px; font-weight: 500; color: #b13535; display: inline-block;}
- .myForm h2 span i {display: inline-block; padding: 0px 5px 0px 0px;}
+.newRolName { float: left; margin: 0px; padding: 14px 0px 0px 20px; font-size: 18px; color: #454545;}
+.roleSeleAll { padding: 7px 15px 0px 0px !important;}
 
- .categorySub { background-color: #f1f1f1; padding: 5px; margin: 0px 10px 10px 0px; float: left; width: 44%;}
+.newRolWrap {
+    position: relative;
+}
+.newRolLeft {
+    width: 250px; background-color: #f6f6f6; height: 100%; float: left;
+}
+.newRolLeft ul { margin: 0px 0px; padding: 10px 0px;}
+.newRolLeft ul li {list-style-type: none; position: relative;}
+.newRolLeft ul li span {
+    position: absolute; left: 20px; top: 10px; z-index: 100;
+}
+.newRolLeft ul li a {
+    display: block; height: 38px; line-height: 38px; padding: 0px 20px 0px 45px; font-size: 14px; font-weight: 500;
+    color: #787878;   border-left: 5px solid #f6f6f6;
+}
+.newRolLeft ul li label { margin: 0px 0px !important; font-weight: 500;}
+.newRolLeft ul li a.active {
+    background-color: #fff; color: #006bbb; border-left: 5px solid #006bbb;
+}
+.newRolLRight {
+    width: auto; padding: 15px 0px 0px 15px; float: left; width: 78%;
+}
+.newRolLRight ul {
+    margin: 0px 0px; padding: 0px 0px; min-height: 400px; max-height: 680px; overflow: auto;
+} 
+.newRolLRight ul li {
+    list-style-type: none; float: left; display: block; padding: 6px; width: 50%;
+}
+#viewmoresDiv {position: absolute; top: -36px; right: 17px;}  
+
+.valMsgPosition { position: relative;}
+.valMsgPosition p { position: absolute; left: -15px; top: 40px;}
+.myForm h2 span {font-size: 13px; font-weight: 500; color: #b13535; display: inline-block;}
+.myForm h2 span i {display: inline-block; padding: 0px 5px 0px 0px;}
+
+.categorySub { background-color: #f1f1f1; padding: 5px; margin: 0px 10px 10px 0px; float: left; width: 48%;}
 .categorySubHead {
-     font-size: 15px; font-weight: 500; color: #454545; padding: 5px 5px 5px 7px !important; line-height: 35px; 
-  }
- .categorySubCta { float: left; width: 23%; margin: 1%;}
-  .categorySubCta span { display: block; font-size: 12px; padding: 0px 0px 5px 0px;}
+font-size: 15px; font-weight: 500; color: #454545; padding: 5px 5px 5px 7px !important; line-height: 35px; 
+}
+.categorySubCta { float: left; width: 23%; margin: 1%;}
+.categorySubCta span { display: block; font-size: 12px; padding: 0px 0px 5px 0px;}
+.categorySubCta span i { display: inline-block; padding: 0px 0px 0px 3px; color: #ea6b6b; cursor: pointer;}
+.subTable table tr { display: inline-table !important; width: 100%; }
+
+
