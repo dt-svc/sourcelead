@@ -10445,7 +10445,7 @@ padding:11.74px 4px; z-index: 9999; }
 .timesheet_out.timesheet_out_divstyles { overflow-x: auto; background: #f5f5f5; box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3); top: -45px; }
 .vendor_wrap.vendor_wrap_box-shadow { box-shadow: none; }
 .require_wrap_table.require_wrap_table_customized_styles { overflow: inherit; min-height: 175px; }
-.require_wrap_table.require_wrap_table_customized_styles select { width: 100% !important; }
+.require_wrap_table.require_wrap_table_customized_styles table tr td select { width: 100% !important; }
 .ref-top { top: 18px;height: 32px; line-height: 18px; }
 .uploadFileGroup_error_message p.jquery_form_error_message{ position: absolute; left:0; bottom:-16px; }
 .vendor_wrap_inn_table.vendor_wrap_inn_table_last_child table tr th:last-child { width:100px; }
