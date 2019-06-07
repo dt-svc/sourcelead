@@ -4,23 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-	<style type="text/css">
-	.teamEditDetails {
-	margin-bottom: 50px;
-	border-bottom:1px solid #ccc;
-	padding-bottom:5px;
-	}
-	.teamEditDetails select.form-control{
-	width:100% !important;
-	padding: 0 10px !important;
-	border: 1px solid #ccc;
-	background:url("/resources/images/arrow-w.png") no-repeat 95% center; background-size:10px;
-	}
-	.vendor_wrap_inn_table table tr:hover .proj_show i {
-	    visibility:visible; opacity:1;color:#333;
-	    }
-	</style>
-
 <!-- end files for autocomplete with tagit -->
 <script>
  window.onload = function() { 
@@ -139,7 +122,7 @@ function sideBar(teamId){
 		outPut = outPut  +'     </div>  ';
 		outPut = outPut  +'     </div>  ';
 				
-		outPut = outPut+ ' <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		outPut = outPut+ ' <div class="project_tabs_inn_table vendor_wrap_inn_table vendorwrap_inner_table">';
 		
 		outPut = outPut+ ' <div id="teamEditDiv"></div>';
 		outPut = outPut+ '<input type = "hidden" id="existedMemberId" name="existedMemberId"/>';
@@ -654,7 +637,7 @@ function TeamMemberpagination(){
         </ul>
       </div>    
       
-      <div class="project_tabs_inn_table vendor_wrap_inn_table">
+      <div class="project_tabs_inn_table vendor_wrap_inn_table vendorwrap_inner_table">
        			<div id="popUpDivTeamParent" class="popupWrap popupWrapFixed"></div>  
       			<div id="teamList" class="datatable_filter dataSeaTop"></div>
       			<div id="deleteTeamPopUp"></div>
