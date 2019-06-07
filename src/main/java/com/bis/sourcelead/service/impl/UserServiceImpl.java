@@ -528,6 +528,11 @@ public class UserServiceImpl implements UserService {
 				candidate.setEmail(addUserDTO.getEmail());
 				candidate.setFirstName(addUserDTO.getFirstName());
 				candidate.setLastName(addUserDTO.getLastName());
+				
+				if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+					candidate.setSsnNumber(addUserDTO.getSsn());
+			    }
+				
 				if(StringUtils.isNotBlank(candidateDTO.getPanNumber())){
 					candidate.setPanNumber(candidateDTO.getPanNumber());
 				}else{
