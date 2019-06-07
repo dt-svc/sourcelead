@@ -1,0 +1,595 @@
+package com.bis.sourcelead.util;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.sax.BodyContentHandler;
+import org.springframework.stereotype.Component;
+
+@Component
+public class SourceleadResumeParserNew {
+	
+	/**
+	 * 
+	 * @author Mahaveer Manoj
+	 * @purpose Using 3rd party API, we are parsing resume(s)
+	 * 
+	 */
+	
+	/*
+	private String serviceURL = "http://cvxdemo.daxtra.com";
+	private String account = "sourcelead";
+	private boolean outputFormat = true; //true - JSON , false - XML
+
+	public ResumeParserJsonUtil getCandidateDetailsFromResume(byte[] source, String country, String orgLocationDateFormat) throws Exception {
+		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+		try {
+			CVXtractorService cvXtractorService = new CVXtractorService(serviceURL, account, outputFormat);
+			String resumeData = cvXtractorService.ProcessCV(source);
+			if (resumeData == "") {
+				System.err.println("Error at processing :: " + cvXtractorService.getLastError());
+			} else {
+				jsonUtil = getResumeParserJsonUtil(resumeData, country, orgLocationDateFormat);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonUtil;
+	}
+
+	public ResumeParserJsonUtil getCandidateDetailsFromResume1(File file, String country, String orgLocationDateFormat) throws Exception {
+		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+		try {
+			CVXtractorService cvXtractorService = new CVXtractorService(serviceURL, account, outputFormat);
+			String resumeData = cvXtractorService.ProcessCV(file.getPath());
+			if (resumeData == "") {
+				System.err.println("Error at processing :: " + cvXtractorService.getLastError());
+			} else {
+				jsonUtil = getResumeParserJsonUtil(resumeData, country, orgLocationDateFormat);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonUtil;
+	}
+	
+	
+	public ResumeParserJsonUtil getResumeParserJsonUtil(String resumeData, String country, String orgLocationDateFormat) {
+		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+		try {
+			JSONObject jsonObject = new JSONObject(resumeData);
+			JSONObject resume = jsonObject.getJSONObject("Resume");
+			if(resume != null) {
+				JSONObject structuredResume = resume.getJSONObject("StructuredResume");
+				if (structuredResume != null) {
+//					System.out.println(structuredResume.toString());
+					//Name & Gender
+					if(structuredResume.has("PersonName")) {
+						JSONObject personName = structuredResume.getJSONObject("PersonName");
+						if(personName != null) {
+							jsonUtil.setFirstName(personName.has("GivenName") ? personName.getString("GivenName") : "");
+							jsonUtil.setMiddleName(personName.has("MiddleName") ? ((String) personName.getJSONArray("MiddleName").get(0)) : "");
+							jsonUtil.setLastName(personName.has("FamilyName") ? personName.getString("FamilyName") : "");
+							
+							jsonUtil.setGender(personName.has("sex") ? personName.getString("sex") : "");
+						}
+					}
+					
+					//PhoneNumber, Email & Address
+					if(structuredResume.has("ContactMethod")) {
+						JSONObject contactMethod = structuredResume.getJSONObject("ContactMethod");
+						if(contactMethod != null) {
+							//Phone Number
+							Set<String> phoneNumberSet = new LinkedHashSet<>();
+							if(contactMethod.has("Telephone_home")) {
+								phoneNumberSet.add(contactMethod.getString("Telephone_home"));
+							} else if(contactMethod.has("Telephone_mobile")) {
+								phoneNumberSet.add(contactMethod.getString("Telephone_mobile"));
+							}
+							
+							if(contactMethod.has("Telephone_alt")) {
+								phoneNumberSet.add(contactMethod.getString("Telephone_alt"));
+							}
+							jsonUtil.setPhoneNumbers(phoneNumberSet);
+
+							//Email
+							String email = "";
+							if(contactMethod.has("InternetEmailAddress_main")) {
+								email = contactMethod.getString("InternetEmailAddress_main");
+							}
+							if(contactMethod.has("InternetEmailAddress_alt")) {
+								email += (email.isEmpty() ? "" : "<<>>") + contactMethod.getString("InternetEmailAddress_alt");
+							}
+							jsonUtil.setEmail(email);
+							
+							//Address
+							if(contactMethod.has("PostalAddress_main")) {
+								JSONObject postalAddress = contactMethod.getJSONObject("PostalAddress_main");
+								if(postalAddress != null) {
+									jsonUtil.setAddressLine1(postalAddress.has("AddressLine") ? postalAddress.getString("AddressLine") : "");
+									jsonUtil.setCity(postalAddress.has("Municipality") ? postalAddress.getString("Municipality") : "");
+									jsonUtil.setState(postalAddress.has("Region") ? postalAddress.getString("Region") : "");
+									jsonUtil.setCountry(postalAddress.has("CountryCode") ? postalAddress.getString("CountryCode") : "");
+									jsonUtil.setZipcode(postalAddress.has("PostalCode") ? postalAddress.getString("PostalCode") : "");
+								}
+							}
+						}
+					}
+						
+					//DOB
+					if(structuredResume.has("DOB")) {
+						try {
+							SimpleDateFormat sdf = new SimpleDateFormat(orgLocationDateFormat);
+							String dob = sdf.format(Constants.DF_YMD.parse(structuredResume.getString("DOB")));
+							jsonUtil.setDob(dob);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+					
+					//Marital Status
+					jsonUtil.setMaritalStatus(structuredResume.has("MaritalStatus") ? structuredResume.getString("MaritalStatus") : "");
+					
+					//Skills
+					if(structuredResume.has("Competency")) {
+						Set<String> skillSet = new HashSet<>();
+						JSONArray competency = structuredResume.getJSONArray("Competency");
+						if (competency != null) {
+							for (int i = 0; i < competency.length(); i++) {
+								if (competency.getJSONObject(i).has("description") && (competency.getJSONObject(i).getString("description").equalsIgnoreCase("Skill") || competency.getJSONObject(i).getString("description").equalsIgnoreCase("Skill > IT"))) {
+									skillSet.add(competency.getJSONObject(i).getString("skillName"));
+								}
+							}
+						}
+						jsonUtil.setSkills(skillSet);
+					}
+					
+					String designation = "";
+					//Employeement History
+					if(structuredResume.has("EmploymentHistory")) {
+						Set<String> employeerSet = new HashSet<>();
+						JSONArray employmentHistory = structuredResume.getJSONArray("EmploymentHistory");
+						if (employmentHistory != null) {
+							for (int i = 0; i < employmentHistory.length(); i++) {
+								if(employmentHistory.getJSONObject(i).has("OrgName")) {
+									if(employmentHistory.getJSONObject(i).has("Title") && designation.isEmpty()) {
+										designation = (String) employmentHistory.getJSONObject(i).getJSONArray("Title").get(0);
+									}
+									employeerSet.add(employmentHistory.getJSONObject(i).getString("OrgName"));
+								}
+							}
+						}
+						jsonUtil.setEmployeers(employeerSet);
+					}
+					jsonUtil.setDesignation(designation);
+					
+					//Education History
+					if(structuredResume.has("EducationHistory")) {
+						Set<String> educationSet = new HashSet<>();
+						JSONArray educationHistory = structuredResume.getJSONArray("EducationHistory");
+						if (educationHistory != null) {
+							for (int i = 0; i < educationHistory.length(); i++) {
+								if(educationHistory.getJSONObject(i).has("Degree")) {
+									JSONObject degreeObject = educationHistory.getJSONObject(i).getJSONObject("Degree");
+									if(degreeObject != null) {
+										if(degreeObject.has("DegreeName")) {
+											educationSet.add(degreeObject.getString("DegreeName"));
+										}
+									}
+								}
+							}
+						}
+						jsonUtil.setEducations(educationSet);
+					}
+					
+					//Summary
+					jsonUtil.setSummary(structuredResume.has("ExecutiveSummary") ? structuredResume.getString("ExecutiveSummary") : "");
+				}
+				
+				//Experience
+				JSONObject experienceSummary = resume.getJSONObject("ExperienceSummary");
+				if(experienceSummary != null) {
+					int totalYearsOfExp = experienceSummary.has("TotalYearsOfWorkExperience") ? experienceSummary.getInt("TotalYearsOfWorkExperience") : 0;
+					int totalMonthsOfExp = experienceSummary.has("TotalMonthsOfWorkExperience") ? experienceSummary.getInt("TotalMonthsOfWorkExperience") : 0;
+					if(totalMonthsOfExp > 12) {
+						jsonUtil.setTotalYearsExp(totalMonthsOfExp / 12);
+						jsonUtil.setTotalMonthsExp(totalMonthsOfExp % 12);
+					} else {
+						jsonUtil.setTotalYearsExp(totalYearsOfExp);
+						jsonUtil.setTotalMonthsExp(totalMonthsOfExp);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonUtil;
+	}*/
+	
+	
+	public ResumeParserJsonUtil getCandidateDetailsFromResume(byte[] source, String country, String orgLocationDateFormat) throws Exception {
+		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+		try {
+			BodyContentHandler htmlHandler = new BodyContentHandler();
+			ByteArrayInputStream stream = new ByteArrayInputStream(source);
+			AutoDetectParser parser = new AutoDetectParser();
+			Metadata metadata = new Metadata();
+			parser.parse(stream, htmlHandler, metadata);
+			String parsedString = htmlHandler.toString();
+			jsonUtil = getResumeParserJsonUtil(parsedString, country, orgLocationDateFormat);			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonUtil;
+	}
+	
+	public ResumeParserJsonUtil getCandidateDetailsFromResume1(File file, String country, String orgLocationDateFormat) throws Exception {
+		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+		try (FileInputStream stream = new FileInputStream(file);) {
+			BodyContentHandler htmlHandler = new BodyContentHandler();
+			AutoDetectParser parser = new AutoDetectParser();
+			Metadata metadata = new Metadata();
+			parser.parse(stream, htmlHandler, metadata);
+			String parsedString = htmlHandler.toString();
+			jsonUtil = getResumeParserJsonUtil(parsedString, country, orgLocationDateFormat);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonUtil;
+	}
+	
+	
+	String textFileLocation = "C:/Users/Mahaveer Manoj/Desktop/Resume Compare textfiles";
+	
+	public ResumeParserJsonUtil getResumeParserJsonUtil(String resumeData, String country, String orgLocationDateFormat) {
+		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+		try {
+			String name = getNameFromTextFile(resumeData);
+			if(name.split(" ").length > 2) {
+				jsonUtil.setFirstName(name.split(" ")[0]);
+				jsonUtil.setMiddleName(name.split(" ")[1]);
+				jsonUtil.setLastName(name.split(" ")[2]);
+			} else if(name.split(" ").length == 2) {
+				jsonUtil.setFirstName(name.split(" ")[0]);
+				jsonUtil.setLastName(name.split(" ")[1]);
+			} else {
+				jsonUtil.setFirstName(name);
+			}
+			
+			jsonUtil.setEmail(getEmailFromTextFile(resumeData));
+			
+			Set<String> phoneNumberSet = new LinkedHashSet<>();
+			phoneNumberSet.add(getMobileNumber(resumeData));
+			jsonUtil.setPhoneNumbers(phoneNumberSet);
+			jsonUtil.setSkills(getSkillsFromTextFile(resumeData));
+			jsonUtil.setDesignation(getDesignationFromTextFile(resumeData));
+			
+			String experience = getExperienceFromTextFile(resumeData);
+//			jsonUtil.setTotalYearsExp(experience.split(":")[0]);
+//			jsonUtil.setTotalMonthsExp(experience.split(":")[1]);
+			System.out.println("Exp : " + experience);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonUtil;
+	}
+	
+	/**
+	 * Name finder from parsed text file Here we used java regular expression
+	 * logic for resolving name from text file
+	 */
+	private String getNameFromTextFile(String parsedString) {
+
+		String[] totalLines = parsedString.split("\n");
+		String firstTenLines = "";
+		String name = "";
+		String lineSeparator = "";
+		String ecludeNameRegex = "((?i)Name|name|NAME|\\.)";
+		int count = 0;
+		 boolean nameMatchFound = false;
+		for (String line : totalLines) {
+			String nameRegex = "((?i)Name|name|NAME)(\\:|\\-|\\.|\\s)+";
+			if(line.matches("(\\W*)" + nameRegex + ".*")) {
+				// nameMatchFound =true;
+				String[] nameLineArray = line.split(nameRegex);
+				if (nameLineArray.length > 1) {
+					String nameContent = nameLineArray[1].replaceAll("[^a-zA-Z0-9\\s]+", "").trim();
+					if (StringUtils.isNotEmpty(nameContent) && Character.isUpperCase(nameContent.charAt(0))) {
+						name = nameLineArray[1].replaceAll("[^a-zA-Z\\s\\.]+", "").trim();
+						// nameMatchFound = false;
+					}
+
+				}
+				name = name.replaceAll(ecludeNameRegex, "");
+				if(StringUtils.isNotEmpty(name)) {
+					break;
+				}else {
+					nameMatchFound = true;
+					continue;
+				}
+				
+			}else if(nameMatchFound) {
+				String regex = "[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}";
+				Matcher nameMatcher = Pattern.compile(regex).matcher(line);
+				if (nameMatcher.find()) {
+					if (StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "objective")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "resume")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "cell")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "mobile")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "email")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Summary")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Profile")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Address")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Date")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "page")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "engineer")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "text"))
+						continue;
+					name = nameMatcher.group();
+					name = name.replaceAll(ecludeNameRegex, "");
+					break ;
+				}else {
+					continue;
+				}
+			}
+			
+			if (count < 10) {
+				
+				if (StringUtils.isNotEmpty(firstTenLines)) {
+					lineSeparator = System.getProperty("line.separator");
+				}
+				line = line.trim();
+				String[] words = line.split("(\\,|\\s){2,}");
+				if (words != null && words.length > 1) {
+
+					for (int i = 0; i < words.length; i++) {
+						if (StringUtils.containsIgnoreCase(words[i], "curriculum")
+								|| StringUtils.containsIgnoreCase(words[i], "objective")
+								|| StringUtils.containsIgnoreCase(words[i], "resume")
+								|| StringUtils.containsIgnoreCase(words[i], "cell")
+								|| StringUtils.containsIgnoreCase(words[i], "mobile")
+								|| StringUtils.containsIgnoreCase(words[i], "email")
+								|| StringUtils.containsIgnoreCase(words[i], "Summary")
+								|| StringUtils.containsIgnoreCase(words[i], "Profile")
+								|| StringUtils.containsIgnoreCase(words[i], "Address")
+								|| StringUtils.containsIgnoreCase(words[i], "Date")
+								|| StringUtils.containsIgnoreCase(words[i], "page")
+								|| StringUtils.containsIgnoreCase(words[i], "engineer")
+								|| StringUtils.containsIgnoreCase(words[i], "text"))
+							continue;
+						line = line + System.getProperty("line.separator") + words[i];
+					}
+				}
+
+				firstTenLines = firstTenLines + lineSeparator + line.replaceAll("[^a-zA-Z0-9\\s\\@\\.\\_]+", "").trim();
+				count++;
+			}
+			
+		}
+
+		if (!StringUtils.isNotEmpty(name)) {
+			if(StringUtils.isEmpty(lineSeparator)){
+				lineSeparator = "\n";
+			}
+			String[] tenLines = firstTenLines.split(lineSeparator);
+			outerloop: {
+				for (String line : tenLines) {
+					String regex = "[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}";
+					Matcher nameMatcher = Pattern.compile(regex).matcher(line);
+					if (nameMatcher.find()) {
+						if (StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "objective")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "resume")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "cell")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "mobile")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "email")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Summary")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Profile")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Address")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Date")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "page")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "engineer")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(),  "text"))
+							continue;
+						name = nameMatcher.group();
+						break outerloop;
+					}
+				}
+			}
+
+			name = name.replaceAll(ecludeNameRegex, "");
+		}
+		return name;
+	}	
+	
+	public String getEmailFromTextFile(String parsedString) {
+		String email = null;
+		Pattern p = Pattern.compile("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = p.matcher(parsedString);
+		if (matcher.find()) {
+			email = matcher.group().replaceAll("\\s", "").toLowerCase();
+		} else {
+			p = Pattern.compile("\\b[A-Z0-9\\s._%+-]+@[A-Z0-9\\s.-]+\\.[A-Z\\s]{2,8}\\b", Pattern.CASE_INSENSITIVE);
+			matcher = p.matcher(parsedString);
+			if (matcher.find()) {
+				email = matcher.group().replaceAll("\\s", "").toLowerCase();
+			}
+		}
+		return email;
+	}
+	
+	public String getMobileNumber(String text) throws Exception {
+		String mobile = "";
+		String regEx = "\\W+\\b[0-9]{2}\\b\\s*\\W*+\\b\\d{10}\\b";
+		Pattern pattern = Pattern.compile(regEx);
+		Matcher found = pattern.matcher(text);
+		if (found.find()) {
+			mobile = found.group();
+		} else {
+			regEx = "\\b\\d{10}\\b";
+			pattern = Pattern.compile(regEx);
+			found = pattern.matcher(text);
+			if (found.find()) {
+				mobile = found.group(0);
+			} else {
+				regEx = "\\W+\\b[0-9]{1}\\b\\s*\\W*\\b[0-9]{3}\\b\\s*+\\W*\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{4}\\b";
+				pattern = Pattern.compile(regEx);
+				found = pattern.matcher(text);
+				if (found.find()) {
+					mobile = found.group(0);
+				} else {
+					regEx = "\\W+\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{4}\\b";
+					pattern = Pattern.compile(regEx); // euro no.
+					found = pattern.matcher(text);
+					if (found.find()) {
+						mobile = found.group(0);
+					} else {
+						regEx = "\\W+\\b[0-9]{2}\\b\\s*\\W*\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{3}\\s*\\W*\\b[0-9]{4}\\b";
+						pattern = Pattern.compile(regEx); // 3x2 1x4 no.
+						found = pattern.matcher(text);
+						if (found.find()) {
+							mobile = found.group();
+						} else {
+							regEx = "\\W+\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{3}\\s*\\W*\\b[0-9]{4}\\b";
+							pattern = Pattern.compile(regEx); // 3x2 1x4 no.
+							found = pattern.matcher(text);
+							if (found.find()) {
+								mobile = found.group(0);
+							} 
+						}
+					}
+				}
+			}
+		}
+//		return mobile.replaceAll("[^\\w ]", "").trim();
+		return mobile.replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim();
+	}
+	
+	@SuppressWarnings("resource")
+	private String getKeywordsFromTextFile(String parsedString, String textFile, String textFileLocation) {
+		String result = "";
+		Set<String> keywordsSet = new HashSet<>();
+		try {
+			File file = new File(textFileLocation, textFile);
+			String keywords = "";
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			while (br.readLine() != null) {
+				keywords += br.readLine();
+			}
+			List<String> keywordsList = Arrays.asList(keywords.split("\\s*,\\s*"));
+			String keywordsPattern = "\\b(" + StringUtils.join(keywordsList, "|") + ")\\b";
+			Pattern pattern = Pattern.compile(keywordsPattern, Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(parsedString);
+			while (matcher.find()) {
+				keywordsSet.add(matcher.group(1).toLowerCase());
+			}
+			result = String.join(", ", keywordsSet);
+			result = result.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	@SuppressWarnings("resource")
+	private Set<String> getSkillsFromTextFile(String parsedString) {
+//		String skills = "";
+		Set<String> skillsSet = new HashSet<>();
+		try {
+			File file = new File(textFileLocation, "Skills.txt");
+			String skillKeywords = "";
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			while (br.readLine() != null) {
+				skillKeywords += br.readLine();
+			}
+			List<String> skillsList = Arrays.asList(skillKeywords.split("\\s*,\\s*"));
+			String skillsPattern = "\\b(" + StringUtils.join(skillsList, "|") + ")\\b";
+			Pattern pattern = Pattern.compile(skillsPattern, Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(parsedString);
+			while (matcher.find()) {
+				skillsSet.add(matcher.group(1).toLowerCase());
+			}
+			/*skills = String.join(", ", skillsSet);
+			skills = skills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");*/
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return skillsSet;
+	}
+	
+	@SuppressWarnings("resource")
+	private String getDesignationFromTextFile(String parsedString) {
+		String designation = "";
+		Set<String> designationSet = new HashSet<>();
+		try {
+			File file = new File(textFileLocation, "designation.txt");
+			String designationKeywords = "";
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			while (br.readLine() != null) {
+				designationKeywords += br.readLine();
+			}
+			List<String> designaitonList = Arrays.asList(designationKeywords.split("\\s*,\\s*"));
+			String desginationPattern = "\\b(" + StringUtils.join(designaitonList, "|") + ")\\b";
+			Pattern pattern = Pattern.compile(desginationPattern, Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(parsedString);
+			while (matcher.find()) {
+				System.out.println("Desig : " + matcher.group(1));
+				designationSet.add(matcher.group(1).toLowerCase());
+			}
+			
+			designation = String.join(", ", designationSet);
+			designation = designation.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return designation;
+	}
+	
+	public static String getExperienceFromTextFile(String text) throws Exception {
+		Pattern p = Pattern.compile("\\d+\\W+\\s+(?:months?|years?) | "
+				+ "\\d+\\s+years?\\s+(?:and\\s*)?\\d+\\s+months?|\\d+\\s+(?:months?|years?) |"
+				+ " \\d+\\.?\\d*\\W+\\s+(?:months?|years?) |\\d+\\.?\\d*\\s+(?:months?|years?)|"
+				+ "\\d+\\W*((?i)plus(?-i))\\W*\\s+(?:months?|years?)");
+
+		Matcher found = p.matcher(text);
+		String experience = "";
+		String years = "", months = "";
+		if (found.find()) {
+			experience = found.group(0).trim();
+		} else {
+			String exp = "\\w+\\s+\\bplus\\b+\\s+(?:months?|years?)";
+			Pattern t = Pattern.compile(exp);
+			Matcher n = t.matcher(text);
+			if (n.find()) {
+				experience = n.group(0).trim();
+			}
+		}
+		if(!experience.isEmpty()) {
+			String[] expArray = experience.split("\\.");
+			years = expArray[0].trim();
+			years = years.length() > 2 ? years.substring(0, 2) : years;
+			if(expArray.length > 1) {
+				months = expArray[1].trim();
+				months = months.length() > 2 ? months.substring(0, 2) : months;
+			}
+		}
+		return years + ":" + months;
+	}	
+
+}

@@ -355,17 +355,8 @@ function init(){
 						} else if (response.response === "SUCCESS") {
 							if(response.object !== null) {
 								var json = response.object;
-								var name = json.name;
-								var firstName = '';
-								var lastName = '';
-								if(name != null && name != 'undefined' && name != ''){
-									 firstName = name.split(".")[0]; 
-									 lastName = name.split(".")[1]; 
-									 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-											 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-										 firstName = name;
-									 }
-								}
+								var firstName = json.firstName;
+								var lastName = json.lastName;
 								
 								
 								 $("input[name=FirstName]").val(firstName);

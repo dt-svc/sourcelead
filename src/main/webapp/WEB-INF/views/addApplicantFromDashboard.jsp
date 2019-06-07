@@ -1336,17 +1336,8 @@ function setRateTypesByLocation(){
 						} else if (response.response === "SUCCESS") {
 							if(response.object !== null) {
 								var json = response.object;
-								var name = json.name;
-								var firstName = '';
-								var lastName = '';
-								if(name != null && name != 'undefined' && name != ''){
-									 firstName = name.split(".")[0]; 
-									 lastName = name.split(".")[1]; 
-									 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-											 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-										 firstName = name;
-									 }
-								}
+								var firstName = json.firstName;
+								var lastName = json.lastName;
 								
 								 $("input[name=FirstName]").val(firstName);
 					        	 $("input[name=LastName]").val(lastName);
@@ -1360,7 +1351,7 @@ function setRateTypesByLocation(){
 		 	                     </c:forEach>
 		 						var skills = json.skills;
 		 						if(skills != null && skills != 'undefined' && skills != ''){
-		 							var str_array = skills.split(',');
+		 							var str_array = skills;
 		 							for(var i = 0; i < str_array.length; i++) {
 		 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
 		 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
