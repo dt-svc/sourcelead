@@ -223,7 +223,7 @@ $('body').on('blur', '#associate_contribution_form', function() {
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-			result = result +"		<p>Please add atleast one deduction type to save</p>";
+			result = result +"		<p>Please add atleast one contribution type to save</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 			result = result +"		<div class='clearfix'><input class='u_can_color' type='button'  value='Ok' onClick='contributionPopup();' style='width:100%;'></div>";
 			result = result +"	</div>";
