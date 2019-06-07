@@ -5,52 +5,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-#loadMoreDiv{
-text-align: center;
-font-size: 18px;
-font-weight: bold;
-vertical-align: middle;
-padding: 20px 15px;
-clear: both;
-display: inline-block;
-margin: auto;
-width: 100%;
-}
-#loadMoreDiv .fa-spinner{
-margin-right: 15px;
-}
-.filter_position .dataTables_filter {
-  position: relative !important; top: -60px !important;
-}
-</style>
-
-
-<style>
-.approvedPop {
-    position:absolute; z-index:100; width:200px; top:35px; right:2px; display:none; background-color: #fff;
-    }
-.approvedPop ul {
- width:100% !important; float: none; padding: 0;
- }
- .approvedPop ul li {
- clear: both; width: 100%; margin: 0;
- }
- 
- 
- .approvedPop1 {
-    position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none; background-color: #fff;
-    }
-.approvedPop1 ul {
- width:100% !important; float: none; padding: 0;
- }
- .approvedPop1 ul li {
- clear: both; width: 100%; margin: 0;
- }
- 
-</style>
-
-
 <script>
 var atsUrl ='${SourceLeadWeb_atsUrl}';
 $(document).ready(function() {
@@ -421,7 +375,7 @@ function getUsersSearchResult(searchValue){
         </ul>
       </div>
       
-              <div id="dynamicUserListViewDiv" class="filter_position positionRelative"></div> 
+              <div id="dynamicUserListViewDiv" class="filter_position filter_position_top60 positionRelative"></div> 
           </div>  
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
       <div class="row">
@@ -1000,7 +954,7 @@ function getUserSummary(userId){
 		    	$('#loadMoreDiv').empty(); 
 		    	$("#loading").removeAttr("style");
 		    	var result ="";
-		     	result = result + '<div id="loadMoreDiv" >No More Records..</div>';
+		     	result = result + '<div id="loadMoreDiv" class="loadMoreDiv_styles">No More Records..</div>';
 		     	$('#loadMoreDiv').append(result);
 		    }
 			  else{
@@ -1009,7 +963,7 @@ function getUserSummary(userId){
 		      	  $('#loadMoreDiv').empty(); 
 		          $("#loading").removeAttr("style");
 		          var result ="";
-		       	  result = result + '<div id="loadMoreDiv" >No  Records..</div>';
+		       	  result = result + '<div id="loadMoreDiv" class="loadMoreDiv_styles">No  Records..</div>';
 		       	  $('#usersListBody').append(result);
 		      }
   }
@@ -1266,7 +1220,7 @@ function prepareDynamicUserList(url){
 	    result = result	+ '<div class="remove_search">';
 		result = result	+ '</div>';
 		result = result	+ '</div>';
-		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		result = result	+ '<div class="project_tabs_inn_table">';
 		result = result + '<table id="dynamicUserListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
