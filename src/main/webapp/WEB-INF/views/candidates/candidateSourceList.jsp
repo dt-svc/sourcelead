@@ -54,7 +54,7 @@
 			<div class="clearfix mb">
 				<label class="noPad">Description</label>
 				<div class="clearfix">
-					<textarea placeholder="Description" name="description" id="candidateSourceDesc" class="form-control" rows="2" data-validation="validate_Space validate_length length1-5000"></textarea>
+					<textarea placeholder="Description" name="description" id="candidateSourceDesc" class="form-control" rows="2" data-validation="validate_Space validate_length length1-5000" data-validation-optional="true"></textarea>
 				</div>
 			</div>
 		</div>
@@ -90,7 +90,7 @@
 	       "ajax": $.fn.dataTable.pipeline( {
 	           url: url,
 	           method: 'POST',
-	           pages: 1
+	           pages: 20
 	       }),
 	       "columns": [
 	    	   {"data": "id"},
@@ -169,7 +169,7 @@
 		    	"bDestroy": true,
 		    	"ordering": true,
 		    	"createdRow": function ( row, data, index ) {
-		    		row.setAttribute('id',"ticketType_"+data.id);
+		    		row.setAttribute('id',"candidateSource_"+data.id);
 	    	    },
 		    	"initComplete": function( settings, json ) {
 		    		 $('#candidateSourceTableSearch').removeAttr('disabled');
