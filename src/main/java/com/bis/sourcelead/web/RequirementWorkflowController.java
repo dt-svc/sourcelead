@@ -248,7 +248,8 @@ public class RequirementWorkflowController {
 		 logger.debug("before getWorkflowList>>> orgLocationid "+orgLocations.getId());
 		try {
 			
-			String[] tableColumns = { "workFlowName", "noOfStages", "status"};
+
+			String[] tableColumns = { "workFlowName","description", "noOfStages", "status"};
 		  	int sortColumnIndex = -1; 
 	  		String sortColumnOrder = "desc"; 
  	  		if (requirementWorkFlowDTO.getOrder() != null && !requirementWorkFlowDTO.getOrder().isEmpty()) {

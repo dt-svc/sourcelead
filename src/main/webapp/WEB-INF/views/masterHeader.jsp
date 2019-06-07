@@ -298,12 +298,9 @@ function preventTabkey(e){
 
 <script>
 		function logoutFormSubmit() {
-			/* var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-			var actionUUID = '${userLoginSession.actionUUID}';
-			window.location.href = sourceleadUrl+"/getActionHistoryList/"+actionUUID;  */
-			
-			document.getElementById("logoutForm").submit();
-			
+			var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+			var actionUUID = '${SourceLeadWeb_actionUUID}';
+			window.location.href = sourceleadUrl+"/getActionHistoryList/"+actionUUID;  
 		}
 </script>
 
@@ -2437,4 +2434,7 @@ function getPreviousClockInData(){
 </script>
 
 
-
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/cropper.min.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/cropper.min.css" type="text/css" />
+<div id='imagecrop' class='post_popup'></div>
+<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>
