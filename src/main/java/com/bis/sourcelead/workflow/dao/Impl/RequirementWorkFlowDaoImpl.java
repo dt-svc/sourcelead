@@ -249,13 +249,14 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 		return template;
 	}
 
+	//and requirementWorkFlowStages.configureType <> '"+Constants.INACTIVE+"'
 	@Override
 	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesListByUuid(String uuid, Long orgLocationId) {
 		logger.debug("Running getRequirementWorkflowStagesListByUuid DAO");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:uuid and requirementWorkFlowStages.orgLocationId.id =:orgLocationId "
-					+ " and requirementWorkFlowStages.status = 1 and requirementWorkFlowStages.configureType <> '"+Constants.INACTIVE+"' ORDER BY requirementWorkFlowStages.seqOrder ASC";
+					+ " and requirementWorkFlowStages.status = 1 ORDER BY requirementWorkFlowStages.seqOrder ASC";
 			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("uuid", uuid).setLong("orgLocationId", orgLocationId).list();
 			return requirementWorkFlowStages;
 		} catch (Exception e) {
@@ -342,8 +343,8 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 			Session session = this.sessionFactory.getCurrentSession(); 
 			List<RequirementQuestionnaireTemplate> questionnaireTemplate = new ArrayList<RequirementQuestionnaireTemplate>();
 			logger.debug("getQuestionnaireTemplateByLabelName start");
-			questionnaireTemplate = session.createQuery("from RequirementQuestionnaireTemplate rq where rq.orgLocationId =:orgLocationId and rq.name like '%"
-					+ templateName + "%' ").setLong("orgLocationId", orgLocationId).list();
+			questionnaireTemplate = session.createQuery("from RequirementQuestionnaireTemplate rq where rq.orgLocationId =:orgLocationId and rq.name like '"
+					+ templateName + "' ").setLong("orgLocationId", orgLocationId).list();
 			logger.debug("getQuestionnaireTemplateByLabelName end");
 			if (questionnaireTemplate.size() > 0) {
 				return questionnaireTemplate.get(0);

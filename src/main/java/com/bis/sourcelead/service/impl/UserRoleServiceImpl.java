@@ -341,8 +341,8 @@ public class UserRoleServiceImpl implements UserRoleService{
 	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, UserRole userRoles,OrgLocations orgLocations) throws Exception {
 //		 Set<Employees> employeeSet = userRoles.getUser().getEmployee();
 		 Employees employee = employeesService.getEmployeeByUserId(userRoles.getUser().getId());
-		 if(employee.getUser().getId() != null) {
-			 writeRow.createCell(0).setCellValue(employee.getUser().getId());
+		 if(employee.getEmployeeId() != null) {
+			 writeRow.createCell(0).setCellValue(employee.getEmployeeId());
 		 }
 		 
 		  if(employee.getHireDate() !=null){
@@ -354,9 +354,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 			   writeRow.createCell(2).setCellValue(userRoles.getUser().getEmail());
 		   }
 		   
-		   if(orgLocations.getProbationPeriod() != null){
-			   writeRow.createCell(3).setCellValue(userRoles.getRoles().getOrgLocations().getProbationPeriod());
+		   if(employee.getProbationPeriod() != null){
+			   writeRow.createCell(3).setCellValue(employee.getProbationPeriod() );
 		   }
+		   
 		   if(userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
 			   writeRow.createCell(4).setCellValue("Invite");
 	   		   }else if((userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
@@ -382,18 +383,23 @@ public class UserRoleServiceImpl implements UserRoleService{
 		   if(userRoles.getUser().getLastName() != null){
 			   writeRow.createCell(8).setCellValue(userRoles.getUser().getLastName());
 		   }
-		   
-		   if(orgLocations.getLocation() !=null){
-		    	writeRow.createCell(9).setCellValue(orgLocations.getLocation());
-		    }
-		   
+		 
 		   com.bis.sourcelead.entity.Candidate candidate = candidateService.getCandidateByConsultantUserId(userRoles.getUser().getId(), orgLocations.getId());
 		    
+		   
+		   if(candidate !=null) {
+			   if(candidate.getWorkLocation() != null) {
+			    	writeRow.createCell(9).setCellValue(candidate.getWorkLocation().getLocation());
+			    }
+			   }
+		   
 		   if(candidate !=null) {
 		   if(candidate.getResidenceAddress() != null) {
 		    	writeRow.createCell(10).setCellValue(candidate.getResidenceAddress());
 		    }
 		   }
+		   
+		  
 			
 			 if(userRoles.getUser().getMobilePhone() != null){
 			   writeRow.createCell(11).setCellValue(userRoles.getUser().getMobilePhone());
@@ -428,7 +434,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 		   }
 		   
 		   if(userRoles.getDesignation() != null) {
-		    	writeRow.createCell(19).setCellValue(userRoles.getDepartment());
+		    	writeRow.createCell(19).setCellValue(userRoles.getDesignation());
 		    }
 			
 			if(userRoles.getGradeId() != null) {

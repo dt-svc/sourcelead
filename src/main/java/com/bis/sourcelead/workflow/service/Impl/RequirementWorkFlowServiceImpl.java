@@ -533,7 +533,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				workFlowStage.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				workFlowStage.setStatus(Constants.RECORD_ACTIVE);
 			}
-		else {
+		if(requirementWorkFlowStagesDTO.getStageName() != null && StringUtils.isNotBlank(requirementWorkFlowStagesDTO.getStageName()) && !requirementWorkFlowStagesDTO.getCurrentStageUuid().equals(Constants.DEFAULT)) {
 			workFlowStage.setStageName(requirementWorkFlowStagesDTO.getStageName());
 			workFlowStage.setDescription(requirementWorkFlowStagesDTO.getDescription());
 			if(!requirementWorkFlowStagesDTO.getCurrentStageUuid().equals(Constants.DEFAULT)) {
