@@ -4,13 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.fa-plus-circle.fa-2x {
-font-size: 1.5em;
-}
-</style>
-
-
 <script type="text/javascript">
 $(document).ready(function(){
 	getDepartmentList();
