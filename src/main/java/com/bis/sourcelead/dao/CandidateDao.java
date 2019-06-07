@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
@@ -287,4 +288,9 @@ public interface CandidateDao {
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
 	
 	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
+	public CandidateVerificationConfig saveDuplicateCheckConfig(CandidateVerificationConfig candidateVerificationConfig);
+
+	public CandidateVerificationConfig getCandidateVerificationConfigBy(Long orgLocationId);
+
+	public CandidateVerificationConfig getCandidateVerificationConfigByIdAndOrglocationId(Long orgLocationId, Long id);
 }

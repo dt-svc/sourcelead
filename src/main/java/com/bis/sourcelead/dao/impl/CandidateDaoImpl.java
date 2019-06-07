@@ -49,6 +49,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
@@ -3613,6 +3614,53 @@ public class CandidateDaoImpl implements CandidateDao {
 		    }
 		}
 		return user;
+	}
+	
+	@Override
+	@Transactional
+	public CandidateVerificationConfig saveDuplicateCheckConfig(CandidateVerificationConfig candidateVerificationConfig) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		try {
+			if (candidateVerificationConfig != null) {
+				session.saveOrUpdate(candidateVerificationConfig);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return candidateVerificationConfig;
+		
+	}
+//	@Override
+//	@Transactional(rollbackFor = { Exception.class })
+//	public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception {
+//		Session session =  this.sessionFactory.getCurrentSession();
+//		String query = "from Candidate can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+//		List<Candidate> aadharNumberList =  session.createQuery(query) .setString("aadharNumber", aadharNumber).setLong("orgLocationId", orgLocationId).list();
+//		Candidate can = null;
+//		if(aadharNumberList != null && !aadharNumberList.isEmpty())
+//		{
+//			can = (Candidate) aadharNumberList.iterator().next();
+//		}
+//		return can;
+//	}
+	@Override
+	@Transactional
+	public CandidateVerificationConfig getCandidateVerificationConfigBy(Long orgLocationId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from CandidateVerificationConfig can where can.orgLocationId=:orgLocationId and can.status = 1";
+		CandidateVerificationConfig candidateVerificationConfig = (CandidateVerificationConfig) session.createQuery(query).setLong("orgLocationId", orgLocationId).uniqueResult();
+		return candidateVerificationConfig;
+	}
+
+	@Override
+	@Transactional
+	public CandidateVerificationConfig getCandidateVerificationConfigByIdAndOrglocationId(Long orgLocationId, Long id) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from CandidateVerificationConfig can where can.orgLocationId=:orgLocationId and can.status = 1 and can.id=:id";
+		CandidateVerificationConfig candidateVerificationConfig = (CandidateVerificationConfig) session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("id", id).uniqueResult();
+		return candidateVerificationConfig;
 	}
 	
 	

@@ -56,6 +56,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.AssociateJoineReportDTO;
+import com.bis.sourcelead.dto.CandidateConfigurationDTO;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -70,6 +71,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -1635,7 +1637,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	
 	@Override
 	public Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,OrgLocations loginOrgLocation) throws Exception{
-		return requirementSubmissionDao.duplicateCandidateCountsByRequirementId(requirementId,user,loginOrgLocation);
+		CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(loginOrgLocation.getId());
+		return requirementSubmissionDao.duplicateCandidateCountsByRequirementId(requirementId,user,loginOrgLocation,candidateVerificationConfig);
 	}
 	
 	@Override
@@ -2198,7 +2201,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    	     Requirement requirement = requirementDao.getRequirementByRequirementId(requirementId);
 		 requirement.setId(requirementId);
 		 Long redirectOrgLocationId = requirement.getClientId().getLocationId().getId();
-				 
 		 if(requirement.getParentRequirement() != null){
 			 requirementName = requirement.getParentRequirement().getJobTitle();
 		 }else{
@@ -2219,10 +2221,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
    		 RequirementSubmissionTemplateFields templateFields = requirementSubmissionTemplateFieldsDao.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submission.getId());
    		 RequirementSubmission clientSubmission = new RequirementSubmission();
+   		Requirement parentrequirement = null;
    		 
    		 if(requirement.getParentRequirement() != null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
    			 clientSubmission.setRequirement(requirement.getParentRequirement());
    			 clientSubmission.setOrgLocations(requirement.getParentRequirement().getOrgLocationId());
+   			parentrequirement = requirementDao.getRequirementByRequirementId(requirement.getParentRequirement().getId());
        	 }
    		 else if(requirement.getParentRequirement() == null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
    			// clientSubmission.setRequirement(requirement);
@@ -2286,7 +2290,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmission.setCreatedDate(new Date());
    		 clientSubmission.setCreatedBy(user.getUserCode());
    		 clientSubmission.setUpdatedDate(commonUtil.currentDate());
-   		 clientSubmission.setCreatedUser(user.getFullName());
+   		 if(user.getLastName() !=null){
+   			 sb.append(user.getFirstName()).append(" ").append(user.getLastName());
+   		 }else{
+   			 sb.append(user.getFirstName());
+   		 }
+   		 clientSubmission.setCreatedUser(sb.toString());
 		 if(null != submission.getCandidateScore() && !"".equalsIgnoreCase(submission.getCandidateScore())){
 			 clientSubmission.setCandidateScore(submission.getCandidateScore());		 
 		 }
@@ -2320,9 +2329,15 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 default:
 					 reqCoolingOffPeriodDays = "0";
 			 }
-			 
-			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(submission.getCandidate().getEmail(), requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
-			 
+			 CandidateConfigurationDTO candidateConfigurationDTO = new CandidateConfigurationDTO();
+			 candidateConfigurationDTO.setEmail(submission.getCandidate().getEmail());
+			 candidateConfigurationDTO.setPhoneNumber(submission.getCandidate().getMobilePhone());
+			 candidateConfigurationDTO.setAadharNumber(submission.getCandidate().getAadharNumber()); 
+			 candidateConfigurationDTO.setPanNumber(submission.getCandidate().getPanNumber());
+			 candidateConfigurationDTO.setSsnNumber(submission.getCandidate().getSsnNumber());
+			 CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(parentrequirement.getOrgLocationId().getId());
+			// requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(submission.getCandidate().getEmail(), requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
+				requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByLocationID(candidateVerificationConfig,candidateConfigurationDTO, requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
 			 
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
@@ -2367,8 +2382,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 String clientRatePer = submissionratePer[i];
 			 rateNegotiation.setExpectedRate(clientRate);
 			 rateNegotiation.setExpectedRateType(clientRatePer);
-			 rateNegotiation.setCurrentRate(templateFields.getExpectedCTC());
-			 rateNegotiation.setCurrentRateType(templateFields.getExpectedRatePer());
 		 }
 			 rateNegotiation.setRateInitiatorType(SubmissionRateStatus.VENDOR);
 			 rateNegotiation.setInitiatorOrgLocationId(loginOrgLocation);
@@ -2466,6 +2479,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
    		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
    		 requirementSubmissionHistory.setToStage(submission.getSubmissionStatus().toString());
+   		submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
    		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT);
    		 submission.setUpdatedBy(user.getUserCode());
    		 submission.setUpdatedDate(commonUtil.currentDate());
@@ -2481,6 +2495,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	   		RequirementSubmissionHistory clientSubmissionHistory = new RequirementSubmissionHistory();
 	   		clientSubmissionHistory.setFromStage(ApplicantSubmissionStatus.NEW.toString());
 			requirementSubmissionHistoryService.updateRequirementHistory(clientSubmission, user, clientSubmissionHistory, clientUser.getUserCode());
+	   		 
 	   		 
 	   		 /*if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
@@ -2508,7 +2523,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		     writeRow = createExcelsheet.createRow(i+8);
    		     for (int j=0; j<jsonRules.length();j++){
    		         JSONObject obj = (JSONObject) jsonRules.get(j);
+   		         if(obj.has("value") && obj.getString("value") !=null){
    		         createXlsSheet(createExcelsheet,writeRow,j,obj.getString("value"));
+   		         }
    		     }
    		     
    		 } catch (JSONException e){
@@ -2518,9 +2535,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    	 
    	 
    	SubmissionXls submissionXls =  saveSubmissionTracker(dateFormat,createExcelworkbook,requirement,user);
-   
-   	
-   	
+    
    	
    	sendMailTemplateWithAttachment(jsonData,user,files,loginOrgLocation,submissionXls,submissionId,redirectOrgLocationId);
 	
@@ -5087,9 +5102,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation) throws Exception
 	{
-		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation);
-	}
-	
+		CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(orgLocation.getId());
+		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation,candidateVerificationConfig);
+		}
 	@Override
 	public RequirementSubmission editRequirementSubmission(JSONObject jsonObj, User user, OrgLocations orgLocations,
 			String jsonStringvalues) throws Exception {

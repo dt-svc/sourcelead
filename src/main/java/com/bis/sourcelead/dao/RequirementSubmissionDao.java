@@ -10,6 +10,7 @@ import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementIncentive;
@@ -97,7 +98,7 @@ public interface RequirementSubmissionDao {
 	 * @return
 	 * @throws Exception
 	 */
-	Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,OrgLocations loginOrgLocation)throws Exception;
+	Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,OrgLocations loginOrgLocation,CandidateVerificationConfig candidateVerificationConfig)throws Exception;
 	
 	RequirementSubmission getSubmissionsByVendorSubmissionIdAndvendorOrgLocationId(Long vendorSubmissionId, Long vendororgLocationsId);
 	
@@ -214,7 +215,7 @@ public interface RequirementSubmissionDao {
 	
 	RequirementSubmission getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(Long sourceSubmissionId, Long vendorLocationId) throws Exception;
 	
-	ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation) throws Exception;
+	ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation, CandidateVerificationConfig candidateVerificationConfig) throws Exception;
 	
 	List<RequirementSubmission> getSubmmisionsForIsClientJob(List<Long> submissionIds) throws Exception;
 	
@@ -265,4 +266,5 @@ public interface RequirementSubmissionDao {
 	long getJoinedCountByUserIdAndDates(String userCode, Date[] searchDates);
 
 	List<RequirementSubmission> getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(Long orgLocationId, String submissionStatus, Date joiningDate);
+
 }

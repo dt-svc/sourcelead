@@ -49,6 +49,7 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
@@ -64,6 +65,7 @@ import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
@@ -1588,6 +1590,24 @@ public class CandidateRestController {
 			}
 			return flag;
 		}  
+	    
+	    @RequestMapping(value = {"/saveDuplicateCheckConfig"},method = RequestMethod.POST)
+		public CandidateVerificationConfig saveDuplicateCheckConfig(CandidateVerificationConfigDTO candidateVerificationConfigDTO,HttpServletRequest request) {
+			
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+			return candidateService.saveDuplicateCheckConfig(candidateVerificationConfigDTO,loginOrgLocation,user);
+			
+		}
+		
+	    @RequestMapping(value = {"/getDuplicateConfigData"},method = RequestMethod.GET)
+		public CandidateVerificationConfig getDuplicateConfigData(CandidateVerificationConfigDTO candidateVerificationConfigDTO,HttpServletRequest request) {
+			
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			return candidateService.getCandidateVerificationConfig(loginOrgLocation.getId());
+				
+		}
 
 }
 
