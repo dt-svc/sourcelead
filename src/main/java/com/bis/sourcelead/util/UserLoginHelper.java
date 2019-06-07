@@ -1008,6 +1008,15 @@ public class UserLoginHelper {
 		if(userRoleJson.get("masterCandidateId") != null) {
 			candidate.setMasterCandId(Long.valueOf(userRoleJson.get("masterCandidateId").toString()));
 		}
+		candidate.setFirstName(userRoleJson.get("firstName").toString());
+		if(userRoleJson.get("lastName") != null) {
+			candidate.setLastName(userRoleJson.get("lastName").toString());
+		}
+		candidate.setEmail(userRoleJson.get("email").toString());
+		if(userRoleJson.get("mobilePhone") != null) {
+			candidate.setMobilePhone(userRoleJson.get("mobilePhone").toString());
+		}
+			  
 		return candidate;
 	}
 	
