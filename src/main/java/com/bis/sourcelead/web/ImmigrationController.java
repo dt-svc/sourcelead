@@ -1993,9 +1993,9 @@ public class ImmigrationController {
 		HashMap<String, Integer> tabRecordCountMap = new HashMap<String, Integer>();
 		try {
 			String entityArray[] = new String[] { "CandidatePassport", "CandidateVisa",
-					"CandidateEmployers", "Candidate", "CandidateEducation", "CandidateFamilyDetails", "Tasks" };
+					"CandidateEmployers", "Candidate", "CandidateEducation", "CandidateFamilyDetails", "Tasks" ,"LcaHistory"};
 			String tabNameArray[] = new String[] { "Passport", "Visa", "Employers", "Residence", "Education", "Family",
-					"Tasks" };
+					"Tasks","Lca" };
 			Integer count = 0;
 			for (int i = 0; i < entityArray.length; i++) {
 				if (i == 0) { // CandidatePassportVisa for passport
@@ -2026,6 +2026,10 @@ public class ImmigrationController {
 				} else if (i == 6) {// CandidateFamilyDetails
 					count = immigrationCommonService.getTableRecordCountByImmigrationId(entityArray[i], immigrationId,
 							"where immigrationId.id=:immigrationId and taskStatus='Open'");
+					tabRecordCountMap.put(tabNameArray[i], count);
+				} else if (i == 7) {// CandidateLcaDetails
+					count = immigrationCommonService.getTableRecordCountByImmigrationId(entityArray[i], immigrationId,
+							"where immigrationId.id=:immigrationId ");
 					tabRecordCountMap.put(tabNameArray[i], count);
 				}
 
