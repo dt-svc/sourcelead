@@ -230,7 +230,7 @@ public class SourceleadResumeParserNew {
 			Metadata metadata = new Metadata();
 			parser.parse(stream, htmlHandler, metadata);
 			String parsedString = htmlHandler.toString();
-			jsonUtil = getResumeParserJsonUtil(parsedString, country, orgLocationDateFormat);			
+			jsonUtil = getResumeParserJsonUtil(parsedString, orgLocationDateFormat);			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -245,7 +245,7 @@ public class SourceleadResumeParserNew {
 			Metadata metadata = new Metadata();
 			parser.parse(stream, htmlHandler, metadata);
 			String parsedString = htmlHandler.toString();
-			jsonUtil = getResumeParserJsonUtil(parsedString, country, orgLocationDateFormat);
+			jsonUtil = getResumeParserJsonUtil(parsedString, orgLocationDateFormat);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -255,7 +255,7 @@ public class SourceleadResumeParserNew {
 	
 	String textFileLocation = "C:/Users/Mahaveer Manoj/Desktop/Resume Compare textfiles";
 	
-	public ResumeParserJsonUtil getResumeParserJsonUtil(String resumeData, String country, String orgLocationDateFormat) {
+	public ResumeParserJsonUtil getResumeParserJsonUtil(String resumeData, String orgLocationDateFormat) {
 		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
 		try {
 			String name = getNameFromTextFile(resumeData);
@@ -297,6 +297,15 @@ public class SourceleadResumeParserNew {
 			educationsSet.add(eduPG);
 			
 			jsonUtil.setEducations(educationsSet);
+			
+			//Address
+			String country = getKeywordsFromTextFile(resumeData, "countries.txt");
+			System.out.println("Country : " + country);
+			jsonUtil.setCountry(country);
+			
+			String state = getKeywordsFromTextFile(resumeData, "states.txt");
+			System.out.println("State : " + state);
+			jsonUtil.setState(state);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
