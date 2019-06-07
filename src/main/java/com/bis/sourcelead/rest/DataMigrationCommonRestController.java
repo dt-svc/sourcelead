@@ -31,6 +31,7 @@ import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.couchbase.connection.CouchbaseConnectionConfig;
 import com.bis.sourcelead.couchbase.connection.CouchbasePropertyPathConfiguration;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
+import com.bis.sourcelead.dto.CandiateBulkUploadCommonDTO;
 import com.bis.sourcelead.dto.CandidateBulkUploadDTO;
 import com.bis.sourcelead.dto.DataMigrationCommonDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
@@ -126,7 +127,8 @@ public class DataMigrationCommonRestController {
 	}
 	 
 	
-	@RequestMapping(value = {"/dataMigrationCommon","/rest/dataMigrationCommon"}, method = RequestMethod.POST)
+	
+	@RequestMapping(value = "/dataMigrationCommon")
 	public ModelAndView dataMigrationCommon(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
 	{
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -203,9 +205,8 @@ public class DataMigrationCommonRestController {
 	
 	
 	
-	
-	@RequestMapping(value = {"/candidateUploadFieldMapping","/rest/candidateUploadFieldMapping"}, method = RequestMethod.POST)
-	public ModelAndView candidateUploadFieldMapping(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/candidateUploadFieldMapping")
+	public ModelAndView candidateUploadFieldMapping(CandiateBulkUploadCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
