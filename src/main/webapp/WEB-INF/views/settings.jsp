@@ -300,7 +300,7 @@
 	            <!-- Dropdown -->
 	            <div class="clearfix text-center mb10"><i class="userconfigSVG"></i></div>
 	            <div class="clearfix text-center">
-	              <h4><a href="#">Candidate</a></h4>
+	              <h4>Candidate</h4>
 	            </div>
 	          </div>
 				
