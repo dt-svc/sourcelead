@@ -724,6 +724,7 @@ public class SubmissionsRestController {
 					RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 					RequirementSubmission submission = requirementSubmissionService .getRequirementSubmissionById(Long.parseLong(submissionId[i]));
 					requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+					submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
 					submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
 					submission.setUpdatedBy(user.getUserCode());
 					submission.setUpdatedUser(user.getFullName());
