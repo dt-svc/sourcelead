@@ -1,9 +1,10 @@
 package com.bis.sourcelead.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -13,12 +14,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.stereotype.Component;
-
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.resumeParser.CVXtractorService;
 
 @Component
 public class SourceleadResumeParserNew {
@@ -30,6 +29,7 @@ public class SourceleadResumeParserNew {
 	 * 
 	 */
 	
+	/*
 	private String serviceURL = "http://cvxdemo.daxtra.com";
 	private String account = "sourcelead";
 	private boolean outputFormat = true; //true - JSON , false - XML
@@ -39,7 +39,6 @@ public class SourceleadResumeParserNew {
 		try {
 			CVXtractorService cvXtractorService = new CVXtractorService(serviceURL, account, outputFormat);
 			String resumeData = cvXtractorService.ProcessCV(source);
-			System.out.println(resumeData);
 			if (resumeData == "") {
 				System.err.println("Error at processing :: " + cvXtractorService.getLastError());
 			} else {
@@ -56,7 +55,6 @@ public class SourceleadResumeParserNew {
 		try {
 			CVXtractorService cvXtractorService = new CVXtractorService(serviceURL, account, outputFormat);
 			String resumeData = cvXtractorService.ProcessCV(file.getPath());
-			System.out.println(resumeData);
 			if (resumeData == "") {
 				System.err.println("Error at processing :: " + cvXtractorService.getLastError());
 			} else {
@@ -219,6 +217,220 @@ public class SourceleadResumeParserNew {
 			e.printStackTrace();
 		}
 		return jsonUtil;
+	}*/
+	
+	
+	public ResumeParserJsonUtil getCandidateDetailsFromResume(byte[] source, String country, String orgLocationDateFormat) throws Exception {
+		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+		try {
+			BodyContentHandler htmlHandler = new BodyContentHandler();
+			ByteArrayInputStream stream = new ByteArrayInputStream(source);
+			AutoDetectParser parser = new AutoDetectParser();
+			Metadata metadata = new Metadata();
+			parser.parse(stream, htmlHandler, metadata);
+			String parsedString = htmlHandler.toString();
+			jsonUtil = getResumeParserJsonUtil(parsedString, country, orgLocationDateFormat);			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonUtil;
+	}
+	
+	public ResumeParserJsonUtil getCandidateDetailsFromResume1(File file, String country, String orgLocationDateFormat) throws Exception {
+		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+		try (FileInputStream stream = new FileInputStream(file);) {
+			BodyContentHandler htmlHandler = new BodyContentHandler();
+			AutoDetectParser parser = new AutoDetectParser();
+			Metadata metadata = new Metadata();
+			parser.parse(stream, htmlHandler, metadata);
+			String parsedString = htmlHandler.toString();
+			jsonUtil = getResumeParserJsonUtil(parsedString, country, orgLocationDateFormat);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonUtil;
+	}
+	
+	
+	String textFileLocation = "C:/Users/Mahaveer Manoj/Desktop/Resume Compare textfiles";
+	
+	public ResumeParserJsonUtil getResumeParserJsonUtil(String resumeData, String country, String orgLocationDateFormat) {
+		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+		try {
+			String name = getNameFromTextFile(resumeData);
+			if(name.split(" ").length > 2) {
+				jsonUtil.setFirstName(name.split(" ")[0]);
+				jsonUtil.setMiddleName(name.split(" ")[1]);
+				jsonUtil.setLastName(name.split(" ")[2]);
+			} else if(name.split(" ").length == 2) {
+				jsonUtil.setFirstName(name.split(" ")[0]);
+				jsonUtil.setLastName(name.split(" ")[1]);
+			} else {
+				jsonUtil.setFirstName(name);
+			}
+			
+			jsonUtil.setEmail(getEmailFromTextFile(resumeData));
+			
+			Set<String> phoneNumberSet = new LinkedHashSet<>();
+			phoneNumberSet.add(getMobileNumber(resumeData));
+			jsonUtil.setPhoneNumbers(phoneNumberSet);
+			jsonUtil.setSkills(getSkillsFromTextFile(resumeData));
+			jsonUtil.setDesignation(getDesignationFromTextFile(resumeData));
+			
+			String experience = getExperienceFromTextFile(resumeData);
+//			jsonUtil.setTotalYearsExp(experience.split(":")[0]);
+//			jsonUtil.setTotalMonthsExp(experience.split(":")[1]);
+			System.out.println("Exp : " + experience);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonUtil;
+	}
+	
+	/**
+	 * Name finder from parsed text file Here we used java regular expression
+	 * logic for resolving name from text file
+	 */
+	private String getNameFromTextFile(String parsedString) {
+
+		String[] totalLines = parsedString.split("\n");
+		String firstTenLines = "";
+		String name = "";
+		String lineSeparator = "";
+		String ecludeNameRegex = "((?i)Name|name|NAME|\\.)";
+		int count = 0;
+		 boolean nameMatchFound = false;
+		for (String line : totalLines) {
+			String nameRegex = "((?i)Name|name|NAME)(\\:|\\-|\\.|\\s)+";
+			if(line.matches("(\\W*)" + nameRegex + ".*")) {
+				// nameMatchFound =true;
+				String[] nameLineArray = line.split(nameRegex);
+				if (nameLineArray.length > 1) {
+					String nameContent = nameLineArray[1].replaceAll("[^a-zA-Z0-9\\s]+", "").trim();
+					if (StringUtils.isNotEmpty(nameContent) && Character.isUpperCase(nameContent.charAt(0))) {
+						name = nameLineArray[1].replaceAll("[^a-zA-Z\\s\\.]+", "").trim();
+						// nameMatchFound = false;
+					}
+
+				}
+				name = name.replaceAll(ecludeNameRegex, "");
+				if(StringUtils.isNotEmpty(name)) {
+					break;
+				}else {
+					nameMatchFound = true;
+					continue;
+				}
+				
+			}else if(nameMatchFound) {
+				String regex = "[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}";
+				Matcher nameMatcher = Pattern.compile(regex).matcher(line);
+				if (nameMatcher.find()) {
+					if (StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "objective")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "resume")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "cell")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "mobile")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "email")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Summary")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Profile")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Address")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Date")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "page")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "engineer")
+							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "text"))
+						continue;
+					name = nameMatcher.group();
+					name = name.replaceAll(ecludeNameRegex, "");
+					break ;
+				}else {
+					continue;
+				}
+			}
+			
+			if (count < 10) {
+				
+				if (StringUtils.isNotEmpty(firstTenLines)) {
+					lineSeparator = System.getProperty("line.separator");
+				}
+				line = line.trim();
+				String[] words = line.split("(\\,|\\s){2,}");
+				if (words != null && words.length > 1) {
+
+					for (int i = 0; i < words.length; i++) {
+						if (StringUtils.containsIgnoreCase(words[i], "curriculum")
+								|| StringUtils.containsIgnoreCase(words[i], "objective")
+								|| StringUtils.containsIgnoreCase(words[i], "resume")
+								|| StringUtils.containsIgnoreCase(words[i], "cell")
+								|| StringUtils.containsIgnoreCase(words[i], "mobile")
+								|| StringUtils.containsIgnoreCase(words[i], "email")
+								|| StringUtils.containsIgnoreCase(words[i], "Summary")
+								|| StringUtils.containsIgnoreCase(words[i], "Profile")
+								|| StringUtils.containsIgnoreCase(words[i], "Address")
+								|| StringUtils.containsIgnoreCase(words[i], "Date")
+								|| StringUtils.containsIgnoreCase(words[i], "page")
+								|| StringUtils.containsIgnoreCase(words[i], "engineer")
+								|| StringUtils.containsIgnoreCase(words[i], "text"))
+							continue;
+						line = line + System.getProperty("line.separator") + words[i];
+					}
+				}
+
+				firstTenLines = firstTenLines + lineSeparator + line.replaceAll("[^a-zA-Z0-9\\s\\@\\.\\_]+", "").trim();
+				count++;
+			}
+			
+		}
+
+		if (!StringUtils.isNotEmpty(name)) {
+			if(StringUtils.isEmpty(lineSeparator)){
+				lineSeparator = "\n";
+			}
+			String[] tenLines = firstTenLines.split(lineSeparator);
+			outerloop: {
+				for (String line : tenLines) {
+					String regex = "[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}";
+					Matcher nameMatcher = Pattern.compile(regex).matcher(line);
+					if (nameMatcher.find()) {
+						if (StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "objective")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "resume")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "cell")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "mobile")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "email")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Summary")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Profile")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Address")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "Date")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "page")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "engineer")
+								|| StringUtils.containsIgnoreCase(nameMatcher.group(),  "text"))
+							continue;
+						name = nameMatcher.group();
+						break outerloop;
+					}
+				}
+			}
+
+			name = name.replaceAll(ecludeNameRegex, "");
+		}
+		return name;
+	}	
+	
+	public String getEmailFromTextFile(String parsedString) {
+		String email = null;
+		Pattern p = Pattern.compile("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = p.matcher(parsedString);
+		if (matcher.find()) {
+			email = matcher.group().replaceAll("\\s", "").toLowerCase();
+		} else {
+			p = Pattern.compile("\\b[A-Z0-9\\s._%+-]+@[A-Z0-9\\s.-]+\\.[A-Z\\s]{2,8}\\b", Pattern.CASE_INSENSITIVE);
+			matcher = p.matcher(parsedString);
+			if (matcher.find()) {
+				email = matcher.group().replaceAll("\\s", "").toLowerCase();
+			}
+		}
+		return email;
 	}
 	
 	public String getMobileNumber(String text) throws Exception {
@@ -296,8 +508,8 @@ public class SourceleadResumeParserNew {
 	}
 	
 	@SuppressWarnings("resource")
-	private String getSkillsFromTextFile(String parsedString, String textFileLocation) {
-		String skills = "";
+	private Set<String> getSkillsFromTextFile(String parsedString) {
+//		String skills = "";
 		Set<String> skillsSet = new HashSet<>();
 		try {
 			File file = new File(textFileLocation, "Skills.txt");
@@ -313,17 +525,16 @@ public class SourceleadResumeParserNew {
 			while (matcher.find()) {
 				skillsSet.add(matcher.group(1).toLowerCase());
 			}
-			skills = String.join(", ", skillsSet);
-			skills = skills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");
-			
+			/*skills = String.join(", ", skillsSet);
+			skills = skills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return skills;
+		return skillsSet;
 	}
 	
 	@SuppressWarnings("resource")
-	private String getDesignationFromTextFile(String parsedString, String textFileLocation) {
+	private String getDesignationFromTextFile(String parsedString) {
 		String designation = "";
 		Set<String> designationSet = new HashSet<>();
 		try {

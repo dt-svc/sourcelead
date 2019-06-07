@@ -37,6 +37,7 @@ $(document).ready(function(){
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead</title>
