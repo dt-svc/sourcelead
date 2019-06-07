@@ -14,9 +14,7 @@
  <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
  
  <style type="text/css">
- .fa.pull-right {
-    margin-left: -1.7em !important;
-}
+ .fa.pull-right { margin-left: -1.7em !important; }
  </style>
  
     <div id="editBudgetRequestPopUpid"></div>

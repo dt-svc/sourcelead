@@ -7,13 +7,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 
-<style>
-.settPop .form-control {
-    height: auto !important; 
-}
-</style>
-
-
 <script type="text/javascript">
 	window.onload = function () {
 		getRequestedAssociatesList();
@@ -211,7 +204,7 @@ function getRequestedAssociatesList(){
 function rejectAssociate(requestUUID,candidateName){
 	$("#requestOnHoldReasonDiv").empty();
 	var result = "";
-	result = result + '	<div class="settPop">';
+	result = result + '	<div class="settPop settPopFormcontrol">';
 	result = result + '	<div id="loading"></div>';
 	result = result + '<form id="rejectedReason_form" name="rejectedReason_form" method="post">';
 	result = result + '<input type="hidden" name="requestUUID" value="'+requestUUID+'">';
@@ -325,7 +318,7 @@ function saveRejectAssociate(requestUUID){
 <script>
 function onholdAssociateRequest(requestUUID,candidateName){
 	var result = "";
-	result = result + '	<div class="settPop">';
+	result = result + '	<div class="settPop settPopFormcontrol">';
 	result = result + '	<div id="loading"></div>';
 	result = result + '<form id="onHold_form" name="onHold_form" method="post">';
 	result = result + '<input type="hidden" name="requestUUID" value="'+requestUUID+'">';
