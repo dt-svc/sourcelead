@@ -15,8 +15,9 @@
 	</condition>
 	
     <!--Location Of Tomcat-Server -->
-	<property name="tomcat.dir" value="/apache-tomcat-8.0.38" />
 
+	<property name="tomcat.dir" value="/apache-tomcat-8.5.32" />
+	
 	<target name="copy-jsp">
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/pms/WEB-INF/views" includeEmptyDirs="no">
 			<fileset dir="venkat_pms/src/main/webapp/WEB-INF/views">
