@@ -97,7 +97,19 @@
             <input id="radio-f" name="isAutomaticCheckOut" type="radio" value="NO" checked>
             <label for="radio-f" class="radio-label">No</label>
           </div> 
-        </div>     
+        </div>  
+        
+        <div class="clockCta">
+          <p>Fill Timesheet Automatically When clock out</p> 
+          <div class="clockRadio">
+            <input id="radio-g" name="isTimesheetFill" type="radio" value="YES">
+            <label for="radio-g" class="radio-label">Yes</label>
+          </div>
+          <div class="clockRadio">
+            <input id="radio-h" name="isTimesheetFill" type="radio" value="NO" checked>
+            <label for="radio-h" class="radio-label">No</label>
+          </div> 
+        </div>       
 
         <div class="">
           <a class="timeEnt" onclick="saveClockInOutConfigure();">Save</a>
@@ -254,6 +266,12 @@ $(".popClose").click(function() {
 		 $("#radio-e").prop("checked", true);
 	 }else{
 		 $("#radio-f").prop("checked", true);
+	 }
+	 
+	 if(data.isTimesheetFill == true){
+		 $("#radio-g").prop("checked", true);
+	 }else{
+		 $("#radio-h").prop("checked", true);
 	 }
  
  }

@@ -1,11 +1,9 @@
 package com.bis.sourcelead.web;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +16,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.dto.performance.PerformanceRatingLevelDTO;
+import com.bis.sourcelead.dto.performance.PerformanceRatingScaleDTO;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceCompetencies;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
+import com.bis.sourcelead.entity.performance.PerformanceRatingLevel;
+import com.bis.sourcelead.entity.performance.PerformanceRatingScale;
 import com.bis.sourcelead.service.DepartmentService;
-import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateService;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
 import com.bis.sourcelead.service.performance.PerformanceCompetenciesService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackTemplateService;
+import com.bis.sourcelead.service.performance.PerformanceRatingLevelService;
+import com.bis.sourcelead.service.performance.PerformanceRatingScaleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -65,6 +65,12 @@ public class PerformanceManagementController {
 	
 	@Autowired
 	PerformanceCompetenciesService performanceCompetenciesService;
+	
+	@Autowired
+	PerformanceRatingLevelService performanceRatingLevelService;
+	
+	@Autowired
+	PerformanceRatingScaleService performanceRatingScaleService;
 	
 	
 	
@@ -149,6 +155,16 @@ public class PerformanceManagementController {
 		return model;
 	}
 	
+	@RequestMapping(value = "/getPerformanceAppraisalAssignToList")
+	public ModelAndView getPerformanceAppraisalAssignToList(@RequestParam(value = "uuid", required = true) String uuid,
+			HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("uuid", uuid);
+		model.setViewName("performance/performanceAppraisalAssignToList");
+		return model;
+	}
+	
 	
 	@RequestMapping(value = "/performanceCompetenceList")
 	public ModelAndView performanceCompetenceList(HttpServletRequest request) throws Exception{
@@ -157,6 +173,23 @@ public class PerformanceManagementController {
 		model.setViewName("performance/performanceCompetenceList");
 		return model;
 	}
+	
+	@RequestMapping(value = "/performanceRatingScaleList")
+	public ModelAndView performanceRatingScaleList(HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("performance/performanceRatingScaleList");
+		return model;
+	}
+	
+	@RequestMapping(value = "/addNewRatingScale")
+	public ModelAndView addNewRatingScale(HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("performance/addNewRatingScale");
+		return model;
+	}
+	
 	
 	
 	@RequestMapping(value = "/tagPerformanceCompetence")
@@ -204,6 +237,114 @@ public class PerformanceManagementController {
 		return result;
 		
 	}
+	
+	
+
+	@RequestMapping(value = "/validateRatingLevelName", method = RequestMethod.GET)
+	@ResponseBody String validateRatingLevelName(@RequestParam(value = "ratingLevelName", required = true) String ratingLevelName,
+			@RequestParam(value = "ratingLevelId", required = false) Long ratingLevelId,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
+		
+		String result = null;
+		if(ratingLevelId != null){
+			 PerformanceRatingLevelDTO ratingLevelDTO =  performanceRatingLevelService.getPerformanceRatingLevelDetailsById(ratingLevelId);
+			 if(ratingLevelDTO.getName().toLowerCase().equalsIgnoreCase(ratingLevelName)) {
+				 result = "valid";
+			 }else {
+				 boolean flag  = performanceRatingLevelService.isRatingLevelNameExisted(orgLocationId, ratingLevelName);
+					if(flag == true){
+						result = "invalid";
+					}else{
+						result = "valid";
+					} 
+			 }
+		}
+		else{
+			boolean flag  = performanceRatingLevelService.isRatingLevelNameExisted(orgLocationId, ratingLevelName);
+			if(flag == true){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
+		
+	}
+	
+	
+
+	@RequestMapping(value = "/validateRatingScaleName", method = RequestMethod.GET)
+	@ResponseBody String validateRatingScaleName(@RequestParam(value = "ratingScaleName", required = true) String ratingScaleName,
+			@RequestParam(value = "ratingScaleId", required = false) Long ratingScaleId,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
+		
+		String result = null;
+		
+		if(ratingScaleId != null){
+			PerformanceRatingScaleDTO ratingScaleDTO = performanceRatingScaleService.getPerformanceRatingScaleDTOByScaleId(ratingScaleId);
+			 if(ratingScaleDTO.getRatingName().toLowerCase().equalsIgnoreCase(ratingScaleName)) {
+				 result = "valid";
+			 }	else{
+					boolean flag  = performanceRatingScaleService.isRatingScaleNameExisted(orgLocationId, ratingScaleName);
+					if(flag == true){
+						result = "invalid";
+					}else{
+						result = "valid";
+					}
+				}
+		}
+		else{
+			boolean flag  = performanceRatingScaleService.isRatingScaleNameExisted(orgLocationId, ratingScaleName);
+			if(flag == true){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
+		
+	}
+	
+	
+	@RequestMapping(value = "/validateRatingShortCode", method = RequestMethod.GET)
+	@ResponseBody String validateRatingShortCode(@RequestParam(value = "ratingShortCode", required = true) String ratingShortCode,
+			@RequestParam(value = "ratingScaleId", required = false) Long ratingScaleId,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
+		
+		String result = null;
+		
+		if(ratingScaleId != null){
+			PerformanceRatingScaleDTO ratingScaleDTO = performanceRatingScaleService.getPerformanceRatingScaleDTOByScaleId(ratingScaleId);
+			 if(ratingScaleDTO.getShortCode().toLowerCase().equalsIgnoreCase(ratingShortCode)) {
+				 result = "valid";
+			 }	else{
+					boolean flag  = performanceRatingScaleService.isRatingShortCodeExisted(orgLocationId, ratingShortCode);
+					if(flag == true){
+						result = "invalid";
+					}else{
+						result = "valid";
+					}
+				}
+		}
+		else{
+			boolean flag  = performanceRatingScaleService.isRatingShortCodeExisted(orgLocationId, ratingShortCode);
+			if(flag == true){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
+		
+	}
+	
+	
 	
 	
 }

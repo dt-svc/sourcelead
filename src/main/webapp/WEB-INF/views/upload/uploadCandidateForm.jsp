@@ -5,31 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-	
-<style type="text/css">
-.center-div {
-	width: 300px;
-	height: 30px;
-	margin: 10px 220px 0;
-}
-
-.center-div input {
-	border: none;
-	background: transparent
-}
-
-.textLoad {
-	text-align: center;
-    padding: 0px 0px;
-    margin: 30% auto 0px;
-    font-size: 14px;
-    color: #666;
-    font-weight: 500;
-    display: none;
-}	
-
-</style>
-
 
 <script type="text/javascript">
 window.onload = function () {
@@ -53,11 +28,11 @@ window.onload = function () {
         <h2>Import Candidates</h2>
       </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
       </c:if>
       
        <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> &raquo; <a href="${appPath}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
       </c:if>
     </section>
 	<div id="loading"><p class="textLoad" id="LoadingTextMsg"></p></div>
@@ -88,8 +63,11 @@ window.onload = function () {
 									<input type="reset" class="btn btn-danger" value="Reset"
 										onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadUrl}/uploadCandidateForm'/>'">
 								</div>
+								
 							</div>
+							
 						</div>
+						
 					</div>
 					
 					<!-- Attach File button -->
@@ -121,8 +99,11 @@ window.onload = function () {
 							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 							<div>File Holder</div>
 						</div>
+						
 						<!--  Downloaded File show here -->
 					</div>
+					<!-- override candidate details when check box enable -->
+					<!-- <div><input type="checkbox" id="candidateOverride" value="N">  Override Details</div> -->
 					
 					<div id="errorDownloadDiv" style="display: none"></div>
 				</div>
@@ -210,11 +191,13 @@ function fetchFieldsWithMatchedColumn(){
 	var fileUrl = $("#dataFilePath").val();
 	var uploadType = "candidatesUpload";
 	var headerPosition = $("#headerPosition").val();
+	//var candidateChekVal =$("#candidateOverride").val();
+	
         if (($('#upload_candidate_form').validate(false, validationSettings))){
       	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           	$.ajax({
     			type: "POST",
-    		    url: sourceleadUrl+"/candidateUploadFieldMapping?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 
+    		    url: sourceleadUrl+"/candidateUploadFieldMapping?filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 
     		    success: function(data) {
     		    	$("#dataFileImportDiv").attr("style","display:none");
     		    	$('#dataFieldsDiv').removeAttr("style");
@@ -241,6 +224,12 @@ function cancelFileImport(){
 }
 </script>
 
+<!-- candidate overriding (prasadk) -->
+<!-- <script type="text/javascript">
+	$('#candidateOverride').change(function(){
+		 $(this).val(this.checked ? "Y" : "N");
+	});
+</script> -->
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
