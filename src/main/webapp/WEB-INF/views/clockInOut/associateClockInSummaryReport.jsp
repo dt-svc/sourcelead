@@ -4,6 +4,12 @@
 <jsp:include page="../masterSideNav.jsp" />
 
 
+  <script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script> 
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script> 
+<script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script>
+<script type="text/javascript" src="../js/amcharts_export.min.js"></script>
+
+
  <!-- Side Nav Bar --> 
  
  <script>
@@ -11,6 +17,8 @@
 	 getCurrentDates('today');
     }); 
  </script>
+
+
 
  <!-- Content Area -->
   <section class="content-wraper contentWraper">
@@ -24,10 +32,11 @@
       <div class="timesheet_out" id="payrollRegister" style="display: block;">
         <div class="clearfix">
           <div class="positionRelative reportHead clearfix">
-            <span class="pull-left refreIcon noPad mt5">
-              <a href="javascript:void(0)" class="refeIcon mt2" title="Refresh" onclick="resetFilter();"></a>
-            </span>
-            
+           <div class="pull-left timeRepList">
+                    <a title="Graphical View" id="graphicalId" onclick="graphicalViewPage();"><i class="fa fa-pie-chart"></i></a>
+                    <a title="List View" id="listId" class="act" onclick="listViewPage();"><i class="fa fa-list"></i></a>
+                    </div> 
+                    
             <div class="clDate">
                 <i class="fa fa-chevron-left" id="previousId" onclick="getCurrentDates('previous');"></i>
                 <p id="frequencyID"></p>
@@ -36,15 +45,19 @@
             
             <ul class="pull-right list-unstyled list-inline">
               <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
-              <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-                <div class="newActPop"> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
-              </li>
-              <li class="noMar">
+             <!--  <li class="noMar">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li> -->
             </ul>
           </div>
-          <div class="require_wrap_table tableFirstSecond clearfix dropdownTableDesig" id="associateClockInOutDiv"></div>
+          
+                          <div class="repclo" id="graphId"  style="display: none;">
+        <div id="jobsAdded" class="amchartAnchor-Hide timRep"></div>
+        <div id="graphIdDiv" class=""></div>
+    </div>
+          
+          <div class="require_wrap_table tableFirstSecond clearfix" id="associateClockInOutDiv"></div>
+           <div id="uniqueDiv" class="associateEmpData_pop boxShadow_div"></div>
         </div>
       </div>
       
@@ -180,6 +193,9 @@
       </div>
     </div>
   </div>
+  
+  <div class="sideMask"></div>
+
   <jsp:include page="../masterFooter.jsp" />
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
@@ -269,203 +285,93 @@ $( function(){
 </script>
 
 <script>
-function prepareDynamicUserList(timeFrequency, url){
-        $("#clockLoading").attr('style','position:absolute; width:100%; height:250%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-        $.ajax({
-            type : "POST",
-            url : url,
-            success : function(json) {
-                getAssociateClockInOutReportSummaryList(timeFrequency, json);
-            },
-        });
-        $("#clockLoading").removeAttr('style');
+
+function graphicalViewPage(){
+	  
+	  $("#listId").removeClass("act");
+	  $("#graphicalId").addClass("act");
+	  document.getElementById("graphId").style.display="block";
+	  document.getElementById("associateClockInOutDiv").style.display="none";
+}
+
+
+function listViewPage(){
+	  $("#graphicalId").removeClass("act");
+	  $("#listId").addClass("act");
+	  document.getElementById("associateClockInOutDiv").style.display="block";
+	  document.getElementById("graphId").style.display="none";
 }
 </script>
+
 
 <script>
 function getAssociateClockInOutReportSummaryList(timeFrequency, json){
     var result = "";
+    var headerLength = "";
     var currentDate = $("#frequencyID").html();
     result = result +'<table id="associateClockInOutTableID">';
     result = result +'<thead>';
     result = result +'  <tr>';
-    result = result + '<th>Employee Name</th>';
-    
-    var report = json;
-    alert("report========="+report)
-	if(report != null && report != "" && report != "undefined"){
-		for(var key in report){
-			 alert("key========="+key)
-// 			if(key === 'today'){
-			if(timeFrequency === 'today'){
-				for(var innerkey in report[key]){
-					result = result + '<th>'+currentDate+' <br><div class="fontSmall clearfix mt2"></div></th>';
-				}
-			}
-// 			}
-// 			if(key === 'weekly'){
-			if(timeFrequency === 'Last_7_days'){
-				for(var innerkey in report[key]){
-					result = result + '<th>'+innerkey+' <br><div class="fontSmall clearfix mt2"></div></th>';
-				}
-			}
-// 			}
-		}
+    for (var i=0; i<json.length; i++){
+    	var rep = json[i];
+    if(rep.headerDates != null && rep.headerDates != "" && rep.headerDates != "undefined"){
+    	headerLength = rep.headerDates.length + 1;
+    	for(var j = 0; j<rep.headerDates.length; j++){
+    			if(i == 0){
+    				result = result + '<th>'+rep.headerDates[j]+' <br><div class="fontSmall clearfix mt2"></div></th>';
+    			}
+    	}
+    }
 	}
-    
-    
-//     if(timeFrequency === 'today'){
-//     	var currentDate = $("#frequencyID").html();
-//     	result = result + '<th>Today <br><div class="fontSmall clearfix mt2">'+currentDate+'</div></th>';
-//     }
-//     else 
-//     	if(timeFrequency === 'Last_7_days'){
-// 		result = result + '<th>Mon <br><div class="fontSmall clearfix mt2"></div></th>';
-// 		result = result + '<th>Tue <br><div class="fontSmall clearfix mt2"></div></th>';
-// 		result = result + '<th>Wed <br><div class="fontSmall clearfix mt2"></div></th>';
-// 		result = result + '<th>Thu <br><div class="fontSmall clearfix mt2"></div></th>';
-// 		result = result + '<th>Fri <br><div class="fontSmall clearfix mt2"></div></th>';
-// 		result = result + '<th>Sat <br><div class="fontSmall clearfix mt2"></div></th>';
-// 		result = result + '<th>Sun <br><div class="fontSmall clearfix mt2"></div></th>';
-// 	}
-//     else
-   	if(timeFrequency === 'current_month'){
-    	var currentDate = $("#frequencyID").html();
-    	var sartDate = currentDate.split("To");
-    	var endDate = sartDate[1].split("-");
-		for (var i=1; i<=endDate[0]; i++)
-        {
-			result = result + '<th>'+i+'<br><div class="fontSmall clearfix mt2"></div></th>';
-        }
-	}
-    else if(timeFrequency === 'Current_Year'){
-		result = result + '<th>Jan <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>Feb <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>March <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>Apr <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>May <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>June <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>July <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>Aug <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>Sept <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>Oct <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>Nav <br><div class="fontSmall clearfix mt2"></div></th>';
-		result = result + '<th>Dec <br><div class="fontSmall clearfix mt2"></div></th>';
-	}
+   
     result = result +'    </tr>';
     result = result +'</thead>  ';
     result = result +'<tbody>';
     
-    for (var i=0; i<json.length; i++)
-    {
-        var reportList = json[i];
-        alert("reportList===="+reportList)
-        var len = reportList.length;
-        alert("length===="+reportList.length)
-        result = result +'<tr>';
-        if(reportList != null && reportList.length > 0){
-	        for(var j=0; j<reportList.length; j++){
-	        	var report = reportList[j];
-	        	
-		        if(report.firstName != null && report.firstName != "" && report.firstName != "undefined")
-		        	 result = result + '<td><div class="tbldata-dotdot inlineBlock">'+report.firstName+' '+report.lastName+'</div></td>';
-		        else
-		            result = result + '<td>--</td>';
-		        
-		        if(timeFrequency === 'today'){
-		        	result = result + prepareTableBody(report);
-		        }
-		        else if(timeFrequency === 'Last_7_days'){
-		        	result = result + prepareTableBody(report);
-		        }
-		        else if(timeFrequency === 'current_month'){
-		        	result = result + prepareTableBody(report);
-		        }
-		        else if(timeFrequency === 'Current_Year'){
-		        	result = result + prepareTableBody(report);
-		        }
-	        }
-        }
-        else{
-        	result = result + '<td>--</td>';
-        }
-        result = result + '</tr>';
-    }
+    for (var i=0; i<json.length; i++){
+    	var report = json[i];
+    	result = result +'    <tr>';
+    	if(report != null && report != "undefined" && report != "" && report.isDataAvailable != "NO"){
+    		for(var j = 0; j<rep.headerDates.length; j++){
+    			var key = rep.headerDates[j];
+    			if(key === "Employee Name" || report.mapData[key] == "--"){
+ 	                result = result + '<td><div class="tbldata-dotdot">'+report.mapData[key]+'</div></td>';
+    			}else{
+ 	               result = result + "<td class='dataLink'><div class='tbldata-dotdot'><a onclick='popHandler("+report.userId+");'>"+report.mapData[key]+"</a></div></td>";
+    			}
+ 			} 
+ 			
+    	}else{
+			result = result +' <td colspan="'+headerLength+'"><div class="dataTables_empty"></div></td>';
+    	}
+    	result = result +'    </tr>';
+	}
     
     result = result +'</tbody>';
     
     $("#associateClockInOutDiv").empty();  
     $("#associateClockInOutDiv").append(result);
-    $(".dropdownTableDesig table tr td").click(function() {
-    	  $(this).find('a').parent().toggleClass("selectedTd");
-    	  $(this).parents().next('tr').toggle();
-    	});
+    
+    showClockSummaryGraph(json,timeFrequency);
+    
 }
 </script>
 
 
-<script type="text/javascript">
-	function prepareTableBody(report){
-		var result = "";
-        if(report.totalTime != null && report.totalTime != "" && report.totalTime != "undefined"){
-                result = result + '<td><div class="tblminwidth-50"><a href="javascript:void(0)">'+report.totalTime+'</a></div></td>';
-                result = result + '<tr>';
-	                result = result + '<td colspan="10">';
-		                result = result + '<div class="clearfix subTable">';
-			                result = result + '<table class="">';
-				                result = result + '<thead>';
-					                result = result + '<tr>';
-					                result = result + '<th>Clock In</th>';
-					                result = result + '<th>No. of hours</th>';
-					                result = result + '<th>Task</th>';
-					                result = result + '<th>Comment</th>';
-					                result = result + '<th>Clock Out</th>';
-					                result = result + '</tr>';
-				                result = result + '</thead>';
-				                result = result + '<tbody>';
-					                result = result + '<tr>';
-					                
-					                if(report.clockInTime != null && report.clockInTime != "" && report.clockInTime != "undefined")
-					                	result = result + '<td><div class="tblminwidth-50">'+report.clockInTime+'</div></td>';
-						   	        else
-						   	            result = result + '<td>--</td>';
-						   	            
-					   	         	if(report.totalTime != null && report.totalTime != "" && report.totalTime != "undefined")
-					   	         		result = result + '<td><div class="tblminwidth-50">'+report.totalTime+'</div></td>';
-							   	    else
-							   	            result = result + '<td>--</td>';
-					                
-					   	         	//if(report.clockInTime != null && report.clockInTime != "" && report.clockInTime != "undefined")	//No DTO property of task
-					   	         	result = result + '<td><div class="tbldata-dotdot-big">--</div></td>';
-							   	    //else
-							   	    //        result = result + '<td>--</td>';
-							   	            
-						   	        if(report.comments != null && report.comments != "" && report.comments != "undefined")
-						   	        	result = result + '<td><div class="tbldata-dotdot-verybig">'+report.comments+'</div></td>';
-								   	else
-							   	            result = result + '<td>--</td>';
-					   	            
-						   	        if(report.clockOutTime != null && report.clockOutTime != "" && report.clockOutTime != "undefined")
-						   	        	result = result + '<td><div class="tblminwidth-75">'+report.clockOutTime+'</div></td>';
-									else
-							   	            result = result + '<td>--</td>';
-					                
-					                
-					                result = result + '</tr>';
-				                result = result + '</tbody>';
-			                result = result + '</table>';
-		                result = result + '</div>';
-	                result = result + '</td>';
-                result = result + '</tr>';
-            }
-            else
-                result = result + '<td>--</td>';
-
-                //-------------------------------------------------------------------------------------
-                
-        
-        return result;
-	}
+ <script>
+function empEntriesPagination(){  
+    $('#associateClockInOutTableID').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": false,
+    	"oLanguage": {
+     		"sSearch": "",
+     		"sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
 </script>
 
 <script>
@@ -643,3 +549,199 @@ function getCurrentDates(type){
  		getCurrentDates(currentType);
  	}
  </script>
+ 
+ <script>
+ 
+ function showClockSummaryGraph(json,type){
+	 if(json.length >1){
+			$("#graphIdDiv").removeClass('dataTables_empty'); 
+			$("#jobsAdded").show();
+			var format = "";
+			 if("Current_Year" != type){
+				 format =  "YYYY-MM-DD";
+			 }else{
+				 format =  "YYYY-MM";
+			 }
+			 var chartData = [];
+			   for (var i = 0; i < json.length; i++) { 
+			 		 var opt = json[i]; 
+			 		 chartData.push({
+			        		"category": opt.graphFormatDate,
+					         "column-1": opt.graphTotalTime
+			       });
+			   }
+			AmCharts.makeChart("jobsAdded",
+				      {
+				      "type": "serial",
+				      "categoryField": "category",
+				      "dataDateFormat": format,
+				      "colors": [],
+				      "startDuration": 1,
+				      "categoryAxis": {
+				        "equalSpacing": true,
+				        "gridPosition": "start",
+				        "parseDates": true,
+				        "axisColor": "#ACACAC",
+				        "gridThickness": 0,
+				        "markPeriodChange": false,
+				        "minHorizontalGap": 35,
+				        "minVerticalGap": 25
+				      },
+				      "trendLines": [],
+				      "graphs": [
+				        {
+				          "balloonText": "[[title]] : [[value]]",
+				          "bulletField": "category",
+				          "fillAlphas": 1,
+				          "fillColors": "#6AB7F3",
+				          "fixedColumnWidth": 30,
+				          "id": "jobsAdded",
+				          "lineColor": "#6AB7F3",
+				          "title": "Clock In/Out Time",
+				          "type": "column",
+				          "valueField": "column-1"
+				        }
+				      ],
+				      "guides": [],
+				      "valueAxes": [
+				        {
+				          "id": "ValueAxis-1",
+				          "axisColor": "#ACACAC",
+				          "firstDayOfWeek": 0,
+				          "gridThickness": 0,
+				          "title": ""
+				        }
+				      ],
+				      "allLabels": [],
+				      "balloon": {
+				        "fixedPosition": false,
+				        "horizontalPadding": 10,
+				        "textAlign": "left",
+				        "verticalPadding": 10
+				      },
+				      "titles": [],
+				      "dataProvider": chartData
+				    });
+		}else{
+			$("#graphIdDiv").addClass('dataTables_empty');
+			$("#jobsAdded").hide();
+		}
+	 
+ }
+ 
+ </script>
+ 
+ <script>
+ function popHandler(userId){
+	 var selectedDate = "";
+	 var selectedName = "";
+      var tbl = document.getElementById("associateClockInOutTableID");
+        if (tbl != null) {
+        	
+        	 $('table#associateClockInOutTableID tr').click(function(){
+        		 selectedName = $(this).find('td:first').text();
+             });
+            for (var i = 0; i < tbl.rows.length; i++) {
+                for (var j = 0; j < tbl.rows[i].cells.length; j++){
+                	
+                	tbl.rows[i].cells[j].onclick = function () { 
+                    	var th = $('#associateClockInOutTableID th').eq($(this).index());
+                    	selectedDate = th.text();
+                         if(selectedDate != null && selectedDate != "" && selectedDate != "undefined"){
+                             $.ajax({
+                                 type : "GET",
+                     			url: sourceleadUrl + "/getListOfClockDataBasedOnDate?&selectedDate="+selectedDate+"&userId="+userId,
+                                 success : function(json) {
+                                	 
+                                	 
+                                	 var result = "";
+                                	 result = result +'  			 <div class="clearfix">';
+                                	 result = result +'  	    <div class="dynamicData">                                                                                                ';
+   	                          		 result = result +'  	    <div class="associateEmpData_pop_header clearfix">                                                                       ';
+   	                         		 result = result +' 	      <h4 class="pull-left">'+selectedName+'</h4>                                                                     ';
+   	                          		 result = result +'  	      <i class="fa fa-times pull-right text-muted" onClick="closeAssociateEmpData_pop();"></i>                               ';
+   	                          		 result = result +'  	      <div class="clearfix"></div>                                                                                           ';
+   	                          		 result = result +'	    </div>                                                                                                                   ';
+   	                          		 result = result +'                                                                                                                               ';
+   	                          		 result = result +' 	    <div class="clearfix col-md-12 mt">   ';
+                        	        	result = result +'<table id="" class="table table-bordered">';
+                        		    	result = result +'<thead>';
+                        		    	result = result +'	<tr>';
+                        		    	result = result +'	<th>Clock In</th>';
+                        		    	result = result +'    <th>No. of hours</th>'; 
+                        		    	result = result +'     <th>Task</th>';
+                        		    	result = result +'     <th>Comment</th>';
+                        		    	result = result +'     <th>Clock Out</th>';
+                        		    	result = result +'    </tr>';
+                        		    	result = result +'</thead>	';
+                        		    	result = result +'<tbody>';
+                        		    	for (var i=0; i<json.length; i++)
+                        				{
+                        		    		var report = json[i];
+                        		    		result = result +'<tr>';
+                        		    		if(report.clockInDate != null && report.clockInDate != "" && report.clockInDate != "undefined"){
+                            		    		result = result +'                     <td><div class="tblminwidth-50">'+report.clockInDate+' '+report.clockInTime+'</div></td>                                                      ';
+                        		    		}else{
+                            		    		result = result +'                     <td><div class="tblminwidth-50">--</div></td>                                                      ';
+                        		    		}
+                        		    		
+                        		    		if(report.totalTime != null && report.totalTime != "" && report.totalTime != "undefined"){
+                            		    		result = result +'  	                      <td><div class="tblminwidth-50">'+report.totalTime+'</div></td>                                                      ';
+                        		    		}else{
+                            		    		result = result +'  	                      <td><div class="tblminwidth-50">--</div></td>                                                      ';
+                        		    		}
+
+                        		    		if(report.projectTaskName != null && report.projectTaskName != "" && report.projectTaskName != "undefined"){
+                        		    			result = result +'                  <td><div class="tbldata-dotdot-big">'+report.projectTaskName+'</div></td>                                            ';
+                        		    		}else{
+                        		    			result = result +'                  <td><div class="tbldata-dotdot-big">--</div></td>                                            ';
+                        		    		}
+
+                        		    		if(report.comments != null && report.comments != "" && report.comments != "undefined"){
+                            		    		result = result +'                     <td><div class="tbldata-dotdot-verybig">'+report.comments+'</div></td>               ';
+                        		    		}else{
+                            		    		result = result +'                     <td><div class="tbldata-dotdot-verybig">--</div></td>               ';
+
+                        		    		}
+                        		    		
+                        		    		if(report.clockOutDate != null && report.clockOutDate != "" && report.clockOutDate != "undefined"){
+                            		    		result = result +'	                      <td><div class="tblminwidth-75">'+report.clockOutDate+' '+report.clockOutTime+'</div></td>                                                      ';
+                        		    		}else{
+                            		    		result = result +'	                      <td><div class="tblminwidth-75">--</div></td>                                                      ';
+                        		    		}
+
+                        		    		result = result +'</tr>';
+                        		    		
+                        				}
+                        		    	result = result +' 	              </tbody>                                                                                                ';
+                        		    	result = result +'	        </table>                                                                                                      ';
+      	                              result = result +'  	    </div>                                                                                                            ';
+      	                              result = result +'  	</div>                                                                                                                ';
+      	                              result = result +'                                                                                                                         ';
+      	                              result = result +'  	</div>                                                                                                                    ';
+                                      		 
+                        		    	
+                        		    	$("#uniqueDiv").empty();  
+                        	    	    $("#uniqueDiv").append(result);
+                                	 
+                                	 }
+                                 	
+                             }); 
+                         }
+                    	 
+					 };
+                }
+                    
+            }
+        }
+        
+        $(".associateEmpData_pop, .sideMask").fadeIn();
+       
+	}
+ 
+ function closeAssociateEmpData_pop() {
+	  $(".associateEmpData_pop, .sideMask").fadeOut();
+	}
+ </script>
+ 
+			    

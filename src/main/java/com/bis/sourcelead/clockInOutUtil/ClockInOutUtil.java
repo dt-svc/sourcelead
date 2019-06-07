@@ -1,9 +1,13 @@
 package com.bis.sourcelead.clockInOutUtil;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import org.joda.time.DateTime;
@@ -422,6 +426,44 @@ private Date[] nextDays(String currentDate, OrgLocations location, Date empJoini
 		e.printStackTrace();
 	}
 	
+	return dates;
+}
+
+public List<String> getAllDatesBetweenTwoDates(OrgLocations orgLocation, Date[] dateArray) throws Exception {
+	
+	List<String> dates = new ArrayList<>();
+	dates.add("Employee Name");
+	Calendar calendar = new GregorianCalendar();
+    calendar.setTime(dateArray[0]);
+
+    while (calendar.getTime().before(dateArray[1]) || calendar.getTime().equals(dateArray[1]))
+    {
+        Date result = calendar.getTime();
+        dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), result));
+        calendar.add(Calendar.DATE, 1);
+    }
+    return dates;
+}
+
+public List<String> getAllMonthsOfCurrentYear(OrgLocations orgLocation,Date[] dateArray) {
+	
+	
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+	
+	List<String> dates = new ArrayList<>();
+	dates.add("Employee Name");
+	 Calendar calendar = new GregorianCalendar();
+	    calendar.setTime(dateArray[0]);
+	     
+	    Calendar endCalendar = new GregorianCalendar();
+	    endCalendar.setTime(dateArray[1]);
+	 
+	    while (calendar.before(endCalendar)) {
+	        Date result = calendar.getTime();
+	        String convertedDate = sdf.format(result);
+	        dates.add(convertedDate);
+	        calendar.add(Calendar.MONTH, 1);
+	    }
 	return dates;
 }
 
