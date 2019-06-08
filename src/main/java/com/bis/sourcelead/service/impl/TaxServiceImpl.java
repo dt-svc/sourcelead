@@ -72,6 +72,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -1387,7 +1388,21 @@ public class TaxServiceImpl implements TaxService {
 			document.add(table);
 	          
 	        document.add(addParagraph(paragraphData+" "+(sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear().toString())+" "+"starting from", font8_B, marginLeft, marginRight,marginTop,0));
-	        document.add(addParagraph(sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear(), font8, marginLeft, marginRight,0,marginBottom));
+			
+	        int startYear = Integer.parseInt(sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear().split("-")[0]);
+			String fromDate = "";
+			if(orgLoc.getStartMonth() != null && !orgLoc.getStartMonth().isEmpty()) {
+	        	fromDate = CalendarUtil.getMonthStartDateAndEndDateWithPrefixByMonth(orgLoc.getStartMonth(), startYear, true) + " of " + orgLoc.getStartMonth();
+	        }
+			fromDate = (!fromDate.isEmpty() ? fromDate + " " : "") + sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear().split("-")[0];
+			
+			int endYear = Integer.parseInt(sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear().split("-")[1]);
+			String toDate = "";
+			if(orgLoc.getEndMonth() != null && !orgLoc.getEndMonth().isEmpty()) {
+				toDate = CalendarUtil.getMonthStartDateAndEndDateWithPrefixByMonth(orgLoc.getEndMonth(), endYear, false) + " of " + orgLoc.getEndMonth();
+			}
+			toDate = (!toDate.isEmpty() ? toDate + " " : "") + sourceleadTaxITDeclarationSubmissionDetails.getFinancialYear().split("-")[1];
+			document.add(addParagraph(fromDate + " to " + toDate, font8, marginLeft, marginRight, 0, marginBottom));
 	          
 			PdfPTable table2 = new PdfPTable(headers.length);
 			PdfPCell cell1 = new PdfPCell();
@@ -1498,12 +1513,16 @@ public class TaxServiceImpl implements TaxService {
 				document.add(addParagraph("2.", font8, marginLeftChild,0,0,marginBottom));
 
 				document.add(addParagraph("Declaration:-", font8_B_U, marginLeft,0,(marginTop + marginTop),marginBottom));
-				document.add(addParagraph(
-						"I ........ here by declare that the information that given above is correct and true in all respect. I also undertake to indemnify to company for any loss/liability may arrise in the event of the above information being incorrect.",
-						font8, marginLeft,0,0,marginBottom));
+				document.add(addParagraph("I ........ here by declare that the information that given above is correct and true in all respect. I also undertake to indemnify to company for any loss/liability may arrise in the event of the above information being incorrect.", font8, marginLeft,0,0,marginBottom));
 
-				document.add(addParagraph("Date :-" + " Add Date here", font8, marginLeft,0,(marginTop + marginTop),marginBottom));
-				document.add(addParagraph("Place : -" + " Add Place here", font8, marginLeft,0,0,marginBottom));
+				document.add(addParagraph("Date : " + commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), new Date()), font8, marginLeft,0,(marginTop + marginTop),marginBottom));
+								
+				Paragraph p5 = addParagraph("Place : " + (orgLoc.getCity() != null ? orgLoc.getCity() : ""), font8, marginLeft,marginRight,0,marginBottom);
+				Chunk c5 = new Chunk("Signature of the employee",font8);
+				p5.add(space);
+				p5.add(c5);
+				document.add(p5);
+				
 				document.close();
 			}
 		} catch (Exception e) {

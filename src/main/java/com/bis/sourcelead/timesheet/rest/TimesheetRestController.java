@@ -2486,6 +2486,8 @@ public class TimesheetRestController {
                    if(StringUtils.isEmpty(weekComment) && frequencyStartDate != null && frequencyEndDate != null) {
 						String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
 						if(StringUtils.isNotEmpty(comment));
+						timesheetSubmissions.setWeekcomments(comment);
+					}else {
 						timesheetSubmissions.setWeekcomments(weekComment);
 					}
 					
@@ -2513,7 +2515,9 @@ public class TimesheetRestController {
 				if(StringUtils.isEmpty(weekComment)  && frequencyStartDate != null && frequencyEndDate != null) {
 						String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
 						if(StringUtils.isNotEmpty(comment));
-						timesheetSubmissions.setWeekcomments(weekComment);
+						timesheetSubmissions.setWeekcomments(comment);
+			     }else {
+			    	 timesheetSubmissions.setWeekcomments(weekComment);
 			     }
 				
 
@@ -5175,7 +5179,6 @@ public class TimesheetRestController {
 		 * saving Code
 		 */
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		Boolean isValid = false;
 		ModelAndView model = new ModelAndView();
 		try {
 			outerLoop:{
@@ -5190,7 +5193,6 @@ public class TimesheetRestController {
 							}
 							
 						}
-						isValid = true;
 						/*if valid Data*/
 						tedDTO = saveTimesheetEntries(tedDTO, request);
 						
@@ -5202,7 +5204,6 @@ public class TimesheetRestController {
 		     }
 		
 		
-		if(!isValid) {
 			/*if invalid Data*/
 			TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 			eedDTO.setCurrentTimeFrequency(tedDTO.getCurrentTimeFrequency());
@@ -5253,7 +5254,6 @@ public class TimesheetRestController {
 					}
 			}
 			tedDTO.setTimesheetSubmission(tsDTO);
-		}
 		model.addObject("timesheetSubmissionDTO", tedDTO.getTimesheetSubmission());
 		LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(
 				tedDTO.getTimesheetSubmission(), request);
@@ -5447,6 +5447,8 @@ public class TimesheetRestController {
 						String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
 						if(StringUtils.isNotEmpty(comment));
 						timesheetSubmissions.setWeekcomments(comment);
+					}else {
+						timesheetSubmissions.setWeekcomments(tsDTO.getWeekComment());
 					}
 					submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(new ArrayList<>(freshSaHierarchyList));
 					timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
@@ -5480,6 +5482,8 @@ public class TimesheetRestController {
 					String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
 					if(StringUtils.isNotEmpty(comment));
 					timesheetSubmissions.setWeekcomments(comment);
+				}else {
+					timesheetSubmissions.setWeekcomments(tsDTO.getWeekComment());
 				}
 				
 				ArrayList<TimesheetSubmissions> timesheetSubmissionsList = new ArrayList<TimesheetSubmissions>();
@@ -6259,6 +6263,8 @@ public class TimesheetRestController {
 						String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
 						if(StringUtils.isNotEmpty(comment));
 						timesheetSubmissions.setWeekcomments(comment);
+					}else {
+						timesheetSubmissions.setWeekcomments(tsDTO.getWeekComment());
 					}
 					timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
 					timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
