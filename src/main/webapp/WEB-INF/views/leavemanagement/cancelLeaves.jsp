@@ -25,7 +25,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 <section class="content-wraper" id="themeroller">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Cancelled</h2>
+			<h2>Cancelled Leaves</h2>
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;
