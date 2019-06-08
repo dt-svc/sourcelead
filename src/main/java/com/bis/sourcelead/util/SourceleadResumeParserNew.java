@@ -252,9 +252,6 @@ public class SourceleadResumeParserNew {
 		return jsonUtil;
 	}
 	
-	
-	String textFileLocation = "C:/Users/Mahaveer Manoj/Desktop/Resume Compare textfiles";
-	
 	public ResumeParserJsonUtil getResumeParserJsonUtil(String resumeData, String orgLocationDateFormat) {
 		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
 		try {
@@ -277,6 +274,8 @@ public class SourceleadResumeParserNew {
 			
 			jsonUtil.setPhoneNumbers(phoneNumberSet);
 			jsonUtil.setSkills(getSkillsFromTextFile(resumeData));
+			
+			//Designation
 			jsonUtil.setDesignation(getKeywordsFromTextFile(resumeData, "designation.txt"));
 			
 			//Experience
@@ -299,21 +298,23 @@ public class SourceleadResumeParserNew {
 			jsonUtil.setEducations(educationsSet);
 			
 			//Address
-			String country = getKeywordsFromTextFile(resumeData, "countries.txt");
-			System.out.println("Country : " + country);
+			/*String country = getKeywordsFromTextFile(resumeData, "countries.txt");
 			jsonUtil.setCountry(country);
 			
 			String state = getKeywordsFromTextFile(resumeData, "states.txt");
-			System.out.println("State : " + state);
-			jsonUtil.setState(state);
+			jsonUtil.setState(state);*/
 			
 			//Gender
 			String gender = getGenderFromTextFile(resumeData);
-			System.out.println("Gender : " + gender);
+			jsonUtil.setGender(gender);
+			
+			//Martial Status
+			String maritalStatus = getMartialStatusFromTextFile(resumeData);
+			jsonUtil.setMaritalStatus(maritalStatus);
 			
 			//Employeers
-			String employeers = getKeywordsFromTextFile(resumeData, "companies.txt");
-			System.out.println("Employeers : " + employeers);
+			/*String employeers = getKeywordsFromTextFile(resumeData, "companies.txt");
+			System.out.println("Employeers : " + employeers);*/
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -357,7 +358,7 @@ public class SourceleadResumeParserNew {
 				
 			}else if(nameMatchFound) {
 				String regex = "[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}";
-				Matcher nameMatcher = Pattern.compile(regex).matcher(line);
+				Matcher nameMatcher = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(line);
 				if (nameMatcher.find()) {
 					if (StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum")
 							|| StringUtils.containsIgnoreCase(nameMatcher.group(), "objective")
@@ -423,7 +424,7 @@ public class SourceleadResumeParserNew {
 			outerloop: {
 				for (String line : tenLines) {
 					String regex = "[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}";
-					Matcher nameMatcher = Pattern.compile(regex).matcher(line);
+					Matcher nameMatcher = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(line);
 					if (nameMatcher.find()) {
 						if (StringUtils.containsIgnoreCase(nameMatcher.group(), "curriculum")
 								|| StringUtils.containsIgnoreCase(nameMatcher.group(), "objective")
@@ -469,37 +470,37 @@ public class SourceleadResumeParserNew {
 	public String getMobileNumber(String text) throws Exception {
 		String mobile = "";
 		String regEx = "\\W+\\b[0-9]{2}\\b\\s*\\W*+\\b\\d{10}\\b";
-		Pattern pattern = Pattern.compile(regEx);
+		Pattern pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);
 		Matcher found = pattern.matcher(text);
 		if (found.find()) {
 			mobile = found.group();
 		} else {
 			regEx = "\\b\\d{10}\\b";
-			pattern = Pattern.compile(regEx);
+			pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);
 			found = pattern.matcher(text);
 			if (found.find()) {
 				mobile = found.group(0);
 			} else {
 				regEx = "\\W+\\b[0-9]{1}\\b\\s*\\W*\\b[0-9]{3}\\b\\s*+\\W*\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{4}\\b";
-				pattern = Pattern.compile(regEx);
+				pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);
 				found = pattern.matcher(text);
 				if (found.find()) {
 					mobile = found.group(0);
 				} else {
 					regEx = "\\W+\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{4}\\b";
-					pattern = Pattern.compile(regEx); // euro no.
+					pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE); // euro no.
 					found = pattern.matcher(text);
 					if (found.find()) {
 						mobile = found.group(0);
 					} else {
 						regEx = "\\W+\\b[0-9]{2}\\b\\s*\\W*\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{3}\\s*\\W*\\b[0-9]{4}\\b";
-						pattern = Pattern.compile(regEx); // 3x2 1x4 no.
+						pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE); // 3x2 1x4 no.
 						found = pattern.matcher(text);
 						if (found.find()) {
 							mobile = found.group();
 						} else {
 							regEx = "\\W+\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{3}\\s*\\W*\\b[0-9]{4}\\b";
-							pattern = Pattern.compile(regEx); // 3x2 1x4 no.
+							pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE); // 3x2 1x4 no.
 							found = pattern.matcher(text);
 							if (found.find()) {
 								mobile = found.group(0);
@@ -604,10 +605,10 @@ public class SourceleadResumeParserNew {
 	private String getExperienceFromTextFile(String text) {
 		String years = "", months = "";
 		try {
-			Pattern p = Pattern.compile("\\d+\\W+\\s+(?:months?|years?) | "
-					+ "\\d+\\s+years?\\s+(?:and\\s*)?\\d+\\s+months?|\\d+\\s+(?:months?|years?) |"
-					+ " \\d+\\.?\\d*\\W+\\s+(?:months?|years?) |\\d+\\.?\\d*\\s+(?:months?|years?)|"
-					+ "\\d+\\W*((?i)plus(?-i))\\W*\\s+(?:months?|years?)");
+			Pattern p = Pattern.compile("\\d+\\W+\\s+(?:months?|years?|yrs?) | "
+					+ "\\d+\\s+years?\\s+(?:and\\s*)?\\d+\\s+months?|\\d+\\s+(?:months?|years?|yrs?) |"
+					+ " \\d+\\.?\\d*\\W+\\s+(?:months?|years?|yrs?) |\\d+\\.?\\d*\\s+(?:months?|years?|yrs?)|"
+					+ "\\d+\\W*((?i)plus(?-i))\\W*\\s+(?:months?|years?|yrs?)", Pattern.CASE_INSENSITIVE);
 	
 			Matcher found = p.matcher(text);
 			String experience = "";
@@ -615,7 +616,7 @@ public class SourceleadResumeParserNew {
 				experience = found.group(0).trim();
 			} else {
 				String exp = "\\w+\\s+\\bplus\\b+\\s+(?:months?|years?)";
-				Pattern t = Pattern.compile(exp);
+				Pattern t = Pattern.compile(exp, Pattern.CASE_INSENSITIVE);
 				Matcher n = t.matcher(text);
 				if (n.find()) {
 					experience = n.group(0).trim();
@@ -632,7 +633,7 @@ public class SourceleadResumeParserNew {
 			}
 	
 			String r="(\\d+\\.?\\d*)";
-			Pattern t = Pattern.compile(r);
+			Pattern t = Pattern.compile(r, Pattern.CASE_INSENSITIVE);
 			Matcher n = t.matcher(years);
 			if (n.find()) {
 				years = n.group(0);
@@ -652,8 +653,8 @@ public class SourceleadResumeParserNew {
 		String gender = "";
 		try {
 			String r="^(?:m|M|male|Male|f|F|female|Female)$";
-			Pattern t = Pattern.compile(r);
-			Matcher n = t.matcher(text);
+			Pattern pattern = Pattern.compile(r, Pattern.CASE_INSENSITIVE);
+			Matcher n = pattern.matcher(text);
 			if (n.find()) {
 				gender = n.group(0);
 			}
@@ -661,6 +662,21 @@ public class SourceleadResumeParserNew {
 			e.printStackTrace();
 		}
 		return gender;
+	}
+	
+	private String getMartialStatusFromTextFile(String text) {
+		String martialStatus = "";
+		try {
+			String r="^(?:single|Single|married|Married|divorsed|Divorsed|separated|Separated)$";
+			Pattern pattern = Pattern.compile(r, Pattern.CASE_INSENSITIVE);
+			Matcher n = pattern.matcher(text);
+			if (n.find()) {
+				martialStatus = n.group(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return martialStatus;
 	}
 
 }
