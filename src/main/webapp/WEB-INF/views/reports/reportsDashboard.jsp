@@ -264,7 +264,7 @@
 					<li><a href="#">360 View</a></li>
 					<li><a href="#">Pay History</a></li>
 					<li><a href="#">Bill Histroy</a></li> -->
-<%-- 				<li><a href='${appPath}/associateClockInSummaryReport'>Associate Clock In-Out Report</a></li>   --%>
+				<li><a href='${appPath}/associateClockInSummaryReport'>Associate Clock In-Out Report</a></li>  
 				<li><a href='${appPath}/loansAndAdvancesReport'>Loans And Advances Report</a></li>     
 				</ul>
 			</div>
@@ -546,7 +546,7 @@
 				<li><a href='${appPath}/associateJoineReports'>Associate Joined Report</a></li>
 				</sec:authorize>      
 				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li>
-<%-- 				<li><a href='${appPath}/associateClockInSummaryReport'>Associate Clock In-Out Report</a></li>   --%>
+				<li><a href='${appPath}/associateClockInSummaryReport'>Associate Clock In-Out Report</a></li>  
 				<li><a href='${appPath}/loansAndAdvancesReport'>Loans And Advances Report</a></li>      
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
