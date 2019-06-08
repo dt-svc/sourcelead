@@ -1,9 +1,12 @@
 package com.bis.sourcelead.clockInOutService;
 
+import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateReportSummaryDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockInOutEntity.Breaks;
 import com.bis.sourcelead.clockInOutEntity.ClockInOut;
@@ -50,5 +53,9 @@ public interface ClockInOutConfigService {
 	public ClockInOutDTO getPreviousClockInData(OrgLocations loginOrgLocation, User user);
 
 	public String getTotalClockInOutHours(OrgLocations loginOrgLocation, Long userId, Long projectId, Long projectTaskId);
+
+	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, Date empJoiningDate, OrgLocations orgLocation);
+
+	public List<ClockInOutUserTimeEntryDTO> getListOfClockDataBasedOnDate(String selectedDate, OrgLocations loginOrgLocation, Long userId);
 
 }

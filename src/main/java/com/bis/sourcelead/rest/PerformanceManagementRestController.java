@@ -30,6 +30,7 @@ import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RoleDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalAssignToListDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceCompetenciesDTO;
 import com.bis.sourcelead.dto.performance.PerformanceRatingLevelDTO;
@@ -547,7 +548,7 @@ public class PerformanceManagementRestController {
 		 return levelDTOList;
    }
    
-	 @RequestMapping(value = "/getPerformanceCompetenceList", method = RequestMethod.GET)
+	@RequestMapping(value = "/getPerformanceCompetenceList", method = RequestMethod.GET)
 	public ResponseList<PerformanceCompetenciesDTO> getPerformanceCompetenceList(PerformanceCompetenciesDTO performanceCompetenciesDTO,HttpServletRequest request) throws Exception {
 		
 		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
@@ -563,6 +564,25 @@ public class PerformanceManagementRestController {
 		performanceCompetenciesDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		performanceCompetenciesDTO.setSortOrder(sortColumnOrder);
 		ResponseList<PerformanceCompetenciesDTO> performanceCompetenciesList = performanceCompetenciesService.getPerformanceCompetenciesList(performanceCompetenciesDTO, dateFormat, orgLocationId);
+		return performanceCompetenciesList;
+	}
+	
+	
+	@RequestMapping(value = "/getAppraisalAssignToList", method = RequestMethod.GET)
+	public ResponseList<PerformanceAppraisalAssignToListDTO> getAppraisalAssignToList(PerformanceAppraisalAssignToListDTO performanceAppraisalAssignToListDTO,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		
+		String[] tableColumns = { "associateId", "associateName", "associateEmail", "associateRole", "reportingManager" };
+		int sortColumnIndex = 1; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (performanceAppraisalAssignToListDTO.getOrder() != null && !performanceAppraisalAssignToListDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(performanceAppraisalAssignToListDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = performanceAppraisalAssignToListDTO.getOrder().get(0).get("dir");
+		}
+		performanceAppraisalAssignToListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		performanceAppraisalAssignToListDTO.setSortOrder(sortColumnOrder);
+		ResponseList<PerformanceAppraisalAssignToListDTO> performanceCompetenciesList = performanceAppraisalTemplateService.getPerformanceAppraisalAssignToList(performanceAppraisalAssignToListDTO, orgLocationId);
 		return performanceCompetenciesList;
 	}
 	 
