@@ -34,7 +34,7 @@ public class TicketCategory implements Serializable {
 	@Column(name = "NAME")
 	private String name;
 
-	@Column(name = "DESCRIPTION")
+	@Column(name="DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
 	private String description;
 
 	@Column(name = "NOTIFY_TO", columnDefinition = "LONGTEXT default NULL")
