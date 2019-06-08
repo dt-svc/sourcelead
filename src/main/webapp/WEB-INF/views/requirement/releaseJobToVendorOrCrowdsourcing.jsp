@@ -621,7 +621,7 @@ function prepareReleaseVendorContactList(url){
    	$("#vendorContacts").empty();
 	$("#vendorContacts").append(result);
 	$("#vendorContactsLoaderDiv").removeAttr("style");
-	checkedVendorContacts = {};
+	//checkedVendorContacts = {};
 	vendorContactPaginationUrl(url);
 }
 function vendorContactPaginationUrl(url){
@@ -854,7 +854,6 @@ function getVendorLists(){
 	var loginOrgLocId = '${loginOrgLocId}';
 	var requirementId = '${requirementId}';
 	$("#vendorLoaderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 
 	var searchValue = $("#vendorDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	var url = atsUrl	+"/getVendorListsForReleaseRequirement?searchValue="+searchValue+"&requirementId="+requirementId+"&vendorStatus="+vendorStatus;
@@ -884,7 +883,7 @@ function prepareReleaseVendorList(url){
    	$("#vendor").empty();
     $("#vendor").append(result);
 	$("#vendorLoaderDiv").removeAttr("style");
-	checkedVendors = {};
+	//checkedVendors = {};
 	
 	vendorPaginationUrl(url);
 	
