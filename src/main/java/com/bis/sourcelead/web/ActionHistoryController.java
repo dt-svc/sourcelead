@@ -53,7 +53,7 @@ public class ActionHistoryController {
 	
 	@RequestMapping(value = "/logoutFormSourcelead")
 	@ResponseBody
-	public String assetManagementSummary(@RequestParam(value="sessionId", required=false) String sessionId,HttpServletRequest request) throws Exception 
+	public String logoutFormSourcelead(@RequestParam(value="sessionId", required=false) String sessionId,HttpServletRequest request) throws Exception 
 	{
 		
 		 ApplicationContext ctx = new AnnotationConfigApplicationContext(CouchbasePropertyPathConfiguration.class);

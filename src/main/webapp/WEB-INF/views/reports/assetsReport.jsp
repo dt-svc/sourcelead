@@ -72,9 +72,9 @@
 			
           <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12 paddingRight">Categories</label>
-				<div class="col-md-12">
-					<select class="chosen-select" name ="categories" id = "categoryId" "data-placeholder="Select category" multiple>
+              <label class="clearfix paddingRight">Categories</label>
+				<div class="clearfix">
+					<select class="chosen-select" name ="categories" id = "categoryId" data-placeholder="Select category" multiple>
 			<c:forEach var="option" items="${assetCategoriesList}">
 				<option value="${option.id}">${option.categoryName}</option>
 			</c:forEach>
@@ -86,9 +86,9 @@
 			
 			  <div class="col-md-5">
              <div class="form-group">
-              <label class="col-md-12">Shift</label>
-              <div class="col-md-12">
-               		<select class="chosen-select" name ="shiftsIds" id = "shiftId" "data-placeholder="Select shift" multiple>
+              <label class="clearfix">Shift</label>
+              <div class="clearfix">
+               		<select class="chosen-select" name ="shiftsIds" id = "shiftId" data-placeholder="Select shift" multiple>
 						<c:forEach var="shift" items="${shiftList}">
 							<option value="${shift.id}">${shift.shiftName}</option>
 						</c:forEach>
@@ -99,9 +99,9 @@
 				
 			  <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12">Asset Name</label>
-              <div class="col-md-12">
-                   		<select class="chosen-select" name ="assetNames" id = "assetId" "data-placeholder="Select asset" multiple>
+              <label class="clearfix">Asset Name</label>
+              <div class="clearfix">
+                   		<select class="chosen-select" name ="assetNames" id = "assetId" data-placeholder="Select asset" multiple>
 							<c:forEach var="option" items="${assetList}">
 								<option value="${option.id}">${option.name}</option>
 							</c:forEach>
@@ -372,3 +372,9 @@ $(".overIcon, .newActPop").click(function(e){
 });	
 
 </script>
+<script src="/resources/js/chosen.jquery.min.js"></script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+   		$('#categoryId, #shiftId, #assetId').chosen();
+    });
+ </script>
