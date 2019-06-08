@@ -5,32 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-	
-<style type="text/css">
-.center-div {
-	width: 300px;
-	height: 30px;
-	margin: 10px 220px 0;
-}
-
-.center-div input {
-	border: none;
-	background: transparent
-}
-
-.textLoad {
-	text-align: center;
-    padding: 0px 0px;
-    margin: 30% auto 0px;
-    font-size: 14px;
-    color: #666;
-    font-weight: 500;
-    display: none;
-}	
-
-</style>
-
-
 <script type="text/javascript">
 window.onload = function () {
 	var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';	

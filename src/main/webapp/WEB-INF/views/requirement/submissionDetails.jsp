@@ -17,41 +17,6 @@
  <jsp:include page="submissionCandidateResume.jsp" />
  <jsp:include page="../candidates/candidatesCommentsList.jsp"></jsp:include>
  
- <style type="text/css">
- .brder-int {padding:2px 10px; margin-right:5px;}
- .brder-int-left {border-left:1px solid #c1c1c1; margin-left: -5px;}
- #accordion-sl{
- position: relative;
- }
- #accordion-sl h2{
- }
- #accordion-sl .fa-handshake-o {
- 	position: absolute;
- 	right: 50px;
- 	color:#333;
- 	cursor:pointer;
- 	top:0;
- 	padding:0;
- 	padding:11.74px 4px;
- 	z-index: 9999;
- }
- .demo {
-   position: absolute; top: 40px; left: 0; z-index: 999999;
- }
- .margnTop0 {
- margin-top: 0;
- }
- #remove_user_pop {
- z-index: 170000;
- }
- .viewEyeicon {
-position: absolute; right:50px; top:0px; color: #fff; cursor: pointer; z-index: 9999;
-padding: 11.74px 4px;
-}
- </style>
- 
- 
- 
  
 <script>
 function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
@@ -679,10 +644,10 @@ function getInternalInterviewsList(submissionId){
 	                    	 if(report.interviewId.location != null && report.interviewId.location != 'undefined' && report.interviewId.location != ""){
 	                    		 location = report.interviewId.location;
 	                    	 }
-	                    	 result = result + '<div id="feedbackdiv'+report.interviewId.id+'" class="require_wrap_table demo" style="display:none;">';
+	                    	 result = result + '<div id="feedbackdiv'+report.interviewId.id+'" class="require_wrap_table feedbackdivPostion" style="display:none;">';
 		                     result = result + '</div>';
 		                     
-	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
+	   					     result = result + '<div id="accordion-sl" class="accordion-sldiv release-jobs positionRelative">';
 	   					   
 	   					   //This condition  is to enable the feedback  and reschedule icon for Own Interviews
 	   					     if(submissionId == report.interviewSubmissionId){
@@ -871,7 +836,7 @@ function getInternalInterviewsList(submissionId){
 	                    	 
 	                    	 $(".reSchPop").removeClass("reSchPopActive");
 	                    	 $(".proposeTimePop").removeClass("proposeTimePopActive");
-	                    	 $('.demo').hide();
+	                    	 $('.feedbackdivPostion').hide();
 	                    	 $(".interview-type").show();
 	                         if($(this).next().is(':hidden')) {
 	                             $('#accordion-sl h2').removeClass('active').next().slideUp('slow');
@@ -1350,7 +1315,7 @@ function rejectOffer(offerStatus,submissionId,offerId){
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='acceptingOffer(\""+ offerStatus+ "\" ,\""+ submissionId+ "\",\""+ offerId+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='canceloffer()'></b>";
 	result = result +"	</div>";
 	$("#rejectOfferAlert").append(result);
-	$("#remove_user_pop").slideDown(200);
+	$("#remove_user_pop").slideDown(200).css({"z-index":"170000"});
 	$(".comMask").fadeIn(200);
 }
 </script>
@@ -1553,7 +1518,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		result = result+'	                          <label class="input-group-btn" onchange = "submissionDocFile();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <span class="text-danger">&nbsp;*</span>';
 		result = result+'	                            <input type="file" name="docFile" id="docFile" style="display: none;" class="upload">';
 		result = result+'	                            </span> </label>';
-		result = result+'	                          <input type="text" class="form-control margnTop0" readonly id="subUploadFile" name="subUploadFile" placeholder="Attachment" field-name="Attachment" data-validation="required validate_Space validatedoc">';
+		result = result+'	                          <input type="text" class="form-control margin-top0" readonly id="subUploadFile" name="subUploadFile" placeholder="Attachment" field-name="Attachment" data-validation="required validate_Space validatedoc">';
 		result = result+'	                        </div>';
 		result = result+'	                    </div>  ';  
 		result = result+'	                  </div>   '; 
@@ -2495,7 +2460,7 @@ function reActivateApplicant(submissionId,candidateId,requirementId,type){
 function feedback_close() {
 	$(".bg_mask, #viewfeedbackdiv").fadeOut(200);
 	$("#mask_inner").fadeOut();
-	$('.demo').fadeOut();
+	$('.feedbackdivPostion').fadeOut();
 	$("#noviewfeedbackdiv").fadeOut(200);
 }
 </script>

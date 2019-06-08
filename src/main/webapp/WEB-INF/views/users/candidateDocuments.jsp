@@ -7,15 +7,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style>
-.addUser-org {
-    overflow-x: auto;
-}
-.validation_p p.jquery_form_error_message {
-bottom:-25px !important;
-}
-.settPop .form-control {
-height: auto !important;
-}
+.addUser-org { overflow-x: auto; }
 </style>
 <%-- 
      @author : prasadK.
@@ -257,7 +249,7 @@ function deleteRequestedDoc(){
  function rejectRequestedDocs(candidateId){
 	
 	 var result = "";
-		result = result + '	<div class="settPop">';
+		result = result + '	<div class="settPop settPopFormcontrol">';
 		result = result + '	<div id="docsrejectedLoading"></div>';
 		result = result + '<form id="docrejectedReason_form" name="docrejectedReason_form" method="post">';
 		result = result + '	<h3>Documents Rejected Reason<i class="fa fa-times" onclick="cancelDocumentRejectedReason();"></i></h3>  ';
@@ -459,7 +451,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result + '</div>'; 
 	
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
-	result = result+'<div class="col-md-12 validation_p">';
+	result = result+'<div class="col-md-12 validation_p validation_p_btn25">';
 	result = result+'<div class="input-group clearUpload" id="uploadFileGroup" onClick="clearUpload()">';
 	result = result+'<label class="input-group-btn" onchange="uploadFileDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'<input type="file"  id="uploadBtn" style="display: none;"  multiple="" class="upload">';
