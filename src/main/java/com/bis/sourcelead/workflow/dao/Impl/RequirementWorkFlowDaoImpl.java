@@ -343,8 +343,8 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 			Session session = this.sessionFactory.getCurrentSession(); 
 			List<RequirementQuestionnaireTemplate> questionnaireTemplate = new ArrayList<RequirementQuestionnaireTemplate>();
 			logger.debug("getQuestionnaireTemplateByLabelName start");
-			questionnaireTemplate = session.createQuery("from RequirementQuestionnaireTemplate rq where rq.orgLocationId =:orgLocationId and rq.name like '%"
-					+ templateName + "%' ").setLong("orgLocationId", orgLocationId).list();
+			questionnaireTemplate = session.createQuery("from RequirementQuestionnaireTemplate rq where rq.orgLocationId =:orgLocationId and rq.name like '"
+					+ templateName + "' ").setLong("orgLocationId", orgLocationId).list();
 			logger.debug("getQuestionnaireTemplateByLabelName end");
 			if (questionnaireTemplate.size() > 0) {
 				return questionnaireTemplate.get(0);
