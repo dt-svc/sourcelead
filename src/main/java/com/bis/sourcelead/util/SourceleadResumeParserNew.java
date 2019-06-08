@@ -471,39 +471,39 @@ public class SourceleadResumeParserNew {
 		String mobile = "";
 		String regEx = "\\W+\\b[0-9]{2}\\b\\s*\\W*+\\b\\d{10}\\b";
 		Pattern pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);
-		Matcher found = pattern.matcher(text);
-		if (found.find()) {
-			mobile = found.group();
+		Matcher matcher = pattern.matcher(text);
+		if (matcher.find()) {
+			mobile = matcher.group();
 		} else {
 			regEx = "\\b\\d{10}\\b";
 			pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);
-			found = pattern.matcher(text);
-			if (found.find()) {
-				mobile = found.group(0);
+			matcher = pattern.matcher(text);
+			if (matcher.find()) {
+				mobile = matcher.group(0);
 			} else {
 				regEx = "\\W+\\b[0-9]{1}\\b\\s*\\W*\\b[0-9]{3}\\b\\s*+\\W*\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{4}\\b";
 				pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE);
-				found = pattern.matcher(text);
-				if (found.find()) {
-					mobile = found.group(0);
+				matcher = pattern.matcher(text);
+				if (matcher.find()) {
+					mobile = matcher.group(0);
 				} else {
 					regEx = "\\W+\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{4}\\b";
 					pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE); // euro no.
-					found = pattern.matcher(text);
-					if (found.find()) {
-						mobile = found.group(0);
+					matcher = pattern.matcher(text);
+					if (matcher.find()) {
+						mobile = matcher.group(0);
 					} else {
 						regEx = "\\W+\\b[0-9]{2}\\b\\s*\\W*\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{3}\\s*\\W*\\b[0-9]{4}\\b";
 						pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE); // 3x2 1x4 no.
-						found = pattern.matcher(text);
-						if (found.find()) {
-							mobile = found.group();
+						matcher = pattern.matcher(text);
+						if (matcher.find()) {
+							mobile = matcher.group();
 						} else {
 							regEx = "\\W+\\b[0-9]{3}\\b\\s*\\W*\\b[0-9]{3}\\s*\\W*\\b[0-9]{4}\\b";
 							pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE); // 3x2 1x4 no.
-							found = pattern.matcher(text);
-							if (found.find()) {
-								mobile = found.group(0);
+							matcher = pattern.matcher(text);
+							if (matcher.find()) {
+								mobile = matcher.group(0);
 							} 
 						}
 					}
@@ -605,15 +605,22 @@ public class SourceleadResumeParserNew {
 	private String getExperienceFromTextFile(String text) {
 		String years = "", months = "";
 		try {
-			Pattern p = Pattern.compile("\\d+\\W+\\s+(?:months?|years?|yrs?) | "
+			/*Pattern p = Pattern.compile("\\d+\\W+\\s+(?:months?|years?|yrs?) | "
 					+ "\\d+\\s+years?\\s+(?:and\\s*)?\\d+\\s+months?|\\d+\\s+(?:months?|years?|yrs?) |"
 					+ " \\d+\\.?\\d*\\W+\\s+(?:months?|years?|yrs?) |\\d+\\.?\\d*\\s+(?:months?|years?|yrs?)|"
-					+ "\\d+\\W*((?i)plus(?-i))\\W*\\s+(?:months?|years?|yrs?)", Pattern.CASE_INSENSITIVE);
+					+ "\\d+\\W*((?i)plus(?-i))\\W*\\s+(?:months?|years?|yrs?)", Pattern.CASE_INSENSITIVE);*/
+			
+			Pattern p = Pattern.compile("\\d+\\W+\\s*\\S*(?:months?|years?|yrs?|mnths?) | "
+					+ "\\d+\\s*\\S*years?\\s+(?:and\\s*)?\\d+\\s*\\S*months?|\\d+\\s+(?:months?|years?|yrs?|mnths?) | "
+					+ "\\d+\\.?\\d*\\W+\\s*\\S*(?:months?|years?|yrs?|mnths?)"
+					+ "  | \\d+\\s*\\S*yrs?\\s+(?:and\\s*)?\\d+\\s*\\S*mnths?|\\d+\\s+(?:months?|years?|yrs?|mnths?)| "
+					+ "\\d+\\s*\\S*((?i)plus(?-i))\\s*\\S*(?:months?|years?|yrs?|mnths?) | "
+					+ "\\d+\\s*\\S*(?:months?|years?|yrs?|mnths?)", Pattern.CASE_INSENSITIVE);
 	
-			Matcher found = p.matcher(text);
+			Matcher matcher = p.matcher(text);
 			String experience = "";
-			if (found.find()) {
-				experience = found.group(0).trim();
+			if (matcher.find()) {
+				experience = matcher.group(0).trim();
 			} else {
 				String exp = "\\w+\\s+\\bplus\\b+\\s+(?:months?|years?)";
 				Pattern t = Pattern.compile(exp, Pattern.CASE_INSENSITIVE);
@@ -652,11 +659,35 @@ public class SourceleadResumeParserNew {
 	private String getGenderFromTextFile(String text) {
 		String gender = "";
 		try {
-			String r="^(?:m|M|male|Male|f|F|female|Female)$";
+			/*String r="^(?:m|M|male|Male|f|F|female|Female)$";
 			Pattern pattern = Pattern.compile(r, Pattern.CASE_INSENSITIVE);
 			Matcher n = pattern.matcher(text);
 			if (n.find()) {
 				gender = n.group(0);
+			}*/
+			
+			Pattern pattern = Pattern.compile("\\bMr.\\b", Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(text);
+			if (matcher.find()) {
+				gender = "Male";
+			} else {
+				pattern = Pattern.compile("\\bmale\\b", Pattern.CASE_INSENSITIVE);
+				matcher = pattern.matcher(text);
+				if (matcher.find()) {
+					gender = "Male";
+				} else {
+					pattern = Pattern.compile("\\bfemale\\b", Pattern.CASE_INSENSITIVE);
+					matcher = pattern.matcher(text);
+					if (matcher.find()) {
+						gender = "Female";
+					} else {
+						pattern = Pattern.compile("\\bMiss\\b", Pattern.CASE_INSENSITIVE);
+						matcher = pattern.matcher(text);
+						if (matcher.find()) {
+							gender = "Female";
+						}
+					}
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -667,11 +698,35 @@ public class SourceleadResumeParserNew {
 	private String getMartialStatusFromTextFile(String text) {
 		String martialStatus = "";
 		try {
-			String r="^(?:single|Single|married|Married|divorsed|Divorsed|separated|Separated)$";
+			/*String r="^(?:single|Single|married|Married|divorsed|Divorsed|separated|Separated)$";
 			Pattern pattern = Pattern.compile(r, Pattern.CASE_INSENSITIVE);
 			Matcher n = pattern.matcher(text);
 			if (n.find()) {
 				martialStatus = n.group(0);
+			}*/
+			
+			Pattern pattern = Pattern.compile("\\bsingle\\b", Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(text);
+			if (matcher.find()) {
+				martialStatus = "Single";
+			} else {
+				pattern = Pattern.compile("\\bmarried\\b", Pattern.CASE_INSENSITIVE);
+				matcher = pattern.matcher(text);
+				if (matcher.find()) {
+					martialStatus = "Married";
+				} else {
+					pattern = Pattern.compile("\\bdivorsed\\b", Pattern.CASE_INSENSITIVE);
+					matcher = pattern.matcher(text);
+					if (matcher.find()) {
+						martialStatus = "Divorsed";
+					} else {
+						pattern = Pattern.compile("\\bseparated\\b", Pattern.CASE_INSENSITIVE);
+						matcher = pattern.matcher(text);
+						if (matcher.find()) {
+							martialStatus = "Separated";
+						}
+					}
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
