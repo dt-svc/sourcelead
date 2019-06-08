@@ -2151,36 +2151,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		
 		StringBuffer activitySummary = new StringBuffer();
 		HashSet<CandidateResumes> candidateResumesList = null;
-		if (null != candidateDTO.getExperienceYears()) {
-			if (candidateDTO.getExperienceYears().matches("[-a-zA-Z]+")) {
-				candidateDTO.setExperienceYears("0");
-				candidateDTO.setExperienceMonths("0");
-			}else{
-				 String exp[] = getExperienceYearsAndMonths(candidateDTO.getExperienceYears());
-				 if(exp.length >1){
-					 candidateDTO.setExperienceYears(exp[0]);
-						if(!exp[1].matches("[a-zA-Z]+")){
-							if(!"years".equalsIgnoreCase(exp[1])){
-							int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
-							candidateDTO.setExperienceMonths(String.valueOf(months));
-							}
-								
-						} 
-				 }else{
-					 if(exp[0].contains("years") || exp[0].contains("Years") ){
-						 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
-						 candidateDTO.setExperienceYears(String.valueOf(years));
-						 candidateDTO.setExperienceMonths("0");
-					 }else{
-						 candidateDTO.setExperienceYears("");
-						 candidateDTO.setExperienceMonths("");
-					 }
-					 
-				 }
-					
-					
-			}
-		}
 		
 		if (null != candidateDTO.getEmploymentType()) {
 			if(candidateDTO.getEmploymentType().equalsIgnoreCase("W2")) {
@@ -2275,6 +2245,24 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 						candidateDTO.setRateType("Hourly");
 				}
 			}
+		}
+		
+		if (null != candidateDTO.getCountry()) {
+			candidateDTO.setCountry(candidateDTO.getCountry());
+		}else {
+			candidateDTO.setCountry(orgLocations.getCountry());
+		}
+		
+		if (null != candidateDTO.getState()) {
+			candidateDTO.setState(candidateDTO.getState());
+		}
+		
+		if (null != candidateDTO.getCity()) {
+			candidateDTO.setCity(candidateDTO.getCity());
+		}
+		
+		if (null != candidateDTO.getLocation()) {
+			candidateDTO.setAddress(candidateDTO.getLocation());
 		}
 		
 		
