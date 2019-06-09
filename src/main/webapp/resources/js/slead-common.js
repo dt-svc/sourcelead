@@ -441,6 +441,16 @@ function applyResumeData(json) {
 	$("#candidateCountry").val("");
 	$("#candidateZipCode").val("");
 	$("#dateofBirth").val("");
+
+	$("input[value='Single']").prop("checked", false);
+	$("input[value='Married']").prop("checked", false);
+	$("input[value='Divorsed']").prop("checked", false);
+	$("input[value='Separated']").prop("checked", false);
+	
+	$("input[value='Male']").prop("checked", false);
+	$("input[value='Female']").prop("checked", false);
+	$("input[value='Transgender']").prop("checked", false);
+	
 	$("#designation").val("");
 	$("#experienceYears").val("");
 	$("#experienceMonths").val("");
