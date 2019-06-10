@@ -298,7 +298,7 @@ public class MissingTimesheetsReoprtsRestController {
 						            	mtr.setProjectName(pm.getProjects().getProjectName());
 						            	mtr.setEmployeName(pm.getProjectMemberCandidteId().getFullName());
 						            	if(null != pm.getProjectMemberCandidteId() && null != pm.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(pm.getProjectMemberCandidteId().getDesignationType())) {
-						            		mtr.setEmployeType(pm.getProjectMemberCandidteId().getDesignationType());
+						            		mtr.setEmployeType(pm.getEmployee().getUserEmploymentType());
 						            	}
 						            	mtr.setFrequency(unfilledFrequency);
 						            	mtr.setDueDays(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()));
