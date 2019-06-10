@@ -10,6 +10,7 @@ import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
 import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
@@ -21,6 +22,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MasterCandidate;
@@ -359,6 +361,11 @@ public interface CandidateService {
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
 	
 	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
+
+	public CandidateVerificationConfig saveDuplicateCheckConfig(CandidateVerificationConfigDTO candidateVerificationConfigDTO, OrgLocations loginOrgLocation,
+			User userId);
+
+	public CandidateVerificationConfig getCandidateVerificationConfig(Long orgLocationId);
 	//CandidateSource storeCandidateSource(CandidateSourceDTO candidateSourceDTO, User user, OrgLocations orgLocationId)throws Exception;
 			
 
