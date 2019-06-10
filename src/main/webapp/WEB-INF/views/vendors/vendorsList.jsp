@@ -3,27 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<style type="text/css">
-vendor_wrap {
-overflow-x: auto;
-}
-.dropdown-select.paddingNone select {
-border:none; background-color: none !important; padding:0 5px !important;
-}
-
-.NewStyleFullWidth {
-	width: 100%; padding: 0px 0px; margin: 0px auto;
-}
-.NewStyleFullWidth .col-md-9 {
-	width: 100%; padding: 0px 0px;
-}
-.NewStyleFullWidth .form-group {
-	width: 50%; margin-bottom: 15px; float: left; padding: 0px 2%;
-}
-.dynamic_search .fa-search {
-position: absolute !important;
-}
-</style>
 
 <script>
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
