@@ -367,7 +367,7 @@ function editCandidate(candidateId){
 								if(loginCountryName == 'United States'){
 									result = result + '<div class="clearfix mb10" id="errSsnNoDiv">';
 									result = result + '<div class="col-md-6 custom-fields">';
-									result = result + '<input class="form-control" id="ssnNumber" name="ssnNumber" value="'+ssnNumber+'" onblur="validateSsnNumberDuplicateChek();" placeholder="000-00-0000" type="text"></input>';
+									result = result + '<input class="form-control" id="ssnNumberUs" name="ssnNumber" value="'+ssnNumber+'" onkeyup="validateSsnNumberDuplicateChek();" onblur="validateSsnNumberDuplicateChek();" placeholder="000-00-0000" type="text"></input>';
 									result = result + '<input type="hidden" id="tempSsnNumber" value="'+json.ssnNumber+'" />';
 									result = result + '</div>';
 									result = result + '</div>';
@@ -1398,7 +1398,7 @@ function saveCandidateTags(candidateId){
 	         }; 
 		rateValidations();
 		 $('#emailDiv').find('p.jquery_form_error_message').remove();
-		
+		 $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){
       		var formData = getFormData("candidateProfileEdit_form");
 			$("#update_candidate").attr("disabled", "disabled");
@@ -2197,7 +2197,7 @@ function validateAadharNumber() {
 <script type="text/javascript">
 function validateSsnNumberDuplicateChek() {
 	
-	  var ssnNumber = document.getElementById("ssnNumber").value;
+	  var ssnNumber = document.getElementById("ssnNumberUs").value;
 	  
 	  var tempSsnNumber = $('#tempSsnNumber').val(); 
 		if(tempSsnNumber != ssnNumber){
@@ -2211,11 +2211,11 @@ function validateSsnNumberDuplicateChek() {
 		        success: function(data) {
 		        	if(data == true){
 		        		  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
-		        		  $("input#ssnNumber").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
+		        		  $("input#ssnNumberUs").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
 						  $("#update_candidate").attr('disabled','disabled');
 		        	}
 		        	else{
-		        		 $('input#ssnNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('input#ssnNumberUs').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#errSsnNoDiv').find('p.jquery_form_error_message').remove(); 
                         $("#update_candidate").removeAttr("disabled");
 		        	}
@@ -2227,7 +2227,7 @@ function validateSsnNumberDuplicateChek() {
 </script>
 
 <script type="text/javascript">
-$('#ssnNumber').mask('000-00-0000', {
+$('#ssnNumberUs').mask('000-00-0000', {
     translation: {
         '#': {
             pattern: "/[0-9]{9}/", optional: true
