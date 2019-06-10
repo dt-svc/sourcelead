@@ -7,6 +7,11 @@
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<style type="text/css">
+.mt10 {
+    margin-top: 10px !important;
+}
+</style>
 <script>
 var atsUrl ='${SourceLeadWeb_atsUrl}';
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
@@ -16,7 +21,6 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 <!-- For add New Applicant -->
 <script>
 function getAddApplicant(requirementId,reqCoolingOffPeriod){
-	
 	$('.action-pop').slideUp();
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
@@ -35,8 +39,6 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<h3>Add Applicant</h3>';
 	result = result + '<div class="form-horizontal clearfix select-field applicant-label">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
-	result = result + '<input type="hidden" id="reqCoolingOffPeriod" name="reqCoolingOffPeriod" value=\''+reqCoolingOffPeriod+'\'>';
-	
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
 	result = result + '<div class="col-md-7 radioInline">';
@@ -385,12 +387,14 @@ function discordApplicant(){
 
 <script type="text/javascript">
  function isCoolingOff(requirementId){
-	var candidateEmail =   $("input[name=EmailId]").val();
+
+	 var candidateEmail =   $("input[name=EmailId]").val();
 	var reqCoolingOffPeriod ='${requirement.reqCoolingOffPeriod}';
+	alert(""+email);
 	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type: "POST",
-	    url: atsUrl+"/verifyCoolingOffPeriod?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId, 
+	    url: atsUrl+"/verifyCoolingOffPeriod?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&email="+email+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId+"&mobilePhone="+mobilePhone+"&ssnNumber="+ssnNumber+"&panNumber="+panNumber+"&aadharNumber="+aadharNumber, 
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
@@ -410,7 +414,6 @@ function discordApplicant(){
 	});
 }
 </script>
-
 <script type="text/javascript">
  function getCandidatesList(requirementId,candidateType) {
 	 $('#sjfb-fields').find('p.jquery_form_error_message').remove();
