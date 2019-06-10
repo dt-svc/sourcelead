@@ -424,8 +424,8 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	public List<ExpensePendingApproveReportView> getPendingForApprovalExpenseReportByProjectIds(String projectIds, Date frequencyStartDate, Date frequencyEndDate) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from ExpensePendingApproveReportView e where e.projectId in (" + projectIds + ") and e.submittedDate between :startDate and :endDate";
-			List<ExpensePendingApproveReportView> expensesList = session.createQuery(query).setParameter("startDate", frequencyStartDate).setTimestamp("endDate", frequencyEndDate).list();
+			String query = "from ExpensePendingApproveReportView e where e.projectId in (" + projectIds + ") and DATE_FORMAT(e.submittedDate,'%Y-%m-%d') between :startDate and :endDate";
+			List<ExpensePendingApproveReportView> expensesList = session.createQuery(query).setDate("startDate", frequencyStartDate).setDate("endDate", frequencyEndDate).list();
 			return expensesList;
 		} catch (Exception e) {
 			e.printStackTrace();
