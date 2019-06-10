@@ -208,7 +208,7 @@ $('#method').on('change', function() {
 			                	if($("#formula").val() != null && $("#formula").val() != ''){
 			                		$("#formulaSpan"+uuid).text($.trim($("#formula").val()));
 			                	}else{
-			                		$("#formulaSpan"+uuid).text($.trim($("textarea#formula").val()));
+			                		$("#formulaSpan"+uuid).text($.trim($("textarea#formulaTextareaId").val()));
 			                	}
 			                	$("#methodSpan"+uuid).text($("#method").val());
 			                	
