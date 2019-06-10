@@ -11,6 +11,7 @@ $(document).ready(function(){
 </script>
 
 <script>
+var table ="";
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </script>
 
@@ -26,6 +27,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     </section>
     <div class="contentareaInner-styles clearfix">
     <div id="loading"></div>
+    <div id="emptyPopup"></div>
     <form:form id="check_register_report_form" name="check_register_report_form" method="post">
       <div class="clearfix minHeight">
         <div class="clearfix row">
@@ -269,7 +271,7 @@ function checkRegisterReports(){
 <script>
 	function payCheckDateData(url) {
 		var colIndex = 0;
-		$('#checkRegisterReportTabble')
+	table =	$('#checkRegisterReportTabble')
 				.DataTable(
 						{
 							"processing" : true,
@@ -397,8 +399,34 @@ function exportToPdf(){
 	var searchValue = $("#dataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	var depositType = 'Cheque';
+	if (!table.data().count()) {
+		  popupDisplay();
+	}
+	else{
 	window.location.href = pmsUrl+"/exportToPdfCheckRegisterReport?searchValue="+searchValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&depositType="+depositType;
-}
+    }
+}	
+</script>
+
+<script>
+  function popupDisplay(){
+		$(".project_inn_mask").remove();
+		var result = "";
+		result = result +" <div class='project_inn_mask'></div>";
+		result = result +" <div id='remove_CheckRegisterReport_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <div class='modal-body'><p id='popupMsg'></p></div>";
+		result = result +" <div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelCheckRegisterReportPopup();'></div>";
+		result = result +" </div>";
+		$("#emptyPopup").empty().append(result);
+		$("#popupMsg").empty().append("No Records To Export in Check Register Report.");
+		$("#remove_CheckRegisterReport_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+  
+  function cancelCheckRegisterReportPopup(){
+		$("#remove_CheckRegisterReport_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
