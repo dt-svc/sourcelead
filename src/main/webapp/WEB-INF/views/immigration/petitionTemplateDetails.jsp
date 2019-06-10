@@ -33,7 +33,7 @@
 									<option value="">--Select Country--</option>
 									<option value="Singapore" ${templateDTO.country == 'Singapore' ? 'selected' : ''}>Singapore</option>
 									<option value="Canada" ${templateDTO.country == 'Canada' ? 'selected' : ''}>Canada</option>
-									<option value="United States" ${templateDTO.country == 'United States' ? 'selected' : 'selected'}>United States</option>
+									<option value="United States" ${templateDTO.country == 'United States' ? 'selected' : empty templateDTO.country ?  'selected' :''}>United States</option>
 									<option value="Australia" ${templateDTO.country == 'Australia' ? 'selected' : ''}>Australia</option>
 									<option value="India" ${templateDTO.country == 'India' ? 'selected' : ''}>India</option>
 									<option value="United Kingdom" ${templateDTO.country == 'United Kingdom' ? 'selected' : ''}>United Kingdom</option>

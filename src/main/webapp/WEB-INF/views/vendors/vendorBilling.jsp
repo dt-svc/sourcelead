@@ -7,38 +7,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link rel="stylesheet" href="/resources/css/style.css" />    
-<style type="text/css"> 
-
-.timesheet_head ul.nav-tabs, .timesheet_head ul.invoiceHdr  { 
-padding: 5px; float: none; clear: both;
-}
-.billing_dashboard {
-padding: 0;
-}
-.billing_dashboard h4 {
-text-align: left; padding-left: 10px;
-}
-.clients_side_wrap select {
-min-height: 35px; padding: 1px 25px 1px 15px;
-}
-.billingArea {
-padding: 10px;
-}
-.side_mask {
-background-color: rgba(0,0,0,0.3);
-}
-.pop_mask {
-z-index: 99999;
-}
-.addcandidate-popup {
-z-index: 9999999;
-}
-.exlpdf_btns table tr td div i {
-    color: #333;
-}
-</style>
-
-
 
 <input type="hidden" id="emptyPayableInvoiceId" name="emptyPayableInvoiceId"/>
 <div class="success_pop" id="selector13" style="display: none;">
@@ -50,7 +18,7 @@ var result = "";
 result = result  +'<div class="">';
 result = result  +'    <div class="billingArea"> ';  
  result = result + '			    <div class="clearfix">																																				                   ';
- result = result + '			      <div class="billing_dashboard">                                                                                                                                                                              ';
+ result = result + '			      <div class="billing_dashboard noPad billing_dashboardH4">                                                                                                                                                                              ';
  result = result + '			        <div class="tabbable positionRelative">                                                                                                                                                                    ';
  result = result + '			          <div class="onboardcreateButtons">                                                                                                                                                                       ';
  result = result + '			            <div class="pull-right select-field ml">                                                                                                                                                               ';
@@ -78,7 +46,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                            <div class="pull-left">                                                                                                                                                                ';
  result = result + '			                            <strong>${SourceLeadWeb_currencyCode}</strong>                                                                                                                                         ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
- result = result + '			                            <div class="pull-right ml10">                                                                                                                                                          ';
+ result = result + '			                            <div class="pull-right ml10 invoiCount">                                                                                                                                                          ';
  result = result + '			                            <div class="count" id="unbilledAmoumt"></div>                                                                                                                                          ';
  result = result + '			                                <h5>Draft Bills <span class="paddingLeft" id="draftInvoiceCount"></span></h5>                                                                                                   ';
  result = result + '			                                </div>                                                                                                                                                                             ';
@@ -90,7 +58,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                        <div class="pull-left">                                                                                                                                                                    ';
  result = result + '			                         <strong>${SourceLeadWeb_currencyCode}</strong>                                                                                                                                            ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
- result = result + '			                            <div class="pull-right ml10">                                                                                                                                                          ';
+ result = result + '			                            <div class="pull-right ml10 invoiCount">                                                                                                                                                          ';
  result = result + '			                            <div class="count" id="dueAfterInvoiceAmount"></div>                                                                                                                                   ';
  result = result + '			                        <h5>Overdue Bills<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>                                                                                                       ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
@@ -103,7 +71,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                        <div class="pull-left">                                                                                                                                                                    ';
  result = result + '			                            <strong>${SourceLeadWeb_currencyCode}</strong>                                                                                                                                         ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
- result = result + '			                            <div class="pull-right ml10">                                                                                                                                                          ';
+ result = result + '			                            <div class="pull-right ml10 invoiCount">                                                                                                                                                          ';
  result = result + '			                            <div class="count" id="dueBeforeInvoiceAmount"></div>                                                                                                                                  ';
  result = result + '			                        <h5>Open Bills<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>                                                                                                         ';
  result = result + '			                        </div>                                                                                                                                                                                     ';
@@ -115,7 +83,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                        <div class="pull-left">                                                                                                                                                                    ';
  result = result + '			                           <strong>${SourceLeadWeb_currencyCode}</strong>                                                                                                                                          ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
- result = result + '			                            <div class="pull-right ml10">                                                                                                                                                          ';
+ result = result + '			                            <div class="pull-right ml10 invoiCount">                                                                                                                                                          ';
  result = result + '			                            <div class="count" id="paidInvoiceAmount"></div>                                                                                                                                       ';
  result = result + '			                        <h5>Paid Bills<span class="paddingLeft" id="paidInvoiceCount"></span></h5>                                                                                                              ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
@@ -141,7 +109,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			            <div class="tab-pane active" id="unbilled">                                                                                                                                                            ';
  result = result + '			              <div class="timesheet_out">                                                                                                                                                                       ';
  result = result + '			                <div class="clearfix">                                                                                                                                                                             ';
- result = result + '			                  <div class="timesheet_head timesheetHead-UL ">                                                                                                                                                                     ';
+ result = result + '			                  <div class="timesheet_head timesheetHead-UL timesheet_head_nav_tabs">                                                                                                                                                                     ';
 
  result = result + ' <div class="pull-left cand-advsrch advsrch_chosen">';
  result = result + ' <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetBillFilter('+orgRelationId+','+vendorLocationId+');" title="Refresh">';
@@ -178,7 +146,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			      </div>                   																																								                        ';                                                                                                                                                            
  result = result  +'  <div class="clearfix"></div> ';
  result = result + '</ul>';
- result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table exlpdf_btns">';
+ result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table exlpdf_btns exlpdf_btns_btns">';
  result  = result + '   <div id="vendorInvoiceList" ></div>';
  result  = result + '   </div>';
  result = result+'	    </div>';
@@ -703,12 +671,12 @@ function saveBillRejectedReason(invoiceUUID){
 
 
 <!-- modal pop -->
-<div class="side_mask" style="display: none"></div>
+<div class="side_mask" style="display: none; background-color: rgba(0,0,0,0.3);"></div>
 <div class="modal modal_invoice datatable_filter" style="display: none;">
    <div id="linkPayblePopup" ></div>
 </div>
 		   <div id="createBillDiv"></div>
-		  <div class="pop_mask"></div>
+		  <div class="pop_mask" style="z-index: 99999;"></div>
 		  <script>
 		    //addcandidate-popup script
 		    function createBill(orgRelationId){
@@ -750,7 +718,7 @@ function saveBillRejectedReason(invoiceUUID){
 				  
 			        $("#createBillDiv").empty();
 			        $("#createBillDiv").append(result);
-			        $('.addcandidate-popup').fadeIn(200);
+			        $('.addcandidate-popup').fadeIn(200).css({"z-index":"9999999"});
 			        $('.pop_mask').fadeIn(200);
 			    };
 		       function closeCandidate(){

@@ -8,52 +8,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.edit-details {
-text-align:left;
-}
-.edit-details ul {
-float:none;
-}
-.edit-details ul li {
-float:none;
-}
-
-.addUser-org {
-    overflow-x: auto;
-}
-
-#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.tblicons a{
-	font-size:13px;
-	}
-	.tblicons a:first-child{
-	margin-left: 0;
-	}
-	.tblicons .glyphicon-trash{
-	margin-left: 5px;
-	}
-	.tblicons a{
-	margin:0px 8px;
-	padding: 0 !important;
-	} 
-	.vendor_wrap_inn_table table tr th:last-child{
-	width:100px;
-	}
-	.removeIcon{
-	font-size:22px; position:relative; top:-5px; margin-left:15px; color:#F22613; cursor: pointer;
-	}
-.mask_time {
-	z-index: 100000;
-}	
-</style>
-
 <div id="deleteDocpopUp"></div>
-<div class="mask_time"></div> 
+<div class="mask_time" style="z-index: 100000;"></div> 
 <section class="contPopup" style="min-height:300px;">
 	<div id="viewPopupDiv"></div>
 </section>
@@ -133,7 +89,7 @@ function vendorContracts(orgRelationId){
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
-		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table vendor_wrap_inn_table_last_child">';
 		result  = result + '<input type="hidden" value = "'+orgRelationId+'" id="contractRelationId"/>';
 		result  = result + '   <div id="contractloading" ></div>';
 		result  = result + '   <div id="vendorContractsList" ></div>';
@@ -458,7 +414,7 @@ function CountClick(contractUUID,parentId){
 
 						  if(opt.fileURL != null && opt.fileURL !=""){
 							  result = result +'	       <div class="col-md-8 text-center" id="removeDiv'+opt.id+'">                                                                                                             ';
-							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
+							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon_styles"></i></span>';
 							  result = result+' <a download class="glyphicon glyphicon-download-alt" href="'+opt.fileURL+'" title="Download"></a>';
 			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\')"title="preview"></a>';
 							  result = result +'	       </div>			                                                                                                                  ';
