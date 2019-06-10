@@ -5,31 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-	
-<style type="text/css">
-.center-div {
-	width: 300px;
-	height: 30px;
-	margin: 10px 220px 0;
-}
-
-.center-div input {
-	border: none;
-	background: transparent
-}
-
-.textLoad {
-	text-align: center;
-    padding: 0px 0px;
-    margin: 30% auto 0px;
-    font-size: 14px;
-    color: #666;
-    font-weight: 500;
-    display: none;
-}	
-
-</style>
-
 
 <script type="text/javascript">
 window.onload = function () {
@@ -53,11 +28,11 @@ window.onload = function () {
         <h2>Import Candidates</h2>
       </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
       </c:if>
       
        <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/recruiterDashboard'/>">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
       </c:if>
     </section>
 	<div id="loading"><p class="textLoad" id="LoadingTextMsg"></p></div>
@@ -73,7 +48,7 @@ window.onload = function () {
 					</div>
 					
 						<div class="col-xs-5 col-md-5">
-							<a href="<c:url value='${appPath}/downloadCreateCandidateTemplate'/>"
+							<a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/downloadCreateCandidateTemplate'/>"
 								class="btn btn-success btn-block" title="Download Candidate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Candidate Template
 							</a>
 						</div>

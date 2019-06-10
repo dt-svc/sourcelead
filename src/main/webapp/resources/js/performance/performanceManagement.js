@@ -401,6 +401,18 @@ function PerformanceManagement(){
   				},
   			}); 
     }
+    
+    this.assignAppraisalCycle = function(uuid){
+    	$.ajax({
+  		  type: "GET",
+  		    url: sourceleadUrl+"/getPerformanceAppraisalAssignToList?uuid="+uuid,
+  		     success :function(response) {
+  		    	    $("#performanceManagementDiv").empty();  
+  		    	    $("#performanceManagementDiv").append(response);
+  		    	    getAppraisalAssignToList(uuid);
+  				},
+  			}); 
+    }
 
 
     this.getFeedbackList = function(){
@@ -683,17 +695,6 @@ function PerformanceManagement(){
  		 document.getElementById("badgeImg").src = '/resources/images/rewards_badges.svg';
  	  
    }
-   
-   this.closeBadgePopup = function(){
-	 	  $(".mask, #modalTasktype").fadeOut();
-	 	  $('#badgeNameDiv').find('p.jquery_form_error_message').remove();
-	 	  $('#badgeImageDiv').find('p.jquery_form_error_message').remove();
-	 	  $('#badgeDescriptionDiv').find('p.jquery_form_error_message').remove();
-	 	  $('#uploadBtn').val('');
-	 		 document.getElementById("performance_badge_form").reset();
-	 		 document.getElementById("badgeImg").src = '/resources/images/rewards_badges.svg';
-	 	  
-	   }
    
    this.closeCompetencePopup = function(){
 	      $(".mask, #competenceModalTasktype").fadeOut();
@@ -1243,22 +1244,22 @@ function PerformanceManagement(){
 						
 						var isSelfChecked = $("#isSelfAppraisalRequired").is(":checked");
 						if(isSelfChecked){
-							selfRevText = "<div class='categorySubCta' id='selfCategoryPercentDiv"+$(this).val()+"'><span>Self Appraisal</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='selfCategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+							selfRevText = '<div class="categorySubCta" id="selfCategoryPercentDiv'+$(this).val()+'"><span>Self Appraisal<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+$(this).val()+',\'self\')"></i></span><input type="text" onblur="performanceManagement.validatePercentage('+$(this).val()+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="selfCategoryPercent'+$(this).val()+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
 						}
 						
 						var isPeerChecked = $("#isPeerReviewRequired").is(":checked");
 						if(isPeerChecked){
-							peerRevText = "<div class='categorySubCta' id='peerCategoryPercentDiv"+$(this).val()+"'><span>Peer Review</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='peerCategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+							peerRevText = '<div class="categorySubCta" id="peerCategoryPercentDiv'+$(this).val()+'"><span>Peer Review<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+$(this).val()+',\'peer\')"></i></span><input type="text" onblur="performanceManagement.validatePercentage('+$(this).val()+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="peerCategoryPercent'+$(this).val()+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
 						}
 						
 						var isRepMngChecked = $("#isReportingManagerAppraisalRequired").is(":checked");
 						if(isRepMngChecked){
-							reportingMngText = "<div class='categorySubCta' id='reportingMngCategoryPercentDiv"+$(this).val()+"'><span>Reporting Manager</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='reportingMngCategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+							reportingMngText = '<div class="categorySubCta" id="reportingMngCategoryPercentDiv'+$(this).val()+'"><span>Reporting Manager<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+$(this).val()+',\'reportingManager\')"></i></span><input type="text" onblur="performanceManagement.validatePercentage('+$(this).val()+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="reportingMngCategoryPercent'+$(this).val()+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
 						}
 						
 						var isResMngChecked = $("#isResourceManagerAppraisalRequired").is(":checked");
 						if(isResMngChecked){
-							resMngText = "<div class='categorySubCta' id='resourceMngcategoryPercentDiv"+$(this).val()+"'><span>Resource Manager</span><input type='text' onblur='performanceManagement.validatePercentage("+$(this).val()+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='resourceMngcategoryPercent"+$(this).val()+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+							resMngText = '<div class="categorySubCta" id="resourceMngcategoryPercentDiv'+$(this).val()+'"><span>Resource Manager<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+$(this).val()+',\'resourceManager\')"></i></span><input type="text" onblur="performanceManagement.validatePercentage('+$(this).val()+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="resourceMngcategoryPercent'+$(this).val()+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
 						}
 						 
 						
@@ -1290,6 +1291,20 @@ function PerformanceManagement(){
 		}
   }
   
+  this.closeSelectedCategoryDiv = function(templateId,categoryType){
+	     if(categoryType == 'self'){
+	    	 $("#selfCategoryPercentDiv"+templateId).remove();
+	     }else if(categoryType == 'peer'){
+	    	 $("#peerCategoryPercentDiv"+templateId).remove();
+	     }else if(categoryType == 'reportingManager'){
+	    	 $("#reportingMngCategoryPercentDiv"+templateId).remove();
+	     }else if(categoryType == 'resourceManager'){
+	    	 $("#resourceMngcategoryPercentDiv"+templateId).remove();
+	     }
+		 performanceManagement.validateCategoryPercentageTotalSumValue();
+  }
+  
+ 
   
   
   this.validateCategoryPercentageTotalSumValue = function(){
@@ -1442,7 +1457,7 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
   
   
   this.editSelectedApprisalCompetenciesRows = function(id,templateName,percentage){
-	    var text="<div class='multiCompetencies positionRelative' id="+id+" data-template_id=" + id + ">";
+	    var text="<div class='multiCompetencies positionRelative categorySub' id="+id+" data-template_id=" + id + ">";
 		text += "<i class='fa fa-close close_multi_job' onclick='performanceManagement.closeAppriasalCompetenceDiv(this)'></i>";
 		text += "<div class='multiJobTitle categorySubHead clearfix'>";
 		text += "<h2 class='pull-left'>" + templateName + "</h2>";
@@ -2353,22 +2368,22 @@ this.enableResourceManagerAppraisalPeriod = function(){
 		
 		var isSelfChecked = $("#isSelfAppraisalRequired").is(":checked");
 		if(isSelfChecked){
-			selfRevText = "<div class='categorySubCta' id='selfCategoryPercentDiv"+id+"'><span>Self Appraisal</span><input type='text' value='"+selfPercentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='selfCategoryPercent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+			selfRevText = '<div class="categorySubCta" id="selfCategoryPercentDiv'+id+'"><span>Self Appraisal<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'self\')"></i></span><input type="text" value="'+selfPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="selfCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
 		}
 		
 		var isPeerChecked = $("#isPeerReviewRequired").is(":checked");
 		if(isPeerChecked){
-			peerRevText = "<div class='categorySubCta' id='peerCategoryPercentDiv"+id+"'><span>Peer Review</span><input type='text' value='"+peerPercentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='peerCategoryPercent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+			peerRevText = '<div class="categorySubCta" id="peerCategoryPercentDiv'+id+'"><span>Peer Review<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'peer\')"></i></span><input type="text" value="'+peerPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="peerCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
 		}
 		
 		var isRepMngChecked = $("#isReportingManagerAppraisalRequired").is(":checked");
 		if(isRepMngChecked){
-			reportingMngText = "<div class='categorySubCta' id='reportingMngCategoryPercentDiv"+id+"'><span>Reporting Manager</span><input type='text' value='"+resourceMgrPercentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='reportingMngCategoryPercent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+			reportingMngText = '<div class="categorySubCta" id="reportingMngCategoryPercentDiv'+id+'"><span>Reporting Manager<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'reportingManager\')"></i></span><input type="text" value="'+reportingMgrPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="reportingMngCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
 		}
 		
 		var isResMngChecked = $("#isResourceManagerAppraisalRequired").is(":checked");
 		if(isResMngChecked){
-			resMngText = "<div class='categorySubCta' id='resourceMngcategoryPercentDiv"+id+"'><span>Resource Manager</span><input type='text' value='"+reportingMgrPercentage+"' onblur='performanceManagement.validatePercentage("+id+");performanceManagement.validateCategoryPercentageTotalSumValue();' id='resourceMngcategoryPercent"+id+"' class='form-control' field-name='Percentage' placeholder='Percentage' data-validation='validate_int required'></div>"
+			resMngText = '<div class="categorySubCta" id="resourceMngcategoryPercentDiv'+id+'"><span>Resource Manager<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'resourceManager\')"></i></span><input type="text" value="'+resourceMgrPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="resourceMngcategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
 		}
 		
 		

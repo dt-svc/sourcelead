@@ -155,6 +155,16 @@ public class PerformanceManagementController {
 		return model;
 	}
 	
+	@RequestMapping(value = "/getPerformanceAppraisalAssignToList")
+	public ModelAndView getPerformanceAppraisalAssignToList(@RequestParam(value = "uuid", required = true) String uuid,
+			HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("uuid", uuid);
+		model.setViewName("performance/performanceAppraisalAssignToList");
+		return model;
+	}
+	
 	
 	@RequestMapping(value = "/performanceCompetenceList")
 	public ModelAndView performanceCompetenceList(HttpServletRequest request) throws Exception{

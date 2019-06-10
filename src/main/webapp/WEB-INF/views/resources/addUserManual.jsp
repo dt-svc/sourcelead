@@ -6,39 +6,6 @@
 <link href="/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
 <script src="/resources/js/summernote.min.js"></script>
 
-<style>
-#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.tblicons a{
-	font-size:13px;
-	}
-	.tblicons a:first-child{
-	margin-left: 0;
-	}
-	.tblicons .glyphicon-trash{
-	margin-left: 5px;
-	}
-	.tblicons a{
-	margin:0px 8px;
-	padding: 0 !important;
-	} 
-	.vendor_wrap_inn_table table tr th:last-child{
-	width:100px;
-	}
-	.removeIcon{
-	font-size:22px; position:relative; top:-5px; margin-left:15px; color:#F22613; cursor: pointer;
-	}
-	.tblicons_4 {
-	width:100px;
-	}
-	.tblicons_4 a {
-	margin: 0 2px;
-	}
-</style>
-
 <script>
 $(function(){
 	levelFun();
