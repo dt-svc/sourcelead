@@ -5,11 +5,6 @@
  
 <%-- <jsp:include page="candidatesQuickView.jsp"></jsp:include> --%>
  
-<style>
-.clsDatePicker {
-	z-index: 100000 !important;
-}
-</style>
 <script>
 function closeCertificatePopup(){
 	 $("#popUpDivEmp").removeClass("edit-details-active");
