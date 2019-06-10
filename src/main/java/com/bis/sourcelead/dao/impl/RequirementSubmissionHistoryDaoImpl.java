@@ -22,8 +22,11 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RequirementLocationsDao;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
+import com.bis.sourcelead.dto.CandidateConfigurationDTO;
+import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.OfferAcceptanceRateView;
 import com.bis.sourcelead.entity.OfferAcceptanceRateViewForVendor;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -113,6 +116,68 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		
 		List<RequirementSubmissionHistory> requirementHistoryList = session.createQuery(query).setString("email", email).setLong("orgLocationId", orgLocationId).list();
 	  
+		
+		RequirementSubmissionHistory requirementSubmissionHistory1 = null;
+		if (requirementHistoryList != null && !requirementHistoryList.isEmpty() ) {
+			RequirementSubmissionHistory requirementSubmissionHistory = requirementHistoryList.get(0);
+			
+	         String query1 = " FROM RequirementSubmissionHistory rsh where rsh.submissionId.id =:submissionId ORDER BY rsh.createdDate DESC";
+	 		 List<RequirementSubmissionHistory> requirementHistoryList1 = session.createQuery(query1).setLong("submissionId", requirementSubmissionHistory.getSubmissionId().getId()).list();
+	 		
+	 		 if (requirementHistoryList1 != null && !requirementHistoryList1.isEmpty() ) {
+				requirementSubmissionHistory1 = requirementHistoryList1.get(0);
+				
+	 		}
+         }
+		
+         return requirementSubmissionHistory1;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementSubmissionHistory isInCoolingOffPeriodByLocationID(
+			CandidateVerificationConfig candidateVerificationConfig,CandidateConfigurationDTO candidateConfigurationDTO, Long orgLocationId, String reqCoolingOffPeriod,
+			Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String statusSubQuery1 = "";
+		String statusSubQuery2 = "";
+		String statusSubQuery3 = "";
+		String statusSubQuery4 = "";
+		String statusSubQuery5 = "";
+		
+		String query = " FROM RequirementSubmissionHistory rsh where rsh.submissionId.orgLocations.id =:orgLocationId ";
+		
+			statusSubQuery1 = " rsh.submissionId.candidate.email =:email";
+		
+		 if(candidateVerificationConfig.getMobilePhone() == true){
+			statusSubQuery2 = " or rsh.submissionId.candidate.mobilePhone =:mobilePhone";
+		}
+		 else if(candidateVerificationConfig.getPanNumber() == true){
+				statusSubQuery3 = " or rsh.submissionId.candidate.panNumber =:panNumber";
+			}
+		 else if(candidateVerificationConfig.getAadharNumber() == true){
+				statusSubQuery4 = " or rsh.submissionId.candidate.aadharNumber =:aadharNumber";
+			}
+		 else if(candidateVerificationConfig.getSsnNumber() == true){
+				statusSubQuery5 = " or rsh.submissionId.candidate.ssnNumber =:ssnNumber";
+			}
+		
+		List<RequirementSubmissionHistory> requirementHistoryList = null;
+		
+		String finalQuery =query+" and ("+statusSubQuery1+statusSubQuery2+statusSubQuery3+statusSubQuery4+statusSubQuery5+") ORDER BY rsh.createdDate asc";
+		if(candidateVerificationConfig.getMobilePhone() == true){
+			 requirementHistoryList = session.createQuery(finalQuery).setString("email", candidateConfigurationDTO.getEmail()).setString("mobilePhone", candidateConfigurationDTO.getPhoneNumber()).setLong("orgLocationId", orgLocationId).list();
+		}else if(candidateVerificationConfig.getPanNumber() == true) {
+			 requirementHistoryList = session.createQuery(finalQuery).setString("email", candidateConfigurationDTO.getEmail()).setString("panNumber", candidateConfigurationDTO.getPanNumber()).setLong("orgLocationId", orgLocationId).list();
+		}else if(candidateVerificationConfig.getAadharNumber() == true) {
+			 requirementHistoryList = session.createQuery(finalQuery).setString("email", candidateConfigurationDTO.getEmail()).setString("aadharNumber", candidateConfigurationDTO.getAadharNumber()).setLong("orgLocationId", orgLocationId).list();
+		}else if(candidateVerificationConfig.getSsnNumber() == true) {
+			 requirementHistoryList = session.createQuery(finalQuery).setString("email", candidateConfigurationDTO.getEmail()).setString("ssnNumber", candidateConfigurationDTO.getSsnNumber()).setLong("orgLocationId", orgLocationId).list();
+		}
+		else {
+			 requirementHistoryList = session.createQuery(finalQuery).setString("email", candidateConfigurationDTO.getEmail()).setLong("orgLocationId", orgLocationId).list();
+
+		}
 		
 		RequirementSubmissionHistory requirementSubmissionHistory1 = null;
 		if (requirementHistoryList != null && !requirementHistoryList.isEmpty() ) {
@@ -462,5 +527,6 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		}
 		return null;
 	}
+
 
 }
