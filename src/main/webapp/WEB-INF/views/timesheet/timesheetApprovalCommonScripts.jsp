@@ -330,7 +330,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		    				 $('#hedderAcceptRejectButton').attr('style','display:none');
 		    			 }else{
 		    				 var currentPageNumberApprover =  $("#timesheetApproverCurrentPageNumber").val();
-		    				 getTableData(currentPageNumberApprover);
+		    				 getTableData(currentPageNumberApprover,0);
 		    			   	$("#loadingCotentDiv").removeAttr('style');
 		    			   	$('#hedderAcceptRejectButton').attr('style','display:none');
 			    		}

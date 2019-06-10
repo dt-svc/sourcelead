@@ -12,6 +12,7 @@ $(document).ready(function(){
 </script>
 
 <script>
+var table="";
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </script>
 
@@ -21,6 +22,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Associate withholding</h2>
       </div>
+      <div id="emptyPopup"></div>
       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard" title="Home">Home</a>&raquo;<a
 				href="${SourceLeadWeb_pmsUrl}/usPayrollReport"> US Payroll Reports List</a>&raquo;Associate withholding
 		</div>
@@ -175,7 +177,7 @@ function associateWithHolding(){
 <script>
 	function associateWithHoldingData(url) {
 		var colIndex = 0;
-		$('#aasociatewithHoldingTabble')
+		table = $('#aasociatewithHoldingTabble')
 				.DataTable(
 						{
 							"processing" : true,
@@ -523,8 +525,12 @@ function exportToPdf(){
    
         var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-
-    	window.location.href = pmsUrl+"/exportAssociateWithholding?searchValue="+searchValue+"&dept="+dept+"&empType="+empType+"&exportType=pdf";
+		if (!table.data().count()) {
+			  popupDisplay();
+		}
+		else{
+			window.location.href = pmsUrl+"/exportAssociateWithholding?searchValue="+searchValue+"&dept="+dept+"&empType="+empType+"&exportType=pdf";
+		}
 }
 </script>
 
@@ -547,8 +553,12 @@ function exportToExcel(){
    
         var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-
-    	window.location.href = pmsUrl+"/exportAssociateWithholding?searchValue="+searchValue+"&dept="+dept+"&empType="+empType+"&exportType=xls";
+		if (!table.data().count()) {
+			  popupDisplay();
+		}
+		else{
+			window.location.href = pmsUrl+"/exportAssociateWithholding?searchValue="+searchValue+"&dept="+dept+"&empType="+empType+"&exportType=xls";
+		}
 }
 </script>
 
@@ -561,6 +571,27 @@ function resetFilter(){
 	associateWithHolding();
 }
 </script>
+<script>
+  function popupDisplay(){
+		$(".project_inn_mask").remove();
+		var result = "";
+		result = result +" <div class='project_inn_mask'></div>";
+		result = result +" <div id='remove_Associatewithholding_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <div class='modal-body'><p id='popupMsg'></p></div>";
+		result = result +" <div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelAssociatewithholdingPopup();'></div>";
+		result = result +" </div>";
+		$("#emptyPopup").empty().append(result);
+		$("#popupMsg").empty().append("No Records To Export in Associate withholding Report.");
+		$("#remove_Associatewithholding_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+  
+  function cancelAssociatewithholdingPopup(){
+		$("#remove_Associatewithholding_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
+</script>
+
 
 
 <jsp:include page="../masterFooter.jsp" />

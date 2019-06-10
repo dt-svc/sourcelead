@@ -13,6 +13,7 @@ $(document).ready(function(){
 </script>
 
 <script>
+var table="";
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </script>
 
@@ -26,7 +27,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-right brud-crum"><a href="/app/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;
        <a href="/pms/usPayrollReport">US Payroll Reports List</a> &raquo;  Payroll Register</div>
     </section>
-    
+     <div id="emptyPopup"></div>
     <div class="contentareaInner-styles clearfix">
     <div id="payrollReportLoading"></div>
     <form:form id="payrollregister_form" name="apply_leave_form" method="post">
@@ -179,7 +180,12 @@ function exportPayrollRegisterReportPdf(){
 	var payRollType = $('#payRollType').val();
 	var freqStartDate = $('#freqStartDate').val();
 	var freqEndDate = $('#freqEndDate').val();
+	if (!table.data().count()) {
+		  popupDisplay();
+	}
+	else{
     window.location.href = pmsUrl+"/exportPayrollRegisterReportPdf?&payGroup="+payGroup+"&department="+department+"&payRollType="+payRollType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue;
+    }
 }
 </script>
 <script type="text/javascript">
@@ -244,7 +250,7 @@ function preparePayRollRegisterList(url){
 
 function payrollRegisterPagination(url){
 	var colIndex = 0;
-    $('#payrollRegisterTable').DataTable( { 
+table = $('#payrollRegisterTable').DataTable( { 
     	"processing": true,
         "serverSide": true,
         "searching": false,
@@ -436,6 +442,27 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });
+</script>
+
+<script>
+  function popupDisplay(){
+		$(".project_inn_mask").remove();
+		var result = "";
+		result = result +" <div class='project_inn_mask'></div>";
+		result = result +" <div id='remove_PayrollRegister_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <div class='modal-body'><p id='popupMsg'></p></div>";
+		result = result +" <div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelPayrollRegisterPopup();'></div>";
+		result = result +" </div>";
+		$("#emptyPopup").empty().append(result);
+		$("#popupMsg").empty().append("No Records To Export in Payroll Register.");
+		$("#remove_PayrollRegister_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+  
+  function cancelPayrollRegisterPopup(){
+		$("#remove_PayrollRegister_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
 </script>
  
 

@@ -12,6 +12,7 @@ $(document).ready(function(){
 </script>
 
 <script>
+var table="";
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </script>
  
@@ -26,7 +27,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     </section>
     
     <div class="contentareaInner-styles clearfix">
-    
+    <div id="emptyPopup"></div>
     <form:form id="associate_payroll_form"  name="associate_payroll_form" method="post">
     <div class="clearfix minHeight">
         <div class="clearfix row">
@@ -247,7 +248,7 @@ function runAssociatePayrollReport(){
 <script>
 	function runAssociatePayrollData(url) {
 		var colIndex = 0;
-		$('#runAssociatePayrollDataTable')
+	table =	$('#runAssociatePayrollDataTable')
 				.DataTable(
 						{
 							"processing" : true,
@@ -506,8 +507,12 @@ function exportEmployeePayrollPdf(){
 	var employees = $('#employees').val();
 	var searchValue = $("#dynamicUserPayrollTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-
-    window.location.href = pmsUrl+"/exportEmployeePayroll?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&department="+department+"&employees="+employees+"&searchValue="+searchValue+"&exportType=pdf";
+	if (!table.data().count()) {
+		  popupDisplay();
+	}
+	else{
+         window.location.href = pmsUrl+"/exportEmployeePayroll?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&department="+department+"&employees="+employees+"&searchValue="+searchValue+"&exportType=pdf";
+    }
 }
 </script>
 
@@ -520,9 +525,33 @@ function exportEmployeePayrollExcel(){
 	var employees = $('#employees').val();
 	var searchValue = $("#dynamicUserPayrollTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-
+	if (!table.data().count()) {
+		  popupDisplay();
+	}
+	else{
     window.location.href = pmsUrl+"/exportEmployeePayroll?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&department="+department+"&employees="+employees+"&searchValue="+searchValue+"&exportType=xls";
+	}
 }
+</script>
+<script>
+  function popupDisplay(){
+		$(".project_inn_mask").remove();
+		var result = "";
+		result = result +" <div class='project_inn_mask'></div>";
+		result = result +" <div id='remove_EmployeePayroll_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <div class='modal-body'><p id='popupMsg'></p></div>";
+		result = result +" <div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelEmployeePayrollPopup();'></div>";
+		result = result +" </div>";
+		$("#emptyPopup").empty().append(result);
+		$("#popupMsg").empty().append("No Records To Export in Employee Payroll.");
+		$("#remove_EmployeePayroll_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+  
+  function cancelEmployeePayrollPopup(){
+		$("#remove_EmployeePayroll_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
 </script>
 
 
