@@ -114,14 +114,14 @@
 			$("#email_settings_form").attr("disabled", "disabled");
 			$("#loading").attr('style', 'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$("#email_settings_form").addClass('button').val('Processing..');
-			$.post(atsUrl
+			$.post(sourceleadUrl
 					+ "/addEmailAccount?${_csrf.parameterName}=${_csrf.token}",
 					formData, function(data) {
 						if (data && data.response === "SUCCESS")
-							location.replace(atsUrl + "/mailBox/mails");
+							location.replace(sourceleadUrl + "/mailBox/mails");
 						else{
-							confirm(data.responseMessage);
-							 $("#loading").hide();
+						     alert(data.responseMessage);
+							 $("#loading").removeAttr('style');
 						}
 					});
 			return true;
