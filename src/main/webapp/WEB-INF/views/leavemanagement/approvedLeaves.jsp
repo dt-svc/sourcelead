@@ -26,7 +26,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
        </div>
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Approved</h2>
+        <h2>Approved Leaves</h2>
       </div>
 		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}"> Home</a>  &raquo;
 		<a href="${SourceLeadWeb_pmsUrl}/leaveManagementReports"> Leave Management</a> &raquo; Approved Leaves</div>
