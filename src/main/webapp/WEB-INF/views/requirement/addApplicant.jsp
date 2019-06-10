@@ -983,6 +983,21 @@ function discordApplicant(){
 	 $("input[name=CurrentCTC]").val('');
 	 $("input[name=Education]").val('');
 	 
+	 $("#expectedCTCRatePer").val('');
+	 $("#currentCTCRatePer").val('');
+	 
+	 $("#expectedCTCRatePer").removeAttr("data-validation");
+	 $("#expectedCTCRatePer").attr("data-validation-optional", "true");
+	 
+	 $("#currentCTCRatePer").removeAttr("data-validation");
+	 $("#currentCTCRatePer").attr("data-validation-optional", "true");
+	 
+	 $("input[name=ExpectedCTC]").removeAttr("data-validation");
+	 $("input[name=ExpectedCTC]").attr("data-validation-optional", "true");
+	 
+	 $("input[name=CurrentCTC]").removeAttr("data-validation");
+	 $("input[name=CurrentCTC]").attr("data-validation-optional", "true");
+	 
 	 $("#newUploadFile").val('');
 	 $("#uploadFile").val('');
 	
