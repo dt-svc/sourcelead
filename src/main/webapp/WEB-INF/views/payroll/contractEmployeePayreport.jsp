@@ -45,6 +45,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
           </div>
         </div>
       </div>
+      <div id="emptyPopup"></div>
       <div class="clearfix"></div>
       <div id="payrollReportLoading"></div>
       <div class="timesheet_out" id="contractEmployeeReportDiv" style="display: none;">
@@ -71,6 +72,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
   </section>
 
 <script>
+var table="";
 function resetForm(){
 	 $("#contractEmployeeReportDiv").hide();
 	 $("#payGroup").val('');
@@ -87,9 +89,13 @@ function exportPayrollRegisterReportExcel(){
 	var searchValue = $("#payrollRegisterSearch").val();
 	var freqStartDate = $('#fromDate').val();
 	var freqEndDate = $('#toDate').val();
-	if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
-		window.location.href = pmsUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=excel&searchValue="+searchValue;
-	}
+	 if (!table.data().count()) {
+		  popupDisplay();
+	 }else{
+		  if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
+			window.location.href = pmsUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=excel&searchValue="+searchValue;
+		  }
+	   }
 }
 </script>
 <script>
@@ -97,9 +103,13 @@ function exportPayrollRegisterReportPdf(){
 	var searchValue = $("#payrollRegisterSearch").val();
 	var freqStartDate = $('#fromDate').val();
 	var freqEndDate = $('#toDate').val();
-	if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
-		window.location.href = pmsUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=pdf&searchValue="+searchValue;
-	}
+	  if (!table.data().count()) {
+		  popupDisplay();
+	  }else{
+          if(freqStartDate != null && freqStartDate != '' && freqStartDate != 'undefined' && freqEndDate != null && freqEndDate != '' && freqEndDate != 'undefined'){
+	           window.location.href = pmsUrl+ "/getContractEmployeeReportExport?${_csrf.parameterName}=${_csrf.token}&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&exportType=pdf&searchValue="+searchValue;
+          }		 
+       }
 }
 </script>
 <script type="text/javascript">
@@ -146,7 +156,7 @@ function getContractEmployeeReportList(url){
 
 function conEmpReportPagination(url){
 	var colIndex = 0;
-    $('#conEmpReportTable').DataTable( { 
+	 table = $('#conEmpReportTable').DataTable( { 
     	"processing": true,
         "serverSide": true,
         "searching": false,
@@ -356,6 +366,28 @@ function resetData(){
  	getContractEmployeeReport();
  }
 </script>
+
+<script>
+  function popupDisplay(){
+		$(".project_inn_mask").remove();
+		var result = "";
+		result = result +" <div class='project_inn_mask'></div>";
+		result = result +" <div id='remove_ContractEmployeePayreport_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <div class='modal-body'><p id='popupMsg'></p></div>";
+		result = result +" <div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelContractEmployeePayreportPopup();'></div>";
+		result = result +" </div>";
+		$("#emptyPopup").empty().append(result);
+		$("#popupMsg").empty().append("No Records To Export in Contract Employee Payreport.");
+		$("#remove_ContractEmployeePayreport_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+  
+  function cancelContractEmployeePayreportPopup(){
+		$("#remove_ContractEmployeePayreport_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
+</script>
+
  -->
 
 <jsp:include page="../masterFooter.jsp" />
