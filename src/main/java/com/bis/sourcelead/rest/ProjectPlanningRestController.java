@@ -1232,6 +1232,7 @@ public class ProjectPlanningRestController {
 				orgRelations.setResponderLocationId(vendorOrgLocation);
 				orgRelations.setInitiatorType("Client");
 				orgRelations.setResponderType("Vendor");
+				orgRelations.setGenerateBill("Bulk");
 				orgRelations.setInitiatorLevel("Tier-5");
 				orgRelations.setResponderLevel("Tier-5");
 				orgRelations.setVendorRelationStatus("Sent");
