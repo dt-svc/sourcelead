@@ -3113,7 +3113,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				for(MarketplacePurchaseOrder purchase : marketplacePurchaseOrder){
 					purchaseOrderDto = new MarketplacePurchaseSalesDTO();
 					BeanUtils.copyProperties(purchase, purchaseOrderDto);
-					formattedDate =  commonUtil.dateStrFromOrgDateFormatter("dd-MM-yyyy", purchase.getOrderDate());
+					formattedDate =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), purchase.getOrderDate());
 					purchaseOrderDto.setOrderDate(formattedDate);
 					purchaseOrderDtoList.add(purchaseOrderDto);
 					}
