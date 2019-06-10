@@ -2151,36 +2151,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		
 		StringBuffer activitySummary = new StringBuffer();
 		HashSet<CandidateResumes> candidateResumesList = null;
-		if (null != candidateDTO.getExperienceYears()) {
-			if (candidateDTO.getExperienceYears().matches("[-a-zA-Z]+")) {
-				candidateDTO.setExperienceYears("0");
-				candidateDTO.setExperienceMonths("0");
-			}else{
-				 String exp[] = getExperienceYearsAndMonths(candidateDTO.getExperienceYears());
-				 if(exp.length >1){
-					 candidateDTO.setExperienceYears(exp[0]);
-						if(!exp[1].matches("[a-zA-Z]+")){
-							if(!"years".equalsIgnoreCase(exp[1])){
-							int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
-							candidateDTO.setExperienceMonths(String.valueOf(months));
-							}
-								
-						} 
-				 }else{
-					 if(exp[0].contains("years") || exp[0].contains("Years") ){
-						 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
-						 candidateDTO.setExperienceYears(String.valueOf(years));
-						 candidateDTO.setExperienceMonths("0");
-					 }else{
-						 candidateDTO.setExperienceYears("");
-						 candidateDTO.setExperienceMonths("");
-					 }
-					 
-				 }
-					
-					
-			}
-		}
 		
 		if (null != candidateDTO.getEmploymentType()) {
 			if(candidateDTO.getEmploymentType().equalsIgnoreCase("W2")) {
@@ -2275,6 +2245,24 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 						candidateDTO.setRateType("Hourly");
 				}
 			}
+		}
+		
+		if (null != candidateDTO.getCountry()) {
+			candidateDTO.setCountry(candidateDTO.getCountry());
+		}else {
+			candidateDTO.setCountry(orgLocations.getCountry());
+		}
+		
+		if (null != candidateDTO.getState()) {
+			candidateDTO.setState(candidateDTO.getState());
+		}
+		
+		if (null != candidateDTO.getCity()) {
+			candidateDTO.setCity(candidateDTO.getCity());
+		}
+		
+		if (null != candidateDTO.getLocation()) {
+			candidateDTO.setAddress(candidateDTO.getLocation());
 		}
 		
 		
@@ -3662,12 +3650,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		
 		OrgLocations orgLocation = orgLocationsDao.getOrgLocations(orgLocationId);
 		Workbook createExcelworkbook =  new XSSFWorkbook();
+
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
         
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		 StringBuilder excelSheet = new StringBuilder();
 		 Sheet createExcelsheet;		
-			 createExcelsheet = createExcelworkbook.createSheet(excelSheet.append("").append("Purchased Candidate").append(dateFormat.format(new Date())).toString());	 
+			 createExcelsheet = createExcelworkbook.createSheet(excelSheet.append("").append("Purchased Candidate").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), new Date())).toString());	 
 		
 		 
     	Row writeRow = null;
@@ -3701,9 +3690,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			else {
 				writeRow.createCell(0).setCellValue("--");
 			}
-			if(candidate.getOrderDate() !=null && !"".equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getOrderDate()))) {
-				
-				writeRow.createCell(1).setCellValue(candidate.getOrderDate());}
+			if(candidate.getOrderDate() !=null) {
+				writeRow.createCell(1).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getOrderDate()));
+				}
 			else {
 				writeRow.createCell(1).setCellValue("--");
 			}
