@@ -56,6 +56,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.AssociateJoineReportDTO;
+import com.bis.sourcelead.dto.CandidateConfigurationDTO;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -70,6 +71,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -739,14 +741,17 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 default:
 					 reqCoolingOffPeriodDays = "0";
 			 }*/
-			 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
-                 if(jsonObj.getString("needApplicantPermit").equals("Y")){
-                     requirementSubmission.setNeedApplicantPermit("Y");
-                     requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
-                 }
-             }else{
-                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+		
+		 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
+             if(jsonObj.getString("needApplicantPermit").equals("Y")){
+                 requirementSubmission.setNeedApplicantPermit("Y");
+                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
              }
+         }
+		else{
+                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+             }	 
+		
 			 /*requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
@@ -1633,7 +1638,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	
 	@Override
 	public Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,OrgLocations loginOrgLocation) throws Exception{
-		return requirementSubmissionDao.duplicateCandidateCountsByRequirementId(requirementId,user,loginOrgLocation);
+		CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(loginOrgLocation.getId());
+		return requirementSubmissionDao.duplicateCandidateCountsByRequirementId(requirementId,user,loginOrgLocation,candidateVerificationConfig);
 	}
 	
 	@Override
@@ -2190,10 +2196,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 RequirementSubmission submission = requirementSubmissionDao.getRequirementSubmissionById(Long.parseLong(submissionId[i]));
    		 RequirementSubmissionTemplateFields templateFields = requirementSubmissionTemplateFieldsDao.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submission.getId());
    		 RequirementSubmission clientSubmission = new RequirementSubmission();
+   		Requirement parentrequirement = null;
    		 
    		 if(requirement.getParentRequirement() != null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
    			 clientSubmission.setRequirement(requirement.getParentRequirement());
    			 clientSubmission.setOrgLocations(requirement.getParentRequirement().getOrgLocationId());
+   			parentrequirement = requirementDao.getRequirementByRequirementId(requirement.getParentRequirement().getId());
        	 }
    		 else if(requirement.getParentRequirement() == null && requirement.getIsClientJob() != null &&  requirement.getIsClientJob().equalsIgnoreCase("Y")){
    			// clientSubmission.setRequirement(requirement);
@@ -2296,9 +2304,15 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 default:
 					 reqCoolingOffPeriodDays = "0";
 			 }
-			 
-			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(submission.getCandidate().getEmail(), requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
-			 
+			 CandidateConfigurationDTO candidateConfigurationDTO = new CandidateConfigurationDTO();
+			 candidateConfigurationDTO.setEmail(submission.getCandidate().getEmail());
+			 candidateConfigurationDTO.setPhoneNumber(submission.getCandidate().getMobilePhone());
+			 candidateConfigurationDTO.setAadharNumber(submission.getCandidate().getAadharNumber()); 
+			 candidateConfigurationDTO.setPanNumber(submission.getCandidate().getPanNumber());
+			 candidateConfigurationDTO.setSsnNumber(submission.getCandidate().getSsnNumber());
+			 CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(parentrequirement.getOrgLocationId().getId());
+			// requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(submission.getCandidate().getEmail(), requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
+				requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByLocationID(candidateVerificationConfig,candidateConfigurationDTO, requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
 			 
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
@@ -3821,7 +3835,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("requirementId")));
 			 requirementSubmission.setRequirement(requirement);
 			 requirementSubmission.setSubmissionTemplateJsonString(requirement.getSubmissionTemplateJsonString());
-			 
 		 }
 		 
 		 if(jsonObj.has("candidateId") && !isNullOrEmpty(jsonObj.getString("candidateId"))){
@@ -5049,7 +5062,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	@Override
 	public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation) throws Exception
 	{
-		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation);
+		CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(orgLocation.getId());
+		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation,candidateVerificationConfig);
 	}
 	
 	@Override
