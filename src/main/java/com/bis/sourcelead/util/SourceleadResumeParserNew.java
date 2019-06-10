@@ -6,19 +6,24 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.stereotype.Component;
+
 
 @Component
 public class SourceleadResumeParserNew {
@@ -253,8 +258,48 @@ public class SourceleadResumeParserNew {
 	}
 	
 	public ResumeParserJsonUtil getResumeParserJsonUtil(String resumeData, String orgLocationDateFormat) {
+		
+		//splitting resume into multiple sections
+		List<Integer> globalIndex = new LinkedList<>();
+		List<Integer> objectiveIndex = getSectionIndex("OBJECTIVE", RegEx.OBJECTIVE, resumeData);
+		List<Integer> educationIndex = getSectionIndex("EDUCATION", RegEx.EDUCATION, resumeData);
+		List<Integer> experienceIndex = getSectionIndex("EXPERIENCE", RegEx.EXPERIENCE, resumeData);
+		List<Integer> skillsIndex = getSectionIndex("SKILLS", RegEx.SKILLS, resumeData);
+//		List<Integer> languageIndex = getSectionDetails(RegEx.LANGUAGE, parsedString);
+		List<Integer> interestIndex = getSectionIndex("INTERESTS", RegEx.INTERESTS, resumeData);
+		List<Integer> membershipIndex = getSectionIndex("MEMBERSHIPS", RegEx.MEMBERSHIP, resumeData);
+		List<Integer> extraCurricularIndex = getSectionIndex("EXTRA_CURRICULARS", RegEx.EXTRA_CURRICULARS, resumeData);
+//		List<Integer> designationIndex = getSectionDetails("DESIGNATION", RegEx.DESIGNATION_START, parsedString);
+
+		/*Adding and sorting all indexes to global index list*/			
+		globalIndex.addAll(objectiveIndex);
+		globalIndex.addAll(educationIndex);
+		globalIndex.addAll(experienceIndex);
+		globalIndex.addAll(skillsIndex);
+//		globalIndex.addAll(languageIndex);
+		globalIndex.addAll(interestIndex);
+		globalIndex.addAll(membershipIndex);
+		globalIndex.addAll(extraCurricularIndex);
+//		globalIndex.addAll(designationIndex);
+		Collections.sort(globalIndex);
+		globalIndex = globalIndex.stream().distinct().collect(Collectors.toList());
+		System.out.println("globalIndex : " + globalIndex.toString());
+		
+		/*String summary = getSectionDetails(resumeData, objectiveIndex, globalIndex, RegEx.OBJECTIVE);
+		System.out.println("summary " + summary);
+		
+		String education = getSectionDetails(resumeData, educationIndex, globalIndex, RegEx.EDUCATION);
+		System.out.println("education " + education);
+		
+		String exp = getSectionDetails(resumeData, experienceIndex, globalIndex, RegEx.EXPERIENCE);
+		System.out.println("exp" + exp);*/
+		
+		//getting values from resume string
 		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
 		try {
+			
+			jsonUtil.setSummary(getSectionDetails(resumeData, objectiveIndex, globalIndex, RegEx.OBJECTIVE));
+			
 			String name = getNameFromTextFile(resumeData);
 			if(name.split(" ").length > 2) {
 				jsonUtil.setFirstName(name.split(" ")[0]);
@@ -270,8 +315,12 @@ public class SourceleadResumeParserNew {
 			jsonUtil.setEmail(getEmailFromTextFile(resumeData));
 			
 			Set<String> phoneNumberSet = new LinkedHashSet<>();
+			String primaryMobile = getMobileNumber(resumeData);
 			phoneNumberSet.add(getMobileNumber(resumeData));
-			
+			if(!primaryMobile.isEmpty()) {
+				String resumeData1 = resumeData.substring(resumeData.indexOf(primaryMobile) + primaryMobile.length(), resumeData.length());
+				phoneNumberSet.add(getMobileNumber(resumeData1));
+			}
 			jsonUtil.setPhoneNumbers(phoneNumberSet);
 			jsonUtil.setSkills(getSkillsFromTextFile(resumeData));
 			
@@ -290,12 +339,32 @@ public class SourceleadResumeParserNew {
 			String eduPG = getKeywordsFromTextFile(resumeData, "education_pg.txt");
 			
 			Set<String> educationsSet = new LinkedHashSet<>();
-			educationsSet.add(eduSSC);
-			educationsSet.add(edueIntermediate);
-			educationsSet.add(eduUG);
-			educationsSet.add(eduPG);
+			if(!eduSSC.isEmpty()) {
+				educationsSet.add(eduSSC.split(",")[0]);
+			}
+			
+			if(!edueIntermediate.isEmpty()) {
+				educationsSet.add(edueIntermediate.split(",")[0]);
+			}
+			
+			if(!eduUG.isEmpty()) {
+				String[] eduUGArray = eduUG.split(",");
+				Set<String> set = new HashSet<>(Arrays.asList(eduUGArray));
+				educationsSet.addAll(set);
+			}
+			
+			if(!eduPG.isEmpty()) {
+				String[] eduPGArray = eduPG.split(",");
+				Set<String> set2 = new HashSet<>(Arrays.asList(eduPGArray));
+				educationsSet.addAll(set2);
+			}
+			
+			educationsSet.remove("been");
+			educationsSet.remove("BEEN");
+			educationsSet.remove("\\,");
 			
 			jsonUtil.setEducations(educationsSet);
+			System.out.println(educationsSet);
 			
 			//Address
 			/*String country = getKeywordsFromTextFile(resumeData, "countries.txt");
@@ -320,6 +389,62 @@ public class SourceleadResumeParserNew {
 			e.printStackTrace();
 		}
 		return jsonUtil;
+	}
+	
+	private static List<Integer> getSectionIndex(String name, RegEx regEx, String parsedString) {
+		List<Integer> indexesOfSection = new ArrayList<>();
+		for(String s : parsedString.split(System.getProperty("line.separator"))) {
+			Pattern pattern = Pattern.compile(regEx.toString(), Pattern.MULTILINE | Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(s);
+	        while (matcher.find()) {
+	        	indexesOfSection.add(matcher.start());
+	        }
+		}
+		System.out.println(name + " : " + indexesOfSection.toString());
+		return indexesOfSection;
+	}
+	
+	private static String getSectionDetails(String parsedString, List<Integer> sectionIndex, List<Integer> globalIndex, RegEx regEx) {
+		String details = "";
+		try {
+//			parsedString.substring(1790)
+			for(int i = 0; i < globalIndex.size() - 1; i++) {
+				for(Integer index : sectionIndex) {
+					if(globalIndex.get(i) == index) {
+						int start = index;
+//						int end = i < globalIndex.size() ? globalIndex.get(i + 1) : parsedString.length();
+						int end = sectionIndex.size() > 1 ? sectionIndex.get(1) : parsedString.length();
+						String subStr = parsedString.substring(start, end);
+						
+						String eliminateWord = "";
+						Pattern p = Pattern.compile(regEx.toString(), Pattern.CASE_INSENSITIVE);
+						Matcher matcher = p.matcher(subStr);
+						if(matcher.find()) {
+							eliminateWord = matcher.group(0); 
+						}
+						subStr = subStr.replaceAll(eliminateWord, "");
+						
+						String[] str = subStr.split("\n\n");
+						int lineCount = 0;
+						for(String s : str) {
+							if(lineCount < 2) {
+								if(!s.isEmpty()) {
+									details += s;
+									lineCount++;
+								}
+							} else {
+								break;
+							}
+						}
+						
+						return details.replaceAll("[^a-zA-Z0-9\\s]", "").trim();
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return details;
 	}
 	
 	/**
@@ -535,7 +660,7 @@ public class SourceleadResumeParserNew {
 			while (matcher.find()) {
 				keywordsSet.add(matcher.group(1).toLowerCase());
 			}
-			result = String.join(", ", keywordsSet);
+			result = String.join(",", keywordsSet);
 			result = result.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");
 			
 		} catch (Exception e) {
