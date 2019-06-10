@@ -83,6 +83,10 @@ function exportTimeSheetToPdfOrExcel(exportType){
 		if(project!= null && project !='' && project !='undefined'){
 			project = $('input[id=project]:checked').val();
 		}
+	    var searchValue = $('#dataTableSearchTimesheets').val();
+	    if(searchValue == null ||  searchValue =='' || searchValue =='undefined'){
+	    	searchValue = '';
+         }
 		var weekFrequency = $('input[id=weekFrequency]:checked').val();
 		if(weekFrequency != null && weekFrequency !='undefined'){
 		var date = weekFrequency.split("To");
@@ -93,7 +97,7 @@ function exportTimeSheetToPdfOrExcel(exportType){
 				+ "/getExportTimeSheetForApprovalMechanizm?&startDate="
 				+ startDate + "&endDate=" + endDate + "&client=" + client+ "&project=" + project
 				+ "&stage=" + stage + "&timesheetFrequency="
-				+ timesheetFrequency +"&frequencyMonth="+frequencyMonth+"&weekFrequency="+weekFrequency+"&exportType=" + exportType;
+				+ timesheetFrequency +"&frequencyMonth="+frequencyMonth+"&weekFrequency="+weekFrequency+"&exportType=" + exportType+"&searchValue="+searchValue;
 	}
 </script>
 
@@ -149,6 +153,11 @@ function displayAcceptRejectButtonOnHedder() {
           var weekFrequency = $('input[id=weekFrequency]:checked').val();
           var client = $('input[id=client]:checked').val();
           var project = $('input[id=project]:checked').val();
+          var searchValue = $('#dataTableSearchTimesheets').val();
+  	   	  if(searchValue == null ||  searchValue =='' || searchValue =='undefined'){
+  	    	searchValue = '';
+           }
+  	    
           if(frequencyMonth == null || frequencyMonth == '' || frequencyMonth == 'undefined')
        	      frequencyMonth = '';
 	       if(timesheetFrequency == null || timesheetFrequency == '' || timesheetFrequency == 'undefined')

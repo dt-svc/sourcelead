@@ -1002,13 +1002,23 @@ public class LeaveManagementRestController {
 	public @ResponseBody ResponseList<HolidayDTO> getHolidaysList(
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "reportYear", required = false) String reportYear,
-			@RequestParam(value = "shiftIds", required = false) String shiftIds, HttpServletRequest request)
+			@RequestParam(value = "shiftIds", required = false) String shiftIds, 
+			@RequestParam(value = "fromType", required = false) String fromType, HttpServletRequest request)
 			throws Exception {
 		ResponseList<HolidayDTO> responseList = new ResponseList<>();
 		try {
 			List<HolidayDTO> holiodaysDTOList = new ArrayList<>();
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
+			
+			Long userRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request,
+					"userRoleId");
+			UserRole userRole = userRoleService.getUserRoleById(userRoleId);
+			
+			if(Constants.Dashboard.equalsIgnoreCase(fromType)) {
+				shiftIds = String.valueOf(userRole.getShift().getId());
+			}
+			
 			if (loginOrgLocation != null) {
 
 				

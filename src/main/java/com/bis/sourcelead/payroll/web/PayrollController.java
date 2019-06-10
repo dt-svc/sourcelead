@@ -371,7 +371,7 @@ public class PayrollController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/indPayrollPaySlipView")
+	@RequestMapping(value = "/indPayrollPaySlipView") 
 	public ModelAndView indPayrollPaySlipView(HttpServletRequest request,@RequestParam(value="empPayrollUUID", required=false)String empPayrollUUID) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
@@ -439,15 +439,22 @@ public class PayrollController {
 			model.addObject("indEmployeePayroll",  indEmployeePayroll.getObject());
 			
 			//payslip Table data
-		   		HashSet<IndEmployeePayroll> payrollList = new HashSet<>();
+ 		   		HashSet<IndEmployeePayroll> payrollList = new HashSet<>();
 		   		payrollList.add(indEmployeePayroll.getObject());
 		   		INDPayrollDTO indPayrollDTO = iNDPayrollCommonUtil.getINDPayrollDTOFromIndEmployeePayroll(payrollList, indEmployeePayroll.getObject().getIndPaysheetFrequency().getOrgLocation()).iterator().next();
 		   		List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList = indPayrollDTO.getPayHeadHistoryDTOList();
-			
+	 		
 		   	if(associatePayrollPayheadDTOList != null && !associatePayrollPayheadDTOList.isEmpty()) {
-				List<AssociatePayrollPayheadHistoryDTO> earningList = associatePayrollPayheadDTOList.stream().filter(app -> (app.getPayrollPayheadType().equals("Earnings") && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0))).collect(Collectors.toList());
+				List<AssociatePayrollPayheadHistoryDTO> earningList = associatePayrollPayheadDTOList
+						.stream()
+						.filter(app -> (app.getPayrollPayheadType().equals("Earnings") && app.getPaySlip().equals("Y")  && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0)))
+						.collect(Collectors.toList());				
 				model.addObject("earningPayhead", earningList);
-				List<AssociatePayrollPayheadHistoryDTO> decuctionList =  associatePayrollPayheadDTOList.stream().filter(app -> app.getPayrollPayheadType().equals("Deduction") && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0)).collect(Collectors.toList());
+				
+				List<AssociatePayrollPayheadHistoryDTO> decuctionList =  associatePayrollPayheadDTOList
+						.stream()
+						.filter(app -> app.getPayrollPayheadType().equals("Deduction")  && app.getPaySlip().equals("Y") && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0))
+						.collect(Collectors.toList());
 				model.addObject("decuctionPayhead", decuctionList);
 			 }
 		   	model.addObject("indPayrollDTO", indPayrollDTO);

@@ -17,12 +17,6 @@
 			});
        </script> 
        
-<style>
-.project_details.project_detailsHei {
-	min-height: 675px;
-}
-</style>
-
 <div id="projectDetailsLoading"></div>
        
        

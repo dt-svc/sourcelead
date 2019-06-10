@@ -157,7 +157,7 @@ $('#method').on('change', function() {
 		  $("#formula").attr("name", "formula");
 		  $("#payheadsFormulaGroup").hide();
 		  $("#formulaTextareaId").removeAttr("name");
-		  $('#formula').attr("data-validation", "validate_Space validate_length length1-3 validate_int");
+		  $('#formula').attr("data-validation", "validate_Space validate_length length1-5 validate_float");
 		  
 	  }else if($('#method :selected').text() == '% of Payheads'){
 		  $("#formula").removeAttr("name");

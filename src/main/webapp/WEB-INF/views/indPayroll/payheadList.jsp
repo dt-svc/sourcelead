@@ -193,9 +193,10 @@ function payheadListPagination(url,pmsUrl){
 	            	    if(opt.active=='NO'){
 	            	    	checked = '';
 	            	    }
+	            	    
 	            	    result = result +"<td>";
 	            	    result = result +"<div class='tblminwidth-50 mt10'>";
-	            	    result = result +"<a  class='pull-left' href='<c:url value='/app/payrollPayhead?uuid="+opt.uuid+"'/>'><span title='Edit Payhead'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
+	            	    result = result +"<a  class='pull-left' href='<c:url value='${SourceLeadWeb_pmsUrl}/payrollPayhead?uuid="+opt.uuid+"'/>'><span title='Edit Payhead'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
 	            	    /* result = result +'<a><span title="Delete Payhead"><i class="glyphicon glyphicon-trash" onClick="deletePayhead(\''+opt.uuid+'\')";></i></span></a>'; */
 	            	    
 	            	    result = result +"<div class='toggle-button pull-left ml'>";

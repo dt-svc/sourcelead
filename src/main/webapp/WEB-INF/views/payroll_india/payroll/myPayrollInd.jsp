@@ -1,7 +1,7 @@
 <jsp:include page="../../masterHeader.jsp" />
 <jsp:include page="../../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<script src="/resources/js/tax/my_payroll.js" type="text/javascript"></script>
+<script src="/pms/resources/js/tax/my_payroll.js" type="text/javascript"></script>
 
 <section class="content-wraper contentWraper">
   <section class="content-header clearfix">

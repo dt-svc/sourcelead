@@ -7,51 +7,6 @@
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
-<style type="text/css">
-.side-bar-active .subMenu{
-    display: none;
-}
-.side-bar-active .fa-fw {
-  position: absolute !important; right: 0 !important;
-}
-.countShow {
-display: none;  border: none; min-width: 10px; text-align: center; cursor: pointer; max-width: 25px; 
-}
-.remove_user_pop.remove_user_pop_a {
-top:20% !important;
-left: 115px !important;
-}
-.prRight.prRight_new {
-    right: 280px; top: 40px;
-}
-.edit_member_pop {
-	top:12% !important; left: 35%; margin: 0px auto; z-index: 15500; width: 520px;
-	position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px;
-}
-.edit_member_pop .footerBtns input {
-    width: 50%; border: none; height: 30px; font-size: 14px; font-weight: 500; color: #FFF; background-color: #ff4b4b;
-}
-.edit_member_pop .footerBtns input.u_can_color {
-    background-color: #375d81;
-}
-.edit_member_pop h4 {
-background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-size: 15px;
-}
-
-.member_rate_history_pop {
-	top:30% !important; left: 25%; margin: 0px auto; z-index: 15500; width: 850px;
-	position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px;
-}
-</style>
- <style type="text/css">
- table#assignEmployeePagination tr th {
- width:auto !important; height: auto; line-height: auto; vertical-align: middle; text-align:center;
- }
- #assignEmployeePagination_wrapper .dataTables_filter {
- 	top:75px !important;
- }
- </style>
- 
       <!-- Modal content Assign Team-->
            <div role="dialog" id="assignTeam" class="modal fade modalAssignTeam">
              <div class="modal-dialog modal-lg">
