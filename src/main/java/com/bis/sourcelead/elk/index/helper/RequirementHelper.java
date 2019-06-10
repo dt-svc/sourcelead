@@ -77,7 +77,12 @@ public class RequirementHelper {
 			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
 			requirementIndex.setUrl(requirement.getUrl());
+			/*if(requirement.getWorkflowId()!= null) {
 			requirementIndex.setWorkflowId(requirement.getWorkflowId().getId());
+			}*/
+			//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
+			// below lines is commented for to move in next release build.
+			//requirementIndex.setWorkflowId(requirement.getWorkflowId().getId());
 			requirementIndex.setGeneratedId(requirement.getGeneratedId());
 			if(requirement.getIsClientJob() !=null){
 				requirementIndex.setIsClientJob(requirement.getIsClientJob());
