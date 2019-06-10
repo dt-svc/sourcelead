@@ -2838,7 +2838,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
  		headers.add("Employee Name");
  		headers.add("Employee Type");
  		headers.add("Department");
- 		if (topleave == null) 
+ 		if (topleave != null) 
  		headers.add("Role");
  		for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
  		{
