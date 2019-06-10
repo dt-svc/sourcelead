@@ -280,7 +280,7 @@ function getUsersSearchResult(searchValue){
       <div class="positionRelative reportHead clearfix">
 <!--       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
               <span class="pull-left refreIcon mb10">
-				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a>
+				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a>
 			  </span>
       <ul class="pull-right list-unstyled list-inline">
         <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
@@ -433,54 +433,69 @@ function myRolesFunction() {
 function myClientsFunction() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("myClientsInput");
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("myClientsUL");
-    li = ul.getElementsByTagName("li");
-    for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("label")[0];
-        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-
-        }
+    if(input != null){
+    	filter = input.value.toUpperCase();
     }
+    ul = document.getElementById("myClientsUL");
+    if(ul != null){
+    	 li = ul.getElementsByTagName("li");
+    	    for (i = 0; i < li.length; i++) {
+    	        a = li[i].getElementsByTagName("label")[0];
+    	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+    	            li[i].style.display = "";
+    	        } else {
+    	            li[i].style.display = "none";
+
+    	        }
+    	    }
+    }
+   
 }
 
 
 function myManagersFunction() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("myManagersInput");
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("myManagersUL");
-    li = ul.getElementsByTagName("li");
-    for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("label")[0];
-        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-
-        }
+    if(input != null){
+    	filter = input.value.toUpperCase();
     }
+    ul = document.getElementById("myManagersUL");
+    if(ul != null){
+    	 li = ul.getElementsByTagName("li");
+    	    for (i = 0; i < li.length; i++) {
+    	        a = li[i].getElementsByTagName("label")[0];
+    	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+    	            li[i].style.display = "";
+    	        } else {
+    	            li[i].style.display = "none";
+
+    	        }
+    	    }
+    }
+   
 }
 
 
 function myTeamsFunction() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("myTeamsInput");
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("myTeamsUL");
-    li = ul.getElementsByTagName("li");
-    for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("label")[0];
-        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-
-        }
+    if(input != null){
+    	filter = input.value.toUpperCase();
     }
+    ul = document.getElementById("myTeamsUL");
+    if(ul != null){
+    	 li = ul.getElementsByTagName("li");
+    	    for (i = 0; i < li.length; i++) {
+    	        a = li[i].getElementsByTagName("label")[0];
+    	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+    	            li[i].style.display = "";
+    	        } else {
+    	            li[i].style.display = "none";
+
+    	        }
+    	    }
+    }
+   
 }
 
 
@@ -500,16 +515,12 @@ function myDepartmentFunction() {
         }
     }
 }
-function refreshPage(){
-	location.reload(); 
-}
+
 $(document).keyup(function(e) {
 	  if (e.keyCode === 27) {
 		  closePop();
 	  }
 	});
-	
-
 
 </script>
 
@@ -528,8 +539,6 @@ function resetFilter(){
 	$("#myClientsInput").val('');
 	$("#myTeamsInput").val('');
 	$("#myDepartmentInput").val('');
-	myDepartmentFunction();
-	
 	
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
@@ -538,6 +547,7 @@ function resetFilter(){
 	myRolesFunction();
 	myClientsFunction();
 	myTeamsFunction();
+	myDepartmentFunction();
 	getDynamciUserList();
 }
 </script>
