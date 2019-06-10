@@ -268,13 +268,7 @@
 					</div>
 				</sec:authorize>
 				
-				<div class="col-md-2 reportNewCta">
-					<a href="${SourceLeadWeb_sourceleadUrl}/clockInOutConfig">
-							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
-					<div class="clearfix text-center">
-						<h4>Clock In - Clock Out</h4>
-					</div>
-				</div>
+				
 				
 
 				<%-- <div class="col-md-2 reportNewCta">
@@ -287,7 +281,6 @@
 						</div>
 					</a>
 				</div> --%>
-				
 				
 				<!-- Candidate Configuration -->
 				 <div class="col-md-2 reportNewCta"> 
@@ -303,6 +296,14 @@
 	              <h4>Candidate</h4>
 	            </div>
 	          </div>
+				
+				<div class="col-md-2 reportNewCta">
+					<a href="${SourceLeadWeb_sourceleadUrl}/clockInOutConfig">
+							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+					<div class="clearfix text-center">
+						<h4>Clock In - Clock Out</h4>
+					</div>
+				</div>
 				
 				 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 					<div class="col-md-2 reportNewCta">
