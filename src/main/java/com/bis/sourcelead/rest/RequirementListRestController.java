@@ -931,7 +931,7 @@ public class RequirementListRestController {
 										requirementSubmission.setJoinedDateStr(commonUtil.dateStrFromOrgDateFormatter(requirementSubmission.getOrgLocations().getDateFormat(), requirementSubmission.getJoinedDate()));
 									}
 									//submissionList.add(requirementSubmission);
-								requirementSubmission.setRequirementCurrentStatus(requirementSubmission.getRequirement().getRequirementSubmissionStatus());
+								//requirementSubmission.setRequirementCurrentStatus(requirementSubmission.getRequirement().getRequirementSubmissionStatus());
 							}
 						}
 					} else {

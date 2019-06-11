@@ -952,7 +952,7 @@ function getCustomerInterviewsList(submissionId,requirementId){
 	                    		 location = report.location;
 	                    	 }
 	                    	 
-	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
+	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
 	                    	 result = result + '<h2>Interview: <span>'+interviewTypeHeader+' '+report.dateOfInterviewStr+' '+report.startTimeStr+' </span></h2>';
 	                    	 result = result + '<div class="content clearfix">';
 	                    	 result = result + '<div class="interview-type">';
@@ -1105,7 +1105,7 @@ function getOfferDetails(submissionId){
 	                    	 result = result + '<div class="clearfix">';
 	   					     result = result + '<div class="content clearfix" style="display: block;">';
 	   					  	 result = result + '<div id="offerLoading"></div>';
-	   					     result = result + '<div id="accordion-sl" class="release-jobs">';
+	   					     result = result + '<div id="accordion-sl" class="release-jobs positionRelative">';
 	   					     if(report.templateUUID != null && report.templateUUID != "" && report.templateUUID != "undefined"){
 		   					  	 result = result + '<i class="fa fa-eye pull-right viewEyeicon" style="color:#fff !important;" onclick="viewOfferLetter(\''+report.offerUUID+'\');"></i>';	
 	   					     }
