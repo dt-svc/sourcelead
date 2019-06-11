@@ -244,7 +244,6 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			url: vmsUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
 			success :function(json) {
 				var output = "";
-				output = output + "<option value=''>Select Client</option>";
 				for (var i=0; i<json.data.length; i++) {
 					var opt = json.data[i];
 					if(orgRelationId == opt.id){
