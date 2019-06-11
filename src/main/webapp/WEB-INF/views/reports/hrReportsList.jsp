@@ -71,7 +71,7 @@
 	</a>
 	</sec:authorize>
 	
-	<a href="${${SourceLeadWeb_sourceleadUrl}/pendingForExpenseApprovalReport">
+	<a href="${SourceLeadWeb_sourceleadUrl}/pendingForExpenseApprovalReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-square-o"></i></span>
 		<div class="repDashCtaWrap">
