@@ -4,6 +4,8 @@ var iconSpan = "";
 var editAndDeleteAnchor = "";
 var lastStage = "";
 var commentReq = "";
+var questionnaireId = null;
+var questionnaireName = null;
 
 function RequirementWorkflow(){
 	
@@ -123,6 +125,7 @@ function RequirementWorkflow(){
 	  	result = result +"<thead>";
 	  	result = result +"<tr>"
 	  	result = result +"<th>Name</th>";
+	  	result = result +"<th>Description</th>";
 	  	result = result +"<th>Stages</th>";
 	  	result = result +"<th>Status</th>";
 	  	result = result +"<th>Action</th>";  
@@ -148,6 +151,7 @@ function RequirementWorkflow(){
 		        }),
 		        "columns": [
 		        	{ "data": "workFlowName" },
+		        	{ "data": "description" },
 		        	{ "data": "noOfStages" },
 		        	{ "data": "status" }
 		        ],
@@ -163,13 +167,23 @@ function RequirementWorkflow(){
 	  	             	}
 	  	             	 return result;
 		    	  	}
-		        },{
-		    	  	"targets": colIndex++,
+		        },{"targets": colIndex++,
+		    	  	"data": "description",
+		    	  	"render": function(data, type, workflow, meta) {
+		    	  		var result = "";
+	              		if(workflow.description != null && workflow.description != '' && workflow.description != "undefined"){
+	              			result = result +"<div class='tbldata-dotdot-vsm'><span title='"+workflow.description+"'>"+workflow.description+"</span></div>";
+	  	              	}else{
+	  	            	  		result = result +"<div>---</div>";
+	  	             	}
+	  	             	 return result;
+		    	  	}
+		        },{"targets": colIndex++,
 		    	  	"data": "noOfStages",
 		    	  	"render": function(data, type, workflow, meta) {
 		    	  		var result = "";
 		    	  		if(workflow.noOfStages != null && workflow.noOfStages != '' && workflow.noOfStages != "undefined"){
-	              			result = result +"<div class='tbldata-dotdot-vsm'>"+workflow.noOfStages+"</div>";
+	              			result = result +"<div class='tbldata-dotdot-vsm'><span title='"+workflow.noOfStages+"'>"+workflow.noOfStages+"</span></div>";
 	  	              	}else{
 	  	            	  		result = result +"<div>---</div>";
 	  	             	}
@@ -182,10 +196,10 @@ function RequirementWorkflow(){
 		    	  		var result = "";
 		    	  		if(workflow.status != null && workflow.status !== '' && workflow.status != "undefined"){
 		    	  			if(workflow.status == 1){
-		    	  				result = result +"<div class='tbldata-dotdot-vsm'>Active</div>";
+		    	  				result = result +"<div class='tbldata-dotdot-vsm'title = 'Active'>Active</div>";
 		    	  			}	
 		    	  			else{
-		    	  				result = result +"<div class='tbldata-dotdot-vsm'>In-Active</div>";
+		    	  				result = result +"<div class='tbldata-dotdot-vsm' title = 'In-Active'>In-Active</div>";
 		    	  			}	
 		    	  		}else{
 	  	            	  		  result = result +"<div>---</div>"; 
@@ -229,7 +243,7 @@ function RequirementWorkflow(){
 
 	this.checkDefaultWorkflow = function(configureType, uuid, workFlowName){
 		var result = "";
-		result = result +"<div class='tbldata-dotdot-200'><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")' title='view'>"+workFlowName+"</a></div>";
+		result = result +"<div class='tbldata-dotdot-200'><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")' title="+workFlowName+">"+workFlowName+"</a></div>";
 		return result;
 	}
 
@@ -530,6 +544,11 @@ function RequirementWorkflow(){
 					  
 				}
 				
+				this.validateAndSaveStage = function(workflowUuid){
+					$('#addTaskForm').remove();
+					requirementWorkflow.saveRequirementWorkflowStage(workflowUuid);
+				}
+				
 				this.saveRequirementWorkflowStage = function(workflowUuid){
 					 var validationSettings = {
 					           errorMessagePosition: 'element',
@@ -542,16 +561,23 @@ function RequirementWorkflow(){
 					var stageUuid = $("#workflowStageUuid").val();
 					var qTemplateId = $("#questionnaireTemplateId").val();
 					
+					var requiredStatsList = $('input[name=list_required]:checked').val();
+					var chosenColumns = [];
+					$('#chosecolumnsID input:checked').each(function() {
+						chosenColumns.push($(this).val());
+					});
+					
+					var chosenColumnJson = JSON.stringify(chosenColumns);
+					
 					 var previousStageUuid = $("#previousStageUuid").val();
 					
 					
-					if(previousStageUuid == null || previousStageUuid == "Select"){
-						$('#previousStageUuid').focus();
-						$("#previousStagelabel").html("Previous Stage<span class='text-danger paddingLeft'>&nbsp;*</span>");
-						return false;
+					/*if(previousStageUuid == null || previousStageUuid == "Select"){
+					
+						$("#previousStage").show();
 					}if(previousStageUuid != null){
-						$('#previousStageUuid').focusout();
-					}
+						$("#previousStage").hide();
+					}*/
 					 
 					if(qTemplateId == "Select"){
 						qTemplateId = "";
@@ -564,6 +590,7 @@ function RequirementWorkflow(){
 
 					
 					 if ($('#addStageForm').validate(false, validationSettings)) {
+						 if ($('#stagesForm').validate(false, validationSettings)) {
 						  var formData = getFormData("addStageForm");
 						   $("#saveStageButton").attr("disabled", "disabled");
 				        $("#saveStageButton").addClass('button').val('Processing..'); 
@@ -572,7 +599,7 @@ function RequirementWorkflow(){
 						 data : formData,
 						url : sourceleadUrl + "/saveRequirementWorkflowStage?description="+description+"&uuid="+stageUuid+
 								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+
-								"&lastStage="+lastStage+"&commentRequired="+commentReq,
+								"&lastStage="+lastStage+"&commentRequired="+commentReq+"&requiredStatsList="+requiredStatsList+"&chosenColumnJson="+chosenColumnJson,
 						success : function(dataList) {
 							if (dataList.response === "AWKWARD") {
 				      	    location.href = "/errorPage";
@@ -592,11 +619,11 @@ function RequirementWorkflow(){
 									
 						}
 						});
-					 }
+					 }}
 				}
 
-				this.getNextWorkflowStage = function(select, worflowUuid){
-					
+				this.getNextWorkflowStage = function(select, worflowUuid, formId){
+					$("#"+formId).find('p.jquery_form_error_message').remove();
 					var currentStageUuid = $("#currentStageUuid").val();
 					var stageUuid = select.value;
 						$.ajax({
@@ -604,7 +631,7 @@ function RequirementWorkflow(){
 							url : sourceleadUrl + "/getRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+worflowUuid+"&currentStageUuid="+currentStageUuid,
 							success : function(dataList){
 								var result = "";
-								 result = result + "<select class='sel form-control' id = 'workflowStageUuid'>";
+								 result = result + "<select class='sel form-control' id = 'workflowStageUuid' name = 'workflowStageUuid'>";
 								if(dataList != null && dataList.length > 1){
 									lastStage = "";
 									for(var i=0 ; i<dataList.length;i++){
@@ -643,7 +670,11 @@ function RequirementWorkflow(){
 							result = result + "<option selected>Select</option>";
 							if(dataList != null && dataList.length > 0){
 								 for(var i = 0 ; i < dataList.length; i++){
-									 result = result + "<option value="+dataList[i].id+">"+dataList[i].name+"</option>";
+									 if(questionnaireId != null && dataList[i].id == questionnaireId){
+										 result = result + "<option selected value="+questionnaireId+">"+questionnaireName+"</option>";
+									 }else{
+										 result = result + "<option value="+dataList[i].id+">"+dataList[i].name+"</option>";
+								 }
 								 }
 							}
 							result = result + "</select>";
@@ -671,62 +702,78 @@ function RequirementWorkflow(){
 								type : "GET",
 								url : sourceleadUrl + "/getAllActiveUsersList",
 								success : function(dataList){
+									 $("#saveStageButton").attr("disabled", "disabled");
 									var result = "";
-									result = result + "<select class='sel form-control' id = 'assignToUserId'>";
-									result = result + "<option selected>Select</option>";
+									result = result + "<select class='sel form-control' name = 'assignToUserId' id = 'assignToUserId' field-name='Assign To' data-validation='required'>";
+									result = result + "<option selected='' value=''>Select</option>";
 									if(dataList != null && dataList.length > 0){
 										 for(var i = 0 ; i < dataList.length; i++){
 											 result = result + "<option value="+dataList[i].userId+">"+dataList[i].userName+"</option>";
 										 }
 									}
 									result = result + "</select>";
-									$("#dynamicUserDiv").empty().append(result);
+									$("#assignToUserId").empty().append(result);
 								}
 								});
 						}
 					 
-					 this.deleteTask = function(){
+					 this.deleteTask = function(formId){
+						 $("#"+formId).find('p.jquery_form_error_message').remove();
 							$("#createNewtask").hide();
 							$("#workFlowTaskName").val("");
 							$("#priority").val("");
 							$("#summerNote").val("");
+							$("#saveStageButton").removeAttr("disabled");
 						} 
 
-				 this.saveWorkflowTask = function(worflowUuid){
-					var workFlowTaskName = $("#workFlowTaskName").val();
-					var priority = $("#workflowTaskPriority").val();
-					var taskDescription = $("#taskDescription").val();
-					var assignToUserId = $("#assignToUserId").val();
-					var currentStageUuid = $("#currentStageUuid").val();
+					 this.saveWorkflowTask = function(worflowUuid){
+						 var validationSettings = {
+						           errorMessagePosition: 'element',
+						           borderColorOnError: '',
+						           scrollToTopOnError: true,
+						           dateFormat: 'yyyy/mm/dd'
+						       };
+	/*					var workFlowTaskName = $("#workFlowTaskName").val();
+						var priority = $("#workflowTaskPriority").val();
+						var taskDescription = $("#workFlowTaskDescription").val();
+						var assignToUserId = $("#assignToUserId").val();
+	*/					var currentStageUuid = $("#currentStageUuid").val();
 
-					var stageName = $("#stageName").val();
-					var description = $("textarea#stageDescription").val();
-					
-					if(currentStageUuid == ""){
-						currentStageUuid = "Default";
-					}
-					$.ajax({
-						type : "POST",
-						url : sourceleadUrl + "/saveWorkflowTask?requirementWorkFlowUuid="+worflowUuid+"&workFlowTaskName="+workFlowTaskName+"&priority="+priority
-								+"&workFlowTaskDescription="+taskDescription+"&assignToUserId="+assignToUserId+"&currentStageUuid="+currentStageUuid
-								+"&stageName="+stageName+"&description="+description,
-						success : function(dataList){
-							$("#createNewtask").hide();
-							if(dataList.response != null){
-								requirementWorkflow.getRequirementWorkflowTasks(dataList.response);
-								
-								$("#currentStageUuid").val(dataList.response);
-							
-							}if(dataList.response == null){
-								showError("Operation failed, please try again");
-							}
-							 $("#workFlowTaskName").val("");
-								$("#priority").val("");
-								$("#taskDescription").val("");
-								$("#assignToUserId").val("");
+						var stageName = $("#stageName").val();
+						var description = $("textarea#stageDescription").val();
+						
+						if(currentStageUuid == ""){
+							currentStageUuid = "Default";
 						}
-					});
-				} 
+						
+						if ($('#addTaskForm').validate(false, validationSettings)) {
+							  var formData = getFormData("addTaskForm");
+						$.ajax({
+							type : "POST",
+							data : formData,
+							/*url : sourceleadUrl + "/saveWorkflowTask?requirementWorkFlowUuid="+worflowUuid+"&workFlowTaskName="+workFlowTaskName+"&priority="+priority
+									+"&workFlowTaskDescription="+taskDescription+"&assignToUserId="+assignToUserId+"&currentStageUuid="+currentStageUuid
+									+"&stageName="+stageName+"&description="+description,*/
+							url : sourceleadUrl + "/saveWorkflowTask?requirementWorkFlowUuid="+worflowUuid+"&currentStageUuid="+currentStageUuid
+							+"&stageName="+stageName+"&description="+description,
+							success : function(dataList){
+								$("#createNewtask").hide();
+								if(dataList.response != null){
+									requirementWorkflow.getRequirementWorkflowTasks(dataList.response);
+									
+									$("#currentStageUuid").val(dataList.response);
+									$("#saveStageButton").removeAttr("disabled");
+								}if(dataList.response == null){
+									showError("Operation failed, please try again");
+								}
+								 /*$("#workFlowTaskName").val("");
+									$("#priority").val("");
+									$("#workFlowTaskDescription").val("");
+									$("#assignToUserId").val("");*/
+							}
+						});
+						}
+					} 
 	
 				 this.getWorkflowQuestionnnaireList = function(){
 				 	$("#questionnaireList").empty();
@@ -772,7 +819,7 @@ function RequirementWorkflow(){
 				 	    	  	"render": function(data, type, workflow, meta) {
 				 	    	  		var result = "";
 				               		if(workflow.name != null && workflow.name != '' && workflow.name != "undefined"){
-				               			result = result +"<div class ='tbldata-dotdot-me'>"+workflow.name+"</div>";
+				               			result = result +"<div class ='tbldata-dotdot-200'><span title='"+workflow.name+"'>"+workflow.name+"</span></div>";
 				   	              	}else{
 				   	            	  		result = result +"<div>---</div>";
 				   	             	}
@@ -784,7 +831,7 @@ function RequirementWorkflow(){
 				 	    	  	"render": function(data, type, workflow, meta) {
 				 	    	  		var result = "";
 				 	    	  		if(workflow.description != null && workflow.description != '' && workflow.description != "undefined"){
-				               			result = result +"<div class='tbldata-dotdot-verybig'>"+workflow.description+"</div>";
+				               			result = result +"<div class='tbldata-dotdot-200'><span title='"+workflow.description+"'>"+workflow.description+"</span></div>";
 				   	              	}else{
 				   	            	  		result = result +"<div>---</div>";
 				   	             	}
@@ -797,7 +844,7 @@ function RequirementWorkflow(){
 				 	    	  		var result = "";
 				 	    	  		var workflowStatus;
 				 	    	  		if(workflow.createdBy != null && workflow.createdBy != '' && workflow.createdBy != "undefined"){
-				               			result = result +"<div class='tbldata-dotdot-vsm'>"+workflow.createdBy+"</div>";
+				               			result = result +"<div class='tbldata-dotdot-vsm'><span title='"+workflow.createdBy+"'>"+workflow.createdBy+"</span></div>";
 				   	              	}else{
 				   	            	  		result = result +"<div>---</div>";
 				   	             	}
@@ -950,4 +997,23 @@ function RequirementWorkflow(){
 					 })
 					 }
 				 }
+				 
+				 this.selectChosenColumns = function(){
+					 $("ul#chosenColumnList > li input:checkbox").prop("checked",true);
+				 }
+				 
+				 this.resetChosenColumns = function(){
+					 $("ul#chosenColumnList > li input:checkbox").prop("checked",false);
+					$("#applicantname").prop("checked", true);
+					$("#applicantmailid").prop("checked", true);
+					$("#applicantphonenumber").prop("checked", true);
+				 }
+				 
+				 this.prepareChosenColumnList = function(chosenColumns){
+					var chosenColumnArr = chosenColumns.split(',');
+					for(var i = 0; i < chosenColumnArr.length; i++){
+						$("#"+chosenColumnArr[i].replace(/[^a-zA-Z]/g, "").toLowerCase()).prop("checked", true);
+					 }
+				 }
+				 
 }

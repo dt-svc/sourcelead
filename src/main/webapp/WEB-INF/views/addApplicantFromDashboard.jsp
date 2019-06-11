@@ -10,14 +10,6 @@
 
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.mt10 {
-    margin-top: 10px !important;
-}
-</style>
-
-
-
 <!-- For add New Applicant -->
 <script>
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
@@ -540,6 +532,21 @@ function discordApplicant(){
 	 
 	 $("#newUploadFile").val('');
 	 $("#uploadFile").val('');
+	 
+	 $("#expectedCTCRatePer").val('');
+	 $("#currentCTCRatePer").val('');
+	 
+	 $("#expectedCTCRatePer").removeAttr("data-validation");
+	 $("#expectedCTCRatePer").attr("data-validation-optional", "true");
+	 
+	 $("#currentCTCRatePer").removeAttr("data-validation");
+	 $("#currentCTCRatePer").attr("data-validation-optional", "true");
+	 
+	 $("input[name=ExpectedCTC]").removeAttr("data-validation");
+	 $("input[name=ExpectedCTC]").attr("data-validation-optional", "true");
+	 
+	 $("input[name=CurrentCTC]").removeAttr("data-validation");
+	 $("input[name=CurrentCTC]").attr("data-validation-optional", "true");
 	 
 	 getCandidateStates();
 	 getSubmissionCandidateCities();

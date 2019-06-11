@@ -298,12 +298,9 @@ function preventTabkey(e){
 
 <script>
 		function logoutFormSubmit() {
-			/* var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-			var actionUUID = '${userLoginSession.actionUUID}';
-			window.location.href = sourceleadUrl+"/getActionHistoryList/"+actionUUID;  */
-			
-			document.getElementById("logoutForm").submit();
-			
+			var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+			var actionUUID = '${SourceLeadWeb_actionUUID}';
+			window.location.href = sourceleadUrl+"/getActionHistoryList/"+actionUUID;  
 		}
 </script>
 
@@ -574,7 +571,7 @@ function preventTabkey(e){
         </sec:authorize>
         
          <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-         	<li><a href="${SourceLeadWeb_atsUrl}/mailBox/mails" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+         	<li><a href="${SourceLeadWeb_sourceleadUrl}/mailBox/mails" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
          </sec:authorize>		
 		
           <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -2437,4 +2434,7 @@ function getPreviousClockInData(){
 </script>
 
 
-
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/cropper.min.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/cropper.min.css" type="text/css" />
+<div id='imagecrop' class='post_popup'></div>
+<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>

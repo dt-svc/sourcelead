@@ -7,21 +7,10 @@
 <link rel="stylesheet" href="/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
 <link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
 
-
 <style>
-.modal-backdrop{
-display: none;
-}
-
-.nicEdit-main {
-	overflow: auto !important;
-}
-
-.mt40{
- margin-top: 50px !important;
-}
+.modal-backdrop { display: none; }
+.nicEdit-main { overflow: auto !important; }
 </style>
-
 
  <section class="content-wraper">
     <section class="content-header clearfix">

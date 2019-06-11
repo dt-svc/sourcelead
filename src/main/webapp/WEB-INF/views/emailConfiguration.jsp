@@ -119,8 +119,10 @@
 					formData, function(data) {
 						if (data && data.response === "SUCCESS")
 							location.replace(sourceleadUrl + "/mailBox/mails");
-						else
-							alert(data.responseMessage);
+						else{
+						     alert(data.responseMessage);
+							 $("#loading").removeAttr('style');
+						}
 					});
 			return true;
 		} else {

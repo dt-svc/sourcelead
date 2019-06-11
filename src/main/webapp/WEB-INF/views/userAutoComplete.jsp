@@ -21,19 +21,8 @@
       <script src="http://code.jquery.com/jquery-1.10.2.js?staticTime=${staticTime}"></script>
       <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js?staticTime=${staticTime}"></script>
       <style>
-         #project-label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 1em;
-         }
-         #project-icon {
-            float: left;
-            height: 32px;
-            width: 32px;
-         }
-         #project-description {
-            margin: 0;
-            padding: 0;
+         .projec_Label { display: block; font-weight: bold; margin-bottom: 1em; }
+         .project_description { margin: 0; padding: 0; }
          }
       </style>
       <!-- Javascript -->
@@ -89,10 +78,10 @@
  
 <body>
       
-         <div id="project-label">Select a project (type "a" for a start):</div>
+         <div id="project-label" class="projec_Label">Select a project (type "a" for a start):</div>
          <input id="project">
          <input type="hidden" id="project-id">
-         <p id="project-description"></p>
+         <p id="project-description" class="project_description"></p>
          
 </body>
 </html>

@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateReportSummaryDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockInOutEntity.Breaks;
 import com.bis.sourcelead.clockInOutEntity.ClockInOut;
@@ -32,6 +34,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimeSheetSubmissionDayEntryDTO;
 import com.bis.sourcelead.dto.TimesheetEntriesDTO;
 import com.bis.sourcelead.dto.TimesheetTaskDTO;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -42,6 +45,7 @@ import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.rest.TaskRestController;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.timesheet.service.TimeSheetDayEntriesService;
@@ -73,6 +77,9 @@ public class ClockInOutRestController {
 	
 	@Autowired
 	private ProjectTasksService projectTasksService;
+	
+	@Autowired
+	private EmployeesService employeeService;
 	
 	
 	@RequestMapping(value = "/clockInOutConfig")
@@ -111,40 +118,42 @@ public class ClockInOutRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ClockInOut clockInOut =  clockInOutConfigService.saveClockInOutTime(clockInOutDTO,loginOrgLocation,user);
-		
-		if(Constants.CLOCK_OUT.equalsIgnoreCase(clockInOutDTO.getType())) {
-			if(clockInOut.getProjectId() != null) {
-				String totalRTime = clockInOutConfigService.getTotalClockInOutHours(loginOrgLocation,user.getId(),clockInOut.getProjectId(),clockInOut.getProjectsTaskId());
-				ProjectMembers projectMember = projectsService.isUserAssignedToProject(clockInOut.getUserId(),clockInOut.getOrgLocations().getId(),clockInOut.getProjectId());
-				String totalHours = totalRTime.substring(0, 5);
-				Map<String, String> freqMap = timeSheetDayEntriesService.getTimesheetFrequency(clockInOut.getClockOutDate(),loginOrgLocation,projectMember.getProjects());
-			    Date frequencyStartDate = null;
-				Date frequencyEndDate   = null;
-				Date subFrequencyStartDate = null;
-				Date subFrequencyEndDate   = null;
-				if (freqMap.get("timesheetFreq") != null) {
-					String timeFrequency = freqMap.get("timesheetFreq");
-					String[] frequency = timeFrequency.split("To");
-					String startDate = frequency[0].trim();
-					String endDate = frequency[1].trim();
-					frequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate.replaceAll("/", "-"));
-					frequencyEndDate =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate.replaceAll("/", "-"));
-				}	
-				if (freqMap.get("timesheetSubFreq") != null) {
-					String subFrequency = freqMap.get("timesheetSubFreq");
-					String[] frequency = subFrequency.split("To");
-					String startDate = frequency[0].trim();
-					String endDate = frequency[1].trim();
-					subFrequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate.replaceAll("/", "-"));
-					subFrequencyEndDate =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate.replaceAll("/", "-"));
-							
-				}	
-			    try {
-					timeSheetDayEntriesService.addTimesheetDayEntry(projectMember.getId(), subFrequencyStartDate, subFrequencyEndDate, frequencyStartDate, frequencyEndDate, clockInOut.getUserId().getId(), clockInOut.getClockOutDate(),totalHours, null, null, clockInOut.getProjectsTaskId(), loginOrgLocation.getDateFormat(),"Regular");
-				} catch (Exception e) {
-					e.printStackTrace();
+		ClockInOutConfig clockInOutConfig = clockInOutConfigService.getClockInOutConfigBasedOnOrgLocationId(loginOrgLocation.getId());
+		if(clockInOutConfig.getIsTimesheetFill() != null && clockInOutConfig.getIsTimesheetFill() == true) {
+			if(Constants.CLOCK_OUT.equalsIgnoreCase(clockInOutDTO.getType())) {
+				if(clockInOut.getProjectId() != null) {
+					String totalRTime = clockInOutConfigService.getTotalClockInOutHours(loginOrgLocation,user.getId(),clockInOut.getProjectId(),clockInOut.getProjectsTaskId());
+					ProjectMembers projectMember = projectsService.isUserAssignedToProject(clockInOut.getUserId(),clockInOut.getOrgLocations().getId(),clockInOut.getProjectId());
+					String totalHours = totalRTime.substring(0, 5);
+					Map<String, String> freqMap = timeSheetDayEntriesService.getTimesheetFrequency(clockInOut.getClockOutDate(),loginOrgLocation,projectMember.getProjects());
+				    Date frequencyStartDate = null;
+					Date frequencyEndDate   = null;
+					Date subFrequencyStartDate = null;
+					Date subFrequencyEndDate   = null;
+					if (freqMap.get("timesheetFreq") != null) {
+						String timeFrequency = freqMap.get("timesheetFreq");
+						String[] frequency = timeFrequency.split("To");
+						String startDate = frequency[0].trim();
+						String endDate = frequency[1].trim();
+						frequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate.replaceAll("/", "-"));
+						frequencyEndDate =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate.replaceAll("/", "-"));
+					}	
+					if (freqMap.get("timesheetSubFreq") != null) {
+						String subFrequency = freqMap.get("timesheetSubFreq");
+						String[] frequency = subFrequency.split("To");
+						String startDate = frequency[0].trim();
+						String endDate = frequency[1].trim();
+						subFrequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),startDate.replaceAll("/", "-"));
+						subFrequencyEndDate =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),endDate.replaceAll("/", "-"));
+								
+					}	
+				    try {
+						timeSheetDayEntriesService.addTimesheetDayEntry(projectMember.getId(), subFrequencyStartDate, subFrequencyEndDate, frequencyStartDate, frequencyEndDate, clockInOut.getUserId().getId(), clockInOut.getClockOutDate(),totalHours, null, null, clockInOut.getProjectsTaskId(), loginOrgLocation.getDateFormat(),"Regular");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-			}
+			}	
 		}
 		
 		return clockInOut;
@@ -306,9 +315,14 @@ public class ClockInOutRestController {
 			HttpServletRequest request) {
 		
 		StringBuilder dateStr = new StringBuilder();
-		Date empJoiningDate = (Date) SourceLeadSessionManager.getSessionAttribute(request, "joiningDate");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Employees emp = employeeService.getEmployeeByUserAndOrgLocationId(user.getId(),loginOrgLocation.getId());
+		Date empJoiningDate = null;
+		if(emp != null) {
+			 empJoiningDate = emp.getHireDate();
+		}
+		
 		try {
 			Date[] dates = null;
 			
@@ -369,5 +383,19 @@ public class ClockInOutRestController {
 
 		return clockInOutConfigService.getPreviousClockInData(loginOrgLocation,user);
 	}
+	
+	@RequestMapping(value = "/getAssociateClockInOutReportSummary",method = RequestMethod.POST)
+	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO,HttpServletRequest request,HttpServletResponse response) {
+		Date empJoiningDate = (Date) SourceLeadSessionManager.getSessionAttribute(request, "joiningDate");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<ClockInOutAssociateReportSummaryDTO> list = clockInOutConfigService.getAssociateClockInOutReportSummary(clockInOutFiltersDTO,empJoiningDate, loginOrgLocation);
+		return list;
+	}
 
+	@RequestMapping(value = "/getListOfClockDataBasedOnDate",method = RequestMethod.GET)
+	public List<ClockInOutUserTimeEntryDTO> getListOfClockDataBasedOnDate(@RequestParam(value="selectedDate", required=false) String selectedDate,@RequestParam(value="userId", required=false) Long userId,HttpServletRequest req,HttpServletResponse res) {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+		return clockInOutConfigService.getListOfClockDataBasedOnDate(selectedDate,loginOrgLocation,userId);
+	}
 }

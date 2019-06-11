@@ -257,9 +257,9 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
        
        
        includePointsHTML = ''+
-	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Points:</div>' +
-       ' <div class="col-md-9" id="points'+addField.i+'"> ' +
-       '<input type="text" '+readOnly+'  id="points'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Help Text" class="field-points form-control input-sm" >' +
+	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Points:</div>' +       
+	   ' <div class="col-md-9" id="points'+addField.i+'"> ' +
+       '<input type="text" '+readOnly+'  id="points'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Points" class="field-points form-control input-sm" >' +
        ' </div> ' +
        '</label>' +
 	   '<div class="clearfix"> '
@@ -267,7 +267,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
        includeAttemptHTML = ''+
 	   '<label class="col-md-5 mt10"><div class="col-md-3 lblHeight">Attempt:</div>' +
        ' <div class="col-md-9" id="attempt'+addField.i+'"> ' +
-       '<input type="text" '+readOnly+'  id="attempt'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Help Text" class="field-attempt form-control input-sm" >' +
+       '<input type="text" '+readOnly+'  id="attempt'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Attempt" class="field-attempt form-control input-sm" >' +
        ' </div> ' +
        '</label>' +
 	   '<div class="clearfix"> '

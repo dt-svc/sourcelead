@@ -56,6 +56,7 @@ import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
@@ -878,7 +879,7 @@ public class ReportRestController {
 						String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 						User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 						
-						String[] tableColumns = {"employeeId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName"};
+						String[] tableColumns = {"employeeId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName", "probationStatus"};
 
 						   int sortColumnIndex = 1; //by default sorting using updated date
 						   String sortColumnOrder = "desc"; //by default descending order
@@ -2030,20 +2031,20 @@ public class ReportRestController {
 	}
 	
 	@RequestMapping(value = "/prepareReport")
-	public ResponseList<AvailableAssociatesDTO> prepareReport(AvailableAssociatesDTO availableAssociatesDTO,
-			HttpServletRequest request, HttpServletResponse response) {
-		ResponseList<AvailableAssociatesDTO> responseList = new ResponseList<>();
+	public Response<Map<String ,List<AvailableAssociatesDTO>>> prepareReport(AvailableAssociatesDTO availableAssociatesDTO,
+			HttpServletRequest request) {
+		Response<Map<String ,List<AvailableAssociatesDTO>>> response = new Response<>();
 		try {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			responseList.setData(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
-			responseList.setResponse(Result.SUCCESS.name());
-			responseList.setResponseMessage(Result.SUCCESS.getValue());
+			response.setObject(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
 		} catch (Exception e) {
-			responseList.setResponse(Result.AWKWARD.name());
-			responseList.setResponse(Result.AWKWARD.getValue());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponse(Result.AWKWARD.getValue());
 			e.printStackTrace();
 		}
-		return responseList;
+		return response;
 	}
 		
 	@ResponseBody
@@ -2051,15 +2052,15 @@ public class ReportRestController {
 	public File availableAssociatereportForExport(HttpServletRequest request, HttpServletResponse response, AvailableAssociatesDTO availableAssociatesDTO) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<AvailableAssociatesDTO> reportList = new ResponseList<>();
+		Response<Map<String ,List<AvailableAssociatesDTO>>> res = new Response<>();
 		File file = null;
-		reportList.setData(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
-		if (reportList.getData() != null && !reportList.getData().isEmpty()) {
+		res.setObject(projectsService.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations));
+		if (res.getObject() != null && !res.getObject().isEmpty()) {
 
 			if (availableAssociatesDTO.getType().equalsIgnoreCase("pdf")) {
-				file = pdfUtil.availableAssociatereportReportListOfPdf(reportList.getData(), user, orgLocations);
+				//file = pdfUtil.availableAssociatereportReportListOfPdf(res.getObject(), user, orgLocations);
 			} else {
-				file = projectsService.availableAssociatereportReportListOfExcel(reportList.getData(), user, orgLocations);
+				file = projectsService.availableAssociatereportReportListOfExcel(res.getObject(), user, orgLocations);
 			}
 		}
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());

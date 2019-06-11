@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.couchbase.connection.CouchbaseConnectionConfig;
 import com.bis.sourcelead.couchbase.connection.CouchbasePropertyPathConfiguration;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
+import com.bis.sourcelead.dto.CandiateBulkUploadCommonDTO;
 import com.bis.sourcelead.dto.CandidateBulkUploadDTO;
 import com.bis.sourcelead.dto.DataMigrationCommonDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
@@ -104,9 +106,29 @@ public class DataMigrationCommonRestController {
 		return model;
 
 	}
+   
+   
+	@PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
+	@RequestMapping(value = "/uploadForm")
+	public ModelAndView fileUploadForm(HttpServletRequest request) {
+		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
+				.getAttribute("sessionData");
+		if (sessionData == null) {
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.Users);
+
+		request.getSession().setAttribute("sessionData", sessionData);
+		ModelAndView model = new ModelAndView();
+		model.setViewName("upload/uploadForm");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+
+	}
 	 
 	
-	@RequestMapping(value = {"/dataMigrationCommon","/rest/dataMigrationCommon"}, method = RequestMethod.POST)
+	
+	@RequestMapping(value = "/dataMigrationCommon")
 	public ModelAndView dataMigrationCommon(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
 	{
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -183,9 +205,8 @@ public class DataMigrationCommonRestController {
 	
 	
 	
-	
-	@RequestMapping(value = {"/candidateUploadFieldMapping","/rest/candidateUploadFieldMapping"}, method = RequestMethod.POST)
-	public ModelAndView candidateUploadFieldMapping(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
+	@RequestMapping(value = "/candidateUploadFieldMapping")
+	public ModelAndView candidateUploadFieldMapping(CandiateBulkUploadCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");

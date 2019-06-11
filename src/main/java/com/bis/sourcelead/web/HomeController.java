@@ -364,23 +364,6 @@ public class HomeController {
 	 * @param request
 	 * @return ModelAndView
 	 */
-	@PreAuthorize("hasRole('ROLE_USER_BULK_IMPORTS')")
-	@RequestMapping(value = "/uploadForm")
-	public ModelAndView fileUploadForm(HttpServletRequest request) {
-		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession()
-				.getAttribute("sessionData");
-		if (sessionData == null) {
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.Users);
-
-		request.getSession().setAttribute("sessionData", sessionData);
-		ModelAndView model = new ModelAndView();
-		model.setViewName("upload/uploadForm");
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		return model;
-
-	}
 
 	@RequestMapping(value = "/errorPage", method = RequestMethod.GET)
 	public ModelAndView displayErrorPage() {

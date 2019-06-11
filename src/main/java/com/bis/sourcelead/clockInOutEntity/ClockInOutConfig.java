@@ -55,6 +55,9 @@ public class ClockInOutConfig {
 	@Column(name = "AUTOMATIC_CLOCKOUT")
 	private Boolean isAutomaticCheckOut;
 	
+	@Column(name = "IS_TIMESHEET_FILL")
+	private Boolean isTimesheetFill;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )   
 	private OrgLocations orgLocationId;
@@ -197,6 +200,16 @@ public class ClockInOutConfig {
 
 	public void setUpdatedBy(Long updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public Boolean getIsTimesheetFill()
+	{
+		return isTimesheetFill;
+	}
+
+	public void setIsTimesheetFill(Boolean isTimesheetFill)
+	{
+		this.isTimesheetFill = isTimesheetFill;
 	}
 	
 	
