@@ -66,6 +66,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
      </div>
      
      <div class="clearfix"></div>
+     <div id="reportPopUp"></div>
       <div class="timesheet_out" id="payrollRegister" style="display: none;">
        
        
@@ -211,9 +212,10 @@ function checkDirectDepositReportsList(url) {
 
 }
 
+var table = "";
 function directDepositData(url) {
 	var colIndex = 0;
-	$('#directDepositReportTable')
+	table = $('#directDepositReportTable')
 			.DataTable(
 					{
 						"processing" : true,
@@ -345,10 +347,33 @@ function directDepositData(url) {
      getFreqdates("freqStartDate", "freqEndDate");
      var  freqStartDate = $("#freqStartDate").val();
      var freqEndDate = $("#freqEndDate").val();
+     if (!table.data().count()) {
+		  pdfPopupDisplay();
+	  }else{
 	 window.location.href = pmsUrl+"/exportToPdfCheckRegisterReport?"+tokenParamName+"="+tokenValue+"&groupId="+groupId+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate+"&searchValue="+searchValue+"&depositType=Direct Deposit";
+ }
  }
  
  </script>
- 
+  <script>
+  function pdfPopupDisplay(){
+		$(".project_inn_mask").remove();
+		var result = "";
+		result = result +" <div class='project_inn_mask'></div>";
+		result = result +" <div id='remove_directDeposit_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <div class='modal-body'><p id='popupMsg'></p></div>";
+		result = result +" <div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelDirectDepositPopup();'></div>";
+		result = result +" </div>";
+		$("#reportPopUp").empty().append(result);
+		$("#popupMsg").empty().append("No Records To Export in Direct Deposit Report.");
+		$("#remove_directDeposit_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+
+	function cancelDirectDepositPopup(){
+		$("#remove_directDeposit_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
+  </script>
  
 <jsp:include page="../masterFooter.jsp" />
