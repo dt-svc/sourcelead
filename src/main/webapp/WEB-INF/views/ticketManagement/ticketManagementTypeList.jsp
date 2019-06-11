@@ -101,7 +101,7 @@
 	       "ajax": $.fn.dataTable.pipeline( {
 	           url: url,
 	           method: 'POST',
-	           pages: 1
+	           pages: 25
 	       }),
 	       "columns": [
 	    	   {"data": "id"},
@@ -185,13 +185,13 @@
 	           ],
 		    	"scrollCollapse": false,
 		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-		    	"aaSorting": [[1,'desc']],
+		    	"aaSorting": [[0,'desc']],
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"ordering": true,
-		    	"createdRow": function ( row, data, index ) {
+		    	 "createdRow": function ( row, data, index ) {
 		    		row.setAttribute('id',"ticketType_"+data.id);
-	    	    },
+	    	    }, 
 		    	"initComplete": function( settings, json ) {
 		    		 $('#ticketTypeDataTableSearch').removeAttr('disabled');
 		    	},
