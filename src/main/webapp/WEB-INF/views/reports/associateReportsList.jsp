@@ -38,16 +38,24 @@
 	</a>
 	</sec:authorize>
 	
-	<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
-	<a href="${appPath}/campaignStats">	
+	<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
+	<a href="${appPath}/associateJoineReports">	
 	<div class="repDashCta">
 		<span><i class="fa fa-bullhorn"></i></span>
 		<div class="repDashCtaWrap">
-		<h2>Campaign(s) Report</h2><b>View</b>
+		<h2>Associate Joined Report</h2><b>View</b>
 		</div>
 	</div>
 	</a>
 	</sec:authorize>		
+	<a href='${appPath}/associateClockInSummaryReport'>
+	<div class="repDashCta">
+		<span><i class="fa fa-users"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Associate Clock-In Summary Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
 				<a href='${appPath}/availableAssociatesReport'>
 				<div class="repDashCta">
 		<span><i class="fa fa-users"></i></span>
