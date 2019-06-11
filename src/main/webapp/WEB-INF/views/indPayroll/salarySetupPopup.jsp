@@ -81,8 +81,8 @@
 		                  <option>&#42;</option>
 		                  <option>&#47;</option>
 		                  <option>&#45;</option>
-		                  <option>&#61;</option>
-		                  <option>&#37;</option>
+		               <!--    <option>&#61;</option>
+ -->		              <option>&#37;</option>
 		                  <%--<option>&#40;</option>
 		                  <option>&#41;</option> --%>
 		                  <option>&#91;</option>

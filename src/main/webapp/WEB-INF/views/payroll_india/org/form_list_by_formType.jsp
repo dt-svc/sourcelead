@@ -6,6 +6,9 @@
 <div class="success_pop">
   <i class="fa fa-check-circle"></i><span>Operation executed successfully...</span>
 </div>
+<script type="text/javascript">
+       var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
 <section class="content-wraper contentWraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
