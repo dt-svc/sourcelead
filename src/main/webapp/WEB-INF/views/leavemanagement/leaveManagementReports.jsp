@@ -543,11 +543,12 @@ function getHolidaysList(){
 	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
+	var fromType = "dashboard";
 	var reportYear = "";
 	if($("#reportYear").val() !=null && $("#reportYear").val() != 'undefined' && $("#reportYear").val() != ''){
 		reportYear = $("#reportYear").val();
 	}
-	$.get(pmsUrl+"/getHolidaysList?orgLocationId="+orgLocationId+"&reportYear="+reportYear+"", function(response) {
+	$.get(pmsUrl+"/getHolidaysList?orgLocationId="+orgLocationId+"&reportYear="+reportYear+"&fromType="+fromType, function(response) {
 		if (response.response === "AWKWARD") {
 		    location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {

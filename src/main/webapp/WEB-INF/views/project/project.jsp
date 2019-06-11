@@ -12,24 +12,6 @@
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
-
-<style>
-.clsDatePicker {
-	z-index: 100000 !important;
-}
-
-.project_tabs {
-    border:none !important;
-    }
-    
-.disabledLink
-{
-	color: #333;
-	text-decoration : none;
-	pointer-events: none;
-}
-</style>
-
 <script>
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </script>
@@ -58,7 +40,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			  </ul>
 			  <div class="clearfix"></div>
 		
-		<div class="project_tabs">
+		<div class="project_tabs projectTabs_brdnone">
 		<div class="clearfix form-area form-horizontal toggle-div remove-div  newPrTabs_inn mt" id="tab-a">
 			<form:form id="project_form" name="project_form" method="post">
 			<input type="hidden" id="actionId" value="${actionId}">

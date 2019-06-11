@@ -289,6 +289,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 <!-- Bulk Approving submitted timesheets from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->  
 <script>
 function acceptTimeSheetSubmissionBySubmissionId(tableFor){
+	  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var submissionIDs = [];
 	for(var e in selectedRecords) {
 		if(selectedRecords[e]){
@@ -329,7 +330,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		    				 $('#hedderAcceptRejectButton').attr('style','display:none');
 		    			 }else{
 		    				 var currentPageNumberApprover =  $("#timesheetApproverCurrentPageNumber").val();
-		    				 getTableData(currentPageNumberApprover);
+		    				 getTableData(currentPageNumberApprover,0);
 		    			   	$("#loadingCotentDiv").removeAttr('style');
 		    			   	$('#hedderAcceptRejectButton').attr('style','display:none');
 			    		}
@@ -370,6 +371,7 @@ function rejectTimeSheetSubmissionBySubmissionId(tableFor){
 }
 
 function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
+	  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var submissionIDs = [];
 	for(var e in selectedRecords) {
 		if(selectedRecords[e]){
