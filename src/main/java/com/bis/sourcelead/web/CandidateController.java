@@ -798,6 +798,23 @@ public class CandidateController {
 		  
 	}
 	    
+	    @RequestMapping(value = "/candidateDuplicateVerification")
+		public ModelAndView redirect(HttpServletRequest request) throws Exception {
+			ModelAndView model = new ModelAndView();
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(null != countries){
+            model.addObject("loginCountryName", countries.getName());
+            model.addObject("currencyCode", countries.getCurrency());
+			
+			model.setViewName("requirement/candidateDuplicateVerification");
+			}
+			return model;
+			
+			}
+			
+			
 	    @RequestMapping(value = "/candidateSourceList")
 		public ModelAndView candidateSourceList(HttpServletRequest request, HttpServletResponse response)
 		{
@@ -806,6 +823,7 @@ public class CandidateController {
 			model.setViewName("candidates/candidateSourceList");
 			
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			
 			return model;
 		}
 	
