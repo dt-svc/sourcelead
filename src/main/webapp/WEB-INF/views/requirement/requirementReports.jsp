@@ -223,12 +223,6 @@ function toDate(selector) {
 }
 </script>
 
-<style>
-.project_tabs_inn_table.vendor_wrap_inn_table div span {
-	max-width: 150px;
-}
-</style>
-
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">

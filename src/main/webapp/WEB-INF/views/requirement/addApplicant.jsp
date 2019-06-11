@@ -180,8 +180,10 @@ function getAddApplicant(requirementId){
 	
 	result = result + '	<div class="col-md-6 upresume mb">';
 	result = result + '<label class="col-md-4">&nbsp;</label>';
-	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span><br>';
-	result = result + '<input type="checkbox" name="notifyToApplicant" value="Y" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
+	result = result + '<div class="col-md-6">';
+	result = result + '<div class="clearfix"><input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span></div>';
+	result = result + '<div class="clearfix mt5"><input type="checkbox" name="notifyToApplicant" value="Y" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span></div> ';
+	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';
 	
@@ -394,10 +396,18 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 	
 	
 	result = result + '	<div class="col-md-6 upresume mb">';
+	
+	result = result + '	<div class="row">';
 	result = result + '<label class="col-md-4">&nbsp;</label>';
-	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span><br>';
-	result = result + '<input type="checkbox"  name="notifyToApplicant" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
+	
+	result = result + '<div class="col-md-6">';
+	result = result + '<div class="clearfix"><input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span></div>';
+	result = result + '<div class="clearfix mt5"><input type="checkbox"  name="notifyToApplicant" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span></div>';
 	result = result + '</div>';
+	
+	result = result + '</div>';
+	result = result + '</div>';
+	
 	result = result + '</div>';
 	
 	result = result + '<div class="form-footer clearfix mt">';
@@ -972,6 +982,21 @@ function discordApplicant(){
 	 $("input[name=ExpectedCTC]").val('');
 	 $("input[name=CurrentCTC]").val('');
 	 $("input[name=Education]").val('');
+	 
+	 $("#expectedCTCRatePer").val('');
+	 $("#currentCTCRatePer").val('');
+	 
+	 $("#expectedCTCRatePer").removeAttr("data-validation");
+	 $("#expectedCTCRatePer").attr("data-validation-optional", "true");
+	 
+	 $("#currentCTCRatePer").removeAttr("data-validation");
+	 $("#currentCTCRatePer").attr("data-validation-optional", "true");
+	 
+	 $("input[name=ExpectedCTC]").removeAttr("data-validation");
+	 $("input[name=ExpectedCTC]").attr("data-validation-optional", "true");
+	 
+	 $("input[name=CurrentCTC]").removeAttr("data-validation");
+	 $("input[name=CurrentCTC]").attr("data-validation-optional", "true");
 	 
 	 $("#newUploadFile").val('');
 	 $("#uploadFile").val('');

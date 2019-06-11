@@ -367,7 +367,7 @@ function editCandidate(candidateId){
 								if(loginCountryName == 'United States'){
 									result = result + '<div class="clearfix mb10" id="errSsnNoDiv">';
 									result = result + '<div class="col-md-6 custom-fields">';
-									result = result + '<input class="form-control" id="ssnNumber" name="ssnNumber" value="'+ssnNumber+'" onblur="validateSsnNumberDuplicateChek();" placeholder="000-00-0000" type="text"></input>';
+									result = result + '<input class="form-control" id="ssnNumberUs" name="ssnNumber" value="'+ssnNumber+'" onkeyup="validateSsnNumberDuplicateChek();" onblur="validateSsnNumberDuplicateChek();" placeholder="000-00-0000" type="text"></input>';
 									result = result + '<input type="hidden" id="tempSsnNumber" value="'+json.ssnNumber+'" />';
 									result = result + '</div>';
 									result = result + '</div>';
@@ -570,7 +570,7 @@ function editCandidate(candidateId){
 							result = result + '<div class="col-md-6">';
 							
 							result = result + '<label class="text-muted fontSmall">Source</label>';
-							result = result + '<select class="form-control valid width100percnt" name="candidateSource" field-name="Source" id="candidateSource" data-validation="required">';
+							result = result + '<select class="form-control valid width100percnt" name="candidateSource" field-name="Source" id="candidateSource" data-validation="validate_Space" data-validation-optional="true">';
 							var candidateSourceList = json.candidateSourceList;
 							for(var e in candidateSourceList) {
 								result = result + '<option value="'+candidateSourceList[e].id+'" '+(candidateSourceList[e].id == json.candidateSource ? "selected" : "")+'>'+ candidateSourceList[e].name +'</option>';
@@ -791,6 +791,67 @@ function removeCandidateAlertMessage(candidateId,candidateType){
 </script>
 
 
+<script type="text/javascript">
+function deleteCandidateAlertMessage(candidateId){
+	$("#profileEditPopup").fadeOut();
+	var result = "";
+	result = result +"<form:form id='delete_candidate_form' name='delete_candidate_form' method='post'> ";
+	result = result +"	<div id='deletePopupLoading'></div>";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a' style='width:500px'>";
+	result = result +"	<p><i class='fa fa-exclamation-triangle text-danger' aria-hidden='true'></i>&nbsp;&nbsp;<i class='text-danger'><strong>The candidate will be removed permanently. Are you sure to delete?</strong></i></p>";
+	result = result +"	<div class='clearfix'>";
+	result = result +"		<textarea id='rejectReason' class='form-control mt mb5' field-name='Delete Reason'  data-validation='required validate_length length2-250' name='rejectReason' value='' placeholder='Delete Reason' rows='2' onkeypress='candiateRemoveSpacesForRejectReason();'></textarea>";
+	result = result +"	</div>";
+	result = result +"	<div class='rejectErrorMsgs'/>";
+	result = result +'		<b href="javascript:void(0)" class="mt10"><input style="width:50%" id="candidatePermanentDelete" type="button" value="Ok" onclick="deleteCandidatePermanently('+candidateId+');"><input style="width:50%" class="u_can_color" type="button"  value="Cancel" onClick="cancelAlert();"></b>';
+	result = result +"	</div>";
+	result = result +"</form:form>";
+	
+	$("#removeCandidateAlert").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+</script>
+
+<script>
+
+function deleteCandidatePermanently(candidateId){
+	if ($('#delete_candidate_form').validate(false, validationSettings)) {
+		var reason = document.getElementById("rejectReason").value;
+		if(reason.length > 250){
+			$(".rejectErrorMsgs").append("<p class='jquery_form_error_message'>The values should be between 2-250 characters</p>");
+		}else{
+			$(".rejectErrorMsgs").find('p.jquery_form_error_message').remove();
+			$("#candidatePermanentDelete").attr("disabled", "disabled");
+			$("#candidatePermanentDelete").addClass('button').val('Processing..');
+			 $.ajax({  
+		         type : "POST",
+		         url: atsUrl+"/deleteCandidatePermanentlyByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason,        
+		         success :function(result) {
+		        	 if (result.response === "SUCCESS") {
+							showSuccessStatusPopup("Candidate deleted permanently");
+							location.replace(atsUrl+"/candidatesList");
+						}
+		       },
+		    });
+			
+		}
+	
+		return true;
+	}else {
+		return false;
+	}
+}
+$('body').on('blur', '#delete_candidate_form', function() {
+	$("#delete_candidate_form").showHelpOnFocus();
+	$("#delete_candidate_form").validateOnBlur(false, validationSettings);
+});
+
+
+</script>
+
+
 
 <%-- 
      @author :Sammeta David Raju
@@ -864,7 +925,8 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 									   '</sec:authorize>'; 
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 									   if(isAssociate != "Y"){
-										   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+										   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
+										   result = result + ' <a href="javascript:void(0)" onClick="deleteCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Delete</a>';
 									   }
 									   '</sec:authorize>';
 								   } else {
@@ -1336,7 +1398,7 @@ function saveCandidateTags(candidateId){
 	         }; 
 		rateValidations();
 		 $('#emailDiv').find('p.jquery_form_error_message').remove();
-		
+		 $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
 		 if ($('#candidateProfileEdit_form').validate(false, validationSettings)){
       		var formData = getFormData("candidateProfileEdit_form");
 			$("#update_candidate").attr("disabled", "disabled");
@@ -2135,7 +2197,7 @@ function validateAadharNumber() {
 <script type="text/javascript">
 function validateSsnNumberDuplicateChek() {
 	
-	  var ssnNumber = document.getElementById("ssnNumber").value;
+	  var ssnNumber = document.getElementById("ssnNumberUs").value;
 	  
 	  var tempSsnNumber = $('#tempSsnNumber').val(); 
 		if(tempSsnNumber != ssnNumber){
@@ -2149,11 +2211,11 @@ function validateSsnNumberDuplicateChek() {
 		        success: function(data) {
 		        	if(data == true){
 		        		  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
-		        		  $("input#ssnNumber").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
+		        		  $("input#ssnNumberUs").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
 						  $("#update_candidate").attr('disabled','disabled');
 		        	}
 		        	else{
-		        		 $('input#ssnNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('input#ssnNumberUs').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#errSsnNoDiv').find('p.jquery_form_error_message').remove(); 
                         $("#update_candidate").removeAttr("disabled");
 		        	}
@@ -2165,7 +2227,7 @@ function validateSsnNumberDuplicateChek() {
 </script>
 
 <script type="text/javascript">
-$('#ssnNumber').mask('000-00-0000', {
+$('#ssnNumberUs').mask('000-00-0000', {
     translation: {
         '#': {
             pattern: "/[0-9]{9}/", optional: true

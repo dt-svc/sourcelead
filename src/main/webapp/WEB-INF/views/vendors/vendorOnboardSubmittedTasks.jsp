@@ -4,11 +4,6 @@
 <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<style>
-.onboardTasksList{
-padding: 0px 15px 15px;
-}
-</style>
 
 <script>
 function vendorOnboardTasksList(orgRelationId){

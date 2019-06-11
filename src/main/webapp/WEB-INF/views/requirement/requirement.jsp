@@ -997,7 +997,7 @@ $(document).ready(function () {
 														class="fa fa-folder-open-o"></i>&nbsp;Browse File <input
 														type="file" id="uploadBtn" class="hidden upload">
 												</span>
-												</label> <input type="text" class="form-control input-sm" readonly
+												</label> <input type="text" class="form-control" readonly
 													id="uploadFile" name="docFile"
 													placeholder="Upload File ..." field-name="Upload Resume"
 													data-validation="validate_docimgpdf"
@@ -2204,7 +2204,9 @@ $(document).ready(function () {
 										</select>
 									</div>
 								</div>
-								<!--  added for workflow integration for job start here  -->
+								<!--  added for workflow integration for job start here  
+								 <!--//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
+   									// below lines is commented for to move in next release build.
 								<div class="form-group">
 									<label class="col-md-3">Workflow<span
 										class="text-danger paddingLeft">*</span></label>
@@ -2219,7 +2221,7 @@ $(document).ready(function () {
 											</c:forEach>
 										</select>
 									</div>
-								</div>
+								</div>-->
 								<!--  added for workflow integration for job end here -->
 								<div class="form-group" id="internalSubmissionFrom">
 									<label class="col-md-3">Application Form<span
@@ -2361,7 +2363,7 @@ $(document).ready(function () {
 			<form role="form" id="team_form" name="team_form" method="post">
 				<div class="modal-content" id="assignTeamDiv">
 					<div class="modal-header">
-						<button data-dismiss="modal" class="close" type="button">ï¿½</button>
+						<button data-dismiss="modal" class="close" type="button"><i class="fa fa-times"></i></button>
 						<h4 class="modal-title">Add Team</h4>
 					</div>
 					<div class="modal-body clearfix">

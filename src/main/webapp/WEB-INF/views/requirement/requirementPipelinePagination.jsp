@@ -368,21 +368,23 @@
 													&& opt.createdUser != ''
 													&& opt.createdUser != 'undefined') {
 												result = result
-														+ '         <td><div><span title="'+opt.createdUser+''+orgName+''+candidateSource+'" class="pull-left">'
+														+ '         <td><div><div class="tbldata-dotdot-vsm pull-left" title="'+opt.createdUser+''+orgName+''+candidateSource+'" class="pull-left">'
 														+ opt.createdUser + ''
 														+ orgName + '<br/>'
 														+ candidateSource
-														+ '</span>'
-														+'</div></td>';
+														+ '</div>'
+														if(opt.orgName == null || opt.orgName == ''){
+															 if(isManager == "true" || isAdmin == "true"){
+															result = result +'<i class="fa fa-pencil pull-left ml10 mt2 cursorPointer" onClick="applicantsourceHandler('+requirementId+','+opt.id+');"></i>';
+															 }
+															 }
+														+'</div>';
+												+'</td>';
 											} else {
 												result = result
 														+ '         <td><div><span>--</span></div></td>';
 											}
-											if(opt.orgName == null || opt.orgName == ''){
-											 if(isManager == "true" || isAdmin == "true"){
-											result = result +'<i class="fa fa-pencil pull-left ml10 mt2 cursorPointer" onClick="applicantsourceHandler('+requirementId+','+opt.id+');"></i>';
-											 }
-											 }
+											
 											return result;
 										}
 									},
@@ -546,13 +548,14 @@
 														result = result
 																+ "<option value='Status'>Submission</option>";
 													}
-													/* if (opt.previousSubmissionStatus != null
-															&& opt.previousSubmissionStatus == 'SHORTLIST') {
-														'<sec:authorize access="hasRole(\'ROLE_SHORTLIST\')">';
+													 if (opt.previousSubmissionStatus != null
+															&& opt.previousSubmissionStatus == 'SHORTLIST'
+															&& opt.submissionStatus == 'ONHOLD') {
+														
 														result = result
 																+ "<option value='shortlist'>Shortlist</option>";
-														'</sec:authorize>';
-													} */
+														
+													} 
 													if (opt.previousSubmissionStatus != null
 															&& opt.previousSubmissionStatus == 'INTERVIEW'
 															&& opt.submissionStatus != 'SELECTED_ON_INTERVIEW'
@@ -562,13 +565,13 @@
 														result = result
 																+ "<option value='Interview'>INTERVIEW</option>";
 													}
-													/* if (opt.previousSubmissionStatus != null
+													 if (opt.previousSubmissionStatus != null
 															&& opt.previousSubmissionStatus == 'SELECTED_ON_INTERVIEW'
-															&& opt.submissionStatus != 'SELECTED_ON_INTERVIEW') {
+															&& opt.submissionStatus == 'ONHOLD') {
 
 														result = result
 																+ "<option value='Selected on Interview'>Selected on Interview</option>";
-													} */
+													} 
 													if (opt.previousSubmissionStatus != null
 															&& opt.previousSubmissionStatus == 'OFFERMADE'
 															&& opt.submissionStatus != 'JOINED') {
@@ -750,6 +753,8 @@
 				&& submissionId != 'undefined' && candidateId != null
 				&& candidateId != '' && candidateId != 'undefined'
 				&& submissionType != "all"
+				&& submissionType != "DUPLICATE_APPLICANTS"
+				&& submissionType != "REQUEST_SENT"
 				&& submissionStatus != "SUBMIT_TO_CLIENT"
 				&& submissionStatus != "all" || submissionStatus == "REJECTED") {
 			applicantQuickViewProfile(submissionId, candidateId);

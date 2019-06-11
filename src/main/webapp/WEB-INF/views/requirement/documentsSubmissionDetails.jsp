@@ -2,16 +2,6 @@
 	<meta http-equiv="Cache-Control" content="private">
 	<meta http-equiv="Expires" content="0">
 	<!-- these files for autocomplete with tagit -->
-	
-	
-	<style>
-	.addUser-org {
-	    overflow-x: auto;
-	}
-	.project_tabs_inn_table table tr td div i.glyphicon-trash{
-	color:red !important;
-	}
-	</style>
 	<%-- 
 	     @author : prasadK.
 	     this script is for display candidate Documents tab data.
