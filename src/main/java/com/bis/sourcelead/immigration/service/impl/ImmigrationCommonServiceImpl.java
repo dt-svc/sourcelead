@@ -2288,14 +2288,17 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			 writeRow.createCell(36).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getPreviousLcaEndDate())); 
 		}
-		if(exportView.getPreviousLcaNumber() !=null){
-			 writeRow.createCell(37).setCellValue(exportView.getPreviousLcaNumber()); 
-		}
+		
 		if(exportView.getPreviousLcaRate() !=null){
-			 writeRow.createCell(38).setCellValue(exportView.getPreviousLcaRate()); 
+			 writeRow.createCell(37).setCellValue(exportView.getPreviousLcaRate()); 
 		}
+		
+		/*if(exportView.getPreviousLcaNumber() !=null){
+			 writeRow.createCell(38).setCellValue(exportView.getPreviousLcaNumber()); 
+		}*/
+		
 		/*if(exportView.getPreviousEmployerLocation() !=null){
-			 writeRow.createCell(38).setCellValue(exportView.getPreviousEmployerLocation()); 
+			 writeRow.createCell(39).setCellValue(exportView.getPreviousEmployerLocation()); 
 		}*/
 		return createExcelsheet;
 	}

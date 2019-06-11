@@ -447,6 +447,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 											"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  "+
 											" and (cv.VISA_NUMBER like :searchValue or cv.COUNTRY like :searchValue or cv.VISA_TYPE like :searchValue) "+
 											" and cv.CANDIDATE_ID=:candidateId  order by cvh.UPDATED_DATE desc";
+			System.out.println("candidateId is if "+candidateId);
 			visaList = session.createSQLQuery(sqlQueryString)
 					   .addScalar("id", StandardBasicTypes.LONG)
 					   .addScalar("candidateId", StandardBasicTypes.LONG)
@@ -465,7 +466,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 											" cv.VISA_NUMBER as visaNumber, cv.VISA_TYPE as visaType, cvh.status as status ," + 
 											" cv.COUNTRY as country, CAST(cvh.VALID_FROM_DATE AS char) as validFrom," + 
 											" CAST(cvh.VALID_TO_DATE AS char) as validTo " + 
-											"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  and cv.CANDIDATE_ID=:candidateId order by cvh.UPDATED_DATE desc";
+	  								"  from CANDIDATE_VISA cv, CANDIDATE_VISA_HISTORY cvh  Where cv.ID= cvh.VISA_ID  and cv.CANDIDATE_ID=:candidateId order by cvh.UPDATED_DATE desc";
+			
+			System.out.println("candidateId is else "+candidateId);
 			visaList = session.createSQLQuery(sqlQueryString)
 					   .addScalar("id", StandardBasicTypes.LONG)
 					   .addScalar("candidateId", StandardBasicTypes.LONG)
@@ -2395,9 +2398,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		empList = session.createSQLQuery(queryString).setParameter("lcaId", lcaId).setResultTransformer(Transformers.aliasToBean(LcaDetailsDTO.class)).list();
 		for(LcaDetailsDTO obj : empList) {
 			if(orgLocations.getId().equals(obj.getOrgLocationId())) {
-			obj.setAttorneyName(obj.getVendor());
+			obj.setAttorneyName(obj.getClient());
 			}else {
-				obj.setAttorneyName(obj.getClient());
+				obj.setAttorneyName(obj.getVendor());
 			}
 		}
 		

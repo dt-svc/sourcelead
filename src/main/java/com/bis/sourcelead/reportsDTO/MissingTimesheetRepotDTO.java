@@ -14,6 +14,8 @@ public class MissingTimesheetRepotDTO {
 
 	private String year;
 	
+	private String type;
+	
 	private int totalRows;
 	private int pageNo;
 	private int pageSize;
@@ -26,6 +28,14 @@ public class MissingTimesheetRepotDTO {
 
 	public void setDateSelection(String dateSelection) {
 		this.dateSelection = dateSelection;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getFromDate() {

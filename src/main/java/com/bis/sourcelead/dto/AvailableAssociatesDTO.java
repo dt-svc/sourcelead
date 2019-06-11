@@ -53,9 +53,6 @@ import java.util.List;
 	
 	private String type;
 	
-	
-	
-	
 	public String getCandidateName() {
 		return candidateName;
 	}

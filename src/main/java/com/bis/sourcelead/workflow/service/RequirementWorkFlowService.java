@@ -20,7 +20,7 @@ public interface RequirementWorkFlowService {
 	
 	List<RequirementWorkFlow> getRequirementWorkFlowByOrgLocationId(OrgLocations orgLocations)throws Exception;
 	
-	void saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(OrgLocations orgLocations, User user)throws Exception;
+	RequirementWorkFlow saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(OrgLocations orgLocations, User user)throws Exception;
 	
 	List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages(OrgLocations orgLocations)throws Exception;
 	

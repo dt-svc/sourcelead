@@ -120,60 +120,78 @@ public class UserProfileSessionRestController {
 			 System.out.println("Uploading userprofile details to Couchbase ends");
 		 }
 	 }
-	 
-	@RequestMapping(value = "/ws/saveWorkflowIdForAllOrgsInRequirement", method = RequestMethod.GET)
+	 //WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
+	// below lines is commented for to move in next release build.
+	/*@RequestMapping(value = "/ws/saveWorkflowIdForAllOrgsInRequirement", method = RequestMethod.GET)
 	public void saveWorkflowIdForAllOrgsInRequirement() {
 		System.out.println("Started saving workflowId in requirement table for all orgs.");
 		List<OrgLocations> orgLocationsList = new ArrayList<OrgLocations>();
 		List<Requirement> requirementList = new ArrayList<Requirement>();
-		Iterator<OrgLocations> i = null;
-		Iterator<Requirement> i1 = null;
+		Iterator<Requirement> requirementIterator = null;
 		RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO();
 		RequirementWorkFlow workFlow = new RequirementWorkFlow();
 		User user = new User();
-		OrgLocations org = new OrgLocations();
 		Requirement requirement = new Requirement();
+		List<String> exceptionList = new ArrayList<String>();
+		List<Exception> exceptionList1 = new ArrayList<Exception>();
+		Integer workflowCount = 0;
+		Integer requirementCount = 0;
 		try {
 			orgLocationsList = orgLocationService.getAllOrgLocations();
 			System.out.println("number of orgLocations - " + orgLocationsList.size());
-			i = orgLocationsList.iterator();
-			if (i != null) {
-				while (i.hasNext()) {
-					org = i.next();
-					if (org != null && org.getId() != null) {
-						workFlow = requirementWorkFlowService.getRequirementWorkFlowByOrgLocId(org.getId());
+			for(OrgLocations orgLocation : orgLocationsList) {
+				try {
+					if (orgLocation != null && orgLocation.getId() != null) {
+						workFlow = requirementWorkFlowService.getRequirementWorkFlowByOrgLocId(orgLocation.getId());
 						if (workFlow == null) {
-							System.out.println("saving workflow for - " + org.getId() + " orgLocation");
-							user = org.getUser();
+							System.out.println("saving workflow for - " + orgLocation.getId() + " orgLocation");
 							requirementWorkFlowDTO.setWorkFlowName(Constants.DEFAULT_JOB_WORKFLOW);
 							requirementWorkFlowDTO.setDescription(Constants.DEFAULT_JOB_WORKFLOW);
 							requirementWorkFlowDTO.setConfigureType(Constants.DEFAULT);
-							workFlow = requirementWorkFlowService.saveRequirementWorkFlowDetailsInfo(requirementWorkFlowDTO, user, org);
+							if(orgLocation.getUser() != null) {
+								user = orgLocation.getUser();
+								workFlow = requirementWorkFlowService.saveRequirementWorkFlowDetailsInfo(requirementWorkFlowDTO, user, orgLocation);
+							}
+							if(workFlow != null) {
 							workFlow.setConfigureType(Constants.DEFAULT);
-							requirementWorkFlowService.saveWorkflowIdInAllOrgsForRequirement(workFlow, org);
+							requirementWorkFlowService.saveWorkflowIdInAllOrgsForRequirement(workFlow, orgLocation);
+							workflowCount++;
 						}
-						requirementList = requirementService.getAllRequirementsByOrglocationId(org.getId());
+						}
+						requirementList = requirementService.getAllRequirementsByOrglocationId(orgLocation.getId());
 						if (requirementList != null && requirementList.size() > 0) {
-							i1 = requirementList.iterator();
+							requirementIterator = requirementList.iterator();
 						}
-						if (workFlow != null && i1 != null) {
-							while (i1.hasNext()) {
-								requirement = i1.next();
+						if (workFlow != null && requirementIterator != null) {
+							while (requirementIterator.hasNext()) {
+								requirement = requirementIterator.next();
 								if (requirement != null && requirement.getWorkflowId() == null) {
-									System.out.println("saving workflowId in " + requirement.getId()+ " requirement for - " + org.getId() + " orgLocation");
+									System.out.println("saving workflowId in " + requirement.getId()+ " requirement for - " + orgLocation.getId() + " orgLocation");
 									requirement.setWorkflowId(workFlow);
 									requirementService.updateRequirement(requirement);
-									requirementElkUtil.saveElkRequirement(requirement, null);
+									requirementCount++;
 								}
 							}
 						}
 					}
+				}catch(Exception e) {
+					exceptionList.add(e + " for "+requirement.getId()+" requirement in " + orgLocation.getId() + " orgLocation");
+					continue;
 				}
-			}
+				}
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println(e + " in saveWorkflowIdForAllOrgsInRequirement for " + org.getId() + " orgLocation");
+			exceptionList1.add(e);
+		}finally {
+			System.out.println("Finished saving "+workflowCount+" workflows & Updated "+requirementCount+" requirements");
+			System.out.println();
+			if(exceptionList != null && exceptionList.size() > 0) {
+			System.out.println("The following exceptions occured during saving");
+			exceptionList.forEach(System.out::println);
+			}
+			if(exceptionList1 != null && exceptionList1.size() > 0) {
+				System.out.println("The following exceptions occured during saving");
+				exceptionList1.forEach(System.out::println);
+			}
 		}
-		System.out.println("Finished saving workflowId in requirement table for all orgs.");
-	}
+	}*/
 }

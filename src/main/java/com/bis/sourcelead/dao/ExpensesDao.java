@@ -2,10 +2,13 @@ package com.bis.sourcelead.dao;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.ExpensePendingApproveReportView;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -29,6 +32,7 @@ public interface ExpensesDao {
 	public BigDecimal getExpenseAmountByCandidateIdAndExpenseStartAndEndDateForClaimedExpenses(Long candidateId,Date startDate, Date endDate);
 	public boolean changeExpenseBillingStatus(long expenseId, String billingStatus);
 	List<Expenses> getAllExpenses();
+	public List<ExpensePendingApproveReportView> getPendingForApprovalExpenseReportByProjectIds(String projectIds, Date frequencyStartDate, Date frequencyEndDate);
 }
 	
 

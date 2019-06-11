@@ -14,6 +14,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +29,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.AvailableAssociatesDTO;
+import com.bis.sourcelead.dto.ExpensesApproverHierarchyDTO;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.Response;
@@ -34,6 +40,8 @@ import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.LeaveReportView;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
@@ -54,8 +62,10 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.reportsDTO.AssetsReportDTO;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
+import com.bis.sourcelead.reportsDTO.PendingForExpenseApprovalReportDTO;
 import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
@@ -72,6 +82,7 @@ import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.ibm.icu.math.BigDecimal;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -2298,7 +2309,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 			   AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
 				ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
 				ablv.setIncludeHolidays(leaveType.getIncludeHolidays());
-			   appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), lrv.getFromDate(), lrv.getToDate(), lrv.getUserId().longValue(),orgLocations.getOrg().getId());
+			   appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), lrv.getFromDate(), lrv.getToDate(), lrv.getUserId().longValue(),orgLocations.getOrgId());
 			if(!appliedLeaves.isEmpty()){
 				   appliedNoofLeaves = (float)associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,lrv.getFromDate(),lrv.getToDate(),leaveType);
 			}
@@ -3588,5 +3599,298 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 								arrayList.add(reportArray);
 							}
 							return arrayList;
+						}
+						public File expensependingApprovalReportListOfPdf(java.util.List<PendingForExpenseApprovalReportDTO> data, User user,OrgLocations orgLocations) {
+							
+							try {
+								String[] headers = Constants.EXPENSE_PENDING_APPROVAL_REPORT_EXPORT_HEADDERS;
+								Document document = new Document(PageSize.LETTER.rotate());
+
+								StringBuilder sbUser = new StringBuilder();
+								sbUser.append("Expense pending Approval Report")
+										.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()));
+
+								StringBuilder fileSB = new StringBuilder();
+								File file = File.createTempFile(fileSB.append("Expense pending Approval Report")
+										.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date())).toString(),
+										".pdf");
+
+								file.setReadable(true);
+
+								try {
+									// Get an instance of PdfWriter and create a Table.pdf file as an output.
+									PdfWriter.getInstance(document, new FileOutputStream(file));
+									document.open();
+
+									Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+									BaseColor myColor = WebColors.getRGBColor("#000000");
+									boldFont.setColor(myColor);
+									StringBuilder userStyle = new StringBuilder();
+									userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("- Expense pending Approval Report");
+
+									// Create an instance of PdfPTable. After that we transform the header and
+									PdfPTable table = new PdfPTable(headers.length);
+									Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+									PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(), font));
+									cell1.setColspan(18);
+									headerCellStyle(cell1);
+									table.setWidthPercentage(100);
+									table.setWidths(new int[] { 5, 7, 5,7, 7, 5,7,5,5,7,5});
+									table.addCell(cell1);
+									for (int i = 0; i < headers.length; i++) {
+										String header = headers[i];
+										PdfPCell cell = new PdfPCell();
+										cell.setGrayFill(0.9f);
+										cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+										BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+										cell.setBackgroundColor(myBorderColor);
+										table.addCell(cell);
+									}
+									table.completeRow();
+									String isGlobalAccess = null;
+									java.util.List<String[]> reportList = prepareReportListStringArray(data, headers,orgLocations, user, isGlobalAccess );
+									if (reportList != null && reportList.size() > 0) {
+										for (String[] reportArray : reportList) {
+											for (int i = 0; i < reportArray.length; i++) {
+												String datum = reportArray[i];
+												PdfPCell cell = new PdfPCell();
+												cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+												table.addCell(cell);
+											}
+											table.completeRow();
+										}
+									}
+									document.addTitle("Available Associate Report Table");
+									table.setSpacingBefore(15f);
+									document.add(table);
+									logger.info("Pdf table created !!");
+								} catch (DocumentException e) {
+									logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+								} catch (FileNotFoundException e) {
+									logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+								} finally {
+									document.close();
+								}
+								return file;
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							return null;
+						}
+
+						private java.util.List<String[]> prepareReportListStringArray(
+								java.util.List<PendingForExpenseApprovalReportDTO> data, String[] headers, OrgLocations orgLocations,
+								User user, String isGlobalAccess) {
+					
+							java.util.List<String[]> arrayList = new ArrayList<>();
+
+							for (PendingForExpenseApprovalReportDTO report : data) {
+								String reportArray[] = new String[headers.length];
+								
+								if (report.getEmployeId() != null) {
+									reportArray[0] = report.getEmployeId();
+								} else {
+									reportArray[0] = "--";
+								}
+								
+								if (report.getEmployeName() != null) {
+									reportArray[1] = report.getEmployeName();
+								} else {
+									reportArray[1] = "--";
+								}
+
+								if (report.getEmployeType() != null) {
+									reportArray[2] = (report.getEmployeType());
+								} else {
+									reportArray[2] = "--";
+								}
+
+								if (report.getProjectName() != null) {
+									reportArray[3] = (report.getProjectName());
+								} else {
+									reportArray[3] = "--";
+								}
+								
+								if (report.getFrequency() != null) {
+									reportArray[4] = report.getFrequency();
+								} else {
+									reportArray[4] = "--";
+								}
+
+								if (report.getApprovalMechanism() != null) {
+									reportArray[5] = report.getApprovalMechanism();
+								} else {
+									reportArray[5] = "--";
+								}
+								if (report.getManagerOne() != null) {
+									reportArray[6] = report.getManagerOne();
+								} else {
+									reportArray[6] = "--";
+								}
+								if (report.getManagerTwo() != null) {
+									reportArray[7] = report.getManagerTwo();
+								} else {
+									reportArray[7] = "--";
+								}
+								if (report.getSubmittedAmount() != null) {
+									reportArray[8] = report.getSubmittedAmount();
+								} else {
+									reportArray[8] = "--";
+								}
+								if (report.getSubmittedOn() != null) {
+									reportArray[9] = report.getSubmittedOn();
+								} else {
+									reportArray[9] = "--";
+								}
+								if (report.getApprovedBy() != null) {
+									reportArray[10] = report.getApprovedBy();
+								} else {
+									reportArray[10] = "--";
+								}
+								arrayList.add(reportArray);
+							}
+							return arrayList;
+						}
+						
+						
+						
+						
+						public File expensependingApprovalReportListOfExcel(java.util.List<PendingForExpenseApprovalReportDTO> exp, User user,
+								OrgLocations orgLoc) throws Exception {
+
+							File file = null;
+								Workbook createExcelworkbook = new XSSFWorkbook();
+								DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+								Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrgLocationName()+ "_" + dateFormat.format(new Date()));
+								Row writeRow = null;
+								TimeSheetSubmissionCount requirementSubCount=null;
+								createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,requirementSubCount);
+								int column = 0;
+								for (PendingForExpenseApprovalReportDTO expenses : exp) {
+									writeRow = createExcelsheet.createRow(column+1);
+									createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expenses,orgLoc,user);
+									column++;
+								}
+								 try {
+									file = File.createTempFile(orgLoc.getOrgLocationName() + "_PendingExpensesReport_" + dateFormat.format(new Date()),".xls");
+								} catch (Exception e1) {
+									e1.printStackTrace();
+								}
+								 file.setReadable(true);
+								FileOutputStream fos = new FileOutputStream(file);
+								try {
+									createExcelworkbook.write(fos);
+									fos.close();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							
+								return file;
+						}
+
+						private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, TimeSheetSubmissionCount requirementSubCount) {
+							
+							CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+
+							String[] headers = Constants.EXPENSES_APPROVAL_lIST_HEADERS;;
+							createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,0);
+
+							return createExcelsheet;
+						}
+
+						private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, PendingForExpenseApprovalReportDTO expenses,OrgLocations orgLoc,User loginUser) throws Exception {
+												
+							
+							if(expenses.getEmployeId() != null) {
+								writeRow.createCell(0).setCellValue(expenses.getEmployeId());
+								
+							}else {
+								writeRow.createCell(0).setCellValue("--");
+							}
+							createExcelsheet.setColumnWidth(0, 15*255);
+
+							if(expenses.getEmployeName() != null) {
+								writeRow.createCell(1).setCellValue(expenses.getEmployeName());
+								
+							}else {
+								writeRow.createCell(1).setCellValue("--");
+							}
+							createExcelsheet.setColumnWidth(1, 32*255);
+
+							if(expenses.getEmployeType() != null) {
+								writeRow.createCell(2).setCellValue(expenses.getEmployeType());
+								
+							}else {
+								writeRow.createCell(2).setCellValue("--");
+							}
+							createExcelsheet.setColumnWidth(2, 15*255);
+
+							if(expenses.getProjectName() != null) {
+								writeRow.createCell(3).setCellValue(expenses.getProjectName());
+								
+							}else {
+								writeRow.createCell(3).setCellValue("--");
+							}
+							createExcelsheet.setColumnWidth(3, 32*255);
+
+							if(expenses.getFrequency() != null) {
+								writeRow.createCell(4).setCellValue(expenses.getFrequency());
+								
+							}else {
+								writeRow.createCell(4).setCellValue("--");
+							}
+							createExcelsheet.setColumnWidth(4, 32*255);
+
+							if(expenses.getApprovalMechanism() != null) {
+								writeRow.createCell(5).setCellValue(expenses.getApprovalMechanism());
+								
+							}else {
+								writeRow.createCell(5).setCellValue("--");
+							}
+							createExcelsheet.setColumnWidth(5, 22*255);
+
+							if(expenses.getManagerOne() != null) {
+								writeRow.createCell(6).setCellValue(expenses.getManagerOne());
+								
+							}else {
+								writeRow.createCell(6).setCellValue("--");
+							}
+							createExcelsheet.setColumnWidth(6, 32*255);
+
+							if(expenses.getManagerTwo() != null) {
+								writeRow.createCell(7).setCellValue(expenses.getManagerTwo());
+								
+							}else {
+								writeRow.createCell(7).setCellValue("--");
+							}
+							createExcelsheet.setColumnWidth(7, 25*255);
+
+							if(expenses.getSubmittedAmount()!= null) {
+								writeRow.createCell(8).setCellValue(expenses.getSubmittedAmount());
+								
+							}else {
+								writeRow.createCell(8).setCellValue("--");
+							}
+							createExcelsheet.setColumnWidth(8, 10*255);
+
+							if(expenses.getSubmittedOn() != null) {
+								writeRow.createCell(9).setCellValue(expenses.getSubmittedOn());
+								
+							}else {
+								writeRow.createCell(9).setCellValue("--");
+							}
+							createExcelsheet.setColumnWidth(9, 22*255);
+
+							if(expenses.getApprovedBy() != null) {
+								writeRow.createCell(10).setCellValue(expenses.getApprovedBy());
+								
+							}else {
+								writeRow.createCell(10).setCellValue("--");
+							}
+							createExcelsheet.setColumnWidth(10, 22*255);
+							
+							return createExcelsheet;
+							
 						}
 }

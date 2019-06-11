@@ -123,6 +123,8 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
+import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.document.JsonArrayDocument;
 import com.couchbase.client.java.document.json.JsonArray;
@@ -212,6 +214,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	    
 	@Autowired
 	private EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	RequirementWorkFlowService requirementWorkflowService;
 	
 	@Value("${env}")
 	 private String environment;
@@ -627,7 +632,12 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	
 				reqDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), RequirementDTO.class);
-	
+			  
+				// if valid workflow name is not found then setting/creating new WORKFLOW for the JOB. SRINIVAS SABBU.
+	           /* if(StringUtils.isEmpty(reqDTO.getWorkflow())){
+	        	   RequirementWorkFlow workflow = requirementWorkflowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocation, user);
+	        	   reqDTO.setWorkflow(workflow.getId().toString());
+	           	}*/
 				// reqDTO = mapper.readValue(dataMigrationDTOJsonCopy, RequirementDTO.class);
 				reqDTO.setDateFormat(orgLocation.getDateFormat());
 				if (reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("SUBMITTED")) {
@@ -1150,6 +1160,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))) {
 			//	passVisaDto.setIdType(Constants.ID_TYPE_PASSPORT);
+				passVisaDto.setPassportNumber(dataMigrationDTOJsonCopy.getString("passportNo"));
 				passVisaDto.setCandidateId(dataMigrationDTOJsonCopy.getString("candidateId"));
 			//	passVisaDto.setIdNumber(dataMigrationDTOJsonCopy.getString("passportNo"));
 				passVisaDto.setValidFrom(dataMigrationDTOJsonCopy.getString("passportStartDate"));

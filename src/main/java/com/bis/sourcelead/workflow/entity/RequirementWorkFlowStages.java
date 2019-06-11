@@ -70,6 +70,15 @@ import com.bis.sourcelead.entity.User;
 	@Column(name = "STATUS")
 	private Integer status;
 	
+	@Column(name = "COMMENT_REQUIRED")
+	private String commentRequired;
+	
+	@Column(name = "REQUIRED_STATS_LIST")
+	private String requiredStatsList;
+	
+	@Column(name = "CHOSEN_COLUMNS", columnDefinition = "LONGTEXT default NULL")
+	private String chosenColumns ;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -84,8 +93,6 @@ import com.bis.sourcelead.entity.User;
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
 	
-	@Column(name = "COMMENT_REQUIRED")
-	private String commentRequired;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementWorkFlowStagesId")
@@ -224,6 +231,22 @@ import com.bis.sourcelead.entity.User;
 
 	public void setWorkflowTasks(Set<RequirementWorkFlowTasks> workflowTasks) {
 		this.workflowTasks = workflowTasks;
+	}
+
+	public String getRequiredStatsList() {
+		return requiredStatsList;
+	}
+
+	public void setRequiredStatsList(String requiredStatsList) {
+		this.requiredStatsList = requiredStatsList;
+	}
+
+	public String getChosenColumns() {
+		return chosenColumns;
+	}
+
+	public void setChosenColumns(String chosenColumns) {
+		this.chosenColumns = chosenColumns;
 	}
 
 	
