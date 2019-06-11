@@ -288,6 +288,7 @@
 	            <div class="dropdown pull-right report-dropdown"> <span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown"> <span class="caret cursorPointer"></span> </span>
 	              <ul class="dropdown-menu minHeight50 maxHeight250">
 	                <li><a href="${SourceLeadWeb_atsUrl}/candidateSourceList">Source</a></li>
+	                <li><a href="${SourceLeadWeb_atsUrl}/candidateDuplicateVerification">CandidateDuplicateVerification</a></li>
 	              </ul>
 	            </div>
 	            <!-- Dropdown -->
@@ -472,6 +473,8 @@
   
   function flushBulkImportPath() {
 	  $("#folderPath").val('');
+	  $("#bulkImportStatus").empty();
+	  $("#bulkImportForm").find('p.jquery_form_error_message').remove();
   }
   
   
