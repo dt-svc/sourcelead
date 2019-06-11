@@ -352,7 +352,7 @@ a { cursor:pointer;}
 .project_tabs_inn_head a i, .canreq-tabs-menu_inn_head a i { padding:0px 5px 0px 0px;}
 .project_tabs_inn_head a:hover, .canreq-tabs-menu_inn_head a:hover { color:#375d81; text-decoration:none;}
 .project_tabs_inn_table { text-align: left; border-bottom:1px solid #EFEFEF !important;}  
-.project_tabs_inn_table.project_tabs_inn_table_a {}
+.project_tabs_inn_table.project_tabs_inn_table_a {width: auto;}
 .project_tabs_inn_table table { width:100%; font-size:14px; font-weight:400; border:none;}
 .project_tabs_inn_table table tr:nth-child(even) {background: #fff;}
 .project_tabs_inn_table table tr:nth-child(odd) {background: #f9f9f9;}
@@ -3769,12 +3769,10 @@ display:none;
 .NeDe {
     padding:5px;
 }
-.newPrDetails {
-    padding:10px;
-    }
+.newPrDetails { padding:10px;}
  
  
-.newPrTabsMenu {
+.newPrTabsMenu { 
     margin:0px 0px; padding:10px 0px 15px 0px; position:relative; top:1px;
     }
 .newPrTabsMenu li {
@@ -3791,27 +3789,13 @@ display:none;
 .newPrTabsMenu li a {
     padding:7px 20px; text-decoration:none; font-size:15px; color:#666; display:block; text-align: center;
     }
-.newPrTabsMenu .current a {
-    color:#a21e23;
-    }
-.newPrTabs_inn {
-    padding:0px; display:none; position: relative;
-    }
-.nObr {
-    border:none;
-}
-.prRight {
-    right:155px;
-}
-.ProjNewDet {
-    background-color:#fff; padding: 20px 0px 0px 0px; border-radius: 5px; box-shadow: 0px 0px 3px #707070;
-}
-.paD5 {
-    padding:0px 10px;
-}
-.bg-w {
-    background:#fff;
-}
+.newPrTabsMenu .current a { color:#a21e23; }
+.newPrTabs_inn { padding:0px; display:none; position: relative; }
+.nObr { border:none;}
+.prRight { right:155px;}
+.ProjNewDet { background-color:#fff; padding: 20px 0px 0px 0px; border-radius: 5px; box-shadow: 0px 0px 3px #707070;}
+.paD5 { padding:0px 10px;}
+.bg-w { background:#fff;}
  .expDetails .ratetype {
     min-height:150px; border-top: 1px solid #ccc; background-color: #f5f5f5; padding: 20px 0px; position: relative !important;
     display: none;
@@ -7841,6 +7825,7 @@ aside.asideAct {
 .navIcons.orgIcon { background: url("../images/org.svg"); background-size: 38px; background-position: -2px -2px;}
 .navIcons.supIcon { background: url("../images/supp.svg"); background-size: 38px; background-position: -2px -2px;}
 .navIcons.resIcon { background: url("../images/resources.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.goalIcon { background: url("../images/goal-menu.svg"); background-size: 38px; background-position: -2px -2px;}
 
 .navIcons.backofIcon { background: url("../images/backoff.svg"); background-size: 38px; background-position: -2px -2px;}
 .navIcons.invoIcon { background: url("../images/invoice.svg"); background-size: 38px; background-position: -2px -2px;}
@@ -8646,7 +8631,7 @@ bottom: auto !important; top: 55px !important;
     width: 98%; box-shadow: 0px 2px 6px rgba(0,0,0,0.2); padding: 12px 5px; text-align: center;
     font-size: 25px; border-radius: 5px; color: #666;
 }
-.popupWrap2 { width: 600px;}
+.popupWrap2 { width: 600px; position: fixed;}      
 .clockinn {
     padding: 15px 10px 10px;
 }
@@ -8959,11 +8944,9 @@ position: fixed; left: 0px !important; right: 0px !important; margin: 0px auto; 
 
 .categorySub { background-color: #f1f1f1; padding: 5px; margin: 0px 10px 10px 0px; float: left; width: 48%;}
 .categorySubHead {
-font-size: 15px; font-weight: 500; color: #454545; padding: 5px 5px 5px 7px !important; line-height: 35px; 
+font-size: 15px; font-weight: 500; color: #454545; padding: 5px 5px 5px 7px !important; line-height: 35px;
 }
 .categorySubCta { float: left; width: 23%; margin: 1%;}
 .categorySubCta span { display: block; font-size: 12px; padding: 0px 0px 5px 0px;}
 .categorySubCta span i { display: inline-block; padding: 0px 0px 0px 3px; color: #ea6b6b; cursor: pointer;}
 .subTable table tr { display: inline-table !important; width: 100%; }
-
-

@@ -89,7 +89,7 @@ public class TicketManagementController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(user != null) {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			model.addObject("ticketTypeList", ticketManagementService.getTicketTypeListByOrgLocationId(orgLocations.getId(), 1, null));
+			model.addObject("ticketTypeList", ticketManagementService.getTicketTypeListByOrgLocationId(orgLocations.getId(), 1, null,null));
 			model.addObject("ticketCategoryList", ticketManagementService.getTicketCategoryListByOrgLocationId(orgLocations.getId(),1, null));
 			model.addObject("ticketPriorityList", ticketManagementService.getTicketPriorityListByOrgLocationId(orgLocations.getId(),1, null));
 			model.addObject("ticketStatusList", ticketManagementService.getTicketStatusListByOrgLocationId(orgLocations.getId(),1, null));
