@@ -611,6 +611,12 @@ public class LeaveManagementUtil {
 	{
 		SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); 
 		
+		double fromHours = 0f;
+		double toHours = 0f;
+		int appLeaves = 0;
+		double actualLeaves = 0;
+		
+		
 		if("Duration".equalsIgnoreCase(l.getPeriod())){
 			appliedLeaves = new ArrayList<>();
 			List<Date> dates = getDaysBetweenLeaveDates(startDate, endDate);
@@ -621,72 +627,71 @@ public class LeaveManagementUtil {
 			}
 		}
 		
-		if (leaveType.getIncludeHolidays() != null
-				&& !Constants.YES.equalsIgnoreCase(leaveType.getIncludeHolidays())) {
-			List<HolidayAndRestrictday> holidayList = holidayService.getHolidayByFromToDate(startDate, endDate, orgLocations);
-			for (HolidayAndRestrictday holiday : holidayList) {
-				Date holidayDate = commonUtil.orgLocationCommonDate(holiday.getDay(), orgLocations);
-				boolean s = appliedLeaves.removeIf(x -> commonUtil.orgLocationCommonDate(x.getApplyLeaveDate(), orgLocations).equals(holidayDate));
-			}
-		}
-		if (leaveType.getIncludeWeekoff() != null && !Constants.YES.equalsIgnoreCase(leaveType.getIncludeWeekoff())) {
-			if (orgLocations.getWeekOffDays() != null) {
-				String[] weekOoffs = orgLocations.getWeekOffDays().split(",");
-				for (String weekEndDay : weekOoffs) {
-					appliedLeaves.removeIf(x -> simpleDateformat.format(x.getApplyLeaveDate()).toUpperCase().equals(weekEndDay.trim().toUpperCase()));
+		if(appliedLeaves != null && !appliedLeaves.isEmpty()) {
+		
+			if (leaveType.getIncludeHolidays() != null
+					&& !Constants.YES.equalsIgnoreCase(leaveType.getIncludeHolidays())) {
+				List<HolidayAndRestrictday> holidayList = holidayService.getHolidayByFromToDate(startDate, endDate, orgLocations);
+				for (HolidayAndRestrictday holiday : holidayList) {
+					Date holidayDate = commonUtil.orgLocationCommonDate(holiday.getDay(), orgLocations);
+					boolean s = appliedLeaves.removeIf(x -> commonUtil.orgLocationCommonDate(x.getApplyLeaveDate(), orgLocations).equals(holidayDate));
 				}
 			}
-		}
-		
-		double fromHours = 0f;
-		double toHours = 0f;
-		int appLeaves = 0;
-		double actualLeaves = 0;
-		
-		if ("Duration".equalsIgnoreCase(l.getPeriod())) {
-			if (appliedLeaves.stream().anyMatch(al -> al.getApplyLeaveDate().equals(startDate))) {
-				if (Constants.STATUS_YES.equalsIgnoreCase(l.getFromHalfDay())) {
-					if(StringUtils.isNotBlank(l.getFromHalfFromTime()) && StringUtils.isNotBlank(l.getFromHalfToTime())){
-						appLeaves += 1;
-						fromHours = calculateActualHoursForHalfDay(l.getFromHalfFromTime(), l.getFromHalfToTime(), orgLocations.getAverageWorkingHours(), leaveType);
+			if (leaveType.getIncludeWeekoff() != null && !Constants.YES.equalsIgnoreCase(leaveType.getIncludeWeekoff())) {
+				if (orgLocations.getWeekOffDays() != null) {
+					String[] weekOoffs = orgLocations.getWeekOffDays().split(",");
+					for (String weekEndDay : weekOoffs) {
+						appliedLeaves.removeIf(x -> simpleDateformat.format(x.getApplyLeaveDate()).toUpperCase().equals(weekEndDay.trim().toUpperCase()));
 					}
 				}
 			}
-			if (appliedLeaves.stream().anyMatch(al -> al.getApplyLeaveDate().equals(endDate))) {
-				if (Constants.STATUS_YES.equalsIgnoreCase(l.getToHalfDay())) {
-					if(StringUtils.isNotBlank(l.getToHalfFromTime()) && StringUtils.isNotBlank(l.getToHalfToTime())){
-						appLeaves += 1;
-						toHours = calculateActualHoursForHalfDay(l.getToHalfFromTime(), l.getToHalfToTime(), orgLocations.getAverageWorkingHours(), leaveType);
+			
+		
+			if ("Duration".equalsIgnoreCase(l.getPeriod())) {
+				if (appliedLeaves.stream().anyMatch(al -> al.getApplyLeaveDate().equals(startDate))) {
+					if (Constants.STATUS_YES.equalsIgnoreCase(l.getFromHalfDay())) {
+						if(StringUtils.isNotBlank(l.getFromHalfFromTime()) && StringUtils.isNotBlank(l.getFromHalfToTime())){
+							appLeaves += 1;
+							fromHours = calculateActualHoursForHalfDay(l.getFromHalfFromTime(), l.getFromHalfToTime(), orgLocations.getAverageWorkingHours(), leaveType);
+						}
 					}
 				}
-			}
-			int orgHours = 0;
-			if("Half Day".equalsIgnoreCase(leaveType.getDuration())){
-				orgHours = orgLocations.getAverageWorkingHours() / 2;
-			}else{
-				orgHours = orgLocations.getAverageWorkingHours();
-			}
-			float hourDays = (float) ((fromHours + toHours) / orgHours);
-			actualLeaves = (appliedLeaves.size() - appLeaves) + hourDays;
-		}else{
-			for(AppliedLeaveDateView ald : appliedLeaves){
-				if (Constants.STATUS_YES.equalsIgnoreCase(ald.getFromHalfDay()) && ald.getFromDate().equals(ald.getApplyLeaveDate())) {
-					appLeaves += 1;
-					fromHours += calculateActualHoursForHalfDay(ald.getFromDateFromHalfTime(), ald.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leaveType);
+				if (appliedLeaves.stream().anyMatch(al -> al.getApplyLeaveDate().equals(endDate))) {
+					if (Constants.STATUS_YES.equalsIgnoreCase(l.getToHalfDay())) {
+						if(StringUtils.isNotBlank(l.getToHalfFromTime()) && StringUtils.isNotBlank(l.getToHalfToTime())){
+							appLeaves += 1;
+							toHours = calculateActualHoursForHalfDay(l.getToHalfFromTime(), l.getToHalfToTime(), orgLocations.getAverageWorkingHours(), leaveType);
+						}
+					}
 				}
-				if (Constants.STATUS_YES.equalsIgnoreCase(ald.getToHalfDay()) && ald.getToDate().equals(ald.getApplyLeaveDate())) {
-					appLeaves += 1;
-					toHours += calculateActualHoursForHalfDay(ald.getToDateFromHalfTime(), ald.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leaveType);
+				int orgHours = 0;
+				if("Half Day".equalsIgnoreCase(leaveType.getDuration())){
+					orgHours = orgLocations.getAverageWorkingHours() / 2;
+				}else{
+					orgHours = orgLocations.getAverageWorkingHours();
 				}
-			}
-			int orgHours = 0;
-			if("Half Day".equalsIgnoreCase(leaveType.getDuration())){
-				orgHours = orgLocations.getAverageWorkingHours() / 2;
+				float hourDays = (float) ((fromHours + toHours) / orgHours);
+				actualLeaves = (appliedLeaves.size() - appLeaves) + hourDays;
 			}else{
-				orgHours = orgLocations.getAverageWorkingHours();
+				for(AppliedLeaveDateView ald : appliedLeaves){
+					if (Constants.STATUS_YES.equalsIgnoreCase(ald.getFromHalfDay()) && ald.getFromDate().equals(ald.getApplyLeaveDate())) {
+						appLeaves += 1;
+						fromHours += calculateActualHoursForHalfDay(ald.getFromDateFromHalfTime(), ald.getFromDateToHalfTime(), orgLocations.getAverageWorkingHours(), leaveType);
+					}
+					if (Constants.STATUS_YES.equalsIgnoreCase(ald.getToHalfDay()) && ald.getToDate().equals(ald.getApplyLeaveDate())) {
+						appLeaves += 1;
+						toHours += calculateActualHoursForHalfDay(ald.getToDateFromHalfTime(), ald.getToDateToHalfTime(), orgLocations.getAverageWorkingHours(), leaveType);
+					}
+				}
+				int orgHours = 0;
+				if("Half Day".equalsIgnoreCase(leaveType.getDuration())){
+					orgHours = orgLocations.getAverageWorkingHours() / 2;
+				}else{
+					orgHours = orgLocations.getAverageWorkingHours();
+				}
+				float hourDays = (float) ((fromHours + toHours) / orgHours);
+				actualLeaves = (appliedLeaves.size() - appLeaves) + hourDays;
 			}
-			float hourDays = (float) ((fromHours + toHours) / orgHours);
-			actualLeaves = (appliedLeaves.size() - appLeaves) + hourDays;
 		}
 		return actualLeaves;
 	}

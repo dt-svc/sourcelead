@@ -3,12 +3,16 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-public class TicketTypeDTO implements Serializable {
+public class TicketTypeDTO extends SearchDTO implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/**
 	 * @author VeeraRaghava
 	 */
-	private static final long serialVersionUID = 1L;
+	
 	private long id;
 	private String uuid;
 	private String name;
@@ -100,8 +104,6 @@ public class TicketTypeDTO implements Serializable {
 		this.updatedDate = updatedDate;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+	
 
 }
