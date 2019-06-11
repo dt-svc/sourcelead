@@ -3,6 +3,7 @@ package com.bis.sourcelead.ticketManagement.dao.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
@@ -141,7 +143,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<TicketType> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
+	public List<TicketType> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue,TicketTypeDTO ticketTypeDTO) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from TicketType t where t.orgLocations.id=" + orgLocationId;
@@ -151,8 +153,14 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			if(searchValue != null && !searchValue.isEmpty()) {
 				query += " and (t.name like '%" + searchValue + "%' or t.description like '%" + searchValue + "%')";
 			}
-			query += " order by t.id desc";
-			return session.createQuery(query).list();
+			
+			String qry = "";
+			if (StringUtils.isNotBlank(ticketTypeDTO.getSortColumn())) {
+				String sortColumnName = ticketTypeDTO.getSortColumn();
+					qry = " order by t." + sortColumnName + " " + ticketTypeDTO.getSortOrder();
+			}
+			String finalQuery = query+qry;
+			return session.createQuery(finalQuery).list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
