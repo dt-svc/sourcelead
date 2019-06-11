@@ -87,24 +87,24 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
+	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue, TicketTypeDTO ticketTypeDTO) {
 		List<TicketTypeDTO> ticketTypeDTOList = new LinkedList<>();
 		try {
-			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status, searchValue);
+			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status,searchValue,ticketTypeDTO);
 			if (ticketTypeList != null && !ticketTypeList.isEmpty()) {
 				for (TicketType ticketType : ticketTypeList) {
-					TicketTypeDTO ticketTypeDTO = new TicketTypeDTO();
-					ticketTypeDTO.setId(ticketType.getId());
-					ticketTypeDTO.setUuid(ticketType.getUuid());
-					ticketTypeDTO.setName(ticketType.getName());
-					ticketTypeDTO.setDescription(ticketType.getDescription());
-					ticketTypeDTO.setStatus(ticketType.getStatus());
-					ticketTypeDTO.setOrgLocationsId(ticketType.getOrgLocations().getId());
-					ticketTypeDTO.setCreatedBy(ticketType.getCreatedBy());
-					ticketTypeDTO.setCreatedDate(ticketType.getCreatedDate());
-					ticketTypeDTO.setUpdatedBy(ticketType.getUpdatedBy());
-					ticketTypeDTO.setUpdatedDate(ticketType.getUpdatedDate());
-					ticketTypeDTOList.add(ticketTypeDTO);
+					TicketTypeDTO ticketTypeDTO1 = new TicketTypeDTO();
+					ticketTypeDTO1.setId(ticketType.getId());
+					ticketTypeDTO1.setUuid(ticketType.getUuid());
+					ticketTypeDTO1.setName(ticketType.getName());
+					ticketTypeDTO1.setDescription(ticketType.getDescription());
+					ticketTypeDTO1.setStatus(ticketType.getStatus());
+					ticketTypeDTO1.setOrgLocationsId(ticketType.getOrgLocations().getId());
+					ticketTypeDTO1.setCreatedBy(ticketType.getCreatedBy());
+					ticketTypeDTO1.setCreatedDate(ticketType.getCreatedDate());
+					ticketTypeDTO1.setUpdatedBy(ticketType.getUpdatedBy());
+					ticketTypeDTO1.setUpdatedDate(ticketType.getUpdatedDate());
+					ticketTypeDTOList.add(ticketTypeDTO1);
 				}
 			}
 		} catch (Exception e) {
