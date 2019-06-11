@@ -24,6 +24,8 @@ import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
+
 
 @Component
 public class SourceleadResumeParserNew {
@@ -235,7 +237,7 @@ public class SourceleadResumeParserNew {
 			Metadata metadata = new Metadata();
 			parser.parse(stream, htmlHandler, metadata);
 			String parsedString = htmlHandler.toString();
-			jsonUtil = getResumeParserJsonUtil(parsedString, orgLocationDateFormat);			
+			jsonUtil = getResumeParserJsonUtil(parsedString, orgLocationDateFormat, "");			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -250,14 +252,14 @@ public class SourceleadResumeParserNew {
 			Metadata metadata = new Metadata();
 			parser.parse(stream, htmlHandler, metadata);
 			String parsedString = htmlHandler.toString();
-			jsonUtil = getResumeParserJsonUtil(parsedString, orgLocationDateFormat);
+			jsonUtil = getResumeParserJsonUtil(parsedString, orgLocationDateFormat, file.getName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return jsonUtil;
 	}
 	
-	public ResumeParserJsonUtil getResumeParserJsonUtil(String resumeData, String orgLocationDateFormat) {
+	public ResumeParserJsonUtil getResumeParserJsonUtil(String resumeData, String orgLocationDateFormat, String fileName) {
 		
 		//splitting resume into multiple sections
 		List<Integer> globalIndex = new LinkedList<>();
@@ -304,21 +306,19 @@ public class SourceleadResumeParserNew {
 
 			//Email
 			String email = getEmailFromTextFile(resumeData);
-			if(!email.isEmpty()) {
-				jsonUtil.setEmail(email);
-				
-				//Name
-				String name = getNameFromTextFile(resumeData, email);
-				if (name.split(" ").length > 2) {
-					jsonUtil.setFirstName(name.split(" ")[0]);
-					jsonUtil.setMiddleName(name.split(" ")[1]);
-					jsonUtil.setLastName(name.split(" ")[2]);
-				} else if (name.split(" ").length == 2) {
-					jsonUtil.setFirstName(name.split(" ")[0]);
-					jsonUtil.setLastName(name.split(" ")[1]);
-				} else {
-					jsonUtil.setFirstName(name);
-				}
+			jsonUtil.setEmail(email);
+			
+			//Name
+			String name = getNameFromTextFile(resumeData, email, fileName);
+			if (name.split(" ").length > 2) {
+				jsonUtil.setFirstName(name.split(" ")[0]);
+				jsonUtil.setMiddleName(name.split(" ")[1]);
+				jsonUtil.setLastName(name.split(" ")[2]);
+			} else if (name.split(" ").length == 2) {
+				jsonUtil.setFirstName(name.split(" ")[0]);
+				jsonUtil.setLastName(name.split(" ")[1]);
+			} else {
+				jsonUtil.setFirstName(name);
 			}
 			
 			Set<String> phoneNumberSet = new LinkedHashSet<>();
@@ -435,7 +435,6 @@ public class SourceleadResumeParserNew {
 						int lineCount = 0;
 						for(String s : str) {
 							if(lineCount < 2) {
-								
 								if(!s.isEmpty()) {
 									details += s;
 									lineCount++;
@@ -459,32 +458,65 @@ public class SourceleadResumeParserNew {
 	 * Name finder from parsed text file Here we used java regular expression
 	 * logic for resolving name from text file
 	 */
-	private String getNameFromTextFile(String parsedString, String email) {
+	private String getNameFromTextFile(String parsedString, String email, String fileName) {
 //		System.out.println(parsedString);
 		String name = "";
 		try {
-			int emailRowIndex = 0;
-			int empty = 0;
-			String[] str = parsedString.split("\n");
-			for(int i = 0; i < str.length; i++) {
-				if(str[i].contains(email)) {
-//					System.out.println("Email found at line : " + i);
-					emailRowIndex = i;
-					break;
-				} else if(str[i].isEmpty()) {
-					empty++;
+			String nameString = "";
+			String[] str = parsedString.replaceAll(SourceleadResumeParserRegEx.ELIMINATE_KEYWORDS.toString(), "").trim().split("\n");
+			
+			//Getting name based on filename
+			if(!fileName.isEmpty()) {
+				String subStr = fileName.substring(0, 4);
+				for(int i = 0; i < str.length; i++) {
+					if(str[i].toLowerCase().contains(subStr.toLowerCase())) {
+						String tempName = str[i].trim();
+						if(!tempName.toLowerCase().contains(email.toLowerCase())) {
+							nameString = tempName.replaceAll("[^a-zA-Z\\s\\.]+", "");
+							for(String eleString : Constants.ELIMINATE_NAME_KEYWORDS) {
+								nameString = nameString.replaceAll("(?i)" + eleString, "").trim();
+							}
+							break;
+						}
+					}
 				}
 			}
 			
-			/**
-			 *  If emailID found with in 10 lines, then fetch name from 1st line
-			 *	Else fetch name from 4 lines prior to EmailID
-			 **/ 
-			int index = emailRowIndex - empty < 10 ? 0 : emailRowIndex - 4;
-			String nameString = "";
-			for(int i = index; i <= index + 4; i++) {
-				if(!str[i].isEmpty()) {
-					nameString += (nameString.isEmpty() ? "" : "\n") + str[i];
+			//Getting name based on RegEx
+			if(nameString.isEmpty()) {
+				Pattern pattern = Pattern.compile(SourceleadResumeParserRegEx.NAME.toString(), Pattern.CASE_INSENSITIVE);
+				for(int i = 0; i < str.length; i++) {
+					Matcher matcher = pattern.matcher(str[i]);
+					if(matcher.find()) {
+						nameString = str[i].replaceAll(matcher.group(0), "").replaceAll("[^a-zA-Z\\s\\.]+", "").trim();
+						break;
+					}
+				}
+			}
+			
+			//Getting name based on lines near to emailId
+			if(nameString.isEmpty() && !email.isEmpty()) {
+				int emailRowIndex = 0;
+				int empty = 0;
+				for(int i = 0; i < str.length; i++) {
+					if(str[i].contains(email)) {
+	//					System.out.println("Email found at line : " + i);
+						emailRowIndex = i;
+						break;
+					} else if(str[i].isEmpty()) {
+						empty++;
+					}
+				}
+				
+				/**
+				 *  If emailID found with in 10 lines, then fetch name from 1st line
+				 *	Else fetch name from 4 lines prior to EmailID
+				 **/ 
+				int index = emailRowIndex - empty < 10 ? 0 : emailRowIndex - 4;
+				for(int i = index; i <= index + 4; i++) {
+					if(!str[i].isEmpty()) {
+						nameString += (nameString.isEmpty() ? "" : "\n") + str[i].replaceAll("[^a-zA-Z\\s\\.]+", "").trim();
+					}
 				}
 			}
 			System.out.println("Name String : " + nameString);

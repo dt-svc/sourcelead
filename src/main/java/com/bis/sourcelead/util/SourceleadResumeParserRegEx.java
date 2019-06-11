@@ -2,6 +2,10 @@ package com.bis.sourcelead.util;
 
 public enum SourceleadResumeParserRegEx {
 	
+	ELIMINATE_KEYWORDS("\\b(CURRICULLUM VITAE)\\b"),
+	
+	NAME("\\b(CANDIDATE(:?)|FIRST NAME(:?))\\b"),
+	
 	LINK("(?:^|[\\W])((ht|f)tp(s?):\\/\\/|www\\.)(([\\w\\-]+\\.){1,}?([\\w\\-.~]+\\/?)*[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};']*)"),
 	OBJECTIVE("\\b(CAREER OBJECTIVE|OBJECTIVE(S?)|CAREER GOAL|CAREER SUMMARY|EMPLOYMENT OBJECTIVE|HIGHLIGHTS|JOB OBJECTIVE|OBJECTIVE|PROFILE|PROFILE SUMMARY|SUMMARY OF QUALIFICATION(S?)|SUMMARY STATEMENT|STATEMENT|SUMMARY)\\b"), // summary included here
 	PROFESSIONAL_SUMMARY("\\b(PROFESSIONAL OBJECTIVE|PROFESSIONAL SUMMARY|PROFESSIONAL PROFILE|TECHNICAL SUMMARY)\\b"),
