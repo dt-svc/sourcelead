@@ -371,7 +371,7 @@ public class SourceleadResumeParserNew {
 			educationsSet.remove("\\,");
 			
 			jsonUtil.setEducations(educationsSet);
-			System.out.println(educationsSet);
+//			System.out.println(educationsSet);
 			
 			//Address
 			/*String country = getKeywordsFromTextFile(resumeData, "countries.txt");
@@ -460,7 +460,7 @@ public class SourceleadResumeParserNew {
 	 * logic for resolving name from text file
 	 */
 	private String getNameFromTextFile(String parsedString, String email) {
-		System.out.println(parsedString);
+//		System.out.println(parsedString);
 		String name = "";
 		try {
 			int emailRowIndex = 0;
@@ -487,7 +487,7 @@ public class SourceleadResumeParserNew {
 					nameString += (nameString.isEmpty() ? "" : "\n") + str[i];
 				}
 			}
-			System.out.println(nameString);
+			System.out.println("Name String : " + nameString);
 			
 			String regEx = "^\\p{L}+[\\p{L}\\p{Z}\\p{P}]{0,}";
 //			String regEx = "^[a-zA-Z\\\\s]*$";
@@ -871,7 +871,7 @@ public class SourceleadResumeParserNew {
 				martialStatus = n.group(0);
 			}*/
 			
-			Pattern pattern = Pattern.compile("\\bsingle\\b", Pattern.CASE_INSENSITIVE);
+			Pattern pattern = Pattern.compile("\\bsingle|solo|unmarried|un married\\b", Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(text);
 			if (matcher.find()) {
 				martialStatus = "Single";
