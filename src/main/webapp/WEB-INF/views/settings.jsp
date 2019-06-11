@@ -473,6 +473,8 @@
   
   function flushBulkImportPath() {
 	  $("#folderPath").val('');
+	  $("#bulkImportStatus").empty();
+	  $("#bulkImportForm").find('p.jquery_form_error_message').remove();
   }
   
   
