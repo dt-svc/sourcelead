@@ -1160,6 +1160,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))) {
 			//	passVisaDto.setIdType(Constants.ID_TYPE_PASSPORT);
+				passVisaDto.setPassportNumber(dataMigrationDTOJsonCopy.getString("passportNo"));
 				passVisaDto.setCandidateId(dataMigrationDTOJsonCopy.getString("candidateId"));
 			//	passVisaDto.setIdNumber(dataMigrationDTOJsonCopy.getString("passportNo"));
 				passVisaDto.setValidFrom(dataMigrationDTOJsonCopy.getString("passportStartDate"));
