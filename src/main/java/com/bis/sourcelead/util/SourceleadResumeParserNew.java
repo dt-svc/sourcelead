@@ -771,17 +771,17 @@ public class SourceleadResumeParserNew {
 	private String getExperienceFromTextFile(String text) {
 		String years = "", months = "";
 		try {
-			/*Pattern p = Pattern.compile("\\d+\\W+\\s+(?:months?|years?|yrs?) | "
+			Pattern p = Pattern.compile("\\d+\\W+\\s+(?:months?|years?|yrs?) | "
 					+ "\\d+\\s+years?\\s+(?:and\\s*)?\\d+\\s+months?|\\d+\\s+(?:months?|years?|yrs?) |"
 					+ " \\d+\\.?\\d*\\W+\\s+(?:months?|years?|yrs?) |\\d+\\.?\\d*\\s+(?:months?|years?|yrs?)|"
-					+ "\\d+\\W*((?i)plus(?-i))\\W*\\s+(?:months?|years?|yrs?)", Pattern.CASE_INSENSITIVE);*/
+					+ "\\d+\\W*((?i)plus(?-i))\\W*\\s+(?:months?|years?|yrs?)", Pattern.CASE_INSENSITIVE);
 			
-			Pattern p = Pattern.compile("\\d+\\W+\\s*\\S*(?:months?|years?|yrs?|mnths?) | "
+			/*Pattern p = Pattern.compile("\\d+\\W+\\s*\\S*(?:months?|years?|yrs?|mnths?) | "
 					+ "\\d+\\s*\\S*years?\\s+(?:and\\s*)?\\d+\\s*\\S*months?|\\d+\\s+(?:months?|years?|yrs?|mnths?) | "
 					+ "\\d+\\.?\\d*\\W+\\s*\\S*(?:months?|years?|yrs?|mnths?)"
 					+ "  | \\d+\\s*\\S*yrs?\\s+(?:and\\s*)?\\d+\\s*\\S*mnths?|\\d+\\s+(?:months?|years?|yrs?|mnths?)| "
 					+ "\\d+\\s*\\S*((?i)plus(?-i))\\s*\\S*(?:months?|years?|yrs?|mnths?) | "
-					+ "\\d+\\s*\\S*(?:months?|years?|yrs?|mnths?)", Pattern.CASE_INSENSITIVE);
+					+ "\\d+\\s*\\S*(?:months?|years?|yrs?|mnths?)", Pattern.CASE_INSENSITIVE);*/
 	
 			Matcher matcher = p.matcher(text);
 			String experience = "";
