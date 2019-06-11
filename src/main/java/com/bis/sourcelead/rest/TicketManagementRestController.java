@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +36,7 @@ import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.ticketManagement.service.TicketManagementService;
@@ -62,6 +65,9 @@ public class TicketManagementRestController {
 
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 
 	@RequestMapping(value = "/dumpTicketManagementData")
 	@ResponseBody
@@ -82,31 +88,43 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = {"/getTicketTypeList", "/rest/getTicketTypeList"}, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketTypeDTO> getTicketTypeList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
-		ResponseList<TicketTypeDTO> responseList = new ResponseList<>();
-		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null) {
-				boolean forMobile = request.getRequestURI().contains("rest");
-				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<TicketTypeDTO> ticketTypeDTOList = ticketManagementService.getTicketTypeListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue);
-				responseList.setData(ticketTypeDTOList);
-				responseList.setRecordsTotal(ticketTypeDTOList.size());
-				responseList.setRecordsFiltered(ticketTypeDTOList.size());
-				responseList.setResponse(Result.SUCCESS.name());
-				responseList.setResponseMessage(Result.SUCCESS.getValue());
-			} else {
-				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
-				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			responseList.setResponse(Result.AWKWARD.name());
-			responseList.setResponseMessage(Result.AWKWARD.getValue());
-		}
-		return responseList;
-	}
+	public ResponseList<TicketTypeDTO> getTicketTypeList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue,TicketTypeDTO ticketTypeDTO) {
+	ResponseList<TicketTypeDTO> responseList = new ResponseList<>();
+	try {
+	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	if (user != null) {
+	boolean forMobile = request.getRequestURI().contains("rest");
+	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
+	String[] tableColumns = { "id", "name ", "description"};// should be
+
+	// entity names
+	int sortColumnIndex = 1; // by default sorting using invoice date
+	String sortColumnOrder = "asc"; // by default descending order
+	if (ticketTypeDTO.getOrder() != null && !ticketTypeDTO.getOrder().isEmpty()) {
+		sortColumnIndex = Integer.parseInt(ticketTypeDTO.getOrder().get(0).get("column"));
+		sortColumnOrder = ticketTypeDTO.getOrder().get(0).get("dir");
+	}
+	ticketTypeDTO.setSortColumn(tableColumns[sortColumnIndex]);
+	ticketTypeDTO.setSortOrder(sortColumnOrder);
+
+	List<TicketTypeDTO> ticketTypeDTOList = ticketManagementService.getTicketTypeListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1,searchValue,ticketTypeDTO);
+	responseList.setData(ticketTypeDTOList);
+	responseList.setRecordsTotal(ticketTypeDTOList.size());
+	responseList.setRecordsFiltered(ticketTypeDTOList.size());
+	responseList.setResponse(Result.SUCCESS.name());
+	responseList.setResponseMessage(Result.SUCCESS.getValue());
+	} else {
+	responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+	responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+	}
+	} catch (Exception e) {
+	e.printStackTrace();
+	responseList.setResponse(Result.AWKWARD.name());
+	responseList.setResponseMessage(Result.AWKWARD.getValue());
+	}
+	return responseList;
+	}
 	@RequestMapping(value = "/saveTicketType", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Long> saveTicketType(HttpServletRequest request, TicketTypeDTO ticketTypeDTO) {
