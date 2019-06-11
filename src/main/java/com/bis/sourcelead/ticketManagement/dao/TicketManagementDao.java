@@ -2,6 +2,7 @@ package com.bis.sourcelead.ticketManagement.dao;
 
 import java.util.List;
 import com.bis.sourcelead.entity.TicketType;
+import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
@@ -18,7 +19,7 @@ public interface TicketManagementDao {
 
 	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations(long orgLocationId);
 
-	public List<TicketType> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+	public List<TicketType> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue,TicketTypeDTO ticketTypeDTO);
 
 	public TicketType getTicketTypeById(long id);
 	
@@ -121,5 +122,7 @@ public interface TicketManagementDao {
 	public List<Long> getTicketCategoryAssignToIdList(long ticketCategoryId);
 	
 	public void deleteTicketCategoryAssignTo(TicketCategoryAssignTo ticketCategoryAssignTo);
+
+	
 
 }
