@@ -332,13 +332,15 @@ function getUserTimeEntriesPagination(url){
 
            					   }
            					   
+           					   result = result +'	        <td>--</td>    ';
+           					   
            					  if(opt.comments != null && opt.comments != "undefined" && opt.comments != ""){
           	   					   result = result +'	        <td>'+opt.comments+'</td>                                 '; 
           					   }else{
           	   					   result = result +'	        <td>--</td>                                 '; 
 
           					   }
-           					   result = result +'	        <td>--</td>                              '; 
+           					   
            					   result = result +'	        <td>'+opt.clockOutDate+'</td>                             '; 
            					   result = result +'	  </tr>                                                 '; 
            		    			
