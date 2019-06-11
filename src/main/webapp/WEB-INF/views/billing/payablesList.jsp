@@ -437,63 +437,6 @@ function cancelTermination(){
 	$("#remove_user_pop, .project_inn_mask").fadeOut();
 }
 
-function showInvoiceStartDate(){
-    
-    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatClientInvoiceDate = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
-	  }
-	  
-	
-	$('#billingStartDate').datepicker({
-		changeMonth: true,
-		changeYear: true, 
-		dateFormat : finalDateFormatClientInvoiceDate,
-		onSelect : function(selected) {
-			 var dt = $(this).datepicker('getDate', '+1d');
-	            dt.setDate(dt.getDate() + 1);
-			$("#billingEndDate").datepicker("option", "minDate", dt);
-			removeStartdateval();
-		}
-	}).datepicker('show');;
-}
-	
-function showInvoiceEndDate(){
-   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-  	  var finalDateFormatClientInvoiceDate = '';
-  	  if(locationDate.match("yyyy-MM-dd")){
-  		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
-  	  }if(locationDate.match("dd-MM-yyyy")){
-  		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
-  	  }if(locationDate.match("MM-dd-yyyy")){
-  		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
-  	  }if(locationDate.match("yyyy-dd-MM")){
-  		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
-  	  }
-   
-   
-	$('#billingEndDate').datepicker({
-		changeMonth: true,
-		changeYear: true, 
-		dateFormat : finalDateFormatClientInvoiceDate,
-		beforeShow: function(){
-	           this.value='';
-	     },
-		onSelect : function(selected) {
-			   var dt = $(this).datepicker('getDate', '-1d');
-	            dt.setDate(dt.getDate() - 1);
-			$("#billingStartDate").datepicker("option", "maxDate", dt);
-			removeEnddateval();
-		}
-	}).datepicker('show');;
-}
 </script>
 <!-- modal pop -->
 <script>
@@ -1231,16 +1174,45 @@ $(document).ready(function() {
             if (selectVal == "custom") {
             	var result = '';
             	result  = result + '<div class="col-md-6 paddingLeft" id="errStartDate">';                                                                       
-            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showInvoiceStartDate();" id="billingStartDate" placeholder="Start Date"> ';
+            	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingStartDate" readonly = "readonly" placeholder="Start Date"> ';
             	result = result +'   </div> ';
             	result = result +'   <div class="col-md-6 noPad" id="errEndDate">';
-            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showInvoiceEndDate();" id="billingEndDate" placeholder="End Date">';
+            	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingEndDate" readonly = "readonly" placeholder="End Date">';
             	result = result +'   </div>';
                 $(".custom_search").empty().append(result);
                 $(".custom_search").show();
             }else {
                 $(".custom_search").empty().hide();
             }
+            
+            var locationDate ='${SourceLeadWeb_dateFormat}'; 
+        	  var finalDateFormatEduSave = getJSDateFormat(locationDate);
+        	  
+        	$('#billingStartDate').datepicker({
+        	      dateFormat: finalDateFormatEduSave,
+        	      changeMonth: true,
+        	  	  changeYear: true, 
+        	      onSelect: function (selected) {
+        	            //var dt = new Date(selected);
+        	            var dt = $(this).datepicker('getDate', '+1d');
+        	            dt.setDate(dt.getDate() + 1);
+        	            $("#billingEndDate").datepicker("option", "minDate", dt);
+        	          removeStartdateval();
+        	        }
+        	  });
+        	  
+        	  $('#billingEndDate').datepicker({
+        	      dateFormat: finalDateFormatEduSave,
+        	      changeMonth: true,
+        	  	  changeYear: true, 
+        	        onSelect: function (selected) {
+        	            //var dt = new Date(selected);
+        	            var dt = $(this).datepicker('getDate', '-1d');
+        	            dt.setDate(dt.getDate() - 1);
+        	            $("#billingStartDate").datepicker("option", "maxDate", dt);
+        	          removeEnddateval();
+        	        }
+        	  });
         }
        
 </script>
@@ -1647,8 +1619,8 @@ function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,invoiceUUID)
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Proceed' onclick='proceedToMergeBill("+checkVal+",\""+invoiceUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
-	$("#payable_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$("#payable_pop").fadeIn(200).css({"z-index":"999999"});
+	$(".project_inn_mask").fadeIn(200).css({"z-index":"105000"});
 	
 }
 

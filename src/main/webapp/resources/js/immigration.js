@@ -494,7 +494,8 @@ function Immigration() {
         			$('#visaCountry').val(data.country);
         			$('#visaCountry').selectpicker('refresh');
         			$('#visaCountry').prop("disabled",true);
-        			$('#visaNumber').prop("disabled",true);
+        			$('#visaNumber').val(data.visaNumber);
+        			$('#visaNumber').attr("disabled","disabled");
         			$('#candidateVisaId').val(data.candidateVisaId);
         			$('#visaHistoryId').val(data.id);
 	        	}

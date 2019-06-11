@@ -225,8 +225,11 @@
 				$(".popMask").fadeOut(200);
 				$("#popUpVisa").fadeOut(200);
 				$("#CandidateVisaform")[0].reset();
+				$('#visaType').prop("disabled",false);
 				$("#visaType").selectpicker("refresh");
+				$('#visaCountry').prop("disabled",false);
 				$("#visaCountry").selectpicker("refresh");
+				$('#visaNumber').removeAttr("disabled");
 				$("#candidateVisaId").val('');
 				$('#popUpVisa').find('p.jquery_form_error_message').remove();
 				$("#visa_save_id").removeAttr("disabled");
