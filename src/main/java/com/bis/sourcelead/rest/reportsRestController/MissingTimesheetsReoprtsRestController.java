@@ -95,6 +95,8 @@ public class MissingTimesheetsReoprtsRestController {
 	
 	@Autowired
 	ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
+	
+	@Autowired
 	private DynamicReport dynamicReport;
 
 	
