@@ -514,12 +514,17 @@ function applyResumeData(json) {
 	
 	if(json.totalYearsExp > 0) {
 		$("#experienceYears").val(json.totalYearsExp);
-		$("#experienceYears").selectpicker('refresh');
+	} else if(json.totalMonthsExp > 0) {
+		$("#experienceYears").val(0);
 	}
+	$("#experienceYears").selectpicker('refresh');
+	
 	if(json.totalMonthsExp > 0) {
 		$("#experienceMonths").val(json.totalMonthsExp);
-		$("#experienceMonths").selectpicker('refresh');
+	} else if(json.totalYearsExp > 0) {
+		$("#experienceMonths").val(0);
 	}
+	$("#experienceMonths").selectpicker('refresh');
 	
 	$("#candidateEmployers").val(json.employeers);
 	
