@@ -879,7 +879,7 @@ public class ReportRestController {
 						String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 						User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 						
-						String[] tableColumns = {"employeeId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName"};
+						String[] tableColumns = {"employeeId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName", "probationStatus"};
 
 						   int sortColumnIndex = 1; //by default sorting using updated date
 						   String sortColumnOrder = "desc"; //by default descending order
