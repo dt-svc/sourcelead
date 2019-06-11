@@ -753,6 +753,8 @@
 				&& submissionId != 'undefined' && candidateId != null
 				&& candidateId != '' && candidateId != 'undefined'
 				&& submissionType != "all"
+				&& submissionType != "DUPLICATE_APPLICANTS"
+				&& submissionType != "REQUEST_SENT"
 				&& submissionStatus != "SUBMIT_TO_CLIENT"
 				&& submissionStatus != "all" || submissionStatus == "REJECTED") {
 			applicantQuickViewProfile(submissionId, candidateId);
