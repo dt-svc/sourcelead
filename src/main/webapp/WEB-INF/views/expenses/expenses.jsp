@@ -513,9 +513,9 @@ function newActions(){
 	$(".approved_pop").hide();	
 }
 $("html").click(function(){
-	$(".newActPop").slideUp(200);
+	$(".newActPop, .approved_pop").slideUp(200);
 });
-$(".overIcon, .newActPop").click(function(e){
+$(".overIcon, .newActPop, .approved_pop, #appro-pop").click(function(e){
  	e.stopPropagation();
 });	
 
