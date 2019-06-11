@@ -28,7 +28,7 @@
         <div class="clearfix row">
           <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12 paddingRight">Loan Name</label>
+              <label class="clearfix">Loan Name</label>
 				<div class="dropdown-select">
                     <select class="form-control chosen-select" name="loanName" id="loanName" field-name="Name">
                         
@@ -39,9 +39,9 @@
 			
 			<div class="col-md-5">
 			<div class="form-group">
-              <label class="col-md-12">Emp Type</label>
-              <div class="col-md-12">
-                <select class="form-control" id="designType"
+              <label class="clearfix">Emp Type</label>
+              <div class="clearfix">
+                <select class="sel" id="designType"
 								name="designType"
 								field-name="Employment type">
 								<option value="">--Select Employment Type--</option>
@@ -60,7 +60,7 @@
 			
 			<div class="col-md-5">
 			<div class="form-group">
-              <label class="col-md-12">Status</label>
+              <label class="clearfix">Status</label>
                <div class="dropdown-select">
                     <select class="form-control" data-placeholder="Select Type" id="loanAndAdvStatus" name="loanAndAdvStatus" field-name="Status">
                       <option value="">-- Select Status --</option>
@@ -75,16 +75,16 @@
 			  
 			  <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12">From Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-12">
+              <label class="clearfix">From Date<span class="text-danger">&nbsp;*</span></label>
+              <div class="clearfix">
                 	<input type="text" class="form-control calendar" id="fromDate" data-validation="required" field-name="From Date">
               </div>
             </div>
 			</div>
             <div class="col-md-5">
              <div class="form-group">
-              <label class="col-md-12">To Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-12">
+              <label class="clearfix">To Date<span class="text-danger">&nbsp;*</span></label>
+              <div class="clearfix">
                 	<input type="text" class="form-control calendar" id="toDate" data-validation="required" field-name="To Date">
               </div>
             </div>
