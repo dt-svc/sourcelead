@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,9 +18,12 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
+import com.bis.sourcelead.dto.CandidateConfigurationDTO;
+import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
 import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.OfferAcceptanceRateView;
 import com.bis.sourcelead.entity.OfferAcceptanceRateViewForVendor;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -32,6 +36,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -53,6 +58,9 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	private CandidateService candidateService;
 	
 	/**
 	 * updating the Requirement Submission Hostory
@@ -126,8 +134,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
         Date parsed = dateFormat.parse(updatedDate);
         java.sql.Timestamp coolingOffEndDate = new java.sql.Timestamp(parsed.getTime());
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-		RequirementSubmissionHistory requirementSubmissionHistory1 = requirementSubmissionHistoryDao.isInCoolingOffPeriodByEmailAndLocationsId(email, orgLocations.getId(), reqCoolingOffPeriod, requirementId);
-		
+        RequirementSubmissionHistory requirementSubmissionHistory1 = requirementSubmissionHistoryDao.isInCoolingOffPeriodByEmailAndLocationsId(email, orgLocations.getId(), reqCoolingOffPeriod, requirementId);
 		boolean isInCoolingOffPeriod = false;
 		if(null != requirementSubmissionHistory1){
 			if(coolingOffEndDate.before(requirementSubmissionHistory1.getCreatedDate())){
@@ -418,4 +425,60 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 		return offerAcceptanceRateDTO;
 	}
 
+	@Override
+	public RequirementSubmissionHistory isInCoolingOffPeriodByLocationID(
+			CandidateVerificationConfig candidateVerificationConfig,CandidateConfigurationDTO candidateConfigurationDTO, OrgLocations orgLocations,
+			String reqCoolingOffPeriod, Long requirementId) throws Exception {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	     Calendar c = Calendar.getInstance();
+	     c.setTime(new Date()); // Now use today date.
+	     Integer dateRange = Integer.parseInt(reqCoolingOffPeriod);
+       c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
+       String updatedDate     = dateFormat.format(c.getTime());
+       Date parsed = dateFormat.parse(updatedDate);
+       java.sql.Timestamp coolingOffEndDate = new java.sql.Timestamp(parsed.getTime());
+		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
+     RequirementSubmissionHistory requirementSubmissionHistory1 = requirementSubmissionHistoryDao.isInCoolingOffPeriodByLocationID(candidateVerificationConfig,candidateConfigurationDTO, orgLocations.getId(), reqCoolingOffPeriod, requirementId);
+		boolean isInCoolingOffPeriod = false;
+		if(null != requirementSubmissionHistory1){
+			if(coolingOffEndDate.before(requirementSubmissionHistory1.getCreatedDate())){
+				isInCoolingOffPeriod = true;
+				requirementSubmissionHistory1.setIsInCoolingOffPeriod(isInCoolingOffPeriod);
+	
+				 Calendar cp = Calendar.getInstance();
+				
+			     cp.setTime(requirementSubmissionHistory1.getCreatedDate()); // Now use today date.
+			     Integer coolingOffPeriodEndDate = Integer.parseInt(reqCoolingOffPeriod);
+			     cp.add(Calendar.DATE, coolingOffPeriodEndDate);
+		         String updatedCPDate     = dateFormat.format(cp.getTime());
+		         Date parsedCPED = dateFormat.parse(updatedCPDate);
+				
+				Timezone timezone = null;
+				if(null != orgLocations.getTimezone()){
+			    	 timezone = timeZoneDao.getTimezone(orgLocations.getTimezone().getId());
+				 }
+				
+				if(parsedCPED != null){
+					String currentTimeStr = Constants.TZ_DF.format(parsedCPED);
+					if(null != timezone && null != timezone.getTimeZoneId()){
+						String currentDateInTimezone= CommonUtil.convertTimeZones("UTC" ,timezone.getTimeZoneId(), currentTimeStr);
+						DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+						currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),converteDate);
+						requirementSubmissionHistory1.setCoolingOffPeriodEndDateStr(currentDateInTimezone);
+						
+						/*SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+				        String time = localDateFormat.format(converteDate);
+				        requirementSubmission.setCreatedTimeStr(time);*/
+					}
+			    }
+			}else{
+				requirementSubmissionHistory1.setIsInCoolingOffPeriod(isInCoolingOffPeriod);
+			}
+		}else{
+			requirementSubmissionHistory1 = new RequirementSubmissionHistory();
+			requirementSubmissionHistory1.setIsInCoolingOffPeriod(isInCoolingOffPeriod);
+		}
+		return requirementSubmissionHistory1;
+	}
 }
