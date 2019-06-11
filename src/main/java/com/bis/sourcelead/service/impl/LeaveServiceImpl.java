@@ -1396,15 +1396,10 @@ public class LeaveServiceImpl implements LeaveService{
 		int selfCancelledCounts = 0;
 		
 		float balanceLeaveCounts = 0;
-		int pendingLeaveCounts = 0;
 		
-		   int takenLeaveCounts = 0;
-		
-		UserRole roleId = userRoleService.getUserRoleByUserId(userId);
 		User user = userService.getUserById(userId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocationId);
-		Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocationId);
 
 		LeaveDTO leaveDto = new LeaveDTO();
 		List<Leave> leavesList = leaveDao.getAllSelfLeavesCounts(orgLocationId,userId);

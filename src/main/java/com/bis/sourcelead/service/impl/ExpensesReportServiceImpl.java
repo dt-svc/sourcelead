@@ -367,7 +367,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					 BigDecimal decUnApprovedTotal = new BigDecimal(0);
 				 for(Expenses exp:expenses){
 					 if(projectMember!=  null && null != projectMember.getProjectMemberCandidteId()){
-							if(projectMember.getEmployee()!= null && null != projectMember.getEmployee().getEmployeeId()){
+							if(projectMember.getEmployeeIdForExpenses() != null){
 								expensesArray[0] = (projectMember.getEmployee().getEmployeeId());
 							}else {
 								expensesArray[0] = ("--");
@@ -399,6 +399,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 
 							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
 			     			  OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
+			     			  if(orgRelation !=null) {
 			     			  	expensesArray[5] = orgRelation.getResponderLocationId().getOrgLocationName();
 			     			  	expensesArray[6] = orgRelation.getResponderLocationId().getUser().getFullName();
 			           	     }else{
@@ -406,7 +407,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 								expensesArray[6] = "--";
 			           	     }
 							
-							
+							}
 							
 							 /*if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
 									OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
@@ -1015,9 +1016,11 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					 
 				 for(Expenses exp:expenses){
 					 if(null != projectMember.getProjectMemberCandidteId()){
-							if(projectMember.getEmployee()!= null && null != projectMember.getEmployee().getEmployeeId()){
+							if(projectMember.getEmployeeIdForExpenses()!= null ){
 								writeRow.createCell(0).setCellValue(exp.getProjectMembers().getEmployee().getEmployeeId());
 								 createExcelsheet.autoSizeColumn(0);
+							}else{
+								writeRow.createCell(0).setCellValue("--");
 							}
 							if(null != projectMember.getProjectMemberCandidteId()){
 								if(null !=projectMember.getProjectMemberCandidteId().getLastName()){
@@ -1050,6 +1053,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 							
 							if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
 								 OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
+								 if(orgRelation != null) {
 								writeRow.createCell(5).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName());
 								 createExcelsheet.autoSizeColumn(5);
 								writeRow.createCell(6).setCellValue(orgRelation.getResponderLocationId().getUser().getFullName());
@@ -1058,7 +1062,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 								 writeRow.createCell(5).setCellValue("--");
 								 writeRow.createCell(6).setCellValue("--");
 							}
-							
+							}
 							if(null != projectMember.getProjects()){
 								writeRow.createCell(7).setCellValue(projectMember.getProjects().getProjectName());
 								 createExcelsheet.autoSizeColumn(7);
