@@ -1341,7 +1341,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 			if(expenseList != null && !expenseList.isEmpty()) {
 				for(ExpensePendingApproveReportView expenses : expenseList) {
 					PendingForExpenseApprovalReportDTO pendingForExpenseApprovalReportDTO = new PendingForExpenseApprovalReportDTO();
+					if(expenses.getEmpId() != null ) {
 					pendingForExpenseApprovalReportDTO.setEmployeId(expenses.getEmpId().toString());
+					}
 					pendingForExpenseApprovalReportDTO.setEmployeName(expenses.getEmpName());
 					pendingForExpenseApprovalReportDTO.setEmployeType(expenses.getEmploymentType());
 					pendingForExpenseApprovalReportDTO.setApprovalMechanism(expenses.getApprovalMechanism());
