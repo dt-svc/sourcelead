@@ -87,24 +87,24 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
+	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue, TicketTypeDTO ticketTypeDTO) {
 		List<TicketTypeDTO> ticketTypeDTOList = new LinkedList<>();
 		try {
-			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status, searchValue);
+			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status,searchValue,ticketTypeDTO);
 			if (ticketTypeList != null && !ticketTypeList.isEmpty()) {
 				for (TicketType ticketType : ticketTypeList) {
-					TicketTypeDTO ticketTypeDTO = new TicketTypeDTO();
-					ticketTypeDTO.setId(ticketType.getId());
-					ticketTypeDTO.setUuid(ticketType.getUuid());
-					ticketTypeDTO.setName(ticketType.getName());
-					ticketTypeDTO.setDescription(ticketType.getDescription());
-					ticketTypeDTO.setStatus(ticketType.getStatus());
-					ticketTypeDTO.setOrgLocationsId(ticketType.getOrgLocations().getId());
-					ticketTypeDTO.setCreatedBy(ticketType.getCreatedBy());
-					ticketTypeDTO.setCreatedDate(ticketType.getCreatedDate());
-					ticketTypeDTO.setUpdatedBy(ticketType.getUpdatedBy());
-					ticketTypeDTO.setUpdatedDate(ticketType.getUpdatedDate());
-					ticketTypeDTOList.add(ticketTypeDTO);
+					TicketTypeDTO ticketTypeDTO1 = new TicketTypeDTO();
+					ticketTypeDTO1.setId(ticketType.getId());
+					ticketTypeDTO1.setUuid(ticketType.getUuid());
+					ticketTypeDTO1.setName(ticketType.getName());
+					ticketTypeDTO1.setDescription(ticketType.getDescription());
+					ticketTypeDTO1.setStatus(ticketType.getStatus());
+					ticketTypeDTO1.setOrgLocationsId(ticketType.getOrgLocations().getId());
+					ticketTypeDTO1.setCreatedBy(ticketType.getCreatedBy());
+					ticketTypeDTO1.setCreatedDate(ticketType.getCreatedDate());
+					ticketTypeDTO1.setUpdatedBy(ticketType.getUpdatedBy());
+					ticketTypeDTO1.setUpdatedDate(ticketType.getUpdatedDate());
+					ticketTypeDTOList.add(ticketTypeDTO1);
 				}
 			}
 		} catch (Exception e) {
@@ -171,30 +171,30 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
+	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue,TicketCategoryDTO ticketCategoryDTO) {
 		List<TicketCategoryDTO> ticketCategoryDTOList = new LinkedList<>();
 		try {
-			List<TicketCategory> ticketCategoryList = ticketManagementDao.getTicketCategoryListByOrgLocationId(orgLocationId, status, searchValue);
+			List<TicketCategory> ticketCategoryList = ticketManagementDao.getTicketCategoryListByOrgLocationId(orgLocationId, status, searchValue,ticketCategoryDTO);
 			if (ticketCategoryList != null && !ticketCategoryList.isEmpty()) {
 				for (TicketCategory ticketCategory : ticketCategoryList) {
-					TicketCategoryDTO ticketCategoryDTO = new TicketCategoryDTO();
-					ticketCategoryDTO.setId(ticketCategory.getId());
-					ticketCategoryDTO.setUuid(ticketCategory.getUuid());
-					ticketCategoryDTO.setName(ticketCategory.getName());
-					ticketCategoryDTO.setDescription(ticketCategory.getDescription());
-					ticketCategoryDTO.setStatus(ticketCategory.getStatus());
-					ticketCategoryDTO.setOrgLocationsId(ticketCategory.getOrgLocations().getId());
+					TicketCategoryDTO ticketCategoryDTO1 = new TicketCategoryDTO();
+					ticketCategoryDTO1.setId(ticketCategory.getId());
+					ticketCategoryDTO1.setUuid(ticketCategory.getUuid());
+					ticketCategoryDTO1.setName(ticketCategory.getName());
+					ticketCategoryDTO1.setDescription(ticketCategory.getDescription());
+					ticketCategoryDTO1.setStatus(ticketCategory.getStatus());
+					ticketCategoryDTO1.setOrgLocationsId(ticketCategory.getOrgLocations().getId());
 					List<String> assignedToList = new LinkedList<>();
 					for (TicketCategoryAssignTo ticketCategoryAssignTo : ticketCategory.getTicketCategoryAssignToList()) {
 						assignedToList.add(ticketCategoryAssignTo.getUser().getFullName());
 					}
-					ticketCategoryDTO.setAssignedTo(assignedToList);
-					ticketCategoryDTO.setNotifyTo(ticketCategory.getNotifyTo());
-					ticketCategoryDTO.setCreatedById(ticketCategory.getCreatedBy());
-					ticketCategoryDTO.setCreatedDate(ticketCategory.getCreatedDate());
-					ticketCategoryDTO.setUpdatedById(ticketCategory.getUpdatedBy());
-					ticketCategoryDTO.setUpdatedDate(ticketCategory.getUpdatedDate());
-					ticketCategoryDTOList.add(ticketCategoryDTO);
+					ticketCategoryDTO1.setAssignedTo(assignedToList);
+					ticketCategoryDTO1.setNotifyTo(ticketCategory.getNotifyTo());
+					ticketCategoryDTO1.setCreatedById(ticketCategory.getCreatedBy());
+					ticketCategoryDTO1.setCreatedDate(ticketCategory.getCreatedDate());
+					ticketCategoryDTO1.setUpdatedById(ticketCategory.getUpdatedBy());
+					ticketCategoryDTO1.setUpdatedDate(ticketCategory.getUpdatedDate());
+					ticketCategoryDTOList.add(ticketCategoryDTO1);
 				}
 			}
 		} catch (Exception e) {
@@ -307,28 +307,28 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status, String searchValue) {
+	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status, String searchValue, TicketPriorityDTO ticketPriorityDTO) {
 		List<TicketPriorityDTO> ticketPriorityDTOList = new LinkedList<>();
 		try {
-			List<TicketPriority> ticketPriorityList = ticketManagementDao.getTicketPriorityListByOrgLocationId(orgLocationId, status, searchValue);
+			List<TicketPriority> ticketPriorityList = ticketManagementDao.getTicketPriorityListByOrgLocationId(orgLocationId, status, searchValue, ticketPriorityDTO);
 			if (ticketPriorityList != null && !ticketPriorityList.isEmpty()) {
 				for (TicketPriority ticketpriority : ticketPriorityList) {
-					TicketPriorityDTO ticketPriorityDTO = new TicketPriorityDTO();
-					ticketPriorityDTO.setId(ticketpriority.getId());
-					ticketPriorityDTO.setUuid(ticketpriority.getUuid());
-					ticketPriorityDTO.setName(ticketpriority.getName());
-					ticketPriorityDTO.setDescription(ticketpriority.getDescription());
-					ticketPriorityDTO.setColorCode(ticketpriority.getColorCode());
-					ticketPriorityDTO.setFileName(ticketpriority.getFileName());
-					ticketPriorityDTO.setFileURL(ticketpriority.getFileURL());
-					ticketPriorityDTO.setFileContentType(ticketpriority.getFileContentType());
-					ticketPriorityDTO.setStatus(ticketpriority.getStatus());
-					ticketPriorityDTO.setOrgLocationsId(ticketpriority.getOrgLocations().getId());
-					ticketPriorityDTO.setCreatedBy(ticketpriority.getCreatedBy());
-					ticketPriorityDTO.setCreatedDate(ticketpriority.getCreatedDate());
-					ticketPriorityDTO.setUpdatedBy(ticketpriority.getUpdatedBy());
-					ticketPriorityDTO.setUpdatedDate(ticketpriority.getUpdatedDate());
-					ticketPriorityDTOList.add(ticketPriorityDTO);
+					TicketPriorityDTO ticketPriorityDTO1 = new TicketPriorityDTO();
+					ticketPriorityDTO1.setId(ticketpriority.getId());
+					ticketPriorityDTO1.setUuid(ticketpriority.getUuid());
+					ticketPriorityDTO1.setName(ticketpriority.getName());
+					ticketPriorityDTO1.setDescription(ticketpriority.getDescription());
+					ticketPriorityDTO1.setColorCode(ticketpriority.getColorCode());
+					ticketPriorityDTO1.setFileName(ticketpriority.getFileName());
+					ticketPriorityDTO1.setFileURL(ticketpriority.getFileURL());
+					ticketPriorityDTO1.setFileContentType(ticketpriority.getFileContentType());
+					ticketPriorityDTO1.setStatus(ticketpriority.getStatus());
+					ticketPriorityDTO1.setOrgLocationsId(ticketpriority.getOrgLocations().getId());
+					ticketPriorityDTO1.setCreatedBy(ticketpriority.getCreatedBy());
+					ticketPriorityDTO1.setCreatedDate(ticketpriority.getCreatedDate());
+					ticketPriorityDTO1.setUpdatedBy(ticketpriority.getUpdatedBy());
+					ticketPriorityDTO1.setUpdatedDate(ticketpriority.getUpdatedDate());
+					ticketPriorityDTOList.add(ticketPriorityDTO1);
 				}
 			}
 		} catch (Exception e) {
@@ -411,25 +411,25 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketStatusDTO> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
+	public List<TicketStatusDTO> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, String searchValue,TicketStatusDTO ticketStatusDTO) {
 		List<TicketStatusDTO> ticketStatusDTOList = new LinkedList<>();
 		try {
-			List<TicketStatus> ticketStatusList = ticketManagementDao.getTicketStatusListByOrgLocationId(orgLocationId, status, searchValue);
+			List<TicketStatus> ticketStatusList = ticketManagementDao.getTicketStatusListByOrgLocationId(orgLocationId, status, searchValue,ticketStatusDTO);
 			if (ticketStatusList != null && !ticketStatusList.isEmpty()) {
 				for (TicketStatus ticketStatus : ticketStatusList) {
-					TicketStatusDTO ticketStatusDTO = new TicketStatusDTO();
-					ticketStatusDTO.setId(ticketStatus.getId());
-					ticketStatusDTO.setUuid(ticketStatus.getUuid());
-					ticketStatusDTO.setName(ticketStatus.getName());
-					ticketStatusDTO.setDescription(ticketStatus.getDescription());
-					ticketStatusDTO.setStatus(ticketStatus.getStatus());
-					ticketStatusDTO.setCommentRequired(ticketStatus.isCommentRequired());
-					ticketStatusDTO.setOrgLocationsId(ticketStatus.getOrgLocations().getId());
-					ticketStatusDTO.setCreatedBy(ticketStatus.getCreatedBy());
-					ticketStatusDTO.setCreatedDate(ticketStatus.getCreatedDate());
-					ticketStatusDTO.setUpdatedBy(ticketStatus.getUpdatedBy());
-					ticketStatusDTO.setUpdatedDate(ticketStatus.getUpdatedDate());
-					ticketStatusDTOList.add(ticketStatusDTO);
+					TicketStatusDTO ticketStatusDTO1 = new TicketStatusDTO();
+					ticketStatusDTO1.setId(ticketStatus.getId());
+					ticketStatusDTO1.setUuid(ticketStatus.getUuid());
+					ticketStatusDTO1.setName(ticketStatus.getName());
+					ticketStatusDTO1.setDescription(ticketStatus.getDescription());
+					ticketStatusDTO1.setStatus(ticketStatus.getStatus());
+					ticketStatusDTO1.setCommentRequired(ticketStatus.isCommentRequired());
+					ticketStatusDTO1.setOrgLocationsId(ticketStatus.getOrgLocations().getId());
+					ticketStatusDTO1.setCreatedBy(ticketStatus.getCreatedBy());
+					ticketStatusDTO1.setCreatedDate(ticketStatus.getCreatedDate());
+					ticketStatusDTO1.setUpdatedBy(ticketStatus.getUpdatedBy());
+					ticketStatusDTO1.setUpdatedDate(ticketStatus.getUpdatedDate());
+					ticketStatusDTOList.add(ticketStatusDTO1);
 				}
 			}
 		} catch (Exception e) {
