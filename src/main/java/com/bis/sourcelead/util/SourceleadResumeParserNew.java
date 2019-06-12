@@ -301,8 +301,9 @@ public class SourceleadResumeParserNew {
 		//getting values from resume string
 		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
 		try {
-			
-			jsonUtil.setSummary(getSectionDetails(resumeData, objectiveIndex, globalIndex, SourceleadResumeParserRegEx.OBJECTIVE));
+			String summary = getSectionDetails(resumeData, objectiveIndex, globalIndex, SourceleadResumeParserRegEx.OBJECTIVE);
+//			System.out.println("Summary : " + summary);
+			jsonUtil.setSummary(summary);
 
 			//Email
 			String email = getEmailFromTextFile(resumeData);
@@ -520,7 +521,7 @@ public class SourceleadResumeParserNew {
 					}
 				}
 			}
-			System.out.println("Name String : " + nameString);
+//			System.out.println("Name String : " + nameString);
 			
 			String regEx = "^\\p{L}+[\\p{L}\\p{Z}\\p{P}]{0,}";
 //			String regEx = "^[a-zA-Z\\\\s]*$";
