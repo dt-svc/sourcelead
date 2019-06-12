@@ -371,7 +371,12 @@ $("#packageZipfile").click(function() {
 	}
 	function deleteImmigrationRecordById(elem, arg1, arg2){	
 		if(typeof elem ==='function') {
+			if(typeof arg2 == 'undefiend'){
+				elem(arg1);
+			}
+			else{
 			elem(arg1, arg2);
+		}
 		}
 		else{
 			alert("Not a valid Function call.");
