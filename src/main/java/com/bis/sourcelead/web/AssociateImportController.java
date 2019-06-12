@@ -275,7 +275,7 @@ public class AssociateImportController {
 			return model;
 		}
 		
-	 	@RequestMapping(value = "/app/saveAssociateSalaryDetailsTemplate", method = RequestMethod.POST)
+	 	@RequestMapping(value = "/saveAssociateSalaryDetailsTemplate", method = RequestMethod.POST)
 		@ResponseBody
 		public ResponseList<AssociateSalaryIndDTO> saveAssociateSalaryDetailsTemplate(MultipartHttpServletRequest request) throws Exception
 		{	
