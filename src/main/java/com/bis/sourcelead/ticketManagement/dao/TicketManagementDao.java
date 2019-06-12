@@ -2,6 +2,10 @@ package com.bis.sourcelead.ticketManagement.dao;
 
 import java.util.List;
 import com.bis.sourcelead.entity.TicketType;
+import com.bis.sourcelead.dto.TicketCategoryDTO;
+import com.bis.sourcelead.dto.TicketPriorityDTO;
+import com.bis.sourcelead.dto.TicketStatusDTO;
+import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Ticket;
 import com.bis.sourcelead.entity.TicketAssignTo;
@@ -18,7 +22,7 @@ public interface TicketManagementDao {
 
 	public int dumpTicketManagementPreDefinedValuesToAllOrgLocations(long orgLocationId);
 
-	public List<TicketType> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+	public List<TicketType> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue,TicketTypeDTO ticketTypeDTO);
 
 	public TicketType getTicketTypeById(long id);
 	
@@ -38,19 +42,19 @@ public interface TicketManagementDao {
 
 	public boolean deleteTicketTypeDataById(long id);
 
-	public List<TicketCategory> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+	public List<TicketCategory> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue,TicketCategoryDTO ticketCategoryDTO);
 
 	public long saveTicketCategory(TicketCategory ticketCategory);
 
 	public Boolean deleteTicketCategoryDataById(long id);
 
-	public List<TicketPriority> getTicketPriorityListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+	public List<TicketPriority> getTicketPriorityListByOrgLocationId(Long orgLocationId, int status, String searchValue,TicketPriorityDTO ticketPriorityDTO);
 
 	public long saveTicketPriority(TicketPriority ticketpriority);
 
 	public Boolean deleteTicketPriorityDataById(long id);
 
-	public List<TicketStatus> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+	public List<TicketStatus> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, String searchValue,TicketStatusDTO ticketStatusDTO);
 
 	public TicketStatus getTicketStatusById(long id);
 
@@ -121,5 +125,7 @@ public interface TicketManagementDao {
 	public List<Long> getTicketCategoryAssignToIdList(long ticketCategoryId);
 	
 	public void deleteTicketCategoryAssignTo(TicketCategoryAssignTo ticketCategoryAssignTo);
+
+	
 
 }
