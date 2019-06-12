@@ -226,18 +226,18 @@ function getPendingForApprovalTimesheetReports(){
 	        		  }
 		    	   
 		    	  result = result	+ '<tr>';
-				  result = result	+ '	  <td><div class="tbldata-dotdot-sm">'+employeName+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+employeType+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+projectName+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-me">'+frequency+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+manager1+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+manager2+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+approvalMechanism+' </div></td>';
-	              result = result   + '   <td><div class="tbldata-dotdot-sm">'+noOfHours+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+approved_By+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+approvedDate+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.submittedOn+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+dueDays+'  Days</div></td>';
+				  result = result	+ '	  <td><div class="tbldata-dotdot-sm" title="'+employeName+'">'+employeName+'</div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+employeType+'">'+employeType+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+projectName+'">'+projectName+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-me" title="'+frequency+'">'+frequency+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+manager1+'">'+manager1+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+manager2+'">'+manager2+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+approvalMechanism+'">'+approvalMechanism+' </div></td>';
+	              result = result   + '   <td><div class="tbldata-dotdot-sm" title="'+noOfHours+'">'+noOfHours+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+approved_By+'">'+approved_By+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+approvedDate+'">'+approvedDate+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+report.submittedOn+'">'+report.submittedOn+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-vsm" title="'+dueDays+' Days">'+dueDays+'  Days</div></td>';
 	              result = result	+ '	</tr>';
    				}
 		        result = result +'</tbody>';
