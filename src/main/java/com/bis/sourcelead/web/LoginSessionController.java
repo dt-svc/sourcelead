@@ -541,6 +541,9 @@ public class LoginSessionController {
 
 			List<LookUpData> skillList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillList", skillList);
+			
+			List<LookUpData> educationList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationList", educationList);
 
 			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService
 					.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(

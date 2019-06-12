@@ -260,7 +260,8 @@ public class CandidateRestController {
 			ResumeParserJsonUtil resumeDetails = null;
 			if (null != multiFile) {
 				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
-				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country, orgLocation.getDateFormat());
+				String fileName = multiFile.getOriginalFilename();
+				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country, orgLocation.getDateFormat(), fileName);
 			}
 			response.setObject(resumeDetails);
 			response.setResponse(Result.SUCCESS.name());

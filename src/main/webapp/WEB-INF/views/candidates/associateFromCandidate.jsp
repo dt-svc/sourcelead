@@ -1554,6 +1554,21 @@ function getCandidateDetails(){
  }
  </script>
  
+ <script>
+	var educationList = [];
+	var skillList = [];
+	$(function() {
+		 var i= 0;
+		 <c:forEach var="skill" items="${skillList}">
+		 	skillList[i++] = "${skill.name}";
+		 </c:forEach>
+		 var i= 0;
+		 <c:forEach var="edu" items="${educationsList}">
+		 	educationList[i++] = "${edu.name}";
+		 </c:forEach>
+	});
+</script>
+ 
   <script>
  function getVendorContactList(){
 	 $('#vendorcontact').val('').trigger("chosen:updated");
@@ -1632,48 +1647,74 @@ function getCandidateDetails(){
 								var lastName = json.lastName;
    	   	  						
    	   	  						
-   	   	  						 $("input[name=firstName]").val(firstName);
-   	   	  			        	 $("input[name=lastName]").val(lastName);
-   	   	  			        	 $("input[name=email]").val(json.email);
-   	   	   						 var mobilePhone = $("#mobilePhone").val();
-   	   	   						 if(mobilePhone == null || mobilePhone == '' || mobilePhone == 'undefined'){
-   	   	   							$("#mobilePhone").val(json.phoneNumbers); 
-   	   	   						}
-   	   	   						
-   	   	   						
+								$("input[name='FirstName']").val(firstName);
+					        	 $("input[name='LastName']").val(lastName);
+					        	 $("input[name='EmailId']").val(json.email.split("<<>>")[0]);
+					        	 
+					        	 for(var e in json.phoneNumbers) {
+					        		 if(e === "0")
+						        	 	$("input[name='PhoneNumber']").val(json.phoneNumbers[e]);
+					        		 else
+					        			 $("input[name='AlternateNumber']").val(json.phoneNumbers[e]);
+					     		 }
+					        	 
+					        	 $("input[name='country']").val(json.country === null && json.country !== "" ? json.country : "");
+					        	 $("input[name='state']").val(json.state === null && json.state !== "" ? json.state : "");
+					        	 $("input[name='city']").val(json.city === null && json.city !== "" ? json.city : "");
+					        	 $("input[name='zipcode']").val(json.zipcode === null && json.zipcode !== "" ? json.zipcode : "");
+					        	 
+					        	 $("#DOB").val(json.dob !== null && json.dob !== "" ? json.dob : "");
+					        	 $("input[name='Current/LastCompany']").val(json.employeers);
+					        	 
+					        	 $("input[name='Designation']").val(json.designation !== null && json.designation !== "" ? json.designation : "");
+					        	 
+					        	 $("input[name='Education']").val(json.educations);
+					        	 
+				        	 	if(json.totalYearsExp > 0) {
+				        			$("select[name='WorkExperience']").val(json.totalYearsExp);
+				        		} else if(json.totalMonthsExp > 0) {
+				        			$("select[name='WorkExperience']").val(0);
+				        		}
+				        		
+				        		if(json.totalMonthsExp > 0) {
+				        			$("select[name='monthExp']").val(json.totalMonthsExp);
+				        		} else if(json.totalYearsExp > 0) {
+				        			$("select[name='monthExp']").val(0);
+				        		}
+					        	 
+					        	 $("#candidateSkills").empty();
+		 						
+		 						var internalOutput = "";
+		 						var skills = json.skills;
+		 						if(skills != null && skills != 'undefined' && skills != ''){
+		 							var str_array = skills;
+		 						} else {
+		 							str_array = [];
+		 						}
+		 						
+		 					   for(var j = 0; j< skillList.length; j++){
+		 						    var existed = 0;
+		 							for(var i = 0; i < str_array.length; i++) {
+		 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+		 							   if(str_array[i] == skillList[j]){
+		 								   existed = 1;
+		 								   internalOutput = internalOutput+"<option value='"+str_array[i]+ "' selected>"+str_array[i]+"</option>";
+		 								   break;
+		 							   }
+		 							}
+		 							if(existed == 0){
+		 								internalOutput = internalOutput+"<option value='"+skillList[j]+"'>"+skillList[j]+"</option>";
+		 					        }
+		 						 }
+		 					   
+		 					   for(var e in str_array) {
+		 							internalOutput = internalOutput+"<option value='" + str_array[e] + "' selected>" + str_array[e] + "</option>";
+		 						}
+		 						
+		 						$("#candidateSkills").append(internalOutput);
+		 		        		$("#candidateSkills").trigger("chosen:updated");
+		 		        		
    	   	   						validateCandidateEmail();
-   	   	   						$("#candidateSkills").empty();
-   	   	   						 var internalOutput = "";
-   	   	   						 <c:forEach var="skill" items="${skillsList}">
-   	   	   						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-   	   	   	                     </c:forEach>
-   	   	   						var skills = json.skills;
-   	   	   						if(skills != null && skills != 'undefined' && skills != ''){
-   	   	   							var str_array = skills;
-   	   	   							for(var i = 0; i < str_array.length; i++) {
-   	   	   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-   	   	   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-   	   	   							}
-   	   	   						}
-   	   	   						$("#candidateSkills").append(internalOutput);
-   	   	   		        		$("#candidateSkills").trigger("chosen:updated");
-   	   	   		        		
-   	   	   		        		
-   	   	   		        		$("#candidateEducation").empty();
-   	   	   						 var internalOutput = "";
-   	   	   						 <c:forEach var="edu" items="${educationsList}">
-   	   	   						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
-   	   	   	                     </c:forEach>
-   	   	   						var edu = json.edu;
-   	   	   						if(edu != null && edu != 'undefined' && edu != ''){
-   	   	   							var str_array = edu.split(',');
-   	   	   							for(var i = 0; i < str_array.length; i++) {
-   	   	   							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-   	   	   							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-   	   	   							}
-   	   	   						}
-   	   	   						$("#candidateEducation").append(internalOutput);
-   	   	   		        		$("#candidateEducation").trigger("chosen:updated");
    							} else {
    								showError("Resume Parsing Failed");
    							}
