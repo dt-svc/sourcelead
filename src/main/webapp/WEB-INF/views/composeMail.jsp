@@ -14,7 +14,7 @@
 </style>
 
  <script>
- var atsUrl = '${SourceLeadWeb_atsUrl}';
+ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
  </script>
  
 
@@ -162,7 +162,7 @@
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
               <button type="button" class="btn btn-sm btn-success" onclick="sendEmails();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
-              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadDomainUrl}/mailBox/mails'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
+              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadUrl}/mailBox/mails'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
           </div>
         <!-- Attachment button --> 
@@ -267,9 +267,9 @@ $(function() {
 			  	    	    enctype: 'multipart/form-data',
 			  		        processData: false,
 			  		        contentType:false, 
-			  				url : atsUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}",
+			  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}",
 			  				success : function(result) {
-			  						location.replace(atsUrl+"/mailBox/mails");
+			  						location.replace(sourceleadUrl+"/mailBox/mails");
 			  				},
 			  			});  
 			  		
