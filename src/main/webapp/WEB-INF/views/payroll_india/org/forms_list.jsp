@@ -3,8 +3,8 @@
 
 		<div class="tablelist-wrap">
 			<div class="timesheetHead minHeight40 mt minHeight40">
-				<div class="col-md-2 dropdown-select mt10 mb10">
-					<select class="form-control" id="yearList">
+				<div class="col-md-2 dropdown-select mb10">
+					<select class="sel" id="yearList">
 						<c:forEach items="${yearList}" var="year">
 							<option ${year.value==true?"selected=selected":""}
 								value="${year.key}">${year.key}</option>
@@ -14,7 +14,7 @@
 						</c:forEach>
 					</select>
 				</div>
-				<div class="pull-right">
+				<div class="pull-right mr10">
 					<ul class="list-unstyled list-inline">
 						<li>
 							<div class="dynamic_search">
@@ -39,10 +39,14 @@
 					<tbody id="formsTabl">
 						<c:forEach items="${formList}" var="form">
 							<tr>
-								<td><div class="tblminwidth proj_show">
-										<span>${form.name}</span> <i class="fa fa-binoculars"
-											onclick="location.href='forms/list?uuid=${form.uuid}&financialYear=${selectedYear}'"></i>
-									</div></td>
+								<td>
+								
+								<div class="width300px">	
+									<a class="tblminwidth proj_show" onclick="location.href='forms/list?uuid=${form.uuid}&financialYear=${selectedYear}'">
+										<div class="tbldata-dotdot-200 inlineBlock">${form.name}</div> <i class="fa fa-binoculars"></i>
+									</a>
+								</div>
+								</td>
 								<td><div class="tbldata-dotdot-verybig">${form.financialYear}</div></td>
 								<td><div class="tbldata-dotdot-verybig">${form.totalFormsCount}</div></td>
 								<!-- <td>
