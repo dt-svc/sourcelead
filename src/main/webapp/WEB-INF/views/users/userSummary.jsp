@@ -276,6 +276,8 @@ window.onload = function () {
 		 //below tab is used for both locations
 		    result = result + '<li><a onClick="associateLoanAndAdvanceDetails('+candidateId+');">Loan / Advances</a></li>';
 		    result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
+// 		    result = result + '<li><a  href="#tab-31" onclick="associatePayDetails('+candidateId+');">Pays</a></li>';
+ 			
 		 '</sec:authorize>';
 
 
@@ -315,6 +317,9 @@ window.onload = function () {
 		 
 		 result = result + '<div id="tab-29" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative">';
 		 result = result + '</div>';
+		 
+// 		 result = result + '<div id="tab-31" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative">';
+// 		 result = result + '</div>';
 		 
 	  	 result = result + '</div>';
 	  	 result = result + '</div>';
@@ -4389,6 +4394,26 @@ function associateLoanAndAdvanceDetails(candidateId){
 				},
 			});
 }
+
+function associatePayDetails(candidateId){
+	getData(candidateId)
+	/* alert("hai")
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	$.ajax({
+		  type: "GET",
+		    url: pmsUrl+"/getAssociatePayDetailsByCandidateId?candidateId="+candidateId,
+		     success :function(response) {
+		    	 alert(response)
+// 		    	 	$("#tab-18").empty();  
+// 		    	    $("#tab-19").empty();
+// 		    	    $("#tab-17").empty();
+// 		    	    $("#tab-25").empty();
+// 		    	    $("#candidateSideDiv").empty();  
+// 		    	    $("#candidateSideDiv").append(response);
+// 		    	    loanAdv.getLoanAndAdvApprovers();
+				},
+			});  */
+}
 </script>
 
 
@@ -4890,7 +4915,7 @@ function cancelRejectPopup() {
 </script>
 
 
-
+<%-- <jsp:include page="associatePay.jsp"></jsp:include> --%>
 <jsp:include page="candidatesProfile.jsp"></jsp:include>
 <jsp:include page="candidatesResumes.jsp"></jsp:include>
 <jsp:include page="candidatesExperience.jsp"></jsp:include>
