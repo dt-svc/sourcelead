@@ -5,7 +5,7 @@ import java.util.Date;
 
 import com.bis.sourcelead.entity.OrgLocations;
 
-public class TicketStatusDTO implements Serializable {
+public class TicketStatusDTO extends SearchDTO implements Serializable {
 
 	/**
 	 * VeeraRaghava
