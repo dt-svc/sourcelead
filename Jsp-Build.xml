@@ -19,21 +19,21 @@
 
 	<target name="copy-jsp">
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/WEB-INF/views" includeEmptyDirs="no">
-			<fileset dir="prasadk_admin/src/main/webapp/WEB-INF/views">
+			<fileset dir="admin/src/main/webapp/WEB-INF/views">
 				<patternset>
 					<include name="**/*.jsp" />
 				</patternset>
 			</fileset>
 		</copy>
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/resources/css" includeEmptyDirs="no">
-			<fileset dir="prasadk_admin/src/main/webapp/resources/css">
+			<fileset dir="admin/src/main/webapp/resources/css">
 				<patternset>
 					<include name="**/*.css" />
 				</patternset>
 			</fileset>
 		</copy>
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/resources/js" includeEmptyDirs="no">
-			<fileset dir="prasadk_admin/src/main/webapp/resources/js">
+			<fileset dir="admin/src/main/webapp/resources/js">
 				<patternset>
 					<include name="**/*.js" />
 				</patternset>
@@ -41,7 +41,7 @@
 		</copy>
 
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/resources/images" includeEmptyDirs="no">
-			<fileset dir="prasadk_admin/src/main/webapp/resources/images">
+			<fileset dir="admin/src/main/webapp/resources/images">
 				<patternset>
 					<include name="**/*.jpg" />
 					<include name="**/*.png" />
@@ -51,7 +51,7 @@
 			</fileset>
 		</copy>
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/resources/fonts" includeEmptyDirs="no">
-			<fileset dir="prasadk_admin/src/main/webapp/resources/fonts">
+			<fileset dir="admin/src/main/webapp/resources/fonts">
 				<patternset>
 					<include name="**/*.otf" />
 					<include name="**/*.eot" />
