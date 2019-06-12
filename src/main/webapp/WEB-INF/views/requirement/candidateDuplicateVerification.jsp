@@ -73,7 +73,7 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
         <div class="clearfix mt col-md-10 mb">
           <div class="pull-right">
             <button type="button" class="btn btn-primary mr" onclick="saveDuplicateCheckConfig();">Save</button>
-            <button type="button" class="btn btn-default">Cancel</button>
+            <button type="button" class="btn btn-default" onclick="cancelDuplicateCheckConfig();">Cancel</button>
           </div>
         </div>
         </div>
@@ -155,6 +155,11 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
  }
 
  </script>
+ <<script type="text/javascript">
+ function cancelDuplicateCheckConfig(){
+	 location.replace(sourceleadUrl+"/settings")
+ }
+</script>
   <script>
    $('#email').change(function(){
    $(this).val(this.checked ? "Yes" : "No");
