@@ -236,7 +236,7 @@ public class FileController {
 			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace("resumes", "temp"));
 			try {
 				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
-				ResumeParserJsonUtil resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat());
+				ResumeParserJsonUtil resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
 				resume.setFileInfo(fileInfo);
 				resumeContent.add(resume);
 			} catch (Exception ex) {

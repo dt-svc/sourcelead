@@ -244,7 +244,7 @@ public class SourceleadResumeParserNew {
 		return jsonUtil;
 	}
 	
-	public ResumeParserJsonUtil getCandidateDetailsFromResume1(File file, String country, String orgLocationDateFormat) throws Exception {
+	public ResumeParserJsonUtil getCandidateDetailsFromResume1(File file, String country, String orgLocationDateFormat, String fileName) throws Exception {
 		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
 		try (FileInputStream stream = new FileInputStream(file);) {
 			BodyContentHandler htmlHandler = new BodyContentHandler();
@@ -252,7 +252,7 @@ public class SourceleadResumeParserNew {
 			Metadata metadata = new Metadata();
 			parser.parse(stream, htmlHandler, metadata);
 			String parsedString = htmlHandler.toString();
-			jsonUtil = getResumeParserJsonUtil(parsedString, orgLocationDateFormat, file.getName());
+			jsonUtil = getResumeParserJsonUtil(parsedString, orgLocationDateFormat, fileName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

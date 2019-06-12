@@ -15,11 +15,13 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -744,7 +746,7 @@ public class FileUploadUtil {
 					StringUtils.isNotBlank(fileInfo.getTempFolderName()) ? fileInfo.getTempFolderName() : "temp"));
 			ResumeParserJsonUtil resume = null;
 			try {
-				resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat());
+				resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), fileInfo.getFileName());
 				resume.setFileInfo(fileInfo);
 				if (resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null")) {
 					throw new Exception("Email ID missing");
@@ -775,15 +777,6 @@ public class FileUploadUtil {
 					candidateIds += (candidateIds.isEmpty() ? "" : ",") + c.getId();
 				} else {
 					CandidateDTO candidateDto = new CandidateDTO();
-					candidateDto.setEmail(resume.getEmail());
-					candidateDto.setCandidateSkills(resume.getSkills() != null ? String.join(", ", resume.getSkills()) : "");
-					Iterator<String> it = resume.getPhoneNumbers().iterator();
-					while (it.hasNext()) {
-						if (candidateDto.getMobilePhone() == null)
-							candidateDto.setMobilePhone(it.next());
-						else
-							candidateDto.setAlternateMobilePhone(it.next());
-					}
 					candidateDto.setFileName(fileInfo.getFileName());
 					candidateDto.setFileContentType(fileInfo.getContentType());
 					candidateDto.setFileUrl(fileInfo.getFileURL());
@@ -791,8 +784,32 @@ public class FileUploadUtil {
 					fileInfoList1.add(fileInfo);
 					candidateDto.setFileInfo(fileInfoList1);
 					candidateDto.setStaticPath(staticPath);
+					
 					candidateDto.setFirstName(resume.getFirstName() != null ? resume.getFirstName() : "");
+					candidateDto.setMiddleName(resume.getMiddleName() != null ? resume.getMiddleName() : "");
 					candidateDto.setLastName(resume.getLastName() != null ? resume.getLastName() : "");
+					candidateDto.setEmail(resume.getEmail());
+					Iterator<String> it = resume.getPhoneNumbers().iterator();
+					while (it.hasNext()) {
+						if (candidateDto.getMobilePhone() == null)
+							candidateDto.setMobilePhone(it.next());
+						else
+							candidateDto.setAlternateMobilePhone(it.next());
+					}
+					candidateDto.setCity(resume.getCity() != null ? resume.getCity() : "");
+					candidateDto.setState(resume.getState() != null ? resume.getState() : "");
+					candidateDto.setCountry(resume.getCountry() != null ? resume.getCountry() : "");
+					candidateDto.setZipcode(resume.getZipcode() != null ? resume.getZipcode() : "");
+					candidateDto.setDateofBirth(resume.getDob() != null ? resume.getDob() : "");
+					candidateDto.setMaritalStatus(resume.getMaritalStatus() != null ? resume.getMaritalStatus() : "");
+					candidateDto.setGender(resume.getGender() != null ? resume.getGender() : "");
+					candidateDto.setDesignation(resume.getDesignation() != null ? resume.getDesignation() : "");
+					candidateDto.setExperienceYears(resume.getTotalYearsExp() + "");
+					candidateDto.setExperienceMonths(resume.getTotalMonthsExp() + "");
+					candidateDto.setCandidateEmployers(resume.getEmployeers() != null ? String.join(", ", resume.getEmployeers()) : "");
+					candidateDto.setCandidateSkills(resume.getSkills() != null ? String.join(", ", resume.getSkills()) : "");
+					candidateDto.setCandidateEducation(resume.getEducations() != null ? String.join(", ", resume.getEducations()) : "");
+					candidateDto.setSummary(resume.getSummary() != null ? resume.getSummary() : "");
 					candidateDto.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
 					Candidate storedCandidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
 					if(requirementId > 0) {
@@ -839,7 +856,7 @@ public class FileUploadUtil {
 					StringUtils.isNotBlank(fileInfo.getTempFolderName()) ? fileInfo.getTempFolderName() : "temp"));
 			ResumeParserJsonUtil resume = null;
 			try {
-				resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat());
+				resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), fileInfo.getFileName());
 				resume.setFileInfo(fileInfo);
 				if (resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null")) {
 					throw new Exception("Email ID missing");
