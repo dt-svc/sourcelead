@@ -310,6 +310,7 @@ public class SourceleadResumeParserNew {
 			
 			//Name
 			String name = getNameFromTextFile(resumeData, email, fileName);
+			name = name.replaceAll("\\s+", " ");
 			if (name.split(" ").length > 2) {
 				jsonUtil.setFirstName(name.split(" ")[0]);
 				jsonUtil.setMiddleName(name.split(" ")[1]);
@@ -323,10 +324,10 @@ public class SourceleadResumeParserNew {
 			
 			Set<String> phoneNumberSet = new LinkedHashSet<>();
 			String primaryMobile = getMobileNumber(resumeData);
-			phoneNumberSet.add(getMobileNumber(resumeData));
+			phoneNumberSet.add(primaryMobile.replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim());
 			if(!primaryMobile.isEmpty()) {
 				String resumeData1 = resumeData.substring(resumeData.indexOf(primaryMobile) + primaryMobile.length(), resumeData.length());
-				phoneNumberSet.add(getMobileNumber(resumeData1));
+				phoneNumberSet.add(getMobileNumber(resumeData1).replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim());
 			}
 			jsonUtil.setPhoneNumbers(phoneNumberSet);
 			jsonUtil.setSkills(getSkillsFromTextFile(resumeData));
@@ -471,7 +472,7 @@ public class SourceleadResumeParserNew {
 				for(int i = 0; i < str.length; i++) {
 					if(str[i].toLowerCase().contains(subStr.toLowerCase())) {
 						String tempName = str[i].trim();
-						if(!tempName.toLowerCase().contains(email.toLowerCase())) {
+						if(email.isEmpty() || !tempName.toLowerCase().contains(email.toLowerCase())) {
 							nameString = tempName.replaceAll("[^a-zA-Z\\s\\.]+", "");
 							for(String eleString : Constants.ELIMINATE_NAME_KEYWORDS) {
 								nameString = nameString.replaceAll("(?i)" + eleString, "").trim();
@@ -702,14 +703,21 @@ public class SourceleadResumeParserNew {
 							matcher = pattern.matcher(text);
 							if (matcher.find()) {
 								mobile = matcher.group(0);
-							} 
+							} else {
+								regEx = "\\W*\\d+\\W\\d\\W*\\s*\\d+\\W*\\s*\\d+\\W*\\s*\\b[0-9]{3}\\b";
+								pattern = Pattern.compile(regEx, Pattern.CASE_INSENSITIVE); // 4 X 3 X 3 
+								matcher = pattern.matcher(text);
+								if (matcher.find()) {
+									mobile = matcher.group(0);
+								}
+							}
 						}
 					}
 				}
 			}
 		}
 //		return mobile.replaceAll("[^\\w ]", "").trim();
-		return mobile.replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim();
+		return mobile;
 	}
 	
 	@SuppressWarnings("resource")
