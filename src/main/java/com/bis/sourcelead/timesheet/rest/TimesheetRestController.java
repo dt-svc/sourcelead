@@ -81,6 +81,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetActivities;
@@ -103,6 +104,7 @@ import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.UserDroppedHolidaysService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.timesheet.dao.TimeSheetDayEntriesDao;
@@ -213,6 +215,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	private EmployeesService employeesService;
+	
+	@Autowired
+	ShiftService shiftService;
 	
 
 	/***
@@ -499,6 +504,10 @@ public class TimesheetRestController {
 			List<AppliedLeaveDate> leaveDateList = appliedLeaveDateService.getAppliedLeaveDateByUserId(user.getId(), startDate, endDate);
 			List<Holiday>  holidays = null;
 			if(user != null && candidate != null && candidate.getWorkLocation() != null) {
+				if(!loc.getId().equals(candidate.getWorkLocation().getId())) {
+					Shift shift = shiftService.getShiftListByShiftNameAndOrglocationId(Constants.GENERAL_SHIFT, candidate.getWorkLocation().getId());
+					shiftId = shift.getId();
+				}
 				 holidays = holidayDAO.getHolidaybyLocationIdAndFromdateForTimesheets(startDate, endDate,candidate.getWorkLocation().getId(),user.getId(), candidate.getWorkLocation().getId(),shiftId);
 			}
 			
