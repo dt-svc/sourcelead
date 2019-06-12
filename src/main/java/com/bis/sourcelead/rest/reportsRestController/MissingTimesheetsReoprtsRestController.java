@@ -297,8 +297,8 @@ public class MissingTimesheetsReoprtsRestController {
 						            	MissingTimesheetResultRepotDTO mtr = new MissingTimesheetResultRepotDTO();
 						            	mtr.setProjectName(pm.getProjects().getProjectName());
 						            	mtr.setEmployeName(pm.getProjectMemberCandidteId().getFullName());
-						            	if(pm.getEmployee() != null) {
-						            		mtr.setEmployeType(pm.getEmployee().getUserEmploymentType());
+						            	if(null != pm.getProjectMemberCandidteId() && null != pm.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(pm.getProjectMemberCandidteId().getDesignationType())) {
+						            		mtr.setEmployeType(pm.getProjectMemberCandidteId().getDesignationType());
 						            	}
 						            	mtr.setFrequency(unfilledFrequency);
 						            	mtr.setDueDays(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()));
