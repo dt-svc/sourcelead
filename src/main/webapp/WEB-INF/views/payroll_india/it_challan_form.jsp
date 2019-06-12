@@ -2,6 +2,9 @@
 <script type="text/javascript" src="/resources/js/tax/it_declaration.js"></script>
 <%-- <jsp:include page="../tax/org/it_Challan_CustomForm.jsp"></jsp:include> --%>
 <div id="itChallanCustomPopup"></div>
+<script type="text/javascript">
+       var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
 <div>
 	<div class="tablelist-wrap">
 
