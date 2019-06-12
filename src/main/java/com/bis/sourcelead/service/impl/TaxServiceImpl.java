@@ -1385,7 +1385,7 @@ public class TaxServiceImpl implements TaxService {
 				table.addCell(getCell("Employee Designation ", font8,Element.ALIGN_LEFT, 1, 18f));
 				table.addCell(getCell(can != null && can.getDesignation() != null ? can.getDesignation() : "", font8,Element.ALIGN_LEFT, 4, 18f));
 				table.addCell(getCell("Employee PAN ", font8,Element.ALIGN_LEFT, 1, 18f));
-				table.addCell(getCell(can != null && can.getPanNumber() != null ? can.getDesignation() : "", font8,Element.ALIGN_LEFT, 4, 18f));
+				table.addCell(getCell(can != null && can.getPanNumber() != null ? can.getPanNumber() : "", font8,Element.ALIGN_LEFT, 4, 18f));
 				table.addCell(getCell("Employee DOB ", font8,Element.ALIGN_LEFT, 1, 18f));
 				table.addCell(getCell(can != null && can.getDateOfBirth() != null ? can.getDateofBirthString() : "", font8,Element.ALIGN_LEFT, 2, 18f));
 				table.addCell(getCell("Gender ", font8,Element.ALIGN_LEFT, 1, 18f));
