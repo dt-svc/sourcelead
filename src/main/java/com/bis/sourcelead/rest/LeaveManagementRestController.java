@@ -2182,7 +2182,7 @@ public class LeaveManagementRestController {
 			 leave.setDeleteReason(reason);
 			 leave.setCancelledBy(user);
 			 leave.setStatus(Constants.LEAVE_CANCELLED);
-//			 leaveDao.saveLeave(leave);
+			 leaveDao.saveLeave(leave);
 			 isCancelled = true;
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());

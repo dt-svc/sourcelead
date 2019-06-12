@@ -1,9 +1,10 @@
 package com.bis.sourcelead.clockInOutDTO;
 
 import java.math.BigInteger;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Time;
 import java.util.List;
+import java.util.Map;
 
 public class ClockInOutAssociateReportSummaryDTO {
 	
@@ -26,6 +27,18 @@ public class ClockInOutAssociateReportSummaryDTO {
 	private List<String> currWeek;
 	private List<String> currMonth;
 	private List<String> currYear;
+	
+	private List<String> headerDates;
+	
+	private String clockInDateStr;
+	private String clockOutDateStr;
+	
+	private String isDataAvailable;
+	private Map<String, String> mapData;
+	
+	private String graphTotalTime;
+	
+	private String graphFormatDate;
 	
 	public BigInteger getId() {
 		return id;
@@ -134,6 +147,48 @@ public class ClockInOutAssociateReportSummaryDTO {
 	}
 	public void setCurrYear(List<String> currYear) {
 		this.currYear = currYear;
+	}
+	public List<String> getHeaderDates() {
+		return headerDates;
+	}
+	public void setHeaderDates(List<String> headerDates) {
+		this.headerDates = headerDates;
+	}
+	public String getClockInDateStr() {
+		return clockInDateStr;
+	}
+	public void setClockInDateStr(String clockInDateStr) {
+		this.clockInDateStr = clockInDateStr;
+	}
+	public String getClockOutDateStr() {
+		return clockOutDateStr;
+	}
+	public void setClockOutDateStr(String clockOutDateStr) {
+		this.clockOutDateStr = clockOutDateStr;
+	}
+	public String getIsDataAvailable() {
+		return isDataAvailable;
+	}
+	public void setIsDataAvailable(String isDataAvailable) {
+		this.isDataAvailable = isDataAvailable;
+	}
+	public Map<String, String> getMapData() {
+		return mapData;
+	}
+	public void setMapData(Map<String, String> mapData) {
+		this.mapData = mapData;
+	}
+	public String getGraphTotalTime() {
+		return graphTotalTime;
+	}
+	public void setGraphTotalTime(String graphTotalTime) {
+		this.graphTotalTime = graphTotalTime;
+	}
+	public String getGraphFormatDate() {
+		return graphFormatDate;
+	}
+	public void setGraphFormatDate(String graphFormatDate) {
+		this.graphFormatDate = graphFormatDate;
 	}
 	
 }
