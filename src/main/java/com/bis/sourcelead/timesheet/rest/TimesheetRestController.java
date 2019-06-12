@@ -5179,7 +5179,6 @@ public class TimesheetRestController {
 		 * saving Code
 		 */
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		Boolean isValid = false;
 		ModelAndView model = new ModelAndView();
 		try {
 			outerLoop:{
@@ -5194,7 +5193,6 @@ public class TimesheetRestController {
 							}
 							
 						}
-						isValid = true;
 						/*if valid Data*/
 						tedDTO = saveTimesheetEntries(tedDTO, request);
 						
@@ -5206,7 +5204,6 @@ public class TimesheetRestController {
 		     }
 		
 		
-		if(!isValid) {
 			/*if invalid Data*/
 			TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 			eedDTO.setCurrentTimeFrequency(tedDTO.getCurrentTimeFrequency());
@@ -5257,7 +5254,6 @@ public class TimesheetRestController {
 					}
 			}
 			tedDTO.setTimesheetSubmission(tsDTO);
-		}
 		model.addObject("timesheetSubmissionDTO", tedDTO.getTimesheetSubmission());
 		LinkedHashMap<String, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(
 				tedDTO.getTimesheetSubmission(), request);
