@@ -214,7 +214,7 @@ function ticketManagementPriorityPagination(url){
 	        {
 	            "targets": colIndex++,
 	            "data": "description",
-	            "sortable": true,
+	            "sortable": false,
 	            "render": function ( data, type, opt, meta ) {
 	            		var result = "";
            		   if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
@@ -271,7 +271,7 @@ function ticketManagementPriorityPagination(url){
            ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[1,'desc']],
+	    	"aaSorting": [[2,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,

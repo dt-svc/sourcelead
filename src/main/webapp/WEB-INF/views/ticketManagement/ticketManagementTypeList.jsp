@@ -101,7 +101,7 @@
 	       "ajax": $.fn.dataTable.pipeline( {
 	           url: url,
 	           method: 'POST',
-	           pages: 1
+	           pages: 25
 	       }),
 	       "columns": [
 	    	   {"data": "id"},
@@ -189,9 +189,9 @@
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"ordering": true,
-		    	"createdRow": function ( row, data, index ) {
+		    	 "createdRow": function ( row, data, index ) {
 		    		row.setAttribute('id',"ticketType_"+data.id);
-	    	    },
+	    	    }, 
 		    	"initComplete": function( settings, json ) {
 		    		 $('#ticketTypeDataTableSearch').removeAttr('disabled');
 		    	},
