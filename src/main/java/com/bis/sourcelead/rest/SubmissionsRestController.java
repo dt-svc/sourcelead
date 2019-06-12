@@ -724,6 +724,7 @@ public class SubmissionsRestController {
 					RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 					RequirementSubmission submission = requirementSubmissionService .getRequirementSubmissionById(Long.parseLong(submissionId[i]));
 					requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+					submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
 					submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
 					submission.setUpdatedBy(user.getUserCode());
 					submission.setUpdatedUser(user.getFullName());
@@ -1473,7 +1474,7 @@ public class SubmissionsRestController {
 		return response;
 	}
 
-	@RequestMapping(value = "/editApplicantSourceName", method = RequestMethod.POST)
+	@RequestMapping(value = "/app/editApplicantSourceName", method = RequestMethod.POST)
 	public @ResponseBody Response<String> editApplicantSourceName(@RequestParam(value = "submissionId", required = false) Long submissionId, 
 			@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
 	{

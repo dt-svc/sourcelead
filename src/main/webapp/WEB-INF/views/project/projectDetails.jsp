@@ -16,12 +16,6 @@
 				$("#txtEditor1").find(".Editor-editor").data-validation-optional('rule-required',true);
 			});
        </script>  -->
-       
-<style>
-.project_details.project_detailsHei {
-	min-height: 675px;
-}
-</style>
 
 <div id="projectDetailsLoading"></div>
        

@@ -9,14 +9,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>::Org Details</title>
-<style type="text/css">
-.comp-textarea textarea {
-min-height: 90px;
-} 
-#loading {
-z-index: 9999999999 !important;
-}
-</style>
 </head>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
@@ -35,7 +27,7 @@ z-index: 9999999999 !important;
     </section>
     <div class="content-area clearfix">
       <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-      <div id="loading"></div> 
+      <div id="loading" style="z-index: 9999999999 !important;"></div> 
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		    <!-- Tab for Profile setting-area -->

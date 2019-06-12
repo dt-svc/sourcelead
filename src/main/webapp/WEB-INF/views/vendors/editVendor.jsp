@@ -3,15 +3,6 @@
 <meta http-equiv="Expires" content="0">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<style>
-.profilerefresh-icon {
-	position: absolute;
-    right: 0px;
-    top: 24px;
-    height: 28px;
-    line-height: 14px;
-}
-</style>
 <!-- for Vendor edit -->
 <script type="text/javascript">
 	function editVendorDetails(vendorLocationId,orgRelationId) {

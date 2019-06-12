@@ -5,16 +5,6 @@
 <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
-<style type="text/css">
-.require_wrap_table.tableHDRBgColor th {
-  background-color: #d0d4dc !important; color: #333; border-right: 1px solid #bec2ca !important;
-}
-.btnBgColor {
-  background-color: #d0d4dc !important; border: 1px solid #bec2ca !important;
-}
-</style>
-
-
 
 <script>
 $(document).ready(function(){

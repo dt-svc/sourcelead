@@ -7,7 +7,7 @@
 	formId = "${formId}";
 	var isEditable = ${isEditable};
 </script>
-<section class="content-wraper contentWraper">
+<section class="content-wraper">
 	<jsp:include page="../payroll_india/taxHeader.jsp"></jsp:include>
 	<div class="timesheet_out">
 		<div class="tablelist-wrap">

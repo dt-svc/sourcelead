@@ -365,21 +365,23 @@
 											if (opt.createdUser != null
 													&& opt.createdUser != ''
 													&& opt.createdUser != 'undefined') {
-												result = result
-														+ '         <td><div><span title="'+opt.createdUser+''+orgName+''+candidateSource+'">'
-														+ opt.createdUser + ''
-														+ orgName + '<br/>'
-														+ candidateSource
-														+ '</span></div></td>';
-											} else {
-												result = result
-														+ '         <td><div><span>--</span></div></td>';
-											}
-											if(opt.orgName == null || opt.orgName == ''){
-												 if(isManager == "true" || isAdmin == "true"){
-												result = result '<i class="fa fa-pencil pull-left ml10 mt2 cursorPointer" onClick="applicantsourceHandler('+requirementId+','+opt.id+');"></i>';
-												 }
-												 }
+													result = result
+													+ ' <td><div><div class="tbldata-dotdot-vsm pull-left" title="'+opt.createdUser+''+orgName+''+candidateSource+'" class="pull-left">'
+													+ opt.createdUser + ''
+													+ orgName + '<br/>'
+													+ candidateSource
+													+ '</div>'
+													if(opt.orgName == null || opt.orgName == ''){
+													if(isManager == "true" || isAdmin == "true"){
+													result = result +'<i class="fa fa-pencil pull-left ml10 mt2 cursorPointer" onClick="applicantsourceHandler('+requirementId+','+opt.id+');"></i>';
+													}
+													}
+													+'</div>';
+													+'</td>';
+													} else {
+													result = result
+													+ ' <td><div><span>--</span></div></td>';
+													}
 											return result;
 										}
 									},
@@ -524,15 +526,15 @@
 													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SUBMISSION' && opt.submissionStatus  != 'SHORTLIST' && opt.submissionStatus  != 'INTERVIEW' && opt.submissionStatus  != 'SUBMIT_TO_CLIENT' && opt.submissionStatus  != 'CLIENT_INTERVIEW'){
 														result = result + "<option value='Status'>Submission</option>";
 													}
-													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SHORTLIST'){
-														'<sec:authorize access="hasRole(\'ROLE_SHORTLIST\')">';
+													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SHORTLIST' && opt.submissionStatus == 'ONHOLD'){
+														
 														result = result + "<option value='shortlist'>Shortlist</option>";
-														'</sec:authorize>';
+														
 													}
 													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'INTERVIEW' && opt.submissionStatus != 'SELECTED_ON_INTERVIEW' && opt.submissionStatus != 'OFFERMADE' && opt.submissionStatus != 'OFFERACCEPTED'){
 														result = result + "<option value='Interview'>INTERVIEW</option>";
 													}
-													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SELECTED_ON_INTERVIEW' && opt.submissionStatus != 'SELECTED_ON_INTERVIEW'){
+													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SELECTED_ON_INTERVIEW' && opt.submissionStatus != 'ONHOLD'){
 													
 														result = result + "<option value='Selected on Interview'>Selected on Interview</option>";
 													}
@@ -559,17 +561,18 @@
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 													}
 													
-													if(opt.previousSubmissionStatus != 'CLIENT_INTERVIEW' && opt.submissionStatus == 'SELECTED_ON_INTERVIEW'){
+													if(opt.previousSubmissionStatus != null && opt.submissionStatus == 'SELECTED_ON_INTERVIEW'){
 														result = result + "<option value='On Hold'>On Hold</option>";
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 													}
 													
 													 if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW' && opt.submissionStatus != 'SUBMIT_TO_CLIENT' && opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'NORESPONSE'){	
 														result = result + "<option value='On Hold'>On Hold</option>";
-														}
-													if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW' && opt.submissionStatus != 'SUBMIT_TO_CLIENT' && opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'ONHOLD'){	
 														result = result + "<option value='NoResponse'>NoResponse</option>";
-														} 
+														}
+													/*if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW' && opt.submissionStatus != 'SUBMIT_TO_CLIENT' && opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED' && opt.submissionStatus != 'ONHOLD'){	
+														result = result + "<option value='NoResponse'>NoResponse</option>";
+														}*/ 
 													result = result + "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED' || opt.submissionStatus == 'JOINED'
 														 || opt.submissionStatus == 'CLIENT_OFFERMADE' || opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
@@ -689,7 +692,7 @@ $('#assignedNewPerson').chosen();
 	
 <script>
 function applicantsourceHandler(reqId,submissionId) {
-	$(".mask, .popupWrap2").fadeIn();
+	$(".mask, #popupSaveId").fadeIn();
 	updateUserPop(submissionId);
 	if(reqId != '' && reqId != 'undefined' && reqId != null){
 		$.ajax({
@@ -699,7 +702,7 @@ function applicantsourceHandler(reqId,submissionId) {
 		                var json = JSON.parse(data);
 	                $('#assignedNewPerson').empty();
 	                $('#assignedNewPerson').append('<option value="">--Select Assign Employee--</option>');
-	                for (var i = 0; i < json.length; i) {
+	                for (var i = 0; i < json.length; i++) {
 	                    var opt = json[i];
 	                    $('#assignedNewPerson').append('<option value='+opt.assignedUserIdTemp+' >'+opt.assignedUserName+'</option>');
 	                }
@@ -709,14 +712,14 @@ function applicantsourceHandler(reqId,submissionId) {
 	}
 }
 function applicantsourceHandlerClose() {
-	$(".mask, .popupWrap2").fadeOut();
+	$(".mask, #popupSaveId").fadeOut();
 }
 function applicantsourceSave(submissionId){
 	var userId = $("#assignedNewPerson").val();
 	if(userId !=null && userId !=''){
 	$.ajax({
         type : "POST",
-        url: sourceleadUrl+"/editApplicantSourceName?&submissionId="+submissionId"&userId="+userId,    
+        url: sourceleadUrl+"/editApplicantSourceName?&submissionId="+submissionId+"&userId="+userId,    
          success :function(response) {
         	 applicantsourceHandlerClose();
          },

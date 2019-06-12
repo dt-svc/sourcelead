@@ -3563,6 +3563,22 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return flag;
 	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidatesForUpdateWorkLocation(Long masterCandidateId, Long orgId) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate candidate left join fetch candidate.masterCandidateId left join fetch candidate.orgLocationId orgLoc left join fetch orgLoc.org where "
+					+ " candidate.masterCandidateId.id = :masterCandidateId and orgLoc.org.id = :orgId ";
+			List<Candidate> candidatesList = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("orgId", orgId).list();
+			return candidatesList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	@Override
 	@Transactional

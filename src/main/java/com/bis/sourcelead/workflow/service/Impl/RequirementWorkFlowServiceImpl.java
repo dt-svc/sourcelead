@@ -188,7 +188,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
        return requirementWorkFlowDao.saveQuestionnaireTemplate(template);
 		
 	}
-
+	
+	@Override
+	public RequirementQuestionnaireTemplate getQuestionnaireByTemplateId(long templateId) throws Exception {
+		
+       return requirementWorkFlowDao.getQuestionnaireByTemplateId(templateId);
+		
+	}
 
 	@Override
 	public ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(
