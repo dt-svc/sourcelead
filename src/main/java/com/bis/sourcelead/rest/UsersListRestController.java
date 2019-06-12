@@ -2432,7 +2432,7 @@ public class UsersListRestController {
 		    }
 			
 			if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
-				 OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+				   OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
 				   candidate.setWorkLocation(workLocation);
 			}
 			
@@ -2449,6 +2449,17 @@ public class UsersListRestController {
 			   
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			
+			//For offshoreC2C candidates
+			if(candidate != null && candidate.getWorkLocation() != null) {
+				List<Candidate> candidatesList = candidateService.getCandidatesForUpdateWorkLocation(candidate.getMasterCandidateId().getId(), orgLocations.getOrg().getId());
+				if(candidatesList != null && !candidatesList.isEmpty()) {
+					for(Candidate offshoreCandiate : candidatesList) {
+						offshoreCandiate.setWorkLocation(candidate.getWorkLocation());
+						candidateService.saveOrUpdateCandidate(offshoreCandiate);
+					}
+				}
+			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getVendors())){
 				if(currentVendorOrgRelation == null || (currentVendorOrgRelation != null && !currentVendorOrgRelation.getId().equals(orgRelation.getId()))) {

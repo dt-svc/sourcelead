@@ -7,12 +7,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css" />
 
-<style type="text/css">
-.require_wrap_table table tr td:first-child {
-width:auto !important;
-}
-</style>
-
 <script>
 function candidateShortList(requirementId){
 	$('.action-pop').slideUp();
@@ -37,7 +31,7 @@ function candidateShortList(requirementId){
 			    	   var json = data.data;
 			           result = result + '     <div class="clearfix"></div>';
 			           result = result + '   </div>';
-			           result = result + '   <div class="require_wrap_table datatable_filter scroll_table mt40">';
+			           result = result + '   <div class="require_wrap_table requiretable-firstchild datatable_filter scroll_table mt40">';
 			           result = result + '     <table id="shortlistedPagination"  class="display" cellspacing="0" width="100%">';
 			           result = result + '       <thead>';
 			           result = result + '         <tr>';

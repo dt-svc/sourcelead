@@ -76,6 +76,7 @@ import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SourceleadDeletedCandidates;
 import com.bis.sourcelead.entity.SourceleadTags;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.Team;
@@ -1564,6 +1565,88 @@ public class CandidateListRestController {
 		}
 		return response;
 	}
+	
+	
+	@RequestMapping(value = "/deleteCandidatePermanentlyByCandidateId")
+	@ResponseBody
+	public Response<Candidate> deleteCandidatePermanentlyByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception {
+		Response<Candidate> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
+						loginOrgLocation.getId());
+				StringBuffer activitySummary = new StringBuffer();
+				Boolean flag;
+				if (candidate != null) {
+					
+					SourceleadDeletedCandidates deletedCandiate = new SourceleadDeletedCandidates();
+					deletedCandiate.setCandidateId(candidate);
+					deletedCandiate.setOrgLocationId(loginOrgLocation);
+					deletedCandiate.setEmail(candidate.getEmail());
+					deletedCandiate.setFirstName(candidate.getFirstName());
+					deletedCandiate.setLastName(candidate.getLastName());
+					deletedCandiate.setCreatedBy(user);
+					deletedCandiate.setCreatedDate(commonUtil.currentDate());
+					candidateService.saveSourceleadDeletedCandidate(deletedCandiate);
+					
+					candidate.setIsAssociate(Constants.NO);
+					candidate.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+
+					if (StringUtils.isNotEmpty(reason)) {
+						candidate.setTerminateReason(reason);
+						activitySummary.append("Reason").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(reason)
+								.append(Constants.NEW_VALUE_TAG_END).append(" ");
+					} else {
+						activitySummary.append(" ");
+					}
+					candidate.setUpdatedBy(user.getUserCode());
+					candidate.setUpdatedDate(commonUtil.currentDate());
+					candidate.setIsFavourite(0);
+					candidate.setTeamId(null);
+
+					//deleting candidate from marketplace and cart.
+					flag = candidateService.deleteCandidateFromMarketcartByCandidateUuid(candidate.getCandidateUUID());
+					if(flag == true){
+						candidateService.deleteCandidateFromMarketplaceByCandidateUuid(candidate.getCandidateUUID());
+						}
+					
+					candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
+					candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_DELETED,
+							activitySummary.toString(), "CANDIDATE");
+					candidate.setOrgLocationId(null);
+					candidateService.saveOrUpdateCandidate(candidate);
+					OrgLocations orgLocations = new OrgLocations();
+					orgLocations.setId(1L);
+					candidate.setOrgLocationId(orgLocations);
+					candidateService.saveOrUpdateCandidate(candidate);
+					candidateService.deleteCandidateElkDocument(candidate);
+
+					StringBuilder candidateRemoveMsg = new StringBuilder();
+					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",
+							candidateRemoveMsg.append("").append(candidate.getFirstName()).append(" Removed Successfully").toString());
+					response.setObject(candidate);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
+	
 
 	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_HOTLIST','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/saveCandidateAsFavourite", method = RequestMethod.POST)

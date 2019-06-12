@@ -14,6 +14,7 @@ import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -589,9 +590,19 @@ public class RequirementController {
 		List<SubmissionTemplate>   submissionTempletesList = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(orgLocations.getId(),"Submission");
 		model.addObject("submissionTempletesList", submissionTempletesList);
 		
-		List<RequirementWorkFlow>   workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
-		model.addObject("workflowList", workflowList);
-		
+		/*// workflow List commented by SRINIVAS SABBU.
+		List<RequirementWorkFlow> workflowList = new ArrayList<RequirementWorkFlow>();
+		workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
+		if (workflowList == null || workflowList.size() == 0) {
+			User user = new User();
+			user.setId(userId);
+			requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
+			workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
+		}
+		if (workflowList != null && workflowList.size() > 0) {
+			model.addObject("workflowList", workflowList);
+		}
+			*/
 		//client submission template 
 		if(null != requirement.getClientId()){
 			List<SubmissionTemplate>   clientSubmissionTempletesList = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(requirement.getClientId().getResponderLocationId().getId(), orgLocations.getId(),"Submission");

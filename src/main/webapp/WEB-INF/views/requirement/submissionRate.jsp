@@ -44,19 +44,6 @@
 		});
 </script>
 
-<style>
-body {
-background-color:#e1e6fa;
-}
-.project_wrap_table table {
-	border: 1px solid #fff;
-	border-bottom: 1px solid #909090;
-	margin-bottom: 10px;
-}
-.project_wrap_table table tr td:last-child {
-width: auto;
-}
-</style>
 <body>
 <div class="wraper"> 
   <!-- Header Area -->
@@ -153,7 +140,7 @@ width: auto;
 		  			 <c:choose>
 					    <c:when test="${permission=='YES'}">
 						    <form id="negotiation_form" name="negotiation_form" method="post" >
-						          <div class="col-md-8 rate-negotiation project_wrap_table" id="negotiationDivId">
+						          <div class="col-md-8 rate-negotiation project_wrap_table projectwrap_Table" id="negotiationDivId">
 									  <div class="clearfix">
 									  <h4>Rate Negotiation</h4>
 									  </div>

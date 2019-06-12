@@ -631,6 +631,7 @@ function cancelOfferPopup(){
 		        	}
 		        	
 		        	$("#"+rowId+"applicantId").empty();
+		        	$("#"+rowId+"applicantId").attr("data-placeholder", json.length + " Applicants available");
 		        	$("#"+rowId+"applicantId").append(output);
 		        	$("#"+rowId+"applicantId").trigger("chosen:updated");
 			       

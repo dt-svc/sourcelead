@@ -2,14 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- <style type="text/css">
- .require_wrap_details_cta b {
-    width: 110px;
-}
-.top_o{
-top:0 !important;
-}
- </style>
  
  <script>
  var atsUrl = '${SourceLeadWeb_atsUrl}';

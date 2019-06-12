@@ -166,8 +166,8 @@
 		</div>
         
         <div class="popupFoot text-right">
-          <button type="button" class="slBtn md colorBtn" onclick="getWalletFilter();">Save</button>
-          <button type="button" class="slBtn md popClose" onclick="cancelWalletFilter();"> Cancel</button>
+          <button type="button" class="slBtn md colorBtn" onclick="getWalletFilter();">Apply</button>
+          <button type="button" class="slBtn md " onclick="cancelWalletFilter();"> Reset</button>
         </div>
         
         <div>
@@ -178,7 +178,7 @@
 		location.href = "/ats/candidatesList";
 	} */
 		
-	function cancelWalletFilter(){
+ 	function cancelWalletFilter(){
 		$('input[name=timeInterval]').prop('checked', false);
 		$('input[name=transactionType]').prop('checked', false);
 		//$("#toDate, #frmDate").val("");
@@ -187,10 +187,8 @@
 		//$.datepicker._clearDate("#toDate");
 		//$.datepicker._clearDate("#frmDate");
 		$("#customDates").hide();
-		getDynamicWalletList();
 		
 	}
-	
 	function getWalletFilter(){
 		var selectedInterval = $('input[name=timeInterval]:checked').val();
 		var selectedTransactionType = [];
@@ -222,13 +220,14 @@
 	function goToSalesOrderList(){
 		location.href = "${SourceLeadWeb_atsUrl}/SalesOrderList";
 	}
-	function refreshPage(){
+	 function refreshPage(){
 		$("#walletSearch").val('');
 		getDynamicWalletList();
-	}
-	/* function goToWalletList(){
+	} 
+
+	/*  function goToWalletList(){
 		location.href = "/ats/walletList";
-	} */
+	}  */
   </script>
   
   <script>

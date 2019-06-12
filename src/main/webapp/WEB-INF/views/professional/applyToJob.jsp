@@ -21,13 +21,6 @@
    var tokenValue = "${_csrf.token}";
 </script>
 
-
-<style>
-.viewTemplate {
-background-color: #fff !important;
-}
-</style>
-
 <div id="popUp"></div>
 <script>
 function applyToJob(jobTitle,requirementId,referId){
@@ -752,7 +745,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		
 		result = result + '</div>';
 		
-		result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div><div id="detailsLoading"></div></div>';
+		result = result + '<div id="sjfb-fields" class="viewTemplate backgroundWhite"> <div id="loading"></div><div id="detailsLoading"></div></div>';
 		result = result + '</div>';
 		
 		result = result + '</div>'; 

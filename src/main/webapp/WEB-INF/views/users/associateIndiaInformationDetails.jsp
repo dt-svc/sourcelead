@@ -538,6 +538,7 @@ $("#nomineeShow").click(function() {
  
  <script>
  function addNomineeDetails(id){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$(".salarySetup, .comMask").fadeIn();
 	var urlPath = '';
 	if(id != null && id != 'undefined' && id != ''){
@@ -547,7 +548,7 @@ $("#nomineeShow").click(function() {
 	}
     $.ajax({
 			type: "POST",
-		    url: atsUrl + urlPath, 
+		    url: pmsUrl + urlPath, 
 		    success: function(data) {
 		    	$('#nomineePopUpDiv').empty();
 		    	$('#nomineePopUpDiv').append(data);

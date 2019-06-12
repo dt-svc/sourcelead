@@ -79,7 +79,7 @@
 				<div class="form-group">
 						<label class="col-md-3">Source</label>
 						<div class="col-md-9">
-							<select class="sel form-control" name="candidateSource" field-name="Source" id="candidateSource" data-validation="required">
+							<select class="width100percnt selectpicker" data-live-search="true" name="candidateSource" field-name="Source" id="candidateSource" data-validation="validate_Space" data-validation-optional="true">
 								<option value="">Select Source</option>
 							<c:forEach items="${sourceCandidateList}" var="candidateSource">
 								<option value="${candidateSource.id}" >${candidateSource.name}</option>
@@ -1243,4 +1243,6 @@ $('#ssnNumber').mask('000-00-0000', {
     },
    placeholder: ""
 });
+
+$('#candidateSource').selectpicker('refresh');
 </script>

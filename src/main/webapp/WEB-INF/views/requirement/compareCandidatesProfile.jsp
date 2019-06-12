@@ -7,9 +7,6 @@
 .new_side_wrap {
 	z-index:100000 !important; 
 }
-/* .side_mask {
-z-index:9999 !important;
-} */
 </style>
 
 <script>

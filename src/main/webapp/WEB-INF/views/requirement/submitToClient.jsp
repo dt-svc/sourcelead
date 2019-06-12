@@ -15,26 +15,9 @@
 <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}">
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap3-wysihtml5.all.min.js?staticTime=${staticTime}"></script> 
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/summernote.js?staticTime=${staticTime}"></script>
-
 <style type="text/css">
-.add_inter table tr td {
- vertical-align: middle;
-}
-.timesheet_week_comm {
-float: none !important; width: auto;
-}
-.timesheet_week_comm.mail-attach table tr {
-width: 100%;
-}
-.timesheet_week_comm span input, .commentFile span input {
-width: 80%;
-}
-ul.tagit li.tagit-choice .tagit-close .text-icon {
-visibility: hidden;
-}
-ul.tagit li.tagit-choice .tagit-close:before {
-content:"x"; z-index: 999; position: absolute; right: 0; top: -5px; color: red;
-}
+ul.tagit li.tagit-choice .tagit-close .text-icon { visibility: hidden; }
+ul.tagit li.tagit-choice .tagit-close:before { content:"x"; z-index: 999; position: absolute; right: 0; top: -5px; color: red;
 </style>
 <script>
 function submitToClient(requirementId){
@@ -61,7 +44,7 @@ function submitToClient(requirementId){
 		           result = result + '     <div class="clearfix"></div>';
 		           result = result + '   </div>';
 		           result = result + '   <div class="require_wrap_table scroll_table mt40 tableData">';
-		           result = result + '     <table id="SCPagination"  class="display" cellspacing="0" width="100%">';
+		           result = result + '     <table id="SCPaginationId"  class="display" cellspacing="0" width="100%">';
 		           result = result + '       <thead>';
 		           result = result + '         <tr>';
 		           result = result + ' <th><input type="checkbox" onclick="selectAllSubmitToClient();"  id="selectallSTC" ></th>';
@@ -91,7 +74,7 @@ function submitToClient(requirementId){
 		   	        		}
 			    			
 		    			    result = result + '<tr>';
-		    			    result = result + '<td><input type="checkbox" onclick="getSubmitToClientCheckedCandidatesCount();"  class="shortlistedChecks" value='+report.id+' name="shortlist[]" ></td>';
+		    			    result = result + '<td><input type="checkbox" onclick="getSubmitToClientCheckedCandidatesCount();"  class="shortlistedChecks" subrate  subrateper value='+report.id+' name="shortlist[]" ></td>';
 		    			    
 				            result = result + '<td><div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div></td>';
 				           
@@ -132,12 +115,12 @@ function submitToClient(requirementId){
 				    	     }
 				           
 				           if(report.submitToClientRate != null && report.submitToClientRate != '' && report.submitToClientRate != 'undefined'){
-				        	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" data-validation="validate_length length1-10" data-validation-optional="true" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.submitToClientRate+'"></div></td>';
+				        	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onblur="validateRate(this,'+report.id+')" data-validation="validate_length length1-10" data-validation-optional="true" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.submitToClientRate+'"></div></td>';
 					           }
 					       else{
-					    	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
+					    	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onblur="validateRate(this,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
 				    	     }
-								result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" field-name="Rate Type" data-validation-optional="true">';
+								result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" onchange = "validateRate(this,'+report.id+')" field-name="Rate Type" data-validation-optional="true">';
 								result = result + '<option value="">Rate Per</option>';
 								result = result + '<option '+(report.submitToClientRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 								result = result + '<option  '+(report.submitToClientRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
@@ -210,22 +193,18 @@ $(document).on('keyup', '.quantity', function(event) {
 	});
 </script>
 <!-- this script is used for validate the rate, which accepts only numerics and upto 10 digits (Venkat Kesav) -->
-<!-- <script>
-function validateRate(evt, rateId) {
-  var theEvent = evt || window.event;
-  var key = theEvent.keyCode || theEvent.which;
-  key = String.fromCharCode( key );
-  var regex = /[0-9]/;
-  if( !regex.test(key) || $("#submissionRate"+rateId+"").val().length>9) {
-   if(theEvent.preventDefault) theEvent.preventDefault();
-    theEvent.returnValue = false;
-  }
+<script>
+
+function validateRate(elem, idval) {
+	 $(elem).closest("tr").find('[type=checkbox]').attr("subrate", $("#submissionRate"+idval).val());
+	 $(elem).closest("tr").find('[type=checkbox]').attr("subrateper", $("#submissionRateType"+idval).val());
+	
 }
-</script> -->
+</script>
 
 <script>
 function SCpagination(){  
-    $('#SCPagination').DataTable( { 
+    $('#SCPaginationId').DataTable( { 
     	"scrollCollapse": false,
     	"bPaginate": false,
     	"bLengthChange": false,
@@ -242,7 +221,7 @@ function SCpagination(){
      	}
 		
     });
-    $('#SCPagination').wrap("<div class='overflow_Auto width100Percnt'></div>")
+    $('#SCPaginationId').wrap("<div class='overflow_Auto width100Percnt'></div>")
 }
 </script>
 
@@ -272,9 +251,11 @@ function selectAllSubmitToClient(){
             });         
         } 
 	
-	 var selectedShortlists = [];
-	 $("input[name='shortlist[]']:checked").each( function (i) {
-		 selectedShortlists[i] = $(this).val();
+	var oTable = $('#SCPaginationId').dataTable();
+	var rowcollectionsc =  oTable.$("input[name='shortlist[]']:checked", {"page": "all"});
+	 rowcollectionsc.each(function(index,elem){
+		 selectedShortlists[index] = $(elem).val();
+		 
 	 });
 	 
 	 $("#checkedSubmitToClientCount").html(selectedShortlists.length);
@@ -283,10 +264,13 @@ function selectAllSubmitToClient(){
 
 
 <script>
+var selectedShortlists = [];
 function getSubmitToClientCheckedCandidatesCount(){
-	 var selectedShortlists = [];
-	 $("input[name='shortlist[]']:checked").each( function (i) {
-		 selectedShortlists[i] = $(this).val();
+	 var oTable = $('#SCPaginationId').dataTable();
+	 var rowcollectionsc =  oTable.$("input[name='shortlist[]']:checked", {"page": "all"});
+	 rowcollectionsc.each(function(index,elem){
+		 selectedShortlists[index] = $(elem).val();
+		 
 	 });
 	 
 	 $("#checkedSubmitToClientCount").html(selectedShortlists.length);
@@ -358,6 +342,7 @@ function cancelSumitToClient(){
 
 
 <script>
+
 function addEmailtemplate(requirementId){
 	
 	var result ="";
@@ -365,21 +350,24 @@ function addEmailtemplate(requirementId){
 		 var selectedShortlistsRate = [];
 		 var selectedShortlistsRatePer = [];
 		 var isCountinue = true;
-		 $("input[name='shortlist[]']:checked").each( function (i) {
-			 selectedShortlists[i] = $(this).val();
-			 var rateId = $(this).val();
-			 var selectedRate = $("#submissionRate"+rateId).val();
-			 selectedShortlistsRate[i] = selectedRate;
-			 var rateIdper = $(this).val();
-			 var selectedRatePer =  $("#submissionRateType"+rateIdper).val();
-			 selectedShortlistsRatePer[i] = selectedRatePer;
+		 
+		 var oTable = $('#SCPaginationId').dataTable();
+		 var rowcollectionsc =  oTable.$("input[name='shortlist[]']:checked", {"page": "all"});
+		 rowcollectionsc.each(function(index,elem){
+			 selectedShortlists[index] = $(elem).val();
+			 
+			 var selectedRate = $(elem).attr("subrate");
+			 selectedShortlistsRate[index] = selectedRate;
+			 
+			 var selectedRatePer =  $(elem).attr("subrateper");
+			 selectedShortlistsRatePer[index] = selectedRatePer;
 			 
 			 if(selectedRate != '' && selectedRate != null && selectedRate != 'undefined' && (selectedRatePer == '' || selectedRatePer == null || selectedRatePer == 'undefined')){
 				 isCountinue = false;
 			 }else if((selectedRate == '' || selectedRate == null || selectedRate == 'undefined') && selectedRatePer != '' && selectedRatePer != null && selectedRatePer != 'undefined'){
 				 isCountinue = false;
 			 }
-		});
+		 });
 		 
 		 if(isCountinue){
 		 if(selectedShortlists.length >0){
@@ -438,7 +426,7 @@ function addEmailtemplate(requirementId){
 						result = result +'			</div>';
 						result = result +'			 <div class="clearfix mb12" id="uploadResumeDiv">';
 						result = result +'                 <div class="col-md-9">';
-						result = result +'						<div class="timesheet_week_comm mail-attach" id="uploadFileGroup">';
+						result = result +'						<div class="timesheet_week_comm mail-attach timesheet_week_comm_div" id="uploadFileGroup">';
 						result = result +'	                          <table class="timesheetAttachment" id="attachmentTable">';
 						result = result +'							  <tr id="divAttachmentTsRow0">';
 						result = result +'							  		<td>';

@@ -6,14 +6,6 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<style type="text/css">
-.collapse-div-adduser select {
-	width: 100% !important;
-	padding-right: 10px !important;
-	padding-left: 10px !important;
-	border: 1px solid #ccc !important
-}
-</style>
 <script type="text/javascript" src='/resources/js/slead-common.js'></script>
 <script type="text/javascript">
 //On document ready

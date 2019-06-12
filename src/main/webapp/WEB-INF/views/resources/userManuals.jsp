@@ -6,16 +6,6 @@
 <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/summernote.min.js"></script>
 
-<style type="text/css">
-.taskdesp .form-control {
-height: auto !important;
-}
-.project_tabs_inn_table.project_tabs_inn_table_a table tr td:last-child
-{
-width: auto !important;
-}
-</style>
-
 <script>
 $(function(){
 	getUserManualList();
@@ -99,7 +89,7 @@ $('.note-editable').css({"min-height":"200px"});
     result = result	+ '</ul>';
     
     result = result	+ '</div>';
-    result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+    result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a widthAutoTD">';
 	result = result	+ '<div id="tasksLoadingImg"></div>';
 	result = result + '<table id="UserManualPagination" class="display" cellspacing="0" width="100%">';
 	result = result + '<thead>';
@@ -287,7 +277,7 @@ function cancelTermination(){
     result = result	+ '</ul>';
     
     result = result	+ '</div>';
-    result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+    result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a widthAutoTD">';
 	result = result	+ '<div id="tasksLoadingImg"></div>';
 	
 	result = result + '<table id="UserManualTwoPagination" class="display" cellspacing="0" width="100%">';
@@ -496,7 +486,7 @@ function cancelTermination(){
 	    result = result	+ '</ul>';
 	    
 	    result = result	+ '</div>';
-	    result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+	    result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a widthAutoTD">';
 		result = result	+ '<div id="tasksLoadingImg"></div>';
 		
    
