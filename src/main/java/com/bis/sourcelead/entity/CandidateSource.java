@@ -31,7 +31,7 @@ public class CandidateSource implements Serializable {
 	@Column(name = "NAME")
 	private String name;
 	
-	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
+	@Column(name="DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
 	private String description;
 	
 	@Column(name = "STATUS")

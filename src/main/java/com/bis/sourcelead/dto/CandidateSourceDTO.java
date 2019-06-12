@@ -1,7 +1,14 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
+
 import com.bis.sourcelead.annotations.Required;
-public class CandidateSourceDTO{
+public class CandidateSourceDTO implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	
