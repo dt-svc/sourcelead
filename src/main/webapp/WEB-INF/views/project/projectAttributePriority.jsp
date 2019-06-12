@@ -219,7 +219,7 @@ function addTaskType(){
 function closeTaskType(){
 	$(".mask, #modalTasktype").fadeOut();
 	$('#taskType_form')[0].reset();
-	$("taskType_form").validate().resetForm();
+	//$("taskType_form").validate().resetForm();
 	$('#referId').val('').selectpicker('refresh');
 }
 function editCloseTaskType(){

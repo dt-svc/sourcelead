@@ -22,7 +22,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="pull-left">
         <h2>Holidays List</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; <a href="${SourceLeadWeb_pmsUrl}/leaveConfiguration">Leave Configuration</a> &raquo; Holiday</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; 
+		<a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo;
+		<a href="${SourceLeadWeb_pmsUrl}/leaveConfiguration">Leave Configuration</a> &raquo; Holiday</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -155,7 +157,6 @@ function getHolidaysList(){
 				$("#holidayListDiv").empty();
 				$("#holidayListDiv").append(result);
 				viewHolidaysTablePagination();
-				viewHolidaysTable();
 		} else if (response.indexOf('Sign In') !== -1) {
 			location.replace(pmsUrl);
 		} else {

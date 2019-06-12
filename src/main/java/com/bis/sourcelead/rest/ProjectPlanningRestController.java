@@ -1232,6 +1232,7 @@ public class ProjectPlanningRestController {
 				orgRelations.setResponderLocationId(vendorOrgLocation);
 				orgRelations.setInitiatorType("Client");
 				orgRelations.setResponderType("Vendor");
+				orgRelations.setGenerateBill("Bulk");
 				orgRelations.setInitiatorLevel("Tier-5");
 				orgRelations.setResponderLevel("Tier-5");
 				orgRelations.setVendorRelationStatus("Sent");
@@ -1591,50 +1592,6 @@ public class ProjectPlanningRestController {
 	      		
 	      		return requestDTOList;
 	    	}
-	        
-	        
-	        
-	        @RequestMapping(value = "/getProjectResourceRequestsCounts", method = RequestMethod.GET)
-			public @ResponseBody ProjectPlanningResourceRequestDTO getProjectResourceRequestsCounts(HttpServletRequest request) throws Exception {
-			   
-        	  OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-      		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			  String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-			  List<ProjectPlanningResourceRequest> projectPlanningRequestList = projectPlanningResourceRequestService.getResourceRequestListByApproverIdAndOrgLocationIdAndStatus(user.getId(), orgLocation.getId(), userRoleName);
-			 
-			  ProjectPlanningResourceRequestDTO projectPlanningResourceRequestDTO = new ProjectPlanningResourceRequestDTO();
-			  
-			  Integer waitingCount = 0;
-			  Integer approvedCount = 0;
-			  Integer rejectedCount = 0;
-			  Integer onholdCount = 0;
-			  
-			  if(projectPlanningRequestList != null && projectPlanningRequestList.size() > 0) {
-				  for(ProjectPlanningResourceRequest planningRequest : projectPlanningRequestList){
-					  if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_APPROVED)){
-						  approvedCount = approvedCount + 1;
-					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_WAITING_FOR_APPROVAL)){
-						  waitingCount = waitingCount + 1;
-					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_REJECTED)){
-						  rejectedCount = rejectedCount + 1;
-					  }else if(planningRequest.getResourceStatus().equalsIgnoreCase(Constants.RESOURCE_REQUEST_ON_HOLD)){
-						  onholdCount = onholdCount + 1;
-					  }
-				  }
-			  }
-			  
-			  projectPlanningResourceRequestDTO.setWaitingCount(waitingCount);
-			  projectPlanningResourceRequestDTO.setApprovedCount(approvedCount);
-			  projectPlanningResourceRequestDTO.setRejectedCount(rejectedCount);
-			  projectPlanningResourceRequestDTO.setOnholdCount(onholdCount);
-			  
-			  return projectPlanningResourceRequestDTO;
-			  
-		    }
-	        
-	        
-	        
-	        
 	        
 	        
 	        @RequestMapping(value = "/getProjectPlanningNewResourceRequestList", method = RequestMethod.GET)
