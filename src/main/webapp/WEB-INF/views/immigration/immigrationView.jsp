@@ -15,7 +15,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 myImmigrationPage = '${myImmigrationPage}';
 </script>
 <%-- <c:set var ="myImmigrationPage" value = "${myImmigrationPage}" scope="session"/> --%>
-<c:set var ="passOnLoadCount" value = "${tabRecordCountMap['Passport']}" scope="request"/>
+<%-- <c:set var ="passOnLoadCount" value = "${tabRecordCountMap['Passport']}" scope="request"/>
 <c:set var ="visaOnLoadCount" value = "${tabRecordCountMap['Visa']}" scope="request"/>
 <c:set var ="empOnLoadCount" value  =  "${tabRecordCountMap['Employers']}" scope="request"/>
 <c:set var ="resiOnLoadCount" value = "${tabRecordCountMap['Residence']}" scope="request"/>
@@ -23,7 +23,7 @@ myImmigrationPage = '${myImmigrationPage}';
 <c:set var ="eduOnLoadCount" value  = "${tabRecordCountMap['Education']}" scope="request"/>
 <c:set var ="familyOnLoadCount" value  = "${tabRecordCountMap['Family']}" scope="request"/>
 <c:set var ="taskOnLoadCount" value  = "${tabRecordCountMap['Tasks']}" scope="request"/>
-<c:set var ="curUscisMyImmi" value = "${immigration.currUscisStatus}" scope="session"/>
+<c:set var ="curUscisMyImmi" value = "${immigration.currUscisStatus}" scope="session"/> --%>
  <section class="content-wraper content-wraperNew">
 	        <div class="success_pop" id="selector" >
 	       <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -94,7 +94,7 @@ myImmigrationPage = '${myImmigrationPage}';
              
               <li><a href="#docsTab"><i id="allDocsfilled" class="fa fa-check-circle-o"></i>Documents</a></li>
              
-              <li><a href="#tasksTab"><i id="tasksInfoTab" class="${taskOnLoadCount==null?'fa fa-check-circle-o':''}"></i>Tasks</a></li>
+              <li><a href="#tasksTab"><i id="tasksInfoTab" class="${taskOnLoadCount==null?'':'fa fa-check-circle-o'}"></i>Tasks</a></li>
               <li><a href="#notesTab">Notes</a></li>
               <li><a href="#activitiesTab" id= "#activitiesId">Timeline</a></li>
               <div class="clearfix"></div>
@@ -371,7 +371,12 @@ $("#packageZipfile").click(function() {
 	}
 	function deleteImmigrationRecordById(elem, arg1, arg2){	
 		if(typeof elem ==='function') {
+			if(typeof arg2 == 'undefiend'){
+				elem(arg1);
+			}
+			else{
 			elem(arg1, arg2);
+		}
 		}
 		else{
 			alert("Not a valid Function call.");
