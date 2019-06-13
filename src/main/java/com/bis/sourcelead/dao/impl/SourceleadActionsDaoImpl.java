@@ -241,10 +241,6 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 		Countries countries = countriesDao.getCountriesByCountryName(orgLocations.getCountry());
 			
 			if(org.getOrgCode().equalsIgnoreCase("slead")) {
-				 List<Long> modulesList = new ArrayList<Long>();
-					for (String s : orgLocations.getModulesId().split(",")){
-						modulesList.add(Long.parseLong(s));
-					 }
 				
 				 String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13) "
 				    		+ "and  sa.id NOT IN (152,153) and sa.status = '1' ";
