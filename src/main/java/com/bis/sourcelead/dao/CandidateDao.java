@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -292,7 +293,7 @@ public interface CandidateDao {
 
 	public CandidateVerificationConfig getCandidateVerificationConfigByIdAndOrglocationId(Long orgLocationId, Long id);
 
-	public List<CandidateSource> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+	public List<CandidateSource> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue,CandidateSourceDTO candidateSourceDTO);
 
 	public long saveCandidateSource(CandidateSource candidateSource);
 
@@ -303,5 +304,4 @@ public interface CandidateDao {
 	public boolean deleteCandidateSourceById(long id);
 
 	public void saveSourceleadDeletedCandidate(SourceleadDeletedCandidates sourceleadDeletedCandidates) throws Exception;
-
 }
