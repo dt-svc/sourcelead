@@ -10,7 +10,7 @@
       <div class="pull-left">
         <h2>Ticket Priority</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo;  <a href="<c:url value='${appPath}/settings'/>">Settings</a> &raquo; Ticket Priority List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo;  <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/settings'/>">Settings</a> &raquo; Ticket Priority List</div>
     </section>
     <div class="content-area content-new clearfix timesheet_out">
       <div class="clearfix mt mb">
