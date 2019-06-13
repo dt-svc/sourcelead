@@ -2311,9 +2311,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 candidateConfigurationDTO.setPanNumber(submission.getCandidate().getPanNumber());
 			 candidateConfigurationDTO.setSsnNumber(submission.getCandidate().getSsnNumber());
 			 CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(parentrequirement.getOrgLocationId().getId());
-			// requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(submission.getCandidate().getEmail(), requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
-				requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByLocationID(candidateVerificationConfig,candidateConfigurationDTO, requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
-			 
+			if(candidateVerificationConfig !=null) {
+			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByLocationID(candidateVerificationConfig,candidateConfigurationDTO, requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
+			}
+			else {
+				 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(submission.getCandidate().getEmail(), requirement.getParentRequirement().getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getParentRequirement().getId());
+			}
+			
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
 					 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
