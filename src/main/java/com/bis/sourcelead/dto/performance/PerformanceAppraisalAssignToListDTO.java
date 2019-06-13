@@ -11,6 +11,8 @@ public class PerformanceAppraisalAssignToListDTO implements Serializable{
 	
 	private BigInteger userId;
 	
+	private BigInteger userRoleId;
+	
 	private String associateId;
 	
 	private String associateName;
@@ -43,6 +45,14 @@ public class PerformanceAppraisalAssignToListDTO implements Serializable{
 
 	public void setUserId(BigInteger userId) {
 		this.userId = userId;
+	}
+	
+	public BigInteger getUserRoleId() {
+		return userRoleId;
+	}
+
+	public void setUserRoleId(BigInteger userRoleId) {
+		this.userRoleId = userRoleId;
 	}
 
 	public String getAssociateId() {

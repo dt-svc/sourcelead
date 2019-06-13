@@ -11,6 +11,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalTemplateDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalAssignToListDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -290,6 +291,12 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 	@Override
 	public PerformanceAppraisalTemplate getPerformanceAppraisalTemplateByUUID(String uuid) throws Exception {
 		return performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateByUUID(uuid);
+	}
+
+	@Override
+	public ResponseList<PerformanceAppraisalPeersDTO> getPerformancePeersList(
+			PerformanceAppraisalPeersDTO performanceAppraisalPeersDTO, Long orgLocationId) throws Exception {
+		return performanceAppraisalTemplateDao.getPerformancePeersList(performanceAppraisalPeersDTO, orgLocationId);
 	}
 
 }

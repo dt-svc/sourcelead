@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalTemplateDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalAssignToListDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -165,11 +166,12 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 			query = "SELECT Q1.* " + 
 			 		 "FROM (" + 
 					 "SELECT " + 
-					"CAND.GENERATED_ID AS associateId," + 
-					"CAND.CONSULTANT_USER_ID AS userId," + 
-					"CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS associateName," +
+					"CAND.GENERATED_ID AS associateId, " + 
+					"CAND.CONSULTANT_USER_ID AS userId, " + 
+					"CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS associateName, " +
 					"CAND.EMAIL AS associateEmail, " + 
 					"CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS reportingManager, " +
+					"UR.ROLE_ID AS userRoleId, " + 
 					"R.DISPLAY_NAME AS associateRole " + 
 							             
 					"FROM " + 
@@ -177,11 +179,10 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 					"USER U ," + 
 					"CANDIDATE CAND, " + 
 					"EMPLOYEE EMP, " + 
-					"DEPARTMENT DEPT, " + 
 					"ORG_LOCATIONS OL, " + 
 					"ROLES R " + 
 					"WHERE UR.REPORTING_MANAGER_ID = U.ID AND UR.ROLE_ID = R.ID " + 
-					"AND CAND.CONSULTANT_USER_ID = UR.USER_ID AND CAND.ORG_LOCATION_ID = OL.ID " + departmentQuery + rolesQuery + employmentType+
+					"AND CAND.CONSULTANT_USER_ID = UR.USER_ID AND CAND.ORG_LOCATION_ID = OL.ID AND EMP.USER_ID = UR.USER_ID " + departmentQuery + rolesQuery + employmentType+
 					"AND CAND.ORG_LOCATION_ID = :orgLocationId AND CAND.STATUS = '1' AND UR.USER_STATE = 'ACTIVE' GROUP BY UR.ID )Q1 "+querySeachStr+sortingQry;
 			
 			
@@ -222,6 +223,107 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 		}
 		
 		response.setData(assignToList);
+		return response;
+		
+	}
+
+	@Override
+	public ResponseList<PerformanceAppraisalPeersDTO> getPerformancePeersList(
+			PerformanceAppraisalPeersDTO performanceAppraisalPeersDTO, Long orgLocationId) throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		Query queryObj = null;
+		List<PerformanceAppraisalPeersDTO> peersList = null;
+		String departmentQuery = "";
+		String employmentType = "";
+		
+		List<BigInteger> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<PerformanceAppraisalPeersDTO> response = new ResponseList<>();
+		String querySeachStr = "";
+		
+		StringBuilder query1 = new StringBuilder("");
+		if(performanceAppraisalPeersDTO.getSearchValue() != null && !"".equalsIgnoreCase(performanceAppraisalPeersDTO.getSearchValue())) {
+			 query1.append(" Q1.associateId like '%" + performanceAppraisalPeersDTO.getSearchValue() + "%' ")
+				.append("OR Q1.associateName like '%" + performanceAppraisalPeersDTO.getSearchValue() + "%' ")
+				.append("OR Q1.associateEmail like '%" + performanceAppraisalPeersDTO.getSearchValue() + "%' ");
+			 
+		}
+		
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(performanceAppraisalPeersDTO.getSortColumn()))
+		{
+			sortingQry = " order by Q1."+ performanceAppraisalPeersDTO.getSortColumn() +" "+performanceAppraisalPeersDTO.getSortOrder();
+		}
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			querySeachStr = "where "+"("+query1.toString()+")";
+		}
+		
+		
+		try {
+			
+			query = "SELECT Q1.* " + 
+			 		 "FROM (" + 
+					 "SELECT " + 
+					"CAND.GENERATED_ID AS associateId, " + 
+					"UR.USER_ID AS peerUserId, " + 
+					"CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS associateName, " +
+					"U.FILE_URL AS userImgUrl, " + 
+					"U.EMAIL AS associateEmail " + 
+							             
+					"FROM " + 
+					"USER_ROLE UR ," + 
+					"USER U ," + 
+					"CANDIDATE CAND, " + 
+					"EMPLOYEE EMP, " + 
+					"ORG_LOCATIONS OL " + 
+					"WHERE UR.REPORTING_MANAGER_ID = U.ID  " + 
+					"AND CAND.CONSULTANT_USER_ID = UR.USER_ID AND CAND.ORG_LOCATION_ID = OL.ID AND EMP.USER_ID = UR.USER_ID " + 
+					"AND UR.ORG_LOCATION_ID = :orgLocationId AND UR.ROLE_ID = :roleId AND UR.USER_STATE = 'ACTIVE' GROUP BY UR.ID )Q1 "+querySeachStr+sortingQry;
+
+			
+			
+			  String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
+						" FROM" + 
+						"(" + query +
+						")Q2;" ;
+			
+			
+			queryObj = session.createSQLQuery(query);
+			queryObj.setParameter("orgLocationId", orgLocationId);
+			queryObj.setParameter("roleId", performanceAppraisalPeersDTO.getUserRoleId());
+			queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalPeersDTO.class));
+			queryObj.setFirstResult(performanceAppraisalPeersDTO.getStart());
+			queryObj.setMaxResults(performanceAppraisalPeersDTO.getLength());
+			peersList = queryObj.list();
+			
+			countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocationId).setLong("roleId", performanceAppraisalPeersDTO.getUserRoleId()).list();
+			filterCount = countlist.iterator().next().intValue();
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		int totalCount = 0;
+
+		
+		if (performanceAppraisalPeersDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		response.setData(peersList);
 		return response;
 		
 	}
