@@ -104,7 +104,7 @@ function prepareDynamicOrgList(url){
 	    result = result	+ '<div class="remove_search">';
 		result = result	+ '</div>';
 		result = result	+ '</div>';
-		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		result = result	+ '<div class="project_tabs_inn_table">';
 		result = result + '<table id="dynamicOrgListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
