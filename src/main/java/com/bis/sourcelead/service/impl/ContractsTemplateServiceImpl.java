@@ -2497,11 +2497,11 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			}else if(Constants.Vendor_SOW.equalsIgnoreCase(contracts.getContractType())){
 				vendorContracts.setContractType(Constants.Client_SOW);
 			}
-			else if(Constants.NDA.equalsIgnoreCase(contracts.getContractType())){
-				vendorContracts.setContractType(Constants.VENDOR_NDA);
+			else if(Constants.VENDOR_NDA.equalsIgnoreCase(contracts.getContractType())){
+				vendorContracts.setContractType(Constants.CLIENT_NDA);
 			}
-			else if(Constants.NSA.equalsIgnoreCase(contracts.getContractType())){
-				vendorContracts.setContractType(Constants.VENDOR_NSA);
+			else if(Constants.VENDOR_NSA.equalsIgnoreCase(contracts.getContractType())){
+				vendorContracts.setContractType(Constants.CLIENT_NSA);
 			}
 				vendorContracts.setInitiatorType(Constants.CLIENT);
 				vendorContracts.setContractOrgLocationId(orgLocation);

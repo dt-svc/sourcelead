@@ -373,29 +373,12 @@ public interface CandidateService {
 
 	public long saveCandidateSource(CandidateSourceDTO candidateSourceDTO, User user, OrgLocations loginOrgLocation);
 
-	public List<CandidateSourceDTO> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+	public List<CandidateSourceDTO> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue, CandidateSourceDTO candidateSourceDTO);
 
 	public CandidateSourceDTO getCandidateSourceById(long id, long userId, OrgLocations loginOrgLocation);
 
 	public Boolean deleteCandidateSourceById(long Id);
-
-	
-	
-
-	
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-	
 	
 	public void saveSourceleadDeletedCandidate(SourceleadDeletedCandidates sourceleadDeletedCandidates) throws Exception;
-	
+
 }
