@@ -10,7 +10,7 @@
       <div class="pull-left">
         <h2>Ticket Category</h2>
       </div>
-            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a> &raquo; Ticket Category List</div>
+            <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/settings'/>">Settings</a> &raquo; Ticket Category List</div>
     </section>
     <div class="content-area content-new clearfix timesheet_out">
       <div class="clearfix mt mb">
@@ -79,7 +79,7 @@
             <div class="clearfix mb">
                 <label class="noPad">Description</label>
                 <div class="clearfix">
-					<textarea placeholder="Description" name="description" id="ticketCategoryDesc" class="form-control" rows="2" data-validation="validate_length length0-1000"></textarea>
+					<textarea placeholder="Description" name="description" id="ticketCategoryDesc" class="form-control" rows="2" data-validation="validate_length length0-5000"></textarea>
                 </div>
             </div>
 
@@ -116,7 +116,7 @@
 	       "ajax": $.fn.dataTable.pipeline( {
 	           url: url,
 	           method: 'POST',
-	           pages: 1
+	           pages: 20
 	       }),
 	       "columns": [
 	    	   {"data": "id"},
@@ -147,7 +147,7 @@
 		            "render": function ( data, type, opt, meta ) {
 		            		var result = "";
 	           		   if(opt.name != null && opt.name != '' && opt.name != 'undefined') {
-		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.name+'</div></td>';
+		     	        	result = result + '<td><div  class="tbldata-dotdot-big500" title="'+opt.name+'">'+opt.name+'</div></td>';
 	           		   } else {
 							result = result +"<td><div>-----</div></td>";
 	           	       }
@@ -161,7 +161,7 @@
 		            "render": function ( data, type, opt, meta ) {
 		            		var result = "";
 	           		   if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
-		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.description+'</div></td>';
+		     	        	result = result + '<td><div  class="tbldata-dotdot-big500" title="'+opt.description+'">'+opt.description+'</div></td>';
 	           		   } else {
 							result = result +"<td><div>-----</div></td>";
 	           	       }
