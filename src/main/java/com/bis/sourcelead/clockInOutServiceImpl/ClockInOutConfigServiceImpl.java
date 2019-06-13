@@ -2,6 +2,7 @@ package com.bis.sourcelead.clockInOutServiceImpl;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -17,6 +18,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,8 +29,10 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateReportSummaryDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutSubDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
@@ -242,6 +246,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			clockInOut.setProjectId(clockInOutDTO.getProjects());
 			clockInOut.setProjectsTaskId(clockInOutDTO.getProjectTasks());
 			clockInOut.setGeneralTaskId(clockInOutDTO.getGeneralTasks());
+			clockInOut.setComments(clockInOutDTO.getComments());
 			clockInOut = clockInOutConfigDao.saveClockInOutTime(clockInOut);
 			
 		} catch (Exception e) {
@@ -623,7 +628,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		    		subDto.setClockOutTime(data.getClockOutTime());
 		    		subDto.setIndividualNoOfHours(data.getTotalTime());
 		    		subDto.setTaskName(data.getProjectTaskName());
-		    		subDto.setLocation(null);
 		    		subDto.setComments(data.getComments());
 		    		subDto.setClockOutDate(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
 		    		subListDto.add(subDto);
@@ -1233,4 +1237,165 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		return totalHours;
 	}
 
+	@Override
+	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, Date empJoiningDate, OrgLocations orgLocation) {
+		// TODO Auto-generated method stub
+
+		List<ClockInOutAssociateReportSummaryDTO> getAssociateReportList = clockInOutConfigDao.getAssociateClockInOutReportSummary(clockInOutFiltersDTO, orgLocation, null);
+		List<ClockInOutAssociateReportSummaryDTO> mainList = new ArrayList<>();
+		
+		try {
+			
+			List<String> dates = new ArrayList<>();
+			dates.add("Employee Name");
+			Date[] dateArray = null;
+			if("previous".equalsIgnoreCase(clockInOutFiltersDTO.getType())) {
+				dateArray = clockInOutUtil.getClockFilterPreviousDates(clockInOutFiltersDTO.getCurrentDate(),null,orgLocation,clockInOutFiltersDTO.getDayWisetype());
+				dates = clockInOutUtil.getAllDatesBetweenTwoDates(orgLocation,dateArray);
+
+			}else if("next".equalsIgnoreCase(clockInOutFiltersDTO.getType())) {
+				dateArray = clockInOutUtil.getClockFilterNextDates(clockInOutFiltersDTO.getCurrentDate(),null,orgLocation,clockInOutFiltersDTO.getDayWisetype());
+				dates = clockInOutUtil.getAllDatesBetweenTwoDates(orgLocation,dateArray);
+			}else {
+				if(Constants.TO_DAY.equalsIgnoreCase(clockInOutFiltersDTO.getDayWisetype())) {
+					
+					dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), new Date()));
+					
+				}else if(Constants.REPORT_FILTER_LAST_7_DAYS.equalsIgnoreCase(clockInOutFiltersDTO.getDayWisetype())) {
+					
+					dateArray = clockInOutUtil.currentWeek(orgLocation);
+					dates = clockInOutUtil.getAllDatesBetweenTwoDates(orgLocation,dateArray);
+			
+				}else if(Constants.REPORT_FILTER_CURRENT_MONTH.equalsIgnoreCase(clockInOutFiltersDTO.getDayWisetype())) {
+					
+					dateArray = clockInOutUtil.currentMonthDates(orgLocation);
+					dates = clockInOutUtil.getAllDatesBetweenTwoDates(orgLocation,dateArray);
+			
+				}else if(Constants.REPORT_FILTER_CURRENT_YEAR.equalsIgnoreCase(clockInOutFiltersDTO.getDayWisetype())) {
+					
+					dateArray = clockInOutUtil.currentYearDates();
+					dates = clockInOutUtil.getAllMonthsOfCurrentYear(orgLocation,dateArray);
+			
+				}
+			}
+			
+			ClockInOutAssociateReportSummaryDTO mainDto = null;
+			
+				Map<BigInteger, List<ClockInOutAssociateReportSummaryDTO>> result = getAssociateReportList.stream().collect(Collectors.groupingBy(ClockInOutAssociateReportSummaryDTO::getUserId));
+				
+				if(result != null && result.size() > 0) {
+					
+					for (Entry<BigInteger, List<ClockInOutAssociateReportSummaryDTO>> entry : result.entrySet()) {
+						mainDto = new ClockInOutAssociateReportSummaryDTO();
+						Map<String, String> map = new HashMap<>();
+						
+						String sum = null;
+						
+						for (ClockInOutAssociateReportSummaryDTO clock : entry.getValue()) {
+							StringBuilder sb = new StringBuilder();
+							
+							for(String s : dates) {
+								List<ClockInOutAssociateReportSummaryDTO> dayClockInList = null;
+								if(!s.equalsIgnoreCase("Employee Name")) {
+									if(!"Current_Year".equalsIgnoreCase(clockInOutFiltersDTO.getDayWisetype())) {
+										dayClockInList = entry.getValue().stream()
+												.filter(clco->clco.getClockInDate().equals(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), s))).collect(Collectors.toList());
+								}else {
+										dayClockInList = entry.getValue().stream()
+												.filter(clco->clco.getYearDate().equals(s)).collect(Collectors.toList());
+								}
+								
+								}
+								
+						    	if(dayClockInList != null && dayClockInList.size() > 0) {
+						    		sum = getTotalTimeSumForSummaryReport(dayClockInList);
+						    		map.put(s, sum);
+						    	}else {
+									map.put(s, "--");
+						    	}
+								
+							}
+							
+							
+							if(clock.getLastName() != null) {
+								map.put("Employee Name", sb.append(clock.getFirstName()).append(" ").append(clock.getLastName()).toString());
+							}else {
+								map.put("Employee Name", clock.getFirstName());
+							}
+							
+							
+							if(!"Current_Year".equalsIgnoreCase(clockInOutFiltersDTO.getDayWisetype())) {
+								mainDto.setGraphFormatDate(commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", clock.getClockInDate()));
+							}else {
+								mainDto.setGraphFormatDate(commonUtil.dateStrFromOrgDateFormatter("yyyy-MM", clock.getClockInDate()));
+
+							}
+						
+		
+						}
+						mainDto.setHeaderDates(dates);
+						mainDto.setMapData(map);
+						mainDto.setUserId(entry.getKey());
+						
+						if(sum != null) {
+							String tTime [] = sum.toString().split(":");
+			                StringBuilder sb = new StringBuilder();
+			                sb.append(tTime[0]).append(".").append(tTime[1]);
+			                mainDto.setGraphTotalTime(sb.toString());
+						}
+						
+						mainList.add(mainDto);
+					}
+					
+				}else {
+					mainDto = new ClockInOutAssociateReportSummaryDTO();
+					mainDto.setHeaderDates(dates);
+					mainDto.setIsDataAvailable("NO");
+					mainList.add(mainDto);
+				}
+				
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return mainList;
+	}
+
+	private String getTotalTimeSumForSummaryReport(List<ClockInOutAssociateReportSummaryDTO> dayClockInList) {
+		
+		int sec = 0;
+    	int min = 0;
+    	int hr = 0;
+    	String sum = null;
+    	DecimalFormat df = new DecimalFormat("00");
+		for (ClockInOutAssociateReportSummaryDTO clk : dayClockInList) {
+			
+		    String[] str = clk.getTotalTime().split(":");
+    		sec += Integer.parseInt(str[2]);
+			if(sec>=60) {
+				min++;
+				sec = sec - 60; 
+			}
+			min += Integer.parseInt(str[1]);
+			if(min>=60) {
+				hr++;
+				min = min - 60;
+			}
+			hr += Integer.parseInt(str[0]);
+    		sum = df.format(hr)+":"+df.format(min)+":"+df.format(sec);
+    		
+		   }
+		return sum;
+	}
+
+	@Override
+	public List<ClockInOutUserTimeEntryDTO> getListOfClockDataBasedOnDate(String selectedDate, OrgLocations loginOrgLocation, Long userId) {
+		List<ClockInOutUserTimeEntryDTO> list = clockInOutConfigDao.getListOfClockDataBasedOnDate(selectedDate,loginOrgLocation,userId);
+		for (ClockInOutUserTimeEntryDTO clockInOutUserTimeEntryDTO : list) {
+			clockInOutUserTimeEntryDTO.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), clockInOutUserTimeEntryDTO.getClockInDate()));
+			clockInOutUserTimeEntryDTO.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), clockInOutUserTimeEntryDTO.getClockOutDate()));
+		}
+		return list;
+	}
 }

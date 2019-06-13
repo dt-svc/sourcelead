@@ -249,7 +249,7 @@ var validationSettings = {
 	
 	<script>
 		function logoutFormSubmit() {
-		/* 	 var sourceleadUrl ='${sourceleadUrl}';
+		 	/*  var sourceleadUrl ='${sourceleadUrl}';
 			 var sessionId = '${sessionId}';
 			
 			  $.ajax({

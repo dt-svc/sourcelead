@@ -97,6 +97,8 @@
 </div>
 
 <script type="text/javascript">
+
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var taxFormName = "${taxForm.name}";
 	$(document).ready(function () {
 		if(taxFormName === "IT Declaration") {

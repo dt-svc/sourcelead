@@ -129,6 +129,14 @@ $(document).ready(function(){
 	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
+ <script type="text/javascript">
+	 var tabAccessArray = '${SourceLeadWeb_tabsList}';
+	 var roleActionsArray = '${SourceLeadWeb_actionsList}';
+	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+ </script>
  
 <style>
 .dashboard-widget.dashboard-widget-icons{
@@ -298,12 +306,9 @@ function preventTabkey(e){
 
 <script>
 		function logoutFormSubmit() {
-			/* var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-			var actionUUID = '${userLoginSession.actionUUID}';
-			window.location.href = sourceleadUrl+"/getActionHistoryList/"+actionUUID;  */
-			
-			document.getElementById("logoutForm").submit();
-			
+			var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+			var actionUUID = '${SourceLeadWeb_actionUUID}';
+			window.location.href = sourceleadUrl+"/getActionHistoryList/"+actionUUID;  
 		}
 </script>
 
@@ -574,7 +579,7 @@ function preventTabkey(e){
         </sec:authorize>
         
          <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-         	<li><a href="${SourceLeadWeb_atsUrl}/mailBox/mails" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+         	<li><a href="${SourceLeadWeb_sourceleadUrl}/mailBox/mails" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
          </sec:authorize>		
 		
           <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -959,7 +964,7 @@ function preventTabkey(e){
 <div class="clearfix" id="commentsDIV">
 <label class="noPad">Comments</label>
 <div class="clearfix addicon">
-<textarea rows="3" class="form-control" name="comments" onblur="updateClockInOutTime();"></textarea>
+<textarea rows="3" class="form-control" id="comments" name="comments" onblur="updateClockInOutTime();"></textarea>
 </div>
 </div> 
 </div>
@@ -2031,11 +2036,9 @@ function getClockInOutConfiguration(){
 	success: function (json) {
 	if(json != null){
 		if(json.isBreak == true){
-			$(".mask, #clockPop").fadeIn();
 			$("#withBreakDiv").show();
 			$("#withoutBreakDiv").hide();
 		}else{
-			$(".mask, #clockPop").fadeIn();
 			$("#withoutBreakDiv").show();
 			$("#withBreakDiv").hide();
 		}
@@ -2065,10 +2068,11 @@ function getClockInOutConfiguration(){
 	$("#commentsDIV").show();
 	}
 	}else{
-		$(".mask, #clockPop").fadeIn();
 		$("#withoutBreakDiv").show();
 		$("#withBreakDiv").hide();
 	}
+	
+	$(".mask, #clockPop").fadeIn(0);
 	}
 	});
 
@@ -2159,14 +2163,13 @@ function getAssignedProjects(obj){
 	
 	}
 	});
-	getProjectTasksByProject(obj);
+	setTimeout(function(){ getProjectTasksByProject(obj); }, 500);
 }
 </script>
 
 
 <script>
 function getProjectTasksByProject(obj){
-
 	var projectId = $("#projectDropDownDiv").val();
 	if(projectId != null && projectId != "" && projectId != "undefined"){
 		$.ajax({
@@ -2279,6 +2282,8 @@ function getExistedClockTime(){
 		$('#reset, #pause').attr("disabled",false);
 		$("#clockInTimeId").text(' : '+data.clockInDateStr +' '+data.clockInTime);
 		
+		$("#comments").val(data.comments);
+		
 		getExistedBreakTime(data.id);
 		}else{
 		$('#reset,#play, #pause').attr("disabled",true);
@@ -2286,6 +2291,21 @@ function getExistedClockTime(){
 		
 		$("#clockInTimeId").text('');
 		$("#clockOutTimeId").text('');
+		
+		$("#jobDropDownDiv").val('');
+		$('#jobDropDownDiv').trigger("chosen:updated");
+		
+		$("#projectDropDownDiv").val('');
+		$('#projectDropDownDiv').trigger("chosen:updated");
+
+		$("#projectTaskDropDownDiv").val('');
+		$('#projectTaskDropDownDiv').trigger("chosen:updated");
+
+		$("#generalTaskDropDownDiv").val('');
+		$('#generalTaskDropDownDiv').trigger("chosen:updated");
+		
+		$("#comments").val('');
+		
 		}
 		
 	},	
@@ -2310,6 +2330,7 @@ function getExistedBreakTime(clockInOutId){
 
 
 <script type="text/javascript">
+$(".clockAniAct").hide();
 obj = {
 	element : '',
 	init: function () {
@@ -2341,6 +2362,21 @@ event: function (type) {
 	obj.element.removeClass('blink');
 	
 	saveClockInOutTime('ClockOut');
+	
+	$("#jobDropDownDiv").val('');
+	$('#jobDropDownDiv').trigger("chosen:updated");
+	
+	$("#projectDropDownDiv").val('');
+	$('#projectDropDownDiv').trigger("chosen:updated");
+
+	$("#projectTaskDropDownDiv").val('');
+	$('#projectTaskDropDownDiv').trigger("chosen:updated");
+
+	$("#generalTaskDropDownDiv").val('');
+	$('#generalTaskDropDownDiv').trigger("chosen:updated");
+	
+	$("#comments").val('');
+	
 	window.setTimeout(function() {
 		getTimeReports();
 	}, 200);
@@ -2437,4 +2473,7 @@ function getPreviousClockInData(){
 </script>
 
 
-
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/cropper.min.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/cropper.min.css" type="text/css" />
+<div id='imagecrop' class='post_popup'></div>
+<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>
