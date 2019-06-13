@@ -181,6 +181,7 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 			
 			List<RequirementWorkFlow> requirementWorkFlow = query1.list();
 			if(requirementWorkFlow != null){
+				StringBuilder userName = new StringBuilder("");	
 				for(RequirementWorkFlow workFlow : requirementWorkFlow){
 					requirementWorkFlowDTO = new RequirementWorkFlowDTO();
 					requirementWorkFlowDTO.setWorkFlowName(workFlow.getWorkFlowName());
@@ -188,6 +189,9 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 					requirementWorkFlowDTO.setStatus(workFlow.getStatus());
 					requirementWorkFlowDTO.setUuid(workFlow.getUuid());
 					requirementWorkFlowDTO.setDescription(workFlow.getDescription());
+					userName.append(workFlow.getUpdatedBy().getFirstName()+""+workFlow.getUpdatedBy().getLastName());
+					requirementWorkFlowDTO.setUpdatedBy(userName.toString());
+					userName.setLength(0);
 					requirementWorkFlowDTO.setConfigureType(workFlow.getConfigureType());
 					requirementWorkFlowDTOList.add(requirementWorkFlowDTO);
 				}
@@ -343,8 +347,8 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 			Session session = this.sessionFactory.getCurrentSession(); 
 			List<RequirementQuestionnaireTemplate> questionnaireTemplate = new ArrayList<RequirementQuestionnaireTemplate>();
 			logger.debug("getQuestionnaireTemplateByLabelName start");
-			questionnaireTemplate = session.createQuery("from RequirementQuestionnaireTemplate rq where rq.orgLocationId =:orgLocationId and rq.name like '%"
-					+ templateName + "%' ").setLong("orgLocationId", orgLocationId).list();
+			questionnaireTemplate = session.createQuery("from RequirementQuestionnaireTemplate rq where rq.orgLocationId =:orgLocationId and rq.name like '"
+					+ templateName + "' ").setLong("orgLocationId", orgLocationId).list();
 			logger.debug("getQuestionnaireTemplateByLabelName end");
 			if (questionnaireTemplate.size() > 0) {
 				return questionnaireTemplate.get(0);
