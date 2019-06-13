@@ -39,6 +39,7 @@ import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -98,6 +99,9 @@ public class MissingTimesheetsReoprtsRestController {
 	
 	@Autowired
 	private DynamicReport dynamicReport;
+	
+	@Autowired
+	ProjectMembersService projectMembersService;
 
 	
 
@@ -232,7 +236,7 @@ public class MissingTimesheetsReoprtsRestController {
 	        	if(!missingTimesheetRepotDTO.getDateSelection().equalsIgnoreCase("custom")) {
 	    			searchDates = reportsUtil.getJobFilterDate(missingTimesheetRepotDTO.getDateSelection(),orgLocations);
 	    		}else {
-	    			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+	    			Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 	    			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	    			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 	    			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
