@@ -142,9 +142,9 @@ private static final Logger logger = LoggerFactory.getLogger(UsersListController
 		model.addObject("orgLocationsCount", orgLocationsCount);
 		
 		
-		List<OrgRelationDTO> orgClientList = orgRelationsService.getAllClientsListOrgLocationId(orgLocations.getId()); 
-        model.addObject("clientsList", orgClientList);
-        model.addObject("clientListSize", orgClientList.size());
+		List<OrgRelationDTO> orgVendorList = orgRelationsService.getAllVendorsListOrgLocationId(orgLocations.getId()); 
+        model.addObject("orgVendorList", orgVendorList);
+        model.addObject("clientListSize", orgVendorList.size());
         
         
         List<UserDTO> reportingManagersList = userRoleService.getAllReportingManagersListAssignedToAssociates(orgLocations.getId());
