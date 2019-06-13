@@ -42,12 +42,16 @@ try {
 			 System.out.println("----Adding unique UUID roles starts-----");
 			 while(rs.next()){
 				 Long id = rs.getLong("ID");
-					 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
+				 String uuid = rs.getString("UUID");
+				 if(uuid == null) {
+					 uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
 					 String query = "update "+dbconfig.getSchema()+".ROLES set UUID = ? where ID = ?";
 					 PreparedStatement pstmt = conn.prepareStatement(query);
 					 pstmt.setString(1, uuid);
 					 pstmt.setLong(2, id);
 					 pstmt.executeUpdate(); 
+				 }
+					
 			 }
 			 
 			 System.out.println("----Adding unique UUID roles ends-----");
