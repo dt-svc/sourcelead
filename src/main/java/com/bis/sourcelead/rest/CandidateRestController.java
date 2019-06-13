@@ -1605,17 +1605,28 @@ public class CandidateRestController {
 
 	    @RequestMapping(value = {"/getCandidateSourceList", "/rest/getCandidateSourceList"}, method = RequestMethod.POST)
 		@ResponseBody
-		public ResponseList<CandidateSourceDTO> getCandidateSourceList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
+		public ResponseList<CandidateSourceDTO> getCandidateSourceList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue,CandidateSourceDTO candidateSourceDTO) {
 			ResponseList<CandidateSourceDTO> responseList = new ResponseList<>();
 			try {
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if (null != user) {
 					boolean forMobile = request.getRequestURI().contains("rest");
 					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-					List<CandidateSourceDTO> candidateSourceDTO = candidateService.getCandidateSourceListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue);
-					responseList.setData(candidateSourceDTO);
-					responseList.setRecordsTotal(candidateSourceDTO.size());
-					responseList.setRecordsFiltered(candidateSourceDTO.size());
+					String[] tableColumns = { "id", "name ", "description"};// should be
+
+					// entity names
+					int sortColumnIndex = 1; // by default sorting using invoice date
+					String sortColumnOrder = "asc"; // by default descending order
+					if (candidateSourceDTO.getOrder() != null && !candidateSourceDTO.getOrder().isEmpty()) {
+						sortColumnIndex = Integer.parseInt(candidateSourceDTO.getOrder().get(0).get("column"));
+						sortColumnOrder = candidateSourceDTO.getOrder().get(0).get("dir");
+					}
+					candidateSourceDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					candidateSourceDTO.setSortOrder(sortColumnOrder);
+					List<CandidateSourceDTO> candidateSourceDTOList = candidateService.getCandidateSourceListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue,candidateSourceDTO);
+					responseList.setData(candidateSourceDTOList);
+					responseList.setRecordsTotal(candidateSourceDTOList.size());
+					responseList.setRecordsFiltered(candidateSourceDTOList.size());
 					responseList.setResponse(Result.SUCCESS.name());
 					responseList.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
