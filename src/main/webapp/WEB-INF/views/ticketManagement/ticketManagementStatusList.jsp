@@ -184,7 +184,7 @@ $(function(){
 		        {
 		            "targets": colIndex++,
 		            "data": "description",
-		            "sortable": true,
+		            "sortable": false,
 		            "render": function ( data, type, opt, meta ) {
 		            		var result = "";
 	           		   if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
@@ -198,7 +198,7 @@ $(function(){
 		        {
 		            "targets": colIndex++,
 		            "data": "comment",
-		            "sortable": true,
+		            "sortable": false,
 		            "render": function ( data, type, opt, meta ) {
 		            		var result = "";
 		            		result = result + '<td><div  class="tbldata-dotdot-sm">' + (opt.commentRequired ? "YES" : "NO") + '</div></td>';
@@ -237,7 +237,7 @@ $(function(){
 	           ],
 		    	"scrollCollapse": false,
 		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-		    	"aaSorting": [[1,'desc']],
+		    	"aaSorting": [[0,'desc']],
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"ordering": true,
