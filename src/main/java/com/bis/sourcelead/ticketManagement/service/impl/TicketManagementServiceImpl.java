@@ -87,24 +87,24 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue, TicketTypeDTO ticketTypeDTO) {
+	public List<TicketTypeDTO> getTicketTypeListByOrgLocationId(Long orgLocationId, int status, String searchValue, TicketTypeDTO ticketTypeSorting) {
 		List<TicketTypeDTO> ticketTypeDTOList = new LinkedList<>();
 		try {
-			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status,searchValue,ticketTypeDTO);
+			List<TicketType> ticketTypeList = ticketManagementDao.getTicketTypeListByOrgLocationId(orgLocationId, status,searchValue,ticketTypeSorting);
 			if (ticketTypeList != null && !ticketTypeList.isEmpty()) {
 				for (TicketType ticketType : ticketTypeList) {
-					TicketTypeDTO ticketTypeDTO1 = new TicketTypeDTO();
-					ticketTypeDTO1.setId(ticketType.getId());
-					ticketTypeDTO1.setUuid(ticketType.getUuid());
-					ticketTypeDTO1.setName(ticketType.getName());
-					ticketTypeDTO1.setDescription(ticketType.getDescription());
-					ticketTypeDTO1.setStatus(ticketType.getStatus());
-					ticketTypeDTO1.setOrgLocationsId(ticketType.getOrgLocations().getId());
-					ticketTypeDTO1.setCreatedBy(ticketType.getCreatedBy());
-					ticketTypeDTO1.setCreatedDate(ticketType.getCreatedDate());
-					ticketTypeDTO1.setUpdatedBy(ticketType.getUpdatedBy());
-					ticketTypeDTO1.setUpdatedDate(ticketType.getUpdatedDate());
-					ticketTypeDTOList.add(ticketTypeDTO1);
+					TicketTypeDTO ticketTypeDTO = new TicketTypeDTO();
+					ticketTypeDTO.setId(ticketType.getId());
+					ticketTypeDTO.setUuid(ticketType.getUuid());
+					ticketTypeDTO.setName(ticketType.getName());
+					ticketTypeDTO.setDescription(ticketType.getDescription());
+					ticketTypeDTO.setStatus(ticketType.getStatus());
+					ticketTypeDTO.setOrgLocationsId(ticketType.getOrgLocations().getId());
+					ticketTypeDTO.setCreatedBy(ticketType.getCreatedBy());
+					ticketTypeDTO.setCreatedDate(ticketType.getCreatedDate());
+					ticketTypeDTO.setUpdatedBy(ticketType.getUpdatedBy());
+					ticketTypeDTO.setUpdatedDate(ticketType.getUpdatedDate());
+					ticketTypeDTOList.add(ticketTypeDTO);
 				}
 			}
 		} catch (Exception e) {
@@ -171,10 +171,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
+	public List<TicketCategoryDTO> getTicketCategoryListByOrgLocationId(Long orgLocationId, int status, String searchValue,TicketCategoryDTO ticketCategorySorting) {
 		List<TicketCategoryDTO> ticketCategoryDTOList = new LinkedList<>();
 		try {
-			List<TicketCategory> ticketCategoryList = ticketManagementDao.getTicketCategoryListByOrgLocationId(orgLocationId, status, searchValue);
+			List<TicketCategory> ticketCategoryList = ticketManagementDao.getTicketCategoryListByOrgLocationId(orgLocationId, status, searchValue,ticketCategorySorting);
 			if (ticketCategoryList != null && !ticketCategoryList.isEmpty()) {
 				for (TicketCategory ticketCategory : ticketCategoryList) {
 					TicketCategoryDTO ticketCategoryDTO = new TicketCategoryDTO();
@@ -307,10 +307,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status, String searchValue) {
+	public List<TicketPriorityDTO> getTicketPriorityListByOrgLocationId(Long orgLocationId,int status, String searchValue, TicketPriorityDTO ticketPrioritySorting) {
 		List<TicketPriorityDTO> ticketPriorityDTOList = new LinkedList<>();
 		try {
-			List<TicketPriority> ticketPriorityList = ticketManagementDao.getTicketPriorityListByOrgLocationId(orgLocationId, status, searchValue);
+			List<TicketPriority> ticketPriorityList = ticketManagementDao.getTicketPriorityListByOrgLocationId(orgLocationId, status, searchValue, ticketPrioritySorting);
 			if (ticketPriorityList != null && !ticketPriorityList.isEmpty()) {
 				for (TicketPriority ticketpriority : ticketPriorityList) {
 					TicketPriorityDTO ticketPriorityDTO = new TicketPriorityDTO();
@@ -411,10 +411,10 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 	}
 
 	@Override
-	public List<TicketStatusDTO> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
+	public List<TicketStatusDTO> getTicketStatusListByOrgLocationId(Long orgLocationId, int status, String searchValue,TicketStatusDTO ticketStatusSorting) {
 		List<TicketStatusDTO> ticketStatusDTOList = new LinkedList<>();
 		try {
-			List<TicketStatus> ticketStatusList = ticketManagementDao.getTicketStatusListByOrgLocationId(orgLocationId, status, searchValue);
+			List<TicketStatus> ticketStatusList = ticketManagementDao.getTicketStatusListByOrgLocationId(orgLocationId, status, searchValue,ticketStatusSorting);
 			if (ticketStatusList != null && !ticketStatusList.isEmpty()) {
 				for (TicketStatus ticketStatus : ticketStatusList) {
 					TicketStatusDTO ticketStatusDTO = new TicketStatusDTO();
@@ -1194,6 +1194,26 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public List<TicketType> getTicketTypeListByOrgLocationIdAndStatus(Long orgLocationId, int status) throws Exception {
+		return ticketManagementDao.getTicketTypeListByOrgLocationIdAndStatus(orgLocationId,status);
+	}
+
+	
+	public List<TicketCategory> getTicketCategoryListByOrgLocationIdAndStatus(Long orgLocationId, int status) throws Exception {
+		return 	ticketManagementDao.getTicketCategoryListByOrgLocationIdAndStatus(orgLocationId,status) ;
+	}
+
+	@Override
+	public List<TicketPriority> getTicketPriorityListByOrgLocationIdAndStatus(Long orgLocationId, int status) throws Exception {
+		return ticketManagementDao.getTicketPriorityListByOrgLocationIdAndStatus(orgLocationId, status);
+	}
+
+	@Override
+	public List<TicketStatus> getTicketStatusListByOrgLocationIdAndStatus(Long orgLocationId, int status) throws Exception {
+		return ticketManagementDao.getTicketStatusListByOrgLocationIdAndStatus(orgLocationId, status);
 	}
 	
 	/*

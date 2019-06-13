@@ -34,6 +34,7 @@ import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -3647,7 +3648,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidateSource> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue) {
+	public List<CandidateSource> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue,CandidateSourceDTO candidateSourceDTO) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from CandidateSource t where t.orgLocations.id=" + orgLocationId;
@@ -3657,8 +3658,13 @@ public class CandidateDaoImpl implements CandidateDao {
 			if(searchValue != null && !searchValue.isEmpty()) {
 				query += " and (t.name like '%" + searchValue + "%' or t.description like '%" + searchValue + "%')";
 			}
-			query += " order by t.id desc";
-			return session.createQuery(query).list();
+			String qry = "";
+			if (StringUtils.isNotBlank(candidateSourceDTO.getSortColumn())) {
+				String sortColumnName = candidateSourceDTO.getSortColumn();
+					qry = " order by t." + sortColumnName + " " + candidateSourceDTO.getSortOrder();
+			}
+			String finalQuery = query+qry;
+			return session.createQuery(finalQuery).list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

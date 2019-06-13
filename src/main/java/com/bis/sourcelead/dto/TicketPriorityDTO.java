@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class TicketPriorityDTO implements Serializable {
+public class TicketPriorityDTO extends SearchDTO implements Serializable {
 
 	/**
 	 * @author VeeraRaghava
