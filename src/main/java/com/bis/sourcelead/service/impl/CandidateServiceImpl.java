@@ -42,7 +42,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateCertificationsDao;
 import com.bis.sourcelead.dao.CandidateDao;
@@ -62,6 +61,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
 import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
@@ -87,6 +87,7 @@ import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -3812,6 +3813,62 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	}
 
 	@Override
+
+	public CandidateVerificationConfig saveDuplicateCheckConfig(CandidateVerificationConfigDTO candidateVerificationConfigDTO, OrgLocations loginOrgLocation,
+			User userId) {
+		CandidateVerificationConfig candidateVerificationConfig = null;
+
+		if(candidateVerificationConfigDTO.getId() != null) {
+			candidateVerificationConfig = candidateDao.getCandidateVerificationConfigByIdAndOrglocationId(loginOrgLocation.getId(),candidateVerificationConfigDTO.getId());
+			candidateVerificationConfig.setUpdatedDate(new Date());
+			candidateVerificationConfig.setUpdatedBy(userId.getId());
+
+		}else {
+			candidateVerificationConfig = new CandidateVerificationConfig();
+			candidateVerificationConfig.setCreatedDate(new Date());
+			candidateVerificationConfig.setCreatedBy(userId.getId());
+		}
+
+		if(Constants.STATUS_YES.equalsIgnoreCase(candidateVerificationConfigDTO.getEmail())) {
+			candidateVerificationConfig.setEmail(true);
+		}else {
+			candidateVerificationConfig.setEmail(false);
+		}
+		if(Constants.STATUS_YES.equalsIgnoreCase(candidateVerificationConfigDTO.getPanNumber())) {
+			candidateVerificationConfig.setPanNumber(true);
+		}else {
+			candidateVerificationConfig.setPanNumber(false);
+		}
+		if(Constants.STATUS_YES.equalsIgnoreCase(candidateVerificationConfigDTO.getPhoneNumber())) {
+			candidateVerificationConfig.setMobilePhone(true);
+		}else {
+			candidateVerificationConfig.setMobilePhone(false);
+		}
+		if(Constants.STATUS_YES.equalsIgnoreCase(candidateVerificationConfigDTO.getSsnNumber())) {
+			candidateVerificationConfig.setSsnNumber(true);
+		}else {
+			candidateVerificationConfig.setSsnNumber(false);
+		}
+		if(Constants.STATUS_YES.equalsIgnoreCase(candidateVerificationConfigDTO.getAadharNumber())) {
+			candidateVerificationConfig.setAadharNumber(true);
+		}else {
+			candidateVerificationConfig.setAadharNumber(false);
+		}
+		candidateVerificationConfig.setCreatedDate(new Date());
+		candidateVerificationConfig.setCreatedBy(userId.getId());
+		candidateVerificationConfig.setUpdatedDate(new Date());
+		candidateVerificationConfig.setUpdatedBy(userId.getId());
+		candidateVerificationConfig.setStatus(1);
+		candidateVerificationConfig.setOrgLocationId(loginOrgLocation);
+		candidateVerificationConfig.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		return candidateDao.saveDuplicateCheckConfig(candidateVerificationConfig);
+	}
+
+	@Override
+	public CandidateVerificationConfig getCandidateVerificationConfig(Long orgLocationId) {
+		return candidateDao.getCandidateVerificationConfigBy(orgLocationId);	
+	}
+	
 	public void saveSourceleadDeletedCandidate(SourceleadDeletedCandidates sourceleadDeletedCandidates)
 			throws Exception {
 		candidateDao.saveSourceleadDeletedCandidate(sourceleadDeletedCandidates);
@@ -3849,23 +3906,22 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	
 }
 
-	
-
 	@Override
-	public List<CandidateSourceDTO> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status,String searchValue) {
+	public List<CandidateSourceDTO> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status,
+			String searchValue, CandidateSourceDTO candidateSourceDTO) {
 		List<CandidateSourceDTO> candidateSourceDTOList = new LinkedList<>();
 		try {
-			List<CandidateSource> candidateSourceList = candidateDao.getCandidateSourceListByOrgLocationId(orgLocationId, status, searchValue);
+			List<CandidateSource> candidateSourceList = candidateDao.getCandidateSourceListByOrgLocationId(orgLocationId, status, searchValue,candidateSourceDTO);
 			if (null != candidateSourceList && !candidateSourceList.isEmpty()) {
 				for (CandidateSource candidateSource : candidateSourceList) {
-					CandidateSourceDTO candidateSourceDTO = new CandidateSourceDTO();
-					candidateSourceDTO.setId(candidateSource.getId());
+					CandidateSourceDTO candidateSourcedto = new CandidateSourceDTO();
+					candidateSourcedto.setId(candidateSource.getId());
 					
-					candidateSourceDTO.setName(candidateSource.getName());
-					candidateSourceDTO.setDescription(candidateSource.getDescription());
-					candidateSourceDTO.setStatus(candidateSource.getStatus());
+					candidateSourcedto.setName(candidateSource.getName());
+					candidateSourcedto.setDescription(candidateSource.getDescription());
+					candidateSourcedto.setStatus(candidateSource.getStatus());
 					
-					candidateSourceDTOList.add(candidateSourceDTO);
+					candidateSourceDTOList.add(candidateSourcedto);
 				}
 			}
 		} catch (Exception e) {
@@ -3873,6 +3929,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		return candidateSourceDTOList;
 	}
+	
 
 	@Override
 	public CandidateSourceDTO getCandidateSourceById(long id, long userId, OrgLocations loginOrgLocation) {
@@ -3900,6 +3957,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Boolean deleteCandidateSourceById(long id) {
 			return candidateDao.deleteCandidateSourceById(id);
 		}
+
+
 	}
 
 	
