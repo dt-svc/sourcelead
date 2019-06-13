@@ -43,6 +43,8 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
@@ -54,6 +56,10 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
+import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
+import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.LcaHistory;
@@ -1578,19 +1584,49 @@ public class CandidateRestController {
 			}
 			return flag;
 		} 
+
+	    @RequestMapping(value = {"/saveDuplicateCheckConfig"},method = RequestMethod.POST)
+		public CandidateVerificationConfig saveDuplicateCheckConfig(CandidateVerificationConfigDTO candidateVerificationConfigDTO,HttpServletRequest request) {
+			
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+			return candidateService.saveDuplicateCheckConfig(candidateVerificationConfigDTO,loginOrgLocation,user);
+			
+		}
+		
+	    @RequestMapping(value = {"/getDuplicateConfigData"},method = RequestMethod.GET)
+		public CandidateVerificationConfig getDuplicateConfigData(CandidateVerificationConfigDTO candidateVerificationConfigDTO,HttpServletRequest request) {
+			
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			return candidateService.getCandidateVerificationConfig(loginOrgLocation.getId());
+				
+		}
+
 	    @RequestMapping(value = {"/getCandidateSourceList", "/rest/getCandidateSourceList"}, method = RequestMethod.POST)
 		@ResponseBody
-		public ResponseList<CandidateSourceDTO> getCandidateSourceList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
+		public ResponseList<CandidateSourceDTO> getCandidateSourceList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue,CandidateSourceDTO candidateSourceDTO) {
 			ResponseList<CandidateSourceDTO> responseList = new ResponseList<>();
 			try {
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if (null != user) {
 					boolean forMobile = request.getRequestURI().contains("rest");
 					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-					List<CandidateSourceDTO> candidateSourceDTO = candidateService.getCandidateSourceListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue);
-					responseList.setData(candidateSourceDTO);
-					responseList.setRecordsTotal(candidateSourceDTO.size());
-					responseList.setRecordsFiltered(candidateSourceDTO.size());
+					String[] tableColumns = { "id", "name ", "description"};// should be
+
+					// entity names
+					int sortColumnIndex = 1; // by default sorting using invoice date
+					String sortColumnOrder = "asc"; // by default descending order
+					if (candidateSourceDTO.getOrder() != null && !candidateSourceDTO.getOrder().isEmpty()) {
+						sortColumnIndex = Integer.parseInt(candidateSourceDTO.getOrder().get(0).get("column"));
+						sortColumnOrder = candidateSourceDTO.getOrder().get(0).get("dir");
+					}
+					candidateSourceDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					candidateSourceDTO.setSortOrder(sortColumnOrder);
+					List<CandidateSourceDTO> candidateSourceDTOList = candidateService.getCandidateSourceListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue,candidateSourceDTO);
+					responseList.setData(candidateSourceDTOList);
+					responseList.setRecordsTotal(candidateSourceDTOList.size());
+					responseList.setRecordsFiltered(candidateSourceDTOList.size());
 					responseList.setResponse(Result.SUCCESS.name());
 					responseList.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
