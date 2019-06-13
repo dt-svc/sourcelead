@@ -199,12 +199,21 @@ public class ImmigrationController {
 				candidateId = immigrationCommonService.getCandidateIdByUUID(candidateUUID);
 				tabRecordCountMap = getImmigrationViewTabStatusDetails(candidateId, immigrationId);
 			}
-			model.addObject("tabRecordCountMap", tabRecordCountMap);
-			model.addObject("uscisStatusList", uscisStatusList);
-			model.addObject("immigration", immigrationDTO);
-			model.addObject("myImmigrationPage", myImmigrationPage);
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("/immigration/immigrationView");
+			/* model.addObject("tabRecordCountMap", tabRecordCountMap); */
+			  model.addObject("passOnLoadCount",tabRecordCountMap.get("Passport"));
+			  model.addObject("visaOnLoadCount",tabRecordCountMap.get("Visa"));
+			  model.addObject("empOnLoadCount",tabRecordCountMap.get("Employers"));
+			  model.addObject("resiOnLoadCount",tabRecordCountMap.get("Residence"));
+			  model.addObject("lcaOnLoadCount",tabRecordCountMap.get("Lca"));
+			  model.addObject("eduOnLoadCount",tabRecordCountMap.get("Education"));
+			  model.addObject("familyOnLoadCount",tabRecordCountMap.get("Family"));
+			  model.addObject("taskOnLoadCount",tabRecordCountMap.get("Tasks"));
+			  model.addObject("curUscisMyImmi",immigrationDTO.getCurrUscisStatus());
+			  model.addObject("uscisStatusList", uscisStatusList);
+			  model.addObject("immigration", immigrationDTO);
+			  model.addObject("myImmigrationPage", myImmigrationPage);
+			  model.addObject("sourceleadUrl", sourceleadUrl);
+			  model.setViewName("/immigration/immigrationView");
 		}
 		return model;
 	}
