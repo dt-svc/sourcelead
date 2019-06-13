@@ -129,6 +129,14 @@ $(document).ready(function(){
 	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
+ <script type="text/javascript">
+	 var tabAccessArray = '${SourceLeadWeb_tabsList}';
+	 var roleActionsArray = '${SourceLeadWeb_actionsList}';
+	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+ </script>
  
 <style>
 .dashboard-widget.dashboard-widget-icons{
