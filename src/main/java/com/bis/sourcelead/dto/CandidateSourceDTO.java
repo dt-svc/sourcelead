@@ -3,6 +3,9 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 
 import com.bis.sourcelead.annotations.Required;
+
+
+
 public class CandidateSourceDTO extends SearchDTO implements Serializable{
 
 	private Long id;
