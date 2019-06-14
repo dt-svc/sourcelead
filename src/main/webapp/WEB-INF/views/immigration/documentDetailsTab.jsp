@@ -551,8 +551,9 @@ function removeDynamicUploaRow(id){
 }
 $("#immigraDocTabSerach").keyup(function (e) {
     if (e.which === 13) {
-    	var searchVal = $("#immigraDocTabSerach").val();
-    	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,searchVal);
+    	var searchDocVal = $("#immigraDocTabSerach").val();
+    	if(searchDocVal) searchDocVal = searchDocVal.trim();
+    	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,searchDocVal,'${curUscisMyImmi}');
     }
 });
 function downlaodZipfileByDocId(docId){

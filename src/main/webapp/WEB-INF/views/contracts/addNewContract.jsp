@@ -68,7 +68,10 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 
 	 if(type != null && type != 'undefined' && type !=''){
 // 	 	 getContractTemplates();
-	 	 contractTypeLabels()
+
+// june-14-2019 -> commented contractTypeLabels() function call as the input field values are disappearing in edit draft contract.
+// june-14-2019 -> contractTypeLabels() function is called when we change contract type.
+//	 	 contractTypeLabels()
 	 }
 	 if(relationId != null && relationId != '' && spocUserCode != null && spocUserCode != ''){
 		 getVendorContacts(spocUserCode);
@@ -2415,8 +2418,11 @@ function flush(){
 	document.getElementById("submissionOffersList").value="";
 	
 	
+	// june-14-2019 -> resetForm() function is not defined.
+	//$("newcontract_form").validate().resetForm();
 	
-	$("newcontract_form").validate().resetForm();
+	// june-14-2019 -> added form error message remove function. 
+	$("#newcontract_form").find('p.jquery_form_error_message').remove();
 }
 </script>
 
