@@ -25,6 +25,8 @@ public class PerformanceAppraisalAssignToListDTO implements Serializable{
 	
 	private String appraisalTemplateUUId;
 	
+	private BigInteger peersCount;
+	
 	private int start;
 	
 	private int length;
@@ -149,6 +151,14 @@ public class PerformanceAppraisalAssignToListDTO implements Serializable{
 
 	public void setAppraisalTemplateUUId(String appraisalTemplateUUId) {
 		this.appraisalTemplateUUId = appraisalTemplateUUId;
+	}
+
+	public BigInteger getPeersCount() {
+		return peersCount;
+	}
+
+	public void setPeersCount(BigInteger peersCount) {
+		this.peersCount = peersCount;
 	}
 	
 	

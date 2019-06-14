@@ -172,7 +172,13 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 					"CAND.EMAIL AS associateEmail, " + 
 					"CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS reportingManager, " +
 					"UR.ROLE_ID AS userRoleId, " + 
-					"R.DISPLAY_NAME AS associateRole " + 
+					"R.DISPLAY_NAME AS associateRole, " + 
+					 "(SELECT " + 
+					 "PEERS.PEER_COUNT " + 
+					 "FROM " + 
+					 "PERFORMANCE_APPRAISAL_PEERS PEERS  " + 
+					 "WHERE " + 
+					 "PEERS.ORG_LOCATION_ID = :orgLocationId AND PEERS.USER_ID = CAND.CONSULTANT_USER_ID) AS peersCount " + 
 							             
 					"FROM " + 
 					"USER_ROLE UR ," + 
