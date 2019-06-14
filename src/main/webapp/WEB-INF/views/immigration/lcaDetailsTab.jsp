@@ -1,8 +1,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
- <c:set var ="employersListCount" value ="${fn:length(lcaList)}"/>
+ <c:set var ="lcaListCount" value ="${fn:length(lcaList)}"/>
  <div class="immigraTabsHead">
-	<a href="javascript:void(0)" id="assignLca"><i class="glyphicon glyphicon-plus"></i> Assign LCA</a>
+	<c:if test="${myImmigrationPage == 'N'}">
+		<a href="javascript:void(0)" id="assignLca"><i class="glyphicon glyphicon-plus"></i> Assign LCA</a>
+	</c:if>
 </div>
 		
 	  	<div class="immigraTable overflow_Auto">
@@ -356,9 +358,9 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
  
 </script> 
 <script>
-  var lcaList = '<c:out value ="${lcaList}"/>';
+  var lcaCount = '<c:out value ="${lcaListCount}"/>';
   var initCount  = '<c:out value ="${requestScope.lcaOnLoadCount}"/>';
-  if(lcaList>0 || initCount!= ""){
+  if(lcaCount>0 || initCount!= ""){
         $('#lcafilled').show() // show and hides circle icon.
     }
 	else {
