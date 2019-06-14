@@ -231,13 +231,13 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 	public ResponseList<PerformanceAppraisalPeersDTO> getPerformancePeersList(
 			PerformanceAppraisalPeersDTO performanceAppraisalPeersDTO, Long orgLocationId) throws Exception {
 		
+		PerformanceAppraisalTemplate appriasalTemplate = getPerformanceAppraisalTemplateByUUID(performanceAppraisalPeersDTO.getAppraisalTemplateUUId());
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
 		Query queryObj = null;
 		List<PerformanceAppraisalPeersDTO> peersList = null;
 		String departmentQuery = "";
-		String employmentType = "";
 		
 		List<BigInteger> countlist = null;
 		Integer filterCount = 0;
@@ -250,6 +250,12 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 				.append("OR Q1.associateName like '%" + performanceAppraisalPeersDTO.getSearchValue() + "%' ")
 				.append("OR Q1.associateEmail like '%" + performanceAppraisalPeersDTO.getSearchValue() + "%' ");
 			 
+		}
+		
+		if(StringUtils.isNotBlank(appriasalTemplate.getDepartment())) {
+			String departmentIds [] = appriasalTemplate.getDepartment().split(",");
+			String departmentIdsStr = "'" + StringUtils.join(departmentIds,"','") + "'";
+			departmentQuery = " AND EMP.DEPARTMENT_ID IN ("+departmentIdsStr+") ";
 		}
 		
 		String sortingQry = "";
@@ -280,9 +286,10 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 					"CANDIDATE CAND, " + 
 					"EMPLOYEE EMP, " + 
 					"ORG_LOCATIONS OL " + 
-					"WHERE UR.REPORTING_MANAGER_ID = U.ID  " + 
-					"AND CAND.CONSULTANT_USER_ID = UR.USER_ID AND CAND.ORG_LOCATION_ID = OL.ID AND EMP.USER_ID = UR.USER_ID " + 
-					"AND UR.ORG_LOCATION_ID = :orgLocationId AND UR.ROLE_ID = :roleId AND UR.USER_STATE = 'ACTIVE' GROUP BY UR.ID )Q1 "+querySeachStr+sortingQry;
+					"WHERE UR.USER_ID = U.ID  " + 
+					"AND CAND.CONSULTANT_USER_ID = UR.USER_ID AND CAND.ORG_LOCATION_ID = OL.ID  " + 
+					"AND UR.ORG_LOCATIONS_ID = :orgLocationId AND UR.ROLE_ID = :roleId " + departmentQuery+
+					"AND UR.USER_ID != :userId AND UR.USER_STATE = 'ACTIVE'  GROUP BY UR.ID )Q1 "+querySeachStr+sortingQry;
 
 			
 			
@@ -294,13 +301,14 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 			
 			queryObj = session.createSQLQuery(query);
 			queryObj.setParameter("orgLocationId", orgLocationId);
+			queryObj.setParameter("userId", performanceAppraisalPeersDTO.getUserId());
 			queryObj.setParameter("roleId", performanceAppraisalPeersDTO.getUserRoleId());
 			queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalPeersDTO.class));
 			queryObj.setFirstResult(performanceAppraisalPeersDTO.getStart());
 			queryObj.setMaxResults(performanceAppraisalPeersDTO.getLength());
 			peersList = queryObj.list();
 			
-			countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocationId).setLong("roleId", performanceAppraisalPeersDTO.getUserRoleId()).list();
+			countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocationId).setBigInteger("userId", performanceAppraisalPeersDTO.getUserId()).setLong("roleId", performanceAppraisalPeersDTO.getUserRoleId()).list();
 			filterCount = countlist.iterator().next().intValue();
 			
 		}catch (Exception e) {
