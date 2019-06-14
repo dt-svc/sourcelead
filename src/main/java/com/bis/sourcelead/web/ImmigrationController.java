@@ -1689,6 +1689,7 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/getCandidateEducationList" })
 	public ModelAndView getCandidateEducationList(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi,
 			@RequestParam(value = "searchVal", required = false) String searchVal, 
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage,
 			HttpServletRequest request)
@@ -1702,6 +1703,7 @@ public class ImmigrationController {
 						orgLocations.getId(), searchVal);
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsDropList", educationsList);
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		model.addObject("candidatesEducationList", candidatesEducationList);
 		model.addObject("myImmigrationPage", myImmigrationPage);
 		return model;

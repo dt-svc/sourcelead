@@ -240,7 +240,7 @@ $(document).ready(function() {
         	immigration.displayFamilyDetails(candidateId);
         }else if(tab=='#educationsTab'){
         showLoading("immigrationLoadingEducationsTab");
-        immigration.getCandidateEducationList(candidateId);
+        immigration.getCandidateEducationList(candidateId,'${curUscisMyImmi}');
         } else if(tab=='#employersTab'){
         showLoading("immigrationLoadingEmployersTab");
         immigration.getCandidateEmployerList(candidateId,"${curUscisMyImmi}");
