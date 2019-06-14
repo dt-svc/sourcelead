@@ -176,8 +176,9 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		 @RequestMapping(value = "/indPayrollPFSummaryReport")
 			public ModelAndView indPayrollPFSummaryReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
-            OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-            List<String> finYearList = iNDPayrollCommonUtil.getFinancialYearByOrgLocation(orgLocation);
+			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		     OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+             List<String> finYearList = iNDPayrollCommonUtil.getFinancialYearByOrgLocation(orgLocation);
 			 model.addObject("finYearList", finYearList);
 			 model.addObject("sourceleadUrl", sourceleadUrl);
 			 model.setViewName("reports/indPayrollPFSummaryReport");

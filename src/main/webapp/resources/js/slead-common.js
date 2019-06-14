@@ -356,7 +356,7 @@ function saveCandidateImage(candidateId, formId, data){
 	            $.ajax({
 	                	      type: "POST",
 	                	      data: formData,
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
+	                      	  url: atsUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 	                          success: function(result) {
 	                        	  if(result){
 	                        		  $("img[data-id=profileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });

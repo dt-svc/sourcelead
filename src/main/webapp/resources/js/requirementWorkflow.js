@@ -128,6 +128,7 @@ function RequirementWorkflow(){
 	  	result = result +"<th>Description</th>";
 	  	result = result +"<th>Stages</th>";
 	  	result = result +"<th>Status</th>";
+	  	result = result +"<th>UpdatedBy</th>";
 	  	result = result +"<th>Action</th>";  
 	  	result = result +"</tr>";
 	  	result = result +"</thead>";
@@ -153,7 +154,8 @@ function RequirementWorkflow(){
 		        	{ "data": "workFlowName" },
 		        	{ "data": "description" },
 		        	{ "data": "noOfStages" },
-		        	{ "data": "status" }
+		        	{ "data": "status" },
+		        	{ "data": "updatedBy" }
 		        ],
 		        "columnDefs": [ {
 		    	  	"targets": colIndex++,
@@ -206,7 +208,18 @@ function RequirementWorkflow(){
 	  	             	}
 	  	             	 return result;
 		    	  	}
-		        },{
+		        },{"targets": colIndex++,
+		        	"data": "updatedBy",
+		        	"render": function(data, type, workflow, meta) {
+		        	var result = "";
+		        	if(workflow.updatedBy != null && workflow.updatedBy != '' && workflow.updatedBy != "undefined"){
+		        	result = result +"<div class='tbldata-dotdot-100'><span title='"+workflow.updatedBy+"'>"+workflow.updatedBy+"</span></div>";
+		        	}else{
+		        	result = result +"<div>---</div>";
+		        	}
+		        	return result;
+		        	}
+		        	},{
 		    	  	"targets": colIndex++,
 		    	  	 bSortable: false,
 	                 aTargets: [ -1 ],

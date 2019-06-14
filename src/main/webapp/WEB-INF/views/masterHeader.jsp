@@ -129,6 +129,14 @@ $(document).ready(function(){
 	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
+ <script type="text/javascript">
+	 var tabAccessArray = '${SourceLeadWeb_tabsList}';
+	 var roleActionsArray = '${SourceLeadWeb_actionsList}';
+	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+ </script>
  
 <style>
 .dashboard-widget.dashboard-widget-icons{
@@ -415,7 +423,7 @@ function preventTabkey(e){
 			</div>
 			
 			<div class="pull-left universalSrch">
-			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);" value="${serachValue}"/>
+			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);" value="${searchValue}"/>
 			 <button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="universalSearch();" ></button>
 			</div>
 			</form:form>
@@ -956,7 +964,7 @@ function preventTabkey(e){
 <div class="clearfix" id="commentsDIV">
 <label class="noPad">Comments</label>
 <div class="clearfix addicon">
-<textarea rows="3" class="form-control" name="comments" onblur="updateClockInOutTime();"></textarea>
+<textarea rows="3" class="form-control" id="comments" name="comments" onblur="updateClockInOutTime();"></textarea>
 </div>
 </div> 
 </div>
@@ -1490,9 +1498,17 @@ function universalSearch(){
 	 }
 	 if(searchType == "Candidate") {
 		 window.location.href = "${SourceLeadWeb_atsUrl}/candidatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
-	 } else if(searchType == "Associate") {
+	 }
+	 
+	 // june-14-2019 -> added else if block for searchType = "Users".
+	 else if(searchType == "Users") {
+		 window.location.href = "${SourceLeadWeb_atsUrl}/usersList?&searchResult=universalUsersList&searchValue="+searchValue;
+	 }
+	 
+	 else if(searchType == "Associate") {
 		 window.location.href = "${SourceLeadWeb_atsUrl}/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
 	 }
+	 
 	 else if(searchType == "Requirement") {
 		 window.location.href = "${SourceLeadWeb_atsUrl}/jobsList?searchResult=universalRequirementSearchList&searchValue="+searchValue;
 	 }
@@ -2028,11 +2044,9 @@ function getClockInOutConfiguration(){
 	success: function (json) {
 	if(json != null){
 		if(json.isBreak == true){
-			$(".mask, #clockPop").fadeIn();
 			$("#withBreakDiv").show();
 			$("#withoutBreakDiv").hide();
 		}else{
-			$(".mask, #clockPop").fadeIn();
 			$("#withoutBreakDiv").show();
 			$("#withBreakDiv").hide();
 		}
@@ -2062,10 +2076,11 @@ function getClockInOutConfiguration(){
 	$("#commentsDIV").show();
 	}
 	}else{
-		$(".mask, #clockPop").fadeIn();
 		$("#withoutBreakDiv").show();
 		$("#withBreakDiv").hide();
 	}
+	
+	$(".mask, #clockPop").fadeIn(0);
 	}
 	});
 
@@ -2156,14 +2171,13 @@ function getAssignedProjects(obj){
 	
 	}
 	});
-	getProjectTasksByProject(obj);
+	setTimeout(function(){ getProjectTasksByProject(obj); }, 500);
 }
 </script>
 
 
 <script>
 function getProjectTasksByProject(obj){
-
 	var projectId = $("#projectDropDownDiv").val();
 	if(projectId != null && projectId != "" && projectId != "undefined"){
 		$.ajax({
@@ -2276,6 +2290,8 @@ function getExistedClockTime(){
 		$('#reset, #pause').attr("disabled",false);
 		$("#clockInTimeId").text(' : '+data.clockInDateStr +' '+data.clockInTime);
 		
+		$("#comments").val(data.comments);
+		
 		getExistedBreakTime(data.id);
 		}else{
 		$('#reset,#play, #pause').attr("disabled",true);
@@ -2283,6 +2299,21 @@ function getExistedClockTime(){
 		
 		$("#clockInTimeId").text('');
 		$("#clockOutTimeId").text('');
+		
+		$("#jobDropDownDiv").val('');
+		$('#jobDropDownDiv').trigger("chosen:updated");
+		
+		$("#projectDropDownDiv").val('');
+		$('#projectDropDownDiv').trigger("chosen:updated");
+
+		$("#projectTaskDropDownDiv").val('');
+		$('#projectTaskDropDownDiv').trigger("chosen:updated");
+
+		$("#generalTaskDropDownDiv").val('');
+		$('#generalTaskDropDownDiv').trigger("chosen:updated");
+		
+		$("#comments").val('');
+		
 		}
 		
 	},	
@@ -2307,6 +2338,7 @@ function getExistedBreakTime(clockInOutId){
 
 
 <script type="text/javascript">
+$(".clockAniAct").hide();
 obj = {
 	element : '',
 	init: function () {
@@ -2338,6 +2370,21 @@ event: function (type) {
 	obj.element.removeClass('blink');
 	
 	saveClockInOutTime('ClockOut');
+	
+	$("#jobDropDownDiv").val('');
+	$('#jobDropDownDiv').trigger("chosen:updated");
+	
+	$("#projectDropDownDiv").val('');
+	$('#projectDropDownDiv').trigger("chosen:updated");
+
+	$("#projectTaskDropDownDiv").val('');
+	$('#projectTaskDropDownDiv').trigger("chosen:updated");
+
+	$("#generalTaskDropDownDiv").val('');
+	$('#generalTaskDropDownDiv').trigger("chosen:updated");
+	
+	$("#comments").val('');
+	
 	window.setTimeout(function() {
 		getTimeReports();
 	}, 200);

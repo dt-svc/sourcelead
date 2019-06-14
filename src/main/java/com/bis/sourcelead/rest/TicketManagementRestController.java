@@ -88,7 +88,7 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = {"/getTicketTypeList", "/rest/getTicketTypeList"}, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketTypeDTO> getTicketTypeList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue,TicketTypeDTO ticketTypeDTO) {
+	public ResponseList<TicketTypeDTO> getTicketTypeList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue,TicketTypeDTO ticketTypeSorting) {
 	ResponseList<TicketTypeDTO> responseList = new ResponseList<>();
 	try {
 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -101,14 +101,14 @@ public class TicketManagementRestController {
 	// entity names
 	int sortColumnIndex = 1; // by default sorting using invoice date
 	String sortColumnOrder = "asc"; // by default descending order
-	if (ticketTypeDTO.getOrder() != null && !ticketTypeDTO.getOrder().isEmpty()) {
-		sortColumnIndex = Integer.parseInt(ticketTypeDTO.getOrder().get(0).get("column"));
-		sortColumnOrder = ticketTypeDTO.getOrder().get(0).get("dir");
+	if (ticketTypeSorting.getOrder() != null && !ticketTypeSorting.getOrder().isEmpty()) {
+		sortColumnIndex = Integer.parseInt(ticketTypeSorting.getOrder().get(0).get("column"));
+		sortColumnOrder = ticketTypeSorting.getOrder().get(0).get("dir");
 	}
-	ticketTypeDTO.setSortColumn(tableColumns[sortColumnIndex]);
-	ticketTypeDTO.setSortOrder(sortColumnOrder);
+	ticketTypeSorting.setSortColumn(tableColumns[sortColumnIndex]);
+	ticketTypeSorting.setSortOrder(sortColumnOrder);
 
-	List<TicketTypeDTO> ticketTypeDTOList = ticketManagementService.getTicketTypeListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1,searchValue,ticketTypeDTO);
+	List<TicketTypeDTO> ticketTypeDTOList = ticketManagementService.getTicketTypeListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1,searchValue,ticketTypeSorting);
 	responseList.setData(ticketTypeDTOList);
 	responseList.setRecordsTotal(ticketTypeDTOList.size());
 	responseList.setRecordsFiltered(ticketTypeDTOList.size());
@@ -225,14 +225,26 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = {"/getTicketCategoryList", "/rest/getTicketCategoryList"}, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketCategoryDTO> getTicketCategoryList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
+	public ResponseList<TicketCategoryDTO> getTicketCategoryList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue,TicketCategoryDTO ticketCategorySorting) {
 		ResponseList<TicketCategoryDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<TicketCategoryDTO> ticketCategoryDTOList = ticketManagementService.getTicketCategoryListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue); 
+				String[] tableColumns = { "id", "name ", "description" ,"assignTo"};// should be
+
+				// entity names
+				int sortColumnIndex = 1; // by default sorting using invoice date
+				String sortColumnOrder = "asc"; // by default descending order
+				if (ticketCategorySorting.getOrder() != null && !ticketCategorySorting.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(ticketCategorySorting.getOrder().get(0).get("column"));
+					sortColumnOrder = ticketCategorySorting.getOrder().get(0).get("dir");
+				}
+				ticketCategorySorting.setSortColumn(tableColumns[sortColumnIndex]);
+				ticketCategorySorting.setSortOrder(sortColumnOrder);
+
+				List<TicketCategoryDTO> ticketCategoryDTOList = ticketManagementService.getTicketCategoryListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1,searchValue,ticketCategorySorting); 
 				responseList.setData(ticketCategoryDTOList);
 				responseList.setRecordsTotal(ticketCategoryDTOList.size());
 				responseList.setRecordsFiltered(ticketCategoryDTOList.size());
@@ -351,14 +363,26 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = {"/getTicketPriorityList", "/rest/getTicketPriorityList"}, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketPriorityDTO> getTicketPriorityList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
+	public ResponseList<TicketPriorityDTO> getTicketPriorityList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue,TicketPriorityDTO ticketPrioritySorting) {
 		ResponseList<TicketPriorityDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<TicketPriorityDTO> ticketPriorityDTOList = ticketManagementService.getTicketPriorityListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue);
+				String[] tableColumns = {"id","icon", "name","description" };// should be
+
+				// entity names
+				int sortColumnIndex = 1; // by default sorting using invoice date
+				String sortColumnOrder = "asc"; // by default descending order
+				if (ticketPrioritySorting.getOrder() != null && !ticketPrioritySorting.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(ticketPrioritySorting.getOrder().get(0).get("column"));
+					sortColumnOrder = ticketPrioritySorting.getOrder().get(0).get("dir");
+				}
+				ticketPrioritySorting.setSortColumn(tableColumns[sortColumnIndex]);
+				ticketPrioritySorting.setSortOrder(sortColumnOrder);
+
+				List<TicketPriorityDTO> ticketPriorityDTOList = ticketManagementService.getTicketPriorityListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue,ticketPrioritySorting);
 				responseList.setData(ticketPriorityDTOList);
 				responseList.setRecordsTotal(ticketPriorityDTOList.size());
 				responseList.setRecordsFiltered(ticketPriorityDTOList.size());
@@ -478,14 +502,25 @@ public class TicketManagementRestController {
 
 	@RequestMapping(value = {"/getTicketStatusList", "/rest/getTicketStatusList"}, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<TicketStatusDTO> getTicketStatusList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
+	public ResponseList<TicketStatusDTO> getTicketStatusList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue,TicketStatusDTO ticketStatusSorting) {
 		ResponseList<TicketStatusDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				boolean forMobile = request.getRequestURI().contains("rest");
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<TicketStatusDTO> ticketStatusDTOList = ticketManagementService.getTicketStatusListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue); 
+				String[] tableColumns = { "id", "name", "description", "comment"};// should be
+
+				// entity names
+				int sortColumnIndex = 1; // by default sorting using invoice date
+				String sortColumnOrder = "asc"; // by default descending order
+				if (ticketStatusSorting.getOrder() != null && !ticketStatusSorting.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(ticketStatusSorting.getOrder().get(0).get("column"));
+					sortColumnOrder = ticketStatusSorting.getOrder().get(0).get("dir");
+				}
+				ticketStatusSorting.setSortColumn(tableColumns[sortColumnIndex]);
+				ticketStatusSorting.setSortOrder(sortColumnOrder);
+				List<TicketStatusDTO> ticketStatusDTOList = ticketManagementService.getTicketStatusListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue,ticketStatusSorting); 
 				responseList.setData(ticketStatusDTOList);
 				responseList.setRecordsTotal(ticketStatusDTOList.size());
 				responseList.setRecordsFiltered(ticketStatusDTOList.size());
