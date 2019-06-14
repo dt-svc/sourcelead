@@ -42,6 +42,7 @@ window.onload = function () {
 
 <script type="text/javascript">
 function usersListCheck(searchValue,searchResult){
+	$("#dynamicUserDataTableSearch").val(searchValue)
 	getDynamciUserList();
 }
 </script>
