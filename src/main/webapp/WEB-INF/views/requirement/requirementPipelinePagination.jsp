@@ -365,21 +365,23 @@
 											if (opt.createdUser != null
 													&& opt.createdUser != ''
 													&& opt.createdUser != 'undefined') {
-												result = result
-														+ '         <td><div><span title="'+opt.createdUser+''+orgName+''+candidateSource+'">'
-														+ opt.createdUser + ''
-														+ orgName + '<br/>'
-														+ candidateSource
-														+ '</span></div></td>';
-											} else {
-												result = result
-														+ '         <td><div><span>--</span></div></td>';
-											}
-											if(opt.orgName == null || opt.orgName == ''){
-												 if(isManager == "true" || isAdmin == "true"){
-												result = result+ '<i class="fa fa-pencil pull-left ml10 mt2 cursorPointer" onClick="applicantsourceHandler('+requirementId+','+opt.id+');"></i>';
-												 }
-												 }
+													result = result
+													+ ' <td><div style="width:150px;"><div class="tbldata-dotdot-vsm pull-left" title="'+opt.createdUser+''+orgName+''+candidateSource+'" class="pull-left">'
+													+ opt.createdUser + ''
+													+ orgName + '<br/>'
+													+ candidateSource
+													+ '</div>'
+													if(opt.orgName == null || opt.orgName == ''){
+													if(isManager == "true" || isAdmin == "true"){
+													result = result +'<i class="fa fa-pencil pull-left mt2 cursorPointer" onClick="applicantsourceHandler('+requirementId+','+opt.id+');"></i>';
+													}
+													}
+													+'</div>';
+													+'</td>';
+													} else {
+													result = result
+													+ ' <td><div><span>--</span></div></td>';
+													}
 											return result;
 										}
 									},
