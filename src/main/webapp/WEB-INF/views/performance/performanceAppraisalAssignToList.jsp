@@ -163,7 +163,12 @@ function appraisalAssignPagination(url,uuid){
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result	+ '<td><div class="tblminwidth-50 pull-left ml"><div class="pull-left"><a><i class="fa fa-user-plus cursorPointer text-primary ml10" onclick="assignToPeer(\''+opt.userId+'\',\''+opt.userRoleId+'\',\''+uuid+'\');"></i></a></div> <div class="pull-left mt2 ml5"></div></div></td>';
+	            	    var peersCount = 0;
+	            	    if(opt.peersCount != null){
+	            	    	peersCount = opt.peersCount;
+	            	    }
+	            	    result = result	+ '<a href="javascript:vois(0)" class="popV">'+peersCount+'</a>';
+	            	    result = result	+ '<td><div class="tblminwidth-50 pull-right ml"><div class="pull-left"><a><i class="fa fa-user-plus cursorPointer text-primary ml10" onclick="assignToPeer(\''+opt.userId+'\',\''+opt.userRoleId+'\',\''+uuid+'\');"></i></a></div> <div class="pull-left mt2 ml5"></div></div></td>';
 	            		return result;
 	              }
 		     }],
