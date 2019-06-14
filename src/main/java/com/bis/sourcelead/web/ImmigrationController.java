@@ -1710,6 +1710,7 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/getCandidateEmployerList" })
 	public ModelAndView getCandidateEmployerList(@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi,
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage,
 			HttpServletRequest request)
 			throws Exception {
@@ -1720,6 +1721,7 @@ public class ImmigrationController {
 		List<CandidateEmployers> candidatesEmployersList = candidateEmployersService
 				.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId), searchVal);
 		model.addObject("myImmigrationPage", myImmigrationPage);
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		model.addObject("candidatesEmployersList", candidatesEmployersList);
 		return model;
 	}
@@ -1751,8 +1753,9 @@ public class ImmigrationController {
 	
 	//Visa List
 	@RequestMapping(value = { "/getCandidateVisaDetails" })
-	public ModelAndView getCandidateVisaDetails(
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
+	public ModelAndView getCandidateVisaDetails(HttpServletRequest request,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, 
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi, 
 			@RequestParam(value = "searchValue", required = true) String searchValue,
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -1762,6 +1765,7 @@ public class ImmigrationController {
 				"orgLocations");
 		Date toDayDate = new Date();
 		List<Long> expiredVisaIdList= new ArrayList<Long>();
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		try {
 			visaList = immigrationCommonService.getCandidateVisaDetails(candidateId,searchValue);
 			for (ImmigrationVisaDTO canVisa : visaList) {
@@ -1824,8 +1828,9 @@ public class ImmigrationController {
 	}
 	//passport list
 	@RequestMapping(value = { "/getCandidatePassportDetails" })
-	public ModelAndView getCandidatePassportVisaDetails(
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
+	public ModelAndView getCandidatePassportDetails(HttpServletRequest request,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, 
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi, 
 			@RequestParam(value = "searchValue", required = true) String searchValue,
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -1834,6 +1839,7 @@ public class ImmigrationController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		Date toDayDate = new Date();
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		try {
 			PassportList = immigrationCommonService.getCandidatePassportDetails(candidateId,searchValue);
 			for (CandidatePassport canPassport : PassportList) {
@@ -1873,9 +1879,12 @@ public class ImmigrationController {
 	
 	@RequestMapping(value = { "/getLcaDetails" })
 	public ModelAndView getLcaDetails(
-			@RequestParam(value = "immigrationId", required = true) String immigrationId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "immigrationId", required = true) String immigrationId,
+			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage, HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
+		model.addObject("myImmigrationPage", myImmigrationPage);
+		System.out.println("myImmigrationPage value is "+myImmigrationPage);
 		logger.debug(" inisde getLcaDetails controller test -->");
 		if(immigrationId != null) {
 			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(Long.parseLong(immigrationId));
