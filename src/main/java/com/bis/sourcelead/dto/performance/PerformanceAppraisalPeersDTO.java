@@ -26,6 +26,8 @@ private static final long serialVersionUID = 1L;
 	
 	private String associateEmail;
 	
+	private String associateRole;
+	
 	private int start;
 	
 	private int length;
@@ -158,6 +160,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setPeerUsers(String peerUsers) {
 		this.peerUsers = peerUsers;
+	}
+
+	public String getAssociateRole() {
+		return associateRole;
+	}
+
+	public void setAssociateRole(String associateRole) {
+		this.associateRole = associateRole;
 	}
 
 }

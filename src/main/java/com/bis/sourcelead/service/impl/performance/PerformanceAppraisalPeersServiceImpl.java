@@ -1,12 +1,14 @@
 package com.bis.sourcelead.service.impl.performance;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalPeersDao;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformancePeersDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -67,6 +69,12 @@ public class PerformanceAppraisalPeersServiceImpl implements PerformanceAppraisa
 	public PerformanceAppraisalPeers getPerformanceAppraisalPeersByUserIdAndOrgLocationId(Long userId,
 			Long orgLocationId) throws Exception {
 		return performanceAppraisalPeersDao.getPerformanceAppraisalPeersByUserIdAndOrgLocationId(userId, orgLocationId);
+	}
+
+	@Override
+	public List<PerformanceAppraisalPeersDTO> getAssociateAssignedPeersList(Long userId, Long orgLocationId)
+			throws Exception {
+		return performanceAppraisalPeersDao.getAssociateAssignedPeersList(userId, orgLocationId);
 	}
 
 }

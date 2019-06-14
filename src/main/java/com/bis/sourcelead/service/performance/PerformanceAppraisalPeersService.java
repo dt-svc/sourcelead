@@ -1,5 +1,8 @@
 package com.bis.sourcelead.service.performance;
 
+import java.util.List;
+
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformancePeersDTO;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalPeers;
 
@@ -10,4 +13,6 @@ public interface PerformanceAppraisalPeersService {
 	PerformanceAppraisalPeers storePerformanceAppraisalPeers(PerformancePeersDTO performancePeersDTO) throws Exception;
 	
 	PerformanceAppraisalPeers getPerformanceAppraisalPeersByUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
+	List<PerformanceAppraisalPeersDTO> getAssociateAssignedPeersList(Long userId,Long orgLocationId) throws Exception;
 }
