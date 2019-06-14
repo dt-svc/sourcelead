@@ -97,9 +97,25 @@
 	        	"targets": colIndex++,
 	    	  	"sortable": false,
 		    	  	"render": function(data, type, opt, meta) {
+		    	  		
+		    	  		   var peerUsersList 
+		    	  		   var assignedPeerflag = false;
+		    	  		 
+		    	  		  if(opt.peerUsers != null){
+		    	  			peerUsersList = opt.peerUsers.split(",");
+		    	  			 for (var i=0; i<peerUsersList.length; i++)
+								{
+					        		if(peerUsersList[i] == opt.peerUserId){
+					        			assignedPeerflag = true
+					        			peerUsers[peerUsersList[i]] = peerUsersList[i];
+					        		}
+						        		
+								}
+		    	  		  }
+		    	  		  
 		    	  		   var result = "";
 		    	  		   result = result +"<div class='tblminwidth-30 pull-left ml'>";
-		        		   result = result +'<div class="pull-left mt3 ml5"><td><input  class="peerscheckbox" name="peerscheckbox"  type="checkbox" id="'+opt.peerUserId+'" data-id="'+opt.peerUserId+'" value="'+opt.peerUserId+'" onchange="checkPeersCandidates(this)"/></td></div>';
+		        		   result = result +'<div class="pull-left mt3 ml5"><td><input '+(assignedPeerflag ? " checked='checked'" : "")+' class="peerscheckbox" name="peerscheckbox"  type="checkbox" id="'+opt.peerUserId+'" data-id="'+opt.peerUserId+'" value="'+opt.peerUserId+'" onchange="checkPeersCandidates(this)"/></td></div>';
 		        		   result = result +"</div>";
 			               return result;
 		    	  	}
