@@ -7,6 +7,7 @@
 
 <div class="popupWrap popupWrapFixed datatable_filter" id="peerModaltype" style="width: 750px;">
       <div class="popupHead"><span>Add Peers</span><i class="closePop pull-right popClose" onclick="closePeerPopup();"></i></div>
+         <div id="peersChoicepopUp"></div>
          <div id="peersListLoading"></div>
         <form:form id="competence_form" name="competence_form" method="post">
 	        <div class="popupContent noPad ml mr mt">
@@ -37,6 +38,8 @@
 	    $("#peersListLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    var result = "";
 	    result = result +"<div class='pull-right'>";
+	    result = result +" <input type='hidden' id='appraisalAssignedUserId' value='"+userId+"'/>";
+	    result = result +" <input type='hidden' id='appraisalTemplateUUId' value='"+uuid+"'/>";
 	    result = result +" <input type='text' placeholder='Search' id='peersDataTableSearch' class='repSearchBar'/>";
 	 	result = result +' <span class="cursorPointer faSearch" title="Search"><i class="fa fa-search" onClick="getPeersList(\''+userId+'\',\''+userRoleId+'\',\''+uuid+'\');"></i></span>';
 	 	result = result +"</div>";
@@ -45,7 +48,8 @@
 	    result = result + '<table id="peersListTable" class="display mt10" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
-		result = result +'  <th class="text-center"><input type="checkbox" id="peerscheckbox" onclick="togglePeers(this);"/></th>'; 
+		//result = result +'  <th class="text-center"><input type="checkbox" id="peerscheckbox" onclick="togglePeers(this);"/></th>'; 
+		result = result + '<th>&nbsp;</th>';
 		result = result + '<th>Associate Id</th>';
 	  	result = result + '<th>Associate Name</th>';
 	  	result = result + '<th>Email</th>';
@@ -95,7 +99,7 @@
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		   var result = "";
 		    	  		   result = result +"<div class='tblminwidth-30 pull-left ml'>";
-		        		   result = result +'<div class="pull-left mt3 ml5"><td><input  class="contactscheckbox" name="peerscheckbox"  type="checkbox" id="'+opt.id+'" data-id="'+opt.id+'" value="'+opt.id+'" onchange="checkPeersCandidates(this)"/></td></div>';
+		        		   result = result +'<div class="pull-left mt3 ml5"><td><input  class="peerscheckbox" name="peerscheckbox"  type="checkbox" id="'+opt.peerUserId+'" data-id="'+opt.peerUserId+'" value="'+opt.peerUserId+'" onchange="checkPeersCandidates(this)"/></td></div>';
 		        		   result = result +"</div>";
 			               return result;
 		    	  	}
@@ -106,7 +110,10 @@
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		 var result = "";
 		    	  	   	 result = result +"<td>";
-	                	 result = result +"<div class='tblminwidth-75' title='"+opt.associateId+"'>"+opt.associateId+"</div>";
+		    	  	  	 result = result +"<div class='UserTextLeft tabImg'>";
+		    	  		 result = result +"<img class='m-t-xs pull-left' onerror='predefinePeerImage(this);' src='"+opt.userImgUrl+"'>";
+		    	  		 result = result +"<div class='tbldata-dotdot-vsm' title='"+opt.associateId+"'>"+opt.associateId+"</div>";
+		    	  		 result = result +"</div>";
 			             return result;
 		    	  	}
 		      },{
@@ -165,4 +172,111 @@
 	    	});
   }
   
-  </script>
+  
+</script>
+  
+ <script>
+var peerUsers = {};
+function checkPeersCandidates(elem) {
+	if($(elem).is(":checked")) {
+		peerUsers[$(elem).data("id")] = $(elem).val();
+	} else{
+		$("#peerscheckbox").removeProp('checked');
+		peerUsers[$(elem).data("id")] = "";
+	}
+}
+
+
+function togglePeers(source){
+	  var checkboxes = document.querySelectorAll('input[class="peerscheckbox"]');
+	  if($(source).is(":checked"))
+		  $('input[class="peerscheckbox"]').prop('checked', 'checked');
+	  else 
+		  $('input[class="peerscheckbox"]').removeProp('checked');
+	  
+	  $('input[class="peerscheckbox"]').each(function(i) {
+		  if($(this).is(":checked")) {
+		      peerUsers[$(this).data("id")] = $(this).val();
+		  } else {
+			  peerUsers[$(this).data("id")] = "";
+		  }
+	  });
+		 
+}
+</script>
+
+
+<script>
+function savePeers(){
+	 
+	 var appraisalAssignedUserId = $("#appraisalAssignedUserId").val();
+	 var appraisalTemplateUUId = $("#appraisalTemplateUUId").val();
+	 
+	 var peerUserIds = new Array();
+	 for(var e in peerUsers) {
+		 if(!e || !peerUsers[e] || peerUsers[e] === "")
+			   continue;
+		 peerUserIds.push(peerUsers[e]);
+	   } 
+	 
+	 
+	 if(peerUserIds.length > 0){
+		 
+		 $("#peersListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			   $.ajax({
+		          type : "POST",
+		          url: sourceleadUrl+"/assignPeersListToAssociate?&peerUserIds="+peerUserIds+"&appraisalAssignedUserId="+appraisalAssignedUserId,    
+		           success :function(data) {
+		        	   if (data.response === "FAILED") {
+		        		   $("#peersListLoading").removeAttr("style");
+				    		showError(data.responseMessage);
+				    	} else if (data.response === "AWKWARD") {
+				    		location.href = "/errorPage";
+				    	} else if (data.response === "SUCCESS") {
+				    		$("#peersListLoading").removeAttr("style");
+				    		peerUsers = {};
+				    		closePeerPopup();
+				    		performanceManagement.assignAppraisalCycle(appraisalTemplateUUId);
+			       			
+				    	}else if (data.indexOf('Sign In') !== -1) {
+				    		location.replace(sourceleadUrl);
+				    	} else {
+				    		showError("Operation failed, please try again");
+				    	}
+		           },
+		   });   
+		 
+		 
+	 }else{
+		 var result = "";
+			result = result +"	<div class='comMask'></div>";
+			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Select at least one peer</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='okPopUp();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPopUp();'></b>";
+			result = result +"	</div>";
+			$("#peersChoicepopUp").append(result);
+			$("#remove_user_pop").slideDown(200);
+			$(".comMask").fadeIn(200);
+	 }
+	 
+}
+</script>
+
+<script>
+	function predefinePeerImage(imageId){
+		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
+	}
+</script>
+
+<script type="text/javascript">
+function okPopUp(){
+	$("#peersChoicepopUp").empty();
+	$(".comMask").fadeOut(200);
+}
+
+function cancelPopUp(){
+	$("#peersChoicepopUp").empty();
+	$(".comMask").fadeOut(200);
+}
+</script>
