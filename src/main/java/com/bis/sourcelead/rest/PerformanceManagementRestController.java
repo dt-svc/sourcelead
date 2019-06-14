@@ -31,6 +31,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalAssignToListDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceCompetenciesDTO;
 import com.bis.sourcelead.dto.performance.PerformanceRatingLevelDTO;
@@ -585,6 +586,27 @@ public class PerformanceManagementRestController {
 		ResponseList<PerformanceAppraisalAssignToListDTO> performanceCompetenciesList = performanceAppraisalTemplateService.getPerformanceAppraisalAssignToList(performanceAppraisalAssignToListDTO, orgLocationId);
 		return performanceCompetenciesList;
 	}
+	
+	
+	@RequestMapping(value = "/getAppraisalPeersList", method = RequestMethod.GET)
+	public ResponseList<PerformanceAppraisalPeersDTO> getAppraisalPeersList(PerformanceAppraisalPeersDTO performanceAppraisalPeersDTO,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		
+		String[] tableColumns = {"action", "associateId", "associateName", "associateEmail"};
+		int sortColumnIndex = 1; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (performanceAppraisalPeersDTO.getOrder() != null && !performanceAppraisalPeersDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(performanceAppraisalPeersDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = performanceAppraisalPeersDTO.getOrder().get(0).get("dir");
+		}
+		performanceAppraisalPeersDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		performanceAppraisalPeersDTO.setSortOrder(sortColumnOrder);
+		ResponseList<PerformanceAppraisalPeersDTO> performancePeersList = performanceAppraisalTemplateService.getPerformancePeersList(performanceAppraisalPeersDTO, orgLocationId);
+		return performancePeersList;
+	}
+	
+	
 	 
 	 
 	 
