@@ -1751,8 +1751,9 @@ public class ImmigrationController {
 	
 	//Visa List
 	@RequestMapping(value = { "/getCandidateVisaDetails" })
-	public ModelAndView getCandidateVisaDetails(
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
+	public ModelAndView getCandidateVisaDetails(HttpServletRequest request,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, 
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi, 
 			@RequestParam(value = "searchValue", required = true) String searchValue,
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -1762,6 +1763,7 @@ public class ImmigrationController {
 				"orgLocations");
 		Date toDayDate = new Date();
 		List<Long> expiredVisaIdList= new ArrayList<Long>();
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		try {
 			visaList = immigrationCommonService.getCandidateVisaDetails(candidateId,searchValue);
 			for (ImmigrationVisaDTO canVisa : visaList) {
@@ -1824,8 +1826,9 @@ public class ImmigrationController {
 	}
 	//passport list
 	@RequestMapping(value = { "/getCandidatePassportDetails" })
-	public ModelAndView getCandidatePassportVisaDetails(
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
+	public ModelAndView getCandidatePassportDetails(HttpServletRequest request,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, 
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi, 
 			@RequestParam(value = "searchValue", required = true) String searchValue,
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -1834,6 +1837,7 @@ public class ImmigrationController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		Date toDayDate = new Date();
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		try {
 			PassportList = immigrationCommonService.getCandidatePassportDetails(candidateId,searchValue);
 			for (CandidatePassport canPassport : PassportList) {
