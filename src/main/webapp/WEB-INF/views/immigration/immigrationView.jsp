@@ -237,7 +237,7 @@ $(document).ready(function() {
       		immigration.displayPetitionDetails(immigrationId);
         }else if(tab=='#familiesTab'){
         	showLoading("immigrationLoadingFamiliesTab");
-        	immigration.displayFamilyDetails(candidateId);
+        	immigration.displayFamilyDetails(candidateId,'${curUscisMyImmi}');
         }else if(tab=='#educationsTab'){
         showLoading("immigrationLoadingEducationsTab");
         immigration.getCandidateEducationList(candidateId,'${curUscisMyImmi}');
@@ -246,7 +246,7 @@ $(document).ready(function() {
         immigration.getCandidateEmployerList(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#residencesTab'){
         	showLoading("immigrationLoadingResidencesTab");
-        immigration.getCandidateResidenceList(candidateId);
+        immigration.getCandidateResidenceList(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#passportsTab'){
         showLoading("immigrationLoadingPassportsTab");
         immigration.displayPassportDetails(candidateId,"${curUscisMyImmi}");
@@ -258,13 +258,13 @@ $(document).ready(function() {
         	immigration.getLcaDetailsInfo(immigrationId,"${myImmigrationPage}");
         }else if(tab=='#docsTab'){
         	showLoading("immigrationLoadingDocsTab");
-        	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
+        	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}","${curUscisMyImmi}");
         }else if(tab =='#notesTab'){
         	showLoading("immigrationLoadingNotesTab");
         	immigration.getNotesListByImmigration(candidateId);
         } else if(tab=='#formsTab'){
         	showLoading("immigrationLoadingFormsTab");
-        	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
+        	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"","${myImmigrationPage}","${curUscisMyImmi}");
         }else if(tab=='#activitiesTab'){
         	showLoading("immigrationLoadingActivitiesTab");
         	immigration.getImmigrationActivies();

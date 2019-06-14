@@ -885,6 +885,7 @@ public class ImmigrationController {
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
 			@RequestParam(value = "myImmigration", required = false) String myImmigration, 
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi,
 			@RequestParam(value = "myImmigrationPage" , required = true) String myImmigrationPage,	HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -930,6 +931,7 @@ public class ImmigrationController {
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		model.addObject("immigrationCanDocList", immigrationCanDocList);
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		model.addObject("myImmigrationPage", myImmigrationPage);
 		return model;
 	}
@@ -1554,6 +1556,7 @@ public class ImmigrationController {
 	public ModelAndView getCandidateFamilyDetails(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi, 
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage,
 			HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
@@ -1575,6 +1578,7 @@ public class ImmigrationController {
 						familyObj.getDateOfBirth()));
 			}
 			model.addObject("myImmigrationPage", myImmigrationPage);
+			model.addObject("curUscisMyImmi", curUscisMyImmi);
 			model.addObject("familyList", familyList);
 		} catch (Exception e) {
 			logger.error("Exception caught in controller --->" + e.getMessage());
@@ -1732,6 +1736,7 @@ public class ImmigrationController {
 	public ModelAndView getCandidateResidenceList(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "curUscisMyImmi" , required = true) String curUscisMyImmi,
 			@RequestParam(value = "myImmigrationPage" , required = true) String myImmigrationPage, HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -1748,6 +1753,7 @@ public class ImmigrationController {
 
 		}
 		model.addObject("myImmigrationPage", myImmigrationPage);
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		model.addObject("candidatesResidenceList", candidatesResidenceList);
 		return model;
 	}
@@ -2256,6 +2262,7 @@ public class ImmigrationController {
 			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
 			@RequestParam(value = "myImmigration", required = false) String myImmigration,
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi,
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage) throws Exception {
 
 		logger.debug("inside controller method getCandidateImmigrationForms--> ");
@@ -2266,6 +2273,7 @@ public class ImmigrationController {
 		logger.debug("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "
 				+ candidateFormsLst.size());
 		model.addObject("myImmigrationPage", myImmigrationPage);
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		model.addObject("formsList", candidateFormsLst);
 		return model;
 	}

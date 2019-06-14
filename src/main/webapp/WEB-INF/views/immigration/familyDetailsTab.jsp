@@ -494,7 +494,7 @@
 	
 	$("#familySerach").keyup(function (e) {
         if (e.which === 13) {
-        	immigration.displayFamilyDetails(candidateId);
+        	immigration.displayFamilyDetails(candidateId,'${curUscisMyImmi}');
         }
     });
 	</script>
