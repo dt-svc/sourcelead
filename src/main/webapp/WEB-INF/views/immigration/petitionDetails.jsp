@@ -299,7 +299,7 @@
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup uiwidgetCustom">
 									<input type="text" class="form-control" name="candidateNameEmail" field-name="Associate" data-validation="required"
-										id="candidateNameEmail" placeholder="Select Beneficiary" value="${immigrationDTO.candidateNameEmail}"/>
+										id="candidateNameEmail" placeholder="Beneficiary Autofill Enabled For 2 Chars" value="${immigrationDTO.candidateNameEmail}"/>
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
@@ -1107,7 +1107,7 @@ function resetBeneficiaryDetails(){
 	$("#experienceYears").val("");
 	$("#experienceMonths").val("");
 	$("#birthDate").val("");
-	
+	$("#ssnNumber").val("");
 }
 	 $("#candidateNameEmail").autocomplete({ 
 			minLength: 2, 
@@ -1139,7 +1139,7 @@ function resetBeneficiaryDetails(){
 				    		$("#email").val(candidateObj.email);
 				    		$("#mobile").val(candidateObj.mobilePhone);
 				    		$("#alternateMobile").val(candidateObj.alternateMobilePhone);
-				    		
+				    		$("#ssnNumber").val(candidateObj.ssnNumber);
 				    		// gender radio button  
 				    		$('input[name="gender"]').prop('checked', false); // reset the value 
 				    		if(typeof candidateObj.gender !='undefined' && candidateObj.gender!=''){  // set the value if not empty
