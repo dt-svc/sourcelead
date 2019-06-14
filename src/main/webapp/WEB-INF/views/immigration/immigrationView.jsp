@@ -12,7 +12,8 @@
 
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
-myImmigrationPage = '${myImmigrationPage}';
+myImmigrationPage = '${myImmigrationPage}'; // using javascript variable to share accross the summary calls.
+curUscisMyImmi ="${curUscisMyImmi}";// using javascript variable to share accross the summary calls.
 </script>
 <%-- <c:set var ="myImmigrationPage" value = "${myImmigrationPage}" scope="session"/> --%>
 <%-- <c:set var ="passOnLoadCount" value = "${tabRecordCountMap['Passport']}" scope="request"/>
@@ -242,19 +243,19 @@ $(document).ready(function() {
         immigration.getCandidateEducationList(candidateId);
         } else if(tab=='#employersTab'){
         showLoading("immigrationLoadingEmployersTab");
-        immigration.getCandidateEmployerList(candidateId);
+        immigration.getCandidateEmployerList(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#residencesTab'){
         	showLoading("immigrationLoadingResidencesTab");
         immigration.getCandidateResidenceList(candidateId);
         }else if(tab=='#passportsTab'){
         showLoading("immigrationLoadingPassportsTab");
-        immigration.displayPassportDetails(candidateId);
+        immigration.displayPassportDetails(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#visasTab'){
         showLoading("immigrationLoadingVisasTab");
-        immigration.displayVisaDetails(candidateId);
+        immigration.displayVisaDetails(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#lcaTab'){
         	showLoading("immigrationLcaLoadingTab");
-        	immigration.getLcaDetailsInfo(immigrationId);
+        	immigration.getLcaDetailsInfo(immigrationId,"${myImmigrationPage}");
         }else if(tab=='#docsTab'){
         	showLoading("immigrationLoadingDocsTab");
         	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}");

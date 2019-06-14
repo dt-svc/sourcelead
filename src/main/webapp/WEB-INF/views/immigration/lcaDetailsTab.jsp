@@ -2,7 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <c:set var ="lcaListCount" value ="${fn:length(lcaList)}"/>
  <div class="immigraTabsHead">
-	<a href="javascript:void(0)" id="assignLca"><i class="glyphicon glyphicon-plus"></i> Assign LCA</a>
+	<c:if test="${myImmigrationPage == 'N'}">
+		<a href="javascript:void(0)" id="assignLca"><i class="glyphicon glyphicon-plus"></i> Assign LCA</a>
+	</c:if>
 </div>
 		
 	  	<div class="immigraTable overflow_Auto">
