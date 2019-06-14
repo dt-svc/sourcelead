@@ -118,6 +118,7 @@ function appraisalAssignPagination(url,uuid){
 	    	  	   	 result = result +"<td>";
              	     result = result +"<div class='width300px'>";
              	     result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.associateName+"'>"+opt.associateName+"</div>";
+             	     result = result +"</div>";
              	     result = result +"</td>";
 		             return result;
               		
@@ -130,7 +131,9 @@ function appraisalAssignPagination(url,uuid){
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	     result = result +"<td>";
-	             	     result = result +"<div class='tbldata-dotdot-sm' title='"+opt.associateEmail+"'>"+opt.associateEmail+"</div>";
+	            	     result = result +"<div class='width300px'>";
+	             	     result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.associateEmail+"'>"+opt.associateEmail+"</div>";
+	             	     result = result +"</div>";
 	             	     result = result +"</td>";
 			             return result;
 	              }
@@ -152,8 +155,7 @@ function appraisalAssignPagination(url,uuid){
 	              "render": function ( data, type, opt, meta ) {
 	            	     var result = "";
 	            	     result = result +"<td>";
-	             	     result = result +"<div class='width300px'>";
-	             	     result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.reportingManager+"'>"+opt.reportingManager+"</div>";
+	             	     result = result +"<div class='tbldata-dotdot-sm' title='"+opt.reportingManager+"'>"+opt.reportingManager+"</div>";
 	             	     result = result +"</td>";
 			             return result;
 	              }
