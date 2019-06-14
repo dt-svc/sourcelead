@@ -793,4 +793,23 @@ public class PerformanceManagementRestController {
 	 		}
 	 		 return response;
 	     }
+	    
+	    @RequestMapping(value = "/getAssociateAssignedPeers", method = RequestMethod.GET)
+		public ResponseList<PerformanceAppraisalPeersDTO> getAssociateAssignedPeers(@RequestParam(value = "userId", required = true) Long userId,
+				HttpServletRequest request){
+	    	ResponseList<PerformanceAppraisalPeersDTO> resObj = new ResponseList<>();
+			 try {
+				 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+				 List<PerformanceAppraisalPeersDTO> peersDTOList =  performanceAppraisalPeersService.getAssociateAssignedPeersList(userId, orgLocationId);
+				 resObj.setData(peersDTOList);
+				 resObj.setResponse(Result.SUCCESS.name());
+				 resObj.setResponseMessage(Result.SUCCESS.getValue());
+			    
+			 }catch (Exception e) {
+				 resObj.setResponse(Result.AWKWARD.name());
+				 resObj.setResponseMessage(Result.AWKWARD.getValue());
+				 e.printStackTrace();
+			}
+			 return resObj;
+	    }
 }

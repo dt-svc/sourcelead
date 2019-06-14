@@ -23,9 +23,99 @@
 </div>
 
 
+  <div class="popupWrap popupWrapFixed" id="assignedPeersModaltype" style="width: 750px;">
+      <div class="popupHead"><span>Peer Reviewers</span><i class="closePop pull-right popClose" onclick="closeAssignedPeerPopup();"></i></div>
+      	<div class="require_wrap_table tableFirstSecond clearfix padd10">
+      	  <div id="assignedPeersListLoading"></div>
+          <div id="associateAssignPeerDiv"></div>
+        </div>
+        <div class="popupFoot text-right">
+          <button type="button" class="slBtn md popClose" onclick="closeAssignedPeerPopup();"> Cancel</button>
+        </div>
+        
+  </div>
+
+
+<script>
+  function closeAssignedPeerPopup(){
+	  $(".mask, #assignedPeersModaltype").fadeOut();
+  }
+ </script>
+  
+
+  <script>
+  function associateAssignedPeers(userId){
+	  $(".mask, #assignedPeersModaltype").fadeIn();
+	  $("#assignedPeersListLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+      $.ajax({
+	    	type: "GET",
+	    	 url: sourceleadUrl+"/getAssociateAssignedPeers?userId="+userId,
+	        success: function(response) {
+	        	$("#assignedPeersListLoading").removeAttr('style');
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		 var result = "";
+	        		 
+	        		 result = result + ' <table>';
+	        		 result = result + ' <thead>';
+	        		 result = result + ' <tr>';
+	        		 result = result + ' <th>Associate Id</th>';
+	        		 result = result + ' <th>Associate Name</th>';
+	        		 result = result + ' <th>Role</th>';  
+	        		 result = result + ' <th>Email</th>';             
+	        		 result = result + ' </tr>';
+	        		 result = result + ' </thead>';
+	        		 result = result + ' <tbody>';
+	        		
+	        		 if(response.data != null){
+		        			for (var i=0; i<response.data.length; i++) {
+		    	        		var report = response.data[i];
+		    	        		
+		    			        		    
+				        		result = result + '<tr>';
+	   			        		result = result + '<td>';
+	   			        		result = result + '<div class="UserTextLeft tabImg">';
+	   			        	 	result = result +'<img class="m-t-xs pull-left" onerror="predefinePeerImage(this);" src="'+report.userImgUrl+'">';
+	   			        		result = result + '<div class="tbldata-dotdot-vsm">'+report.associateId+'</div>';
+	   			        		result = result + '</div>';
+	   			        		result = result + '</td>';
+   	                  
+   			        		    result = result + '<td><div class="tbldata-dotdot-vsm pull-left">'+report.associateName+'</div></td>';
+   			        		    result = result + '<td><div class="tbldata-dotdot-vsm">'+report.associateRole+'</div></td>';
+   			        		    result = result + '<td><div class="tbldata-dotdot-me">'+report.associateEmail+'</div></td>';
+   			        		   
+   			        		    result = result + '</tr>';
+		    		  				
+		    				}
+		        		 }else{
+		        			 result = result + '<tr class="odd"><td valign="top" colspan="4" class="dataTables_empty"></td></tr>';
+			    		  }
+		        			
+		        			 result = result + '</tbody>';
+			        		 result = result + '</table>';
+		        			
+	        			    $("#assignedPeersListLoading").removeAttr('style');
+				            $("#associateAssignPeerDiv").empty();
+			    			$("#associateAssignPeerDiv").append(result);
+		        			  
+	        		
+	        		
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+	        },
+	    });
+	  
+  }
+  </script>
+
+  
+  
   
   <script>
-  
   function closePeerPopup(){
 	  $(".mask, #peerModaltype").fadeOut();
   }
