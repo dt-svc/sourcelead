@@ -127,7 +127,7 @@
 	   
 	    $("#peersListLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    var result = "";
-	    result = result +"<div class='pull-right'>";
+	    result = result +"<div class='pull-right' id='peersSearchDiv'>";
 	    result = result +" <input type='hidden' id='appraisalAssignedUserId' value='"+userId+"'/>";
 	    result = result +" <input type='hidden' id='appraisalTemplateUUId' value='"+uuid+"'/>";
 	    result = result +" <input type='text' placeholder='Search' id='peersDataTableSearch' class='repSearchBar'/>";
@@ -263,7 +263,8 @@
 	    } );
 	    $("#peersListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	    $("input[type=search]").hide();
-	    $("#peersDataTableSearch").keyup(function(e) {
+	    
+	    /* $("#peersDataTableSearch").keyup(function(e) {
 	    	   if(e.which === 13) {
 	   		    $('#peersDataTableSearch').parent().find('p.jquery_form_error_message').remove();
 	   	    	var searchData = $('#peersDataTableSearch').val();
@@ -275,11 +276,22 @@
 		    	}
 	   	    	$('#peersDataTableSearch').val(searchData);
 	    	   }
-	    	});
+	    	}); */
   }
   
   
 </script>
+
+ <script>
+$(document).keypress(
+		  function(event){
+		    if (event.which == '13') {
+		      event.preventDefault();
+		     /*  $('#peersDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+		      $("#peersDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Click on search</font></span>"); */
+		    }
+		});
+</script> 
   
  <script>
 var peerUsers = {};
