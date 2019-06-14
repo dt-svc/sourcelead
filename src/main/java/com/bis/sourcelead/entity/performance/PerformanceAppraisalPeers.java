@@ -34,11 +34,11 @@ public class PerformanceAppraisalPeers implements Serializable{
 	private Integer peerCount;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="USER_ID", nullable=false )        
+    @JoinColumn(name="USER_ID")        
     private User userId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
+    @JoinColumn(name="ORG_LOCATION_ID" )        
     private OrgLocations orgLocationId;
 	
 	@Column(name = "UUID")
@@ -51,14 +51,14 @@ public class PerformanceAppraisalPeers implements Serializable{
 	private Date createdDate;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="CREATED_BY", nullable=false )        
+    @JoinColumn(name="CREATED_BY" )        
     private User createdBy;
 	
 	@Column(name = " UPDATED_DATE ")
 	private Date updatedDate;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="UPDATED_BY", nullable=false )        
+    @JoinColumn(name="UPDATED_BY")        
     private User updatedBy;
 	
 	

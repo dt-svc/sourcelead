@@ -5,4 +5,6 @@ import com.bis.sourcelead.entity.performance.PerformanceAppraisalPeers;
 public interface PerformanceAppraisalPeersDao {
 
 	PerformanceAppraisalPeers savePerformanceAppraisalPeers(PerformanceAppraisalPeers performanceAppraisalPeers) throws Exception;
+	
+	PerformanceAppraisalPeers getPerformanceAppraisalPeersByUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 }
