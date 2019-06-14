@@ -1502,7 +1502,7 @@ function universalSearch(){
 	 
 	 // june-14-2019 -> added else if block for searchType = "Users".
 	 else if(searchType == "Users") {
-		 window.location.href = "${SourceLeadWeb_atsUrl}/usersList?&searchResult=universalCanddateList&searchValue="+searchValue;
+		 window.location.href = "${SourceLeadWeb_atsUrl}/usersList?&searchResult=universalUsersList&searchValue="+searchValue;
 	 }
 	 
 	 else if(searchType == "Associate") {
