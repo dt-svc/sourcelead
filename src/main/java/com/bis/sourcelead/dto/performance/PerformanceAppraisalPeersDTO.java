@@ -18,6 +18,8 @@ private static final long serialVersionUID = 1L;
 	
 	private Long userRoleId;
 	
+	private String peerUsers;
+	
 	private String associateId;
 	
 	private String associateName;
@@ -150,7 +152,12 @@ private static final long serialVersionUID = 1L;
 		this.userImgUrl = userImgUrl;
 	}
 
-	
-	
-	
+	public String getPeerUsers() {
+		return peerUsers;
+	}
+
+	public void setPeerUsers(String peerUsers) {
+		this.peerUsers = peerUsers;
+	}
+
 }
