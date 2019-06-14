@@ -1710,6 +1710,7 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/getCandidateEmployerList" })
 	public ModelAndView getCandidateEmployerList(@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi,
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage,
 			HttpServletRequest request)
 			throws Exception {
@@ -1720,6 +1721,7 @@ public class ImmigrationController {
 		List<CandidateEmployers> candidatesEmployersList = candidateEmployersService
 				.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId), searchVal);
 		model.addObject("myImmigrationPage", myImmigrationPage);
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		model.addObject("candidatesEmployersList", candidatesEmployersList);
 		return model;
 	}
@@ -1877,9 +1879,12 @@ public class ImmigrationController {
 	
 	@RequestMapping(value = { "/getLcaDetails" })
 	public ModelAndView getLcaDetails(
-			@RequestParam(value = "immigrationId", required = true) String immigrationId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "immigrationId", required = true) String immigrationId,
+			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage, HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
+		model.addObject("myImmigrationPage", myImmigrationPage);
+		System.out.println("myImmigrationPage value is "+myImmigrationPage);
 		logger.debug(" inisde getLcaDetails controller test -->");
 		if(immigrationId != null) {
 			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(Long.parseLong(immigrationId));

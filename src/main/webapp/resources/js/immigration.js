@@ -622,9 +622,9 @@ function Immigration() {
 		});
 	}
     
-   this.getLcaDetailsInfo=function(immigrationId){
+   this.getLcaDetailsInfo=function(immigrationId,curUscisMyImmi){
   		$.ajax({
-          url: vmsUrl + immiModulePath +"/getLcaDetails?immigrationId="+immigrationId,
+          url: vmsUrl + immiModulePath +"/getLcaDetails?immigrationId="+immigrationId+"&myImmigrationPage="+myImmigrationPage,
           type: "GET",
           success: function (result) {
               $("#lcaTab").html(result);
@@ -951,7 +951,7 @@ function Immigration() {
 	        success: function (result) {
 	        	if(result=='success'){
 	        		showSuccessMsg("Successfully Record Deleted.");
-	        		immigration.getCandidateEmployerList(candidateId) //candidateId global variable
+	        		immigration.getCandidateEmployerList(candidateId,curUscisMyImmiVal) //candidateId global variable
 	        		deleteImmigrationPopupDiv();
 	        	}
 	        }
@@ -1018,7 +1018,7 @@ function Immigration() {
 	                    }else{
 	                    	showSuccessMsg("Successfully new Employees Details.");
 	                    	}
-	                	immigration.getCandidateEmployerList(candidateId);
+	                	immigration.getCandidateEmployerList(candidateId,curUscisMyImmi);
 	                }else{
 	                	 showError("Operation failed, please try again");
 	                }
@@ -1040,10 +1040,11 @@ function Immigration() {
 
 
 	
-	this.getCandidateEmployerList = function(candidateId){
+	this.getCandidateEmployerList = function(candidateId, curUscisMyImmi){
 		var searchEmployerVal = $("#employersDataSearch").val();
+		if(searchEmployerVal) searchEmployerVal = searchEmployerVal.trim();
 		$.ajax({
-	        url: vmsUrl + immiModulePath + "/getCandidateEmployerList?candidateId="+candidateId+"&searchVal="+searchEmployerVal+"&myImmigrationPage="+myImmigrationPage,
+	        url: vmsUrl + immiModulePath + "/getCandidateEmployerList?candidateId="+candidateId+"&searchVal="+searchEmployerVal+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
 	        type: "GET",
 	        success: function (result) {
 	            $("#employersTab").html(result);
@@ -1814,7 +1815,7 @@ function Immigration() {
 				                   }else if(result.response === 'SUCCESS') {
 				                	    $(".popMask").fadeOut(200);
 					    				$("#popLcaView").hide(100);
-					                   	immigration.getLcaDetailsInfo(immigrationId);
+					                   	immigration.getLcaDetailsInfo(immigrationId,curUscisMyImmi);
 				                   }else{
 				                   	 showError("Operation failed, please try again");
 				                   }

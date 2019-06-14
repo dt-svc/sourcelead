@@ -243,7 +243,7 @@ $(document).ready(function() {
         immigration.getCandidateEducationList(candidateId);
         } else if(tab=='#employersTab'){
         showLoading("immigrationLoadingEmployersTab");
-        immigration.getCandidateEmployerList(candidateId);
+        immigration.getCandidateEmployerList(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#residencesTab'){
         	showLoading("immigrationLoadingResidencesTab");
         immigration.getCandidateResidenceList(candidateId);
@@ -255,7 +255,7 @@ $(document).ready(function() {
         immigration.displayVisaDetails(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#lcaTab'){
         	showLoading("immigrationLcaLoadingTab");
-        	immigration.getLcaDetailsInfo(immigrationId);
+        	immigration.getLcaDetailsInfo(immigrationId,"${myImmigrationPage}");
         }else if(tab=='#docsTab'){
         	showLoading("immigrationLoadingDocsTab");
         	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
