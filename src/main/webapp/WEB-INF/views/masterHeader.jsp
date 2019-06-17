@@ -423,7 +423,7 @@ function preventTabkey(e){
 			</div>
 			
 			<div class="pull-left universalSrch">
-			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);" value="${serachValue}"/>
+			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);" value="${searchValue}"/>
 			 <button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="universalSearch();" ></button>
 			</div>
 			</form:form>
@@ -1498,9 +1498,17 @@ function universalSearch(){
 	 }
 	 if(searchType == "Candidate") {
 		 window.location.href = "${SourceLeadWeb_atsUrl}/candidatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
-	 } else if(searchType == "Associate") {
+	 }
+	 
+	 // june-14-2019 -> added else if block for searchType = "Users".
+	 else if(searchType == "Users") {
+		 window.location.href = "${SourceLeadWeb_atsUrl}/usersList?&searchResult=universalUsersList&searchValue="+searchValue;
+	 }
+	 
+	 else if(searchType == "Associate") {
 		 window.location.href = "${SourceLeadWeb_atsUrl}/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
 	 }
+	 
 	 else if(searchType == "Requirement") {
 		 window.location.href = "${SourceLeadWeb_atsUrl}/jobsList?searchResult=universalRequirementSearchList&searchValue="+searchValue;
 	 }
