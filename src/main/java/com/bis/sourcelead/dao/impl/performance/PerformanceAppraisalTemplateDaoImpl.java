@@ -21,6 +21,7 @@ import com.bis.sourcelead.dao.performance.PerformanceAppraisalTemplateDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalAssignToListDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -367,6 +368,60 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 		response.setData(peersList);
 		return response;
 		
+	}
+
+	@Override
+	public List<PerformanceAppraisalTemplateDTO> getPerformanceAppraisalTemplateDTOList(Long orgLocationId,String dateFormat)
+			throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Query queryObj = null;
+		List<PerformanceAppraisalTemplateDTO> templatesList = null;
+		
+		String templateDateFormat =  "";
+		
+		if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
+			templateDateFormat = "\"%Y-%m-%d\"";
+		}else if("dd-MM-yyyy".equalsIgnoreCase(dateFormat)) {
+			templateDateFormat = "\"%d-%m-%Y\"";
+		}else if("MM-dd-yyyy".equalsIgnoreCase(dateFormat)) {
+			templateDateFormat = "\"%m-%d-%Y\"";
+		}else if("yyyy-dd-MM".equalsIgnoreCase(dateFormat)) {
+			templateDateFormat = "\"%Y-%d-%m\"";
+		}
+		
+		try {
+		
+		String templateQuery =  "SELECT " + 
+				 "TEMPLATE.ID AS templateId, " + 
+				 "TEMPLATE.NAME AS name, " + 
+				 "TEMPLATE.UUID AS templateUUId, " + 
+				 "DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+templateDateFormat+") as selfAppraisalStartDate, "+
+				 "DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+templateDateFormat+") as selfAppraisalEndDate, "+
+				
+				 "(SELECT " + 
+				 "COUNT(ASSIGNED.ID) " + 
+				 "FROM " + 
+				 "PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED  " + 
+				 "WHERE " + 
+				 "ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND ASSIGNED.STATUS = '1' ) AS templateAssignedUserCount " + 
+				 
+				 "FROM " + 
+				 "PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE  " + 
+				 "WHERE " + 
+				 "TEMPLATE.ORG_LOCATION_ID = :orgLocationId AND TEMPLATE.STATUS = '1' ";
+		
+		queryObj = session.createSQLQuery(templateQuery);
+		queryObj.setParameter("orgLocationId", orgLocationId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalTemplateDTO.class));
+		templatesList = queryObj.list();
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return templatesList;
 	}
 
 	

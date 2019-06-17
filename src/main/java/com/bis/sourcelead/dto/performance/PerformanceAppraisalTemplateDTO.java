@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto.performance;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -54,6 +55,8 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private String appraisalGoals;
 	
+	private BigInteger templateId;
+	
 	@Required(desc="goalsWeightage", dependsOn = "appraisalGoals", parentValue = "Y")
 	private String goalsWeightage;
 	
@@ -80,6 +83,9 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private String resourceManagerReviewEndDate;
 	
+	private String templateUUId;
+	
+	private BigInteger templateAssignedUserCount;
 	
 	
 	public Long getAppraisalTemplateId() {
@@ -336,6 +342,30 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 
 	public void setResourceManagerReviewEndDate(String resourceManagerReviewEndDate) {
 		this.resourceManagerReviewEndDate = resourceManagerReviewEndDate;
+	}
+
+	public BigInteger getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(BigInteger templateId) {
+		this.templateId = templateId;
+	}
+
+	public String getTemplateUUId() {
+		return templateUUId;
+	}
+
+	public void setTemplateUUId(String templateUUId) {
+		this.templateUUId = templateUUId;
+	}
+
+	public BigInteger getTemplateAssignedUserCount() {
+		return templateAssignedUserCount;
+	}
+
+	public void setTemplateAssignedUserCount(BigInteger templateAssignedUserCount) {
+		this.templateAssignedUserCount = templateAssignedUserCount;
 	}
 
 	

@@ -184,9 +184,9 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 	}
 
 	@Override
-	public PerformanceAppraisalTemplateDTO getPerformanceAppraisalTemplateDTOById(Long id) throws Exception {
+	public PerformanceAppraisalTemplateDTO getPerformanceAppraisalTemplateDTOById(String templateUUId) throws Exception {
 		   PerformanceAppraisalTemplateDTO templateDTO = new PerformanceAppraisalTemplateDTO();
-		   PerformanceAppraisalTemplate template = performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateById(id);
+		   PerformanceAppraisalTemplate template = performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateByUUID(templateUUId);
 		   templateDTO.setAppraisalTemplateId(template.getId());
 		   templateDTO.setName(template.getName());
 		   templateDTO.setAppraisalStartDate(template.getAppraisalStartDateStr());
@@ -297,6 +297,12 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 	public ResponseList<PerformanceAppraisalPeersDTO> getPerformancePeersList(
 			PerformanceAppraisalPeersDTO performanceAppraisalPeersDTO, Long orgLocationId) throws Exception {
 		return performanceAppraisalTemplateDao.getPerformancePeersList(performanceAppraisalPeersDTO, orgLocationId);
+	}
+
+	@Override
+	public List<PerformanceAppraisalTemplateDTO> getPerformanceAppraisalTemplateDTOList(Long orgLocationId,String dateFormat)
+			throws Exception {
+		return performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateDTOList(orgLocationId,dateFormat);
 	}
 
 }

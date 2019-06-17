@@ -16,7 +16,7 @@ public interface PerformanceAppraisalTemplateService {
 	
 	List<PerformanceAppraisalTemplate> getPerformanceAppraisalTemplateList(Long orgLocationId) throws Exception;
 	
-	PerformanceAppraisalTemplateDTO getPerformanceAppraisalTemplateDTOById(Long id) throws Exception;
+	PerformanceAppraisalTemplateDTO getPerformanceAppraisalTemplateDTOById(String templateUUId) throws Exception;
 	
 	PerformanceAppraisalTemplate getPerformanceAppraisalTemplateById(Long id) throws Exception;
 	
@@ -25,5 +25,7 @@ public interface PerformanceAppraisalTemplateService {
 	PerformanceAppraisalTemplate getPerformanceAppraisalTemplateByUUID(String uuid) throws Exception;
 	
 	ResponseList<PerformanceAppraisalPeersDTO> getPerformancePeersList(PerformanceAppraisalPeersDTO performanceAppraisalPeersDTO,Long orgLocationId) throws Exception;
+	
+	List<PerformanceAppraisalTemplateDTO> getPerformanceAppraisalTemplateDTOList(Long orgLocationId,String dateFormat) throws Exception;
 	
 }
