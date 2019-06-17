@@ -300,7 +300,7 @@
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup uiwidgetCustom">
 									<input type="text" class="form-control" name="candidateNameEmail" field-name="Associate" data-validation="required"
-										id="candidateNameEmail" placeholder="Select Beneficiary" value="${immigrationDTO.candidateNameEmail}"/>
+										id="candidateNameEmail" placeholder="Beneficiary Autofill Enabled For 2 Chars" value="${immigrationDTO.candidateNameEmail}"/>
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
