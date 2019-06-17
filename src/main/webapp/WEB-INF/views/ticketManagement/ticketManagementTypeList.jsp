@@ -12,7 +12,7 @@
       <div class="pull-left">
         <h2>Ticket Type</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a> &raquo; Ticket Type List</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/settings'/>">Settings</a> &raquo; Ticket Type List</div>
     </section>
     <div class="content-area content-new clearfix timesheet_out">
       <div class="clearfix mt mb">
@@ -66,7 +66,7 @@
 			<div class="clearfix mb">
 				<label class="noPad">Description</label>
 				<div class="clearfix">
-					<textarea placeholder="Description" name="description" id="ticketTypeDesc" class="form-control" rows="2" data-validation="validate_length length0-5000"></textarea>
+					<textarea placeholder="Description" name="description" id="ticketTypeDesc" class="form-control" rows="2" data-validation="validate_length length1-5000"></textarea>
 				</div>
 			</div>
 		</div>

@@ -40,6 +40,13 @@ $(document).ready(function() {
 	});
 });
 
+var validationSettings = {
+        errorMessagePosition : 'element',
+        borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+        };
+
 function showDeletePopup(id, status) {
 	$("#confirmId").data("id", id);
 	$("#confirmId").data("status", status);
@@ -96,8 +103,15 @@ function saveTicketType() {
 				showError("Operation failed, please try again");
 			}
 		});
-	}
+		return true
+	}else{
+		return false;
+	  } 
 }
+$('body').on('blur', '#addTicketTypeForm', function() {
+	$("#addTicketTypeForm").showHelpOnFocus();
+	$("#addTicketTypeForm").validateOnBlur(false, validationSettings);  
+});
 
 function cancelTicketType() {
 	$("#ticketTypeId").val(0);
@@ -227,8 +241,15 @@ function saveTicketCategory() {
 				}
 			},
 		});
+		return true
+	}else{
+		return false;
 	}
 }
+$('body').on('blur', '#addTicketCategoryForm', function() {
+	$("#addTicketCategoryForm").showHelpOnFocus();
+	$("#addTicketCategoryForm").validateOnBlur(false, validationSettings);  
+});
 
 function editTicketCategory(id){
 	$("#assignedTo option").removeAttr("selected");
@@ -333,8 +354,15 @@ function saveTicketPriority() {
 				showError("Operation failed, please try again");
 			}
 		});
+		return true
+	}else{
+		return false;
 	}
 }
+$('body').on('blur', '#addTicketPriorityForm', function() {
+	$("#addTicketPriorityForm").showHelpOnFocus();
+	$("#addTicketPriorityForm").validateOnBlur(false, validationSettings);  
+});
 function cancelTicketPriority() {
 	$("#ticketPriorityId").val(0);
 	if(document.getElementById("addTicketPriorityForm") !== null) {
@@ -449,8 +477,16 @@ function saveTicketStatus() {
 				showError("Operation failed, please try again");
 			}
 		});
+		return true
+	}else{
+		return false;
 	}
 }
+$('body').on('blur', '#addTicketStatusForm', function() {
+	$("#addTicketStatusForm").showHelpOnFocus();
+	$("#addTicketStatusForm").validateOnBlur(false, validationSettings);  
+});
+
 
 function cancelTicketStatus() {
 	$("#ticketStatusId").val(0);
