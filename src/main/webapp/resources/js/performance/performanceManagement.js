@@ -364,7 +364,7 @@ function PerformanceManagement(){
     			
     }
     
-    this.addNewAppraisalCycle = function(templateId){
+    this.addNewAppraisalCycle = function(templateUUId){
     	$.ajax({
   		  type: "GET",
   		    url: sourceleadUrl+"/addNewAppraisalCycle",
@@ -372,11 +372,11 @@ function PerformanceManagement(){
   		    	    $("#performanceManagementDiv").empty();  
   		    	    $("#performanceManagementDiv").append(response);
   		    	    
-  		    	    if(templateId != null && templateId != '' && templateId != 'undefined'){
-  		    	    	 performanceManagement.editAppraisalCycle(templateId);
+  		    	    if(templateUUId != null && templateUUId != '' && templateUUId != 'undefined'){
+  		    	    	 performanceManagement.editAppraisalCycle(templateUUId);
   		    	    }
   		    	   
-  		    	   if(templateId == null || templateId == '' || templateId == 'undefined'){
+  		    	   if(templateUUId == null || templateUUId == '' || templateUUId == 'undefined'){
   		    		performanceManagement.departmentsList();
   		    		performanceManagement.rolesList();
   		    		performanceManagement.employeeTypeList();
@@ -1983,12 +1983,12 @@ this.enableResourceManagerAppraisalPeriod = function(){
   }
   
   
-  this.editAppraisalCycle = function(templateId){
+  this.editAppraisalCycle = function(templateUUId){
 	  
  	  $("#appraisalDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			  type: "GET",
-			    url: sourceleadUrl+"/getAppraisalCycleTemplateDetailsById?templateId="+templateId,
+			    url: sourceleadUrl+"/getAppraisalCycleTemplateDetailsById?templateUUId="+templateUUId,
 			     success :function(response) {
 			    	 
 			    		if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
@@ -2411,11 +2411,11 @@ this.enableResourceManagerAppraisalPeriod = function(){
   }
   
   
-  this.deleteAppraisalCycle = function(templateId){
+  this.deleteAppraisalCycle = function(templateUUId){
 
 		$.ajax({
 			  type: "POST",
-			    url: sourceleadUrl+"/deleteAppraisalCycleTemplateById?templateId="+templateId,
+			    url: sourceleadUrl+"/deleteAppraisalCycleTemplateById?templateUUId="+templateUUId,
 			     success :function(response) {
 			    	 
 			    		if (response && (response === "INVALID_DATA" || response === "INVALID_USER")) {

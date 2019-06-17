@@ -34,7 +34,7 @@
               <thead>
                 <tr>
                   <th>Cycle Name</th>
-                  <th>Performance Period</th>
+                  <th>Performance Period<br>(<small class="custom-small">${SourceLeadWeb_dateFormat == 'dd-MM-yyyy' ? 'DD-MM-YYYY' : 'SourceLeadWeb_dateFormat' == 'yyyy-MM-dd' ? 'YYYY-MM-DD' : 'SourceLeadWeb_dateFormat' == 'MM-dd-yyyy' ? 'MM-DD-YYYY' : 'SourceLeadWeb_dateFormat' == 'yyyy-dd-MM' ? 'YYYY-DD-MM' : '' }</small>)</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -47,16 +47,21 @@
 		                  <td><div class="tblminwidth-75">${appraisal.name}</div></td>
 		                  <td>
 							  <div>
-							  <span class="tblminwidth-75 mr">${appraisal.appraisalStartDateStr}</span>
-							  <span class="tblminwidth-75">${appraisal.appraisalEndDateStr}</span>
+							  <span class="tblminwidth-75 mr">${appraisal.selfAppraisalStartDate}</span>
+							  <span class="tblminwidth-75">${appraisal.selfAppraisalEndDate}</span>
 							  </div>
 						  </td>
 		                  <td>
 							  <div class="tblminwidth-50">
 								  <ul class="list-unstyled list-inline">
-									  <li><a onclick="performanceManagement.assignAppraisalCycle('${appraisal.uuid}');" title="Assign"><i class="fa fa-user-plus cursorPointer text-primary"></i></a></li>
-									  <li><a onclick="performanceManagement.addNewAppraisalCycle('${appraisal.id}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
-							  	      <li><a onclick="performanceManagement.deleteAppraisalCycle('${appraisal.id}');" title="Delete"><i class="fa fa-trash"></i></a></li>
+									  <li><a onclick="performanceManagement.assignAppraisalCycle('${appraisal.templateUUId}');" title="Assign"><i class="fa fa-user-plus cursorPointer text-primary"></i></a></li>
+									  <li><a onclick="performanceManagement.addNewAppraisalCycle('${appraisal.templateUUId}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
+							  	      <c:if test="${appraisal.templateAssignedUserCount == 0}">
+							  	      <li><a onclick="performanceManagement.deleteAppraisalCycle('${appraisal.templateUUId}');" title="Delete"><i class="fa fa-trash"></i></a></li>
+								      </c:if>
+								      <c:if test="${appraisal.templateAssignedUserCount > 0}">
+								      <li><a href="javascript:vois(0)" title="Assigned Associates Count" onclick="templateAssignedAssociates('${appraisal.templateUUId}');">${appraisal.templateAssignedUserCount}</a>
+								      </c:if>
 								  </ul>
 							  </div>
 						  </td>

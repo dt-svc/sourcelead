@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceRatingLevelDTO;
 import com.bis.sourcelead.dto.performance.PerformanceRatingScaleDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -147,7 +148,7 @@ public class PerformanceManagementController {
 	public ModelAndView getPerformanceAppraisalCyclesList(HttpServletRequest request) throws Exception{
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<PerformanceAppraisalTemplate> appraisalTemplatesList = performanceAppraisalTemplateService.getPerformanceAppraisalTemplateList(orgLocation.getId());
+		List<PerformanceAppraisalTemplateDTO> appraisalTemplatesList = performanceAppraisalTemplateService.getPerformanceAppraisalTemplateDTOList(orgLocation.getId(),orgLocation.getDateFormat());
 		model.addObject("appraisalTemplatesList", appraisalTemplatesList);
 		model.addObject("appraisalTemplatesListSize", appraisalTemplatesList.size());
 		model.addObject("sourceleadUrl", sourceleadUrl);

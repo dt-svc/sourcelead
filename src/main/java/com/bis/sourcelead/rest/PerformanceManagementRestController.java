@@ -313,10 +313,10 @@ public class PerformanceManagementRestController {
    
    
    @RequestMapping(value = "/getAppraisalCycleTemplateDetailsById" , method = RequestMethod.GET)
-   public Response<PerformanceAppraisalTemplateDTO> getAppraisalCycleTemplateDetailsById(@RequestParam(value="templateId", required=false) Long templateId) throws Exception {
+   public Response<PerformanceAppraisalTemplateDTO> getAppraisalCycleTemplateDetailsById(@RequestParam(value="templateUUId", required=false) String templateUUId) throws Exception {
 	   Response<PerformanceAppraisalTemplateDTO> resObj = new Response<>();
 	   try {
-		   PerformanceAppraisalTemplateDTO templateDTO = performanceAppraisalTemplateService.getPerformanceAppraisalTemplateDTOById(templateId);
+		   PerformanceAppraisalTemplateDTO templateDTO = performanceAppraisalTemplateService.getPerformanceAppraisalTemplateDTOById(templateUUId);
 		   resObj.setObject(templateDTO);
 		   resObj.setResponse(Result.SUCCESS.name());
 		   resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -391,10 +391,10 @@ public class PerformanceManagementRestController {
    
    @RequestMapping(value = "/deleteAppraisalCycleTemplateById", method = RequestMethod.POST)
  	public String deleteAppraisalCycleTemplateById(HttpServletRequest request, 
- 			@RequestParam(value = "templateId", required = true) Long templateId){
+ 			@RequestParam(value = "templateUUId", required = true) String templateUUId){
  		 String resObj = null;
  		 try {
- 			 PerformanceAppraisalTemplate template =  performanceAppraisalTemplateService.getPerformanceAppraisalTemplateById(templateId);
+ 			 PerformanceAppraisalTemplate template =  performanceAppraisalTemplateService.getPerformanceAppraisalTemplateByUUID(templateUUId);
  			template.setStatus(Constants.RECORD_INACTIVE);
  			performanceAppraisalTemplateService.savePerformanceAppraisalTemplate(template);
  			 resObj = Result.SUCCESS.name();
