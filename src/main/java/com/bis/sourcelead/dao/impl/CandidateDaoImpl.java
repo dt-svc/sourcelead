@@ -3751,11 +3751,16 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateSource> getCandidateSourceListByOrgLocationIdAndStatus(Long orgLocationId, int status)throws Exception {
-		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from CandidateSource cs where cs.orgLocations.id = :orgLocationId and cs.status =:status";
-		
-		List<CandidateSource> candidateSource = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("status", status).list();
-		return candidateSource;
+		try {
+			Session session =  this.sessionFactory.getCurrentSession();
+			String query = "from CandidateSource cs where cs.orgLocations.id = :orgLocationId and cs.status =:status";
+			
+			List<CandidateSource> candidateSource = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("status", status).list();
+			return candidateSource;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 
