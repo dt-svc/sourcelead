@@ -345,7 +345,18 @@ public class PerformanceManagementController {
 		
 	}
 	
-	
+	@RequestMapping(value = "/getTemplateAssignedAssociatesList")
+	public ModelAndView getTemplateAssignedAssociatesList(@RequestParam(value = "uuid", required = true) String uuid,
+			HttpServletRequest request) throws Exception{
+		
+		PerformanceAppraisalTemplate template = performanceAppraisalTemplateService.getPerformanceAppraisalTemplateByUUID(uuid);
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("uuid", uuid);
+		model.addObject("templateName", template.getName());
+		model.setViewName("performance/appraisalAssignedAssociates");
+		return model;
+	}
 	
 	
 }

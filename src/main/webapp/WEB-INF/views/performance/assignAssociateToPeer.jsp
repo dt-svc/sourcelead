@@ -231,6 +231,7 @@
 		    	  		 result = result +"<img class='m-t-xs pull-left' onerror='predefinePeerImage(this);' src='"+opt.userImgUrl+"'>";
 		    	  		 result = result +"<div class='tbldata-dotdot-vsm' title='"+opt.associateId+"'>"+opt.associateId+"</div>";
 		    	  		 result = result +"</div>";
+		    	  		 result = result +"</td>";
 			             return result;
 		    	  	}
 		      },{

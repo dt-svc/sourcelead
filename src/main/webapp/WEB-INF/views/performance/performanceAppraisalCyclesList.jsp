@@ -60,7 +60,7 @@
 							  	      <li><a onclick="performanceManagement.deleteAppraisalCycle('${appraisal.templateUUId}');" title="Delete"><i class="fa fa-trash"></i></a></li>
 								      </c:if>
 								      <c:if test="${appraisal.templateAssignedUserCount > 0}">
-								      <li><a href="javascript:vois(0)" title="Assigned Associates Count" onclick="templateAssignedAssociates('${appraisal.templateUUId}');">${appraisal.templateAssignedUserCount}</a>
+								      <li><a href="javascript:vois(0)" title="Assigned Associates Count" onclick="performanceManagement.templateAssignedAssociates('${appraisal.templateUUId}');">${appraisal.templateAssignedUserCount}</a>
 								      </c:if>
 								  </ul>
 							  </div>
@@ -74,4 +74,5 @@
           </div>
         </div>
       </div>
+      
        

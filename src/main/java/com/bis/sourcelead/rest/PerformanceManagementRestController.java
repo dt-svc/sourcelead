@@ -844,4 +844,22 @@ public class PerformanceManagementRestController {
 		 		}
 		 		 return response;
 		     }
+	    
+	    
+		@RequestMapping(value = "/getAppraisalAssignedAssociatesList", method = RequestMethod.GET)
+		public ResponseList<AppraisalAssignedAssociatesDTO> getAppraisalAssignedAssociatesList(AppraisalAssignedAssociatesDTO appraisalAssignedAssociatesDTO,HttpServletRequest request) throws Exception {
+			
+			String[] tableColumns = { "associateId", "associateName", "associateEmail", "associateRole", "reportingManager" };
+			int sortColumnIndex = 1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default descending order
+			if (appraisalAssignedAssociatesDTO.getOrder() != null && !appraisalAssignedAssociatesDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(appraisalAssignedAssociatesDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = appraisalAssignedAssociatesDTO.getOrder().get(0).get("dir");
+			}
+			appraisalAssignedAssociatesDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			appraisalAssignedAssociatesDTO.setSortOrder(sortColumnOrder);
+			ResponseList<AppraisalAssignedAssociatesDTO> appraisalAssignedAssociatesList = performanceAppraisalAssignedAssociatesService.getAppraisalAssignedAssociatesList(appraisalAssignedAssociatesDTO);
+			return appraisalAssignedAssociatesList;
+		}
+		
 }

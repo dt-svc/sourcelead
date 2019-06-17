@@ -130,8 +130,13 @@ function appraisalAssignPagination(url,uuid){
 	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  	   	 result = result +"<td>";
-                	 result = result +"<div class='tbldata-dotdot-sm' title='"+opt.associateId+"'>"+opt.associateId+"</div>";
+                	 result = result +"<td>";
+	    	  	  	 result = result +"<div class='UserTextLeft tabImg clearfix'>";
+	    	  		 result = result +"<img class='m-t-xs pull-left' onerror='predefineAssociateImage(this);' src='"+opt.userImgUrl+"'>";
+	    	  		 result = result +"<div class='pull-left' title='"+opt.associateId+"'>"+opt.associateId+"</div>";
+	    	  		 result = result +"</div>";
+	    	  		 result = result +"</td>";
+	    	  		 
 		             return result;
 	    	  	}
 	      },{
@@ -328,6 +333,12 @@ function assignAssociatesToAppraisal(){
 	 
 }
 </script> 
+
+<script>
+	function predefineAssociateImage(imageId){
+		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
+	}
+</script>
 
 <script type="text/javascript">
 function okAssociatePopUp(){

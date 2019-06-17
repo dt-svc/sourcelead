@@ -413,6 +413,18 @@ function PerformanceManagement(){
   				},
   			}); 
     }
+    
+    this.templateAssignedAssociates = function(uuid){
+    	$.ajax({
+    		  type: "GET",
+    		    url: sourceleadUrl+"/getTemplateAssignedAssociatesList?uuid="+uuid,
+    		     success :function(response) {
+    		    	    $("#performanceManagementDiv").empty();  
+    		    	    $("#performanceManagementDiv").append(response);
+    		    	    getAppraisalAssignedAssociatesList(uuid);
+    				},
+    			}); 
+    }
 
 
     this.getFeedbackList = function(){
