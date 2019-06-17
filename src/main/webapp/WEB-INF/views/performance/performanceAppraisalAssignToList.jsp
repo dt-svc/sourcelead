@@ -11,7 +11,7 @@
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; 
       <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/settings'/>">Settings</a> &raquo;
-      <a href="${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration">Performance Management</a> &raquo;<a onclick="performanceManagement.viewAppraisalCycle();">Appraisal Cycle List</a> &raquo; Performance Assign List <span id = "fname"></a> </div>
+      <a href="${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration">Performance Management</a> &raquo;<a onclick="performanceManagement.viewAppraisalCycle();"> Appraisal Cycle List</a> &raquo; Performance Assign List <span id = "fname"></a> </div>
 </section>
 
 

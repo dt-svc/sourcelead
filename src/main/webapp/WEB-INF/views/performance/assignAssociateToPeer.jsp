@@ -190,6 +190,16 @@
 		    	  		
 		    	  		   var peerUsersList 
 		    	  		   var assignedPeerflag = false;
+		    	  		   
+		    	  		  for(var e in peerUsers) {
+		   	     	    	   if(!e || !peerUsers[e] || peerUsers[e] === "")
+		   	     				   continue;
+		   	     	    	   if(e === opt.peerUserId+"") {
+		   	     	    		 	checkOrUncheckParent("peersListTable",peerUsers); 
+		   	     	    		assignedPeerflag = true;
+		   	     	    	   	break;
+		   	     	    	   }
+		   	        		 }
 		    	  		 
 		    	  		  if(opt.peerUsers != null){
 		    	  			peerUsersList = opt.peerUsers.split(",");
@@ -321,6 +331,21 @@ function togglePeers(source){
 	  });
 		 
 }
+
+function checkOrUncheckParent(tableId, selectedItems) {
+     var count = 0;
+     var data = $("#"+tableId).DataTable().data();
+	 for(var e in selectedItems) {
+	   if(!e || !selectedItems[e] || selectedItems[e] === "")
+		   continue;
+	   
+	   for(var f in data) {
+	 	   if(e === data[f].id+"") {
+	 		count ++;
+	 	   }
+		}
+	 }
+}
 </script>
 
 
@@ -340,7 +365,7 @@ function savePeers(){
 	 
 	 if(peerUserIds.length > 0){
 		 
-		 $("#peersListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		  $("#peersListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			   $.ajax({
 		          type : "POST",
 		          url: sourceleadUrl+"/assignPeersListToAssociate?&peerUserIds="+peerUserIds+"&appraisalAssignedUserId="+appraisalAssignedUserId,    
@@ -362,7 +387,7 @@ function savePeers(){
 				    		showError("Operation failed, please try again");
 				    	}
 		           },
-		   });   
+		   });    
 		 
 		 
 	 }else{
