@@ -14,7 +14,8 @@ public class AssociatePfEsiDetailsDTO {
 	@Required(desc="pfNumber", dependsOn = "eligibleForPf", parentValueAny = true)
 	private String pfNumber;
 	
-	@Required(desc="aadharNumber", dependsOn = "eligibleForPf", parentValueAny = true)
+	//commented by prasad k(there is no field name aadharNumber in jsp page )
+	//@Required(desc="aadharNumber", dependsOn = "eligibleForPf", parentValueAny = true)
 	private String aadharNumber;
 	
 	private String enroleDate;
