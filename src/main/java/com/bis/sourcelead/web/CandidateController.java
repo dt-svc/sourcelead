@@ -258,7 +258,7 @@ public class CandidateController {
 				ModelAndView model = new ModelAndView();
 				model.setViewName("candidates/addCandidate");
 				model.addObject("sourceleadUrl", sourceleadUrl);
-				model.addObject("sourceCandidateList", candidateService.getCandidateSourceListByOrgLocationId(orgLocations.getId(), 1, null, null));
+				model.addObject("sourceCandidateList", candidateService.getCandidateSourceListByOrgLocationIdAndStatus(orgLocations.getId(), 1));
 				Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 				if(null != countries){
 	            model.addObject("loginCountryName", countries.getName());
