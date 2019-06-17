@@ -772,7 +772,7 @@ result = result +'<div class="clearfix">                                 ';
 result = result +'<div class="popupHead clearfix"> Assign Employee                                                                      ';
 result = result +'	<i class="closePop pull-right clPopClose" onClick="applicantsourceHandlerClose()"></i>                              ';
 result = result +'</div>                                                                                                                ';
-result = result +'<div class="clockWrap">                                                                                               ';
+result = result +'<div class="cleaffix col-md-12 mt mb">                                                                                               ';
 result = result +'	<label>Assign Employee</label>                                                                                      ';
 result = result +'	<div class="mt5 width100percnt">                                                                                    ';
 result = result +'	<select class="chosen-select width100percnt" data-placeholder="Select Assign Employee" id="assignedNewPerson">      ';
@@ -780,7 +780,7 @@ result = result +'		<option>Employee</option>                                   
 result = result +'	</select>                                                                                                           ';
 result = result +'	</div>                                                                                                              ';
 result = result +'</div>                                                                                                                ';
-result = result +'<div class="col-md-12 mb">                                                                                            ';
+result = result +'<div class="col-md-12 mb mt5">                                                                                            ';
 result = result +'	<div class="pull-right">                                                                                            ';
 result = result +'		<button type="button" class="btn btn-primary" onclick="applicantsourceSave('+submissionId+')">Assign</button>                   ';
 result = result +'	        <button type="button" class="btn btn-default ml" onClick="applicantsourceHandlerClose()">Cancel</button>    ';
