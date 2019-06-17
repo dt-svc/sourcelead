@@ -117,6 +117,7 @@
   
   <script>
   function closePeerPopup(){
+	  peerUsers = {};
 	  $(".mask, #peerModaltype").fadeOut();
   }
   </script>
@@ -260,7 +261,7 @@
 			     }],
 			     
 		    	"scrollCollapse": false,
-		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+		    	"lengthMenu": [[5], [5]],
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"aaSorting": [[1,'desc']],

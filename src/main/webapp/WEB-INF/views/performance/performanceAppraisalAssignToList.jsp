@@ -20,7 +20,7 @@
          <div class="positionRelative reportHead clearfix"> 
             <ul class="pull-right list-unstyled list-inline">
    			<li>
-				<a class="action newAdBtn mr5"  href="javascript:void(0)"> Assign </a>
+				<a class="action newAdBtn mr5"  href="javascript:void(0)" onclick="assignAssociatesToAppraisal();"> Assign </a>
 			</li>
 		    <li id="appraisalAssignListSearch"><input type="text" class="repSearchBar"  id='appraisalAssignDataTableSearch'/><span class="repSearchIcon" onClick="appraisalAssignTableList('${uuid}');"></span></li>
         	</ul>
@@ -48,10 +48,11 @@
  function getAppraisalAssignToList(uuid){
 	 $("#appraisalAssignLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  var result = "";
-
+	    result = result +" <input type='hidden' id='appraisalTemplateUUId' value='"+uuid+"'/>";
 	 	result = result + '<table id="appraisalAssignListTable" class="display mt10" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
+		result = result + '<th class="text-center"><input type="checkbox" id="sharedcheckbox" onclick="toggleAssignList(this);"/></th>'; 
 		result = result + '<th>Associate Id</th>';
 	  	result = result + '<th>Associate Name</th>';
 	  	result = result + '<th>Email</th>';
@@ -100,6 +101,29 @@ function appraisalAssignPagination(url,uuid){
             { "data": "actions"}
         ],
         "columnDefs": [ {
+        	"targets": colIndex++,
+    	  	"sortable": false,
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  		 var shareflag = false;
+	        		 for(var e in assignAssociates) {
+   	     	    	   if(!e || !assignAssociates[e] || assignAssociates[e] === "")
+   	     				   continue;
+   	     	    	   if(e === opt.associateId+"") {
+   	     	    		    if(!$("#sharedcheckbox").is(":checked"))
+   	     	    		 	checkOrUncheckParent("appraisalAssignListTable",assignAssociates, "sharedcheckbox"); 
+   	     	    		    shareflag = true;
+   	     	    	   	break;
+   	     	    	   }
+   	        		 }
+	        		 if(!shareflag)
+   	        			$("#sharedcheckbox").removeAttr('checked');
+	        		    result = result +"<div class='tblminwidth-30 pull-left ml'>";
+	        			result = result +'<div class="pull-left mt3"><td><input'+(shareflag ? " checked='checked'" : "")+' class="associatescheckbox" name="sharedcheckbox"  type="checkbox" id="'+opt.associateId+'" data-id="'+opt.associateId+'" value="'+opt.userId+'" onchange="checkAssociates(this)"/></td></div>';
+	        			result = result +"</div>";
+	        			return result; 
+	    	  	}
+	      },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "associateId",
 	    	  	"sortable": false,
@@ -131,8 +155,8 @@ function appraisalAssignPagination(url,uuid){
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	     result = result +"<td>";
-	            	     result = result +"<div class='width300px'>";
-	             	     result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.associateEmail+"'>"+opt.associateEmail+"</div>";
+	            	     result = result +"<div class=''>";
+	             	     result = result +"<div class='tbldata-dotdot-me pull-left' title='"+opt.associateEmail+"'>"+opt.associateEmail+"</div>";
 	             	     result = result +"</div>";
 	             	     result = result +"</td>";
 			             return result;
@@ -169,8 +193,8 @@ function appraisalAssignPagination(url,uuid){
 	            	    if(opt.peersCount != null){
 	            	    	peersCount = opt.peersCount;
 	            	    }
-	            	    result = result	+ '<a href="javascript:vois(0)" title="Peer Count" onclick="associateAssignedPeers(\''+opt.userId+'\');">'+peersCount+'</a>';
-	            	    result = result	+ '<td><div class="tblminwidth-50 pull-right ml"><div class="pull-left"><a><i class="fa fa-user-plus cursorPointer text-primary ml10" onclick="assignToPeer(\''+opt.userId+'\',\''+opt.userRoleId+'\',\''+uuid+'\');"></i></a></div> <div class="pull-left mt2 ml5"></div></div></td>';
+	            	    result = result	+ '<td><div class="tblminwidth-50 ml"><a href="javascript:vois(0)" title="Peer Count" onclick="associateAssignedPeers(\''+opt.userId+'\');">'+peersCount+'</a>';
+	            	    result = result	+ '<a><i class="fa fa-user-plus cursorPointer text-primary ml10" onclick="assignToPeer(\''+opt.userId+'\',\''+opt.userRoleId+'\',\''+uuid+'\');"></i></a></div></td>';
 	            		return result;
 	              }
 		     }],
@@ -179,7 +203,7 @@ function appraisalAssignPagination(url,uuid){
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
-	    	"aaSorting": [[0,'desc']],
+	    	"aaSorting": [[1,'desc']],
 	    	"ordering": false,
 	    	"oLanguage": {
 	     		"sSearch": "",
@@ -204,5 +228,67 @@ function appraisalAssignPagination(url,uuid){
     	});
 }
 </script>
- 
+
+
+<script>
+var assignAssociates = {};
+function checkAssociates(elem){
+	if($(elem).is(":checked")) {
+		assignAssociates[$(elem).data("id")] = $(elem).val();
+	} else{
+		$("#sharedcheckbox").removeProp('checked');
+		assignAssociates[$(elem).data("id")] = "";
+	}
+}
+
+function toggleAssignList(source){
+	  var checkboxes = document.querySelectorAll('input[class="associatescheckbox"]');
+	  if($(source).is(":checked"))
+		  $('input[class="associatescheckbox"]').prop('checked', 'checked');
+	  else 
+		  $('input[class="associatescheckbox"]').removeProp('checked');
+	  
+	  $('input[class="associatescheckbox"]').each(function(i) {
+		  if($(this).is(":checked")) {
+			  assignAssociates[$(this).data("id")] = $(this).val();
+		  } else {
+			  assignAssociates[$(this).data("id")] = "";
+		  }
+	  });
+}
+
+function checkOrUncheckParent(tableId, selectedItems, checkboxId) {
+	$("#"+checkboxId).removeProp("checked");
+	   var count = 0;
+	   var data = $("#"+tableId).DataTable().data();
+	 for(var e in selectedItems) {
+	   if(!e || !selectedItems[e] || selectedItems[e] === "")
+		   continue;
+	   
+	   for(var f in data) {
+	   if(e === data[f].id+"") {
+		count ++;
+	   }
+		}
+	 }
+	 if(count == data.count()) {
+		$("#"+checkboxId).prop("checked", "checked");
+	 }
+}
+</script>
+
+<script>
+function assignAssociatesToAppraisal(){
+	var appraisalTemplateUUId = $('#appraisalTemplateUUId').val();
+	 var associateIds = new Array();
+	 for(var e in assignAssociates) {
+		 if(!e || !assignAssociates[e] || assignAssociates[e] === "")
+			   continue;
+		 associateIds.push(assignAssociates[e]);
+	   } 
+	 
+	 alert(associateIds);
+	 
+}
+</script> 
  
