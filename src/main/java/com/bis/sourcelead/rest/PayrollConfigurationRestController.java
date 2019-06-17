@@ -945,7 +945,9 @@ public class PayrollConfigurationRestController {
 	}
 			 
 	 @RequestMapping(value = "/getAssociateSalaryDataByOrgLocation", method = RequestMethod.GET)
-		public ModelAndView getAssociateSalaryDataByOrgLocation(PayrollPayheadDTO payrollPayheadDTO, HttpServletRequest request) throws Exception
+		public ModelAndView getAssociateSalaryDataByOrgLocation(PayrollPayheadDTO payrollPayheadDTO, 
+				@RequestParam(value="userCode", required=false)String userCode,
+				HttpServletRequest request) throws Exception
 		{
 		 	ModelAndView model = new ModelAndView();
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -1027,6 +1029,7 @@ public class PayrollConfigurationRestController {
 			}
 			model.setViewName("indPayroll/associateSalary");
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("userCode", userCode);
 			return model;
 		}
 	 

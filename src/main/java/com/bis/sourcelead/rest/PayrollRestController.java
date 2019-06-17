@@ -235,7 +235,9 @@ public class PayrollRestController {
 	   		Response<IndEmployeePayroll> indEmployeePayrollResponse = indPaysheetFrequencyService.getIndEmployeePayrollByEmpPayrollUUID(associatePayrollPayheadHistoryDTO.getIndEmpPayrollUUID());
 	   		IndEmployeePayroll	indEmployeePayroll = indEmployeePayrollResponse.getObject();
 	   		HashSet<IndEmployeePayroll> payrollList = new HashSet<>();
-	   		payrollList.add(indEmployeePayroll);
+	   		if(indEmployeePayroll != null) {
+	   			payrollList.add(indEmployeePayroll);
+	   		}
 	   		indPayrollDTO = iNDPayrollCommonUtil.getINDPayrollDTOFromIndEmployeePayroll(payrollList, orgLocation).iterator().next();
 	   	    associatePayrollPayheadDTOList = indPayrollDTO.getPayHeadHistoryDTOList();
 	   	}
