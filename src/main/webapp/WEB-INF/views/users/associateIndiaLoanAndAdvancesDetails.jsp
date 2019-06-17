@@ -1,7 +1,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/loanAndAdvances.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/loanAndAdvances.js"></script>
 
 <div id="tab-4" class="tabsMenu_tabs_inn clearfix">
   <div id="loanAndAdvancesDetailsLoading"></div>

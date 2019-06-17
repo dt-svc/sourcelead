@@ -4314,11 +4314,13 @@ function profileDetails(candidateId){
 
 <script>
 function assocSalarySummary(candidateId){
+	//Added userCode in url, to be used in associateSalary page.
+	var userCode = '${userCode}';
 	var locationCode = '${SourceLeadWeb_locationCode}';
 	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$.ajax({
 		  type: "GET",
-		    url: pmsUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&locationCode="+locationCode,
+		    url: pmsUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&locationCode="+locationCode+"&userCode="+userCode,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();
