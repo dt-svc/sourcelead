@@ -84,7 +84,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">LCA No<span class="text-danger paddingLeft">*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name="lcaNo"  id="lcaNumberAuto" class="form-control"  placeholder="LCA Number" field-name="LCA NO" data-validation="required" >
+              		<input type="text" name="lcaNo"  id="lcaNumberAuto" class="form-control"  placeholder="Autofill Enabled For 2 Chars" field-name="LCA NO" data-validation="required" >
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
