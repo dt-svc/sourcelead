@@ -44,7 +44,10 @@ window.onload = function () {
 function usersListCheck(searchValue,searchResult){
 	if(searchResult == "universalUsersList"){
 	$("#dynamicUserDataTableSearch").val(searchValue)
-	getDynamciUserList();
+		getDynamciUserList();
+	}
+	else{
+		getDynamciUserList();
 	}
 }
 </script>
