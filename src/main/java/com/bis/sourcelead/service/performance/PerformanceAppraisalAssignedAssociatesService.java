@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.performance;
 
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.AppraisalAssignedAssociatesDTO;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalAssignedAssociates;
 
@@ -8,4 +9,6 @@ public interface PerformanceAppraisalAssignedAssociatesService {
 	void storePerformanceAppraisalAssignedAssociates(AppraisalAssignedAssociatesDTO appraisalAssignedAssociatesDTO) throws Exception;
 	
 	PerformanceAppraisalAssignedAssociates savePerformanceAppraisalAssignedAssociates(PerformanceAppraisalAssignedAssociates performanceAppraisalAssignedAssociates) throws Exception;
+	
+	ResponseList<AppraisalAssignedAssociatesDTO> getAppraisalAssignedAssociatesList(AppraisalAssignedAssociatesDTO appraisalAssignedAssociatesDTO) throws Exception;
 }

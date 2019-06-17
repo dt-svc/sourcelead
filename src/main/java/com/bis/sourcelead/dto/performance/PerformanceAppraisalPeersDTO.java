@@ -29,6 +29,8 @@ private static final long serialVersionUID = 1L;
 	
 	private String associateRole;
 	
+	private String uuid;
+	
 	private int start;
 	
 	private int length;
@@ -169,6 +171,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setAssociateRole(String associateRole) {
 		this.associateRole = associateRole;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 }

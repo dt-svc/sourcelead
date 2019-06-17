@@ -1,9 +1,14 @@
 package com.bis.sourcelead.dao.impl.performance;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +17,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalAssignedAssociatesDao;
+import com.bis.sourcelead.dao.performance.PerformanceAppraisalTemplateDao;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.performance.AppraisalAssignedAssociatesDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalAssignToListDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalAssignedAssociates;
+import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -23,6 +34,9 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	PerformanceAppraisalTemplateDao PerformanceAppraisalTemplateDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -58,5 +72,106 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return performanceAppraisalAssignedAssociates;
+	}
+
+	@Override
+	public ResponseList<AppraisalAssignedAssociatesDTO> getAppraisalAssignedAssociatesList(
+			AppraisalAssignedAssociatesDTO appraisalAssignedAssociatesDTO) throws Exception {
+		
+		PerformanceAppraisalTemplate appriasalTemplate = PerformanceAppraisalTemplateDao.getPerformanceAppraisalTemplateByUUID(appraisalAssignedAssociatesDTO.getAppraisalTemplateUUId());
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		Query queryObj = null;
+		List<AppraisalAssignedAssociatesDTO> assignToList = null;
+		
+		List<BigInteger> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<AppraisalAssignedAssociatesDTO> response = new ResponseList<>();
+		String querySeachStr = "";
+		
+		StringBuilder query1 = new StringBuilder("");
+		if(appraisalAssignedAssociatesDTO.getSearchValue() != null && !"".equalsIgnoreCase(appraisalAssignedAssociatesDTO.getSearchValue())) {
+			 query1.append(" Q1.associateId like '%" + appraisalAssignedAssociatesDTO.getSearchValue() + "%' ")
+				.append("OR Q1.associateName like '%" + appraisalAssignedAssociatesDTO.getSearchValue() + "%' ")
+				.append("OR Q1.associateEmail like '%" + appraisalAssignedAssociatesDTO.getSearchValue() + "%' ")
+				.append("OR Q1.reportingManager like '%" + appraisalAssignedAssociatesDTO.getSearchValue() + "%' ");
+			 
+		}
+		
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(appraisalAssignedAssociatesDTO.getSortColumn()))
+		{
+			sortingQry = " order by Q1."+ appraisalAssignedAssociatesDTO.getSortColumn() +" "+appraisalAssignedAssociatesDTO.getSortOrder();
+		}
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			querySeachStr = "where "+"("+query1.toString()+")";
+		}
+		
+		try {
+			
+
+			query = "SELECT Q1.* " + 
+			 		 "FROM (" + 
+					 "SELECT " + 
+					"ASSIGNED.UUID AS uuid, " + 
+					"CAND.GENERATED_ID AS associateId, " + 
+					"U.FILE_URL AS userImgUrl, " + 
+					"CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS associateName, " +
+					"CAND.EMAIL AS associateEmail, " + 
+					"CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS reportingManager, " +
+					"R.DISPLAY_NAME AS associateRole " + 
+							             
+					"FROM " + 
+					"USER_ROLE UR ," + 
+					"CANDIDATE CAND, " + 
+					"USER U ," + 
+					"PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, " + 
+					"ROLES R " + 
+					"WHERE ASSIGNED.USER_ID = CAND.CONSULTANT_USER_ID AND ASSIGNED.USER_ID = UR.USER_ID   " + 
+					"AND UR.REPORTING_MANAGER_ID = U.ID AND UR.ROLE_ID = R.ID " + 
+					"AND ASSIGNED.APPRAISAL_TEMPLATE_ID = :appriasalTemplateId GROUP BY UR.ID )Q1 "+querySeachStr+sortingQry;
+			
+			String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
+					" FROM" + 
+					"(" + query +
+					")Q2;" ;
+		
+		
+		queryObj = session.createSQLQuery(query);
+		queryObj.setParameter("appriasalTemplateId", appriasalTemplate.getId());
+		
+		queryObj.setResultTransformer(Transformers.aliasToBean(AppraisalAssignedAssociatesDTO.class));
+		queryObj.setFirstResult(appraisalAssignedAssociatesDTO.getStart());
+		queryObj.setMaxResults(appraisalAssignedAssociatesDTO.getLength());
+		assignToList = queryObj.list();
+		
+		countlist = session.createSQLQuery(countQuery).setLong("appriasalTemplateId", appriasalTemplate.getId()).list();
+		filterCount = countlist.iterator().next().intValue();
+			
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	int totalCount = 0;
+
+		
+		if (appraisalAssignedAssociatesDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		response.setData(assignToList);
+		return response;
 	}
 }

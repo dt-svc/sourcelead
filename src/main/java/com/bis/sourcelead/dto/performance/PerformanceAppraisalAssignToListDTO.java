@@ -15,6 +15,8 @@ public class PerformanceAppraisalAssignToListDTO implements Serializable{
 	
 	private String associateId;
 	
+	private String userImgUrl;
+	
 	private String associateName;
 	
 	private String associateEmail;
@@ -159,6 +161,14 @@ public class PerformanceAppraisalAssignToListDTO implements Serializable{
 
 	public void setPeersCount(BigInteger peersCount) {
 		this.peersCount = peersCount;
+	}
+
+	public String getUserImgUrl() {
+		return userImgUrl;
+	}
+
+	public void setUserImgUrl(String userImgUrl) {
+		this.userImgUrl = userImgUrl;
 	}
 	
 	

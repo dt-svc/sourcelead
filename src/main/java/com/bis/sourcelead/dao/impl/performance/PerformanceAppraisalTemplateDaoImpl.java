@@ -189,7 +189,8 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 			 		 "FROM (" + 
 					 "SELECT " + 
 					"CAND.GENERATED_ID AS associateId, " + 
-					"CAND.CONSULTANT_USER_ID AS userId, " + 
+					"CAND.CONSULTANT_USER_ID AS userId, " +
+					"U.FILE_URL AS userImgUrl, " + 
 					"CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS associateName, " +
 					"CAND.EMAIL AS associateEmail, " + 
 					"CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS reportingManager, " +

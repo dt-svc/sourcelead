@@ -9,6 +9,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalAssignedAssociatesDao;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalPeersDao;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalTemplateDao;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.AppraisalAssignedAssociatesDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -74,6 +75,12 @@ public class PerformanceAppraisalAssignedAssociatesServiceImpl implements Perfor
 	public PerformanceAppraisalAssignedAssociates savePerformanceAppraisalAssignedAssociates(
 			PerformanceAppraisalAssignedAssociates performanceAppraisalAssignedAssociates) throws Exception {
 		return performanceAppraisalAssignedAssociatesDao.savePerformanceAppraisalAssignedAssociates(performanceAppraisalAssignedAssociates);
+	}
+
+	@Override
+	public ResponseList<AppraisalAssignedAssociatesDTO> getAppraisalAssignedAssociatesList(
+			AppraisalAssignedAssociatesDTO appraisalAssignedAssociatesDTO) throws Exception {
+		return performanceAppraisalAssignedAssociatesDao.getAppraisalAssignedAssociatesList(appraisalAssignedAssociatesDTO);
 	}
 
 }
