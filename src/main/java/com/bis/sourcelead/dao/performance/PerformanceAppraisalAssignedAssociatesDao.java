@@ -1,0 +1,8 @@
+package com.bis.sourcelead.dao.performance;
+
+import com.bis.sourcelead.entity.performance.PerformanceAppraisalAssignedAssociates;
+
+public interface PerformanceAppraisalAssignedAssociatesDao {
+
+	PerformanceAppraisalAssignedAssociates savePerformanceAppraisalAssignedAssociates(PerformanceAppraisalAssignedAssociates performanceAppraisalAssignedAssociates) throws Exception;
+}

@@ -1,10 +1,11 @@
 package com.bis.sourcelead.dto.performance;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
-public class PerformanceAppraisalPeersDTO {
+public class PerformanceAppraisalPeersDTO implements Serializable{
 
 private static final long serialVersionUID = 1L;
 

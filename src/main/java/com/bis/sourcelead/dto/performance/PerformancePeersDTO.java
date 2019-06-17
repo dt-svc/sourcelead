@@ -14,6 +14,8 @@ public class PerformancePeersDTO implements Serializable{
 	 
 	 private Long userId;
 	 
+	 private Long orgId;
+	 
 	 
 
 	public Long getAppraisalAssignedUserId() {
@@ -46,6 +48,14 @@ public class PerformancePeersDTO implements Serializable{
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
 	}
 	 
 	 

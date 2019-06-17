@@ -118,6 +118,7 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 		String departmentQuery = "";
 		String rolesQuery = "";
 		String employmentType = "";
+		String associateUserIdsStr = "";
 		
 		List<BigInteger> countlist = null;
 		Integer filterCount = 0;
@@ -161,7 +162,27 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 			employmentType = " AND CAND.DESIGNATION_TYPE IN ("+empTypeStr+") ";
 		}
 		
+		
 		try {
+			
+			
+			String appraisalAssignedQuery =  "SELECT " + 
+					 "ASSIGNED.USER_ID " + 
+					 "FROM " + 
+					 "PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED  " + 
+					 "WHERE " + 
+					 "ASSIGNED.APPRAISAL_TEMPLATE_ID = :templateId AND ASSIGNED.STATUS = '1' ";
+
+						Query appraisalAssignedQueryObj = session.createSQLQuery(appraisalAssignedQuery);
+						appraisalAssignedQueryObj.setParameter("templateId", appriasalTemplate.getId());
+						List<BigInteger> assignedUsers = (List<BigInteger>) appraisalAssignedQueryObj.list();
+						
+					if(assignedUsers != null) {
+						associateUserIdsStr = "'" + StringUtils.join(assignedUsers,"','") + "'";
+					}else {
+						associateUserIdsStr = "'0'";
+					}
+					
 			
 			query = "SELECT Q1.* " + 
 			 		 "FROM (" + 
@@ -189,7 +210,7 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 					"ROLES R " + 
 					"WHERE UR.REPORTING_MANAGER_ID = U.ID AND UR.ROLE_ID = R.ID " + 
 					"AND CAND.CONSULTANT_USER_ID = UR.USER_ID AND CAND.ORG_LOCATION_ID = OL.ID AND EMP.USER_ID = UR.USER_ID " + departmentQuery + rolesQuery + employmentType+
-					"AND CAND.ORG_LOCATION_ID = :orgLocationId AND CAND.STATUS = '1' AND UR.USER_STATE = 'ACTIVE' GROUP BY UR.ID )Q1 "+querySeachStr+sortingQry;
+					"AND CAND.ORG_LOCATION_ID = :orgLocationId AND CAND.STATUS = '1' AND CAND.CONSULTANT_USER_ID NOT IN ("+associateUserIdsStr+") AND UR.USER_STATE = 'ACTIVE' GROUP BY UR.ID )Q1 "+querySeachStr+sortingQry;
 			
 			
 			  String  countQuery = "SELECT COUNT(*) AS TOTAL" + 

@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -40,6 +41,10 @@ public class PerformanceAppraisalPeers implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID" )        
     private OrgLocations orgLocationId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="ORG_ID" )        
+    private Org orgId;
 	
 	@Column(name = "UUID")
 	private String uuid;
@@ -102,6 +107,14 @@ public class PerformanceAppraisalPeers implements Serializable{
 
 	public void setOrgLocationId(OrgLocations orgLocationId) {
 		this.orgLocationId = orgLocationId;
+	}
+	
+	public Org getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Org orgId) {
+		this.orgId = orgId;
 	}
 
 	public String getUuid() {

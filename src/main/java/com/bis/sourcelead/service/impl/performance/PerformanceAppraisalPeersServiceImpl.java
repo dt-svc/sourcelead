@@ -10,6 +10,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalPeersDao;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformancePeersDTO;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalPeers;
@@ -51,6 +52,9 @@ public class PerformanceAppraisalPeersServiceImpl implements PerformanceAppraisa
 						OrgLocations loginOrgLocation = new OrgLocations();
 						loginOrgLocation.setId(performancePeersDTO.getOrgLocationId());
 						appraisalPeers.setOrgLocationId(loginOrgLocation);
+						Org loginOrg = new Org();
+						loginOrg.setId(performancePeersDTO.getOrgId());
+						appraisalPeers.setOrgId(loginOrg);
 				}else {
 					appraisalPeers.setUpdatedBy(loginUser);
 					appraisalPeers.setUpdatedDate(new Date());
