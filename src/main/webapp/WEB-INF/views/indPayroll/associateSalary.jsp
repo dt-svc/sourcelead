@@ -280,6 +280,7 @@ function payHeadCalculation(id, shortCode, method, formula){
 function saveAssociateSalaryInd(){
 	if ($('#associateSalary_form').validate(false, validationSettings)) {
 		
+		if(document.getElementById("BA")!=null)
 		if(!document.getElementById("BA").checked || document.getElementById("payHeadMonthly[BA]").value == "" || document.getElementById("payHeadMonthly[BA]").value == "0.00" || document.getElementById("payHeadMonthly[BA]").value == "0" || document.getElementById("payHeadMonthly[BA]").value == "0.0" || document.getElementById("payHeadMonthly[BA]").value == "0." || document.getElementById("payHeadYearly[BA]").value == "" || document.getElementById("payHeadYearly[BA]").value == "0.00" || document.getElementById("payHeadYearly[BA]").value == "0" || document.getElementById("payHeadYearly[BA]").value == "0.0" || document.getElementById("payHeadYearly[BA]").value == "0."){
 			payheadsNotMatchedAlert('impba');
 			return false;
@@ -340,6 +341,7 @@ function cnfToSaveAssociateSalaryInd(){
 		var formData = getFormData1("associateSalary_form");
 		var status = $("#status").val();
 		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		$.ajax({
 			 type : "POST",
 			 data: formData,
@@ -348,7 +350,8 @@ function cnfToSaveAssociateSalaryInd(){
 			 url : pmsUrl+"/saveAssociateSalaryInd?"+tokenParamName+"="+tokenValue,
 			 success : function(result) {
 			  		if(status == "NEW" || status == "NODATA"){
-			  			location.reload();
+			  		//Redirecting to userlist
+				  		location.replace(atsUrl+"/usersList");	
 			  		}else{
 			  			$('#editAssociateBtn').css('display','block');
 				  		$('#associateSalary_form input').attr('disabled','true');
