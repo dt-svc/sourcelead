@@ -355,7 +355,7 @@ function loadingDiv(){
 </script>
 <script>
 function linkReadAndUnread(uuId){
-// 	var vmsUrl = "${SourceLeadWeb_vmsUrl}";
+	var sourceleadUrl = "${SourceLeadWeb_sourceleadUrl}";
 	 $.ajax({
 	      type: "POST",
 	  	  url: sourceleadUrl+"/notificationStatusRead?${_csrf.parameterName}=${_csrf.token}&uuId="+uuId,
