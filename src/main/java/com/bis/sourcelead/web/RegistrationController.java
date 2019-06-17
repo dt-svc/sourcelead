@@ -402,7 +402,7 @@ public class RegistrationController {
 					 }
 				 }
 				 
-				 response.sendRedirect(redirectUrl.append("/app/dashboard/").append(respondingPartyOrgLocationId).toString());
+				 response.sendRedirect(redirectUrl.append(sourceleadUrl).append("/notificationsList").toString());
 			}
 			
 		}
