@@ -106,7 +106,7 @@
 		            "render": function ( data, type, opt, meta ) {
 		            		var result = "";
 	           		   if(opt.id != null && opt.id != '' && opt.id != 'undefined') {
-		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.id+'</div></td>';
+		     	        	result = result + '<td><div  class="tbldata-dotdot-sm" title="'+opt.id+'">'+opt.id+'</div></td>';
 	           		   } else {
 							result = result +"<td><div>-----</div></td>";
 	           	       }
@@ -120,7 +120,7 @@
 		            "render": function ( data, type, opt, meta ) {
 		            		var result = "";
 	           		   if(opt.name != null && opt.name != '' && opt.name != 'undefined') {
-		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.name+'</div></td>';
+		     	        	result = result + '<td><div  class="tbldata-dotdot-sm" title="'+opt.name+'">'+opt.name+'</div></td>';
 	           		   } else {
 							result = result +"<td><div>-----</div></td>";
 	           	       }
@@ -134,7 +134,7 @@
 		            "render": function ( data, type, opt, meta ) {
 		            		var result = "";
 	           		   if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
-		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.description+'</div></td>';
+		     	        	result = result + '<td><div  class="tbldata-dotdot-sm" title="'+opt.description+'">'+opt.description+'</div></td>';
 	           		   } else {
 							result = result +"<td><div>-----</div></td>";
 	           	       }
