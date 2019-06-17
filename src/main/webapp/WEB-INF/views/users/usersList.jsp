@@ -42,7 +42,10 @@ window.onload = function () {
 
 <script type="text/javascript">
 function usersListCheck(searchValue,searchResult){
+	if(searchResult == "universalUsersList"){
+	$("#dynamicUserDataTableSearch").val(searchValue)
 	getDynamciUserList();
+	}
 }
 </script>
 
@@ -195,13 +198,13 @@ function getUsersSearchResult(searchValue){
 						<c:if test="${clientListSize > 0}">
 						<div class="col-md-4 positionRelative mb">
 							<div class="clearfix dynamic_search filterDynamicsearch">
-								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Clients" title="Type in a clients">
+								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Vendor" title="Type in a vendor">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
 							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
-									<c:forEach var="client" items="${clientsList}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${client.orgRelId}" ><label>${client.clientName}</label></li>
+									<c:forEach var="vendor" items="${orgVendorList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${vendor.orgRelId}" ><label>${vendor.vendorName}</label></li>
 									</c:forEach>
 								</ul>
 							 </div> 
