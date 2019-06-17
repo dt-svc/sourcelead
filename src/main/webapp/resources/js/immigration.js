@@ -752,7 +752,7 @@ function Immigration() {
             success: function (result) {
                 $("#familiesTab").html(result);
                 addfamilyPopupEventListener();
-                $("#familySerach").val(searchVal);
+                $("#familySerach").val(searchFamilyVal);
             }
         });
     }	
@@ -814,6 +814,7 @@ function Immigration() {
 	
 	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId,searchVal,myImmigrationStatus,curUscisMyImmi){
 		var searchVal = $("#immigraFormTabSerach").val();
+		if(searchVal) searchVal = searchVal.trim();
 		$.ajax({
 	        url: vmsUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId+
 	        "&searchVal="+searchVal+"&myImmigration="+myImmigrationStatus+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
@@ -1205,7 +1206,7 @@ function Immigration() {
 	       type: "GET",
 	        success: function (result) {
 	           $("#residencesTab").html(result);
-	           $("#residenceSearch").val(searchVal);
+	           $("#residenceSearch").val(searchResidenceVal);
 	       }
 	   });
 	}
@@ -1477,7 +1478,7 @@ function Immigration() {
 	        		$('#uploadCanDocPop').hide();
 	            	$('.popMask').fadeOut();
 	            	showSuccessMsg("Successfully Uploaded File.");
-	            	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'','');
+	            	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'',curUscisMyImmi);
 	        	     
 	        	}
 	        }
