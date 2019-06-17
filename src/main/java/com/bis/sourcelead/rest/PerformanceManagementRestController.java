@@ -30,6 +30,7 @@ import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RoleDTO;
+import com.bis.sourcelead.dto.performance.AppraisalAssignedAssociatesDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalAssignToListDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
@@ -38,6 +39,7 @@ import com.bis.sourcelead.dto.performance.PerformancePeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceRatingLevelDTO;
 import com.bis.sourcelead.dto.performance.PerformanceRatingScaleDTO;
 import com.bis.sourcelead.dto.performance.PerformanceTagCompetenciesDTO;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalPeers;
@@ -51,6 +53,7 @@ import com.bis.sourcelead.entity.performance.PerformanceTagCompetencies;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.performance.PerformanceAppraisalAssignedAssociatesService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalPeersService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateService;
 import com.bis.sourcelead.service.performance.PerformanceBadgesService;
@@ -104,6 +107,9 @@ public class PerformanceManagementRestController {
 	
 	@Autowired
 	PerformanceAppraisalPeersService performanceAppraisalPeersService;
+	
+	@Autowired
+	PerformanceAppraisalAssignedAssociatesService performanceAppraisalAssignedAssociatesService;
 	
 	
     @RequestMapping(value = "/savePerformanceBudgetDetails", method = RequestMethod.POST)
@@ -777,10 +783,12 @@ public class PerformanceManagementRestController {
 				HttpServletRequest request){
 	    	 Response<String> response = new Response<>(); 
 	    	 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    	 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 		 try {
 	 			    performancePeersDTO.setUserId(user.getId());
 	 			    performancePeersDTO.setOrgLocationId(orgLocation.getId());
+	 			    performancePeersDTO.setOrgId(org.getId());
 	 			    performanceAppraisalPeersService.storePerformanceAppraisalPeers(performancePeersDTO);
 	 				response.setObject("success");
 					response.setResponse(Result.SUCCESS.name());
@@ -812,4 +820,28 @@ public class PerformanceManagementRestController {
 			}
 			 return resObj;
 	    }
+	    
+	    @RequestMapping(value = "/assignAssociateToAppraisal", method = RequestMethod.POST)
+		 	public Response<String> assignAssociateToAppraisal(AppraisalAssignedAssociatesDTO appraisalAssignedAssociatesDTO,
+					HttpServletRequest request){
+		    	 Response<String> response = new Response<>(); 
+		    	 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    	 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 		 try {
+		 			appraisalAssignedAssociatesDTO.setUserId(user.getId());
+		 			appraisalAssignedAssociatesDTO.setOrgLocationId(orgLocation.getId());
+		 			appraisalAssignedAssociatesDTO.setOrgId(org.getId());
+		 			performanceAppraisalAssignedAssociatesService.storePerformanceAppraisalAssignedAssociates(appraisalAssignedAssociatesDTO);
+	 				response.setObject("success");
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+		 			
+		 		 }catch (Exception e) {
+		 			response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+					e.printStackTrace();
+		 		}
+		 		 return response;
+		     }
 }

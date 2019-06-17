@@ -16,6 +16,7 @@
 
 
 <div class="content-area content-new clearfix backWhite">
+ <div id="appraisalAssignLoading"></div>
          <div class="clearfix">
          <div class="positionRelative reportHead clearfix"> 
             <ul class="pull-right list-unstyled list-inline">
@@ -31,7 +32,7 @@
           
           
           <div class="candidate_wrap_table datatable_filter positionRelative">
-	          <div id="appraisalAssignLoading"></div>
+              <div id="associatesChoicepopUp"></div>
 	         
 		    <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
 		    	<div id="appraisalAssignList" class="datatable_filter"></div>
@@ -280,15 +281,63 @@ function checkOrUncheckParent(tableId, selectedItems, checkboxId) {
 <script>
 function assignAssociatesToAppraisal(){
 	var appraisalTemplateUUId = $('#appraisalTemplateUUId').val();
-	 var associateIds = new Array();
+	 var associateUserIds = new Array();
 	 for(var e in assignAssociates) {
 		 if(!e || !assignAssociates[e] || assignAssociates[e] === "")
 			   continue;
-		 associateIds.push(assignAssociates[e]);
+		 associateUserIds.push(assignAssociates[e]);
 	   } 
 	 
-	 alert(associateIds);
+	 if(associateUserIds.length > 0){
+		 
+		  $("#appraisalAssignLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 	   $.ajax({
+		          type : "POST",
+		          url: sourceleadUrl+"/assignAssociateToAppraisal?&associateUserIds="+associateUserIds+"&appraisalTemplateUUId="+appraisalTemplateUUId,    
+		           success :function(data) {
+		        	   if (data.response === "FAILED") {
+		        		   $("#appraisalAssignLoading").removeAttr("style");
+				    		showError(data.responseMessage);
+				    	} else if (data.response === "AWKWARD") {
+				    		location.href = "/errorPage";
+				    	} else if (data.response === "SUCCESS") {
+				    		assignAssociates = {};
+				    		performanceManagement.assignAppraisalCycle(appraisalTemplateUUId);
+			       			
+				    	}else if (data.indexOf('Sign In') !== -1) {
+				    		location.replace(sourceleadUrl);
+				    	} else {
+				    		showError("Operation failed, please try again");
+				    	}
+		           },
+		   });     
+		 
+		 
+	 }else{
+		 var result = "";
+			result = result +"	<div class='comMask'></div>";
+			result = result +"	   <div id='remove_associate_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Select at least one associate</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='okAssociatePopUp();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAssociatePopUp();'></b>";
+			result = result +"	</div>";
+			$("#associatesChoicepopUp").append(result);
+			$("#remove_associate_pop").slideDown(200);
+			$(".comMask").fadeIn(200);
+	 }
 	 
 }
 </script> 
+
+<script type="text/javascript">
+function okAssociatePopUp(){
+	$("#associatesChoicepopUp").empty();
+	$(".comMask").fadeOut(200);
+}
+
+function cancelAssociatePopUp(){
+	$("#associatesChoicepopUp").empty();
+	$(".comMask").fadeOut(200);
+}
+</script>
  
