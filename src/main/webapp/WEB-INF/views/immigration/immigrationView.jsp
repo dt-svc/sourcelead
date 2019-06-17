@@ -12,7 +12,8 @@
 
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
-myImmigrationPage = '${myImmigrationPage}';
+myImmigrationPage = '${myImmigrationPage}'; // using javascript variable to share accross the summary calls.
+curUscisMyImmi ="${curUscisMyImmi}";// using javascript variable to share accross the summary calls.
 </script>
 <%-- <c:set var ="myImmigrationPage" value = "${myImmigrationPage}" scope="session"/> --%>
 <%-- <c:set var ="passOnLoadCount" value = "${tabRecordCountMap['Passport']}" scope="request"/>
@@ -236,34 +237,34 @@ $(document).ready(function() {
       		immigration.displayPetitionDetails(immigrationId);
         }else if(tab=='#familiesTab'){
         	showLoading("immigrationLoadingFamiliesTab");
-        	immigration.displayFamilyDetails(candidateId);
+        	immigration.displayFamilyDetails(candidateId,'${curUscisMyImmi}');
         }else if(tab=='#educationsTab'){
         showLoading("immigrationLoadingEducationsTab");
-        immigration.getCandidateEducationList(candidateId);
+        immigration.getCandidateEducationList(candidateId,'${curUscisMyImmi}');
         } else if(tab=='#employersTab'){
         showLoading("immigrationLoadingEmployersTab");
-        immigration.getCandidateEmployerList(candidateId);
+        immigration.getCandidateEmployerList(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#residencesTab'){
         	showLoading("immigrationLoadingResidencesTab");
-        immigration.getCandidateResidenceList(candidateId);
+        immigration.getCandidateResidenceList(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#passportsTab'){
         showLoading("immigrationLoadingPassportsTab");
-        immigration.displayPassportDetails(candidateId);
+        immigration.displayPassportDetails(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#visasTab'){
         showLoading("immigrationLoadingVisasTab");
-        immigration.displayVisaDetails(candidateId);
+        immigration.displayVisaDetails(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#lcaTab'){
         	showLoading("immigrationLcaLoadingTab");
-        	immigration.getLcaDetailsInfo(immigrationId);
+        	immigration.getLcaDetailsInfo(immigrationId,"${myImmigrationPage}");
         }else if(tab=='#docsTab'){
         	showLoading("immigrationLoadingDocsTab");
-        	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
+        	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}","${curUscisMyImmi}");
         }else if(tab =='#notesTab'){
         	showLoading("immigrationLoadingNotesTab");
         	immigration.getNotesListByImmigration(candidateId);
         } else if(tab=='#formsTab'){
         	showLoading("immigrationLoadingFormsTab");
-        	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
+        	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"","${myImmigrationPage}","${curUscisMyImmi}");
         }else if(tab=='#activitiesTab'){
         	showLoading("immigrationLoadingActivitiesTab");
         	immigration.getImmigrationActivies();
