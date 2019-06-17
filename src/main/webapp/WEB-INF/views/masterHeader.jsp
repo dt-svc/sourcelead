@@ -68,7 +68,7 @@ $(document).ready(function(){
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
-<c:if test='${viewPage != "vendors/vendorsList" && viewPage != "reports/usersUsageReportList"
+<c:if test='${viewPage != "reports/usersUsageReportList"
             && viewPage != "reports/employeeTasksReportList"  && viewPage != "reports/overdueTaskReport"}'>
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
 </c:if>
