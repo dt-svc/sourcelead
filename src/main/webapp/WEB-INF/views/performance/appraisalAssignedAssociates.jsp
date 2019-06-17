@@ -166,7 +166,12 @@ function appraisalAssignedAssociatesPagination(url,templateUUId){
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result	+ '<td><i class="fa fa-trash cursorPointer text-danger ml10" onclick="deleteAssignedAssociate(\''+opt.uuid+'\');"></i></a></div></td>';
+	            	    if(opt.daysDifference < 0){
+	            	    	 result = result	+ '<td><i class="fa fa-trash cursorPointer text-danger ml10" onclick="deleteAssignedAssociate(\''+opt.uuid+'\');"></i></a></td>';
+	            	    }else{
+	            	    	 result = result	+ '<td>--</td>';
+	            	    }
+	            	   
 	            		return result;
 	              }
 		     }],
