@@ -89,7 +89,7 @@
               	</div>
               	<div class="clearfix"></div>
               		<input type="text" name="lcaNo"  id="lcaNumberAuto" class="form-control"  
-              		placeholder="LCA Number" field-name="LCA NO" data-validation="required">
+              		placeholder="LCA No Autofill Enabled For 2 Numbers" field-name="LCA NO" data-validation="required">
 				</div>
 			</div>		
 						          
