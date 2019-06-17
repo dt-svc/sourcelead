@@ -121,6 +121,7 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 					"CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS associateName, " +
 					"CAND.EMAIL AS associateEmail, " + 
 					"CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS reportingManager, " +
+					"DATEDIFF(CURRENT_DATE(),'"+appriasalTemplate.getAppraisalStartDate()+"') AS daysDifference, " + 
 					"R.DISPLAY_NAME AS associateRole " + 
 							             
 					"FROM " + 
@@ -129,7 +130,7 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 					"USER U ," + 
 					"PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, " + 
 					"ROLES R " + 
-					"WHERE ASSIGNED.USER_ID = CAND.CONSULTANT_USER_ID AND ASSIGNED.USER_ID = UR.USER_ID   " + 
+					"WHERE ASSIGNED.USER_ID = CAND.CONSULTANT_USER_ID AND ASSIGNED.USER_ID = UR.USER_ID " + 
 					"AND UR.REPORTING_MANAGER_ID = U.ID AND UR.ROLE_ID = R.ID " + 
 					"AND ASSIGNED.APPRAISAL_TEMPLATE_ID = :appriasalTemplateId GROUP BY UR.ID )Q1 "+querySeachStr+sortingQry;
 			

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto.performance;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,8 @@ public class AppraisalAssignedAssociatesDTO implements Serializable{
 	private String associateRole;
 	
 	private String reportingManager;
+	
+	private Integer daysDifference;
 	
 	private String uuid;
 	
@@ -187,5 +190,14 @@ public class AppraisalAssignedAssociatesDTO implements Serializable{
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
+
+	public Integer getDaysDifference() {
+		return daysDifference;
+	}
+
+	public void setDaysDifference(Integer daysDifference) {
+		this.daysDifference = daysDifference;
+	}
+
 	
 }
