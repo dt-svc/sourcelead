@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl.performance;
 
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -175,4 +176,37 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 		response.setData(assignToList);
 		return response;
 	}
+
+	@Override
+	public void deleteAppraisalAssignedAssociate(
+			PerformanceAppraisalAssignedAssociates performanceAppraisalAssignedAssociates) throws Exception {
+		
+		logger.debug("Adding deleteAppraisalAssignedAssociate");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (performanceAppraisalAssignedAssociates != null) {
+				session.delete(performanceAppraisalAssignedAssociates);
+			}
+			logger.debug("deleteAppraisalAssignedAssociate Deleted Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
+	}
+
+	@Override
+	public PerformanceAppraisalAssignedAssociates getPerformanceAppraisalAssignedAssociatesByUUID(String uuid)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceAppraisalAssignedAssociates> assignedAssociates = new ArrayList<PerformanceAppraisalAssignedAssociates>();
+		logger.debug("getPerformanceAppraisalAssignedAssociatesByUUID  start");
+		assignedAssociates = session.createQuery("from PerformanceAppraisalAssignedAssociates assigned where assigned.uuid = :uuid " ).setString( "uuid", uuid).list();
+		logger.debug("getPerformanceAppraisalAssignedAssociatesByUUID  end");
+		if (assignedAssociates.size() > 0) {
+			return assignedAssociates.get(0);
+		} else {
+			return null;
+		}
+	 }
 }

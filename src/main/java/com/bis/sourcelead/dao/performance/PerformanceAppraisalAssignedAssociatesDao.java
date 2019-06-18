@@ -9,4 +9,8 @@ public interface PerformanceAppraisalAssignedAssociatesDao {
 	PerformanceAppraisalAssignedAssociates savePerformanceAppraisalAssignedAssociates(PerformanceAppraisalAssignedAssociates performanceAppraisalAssignedAssociates) throws Exception;
 	
 	ResponseList<AppraisalAssignedAssociatesDTO> getAppraisalAssignedAssociatesList(AppraisalAssignedAssociatesDTO appraisalAssignedAssociatesDTO) throws Exception;
+	
+	void deleteAppraisalAssignedAssociate(PerformanceAppraisalAssignedAssociates performanceAppraisalAssignedAssociates) throws Exception;
+	
+	PerformanceAppraisalAssignedAssociates getPerformanceAppraisalAssignedAssociatesByUUID(String uuid) throws Exception;
 }

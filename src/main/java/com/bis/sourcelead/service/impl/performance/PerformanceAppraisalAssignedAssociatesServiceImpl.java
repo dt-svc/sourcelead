@@ -83,4 +83,18 @@ public class PerformanceAppraisalAssignedAssociatesServiceImpl implements Perfor
 		return performanceAppraisalAssignedAssociatesDao.getAppraisalAssignedAssociatesList(appraisalAssignedAssociatesDTO);
 	}
 
+	@Override
+	public void deleteAppraisalAssignedAssociate(
+			PerformanceAppraisalAssignedAssociates performanceAppraisalAssignedAssociates) throws Exception {
+		
+		performanceAppraisalAssignedAssociatesDao.deleteAppraisalAssignedAssociate(performanceAppraisalAssignedAssociates);
+		
+	}
+
+	@Override
+	public PerformanceAppraisalAssignedAssociates getPerformanceAppraisalAssignedAssociatesByUUID(String uuid)
+			throws Exception {
+		return performanceAppraisalAssignedAssociatesDao.getPerformanceAppraisalAssignedAssociatesByUUID(uuid);
+	}
+
 }
