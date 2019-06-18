@@ -265,7 +265,7 @@
 			 
 				$("#residenceSearch").keyup(function (e) {
 			        if (e.which === 13) {
-			        	immigration.getCandidateResidenceList(candidateId);
+			        	immigration.getCandidateResidenceList(candidateId,'${curUscisMyImmi}');
 			        }
 			    });
 		</script>
