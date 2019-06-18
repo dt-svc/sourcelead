@@ -1819,6 +1819,12 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 			Long locationId,String isGlobalUser) throws Exception {
 		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId,isGlobalUser);
 	}
+	
+	@Override
+	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForFinance(Long masterCandidateId, Long projectId,
+			Long locationId,String isGlobalUser) throws Exception {
+		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForFinance(masterCandidateId, projectId, locationId,isGlobalUser);
+	}
 
 	@Override
 	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndActiveStatusRecords(Long projectClientsId) throws Exception {

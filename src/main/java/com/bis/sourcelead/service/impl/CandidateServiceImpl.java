@@ -3958,6 +3958,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			return candidateDao.deleteCandidateSourceById(id);
 		}
 
+	@Override
+	public List<CandidateSource> getCandidateSourceListByOrgLocationIdAndStatus(Long orgLocationId, int status) throws Exception {
+			
+		return candidateDao.getCandidateSourceListByOrgLocationIdAndStatus(orgLocationId, status);
+		
+	}
+
 
 	}
 
