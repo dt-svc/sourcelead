@@ -263,7 +263,7 @@ public class RequirementWorkflowController {
 	  		
 	  			
 	  			
-			responseList = requirementWorkFlowService.getRequirementWorkFlowList(requirementWorkFlowDTO, orgLocations);
+			responseList = requirementWorkFlowService.getRequirementWorkFlowList(requirementWorkFlowDTO, orgLocations, user);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
