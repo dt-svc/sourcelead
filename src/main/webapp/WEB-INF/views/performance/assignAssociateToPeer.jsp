@@ -175,7 +175,7 @@
 	      "ajax": $.fn.dataTable.pipeline( {
 	    	  url: url,
 	          method: 'GET',
-	          pages: 1
+	          pages: 2
 	        }),
 	        "columns": [
 	        	{ "data": "action" },
