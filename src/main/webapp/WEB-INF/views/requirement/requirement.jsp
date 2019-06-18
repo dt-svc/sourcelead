@@ -2204,24 +2204,25 @@ $(document).ready(function () {
 										</select>
 									</div>
 								</div>
-								<!--  added for workflow integration for job start here  
-								 <!--//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
-   									// below lines is commented for to move in next release build.
+								<!-- added for workflow integration for job start here -->   
 								<div class="form-group">
 									<label class="col-md-3">Workflow<span
 										class="text-danger paddingLeft">*</span></label>
 									<div class="col-md-9">
-
 										<select class="chosen-select form-control"
 											data-validation="required" field-name="Workflow"
 											name="workflow" id="workflowId">
 											<c:forEach var="workflow" items="${workflowList}">
+											       <c:if test="${empty requirement.workflowId.id}"><!-- for new requirement below optios are generated. -->
 													<option value="${workflow.id}"
 														${workflow.configureType=='Default'? 'selected' : ''}>${workflow.workFlowName}</option>
+												   </c:if>
+													<option value="${workflow.id}"
+														${workflow.id==requirement.workflowId.id ? 'selected' : ''}>${workflow.workFlowName}</option>
 											</c:forEach>
 										</select>
 									</div>
-								</div>-->
+								</div>
 								<!--  added for workflow integration for job end here -->
 								<div class="form-group" id="internalSubmissionFrom">
 									<label class="col-md-3">Application Form<span

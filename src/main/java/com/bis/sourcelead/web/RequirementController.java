@@ -590,7 +590,7 @@ public class RequirementController {
 		List<SubmissionTemplate>   submissionTempletesList = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(orgLocations.getId(),"Submission");
 		model.addObject("submissionTempletesList", submissionTempletesList);
 		
-		/*// workflow List commented by SRINIVAS SABBU.
+		// workflow List commented by SRINIVAS SABBU.
 		List<RequirementWorkFlow> workflowList = new ArrayList<RequirementWorkFlow>();
 		workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
 		if (workflowList == null || workflowList.size() == 0) {
@@ -602,7 +602,7 @@ public class RequirementController {
 		if (workflowList != null && workflowList.size() > 0) {
 			model.addObject("workflowList", workflowList);
 		}
-			*/
+			
 		//client submission template 
 		if(null != requirement.getClientId()){
 			List<SubmissionTemplate>   clientSubmissionTempletesList = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(requirement.getClientId().getResponderLocationId().getId(), orgLocations.getId(),"Submission");
