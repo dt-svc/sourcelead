@@ -167,7 +167,7 @@ function appraisalAssignedAssociatesPagination(url,templateUUId){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.daysDifference < 0){
-	            	    	 result = result	+ '<td><i class="fa fa-trash cursorPointer text-danger ml10" onclick="deleteAssignedAssociate(\''+opt.uuid+'\');"></i></a></td>';
+	            	    	 result = result	+ '<td><i class="fa fa-trash cursorPointer text-danger ml10" onclick="deleteAssignedAssociate(\''+opt.uuid+'\',\''+templateUUId+'\');"></i></a></td>';
 	            	    }else{
 	            	    	 result = result	+ '<td>--</td>';
 	            	    }
@@ -210,4 +210,25 @@ function appraisalAssignedAssociatesPagination(url,templateUUId){
 	function predefineAssociateImage(imageId){
 		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 	}
+</script>
+
+<script>
+function deleteAssignedAssociate(assignedUUId,templateUUId){
+	$.ajax({
+		  type: "POST",
+		    url: sourceleadUrl+"/deleteAppraisalAssignedAssociate?assignedUUId="+assignedUUId,
+		     success :function(response) {
+		    	 
+		           if (response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response === "SUCCESS") {
+		        		appraisalAssignedAssociatesTableList(templateUUId);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
+		     },
+		}); 
+}
 </script>

@@ -42,6 +42,7 @@ import com.bis.sourcelead.dto.performance.PerformanceTagCompetenciesDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.performance.PerformanceAppraisalAssignedAssociates;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalPeers;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
@@ -861,5 +862,21 @@ public class PerformanceManagementRestController {
 			ResponseList<AppraisalAssignedAssociatesDTO> appraisalAssignedAssociatesList = performanceAppraisalAssignedAssociatesService.getAppraisalAssignedAssociatesList(appraisalAssignedAssociatesDTO);
 			return appraisalAssignedAssociatesList;
 		}
+		
+		
+		   @RequestMapping(value = "/deleteAppraisalAssignedAssociate", method = RequestMethod.POST)
+		 	public String deleteAppraisalAssignedAssociate(HttpServletRequest request, 
+		 			@RequestParam(value = "assignedUUId", required = true) String assignedUUId){
+		 		 String resObj = null;
+		 		 try {
+		 			PerformanceAppraisalAssignedAssociates assignedAssociate = performanceAppraisalAssignedAssociatesService.getPerformanceAppraisalAssignedAssociatesByUUID(assignedUUId);
+		 			performanceAppraisalAssignedAssociatesService.deleteAppraisalAssignedAssociate(assignedAssociate);
+		 			resObj = Result.SUCCESS.name();
+		 		    
+		 		 }catch (Exception e) {
+		 			resObj = Result.AWKWARD.name();
+		 		}
+		 		 return resObj;
+		   }
 		
 }
