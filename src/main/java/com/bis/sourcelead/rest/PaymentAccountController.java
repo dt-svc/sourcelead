@@ -223,7 +223,7 @@ public class PaymentAccountController {
         return response;
     }
 
-    @RequestMapping(value = "/ats/change-default-payment-account", method = RequestMethod.POST)
+    @RequestMapping(value = "/change-default-payment-account", method = RequestMethod.POST)
     @ResponseBody
     public com.bis.sourcelead.dto.Response changeDefaultAccount(HttpServletRequest request, 
             long id, boolean defaultAccount) {
@@ -327,7 +327,7 @@ public class PaymentAccountController {
         return false;
     }
     
-    @RequestMapping(value = "/ats/change-active-payment-account", method = RequestMethod.POST)
+    @RequestMapping(value = "/change-active-payment-account", method = RequestMethod.POST)
     @ResponseBody
     public com.bis.sourcelead.dto.Response changeActiveAccount(HttpServletRequest request,  long id) {
         com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();
