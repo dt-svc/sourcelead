@@ -2026,7 +2026,8 @@ public class CandidateDaoImpl implements CandidateDao {
 				+ " CAND.COUNTRY AS country, " + " CAND.STATE AS state, " + " CAND.CITY AS city, "
 				+ " CAND.NOTICE_PERIOD AS noticePeriod, " + " CAND.PROFILE_PERCENTAGE AS profilePercentage, "
 				+ " CAND.CURRENT_RATE AS currentRate, " + " CAND.CURRENT_RATE_TYPE AS currentRateType, "  + " CAND.CURRENT_RATE_CURRENCY AS currentRateCurrency, "
-				+ " CAND.EXPECTED_RATE AS expectedRate, " + " CAND.RATE_TYPE AS rateType, "  + " CAND.EXPECTED_RATE_CURRENCY AS expectedRateCurrencey "
+				+ " CAND.EXPECTED_RATE AS expectedRate, " + " CAND.RATE_TYPE AS rateType, "  + " CAND.EXPECTED_RATE_CURRENCY AS expectedRateCurrencey, "
+				+ " CAND.EXPERIENCE_YEARS AS experienceYears, " + " CAND.EXPERIENCE_MONTHS AS experienceMonths "
 				+ " FROM CANDIDATE CAND " + " WHERE " + " CAND.ID = :candidateId ";
 
 		Query queryObj = session.createSQLQuery(query);
@@ -3747,6 +3748,20 @@ public class CandidateDaoImpl implements CandidateDao {
 			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "SourceleadDeletedCandidates"));
 			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
 		}
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateSource> getCandidateSourceListByOrgLocationIdAndStatus(Long orgLocationId, int status)throws Exception {
+		try {
+			Session session =  this.sessionFactory.getCurrentSession();
+			String query = "from CandidateSource cs where cs.orgLocations.id = :orgLocationId and cs.status =:status";
+			
+			List<CandidateSource> candidateSource = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("status", status).list();
+			return candidateSource;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 
