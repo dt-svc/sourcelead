@@ -12,7 +12,7 @@
       <div class="pull-left">
         <h2>Candidate Source</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a> &raquo; Candidate Source List</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/settings'/>">Settings</a> &raquo; Candidate Source List</div>
     </section>
     <div class="content-area content-new clearfix timesheet_out">
       <div class="clearfix mt mb">
@@ -54,7 +54,7 @@
 			<div class="clearfix mb">
 				<label class="noPad">Description</label>
 				<div class="clearfix">
-					<textarea placeholder="Description" name="description" id="candidateSourceDesc" class="form-control" rows="2" data-validation="validate_Space validate_length length1-5000" data-validation-optional="true"></textarea>
+					<textarea placeholder="Description" name="description" id="candidateSourceDesc" class="form-control" rows="2" field-name="Description" data-validation="validate_length length0-5000" data-validation-optional="true"></textarea>
 				</div>
 			</div>
 		</div>
@@ -134,7 +134,7 @@
 		            "render": function ( data, type, opt, meta ) {
 		            		var result = "";
 	           		   if(opt.description != null && opt.description != '' && opt.description != 'undefined'){
-		     	        	result = result + '<td><div  class="tbldata-dotdot-sm" title="'+opt.description+'">'+opt.description+'</div></td>';
+		     	        	result = result + '<td><div  class="tbldata-dotdot-big500" title="'+opt.description+'">'+opt.description+'</div></td>';
 	           		   } else {
 							result = result +"<td><div>-----</div></td>";
 	           	       }
@@ -205,11 +205,6 @@ $(document).ready(function() {
 		cancelCandidateSource();
 		
 	});
-	if(document.getElementById("uploadBtn") !== null) {
-		document.getElementById("uploadBtn").onchange = function () {
-		    $('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
-		};
-	}
 	$("#candidateSourceTableSearch").keyup(function(e) {
 		if(e.which === 13) {
 			getCandidateSourceList();
@@ -242,6 +237,12 @@ function getCandidateSourceList() {
 	$("#candidateSourceParentList").append(text);
 	candidateSourcePagination(atsUrl + "/getCandidateSourceList?searchValue=" + $("#candidateSourceTableSearch").val());
 }
+var validationSettings = {
+        errorMessagePosition : 'element',
+        borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+        };
 
 function saveCandidateSource() {
 	if ($('#addCandidatesourceForm').validate(false, validationSettings)){
@@ -253,7 +254,7 @@ function saveCandidateSource() {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				if(response.object > 0) {
-					$(".success_pop span").html(" saved successfully...");
+					$(".success_pop span").html("Candidate Source saved successfully...");
 					$(".success_pop").show();
 					cancelCandidateSource();
 					setTimeout(function() {
@@ -267,8 +268,16 @@ function saveCandidateSource() {
 				showError("Operation failed, please try again");
 			}
 		});
-	}
+		return true;
+		
+	  }else{
+		return false;
+	  } 
 }
+$('body').on('blur', '#addCandidatesourceForm', function() {
+	$("#addCandidatesourceForm").showHelpOnFocus();
+	$("#addCandidatesourceForm").validateOnBlur(false, validationSettings);  
+});
 
 function editCandidateSource(id){
 	$.ajax({
