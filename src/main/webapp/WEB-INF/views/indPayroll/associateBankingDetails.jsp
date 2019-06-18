@@ -16,7 +16,7 @@
 		<thead>
 			<tr>
 			  <th>Type</th>           
-			  <th>Bank Namzcvzx cve</th>         
+			  <th>Bank Name</th>         
 			  <th>Account Number</th>     
 			  <th>Routing Number</th>     
 			  <th>First Name</th>        
@@ -153,7 +153,7 @@
   </div>
 
 <script type="text/javascript">
-var atsUrl ='${SourceLeadWeb_atsUrl}';
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
  function savePaymentAccount(){
 	 var userId = '${userId}';
 	 var candidateId = '${candidateId}';
@@ -163,7 +163,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 			$.ajax({
 				 type : "POST",
 				 data: formData,
-			     url : atsUrl+"/save-ind-associate-payment-account?userId="+userId,
+			     url : pmsUrl+"/save-ind-associate-payment-account?userId="+userId,
 				 success : function(result) {
 					 if (result && result.response === "INVALID_DATA") {
 							$("#accountDetailsLoading").removeAttr("style");
