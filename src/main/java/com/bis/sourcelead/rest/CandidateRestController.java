@@ -103,7 +103,7 @@ import com.bis.sourcelead.util.PrimarySkillUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.util.SourceleadResumeParser;
+import com.bis.sourcelead.util.SourceleadResumeParserNew;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -155,7 +155,7 @@ public class CandidateRestController {
 	@Autowired
 	RequirementOfferHistoryService requirementOfferHistoryService;
 	@Autowired
-	private SourceleadResumeParser sourceleadResumeParser;
+	private SourceleadResumeParserNew sourceleadResumeParser;
 	@Autowired
 	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	@Autowired
@@ -246,6 +246,7 @@ public class CandidateRestController {
 			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData) {
 		Response<ResumeParserJsonUtil> response = new Response<>();
 		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
 			if (itrator.hasNext()) {
@@ -254,7 +255,8 @@ public class CandidateRestController {
 			ResumeParserJsonUtil resumeDetails = null;
 			if (null != multiFile) {
 				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
-				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country);
+				String fileName = multiFile.getOriginalFilename();
+				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country, orgLocation.getDateFormat(), fileName);
 			}
 			response.setObject(resumeDetails);
 			response.setResponse(Result.SUCCESS.name());

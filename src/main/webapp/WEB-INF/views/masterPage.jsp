@@ -234,13 +234,13 @@
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/dashboard_3118.css?staticTime=${staticTime}" type="text/css" media="all" />
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/chosen.min.css?staticTime=${staticTime}">
-<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="/resources/reports/dashboard_3118.css?staticTime=${staticTime}" type="text/css" media="all" />
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
  
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
@@ -249,73 +249,73 @@
 
 <!-- This requirement.css for only requirement.jsp  -->
 <c:if test='${viewPage == "requirement/requirement"}'>
-	<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/requirement.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+	<link href="/resources/css/requirement.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 </c:if>
 
 </head>
 
 
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
  
 <!--  Amcharts -->
 <c:if test='${viewPage == "reports/reportsDashboard"}'>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/serial.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/plugins/export/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/plugins/export/export.css?staticTime=${staticTime}" type="text/css" media="all" />
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/themes/light.js?staticTime=${staticTime}"></script>
+	<script src="/resources/amcharts/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/amcharts/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/amcharts/plugins/export/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css?staticTime=${staticTime}" type="text/css" media="all" />
+	<script src="/resources/amcharts/themes/light.js?staticTime=${staticTime}"></script>
  
  </c:if>
  
  <c:if test='${viewPage == "reports/applicantsReport"}'>
-	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/pie.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/light.js?staticTime=${staticTime}"></script>
+	 <script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/pie.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="/resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
+	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
 </c:if>
 
 <c:if test='${viewPage == "reports/applicantsReceivedReport"}'>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/highcharts.js"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/exporting.js"></script> 
+	<script src="/resources/reports/highcharts.js"></script>
+	<script src="/resources/reports/exporting.js"></script> 
 </c:if>
 
 <c:if test='${viewPage == "reports/requirementStageReports" || viewPage == "reports/usersUsageReportList"}'>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/piechart.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/light.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/piechart.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
+	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
 	
 </c:if>
 
 <c:if test='${viewPage == "reports/requirementAssignToReports" || viewPage == "reports/requirementAssignToReports" || viewPage == "reports/vendorsReport" || viewPage == "reports/paidBillReportGraph" || viewPage == "reports/receivedInvoiceReportGraph"}'>
-	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script> 
-	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
-	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/serial.js?staticTime=${staticTime}"></script> 
-	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.min.js?staticTime=${staticTime}"></script> 
-	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/pie.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/serial.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/themes/light.js?staticTime=${staticTime}"></script> 
  </c:if>
 
 
 <c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" || viewPage == "reports/perfomanceClientReports"}'>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/light.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
  <c:if test='${viewPage == "leavemanagement/applyLeave"}'>
-    <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script>
+    <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
 
 
@@ -570,28 +570,28 @@ function preventTabkey(e){
 			<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
 			<option data-icon="fa fa-th-large" ${searchType == "All" ?"selected='selected'":""} value="All">All</option>
 			<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-		       <c:if test="${userTabs == 'Associates'}">
+		       <c:if test="${userTabs.tabName == 'Associates'}">
 	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Associates</option>
 	           </c:if>
-	           <c:if test="${userTabs == 'Jobs'}"> 
+	           <c:if test="${userTabs.tabName == 'Jobs'}"> 
 	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Jobs</option>
 	           </c:if>
-	           <c:if test="${userTabs == 'Candidates'}">
+	           <c:if test="${userTabs.tabName == 'Candidates'}">
 	                <option data-icon="fa fa-user-circle" ${searchType == "Candidate" ?"selected='selected'":""} value="Candidate">Candidates</option>
 	           </c:if> 
-	           <c:if test="${userTabs == 'Clients'}">
+	           <c:if test="${userTabs.tabName == 'Clients'}">
                  	  <option data-icon="fa fa-user-plus" ${searchType == "Client" ?"selected='selected'":""} value="Client">Clients</option>
                </c:if>
-	           <c:if test="${userTabs == 'Vendors'}">
+	           <c:if test="${userTabs.tabName == 'Vendors'}">
 	                  <option data-icon="fa fa-suitcase" ${searchType == "Vendor" ?"selected='selected'":""} value="Vendor">Vendors</option>
 	           </c:if> 
 	           
 	         <!--   commented by laxman because client based project querys are not implemented -->
-	           <%-- <c:if test="${userTabs == 'Projects'}">
+	           <%-- <c:if test="${userTabs.tabName == 'Projects'}">
 	             <option data-icon="fa fa-bar-chart" ${searchType == "Projects" ?"selected='selected'":""} value="Projects">Projects</option>   	  
 	           </c:if> --%>
 	           
-	           <c:if test="${userTabs == 'Associates List'}">
+	           <c:if test="${userTabs.tabName == 'Associates List'}">
 	           <option data-icon="fa fa-black-tie" ${searchType == "Associate" ?"selected='selected'":""} value="Associate">Associates</option>
 	           </c:if>
 			</c:forEach>
@@ -698,92 +698,70 @@ function preventTabkey(e){
             <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
             	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
             </sec:authorize>
+            
+            
             <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-            <li> <a href="javascript:void(0)" title="Locations" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-	              <div id="spockLinksList" style="display: none;">
-	              <ul class="list-unstyled">
+
+            <li><a id="orgPopId" href="javascript:void(0)" title="Locations"><i class="headNavIcon"></i></a>
+            
+			<div class="headPop headPopnoti" id="orgPopView">
+				<div class="headPopInn">
+					<div class="headPopSear"><input type="text" class="" id="orgsSearch" placeholder="Search"></div>
+					
+					<ul>
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-			              
-			              <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == null && SourceLeadWeb_loginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
-			              
-				              <c:if test="${links.roles.displayName != 'Professional' && links.roles.displayName != 'Independent Recruiter'}">
-					              
-					              <c:if test="${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null}">
-					              		<a class="sopcSwith">
+				              <c:if test="${links.displayName != 'Professional' && links.displayName != 'Independent Recruiter'}">
+					              <c:if test="${links.orgLocationId == SourceLeadWeb_orgLocationId}">
+					              		<a class="sopcSwith noPad">
 					              </c:if>
-					              		<a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}','${links.user.id}');" class="sopcSwith">
-						                <div class="clearfix">
-						                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_user.id == links.user.id ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
-						                     </div>
-						                   </div>
-						                   <div class="pull-left">
-						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
-						                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${!empty links.designation ? links.designation : links.roles.displayName}</p>
-						                   </div>
+					              		<a onclick="checkAuth(${links.orgLocationId},${links.userRoleId},'${links.orgLocationLoginSecurity}','${links.userId}');" class="sopcSwith noPad">
+						                <div class="clearfix  ${links.orgLocationId == SourceLeadWeb_orgLocationId && SourceLeadWeb_userId == links.userId ? 'orgAct' : ''}">
+						                <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgImgUrl}"></div>
+										<div class="orgDetails">
+											<h3>${links.orgLocationName}</h3>
+											<h4><i	class="fa fa fa-map-marker"></i>${!empty links.city ? links.city : ""} ${links.country}</h4>
+											<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : links.displayName}</h4>
+										</div>						                   
+						                </div>
+						                
+					                </a>
+				              </c:if>
+				              
+				              <c:if test="${links.displayName == 'Professional'}">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocationId}/${links.userType}/${links.userId}'/>" class="sopcSwith noPad">
+						                <div class="clearfix ${links.orgLocationId == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'orgAct' : ''}">
+						                   
+						                    <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgImgUrl}"></div>
+											<div class="orgDetails">
+												<h3>${links.orgLocationName}</h3>
+												<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : 'Job Seeker'}</h4>
+											</div>						                   
 						                </div>
 					                </a>
 				              </c:if>
 				              
-				              <c:if test="${links.roles.displayName == 'Professional'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith">
-						                <div class="clearfix">
-						                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
-					                       </div>
-						                   </div>
-						                   <div class="pull-left">
-						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${!empty links.designation ? links.designation : 'Job Seeker'}</p>
-						                   </div>
+				              <c:if test="${links.displayName == 'Independent Recruiter'}">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocationId}/${links.userType}/${links.userId}'/>" class="sopcSwith noPad">
+						                <div class="clearfix ${links.orgLocationId == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'orgAct' : ''}">
+						                   
+						                    <div class="orgProfile"> <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgImgUrl}"></div>
+											<div class="orgDetails">
+												<h3>${links.orgLocationName}</h3>
+												<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : 'Freelance Recruiter'}</h4>
+											</div>							                   
 						                </div>
 					                </a>
 				              </c:if>
-				              
-				              <c:if test="${links.roles.displayName == 'Independent Recruiter'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith">
-						                <div class="clearfix">
-						                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
-					                       </div>
-						                   </div>
-						                   <div class="pull-left">
-						                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.orgLocationName}</p>
-						                     <p><i class="fa fa-user"></i>&nbsp;${!empty links.designation ? links.designation : 'Freelance Recruiter'}</p>
-						                   </div>
-						                </div>
-					                </a>
-				              </c:if>
-				              
-			              </c:if>
-			              
-			              <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
-		              			<a href="<c:url value='${sourceleadUrl}/productionSupportdashboard/${links.id}/${SourceLeadWeb_prodSupportOrgLocationId}'/>" class="sopcSwith">
-					                <div class="clearfix">
-					                   <div class="pull-left image-parent positionRelative">
-					                   <div class="imageParent org-imagelink ${links.id == SourceLeadWeb_orgLocationId  ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.org.fileUrl}">
-					                     </div>
-					                   </div>
-					                   <div class="pull-left">
-					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocationName}</p>
-					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.city ? links.city : ""} ${links.country}</p>
-					                   </div>
-					                </div>
-				                </a>
-			              </c:if>
 			              
 		              </li>
 	              </c:forEach>
 	              </ul>
+	              <div class="noDate noDateSm" style="display: none;"></div>
+	            </div>
 	            </div>
 	          </li>
-	          </c:if>
+         </c:if>
          
           <%-- <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> --%>
           <li id="alert"> 
@@ -910,7 +888,7 @@ function preventTabkey(e){
 	          </li>
           </c:if> --%>
           
-          <li class="flag-image"><a><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
+          <li class="flag-image"><a><img src="/resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
 
         </ul>
       </div>
@@ -1181,7 +1159,7 @@ function preventTabkey(e){
   <div class="theme-color">
       <span class="icon-theme theme-styels" title="click here">
           <figure class="rotate">
-            <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/theme-icon.png" class="img-responsive" title="Themes">
+            <img src="/resources/images/theme-icon.png" class="img-responsive" title="Themes">
           </figure>
       </span>
     <ul class="list-unstyled">
@@ -2023,10 +2001,10 @@ $('body').on('blur', '#inviteCompany_form', function() {
 </script>
 
 <%-- <c:if test='${viewPage == "campaignSender"}'> --%>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/campaignSender.js"></script>
+<script src="/resources/js/campaignSender.js"></script>
 <div id='campaignSender' class='popupWrap popupWrapFixed'></div> 
 
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/campaignRecipient.js"></script>
+<script src="/resources/js/campaignRecipient.js"></script>
 <div id='campaignRecipient' class='popupWrap popupWrapFixed'></div> 
 <%-- </c:if> --%>
 
@@ -2144,7 +2122,7 @@ function zipcodeMask(country,zipCodeId){
 
 
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 
 <script type="text/javascript">
