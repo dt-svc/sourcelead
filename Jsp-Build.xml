@@ -15,7 +15,7 @@
 	</condition>
 
 	<!--Location Of Tomcat-Server -->
-	<property name="tomcat.dir" value="/apache-tomcat-8.0.38" />
+	<property name="tomcat.dir" value="/apache-tomcat-8.5.34" />
 
 	<target name="copy-jsp">
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/WEB-INF/views" includeEmptyDirs="no">
