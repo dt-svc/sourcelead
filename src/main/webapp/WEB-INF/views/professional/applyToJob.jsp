@@ -1271,7 +1271,7 @@ function ApplicantNotifyRequiremnentProRecruter(){
 			        processData: false,
 			        contentType:false,
 		   	        dataType : 'json',
-					url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
+					url : atsUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
 					success : function(response) {
 						if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
@@ -2383,7 +2383,7 @@ function setRateTypesByLocation(){
 			        processData: false,
 			        contentType:false,
 		   	        dataType : 'json',
-					url : sourceleadUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
+					url : atsUrl+"/parseResume?${_csrf.parameterName}=${_csrf.token}",
 					success : function(response) {
 						if (response.response === "AWKWARD") {
 						    location.href = "/errorPage";
