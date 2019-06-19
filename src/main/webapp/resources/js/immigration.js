@@ -853,6 +853,7 @@ function Immigration() {
 			if ($('#candidate_Immigration_document_form').validate(false, validationSettings)) {
 		 
 				var formData = getFormData("candidate_Immigration_document_form");
+				$("#canDocSave_Button1").attr("disabled",true);
 				var candidateId = $('#candidateID').val();
 				var templateId = $('#templateID').val();
 				var immigrationId = $('#immigrationID').val();
