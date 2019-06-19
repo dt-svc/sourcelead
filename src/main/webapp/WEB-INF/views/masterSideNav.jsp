@@ -360,9 +360,20 @@
           			 <li class="${sessionData.nav == 'Taxes' ? 'navActive' : ''}"><a href="${SourceLeadWeb_sourceleadUrl}/stateTax/list" title="Taxes"><span class="navIcons finIcon"></span><b>Taxes</b></a></li>
        	 	  </c:if>
        	 	  
-       	 	  <li class="${sessionData.nav == 'Taxes' ? 'navActive' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" title="Goals"><span class="navIcons finIcon"></span><b>Goals</b></a></li>	
 	            	
-			
+			<li>
+														  
+				  <a href="#" class="performanceli" title="Performance">
+					<span class="navIcons finIcon"></span><b>Performance</b> <i class="fa fa-fw fa-caret-down"></i>
+				  </a>
+					  
+				     <ul class="collapses" style="display: none">
+                                <li class="${sessionData.nav == 'Goals' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" title="Goals"><i class="fa fa-chevron-right"></i> Goals</a></li>
+                                <li class="${sessionData.nav == 'My Appraisal' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceAppraisalList" title="My Appraisal"><i class="fa fa-chevron-right"></i> My Appraisal</a></li>
+                                <li class="${sessionData.nav == 'Employee Appraisal' ? 'treview-active' : ''}"><a href="#" title="Employee Appraisal"><i class="fa fa-chevron-right"></i> Employee Appraisal</a></li>
+                     </ul>
+                              
+			  </li>
           	
         </ul>
         </nav>
