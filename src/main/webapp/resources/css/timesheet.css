@@ -8683,14 +8683,15 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .newRolLeft ul li {list-style-type: none; position: relative;}
 .newRolLeft ul li span { position: absolute; left: 20px; top: 10px; z-index: 100;}
 .newRolLeft ul li a {
-    display: block; height: 38px; line-height: 38px; padding: 0px 20px 0px 45px; font-size: 14px; font-weight: 500;
+    display: block; height: 38px; line-height: 38px; padding: 0px 10px 0px 45px; font-size: 14px; font-weight: 500;
     color: #787878;   border-left: 5px solid #f6f6f6;
 }
 .newRolLeft ul li label { margin: 0px 0px !important; font-weight: 500;}
 .newRolLeft ul li a.active { background-color: #fff; color: #006bbb; border-left: 5px solid #006bbb;}
+.newRolLeft ul li a b {font-weight: 500; font-size: 13px;}
 .newRolLRight { width: auto; padding: 15px 0px 0px 15px; float: left; width: 78%;}
 .newRolLRight ul { margin: 0px 0px; padding: 0px 0px; min-height: 400px; max-height: 680px; overflow: auto;} 
-.newRolLRight ul li { list-style-type: none; float: left; display: block; padding: 6px; width: 50%;}
+.newRolLRight ul li { list-style-type: none; float: left; display: block; padding: 6px; width: 46%;}
 #viewmoresDiv {position: absolute; top: -36px; right: 17px;}  
 .valMsgPosition { position: relative;}
 .valMsgPosition p { position: absolute; left: -15px; top: 40px;}
