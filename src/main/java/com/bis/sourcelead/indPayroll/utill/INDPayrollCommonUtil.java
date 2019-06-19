@@ -375,7 +375,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		List<INDPayrollDTO> payrollDTOList = new ArrayList<>();
 		if(payrollList != null && !payrollList.isEmpty()) {
 			for(IndEmployeePayroll employeePayroll :payrollList) {
-				if(employeePayroll.getStatus() == 0)
+				if(employeePayroll != null && employeePayroll.getStatus() == 0)
 					continue;
 					
 				

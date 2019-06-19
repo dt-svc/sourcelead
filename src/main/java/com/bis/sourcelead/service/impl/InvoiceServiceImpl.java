@@ -2471,7 +2471,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 				// candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(),
 				// orgLocation.getId(), orgRelationId);
 
-				ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(
+				ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForFinance(
 						projectMember.getMasterCandidateId().getId(), projectId, orgLocation.getId(), globalUser);
 
 				Candidate candidate = pm.getProjectMemberCandidteId();
