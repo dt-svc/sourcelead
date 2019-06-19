@@ -1,6 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 $(document).ready(function() {
@@ -19,6 +19,7 @@ $(document).ready(function() {
       Application Workflow
       </div>
     </section>
+    <sec:authorize access="hasRole('ROLE_ADD_WORKFLOW')"> 
     <div class="project_wrap clearfix">
       <div class="timesheet_out" id="payrollRegister" style="display: block;">
         <div class="clearfix">
@@ -46,6 +47,7 @@ $(document).ready(function() {
         </div>
       </div>
     </div>
+    </sec:authorize>
   </section>
 </div>
 <div id="popUp"></div>
