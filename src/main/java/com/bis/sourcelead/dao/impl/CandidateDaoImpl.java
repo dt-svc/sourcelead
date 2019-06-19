@@ -3749,6 +3749,20 @@ public class CandidateDaoImpl implements CandidateDao {
 			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
 		}
 	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateSource> getCandidateSourceListByOrgLocationIdAndStatus(Long orgLocationId, int status)throws Exception {
+		try {
+			Session session =  this.sessionFactory.getCurrentSession();
+			String query = "from CandidateSource cs where cs.orgLocations.id = :orgLocationId and cs.status =:status";
+			
+			List<CandidateSource> candidateSource = session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("status", status).list();
+			return candidateSource;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 
 }
