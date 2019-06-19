@@ -12,7 +12,7 @@
       <div class="pull-left">
         <h2>Ticket Type</h2>
       </div>
-       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a> &raquo; Ticket Type List</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/settings'/>">Settings</a> &raquo; Ticket Type List</div>
     </section>
     <div class="content-area content-new clearfix timesheet_out">
       <div class="clearfix mt mb">
@@ -101,7 +101,7 @@
 	       "ajax": $.fn.dataTable.pipeline( {
 	           url: url,
 	           method: 'POST',
-	           pages: 1
+	           pages: 25
 	       }),
 	       "columns": [
 	    	   {"data": "id"},
@@ -189,9 +189,9 @@
 		    	"bLengthChange": true,
 		    	"bDestroy": true,
 		    	"ordering": true,
-		    	"createdRow": function ( row, data, index ) {
+		    	 "createdRow": function ( row, data, index ) {
 		    		row.setAttribute('id',"ticketType_"+data.id);
-	    	    },
+	    	    }, 
 		    	"initComplete": function( settings, json ) {
 		    		 $('#ticketTypeDataTableSearch').removeAttr('disabled');
 		    	},

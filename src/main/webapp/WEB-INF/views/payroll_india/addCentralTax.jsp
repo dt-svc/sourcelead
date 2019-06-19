@@ -78,7 +78,7 @@
 								<label class="clearfix">Employee</label>
 								<div class="clearfix">
 									<input type="number" id="employeepf" name="employeepf"
-										class="form-control" name="Website" data-validation="validate_length length1-3 "
+										class="form-control" name="Website" data-validation=" validate_float validate_length length1-5 "
 										value="${centralTax.employeepf}" placeholder="Enter %" >
 									
 								</div>

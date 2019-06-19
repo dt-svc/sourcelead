@@ -48,7 +48,7 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.util.SourceleadResumeParser;
+import com.bis.sourcelead.util.SourceleadResumeParserNew;
 
 @Controller
 @RequestMapping("/app")
@@ -61,7 +61,7 @@ public class FileController {
 	private PdfConversionUtil pdfConversionUtil;
 
 	@Autowired
-	private SourceleadResumeParser sourceleadResumeParser;
+	private SourceleadResumeParserNew sourceleadResumeParser;
 
 	@Autowired
 	private CandidateService candidateService;
@@ -237,11 +237,12 @@ public class FileController {
 	public List<ResumeParserJsonUtil> uploadResume(MultipartHttpServletRequest request) {
 		List<ResumeParserJsonUtil> resumeContent = new ArrayList<>();
 		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0, 0, 0, 0, 0, 0, 0, null, null);
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		for (FileInfo fileInfo : fileInfoList) {
 			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace("resumes", "temp"));
 			try {
 				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
-				ResumeParserJsonUtil resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country);
+				ResumeParserJsonUtil resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
 				resume.setFileInfo(fileInfo);
 				resumeContent.add(resume);
 			} catch (Exception ex) {

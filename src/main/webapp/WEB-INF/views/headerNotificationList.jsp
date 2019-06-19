@@ -37,7 +37,6 @@ function getNotificationsByuserId(){
 						result = result +'<a class="visitedAnchor" href="${SourceLeadWeb_vmsUrl}/vendorsList?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.body+'"  onclick="linkReadAndUnread(\''+opt.uuId+'\');"><p>'+opt.body+'</p>';
 						result = result + ' <u>'+opt.calDays+'</u></a>';
 					}else{
-						alert(opt.mode)
 						result = result +'<a href="${SourceLeadWeb_vmsUrl}/vendorsList?orgRelationUUID='+opt.orgRelationUUID+'" title="'+opt.body+'" onclick="linkReadAndUnread(\''+opt.uuId+'\');"><p>'+opt.body+'</p>';
 						result = result + ' <u>'+opt.calDays+'</u></a> ';
 					}
@@ -90,12 +89,12 @@ $('.alert-area, .notiClick').click(function(event){
 </script>
 <script>
 function linkReadAndUnread(uuId){
-	var vmsUrl = "${SourceLeadWeb_vmsUrl}";
+	 var vmsUrl = "${SourceLeadWeb_vmsUrl}";
 	 $.ajax({
 	      type: "POST",
 	  	  url: vmsUrl+"/notificationStatusRead?${_csrf.parameterName}=${_csrf.token}&uuId="+uuId,
 	  			  success :function(data) {
      			 }							     
-	}); 
+	});  
 }
 </script>

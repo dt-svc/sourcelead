@@ -231,7 +231,7 @@ public class MailBoxController {
 	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
 	@RequestMapping(value = "/app/hotlistMail")
  	public ModelAndView hotlistMail(HttpServletRequest request) throws Exception {
-		
+		 System.out.println(" inisde hotlist mail ");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    ModelAndView model = new ModelAndView();
  			model.setViewName("hotlistMail");
@@ -239,6 +239,7 @@ public class MailBoxController {
  			 commonUtil.highLightMenu(Constants.Campaigns, request);
  			 List<ContactsGroup> contactsGroupList = contactsGroupService.getContactsGroupListByUserId(user.getId());
 			 model.addObject("contactsGroupList", contactsGroupList);
+			 System.out.println(" after hotlist mail completed");
  			return model;
  	}
 	
@@ -306,7 +307,8 @@ public class MailBoxController {
 			HttpServletRequest request) throws Exception {
 
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+	    Long timeZoneId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "timeZoneId");
+	    Timezone timezone = timeZoneService.getTimezone(timeZoneId);
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    String resultJson;
 	    List<CampaignIndex> mailBoxList = new ArrayList<CampaignIndex>();
