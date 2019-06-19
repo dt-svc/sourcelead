@@ -2269,7 +2269,7 @@ public class ReportRestController {
 					HttpServletRequest request,HttpServletResponse response) throws Exception {
 						OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 						
-						String[] tableColumns = {"employeeId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName"};
+						String[] tableColumns = {"employeeId","empName", "gender","empType","deptName", "userRole","rate","hireDate", "reportingManager", "shiftName", "probationStatus"};
 
 						   int sortColumnIndex = 1; //by default sorting using updated date
 						   String sortColumnOrder = "desc"; //by default descending order
