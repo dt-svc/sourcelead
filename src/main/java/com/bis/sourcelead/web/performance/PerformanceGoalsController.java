@@ -35,7 +35,7 @@ public class PerformanceGoalsController {
 					{
 						sessionData = new SessionMaintainanceData();
 					}
-					sessionData.setNav(Constants.PERFORMANCE);
+					sessionData.setNav(Constants.PERFORMANCE_GOALS);
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 					
@@ -55,7 +55,7 @@ public class PerformanceGoalsController {
 					{
 						sessionData = new SessionMaintainanceData();
 					}
-					sessionData.setNav(Constants.PERFORMANCE);
+					sessionData.setNav(Constants.PERFORMANCE_GOALS);
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 					
@@ -76,7 +76,7 @@ public class PerformanceGoalsController {
 			{
 				sessionData = new SessionMaintainanceData();
 			}
-			sessionData.setNav(Constants.PERFORMANCE);
+			sessionData.setNav(Constants.PERFORMANCE_GOALS);
 			
 			request.getSession().setAttribute("sessionData",sessionData);
 			
@@ -97,7 +97,7 @@ public class PerformanceGoalsController {
 			{
 				sessionData = new SessionMaintainanceData();
 			}
-			sessionData.setNav(Constants.PERFORMANCE);
+			sessionData.setNav(Constants.PERFORMANCE_GOALS);
 			
 			request.getSession().setAttribute("sessionData",sessionData);
 			
@@ -118,7 +118,7 @@ public class PerformanceGoalsController {
 					{
 						sessionData = new SessionMaintainanceData();
 					}
-					sessionData.setNav(Constants.PERFORMANCE);
+					sessionData.setNav(Constants.PERFORMANCE_GOALS);
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 					
@@ -137,7 +137,7 @@ public class PerformanceGoalsController {
 					{
 						sessionData = new SessionMaintainanceData();
 					}
-					sessionData.setNav(Constants.PERFORMANCE);
+					sessionData.setNav(Constants.PERFORMANCE_GOALS);
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 					
@@ -157,7 +157,7 @@ public class PerformanceGoalsController {
 					{
 						sessionData = new SessionMaintainanceData();
 					}
-					sessionData.setNav(Constants.PERFORMANCE);
+					sessionData.setNav(Constants.PERFORMANCE_GOALS);
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 					
