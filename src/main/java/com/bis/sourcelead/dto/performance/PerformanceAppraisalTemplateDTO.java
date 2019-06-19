@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.dto.DepartmentDTO;
@@ -86,6 +87,20 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	private String templateUUId;
 	
 	private BigInteger templateAssignedUserCount;
+	
+	private int start;
+	
+	private int length;
+	
+	private String searchValue;
+	
+	private String sortColumn;
+	
+	private String sortOrder;
+	
+	private List<Map<String, String>> order;
+	
+	private BigInteger daysDifference;
 	
 	
 	public Long getAppraisalTemplateId() {
@@ -366,6 +381,62 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 
 	public void setTemplateAssignedUserCount(BigInteger templateAssignedUserCount) {
 		this.templateAssignedUserCount = templateAssignedUserCount;
+	}
+
+	public int getStart() {
+		return start;
+	}
+
+	public void setStart(int start) {
+		this.start = start;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+
+	public String getSortColumn() {
+		return sortColumn;
+	}
+
+	public void setSortColumn(String sortColumn) {
+		this.sortColumn = sortColumn;
+	}
+
+	public String getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(String sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
+	public List<Map<String, String>> getOrder() {
+		return order;
+	}
+
+	public void setOrder(List<Map<String, String>> order) {
+		this.order = order;
+	}
+
+	public BigInteger getDaysDifference() {
+		return daysDifference;
+	}
+
+	public void setDaysDifference(BigInteger daysDifference) {
+		this.daysDifference = daysDifference;
 	}
 
 	
