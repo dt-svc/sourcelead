@@ -3,6 +3,9 @@
 <%-- <%@taglib prefix="json" uri="http://www.atg.com/taglibs/json"%> --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script type="text/javascript" src="/resources/js/tax/it_declaration.js"></script>
+<script type="text/javascript">
+       var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
 <section class="content-wraper contentWraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
