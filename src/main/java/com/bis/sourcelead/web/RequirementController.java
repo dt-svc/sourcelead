@@ -884,8 +884,17 @@ public class RequirementController {
 			
 			if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 				Long requirementId = requirement.getId();
+				RequirementWorkFlowDTO workflowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow(orgLocations);
+				System.out.println(" defalt workflow id is :>>>"+workflowDTO.getId());
+				System.out.println("Workflow configure Type is >>>>> "+workflowDTO.getConfigureType());
+				if(workflowDTO.getId() != requirement.getWorkflowId().getId()) {
+					System.out.println("OTHER THAN DEFAULT WORKFLOW IS FOUND >>>>>>>>>>>>>");
+					model.setViewName("requirement/requirementWorkflowSummary");
+				}else {
+					System.out.println("DEFAULT WORKFLOW IS FOUND >>>>>>>>>>>>>");
+					model.setViewName("requirement/requirementSummary");
+				}
 				
-				model.setViewName("requirement/requirementSummary");
 				model.addObject("requirementId",requirementId);
 				
 				model.addObject("requirement",requirement);
