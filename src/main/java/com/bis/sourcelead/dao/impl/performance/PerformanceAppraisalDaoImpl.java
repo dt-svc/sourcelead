@@ -239,7 +239,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 					"PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE, " + 
 					"PERFORMANCE_APPRAISAL_PEERS PEERS PEERS " + 
 					"WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND ASSIGNED.PEER_ID = PEERS.ID " + 
-					"AND ASSIGNED.ORG_LOCATION_ID = :orgLocationId AND FIND_IN_SET('"+userId+"',PEERS.PEER_USER_ID) > 0))Q1 "+querySeachStr+sortingQry;
+					"AND ASSIGNED.ORG_LOCATION_ID = :orgLocationId AND FIND_IN_SET('"+userId+"',PEERS.PEER_USER_ID) > 0)Q1 "+querySeachStr+sortingQry;
 			
 			String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
 					" FROM" + 
