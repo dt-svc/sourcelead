@@ -310,6 +310,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		requirementWorkFlowDTO.setWorkFlowName(defaultWorkflow.getWorkFlowName());
 		requirementWorkFlowDTO.setDescription(defaultWorkflow.getDescription());
 		requirementWorkFlowDTO.setUuid(defaultWorkflow.getUuid());
+		requirementWorkFlowDTO.setConfigureType(defaultWorkflow.getConfigureType());
 		logger.debug("Finished getRequirementDefaultWorkflow Service for "+orgLocations.getId()+" orgLocation");
 		return requirementWorkFlowDTO;
 	}catch(Exception e) {
