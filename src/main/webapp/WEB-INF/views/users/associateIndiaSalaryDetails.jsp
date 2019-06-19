@@ -7,10 +7,10 @@
 </div>
 
 <script>
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 function indAssociateSalarySummary(newAssociate){
 	var locationCode = '${SourceLeadWeb_locationCode}';
 	var candidateId =  $("#associateCandidateId").val();
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	
 	if(candidateId != null && candidateId != '' && candidateId != 'undefined'){
 		var status = "NEW";
