@@ -68,7 +68,13 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(performanceAppraisalTemplateDTO.getSearchValue() != null && !"".equalsIgnoreCase(performanceAppraisalTemplateDTO.getSearchValue())) {
-			 query1.append(" Q1.name like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ");
+			 query1.append(" Q1.name like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.appraisalStartDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.appraisalEndDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.appraisalProcessStartDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.appraisalProcessEndDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.selfAppraisalStartDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.selfAppraisalEndDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ");
 			 
 		}
 		
@@ -133,6 +139,123 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 			assignToList = queryObj.list();
 			
 			countlist = session.createSQLQuery(countQuery).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list();
+			filterCount = countlist.iterator().next().intValue();
+				
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		int totalCount = 0;
+
+		
+		if (performanceAppraisalTemplateDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		response.setData(assignToList);
+		return response;
+	}
+
+	@Override
+	public ResponseList<PerformanceAppraisalTemplateDTO> getAssignedPeersAppraisalList(
+			PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO, Long userId, Long orgLocationId,
+			String dateFormat) throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		Query queryObj = null;
+		List<PerformanceAppraisalTemplateDTO> assignToList = null;
+		
+		List<BigInteger> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<PerformanceAppraisalTemplateDTO> response = new ResponseList<>();
+		String querySeachStr = "";
+		
+		StringBuilder query1 = new StringBuilder("");
+		if(performanceAppraisalTemplateDTO.getSearchValue() != null && !"".equalsIgnoreCase(performanceAppraisalTemplateDTO.getSearchValue())) {
+			 query1.append(" Q1.name like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.appraisalStartDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.appraisalEndDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.appraisalProcessStartDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.appraisalProcessEndDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.peerReviewStartDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.peerReviewEndDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ");
+			 
+		}
+		
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getSortColumn()))
+		{
+			sortingQry = " order by Q1."+ performanceAppraisalTemplateDTO.getSortColumn() +" "+performanceAppraisalTemplateDTO.getSortOrder();
+		}
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			querySeachStr = "where "+"("+query1.toString()+") AND Q1.daysDifference <= 0";
+		}else {
+			querySeachStr = "where Q1.daysDifference <= 0";
+		}
+		
+		try {
+			
+			String appraisalDateFormat =  "";
+			
+			if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
+				appraisalDateFormat = "\"%Y-%m-%d\"";
+			}else if("dd-MM-yyyy".equalsIgnoreCase(dateFormat)) {
+				appraisalDateFormat = "\"%d-%m-%Y\"";
+			}else if("MM-dd-yyyy".equalsIgnoreCase(dateFormat)) {
+				appraisalDateFormat = "\"%m-%d-%Y\"";
+			}else if("yyyy-dd-MM".equalsIgnoreCase(dateFormat)) {
+				appraisalDateFormat = "\"%Y-%d-%m\"";
+			}
+			
+			query = "SELECT Q1.* " + 
+			 		 "FROM (" + 
+					 "SELECT " + 
+					"TEMPLATE.NAME AS name, " + 
+					"TEMPLATE.UUID AS templateUUId, " + 
+					"DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+appraisalDateFormat+") AS appraisalStartDate, "+
+					"DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+appraisalDateFormat+") AS appraisalEndDate, "+
+					"DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_START_DATE,"+appraisalDateFormat+") AS appraisalProcessStartDate, "+
+					"DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_END_DATE,"+appraisalDateFormat+") AS appraisalProcessEndDate, "+
+					"DATE_FORMAT(TEMPLATE.PEER_REVIEW_START_DATE,"+appraisalDateFormat+") AS peerReviewStartDate, "+
+					"DATE_FORMAT(TEMPLATE.PEER_REVIEW_END_DATE,"+appraisalDateFormat+") AS peerReviewEndDate, "+
+					"DATEDIFF(TEMPLATE.PEER_REVIEW_START_DATE,CURRENT_DATE()) AS daysDifference " + 
+							             
+					"FROM " + 
+					"PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, " + 
+					"PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE, " + 
+					"PERFORMANCE_APPRAISAL_PEERS PEERS PEERS " + 
+					"WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND ASSIGNED.PEER_ID = PEERS.ID " + 
+					"AND ASSIGNED.ORG_LOCATION_ID = :orgLocationId AND FIND_IN_SET('"+userId+"',PEERS.PEER_USER_ID) > 0))Q1 "+querySeachStr+sortingQry;
+			
+			String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
+					" FROM" + 
+					"(" + query +
+					")Q2;" ;
+			
+			
+			queryObj = session.createSQLQuery(query);
+			queryObj.setParameter("orgLocationId", orgLocationId);
+			
+			queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalTemplateDTO.class));
+			queryObj.setFirstResult(performanceAppraisalTemplateDTO.getStart());
+			queryObj.setMaxResults(performanceAppraisalTemplateDTO.getLength());
+			assignToList = queryObj.list();
+			
+			countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocationId).list();
 			filterCount = countlist.iterator().next().intValue();
 				
 			
