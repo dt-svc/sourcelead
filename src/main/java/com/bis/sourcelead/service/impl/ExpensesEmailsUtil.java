@@ -141,9 +141,10 @@ public class ExpensesEmailsUtil {
 
              		 Long redirectOrgLocationId = managerUser.getOrgLocationId();
              		 String redirectURL = "/addApprovalExpense-params-expenseId="+expenses.getExpenseId()+"-and-expenseLocationCode="+expenseLocationCode + "-and-type=view";
-             
+            
+                   		 
                 StringBuilder stringBuildforLink = new StringBuilder();
-                globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+                globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
              
              //getting the current EmailScenario by EmailScenario unique name and entity type
              EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_EMAIL_TO_MANAGER,Constants.ENTITY_TYPE_EMAIL);
@@ -161,8 +162,6 @@ public class ExpensesEmailsUtil {
         }
     }
     }
-
-
 
 //mail to employee when manager submit expense
 
