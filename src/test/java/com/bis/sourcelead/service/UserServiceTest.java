@@ -42,7 +42,6 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.UserProfile;
 import com.bis.sourcelead.service.impl.UserServiceImpl;
-import com.bis.sourcelead.util.EMailJobScheduler;
 
 /**
  * This is a JUnit Test class for testing UserService methods
@@ -75,8 +74,6 @@ public class UserServiceTest {
 	@Autowired
 	OrgSpocService orgSpocService;
 	
-	@Autowired
-	EMailJobScheduler eMailJobScheduler;
 
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceTest.class);
 
@@ -389,13 +386,13 @@ public class UserServiceTest {
 		List<Long> list = userRoleService.getAllUserIdsByReportingManagerId(3l);
 		assertFalse(list.isEmpty());
 	}
-	@Test
-	public void testPayroll() throws Exception {
-		eMailJobScheduler.autoMaticPayrollRunning();
-	}
-	
-	@Test
-	public void testSchedulePayrollEmail() throws Exception {
-		eMailJobScheduler.sendUSPayrollScheduleEmail();
-	}
+//	@Test
+//	public void testPayroll() throws Exception {
+//		eMailJobScheduler.autoMaticPayrollRunning();
+//	}
+//	
+//	@Test
+//	public void testSchedulePayrollEmail() throws Exception {
+//		eMailJobScheduler.sendUSPayrollScheduleEmail();
+//	}
 }

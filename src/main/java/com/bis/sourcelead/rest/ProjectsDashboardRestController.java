@@ -512,9 +512,9 @@ public class ProjectsDashboardRestController {
 				 if(projectClients.getOrgRelationId() != null){
 		    		 
 					 if(StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
-						 if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getOrg().getId().longValue() == loginOrgLocations.getOrg().getId().longValue()){
+						 if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getOrg().getId().longValue() == loginOrgLocations.getOrgId()){
 							 ProjectDetails.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
-							}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getOrg().getId().longValue() == loginOrgLocations.getOrg().getId().longValue()){
+							}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getOrg().getId().longValue() == loginOrgLocations.getOrgId()){
 								ProjectDetails.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
 							}
 					 }else {
