@@ -926,7 +926,7 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 									   if(isAssociate != "Y"){
 										   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
-										   result = result + ' <a href="javascript:void(0)" onClick="deleteCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Delete</a>';
+										   //result = result + ' <a href="javascript:void(0)" onClick="deleteCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Delete</a>';
 									   }
 									   '</sec:authorize>';
 								   } else {
