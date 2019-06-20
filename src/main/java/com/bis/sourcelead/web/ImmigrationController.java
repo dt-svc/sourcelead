@@ -199,12 +199,21 @@ public class ImmigrationController {
 				candidateId = immigrationCommonService.getCandidateIdByUUID(candidateUUID);
 				tabRecordCountMap = getImmigrationViewTabStatusDetails(candidateId, immigrationId);
 			}
-			model.addObject("tabRecordCountMap", tabRecordCountMap);
-			model.addObject("uscisStatusList", uscisStatusList);
-			model.addObject("immigration", immigrationDTO);
-			model.addObject("myImmigrationPage", myImmigrationPage);
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.setViewName("/immigration/immigrationView");
+			/* model.addObject("tabRecordCountMap", tabRecordCountMap); */
+			  model.addObject("passOnLoadCount",tabRecordCountMap.get("Passport"));
+			  model.addObject("visaOnLoadCount",tabRecordCountMap.get("Visa"));
+			  model.addObject("empOnLoadCount",tabRecordCountMap.get("Employers"));
+			  model.addObject("resiOnLoadCount",tabRecordCountMap.get("Residence"));
+			  model.addObject("lcaOnLoadCount",tabRecordCountMap.get("Lca"));
+			  model.addObject("eduOnLoadCount",tabRecordCountMap.get("Education"));
+			  model.addObject("familyOnLoadCount",tabRecordCountMap.get("Family"));
+			  model.addObject("taskOnLoadCount",tabRecordCountMap.get("Tasks"));
+			  model.addObject("curUscisMyImmi",immigrationDTO.getCurrUscisStatus());
+			  model.addObject("uscisStatusList", uscisStatusList);
+			  model.addObject("immigration", immigrationDTO);
+			  model.addObject("myImmigrationPage", myImmigrationPage);
+			  model.addObject("sourceleadUrl", sourceleadUrl);
+			  model.setViewName("/immigration/immigrationView");
 		}
 		return model;
 	}
@@ -876,6 +885,7 @@ public class ImmigrationController {
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
 			@RequestParam(value = "myImmigration", required = false) String myImmigration, 
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi,
 			@RequestParam(value = "myImmigrationPage" , required = true) String myImmigrationPage,	HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -921,6 +931,7 @@ public class ImmigrationController {
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		model.addObject("immigrationCanDocList", immigrationCanDocList);
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		model.addObject("myImmigrationPage", myImmigrationPage);
 		return model;
 	}
@@ -1545,6 +1556,7 @@ public class ImmigrationController {
 	public ModelAndView getCandidateFamilyDetails(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi, 
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage,
 			HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
@@ -1566,6 +1578,7 @@ public class ImmigrationController {
 						familyObj.getDateOfBirth()));
 			}
 			model.addObject("myImmigrationPage", myImmigrationPage);
+			model.addObject("curUscisMyImmi", curUscisMyImmi);
 			model.addObject("familyList", familyList);
 		} catch (Exception e) {
 			logger.error("Exception caught in controller --->" + e.getMessage());
@@ -1680,6 +1693,7 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/getCandidateEducationList" })
 	public ModelAndView getCandidateEducationList(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi,
 			@RequestParam(value = "searchVal", required = false) String searchVal, 
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage,
 			HttpServletRequest request)
@@ -1693,6 +1707,7 @@ public class ImmigrationController {
 						orgLocations.getId(), searchVal);
 		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
 		model.addObject("educationsDropList", educationsList);
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		model.addObject("candidatesEducationList", candidatesEducationList);
 		model.addObject("myImmigrationPage", myImmigrationPage);
 		return model;
@@ -1701,6 +1716,7 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/getCandidateEmployerList" })
 	public ModelAndView getCandidateEmployerList(@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi,
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage,
 			HttpServletRequest request)
 			throws Exception {
@@ -1711,6 +1727,7 @@ public class ImmigrationController {
 		List<CandidateEmployers> candidatesEmployersList = candidateEmployersService
 				.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId), searchVal);
 		model.addObject("myImmigrationPage", myImmigrationPage);
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		model.addObject("candidatesEmployersList", candidatesEmployersList);
 		return model;
 	}
@@ -1719,6 +1736,7 @@ public class ImmigrationController {
 	public ModelAndView getCandidateResidenceList(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
+			@RequestParam(value = "curUscisMyImmi" , required = true) String curUscisMyImmi,
 			@RequestParam(value = "myImmigrationPage" , required = true) String myImmigrationPage, HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -1735,6 +1753,7 @@ public class ImmigrationController {
 
 		}
 		model.addObject("myImmigrationPage", myImmigrationPage);
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		model.addObject("candidatesResidenceList", candidatesResidenceList);
 		return model;
 	}
@@ -1742,8 +1761,9 @@ public class ImmigrationController {
 	
 	//Visa List
 	@RequestMapping(value = { "/getCandidateVisaDetails" })
-	public ModelAndView getCandidateVisaDetails(
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
+	public ModelAndView getCandidateVisaDetails(HttpServletRequest request,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, 
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi, 
 			@RequestParam(value = "searchValue", required = true) String searchValue,
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -1753,6 +1773,7 @@ public class ImmigrationController {
 				"orgLocations");
 		Date toDayDate = new Date();
 		List<Long> expiredVisaIdList= new ArrayList<Long>();
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		try {
 			visaList = immigrationCommonService.getCandidateVisaDetails(candidateId,searchValue);
 			for (ImmigrationVisaDTO canVisa : visaList) {
@@ -1815,8 +1836,9 @@ public class ImmigrationController {
 	}
 	//passport list
 	@RequestMapping(value = { "/getCandidatePassportDetails" })
-	public ModelAndView getCandidatePassportVisaDetails(
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
+	public ModelAndView getCandidatePassportDetails(HttpServletRequest request,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, 
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi, 
 			@RequestParam(value = "searchValue", required = true) String searchValue,
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage) throws Exception {
 		ModelAndView model = new ModelAndView();
@@ -1825,6 +1847,7 @@ public class ImmigrationController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		Date toDayDate = new Date();
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		try {
 			PassportList = immigrationCommonService.getCandidatePassportDetails(candidateId,searchValue);
 			for (CandidatePassport canPassport : PassportList) {
@@ -1864,9 +1887,12 @@ public class ImmigrationController {
 	
 	@RequestMapping(value = { "/getLcaDetails" })
 	public ModelAndView getLcaDetails(
-			@RequestParam(value = "immigrationId", required = true) String immigrationId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "immigrationId", required = true) String immigrationId,
+			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage, HttpServletRequest request) throws Exception {
 		
 		ModelAndView model = new ModelAndView();
+		model.addObject("myImmigrationPage", myImmigrationPage);
+		System.out.println("myImmigrationPage value is "+myImmigrationPage);
 		logger.debug(" inisde getLcaDetails controller test -->");
 		if(immigrationId != null) {
 			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(Long.parseLong(immigrationId));
@@ -2236,6 +2262,7 @@ public class ImmigrationController {
 			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
 			@RequestParam(value = "myImmigration", required = false) String myImmigration,
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi,
 			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage) throws Exception {
 
 		logger.debug("inside controller method getCandidateImmigrationForms--> ");
@@ -2246,6 +2273,7 @@ public class ImmigrationController {
 		logger.debug("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "
 				+ candidateFormsLst.size());
 		model.addObject("myImmigrationPage", myImmigrationPage);
+		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		model.addObject("formsList", candidateFormsLst);
 		return model;
 	}

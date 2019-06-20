@@ -320,7 +320,7 @@
 	
 	$("#employersDataSearch").keyup(function (e) {
 	    if (e.which === 13) {
-	    	immigration.getCandidateEmployerList(candidateId);
+	    	immigration.getCandidateEmployerList(candidateId,'${curUscisMyImmi}');
 	    }
 	});
 	

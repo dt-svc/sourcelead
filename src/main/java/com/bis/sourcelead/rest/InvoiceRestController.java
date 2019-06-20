@@ -1470,7 +1470,7 @@ return responseList;
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
 				ProjectMembers subPm = sah.getSubmissionId().getProjectMembers();
-				ProjectMembers projectMember = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(subPm.getMasterCandidateId().getId(), Long.parseLong(projectId), orgLocation.getId(),isGlobalAccess);
+				ProjectMembers projectMember = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForFinance(subPm.getMasterCandidateId().getId(), Long.parseLong(projectId), orgLocation.getId(),isGlobalAccess);
 				// Candidate candidate =
 				// candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
 				Candidate candidate = projectMember.getProjectMemberCandidteId();

@@ -12,10 +12,11 @@
 
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
-myImmigrationPage = '${myImmigrationPage}';
+myImmigrationPage = '${myImmigrationPage}'; // using javascript variable to share accross the summary calls.
+curUscisMyImmi ="${curUscisMyImmi}";// using javascript variable to share accross the summary calls.
 </script>
 <%-- <c:set var ="myImmigrationPage" value = "${myImmigrationPage}" scope="session"/> --%>
-<c:set var ="passOnLoadCount" value = "${tabRecordCountMap['Passport']}" scope="request"/>
+<%-- <c:set var ="passOnLoadCount" value = "${tabRecordCountMap['Passport']}" scope="request"/>
 <c:set var ="visaOnLoadCount" value = "${tabRecordCountMap['Visa']}" scope="request"/>
 <c:set var ="empOnLoadCount" value  =  "${tabRecordCountMap['Employers']}" scope="request"/>
 <c:set var ="resiOnLoadCount" value = "${tabRecordCountMap['Residence']}" scope="request"/>
@@ -23,7 +24,7 @@ myImmigrationPage = '${myImmigrationPage}';
 <c:set var ="eduOnLoadCount" value  = "${tabRecordCountMap['Education']}" scope="request"/>
 <c:set var ="familyOnLoadCount" value  = "${tabRecordCountMap['Family']}" scope="request"/>
 <c:set var ="taskOnLoadCount" value  = "${tabRecordCountMap['Tasks']}" scope="request"/>
-<c:set var ="curUscisMyImmi" value = "${immigration.currUscisStatus}" scope="session"/>
+<c:set var ="curUscisMyImmi" value = "${immigration.currUscisStatus}" scope="session"/> --%>
  <section class="content-wraper content-wraperNew">
 	        <div class="success_pop" id="selector" >
 	       <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
@@ -94,7 +95,7 @@ myImmigrationPage = '${myImmigrationPage}';
              
               <li><a href="#docsTab"><i id="allDocsfilled" class="fa fa-check-circle-o"></i>Documents</a></li>
              
-              <li><a href="#tasksTab"><i id="tasksInfoTab" class="${taskOnLoadCount==null?'fa fa-check-circle-o':''}"></i>Tasks</a></li>
+              <li><a href="#tasksTab"><i id="tasksInfoTab" class="${taskOnLoadCount==null?'':'fa fa-check-circle-o'}"></i>Tasks</a></li>
               <li><a href="#notesTab">Notes</a></li>
               <li><a href="#activitiesTab" id= "#activitiesId">Timeline</a></li>
               <div class="clearfix"></div>
@@ -236,34 +237,34 @@ $(document).ready(function() {
       		immigration.displayPetitionDetails(immigrationId);
         }else if(tab=='#familiesTab'){
         	showLoading("immigrationLoadingFamiliesTab");
-        	immigration.displayFamilyDetails(candidateId);
+        	immigration.displayFamilyDetails(candidateId,'${curUscisMyImmi}');
         }else if(tab=='#educationsTab'){
         showLoading("immigrationLoadingEducationsTab");
-        immigration.getCandidateEducationList(candidateId);
+        immigration.getCandidateEducationList(candidateId,'${curUscisMyImmi}');
         } else if(tab=='#employersTab'){
         showLoading("immigrationLoadingEmployersTab");
-        immigration.getCandidateEmployerList(candidateId);
+        immigration.getCandidateEmployerList(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#residencesTab'){
         	showLoading("immigrationLoadingResidencesTab");
-        immigration.getCandidateResidenceList(candidateId);
+        immigration.getCandidateResidenceList(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#passportsTab'){
         showLoading("immigrationLoadingPassportsTab");
-        immigration.displayPassportDetails(candidateId);
+        immigration.displayPassportDetails(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#visasTab'){
         showLoading("immigrationLoadingVisasTab");
-        immigration.displayVisaDetails(candidateId);
+        immigration.displayVisaDetails(candidateId,"${curUscisMyImmi}");
         }else if(tab=='#lcaTab'){
         	showLoading("immigrationLcaLoadingTab");
-        	immigration.getLcaDetailsInfo(immigrationId);
+        	immigration.getLcaDetailsInfo(immigrationId,"${myImmigrationPage}");
         }else if(tab=='#docsTab'){
         	showLoading("immigrationLoadingDocsTab");
-        	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
+        	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"","${myImmigrationPage}","${curUscisMyImmi}");
         }else if(tab =='#notesTab'){
         	showLoading("immigrationLoadingNotesTab");
         	immigration.getNotesListByImmigration(candidateId);
         } else if(tab=='#formsTab'){
         	showLoading("immigrationLoadingFormsTab");
-        	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"","${myImmigrationPage}");
+        	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"","${myImmigrationPage}","${curUscisMyImmi}");
         }else if(tab=='#activitiesTab'){
         	showLoading("immigrationLoadingActivitiesTab");
         	immigration.getImmigrationActivies();
@@ -371,7 +372,12 @@ $("#packageZipfile").click(function() {
 	}
 	function deleteImmigrationRecordById(elem, arg1, arg2){	
 		if(typeof elem ==='function') {
+			if(typeof arg2 == 'undefiend'){
+				elem(arg1);
+			}
+			else{
 			elem(arg1, arg2);
+		}
 		}
 		else{
 			alert("Not a valid Function call.");
