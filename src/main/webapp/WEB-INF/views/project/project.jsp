@@ -14,6 +14,7 @@
 
 <script>
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+var projectType = '${projectType}';
 </script>
 
 <!-- Content Area -->
@@ -860,7 +861,7 @@ $(window).load(function() {
 		  getCustomDependentField(sectionId);
 		 </c:forEach>
 		 
-		 var projectType = '${projectType}';
+		
 		 if(projectType != '' && projectType != 'undefined' && projectType == 'sharedProject'){
 			 $("#sharedClientOrgLocId").removeAttr("data-validation-optional");
 			 $("#sharedClientOrgLocId").attr("data-validation", "required");
