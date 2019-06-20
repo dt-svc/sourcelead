@@ -1023,7 +1023,7 @@ public class CandidateListRestController {
 				
 				if(null != can.getCandidateSource()) {
 					candidateDTO.setCandidateSource(can.getCandidateSource());
-					List<CandidateSourceDTO> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationId(loginOrgLocation.getId(), 1, null, null);
+					List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),1);
 					candidateDTO.setCandidateSourceList(candidateSourceList);
 				}
 				
