@@ -298,6 +298,7 @@ public class Constants {
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";
 	public static final String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
+	public static final String APPLICANT_SOURCE_CHANGE_EMAIL_NOTIFICATION = "ApplicantSourceChange";
 	public static final String SHARE_RECOMENDED_APPLICANT = "Share Recomended Applicant";
 	public static final String SHARE_RECOMENDED_APPLICANT_NOTIFICATION = "Share Recommended Applicant Notification";
 	public static final String APPROVER_UPDATED_CONTRACT = "approverUpdatedContract";
@@ -1508,4 +1509,6 @@ public class Constants {
 	public static final String[] IT_DECRALARATION_FOOTER = {"DECLARATIONS","I hereby declare that the information given above is correct and true in all respects. I am also aware that the company will be considering the above details in utmost good faith based on the details provided by me and that I am personally liable for any consequences arising out of errors, if any, in the above information",
 			                                                "I am also aware that any person making a false statement / declaration in the above form shall be liable to be fined and prosecution u/s 277 of the Income Tax Act, 1961", "The proof of payment / Supportings for claim, will be provided latest by _________________",
 			                                                "Note-", "Date","Place","SIGNATURE OF THE EMPLOYEE"};
+	
+	public static final String[] ELIMINATE_NAME_KEYWORDS = { "CANDIDATE", "FIRST NAME", "NAME" };
 }

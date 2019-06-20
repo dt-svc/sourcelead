@@ -394,6 +394,12 @@ public class DataMigrationCommonUtil {
 					}else {
 						dataMigrationDTOJsonCopy.put("coolingOff", Constants.DEFAULT_COOLINGOFF_PERIOD);
 					}
+				}else {
+					if(StringUtils.isNotEmpty(orgLocation.getCoolingOffPeriod())){
+						dataMigrationDTOJsonCopy.put("coolingOff", orgLocation.getCoolingOffPeriod());
+					}else {
+						dataMigrationDTOJsonCopy.put("coolingOff", Constants.DEFAULT_COOLINGOFF_PERIOD);
+					}
 				}
 				
 				if(!dataMigrationDTOJsonCopy.getString("closedDate").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("closedDate"))) {

@@ -257,7 +257,7 @@ public class EMailJobScheduler {
 	CandidateResumesService candidateResumesService;
 	
 	@Autowired
-	SourceleadResumeParser sourceleadResumeParser;
+	SourceleadResumeParserNew sourceleadResumeParser;
 	
 	@Autowired
 	RequirementInterviewService requirementInterviewService;
