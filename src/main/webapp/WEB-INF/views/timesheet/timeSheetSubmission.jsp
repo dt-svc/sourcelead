@@ -781,7 +781,7 @@
 							<label class="input-group-btn pull-left"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
 							  <input style="display: none;" multiple  id="REPLACEROWIDdocFile0"  onchange="validateUploadFile('REPLACEROWID','0',this);"  class="upload" type="file">
 							  </span></label>
-							<input class="form-control input-sm pull-left" style="width:130px;" id="REPLACEROWIDuploadFile0" placeholder="Attachment" type="file">
+							<input class="form-control input-sm pull-left" style="width:130px;" id="REPLACEROWIDuploadFile0" placeholder="Attachment" type="text">
 						  </div>
 						  <input type="button" value="" onclick="addAttachmentRow('REPLACEROWID');" class="addRowIcon"/>
 						   <input type="hidden" disabled id="timesheetAttValidationInputREPLACEROWID" field-name="Attachment"/>
