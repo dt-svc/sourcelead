@@ -35,52 +35,12 @@
 
 
 <style type="text/css">
-.paddingTop {
-padding-top: 55px;	
-}
-.viewTemplate .sjfb-field{
-margin: 0;
-}
-.positionRelative {
-position: relative;
-}
-.container.container-wraper{
-	padding: 15px; box-sizing: border-box; border: 1px solid #ccc; background: #fafafa; border-radius:5px;
-	margin-top: 80px;
-}
-.container-wraper h3 {
-margin: 0; margin-bottom: 10px; font-size: 20px;
-}
-.container-wraper .viewTemplate .sjfb-field{
-display: inline-flex; margin-bottom: 20px;
-}
-.container-wraper .viewTemplate .sjfb-field label {
-font-size:14px !important; font-weight: 600;
-}
-.container-wraper viewTemplate .sjfb-field{
-width: 48.5%;
-}
-.ml{
-margin-left: 15px;
-}
 .choices label {
 width: auto !important; padding-right: 15px;
 }
 .choices input[type="checkbox"], .choices input[type="radio"]{
  margin-right: 10px; position: relative; top: 1px;
 }
-.stickyfooter {
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-	height: 40px;
-	line-height: 40px;
-	background-color: #f5f5f5;
-	padding:0;
-}
-.viewTemplate textarea + p{
-top:55px !important;
-} 
 </style>
 
 <script type="text/javascript">
@@ -287,7 +247,7 @@ function interviewTemplateForm(){
 		result = result + '</div>'; */
 		
 		result = result + '<div class="form-horizontal clearfix">';
-		result = result + '<div id="interviewsjfb-fields" class="viewTemplate">';
+		result = result + '<div id="interviewsjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
 		result = result + '</div>';
 		result = result + '</div>';
 		
@@ -434,13 +394,13 @@ $('body').on('blur', '#interviewTemplate_form', function() {
     <nav class="header-nav navbar">
     </nav>
    </header>
-   <div id="interviewTemplateFormDiv" class="container container-wraper positionRelative paddingTop" style="display: none;"> </div> 
-   <div id="cancelFeedbackDiv" class="container paddingTop container-wraper positionRelative" style="display: none;"> </div>
-   <div id="viewInterviewTemplateList" class="container paddingTop"></div>
-   <div id="viewInterviewTemplateNo" class="container paddingTop"></div>
+   <div id="interviewTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
+   <div id="cancelFeedbackDiv" class="container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> </div>
+   <div id="viewInterviewTemplateList" class="container paddingTop55"></div>
+   <div id="viewInterviewTemplateNo" class="container paddingTop55"></div>
    
    
-   <footer class="clearfix stickyfooter">
+   <footer class="clearfix stickyfooterDiv">
    <div class="container">
     <div class="pull-left"> @ Copyright : Source Lead, All right reserved </div>
     <div class="pull-right"> Powered by: businessintelli.com </div>

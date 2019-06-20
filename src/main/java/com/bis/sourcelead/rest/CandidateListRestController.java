@@ -815,21 +815,6 @@ public class CandidateListRestController {
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("tags", keywd));
 
-		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
-		if (matcher.find()) {
-			Float expYears = Float.valueOf(matcher.group());
-			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
-			// QueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths",
-			// keywd));
-			String mobileKeywd = matcher.group().replaceAll("[+91]", "");
-			QueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
-			QueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
-		}
-		if (StringUtils.isNumeric(keywd)) {
-			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
-			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRate", keywd));
-		}
-
 		return QueryBuilderList;
 	}
 	

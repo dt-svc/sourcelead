@@ -388,7 +388,7 @@ function prepareAragingInvoiceList(url){
         result = result + '<tr>';
         result = result + '<th>Refer Id</th>';
 		result = result + '<th>Client</th>';
-		result = result + '<th>Bill Date</th>';
+		result = result + '<th>Invoice Date</th>';
 		result = result + '<th>Due Date</th>';
 		result = result + '<th>Due Amount</th>';
 		result = result + '<th>Total Amount</th>';

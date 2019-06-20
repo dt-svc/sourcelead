@@ -494,113 +494,34 @@ public class TimesheetApprovalRestController {
 	        if(StringUtils.isNotEmpty(timesheetApprovalDTO.getProject()) && !timesheetApprovalDTO.getProject().equalsIgnoreCase("undefined")  && !timesheetApprovalDTO.getProject().equalsIgnoreCase("All")){
 	        	projectId =Long.parseLong(timesheetApprovalDTO.getProject());
 	        }
+	        ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId,projectId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId(),timesheetApprovalDTO.getSearchValue(),timesheetApprovalDTO.getProjectName(),start,length,"",isGlobalAccess);
 	        
-	        if(timesheetApprovalDTO.getProjectList() != null && !timesheetApprovalDTO.getProjectList().isEmpty()) {
-	        	 Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isAdmin");
-	 	         ResponseList<TimesheetApprovalSubmissionDetailsDTO> tasDetails =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getProjectList().keySet(),isAdmin,timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId, projectId, timesheetApprovalDTO.getStage(), orgLocations.getId(),orgLocations.getOrg().getId(), user.getId(), timesheetApprovalDTO.getSearchValue(), timesheetApprovalDTO.getProjectName(), start, length,timesheetApprovalDTO.getTotalRows(),isGlobalAccess,"approver",orgLocations.getDateFormat());
-	 	         timesheetApprovalDTO.setTotalRows(tasDetails.getRecordsTotal());
-	 	         int totalRows = tasDetails.getRecordsTotal();
-	        	 if(totalRows > 0) {
-					final Date aStartDate = actualStartDate;
-					final Date aEndDate = actualEndDate;
-					final Integer tdSpanLength = 6;
-					 tasDetails.getData().stream().forEach(tas->{
-						 try {
-						
-						 //for getting client-name and uuid
-						 if(tas.getClientId() != null) {
-						    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(tas.getClientId());
-						   	       if(orgRelations != null && orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()){
-										if(orgRelations.getResponderLocationId() != null){
-											tas.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
-										}
-									}
-									if(orgRelations != null && orgRelations.getResponderLocationId() != null && orgRelations.getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
-										if(orgRelations.getLocationId() != null){
-											tas.setClientName(orgRelations.getLocationId().getOrgLocationName());
-										}
-									}
-									tas.setOrgRelationUUID(orgRelations.getUUID());
-						 }else{
-						    	tas.setClientName("--");
-						 }
-						 Float totalHours = 0f;
-							Float estimatedTotalHours = 0f;
-							LinkedHashMap<Date, Float> dateTotalsMap = null;
-							
-								dateTotalsMap = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(tas.getProjectId().longValue(),tas.getMasterCandidateId().longValue(),aStartDate,aEndDate,orgLocations.getLocFullFormDateFormatter(),orgLocations.getDateFormat());
-							if(timesheetApprovalDTO.getDisplayWeekList() != null && !timesheetApprovalDTO.getDisplayWeekList().isEmpty()){
-								  List<String> weekTotalList = new ArrayList<String>();
-								  List<String> submissionTotalList = new ArrayList<String>();   
-								  Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-				                  if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
-									 avgWorkingHoursPerDay = 8; 
-								   }
-								    for (Map.Entry<Date,Date> entry : timesheetApprovalDTO.getDisplayWeekList().entrySet()) { 
-								    	     //Used to calculate estimated hours
-									    	 long diff = CalendarUtil.getNumberOfDays(entry.getKey(), entry.getValue());
-									    	 Float weekTotal = 0f;
-									    	 if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 7){
-									    		  weekTotal = (float) ((diff)*avgWorkingHoursPerDay);
-									    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
-									    	 }
-									    	 else if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 1){
-									    		  weekTotal = (float) ((diff-1)*avgWorkingHoursPerDay);
-									    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
-									    	 }
-									    	 else if(CalendarUtil.getDayOfTheDate(entry.getKey()) == 2){
-									    		  weekTotal = (float) ((diff+1)*avgWorkingHoursPerDay);
-									    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
-									    	 }
-								    	    float leaveTotal = 0f;
-								    	   if(tas.getConsultantUserId() != null && tas.getWorkLocationId() != null) {
-								    		 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(tas.getConsultantUserId(), entry.getKey(), entry.getValue(),tas.getWorkLocationId().longValue());
-								    	     if(leaveTotalMap != null && !leaveTotalMap.isEmpty()) {
-								    	    	 leaveTotal = leaveTotalMap.get("TOTAL");
-								    	     }
-								    	   }
-								    	 if(dateTotalsMap!= null && !dateTotalsMap.isEmpty() && dateTotalsMap.get(entry.getKey()) != null){
-								    		  //calculating total hours with out leaves
-								    		  totalHours = CommonUtil.getCombinedHours(totalHours, dateTotalsMap.get(entry.getKey()));
-								    		  
-								    		  //calculating total hours with leaves
-								    		  totalHours = CommonUtil.getCombinedHours(totalHours, leaveTotal);
-								    		  
-								    		  //for week-wise display
-								    		  weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal,null));
-								    		 
-								    		  Float submissionTotal = CommonUtil.getCombinedHours(leaveTotal, dateTotalsMap.get(entry.getKey()));
-								    		  
-								    		  submissionTotalList.add(CommonUtil.getHoursDisplayFormat(submissionTotal,null));
-								    	 }else{
-								    		 submissionTotalList.add(CommonUtil.getHoursDisplayFormat(leaveTotal,null));
-								    		 weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal,null));
-								    	 }
-								    	 
-								     }
-								    tas.setTdSpanLength(tdSpanLength);
-								    tas.setWeeekTotal(weekTotalList);
-								    tas.setSubmissionTotal(submissionTotalList);
-								    tas.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours,null));
-								    tas.setEstimatedHours(CommonUtil.getHoursDisplayFormat(estimatedTotalHours,null));
-							  	  }
-						 } catch (Exception e) {}
-					 });
-					 int remainder = totalRows % length;
-					 int pageCount = totalRows / length;
-					 if(remainder > 0) {
-						 timesheetApprovalDTO.setPageCount(pageCount+1);
-					 }
-					 else {
-						 timesheetApprovalDTO.setPageCount(pageCount);
-					 }
-				}
-				 timesheetApprovalDTO.setTimesheetSubmission(tasDetails.getData());
-	        }else {
-	        	timesheetApprovalDTO.setTotalRows(0);
-	        }
+	        timesheetApprovalDTO.setTotalRows(projectMembers.getRecordsTotal());
+			
+			int totalRows = projectMembers.getRecordsTotal();
+			if(totalRows > 0) {
+				 int remainder = totalRows % length;
+				 int pageCount = totalRows / length;
+				 if(remainder > 0) {
+					 timesheetApprovalDTO.setPageCount(pageCount+1);
+				 }
+				 else {
+					 timesheetApprovalDTO.setPageCount(pageCount);
+				 }
+			}
+	        if(projectMembers.getData() != null && !projectMembers.getData().isEmpty()){
+	        	int tdSpanLength = 6;
+	        	List<TimesheetApprovalSubmissionDetailsDTO> subDetails = new ArrayList<>();
+	         for (ProjectMembers projectMember : projectMembers.getData()){
+	        	TimesheetApprovalSubmissionDetailsDTO ts = 	getTimesheetApprovalRowDetails(timesheetApprovalDTO, projectMember, orgLocations, actualStartDate, actualEndDate, user, tdSpanLength,isGlobalAccess);
+	        	 ts.setTableFor("approver");
+	        	subDetails.add(ts);
+	         }
+	         timesheetApprovalDTO.setTimesheetSubmission(subDetails);
+	       }
 	        return timesheetApprovalDTO;
-	 }
+	   }
+		
 		
 	@RequestMapping(value = "/timesheetApprovalRowDetails", method = RequestMethod.POST ) 
 	public ModelAndView timesheetApprovalRowDetailsWeb(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
@@ -787,134 +708,50 @@ public class TimesheetApprovalRestController {
 			return model;
 			
 		}
+		public TimesheetApprovalDTO getTimesheetListByStatus(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception{
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
+			String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+       	    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
+       	    int start = timesheetApprovalDTO.getStart();
+			int length = 0;
+			if(timesheetApprovalDTO.getPageNo()<1) {
+				timesheetApprovalDTO.setPageNo(1);
+			}
+			if(timesheetApprovalDTO.getPageSize()<1) {
+				length = 10;
+				timesheetApprovalDTO.setPageSize(10);
+			}else {
+				length = timesheetApprovalDTO.getPageSize();
+			}
+		    ResponseList<SubmissionApproverHierarchy> list  =	submissionApproverHierarchyService.getTotalTimesheetSubmissionListByUserIdAndOrgLocationIdAndStatusBasedOnUserRoleLogin(user.getId(), loginOrgLocations.getId(), timesheetApprovalDTO.getDashboardTimeStatus(), userRole,timesheetApprovalDTO.getSearchValue(),start,length,isGlobalAccess);
+		    int tdSpanLength = 8;
+		    if(list != null && !list.getData().isEmpty())
+		    {
+		    	timesheetApprovalDTO.setTotalRows(list.getRecordsTotal());
+		    	List<TimesheetApprovalSubmissionDetailsDTO> subDetails = new ArrayList<>();
+		    	for(SubmissionApproverHierarchy submissionApproverHierarchy:list.getData()) {
+		    	 Date actualStartDate =submissionApproverHierarchy.getFrequencyStartDate();
+		    	 Date actualEndDate =submissionApproverHierarchy.getFrequencyEndDate();
+		    	 if(actualStartDate != null && actualEndDate != null){
+			    	 timesheetApprovalDTO.setFrequencyStartDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate));
+					 timesheetApprovalDTO.setFrequencyEndDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
+			    	 timesheetApprovalDTO = dataTableWeekDateList(request, timesheetApprovalDTO,loginOrgLocations);
+					 ProjectMembers projectMember = projectMembersService.getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getMasterCandidateId().getId(),submissionApproverHierarchy.getSubmissionId().getProjectMembers().getProjects().getId(),loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),isGlobalAccess);
+					 TimesheetApprovalSubmissionDetailsDTO timeSub = getTimesheetApprovalRowDetails(timesheetApprovalDTO, projectMember, loginOrgLocations, actualStartDate, actualEndDate, user, tdSpanLength,isGlobalAccess);
+					  timeSub.setDashboardInvoiceFrequency(projectMember.getProjects().getInvoiceFrequency());
+					  timeSub.setCurrentTimeFrequency(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)+"To"+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
+					  timeSub.setDashboardDateList(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)+" To "+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
+					  timeSub.setTableFor("dashboard");
+			          subDetails.add(timeSub);
+		 		    }
+		    	 	timesheetApprovalDTO.setTimesheetSubmission(subDetails);
+		 		   }
+		 		     	
+		 		 }
+			     return timesheetApprovalDTO;
+	}
 	
 		
-		public TimesheetApprovalDTO getTimesheetListByStatus(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception{
-				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-				String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
-				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
-	       	    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
-	       	    int start = timesheetApprovalDTO.getStart();
-				int length = 0;
-				if(timesheetApprovalDTO.getPageNo()<1) {
-					timesheetApprovalDTO.setPageNo(1);
-				}
-				if(timesheetApprovalDTO.getPageSize()<1) {
-					length = 10;
-					timesheetApprovalDTO.setPageSize(10);
-				}else {
-					length = timesheetApprovalDTO.getPageSize();
-				}
-				
-				 Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isAdmin");
-	 	         ResponseList<TimesheetApprovalSubmissionDetailsDTO> tasDetails =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,isAdmin,timesheetApprovalDTO.getTimesheetFrequency(), null, null, null, null, timesheetApprovalDTO.getDashboardTimeStatus(), loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(), user.getId(), timesheetApprovalDTO.getSearchValue(), timesheetApprovalDTO.getProjectName(), start, length,timesheetApprovalDTO.getTotalRows(),isGlobalAccess,"dashboard",loginOrgLocations.getDateFormat());
-	 	        timesheetApprovalDTO.setTotalRows(tasDetails.getRecordsTotal());
-	 	         int totalRows = tasDetails.getRecordsTotal();
-	        	 if(totalRows > 0) {
-					final Integer tdSpanLength = 8;
-					 tasDetails.getData().stream().forEach(tas->{
-						 try {
-						
-							 Date aStartDate = commonUtil.stringToDateByOrgLocationFormat(tas.getActualStartDate(), loginOrgLocations.getDateFormat());
-						     Date aEndDate =  commonUtil.stringToDateByOrgLocationFormat(tas.getActualEndDate(), loginOrgLocations.getDateFormat());;
-								
-						 //for getting client-name and uuid
-						 if(tas.getClientId() != null) {
-						    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(tas.getClientId());
-						   	       if(orgRelations != null && orgRelations.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-										if(orgRelations.getResponderLocationId() != null){
-											tas.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
-										}
-									}
-									if(orgRelations != null && orgRelations.getResponderLocationId() != null && orgRelations.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-										if(orgRelations.getLocationId() != null){
-											tas.setClientName(orgRelations.getLocationId().getOrgLocationName());
-										}
-									}
-									tas.setOrgRelationUUID(orgRelations.getUUID());
-						 }else{
-						    	tas.setClientName("--");
-						 }
-						 
-						 
-						 timesheetApprovalDTO.setFrequencyStartDate(tas.getActualStartDate());
-						 timesheetApprovalDTO.setFrequencyEndDate(tas.getActualEndDate());
-				    	  final TimesheetApprovalDTO tsApprovalDTO = dataTableWeekDateList(request, timesheetApprovalDTO,loginOrgLocations);
-						  tas.setCurrentTimeFrequency(tas.getActualStartDate()+"To"+tas.getActualEndDate());
-						  tas.setDashboardDateList(tas.getActualStartDate()+" To "+tas.getActualEndDate());
-						 Float totalHours = 0f;
-							Float estimatedTotalHours = 0f;
-							LinkedHashMap<Date, Float> dateTotalsMap = null;
-								dateTotalsMap = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(tas.getProjectId().longValue(),tas.getMasterCandidateId().longValue(),aStartDate,aEndDate,loginOrgLocations.getLocFullFormDateFormatter(),loginOrgLocations.getDateFormat());
-							if(tsApprovalDTO.getDisplayWeekList() != null && !tsApprovalDTO.getDisplayWeekList().isEmpty()){
-								  List<String> weekTotalList = new ArrayList<String>();
-								  List<String> submissionTotalList = new ArrayList<String>();   
-								  Integer avgWorkingHoursPerDay = loginOrgLocations.getAverageWorkingHours();
-				                  if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
-									 avgWorkingHoursPerDay = 8; 
-								   }
-								    for (Map.Entry<Date,Date> entry : tsApprovalDTO.getDisplayWeekList().entrySet()) { 
-								    	     //Used to calculate estimated hours
-									    	 long diff = CalendarUtil.getNumberOfDays(entry.getKey(), entry.getValue());
-									    	 Float weekTotal = 0f;
-									    	 if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 7){
-									    		  weekTotal = (float) ((diff)*avgWorkingHoursPerDay);
-									    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
-									    	 }
-									    	 else if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 1){
-									    		  weekTotal = (float) ((diff-1)*avgWorkingHoursPerDay);
-									    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
-									    	 }
-									    	 else if(CalendarUtil.getDayOfTheDate(entry.getKey()) == 2){
-									    		  weekTotal = (float) ((diff+1)*avgWorkingHoursPerDay);
-									    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
-									    	 }
-								    	    float leaveTotal = 0f;
-								    	   if(tas.getConsultantUserId() != null && tas.getWorkLocationId() != null) {
-								    		 Map<String,Float> leaveTotalMap = appliedLeaveDateService.getAppliedLeaveDateAndHolidayHoursByUserId(tas.getConsultantUserId(), entry.getKey(), entry.getValue(),tas.getWorkLocationId().longValue());
-								    	     if(leaveTotalMap != null && !leaveTotalMap.isEmpty()) {
-								    	    	 leaveTotal = leaveTotalMap.get("TOTAL");
-								    	     }
-								    	   }
-								    	 if(dateTotalsMap!= null && !dateTotalsMap.isEmpty() && dateTotalsMap.get(entry.getKey()) != null){
-								    		  //calculating total hours with out leaves
-								    		  totalHours = CommonUtil.getCombinedHours(totalHours, dateTotalsMap.get(entry.getKey()));
-								    		  
-								    		  //calculating total hours with leaves
-								    		  totalHours = CommonUtil.getCombinedHours(totalHours, leaveTotal);
-								    		  
-								    		  //for week-wise display
-								    		  weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal,null));
-								    		 
-								    		  Float submissionTotal = CommonUtil.getCombinedHours(leaveTotal, dateTotalsMap.get(entry.getKey()));
-								    		  
-								    		  submissionTotalList.add(CommonUtil.getHoursDisplayFormat(submissionTotal,null));
-								    	 }else{
-								    		 submissionTotalList.add(CommonUtil.getHoursDisplayFormat(leaveTotal,null));
-								    		 weekTotalList.add(CommonUtil.getHoursDisplayFormat(weekTotal,null));
-								    	 }
-								    	 
-								     }
-								    tas.setTdSpanLength(tdSpanLength);
-								    tas.setWeeekTotal(weekTotalList);
-								    tas.setSubmissionTotal(submissionTotalList);
-								    tas.setTotalHours(CommonUtil.getHoursDisplayFormat(totalHours,null));
-								    tas.setEstimatedHours(CommonUtil.getHoursDisplayFormat(estimatedTotalHours,null));
-							  	  }
-						 } catch (Exception e) {}
-					 });
-					 int remainder = totalRows % length;
-					 int pageCount = totalRows / length;
-					 if(remainder > 0) {
-						 timesheetApprovalDTO.setPageCount(pageCount+1);
-					 }
-					 else {
-						 timesheetApprovalDTO.setPageCount(pageCount);
-					 }
-				   timesheetApprovalDTO.setTimesheetSubmission(tasDetails.getData());
-		        }else {
-		        	timesheetApprovalDTO.setTotalRows(0);
-		        }
-		       return timesheetApprovalDTO;
-		}
 }

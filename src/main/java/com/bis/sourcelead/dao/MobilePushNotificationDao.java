@@ -20,6 +20,8 @@ public interface MobilePushNotificationDao {
      Boolean validateMobileDevicceTokenByUserIdAndTokeIndAndDeviceType(Long userId,String tokenId,String deviceType) throws Exception;
 
 	 List<MobileDeviceTokenInformaion> mobileDeviceTokenInformaionList(Long userId,String deviceType)throws Exception;
+	 
+	 List<MobileDeviceTokenInformaion> mobileDeviceTokenInformaionLisByUserId(Long userId)throws Exception;
 
 	 MobileDeviceTokenInformaion getMobileDeviceTokenInformaionByUserId(Long userId)throws Exception;
 

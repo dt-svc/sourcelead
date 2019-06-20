@@ -610,7 +610,10 @@ $("#trashHdr").click(function() {
 	 $("#deleteAll").toggle();
 })
 function refreshPage(){
-  location.reload(); // refresh the page.
+	resetMarketCartFilter();
+	$("#dynamicUserDataTableSearch").val('');
+	getCandidateDetailsFromMarketcart();
+   // refresh the page.
 }
 function predefineProfileImage(imageId){
 	$(imageId).attr('src','/resources/images/userprofileImg.jpg');

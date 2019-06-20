@@ -6,15 +6,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.taskdesp .form-control {
-height: auto !important;
-}
-.project_tabs_inn_table.project_tabs_inn_table_a table tr td:last-child
-{
-width: auto !important;
-}
-</style>
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
 </script>
@@ -220,7 +211,7 @@ function prepareTasksList(url){
     result = result +" <input type='text' placeholder='Search' id='taskDataTableSearch'/>";
  	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='projectTaskList();'></i></span>";     
 
-	result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
+	result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a widthAutoTD">';
 	result = result	+ '<div id="tasksLoadingImg"></div>';
 	result = result + '<table id="projectTaskPagination" class="display" cellspacing="0" width="100%">';
 	result = result + '<thead>';

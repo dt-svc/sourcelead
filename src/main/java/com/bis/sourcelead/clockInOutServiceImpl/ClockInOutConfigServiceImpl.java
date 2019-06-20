@@ -1,19 +1,17 @@
 package com.bis.sourcelead.clockInOutServiceImpl;
 
-import java.sql.Time;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,8 +20,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateReportSummaryDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutSubDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
@@ -169,7 +169,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			
 			
 			ZoneId zoneId = ZoneId.of(loginOrgLocation.getTimezone().getTimeZoneId());
-//			LocalTime localTime = LocalTime.now(zoneId);
 			LocalDateTime ldt = LocalDateTime.now(zoneId);
 			Date currentDate = Date.from( ldt.atZone( ZoneId.systemDefault()).toInstant());
 			
@@ -203,12 +202,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 					diffHours = diffDays * 24;
 				}
 				
-//				int sec = timeValue.getSeconds() - clockInOut.getClockInTime().getSeconds();
-//				int min = timeValue.getMinutes() - clockInOut.getClockInTime().getMinutes();
-//				int hr = timeValue.getHours() - clockInOut.getClockInTime().getHours();
-//				Time totTime = new Time(hr, min, sec);
-				
-//				clockInOut.setTotalClockTime(totTime);
 				
 				clockInOut.setClockOutTime(timeValue);
 				clockInOut.setClockOutDate(currentDate);
@@ -294,13 +287,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			
 			breaks.setClockInOutId(clockInOutDTO.getClockInOutId());
 		
-			
-//			DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-//			String s = formatter.format(Calendar.getInstance().getTime());
-//			java.sql.Time timeValue =  new java.sql.Time(formatter.parse(s).getTime());
-			
 			ZoneId zoneId = ZoneId.of(loginOrgLocation.getTimezone().getTimeZoneId());
-//			LocalTime localTime = LocalTime.now(zoneId);
 			LocalDateTime ldt = LocalDateTime.now(zoneId);
 			Date currentDate = Date.from( ldt.atZone( ZoneId.systemDefault()).toInstant());
 			
@@ -333,17 +320,11 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 					diffHours = diffDays * 24;
 				}
 				
-//				int sec = timeValue.getSeconds() - breaks.getBreakStartTime().getSeconds();
-//				int min = timeValue.getMinutes() - breaks.getBreakStartTime().getMinutes();
-//				int hr = timeValue.getHours() - breaks.getBreakStartTime().getHours();
-//				Time totTime = new Time(hr, min, sec);
-				
 				DecimalFormat df = new DecimalFormat("00");
 				breaks.setTotalTime(df.format(diffHours)+":"+df.format(diffMinutes)+":"+df.format(diffSeconds));
 				breaks.setBreakEndDate(currentDate);
 				breaks.setBreakEndDateTime(currentDate);
 				breaks.setBreakEndTime(timeValue);
-//				breaks.setTotalBreakTime(totTime);
 					
 			}
 				
@@ -453,11 +434,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    		main.setGraphForamatDate(commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", data.getClockInDate()));
 				    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockOutDate()));
 						
-//				    		sec += data.getTotalTime().getSeconds();
-//				    		min += data.getTotalTime().getMinutes();
-//				    		hr += data.getTotalTime().getHours();
-//				    		sum = new Time(hr, min, sec);
-				    		
 				    		
 				    		String[] str = data.getTotalTime().split(":");
 				    		sec += Integer.parseInt(str[2]);
@@ -562,10 +538,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				    		main.setGraphForamatDate(uniqueData.getKey());
 				    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(dateFormat, data.getClockOutDate()));
 						
-//				    		sec += data.getTotalTime().getSeconds();
-//				    		min += data.getTotalTime().getMinutes();
-//				    		hr += data.getTotalTime().getHours();
-//				    		sum = new Time(hr, min, sec);
 				    		
 				    		String[] str = data.getTotalTime().split(":");
 				    		sec += Integer.parseInt(str[2]);
@@ -651,10 +623,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 						brkhr += Integer.parseInt(str[0]);
 			    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
 						
-//						brksec += breaks.getTotalBreakTime().getSeconds();
-//						brkmin += breaks.getTotalBreakTime().getMinutes();
-//						brkhr += breaks.getTotalBreakTime().getHours();
-//						brksum = new Time(brkhr, brkmin, brksec);
 					}
 				}
 				String[] str = data.getTotalTime().split(":");
@@ -669,7 +637,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 					min = min - 60;
 				}
 	    		hr += Integer.parseInt(str[0]);
-//	    		sum = new Time(hr, min, sec);
 	    		sum = df.format(hr)+":"+df.format(min)+":"+df.format(sec);
 
 	    	}
@@ -714,13 +681,8 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 					 totHr++;
 					}
 				totHr = Integer.parseInt(str[0]) - Integer.parseInt(brkStr[0]);
-//				totSum = new Time(totHr, totMin, totSec);
 				totSum = df.format(totHr)+":"+df.format(totMin)+":"+df.format(totSec);
 			
-//				int totSec = sum.getSeconds() - brksum.getSeconds();
-//				int totMin = sum.getMinutes() - brksum.getMinutes();
-//				int totHr = sum.getHours() - brksum.getHours();
-//				totSum = new Time(totHr, totMin, totSec);
 			
 			}else {
 				totSum = sum;
@@ -745,10 +707,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
 				for (Breaks breaks : breakList) {
 					if(breaks.getTotalTime() != null) {
-//						brksec2 += breaks.getTotalBreakTime().getSeconds();
-//						brkmin2 += breaks.getTotalBreakTime().getMinutes();
-//						brkhr2 += breaks.getTotalBreakTime().getHours();
-//						brksum2 = new Time(brkhr2, brkmin2, brksec2);
 						
 						String[] str = breaks.getTotalTime().split(":");
 						brksec2 += Integer.parseInt(str[2]);
@@ -766,10 +724,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 					}
 				}
 				
-//	    		sec2 += data.getTotalTime().getSeconds();
-//	    		min2 += data.getTotalTime().getMinutes();
-//	    		hr2 += data.getTotalTime().getHours();
-//	    		sum2 = new Time(hr2, min2, sec2);
 	    		
 	    		String[] str = data.getTotalTime().split(":");
 	    		sec2 += Integer.parseInt(str[2]);
@@ -783,7 +737,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 					min2 = min2 - 60;
 				}
 	    		hr2 += Integer.parseInt(str[0]);
-//	    		sum = new Time(hr, min, sec);
 	    		sum2 = df.format(hr2)+":"+df.format(min2)+":"+df.format(sec2);
 	    		
 	    		
@@ -829,13 +782,8 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 					 totHr++;
 					}
 				totHr = Integer.parseInt(str[0]) - Integer.parseInt(brkStr[0]);
-//				totSum = new Time(totHr, totMin, totSec);
 				totSum2 = df.format(totHr)+":"+df.format(totMin)+":"+df.format(totSec);
 				
-//				int totSec = sum2.getSeconds() - brksum2.getSeconds();
-//				int totMin = sum2.getMinutes() - brksum2.getMinutes();
-//				int totHr = sum2.getHours() - brksum2.getHours();
-//				totSum2 = new Time(totHr, totMin, totSec);
 				
 			}else {
 				totSum2 = sum2;
@@ -862,10 +810,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
 				for (Breaks breaks : breakList) {
 					if(breaks.getTotalTime() != null) {
-//						brksec3 += breaks.getTotalBreakTime().getSeconds();
-//						brkmin3 += breaks.getTotalBreakTime().getMinutes();
-//						brkhr3 += breaks.getTotalBreakTime().getHours();
-//						brksum3 = new Time(brkhr3, brkmin3, brksec3);
 						String[] str = breaks.getTotalTime().split(":");
 						brksec3 += Integer.parseInt(str[2]);
 						if(brksec3>=60) {
@@ -882,10 +826,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 					}
 				}
 				
-//	    		sec3 += data.getTotalTime().getSeconds();
-//	    		min3 += data.getTotalTime().getMinutes();
-//	    		hr3 += data.getTotalTime().getHours();
-//	    		sum3 = new Time(hr3, min3, sec3);
 	    		
 	    		String[] str = data.getTotalTime().split(":");
 	    		sec3 += Integer.parseInt(str[2]);
@@ -899,7 +839,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 					min3 = min3 - 60;
 				}
 	    		hr3 += Integer.parseInt(str[0]);
-//	    		sum = new Time(hr, min, sec);
 	    		sum3 = df.format(hr3)+":"+df.format(min3)+":"+df.format(sec3);
 	    	}
 			
@@ -943,13 +882,8 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 					 totHr++;
 					}
 				totHr = Integer.parseInt(str[0]) - Integer.parseInt(brkStr[0]);
-//				totSum = new Time(totHr, totMin, totSec);
 				totSum3 = df.format(totHr)+":"+df.format(totMin)+":"+df.format(totSec);
 				
-//				int totSec = sum3.getSeconds() - brksum3.getSeconds();
-//				int totMin = sum3.getMinutes() - brksum3.getMinutes();
-//				int totHr = sum3.getHours() - brksum3.getHours();
-//				totSum3 = new Time(totHr, totMin, totSec);
 
 			}else {
 				totSum3 = sum3;
@@ -997,10 +931,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 						brkmin = brkmin - 60;
 					}
 					brkhr += Integer.parseInt(str[0]);
-//					brksec += breaks.getTotalBreakTime().getSeconds();
-//					brkmin += breaks.getTotalBreakTime().getMinutes();
-//					brkhr += breaks.getTotalBreakTime().getHours();
-//					brksum = new Time(brkhr, brkmin, brksec);
 		    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
 
 				}
@@ -1019,18 +949,11 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	    			min = min - 60;
 				}
 	    		hr += Integer.parseInt(str[0]);
-//	    		sum = new Time(hr, min, sec);
 	    		sum = df.format(hr)+":"+df.format(min)+":"+df.format(sec);
 
 			}else {
 				
-//				int sec1 = new Date().getSeconds() - clockInOut.getClockInTime().getSeconds();
-//				int min1 = new Date().getMinutes() - clockInOut.getClockInTime().getMinutes();
-//				int hr1 = new Date().getHours() - clockInOut.getClockInTime().getHours();
-//				Time currentTime = new Time(hr1, min1, sec1);
-				
 				ZoneId zoneId = ZoneId.of(loc.getTimezone().getTimeZoneId());
-//				LocalTime localTime = LocalTime.now(zoneId);
 				LocalDateTime ldt = LocalDateTime.now(zoneId);
 				Date currentDate = Date.from( ldt.atZone( ZoneId.systemDefault()).toInstant());
 				
@@ -1131,6 +1054,160 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	}
 	
 
-	
+	@Override
+	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, Date empJoiningDate, OrgLocations orgLocation) {
+		// TODO Auto-generated method stub
 
+		List<ClockInOutAssociateReportSummaryDTO> getAssociateReportList = clockInOutConfigDao.getAssociateClockInOutReportSummary(clockInOutFiltersDTO, orgLocation, null);
+		List<ClockInOutAssociateReportSummaryDTO> mainList = new ArrayList<>();
+		
+		try {
+			
+			List<String> dates = new ArrayList<>();
+			dates.add("Employee Name");
+			Date[] dateArray = null;
+			if("previous".equalsIgnoreCase(clockInOutFiltersDTO.getType())) {
+				dateArray = clockInOutUtil.getClockFilterPreviousDates(clockInOutFiltersDTO.getCurrentDate(),null,orgLocation,clockInOutFiltersDTO.getDayWisetype());
+				dates = clockInOutUtil.getAllDatesBetweenTwoDates(orgLocation,dateArray);
+
+			}else if("next".equalsIgnoreCase(clockInOutFiltersDTO.getType())) {
+				dateArray = clockInOutUtil.getClockFilterNextDates(clockInOutFiltersDTO.getCurrentDate(),null,orgLocation,clockInOutFiltersDTO.getDayWisetype());
+				dates = clockInOutUtil.getAllDatesBetweenTwoDates(orgLocation,dateArray);
+			}else {
+				if(Constants.TO_DAY.equalsIgnoreCase(clockInOutFiltersDTO.getDayWisetype())) {
+					
+					dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), new Date()));
+					
+				}else if(Constants.REPORT_FILTER_LAST_7_DAYS.equalsIgnoreCase(clockInOutFiltersDTO.getDayWisetype())) {
+					
+					dateArray = clockInOutUtil.currentWeek(orgLocation);
+					dates = clockInOutUtil.getAllDatesBetweenTwoDates(orgLocation,dateArray);
+			
+				}else if(Constants.REPORT_FILTER_CURRENT_MONTH.equalsIgnoreCase(clockInOutFiltersDTO.getDayWisetype())) {
+					
+					dateArray = clockInOutUtil.currentMonthDates(orgLocation);
+					dates = clockInOutUtil.getAllDatesBetweenTwoDates(orgLocation,dateArray);
+			
+				}else if(Constants.REPORT_FILTER_CURRENT_YEAR.equalsIgnoreCase(clockInOutFiltersDTO.getDayWisetype())) {
+					
+					dateArray = clockInOutUtil.currentYearDates();
+					dates = clockInOutUtil.getAllMonthsOfCurrentYear(orgLocation,dateArray);
+			
+				}
+			}
+			
+			ClockInOutAssociateReportSummaryDTO mainDto = null;
+			
+				Map<BigInteger, List<ClockInOutAssociateReportSummaryDTO>> result = getAssociateReportList.stream().collect(Collectors.groupingBy(ClockInOutAssociateReportSummaryDTO::getUserId));
+				
+				if(result != null && result.size() > 0) {
+					
+					for (Entry<BigInteger, List<ClockInOutAssociateReportSummaryDTO>> entry : result.entrySet()) {
+						mainDto = new ClockInOutAssociateReportSummaryDTO();
+						Map<String, String> map = new HashMap<>();
+						
+						String sum = null;
+						
+						for (ClockInOutAssociateReportSummaryDTO clock : entry.getValue()) {
+							StringBuilder sb = new StringBuilder();
+							
+							for(String s : dates) {
+								List<ClockInOutAssociateReportSummaryDTO> dayClockInList = null;
+								if(!s.equalsIgnoreCase("Employee Name")) {
+									if(!"Current_Year".equalsIgnoreCase(clockInOutFiltersDTO.getDayWisetype())) {
+										dayClockInList = entry.getValue().stream()
+												.filter(clco->clco.getClockInDate().equals(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), s))).collect(Collectors.toList());
+								}else {
+										dayClockInList = entry.getValue().stream()
+												.filter(clco->clco.getYearDate().equals(s)).collect(Collectors.toList());
+								}
+								
+								}
+								
+						    	if(dayClockInList != null && dayClockInList.size() > 0) {
+						    		sum = getTotalTimeSumForSummaryReport(dayClockInList);
+						    		map.put(s, sum);
+						    	}else {
+									map.put(s, "--");
+						    	}
+								
+							}
+							
+							
+							if(clock.getLastName() != null) {
+								map.put("Employee Name", sb.append(clock.getFirstName()).append(" ").append(clock.getLastName()).toString());
+							}else {
+								map.put("Employee Name", clock.getFirstName());
+							}
+							
+							
+							if(!"Current_Year".equalsIgnoreCase(clockInOutFiltersDTO.getDayWisetype())) {
+								mainDto.setGraphFormatDate(commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", clock.getClockInDate()));
+							}else {
+								mainDto.setGraphFormatDate(commonUtil.dateStrFromOrgDateFormatter("yyyy-MM", clock.getClockInDate()));
+
+							}
+						
+		
+						}
+						mainDto.setHeaderDates(dates);
+						mainDto.setMapData(map);
+						mainDto.setUserId(entry.getKey());
+						
+						if(sum != null) {
+							String tTime [] = sum.toString().split(":");
+			                StringBuilder sb = new StringBuilder();
+			                sb.append(tTime[0]).append(".").append(tTime[1]);
+			                mainDto.setGraphTotalTime(sb.toString());
+						}
+						
+						mainList.add(mainDto);
+					}
+					
+				}else {
+					mainDto = new ClockInOutAssociateReportSummaryDTO();
+					mainDto.setHeaderDates(dates);
+					mainDto.setIsDataAvailable("NO");
+					mainList.add(mainDto);
+				}
+				
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return mainList;
+	}
+
+	private String getTotalTimeSumForSummaryReport(List<ClockInOutAssociateReportSummaryDTO> dayClockInList) {
+		
+		int sec = 0;
+    	int min = 0;
+    	int hr = 0;
+    	String sum = null;
+    	DecimalFormat df = new DecimalFormat("00");
+		for (ClockInOutAssociateReportSummaryDTO clk : dayClockInList) {
+			
+		    String[] str = clk.getTotalTime().split(":");
+    		sec += Integer.parseInt(str[2]);
+			if(sec>=60) {
+				min++;
+				sec = sec - 60; 
+			}
+			min += Integer.parseInt(str[1]);
+			if(min>=60) {
+				hr++;
+				min = min - 60;
+			}
+			hr += Integer.parseInt(str[0]);
+    		sum = df.format(hr)+":"+df.format(min)+":"+df.format(sec);
+    		
+		   }
+		return sum;
+	}
+
+	@Override
+	public List<ClockInOut> getListOfClockDataBasedOnDate(String selectedDate, OrgLocations loginOrgLocation, Long userId) {
+		return clockInOutConfigDao.getListOfClockDataBasedOnDate(selectedDate,loginOrgLocation,userId);
+	}
 }

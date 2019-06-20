@@ -7,42 +7,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
      <script src="/resources/js/sourcelead.common.js"></script> 
 
-<style>
-
-.dashboard-widget.dashboard-widget-icons{
-min-height: 125px !important;
-}
-.dashboard-widget .blank-pages{
-padding: 0; min-height: 100px;
-}
-
-.custom-datatble table{
-  margin-top: 20px !important;
- }
- .custom-datatble .dataTables_filter{
-   top: -35px !important; padding: 0 !important;
- }
- .dashboard-datepkr{
-       position:relative;
-}
-.ui-timepicker-wrapper {
-z-index: 999999;
-width: 11.5%;
-}
-.pdleft{
-padding-left:0;
-}
-.pdRight{
-padding-right:0;
-}
-</style>
-
- <style type="text/css">
-.clients_wrap_table {
-overflow-x: auto;
-}
-</style>
-
  <script type="text/javascript">
  $( document ).ready(function() {
 	 var settingsConfigured = '${SourceLeadWeb_settingsConfigured}';

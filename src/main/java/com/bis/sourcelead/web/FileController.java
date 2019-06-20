@@ -38,14 +38,17 @@ import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.rest.RequirementRestController;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.util.SourceleadResumeParser;
+import com.bis.sourcelead.util.SourceleadResumeParserNew;
 
 @Controller
 @RequestMapping("/app")
@@ -58,13 +61,19 @@ public class FileController {
 	private PdfConversionUtil pdfConversionUtil;
 
 	@Autowired
-	private SourceleadResumeParser sourceleadResumeParser;
+	private SourceleadResumeParserNew sourceleadResumeParser;
 
 	@Autowired
 	private CandidateService candidateService;
 
 	@Autowired
 	private CandidateResumesService candidateResumeService;
+	
+	@Autowired
+	private RequirementRestController requirementRestController;
+	
+	@Autowired
+	private RequirementService requirementService;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -187,7 +196,7 @@ public class FileController {
 	@RequestMapping(value = "/upload-resumes", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, List<ResumeParserJsonUtil>> uploadResumeFiles(MultipartHttpServletRequest request, String uploadid, int chunk,
-			int chunks, String name) throws Exception {
+			int chunks, String name, String requirementUUID, String needApplicantPermit, String notifyToApplicant) throws Exception {
 		HttpSession session = request.getSession();
 		Map<String, List<ResumeParserJsonUtil>> parsedList = new HashMap<>();
 		if (chunks <= chunk + 1) {
@@ -203,8 +212,15 @@ public class FileController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
+		Long requirementId = 0L;
+		if (requirementUUID != null && !requirementUUID.isEmpty()) {
+			Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
+			if (requirement != null) {
+				requirementId = requirement.getId();
+			}
+		}
 		FileUploadUtil.processResumeFiles(parsedList, fileInfoList, session, uploadid, staticPath, sourceleadResumeParser, candidateService,
-				candidateResumeService, country, loginOrgLocation, sourceleadUrl, user);
+				candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, requirementId, needApplicantPermit, notifyToApplicant, requirementRestController, request);
 		session.setAttribute("uploadstats" + uploadid, "Completed!");
 		FileUploadUtil.saveLogMessage(uploadid, "<br/>Completed!<br/><br/>", candidateService);
 		return parsedList;
@@ -215,11 +231,12 @@ public class FileController {
 	public List<ResumeParserJsonUtil> uploadResume(MultipartHttpServletRequest request) {
 		List<ResumeParserJsonUtil> resumeContent = new ArrayList<>();
 		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0, 0, 0, 0, 0, 0, 0, null, null);
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		for (FileInfo fileInfo : fileInfoList) {
 			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace("resumes", "temp"));
 			try {
 				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
-				ResumeParserJsonUtil resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country);
+				ResumeParserJsonUtil resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
 				resume.setFileInfo(fileInfo);
 				resumeContent.add(resume);
 			} catch (Exception ex) {
@@ -266,7 +283,7 @@ public class FileController {
 						Map<String, List<ResumeParserJsonUtil>> parsedList = new HashMap<>();
 
 						FileUploadUtil.processResumeFiles(parsedList, fileInfoList, null, uploadid, staticPath, sourceleadResumeParser,
-								candidateService, candidateResumeService, country, loginOrgLocation, sourceleadUrl, user);
+								candidateService, candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, 0L, null, null, null, null);
 
 						FileUploadUtil.saveLogMessage(uploadid, "<br/>Completed!<br/><br/>", candidateService);
 
@@ -362,7 +379,8 @@ public class FileController {
 	}
 
 	@RequestMapping("/bulk-resume-import.html")
-	public String bulkResumeImport() {
+	public String bulkResumeImport(@RequestParam(defaultValue = "") String requirementUUID, ModelMap map) {
+		map.addAttribute("requirementUUID", requirementUUID);
 		return "resume-upload";
 	}
 

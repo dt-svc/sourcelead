@@ -1,9 +1,12 @@
 package com.bis.sourcelead.clockInOutRestController;
 
 import java.sql.Time;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateReportSummaryDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockInOutDTO.PreviousNextDTO;
 import com.bis.sourcelead.clockInOutEntity.Breaks;
@@ -28,14 +33,24 @@ import com.bis.sourcelead.clockInOutUtil.ClockInOutUtil;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Tasks;
+import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.TeamService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.sendgrid.Method;
@@ -55,6 +70,24 @@ public class ClockInOutRestController {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	DepartmentService departmentService;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	RolesService rolesService;
+	
+	@Autowired
+	RequirementService requirementService;
+	
+	@Autowired
+	ProjectsService projectsService;
+	
+	@Autowired
+	TeamService teamService;
 	
 	@RequestMapping(value = "/clockInOutConfig")
 	public ModelAndView redirect(HttpServletRequest request) {
@@ -219,13 +252,6 @@ public class ClockInOutRestController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/associateClockInSummaryReport")
-	public ModelAndView associateClockInSummaryReport() {
-		ModelAndView model = new ModelAndView();
-		model.setViewName("clockInOut/associateClockInSummaryReport");
-		return model;
-	}
-	
 	@RequestMapping(value = { "/getUserTimeEntries", "/rest/getUserTimeEntries" })
 	public ResponseList<ClockInOutUserTimeEntryDTO> getUserTimeEntries(@RequestParam(value = "dayWisetype", required = false) String dayWisetype, @RequestParam(value = "currentDate", required = false) String currentDate, @RequestParam(value = "type", required = false) String type, HttpServletRequest request)
 	{
@@ -278,11 +304,56 @@ public class ClockInOutRestController {
 	}
 	
 	
-	@RequestMapping(value = "/getAossociateClockInOutReportSummary",method = RequestMethod.GET)
-	public String getAossociateClockInOutReportSummary(HttpServletRequest req,HttpServletResponse res) {
+	@RequestMapping(value = "/associateClockInSummaryReport")
+	public ModelAndView associateClockInSummaryReport(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
 		
-		
-		return null;
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (user != null) {
+			try {
+				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+				Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+				
+				Collection<Roles> rolesList = null;
+				String userType = null;
+				List<Department> deptList = null;
+				List<Projects> projectList = null;
+				List<Requirement> requirementList = null;
+				List<UserRole> userRoleList = null;
+				List<Team> teamList = null;
+				
+				if (Constants.ROLE_ADMIN.equalsIgnoreCase(userRole)
+						|| Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)) {
+					userType = Constants.ADMIN;
+					requirementList = clockInOutConfigService.getAssignedRequirementListByOrgLocationIDAndUserId(orgLocationId, userType, user.getId());
+				}
+				else {
+					requirementList = clockInOutConfigService.getAssignedRequirementListByOrgLocationIDAndUserId(orgLocationId, userType, user.getId());
+				}
+				
+				deptList = departmentService.getDepartmentByOrgLocationId(orgLocationId);
+				rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocationId,roleHierarchyId);
+				projectList = projectsService.getProjectByOrgLocationsId(orgLocationId);
+				
+				userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocationId);
+				
+				teamList = teamService.getTeamListByOrgLocationID(orgLocationId);
+				
+				model.addObject("deptList", deptList);
+				model.addObject("rolesList", rolesList);
+				model.addObject("jobsList", requirementList);
+				model.addObject("projectList", projectList);
+				model.addObject("userRoleList", userRoleList);
+				model.addObject("teamList", teamList);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		model.setViewName("clockInOut/associateClockInSummaryReport");
+		return model;
 	}
 	
 	@RequestMapping(value = "/getTimeReports",method = RequestMethod.GET)
@@ -301,6 +372,16 @@ public class ClockInOutRestController {
 		return clockInOutConfigService.getWorkingTimeByClockId(loginOrgLocation,user);
 	}
 	
+
+	@RequestMapping(value = "/getAssociateClockInOutReportSummary",method = RequestMethod.POST)
+	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO,HttpServletRequest request,HttpServletResponse response) {
+		Date empJoiningDate = (Date) SourceLeadSessionManager.getSessionAttribute(request, "joiningDate");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<ClockInOutAssociateReportSummaryDTO> list = clockInOutConfigService.getAssociateClockInOutReportSummary(clockInOutFiltersDTO,empJoiningDate, loginOrgLocation);
+		return list;
+	}
+
+
 	@RequestMapping(value = "/getPreviousClockInData",method = RequestMethod.GET)
 	public ClockInOutDTO getPreviousClockInData(HttpServletRequest req,HttpServletResponse res) {
 		
@@ -309,4 +390,10 @@ public class ClockInOutRestController {
 		return clockInOutConfigService.getPreviousClockInData(loginOrgLocation,user);
 	}
 
+	@RequestMapping(value = "/getListOfClockDataBasedOnDate",method = RequestMethod.GET)
+	public List<ClockInOut> getListOfClockDataBasedOnDate(@RequestParam(value="selectedDate", required=false) String selectedDate,@RequestParam(value="userId", required=false) Long userId,HttpServletRequest req,HttpServletResponse res) {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+		return clockInOutConfigService.getListOfClockDataBasedOnDate(selectedDate,loginOrgLocation,userId);
+	}
 }

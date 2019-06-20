@@ -634,6 +634,11 @@ public class Constants {
 			"EmpType","Role","Designation","Grade","Reporting Manager","Resource Manager","Shift","Rate",
 			"Daily Hours","Global Manager","Is send mail to Associate","Allow Employee To Fill","SSN Number"};
 	
+	
+	public static final String[] AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS = { "Project Name", "Project Duration","Associate Duration", "Availability %","No.of Hours",};
+	
+	public static final String[] EXPENSE_PENDING_APPROVAL_REPORT_EXPORT_HEADDERS = { "Emp_ID", "Emp_Name","Emp_Type", "Project","Duration","Approval Mechanism","Manager1","Manager2","Submitted Amount","Submitted on","Approved By"};
+	
 	public static final String[] DAILY_WISE_LEAVE_REPORT_HEADERS = { "Emp Name", "Emp Type", "Departement",
 			"Role", "Leave Type", "Type", "Duration", "From Date",
 			"To Date", "Applied On", "Reason", "Status", "Approver", "Approved On" };
@@ -1014,8 +1019,6 @@ public class Constants {
 	public static final String[] ASSETS_REPORT_EXPORT_HEADDERS = { "Employee Id", "Employee Name","Asset Name", "Category","Serial Number",
 			"Assigned On", "Returned On" ,"Shift", "Document", "Assigned By",};
 	
-	public static final String[] AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS = {"Employee Name", "Project Name", "Project Duration","Associate Duration", "Availability %","No.of Hours",};
-	
 	public static final String[] JOBFAIR_EXPORT_HEADERS = {"Generated ID", "Title", "Start Date", "End Date", "No.of Jobs", "Applicants", "Offered", "Venue", "Status"};
 	
 	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense ID","purpose","Project","Client","Start Date","End Date","No of Items","Amount","Status"};
@@ -1318,7 +1321,7 @@ public class Constants {
 	public static final String REPORT_FILTER_1_WEEK = "1_week";
 	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
-	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On","Location"};
+	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Id","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On","Location"};
 	
     public static final String BOOLEAN_TRUE = "true";
     public static final String LOCAL_TAX_YES = "YES";
@@ -1493,6 +1496,10 @@ public class Constants {
 	public static final String DEDUCTION_TYPE = "Deduction Type";
 	public static final String DEDUCT_AMOUNT= "Deduct Amount";
 	public static final String CONTRIBUTE_AMOUNT = "Contribute Amount";
+	
+	public static final String NOTIFICATION_LEAVE_TITLE = "Leave Status";
+	
+	public static final String[] ELIMINATE_NAME_KEYWORDS = { "CANDIDATE", "FIRST NAME", "NAME" };
 	
 	
 }

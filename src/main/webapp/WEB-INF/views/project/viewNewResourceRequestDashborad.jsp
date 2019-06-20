@@ -5,14 +5,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style>
-.settPop .form-control {
-    height: auto !important; 
-}
-</style>
-
-
-
 <script type="text/javascript">
 	window.onload = function () {
 		getRequestedAssociatesList();
@@ -387,7 +379,7 @@ function acceptNewResourceRequest(requestUUID){
 <script>
 function onholdNewAssociateRequest(requestUUID,roleName,requestType){
 	var result = "";
-	result = result + '	<div class="settPop">';
+	result = result + '	<div class="settPop settPopFormcontrol">';
 	result = result + '	<div id="loading"></div>';
 	result = result + '<form id="newRequestOnHold_form" name="newRequestOnHold_form" method="post">';
 	result = result + '<input type="hidden" name="requestUUID" value="'+requestUUID+'">';
