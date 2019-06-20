@@ -1037,9 +1037,9 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     	                result = result +"	<div class='col-md-12 mt10 mb'>";
     	                result = result +"    <div class='clearfix inputfiledColor'>";
     	                if(obj != null && obj != 'undefined' && obj != ""){
-    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='"+obj.updatedDateStr+"' type='text' field-name='Join Date'>";
+    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate"+submissionId+"'  readonly='readonly' value='"+obj.updatedDateStr+"' type='text' field-name='Join Date'>";
     	                }else{
-    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='' type='text' field-name='Join Date'>";
+    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate"+submissionId+"'  readonly='readonly' value='' type='text' field-name='Join Date'>";
     	                }
     	                result = result +"    </div>";
     	                result = result +"    <div id='joinDateErrorDiv'></div>";
@@ -1061,7 +1061,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     	            	  }if(locationDate.match("yyyy-dd-MM")){
     	            		  jsDateFormat = 'yy-dd-mm'; 
     	            	  }
-    	            	  $('#joinDate').datepicker({
+    	            	  $('#joinDate'+submissionId).datepicker({
     	            	      dateFormat: jsDateFormat,
     	            	      changeMonth: true,
     	            	  	  changeYear: true,
@@ -1222,7 +1222,7 @@ function cancelBackOutApplicant(submissionId,requirementId,submissionType){
 function cancelJoinedRequest(submissionId,requirementId,submissionType){ 
 	 $("#joinedApplicant"+submissionId).fadeOut(200);
 	 $(".project_inn_mask").fadeOut(200);
-	 $("#joinDate").val("");
+	 $("#joinDate"+submissionId+"").val("");
 	 pipelineBySubmissionType(requirementId,submissionType);
 };
 
@@ -1322,7 +1322,7 @@ $('body').on('blur', '#backOut_form', function() {
 
 function saveJoinedRequestForApplicant(submissionId,requirementId,submissionType){
 	if ($('#joinedApplicant_form').validate(false, validationSettings)) {
-		if($('#joinDate').val() != null && $('#joinDate').val() != ''){
+		if($('#joinDate'+submissionId+'').val() != null && $('#joinDate'+submissionId+'').val() != ''){
 		var formData =  getFormData('joinedApplicant_form'); 
 		$("#saveBackOut").attr("disabled", true);
 		$.ajax({
