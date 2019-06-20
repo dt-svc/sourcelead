@@ -2020,6 +2020,12 @@ function requirementWorkflowStatusBar(requirementId){
 		result = result + '<li title="Request Sent" id="requestSentli" onclick="requirementPipeline('+requirementId+',\''+requestSent+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-check"></i></span><b id="requestSent">0</b>';
 		result = result + '</li>';
+		 <c:forEach var="stage" items="${stagesList}">
+		//  console.log('${stage.stageName}' + ', '+'${stage.uuid}')
+		result = result + '<li title="${stage.stageName}" id="requestSentli" onclick="requirementPipeline('+requirementId+',"${stage.stageName}");tabEnable(this);">';
+		result = result + '	<span><i class="fa fa-check"></i></span><b id="requestSent">0</b>';
+		result = result + '</li>';
+		</c:forEach>
 		result = result + '<div class="clearfix"></div>';
 	    result = result + '</ul>';
 	    result = result + '</div>';
@@ -2027,7 +2033,7 @@ function requirementWorkflowStatusBar(requirementId){
 	    
 	    $("#status-div").empty();
 	    $("#status-div").prepend(result);
-	
+	   
 }
 function requirementStatusBar(requirementId){
 	alert("inside requirementStatusBar ");

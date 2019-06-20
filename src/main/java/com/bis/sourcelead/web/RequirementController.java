@@ -115,8 +115,8 @@ import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
-import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 //import org.apache.commons.collections.ListUtils;
 import com.ibm.icu.util.Calendar;
@@ -890,8 +890,8 @@ public class RequirementController {
 				System.out.println("Workflow configure Type is >>>>> "+workflowDTO.getConfigureType());
 				if(requirement.getWorkflowId() != null  && workflowDTO.getId() != requirement.getWorkflowId().getId()) {
 					System.out.println("OTHER THAN DEFAULT WORKFLOW IS FOUND >>>>>>>>>>>>>");
-					//List<RequirementWorkFlowStagesDTO> stagesList = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(requirement.getWorkflowId().getId(), orgLocations);
-					//model.addObject("stagesList", stagesList);
+					List<RequirementWorkFlowStages> stagesList = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(requirement.getWorkflowId().getId(), orgLocations);
+					model.addObject("stagesList", stagesList);
 					model.setViewName("requirement/requirementWorkflowSummary");
 				}else {
 					System.out.println("DEFAULT WORKFLOW IS FOUND >>>>>>>>>>>>>");
