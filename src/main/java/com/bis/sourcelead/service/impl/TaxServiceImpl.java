@@ -805,16 +805,15 @@ public class TaxServiceImpl implements TaxService {
 					.setSourceleadTaxForm(taxDao.getTaxFormType(itDeclarationSubmissionDTO.getTaxFormId()));
 
 			Map<Long, String> taxSectionMapList = new HashMap<>();
-			for (SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO : itDeclarationSubmissionDTO
-					.getSubmissionItemList()) {
-				taxSectionMapList.put(submissionItemDTO.getTaxSectionId(), submissionItemDTO.getTaxSectionName());
-			}
+			for (SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO : itDeclarationSubmissionDTO.getSubmissionItemList()){
+				taxSectionMapList.put(submissionItemDTO.getTaxSectionId(), submissionItemDTO.getTaxSectionName());}
 
 			JSONArray jsonArray = new JSONArray();
 			for (Long taxSectionId : taxSectionMapList.keySet()) {
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("taxSectionId", taxSectionId);
 				jsonObject.put("taxSectionName", taxSectionMapList.get(taxSectionId));
+				jsonObject.put("taxSectionMaxLimit", (taxDao.getTaxSection(taxSectionId)).getMaxLimit());
 				JSONArray itemArray = new JSONArray();
 				for (SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO : itDeclarationSubmissionDTO
 						.getSubmissionItemList()) {
