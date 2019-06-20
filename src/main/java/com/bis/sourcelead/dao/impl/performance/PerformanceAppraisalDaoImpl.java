@@ -202,9 +202,9 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		}
 		
 		if(query1.toString() != null && !query1.toString().isEmpty()){
-			querySeachStr = "where "+"("+query1.toString()+") AND Q1.daysDifference <= 0";
+			querySeachStr = "where "+"("+query1.toString()+") AND Q1.dayDiff <= 0";
 		}else {
-			querySeachStr = "where Q1.daysDifference <= 0";
+			querySeachStr = "where Q1.dayDiff <= 0";
 		}
 		
 		try {
@@ -221,6 +221,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 				appraisalDateFormat = "\"%Y-%d-%m\"";
 			}
 			
+			
 			query = "SELECT Q1.* " + 
 			 		 "FROM (" + 
 					 "SELECT " + 
@@ -232,13 +233,13 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 					"DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_END_DATE,"+appraisalDateFormat+") AS appraisalProcessEndDate, "+
 					"DATE_FORMAT(TEMPLATE.PEER_REVIEW_START_DATE,"+appraisalDateFormat+") AS peerReviewStartDate, "+
 					"DATE_FORMAT(TEMPLATE.PEER_REVIEW_END_DATE,"+appraisalDateFormat+") AS peerReviewEndDate, "+
-					"DATEDIFF(TEMPLATE.PEER_REVIEW_START_DATE,CURRENT_DATE()) AS daysDifference " + 
+					"DATEDIFF(TEMPLATE.PEER_REVIEW_START_DATE,CURRENT_DATE()) AS dayDiff " + 
 							             
 					"FROM " + 
 					"PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, " + 
 					"PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE, " + 
-					"PERFORMANCE_APPRAISAL_PEERS PEERS PEERS " + 
-					"WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND ASSIGNED.PEER_ID = PEERS.ID " + 
+					"PERFORMANCE_APPRAISAL_PEERS PEERS " + 
+					"WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND PEERS.ID = ASSIGNED.PEER_ID  " + 
 					"AND ASSIGNED.ORG_LOCATION_ID = :orgLocationId AND FIND_IN_SET('"+userId+"',PEERS.PEER_USER_ID) > 0)Q1 "+querySeachStr+sortingQry;
 			
 			String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
