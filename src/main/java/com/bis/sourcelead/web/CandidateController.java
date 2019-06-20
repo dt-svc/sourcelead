@@ -225,7 +225,7 @@ public class CandidateController {
 		 	logger.debug("Display the candiade page");
 		 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			ModelAndView model = new ModelAndView();
-			model.addObject("sourceCandidateList", candidateService.getCandidateSourceListByOrgLocationId(orgLocations.getId(), 1, null, null));
+			model.addObject("sourceCandidateList", candidateService.getCandidateSourceListByOrgLocationIdAndStatus(orgLocations.getId(), 1));
 			model.setViewName("candidates/candidate");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
