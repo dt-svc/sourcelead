@@ -88,7 +88,7 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 		logger.debug("Running getRequirementWorkFlowByOrgLocationId DAO");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id = :orgLocationId";
+			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.orgLocationId.id = :orgLocationId and requirementWorkFlow.status=1";
 			List<RequirementWorkFlow> requirementWorkFlow = session.createQuery(query)
 					.setParameter("orgLocationId", orgLocationId).list();
 			return requirementWorkFlow;
@@ -776,4 +776,20 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 	}
 	}
 
+	@Override
+	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesByWorkflowIdAndOrglocations(Long workflowId,
+			OrgLocations orgLocations) {
+		logger.debug("Running getRequirementWorkflowStagesByWorkflowIdAndOrglocations DAO");
+		List<RequirementWorkFlowStages> workflowStagesList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlowStages worflowstages where worflowstages.requirementWorkFlowId.id =:workflowId and worflowstages.orgLocationId.id=:orgLocationId order by worflowstages.seqOrder";
+			workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setLong("orgLocationId", orgLocations.getId()).list();
+		} catch (Exception e) {
+			logger.error(e + " in getRequirementWorkflowStagesByWorkflowIdAndOrglocations DAO");
+			e.printStackTrace();
+		}
+		return workflowStagesList;
+	}
 }
+	
