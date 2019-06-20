@@ -573,6 +573,12 @@ function Projects() {
 		this.validateShortCode = function(){
 			var projectShortCode = $('#projectShortCode').val();
 			var orgLocId = document.getElementById("loginOrgLocationId").value;
+			
+			if(projectType != null && projectType != '' && projectType != 'undefined' && 
+					sharedClientOrgLocId != null && sharedClientOrgLocId != '' && sharedClientOrgLocId != 'undefined'){
+				orgLocId =  $('#sharedClientOrgLocId').val();
+			}
+			
 			$.ajax({
 				type : "POST",
 				url : pmsUrl+ "/validateProjectShortCodeByOrgLocationId?projectShortCode="+projectShortCode+"&orgLocId="+orgLocId,
