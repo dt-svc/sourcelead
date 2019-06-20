@@ -3906,23 +3906,22 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	
 }
 
-	
-
 	@Override
-	public List<CandidateSourceDTO> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status,String searchValue) {
+	public List<CandidateSourceDTO> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status,
+			String searchValue, CandidateSourceDTO candidateSourceDTO) {
 		List<CandidateSourceDTO> candidateSourceDTOList = new LinkedList<>();
 		try {
-			List<CandidateSource> candidateSourceList = candidateDao.getCandidateSourceListByOrgLocationId(orgLocationId, status, searchValue);
+			List<CandidateSource> candidateSourceList = candidateDao.getCandidateSourceListByOrgLocationId(orgLocationId, status, searchValue,candidateSourceDTO);
 			if (null != candidateSourceList && !candidateSourceList.isEmpty()) {
 				for (CandidateSource candidateSource : candidateSourceList) {
-					CandidateSourceDTO candidateSourceDTO = new CandidateSourceDTO();
-					candidateSourceDTO.setId(candidateSource.getId());
+					CandidateSourceDTO candidateSourcedto = new CandidateSourceDTO();
+					candidateSourcedto.setId(candidateSource.getId());
 					
-					candidateSourceDTO.setName(candidateSource.getName());
-					candidateSourceDTO.setDescription(candidateSource.getDescription());
-					candidateSourceDTO.setStatus(candidateSource.getStatus());
+					candidateSourcedto.setName(candidateSource.getName());
+					candidateSourcedto.setDescription(candidateSource.getDescription());
+					candidateSourcedto.setStatus(candidateSource.getStatus());
 					
-					candidateSourceDTOList.add(candidateSourceDTO);
+					candidateSourceDTOList.add(candidateSourcedto);
 				}
 			}
 		} catch (Exception e) {
@@ -3930,6 +3929,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		return candidateSourceDTOList;
 	}
+	
 
 	@Override
 	public CandidateSourceDTO getCandidateSourceById(long id, long userId, OrgLocations loginOrgLocation) {
@@ -3957,6 +3957,15 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Boolean deleteCandidateSourceById(long id) {
 			return candidateDao.deleteCandidateSourceById(id);
 		}
+
+	@Override
+	public List<CandidateSource> getCandidateSourceListByOrgLocationIdAndStatus(Long orgLocationId, int status) throws Exception {
+			
+		return candidateDao.getCandidateSourceListByOrgLocationIdAndStatus(orgLocationId, status);
+		
+	}
+
+
 	}
 
 	
