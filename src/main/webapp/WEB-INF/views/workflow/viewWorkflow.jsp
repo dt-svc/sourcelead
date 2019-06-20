@@ -2,6 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+	<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 	<script>
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
@@ -157,12 +158,15 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					
 					<ul class="list-inline list-unstyled pull-right mb0">
 						<c:if test = "${requirementWorkFlowStages.editable == 'Y'}">
+						    <sec:authorize access="hasRole('ROLE_EDIT_VIEW_WORKFLOW')">
 						<li>
 							<a title="Edit" 
 							onclick = 'requirementWorkflow.editStage("${requirementWorkFlowStages.uuid}",
 							"${requirementWorkFlowStages.requirementWorkFlowUuid}")'>
 							<i class="fa fa-pencil"></i></a>
 						</li>
+						</sec:authorize>
+                             <sec:authorize access="hasRole('ROLE_DELETE_WORKFLOW')">
 						<li>
 							<a title="Delete" 
 							onclick = 'requirementWorkflow.deletepopup("${requirementWorkFlowStages.uuid}",
@@ -170,6 +174,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 							"${requirementWorkFlowStages.requirementWorkFlowUuid}")'>
 							<i class="fa fa-trash"></i></a>
 						</li>
+						</sec:authorize>
 						</c:if>	
 						<c:if test = "${requirementWorkFlowStages.editable == 'N'}">	
 						<li></li>
