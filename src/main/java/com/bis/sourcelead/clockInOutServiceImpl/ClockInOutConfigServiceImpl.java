@@ -246,6 +246,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			clockInOut.setProjectId(clockInOutDTO.getProjects());
 			clockInOut.setProjectsTaskId(clockInOutDTO.getProjectTasks());
 			clockInOut.setGeneralTaskId(clockInOutDTO.getGeneralTasks());
+			clockInOut.setComments(clockInOutDTO.getComments());
 			clockInOut = clockInOutConfigDao.saveClockInOutTime(clockInOut);
 			
 		} catch (Exception e) {
@@ -627,7 +628,6 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		    		subDto.setClockOutTime(data.getClockOutTime());
 		    		subDto.setIndividualNoOfHours(data.getTotalTime());
 		    		subDto.setTaskName(data.getProjectTaskName());
-		    		subDto.setLocation(null);
 		    		subDto.setComments(data.getComments());
 		    		subDto.setClockOutDate(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
 		    		subListDto.add(subDto);

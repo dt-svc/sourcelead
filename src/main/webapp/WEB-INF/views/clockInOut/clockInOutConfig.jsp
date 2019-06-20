@@ -154,6 +154,9 @@ $("#clSub").click(function(){
 
 $("#hideClSub").click(function(){
   $(".clockSub").hide();
+  $("#a").prop("checked", false);
+  $("#b").prop("checked", false);
+  $("#c").prop("checked", false);
 });
 
 $(".clockAni").click(function(){
