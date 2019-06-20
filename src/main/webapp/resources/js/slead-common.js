@@ -165,18 +165,18 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 	
 }
 
-$(function() {
+/*$(function() {
 
-    /*for (var selector in config) {
+	for (var selector in config) {
 		$(selector).chosen(config[selector]);
-	}*/
+	}
 	
-    $('.chosen-select').each(function() {
+	$('.chosen-select').each(function() {
 		var $this = $(this);
 		$this.next().css({'width': '100%'});
 	});
 
-});
+});*/
 
 function viewFile(fileURL, title, contentType){
 	if(fileURL != null && fileURL != "" && fileURL != "undefined"){
