@@ -1484,7 +1484,7 @@ function cancel(){
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
 			startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input"  value="'+projectStartDate+'" name="associateResources['+maxRowNum+'].requestStartDate" readonly >';
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'sdate-input"  field-name="Start Date"  data-validation="required" name="associateResources['+maxRowNum+'].requestStartDate" readonly >';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
