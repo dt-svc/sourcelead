@@ -269,11 +269,19 @@ function RequirementWorkflow(){
 	  		result = result +"<li>";
 	  		result = result +"<label class='switch mr positionRelativeTop10' title='Default'>"
 	  		result = result +"<input type='checkbox' name='' "+ (status == 1 ?'checked':'')+" >";
-	  		result = result +"<div class='slider round' onclick = 'requirementWorkflow.changeWorkflowStatus(\""+uuid+"\", \""+status+"\");'></div>";
+	  		 if(roleActionsArray.indexOf("ROLE_EDIT_VIEW_WORKFLOW")  > -1){
+	 	  		result = result +"<div class='slider round' onclick = 'requirementWorkflow.changeWorkflowStatus(\""+uuid+"\", \""+status+"\");'></div>";
+				 }
 	  		result = result +"</label></li>";
-	  		result = result +"<li><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
-	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick='requirementWorkflow.deleteWorkflowEntry(\""+uuid+"\", \""+workFlowName+"\")'></i></li>";
-			result = result +"<li><i onclick='requirementWorkflow.cloneWorkFlow(\""+uuid+"\",\""+workFlowName+"\",\""+description+"\");'class='fa fa fa-clone cursorPointer text-primary' title='Clone'></i></li>";
+	  		 if(roleActionsArray.indexOf("ROLE_EDIT_VIEW_WORKFLOW")  > -1){
+	 	  		result = result +"<li><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
+			 }
+	  		 if(roleActionsArray.indexOf("ROLE_DELETE_WORKFLOW")  > -1){
+	 	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick='requirementWorkflow.deleteWorkflowEntry(\""+uuid+"\", \""+workFlowName+"\")'></i></li>";
+				 }
+	  		 if(roleActionsArray.indexOf("ROLE_ADD_WORKFLOW")  > -1){
+	 			result = result +"<li><i onclick='requirementWorkflow.cloneWorkFlow(\""+uuid+"\",\""+workFlowName+"\",\""+description+"\");'class='fa fa fa-clone cursorPointer text-primary' title='Clone'></i></li>";
+					 }
 	  		result = result +"</ul></div>";
 	  		}
 		return result;
@@ -871,8 +879,12 @@ function RequirementWorkflow(){
 				 	    	  		var result = "";
 				 	    	    	result = result +"<div class='width90px'>";
 				 	    	  		result = result +"<ul class='list-inline list-unstyled'>";
+				 	    	  		if(roleActionsArray.indexOf("ROLE_EDIT_VIEW_WORKFLOW")  > -1){
 				 	    	  		result = result +"<li><a href= "+sourceleadUrl+"/editQuestionnaire?templateUuid="+workflow.uuid+"><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
-				 	    	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick=  'requirementWorkflow.deletepoup(\""+workflow.uuid+"\",\""+workflow.name+"\")'></i></li>"
+				 	    	  		}
+				 	    	  		if(roleActionsArray.indexOf("ROLE_DELETE_WORKFLOW")  > -1){
+					 	    	  	result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick=  'requirementWorkflow.deletepoup(\""+workflow.uuid+"\",\""+workflow.name+"\")'></i></li>"
+					 	    	  	}
 				 	    	  		result = result +"</ul>	";
 				 	    	  		result = result +"</div>";
 				   	             	return result;

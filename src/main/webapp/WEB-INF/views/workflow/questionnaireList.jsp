@@ -1,5 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="/resources/js/requirementWorkflow.js?staticTime=${staticTime}"></script>
 <script>
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
@@ -15,6 +16,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
       <a href="${SourceLeadWeb_sourceleadUrl}/workflowList">Application Workflow</a> &raquo;
       Questionnaire</div>
     </section>
+       <sec:authorize access="hasRole('ROLE_ADD_WORKFLOW')"> 
     <div class="project_wrap clearfix">
       <div class="timesheet_out" id="payrollRegister" style="display: block;">
         <div class="clearfix">
@@ -33,6 +35,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           </div>
       </div>
     </div>
+    </sec:authorize>
   </section>
 </div>
 <div id="popUp"></div>
