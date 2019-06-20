@@ -103,7 +103,7 @@ import com.bis.sourcelead.util.PrimarySkillUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.util.SourceleadResumeParser;
+import com.bis.sourcelead.util.SourceleadResumeParserNew;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -155,7 +155,7 @@ public class CandidateRestController {
 	@Autowired
 	RequirementOfferHistoryService requirementOfferHistoryService;
 	@Autowired
-	private SourceleadResumeParser sourceleadResumeParser;
+	private SourceleadResumeParserNew sourceleadResumeParser;
 	@Autowired
 	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	@Autowired
@@ -246,6 +246,7 @@ public class CandidateRestController {
 			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData) {
 		Response<ResumeParserJsonUtil> response = new Response<>();
 		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
 			if (itrator.hasNext()) {
@@ -254,7 +255,8 @@ public class CandidateRestController {
 			ResumeParserJsonUtil resumeDetails = null;
 			if (null != multiFile) {
 				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
-				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country);
+				String fileName = multiFile.getOriginalFilename();
+				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country, orgLocation.getDateFormat(), fileName);
 			}
 			response.setObject(resumeDetails);
 			response.setResponse(Result.SUCCESS.name());
@@ -1605,17 +1607,28 @@ public class CandidateRestController {
 
 	    @RequestMapping(value = {"/getCandidateSourceList", "/rest/getCandidateSourceList"}, method = RequestMethod.POST)
 		@ResponseBody
-		public ResponseList<CandidateSourceDTO> getCandidateSourceList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue) {
+		public ResponseList<CandidateSourceDTO> getCandidateSourceList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue,CandidateSourceDTO candidateSourceDTO) {
 			ResponseList<CandidateSourceDTO> responseList = new ResponseList<>();
 			try {
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if (null != user) {
 					boolean forMobile = request.getRequestURI().contains("rest");
 					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-					List<CandidateSourceDTO> candidateSourceDTO = candidateService.getCandidateSourceListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue);
-					responseList.setData(candidateSourceDTO);
-					responseList.setRecordsTotal(candidateSourceDTO.size());
-					responseList.setRecordsFiltered(candidateSourceDTO.size());
+					String[] tableColumns = { "id", "name ", "description"};// should be
+
+					// entity names
+					int sortColumnIndex = 1; // by default sorting using invoice date
+					String sortColumnOrder = "asc"; // by default descending order
+					if (candidateSourceDTO.getOrder() != null && !candidateSourceDTO.getOrder().isEmpty()) {
+						sortColumnIndex = Integer.parseInt(candidateSourceDTO.getOrder().get(0).get("column"));
+						sortColumnOrder = candidateSourceDTO.getOrder().get(0).get("dir");
+					}
+					candidateSourceDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					candidateSourceDTO.setSortOrder(sortColumnOrder);
+					List<CandidateSourceDTO> candidateSourceDTOList = candidateService.getCandidateSourceListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue,candidateSourceDTO);
+					responseList.setData(candidateSourceDTOList);
+					responseList.setRecordsTotal(candidateSourceDTOList.size());
+					responseList.setRecordsFiltered(candidateSourceDTOList.size());
 					responseList.setResponse(Result.SUCCESS.name());
 					responseList.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
