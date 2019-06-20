@@ -288,6 +288,7 @@ public class ClockInOutRestController {
 	@RequestMapping(value = "/associateClockInSummaryReport")
 	public ModelAndView associateClockInSummaryReport() {
 		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl",sourceleadUrl);
 		model.setViewName("clockInOut/associateClockInSummaryReport");
 		return model;
 	}
