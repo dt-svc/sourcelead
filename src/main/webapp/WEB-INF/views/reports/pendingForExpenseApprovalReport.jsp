@@ -29,27 +29,29 @@ function reloadFunction(){
 	location.reload();
 }
 </script>
+
+
  <section class="content-wraper">
-    <section class="content-header clearfix">
+    <section class="content-header clearfix dummywraper">
       <div class="pull-left">
         <h2>Pending for Approval Expenses</h2>
       </div>
       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"> Reports Dashboard </a>&raquo; <a href="${SourceLeadWeb_sourceleadUrl}/hrReportsList">HR Reports</a> &raquo; Pending for Approval</div>
     </section>
 
-    <div class="ReqRepHead clearfix">
-    <div class="col-md-8 clearfix pull-right">
-	<div class="col-md-6 noPad">
-	      <select class="chosen-select form-control" multiple data-placeholder="Select Project" name="projectIds" id="projectIds">
+<div class="clearfix backgroundWhite ReqRepHead"> 
+            <ul class="list-unstyled mb5">
+            <li>
+            <div class="clearfix mt5">
+            <div class="col-md-8">
+            <select class="chosen-select form-control" multiple data-placeholder="Select Project" name="projectIds" id="projectIds">
             <c:forEach var="option" items="${projectList}">
 				<option value="${option.id}">${option.projectName}</option>
 			</c:forEach>
           </select>
-	</div>
-	
-   <div class="col-md-5 dropdown-select">
-        <div class="dropdown-select positionRelative">
-        <select class="form-control" name="dateSelection" id="dateSelection" onchange="getJobsReportCustomDates();">
+          </div>
+        <div class="positionRelative col-md-3">
+        <select class="form-control sel" name="dateSelection" id="dateSelection" onchange="getJobsReportCustomDates();">
             <option value='Last_7_days' >Last 7 days</option>
             <option value='Last_15_days'>Last 15 days</option>
             <option value='1_month' selected>1 month</option>
@@ -59,60 +61,53 @@ function reloadFunction(){
             <option value="custom">Custom</option>
           </select>
     <!-- Top Leave Takers Custom Date -->
-          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
+          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display:none; width:402px; z-index: 10000; ">
             <div class="pull-left">
               <div class="pull-left mr5" style="width: 140px" id="errMsgFrm">
-                <input type="text" class="form-control calendar" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
+                <input type="text" class="form-control calendar margin-top0" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
                 <p id="fromDateDiv" style="display: none; font-size: 12px;"><font color="red">From Date Required</font></p>
               </div>
               
               <div class="pull-left mr5" style="width: 140px" id="errMsgTo">
-                <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
+                <input type="text" class="form-control calendar margin-top0" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
                 <p id="toDateDiv" style="display: none; font-size: 12px;"><font color="red">To Date Required</font></p>
               </div>
               <button type="button" class="btn btn-primary btn-sm" onclick="getPendingApprovalExpenseReports();"><i class="fa fa-search"></i></button>
+               <button type="button" class="btn btn-default btn-sm" onclick="resetDatepickers();">Reset</button>
             </div>
           </div>
       </div>
 
-        </div>
-     <div class="pull-left">
-        <button type="button" class="btn btn-primary btn-sm	mt2" onclick="getPendingApprovalExpenseReports();">Run</button>
+     <div class="col-md-1">
+        <button type="button" class="btn btn-primary btn-sm	mt2 btn-block" onclick="getPendingApprovalExpenseReports();">Run</button>
 		</div>
-		
-		     <div class="clearfix"></div>
-        <div class="clearfix" id="avlbAssociatesReporttableDiv">
+		</div>
+            </li>
+            </ul>
+          </div>
           
-          <div class="positionRelative reportHead clearfix"> 
-            <ul class="pull-right list-unstyled list-inline">
-                 <li><a href="javascript:void(0)" class="overIcon" id="exportOptions" title="Actions" onclick="newActions();"></a>
+          <div class="clearfix"></div>
+          
+          <div class="timesheet_head clearfix backgroundWhite dummywraper">
+          	<ul>
+          	<li><a href="javascript:void(0)" class="overIcon" id="exportOptions" title="Actions" onclick="newActions();"></a>
 					<div class="newActPop">
-						<span>
+						<span class="noPad">
 							<a href="javascript:void(0)" onclick="reportExport('pdf');" title="pdf">Export Pdf</a>      
 							<a href="javascript:void(0)" onclick="reportExport('Excel');" title="Excel">Export Excel</a>         
 						</span>
 					</div>
-				</li> 
-            </ul>
+				</li>
+          	</ul>
+          
           </div>
-	          <div class="tableNoborder clerfix">
-	               <div id="availableAssociatesReporttableList"></div>
-	          </div>
-        </div>
-		
-		
-		
-		</div>
-    </div>
-     
-  <div class="vendor_wrap mt">
-	<div class="tableStyles">
-      <div class="clients_wrap_table datatable_scroll datatable_filter">
-         <div id="pendingForApprovalExpenseDivDiv" ></div>
-      </div>
 
+  <div class="vendor_wrap dummywraper">
+      <div class="clients_wrap_table datatable_scroll datatable_filter">
+      <div id="loadingId"></div>
+         <div id="pendingForApprovalExpenseDivDiv"></div>
+      </div>
 	<div class="clearfix"></div>
-	</div>
 	</div>
     
   </section>
@@ -147,32 +142,33 @@ function getPendingApprovalExpenseReports(){
 			  document.getElementById("fromDateDiv").style.display="none";
 			  document.getElementById("toDateDiv").style.display="none";
 		  }
-		  
 	  }
 	  if(flag){
+		  $("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	     $.ajax({ 
 		   	type: "POST",
 		   	url: sourceleadUrl+"/getpendingForExpenseReportList?${_csrf.parameterName}=${_csrf.token}&projectIds="+projectIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate,
 		    success: function(data) {
 		    	var result = "";
-		    	result = result	+ '<table class="table table-bordered noMar" id="pendingForApprovalExpenseDiv">';
+		    	result = result	+ '<table class="noMar" id="pendingForApprovalExpenseDiv">';
 		        result = result	+ '<thead> ';
 		        result = result	+ '  <tr>  ';
 		        result = result	+ '    <th>Emp Id</th> ';
 		        result = result	+ '    <th>Emp Name</th> ';
 		        result = result	+ '    <th>Emp Type</th> ';
 		        result = result	+ '    <th>Project</th>  ';
-		        result = result	+ '    <th>Duration</th>';
-		        result = result	+ '    <th>Approval Mechanism</th> ';
+		       // result = result	+ '    <th>Duration</th>';
+		        result = result	+ '    <th>Approval<br/>Mechanism</th> ';
 		        result = result	+ '    <th>Manager One</th> ';
 		        result = result	+ '    <th>Manager Two</th> ';
-		        result = result	+ '    <th>Submitted Amount</th> ';
+		        result = result	+ '    <th>Submitted<br/>Amount</th> ';
 		        result = result	+ '    <th>Submitted On</th> ';
 		        result = result	+ '    <th>Approved By</th>';
-		        //result = result	+ '    <th>no.of days Pending</th>';
+		     //   result = result	+ '    <th>no.of days Pending</th>';
 		        result = result	+ '  </tr> ';
 		        result = result	+ '  </thead>';
 		        result = result +'<tbody>';
+		        
 		       for (var i=0; i<data.length; i++)
    				{
 		    	   var report = data[i];
@@ -198,11 +194,11 @@ function getPendingApprovalExpenseReports(){
 	        		  }else{
 	        			  projectName = "--";
 	        		  }
-	        		  if(report.frequency != null && report.frequency != '' && report.frequency != 'undefined'){
+	        		 /*  if(report.frequency != null && report.frequency != '' && report.frequency != 'undefined'){
 	        			  frequency = report.frequency;
 	        		  }else{
 	        			  frequency = "--";
-	        		  }
+	        		  } */
 	        		  if(report.approvalMechanism != null && report.approvalMechanism != '' && report.approvalMechanism != 'undefined'){
 	        			  approvalMechanism = report.approvalMechanism;
 	        		  }else{
@@ -216,7 +212,8 @@ function getPendingApprovalExpenseReports(){
 	        		  if(report.managerTwo != null && report.managerTwo != '' && report.managerTwo != 'undefined'){
 	        			  managerTwo = report.managerTwo;
 	        		  }else{
-	        			  managerTwo = "--";
+	        			  managerTwo = report.managerOne;
+	        			 // managerOne = "--";
 	        		  }
 	        		  if(report.submittedAmount != null && report.submittedAmount != '' && report.submittedAmount != 'undefined'){
 	        			  submittedAmount = report.submittedAmount;
@@ -234,31 +231,37 @@ function getPendingApprovalExpenseReports(){
 	        		  }else{
 	        			  approvedBy = "--";
 	        		  }
-	        		/*   if(report.noofDaysPending != null && report.noofDaysPending != '' && report.noofDaysPending != 'undefined'){
+	        		  if(report.reportingManager != null && report.reportingManager != '' && report.reportingManager != 'undefined'){
+	        			  reportingManager = report.reportingManager;
+	        		  }else{
+	        			  reportingManager = " ";
+	        		  }
+	        		  /*   if(report.noofDaysPending != null && report.noofDaysPending != '' && report.noofDaysPending != 'undefined'){
 	        			  noofDaysPending = report.noofDaysPending;
 	        		  }else{
 	        			  noofDaysPending = "--";
-	        		  } */
+	        		  }   */
 		    	   
 		    	  result = result	+ '<tr>';
-		    	  result = result	+ '	  <td><div class="tbldata-dotdot-sm">'+employeId+'</div></td>';
-				  result = result	+ '	  <td><div class="tbldata-dotdot-sm">'+employeName+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+employeType+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+projectName+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-me">'+frequency+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+approvalMechanism+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+managerOne+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+managerTwo+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+submittedAmount+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+submittedOn+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+approvedBy+'</div></td>';
-	             // result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+noofDaysPending+'</div></td>';
+		    	  result = result	+ '	  <td style="vertical-align: middle;"><div title ="'+report.employeId +'" class="tblminwidth-50">'+employeId+'</div></td>';
+				  result = result	+ '	  <td style="vertical-align: middle;"><div title ="'+report.employeName +'" class="tbldata-dotdot-sm">'+employeName+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.employeType +'" class="tblminwidth-50">'+employeType+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.projectName +'" class="tbldata-dotdot-sm">'+projectName+'</div></td>';
+	              //result = result	+ '   <td><div title ='+report.employeId +'><class="tbldata-dotdot-me">'+frequency+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.approvalMechanism +'" class="tbldata-dotdot-sm">'+approvalMechanism+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.managerOne +','+report.reportingManager+'" class="tbldata-dotdot-vsm">'+managerOne+','+reportingManager+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.managerTwo +'" class="tbldata-dotdot-vsm">'+managerTwo+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.submittedAmount +'" class="tblminwidth-50">'+submittedAmount+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.submittedOn +'" class="tbldata-dotdot-vsm">'+submittedOn+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.approvedBy +'" class="tbldata-dotdot-vsm">'+approvedBy+'</div></td>';
+	             // result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.noofDaysPending +'" class="width300px">'+noofDaysPending+'</div></td>';
 	              result = result	+ '	</tr>';
    				}
 		        result = result +'</tbody>';
 		        result = result + '</table>';
 		        
 		        $("#pendingForApprovalExpenseDivDiv").empty();
+		        $("#loadingId").removeAttr('style');
 				$("#pendingForApprovalExpenseDivDiv").append(result);
 				dynamicMissingTimesheetReportPagination();
 		    }
@@ -267,10 +270,24 @@ function getPendingApprovalExpenseReports(){
 }
 </script>
 
+
+<script>
+function resetDatepickers() {
+	var $dates = $('#fromDate, #toDate').datepicker();
+	$dates.datepicker('setDate', null);
+}
+$('.content-wraper, .content-header, .reportHead, .vendor_wrap').click(function(){
+	$("#customSearch").hide();
+})
+$("#customSearch, .clearfix, .pull-lefet, .col-md-12, .paddingRight, .customLeaves, #errMsgFrm, #errMsgTo, #toDate, #fromDate").click(function(e) {
+	e.stopPropagation();
+});
+</script>
+
 <script>
 function dynamicMissingTimesheetReportPagination(){  
     $('#pendingForApprovalExpenseDiv').DataTable( {
-    	"dom": 'Bfrtip',
+    	//"dom": 'Bfrtip',
     	"responsive": true,
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
@@ -376,17 +393,22 @@ function dynamicMissingTimesheetReportPagination(){
 s  	}
       }
       </script>
+<jsp:include page="../masterFooter.jsp" />
 
 <script>
 	function newActions() {
 		$(".newActPop").slideToggle(200);
 		$(".action-pop").slideUp(200);
 	}
-	$("html").click(function() {
-		$(".newActPop").slideUp(200);
-	});
+	$(document).ready(function(){
+		$('html').click(function(){
+			$(".newActPop").slideUp(200);
+		});
+		$(".dummywraper").click(function(){
+			$(".newActPop").slideUp(200);
+		});
+	 });
 	$(".overIcon, .newActPop").click(function(e) {
 		e.stopPropagation();
 	});
 </script>
-<jsp:include page="../masterFooter.jsp" />
