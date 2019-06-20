@@ -987,6 +987,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	public void saveWorkflowIdInAllOrgsForRequirement(RequirementWorkFlow requirementWorkFlow, OrgLocations orgLocations) throws Exception {
 		requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
 	}
+
+
+	@Override
+	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesByWorkflowIdAndOrglocations(Long workflowId,
+			OrgLocations orgLocations) {
+		return requirementWorkFlowDao.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(workflowId, orgLocations);
+	}
 	
 	}
 
