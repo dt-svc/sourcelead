@@ -830,7 +830,8 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			.append("LEFT JOIN TEAM_MEMBERS tm ON clk.USER_ID = tm.MEMBER_USER_ID ")
 			.append("where clk.ORG_LOCATION_ID = :clkOrgLocationID ")
 			.append("AND uRole.ORG_LOCATIONS_ID = :uRoleOrgLocationID ")
-			.append("AND emp.ORG_LOCATIONS_ID = :empOrgLocationID");
+			.append("AND emp.ORG_LOCATIONS_ID = :empOrgLocationID")
+			.append("AND clk.CLOCK_OUT_DATE is NOT NULL");
 			
 			if(clockInOutFiltersDTO.getOrgDepartments() != null && !clockInOutFiltersDTO.getOrgDepartments().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getOrgDepartments())) {
 				String[] depts = clockInOutFiltersDTO.getOrgDepartments().split(",");
