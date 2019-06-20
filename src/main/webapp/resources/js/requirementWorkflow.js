@@ -256,7 +256,7 @@ function RequirementWorkflow(){
 
 	this.checkDefaultWorkflow = function(configureType, uuid, workFlowName){
 		var result = "";
-		result = result +"<div class='tbldata-dotdot-200'><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")' title="+workFlowName+">"+workFlowName+"</a></div>";
+		result = result +"<div class='tbldata-dotdot-200'><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")' title='"+workFlowName+"'>"+workFlowName+"</a></div>";
 		return result;
 	}
 
