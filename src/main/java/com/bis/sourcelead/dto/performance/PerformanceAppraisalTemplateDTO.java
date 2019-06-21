@@ -102,7 +102,9 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private BigInteger daysDifference;
 	
-	private Integer dayDiff;
+	private String dayDiff;
+	
+	private char daysDiff;
 	
 	public Long getAppraisalTemplateId() {
 		return appraisalTemplateId;
@@ -440,12 +442,20 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 		this.daysDifference = daysDifference;
 	}
 
-	public Integer getDayDiff() {
+	public String getDayDiff() {
 		return dayDiff;
 	}
 
-	public void setDayDiff(Integer dayDiff) {
+	public void setDayDiff(String dayDiff) {
 		this.dayDiff = dayDiff;
+	}
+
+	public char getDaysDiff() {
+		return daysDiff;
+	}
+
+	public void setDaysDiff(char daysDiff) {
+		this.daysDiff = daysDiff;
 	}
 
 	
