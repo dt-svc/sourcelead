@@ -21,7 +21,6 @@ public class ExpensePendingApproveReportView {
 	
 	@Column(name = "EMP_ID")
 	private Long empId;
-	
 
 	@Column (name = "EMPLOYMENT_TYPE")
 	private String employmentType;
@@ -43,6 +42,9 @@ public class ExpensePendingApproveReportView {
 	
 	@Column (name = "LEVEL_1_NAME",columnDefinition = "TEXT default NULL")
 	private String level1Name;
+	
+	@Column (name = "REPORTING_MANAGER",columnDefinition = "TEXT default NULL")
+	private String reportingManager;
 	
 	@Column (name = "LEVEL_2_NAME",columnDefinition = "TEXT default NULL")
 	private String level2Name;
@@ -182,6 +184,18 @@ public class ExpensePendingApproveReportView {
 
 	public void setSubmittedDate(Date submittedDate) {
 		this.submittedDate = submittedDate;
+	}
+
+
+
+	public String getReportingManager() {
+		return reportingManager;
+	}
+
+
+
+	public void setReportingManager(String reportingManager) {
+		this.reportingManager = reportingManager;
 	}
 
 

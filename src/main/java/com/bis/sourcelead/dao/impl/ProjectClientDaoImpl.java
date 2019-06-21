@@ -137,7 +137,7 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 		logger.debug("In Project Clients getProjectClientsByUUID method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from ProjectClients pc left join fetch pc.projectId left join fetch pc.orgLocationsId "
-				+ "left join fetch pc.orgRelationId ol left join fetch ol.locationId left join fetch ol.responderLocationId  "
+				+ "left join fetch pc.orgRelationId ol left join fetch ol.locationId left join fetch ol.locationId.org left join fetch ol.responderLocationId left join fetch ol.responderLocationId.org  "
 				+ "where pc.uuid = :uuid" ;
 		List<ProjectClients> pcList =session.createQuery(query).setString("uuid", uuid).list(); 
 		ProjectClients pc = null;
