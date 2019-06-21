@@ -1112,6 +1112,7 @@ function timesheetComment(local){
 
 <script type="text/javascript">
 function makeActive(local,commentI,commentValidationId){ 
+	
 	var comment = local.value;
 	 $("#"+commentI).removeClass('com_active');
 	if(comment != null && comment != 'undefined' && comment != ''){
