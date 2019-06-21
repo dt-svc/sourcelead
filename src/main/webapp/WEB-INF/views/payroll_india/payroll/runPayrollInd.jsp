@@ -35,10 +35,13 @@
 		var stab = '${stab}';
 		if(stab != null && stab != '' && stab != 'undefined' && stab == 'payroll'){
 			payrollDiv();
+		}else if (stab != null && stab != '' && stab != 'undefined' && stab == 'forms'){
+			formsDiv();
+			highlight('formsLi');
 		}else{
 			initiatePayrollDiv();
+			highlight('initiatePayrollLi');
 		}
-		highlight('initiatePayrollLi');
 	});
 </script> 
 
