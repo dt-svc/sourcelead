@@ -1006,6 +1006,41 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			OrgLocations orgLocations) {
 		return requirementWorkFlowDao.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(workflowId, orgLocations);
 	}
+
+
+	@Override
+	public String validateStageShortCode(Long id, String shortCode, String workflowUuid) {
+		// TODO Auto-generated method stub
+		logger.debug("Started validateStageShortCode Service for "+id+" orgLocation and "+shortCode+" shortCode");
+		List<RequirementWorkFlowStages> workflowStages = new ArrayList<RequirementWorkFlowStages>();
+		String flag = null;
+		String nonSpecialChars = "^(?!_)(?!.*__)(?!-)(?!.*--)[\\w .-]+(?<!-)(?<!_)$";
+		Boolean nonSpecialFlag = false;
+		try {
+			if(shortCode != null && !StringUtils.isBlank(shortCode)) {
+				nonSpecialFlag = Pattern.matches(nonSpecialChars, shortCode);
+			}
+			if(nonSpecialFlag == true) {
+			workflowStages = requirementWorkFlowDao.getRequirementWorkflowStagesListByUuid(workflowUuid, id);
+			if(workflowStages != null && workflowStages.size() > 0) {
+				if(shortCode != null && !StringUtils.isBlank(shortCode)) {
+					Stream<RequirementWorkFlowStages> stageStream = workflowStages.stream().filter(stage -> stage.getStageShortCode().equalsIgnoreCase(shortCode));
+					if(stageStream.count() > 0) {
+						return "true";
+					}
+				}
+			}
+			}else {
+				flag = "special";
+			}
+			logger.debug("Finished validateStageShortCode Service for "+id+" orgLocation and "+shortCode+" shortCode");
+		return flag;
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error(e+" in validateStageShortCode Service for "+id+" orgLocation and "+shortCode+" shortCode");
+			return null;
+		}
+	}
 	
 	}
 
