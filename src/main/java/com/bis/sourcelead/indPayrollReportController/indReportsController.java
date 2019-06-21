@@ -134,7 +134,9 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		 @RequestMapping(value = "/indPayrollAnnualTaxReport")
 			public ModelAndView indPayrollAnnualTaxReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
-             OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 
+			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		     OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
              List<String> finYearList = iNDPayrollCommonUtil.getFinancialYearByOrgLocation(orgLocation);
 			 model.addObject("finYearList", finYearList);
 			 model.addObject("sourceleadUrl", sourceleadUrl);
@@ -153,7 +155,8 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		 @RequestMapping(value = "/indPayrollSalaryStatementReport")
 			public ModelAndView indPayrollSalaryStatementReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
-             OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		     OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
              List<String> finYearList = iNDPayrollCommonUtil.getFinancialYearByOrgLocation(orgLocation);
 			 model.addObject("finYearList", finYearList);
 			 model.addObject("sourceleadUrl", sourceleadUrl);
@@ -165,7 +168,8 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		 @RequestMapping(value = "/indPayrollESISummaryReport")
 			public ModelAndView indPayrollESISummaryReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
-             OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		     OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
              List<String> finYearList = iNDPayrollCommonUtil.getFinancialYearByOrgLocation(orgLocation);
 			 model.addObject("finYearList", finYearList);
 			 model.addObject("sourceleadUrl", sourceleadUrl);
