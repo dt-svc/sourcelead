@@ -234,10 +234,10 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                   </div>
                 </div>
                 
-               <div class="form-group">
+             <div class="form-group">
                   <label class="col-md-3">Work Location<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9">
-                   	<select class="form-control chosen-select" id="workLocation" name="workLocation" field-name="Work Location" data-validation="required" >
+                  <div class="col-md-9" id= "workLocationDiv">
+                   	<select class="form-control chosen-select" id="workLocation" name="workLocation" field-name="Work Location" onchange="removeLocationValidation();" data-validation="required" >
                         <option value="">--Select Location--</option>
                         <c:forEach var="option" items="${locationList}">
 							<option value="${option.id}">${(option.orgLocationAddress != '' && option.orgLocationAddress != null) ? option.orgLocationAddress : option.registeredLocation}</option>
@@ -288,12 +288,12 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                      </div>
                   </div>
                 </div> 
-                <div class="form-group">
+                <div class="form-group" id="genderDiv">
 						<label class="col-md-3">Gender<span class="text-danger">&nbsp;*</span></label>
 						<div class="col-md-9" id= "errorGenderMsg">
-						<label class="paddingRight"><input type="radio"  value="Male"  name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Male</label>
-						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Female</label>
-						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Transgender</label>
+						<label class="paddingRight"><input type="radio"  value="Male"  name="gender" onblur="genderCheckValidationAssociate(this)" onchange="removeGenderValidation();"><span class="mr5"></span>Male</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidationAssociate(this)" onchange="removeGenderValidation();"><span class="mr5"></span>Female</label>
+						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidationAssociate(this)" onchange="removeGenderValidation();"><span class="mr5"></span>Transgender</label>
 						<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		
 						</div>
 					</div>
@@ -336,9 +336,9 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                   
                <div class="form-group">
                   <label class="col-md-3">Department <span class="text-danger">*</span></label>
-                  <div class="col-md-9 chooRadius" id="chosen-role">
+                  <div class="col-md-9 chooRadius" id="departments">
                    <div class="input-group col-md-10 pull-left errorInptgroup">
-                         <select class="form-control chosen-select" id="department" name="department" field-name="Department" onchange="getReportingManager()" data-validation="required" >
+                         <select class="form-control chosen-select" id="department" name="department" field-name="Department" onchange="removeValidation();" data-validation="required" >
 			              </select>
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="getDepartmentsList();"><i class="fa fa-refresh "></i></span>
                   </div>
@@ -366,7 +366,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                 
                 <div class="form-group errorInptgroup">
                   <label class="col-md-3">Role<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9 chooRadius chooErrorMessage" id="chosen-role">
+                  <div class="col-md-9 chooRadius" id="chosen-role">
                    <div class="input-group col-md-10 pull-left">
                          <select class="form-control chosen-select" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
@@ -451,8 +451,8 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                
               <div class="form-group">
                   <label class="col-md-3">Reporting Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the reporting manager for a associate in organisation'></i></label>
-                  <div class="col-md-9">
-                      <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Reporting Manager" data-validation="required">
+                  <div class="col-md-9"  id="reportingManagerDiv">
+                      <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Reporting Manager" onchange="removeValidationmsg();" data-validation="required">
                         <option value="">-Select Manager-</option>
                       </select>
                   </div>
@@ -472,8 +472,8 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
             
             <div class="form-group">
                   <label class="col-md-3">Resource Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the resource manager for a associate in organisation'></i></label>
-                  <div class="col-md-9">
-                      <select class="form-control chosen-select" name="resourceManager" id="resourceManager" field-name="Resource Manager" data-validation="required">
+                  <div class="col-md-9"  id="resourceManagerDiv">
+                      <select class="form-control chosen-select" name="resourceManager" id="resourceManager" field-name="Resource Manager"  onchange=" removeResourceValidation();" data-validation="required">
                         <option value="">-Select Manager-</option>
                       </select>
                   </div>
@@ -1767,6 +1767,36 @@ $(document).ready(function() {
     });
 });
 </script> 
+
+<script>
+function removeValidationmsg(){
+	 $('#reportingManagerDiv').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+<script>
+function removeLocationValidation(){
+	 $('#workLocationDiv').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+<script>
+function removeValidation(){
+	 $('#departments').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+<script>
+function removeResourceValidation(){
+	 $('#resourceManagerDiv').find('p.jquery_form_error_message').remove();
+}
+</script>
+
+<script>
+function removeGenderValidation(){
+	 $('#genderDiv').find('p.jquery_form_error_message').remove();
+}
+</script>
 
 
 <script>

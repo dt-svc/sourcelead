@@ -11,10 +11,10 @@
    <input type="hidden" name="associateUserId" id="associateUserId"/>
    <input type="hidden" name="paymentAccountId" id="paymentAccountId"/>
    <div class="clearfix row minHeightcol5">
- 		<div class="col-md-5">
+ 		<div class="col-md-5" id= "paymentDiv">
                 <label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
                 <div>
-                  <select class="form-control chosen-select" id="accountType" name="accountType" data-validation="required" field-name="Payment Mode">
+                  <select class="form-control chosen-select" id="accountType" name="accountType" onchange=" removePaymentValidation();" data-validation="required" field-name="Payment Mode">
                         <option value="">--Select Payment Mode--</option>
 	                    <option value="SAVINGS" data-type="1">Savings</option>
 	                    <option value="CHEQUE" data-type="2">Cheque</option>
@@ -157,6 +157,12 @@ function skipToInfomationTab(){
 	 document.getElementById("indInformationDetails").removeAttribute("class");
 	 indInformationDetails.href="#tab-3";
 	 $("#indInformationDetails").click();
+}
+</script> 
+ 
+<script>
+function removePaymentValidation(){
+	 $('#paymentDiv').find('p.jquery_form_error_message').remove();
 }
 </script> 
   
