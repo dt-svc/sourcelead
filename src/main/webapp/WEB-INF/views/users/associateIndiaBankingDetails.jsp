@@ -1,10 +1,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
   
-  <script>
-  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-  </script>
-  
   <div id="tab-2" class="tabsMenu_tabs_inn clearfix">
   <div id="accountDetailsLoading"></div>
    <form:form id="associate_bankingDetails_form" name="associate_bankingDetails_form" method="post">
@@ -53,7 +49,7 @@
           <div class="col-md-5">
                   <label>IFSC Code<span class="text-danger">&nbsp;*</span></label>
                   <div>
-                  <input type="text" id="routingNumber" field-name="IFSC Code" name="routingNumber" class="form-control" data-validation="required validate_Space validate_length length9-9" />
+                  <input type="text" id="routingNumber" field-name="IFSC Code" name="routingNumber" class="form-control" data-validation="required validate_Space validate_length length11-11" />
                   </div>
           </div>
           
@@ -91,8 +87,11 @@
   
   <script type="text/javascript">
  function savePaymentAccount() {
+
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 var userId = $("#associateId").val();
 	 var empType = $("#empType").val(); 
+	 
 	 if ($('#associate_bankingDetails_form').validate(false, validationSettings)){ 
 			   var formData = getFormData("associate_bankingDetails_form");
 				$("#accountDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -169,8 +168,10 @@ function removePaymentValidation(){
   
   <script>
 	  function getIndAssociateBankingDetails(){
-	     var userId = $("#associateId").val();
-	   
+	     
+		  var userId = $("#associateId").val();
+	     var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	     
 	     if(userId != null && userId != 'undefined' && userId != ''){
 		     $("#associateUserId").val(userId);
 			 $.ajax({
