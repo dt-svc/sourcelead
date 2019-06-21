@@ -711,4 +711,21 @@ public class RequirementWorkflowController {
 			return response;
 			
 		}
+		
+		@RequestMapping(value = "/validateStageShortCode")
+		@ResponseBody
+		public Response<String> validateStageShortCode(
+				@RequestParam(value = "stageShortCode", required = true)String stageShortCode,
+				@RequestParam(value = "workflowUuid", required = true)String workflowUuid,
+				HttpServletRequest request) throws Exception{
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			String flag ;
+			Response<String> response = new Response<String>();
+			logger.debug("before validateStageShortCode for "+orgLocationId+" orgLocation");
+			flag = requirementWorkFlowService.validateStageShortCode(orgLocationId, stageShortCode, workflowUuid);
+			response.setResponse(flag);
+			logger.debug("after validateStageShortCode for "+orgLocationId+" orgLocation");
+			return response;
+			
+		}
 }

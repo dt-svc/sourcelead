@@ -56,6 +56,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <div class="col-md-9" id = "ShortCodeDiv">
             <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
             value = "<c:out value='${stageShortCode}'/>"
+             onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
+			onblur= "requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
             data-validation="required validate_length length1-50"/>
             
           </div>
@@ -90,6 +92,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <label class="col-md-3">Short Code<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-9" id = "ShortCodeDiv">
             <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
+            onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
+			onblur= "requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
             data-validation="required validate_length length1-50"/>
             
           </div>

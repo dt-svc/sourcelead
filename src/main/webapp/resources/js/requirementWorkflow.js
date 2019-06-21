@@ -1041,4 +1041,30 @@ function RequirementWorkflow(){
 					 }
 				 }
 				 
+				 this.validateStageShortCode = function(workflowUuid){
+					 var stageShortCode = $("#shortCode").val();
+					 if(stageShortCode != null && stageShortCode.length > 0){
+						 $.ajax({
+							 type: "GET",
+							 url : sourceleadUrl+"/validateStageShortCode?workflowUuid="+workflowUuid+"&stageShortCode="+stageShortCode,
+							 success:function(dataList){
+								 if (dataList.response =="true" || dataList.response =="special") {
+									 $('#ShortCodeDiv').find('p.jquery_form_error_message').remove();
+									 if ($('#ShortCodeDiv').find('p.jquery_form_error_message').length === 0)
+					                 if(dataList.response =="true"){
+										 $("#shortCode").after("<p class='jquery_form_error_message'>" + stageShortCode + " Already Exists</span>");
+					                 }if(dataList.response =="special"){
+									 $("#shortCode").after("<p class='jquery_form_error_message'> No Special Characters !</span>");
+					                 }
+					                    $("#saveStageButton").attr("disabled", "disabled");
+					                 }else {
+					                    $('#ShortCodeDiv').find('p.jquery_form_error_message').remove();
+					                    $("#saveStageButton").removeAttr("disabled");
+					                }
+								
+							 }
+						 })
+						 }
+				 }
+				 
 }
