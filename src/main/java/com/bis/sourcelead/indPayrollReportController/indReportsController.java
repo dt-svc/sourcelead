@@ -134,7 +134,9 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		 @RequestMapping(value = "/indPayrollAnnualTaxReport")
 			public ModelAndView indPayrollAnnualTaxReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
-             OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 
+			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		     OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
              List<String> finYearList = iNDPayrollCommonUtil.getFinancialYearByOrgLocation(orgLocation);
 			 model.addObject("finYearList", finYearList);
 			 model.addObject("sourceleadUrl", sourceleadUrl);
@@ -153,7 +155,8 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		 @RequestMapping(value = "/indPayrollSalaryStatementReport")
 			public ModelAndView indPayrollSalaryStatementReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
-             OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		     OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
              List<String> finYearList = iNDPayrollCommonUtil.getFinancialYearByOrgLocation(orgLocation);
 			 model.addObject("finYearList", finYearList);
 			 model.addObject("sourceleadUrl", sourceleadUrl);
@@ -165,7 +168,8 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		 @RequestMapping(value = "/indPayrollESISummaryReport")
 			public ModelAndView indPayrollESISummaryReport(HttpServletRequest request,HttpServletResponse response) throws Exception {
 			 ModelAndView model = new ModelAndView();
-             OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		     OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
              List<String> finYearList = iNDPayrollCommonUtil.getFinancialYearByOrgLocation(orgLocation);
 			 model.addObject("finYearList", finYearList);
 			 model.addObject("sourceleadUrl", sourceleadUrl);
@@ -487,7 +491,9 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		   	{
 		   		ResponseList<IndEmployeePayrollDTO> responseList = new ResponseList<>();
 		   		try {
-		   			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   		    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			        OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		   			//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   			if (orgLocations != null) {
 		   				String[] tableColumns = {"empId", "empName", "department", "", "", "", "", "", ""};
 		   			    int sortColumnIndex = 1;		 //by default sorting using updated date
@@ -614,7 +620,8 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		  	public @ResponseBody ResponseList<IndEmployeePayrollDTO> indPayrollESIAndPFReport(IndEmployeePayrollDTO indEmployeePayrollDTO,HttpServletRequest request)throws Exception{
 		    	ResponseList<IndEmployeePayrollDTO> responseList = new ResponseList<>();	
 		    	try {
-		  	  			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		    		   Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+				       OrgLocations orgLocations= orgLocationService.getOrgLocations(orgLocationId);
 		  	   			if (orgLocations != null) {
 		  	   				String[] tableColumns = {"empId", "empName", "", "", "", "", "", "", ""};
 		  	   			    int sortColumnIndex = 1;		 //by default sorting using updated date
@@ -861,6 +868,8 @@ private static final Logger logger = LoggerFactory.getLogger(indReportsControlle
 		   	{
 		        Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		        OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+		        
+		        
 			     List<Date> finYearList = iNDPayrollCommonUtil.getFinancialYearStartAndEndDateByOrgLocations(orgLocation, financialYear);
 			     java.sql.Date freqStartDate = new java.sql.Date(finYearList.get(0).getTime());
 			     java.sql.Date freqEndDate = new java.sql.Date(finYearList.get(1).getTime());

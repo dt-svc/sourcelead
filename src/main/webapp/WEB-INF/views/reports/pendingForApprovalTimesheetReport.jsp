@@ -123,7 +123,6 @@ function getPendingForApprovalTimesheetReports(){
 	  if(dateSelection == 'custom'){
 		   fromDate = $("#fromDate").val();
 		   toDate = $("#toDate").val();
-		  
 		  if(fromDate == '' || toDate == ''){
 			  flag = false;
 			  if(fromDate == ''){
@@ -248,6 +247,7 @@ function getPendingForApprovalTimesheetReports(){
 		        $("#pendingForApprovalTimesheetDiv").empty();
 				$("#pendingForApprovalTimesheetDiv").append(result);
 				dynamicMissingTimesheetReportPagination();
+				document.getElementById("customSearch").style.display="none";
 		    }
 		 });
 	  }	  
