@@ -51,6 +51,15 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           </div>
         </div>
       </div>
+      <div class="form-group clearfix">
+          <label class="col-md-3">Short Code<span class="text-danger paddingLeft">&nbsp;*</span></label>
+          <div class="col-md-9" id = "ShortCodeDiv">
+            <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
+            value = "<c:out value='${stageShortCode}'/>"
+            data-validation="required validate_length length1-50"/>
+            
+          </div>
+        </div>
     </div>
     
 		</c:when>
@@ -77,6 +86,14 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           </div>
         </div>
       </div>
+      <div class="form-group clearfix">
+          <label class="col-md-3">Short Code<span class="text-danger paddingLeft">&nbsp;*</span></label>
+          <div class="col-md-9" id = "ShortCodeDiv">
+            <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
+            data-validation="required validate_length length1-50"/>
+            
+          </div>
+        </div>
     </div>
 							
 							</c:otherwise>
