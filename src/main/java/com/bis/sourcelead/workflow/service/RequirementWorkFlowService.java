@@ -89,4 +89,6 @@ public interface RequirementWorkFlowService {
 
 	List<RequirementWorkFlowStages> getRequirementWorkflowStagesByWorkflowIdAndOrglocations(Long workflowId, OrgLocations orgLocations);
 	
+	String validateStageShortCode(Long id, String shortCode, String workflowUuid)throws Exception;
+	
 }
