@@ -17,6 +17,7 @@
 <script type="text/javascript">
 var atsUrl ='${SourceLeadWeb_atsUrl}';
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		window.onload = function () {
 			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','','address');
 			getDesignationType();
