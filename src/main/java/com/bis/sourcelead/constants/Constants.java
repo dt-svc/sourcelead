@@ -307,6 +307,7 @@ public class Constants {
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";
 	public static final String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
+	public static final String APPLICANT_SOURCE_CHANGE_EMAIL_NOTIFICATION = "ApplicantSourceChange";
 	public static final String SHARE_RECOMENDED_APPLICANT = "Share Recomended Applicant";
 	public static final String SHARE_RECOMENDED_APPLICANT_NOTIFICATION = "Share Recommended Applicant Notification";
 	public static final String APPROVER_UPDATED_CONTRACT = "approverUpdatedContract";

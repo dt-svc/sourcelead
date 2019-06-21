@@ -546,7 +546,7 @@ public class IndPaySlipPdf {
 					.title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle).setHorizontalAlignment(HorizontalAlignment.CENTER))
 					.columns(
 							col.column("Employee Id", "employeeId", type.stringType()),
-							col.column("Employee Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER).setFixedWidth(600),
+							col.column("Employee Name", "employeeName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
 							col.column("Department", "department", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
 							col.column("Account Numaber", "acoountNumber", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
 							col.column("Bank Name", "bankName", type.stringType()).setHorizontalAlignment(HorizontalAlignment.CENTER),
