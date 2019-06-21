@@ -19,35 +19,35 @@
 
 	<target name="copy-jsp">
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/ats/WEB-INF/views" includeEmptyDirs="no">
-			<fileset dir="ats/src/main/webapp/WEB-INF/views">
+			<fileset dir="kiran_ats/src/main/webapp/WEB-INF/views">
 				<patternset>
 					<include name="**/*.jsp"/>
 				</patternset>
 			</fileset>
 		</copy>
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/ats/resources/css" includeEmptyDirs="no">
-			<fileset dir="ats/src/main/webapp/resources/css">
+			<fileset dir="kiran_ats/src/main/webapp/resources/css">
 				<patternset>
 					<include name="**/*.css"/>
 				</patternset>
 			</fileset>
 		</copy>
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/ats/resources/js" includeEmptyDirs="no">
-			<fileset dir="ats/src/main/webapp/resources/js">
+			<fileset dir="kiran_ats/src/main/webapp/resources/js">
 				<patternset>
 					<include name="**/*.js"/>
 				</patternset>
 			</fileset>
 		</copy>
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/resources/sourceleadHtmls" includeEmptyDirs="no">
-			<fileset dir="ats/src/main/webapp/resources/sourceleadHtmls">
+			<fileset dir="kiran_ats/src/main/webapp/resources/sourceleadHtmls">
 				<patternset>
 					<include name="**/*.html"/>
 				</patternset>
 			</fileset>
 		</copy>
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/ats/resources/images" includeEmptyDirs="no">
-			      <fileset dir="ats/src/main/webapp/resources/images">
+			      <fileset dir="kiran_ats/src/main/webapp/resources/images">
 						<patternset>
 							<include name="**/*.jpg"/>
 							<include name="**/*.png"/>
@@ -57,7 +57,7 @@
 					</fileset>
 	    </copy>
         <copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/ats/resources/fonts" includeEmptyDirs="no">
-			      <fileset dir="ats/src/main/webapp/resources/fonts">
+			      <fileset dir="kiran_ats/src/main/webapp/resources/fonts">
 						<patternset>
 							<include name="**/*.otf"/>
 							<include name="**/*.eot"/>
