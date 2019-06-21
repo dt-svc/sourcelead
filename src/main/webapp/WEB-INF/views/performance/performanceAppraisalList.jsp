@@ -124,12 +124,19 @@ function appraisalAssignPagination(url,appraisalType){
 	    	  	"data": "name",
 	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
+	    	  		
+	    	  		 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	    	  		
 	    	  		 var result = "";
-	    	  		 result = result +"<td>";
-             	     result = result +"<div class='width300px'>";
-             	     result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.name+"'>"+opt.name+"</div>";
-             	     result = result +"</div>";
-             	     result = result +"</td>";
+	             	 result = result +'<td>';
+	            	 result = result +"<div class='width300px'>";
+	           	     result = result +'<a href="'+pmsUrl+'/selfAppraisalDetails?assignedUUID='+opt.templateUUId+'" >';
+	           	     result = result +'<div class="proj_show tbldata-dotdot_140 pull-left"><span class="pull-left" title="'+opt.name+'">'+opt.name+'</span>';
+	           	     result = result +'<i class="fa fa-binoculars pull-right"></i></div></a>';
+	           	     result = result +"</div>";
+	           	     result = result +'</td>';
+             	     
+             	    
 	    	  		 
 		             return result;
 	    	  	}

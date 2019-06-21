@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl.performance;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,8 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalDao;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.performance.AppraisalAssignedAssociatesDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDetailsDTO;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -85,9 +88,9 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		}
 		
 		if(query1.toString() != null && !query1.toString().isEmpty()){
-			querySeachStr = "where "+"("+query1.toString()+") AND Q1.daysDifference <= 0";
+			querySeachStr = "where "+"("+query1.toString()+") AND Q1.dayDiff <= 0";
 		}else {
-			querySeachStr = "where Q1.daysDifference <= 0";
+			querySeachStr = "where Q1.dayDiff <= 0";
 		}
 		
 		try {
@@ -108,14 +111,14 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 			 		 "FROM (" + 
 					 "SELECT " + 
 					"TEMPLATE.NAME AS name, " + 
-					"TEMPLATE.UUID AS templateUUId, " + 
+					"ASSIGNED.UUID AS templateUUId, " + 
 					"DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+appraisalDateFormat+") AS appraisalStartDate, "+
 					"DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+appraisalDateFormat+") AS appraisalEndDate, "+
 					"DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_START_DATE,"+appraisalDateFormat+") AS appraisalProcessStartDate, "+
 					"DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_END_DATE,"+appraisalDateFormat+") AS appraisalProcessEndDate, "+
 					"DATE_FORMAT(TEMPLATE.SELF_APPRAISAL_START_DATE,"+appraisalDateFormat+") AS selfAppraisalStartDate, "+
 					"DATE_FORMAT(TEMPLATE.SELF_APPRAISAL_END_DATE,"+appraisalDateFormat+") AS selfAppraisalEndDate, "+
-					"DATEDIFF(TEMPLATE.SELF_APPRAISAL_START_DATE,CURRENT_DATE()) AS daysDifference " + 
+					"DATEDIFF(TEMPLATE.SELF_APPRAISAL_START_DATE,CURRENT_DATE()) AS dayDiff " + 
 							             
 					"FROM " + 
 					"PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, " + 
@@ -226,7 +229,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 			 		 "FROM (" + 
 					 "SELECT " + 
 					"TEMPLATE.NAME AS name, " + 
-					"TEMPLATE.UUID AS templateUUId, " + 
+					"ASSIGNED.UUID AS templateUUId, " + 
 					"DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+appraisalDateFormat+") AS appraisalStartDate, "+
 					"DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+appraisalDateFormat+") AS appraisalEndDate, "+
 					"DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_START_DATE,"+appraisalDateFormat+") AS appraisalProcessStartDate, "+
@@ -283,5 +286,96 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		response.setData(assignToList);
 		return response;
+	}
+
+	@Override
+	public PerformanceAppraisalDetailsDTO getSelfAppraisalTemplateDetails(String assignedUUID, String dateFormat)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceAppraisalTemplateDetailsDTO> templateDetailsList = new ArrayList<PerformanceAppraisalTemplateDetailsDTO>();
+		List<PerformanceAppraisalPeersDTO> peersList = new ArrayList<PerformanceAppraisalPeersDTO>();
+		PerformanceAppraisalTemplateDetailsDTO templateDTO = null;
+		PerformanceAppraisalDetailsDTO performanceAppraisalDetailsDTO = new PerformanceAppraisalDetailsDTO();
+		
+		try {
+		String appraisalDateFormat =  "";
+		
+		if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%Y-%m-%d\"";
+		}else if("dd-MM-yyyy".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%d-%m-%Y\"";
+		}else if("MM-dd-yyyy".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%m-%d-%Y\"";
+		}else if("yyyy-dd-MM".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%Y-%d-%m\"";
+		}
+		
+		String query =  "SELECT "
+						+" TEMPLATE.NAME AS name, "           
+						+" DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+appraisalDateFormat+") AS appraisalStartDate, "
+						+" DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+appraisalDateFormat+") AS appraisalEndDate, "
+						+" DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_START_DATE,"+appraisalDateFormat+") AS appraisalProcessStartDate, "
+						+" DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_END_DATE,"+appraisalDateFormat+") AS appraisalProcessEndDate, "
+						+" DATE_FORMAT(TEMPLATE.SELF_APPRAISAL_START_DATE,"+appraisalDateFormat+") AS selfAppraisalStartDate, "
+						+" DATE_FORMAT(TEMPLATE.SELF_APPRAISAL_END_DATE,"+appraisalDateFormat+") AS selfAppraisalEndDate, "
+						+" DATE_FORMAT(TEMPLATE.APPROVING_FROM_START_DATE,"+appraisalDateFormat+") AS reportingManagerReviewStartDate, "
+						+" DATE_FORMAT(TEMPLATE.APPROVING_FROM_END_DATE,"+appraisalDateFormat+") AS reportingManagerReviewEndDate, "
+						+" DATE_FORMAT(TEMPLATE.RESOURCE_MANAGER_REVIEW_START_DATE,"+appraisalDateFormat+") AS resourceManagerReviewStartDate, "
+						+" DATE_FORMAT(TEMPLATE.RESOURCE_MANAGER_REVIEW_END_DATE,"+appraisalDateFormat+") AS resourceManagerReviewEndDate, "
+						+" TEMPLATE.DESCRIPTION AS description, "
+						+" TEMPLATE.DESCRIPTION_DISPLAY AS descriptionDisplay, "
+						+" PEERS.PEER_USER_ID AS peerIds, "
+						+" CONCAT (U.FIRST_NAME,' ',IFNULL(U.MIDDLE_NAME,''),IFNULL(U.LAST_NAME,'')) AS reportingManager, " 
+						+ "U.FILE_URL AS reportingManagerImgUrl, "
+						+ "(SELECT (CONCAT(USR.FIRST_NAME,' ',IFNULL(USR.MIDDLE_NAME, ''),IFNULL(USR.LAST_NAME, ''))) FROM USER USR WHERE USR.ID = UR.RESOURCE_MANAGER_ID) AS resourceManager, "
+						+ "(SELECT USR.FILE_URL FROM USER USR WHERE USR.ID = UR.RESOURCE_MANAGER_ID) AS resourceManagerImgUrl "
+						
+						+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+						+ "PERFORMANCE_APPRAISAL_PEERS PEERS ,"
+						+ "USER_ROLE UR ,"
+						+ "USER U ,"
+						+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE "
+						+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND ASSIGNED.PEER_ID = PEERS.ID  "
+						+ "AND ASSIGNED.USER_ID = UR.USER_ID "
+						+ "AND UR.REPORTING_MANAGER_ID = U.ID  AND UR.ORG_LOCATIONS_ID = ASSIGNED.ORG_LOCATION_ID "
+						+" AND ASSIGNED.UUID = :assignedUUID ";
+			
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("assignedUUID", assignedUUID);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalTemplateDetailsDTO.class));
+		templateDetailsList = queryObj.list();
+		templateDTO = templateDetailsList.get(0);
+		
+		
+		if(templateDTO.getPeerIds() != null) {
+			
+			String peerUserIds [] = templateDTO.getPeerIds().split(",");
+			String peerUserIdStr = "'" + StringUtils.join(peerUserIds,"','") + "'";
+			
+			String peersQuery =  "SELECT " + 
+								 "CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS associateName, " +
+								 "U.FILE_URL AS userImgUrl " + 
+										             
+								 "FROM " + 
+								 "USER U " + 
+								 "WHERE U.ID IN ("+peerUserIdStr+") ";
+			
+			
+			queryObj = session.createSQLQuery(peersQuery);
+			queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalPeersDTO.class));
+			peersList = queryObj.list();
+						
+		}
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		performanceAppraisalDetailsDTO.setAppraisalTemplate(templateDTO);
+		performanceAppraisalDetailsDTO.setPeersList(peersList);
+		
+		return performanceAppraisalDetailsDTO;
+		
 	}
 }

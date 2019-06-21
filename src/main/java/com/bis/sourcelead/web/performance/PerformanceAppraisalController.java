@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
@@ -30,5 +31,41 @@ public class PerformanceAppraisalController {
 					model.setViewName("performance/performanceAppraisalList");
 					return model;
 	}
+	 
+	 @RequestMapping(value = "/selfAppraisalDetails")
+	 public ModelAndView selfAppraisalDetails(HttpServletRequest request,
+			 @RequestParam(value="assignedUUID", required=false) String assignedUUID) throws Exception {
+		    
+				ModelAndView model = new ModelAndView();
+				
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.PERFORMANCE_MY_APPRAISAL);
+					
+					request.getSession().setAttribute("sessionData",sessionData);
+					
+					model.addObject("assignedUUID", assignedUUID);
+					model.setViewName("performance/selfAppraisalDetails");
+					return model;
+	}
+	 
+	 
+	 @RequestMapping(value = "/getTemplateOverView")
+		public ModelAndView getTemplateOverView(HttpServletRequest request) throws Exception{
+			ModelAndView model = new ModelAndView();
+			model.setViewName("performance/templateOverView");
+			return model;
+		}
+	 
+	 @RequestMapping(value = "/getAppraisalFeedbackDetails")
+		public ModelAndView getAppraisalFeedbackDetails(HttpServletRequest request) throws Exception{
+			ModelAndView model = new ModelAndView();
+			model.setViewName("performance/appraisalFeedback");
+			return model;
+		}
+	 
 
 }

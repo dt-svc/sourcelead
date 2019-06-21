@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalDao;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalService;
 
@@ -25,6 +26,12 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 			PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO, Long userId, Long orgLocationId,
 			String dateFormat) throws Exception {
 		return performanceAppraisalDao.getAssignedPeersAppraisalList(performanceAppraisalTemplateDTO, userId, orgLocationId, dateFormat);
+	}
+
+	@Override
+	public PerformanceAppraisalDetailsDTO getSelfAppraisalTemplateDetails(String assignedUUID, String dateFormat)
+			throws Exception {
+		return performanceAppraisalDao.getSelfAppraisalTemplateDetails(assignedUUID, dateFormat);
 	}
 
 }
