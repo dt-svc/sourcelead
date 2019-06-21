@@ -211,7 +211,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                 </sec:authorize>
                 
                 <sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
-				<li><a href="${SourceLeadWeb_sourceleadUrl}/pendingForApprovalReport">Pending for Approval</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/pendingForApprovalReport">Pending for Approval Timesheets</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
