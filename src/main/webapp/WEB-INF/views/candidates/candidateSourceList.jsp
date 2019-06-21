@@ -106,7 +106,7 @@
 		            "render": function ( data, type, opt, meta ) {
 		            		var result = "";
 	           		   if(opt.id != null && opt.id != '' && opt.id != 'undefined') {
-		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.id+'</div></td>';
+		     	        	result = result + '<td><div  class="tbldata-dotdot-sm" title="'+opt.id+'">'+opt.id+'</div></td>';
 	           		   } else {
 							result = result +"<td><div>-----</div></td>";
 	           	       }
