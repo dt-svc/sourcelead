@@ -43,7 +43,7 @@ $(document).ready(function() {
                         </a>
                       </li>
                       <li title="Feedback">
-                          <a onclick="getAppraisalFeedbackDetails();" class="clearfix mb0">
+                          <a onclick="getAppraisalFeedbackDetails();" id="feedbackWidget" class="clearfix mb0">
                             <div class="categoryIcon"></div>
                             <div class="clearfix"></div>
                             Feedback

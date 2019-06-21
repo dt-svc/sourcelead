@@ -3,6 +3,7 @@
 
 <script>
 function getTemplateOverViewDetails(){
+    document.getElementById("feedbackWidget").removeAttribute("class")
 	$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 		  type: "GET",
@@ -79,44 +80,51 @@ function getTemplateOverViewDetails(){
  						    	  result = result + '</div>';
  						    	  result = result + '</div>';
 				    	    }
+ 							
+ 							
  
-				    	  
-
-				    	  result = result + '<div class="form-group clearfix">';
-				    	  result = result + '<label class="col-md-2 paddingRight mt10">Reporting Manager<span class="pull-right paddingLeft">:</span></label>';
-				    	  result = result + '<div class="col-md-5">';
-			                      
-				    	  result = result + '<div class="selfAppraisalImg">';
-				    	  result = result + '<img src="'+reportingManagerImgUrl+'" alt="Image">';
-				    	  result = result + '</div>';
-				    	  result = result + '<span class="selfAppraisalpeerName">'+response.object.appraisalTemplate.reportingManager+'</span>';
-				    	  result = result + '</div>';
-				    	  result = result + '</div>';
-			  
-				    	  if(response.object.appraisalTemplate.reportingManagerReviewStartDate != null){
-				    	  result = result + '<div class="form-group clearfix">';
-				    	  result = result + '<label class="col-md-2 paddingRight">Review Peirod<span class="pull-right paddingLeft">:</span></label>';
-				    	  result = result + '<div class="col-md-5">'+response.object.appraisalTemplate.reportingManagerReviewStartDate+' <span class="text-muted ml mr">to</span> '+response.object.appraisalTemplate.reportingManagerReviewEndDate+'</div>';
-				    	  result = result + '</div>';
-				    	  }
-				    	  
-				    	  result = result + '<div class="form-group clearfix">';
-				    	  result = result + '<label class="col-md-2 paddingRight mt10">Resource Manager<span class="pull-right paddingLeft">:</span></label>';
-				    	  result = result + '<div class="col-md-5">';
-				    	  
-				    	  result = result + '<div class="selfAppraisalImg">';
-				    	  result = result + '<img src="'+resourceManagerImgUrl+'" alt="Image">';
-				    	  result = result + '</div>';
-				    	  result = result + '<span class="selfAppraisalpeerName">'+response.object.appraisalTemplate.resourceManager+'</span>';
-				    	  result = result + '</div>';
-				    	  result = result + '</div>';
-			  
-				    	  if(response.object.appraisalTemplate.resourceManagerReviewStartDate != null){
+				    	  if(response.object.appraisalTemplate.reportingManager != null){
+				    		  
 				    		  result = result + '<div class="form-group clearfix">';
-					    	  result = result + '<label class="col-md-2 paddingRight">Review Peirod<span class="pull-right paddingLeft">:</span></label>';
-					    	  result = result + '<div class="col-md-5">'+response.object.appraisalTemplate.resourceManagerReviewStartDate+' <span class="text-muted ml mr">to</span> '+response.object.appraisalTemplate.resourceManagerReviewEndDate+'</div>';
+					    	  result = result + '<label class="col-md-2 paddingRight mt10">Reporting Manager<span class="pull-right paddingLeft">:</span></label>';
+					    	  result = result + '<div class="col-md-5">';
+				                      
+					    	  result = result + '<div class="selfAppraisalImg">';
+					    	  result = result + '<img src="'+reportingManagerImgUrl+'" alt="Image">';
 					    	  result = result + '</div>';
+					    	  result = result + '<span class="selfAppraisalpeerName">'+response.object.appraisalTemplate.reportingManager+'</span>';
+					    	  result = result + '</div>';
+					    	  result = result + '</div>';
+					    	  
+					    	  if(response.object.appraisalTemplate.reportingManagerReviewStartDate != null){
+						    	  result = result + '<div class="form-group clearfix">';
+						    	  result = result + '<label class="col-md-2 paddingRight">Review Peirod<span class="pull-right paddingLeft">:</span></label>';
+						    	  result = result + '<div class="col-md-5">'+response.object.appraisalTemplate.reportingManagerReviewStartDate+' <span class="text-muted ml mr">to</span> '+response.object.appraisalTemplate.reportingManagerReviewEndDate+'</div>';
+						    	  result = result + '</div>';
+						    	  }
 				    	  }
+
+				    	 
+				    	  if(response.object.appraisalTemplate.resourceManager != null){
+				        	  result = result + '<div class="form-group clearfix">';
+					    	  result = result + '<label class="col-md-2 paddingRight mt10">Resource Manager<span class="pull-right paddingLeft">:</span></label>';
+					    	  result = result + '<div class="col-md-5">';
+					    	  
+					    	  result = result + '<div class="selfAppraisalImg">';
+					    	  result = result + '<img src="'+resourceManagerImgUrl+'" alt="Image">';
+					    	  result = result + '</div>';
+					    	  result = result + '<span class="selfAppraisalpeerName">'+response.object.appraisalTemplate.resourceManager+'</span>';
+					    	  result = result + '</div>';
+					    	  result = result + '</div>';
+				  
+					    	  if(response.object.appraisalTemplate.resourceManagerReviewStartDate != null){
+					    		  result = result + '<div class="form-group clearfix">';
+						    	  result = result + '<label class="col-md-2 paddingRight">Review Peirod<span class="pull-right paddingLeft">:</span></label>';
+						    	  result = result + '<div class="col-md-5">'+response.object.appraisalTemplate.resourceManagerReviewStartDate+' <span class="text-muted ml mr">to</span> '+response.object.appraisalTemplate.resourceManagerReviewEndDate+'</div>';
+						    	  result = result + '</div>';
+					    	  }
+				    	  }
+				
 				    	  
 
 						 if(response.object.appraisalTemplate.description != null 

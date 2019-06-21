@@ -88,9 +88,9 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		}
 		
 		if(query1.toString() != null && !query1.toString().isEmpty()){
-			querySeachStr = "where "+"("+query1.toString()+") AND Q1.dayDiff <= 0";
+			querySeachStr = "where "+"("+query1.toString()+") AND Q1.dayDiff = 1 ";
 		}else {
-			querySeachStr = "where Q1.dayDiff <= 0";
+			querySeachStr = "where Q1.dayDiff = 1 ";
 		}
 		
 		try {
@@ -118,7 +118,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 					"DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_END_DATE,"+appraisalDateFormat+") AS appraisalProcessEndDate, "+
 					"DATE_FORMAT(TEMPLATE.SELF_APPRAISAL_START_DATE,"+appraisalDateFormat+") AS selfAppraisalStartDate, "+
 					"DATE_FORMAT(TEMPLATE.SELF_APPRAISAL_END_DATE,"+appraisalDateFormat+") AS selfAppraisalEndDate, "+
-					"DATEDIFF(TEMPLATE.SELF_APPRAISAL_START_DATE,CURRENT_DATE()) AS dayDiff " + 
+					"CONVERT(CURRENT_DATE() >= TEMPLATE.SELF_APPRAISAL_START_DATE,CHAR)AS dayDiff " + 
 							             
 					"FROM " + 
 					"PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, " + 
@@ -205,9 +205,9 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		}
 		
 		if(query1.toString() != null && !query1.toString().isEmpty()){
-			querySeachStr = "where "+"("+query1.toString()+") AND Q1.dayDiff <= 0";
+			querySeachStr = "where "+"("+query1.toString()+") AND Q1.dayDiff = 1";
 		}else {
-			querySeachStr = "where Q1.dayDiff <= 0";
+			querySeachStr = "where Q1.dayDiff = 1";
 		}
 		
 		try {
@@ -236,7 +236,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 					"DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_END_DATE,"+appraisalDateFormat+") AS appraisalProcessEndDate, "+
 					"DATE_FORMAT(TEMPLATE.PEER_REVIEW_START_DATE,"+appraisalDateFormat+") AS peerReviewStartDate, "+
 					"DATE_FORMAT(TEMPLATE.PEER_REVIEW_END_DATE,"+appraisalDateFormat+") AS peerReviewEndDate, "+
-					"DATEDIFF(TEMPLATE.PEER_REVIEW_START_DATE,CURRENT_DATE()) AS dayDiff " + 
+					"CONVERT(CURRENT_DATE() >= TEMPLATE.PEER_REVIEW_START_DATE,CHAR)AS dayDiff " + 
 							             
 					"FROM " + 
 					"PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, " + 
