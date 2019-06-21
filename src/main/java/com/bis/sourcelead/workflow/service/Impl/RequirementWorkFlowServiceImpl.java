@@ -530,12 +530,21 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			workFlowStage.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			workFlowStage.setStatus(Constants.RECORD_INACTIVE);
 			workFlowStage.setSeqOrder(Constants.RECORD_INACTIVE);
+			workFlowStage.setOrgLocationId(orgLocations);
+			workFlowStage.setConfigureType(Constants.CLIENT);
+			workFlowStage.setEditable(Constants.YES);
+			workFlowStage.setCreatedDate(new Date());
+			workFlowStage.setCreatedBy(user);
+			workFlowStage.setUpdatedDate(new Date());
+			workFlowStage.setUpdatedBy(user);
 		}if(!requirementWorkFlowStagesDTO.getCurrentStageUuid().equals("") && !requirementWorkFlowStagesDTO.getCurrentStageUuid().equals(Constants.DEFAULT)) {
 				workFlowStage = requirementWorkFlowDao.getRequirementWorkFlowStageByUuidAndWorkflowUuid(requirementWorkFlowStagesDTO.getCurrentStageUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), orgLocations.getId());	
 				workFlowStage.setStageName(requirementWorkFlowStagesDTO.getStageName());
 				workFlowStage.setDescription(requirementWorkFlowStagesDTO.getDescription());
 				workFlowStage.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				workFlowStage.setStatus(Constants.RECORD_ACTIVE);
+				workFlowStage.setUpdatedDate(new Date());
+				workFlowStage.setUpdatedBy(user);
 			}
 		if(requirementWorkFlowStagesDTO.getStageName() != null && StringUtils.isNotBlank(requirementWorkFlowStagesDTO.getStageName()) && !requirementWorkFlowStagesDTO.getCurrentStageUuid().equals(Constants.DEFAULT)) {
 			workFlowStage.setStageName(requirementWorkFlowStagesDTO.getStageName());
@@ -544,10 +553,21 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				workFlowStage.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				workFlowStage.setStatus(Constants.RECORD_ACTIVE);
 			}
+			workFlowStage.setOrgLocationId(orgLocations);
+			workFlowStage.setConfigureType(Constants.CLIENT);
+			workFlowStage.setEditable(Constants.YES);
+			workFlowStage.setCreatedDate(new Date());
+			workFlowStage.setCreatedBy(user);
+			workFlowStage.setUpdatedDate(new Date());
+			workFlowStage.setUpdatedBy(user);
 			}
 		if(requirementWorkFlowStages != null && !requirementWorkFlowStagesDTO.getCurrentStageUuid().equals(Constants.DEFAULT)) {
 			workFlowStage.setRequirementWorkFlowId(requirementWorkFlowStages.getRequirementWorkFlowId());
 			workFlowStage.setSeqOrder(requirementWorkFlowStages.getSeqOrder());
+		}
+		
+		if(requirementWorkFlowStagesDTO.getStageShortCode() != null && StringUtils.isNotBlank(requirementWorkFlowStagesDTO.getStageShortCode())) {
+			workFlowStage.setStageShortCode(requirementWorkFlowStagesDTO.getStageShortCode());
 		}
 		
 		if(requirementWorkFlowStagesDTO.getRequirementQuestionnaireTemplateId() != null) {
@@ -574,14 +594,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			workFlowStage.setChosenColumns(requirementWorkFlowStagesDTO.getChosenColumns());
 		}
 		}
-		
-		workFlowStage.setOrgLocationId(orgLocations);
-		workFlowStage.setConfigureType(Constants.CLIENT);
-		workFlowStage.setEditable(Constants.YES);
-		workFlowStage.setCreatedDate(new Date());
-		workFlowStage.setCreatedBy(user);
-		workFlowStage.setUpdatedDate(new Date());
-		workFlowStage.setUpdatedBy(user);
 		
 		//task saving..
 		User assignedUser = new User();
@@ -987,6 +999,48 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	@Override
 	public void saveWorkflowIdInAllOrgsForRequirement(RequirementWorkFlow requirementWorkFlow, OrgLocations orgLocations) throws Exception {
 		requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, orgLocations);
+	}
+
+
+	@Override
+	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesByWorkflowIdAndOrglocations(Long workflowId,
+			OrgLocations orgLocations) {
+		return requirementWorkFlowDao.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(workflowId, orgLocations);
+	}
+
+
+	@Override
+	public String validateStageShortCode(Long id, String shortCode, String workflowUuid) {
+		// TODO Auto-generated method stub
+		logger.debug("Started validateStageShortCode Service for "+id+" orgLocation and "+shortCode+" shortCode");
+		List<RequirementWorkFlowStages> workflowStages = new ArrayList<RequirementWorkFlowStages>();
+		String flag = null;
+		String nonSpecialChars = "^(?!_)(?!.*__)(?!-)(?!.*--)[\\w .-]+(?<!-)(?<!_)$";
+		Boolean nonSpecialFlag = false;
+		try {
+			if(shortCode != null && !StringUtils.isBlank(shortCode)) {
+				nonSpecialFlag = Pattern.matches(nonSpecialChars, shortCode);
+			}
+			if(nonSpecialFlag == true) {
+			workflowStages = requirementWorkFlowDao.getRequirementWorkflowStagesListByUuid(workflowUuid, id);
+			if(workflowStages != null && workflowStages.size() > 0) {
+				if(shortCode != null && !StringUtils.isBlank(shortCode)) {
+					Stream<RequirementWorkFlowStages> stageStream = workflowStages.stream().filter(stage -> stage.getStageShortCode().equalsIgnoreCase(shortCode));
+					if(stageStream.count() > 0) {
+						return "true";
+					}
+				}
+			}
+			}else {
+				flag = "special";
+			}
+			logger.debug("Finished validateStageShortCode Service for "+id+" orgLocation and "+shortCode+" shortCode");
+		return flag;
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error(e+" in validateStageShortCode Service for "+id+" orgLocation and "+shortCode+" shortCode");
+			return null;
+		}
 	}
 	
 	}
