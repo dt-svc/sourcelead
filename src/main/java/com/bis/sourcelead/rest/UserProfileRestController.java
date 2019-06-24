@@ -165,6 +165,7 @@ public class UserProfileRestController {
 					 */
 
 					commonUtil.updateSpockDetails(user, orgLocations);
+					userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 
 					SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 					StringBuilder userNameSB = new StringBuilder();

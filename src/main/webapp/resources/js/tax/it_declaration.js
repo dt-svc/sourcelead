@@ -46,7 +46,7 @@ $(document).ready(function() {
 			        			$(".success_pop").css("display","block");
 				        		$(".success_pop span").html("ITDeclaration added successfully....");
 				        		setTimeout(function() {
-				        			location.href = pmsUrl + "/runIndianPayRoll";
+				        			location.href = pmsUrl + "/runIndianPayRoll?stab=forms";
 						 		}, 100);
 			        		}
 			        	} else if (response.response === "INVALID_DATA" || response.response === "DUPLICATE_TAX_RECORD") {
@@ -274,7 +274,7 @@ function getItDeclarationSubmissionList(uuid, financialYear, pageNo) {
 					text += "	<td>" + formList[e].employeeId + "</td>";
 					text += "	<td>";
 					text += "		<div class='tblminwidth proj_show'>";
-					text += "			<span>" + formList[e].userName + "</span> <a href='viewForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "'><i class='fa fa-binoculars'></i></a>";
+					text += "			<a href='viewForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "'><span>" + formList[e].userName + "</span> <i class='fa fa-binoculars'></i></a>";
 					text += "		</div>";
 					text += "	</td>";
 					text += "	<td><div class='tbldata-dotdot-verybig'>" + formList[e].financialYear + "</div></td>";

@@ -70,7 +70,8 @@
 	</div>	
 	</a>
 	</sec:authorize>
-	
+
+	<sec:authorize access="hasRole('ROLE_MISSING_TIMESHEETS')">
 	<a href="${SourceLeadWeb_sourceleadUrl}/pendingForExpenseApprovalReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-square-o"></i></span>
@@ -79,13 +80,13 @@
 		</div>
 	</div>	
 	</a>
-	
+	</sec:authorize>
 	<sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
 	<a href="${SourceLeadWeb_sourceleadUrl}/pendingForApprovalReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-square-o"></i></span>
 		<div class="repDashCtaWrap">
-		<h2>Pending for Approval</h2><b>View</b>
+		<h2>Pending for Approval Timesheet</h2><b>View</b>
 		</div>
 	</div>	
 	</a>
