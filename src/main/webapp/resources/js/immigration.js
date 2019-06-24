@@ -1059,6 +1059,9 @@ function Immigration() {
 	
 	
 	this.displayImmigrationCandidateDocs = function(candidateId,templateid,immigrationId,searchVal,myImmigrationStatus,curUscisMyImmi){
+		if(curUscisMyImmi == null){
+			curUscisMyImmi = "";
+		}
 		$.ajax({
 	        url: vmsUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId+"&searchVal="+searchVal+
 	        "&myImmigration="+myImmigrationStatus+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
