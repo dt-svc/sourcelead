@@ -2,6 +2,7 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,100italic,300italic,400italic,500,500italic,700,700italic,900,900italic);
 * {
 	margin: 0; padding: 0;
+	scrollbar-color: #368ee0 #ededed; scrollbar-width: thin;
 }
 body {
 	font-size: 14px; color: #333; min-height: 100%; background-color: #f2f2f2 !important;
@@ -10445,7 +10446,7 @@ padding:11.74px 4px; z-index: 9999; }
 .timesheet_out.timesheet_out_divstyles { overflow-x: auto; background: #f5f5f5; box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3); top: -45px; }
 .vendor_wrap.vendor_wrap_box-shadow { box-shadow: none; }
 .require_wrap_table.require_wrap_table_customized_styles { overflow: inherit; min-height: 175px; }
-.require_wrap_table.require_wrap_table_customized_styles select { width: 100% !important; }
+.require_wrap_table.require_wrap_table_customized_styles table tr td select { width: 100% !important; }
 .ref-top { top: 18px;height: 32px; line-height: 18px; }
 .uploadFileGroup_error_message p.jquery_form_error_message{ position: absolute; left:0; bottom:-16px; }
 .vendor_wrap_inn_table.vendor_wrap_inn_table_last_child table tr th:last-child { width:100px; }
@@ -10501,6 +10502,8 @@ vertical-align: middle; padding: 20px 15px; clear: both; display: inline-block; 
   .associateEmpData_pop_header { background-color: #ededed; min-height: 15px;  padding: 15px; margin: 0; }
   .associateEmpData_pop_header h4 { margin: 0px;  }
   .associateEmpData_pop .table thead th { text-align: center; }
+  
+
 
 @media (max-width: 320px) {
 .uasrch-selectpicker {

@@ -211,7 +211,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                 </sec:authorize>
                 
                 <sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
-				<li><a href="${SourceLeadWeb_sourceleadUrl}/pendingForApprovalReport">Pending for Approval</a></li>
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/pendingForApprovalReport">Pending for Approval Timesheets</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
@@ -265,7 +265,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateJoineReports'>Associate Joined Report</a></li>
 				</sec:authorize>  
 				
-			<%-- 	<li><a href='${SourceLeadWeb_sourceleadUrl}/associateClockInSummaryReport'>Associate Clock-In Summary Report</a></li> --%>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateClockInSummaryReport'>Associate Clock-In Summary Report</a></li>
 				
 				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li> 
 
@@ -584,6 +584,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					<sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateJoineReports'>Associate Joined Report</a></li>
 				</sec:authorize>    
+
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateClockInSummaryReport'>Associate Clock-In Summary Report</a></li>
 
 				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li>           
                 <li><a href='${SourceLeadWeb_sourceleadUrl}/loansAndAdvancesReport'>Loans And Advances Report</a></li>

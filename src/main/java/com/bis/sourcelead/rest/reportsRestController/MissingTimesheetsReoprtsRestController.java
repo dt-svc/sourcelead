@@ -13,10 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FileCopyUtils;
@@ -25,14 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.AvailableAssociatesDTO;
-import com.bis.sourcelead.dto.Response;
-import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
-import com.bis.sourcelead.entity.Expenses;
-import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.TicketDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -46,7 +37,9 @@ import com.bis.sourcelead.reportsDTO.MissingTimesheetResultRepotDTO;
 import com.bis.sourcelead.reportsDTO.PendingForExpenseApprovalReportDTO;
 import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -99,8 +92,16 @@ public class MissingTimesheetsReoprtsRestController {
 	PdfUtil pdfUtil;
 	
 	@Autowired
+	private OrgLocationService orgLocationService;
+	
+	@Autowired
 	ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
+	
+	@Autowired
 	private DynamicReport dynamicReport;
+	
+	@Autowired
+	ProjectMembersService projectMembersService;
 
 	
 
@@ -235,7 +236,7 @@ public class MissingTimesheetsReoprtsRestController {
 	        	if(!missingTimesheetRepotDTO.getDateSelection().equalsIgnoreCase("custom")) {
 	    			searchDates = reportsUtil.getJobFilterDate(missingTimesheetRepotDTO.getDateSelection(),orgLocations);
 	    		}else {
-	    			Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+	    			Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocations.getTimeZoneId()));
 	    			DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	    			DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 	    			DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
@@ -300,8 +301,8 @@ public class MissingTimesheetsReoprtsRestController {
 						            	MissingTimesheetResultRepotDTO mtr = new MissingTimesheetResultRepotDTO();
 						            	mtr.setProjectName(pm.getProjects().getProjectName());
 						            	mtr.setEmployeName(pm.getProjectMemberCandidteId().getFullName());
-						            	if(pm.getEmployee() != null) {
-						            		mtr.setEmployeType(pm.getEmployee().getUserEmploymentType());
+						            	if(null != pm.getProjectMemberCandidteId() && null != pm.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(pm.getProjectMemberCandidteId().getDesignationType())) {
+						            		mtr.setEmployeType(pm.getProjectMemberCandidteId().getDesignationType());
 						            	}
 						            	mtr.setFrequency(unfilledFrequency);
 						            	mtr.setDueDays(CalendarUtil.getNumberOfDays(frequencyEndDate,currentCal.getTime()));
@@ -394,7 +395,8 @@ public class MissingTimesheetsReoprtsRestController {
 	
 	@RequestMapping(value ="/getpendingForExpenseReportList", method = RequestMethod.POST)
 	public  @ResponseBody List<PendingForExpenseApprovalReportDTO> getpendingForApprovalExpenseReportList(MissingTimesheetRepotDTO missingTimesheetRepotDTO,HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long locationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(locationId);
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
         Date[] searchDates = null;

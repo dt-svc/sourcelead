@@ -268,16 +268,10 @@
 					</div>
 				</sec:authorize>
 				
-				<div class="col-md-2 reportNewCta">
-					<a href="${SourceLeadWeb_sourceleadUrl}/clockInOutConfig">
-							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
-					<div class="clearfix text-center">
-						<h4>Clock In - Clock Out</h4>
-					</div>
-				</div>
+				
 				
 
-				<div class="col-md-2 reportNewCta">
+				<%-- <div class="col-md-2 reportNewCta">
 					<a href="${SourceLeadWeb_sourceleadUrl}/workflowDashboard">
 						<div class="clearfix text-center mb10">
 							<i class="workflowSVG" title="Work Flow"></i>
@@ -286,8 +280,7 @@
 							<h4>Workflow</h4>
 						</div>
 					</a>
-				</div>
-				
+				</div> --%>
 				
 				<!-- Candidate Configuration -->
 				 <div class="col-md-2 reportNewCta"> 
@@ -295,6 +288,7 @@
 	            <div class="dropdown pull-right report-dropdown"> <span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown"> <span class="caret cursorPointer"></span> </span>
 	              <ul class="dropdown-menu minHeight50 maxHeight250">
 	                <li><a href="${SourceLeadWeb_atsUrl}/candidateSourceList">Source</a></li>
+	                <li><a href="${SourceLeadWeb_atsUrl}/candidateDuplicateVerification">Candidate Duplicate Verification</a></li>
 	              </ul>
 	            </div>
 	            <!-- Dropdown -->
@@ -303,6 +297,14 @@
 	              <h4>Candidate</h4>
 	            </div>
 	          </div>
+				
+				<div class="col-md-2 reportNewCta">
+					<a href="${SourceLeadWeb_sourceleadUrl}/clockInOutConfig">
+							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+					<div class="clearfix text-center">
+						<h4>Clock In - Clock Out</h4>
+					</div>
+				</div>
 				
 				 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 					<div class="col-md-2 reportNewCta">
@@ -471,6 +473,8 @@
   
   function flushBulkImportPath() {
 	  $("#folderPath").val('');
+	  $("#bulkImportStatus").empty();
+	  $("#bulkImportForm").find('p.jquery_form_error_message').remove();
   }
   
   

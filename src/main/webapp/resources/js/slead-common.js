@@ -275,8 +275,7 @@ function applyData(data, formId, name, id) {
 	else if(formId == 'vendorOnboardUploadedDocuments_form'){
 		var i = name.split('@')[1];
 		  name = name.split('@')[0];
-	}
-	else if(formId == 'timesheet_form'){
+	} else if(formId == 'timesheet_form'){
 		if($("#"+formId+" input[data-id*='"+id+"']").length > 0){
 			$("#"+formId+" input[data-id*='"+id+"']").remove();
 		}
@@ -308,8 +307,13 @@ function applyData(data, formId, name, id) {
 		i ++;
 	}
 	if(data && data.length > 0 && data[e].fileInfo) {
-		for(var e in data) {
-			applyResumeData(data[e]);
+		if(data[e].fileInfo.fileURL !== null && data[e].fileInfo.fileURL !== "") {
+			for(var e in data) {
+				applyResumeData(data[e]);
+			}
+		} else {
+			alert("Please try again....");
+			$("#loading").removeAttr("style");
 		}
 	}
 }
@@ -356,7 +360,7 @@ function saveCandidateImage(candidateId, formId, data){
 	            $.ajax({
 	                	      type: "POST",
 	                	      data: formData,
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
+	                      	  url: atsUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 	                          success: function(result) {
 	                        	  if(result){
 	                        		  $("img[data-id=profileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
@@ -423,82 +427,254 @@ function uploadResumeOnSelect(formId) {
 }
 
 function applyResumeData(json) {
-	
-	var name = json.name;
-	var firstName = '';
-	var lastName = '';
-	if(name != null && name != 'undefined' && name != ''){
-		 firstName = name.split(".")[0]; 
-		 lastName = name.split(".")[1]; 
-		 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-				 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-			 firstName = name;
-		 }
-	}
-	
-	$("#firstName").val($("#firstName").attr('readonly') ? $("#firstName").val() : firstName);
-	$("#lastName").val($("#lastName").attr('readonly') ? $("#lastName").val() : lastName);
-	$("#email").val($("#email").attr('readonly') ? $("#email").val() : json.email);
-	$("#mobilePhone").val($("#mobilePhone").attr('readonly') ? $("#mobilePhone").val() : json.phoneNumbers);
-	if(!$("#email").attr('readonly'))
-		validateCandidateEmail();
-	$("#candidateSkills").empty();
-	
-	var internalOutput = "";
-	var skills = json.skills;
-	if(skills != null && skills != 'undefined' && skills != ''){
-		var str_array = skills.split(',');
-	} else {
-		str_array = [];
-	}
-	
-   for(var j = 0; j< skillList.length; j++){
-	    var existed = 0;
-		for(var i = 0; i < str_array.length; i++) {
-		   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-		   if(str_array[i] == skillList[j]){
-				 existed = 1;
-				 internalOutput = internalOutput+"<option value='"+str_array[i]+ "' selected>"+str_array[i]+"</option>";
-				 break;
-		  }
+	//clearing previous values
+		$("#firstName").val("");
+		$("#middleName").val("");
+		$("#lastName").val("");
+		$("#email").val("");
+		$("#mobilePhone").val("");
+		$("#alternateMobilePhone").val("");
+		$("#candidateLocation").val("");
+		$("#address").val("");
+		$("#candidateCity").val("");
+		$("#candidateState").val("");
+		$("#candidateCountry").val("");
+		$("#candidateZipCode").val("");
+		$("#dateofBirth").val("");
+
+		$("input[value='Single']").prop("checked", false);
+		$("input[value='Married']").prop("checked", false);
+		$("input[value='Divorsed']").prop("checked", false);
+		$("input[value='Separated']").prop("checked", false);
+		
+		$("input[value='Male']").prop("checked", false);
+		$("input[value='Female']").prop("checked", false);
+		$("input[value='Transgender']").prop("checked", false);
+		
+		$("#designation").val("");
+		$("#experienceYears").val("");
+		$("#experienceMonths").val("");
+		$("#candidateEmployers").val("");
+		$("#candidateSkills").html("");
+		$("#candidateEducation").html("");
+		$("#summary").val("");
+		
+	//updating fields with parsed values	
+		$("#firstName").val($("#firstName").attr('readonly') ? $("#firstName").val() : json.firstName);
+		$("#middleName").val($("#middleName").attr('readonly') ? $("#middleName").val() : json.middleName);
+		$("#lastName").val($("#lastName").attr('readonly') ? $("#lastName").val() : json.lastName);
+		if(json.email !== null) {
+			$("#email").val($("#email").attr('readonly') ? $("#email").val() : json.email.split("<<>>")[0]);
 		}
-		if(existed == 0){
-			internalOutput = internalOutput+"<option value='"+skillList[j]+"'>"+skillList[j]+"</option>";
-        }
-	 }
-	
-	$("#candidateSkills").html(internalOutput);
-	$("#candidateSkills").trigger("chosen:updated");
-	$("#candidateEducation").trigger("chosen:updated");
-	
-	$("#candidateEducation").empty();
-	
-	 var internalOutput = "";
-	 var edu = json.edu;
-	 if(edu != null && edu != 'undefined' && edu != ''){
-			var str_array = edu.split(',');
-	 }else{
-		 str_array = [];
-	 }
-	 for(var j = 0; j< educationList.length; j++){
-		var existed = 0;
-	 
-		for(var i = 0; i < str_array.length; i++) {
-		   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-		   if(str_array[i] == educationList[j]){
+		if(json.phoneNumbers !== null) {
+			for(var e in json.phoneNumbers) {
+				$(e === "0" ? "#mobilePhone" : "#alternateMobilePhone").val(json.phoneNumbers[e]);
+			}
+		}
+
+		if(!$("#email").attr('readonly'))
+			validateCandidateEmail();
+		
+		var location = "";
+		location += (json.addressLine1 === null || json.addressLine1 === "") ? "" : ((location === "" ? "" : ", ") + json.addressLine1);
+		location += (json.city === null || json.city === "") ? "" : ((location === "" ? "" : ", ") + json.city);
+		location += (json.state === null || json.state === "") ? "" : ((location === "" ? "" : ", ") + json.state);
+		location += (json.zipcode === null || json.zipcode === "") ? "" : ((location === "" ? "" : ", ") + json.zipcode);
+		$("#candidateLocation").val(location);
+		
+		$("#address").val(json.addressLine1 !== null && json.addressLine1 !== "" ? json.addressLine1 : "");
+		$("#candidateCity").val(json.city !== null && json.city !== "" ? json.city : "");
+		$("#candidateState").val(json.state !== null && json.state !== "" ? json.state : "");
+		$("#candidateCountry").val(json.country !== null && json.country !== "" ? json.country : "");
+		$("#candidateZipCode").val(json.zipcode !== null && json.zipcode !== "" ? json.zipcode : "");
+		
+		$("#dateofBirth").val(json.dob !== null && json.dob !== "" ? json.dob : "");
+		
+		if(json.maritalStatus !== null) {
+			if(json.maritalStatus.toLowerCase() === "single") {
+				$("input[value='Single']").prop("checked", true);
+			} else if(json.maritalStatus.toLowerCase() === "married") {
+				$("input[value='Married']").prop("checked", true);
+			} else if(json.maritalStatus.toLowerCase() === "divorsed") {
+				$("input[value='Divorsed']").prop("checked", true);
+			} else if(json.maritalStatus.toLowerCase() === "separated") {
+				$("input[value='Separated']").prop("checked", true);
+			}
+		}
+		
+		if(json.gender != null) {
+			if(json.gender.toLowerCase() === "male") {
+				$("input[value='Male']").prop("checked", true);
+			} else if(json.gender.toLowerCase() === "female") {
+				$("input[value='Female']").prop("checked", true);
+			}
+		}
+		
+		$("#designation").val(json.designation !== null && json.designation !== "" ? json.designation : "");
+		
+		if(json.totalYearsExp > 0) {
+			$("#experienceYears").val(json.totalYearsExp);
+		} else if(json.totalMonthsExp > 0) {
+			$("#experienceYears").val(0);
+		}
+		$("#experienceYears").selectpicker('refresh');
+		
+		if(json.totalMonthsExp > 0) {
+			$("#experienceMonths").val(json.totalMonthsExp);
+		} else if(json.totalYearsExp > 0) {
+			$("#experienceMonths").val(0);
+		}
+		$("#experienceMonths").selectpicker('refresh');
+		
+		$("#candidateEmployers").val(json.employeers);
+		
+		$("#candidateSkills").empty();
+		
+		var internalOutput = "";
+		var skills = json.skills;
+		if(skills != null && skills != 'undefined' && skills != ''){
+			var str_array = skills;
+		} else {
+			str_array = [];
+		}
+		
+	   for(var j = 0; j< skillList.length; j++){
+		    var existed = 0;
+			for(var i = 0; i < str_array.length; i++) {
+			   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+			   if(str_array[i] == skillList[j]){
+				   existed = 1;
+				   internalOutput = internalOutput+"<option value='"+str_array[i]+ "' selected>"+str_array[i]+"</option>";
+				   break;
+			   }
+			}
+			if(existed == 0){
+				internalOutput = internalOutput+"<option value='"+skillList[j]+"'>"+skillList[j]+"</option>";
+	        }
+		 }
+	   
+	   for(var e in str_array) {
+			internalOutput = internalOutput+"<option value='" + str_array[e] + "' selected>" + str_array[e] + "</option>";
+		}
+		
+		$("#candidateSkills").html(internalOutput);
+		$("#candidateSkills").trigger("chosen:updated");
+		
+		$("#candidateEducation").empty();
+		
+		 var internalOutput = "";
+		 var edu = json.educations;
+		 if(edu != null && edu != 'undefined' && edu != ''){
+			var str_array = edu;
+			var index = educationList.length;
+			for(var i = 0; i < edu.length; i++) {
+				if(educationList.indexOf(edu[i]) === -1)
+					educationList[index++] = edu[i];
+			}
+		 }else{
+			 str_array = [];
+		 }
+		 
+		 for(var j = 0; j< educationList.length; j++){
+			var existed = 0;
+			for(var i = 0; i < str_array.length; i++) {
+			   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+			   if(str_array[i] == educationList[j]){
 				   existed = 1;
 				   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
 				   break;
-		   }
-		}
-		if(existed == 0){
-			internalOutput = internalOutput+"<option value='"+educationList[j]+"'>"+educationList[j]+"</option>";
-        }
+			   }
+			}
+			if(existed == 0){
+				internalOutput = internalOutput+"<option value='"+educationList[j]+"'>"+educationList[j]+"</option>";
+	        }
+		 }		
+
+		$("#candidateEducation").append(internalOutput);
+		$("#candidateEducation").trigger("chosen:updated");
 		
-	 }		
-	$("#candidateEducation").append(internalOutput);
-	$("#loading").removeAttr("style");
-}
+		$("#summary").val(json.summary);
+		$("#loading").removeAttr("style");
+	}
+
+//function applyResumeData(json) {
+//	
+//	var name = json.name;
+//	var firstName = '';
+//	var lastName = '';
+//	if(name != null && name != 'undefined' && name != ''){
+//		 firstName = name.split(".")[0]; 
+//		 lastName = name.split(".")[1]; 
+//		 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
+//				 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
+//			 firstName = name;
+//		 }
+//	}
+//	
+//	$("#firstName").val($("#firstName").attr('readonly') ? $("#firstName").val() : firstName);
+//	$("#lastName").val($("#lastName").attr('readonly') ? $("#lastName").val() : lastName);
+//	$("#email").val($("#email").attr('readonly') ? $("#email").val() : json.email);
+//	$("#mobilePhone").val($("#mobilePhone").attr('readonly') ? $("#mobilePhone").val() : json.phoneNumbers);
+//	if(!$("#email").attr('readonly'))
+//		validateCandidateEmail();
+//	$("#candidateSkills").empty();
+//	
+//	var internalOutput = "";
+//	var skills = json.skills;
+//	if(skills != null && skills != 'undefined' && skills != ''){
+//		var str_array = skills.split(',');
+//	} else {
+//		str_array = [];
+//	}
+//	
+//   for(var j = 0; j< skillList.length; j++){
+//	    var existed = 0;
+//		for(var i = 0; i < str_array.length; i++) {
+//		   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+//		   if(str_array[i] == skillList[j]){
+//				 existed = 1;
+//				 internalOutput = internalOutput+"<option value='"+str_array[i]+ "' selected>"+str_array[i]+"</option>";
+//				 break;
+//		  }
+//		}
+//		if(existed == 0){
+//			internalOutput = internalOutput+"<option value='"+skillList[j]+"'>"+skillList[j]+"</option>";
+//        }
+//	 }
+//	
+//	$("#candidateSkills").html(internalOutput);
+//	$("#candidateSkills").trigger("chosen:updated");
+//	$("#candidateEducation").trigger("chosen:updated");
+//	
+//	$("#candidateEducation").empty();
+//	
+//	 var internalOutput = "";
+//	 var edu = json.edu;
+//	 if(edu != null && edu != 'undefined' && edu != ''){
+//			var str_array = edu.split(',');
+//	 }else{
+//		 str_array = [];
+//	 }
+//	 for(var j = 0; j< educationList.length; j++){
+//		var existed = 0;
+//	 
+//		for(var i = 0; i < str_array.length; i++) {
+//		   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+//		   if(str_array[i] == educationList[j]){
+//				   existed = 1;
+//				   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+//				   break;
+//		   }
+//		}
+//		if(existed == 0){
+//			internalOutput = internalOutput+"<option value='"+educationList[j]+"'>"+educationList[j]+"</option>";
+//        }
+//		
+//	 }		
+//	$("#candidateEducation").append(internalOutput);
+//	$("#loading").removeAttr("style");
+//}
+
 function getJSDate(date,dateFormat){
 	 var start = date.split("-");
     if(dateFormat.match("yyyy-MM-dd")){
