@@ -409,9 +409,9 @@
 										               <input onblur="editMe(this);"  ${te.editable ? '' : 'disabled="disabled"'} id="${leaveIndex+entryCount.index+1}timeSheetDay${teStatus.index+1}Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
 										               <div class='timesheet_comm'>
 										                   <c:if test="${!empty te.comments || (empty te.comments && te.editable)}">
-										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${leaveIndex+entryCount.index+1}comment${teStatus.index+1}Id");'></i>
+										                       <i id="commentI${entryIndex}" class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${leaveIndex+entryCount.index+1}comment${teStatus.index+1}Id");'></i>
 										                       <span class='teskcomment' id='${leaveIndex+entryCount.index+1}comment${teStatus.index+1}Id'>
-										                             <textarea ${te.editable ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
+										                             <textarea ${te.editable ? '' : 'disabled="disabled"'} onblur="makeActive(this,'commentI${entryIndex}','${leaveIndex+entryCount.index+1}CommentValidation${teStatus.index+1}Id')" name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
                                                                </span>
 										                   </c:if>
 										                   <c:if test="${empty te.comments && !te.editable}">
@@ -559,7 +559,7 @@
 								 <!--###################################### save/submit/approve/reject/cancel buttons section  ######################################-->
 								 <c:if test="${!timesheetSubmissionDTO.submitButtonVisible}">
 								   <c:if 	test="${timesheetSubmissionDTO.timesheetStatus == 'NEW' || timesheetSubmissionDTO.timesheetStatus == 'DRAFT' || timesheetSubmissionDTO.timesheetStatus == 'SUBMITTED'}">
-								        <input onclick="saveTimesheet('Submitted');" value="Save" class="time_btn time_dra" type="button">
+								        <input onclick="saveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
 								   </c:if>
 								 </c:if>
 								
@@ -1109,6 +1109,24 @@ function timesheetComment(local){
 	});
 } 
 </script>	
+
+<script type="text/javascript">
+function makeActive(local,commentI,commentValidationId){ 
+	
+	var comment = local.value;
+	 $("#"+commentI).removeClass('com_active');
+	if(comment != null && comment != 'undefined' && comment != ''){
+		 $("#"+commentValidationId).val(comment);
+		 $("#"+commentValidationId).next('p').remove();
+		 $("#"+commentValidationId).removeClass('error');
+		 $("#"+commentI).addClass('com_active');
+	}else{
+		 $("#"+commentValidationId).val('');
+		 $("#"+commentValidationId).next('p').remove();
+		 $("#"+commentValidationId).removeClass('error');
+	}
+} 
+</script>
 
 <script type="text/javascript">
 		function bodyClick(){

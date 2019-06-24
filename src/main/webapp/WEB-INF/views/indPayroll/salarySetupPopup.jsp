@@ -81,8 +81,8 @@
 		                  <option>&#42;</option>
 		                  <option>&#47;</option>
 		                  <option>&#45;</option>
-		                  <option>&#61;</option>
-		                  <option>&#37;</option>
+		               <!--    <option>&#61;</option>
+ -->		              <option>&#37;</option>
 		                  <%--<option>&#40;</option>
 		                  <option>&#41;</option> --%>
 		                  <option>&#91;</option>
@@ -157,7 +157,7 @@ $('#method').on('change', function() {
 		  $("#formula").attr("name", "formula");
 		  $("#payheadsFormulaGroup").hide();
 		  $("#formulaTextareaId").removeAttr("name");
-		  $('#formula').attr("data-validation", "validate_Space validate_length length1-3 validate_int");
+		  $('#formula').attr("data-validation", "validate_Space validate_length length1-5 validate_float");
 		  
 	  }else if($('#method :selected').text() == '% of Payheads'){
 		  $("#formula").removeAttr("name");
@@ -208,11 +208,12 @@ $('#method').on('change', function() {
 			                	if($("#formula").val() != null && $("#formula").val() != ''){
 			                		$("#formulaSpan"+uuid).text($.trim($("#formula").val()));
 			                	}else{
-			                		$("#formulaSpan"+uuid).text($.trim($("textarea#formula").val()));
+			                		$("#formulaSpan"+uuid).text($.trim($("textarea#formulaTextareaId").val()));
 			                	}
 			                	$("#methodSpan"+uuid).text($("#method").val());
 			                	
 			                	closesalarySetup();
+			                	getPayRollSalarySetupList();
 			                    
 			                } else if (result.indexOf('Sign In') !== -1) {
 								location.replace(pmsUrl);
@@ -287,12 +288,12 @@ $('#method').on('change', function() {
 		
 		for (var i = 0; i < formula.length; i++) {
 			  
-			alert(formula.charAt(i));
+			//alert(formula.charAt(i));
 			  
 			  if(/^[a-zA-Z]$/.test(formula.charAt(i))){
 				  
 					
-					alert(i);
+				//	alert(i);
 					
 					
 				}

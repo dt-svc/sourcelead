@@ -7,51 +7,6 @@
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </script>
 
-<style>
-.Highlighted {
-	background-color : #DCDCDC !important;
-	font-weight:bold !important;
-	font-size: 12pt; border: 1px solid #fff !important;
-}
-.CheckDateHighlighted {
-	background-color : 	#F0E68C !important;
-	font-weight:bold !important;
-	font-size: 12pt; border: 1px solid #fff !important;
-}
-.PayRunDateHighlighted {
-	background-color : #80ff00 !important;
-	font-weight:bold !important;
-	font-size: 12pt; border: 1px solid #fff !important;
-}
-.RunDateHighlighted {
-	background-color : #0000FF !important;
-	font-weight:bold !important;
-	font-size: 12pt; border: 1px solid #fff !important;
-}
-.Highlighted a.ui-state-default {
- color: #fff !important;
-}
-
-#eventCalendar .ui-widget.ui-widget-content, #scheduleCalendar .ui-widget.ui-widget-content {
-    border: 1px solid #ededed !important;
-    box-shadow: none;
-    width: 60% !important;
-    border-radius: 0;
-    background: #fff !important;
-    padding: 10px;
-}
-
-/* .Hil a { */
-/* 	background-color : #DC143C !important; */
-/* 	font-weight:bold !important; */
-/* 	font-size: 12pt; */
-/* } */
-
-
-
-</style>
-
-
 <script>
 $(document).ready(function(){
 	$("#calenderViewDIV").hide();
@@ -237,7 +192,7 @@ function callDates(data){
         	    })
         	  $("#eventCalendar"+i).removeClass('ui-state-active');
         	  $("#eventCalendar"+i).find("a.ui-state-active").removeClass('ui-state-active'); 
-        	  $("#eventCalendar"+i).find("td.Highlighted").removeClass('ui-state-disabled'); 
+        	  $("#eventCalendar"+i).find("td.Highlighted area").removeClass('ui-state-disabled'); 
         	  
          }
          

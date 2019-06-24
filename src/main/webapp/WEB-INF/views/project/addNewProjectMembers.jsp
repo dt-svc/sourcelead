@@ -5,12 +5,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style>
-.text-muted {
-    color: #ededed !important; 
-}
-</style>
-
 <script>
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </script>

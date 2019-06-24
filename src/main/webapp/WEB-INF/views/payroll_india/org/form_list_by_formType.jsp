@@ -6,12 +6,15 @@
 <div class="success_pop">
   <i class="fa fa-check-circle"></i><span>Operation executed successfully...</span>
 </div>
+<script type="text/javascript">
+       var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+</script>
 <section class="content-wraper contentWraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
 			<h2>${taxForm.name} list</h2>
 		</div>
-		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; ${taxForm.name} list</div>
+		<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; ${taxForm.name} list</div>
 	</section>
 
 	<!-- Timesheet -->
