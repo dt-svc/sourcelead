@@ -659,7 +659,9 @@
                     <div class="clearfix"></div>
                     
                     <div class="require_wrap_details_cta"> <b>Assign to all :</b><span>${requirement.releaseJobToAllUsers  == 'Y' ? 'YES' : 'NO'}</span></div>
-                    
+                    <div class="clearfix"></div>
+                    <%-- // below lines is commented for to move in next release build.--%>
+                    <%-- <div class="require_wrap_details_cta"> <b>Workflow :</b><span>${requirement.workflowId.workFlowName}</span></div> --%>
                     <c:if test="${!empty sourceleadSectionList}">
 						            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 						               <c:if test="${sectionOrder.index == 2}">
@@ -844,7 +846,7 @@ function importApplicantsToJob(requirementId){
 }
 
 function bulkResumeParsing(requirementUUID) {
-	location.href = sourceleadUrl + "/bulk-resume-import.html?requirementUUID=" + requirementUUID;
+	window.open(sourceleadUrl + "/bulk-resume-import.html?requirementUUID=" + requirementUUID, "_blank");
 }
 </script>
 

@@ -1567,7 +1567,7 @@ $(document).ready(function () {
 												<label class="col-md-3">Bill Rate / Salary&nbsp;<i
 													class='fa fa-info-circle'
 													title='Client proposed bill rate for the particular job (strictly for internal reference only)'></i></label>
-												<div class="col-md-9 pras ratetype">
+												<div class="col-md-9 ratetype">
 													<div class="input-group">
 														<c:set var="val" value="${requirement.isClientJob}" />
 														<c:choose>
@@ -1755,8 +1755,8 @@ $(document).ready(function () {
 												<div class="clearfix"></div>
 											</div>
 											<div class="form-group">
-												<label class="col-md-3">Submission Form<span
-													class="text-danger paddingLeft">* </span><i
+												<label class="col-md-3 paddingRight">Submission Form<span
+													class="text-danger">*</span><i
 													class='fa fa-info-circle'
 													title="Select client specific Submission Template to provide the applicant's information"></i></label>
 												<div class="col-md-9">
@@ -1801,6 +1801,7 @@ $(document).ready(function () {
 													</c:if>
 												</c:forEach>
 											</c:if>
+											
 											<div class="form-group">
 												<label class="col-md-3">Job Rating</label>
 												<div class="col-md-9">
@@ -1813,7 +1814,7 @@ $(document).ready(function () {
 													</div>
 												</div>
 											</div>
-
+											
 											<div class="form-group">
 												<label class="col-md-3">Incentivized</label>
 												<div class="col-md-9 toggle-button">
@@ -1826,7 +1827,6 @@ $(document).ready(function () {
 													</label>
 												</div>
 											</div>
-
 											<div class="form-group" id="nofJoiners"
 												${requirement.incentivized == 'Y' ? '' : 'style="display:none;"'}>
 												<label class="col-md-3">No. of Joiners <span
@@ -2204,7 +2204,9 @@ $(document).ready(function () {
 										</select>
 									</div>
 								</div>
-								<!--  added for workflow integration for job start here  -->
+								<!--  added for workflow integration for job start here  
+								 <!--//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
+   									// below lines is commented for to move in next release build.
 								<div class="form-group">
 									<label class="col-md-3">Workflow<span
 										class="text-danger paddingLeft">*</span></label>
@@ -2219,7 +2221,7 @@ $(document).ready(function () {
 											</c:forEach>
 										</select>
 									</div>
-								</div>
+								</div>-->
 								<!--  added for workflow integration for job end here -->
 								<div class="form-group" id="internalSubmissionFrom">
 									<label class="col-md-3">Application Form<span
