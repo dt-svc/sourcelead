@@ -19,6 +19,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.MissingTimesheetRepotDTO;
 import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 
 public interface ProjectsService {
@@ -151,16 +152,18 @@ public interface ProjectsService {
 
 		public ResponseList<ProjectReportDTO> getProjectReportList(ProjectReportDTO projectReportDTO,Long orgLocationId)throws Exception;
 		
-		List<AvailableAssociatesDTO> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations);
-
-		File availableAssociatereportReportListOfExcel(List<AvailableAssociatesDTO> data, User user,
-				OrgLocations orgLocations) throws FileNotFoundException;
+		Map<String, List<AvailableAssociatesDTO>> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO,OrgLocations orgLocations);
 
 		//public File getProjectReportListOfExcel(ProjectReportDTO projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess);
 
 		File getProjectReportListOfExcel(List<ProjectReportDTO> projectReportDTO, User user, OrgLocations orgLocation,String isGlobalAccess) throws Exception;
 
 		List<Projects> getProjectsListByCanddateIdAndOrgId(String associates, Long orgLocatonId);
+
+
+		ProjectMembers isUserAssignedToProject(User userId, Long orgLocationId, Long projectId);
+
+		File availableAssociatereportReportListOfExcel(Map<String, List<AvailableAssociatesDTO>> object, User user,OrgLocations orgLocations);
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		

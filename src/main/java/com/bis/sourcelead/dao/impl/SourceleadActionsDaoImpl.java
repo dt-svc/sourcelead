@@ -89,19 +89,17 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
          List<Roles> rolesList = new ArrayList<Roles>();
 		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).list();
 		 List<Long> roleActonList = new ArrayList<Long>();
-		 for(Roles roles : rolesList){
-			 /*for (String s : roles.getActionId().split(",")){
-				 roleActonList.add(Long.parseLong(s));
-			 }*/
-			 /*Remove/filter null & empty string objects from array-lambda stream*/
-			 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
-				 roleActonList.add(Long.parseLong(s));
-        	 }
-		 }
-		
-	    String query = "from SourceleadActions sa where sa.id IN (:roleActonList) ";
-	    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("roleActonList", roleActonList).list();
-      
+		 List<SourceleadActions> actionsList = null;
+		 if(rolesList != null) {
+			 for(Roles roles : rolesList){
+				 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+					 roleActonList.add(Long.parseLong(s));
+	        	 }
+			 }
+			
+		    String query = "from SourceleadActions sa where sa.id IN (:roleActonList) ";
+		    actionsList = session.createQuery(query.toString()).setParameterList("roleActonList", roleActonList).list();
+		}
       
 	    return actionsList;
 	}
@@ -243,10 +241,6 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 		Countries countries = countriesDao.getCountriesByCountryName(orgLocations.getCountry());
 			
 			if(org.getOrgCode().equalsIgnoreCase("slead")) {
-				 List<Long> modulesList = new ArrayList<Long>();
-					for (String s : orgLocations.getModulesId().split(",")){
-						modulesList.add(Long.parseLong(s));
-					 }
 				
 				 String query = "from SourceleadActions sa where sa.actionRole != 'ROLE_ENROLL_ORG' and sa.tabs.id NOT IN (13) "
 				    		+ "and  sa.id NOT IN (152,153) and sa.status = '1' ";

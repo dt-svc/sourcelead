@@ -63,5 +63,7 @@ public interface ProjectTasksDao {
 	
 	public ResponseList<ProjectTasks> getOverdueTaskReportListByOrglocationId(ProjectTasksDTO  projectTasksDTO, Date[] searchDates)throws Exception;
 
+	public ProjectTasks getTasksById(Long projectsTaskId);
+
 
 }

@@ -1,4 +1,4 @@
-package com.bis.sourcelead.constants;
+	package com.bis.sourcelead.constants;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,7 +23,9 @@ public class Constants {
 	public static final String[] FONT_FAMILY = { "Arial", "Comisc", "Comic Sans MS", "Courier New",
 			"Georgia", "Monotype", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana",
 			"Impace" };
-	public static final String[] AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS = {"Employee Name", "Project Name", "Project Duration","Associate Duration", "Availability %","No.of Hours",};
+	public static final String[] AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS = { "Project Name", "Project Duration","Associate Duration", "Availability %","No.of Hours",};
+	
+	public static final String[] EXPENSE_PENDING_APPROVAL_REPORT_EXPORT_HEADDERS = { "Emp_ID", "Emp_Name","Emp_Type", "Project","Duration","Approval Mechanism","Manager1","Manager2","Submitted Amount","Submitted on","Approved By"};
 	
 	public static final String[] FONT_SIZE = { "8px", "9px", "10px", "11px", "12px", "13px", "14px",
 			"15px", "16px", "17px", "18px", "19px", "20px", "21px", "221px", "23px", "24px" };
@@ -123,10 +125,20 @@ public class Constants {
 	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_REJECT_THE_EXPENSE = "MailToManager1WhenManager2orAdminRejectTheExpense";
 
 	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_APPROVESTHE_EXPENSE = "MailToManager1WhenManager2orAdminApprovesTheExpense";
+	
+	public static final String MAIL_TO_EMPLOYEE_WHEN_MANAGER_SUBMIT_THE_TIMESHEET = "MailToEmployeeWhenManagerSubmitTheTimesheet";
+
+
+	public static final String MAIL_TO_MANAGER1_WHENMANAGER2_OR_ADMINREJECT_THETIMESHEET = "MailToManager1WhenManager2orAdminRejectTheTimesheet";
+
+	public static final String MAIL_TO_MANAGER1_WHENMANAGER2_OR_ADMINAPPROVES_THETIMESHEET = "MailToManager1WhenManager2orAdminApprovesTheTimesheet";
+	
+	public static final String MAIL_TO_THE_MANAGER_TIMESHEET_SUBMISSION = "Mail To Manager when the Timesheet Submission";
 
 
 	
 	public static final String DEFAULT = "Default";
+	public static final String ON = "on";
 	public static final String ONBOARD_DOCUMENT_BUSNIESS_LICENSE = "Business License";
 	public static final String BANK_CHEQUE = "Bank Cheque";
 	public static final String REGISTRATION_OR_INCORPORATION_OF_RECORDING = "Registration or Incorporation of recording";
@@ -295,6 +307,7 @@ public class Constants {
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";
 	public static final String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
+	public static final String APPLICANT_SOURCE_CHANGE_EMAIL_NOTIFICATION = "ApplicantSourceChange";
 	public static final String SHARE_RECOMENDED_APPLICANT = "Share Recomended Applicant";
 	public static final String SHARE_RECOMENDED_APPLICANT_NOTIFICATION = "Share Recommended Applicant Notification";
 	public static final String APPROVER_UPDATED_CONTRACT = "approverUpdatedContract";
@@ -626,10 +639,11 @@ public class Constants {
 	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
+	// "Workflow" removed from the below list as it planned for next build SRINIVA SABBU 07- JUNE-2019.
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title*",
 			"Min Experience", "Max Experience", "Min/Max Rate", "Location*", "City",	"State", "Country", "Zip Code",	
 			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
-			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority*", "Description", "Attachment", "Manager(Email)*", "Approver", "Assign To",
+			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority*","Description", "Attachment", "Manager(Email)*", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category*", "Work Status*",
@@ -729,7 +743,7 @@ public class Constants {
 
 	public static final String[] IMMIGRATION_LIST_EXCEL_HEADERS = { "ID", "Country", "Beneficiary First Name", "Beneficiary Last Name", "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number", "I-20 SEVIS Number If Student", "EAD Number If Student",
 			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Visa Status", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
-			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
+			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate"};
 
 	public static final String[] DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Payment Mode*","Bank Name*","Account Number*","BSR Number","MICR Code","IFSC Code*",
 			"First Name*","Last Name*",};
@@ -1328,7 +1342,7 @@ public class Constants {
 	public static final String REPORT_FILTER_1_WEEK = "1_week";
 	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
-	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On","Location"};
+	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Id","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On","Location"};
 	
     public static final String BOOLEAN_TRUE = "true";
     public static final String LOCAL_TAX_YES = "YES";
@@ -1499,4 +1513,11 @@ public class Constants {
 
 	public static final String NOTIFICATION_LEAVE_TITLE = "Leave Status";
 	
+	public static final String IT_DECRALARATION_HEADER1 = "INCOME TAX DECLARATION FORM - F.Y. ";
+	public static final String IT_DECRALARATION_HEADER2 = "(To be used to declare investment that will be made during the period from ";
+	public static final String[] IT_DECRALARATION_FOOTER = {"DECLARATIONS","I hereby declare that the information given above is correct and true in all respects. I am also aware that the company will be considering the above details in utmost good faith based on the details provided by me and that I am personally liable for any consequences arising out of errors, if any, in the above information",
+			                                                "I am also aware that any person making a false statement / declaration in the above form shall be liable to be fined and prosecution u/s 277 of the Income Tax Act, 1961", "The proof of payment / Supportings for claim, will be provided latest by _________________",
+			                                                "Note-", "Date","Place","SIGNATURE OF THE EMPLOYEE"};
+	
+	public static final String[] ELIMINATE_NAME_KEYWORDS = { "CANDIDATE", "FIRST NAME", "NAME" };
 }

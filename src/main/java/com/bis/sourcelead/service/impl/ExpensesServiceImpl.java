@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -27,9 +29,11 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesApproverHierarchyDao;
 import com.bis.sourcelead.dao.ExpensesDao;
+import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ExpensePendingApproveReportView;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -40,6 +44,7 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.reportsDTO.PendingForExpenseApprovalReportDTO;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
@@ -1327,6 +1332,62 @@ public class ExpensesServiceImpl implements ExpensesService{
 	public List<Expenses> getAllExpenses() {
 		// TODO Auto-generated method stub
 		return  expensesDao.getAllExpenses();
+	}
+
+	@Override
+	public List<PendingForExpenseApprovalReportDTO> getPendingForApprovalExpenseReportByProjectIds(String projectIds, Date frequencyStartDate,Date frequencyEndDate,String locationDateFormat) {
+		List<PendingForExpenseApprovalReportDTO> pendingForExpenseApprovalReportDTOList = new LinkedList<>();
+		try {
+			List<ExpensePendingApproveReportView> expenseList = expensesDao.getPendingForApprovalExpenseReportByProjectIds(projectIds, frequencyStartDate, frequencyEndDate);
+			if(expenseList != null && !expenseList.isEmpty()) {
+				for(ExpensePendingApproveReportView expenses : expenseList) {
+					PendingForExpenseApprovalReportDTO pendingForExpenseApprovalReportDTO = new PendingForExpenseApprovalReportDTO();
+					if(expenses.getEmpId() != null ) {
+					pendingForExpenseApprovalReportDTO.setEmployeId(expenses.getEmpId().toString());
+					}
+					pendingForExpenseApprovalReportDTO.setEmployeName(expenses.getEmpName());
+					pendingForExpenseApprovalReportDTO.setEmployeType(expenses.getEmploymentType());
+					pendingForExpenseApprovalReportDTO.setApprovalMechanism(expenses.getApprovalMechanism());
+					pendingForExpenseApprovalReportDTO.setApprovedBy(expenses.getActionPerformedby());
+					pendingForExpenseApprovalReportDTO.setManagerOne(expenses.getLevel1Name());
+					pendingForExpenseApprovalReportDTO.setManagerTwo(expenses.getLevel2Name());
+					pendingForExpenseApprovalReportDTO.setReportingManager(expenses.getReportingManager());
+					pendingForExpenseApprovalReportDTO.setFrequency(expenses.getDuration());
+					pendingForExpenseApprovalReportDTO.setSubmittedAmount(expenses.getSubmittedAmount().toString());
+					pendingForExpenseApprovalReportDTO.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(locationDateFormat, expenses.getSubmittedDate()));		
+					pendingForExpenseApprovalReportDTO.setProjectName(expenses.getProjectName());
+					//set all DTO values
+
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+					Date date = expenses.getSubmittedDate();
+					String output =dateFormat.format(date); 
+					
+					
+					Date d = new Date(output);
+			        Calendar compareDate = Calendar.getInstance();
+			        compareDate.setTime(d);
+			        Calendar currentDate = Calendar.getInstance();
+			        int noOfDays = Double.valueOf(Math.ceil((currentDate.getTimeInMillis() - compareDate.getTimeInMillis()) / 1000 / 60 / 60 / 24.0)).intValue();
+			        int years = 0, months = 0, weeks = 0, days = 0;
+			        years = noOfDays / 365;
+			        noOfDays = noOfDays % 365;
+			        weeks = noOfDays / 7;
+			        while(weeks >= 4) {
+			            weeks = weeks - 4;
+			            months++;
+			            noOfDays = noOfDays - 4;
+			        }
+			        noOfDays = noOfDays % 7;
+			        days = noOfDays;
+			        String str =(years + " Years " + months + " months " + weeks + " weeks " + days + " days");
+			        pendingForExpenseApprovalReportDTO.setNoofDaysPending(str);
+					pendingForExpenseApprovalReportDTOList.add(pendingForExpenseApprovalReportDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return pendingForExpenseApprovalReportDTOList;
 	}
 	
 }

@@ -20,6 +20,8 @@ public class TimesheetProjectTaskDTO {
 	
 	private String comments;
 	
+	private String hourlyType;
+	
 	private List<FileInfo> fileInfoList;
 	
 	public Long getUserId() {
@@ -91,6 +93,16 @@ public class TimesheetProjectTaskDTO {
 
 	public void setFileInfoList(List<FileInfo> fileInfoList) {
 		this.fileInfoList = fileInfoList;
+	}
+
+	public String getHourlyType()
+	{
+		return hourlyType;
+	}
+
+	public void setHourlyType(String hourlyType)
+	{
+		this.hourlyType = hourlyType;
 	}
 
 

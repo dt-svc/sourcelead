@@ -107,5 +107,7 @@ public interface ProjectTasksService {
 
 	public void updateTaskStatusList(TaskDTO taskDTO, OrgLocations loginOrgLocation)throws Exception;
 
+	public ProjectTasks getTasksById(Long projectsTaskId);
+
  	 
 }

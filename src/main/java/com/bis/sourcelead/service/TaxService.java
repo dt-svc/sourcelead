@@ -109,11 +109,11 @@ public interface TaxService {
 
 	 public SourceleadTaxITDeclarationSubmission getITDeclarationSubmissionDetails(long formId);
 
-     public File exportItDeclarationSubmissionPdf(SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, User loginUser,OrgLocations orgLoc,User user);
+     public File exportItDeclarationSubmissionPdf(SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, User loginUser, long orgLocationId,User user);
 
 	  public  User getEmployeeDetails(Long id);
 
-	 public File exportItDeclarationSubmissionExcel(SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, User loginUser,OrgLocations orgLoc, User user) throws IOException, Exception;
+	 public File exportItDeclarationSubmissionExcel(SourceleadTaxITDeclarationSubmission sourceleadTaxITDeclarationSubmissionDetails, User loginUser, long orgLocationId, User user) throws IOException, Exception;
 
 	List<SourceleadTaxSubmissionMasterDTO> getTaxSubmissionMaster(Long userId, String dateFormat, String financialYear, Paginator paginator);
 	

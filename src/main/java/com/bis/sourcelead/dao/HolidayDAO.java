@@ -43,7 +43,7 @@ public interface HolidayDAO {
 
 	List<HolidayAndRestrictday> getHolidayByFromToDate(Date startDate, Date endDate, OrgLocations orgLocations);
 	
-	public List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date startDate, Date endDate, Long orgLocationId,Long userId,Long workLocationId) throws Exception;
+	public List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date startDate, Date endDate, Long orgLocationId,Long userId,Long workLocationId, Long shiftId) throws Exception;
 
 	
 }

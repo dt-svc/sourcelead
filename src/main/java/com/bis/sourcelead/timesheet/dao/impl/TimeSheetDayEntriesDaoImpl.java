@@ -31,7 +31,6 @@ import com.bis.sourcelead.timesheet.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.timesheet.dao.TimeSheetDayEntriesHistoryDao;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
-import com.ibm.icu.util.Calendar;
 
 @Repository
 public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
@@ -56,7 +55,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 
-	private static final Logger logger = LoggerFactory.getLogger(TimesheetEntriesDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(TimeSheetDayEntriesDaoImpl.class);
 	
 	
 	@Override
@@ -208,14 +207,14 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public TimeSheetDayEntries getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(Long submissionId,
-			Long taskId, Date timesheetDate) throws Exception {
+			Long taskId, Date timesheetDate,String hourlyType) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlDate = null;
 		if(timesheetDate != null){
 			sqlDate = new java.sql.Date(timesheetDate.getTime());
 		}
-		String query = "from TimeSheetDayEntries tde left join fetch tde.timesheetSubmissions left join fetch tde.projectTask  where tde.timesheetDate =:timesheetDate and tde.timesheetSubmissions.Id =:submissionId and tde.projectTask.Id =:taskId ";
-		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setParameter("timesheetDate", sqlDate).setLong("submissionId", submissionId).setLong("taskId", taskId).list();
+		String query = "from TimeSheetDayEntries tde  where tde.timesheetDate =:timesheetDate and tde.hourlyType =:hourlyType and tde.timesheetSubmissions.Id =:submissionId and tde.projectTask.Id =:taskId ";
+		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setDate("timesheetDate", sqlDate).setLong("submissionId", submissionId).setLong("taskId", taskId).setString("hourlyType", hourlyType).list();
 		TimeSheetDayEntries tde = null;
 		if(timesheetEntriesList !=null && !timesheetEntriesList.isEmpty()){
              tde = timesheetEntriesList.iterator().next();

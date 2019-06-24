@@ -34,6 +34,7 @@ import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 	/**
@@ -334,6 +335,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @JoinColumn(name="PROJECT_CLIENT_ID", nullable=true) 
 	private ProjectClients projectClientID;
 	
+	//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
+	// below lines is commented for to move in next release build.
+	/*@NotFound(action = NotFoundAction.IGNORE)
+	@ManyToOne
+	@JoinColumn(name = "WORKFLOW_ID",  nullable=true)
+	private RequirementWorkFlow workflowId;*/
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
@@ -2268,6 +2275,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setReleasedDate(String releasedDate) {
 		this.releasedDate = releasedDate;
 	}
-	
+
+	/*public RequirementWorkFlow getWorkflowId() {
+		return workflowId;
+	}
+
+	public void setWorkflowId(RequirementWorkFlow workflowId) {
+		this.workflowId = workflowId;
+	}*/
 	
 }

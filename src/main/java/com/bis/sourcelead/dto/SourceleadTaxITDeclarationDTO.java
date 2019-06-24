@@ -17,6 +17,7 @@ public class SourceleadTaxITDeclarationDTO implements Serializable {
 	private String uuid;
 	private long taxFormId;
 	private String taxFormName;
+	private String maxLimit;
 
 	private List<SourceleadTaxITDeclarationItemDTO> sectionItemList;
 
@@ -86,5 +87,13 @@ public class SourceleadTaxITDeclarationDTO implements Serializable {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public String getMaxLimit() {
+		return maxLimit;
+	}
+
+	public void setMaxLimit(String maxLimit) {
+		this.maxLimit = maxLimit;
 	}
 }

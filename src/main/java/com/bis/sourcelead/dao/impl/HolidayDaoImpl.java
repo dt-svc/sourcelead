@@ -3,6 +3,7 @@
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -20,6 +21,7 @@ import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.HolidayShift;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -233,19 +235,27 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	}
 
 	@Override
-	public List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date startDate, Date endDate, Long orgLocationId,Long userId,Long workLocationId) throws Exception {
+	public List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date startDate, Date endDate, Long orgLocationId, Long userId, Long workLocationId, Long shiftId) throws Exception
+	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Holiday hday where ((hday.fromDate  between  :startDate and :endDate) or (hday.toDate  between  :startDate and :endDate) or (hday.fromDate = :startDate or hday.fromDate = :endDate)or (hday.toDate = :startDate or hday.toDate = :endDate)) and hday.id NOT IN(select udh.holiday.id from UserDroppedHolidays udh where udh.user.id = :userId and udh.orgLocations.id = :workLocationId and udh.toDate = hday.toDate and udh.fromDate = hday.fromDate and udh.status = '1') and hday.orgLocations.id = :orgLocationId and hday.status != '0'";
-		List<Holiday> holiday = session.createQuery(query).setParameter("startDate", startDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).setLong("userId", userId) .setLong("workLocationId", workLocationId).list();
-		if (holiday.size() > 0) {
-			return holiday;
+		List<Holiday> shiftHolidayList = new ArrayList<>();
+		try {
+			String query = "from Holiday hday where ((hday.fromDate  between  :startDate and :endDate) or (hday.toDate  between  :startDate and :endDate) or (hday.fromDate = :startDate or hday.fromDate = :endDate)or (hday.toDate = :startDate or hday.toDate = :endDate)) and hday.id NOT IN(select udh.holiday.id from UserDroppedHolidays udh where udh.user.id = :userId and udh.orgLocations.id = :workLocationId and udh.toDate = hday.toDate and udh.fromDate = hday.fromDate and udh.status = '1') and hday.orgLocations.id = :orgLocationId and hday.status != '0'";
+			List<Holiday> holidayList = session.createQuery(query).setParameter("startDate", startDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("workLocationId", workLocationId).list();
+			if (holidayList.size() > 0) {
+				for (Holiday holiday : holidayList) {
+					Set<HolidayShift> shiftsList = holiday.getHolidayShift();
+					for (HolidayShift shift : shiftsList) {
+						if (shift.getShift().getId().equals(shiftId)) {
+							shiftHolidayList.add(holiday);
+						}
+					}
+				}
+				return shiftHolidayList;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		else {
-			return null;
-		}
+		return null;
 	}
-
-	
-	
-	
 }

@@ -105,120 +105,103 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		   return file;
 	    }
 		private Sheet createXlsSheet(Workbook workbook,Sheet createExcelsheet,DateFormat DF_YMD,SimpleDateFormat WEEK_DAY,String weekDayName,String status, Row writeRow, DayWiseTimesheetReoprtsListDTO dayEntries, OrgLocations orgloc, Long totalBillable, Long totalNonbillable) throws Exception {
-				Date tDate = commonUtil.stringToDateByOrgLocationFormat(dayEntries.getTimesheetDate(), orgloc.getDateFormat());
-				weekDayName = WEEK_DAY.format(tDate);
-				if (dayEntries.getTimesheetDate() != null) {
-					String timesheetDate = dayEntries.getTimesheetDate();
-					writeRow.createCell(0).setCellValue(timesheetDate);
+			Date tDate = commonUtil.stringToDateByOrgLocationFormat(dayEntries.getTimesheetDate(), orgloc.getDateFormat());
+			weekDayName = WEEK_DAY.format(tDate);
+			int columnCount = 0;
+			String timesheetDate = "";
+			if (dayEntries.getTimesheetDate() != null) {
+				timesheetDate = dayEntries.getTimesheetDate();
+			}
+			writeRow.createCell(columnCount++).setCellValue(timesheetDate);
+	
+			writeRow.createCell(columnCount++).setCellValue(weekDayName != null ? weekDayName : "");
+			
+			writeRow.createCell(columnCount++).setCellValue(dayEntries.getEmployeeId() != null ? dayEntries.getEmployeeId() : "");
+			
+			writeRow.createCell(columnCount++).setCellValue(dayEntries.getEmployeeName() != null ? dayEntries.getEmployeeName() : "");
+			
+			writeRow.createCell(columnCount++).setCellValue(dayEntries.getEmployeeEmail() != null ? dayEntries.getEmployeeEmail() : "");
+			
+			writeRow.createCell(columnCount++).setCellValue(dayEntries.getDepartmentName()!= null ? dayEntries.getDepartmentName() : "");
+			
+			writeRow.createCell(columnCount++).setCellValue(dayEntries.getTicketNo()!= null ? dayEntries.getTicketNo() : "");
+			
+			writeRow.createCell(columnCount++).setCellValue(dayEntries.getProjectName() != null ? dayEntries.getProjectName() : "");
+			
+			writeRow.createCell(columnCount++).setCellValue(dayEntries.getTask() != null ? dayEntries.getTask() : "");
+			
+			String getBillableHrs = "0";
+			int billableHrsColumn = columnCount++;
+			if (dayEntries.getBillableHrs() != null && StringUtils.isNotEmpty(dayEntries.getBillableHrs())) {
+				CellStyle style = workbook.createCellStyle();
+				style.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00"));
+				writeRow.createCell(billableHrsColumn).setCellStyle(style);
+				String[] hours = dayEntries.getBillableHrs().split(":");
+				if(hours != null && hours.length > 1) {
+					String billableHrs = hours[0]+"."+Math.round((Integer.parseInt(hours[1])*5)/3);
+					getBillableHrs = billableHrs;
 				}
-				if (weekDayName != null && !"".equalsIgnoreCase(weekDayName)) {
-					writeRow.createCell(1).setCellValue(weekDayName);
+			}
+			
+			writeRow.createCell(billableHrsColumn).setCellValue(Float.parseFloat(getBillableHrs));
+			
+			String getNonBillableHrs = "0";
+			int nonBillableHrsColumn = columnCount++;
+			if (dayEntries.getNonBillableHrs() != null && StringUtils.isNotEmpty(dayEntries.getNonBillableHrs())) {
+				CellStyle style = workbook.createCellStyle();
+				style.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00"));
+				writeRow.createCell(nonBillableHrsColumn).setCellStyle(style);
+				String[] hours = dayEntries.getNonBillableHrs().split(":");
+				if(hours != null && hours.length > 1) {
+					String nonbillableHrs = hours[0]+"."+Math.round((Integer.parseInt(hours[1])*5)/3);
+					getNonBillableHrs = nonbillableHrs;
 				}
-				if (dayEntries.getEmployeeName() != null) {
-						writeRow.createCell(2).setCellValue(dayEntries.getEmployeeName());
-				}
-				
-				if (dayEntries.getEmployeeEmail() != null) {
-					writeRow.createCell(3).setCellValue(dayEntries.getEmployeeEmail());
-				}
-				
-				if (dayEntries.getDepartmentName()!= null) {
-							writeRow.createCell(4).setCellValue(dayEntries.getDepartmentName());
+		    }
+	
+			writeRow.createCell(nonBillableHrsColumn).setCellValue(Float.parseFloat(getNonBillableHrs));
+	
+			writeRow.createCell(columnCount++).setCellValue(dayEntries.getStatus() != null ? dayEntries.getStatus() : "");
+	
+			writeRow.createCell(columnCount++).setCellValue(dayEntries.getComments() != null ? dayEntries.getComments() : "");
+			
+			if(StringUtils.isNotEmpty(dayEntries.getStatus())) {
+				if(dayEntries.getStatus().equalsIgnoreCase("submitted for approval")) {
+					status =  "submitted";
 				}else {
-						writeRow.createCell(4).setCellValue("");
+					status = dayEntries.getStatus();
+				}
+			}
+			//Map<String,Date>dateMap = getSubmittedAndApprovedDate(dayEntries.getProjectId().longValue(),dayEntries.getMasterCandidateId().longValue(),dayEntries.getSahFrequenchStartDate(),dayEntries.getSahFrequenchEndDate(),status);
+			String submittedDate =  null;
+			String approvedDate =  null;
+			/*if(dateMap != null && !dateMap.isEmpty()) {
+				if(dateMap.get("SUBMITTED") != null) {
+					submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dateMap.get("SUBMITTED"));
 				}
 				
-				if (dayEntries.getTicketNo()!= null) {
-					writeRow.createCell(5).setCellValue(dayEntries.getTicketNo());
+	            if(dateMap.get("APPROVED") != null) {
+	            	approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dateMap.get("APPROVED")); 
 				}
-				
-				if (dayEntries.getProjectName() != null) {
-					writeRow.createCell(6).setCellValue(dayEntries.getProjectName());
-				}
-				
-				if (dayEntries.getTask() != null) {
-					writeRow.createCell(7).setCellValue(dayEntries.getTask());
-				}
-				if (dayEntries.getBillableHrs() != null) {
-					CellStyle style = workbook.createCellStyle();
-					style.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00"));
-					writeRow.createCell(8).setCellStyle(style);
-					if(StringUtils.isNotEmpty(dayEntries.getBillableHrs())) {
-						String[] hours = dayEntries.getBillableHrs().split(":");
-						if(hours != null && hours.length > 1) {
-							String billableHrs = hours[0]+"."+Math.round((Integer.parseInt(hours[1])*5)/3);
-							writeRow.createCell(8).setCellValue(Float.parseFloat(billableHrs));
-						}else {
-							writeRow.createCell(8).setCellValue(Float.parseFloat("0"));
-						}
-						
-					}else {
-						writeRow.createCell(8).setCellValue(Float.parseFloat("0"));
-					}
+			}else {*/
+				if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
+					if(dayEntries.getSubmittedDate() != null)
+					 submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
 					
+				}else if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("APPROVED")){
+					if(dayEntries.getSubmittedDate() != null)
+					  submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+					if(dayEntries.getApprovedDate() != null)
+						approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
 				}
-				if (dayEntries.getNonBillableHrs() != null) {
-					CellStyle style = workbook.createCellStyle();
-					style.setDataFormat(HSSFDataFormat.getBuiltinFormat("0.00"));
-					writeRow.createCell(9).setCellStyle(style);
-					if(StringUtils.isNotEmpty(dayEntries.getNonBillableHrs())) {
-						String[] hours = dayEntries.getNonBillableHrs().split(":");
-						if(hours != null && hours.length > 1) {
-							String nonbillableHrs = hours[0]+"."+Math.round((Integer.parseInt(hours[1])*5)/3);
-							writeRow.createCell(9).setCellValue(Float.parseFloat(nonbillableHrs));
-						}else {
-							writeRow.createCell(9).setCellValue(Float.parseFloat("0"));
-						}
-						
-					}else {
-						writeRow.createCell(9).setCellValue(Float.parseFloat("0"));
-					}
-					
-			    }
-				if (dayEntries.getStatus() != null) {
-					writeRow.createCell(10).setCellValue(dayEntries.getStatus());
-				}
-				if (dayEntries.getComments() != null) {
-					writeRow.createCell(11).setCellValue(dayEntries.getComments());
-				}
-				if(StringUtils.isNotEmpty(dayEntries.getStatus())) {
-					if(dayEntries.getStatus().equalsIgnoreCase("submitted for approval")) {
-						status =  "submitted";
-					}else {
-						status = dayEntries.getStatus();
-					}
-				}
-				//Map<String,Date>dateMap = getSubmittedAndApprovedDate(dayEntries.getProjectId().longValue(),dayEntries.getMasterCandidateId().longValue(),dayEntries.getSahFrequenchStartDate(),dayEntries.getSahFrequenchEndDate(),status);
-				String submittedDate =  null;
-				String approvedDate =  null;
-				/*if(dateMap != null && !dateMap.isEmpty()) {
-					if(dateMap.get("SUBMITTED") != null) {
-						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dateMap.get("SUBMITTED"));
-					}
-					
-                    if(dateMap.get("APPROVED") != null) {
-                    	approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dateMap.get("APPROVED")); 
-					}
-				}else {*/
-					if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
-						if(dayEntries.getSubmittedDate() != null)
-						 submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
-						
-					}else if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("APPROVED")){
-						if(dayEntries.getSubmittedDate() != null)
-						  submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
-						if(dayEntries.getApprovedDate() != null)
-							approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
-					}
-				//}
-				writeRow.createCell(12).setCellValue(submittedDate);
-				writeRow.createCell(13).setCellValue(approvedDate);
-				if (dayEntries.getCandidateLocation() != null) {
-					writeRow.createCell(14).setCellValue(dayEntries.getCandidateLocation());
-				}
-				
-			return createExcelsheet;
-		}
+			//}
+			writeRow.createCell(columnCount++).setCellValue(submittedDate);
+	
+			writeRow.createCell(columnCount++).setCellValue(approvedDate);
+			
+			writeRow.createCell(columnCount++).setCellValue(dayEntries.getCandidateLocation() != null ? dayEntries.getCandidateLocation() : "");
+			
+		return createExcelsheet;
+	}
 		
 		private Sheet billableAndNonBillabeTotalHeaderCount(String billable, String nonBillable,Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) {
 			
@@ -280,7 +263,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		public File exportDayEntryReportsWithProjectPdf(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgloc, User loginUser,String isGlobalUser)throws Exception {
 
 			String[] headers = Constants.DAYWISE_TIMESHEET_REPORTS;
-		    Document document = new Document(PageSize.LETTER.rotate());
+		    Document document = new Document(PageSize.A4.rotate());
 
 		    StringBuilder sbUser =  new StringBuilder();
 		    sbUser.append("DayWiseTimeSheetReports_").append(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(),new Date()));
@@ -295,30 +278,30 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		        PdfWriter.getInstance(document, new FileOutputStream(file));
 		        document.open();
 
-		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+		        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
 		        BaseColor myColor = WebColors.getRGBColor("#000000");
 		        boldFont.setColor(myColor);
 		        StringBuilder userStyle = new StringBuilder();
 		        userStyle.append(orgloc.getOrgLocationName()).append(" ");
-	          
+		        Font orderedListFont = new Font(FontFamily.HELVETICA, 10, Font.NORMAL);
 	            com.itextpdf.text.List orderedList = new com.itextpdf.text.List(com.itextpdf.text.List.ORDERED);
-	            orderedList.add(new ListItem("From Date:"+dayWiseTimesheetReoprtsDto.getStartDate()));
-		        orderedList.add(new ListItem("To Date:"+dayWiseTimesheetReoprtsDto.getEndDate()));
+	            orderedList.add(new ListItem("From Date:"+dayWiseTimesheetReoprtsDto.getStartDate(), orderedListFont));
+		        orderedList.add(new ListItem("To Date:"+dayWiseTimesheetReoprtsDto.getEndDate(), orderedListFont));
 		        //document.add(orderedList);
 		        // Create an instance of PdfPTable. After that we transform the header and
 		        PdfPTable table = new PdfPTable(headers.length);
-		        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+		        Font font = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
 		        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
 		        cell1.setColspan(17);
 		        headerCellStyle(cell1);
 		        table.setWidthPercentage(100);
-	            table.setWidths(new int[]{5, 3, 3,5,3, 5, 5,5,5,5,3,5,3,3,5});
+		        table.setWidths(new int[]{4,3,3,3,5,3,3,5,5,3,3,3,5,4,4,5});
 	            table.addCell(cell1);
 		        for (int i = 0; i < headers.length; i++) {
 		            String header = headers[i];
 		            PdfPCell cell = new PdfPCell();
 		            cell.setGrayFill(0.9f);
-		            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+		            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 8, Font.BOLD)));
 		            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
 		            cell.setBackgroundColor(myBorderColor);
 		            table.addCell(cell);
@@ -340,7 +323,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 	                for (int i = 0; i < datTimeArray.length; i++) {
 	                    String datum = datTimeArray[i];
 	                    PdfPCell cell = new PdfPCell();
-	                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+	                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 8, Font.NORMAL)));
 	                    table.addCell(cell);
 	                }
 	                table.completeRow();
@@ -362,81 +345,81 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		
 		
 		private String[] prepareDaywiseReportPdfData(String[] headers, DayWiseTimesheetReoprtsListDTO dayEntries, OrgLocations orgloc, long totalBillable, long totalNonbillable) {
-			    String dayArray[] = new String[headers.length];
-				String weekDayName;
-				SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
-				Date timesheetDate = commonUtil.stringToDateByOrgLocationFormat(dayEntries.getTimesheetDate(), orgloc.getDateFormat());
-				weekDayName = dayFormat.format(timesheetDate);
-				if (StringUtils.isNotEmpty(dayEntries.getTimesheetDate())) {
-					dayArray[0] = dayEntries.getTimesheetDate();
+		    String dayArray[] = new String[headers.length];
+			String weekDayName;
+			SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
+			Date timesheetDate = commonUtil.stringToDateByOrgLocationFormat(dayEntries.getTimesheetDate(), orgloc.getDateFormat());
+			weekDayName = dayFormat.format(timesheetDate);
+			int columnCount = 0;
+
+			dayArray[columnCount++] = StringUtils.isNotEmpty(dayEntries.getTimesheetDate()) ? dayEntries.getTimesheetDate() : "";
+
+			dayArray[columnCount++] = weekDayName != null && !"".equalsIgnoreCase(weekDayName) ? weekDayName : "";
+			
+			dayArray[columnCount++] =  dayEntries.getEmployeeId() != null ? dayEntries.getEmployeeId() : "";
+			
+			dayArray[columnCount++] = dayEntries.getEmployeeName()!=null ? dayEntries.getEmployeeName() : "";
+
+			dayArray[columnCount++] = dayEntries.getEmployeeEmail()!= null ? dayEntries.getEmployeeEmail() : "";
+
+			dayArray[columnCount++] = dayEntries.getDepartmentName()!= null ? dayEntries.getDepartmentName() : "";
+
+			dayArray[columnCount++] = dayEntries!= null ? dayEntries.getTicketNo() : "";
+
+			dayArray[columnCount++] = dayEntries.getProjectName() != null ? dayEntries.getProjectName() : "";
+
+			dayArray[columnCount++] = dayEntries.getTask() != null ? dayEntries.getTask() : "";
+			
+			String billableHrs = "";
+			if (dayEntries.getBillableHrs() != null) {
+				billableHrs = dayEntries.getBillableHrs();
+				totalBillable = getTotalHoursFormDayHours(dayEntries.getBillableHrs(), totalBillable);
+			}
+			dayArray[columnCount++] = billableHrs;
+			
+			String nonBillableHrs = "";
+			if (dayEntries.getNonBillableHrs() != null) {
+				nonBillableHrs = dayEntries.getNonBillableHrs();
+				totalNonbillable = getTotalHoursFormDayHours(dayEntries.getNonBillableHrs(), totalNonbillable);
+			}
+			dayArray[columnCount++] = nonBillableHrs;
+			
+			dayArray[columnCount++] = dayEntries.getStatus() != null ? dayEntries.getStatus() : "";
+
+			dayArray[columnCount++]=  dayEntries.getComments() != null ? dayEntries.getComments() : "";
+			
+			String status = null;
+			if(StringUtils.isNotEmpty(dayEntries.getStatus()) && dayEntries.getStatus().equalsIgnoreCase("submitted for approval")) {
+				status = "SUBMITTED";
+			}else {
+				status = dayEntries.getStatus();
+			}
+			
+			String submittedDate =  null;
+			String approvedDate =  null;
+			
+			if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
+				if(dayEntries.getSubmittedDate() != null)
+				submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+			}else if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("APPROVED")) {
+				if(dayEntries.getSubmittedDate() != null)
+				submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
+				if(dayEntries.getApprovedDate() != null)
+				approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getApprovedDate()); 
+			}
+		    dayArray[columnCount++] = submittedDate;
+			dayArray[columnCount++] = approvedDate;
+			String candLoc = "";
+			if(dayEntries.getCandidateLocation()!= null) {
+				if(dayEntries.getCandidateLocation().endsWith(",")) {
+					candLoc = dayEntries.getCandidateLocation().substring(0,dayEntries.getCandidateLocation().length() - 1);
+				} else {
+					candLoc = dayEntries.getCandidateLocation();
 				}
-				if (weekDayName != null && !"".equalsIgnoreCase(weekDayName)) {
-					dayArray[1]=(weekDayName);
-				}
-				if(dayEntries.getEmployeeName()!=null) {
-					dayArray[2]= dayEntries.getEmployeeName();
-				}
-				if (dayEntries.getEmployeeEmail()!= null) {
-					dayArray[3]= dayEntries.getEmployeeEmail();
-				}
-				if (dayEntries.getDepartmentName()!= null) {
-					dayArray[4]=dayEntries.getDepartmentName();
-				}
-				if (dayEntries!= null) {
-					dayArray[5]=dayEntries.getTicketNo();
-				}
-				if (dayEntries.getProjectName() != null) {
-					dayArray[6]= dayEntries.getProjectName();
-				}
-				if (dayEntries.getTask() != null) {
-					dayArray[7]=dayEntries.getTask();
-				}
-				if (dayEntries.getBillableHrs() != null) {
-					dayArray[8]=dayEntries.getBillableHrs();
-					 totalBillable = getTotalHoursFormDayHours(dayEntries.getBillableHrs(), totalBillable);
-				}
-				if (dayEntries.getNonBillableHrs() != null) {
-					dayArray[9]= dayEntries.getNonBillableHrs();
-					 totalNonbillable = getTotalHoursFormDayHours(dayEntries.getNonBillableHrs(), totalNonbillable);
-				}
-				if (dayEntries.getStatus() != null) {
-					dayArray[10]= dayEntries.getStatus();
-				}
-				if (dayEntries.getComments() != null) {
-					dayArray[11]=(dayEntries.getComments());
-				}
-				
-				String status = null;
-				if(StringUtils.isNotEmpty(dayEntries.getStatus()) && dayEntries.getStatus().equalsIgnoreCase("submitted for approval")) {
-					status = "SUBMITTED";
-				}else {
-					status = dayEntries.getStatus();
-				}
-				
-				String submittedDate =  null;
-				String approvedDate =  null;
-				
-				if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("SUBMITTEDFORAPPROVAL")) {
-					if(dayEntries.getSubmittedDate() != null)
-					submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
-				}else if(StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("APPROVED")) {
-					if(dayEntries.getSubmittedDate() != null)
-					submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getSubmittedDate());
-					if(dayEntries.getApprovedDate() != null)
-					approvedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getApprovedDate()); 
-				}
-			    dayArray[12] = submittedDate;
-				dayArray[13] = approvedDate;
-				if(dayEntries.getCandidateLocation()!= null) {
-					if(dayEntries.getCandidateLocation().endsWith(","))
-					{
-						dayArray[14]= dayEntries.getCandidateLocation().substring(0,dayEntries.getCandidateLocation().length() - 1);
-					}else {
-						dayArray[14]= dayEntries.getCandidateLocation();
-					}
-				}
-				return dayArray;
-		}
+			}
+			dayArray[columnCount++] =  candLoc;
+			return dayArray;
+	}
 		
 		
 	 private static void headerCellStyle(PdfPCell cell){

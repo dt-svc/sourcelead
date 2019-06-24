@@ -17,7 +17,7 @@ public interface TimeSheetDayEntriesDao {
 	 
 	 public TimeSheetDayEntries getTimesheetDayEntriesById(Long id) throws Exception;
 	 
-	 public TimeSheetDayEntries getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(Long submissionId,Long taskId,Date timesheetDate) throws Exception;
+	 public TimeSheetDayEntries getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(Long submissionId,Long taskId,Date timesheetDate,String hourlyType) throws Exception;
 	 
 	 public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionId(Long submissionId) throws Exception;
 	 
@@ -38,5 +38,6 @@ public interface TimeSheetDayEntriesDao {
 	 public Boolean isMissingTimesheetByMasterCandidateIdAndOrgLocationWithStartEndDates(Long masterCandidateId,Date startDate,Date endDate,OrgLocations orgLocations) throws Exception;
 	 
 	 public Double getOverTimeHoursByMasterCandidateIdAndOrgLocationWithStartEndDates(Long masterCandidateId,Date startDate,Date endDate,OrgLocations orgLocations) throws Exception;
+
 
 }

@@ -1280,4 +1280,10 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 		
 	}
 
+	@Override
+	public ProjectTasks getTasksById(Long projectsTaskId)
+	{
+		return tasksDao.getTasksById(projectsTaskId);
+	}
+
 }

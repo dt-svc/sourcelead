@@ -94,6 +94,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.timesheet.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
+import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 /**
@@ -202,6 +204,9 @@ public class DataMigrationCommonUtil {
 	
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	RequirementWorkFlowService requirementWorkflowService;
 	
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
@@ -389,6 +394,12 @@ public class DataMigrationCommonUtil {
 					}else {
 						dataMigrationDTOJsonCopy.put("coolingOff", Constants.DEFAULT_COOLINGOFF_PERIOD);
 					}
+				}else {
+					if(StringUtils.isNotEmpty(orgLocation.getCoolingOffPeriod())){
+						dataMigrationDTOJsonCopy.put("coolingOff", orgLocation.getCoolingOffPeriod());
+					}else {
+						dataMigrationDTOJsonCopy.put("coolingOff", Constants.DEFAULT_COOLINGOFF_PERIOD);
+					}
 				}
 				
 				if(!dataMigrationDTOJsonCopy.getString("closedDate").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("closedDate"))) {
@@ -565,6 +576,20 @@ public class DataMigrationCommonUtil {
 					errorSet.put("projectClientID", dataMigrationDTOJsonCopy.getString("projectClientID")+" is invalid Project");
 				}
 			}
+			/** below lines is commented for to move in next release build.!--//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
+			if(!dataMigrationDTOJsonCopy.getString("workflow").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("workflow"))) {
+				List<RequirementWorkFlow> workflowList = requirementWorkflowService.getRequirementWorkFlowByOrgLocationId(orgLocation);
+				boolean found = false;
+				for(RequirementWorkFlow workflow: workflowList) {
+					if(workflow.getWorkFlowName().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("workflow").trim())) {
+						dataMigrationDTOJsonCopy.put("workflow", workflow.getId().toString());
+						found = true;
+					}
+				}
+				if(!found){
+					errorSet.put("workflow", dataMigrationDTOJsonCopy.getString("workflow")+" is invalid Workflow");
+				}
+			}*/
 			
 			
 		if (!dataMigrationDTOJsonCopy.getString("docFile").equals("null")
@@ -1291,7 +1316,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					averageHours = getAverageHours(weekCount,importTimeSheet,0,timeFrequency);
 				  }
 				  ProjectTasks projectTasks = projectTasksService.getProjectTasksByUUID(projectTaskUUID);
-				  TimeSheetDayEntries  timesheetDayEntries = timesheetDayEntriesDao.getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(timesheetSubmissions.getId(), projectTasks.getId(), weekStartDate);
+				  TimeSheetDayEntries  timesheetDayEntries = timesheetDayEntriesDao.getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(timesheetSubmissions.getId(), projectTasks.getId(), weekStartDate,"Regular");
 				  if(timesheetDayEntries == null){
 					 timesheetDayEntries = new TimeSheetDayEntries();
 					 timesheetDayEntries.setBillableHours("00:00");

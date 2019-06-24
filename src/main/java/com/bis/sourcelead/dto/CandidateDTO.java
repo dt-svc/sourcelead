@@ -10,6 +10,7 @@ import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Phone;
 import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.OrgLocations;
 public class CandidateDTO extends SearchDTO{
 
@@ -274,6 +275,20 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String employmentType;
 	
+	private String candidateSource;
+	
+	private List<CandidateSource> candidateSourceList;
+	
+	
+
+	public List<CandidateSource> getCandidateSourceList() {
+		return candidateSourceList;
+	}
+
+	public void setCandidateSourceList(List<CandidateSource> candidateSourceList) {
+		this.candidateSourceList = candidateSourceList;
+	}
+
 	public String getCandidateId() {
 		return candidateId;
 	}
@@ -1316,6 +1331,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setEmploymentType(String employmentType) {
 		this.employmentType = employmentType;
+	}
+
+	public String getCandidateSource() {
+		return candidateSource;
+	}
+
+	public void setCandidateSource(String candidateSource) {
+		this.candidateSource = candidateSource;
 	}
 
 

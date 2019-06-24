@@ -6,6 +6,7 @@ import java.util.Date;
 public class DayWiseTimesheetReoprtsListDTO {
 	private BigInteger timeEntryId;
 	private String timesheetDate;
+	private String employeeId;
 	private String employeeName;
 	private String employeeEmail;
 	private String ticketNo;
@@ -30,6 +31,13 @@ public class DayWiseTimesheetReoprtsListDTO {
 	private Date approvedDate;
 	private Date sahFrequenchStartDate;
 	private Date sahFrequenchEndDate;
+	
+	public String getEmployeeId() {
+		return employeeId;
+	}
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
 	
 	public String getEmployeeName() {
 		return employeeName;

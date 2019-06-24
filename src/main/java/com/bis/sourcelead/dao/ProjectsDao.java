@@ -8,8 +8,10 @@ import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 
 public interface ProjectsDao {
@@ -114,5 +116,7 @@ public interface ProjectsDao {
 	List<Object[]> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations);
 
 	public List<Projects> getProjectsListByCanddateIdAndOrgId(String associates, Long orglocationId);
+
+	public ProjectMembers isUserAssignedToProject(User userId, Long orgLocationId, Long projectId);
 
 }

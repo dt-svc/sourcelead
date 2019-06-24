@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -30,13 +31,22 @@ import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectAssignTask;
+import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
+import com.bis.sourcelead.reportsDTO.MissingTimesheetRepotDTO;
+import com.bis.sourcelead.reportsDTO.MissingTimesheetResultRepotDTO;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectAssignTasksService;
+import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.mchange.v3.filecache.FileCache;
 
 import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
 import net.sf.dynamicreports.jasper.builder.export.JasperXlsExporterBuilder;
@@ -64,6 +74,12 @@ public class DynamicReport {
 	
 	@Autowired
 	private ProjectMembersDao  projectMembersDao;
+	
+	@Autowired
+	ProjectsService projectsService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	/**
 	 * @author Laxman
@@ -754,6 +770,7 @@ public class DynamicReport {
 							col.column("Associate Name", "Associate Name", type.stringType()),
 							col.column("Associate Join Date", "Associate Join Date", type.stringType()),
 							col.column("Client Name", "Client Name", type.stringType()),
+							col.column("Project Name", "Project Name", type.stringType()),
 							col.column("Project Duration", "Project Duration", type.stringType()),
 							col.column("Pay Rate", "Pay Rate", type.stringType()),
 							col.column("Bill Rate", "Bill Rate", type.stringType()),
@@ -788,6 +805,7 @@ public class DynamicReport {
 								col.column("Associate Name", "Associate Name", type.stringType()),
 								col.column("Associate Join Date", "Associate Join Date", type.stringType()),
 								col.column("Client Name", "Client Name", type.stringType()),
+								col.column("Project Name", "Project Name", type.stringType()),
 								col.column("Project Duration", "Project Duration", type.stringType()),
 								col.column("Pay Rate", "Pay Rate", type.stringType()),
 								col.column("Bill Rate", "Bill Rate", type.stringType()),
@@ -800,7 +818,7 @@ public class DynamicReport {
   }
 	
 	private DRDataSource marginSheetReportDataSource(ResponseList<MarginSheetReportDTO> responseList) {
-		DRDataSource dataSource = new DRDataSource("Associate Id","Associate Name","Associate Join Date", "Client Name","Project Duration", "Pay Rate", "Bill Rate", "Margin");
+		DRDataSource dataSource = new DRDataSource("Associate Id","Associate Name","Associate Join Date", "Client Name","Project Name","Project Duration", "Pay Rate", "Bill Rate", "Margin");
 		for(MarginSheetReportDTO margin:responseList.getData()) {
 			String empId = "--";
 			
@@ -814,6 +832,8 @@ public class DynamicReport {
 		
 			String	clientName = margin.getClinetName();
 			
+			String	projectName = margin.getProjectName();
+			
 			String  projectDuration = margin.getProjectDuration();
 			
 			String	 payRate = margin.getPayRateCurrency() +" "+String.valueOf(margin.getPayRate())+" "+margin.getPayRateType();
@@ -822,7 +842,7 @@ public class DynamicReport {
 			 
 			String marginRate = String.valueOf(margin.getMarginRate());
 			
-			dataSource.add(empId,associateName,associateJoinDate, clientName,projectDuration, payRate,billRate,marginRate);
+			dataSource.add(empId,associateName,associateJoinDate, clientName,projectName,projectDuration, payRate,billRate,marginRate);
 		}
 		return dataSource;
 	}
@@ -1400,5 +1420,103 @@ public class DynamicReport {
 		}
 		return dataSource;
 	}
+	
+	public File timesheetsPendingPdfExport(List<MissingTimesheetResultRepotDTO> missingTimesheetResultRepotList, OrgLocations orgLocations) {
+		File file = null;
+		try {
+			StringBuilder tmSbPdf = new StringBuilder();
+			file = File.createTempFile(tmSbPdf.append("TimesheetsPending").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()))
+					.toString(), ".pdf");
+			file.setReadable(true);
+			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(file);
+			report().setTemplate(Templates.reportTemplate).title(cmp.text(orgLocations.getOrgLocationName()).setStyle(Templates.bold18CenteredStyle)
+					.setHorizontalAlignment(HorizontalAlignment.CENTER))
+			.columns(col.column("Employee id", "Employee_id", type.stringType()),
+					col.column("Employee Name", "Employee_Name", type.stringType()),
+					col.column("Employee Type", "Employee_Type", type.stringType()),
+					col.column("Project Name", "Project_Name", type.stringType()),
+					col.column("Project Frequency", "Project_Frequency", type.stringType()),
+					col.column("Approval Mechanism", "Approval_Mechanism", type.stringType()),
+					col.column("Duration", "Duration", type.stringType()),
+					col.column("Manager 1", "Manager_1", type.stringType()),
+					col.column("Manager 2", "Manager_2", type.stringType()),
+					col.column("No of Hours", "No_Of_Hours", type.stringType()),
+					col.column("Submitted on", "Submitted_On", type.stringType()),
+					col.column("Approved by", "Approved_By", type.stringType()),
+					col.column("Approved on", "Approved_On", type.stringType()),
+					col.column("No of days Pending", "No_Of_Days_Pending", type.stringType()))
+					.pageFooter(Templates.footerComponent).setDataSource(createTimesheetsApprovePendingDataSource(missingTimesheetResultRepotList)).toPdf(pdfExporter);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return file;
+	}
+	
+	
+	public File timesheetsPendingExcelExport(List<MissingTimesheetResultRepotDTO> missingTimesheetResultRepotList, OrgLocations orgLocations) {
+		File file = null;
+			try {
+				StringBuilder fileExcelSb = new StringBuilder();
+				file = File.createTempFile(fileExcelSb.append("TimesheetsPending").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date())).toString(), ".xls");
+				file.setReadable(true);
+				JasperXlsExporterBuilder xlsExporter = export.xlsExporter(file).setDetectCellType(true).setIgnorePageMargins(true).setWhitePageBackground(false).setRemoveEmptySpaceBetweenColumns(true);
+				report().setTemplate(Templates.reportTemplate).setColumnTitleStyle(Templates.columnTitleStyle)
+				.addProperty(JasperProperty.EXPORT_XLS_FREEZE_ROW, "1").ignorePageWidth().ignorePagination()
+				.columns(col.column("Employee id", "Employee_id", type.stringType()),
+						col.column("Employee Name", "Employee_Name", type.stringType()),
+						col.column("Employee Type", "Employee_Type", type.stringType()),
+						col.column("Project Name", "Project_Name", type.stringType()),
+						col.column("Project Frequency", "Project_Frequency", type.stringType()),
+						col.column("Approval Mechanism", "Approval_Mechanism", type.stringType()),
+						col.column("Duration", "Duration", type.stringType()),
+						col.column("Manager 1", "Manager_1", type.stringType()),
+						col.column("Manager 2", "Manager_2", type.stringType()),
+						col.column("No of Hours", "No_Of_Hours", type.stringType()),
+						col.column("Submitted on", "Submitted_On", type.stringType()),
+						col.column("Approved by", "Approved_By", type.stringType()),
+						col.column("Approved on", "Approved_On", type.stringType()),
+						col.column("No of days Pending", "No_Of_Days_Pending", type.stringType()))
+						.setDataSource(createTimesheetsApprovePendingDataSource(missingTimesheetResultRepotList)).toXls(xlsExporter);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		return file;
+	}
+	
+	private DRDataSource createTimesheetsApprovePendingDataSource(List<MissingTimesheetResultRepotDTO> missingTimesheetResultRepotList) {
+		DRDataSource dataSource = new DRDataSource("Employee_id","Employee_Name","Employee_Type","Project_Name", "Project_Frequency","Approval_Mechanism","Duration","Manager_1","Manager_2","No_Of_Hours","Submitted_On","Approved_By","Approved_On","No_Of_Days_Pending");
+		try {
+			for (MissingTimesheetResultRepotDTO mtrd : missingTimesheetResultRepotList) {
+				String Manager_1 = "";
+				String Manager_2= "";
+				String Employee_id       = mtrd.getEmpId();		
+				String Employee_Name 	 = mtrd.getEmployeName();
+				String Employee_Type 	 = mtrd.getEmployeType();
+				String Project_Name  	 = mtrd.getProjectName();
+				String Project_Frequency = mtrd.getProjectFrequency();
+				String Approval_Mechanism = mtrd.getApprovalMechanism();
+				String Duration          = mtrd.getFrequency();
+				if(mtrd.getManager2() != null && !"".equalsIgnoreCase(mtrd.getManager2())) {
+					 Manager_1 		 = mtrd.getManager1();
+					 Manager_2 		 = mtrd.getManager2();
+					}
+					else{
+						Manager_1 		 = mtrd.getManager1();
+						Manager_2 = Manager_1;
+						Manager_1 ="--";
+					}
+				String No_Of_Hours 		 = mtrd.getNoOfHours();
+				String Submitted_On 	 = mtrd.getSubmittedOn();
+				String Approved_By 		 = mtrd.getApproved_By();
+				String Approved_On		 = mtrd.getApprovedDate();
+				String No_Of_Days_Pending= mtrd.getDueDays().toString();
+				dataSource.add(Employee_id,Employee_Name,Employee_Type,Project_Name,Project_Frequency,Approval_Mechanism,Duration,Manager_1,Manager_2,No_Of_Hours,Submitted_On,Approved_By,Approved_On,No_Of_Days_Pending);
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dataSource;
+	}
+	
 	
 }

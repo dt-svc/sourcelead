@@ -251,8 +251,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
 					           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
 					           if(jsonObj.has("isClientInterview")){
+					        	   requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW);
 					           }else{
+					        	   requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
 					           }
 					           requirementSubmission.setUpdatedDate(commonUtil.currentDate());

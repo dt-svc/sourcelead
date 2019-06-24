@@ -209,6 +209,10 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "masterCandidateId", Long.parseLong(userRole.get("masterCandidateId").toString()));
 		  }
 		  
+		  if(userRole.get("shiftId") != null) {
+			  SourceLeadSessionManager.setSessionAttribute(req, "shiftId", Long.parseLong(userRole.get("shiftId").toString()));
+		  }
+		  
 		  SourceLeadSessionManager.setSessionAttribute(req, "loginUserRole", userRole.get("roleName"));
 		  
 		  if(userRole.get("roleName").toString().equalsIgnoreCase("ROLE_ADMIN")) {
@@ -1004,6 +1008,15 @@ public class UserLoginHelper {
 		if(userRoleJson.get("masterCandidateId") != null) {
 			candidate.setMasterCandId(Long.valueOf(userRoleJson.get("masterCandidateId").toString()));
 		}
+		candidate.setFirstName(userRoleJson.get("firstName").toString());
+		if(userRoleJson.get("lastName") != null) {
+			candidate.setLastName(userRoleJson.get("lastName").toString());
+		}
+		candidate.setEmail(userRoleJson.get("email").toString());
+		if(userRoleJson.get("mobilePhone") != null) {
+			candidate.setMobilePhone(userRoleJson.get("mobilePhone").toString());
+		}
+			  
 		return candidate;
 	}
 	
