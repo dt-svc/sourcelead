@@ -35,17 +35,24 @@ function getAppraisalFeedbackDetails(){
 			        	    result = result + '</div>';
 			        	    
 			        	    result = result + '<div class="newRolWrap appraiQue clearfix">';
-			        	    result = result + '<div class="newRolLeft">';
-			        	    result = result + '<ul id="nav" class="clearfix">';
+			        	    result = result + '<div class="newRolLeft" >';
+			        	    result = result + '<ul id="feedbackTemplate" class="clearfix">';
 			        	    
 			        	    for (var i=0; i<response.data.length; i++)
 			        	    	{
 			        	    	 var opt = response.data[i];
-				        	        result = result + '<li><a href="#">'+opt.templateName+'</a></li>';
+				        	        result = result + '<li rel="'+opt.feedbackTemplateUUID+'"><a id="feedbackTemplate'+opt.feedbackTemplateUUID+'" value="'+opt.feedbackTemplateUUID+'" onclick="getFeedbackCategoryForm(\''+opt.feedbackTemplateUUID+'\');">'+opt.templateName+'</a></li>';
 			        	    	}
 			        	
 			        	    result = result + '</ul>';
 			        	    result = result + '</div>';
+			        	    
+			        	    result = result + '<div class="newRolLRight">';
+			        	    result = result + '<div class="clearfix" id="tab-content">';
+			        	    result = result + '<div id="feedBackCategoryTemplateDiv">';
+			                result = result + '</div>';
+			                result = result + '</div>';
+			        	    
 			        	    result = result + '</div>';
 		        	    }else{
 		        	    	 result = result + '<div class="odd"><div valign="top" colspan="4" class="dataTables_empty"></div></div>';
@@ -65,5 +72,44 @@ function getAppraisalFeedbackDetails(){
 			}); 
 	    
 		
+}
+</script>
+
+<script>
+function getFeedbackCategoryForm(feedbackTemplateUUID){
+	
+	
+	$('#feedbackTemplate li').each(function(){
+		document.getElementById("feedbackTemplate"+$(this).attr('rel')).removeAttribute("class")
+	});
+	
+	document.getElementById("feedbackTemplate"+feedbackTemplateUUID).className = 'active'
+	
+	var result = "";  
+	result = result + '<div id="tab1" class="appraQueOut">';
+	result = result + '<span class="appraQueInn">';
+	result = result + '<h3><b>Q</b>Question Text here...'+feedbackTemplateUUID+'</h3>';
+	result = result + '<ul class="clearfix">';
+	result = result + '<li class="clearfix">';
+	result = result + '<input id="a1" value=" " class="checkbox-custom" name="a" type="radio">';
+	result = result + '<label for="a1" class="checkbox-custom-label paddingright">Answer 1</label>';
+    result = result + '</li>';
+    result = result + '<li class="clearfix">';
+    result = result + '<input id="a2" value=" " class="checkbox-custom" name="a" type="radio">';
+    result = result + '<label for="a2" class="checkbox-custom-label paddingright">Answer 2</label>';
+    result = result + '</li>';
+    result = result + '<li class="clearfix">';
+    result = result + '<input id="a3" value=" " class="checkbox-custom" name="a" type="radio">';
+    result = result + '<label for="a3" class="checkbox-custom-label paddingright">Answer 3</label>';
+    result = result + '</li>';
+    result = result + '<li class="clearfix">';
+    result = result + '<input id="a4" value=" " class="checkbox-custom" name="a" type="radio">';
+    result = result + '<label for="a4" class="checkbox-custom-label paddingright">Answer 4</label>';
+    result = result + '</li>';
+    result = result + '</ul>';
+    result = result + '</span>';
+    $("#feedBackCategoryTemplateDiv").empty(); 
+    $("#feedBackCategoryTemplateDiv").append(result);
+	
 }
 </script>
