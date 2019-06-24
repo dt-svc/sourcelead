@@ -79,7 +79,10 @@ public class PayrollPdfUtil {
 			        	zipcode = orgLocation.getZipCode();
 			        }
 			        StringBuilder address = new StringBuilder();
-			        String streetAddress = payroll.getPaysheetFrequency().getOrgLocation().getLocation().substring( 0, payroll.getPaysheetFrequency().getOrgLocation().getLocation().indexOf(","));
+			        String streetAddress = "";
+			        if(payroll.getPaysheetFrequency().getOrgLocation().getLocation() != null) {
+				         streetAddress = payroll.getPaysheetFrequency().getOrgLocation().getLocation().substring( 0, payroll.getPaysheetFrequency().getOrgLocation().getLocation().indexOf(","));
+			        }
 			        address.append(payroll.getPaysheetFrequency().getOrgLocation().getOrgLocationName()+"\n\n")
 			         .append(streetAddress+"\n\n")
 			        .append(payroll.getPaysheetFrequency().getOrgLocation().getCity()+"\n\n")
@@ -122,7 +125,11 @@ public class PayrollPdfUtil {
 			        }else {
 			        	candidateAddress.append("Emplyee Name : "+payroll.getCandidate().getFirstName()+"\n\n");
 			        }
-			        String candidateStreetAddress = orgLocation.getLocation().substring( 0, orgLocation.getLocation().indexOf(","));
+			        
+			        String candidateStreetAddress = "";
+			        if(orgLocation.getLocation() != null) {
+				         candidateStreetAddress = orgLocation.getLocation().substring( 0, orgLocation.getLocation().indexOf(","));
+			        }
 			        candidateAddress.append("Address : \n")
 			        .append(candidateStreetAddress+"\n")
 			        .append(payroll.getCandidate().getResidenceCity()+"\n")
