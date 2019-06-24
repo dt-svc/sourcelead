@@ -419,9 +419,9 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		StringBuilder query1 = new StringBuilder("");
 		if(indEmployeePayrollDTO.getSearchValue() !=null && !"".equalsIgnoreCase(indEmployeePayrollDTO.getSearchValue())) {
 		 query1.append("and (iep.employee.departmentId.departmentName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' ")
-		       .append("OR (candidate.firstName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
-	           .append("OR (candidate.lastName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
-	           .append("OR concat(candidate.firstName,candidate.lastName) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
+		       .append("OR (iep.candidate.firstName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+	           .append("OR (iep.candidate.lastName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+	           .append("OR concat(iep.candidate.firstName,iep.candidate.lastName) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
 		       .append("OR (iep.paymentAccount.accountNumber like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR (iep.paymentAccount.bankName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR (iep.paymentAccount.routingNumber like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
@@ -432,7 +432,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		List<IndEmployeePayroll> indEmployeePayrollList = null;
 		List<Long> countlist  = null;
 		//List Query
-		String query = "from IndEmployeePayroll iep  left join fetch iep.candidate candidate left join fetch iep.indPaysheetFrequency ipf where  ipf.userGroup.id =:groupId and ipf.frequencyStartDate =:frequencyStartDate and ipf.frequencyEndDate =:frequencyEndDate and ipf.approverStatus ='APPROVED' and ipf.orgLocation.id =:orgLoactionId  "+query1+"";
+		String query = "from IndEmployeePayroll iep  left join fetch iep.paymentAccount payment left join fetch iep.indPaysheetFrequency ipf where  ipf.userGroup.id =:groupId and ipf.frequencyStartDate =:frequencyStartDate and ipf.frequencyEndDate =:frequencyEndDate and ipf.approverStatus ='APPROVED' and ipf.orgLocation.id =:orgLoactionId  "+query1+"";
 		
 		//count Query
 		String countQuery  = "Select count (*) from IndEmployeePayroll iep where  iep.indPaysheetFrequency.userGroup.id =:groupId and iep.indPaysheetFrequency.frequencyStartDate =:frequencyStartDate and iep.indPaysheetFrequency.frequencyEndDate =:frequencyEndDate and iep.indPaysheetFrequency.approverStatus ='APPROVED' and iep.indPaysheetFrequency.orgLocation.id =:orgLoactionId "+query1+"";
@@ -599,7 +599,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			 Calendar cal = Calendar.getInstance();
 			 cal.setTime(startDate);
 			 cal.set(Calendar.YEAR, sFCal.get(Calendar.YEAR));
-			 if(cal.getTime().after(sDate) && cal.getTime().before(eDate)) {
+			 if((cal.getTime().after(sDate) || cal.getTime().equals(sDate)) && cal.getTime().before(eDate)) {
 				 sDate = cal.getTime();
 				 cal.add(Calendar.MONTH, 1);  
 				 cal.set(Calendar.DAY_OF_MONTH, 1);  
