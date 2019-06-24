@@ -501,7 +501,7 @@
 															 </div>
 														</td>
 														<td>
-															<input type="text" name="timsheetAttachments[${attCount.index}].weekComment" ${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APPROVED' ? '' : 'readonly="readonly"'}  class="form-control  input-sm" value="${attachment.weekComment}" placeholder="Comment" />
+															<input type="text" name="timsheetAttachments[${attCount.index}].weekComment" ${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APPROVED' ? '' : 'readonly="readonly"'}  class="form-control  input-sm" value="${attachment.weekComment}" placeholder="Comment"  title ="'${attachment.weekComment}'"/>
 														</td>
 													    </tr>
 												    </c:forEach>
