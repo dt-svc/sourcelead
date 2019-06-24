@@ -1,55 +1,15 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<style type="text/css">
-.edit-details {
-text-align:left;
-}
-.edit-details ul {
-float:none;
-}
-.edit-details ul li {
-float:none;
-}
-
-.addUser-org {
-    overflow-x: auto;
-}
-
-
-#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.tblicons a{
-	font-size:13px;
-	}
-	.tblicons a:first-child{
-	margin-left: 0;
-	}
-	.tblicons .glyphicon-trash{
-	margin-left: 5px;
-	}
-	.tblicons a{
-	margin:0px 8px;
-	padding: 0 !important;
-	} 
-	.vendor_wrap_inn_table table tr th:last-child{
-	width:100px;
-	}
-	.removeIcon{
-	font-size:22px; position:relative; top:-5px; margin-left:15px; color:#F22613; cursor: pointer;
-	}
-</style>
 
 <div id="deleteDocpopUp"></div>
 
 <script>
+$(".addUser-org").css({"overflow-x": "auto"});
+
 function vendorDocuments(orgRelationId,vendorLocationId){
 	
 	var result = "";
@@ -67,11 +27,11 @@ function vendorDocuments(orgRelationId,vendorLocationId){
 		 '<sec:authorize access="!hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
 		      result = result  +'    	<a href="javascript:void(0)" class="addUser-org" ><i class=""></i></a>                                                            ';
 		 '</sec:authorize>';
-		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
+		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4 editDetails"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
-		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table vendor_wrap_inn_table_last_child">';
 		result  = result + '   <div id="vendorDocumentsList" class="datatable_filter"></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
@@ -106,7 +66,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?"+tokenParamName+"="+tokenValue+"&responderLocationId="+vendorLocationId+"&sourceType=Vendor",        
-          success :function(data) {
+          success :function(json) {
 	                	 $("#vendorDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -124,7 +84,6 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
 	                     for (var i = 0; i < json.length; i++) { 
 	                    	 var opt = json[i];  
 	                    	 result  = result + '         <tr>';
@@ -173,9 +132,9 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	 result = result+'	 <td><div class="tblicons tblminwidth-75">';
+	                    	 result = result+'	 <td><div class="tbl_Icons tblminwidth-75">';
 	                    	 '<sec:authorize access="hasAnyRole(\"ROLE_DOWNLOAD_VENODR_DOCS\")">';
-	                    	 result = result+'<a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
+	                    	 result = result+'<a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
 	                    	 result = result+'<a class="fa fa-eye" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.fileType+'\');"></a>';
 	                    	 '</sec:authorize>'; 
 	                    	  
@@ -196,22 +155,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                     result = result +"</table>";
 	                    
 	                     $("#vendorDocumentsList").append(result); 
-	                     documentpagination(); 
-               /* }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Documents Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#vendorDocumentsList").empty();
-				    $("#vendorDocumentsList").append(result); 
-               } */
+	                     vendorNewPagination(); 
         },
           
      }); 
@@ -225,13 +169,17 @@ function viewVendorDocument(docId,title){
 </script>
 
 <script>
-function documentpagination(){  
+function vendorNewPagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 8
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -273,7 +221,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	
 	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
+	result = result+'							<div class="input-group uploadFileGroup_error_message" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary" onChange="vendorDocFileSaving();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file"  id="uploadBtn" style="display: none;"  class="upload">';
 	result = result+'	                            </span> </label>';
@@ -299,14 +247,20 @@ function addDocument(vendorLocationId,orgRelationId) {
     result = result  +'	                   </div>';
 	
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearVendorDocuStartDate();"></div>';
+	result  = result + '                   </div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDate" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearVendorDocuEndDate();"></div>';
+	result  = result + '                   </div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
@@ -319,7 +273,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	
 	result = result+'	                  <div class="clearfix mb10" id="docNameDiv" style="display: none;">';
 	result = result+'	                    <div class="col-md-12 mt">';
-	result = result+'	                      <label id="documentName" name="documentName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+	result = result+'	                      <label id="documentName" name="documentName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv();"><i class="fa fa-trash removeIcon_styles"></i></span>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	
@@ -378,15 +332,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	    };
 	    
 	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
+	    
 	  
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
@@ -479,19 +425,20 @@ function closeDocPopup(){
 function getSpocsList(orgRelationId){
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Vendor",  
-        success: function(data) {
-        	var json = JSON.parse(data);
+        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Vendor",  
+        success: function(json) {
+        	//var json = JSON.parse(data);
         	var output = "";
-        	output = output + "<option value=''>Client Contact</option>"; 
-        	for (var i=0; i<json.length; i++)
+        	output = output + "<option value=''>Vendor Contact</option>"; 
+        	for (var i=0; i<json.data.length; i++)
 			{
-	        		var opt = json[i];
-	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"</option>";
+	        		var opt = json.data[i];
+	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"&nbsp;("+opt.ownerName+")</option>";
 			}
         	$("#spoc").empty();
 	        $("#spoc").append(output);
 	        $('#spoc').trigger("chosen:updated");
+	        //$('.selectpicker').selectpicker('refresh'); 
         },
     });
 }
@@ -505,8 +452,8 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOrgDocument?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&orgRelationId="+orgRelationId+"&type=Vendor", 	   
-		    success: function(data) {
-		    	var json = JSON.parse(data);
+		    success: function(json) {
+		    	//var json = JSON.parse(data);
 		    	var spoc = "";
 		    	var owner = "";
     			 $("#uploadDocumentDiv").hide();
@@ -525,13 +472,14 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     				 $('#contractType').trigger("chosen:updated");
     			 }
     			 
+    			     			 
     			 if(json.orgSpocsList != null && json.orgSpocsList != "" && json.orgSpocsList != "undefined" && json.orgSpocsList.length > 0){
     				 $('#spoc').empty();
-    		         $('#spoc').append('<option value="">Client Contact</option>');
+    		         $('#spoc').append('<option value="">Vendor Contact</option>');
     		            for(var i=0; i<json.orgSpocsList.length; i++){
     		            	 spoc = json.orgSpocsList[i];
 	    		 	    	  if(json.spocUser != null && json.spocUser != "" && json.spocUser != 'undefined' && json.spocUser.id == spoc.vendorUser.id){
-	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'" selected>'+spoc.spocName+'</option>');
+	    		 	    		  $('#spoc').append('<option value="'+spoc.spocUserId+'" selected>'+spoc.spocName+'&nbsp;('+spoc.ownerName+')</option>');
 	    		 	    	  }else{
 	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'">'+spoc.spocName+'</option>');
 	    		 	    	  }
@@ -546,7 +494,7 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     		            for(var j=0; j<json.ownersList.length; j++){
     		            	  owner = json.ownersList[j];
 	    		 	    	  if(json.ownerUser != null && json.ownerUser != "" && json.ownerUser != 'undefined' && json.ownerId == owner.id){
-	    		 	    		 $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
+	    		 	    		  $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
 	    		 	    	  }
 	    		 	    	  else if((json.ownerUser == null || json.ownerUser == "" || json.ownerUser == 'undefined') && (owner.id == sourceLeadUserId)){
 	    		 	    		 $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
@@ -636,13 +584,15 @@ function removeResumeNameDiv(){
 <script>
 function deleteVendorDocument(vendorLocationId,orgRelationId,docId,docName){
 	var result = "";
+	result = result  +'          <form role="form"  id="docu_form" name="docu_form" method="post" > ';
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a remove_uservalidation'>";
 	result = result +"		<p>Document delete message here</p>";
-	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
+	result = result +"		<textarea  id='terminateReason' name='terminateReason'  data-validation = 'required' field-name='comment' placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorDoc("+vendorLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
 	result = result +"	</div>";
+	result = result  +' </form> ';
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -659,11 +609,19 @@ $(".project_inn_mask").fadeOut(200);
 <script>
 function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
 	var terminateReason = document.getElementById("terminateReason").value;
-	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
+	if ($('#docu_form').validate(false, validationSettings)){
 		$("#terminateReasonDiv").empty();
+		 var formData = new FormData();
+	     formData.append("tokenParamName", tokenValue);
+	     formData.append("docId", docId);
+	     formData.append("terminateReason", terminateReason);
 		$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/terminateOrgDocumnet?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&terminateReason="+terminateReason, 	   
+			 type : "POST",
+	          data: formData,
+	          processData: false,
+	          contentType:false, 
+	     	  url: sourceleadUrl+"/terminateOrgDocumnet",
+// 		    url: sourceleadUrl+"/terminateOrgDocumnet?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
@@ -674,14 +632,21 @@ function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
         			 vendorDocMsgFadein();
    		    }
 	     });
+		
 	}else{
-		if(terminateReason){
-			$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
-			$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-		}
+		return false;
+	  }
+	
+	 /* else{
+	if(terminateReason){
+		$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+	}else{
+		$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 	}
+} */
+
 }
+
 </script>
 <!-- Show success message after form submission script -->
 <script>
@@ -706,3 +671,16 @@ function vendorDocFileSaving()
 }
 </script>
 <!-- script for dateformat in datepicker End -->
+<!-- <script>
+	function clearUpload(){
+		$("#uploadFile").val("");
+	}
+</script> -->
+<script>
+function clearVendorDocuStartDate(){
+	$("#startDate").val("");
+	};
+function clearVendorDocuEndDate(){
+	$("#endDate").val("");
+	};
+</script>

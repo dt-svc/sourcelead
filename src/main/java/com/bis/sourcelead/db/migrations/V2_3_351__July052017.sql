@@ -1,6 +1,0 @@
-SET SQL_SAFE_UPDATES = 0;
-
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{ExpensesEmailToManager.managerUser}},\nI request you to approve my expenses which I have spent on the {{ExpensesEmailToManager.projectName}} due to {{ExpensesEmailToManager.purposeOfVisit}}.\nThe brief of details of the expenses are following \nNumber of Expenses : {{ExpensesEmailToManager.expenseTypes}}\nAmount : {{ExpensesEmailToManager.totalAmount}}\n' WHERE `UNIQUE_SCENARIO_NAME`='ExpensesEmailToManager' and `ENTITY_TYPE`='Email';
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{ExpensesReopenEmailToSuperAdmin.superUser}}\nRequest for editing the Expenses of {{ExpensesReopenEmailToSuperAdmin.employeeUser}}.,\nProject : {{ExpensesReopenEmailToSuperAdmin.projectName}}\nStart Date :{{ExpensesReopenEmailToSuperAdmin.startDate}}\nEnd Date :{{ExpensesReopenEmailToSuperAdmin.endDate}}\nAmount : {{ExpensesReopenEmailToSuperAdmin.amount}}\nReason for Reopen : {{ExpensesReopenEmailToSuperAdmin.reasonForReopen}}\n{{ExpensesReopenEmailToSuperAdmin.accept}}{{ExpensesReopenEmailToSuperAdmin.reject}}\n' WHERE `UNIQUE_SCENARIO_NAME`='ExpensesReopenEmailToSuperAdmin' and `ENTITY_TYPE`='Email';
-
-SET SQL_SAFE_UPDATES = 1;

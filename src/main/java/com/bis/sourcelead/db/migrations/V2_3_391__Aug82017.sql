@@ -1,5 +1,0 @@
-SET SQL_SAFE_UPDATES = 0;
-
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{ExpensesApprovalManagerEmailToEmployee.employeeUser}}\nWe are pleased to inform you ,your proposal for expenses submitted on {{ExpensesApprovalManagerEmailToEmployee.submitForApprovalDate}} has been approved.,\nExpense id :  {{ExpensesApprovalManagerEmailToEmployee.expenseId}}\nProject :  {{ExpensesApprovalManagerEmailToEmployee.projectName}}\nStart Date :  {{ExpensesApprovalManagerEmailToEmployee.startDate}}\nEnd Date :  {{ExpensesApprovalManagerEmailToEmployee.endDate}}\nAmount :  {{ExpensesApprovalManagerEmailToEmployee.amount}}\n\nAll The Best' WHERE `UNIQUE_SCENARIO_NAME`='ExpensesApprovalManagerEmailToEmployee' and `ENTITY_TYPE`='Email';
-
-SET SQL_SAFE_UPDATES = 1;

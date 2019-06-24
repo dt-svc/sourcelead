@@ -1,5 +1,0 @@
-SET SQL_SAFE_UPDATES = 0;
-
-UPDATE 	`sourcelead`.`EMAIL_SCENARIO` SET `BODY`=	'Dear {{ApplicantReceiveMailAboutRequirement.applicantName}},\n\n We have opening for the {{ApplicantReceiveMailAboutRequirement.requirementName}}, \n\n Exeperience : {{ApplicantReceiveMailAboutRequirement.experience}} \n\n Location : {{ApplicantReceiveMailAboutRequirement.location}} \n\n Rate :{{ApplicantReceiveMailAboutRequirement.requirementRate}}\n\n Skills  : {{ApplicantReceiveMailAboutRequirement.skills}} \n\n Job Description :  {{ApplicantReceiveMailAboutRequirement.jobDescription}} .\n\n  If interested , please click on the link accept. Your acceptance will assist us for further process of recruitment for this position. \n\n {{ApplicantReceiveMailAboutRequirement.acceptLink}} {{ApplicantReceiveMailAboutRequirement.rejectLink}} {{ApplicantReceiveMailAboutRequirement.negotiateRateLink}} {{ApplicantReceiveMailAboutRequirement.attachmentLink}} \n\n\n  As these position is urgent, we would appreciate a quick response from your end. \n' WHERE `UNIQUE_SCENARIO_NAME`='ApplicantReceiveMailAboutRequirement';
-
-SET SQL_SAFE_UPDATES = 1;

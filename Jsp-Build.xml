@@ -1,4 +1,4 @@
-<project name="sourcelead-jsp" basedir="../" default="copy-jsp">
+<project name="vms-jsp" basedir="../" default="copy-jsp">
    <condition property="unix">
 		<os family="unix" />
 	</condition>
@@ -15,33 +15,33 @@
 	</condition>
 	
     <!--Location Of Tomcat-Server -->
-	<property name="tomcat.dir" value="\apache-tomcat-8.0.36" />
+	<property name="tomcat.dir" value="\apache-tomcat-8.5.32" />
 
 	<target name="copy-jsp">
-		<copy todir="${root.dir}/${tomcat.dir}/webapps/sourcelead/WEB-INF/views" includeEmptyDirs="no">
-			<fileset dir="sourcelead/src/main/webapp/WEB-INF/views">
+		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/vms/WEB-INF/views" includeEmptyDirs="no">
+			<fileset dir="vms/src/main/webapp/WEB-INF/views">
 				<patternset>
 					<include name="**/*.jsp"/>
 				</patternset>
 			</fileset>
 		</copy>
-		<copy todir="${root.dir}/${tomcat.dir}/webapps/sourcelead/resources/css" includeEmptyDirs="no">
-			<fileset dir="sourcelead/src/main/webapp/resources/css">
+		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/vms/resources/css" includeEmptyDirs="no">
+			<fileset dir="vms/src/main/webapp/resources/css">
 				<patternset>
 					<include name="**/*.css"/>
 				</patternset>
 			</fileset>
 		</copy>
-		<copy todir="${root.dir}/${tomcat.dir}/webapps/sourcelead/resources/js" includeEmptyDirs="no">
-			<fileset dir="sourcelead/src/main/webapp/resources/js">
+		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/vms/resources/js" includeEmptyDirs="no">
+			<fileset dir="vms/src/main/webapp/resources/js">
 				<patternset>
 					<include name="**/*.js"/>
 				</patternset>
 			</fileset>
 		</copy>
 		
-		<copy todir="${root.dir}/${tomcat.dir}/webapps/sourcelead/resources/images" includeEmptyDirs="no">
-			      <fileset dir="sourcelead/src/main/webapp/resources/images">
+		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/vms/resources/images" includeEmptyDirs="no">
+			      <fileset dir="vms/src/main/webapp/resources/images">
 						<patternset>
 							<include name="**/*.jpg"/>
 							<include name="**/*.png"/>
@@ -50,8 +50,8 @@
 						</patternset>
 					</fileset>
 	    </copy>
-        <copy todir="${root.dir}/${tomcat.dir}/webapps/sourcelead/resources/fonts" includeEmptyDirs="no">
-			      <fileset dir="sourcelead/src/main/webapp/resources/fonts">
+        <copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/vms/resources/fonts" includeEmptyDirs="no">
+			      <fileset dir="vms/src/main/webapp/resources/fonts">
 						<patternset>
 							<include name="**/*.otf"/>
 							<include name="**/*.eot"/>

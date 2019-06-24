@@ -28,21 +28,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.ClientImportsService;
+import com.bis.sourcelead.entity.VendorOnboarding;
+import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorImportService;
+import com.bis.sourcelead.service.VendorOnboardService;
+import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -69,11 +78,26 @@ public class VendorController {
 	@Autowired
 	OrgSpocService orgSpocService;
 	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
+	VendorOnboardTemplateService vendorOnboardTemplateService;
+	
 //	@Autowired
 //	ClientImportsService clientImportsService;
 	
 	@Autowired
 	private VendorImportService vendorImportService;
+	
+	@Autowired
+	VendorOnboardService vendorOnboardService;
+	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private SourceleadFormSectionsService sourceleadFormSectionsService;
 
 	/* This method is used for landing page of vendors tab. So, who has vendors tab access they can see vendors list. No preAuthorize for this method */
 	@RequestMapping(value = "/vendorsList")
@@ -82,8 +106,11 @@ public class VendorController {
 			@RequestParam(value="searchType", required=false)String searchType,
 			@RequestParam(value="responderLocationId", required=false)String responderLocationId,
 			@RequestParam(value="orgRelationId", required=false)String orgRelationId,
+			@RequestParam(value="orgRelationUUID", required=false)String orgRelationUUID,
 			@RequestParam(value="orgName", required=false)String orgName,
-			@RequestParam(value="vendorKeyword", required=false)String vendorKeyword) throws Exception {
+			@RequestParam(value="vendorKeyword", required=false)String vendorKeyword,
+			@RequestParam(value="contactsTab", required=false)String contactsTab) throws Exception {
+		
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -94,10 +121,18 @@ public class VendorController {
 		}*/
 		
 		//for get the owners list for spocs
-		List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
+		//List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
+		
+		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
+	     model.addObject("actionId",action.getId());
+	     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLoc.getId());
+		 model.addObject("sourceleadSectionList",sections);
+		
+		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLoc.getId(),Long.valueOf(Constants.TAB_VENDOR));
 		model.addObject("userList", userList);
 	
 		model.addObject("loginOrgLocId",orgLoc.getId());
+		model.addObject("contactsTab",contactsTab);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("vendors/vendorsList");
 		List<Countries> countryList = countriesService.getAllCountries();
@@ -122,20 +157,24 @@ public class VendorController {
 			if(null != countries){
 			   model.addObject("loginCountryName", countries.getName());
 			}
+			if(countries!= null && countries.getName()!= null) {
+
 	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 	        model.addObject("statesList", statesList);
-		}
+		    }
+			
+		}	
 		
 		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLoc.getId());
 		for(OrgRelations orgRelation :vendorsList){
 			if(orgRelation.getLocationId() != null && null != orgRelation.getLocationId().getId() && orgRelation.getLocationId().getId().longValue() == orgLoc.getId().longValue()){
 				if(null != orgRelation.getResponderLocationId()){
-					orgRelation.setClientName(orgRelation.getResponderLocationId().getOrgLocationName());
+					orgRelation.setVendorNameForList(orgRelation.getResponderLocationId().getOrgLocationName());
 				}
 			}
 			if(null != orgRelation.getResponderLocationId() && null != orgRelation.getResponderLocationId().getId() && orgRelation.getResponderLocationId().getId().longValue() == orgLoc.getId().longValue()){
 				if(null != orgRelation.getLocationId()){
-					orgRelation.setClientName(orgRelation.getLocationId().getOrgLocationName());
+					orgRelation.setVendorNameForList(orgRelation.getLocationId().getOrgLocationName());
 				}
 			}
 			
@@ -161,6 +200,20 @@ public class VendorController {
 			SourceLeadSessionManager.removeSessionAttribute(request, "vendorImport");
 		}
 		
+		if(orgRelationUUID != null){
+			OrgRelations orgRelations = orgRelationsService.getOrgRelationsByUUID(orgRelationUUID);
+			if(orgRelations.getLocationId().getId().longValue() == orgLoc.getId().longValue()){
+				model.addObject("vendorLocationId", orgRelations.getResponderLocationId().getId());
+				model.addObject("vendorName", orgRelations.getResponderLocationId().getOrgLocationName());
+			}else{
+				model.addObject("vendorLocationId", orgRelations.getLocationId().getId());
+				model.addObject("vendorName", orgRelations.getLocationId().getOrgLocationName());
+			}
+			
+			model.addObject("orgRelationId", orgRelations.getId());
+			model.addObject("orgRelationUUID", orgRelationUUID);
+		}
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -182,7 +235,7 @@ public class VendorController {
 	
 	 @PreAuthorize("hasRole('ROLE_CREATE_VENDOR')")
 	@RequestMapping(value = "/addVendor")
-	public ModelAndView addVendor(HttpServletRequest request)  {
+	public ModelAndView addVendor(@RequestParam(value = "orgRelationUUID", required = false) String orgRelationUUID,HttpServletRequest request)  {
 		
 		ModelAndView model = new ModelAndView();      
 		try{
@@ -192,6 +245,12 @@ public class VendorController {
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_VENDOR));
 			model.addObject("userList", userList);
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			
+			 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
+		     model.addObject("actionId",action.getId());
+		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+			 model.addObject("sourceleadSectionList",sections);
+			
 			if(sessionData == null)
 			{
 				sessionData = new SessionMaintainanceData();
@@ -199,10 +258,33 @@ public class VendorController {
 			sessionData.setNav(Constants.Vendors);
 			request.getSession().setAttribute("sessionData",sessionData);
 			
+			List<VendorOnboardingTemplate> templatesList = vendorOnboardTemplateService.getVendorOnBoardingFinishedTemplatesList(orgLocations.getId());
+			model.addObject("templatesList", templatesList);
+			
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 			if(countries != null){
 			model.addObject("loginCountryName", countries.getName());
 			}
+			
+			if(StringUtils.isNotBlank(orgRelationUUID)){
+				OrgRelations orgRelations = orgRelationsService.getOrgRelationsByUUID(orgRelationUUID);
+				if(orgRelations != null){
+					model.addObject("orgRelationId", orgRelations.getId());
+					model.addObject("isDocumentsFilled", orgRelations.getIsVendorDocumentsFilled());
+					model.addObject("isTasksFilled", orgRelations.getIsVendorTasksFilled());
+					if(orgRelations.getLocationId().getId().equals(orgLocations.getId())){
+						model.addObject("vendorOrgLocationId", orgRelations.getResponderLocationId().getId());
+					}else{
+						model.addObject("vendorOrgLocationId", orgRelations.getLocationId().getId());
+					}
+					VendorOnboarding vendorOnboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelations.getId());
+					if(vendorOnboarding != null){
+						model.addObject("vendorOnboardId", vendorOnboarding.getId());
+					}
+				}
+				model.addObject("orgRelationUUID", orgRelationUUID);
+			}
+			
 		}catch(Exception e){
 			logger.error(ExceptionUtils.getFullStackTrace(e)); 
 		}
@@ -217,9 +299,10 @@ public class VendorController {
 	 */
 	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR_CONTACT')")
 	@RequestMapping(value = "/addVendorContact")
-	public ModelAndView addVendorContac(HttpServletRequest request){
+	public ModelAndView addVendorContac(HttpServletRequest request,@RequestParam(value = "vid", required = false) String vid) {
 		ModelAndView model = new ModelAndView();
 		try{
+			model.addObject("vid",vid);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/addVendorContact");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -228,11 +311,21 @@ public class VendorController {
 			model.addObject("userList", userList);
 			model.addObject("loginOrgLocId", orgLocations.getId());
 			model.addObject("vendorList", vandorsListByOrgLocationId);
+			
+			/*List<VendorOnboardingTemplate> templatesList = vendorOnboardTemplateService.getVendorOnBoardingFinishedTemplatesList(orgLocations.getId());
+			model.addObject("templatesList", templatesList);*/
+			
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{
 				sessionData = new SessionMaintainanceData();
 			}
+			
+			SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
+		     model.addObject("actionId",action.getId());
+		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+			 model.addObject("sourceleadSectionList",sections);
+			 
 			sessionData.setNav(Constants.Vendors);
 			request.getSession().setAttribute("sessionData",sessionData);
 			
@@ -244,7 +337,8 @@ public class VendorController {
 
 	@PreAuthorize("hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')")
 	 @RequestMapping(value = "/uploadVendorForm")
-		public ModelAndView uploadVendorForm(HttpServletRequest request) {
+		public ModelAndView uploadVendorForm(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			if(sessionData == null)
 			{
@@ -254,6 +348,8 @@ public class VendorController {
 			
 			request.getSession().setAttribute("sessionData",sessionData);
 			ModelAndView model = new ModelAndView();
+			List<VendorOnboardingTemplate> templatesList = vendorOnboardTemplateService.getVendorOnBoardingFinishedTemplatesList(orgLocations.getId());
+			model.addObject("templatesList", templatesList);
 			model.setViewName("upload/uploadVendorForm");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			sessionData.setNav(Constants.Vendors);
@@ -340,6 +436,35 @@ public class VendorController {
 				response.getOutputStream().close();
 				response.getOutputStream().flush();	
 		}
+		
+		
+		
+		@RequestMapping(value = "/addNewVendorOnboardTemplate")
+	 	public ModelAndView addNewVendorOnboardTemplate(HttpServletRequest request) {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			    ModelAndView model = new ModelAndView();
+	 			commonUtil.highLightMenu(Constants.OrgSettings, request);
+	 			
+	 			model.setViewName("vendors/addNewVendorOnboardTemplate");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			return model;
+	 	}
+		
+		@RequestMapping(value = "/vendorOnboardTemplateList")
+	 	public ModelAndView vendorOnboardTemplateList(HttpServletRequest request) {
+			    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			    ModelAndView model = new ModelAndView();
+	 			commonUtil.highLightMenu(Constants.OrgSettings, request);
+	 			
+	 			model.setViewName("vendors/vendorOnboardTemplateList");
+	 			model.addObject("sourceleadUrl", sourceleadUrl);
+	 			return model;
+	 	}
+		
+		
+		
+		
+		
 	/**	
 	 * removing special charactes from file name
 	 * @param file

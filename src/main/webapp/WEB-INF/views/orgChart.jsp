@@ -8,23 +8,28 @@
       <h2 class="pull-left">Org chart view</h2>
     </div>
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Org Chart View </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Org Chart View </div>
     </c:if> 
     
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Org Chart View  </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/goToSettings'/>">Settings</a>&raquo; Org Chart View  </div>
     </c:if> 
   </section>
   
   <!--   Org Chart   -->
 
 	<div class="OrgChartNew">
-		<div class="OrgSearch">
-			<input type="text" placeholder="Search" id="orgChartSearch"><input id='orgChartSearchButton' class="OrgBt" type="button" value="&nbsp" />
-			<!-- <p class="OrgChBtn"></p> --> <i class="fa fa-times refresh" id='orgChartSearchClear'></i> 
-			<div class="clearfix"></div>
-		</div>
-		
+		 <div class="OrgSearch">
+			<select class="form-control select-styles" id="chartLocation">
+                    <c:forEach items="${locations}" var='l'>
+                        <option ${l.id == SourceLeadWeb_orgLocationId ? "selected='selected'" : ""} value="${l.id}">${l.orgLocationName} - ${l.city}${l.state == null || l.state.isEmpty() ? "" : ", ".concat(l.state)}${l.country == null || l.country.isEmpty() ? "" : ", ".concat(l.country)}</option>
+                    </c:forEach>
+                </select>
+            <input type="text" placeholder="Search" id="orgChartSearch"><input id='orgChartSearchButton' class="OrgBt" type="button" value="&nbsp" />
+		<i class="fa fa-times refresh" id='orgChartSearchClear'></i>
+		<div class="clearfix"></div>
+		</div> 
+		 
 		<div id="chart-container" class="text-center"></div>
 	</div>
 
@@ -35,7 +40,8 @@
 <script type="text/javascript">
 var sourceleadUrl = '${sourceleadUrl}';
 $(document).ready(function(){
-	getOrgChartData();
+    $("#chartLocation").change(function() { getOrgChartData($("#chartLocation").val()); });
+    getOrgChartData($("#chartLocation").val());
 	
 	/* $(".OrgChBtn").click(function(){
 		$(this).toggleClass("OrgChBtnAct");
@@ -102,20 +108,28 @@ function filterNodes(keyWord) {
       .end().find('.slide-up, .slide-left, .slide-right').removeClass('slide-up slide-right slide-left');
   }
   var data = {};
-  function getOrgChartData() {
-	$.post('${sourceleadUrl}/org/orgChart', {}, function(ds) {
+  function getOrgChartData(id) {
+	    $.post('${sourceleadUrl}/org/orgChart', {id: id}, function(ds) {
+	         data = {};
 	    $.each(ds, function(i) {
 	    		if(ds[i]["parentId"] == "0") {
 	    			var obj  = {};
 	    			obj.id = ds[i].id;
+	    			obj.userCode = ds[i].userCode;
 	    			obj.name = ds[i].name;
 	    			obj.designation = ds[i].designation;
-	          	obj.avatar = sourceleadUrl+'/displayUserImage/'+ds[i].id;
-	          	data = obj;
+	    			if(ds[i].fileURL && ds[i].fileURL !== "")
+	          			obj.avatar = sourceleadUrl.replace("/app", "")+ds[i].fileURL;
+	    			else 
+	    				obj.avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
+	          		data = obj;
 		    		obj.children = [];
 	    			$.each(ds, function(j) {
 	    				if(ds[j].parentId == obj.id) {
-	    					ds[j].avatar = sourceleadUrl+'/displayUserImage/'+ds[j].id;
+							if(ds[j].fileURL && ds[j].fileURL !== "")	    					
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+ds[j].fileURL;
+	    					else
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
 	    					obj.children.push(ds[j]);
 	    				}
 	    			});
@@ -123,7 +137,10 @@ function filterNodes(keyWord) {
 	    			ds[i].children = [];
 	    			$.each(ds, function(j) {
 	    				if(ds[i].id == ds[j].parentId) {
-	    					ds[j].avatar = sourceleadUrl+'/displayUserImage/'+ds[j].id;
+	    					if(ds[j].fileURL && ds[j].fileURL !== "")	    					
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+ds[j].fileURL;
+	    					else
+	    						ds[j].avatar = sourceleadUrl.replace("/app", "")+"/resources/images/userprofile-img.png";
 	    					ds[i].children.push(ds[j]);
 	    				}
 	    			});
@@ -135,18 +152,20 @@ function filterNodes(keyWord) {
 }
 
 function initChart(data) {
+	$('#chart-container').html("");  
 	 $('#chart-container').orgchart({
 	        'data' : data,
 	        'depth': 2,
 	        'nodeTitle': 'name',
 	        'nodeContent': 'designation',
 	        'nodeID': 'id',
+	        'nodeCode': 'userCode',
 	        'createNode': function($node, data) {
 	          var nodePrompt = $('<i>', {
 	            'class': 'fa fa-info-circle second-menu-icon',
 	            'title': "Show Profile",
 	            click: function() {
-	              window.open('${sourceleadUrl}/userSummaryDetails?userId='+data["id"], "_blank");
+	            	window.open('${sourceleadUrl}/userSummaryDetails?userCode='+data["userCode"], "_blank");
 	            }
 	          });
 //	          var secondMenu = '<div class="second-menu">Extra Details</div>';

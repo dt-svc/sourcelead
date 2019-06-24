@@ -96,8 +96,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getclientDocumentsListByResponderLocationId?"+tokenParamName+"="+tokenValue+"&responderLocationId="+clientLocationId+"&sourceType=Client",        
-          success :function(data) {
-             			var json = JSON.parse(data);
+          success :function(json) {
 	                	 $("#clientDocumentsList").empty();
 	                	 var result = "";
 	                	 result = result +"<table id='clientDocumentsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -164,9 +163,9 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	    result = result+'	 <td><div class="tblicons tblminwidth-75">';
+	                    	    result = result+'	 <td><div class="tblicons tblminwidth-150">';
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_CLIENT_DOCS\')">'; 
-	                    	    result = result+'<a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
+	                    	    result = result+'<a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
 	                    	    result = result+'<a class="fa fa-eye" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.fileType+'\');"></a>';
 	                    	 '</sec:authorize>';
 	                    	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
@@ -190,7 +189,7 @@ function clientDocumentsList(clientLocationId,orgRelationId){
 	                     result = result +"</table>";
 	                    
 	                     $("#clientDocumentsList").append(result); 
-	                     documentpagination(); 
+	                     clientDocsPagination(); 
 	                     //msgFadein();
         },
           
@@ -205,13 +204,17 @@ function viewClientDocument(docId,title){
 </script>
 
 <script>
-function documentpagination(){  
+function clientDocsPagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 8
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -253,7 +256,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	
 	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
+	result = result+'							<div class="input-group" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary" onChange="clientDocumentFileSaving();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file" id="uploadBtn" style="display: none;"  class="upload">';
 	result = result+'	                            </span> </label>';
@@ -279,14 +282,20 @@ function addDocument(clientLocationId,orgRelationId) {
     result = result  +'	                   </div>';
 	
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearClientDocuStartDate();"></div>';
+	result  = result + '                   </div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDate" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearClientDocuEndDate();"></div>';
+	result  = result + '                   </div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
@@ -299,7 +308,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	
 	result = result+'	                  <div class="clearfix mb10" id="docNameDiv" style="display: none;">';
 	result = result+'	                    <div class="col-md-12 mt">';
-	result = result+'	                      <label id="documentName" name="documentName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+	result = result+'	                      <label id="documentName" name="documentName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeDiv();"><i class="fa fa-trash removeIcon"></i></span>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	
@@ -358,15 +367,7 @@ function addDocument(clientLocationId,orgRelationId) {
 	    };
 	    
 	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
+	    
 	  
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
@@ -456,16 +457,17 @@ function closeDocPopup(){
 
 <script>
 function getSpocsList(orgRelationId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$.ajax({
     	type: "POST",
-        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
-        success: function(data) {
-        	var json = JSON.parse(data);
+        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
+        success: function(json) {
+        	//var json = JSON.parse(data);
         	var output = "";
         	output = output + "<option value=''>Client Contact</option>"; 
-        	for (var i=0; i<json.length; i++)
+        	for (var i=0; i<json.data.length; i++)
 			{
-	        		var opt = json[i];
+	        		var opt = json.data[i];
 	        		output = output + "<option value='" +opt.spocUserId+ "'>"+opt.spocName+"&nbsp;("+opt.ownerName+")</option>";
 			}
         	$("#spoc").empty();
@@ -485,8 +487,7 @@ function getClientDocument(clientLocationId,orgRelationId,docId){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOrgDocument?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&orgRelationId="+orgRelationId+"&type=Client", 	   
-		    success: function(data) {
-		    	var json = JSON.parse(data);
+		    success: function(json) {
 		    	var spoc = "";
 		    	var owner = "";
     			 $("#uploadDocumentDiv").hide();
@@ -606,7 +607,7 @@ function manageDates(startDateStr,endDateStr) {
 </script>
 
 <script>
-function removeResumeNameDiv(){
+function removeResumeDiv(){
 	$("#docNameDiv").hide();
 	$("#uploadDocumentDiv").show();
 	$("#uploadFile").attr("data-validation", "required validate_Space validatedoc");
@@ -616,13 +617,15 @@ function removeResumeNameDiv(){
 <script>
 function deleteClientDocument(clientLocationId,orgRelationId,docId,docName){
 	var result = "";
+	result = result  +'          <form role="form"  id="doc_form" name="document_delete" method="post" > ';
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a remove_uservalidation'>";
 	result = result +"		<p>Document delete message here</p>";
-	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
+	result = result +"		<textarea  id='terminateReason' name='terminateReason'  data-validation = 'required' field-name='comment'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForDoc("+clientLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
 	result = result +"	</div>";
+	result = result  +' </form> ';
 	$("#deleteDocpopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
@@ -639,11 +642,19 @@ $(".project_inn_mask").fadeOut(200);
 <script>
 function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
 	var terminateReason = document.getElementById("terminateReason").value;
-	if(terminateReason.match(/^[^\s-](.*)*$/) != null){
+	 if ($('#doc_form').validate(false, validationSettings)){
 		$("#terminateReasonDiv").empty();
+		 var formData = new FormData();
+	     formData.append("tokenParamName", tokenValue);
+	     formData.append("docId", docId);
+	     formData.append("terminateReason", terminateReason);
 		$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/terminateOrgDocumnet?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&terminateReason="+terminateReason, 	   
+			 type : "POST",
+	          data: formData,
+	          processData: false,
+	          contentType:false, 
+	     	  url: sourceleadUrl+"/terminateOrgDocumnet",
+// 		    url: sourceleadUrl+"/terminateOrgDocumnet?"+tokenParamName+"="+tokenValue+"&docId="+docId+"&terminateReason="+terminateReason, 	   
    		    success: function(data) {
         			 $("#deleteDocpopUp").empty();
         			 $(".project_inn_mask").fadeOut(200);
@@ -655,12 +666,16 @@ function saveReasonForDoc(clientLocationId,orgRelationId,docId,docName){
    		    }
 	     });
 	}else{
+		return false;
+	  }
+	 
+	 /* else{
 		if(terminateReason){
 			$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
 		}else{
 			$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 		}
-	}
+	} */
 }
 </script>
 
@@ -687,3 +702,17 @@ function clientDocumentFileSaving()
 }
 </script>
 <!-- script for dateformat in datepicker End -->
+<!-- <script>
+	function clearUpload(){
+		$("#uploadFile").val("");
+	}
+</script> -->
+
+<script>
+function clearClientDocuStartDate(){
+	$("#startDate").val("");
+	};
+function clearClientDocuEndDate(){
+	$("#endDate").val("");
+	};
+</script>

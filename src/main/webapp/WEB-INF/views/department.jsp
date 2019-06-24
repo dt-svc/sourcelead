@@ -10,18 +10,13 @@ font-size: 1.5em;
 }
 </style>
 
-<section class="content-wraper">
-    <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>Department List</h2>
-      </div>
-      <div class="pull-right brud-crum"><a href="orgRolesList">Roles List</a> &raquo;  Department List </div>
-    </section>
+
 <script type="text/javascript">
 $(document).ready(function(){
 	getDepartmentList();
 });
 </script>
+
 <script>
 $(document).ready(function() {
 	$("#filter2ApprovePop").click(function(){
@@ -40,52 +35,38 @@ $(document).ready(function() {
 }); 
 </script>
 
+<section class="content-wraper">
+    <section class="content-header clearfix">
+      <div class="pull-left">
+        <h2>Department List</h2>
+      </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home </a>&raquo;<a href="${appPath}/orgRolesList"> Roles List </a> &raquo;  Department List </div>
+    </section>
+
+
 <div class="timesheet_out">
       <div class="vendor_wrap">
         
-        <div class="timesheet_head timesheet_header minHeight pull-right">
-          <ul class="pull-right">
-            <li id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
-                	<div id="filter2ApprovedPop" class="approved_pop dropdownPop">
-                    	<ul>
-                        	<li><input id="c5" type="radio" name="departmentStatus" value ="1" checked onclick="getDepartmentList();"  ><label for="c5">Active</label></li>
-							<li><input id="c6" type="radio" name="departmentStatus" value ="0"  onclick="getDepartmentList();" ><label for="c6" title="Remove Departments">Remove Departments</label></li>
-                        </ul>
-                    </div>                	
-                </li>
-                
-            <li class="addcon-pop mt"><a href="javascript:void(0)" title="" onclick="flushDepartment();"><i class="fa fa-plus"></i>Add Department</a>
-            
-            
-
-			<form:form id="department_form" name="department_form" method="post">
-				<div class="collapse-div-adduser col-md-4 depPW" id="departmentCloseDiv"> <i class="fa fa-close close-div"></i>
-                    <div class="form-horizontal clearfix">
-                      <div class="clearfix mb10">
-                        <div class="col-md-12" id="departmentNameDiv">
-                          <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Name" onkeyup="validDepartmentname();">
-                        </div>
-                      </div>
-                      <div class="clearfix mb10">
-                        <div class="col-md-12">
-                          <textarea rows="2" placeholder="Description" class="form-control" name="departmentDesc" id="departmentDesc" data-validation="validate_length length2-250"
-									data-validation-optional="true"></textarea>
-                        </div>
-                      </div>
-                      <div class="clearfix mr">
-                        <button type="button" class="btn btn-sm btn-primary pull-right" onclick="saveDepartment();">Add</button>
-                      </div>
-                    </div>
-				</div>
-            </form:form>
-            
-            </li>
-            <div class="clearfix"></div>
-          </ul>
-           
-        </div>
+<div class="reportHead reportHeadDataTab clearfix">
+      <ul class="pull-right list-unstyled list-inline">
+      
+			<li>
+				<a href="javascript:void(0)" class="action newAdBtn addcon-pop" title="" onclick="flushDepartment();">+ Department</a>
+            </li>      
+	       
+            <li id="filter2ApprovePop"><a href="javascript:void(0)" class="filtIcon" title="Filters"></a>
+               	<div id="filter2ApprovedPop" class="approved_pop">
+                   	<ul>
+                       	<li><input id="c5" type="radio" name="departmentStatus" value ="1" checked onclick="getDepartmentList();"  ><label for="c5">Active</label></li>
+						<li><input id="c6" type="radio" name="departmentStatus" value ="0"  onclick="getDepartmentList();" ><label for="c6" title="Remove Departments">Remove Departments</label></li>
+                    </ul>
+                </div>                	
+            </li>	       
+        </ul>
+      </div>        
+        
         <div class="candidate_wrap_table">
-          <div id="departmentresultId" class="datatable_filter"></div>
+          <div id="departmentresultId" class="datatable_filter dataSeaTop"></div>
         </div>
         
         <div class="vendor_wrap_mask"></div>
@@ -94,6 +75,32 @@ $(document).ready(function() {
       </div>
     </div>
 		<div id="popUp"></div>
+			<form:form id="department_form" name="department_form" method="post">
+				<div class="popupWrap" id="departmentCloseDiv">
+				<div class="popupHead">Add Department <i class="closePop pull-right popClose" onclick="flushRole();"></i></div>
+				<div  id="departmentDivLoading"></div>
+                    <div class="popupContent">
+                      <div class="clearfix mb">
+                        <div class="" id="departmentNameDiv">
+                        	<label class="noPad">Department Name <b class="valStar">*</b></label>
+                          <input type="text" class="form-control input-sm" value="" placeholder="Name *" name="departmentName" id="departmentName" data-validation="required validate_length length2-100" field-name="Name" onkeyup="validDepartmentname();" onkeydown="return (event.keyCode!=13);">
+                        </div>
+                      </div>
+                      <div class="clearfix mb">
+                        <div class="">
+                        <label class="noPad">Description</label>
+                          <textarea rows="2" placeholder="Description" class="form-control" name="departmentDesc" id="departmentDesc" data-validation="validate_length length2-250"
+									data-validation-optional="true"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    
+					<div class="popupFoot text-right">
+						<button type="button" class="slBtn md colorBtn" onclick="saveDepartment();">Add</button>
+						<input type="button" value="Cancel" class="slBtn md popClose">
+					</div>                    
+				</div>
+            </form:form>		
 
   </section>
   <!-- Content Area Ends-->
@@ -107,8 +114,8 @@ $(document).ready(function() {
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl+ "/getDepartmentList?${_csrf.parameterName}=${_csrf.token}&departmentStatus="+status,
-			success : function(data) {
-				var json = JSON.parse(data);
+			success : function(json) {
+// 				var json = JSON.parse(data);
    	        	var result = "";
    	        	result = result +'<table id="departmentPagination">';
    		    	result = result +'<thead>';
@@ -119,9 +126,9 @@ $(document).ready(function() {
    		    	result = result +'    </tr>';
    		    	result = result +'</thead>	';
    		    	result = result +'<tbody>';
-   		    	for (var i=0; i<json.length; i++)
+   		    	for (var i=0; i<json.data.length; i++)
    				{
-   		    		var report = json[i];
+   		    		var report = json.data[i];
    		    		if(report.description != null && report.description !='' && report.description != 'undefined'){
    		    			description = report.description
    		    		}else{
@@ -184,38 +191,50 @@ function departmentPagination(){
   
  <script>
 	  $(".addcon-pop").click(function(){
-			 $(".collapse-div-adduser").toggleClass("show-div");
-			 $(".collapse-div").removeClass("show-div");
-			 $('#filter2ApprovedPop').hide();
+			 $("#departmentCloseDiv").fadeIn(100);
+			 $(".mask").show();
 		 });
-		 $(".close-div").click(function(){
-			 $(this).parent().removeClass("show-div");
+		 $(".popClose").click(function(){
+			 $("#departmentCloseDiv").fadeOut(100);
+			 $(".mask").hide();
 			 });
-		 $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
-			 e.stopPropagation();
-		 });
-		 $('html').click(function(){
-		    $(".collapse-div-adduser").removeClass("show-div");
-			$(".collapse-div").removeClass("show-div");
-		   });	
   </script>
 
 <script>
 function saveDepartment(){
 	if ($('#department_form').validate(false, validationSettings)) {
-		var frm = $('#department_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		var jsonData = encodeURIComponent(con);
 		var sourceleadUrl = '${sourceleadUrl}';
-		$.ajax({
-			type : "GET",
-			url : sourceleadUrl+ "/storeDepartment?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
-			success : function(result) {
-				 $("#departmentCloseDiv").toggleClass('show-div');
-				 location.reload();
+		var formData = getFormData1("department_form");
+		$("#departmentDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		
+	 	$.ajax({
+			type: "POST",
+			data: formData,
+		    processData: false, 
+	 		contentType: false,
+			url : sourceleadUrl+ "/storeDepartment?${_csrf.parameterName}=${_csrf.token}",
+			success : function(data) {
+				if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+		        		showError(data.responseMessage);
+  	    		    $("#hierarchyLoading").removeAttr('style');
+  	    		}
+            		else if (data.response === "AWKWARD") {
+            			location.href = "/errorPage";
+  	    		}
+            		else if(data.response === "SUCCESS"){
+            			 $("#departmentCloseDiv").toggleClass('show-div');
+        				 location.reload();
+		        	    }
+            		else if (data.indexOf('Sign In') !== -1) {
+            			location.replace(sourceleadUrl);
+  				} else {
+  					showError("Operation failed, please try again");
+  				    $("#hierarchyLoading").removeAttr('style');
+  				}
+				
+				
 			},
-		});
+		}); 
 		return true;
 	}else {
 		return false;
@@ -279,47 +298,50 @@ function editDepartment(departmentId){
 			 }else{
 				 description = "";
 			 }
-			 
-				result = result + '	<div class="settPop departmentPop">';
+				result = result + '	<div class="settPop popupWrap popupWrapFixed">';
+				
 				result = result + '<form id="editDepartment_form" name="editDepartment_form">';
 				if(json.status == 1){
-					result = result + '	<h3>Edit Department<i class="fa fa-times" onclick="editCancel();"></i></h3>  ';
+					result = result + '	<div class="popupHead">Edit Department <i class="closePop popClose" onclick="editCancel()"></i></div>  ';
 				}else{
-					result = result + '	<h3>Add Department <i class="fa fa-times" onclick="editCancel();"></i></h3>  ';
+					result = result + '	<div class="popupHead">Add Department <i class="closePop popClose" onclick="editCancel()"></i></div>';
 				}
-				result = result + '	<div class="settPopInn"> ';
-				result = result + '		<div class="form-group col-md-12"> ';
-				result = result + '		  <label class="col-md-4" for="Project Id">Department Name <span class="text-danger">*</span></label> ';
-				result = result + '		  <div class="col-md-8" id="eidtdepartmentNameDIV"> ';
-				result = result + '			<input type="text" class="form-control input-sm" id="eidtdepartmentName" name="departmentName"  value="'+json.departmentName+'" data-validation="required validate_length length2-100" field-name="Department Name" onkeyup="validateDepartmentname('+departmentId+');"> ';
+				
+				result = result + '	<div class="popupContent"> ';
+				result = result + '		<div class="mb"> ';
+				result = result + '		  <label for="Project Id">Department Name <b class="valStar">*</b></label> ';
+				result = result + '		  <div class="" id="eidtdepartmentNameDIV"> ';
+				result = result + '			<input type="text" class="form-control" id="eidtdepartmentName" name="departmentName"  value="'+json.departmentName+'" data-validation="required validate_length length2-100" field-name="Department Name" onkeyup="validateDepartmentname('+departmentId+');" onkeydown="return (event.keyCode!=13);"> ';
 				result = result + '		   </div>';
 				result = result + '		</div>  ';
-				result = result + '		<div class="form-group col-md-12">  ';
-				result = result + '		  <label class="col-md-4" for="Project Id">Department description</label> ';
-				result = result + '		  <div class="col-md-8 taskdesp">   ';
+				result = result + '		<div class="mb"> ';
+				result = result + '		  <label for="Project Id">Description</label> ';
+				result = result + '		  <div class="taskdesp">   ';
 				result = result + '			<textarea class="form-control" name="departmentDesc"  value="'+description+'" colspan="5">'+description+'</textarea>';
 				result = result + '			<span class="hidden">Enter Project Id</span> </div>  ';
 				result = result + '		</div>   ';
-				result = result + '		<div class="col-md-12 mt5 clearfix"> ';
-				result = result + '		<div class="pull-right">  ';
+				result = result + '		<div class="clearfix"></div>';
+				result = result + '		</div>';
+				
+				
+				result = result + '	<div class="popupFoot text-right">';
 				if(json.status == 1){
-					result = result + '		  <input type="button" value="Save" class="btn btn-primary" onclick="saveEditDepartment('+departmentId+');">';	
+					result = result + '		  <input type="button" value="Save" class="slBtn md colorBtn" onclick="saveEditDepartment('+departmentId+');">';	
 				}else{
-					result = result + '		  <input type="button" value="Add" class="btn btn-primary" onclick="updateDepartment('+departmentId+');">';
+					result = result + '		  <input type="button" value="Add" class="slBtn md colorBtn" onclick="updateDepartment('+departmentId+');">';
 				}
 				
-				result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="editCancel();">';
+				result = result + '		  <input type="button" value="Cancel" class="slBtn md popClose" onclick="editCancel();">';
 				result = result + '		</div>';
-				result = result + '		</div>';
-				result = result + '		<div class="clearfix"></div>   ';
-				result = result + '	</div>  ';
+				
+				
 				result = result + '</form>';
 				result = result + '	</div>';
 			    $("#editDepartmentId").empty();
 			    $("#editDepartmentId").append(result);
 			    
-				$(".settPop").slideDown(200);
-				$(".vendor_wrap_mask").fadeIn(200); 
+				$(".settPop").fadeIn(100);
+				$(".mask").show(); 
 		},
 	});
 	
@@ -328,25 +350,42 @@ function editDepartment(departmentId){
 </script>
 <script>
 function editCancel(){
-	$(".settPop").slideUp(200);
-	$(".vendor_wrap_mask").fadeOut(200);
+	$(".settPop").fadeOut(200);
+	$(".mask").hide();
 }
 </script>
 
 <script>
 function saveEditDepartment(departmentId){
 	if ($('#editDepartment_form').validate(false, validationSettings)) {
-		var frm = $('#editDepartment_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		var jsonData = encodeURIComponent(con);
+		
 		var sourceleadUrl = '${sourceleadUrl}';
+		var formData = getFormData1("editDepartment_form");
 		$.ajax({
-			type : "GET",
-			url : sourceleadUrl+ "/updateDepartment?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&departmentId="+departmentId,
-			success : function(result) {
-				cancelTermination();
-				location.reload();
+			type : "POST",
+			data: formData,
+		    processData: false, 
+	 		contentType: false,
+	 		url : sourceleadUrl+ "/updateDepartment?${_csrf.parameterName}=${_csrf.token}&departmentId="+departmentId,
+			success : function(data) {
+				
+				if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+	        		showError(data.responseMessage);
+	    		}
+        		else if (data.response === "AWKWARD") {
+        			location.href = "/errorPage";
+	    		}
+        		else if(data.response === "SUCCESS"){
+        			cancelTermination();
+    				location.reload();
+	        	    }
+        		else if (data.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
+				
+				
 			},
 		});
 		return true;

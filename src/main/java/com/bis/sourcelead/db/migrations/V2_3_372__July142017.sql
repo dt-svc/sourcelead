@@ -1,3 +1,0 @@
-SET SQL_SAFE_UPDATES = 0;
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Pending Employees Timesheet', `BODY`='Dear {{TimesheetScheduler.FirstName}}{{TimesheetScheduler.LastName}},\n Employees not update their timesheet.The list of Employee Frequencies are below\n {{TimesheetScheduler.WeekFrequency}}\nSo update as soon as possible' WHERE `UNIQUE_SCENARIO_NAME`='Timesheet Scheduler Level1 Manager' and `ENTITY_TYPE`='Email';
-SET SQL_SAFE_UPDATES = 1;

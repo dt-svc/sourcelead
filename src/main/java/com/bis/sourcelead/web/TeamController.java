@@ -22,9 +22,11 @@ import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class TeamController {
 	
 	
@@ -46,6 +48,9 @@ public class TeamController {
 	@Autowired
 	RequirementAssignToService requirementAssignToService;
 	
+	@Autowired
+	CommonUtil commonUtil;
+	
 	@PreAuthorize("hasRole('ROLE_ADD_TEAM')")
 	@RequestMapping(value = "/team")
 	public ModelAndView newRequirement(HttpServletRequest request) throws Exception {
@@ -53,7 +58,7 @@ public class TeamController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/team");
-		
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<User> allusersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
 		model.addObject("usersList", allusersList); 

@@ -1,3 +1,0 @@
-SET SQL_SAFE_UPDATES = 0;
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SUBJECT`='Invitation From {{CandidateInvitation.loginOrg}}',`BODY`='Welcome to {{CandidateInvitation.loginOrg}}, I am delighted to Introduce you to our Platform to Manage Day to day Operations, You are invited to Update your profile so please take a moment to register and update your information so that you can find great opportunities to work with Sourcelead.\n{{CandidateInvitation.registerURL}}' WHERE `UNIQUE_SCENARIO_NAME`='CandidateInvitation' and `ENTITY_TYPE`='Email';
-SET SQL_SAFE_UPDATES = 1;

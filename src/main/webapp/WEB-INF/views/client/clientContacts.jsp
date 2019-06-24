@@ -5,16 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<style type="text/css">
-.collapse-div-adduser select{
-width: 100% !important;
-    padding-right: 10px !important;
-    padding-left: 10px !important;
-    border:1px solid #ccc !important
-}
-</style>
-
 <script>
 function clientContacts(orgRelationID,clientLocationId){
 	
@@ -55,15 +45,15 @@ function clientContacts(orgRelationID,clientLocationId){
 <!-- client details View starts-->
 <script type="text/javascript">
 	function clientContactList(orgRelationID,clientLocationId) {
-		var sourceleadUrl = '${sourceleadUrl}';
+		var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Client", 
-	        success: function(data) {
+	    	url : vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Client", 
+	        success: function(json) {
 	        	
-	        var json = JSON.parse(data);
-	        for (var i = 0; i < 1; i++) { 
- 				var val= json[i];
+	     //   var json = JSON.parse(data);
+	     /*    for (var i = 0; i < 1; i++) { 
+ 				var val= json.data[i];
  				var opt = "";
  					if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
      					opt  = opt + '<div class="success_pop" id="clientMsgSelector" style="display: block;">';
@@ -72,9 +62,8 @@ function clientContacts(orgRelationID,clientLocationId){
  						}
  					$("#clientMsgDiv").empty();
  					$("#clientMsgDiv").append(opt);
- 				}
+ 				} */
 	      
-    		if(json.length != null && json.length != ''){
     			$("#clientContactList").empty();
 				var result = "";
 				result = result +"<table id='clientContactsPagination' class='display' cellspacing='0' width='100%' >"; 
@@ -91,9 +80,9 @@ function clientContacts(orgRelationID,clientLocationId){
 	        	result = result +'</thead>';
 	        	result = result +'<tbody>';
 
-	        	for (var i=0; i<json.length; i++)
+	        	for (var i=0; i<json.data.length; i++)
 				  {	        		
-	        		var opt = json[i];
+	        		var opt = json.data[i];
 	        		var selected1 = '';
 					var selected2 = '';
 					var selected3 = '';
@@ -138,7 +127,7 @@ function clientContacts(orgRelationID,clientLocationId){
 	                if(opt.invitationStatus == 'Rejected'){
 	        			result = result + '<span>'+opt.spocStatus+'</span>';
 	        		}else{
-	        			result = result + ' <select id="spocStatus'+json[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json[i].id+'\,'+clientLocationId+');">';
+	        			result = result + ' <select id="spocStatus'+json.data[i].id+'" name="spocStatus" onChange="changeSpocStatus('+json.data[i].id+'\,'+clientLocationId+');">';
 						result = result + ' <option value="Active"  '+selected1+'>Active</option>';
 						result = result + ' <option value="In-Active"    '+selected2+'>In-Active</option>';
 						/* result = result + ' <option value="New" '+selected3+'>New</option>';
@@ -184,9 +173,9 @@ function clientContacts(orgRelationID,clientLocationId){
    		    		result = result +'</div></td>';
 	                
    		    		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
-	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
+	                if(json.data[i].status != null && json.data[i].status != '' && json.data[i].status !='undefined' && json.data[i].status != "INACTIVE"){
 	                result = result + '	    <td><div>';
-	                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateClientSpoc('+json[i].id+'\,\''+orgRelationID+'\',\''+clientLocationId+'\',\''+opt.spocName+'\')"; title = "Remove client contact"></i>';
+	                                        result = result + '<i class="glyphicon glyphicon-trash" onClick="terminateClientSpoc('+json.data[i].id+'\,\''+orgRelationID+'\',\''+clientLocationId+'\',\''+opt.spocName+'\')"; title = "Remove client contact"></i>';
 	                	                    result = result +'</div></td>';
                      }
                      else{
@@ -196,7 +185,7 @@ function clientContacts(orgRelationID,clientLocationId){
 	                
 	                
 	                '<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
-	                if(json[i].status != null && json[i].status != '' && json[i].status !='undefined' && json[i].status != "INACTIVE"){
+	                if(json.data[i].status != null && json.data[i].status != '' && json.data[i].status !='undefined' && json.data[i].status != "INACTIVE"){
 	                						result = result + '	    <td><div>';
 	                                        result = result + '--';
 	                	                    result = result +'</div></td>';
@@ -215,42 +204,8 @@ function clientContacts(orgRelationID,clientLocationId){
 			    result = result + '	<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> ';
 			    result = result + '</div>';
 			    $("#clientContactList").append(result); 
-	    	    contactPagination();
 	    	    clientMsgFadein();
-    		}else{
-    			 var result ="";
-	    	     result = result+"   <div class='row'>"; 
-				 result = result+"	<div class='col-lg-12'>"; 
-				 result = result+"		<div class='content-area clearfix'>"; 
-				 result = result+"			<div class='blank-pages'>";
-				 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-				 result = result+"			        <p>No Contacts Found</p>";
-				 result = result+"			 </div>";
-				 result = result+"		</div>"; 
-				 result = result+"	</div>"; 
-				 result = result+"  </div> "; 
-				$("#clientContactList").empty();
-			    $("#clientContactList").append(result); 
-       		 }
-    		$("#tab-4").empty();  
-    		$("#tab-2-addContact").empty();  
-    	    $("#tab-2-addContact").append(res);
-    		$("#tab-2").empty();  
-    	    $("#tab-2").append(result);  
-    	    $("#testDiv").show();
-    	    
-    	    $(".project-tabs-menu a").click(
-					function(event) {
-						event.preventDefault();
-						$(this).parent().addClass("current");
-						$(this).parent().siblings().removeClass(
-								"current");
-						var tab = $(this).attr("href");
-						$(".project_tabs_inn").not(tab).css(
-								"display", "none");
-						$(tab).fadeIn();
-					});
-    	    contactPagination();
+ 				contactPagination();
 	        },
 	    });
 	}
@@ -261,10 +216,14 @@ function clientContacts(orgRelationID,clientLocationId){
 function contactPagination(){ 
     $('#clientContactsPagination').DataTable( {
         "scrollCollapse": false,
-        "lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+        "lengthMenu": [[10, 15, 20], [10, 15, 20]],
         "bLengthChange": true,
         "bDestroy": true,
         "ordering": true,
+        "aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': [5,6]
+			}],
         "oLanguage": {
              "sSearch": "",
              "sZeroRecords": "", "sEmptyTable": ""
@@ -340,7 +299,7 @@ function terminateClientSpoc(spocId, orgRelationID,clientLocationId,spocName){
 </script>
 <script>
 function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId,spocName){
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	var userId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 var reason = document.getElementById("reasonForSpoc").value;
@@ -350,9 +309,21 @@ function saveSpocTerminateReason(spocId, orgRelationID,clientLocationId,spocName
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 	      
 		  $("#reasonForSpocDiv").empty();
+		  var formData = new FormData();
+		     formData.append("tokenParamName", tokenValue);
+		     formData.append("spocId", spocId);
+		     formData.append("reason", reason);
+		     formData.append("userId", userId);
+		     formData.append("orgLocationId", orgLocationId);
+		     formData.append("responderType", "Client");
+		     
 		$.ajax({
-		   	type: "POST",
-		    url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Client",	    	   
+			 type : "POST",
+          data: formData,
+          processData: false,
+          contentType:false, 
+     	  url: vmsUrl+"/terminateSpoc",
+// 		    url: vmsUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Client",	    	   
 		    success: function(data) {
 		    	$("#popUp").empty();
    			 	$(".project_inn_mask").fadeOut(200);
@@ -388,10 +359,10 @@ $(".project_inn_mask").fadeOut(200);
 <script>
 function changeSpocStatus(spocId,clientLocationId){
 	var spocStatus = $('#spocStatus'+spocId).val();
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/changeSpocStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
+	    url: vmsUrl+"/changeSpocStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
 	    success: function(data) {
 	    	clientContactList(orgRelationID,clientLocationId);
 	    }
@@ -402,12 +373,12 @@ function changeSpocStatus(spocId,clientLocationId){
 <!-- This script is for resending the invitation mail -->
 <script type="text/javascript">
 function resendSpocInvitation(spocUserId,orgRelationID,clientLocationId,spocId){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(spocUserId != null && spocUserId != ""){
-		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		//$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+spocId+"&responderType=Client&orgRelationID="+orgRelationID, 
+			        url: vmsUrl+"/resendSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+spocId+"&responderType=Client&orgRelationID="+orgRelationID, 
 			        success: function(result) {
 			        	clientContactList(orgRelationID,clientLocationId)
 			        },
@@ -419,43 +390,49 @@ function resendSpocInvitation(spocUserId,orgRelationID,clientLocationId,spocId){
 
    <!-- This Script is For Popup Div Starts-->  
 <script>
-function addContact(orgRelationID,clientLocationId) {	  
+function addContact(orgRelationID,clientLocationId) {	
 	var result = "";
 	result = result  +'	<form id="clinetContact_form" name="clinetContact_form" method="post">';
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopupDiv();"></i> ';
 	result = result  +'	<div class="form-horizontal clearfix">';
 	result = result  +'                  </div>  ';             
 	
-	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
+	result = result  +'	 <div class="clearfix mb" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" id="email" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	result = result + '<div class="input-group errorInptgroup">';
+	result = result  +'<input type="text" class="form-control input-sm" id="EmailId" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="validateEmail1('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	
+	result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
+	result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
+	result = result + '</i>';
+	result = result + '</span>';
+	result = result  +'	   </div>';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
-	result = result  +'	<div class="clearfix mb10">';
-	result = result  +'	 <div class="col-md-12">';
+	result = result  +'	<div class="clearfix mb mt">';
+	result = result  +'	 <div class="col-md-12 mt2">';
 	result = result  +'	<input type="text" class="form-control input-sm" value="" id="firstName" name="firstName" field-name="First name" placeholder="First name *" data-validation="required validate_Space validate_length length1-100">';
 	result = result  +'	</div>';
 	result = result  +'	</div>';
 	
-	result = result  +'	<div class="clearfix mb10">';
+	result = result  +'	<div class="clearfix mb">';
 	result = result  +'	  <div class="col-md-12">';
 	result = result  +'	     <input type="text" class="form-control input-sm" name="lastName" id="lastName" value="" placeholder="Last name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
 	
-	result = result  +'	 <div class="clearfix mb10">';
+	result = result  +'	 <div class="clearfix mb">';
 	result = result  +'	   <div class="col-md-12">';
 	result = result  +'	     <input type="text" class="form-control input-sm" value="" name="phoneNumber" id="phoneNumber" placeholder="Phone number" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">';
 	result = result  +'	    </div>';
 	result = result  +'	  </div>';
 	
 	
-	result = result  +'	 <div class="clearfix mb10">';
-	result = result  +'	 <label class="col-md-12">Status</label>';
+	result = result  +'	 <div class="clearfix mb">';
 	result = result  +'	 <div class="col-md-12">';
-	result = result  +'	  <select class="form-control" id="spocStatus" name="spocStatus">';
+	result = result  +'	  <select class="width100percnt form-control" id="spocStatus" name="spocStatus">';
 	result = result  +'	   <option value="Active">Active</option>';
 	result = result  +'	   <option value="In-Active">In-Active</option>';
 	/* result = result  +'	   <option value="New">New</option>';
@@ -465,8 +442,7 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	 </div>';
 	result = result  +'	 </div>';
 	
-	result = result  +'	 <div class="clearfix mb10">';
-	result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
+	result = result  +'	 <div class="clearfix">';
 	result = result  +'	 <div class="col-md-12">';
 	result = result  +'	   <select multiple class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 	result = result  +'	       <c:forEach var="user" items="${userList}">';
@@ -500,10 +476,20 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'</div>';
 	
 	
-	result = result  +'	 <div class="clearfix mb10">';
-	result = result  +'	   <div class="col-md-12 checkbox">';
+	result = result  +'	 <div class="clearfix">';
+	result = result  +'	   <div class="col-md-6 checkbox margin-top0">';
 	result = result  +'	     <label>';
-	result = result  +'	      <input type="checkbox" value="Y" name="isMailSent" checked="checked">Send Invitation</label>';
+	result = result  +'	      <input type="checkbox" value="Y" name="isMailSent">Send Invitation</label>';
+	result = result  +'	   </div>';
+	
+	result = result  +'	   <div class="col-md-6 checkbox margin-top0">';
+	result = result  +'	     <label>';
+	result = result  +'	      <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AP Email</label>';
+	result = result  +'	   </div>';
+	
+	result = result  +'	   <div class="col-md-6 checkbox margin-top0">';
+	result = result  +'	     <label>';
+	result = result  +'	      <input type="checkbox" value="N" name="invoiceOrBillSent" id= "invoiceOrBillSent" onclick = "allowInvoiceEmailSent();"> Invoice Email</label>';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
@@ -517,6 +503,7 @@ function addContact(orgRelationID,clientLocationId) {
 	$("#popUpDivContact").empty();
 	$("#popUpDivContact").append(result);
 	
+	
 	$(".edit-details").toggleClass("edit-details-active");
 	 $(".close-div").click(function(){ 
 		 $(this).parent("div.edit-details").removeClass("edit-details-active");
@@ -524,6 +511,7 @@ function addContact(orgRelationID,clientLocationId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
+
 	 
 	 var config = {
 			  '.chosen-select'           : {},
@@ -539,8 +527,9 @@ function addContact(orgRelationID,clientLocationId) {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				})
-	 
+				 $("#owner_chosen").find("ul.chosen-choices > li input").attr("placeholder", "Select Owners *");
 	}
+	
 </script>
  <!-- This Script is For Popup Div Ends --> 
  
@@ -548,18 +537,38 @@ function addContact(orgRelationID,clientLocationId) {
 function closePopupDiv(){
 	 $("#popUpDivContact").removeClass("edit-details-active");
 }
+
+function allowApEmailSent(){
+	var checked = document.getElementById("apOrArSent").checked
+	if(checked == true){
+		$("#apOrArSent").val("Y");
+	}else{
+		$("#apOrArSent").val("N");
+	}
+}
+
+
+function allowInvoiceEmailSent(){
+	var checked = document.getElementById("invoiceOrBillSent").checked
+	if(checked == true){
+		$("#invoiceOrBillSent").val("Y");
+	}else{
+		$("#invoiceOrBillSent").val("N");
+	}
+}
+
 </script>
 
 <!-- to add new contact -->
 <script type="text/javascript">
 	function checkClientContactAdd(orgRelationId,clientLocationId) {
 		if ($('#clinetContact_form').validate(false, validationSettings)) {
-	        var formData = $($('#clinetContact_form')[0]).serialize();
-			var sourceleadUrl = '${sourceleadUrl}';
+	  	        var formData = $($('#clinetContact_form')[0]).serialize();
+			var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 			$("#addClientContact").attr("disabled", "disabled");
 			$("#addClientContact").addClass('button').val('Processing..');
 			
-			$.post(sourceleadUrl+"/saveClinentAndVendorContact?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&responderType=Client", formData, function(data) {
+			$.post(vmsUrl+"/saveClinentAndVendorContact?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&responderType=Client", formData, function(data) {
 				$("#popUpDivContact").removeClass("edit-details-active");
 				 $("#clientTerminateMsgDiv").removeAttr("style");
 		 			$("#clientTerminateMsgDiv").css({ display: "block" });
@@ -581,15 +590,16 @@ function closePopupDiv(){
 
 <script type="text/javascript">
  function validateSpocEmail(orgRelationId) {
+	 
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if(EmailId != null && EmailId != ""){
 		 $("#addClientContact").attr("disabled", "disabled");
          $("#addClientContact" ).addClass('button').val('Processing..');
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateSpocEmailId?"+tokenParamName+"="+tokenValue+"&email="+EmailId+"&orgRelationId="+orgRelationId, 
+		        url: vmsUrl+"/validateSpocEmailId?"+tokenParamName+"="+tokenValue+"&email="+EmailId+"&orgRelationId="+orgRelationId, 
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		  $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
@@ -645,11 +655,11 @@ function closePopupDiv(){
 function getSpocUserDetails(orgLocationId,orgRelationID){
 	getOwners(orgRelationID);
 	var email = document.getElementById("EmailId").value;
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	if(email){
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId,
+	    	url : vmsUrl+"/getSpocUserDetails?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgLocationId="+orgLocationId,
 	        contentType: "application/json; charset=utf-8",
 	        dataType: "json",
 	        success: function(data) {
@@ -657,26 +667,26 @@ function getSpocUserDetails(orgLocationId,orgRelationID){
 	        		var json = JSON.parse(data);
 	        		
 	        		 if(json[0] != null && json[0] != ''){
-	        			$("#firstName").attr("disabled", true);
+	        			$("#firstName").attr("readOnly", true);
 	        		    $("#firstName").val(json[0]);
 	        		 }else{
-	        			 $("#firstName").attr("disabled", false);
+	        			 $("#firstName").attr("readOnly", false);
 	        			 $("#firstName").val('');
 	        		 }
 	        		 
 	        		 if(json[1] != null && json[1] != ''){
-		        			$("#lastName").attr("disabled", true);
+		        			$("#lastName").attr("readOnly", true);
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
-	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").attr("readOnly", false);
 	        			    $("#lastName").val('');
 	        		 }
 		        		
 	        		 if(json[2] != null && json[2] != ''){
-		        			$("#phoneNumber").attr("disabled", true);
+		        			$("#phoneNumber").attr("readOnly", true);
 		        		    $("#phoneNumber").val(json[2]);
 	        		 }else{
-	        			    $("#phoneNumber").attr("disabled", false);
+	        			    $("#phoneNumber").attr("readOnly", false);
 	        			    $("#phoneNumber").val('');
 	        		 }
 	        		 
@@ -721,10 +731,10 @@ function getSpocUserDetails(orgLocationId,orgRelationID){
 
 <script>
 function acceptSpocInvitation(spocId,orgRelationId,clientLocationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Accepted",	    	   
+		    url: vmsUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
 		    	$("#clientTerminateMsgDiv").removeAttr("style");
 	 			$("#clientTerminateMsgDiv").css({ display: "block" });
@@ -738,10 +748,10 @@ function acceptSpocInvitation(spocId,orgRelationId,clientLocationId){
 
 <script>
 function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Rejected",
+		    url: vmsUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
 		    	$("#clientTerminateMsgDiv").removeAttr("style");
 	 			$("#clientTerminateMsgDiv").css({ display: "block" });
@@ -758,12 +768,12 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
  function getOwners(orgRelationID) {
 	 var email = document.getElementById("EmailId").value; 
 	 var orgRelationId = orgRelationID;
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var SourceLeadWeb_userId= '${SourceLeadWeb_userId}';
 	 if(email != null && email != "" && email != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllOwners?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&type=client",  
+		        url: vmsUrl+"/getAllOwners?"+tokenParamName+"="+tokenValue+"&email="+email+"&orgRelationId="+orgRelationId+"&type=client",  
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -806,14 +816,14 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 </script>
 
 <script type="text/javascript">
-function validateEmail(orgRelationID){
+function validateEmail1(orgRelationID){
 	 getOwners(orgRelationID);
 	var email = document.getElementById("EmailId").value;
-	var sourceleadUrl = '${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	if(email != null){
 		$.ajax({
 			type : "POST",
-			url : sourceleadUrl + "/validateClientOrVendorEmail?"+tokenParamName+"="+tokenValue+"&email="+email,
+			url : vmsUrl + "/validateClientOrVendorEmails?"+tokenParamName+"="+tokenValue+"&email="+email,
 			success : function(data) {
 				var result = data;
 				if(result == 'Invalid Email') {
@@ -826,11 +836,15 @@ function validateEmail(orgRelationID){
 					$('input#EmailId').removeAttr("class record-exist record-exist-errormsg");
 					$('input#EmailId').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					validateEmailForExistenceUniversally(EmailId, "input#EmailId");
 					
 				}
 			},
 
 		});
+	}else{
+		$("#emailStatusIconDiv").find("i").remove();
+  		$("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	}
 }
 </script>

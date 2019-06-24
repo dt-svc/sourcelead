@@ -6,14 +6,18 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
- <link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
- <script src="resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
- <script src="resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
+ <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+ <script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+ <script src="/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
 <script type="text/javascript">
 //On document ready
 $(function(){
 	submissionTemplateList();
+	if('${type}' != 'undefined' && '${type}' != '' && '${type}' != null && '${type}' == 'addTemplate'){
+		$("#add-tm").click();
+	}
+	
 });
 </script>
 
@@ -47,10 +51,10 @@ $(function(){
 	        		result = result + '<tr>';
 	                result = result + '<td><div><span class="mid-span" title="'+opt.templateName+'">'+opt.templateName+'</span></a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
-	                result = result + '<td><div>';
-	                    result = result + '<a href="javascript:void(0)" onclick="viewSubmissionTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;|&nbsp;';
+	                result = result + '<td><div class="tblicons">';
+	                    result = result + '<a href="javascript:void(0)" class="mr10" title="View" onclick="viewSubmissionTemplate('+opt.id+',\''+opt.templateName+'\')"><i class="fa fa-eye"></i></a>';
                     '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_APPLICANT_TEMPLATE\',\'ROLE_VIEW_EDIT_APPLICANT_TEMPLATE\')">'
-	                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\')">Edit</a>';
+	                    result = result + '<a href="javascript:void(0)" class="" title="Edit" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\')"><i class="fa fa-pencil"></i></a>';
 	                    result = result + '<input type="hidden" name="description" id="description'+opt.id+'" value="'+opt.description+'" >';
                     '</sec:authorize>';
 	                result = result +'</div></td>';
@@ -66,8 +70,6 @@ $(function(){
 	    });
 	}
 </script>
-
-
 
 <script type="text/javascript">
 	function viewSubmissionTemplate(templateId,templateName) {
@@ -94,9 +96,6 @@ $(function(){
         
 	}
 </script>
-
-
-
 
 <script>
 function templatepagination(){  
@@ -209,11 +208,9 @@ function templatepagination(){
 	}
 </script>	
 
-
-
 <script type="text/javascript">
 function alertMessage(message){
-	var result = "";
+    var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
@@ -233,7 +230,6 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
-
 
 <script type="text/javascript">
    	$('body').on('submit', '#sjfb', function(e){
@@ -314,12 +310,12 @@ function cancel(){
             }
             
             fields.push({
-                type: fieldType,
-                label: fieldLabel,
-                req: fieldReq,
-                choices: choices,
-                isRemoved : isRemoved,
-                isLabelModified : isLabelModified
+            		type: fieldType,
+	                label: fieldLabel,
+	                req: fieldReq,
+	                choices: choices,
+	                isRemoved : isRemoved,
+	                isLabelModified : isLabelModified
             });
 
         });
@@ -379,7 +375,6 @@ function cancel(){
     });
    	  
   </script>
-  
 
 <script type="text/javascript">
 function validateTemplateName(){
@@ -413,7 +408,6 @@ function validateTemplateName(){
 }
 </script>
  
- 
  <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',
@@ -422,7 +416,6 @@ function validateTemplateName(){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
-
 
 <script type="text/javascript">
 	(function($) {
@@ -448,43 +441,40 @@ function validateTemplateName(){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
-    <div class="pull-left">
-      <!-- <h2>Submission Templates</h2> -->
-      <h2 class="pull-left">Submission Templates</h2>
-				<div class=" pull-left reportsH">
-			
-			<div class="RePop openTemplates">
-				
-			</div>
-		</div>
-    </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo;Submission Templates List</div>
+  	<c:if test="${!empty msg}"> 
+		<div class="success_pop" id="selector" style="display: block;"> <i class="fa fa-check-circle"></i><span>${msg}</span> </div> 
+	</c:if> 
+    <div class="pull-left"><h2 class="pull-left">Submission Templates</h2></div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Submission Templates List</div>
   </section>
+  
   <div class="timesheet_out">
     <div class="vendor_wrap">
-	      <div class="timesheet_head timesheet_head_11"  id="addTemplate">
-	        <ul>
-	          <li><a onClick="addSubmissionTemplateFields();" id="add-tm"><i class="fa fa-plus"></i>Add Template</a></li>
-	          <div class="clearfix"></div>
-	        </ul>
-	        <div class="clearfix"></div>
-	      </div>
-	       <div class="project_tabs_inn_table vendor_wrap_inn_table">
-	          <div id="clientSubmissionTemplateList" class="datatable_filter"></div>
+    
+<div class="reportHead reportHeadDataTab clearfix" id="addTemplate">
+      <ul class="pull-right list-unstyled list-inline">
+      
+	         <sec:authorize access="hasRole('ROLE_CREATE_APPLICANT_TEMPLATE')"> 
+	          <li><a onClick="addSubmissionTemplateFields();" id="add-tm" class="newAdBtn">+ Template</a></li>
+	          </sec:authorize>      	
+        </ul>
+      </div>     
+	      
+	       <div class="project_wrap_table">
+	          <div id="clientSubmissionTemplateList" class="datatable_filter dataSeaTop"></div>
 	       </div> 
 	       
 	       <div id="templateList"></div>
 	            
        </div>
-	    <!-- <div class="side_mask">
-	      <div class="proj_close"></div>
-	    </div> -->
-    
-    <!-- Project --> 
   </div>
   
 </section>
+<script> 
+$("#selector").fadeIn(200); 
+$('#selector').delay(2000).fadeOut('slow'); 
 
+</script> 
 <script>
 $("#add-tm").click(function(){
 	$("#clientSubmissionTemplateList").hide();
@@ -513,7 +503,7 @@ function scrollToBottom(){
 
 
 <jsp:include page="masterFooter.jsp" />
-<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
 </html>
 
 

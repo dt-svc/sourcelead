@@ -4,24 +4,40 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<jsp:include page="editClientSpocDetails.jsp" />
+<jsp:include page="editClientSpocDetails.jsp" /> 
 <jsp:include page="clientDetails.jsp" />	
 <jsp:include page="clientContacts.jsp" />
 <jsp:include page="clientDocuments.jsp" />	
-<jsp:include page="clientSpocDocuments.jsp" />	
+<jsp:include page="clientSpocDocuments.jsp" />
 <jsp:include page="submissionTemplateList.jsp" /> 
 <jsp:include page="clientContracts.jsp" />
 <jsp:include page="clientBilling.jsp" /> 
 <jsp:include page="requirementReleasedList.jsp" /> 
 <jsp:include page="clientNotes.jsp" /> 
 <jsp:include page="clientListDatatable.jsp" />
-<jsp:include page="clientContactsDataTable.jsp" />
+<jsp:include page="clientContactsDataTable.jsp" /><!-- not done -->
 <style type="text/css">
 clients_wrap {
 overflow-x: auto;
 }
+/* .side-bar {
+z-index: 8;
+}
+.main-header {
+z-index: 5;
+}
+.advancedsearch-mask {
+z-index: 9;
+}
+.cand-advsrch {
+z-index: 1;
+} */
 </style>
 <body>
+
+<script>
+var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+</script>
 
  <div id="loading"></div>
 	<!-- Content Area -->
@@ -44,20 +60,25 @@ overflow-x: auto;
 				</span>
 				</h2>
 			</div>
-
-			<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;Client List</div>
-
-		</section>
+                  <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo;</a> Clients List </div>
+    
+	 	</section>
 
 		<!-- Project -->
 		
 			
 			<!-- Advanced Search -->
   <div class="timesheet_out">
-  <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
-            <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+
+            </div>
+            
+            
             <form:form id="clientlist_form" name="clientlist_form"  enctype='multipart/form-data' >
-          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+          <div class="cand-advsrch-popup advancedsearch-popup">
+         <h5 class="headerAdsrch">Advanced Search 
+          <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
+          </h5>
+          <div class="addInner">
             <div class="row">
               <div class="col-md-4">
                 <label>Any of Keyword</label>
@@ -84,9 +105,6 @@ overflow-x: auto;
             </div>
             <div class="row">
 	            <div id="vendorListAdvanced">
-		              <div class="col-md-12">
-		                <h4>Details:</h4>
-		              </div>
 		              <div class="clearfix">
 		                <div class="col-md-4">
 		                  <label>Client Name</label>
@@ -99,43 +117,6 @@ overflow-x: auto;
                 	  </div>
 		                </div>
 		                
-		              </div>
-		              <div class="clearfix">
-		                
-		              </div>
-		              <div class="clearfix">
-		                <div class="col-md-4">
-		                  <label>Country</label>
-		                  <div class="clearfix">
-		                    <select class="chosen-select" name="country" id="countrySearch" field-name="Country"  >
-						     <c:forEach var="cntry" items="${countryList}">
-					                      <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
- 
-				             </c:forEach>
-				           </select>
-		                  </div>
-		                </div>
-		                 <div class="col-md-4"> 
-							  <label>State</label>
-							  <div class="clearfix">
-								  <select  class="chosen-select" name="state" id="stateSearch" field-name="State"  >
-								        <option value="">---select state---</option>
-								        <c:forEach var="state" items="${statesList}">
-							                     <option value="${state.stateName}">${state.stateName}</option>
-						                </c:forEach>
-                                 </select>
-							 </div>
-						  </div>
-						  <div class="col-md-4">
-							  <label>City</label>
-							  <div class="clearfix">
-								  <select  class="chosen-select" name="city" id="citySearch" field-name="City"  >
-								      <option value="">---select city---</option>
-                                  </select>
-							  </div>
-						  </div>
-            		  </div>
-		              <div class="clearfix">
 		                <div class="col-md-4">
 		                  <label>Tier</label>
 		                  <div class="clearfix">
@@ -159,6 +140,43 @@ overflow-x: auto;
 		              </div>
 	             
 	               </div>
+		              <div class="clearfix">
+		                
+		              </div>
+		              <div class="clearfix">
+		                <div class="col-md-4">
+		                  <label>Country</label>
+		                  <div class="clearfix">
+		                    <select class="chosen-select" name="searchCountry" id="countrySearch" field-name="Country"  >
+						     <option value="" selected>---select country---</option>
+						     <c:forEach var="cntry" items="${countryList}">
+					                      <option value="${cntry.name}">${cntry.name}</option>
+ 
+				             </c:forEach>
+				           </select>
+		                  </div>
+		                </div>
+		                 <div class="col-md-4"> 
+							  <label>State</label>
+							  <div class="clearfix">
+								  <select  class="chosen-select" name="searchState" id="stateSearch" field-name="State"  >
+								        <option value="">---select state---</option>
+								        <%-- <c:forEach var="state" items="${statesList}">
+							                     <option value="${state.stateName}">${state.stateName}</option>
+						                </c:forEach> --%>
+                                 </select>
+							 </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>City</label>
+							  <div class="clearfix">
+								  <select  class="chosen-select" name="searchCity" id="citySearch" field-name="City"  >
+								      <option value="">---select city---</option>
+                                  </select>
+							  </div>
+						  </div>
+            		  </div>
+		              
 	                
 	                <div class="clearfix">
 	              
@@ -243,133 +261,128 @@ overflow-x: auto;
             </div>  
               
             </div>
-            <div class="row form-footer mt">
+          </div>
+          <div class="clearfix advancedsearch-footer">
               <div class="pull-right mr"> 
                <div id="enableClientAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               	<div id="enableClientContactAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getClientContactList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
             </div>
           </div>
+          </div>
           </form:form>
-        </div>
-        </div>
 		<!-- Advanced Search Ends -->
 		<div class="clients_wrap vendor_wrap_shadownone minHeight_225">
-<!-- 				<div class="timesheet_head datatbl-filters customtimesheet-head hdr-styles hdrStyles">
- -->				<div class="timesheet_head datatbl-filters topfilters">
-					<ul>
-	               
-		                <li  id="filter3ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="clientSatatus"></i>|
-	                	<div id="filter3ApprovedPop" class="approved_pop">
-	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="clientStatus"  value ="Active"      onclick="getClientContactList();"  ><label>Active</label></li>
-								<li><input id="c6" type="checkbox"  name="clientStatus"  value ="In-Active"   onclick="getClientContactList();"><label>In-Active</label></li>
-	                        </ul>
-	                      </div>                	
-	                  </li>
-	                  <li  id="filter4ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="clientInvitation"></i>|
-	                	<div id="filter4ApprovedPop" class="approved_pop">
-	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="clientInvitationStatus"  value ="Sent"      onclick="getClientContactList();"  ><label>Resend</label></li>
-								<li><input id="c6" type="checkbox"  name="clientInvitationStatus"  value ="New"   onclick="getClientContactList();"><label>Send</label></li>
-								<li><input id="c7" type="checkbox"  name="clientInvitationStatus"  value ="Accepted"         onclick="getClientContactList();"><label>Accepted</label></li>
-								<li><input id="c8" type="checkbox"  name="clientInvitationStatus"  value ="Rejected" onclick="getClientContactList();"><label for="c8">Rejected</label></li>
-	                        </ul>
-	                      </div>                	
-	                  </li>
-	                  
-		                  <li id="contactLevel" >
-		                  <div id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
-		                	<div id="filter2ApprovedPop" class="approved_pop">
-		                    	<ul>
-									<!-- <li><input id="c5"  type="checkbox" name="clinetLevel" value ="All" onclick="getClientDetails();"  ><label for="c5">All</label></li> -->
-									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"  onclick="getClientList();"><label>Tier-1</label></li>
-									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"  onclick="getClientList();"><label>Tier-2</label></li>
-									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"  onclick="getClientList();"><label>Tier-3</label></li>
-		               				<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-4"  onclick="getClientList();"><label>Tier-4</label></li>
-		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Tier-5"  onclick="getClientList();"><label>Tier-5</label></li>
-		                        </ul>
-		                    </div>                	
-		                </li>
-                		<sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
-                        <li><a href="<c:url value='/addClientContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
-                        </sec:authorize>
-                        <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-							<li><a href="<c:url value='/client'/>"><i class="fa fa-plus"></i>Client</a></li>
-						</sec:authorize>
-						 <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
-						 <li title="Import"><a href="<c:url value='/uploadClientForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-						 </sec:authorize>
-						
-						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
-						   <li id="clientImports"  title="Export">
-		                      <a  id="client-imports"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-			                    <div class="export_pop">
-				                   <ul class="widScr">
-				                     <li onclick="exportClientToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-				                     <li onclick="exportClientToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Excel </li>
-				                   </ul>
-				              </div>
-		                  </li> 
-		            </sec:authorize>
-		            
-		             <sec:authorize access="hasRole('ROLE_EXPORT_CLIENT_CONTACTS')"> 
-		            <li id="ContactImports" title="Export" style="display:none">
-		                     <a  id="export-popcon"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-			                    <div class="export_pop">
-				                <ul class="widScr">
-				                <li onclick="exportContactToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp; PDF</li>
-				                <li onclick="exportContactToExcel();"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp; Excel</li>
-				       </ul>
-				    </div>
-		            </li> 
-                    </sec:authorize>
-                              
-						<div class="clearfix"></div>
-					</ul>
-					<div class="clearfix"></div>
-					 <div class='remove_search'>
-        		          <input type='text' placeholder='search' id='dataTableSearch'/>
-                </div> 
-                
+				
+	<div class="positionRelative reportHead clearfix">
+      <span class="pull-left refreIcon" id="advanceSearchDiv">
+      		<a href="javascript:void(0)" class="refeIcon" id="resetClient" title="Refresh" onclick="resetClientFilter();"></a>
+      		<a href="javascript:void(0)" class="refeIcon" id="resetClientContact" style="display: none;" title="Refresh" onclick="resetClientContactFilter();"></a>
+      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+      </span>
+      
+      <ul class="pull-right list-unstyled list-inline">
+                  <li>
+				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">
+					<span> 
+					  <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+						<a href="${SourceLeadWeb_vmsUrl}/client">Add Client</a>
+					 </sec:authorize>
+					 <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+                        <a href="${SourceLeadWeb_vmsUrl}/addClientContact">Add Contact</a>
+                     </sec:authorize>		
+                     
+						<sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS','ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> 
+							<a href="${SourceLeadWeb_vmsUrl}/uploadClientForm">Import</a>
+						 </sec:authorize>                     			
+					</span>
 				</div>
+			</li>
+						
+			
+				<li id="contactLevel"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="clientFileterPopUp();"></a></li>
+				<li id="clientFiletPopup" style="display: none;"><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="clientContactFilterPopUp();"></a></li>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+						 <sec:authorize access="hasRole('ROLE_EXPORT_CLIENTS')"> 
+						 <div id="clientImports">
+						 	<a href="javascript:void(0)" onclick="exportClientToPdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportClientToExcel();" title="Excel">Export Excel</a>
+						 </div>
+		            	</sec:authorize>
+		            
+			             <sec:authorize access="hasRole('ROLE_EXPORT_CLIENT_CONTACTS')"> 
+							 <div id="ContactImports" style="display:none">
+							 	<a href="javascript:void(0)" onclick="exportContactToPdf();" title="PDF">Export PDF</a>
+								<a href="javascript:void(0)" onclick="exportContactToExcel();" title="Excel">Export Excel</a>
+							 </div>		             
+	                    </sec:authorize>						
+						
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearch'/><span class="repSearchIcon" onClick="beforeSearch();"></span></li>
+        </ul>
+      </div>			
 				
 				<div class="clients_wrap_table datatable_scroll datatable_filter" id ="vendorListFilter">
 			      <input type="hidden" name="clientContactLength" id="clientContactLength" >
 			      <input type="hidden" name="emptyClientList" id="emptyClientList" >
 			      
 		     	  <table id="clientList" class="display" cellspacing="0" width="100%"> </table>
-		     	 <table id="vendorContactList" class="display" cellspacing="0" width="100%"> </table> 
+		     	  <div class="overflow_Auto width100percnt">
+		     	 	<div id="vendorContactList" class="display" cellspacing="0" width="100%"> </div>
+		     	 </div> 
 				</div>
 				<div id="popUp"></div>
 			</div>
-		</div>
 
 
-       <div class="side_mask"><div class="proj_close"></div></div>
-		<div class="clients_side_wrap">
+       <div class="side_mask"><div class="proj_close" onclick="refresh();"></div></div>
+		<div class="clients_side_wrap clientspagedrop">
 			<div class="clients_side_wrap_inn">
 				<h1 id="clientNameDiv"></h1>
 				<div class="proj_close">
 					<i></i>
+					<div class="success_pop" id="selector12" style="display: none;">
+						<i class="fa fa-check-circle"></i><span id="msgdiv"></span>
+  					</div>
 				</div>
 				<div id="clientSideDiv"></div>
+				
+				
 			</div>
          </div>
 	</section>
+	
+	<div class="advancedsearch-mask"></div>
 </body>
 
 
 
 <script type="text/javascript">
 window.onload = function () {
+	
 	/* clientOnLoad("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}");  */
 	 loadClientDatatable("${clientSearchResult}","${clientKeyword}","${responderLocationId}","${orgRelationId}","${orgName}"); 
+	if('${orgRelationUUID}' != null && '${orgRelationUUID}' != '' && '${orgRelationUUID}' != 'undefined'){
+			clientSideBar('${clientOrgLocationId}','${orgRelationId}','${clientName}');
+		}
+	
+
+	if('${spocId}' != null && '${spocId}' != '' && '${spocId}' != 'undefined'){
+		clientSpocSideBar("${spocId}","${ownerId}","${spocUserId}","${spocName}","${spocLocationId}","${orgRelationId}","${userId}","${tempOwnerId}");
+	}
+	
  };
 </script>
 
@@ -399,10 +412,10 @@ function clientOnLoad(clientSearchResult,clientKeyword,responderLocationId,orgRe
 </script> -->
 <!-- <script type="text/javascript">
 function getClientUniversalSearchList(searchValue,searchType){
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	 $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getUniversalClientList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&searchType="+searchType,       
+         url: vmsUrl+"/getUniversalClientList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&searchType="+searchType,       
          success :function(data) {
         	 preparedClientListFromElk(data);
         },
@@ -413,6 +426,8 @@ function getClientUniversalSearchList(searchValue,searchType){
 
 <!-- PLEASE DO NOT DELETE COMMENTED SCRIPTS, IF YOU HAVE ANY QUERIES CONTACT RAJASHEKAR -->
 
+
+
 <script>
 function clearSearch(){
 	document.getElementById("clientlist_form").reset();
@@ -420,9 +435,11 @@ function clearSearch(){
 	$('#allKeywords').val('').trigger('chosen:updated');
 	$('#excludeKeyWord').val('').trigger('chosen:updated');
 	$('#orgNameAdvanced').val('').trigger('chosen:updated');
-	/* $('#countrySearch').val('').trigger('chosen:updated'); */
-	$('#stateSearch').val('').trigger('chosen:updated');
-	$('#citySearch').val('').trigger('chosen:updated');
+	$('#countrySearch').val('').trigger('chosen:updated');
+	//$('#stateSearch').val('').trigger('chosen:updated');
+	getStates();
+	//$('#citySearch').val('').trigger('chosen:updated');
+	getCities();
 	$('#tierAdvanced').val('').trigger('chosen:updated');
 	$('#createdByAdvanced').val('').trigger('chosen:updated');
 	$('#emailAdvanced').val('').trigger('chosen:updated');
@@ -433,20 +450,63 @@ function clearSearch(){
 	$('#contactNameAdvanced').val('').trigger('chosen:updated');
 	$('#phoneNumberAdvanced').val('').trigger('chosen:updated');
 }
+
 </script>
 
+<script>
+  $(function() { 
+	       //Adding Customized Any Of Keyword to the list this method is slead-common.js
+		   tagIt("anyOfKeyword", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','Any Keyword');
+	       
+		 //Adding Customized All Of Keyword to the list this method is slead-common.js
+		   tagIt("allKeywords", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','All Keywords');
+		 
+		 //Adding Customized Exclude Keyword to the list this method is slead-common.js
+		   tagIt("excludeKeyWord", 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:', 'tagItBykeyForSkills','skills','Exclude Keyword');
+		 
+		 //This is for Client Name  the list this method is slead-common.js
+		   tagIt("orgNameAdvanced", 'Press Enter-Key Or Comma(,) To Add Client Name:', 'tagItBykeyForSkills','skills','Client Name');
+		 
+		   //This is for CreatedBy Name  the list this method is slead-common.js
+		   tagIt("createdByAdvanced", 'Press Enter-Key Or Comma(,) Or Tab To Add Document Type:', 'tagItBykeyForSkills','skills','Created By');
+	   
+
+		   
+		   //client Contact Customized keywords
+		   
+		   //This is for Client Contact Name  the list this method is slead-common.js
+		   tagIt("contactNameAdvanced", 'Press Enter-Key Or Comma(,) To Add Contact Name:', 'tagItBykeyForSkills','skills','Contact Name');
+		   
+		   //Email
+		   tagIt("emailAdvanced", 'Press Enter-Key Or Comma(,) To Add Email:', 'tagItBykeyForSkills','skills','Email');
+
+		   //phoneNumber
+		   tagIt("phoneNumberAdvanced", 'Press Enter-Key Or Comma(,) To Add Phoe Number:', 'tagItBykeyForSkills','skills','Phone Number');
+		   
+		   //Owner Name
+		   tagIt("ownerAdvanced", 'Press Enter-Key Or Comma(,) To Add Owner:', 'tagItBykeyForSkills','skills','Owner');
+		   
+		   //Client Name
+		   tagIt("orgAdvanced", 'Press Enter-Key Or Comma(,) To Add Client:', 'tagItBykeyForSkills','skills','Client');
+		   
+		   
+
+	});
+  </script>
+  
 <script type="text/javascript">
-    	   var config = {
+    	/*    var config = {
     				  '.chosen-select'           : {},
     				  '.chosen-select-deselect'  : {allow_single_deselect:true},
     				  '.chosen-select-no-single' : {disable_search_threshold:10},
     				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
     				  '.chosen-select-width'     : {width:"95%"}
     	   }
-    	   
+    	    */
     	       
 				
-			//Adding Customized Any Of Keyword to the list 
+    		
+			/* //Adding Customized Any Of Keyword to the list 
 		    var select, chosen;
 		    select = $("#anyOfKeyword");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Keyword:' });
@@ -467,7 +527,7 @@ function clearSearch(){
 	        		$("#anyOfKeyword").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); 
 		    
 		  //Adding Customized Any Of Keyword to the list
 		    var selectone, chosenone;
@@ -519,7 +579,7 @@ function clearSearch(){
 		    // These are choosen fields for vendor List Multiselect
 		    
 		    
-		    // This is for vendorName 
+		    // This is for Client Name 
 		    
 		    var selectthree, chosenthree;
 		    selectthree = $("#orgNameAdvanced");
@@ -565,7 +625,7 @@ function clearSearch(){
 	        		
 		        }
 		    });
-		    
+		   
 		    
 		    
 		    //  This is for contact Name
@@ -588,7 +648,7 @@ function clearSearch(){
 	        		$("#contactNameAdvanced").trigger("chosen:updated");
 	        		
 		        }
-		    });
+		    }); 
 		    
 		    //  This is for Email
 		    var selectemailAdvanced, chosenemailAdvanced;
@@ -678,7 +738,7 @@ function clearSearch(){
 	        		
 		        }
 		    });
-		  
+		    */
 
 		      $("#countrySearch").on('change', function (e) {
 		    	   getStates();
@@ -686,14 +746,14 @@ function clearSearch(){
 		       $("#stateSearch").on('change', function (e) {
 		    	   getCities();
 		       });
-				for (var selector in config) {
+			/* 	for (var selector in config) {
 				  $(selector).chosen(config[selector]);
 				}
 				
 				$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+				}) */
 </script> 
 
 
@@ -709,10 +769,7 @@ function clearSearch(){
 			 document.getElementById("vendorListAdvanced").style.display="none";
 			 document.getElementById("enableClientContactAdvancedSearch").style.display="block";
 			 document.getElementById("enableClientAdvancedSearch").style.display="none";
-			 
-			 
 		}else if(selectedList == "listbyVendor" ){
-			
 			 document.getElementById("vendorListAdvanced").style.display="block";
 			 document.getElementById("vendorContactListAdvanced").style.display="none";
 			 document.getElementById("enableClientAdvancedSearch").style.display="block";
@@ -720,11 +777,13 @@ function clearSearch(){
 		}
 	    
 	    
-	    $("#citySearch").empty();
+/* 	    $("#citySearch").empty();
 		 $("#citySearch").val('').trigger("chosen:updated");
 		 
+		 $("#ownerAdvanced").empty();
+		 $("#ownerAdvanced").val('').trigger("chosen:updated");
+		 
 	    $('#orgNameAdvanced').val(''); 
-	    
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
@@ -732,8 +791,8 @@ function clearSearch(){
 
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
-	    $("#excludeKeyWord").empty();
-	    $("#orgNameAdvanced").empty();
+	    $("#excludeKeyWord").empty(); */
+// 	    $("#orgNameAdvanced").empty();
 	}
 </script>   
 
@@ -841,11 +900,11 @@ function getClientDetails(){
 			values.push($(this).val());
     });
 	
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var loginOrgLocId = '${loginOrgLocId}';
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getClientDetails?"+tokenParamName+"="+tokenValue+"&values="+values, 	   
+		    url: vmsUrl+"/getClientDetails?"+tokenParamName+"="+tokenValue+"&values="+values, 	   
    		    success: function(data) {
    		    	preparedClientDetails(data); 
    		    	/* preparedClientListFromElk(data); */
@@ -864,12 +923,12 @@ function getClientDetailsELK(){
     {
 			values.push($(this).val());
     });
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var loginOrgLocId = '${loginOrgLocId}';
 	var responderType = "Client";
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getVendorFilterListsElK?"+tokenParamName+"="+tokenValue+"&responderType="+responderType+"&values="+values, 	   
+		    url: vmsUrl+"/getVendorFilterListsElK?"+tokenParamName+"="+tokenValue+"&responderType="+responderType+"&values="+values, 	   
    		    success: function(data) {
    		    	preparedClientListFromElk(data);
    		    }
@@ -917,7 +976,7 @@ function pagination(){
 		
 		//for client contatcs tab
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
-		result = result + '<li><a href="#tab-2" onclick="clientContacts('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
+		result = result + '<li id="clientContactsLi"><a href="#tab-2" onclick="clientContacts('+orgRelationId+','+clientLocationId+');">Contacts</a></li>';
 		'</sec:authorize>';
 		
 		//for client documents tab
@@ -937,7 +996,7 @@ function pagination(){
 		'</sec:authorize>';
 		
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\',\'ROLE_VIEW_EDIT_INVOICE\')">';
-		result = result + '<li><a href="#tab-6" onclick="getClientInvoiceList('+orgRelationId+','+clientLocationId+');">Billing</a></li>';
+		result = result + '<li><a href="#tab-6" onclick="getClientInvoiceList('+orgRelationId+','+clientLocationId+');">Invoices</a></li>';
 		'</sec:authorize>';
 		
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -989,16 +1048,21 @@ function pagination(){
 		result = result + '</div>';
 		$("#clientSideDiv").empty();
 		$("#clientSideDiv").append(result);
-		
 		/* $("#clientNameDiv").empty();
 		$("#clientNameDiv").append(orgName); */
 		
 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
-		 
- 
-		clientDetails(clientLocationId,orgRelationId);
+		if ('${contactsTab}' == "contactsTab") {
+			$(".project-tabs-menu li").removeClass("current");
+			$("#clientContactsLi").addClass("current");
+			$("#tab-2").show();
+			clientContacts(orgRelationId,clientLocationId);
+		} else {
+			clientDetails(clientLocationId,orgRelationId);
+		}
+		
 	}
 </script>
 
@@ -1359,11 +1423,11 @@ function getVendorContactLists(){
     });
 	
 	
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var loginOrgLocId = '${loginOrgLocId}';
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getClientContactLists?"+tokenParamName+"="+tokenValue+"&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
+		    url: vmsUrl+"/getClientContactLists?"+tokenParamName+"="+tokenValue+"&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
    		    	preparedClientContacts(data);
    		    }
@@ -1395,13 +1459,13 @@ function getVendorContactListsELK(){
     });
 	
 	
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	var loginOrgLocId = '${loginOrgLocId}';
 	var responderType = "Client";
 	
 	  $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getVendorContactListsELK?"+tokenParamName+"="+tokenValue+"&responderType="+responderType+"&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
+		    url: vmsUrl+"/getVendorContactListsELK?"+tokenParamName+"="+tokenValue+"&responderType="+responderType+"&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus, 	   
    		    success: function(data) {
    		    	preparedClientContactListFromElk(data);
    		    }
@@ -1417,16 +1481,15 @@ function getVendorContactListsELK(){
 <!-- This script is for resending the invitation mail -->
 <script type="text/javascript"><%-- <jsp:include page="submissionTemplate.jsp" />	 --%>
 function resendClientSpocInvitation(spocUserId,orgSpocId,orgRelationId){
-	var sourceleadUrl ='${sourceleadUrl}';
-	
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var rowHtmlContent =  $("#row"+orgSpocId).html();
 	 $("#row"+orgSpocId).empty();
 	 $("#row"+orgSpocId).html("<td colspan='8'  id='loading"+orgSpocId+"'></td>");
 	if(spocUserId != null && spocUserId != ""){
-		$("#loading"+orgSpocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		$("#loading"+orgSpocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		$.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Client&orgRelationID="+orgRelationId, 
+			        url: vmsUrl+"/resendSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Client&orgRelationID="+orgRelationId, 
 			        success: function(result) {
 			        	$("#row"+orgSpocId).empty();
 			    	     $("#row"+orgSpocId).html(rowHtmlContent);
@@ -1462,17 +1525,18 @@ function pagination1(){
 
 <script>
 function updateSpocStatus(spocId){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
     var spocStatus = $('#spocState'+spocId).val();
-	var sourceleadUrl = '${sourceleadUrl}';
+
 	
 	 var rowHtmlContent =  $("#row"+spocId).html();
 	 $("#row"+spocId).empty();
 	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
-	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/changeSpocStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
+	    url: vmsUrl+"/changeSpocStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&spocStatus="+spocStatus,	    	   
 	    success: function(data) {
 	    	$("#row"+spocId).empty();
 	    	$("#row"+spocId).html(rowHtmlContent);
@@ -1492,7 +1556,7 @@ function updateSpocStatus(spocId){
 		
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_CONTACT\')">';
 		result = result
-				+ '<li class="current"><a href="#tab-1"  id="spocDetailsId" onClick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
+				+ '<li class="current"><a href="#tab-1"  id="spocDetailsId" onClick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+','+orgRelationId+','+spocLocationId+');">Details</a></li>';
 		'</sec:authorize>';
 		
 		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT_DOCUMENT\')">';
@@ -1520,8 +1584,7 @@ function updateSpocStatus(spocId){
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
-
-		clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId);
+		clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId,orgRelationId,spocLocationId);
 	}
 </script>
 
@@ -1542,24 +1605,20 @@ function listChange(sel){
 // 		 document.getElementById("vendorContactList_wrapper").style.display="none";
 		 document.getElementById("contactLevel").style.display="block";
 // 		 document.getElementById("clientsList").style.display="none";
-		 document.getElementById("clientSatatus").style.display="none";
-		 document.getElementById("clientInvitation").style.display="none";
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENTS\')">'; 
 		 document.getElementById("clientImports").style.display="block";
 		 '</sec:authorize> ';
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENT_CONTACTS\')">'; 
 		 document.getElementById("ContactImports").style.display="none";
 		'</sec:authorize> ';	 
-// 		 document.getElementById("vendorContactList_paginate").style.display="none";
-// 		 document.getElementById("vendorContactList_info").style.display="none";
-// 		 document.getElementById("vendorContactList_filter").style.display="none";
-// 		 document.getElementById("filter1ApprovePop").style.display="none";
-		 document.getElementById("filter3ApprovePop").style.display="none";
-		 document.getElementById("filter4ApprovePop").style.display="none";
-		/*  getClientDetails(); */
-		 /* getClientDetailsELK(); */
 		 document.getElementById("advanceSearchDiv").style.display="block";
 		 $("#dataTableSearch").val("");
+		 document.getElementById("resetClient").style.display="inline-block";
+		 document.getElementById("resetClientContact").style.display="none";
+		 
+		 document.getElementById("clientFiletPopup").style.display="none";
+
+		 
 		 getClientList();
 	 }
 	 if(sel.value=="listbyContact"){
@@ -1570,8 +1629,6 @@ function listChange(sel){
 // 		 document.getElementById("vendorContactList_wrapper").style.display="block";
 		 document.getElementById("contactLevel").style.display="none";
 // 		 document.getElementById("clientsList").style.display="block";
-		 document.getElementById("clientSatatus").style.display="block";
-		 document.getElementById("clientInvitation").style.display="block";
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_CLIENTS\')">'; 
 		 document.getElementById("clientImports").style.display="none";
 		 '</sec:authorize> ';
@@ -1579,12 +1636,14 @@ function listChange(sel){
 		 document.getElementById("ContactImports").style.display="block";
 		'</sec:authorize> ';	 
 // 		document.getElementById("filter1ApprovePop").style.display="block";
-		 document.getElementById("filter3ApprovePop").style.display="block";
-		 document.getElementById("filter4ApprovePop").style.display="block";
 		 document.getElementById("advanceSearchDiv").style.display="block";
 		/*  getVendorContactLists(); */
 // 		 getVendorContactListsELK();
 		$("#dataTableSearch").val("");
+		 document.getElementById("resetClient").style.display="none";
+		 document.getElementById("resetClientContact").style.display="inline-block";
+		 document.getElementById("clientFiletPopup").style.display="inline-block";
+
 		loadClientContactDataTable("${clientSearchResult}");
 	 }
 	 
@@ -1593,11 +1652,11 @@ function listChange(sel){
 
 <script>
 	function clientProjectDetails(clientId) {
-		var sourceleadUrl = '${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		$
 				.ajax({
 					type : "POST",
-					url : sourceleadUrl
+					url : vmsUrl
 							+ "/getAllClientProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="
 							+ clientId,
 					success : function(data) {
@@ -1691,7 +1750,7 @@ function listChange(sel){
 				    		
 			    			 result = result + '<div class="table_nodata">';
 			    			 result = result + '<div class="table_nodata_inn">';
-			    			 result = result + '<img src="resources/images/no-data.png" />';
+			    			 result = result + '<img src="/resources/images/no-data.png" />';
 			    			 result = result + '<span>Nothing is here to show ';
 			    			 result = result + '</span>';
 			    			 result = result + '<div class="clearfix"></div>';
@@ -1735,12 +1794,12 @@ function listChange(sel){
 
 <script> 
 function  inlineEditClientProjects(projectId,localFieldName){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var fieldName = localFieldName;
 	var fieldValue = $("#"+localFieldName+""+projectId).val();
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/inlineEditClientProjects?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
+		    url: vmsUrl+"/inlineEditClientProjects?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
    		    success: function(data) {
    		    }
 	 }); 
@@ -1749,12 +1808,12 @@ function  inlineEditClientProjects(projectId,localFieldName){
 <div id="popUp"></div>
 <script> 
 function  inlineEditForProjects(orgRelationId,localFieldName){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var fieldName = localFieldName;
 	var fieldValue = $("#"+localFieldName).val();
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/updateClientProjectById?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
+		    url: vmsUrl+"/updateClientProjectById?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&fieldName="+fieldName+"&fieldValue="+fieldValue, 	   
    		    success: function(data) {
    		    }
 	 }); 
@@ -1811,29 +1870,6 @@ function getEndDatePickerById(projectId,localFieldName){
 	    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
 	        e.stopPropagation();
 	    });	
-	    
-	    $("#filter3ApprovePop").click(function(){
-			$("#filter3ApprovedPop").slideToggle(200);
-			$("#filter1ApprovedPop, .export_pop, #filter4ApprovedPop").slideUp(200);
-		});
-	    $("html").click(function() {
-	        $("#filter3ApprovedPop").slideUp(200);
-	    });
-	    $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
-	        e.stopPropagation();
-	    });	
-	    
-	    $("#filter4ApprovePop").click(function(){
-			$("#filter4ApprovedPop").slideToggle(200);
-			$("#filter1ApprovedPop, .export_pop, #filter3ApprovedPop").slideUp(200);
-		});
-	    $("html").click(function() {
-	        $("#filter4ApprovedPop").slideUp(200);
-	    });
-	    $("#filter4ApprovedPop, #filter4ApprovePop").click(function(e) {  
-	        e.stopPropagation();
-	    });	
-	    
 	});
 	// project side bar
 	$(document).ready(function() {
@@ -1857,6 +1893,10 @@ function getEndDatePickerById(projectId,localFieldName){
 	   		}
 		});
 	});
+	
+	function refresh(){
+		getClientList();
+	}
 
 	//project side bar tabs
 	$(document).ready(function() {
@@ -1885,14 +1925,14 @@ $("#selector").fadeIn(200);
 <!-- Scripts for invitations  -->
 <script>
 function acceptInvitation(spocId){
-	 var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var rowHtmlContent =  $("#row"+spocId).html();
 	 $("#row"+spocId).empty();
 	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
-	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Accepted",	    	   
+		    url: vmsUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Accepted",	    	   
 		    success: function(data) {
 		    	$("#selector1").removeAttr("style");
     			$("#selector1").css({ display: "block" });
@@ -1918,7 +1958,7 @@ function cancelRejectPopupClient(){
 </script>
 
 <script>
-function terminateSpoc1(spocId, orgRelationID){
+function terminateSpoc1(spocId, orgRelationID, spocEmail){
 	
 	$(".project_inn_mask").remove();
 	var result = "";
@@ -1927,7 +1967,7 @@ function terminateSpoc1(spocId, orgRelationID){
 	//result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
 	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2' onkeypress='clientDashboardRemoveSpacesForRejectReason();'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectPopupClient();'></b>";
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveReason1('+spocId+',\''+spocEmail+'\','+orgRelationID+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelRejectPopupClient();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1944,11 +1984,11 @@ function terminateSpoc1(spocId, orgRelationID){
 	}
 </script>
 <script>
-function saveReason1(spocId, orgRelationID){
-	var sourceleadUrl = '${sourceleadUrl}';
+function saveReason1(spocId,spocEmail, orgRelationID){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
 	var reason1 = document.getElementById("reasonForSpoc").value;
-	var userId = '${SourceLeadWeb_user.id}';
+	var userId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 reason = reason.replace(/\s/g, "")
 	if(reason.match(/^[^\s-](.*)*$/) != null){
@@ -1956,7 +1996,7 @@ function saveReason1(spocId, orgRelationID){
 	
 		$.ajax({
 		   	type: "POST",
-		   url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Client",	    	   
+		   url: vmsUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&spocEmail="+spocEmail+"&responderType=Client",	    	   
 		    success: function(data) {
 		    	getClientContactList();
 	   			 $("#selector1").removeAttr("style");
@@ -1983,15 +2023,14 @@ function saveReason1(spocId, orgRelationID){
 
 <script>
 function rejectInvitation(spocId){
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var rowHtmlContent =  $("#row"+spocId).html();
 	 $("#row"+spocId).empty();
 	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
-	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Rejected",
+		    url: vmsUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Rejected",
 		    success: function(data) {
 		    	$("#selector1").removeAttr("style");
     			$("#selector1").css({ display: "block" });
@@ -2013,15 +2052,15 @@ function rejectInvitation(spocId){
 
 <script>
 function exportClientToPdf(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var values = [];
 	$('input:checkbox[name=clinetLevel]:checked').each(function() 
     {
 			values.push($(this).val());
     });
 	var emptyClientList = $("#emptyClientList").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(emptyClientList > 0){
-		window.location.href = sourceleadUrl+"/exportClientDetails?"+tokenParamName+"="+tokenValue+"&values="+values+"&exportType=pdf";	
+		window.location.href = vmsUrl+"/exportClientDetails?"+tokenParamName+"="+tokenValue+"&values="+values+"&exportType=pdf";	
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -2040,15 +2079,15 @@ function exportClientToPdf(){
 
 <script>
 function exportClientToExcel(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var values = [];
 	$('input:checkbox[name=clinetLevel]:checked').each(function() 
     {
 			values.push($(this).val());
     });
 	var emptyClientList = $("#emptyClientList").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(emptyClientList > 0){
-		window.location.href = sourceleadUrl+"/exportClientDetails?"+tokenParamName+"="+tokenValue+"&values="+values+"&exportType=xls";
+		window.location.href = vmsUrl+"/exportClientDetails?"+tokenParamName+"="+tokenValue+"&values="+values+"&exportType=xls";
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -2068,6 +2107,7 @@ function exportClientToExcel(){
 
 <script>
 function exportContactToPdf(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var clientIds = [];
 	$('input:checkbox[name=clientNameById]:checked').each(function() 
     {
@@ -2085,9 +2125,8 @@ function exportContactToPdf(){
 		invitationStatus.push($(this).val());
     });
 	var vendorContactListEmpty = $("#clientContactLength").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(vendorContactListEmpty > 0){
-	window.location.href = sourceleadUrl+"/exportClientContactDetails?"+tokenParamName+"="+tokenValue+"&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus+"&exportType=pdf";
+	window.location.href = vmsUrl+"/exportClientContactDetails?"+tokenParamName+"="+tokenValue+"&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus+"&exportType=pdf";
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -2105,6 +2144,7 @@ function exportContactToPdf(){
 
 <script>
 function exportContactToExcel(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var clientIds = [];
 	$('input:checkbox[name=clientNameById]:checked').each(function() 
     {
@@ -2122,9 +2162,9 @@ function exportContactToExcel(){
 		invitationStatus.push($(this).val());
     });
 	var vendorContactListEmpty = $("#clientContactLength").val();
-	var sourceleadUrl ='${sourceleadUrl}';
+	
 	if(vendorContactListEmpty > 0){
-		window.location.href = sourceleadUrl+"/exportClientContactDetails?"+tokenParamName+"="+tokenValue+"&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus+"&exportType=xls";	
+		window.location.href = vmsUrl+"/exportClientContactDetails?"+tokenParamName+"="+tokenValue+"&status="+status+"&clientIds="+clientIds+"&invitationStatus="+invitationStatus+"&exportType=xls";	
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -2143,11 +2183,9 @@ function exportContactToExcel(){
 <script>
 // Edit pop
 $(document).ready(function() {	
-	
     $("#edit-client, #btnClose").click(function() {
         $(".user_summary_edit").slideUp(100);
     });
-		
 });
 </script> 
 
@@ -2193,11 +2231,16 @@ $('#selector').delay(2000).fadeOut('slow');
 	// Close Advanced Search
 		function closePop(){
 			$("div.cand-advsrch-popup").hide();
+			$(".mask").fadeOut();
 		}
 		function openPop(){
 		  $("div.cand-advsrch-popup").toggle();
-		  
+		  $(".mask").fadeIn();
 		}
+		/* function closeAdsrch(){
+			$("div.cand-advsrch-popup").fadeOut();
+			$(".mask").fadeOut();
+		}; */
 </script>
 	
  
@@ -2226,6 +2269,7 @@ $('#selector').delay(2000).fadeOut('slow');
 
 <script type="text/javascript">
 	function searchClient() {
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
@@ -2239,7 +2283,6 @@ $('#selector').delay(2000).fadeOut('slow');
 		
 		 if ($('#clientlist_form').validate(false, validationSettings)){ 
 			
-			var sourceleadUrl = '${sourceleadUrl}';
 			var frm = $('#clientlist_form').serializeFormJSON();
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
@@ -2264,7 +2307,7 @@ $('#selector').delay(2000).fadeOut('slow');
 	    	        processData: false,
 	    	        contentType:false,
 	        	    dataType : 'json',
-					url : sourceleadUrl+"/searchVendorThroughElasticSearch?"+tokenParamName+"="+tokenValue+"&responderType="+responderType+"&json="+jsonData,
+					url : vmsUrl+"/searchVendorThroughElasticSearch?"+tokenParamName+"="+tokenValue+"&responderType="+responderType+"&json="+jsonData,
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
@@ -2284,7 +2327,7 @@ $('#selector').delay(2000).fadeOut('slow');
 	    	        processData: false,
 	    	        contentType:false,
 	        	    dataType : 'json',
-					url : sourceleadUrl+"/searchVendorContactsThroughElasticSearch?"+tokenParamName+"="+tokenValue+"&responderType="+responderType+"&json="+jsonData,
+					url : vmsUrl+"/searchVendorContactsThroughElasticSearch?"+tokenParamName+"="+tokenValue+"&responderType="+responderType+"&json="+jsonData,
 					success : function(data) {
 						$("#search_client").addClass('button').val('Search');
 						$("#search_client").removeAttr("disabled");
@@ -2313,12 +2356,14 @@ $('#selector').delay(2000).fadeOut('slow');
 
 <script>
 function getStates(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var countryName = $("#countrySearch").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: sourceleadUrl+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#stateSearch').empty();
@@ -2349,6 +2394,8 @@ function getStates(){
 
 <script>
 function getCities(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var countryName = $("#countrySearch").val();
 	var stateName = $("#stateSearch").val();
 	
@@ -2356,7 +2403,7 @@ function getCities(){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: sourceleadUrl+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#citySearch').empty();
@@ -2383,4 +2430,202 @@ function flushCheckBoxVal(){
 	
 }
  </script>
+ 
+ <script>
+function getClientActions(){
+	$(".action-pop").slideToggle(200);
+}	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+</script>
+<script>
+//Client
+function closeClientFilterPop(){
+	$("#clientFilterId").hide();
+	$(".mask").fadeOut();
+}
+function clientFileterPopUp(){
+	 $("#clientFilterId").toggle();
+	 $(".mask").fadeIn();
+}
+function resetClientFilter(){
+	$("ul#tierFilter > li input:checkbox").prop("checked",false);
+	$("#dataTableSearch").val('');
+	clearSearch();
+	getClientList();
+// 	$(".mask").fadeOut();
+}
+function resetingClientFilter(){
+	$("ul#tierFilter > li input:checkbox").prop("checked",false);
+// 	$(".mask").fadeOut();
+}
+
+//Client Contact
+function closeClientContactFilterPop(){
+	$("#clientContactFilterId").hide();
+	$(".mask").fadeOut();
+}
+function clientContactFilterPopUp(){
+	 $("#clientContactFilterId").toggle();
+	 $(".mask").fadeIn();
+}
+function resetClientContactFilter(){
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
+	$("#dataTableSearch").val('');
+	clearSearch();
+	getClientContactList();
+// 	 $(".mask").fadeIn();
+	
+}
+function resetingClientContactFilter(){
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
+// 	 $(".mask").fadeIn();
+	
+}
+</script>
+<!-- clinet related Fileter popup -->
+          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="clientFilterId" style="display:none;">
+				<h5 class="headerAdsrch">Filters
+					<a href="javascript:void(0)" class="close-div" onClick="closeClientFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+					  <div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Tier</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="tierFilter">
+									<li class="checkBox positionRelative" ><input class="mb0" id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"><label>Tier-1</label></li>
+									<li class="checkBox positionRelative" ><input class="mb0" id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"><label>Tier-2</label></li>
+									<li class="checkBox positionRelative" ><input class="mb0" id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"><label>Tier-3</label></li>
+		               				<li class="checkBox positionRelative" ><input class="mb0" id="c8"  type="checkbox" name="clinetLevel" value ="Tier-4"><label>Tier-4</label></li>
+		               				<li class="checkBox positionRelative" ><input class="mb0" id="c9"  type="checkbox" name="clinetLevel" value ="Tier-5"><label>Tier-5</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+					  </div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientFilterPop();getClientList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingClientFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+
+
+
+          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="clientContactFilterId" style="display:none;">
+				<h5 class="headerAdsrch">Filters
+					<a href="javascript:void(0)" class="close-div" onClick="closeClientContactFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+					  <div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="statusFilter">
+									   <li class="checkBox positionRelative"><input id="c5" type="checkbox" class="mb0" name="clientStatus"  value ="Active"><label>Active</label></li>
+								       <li class="checkBox positionRelative"><input id="c6" type="checkbox" class="mb0" name="clientStatus"  value ="In-Active"><label>In-Active</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+						
+						<div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Invitation</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="invitationFilter">
+										<li class="checkBox positionRelative"><input id="c5" type="checkbox"  name="clientInvitationStatus" class="mb0" value ="Sent"><label>Resend</label></li>
+										<li class="checkBox positionRelative"><input id="c6" type="checkbox"  name="clientInvitationStatus" class="mb0" value ="New"><label>Send</label></li>
+										<li class="checkBox positionRelative"><input id="c7" type="checkbox"  name="clientInvitationStatus" class="mb0" value ="Accepted"><label>Accepted</label></li>
+										<li class="checkBox positionRelative"><input id="c8" type="checkbox"  name="clientInvitationStatus" class="mb0" value ="Rejected"><label for="c8">Rejected</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+					  </div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientContactFilterPop();getClientContactList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingClientContactFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+
 <jsp:include page="../masterFooter.jsp" />	
+
+<script>
+$("#dataTableSearch").keyup(function(event) {
+	$('#dataTableSearch').parent().find('p.jquery_form_error_message').remove();
+    if (event.keyCode === 13) {
+    	$('#dataTableSearch').parent().find('p.jquery_form_error_message').remove();
+    	var searchData = $('#dataTableSearch').val();
+    	var regex =  new RegExp(/[\\]/g);
+    	
+    	if(regex.test(searchData) == false){
+    		getClientList();
+    	}else{
+    		$("#dataTableSearch").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+    	}
+    	$('#dataTableSearch').val(searchData);
+    }
+});
+
+function beforeSearch(){
+	$('#dataTableSearch').parent().find('p.jquery_form_error_message').remove();
+	var searchData = $('#dataTableSearch').val();
+	var regex =  new RegExp(/[\\]/g);
+	if(regex.test(searchData) == false){
+		getClientList();
+	}else{
+		$("#dataTableSearch").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+	}
+	$('#dataTableSearch').val(searchData);
+}
+</script>		
+
+
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+</script>
+

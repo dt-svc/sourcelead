@@ -21,13 +21,13 @@
  
 
     <title>::. Registration .::</title>
-    <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+    <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
-    <link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-    <link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-    <link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-     <link href="resources/css/crowdsourcing-main.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+    <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
+     <link href="/resources/css/crowdsourcing-main.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
      
 </head>
 
@@ -42,7 +42,7 @@ window.onload = function () {
   <div class="container">
       
     <div class="outsoucing-registaion">
-        <div class="pull-left mb"><img src="resources/images/SourceLead-logo.png" alt="Sourcelead Logo" class="img-responsive" width="300"></div>
+        <div class="pull-left mb"><img src="/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" class="img-responsive" width="300"></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="javascript:void(0)"><i class="fa fa-retweet"></i>&nbsp;&nbsp;Reset Credentials</a></li>
@@ -99,10 +99,10 @@ window.onload = function () {
       </div>
   </div>
 </div>
-<script src="resources/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script> 
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-1.11.3.min.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
 </body>
 
 
@@ -112,7 +112,7 @@ function getOptionalServiceList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 $.ajax({
       type: "POST",
-  	  url: sourceleadUrl+"/getOptionalValueList?${_csrf.parameterName}=${_csrf.token}",
+  	  url: sourceleadUrl+"/ws/getOptionalValueList?${_csrf.parameterName}=${_csrf.token}",
     	success: function(data) {
 		    var json = JSON.parse(data);
 		    var result = '';		
@@ -168,7 +168,7 @@ var validationSettings = {
           	      type: "POST",
           	      contentType : 'application/json; charset=utf-8',
           	      dataType : 'json',
-                	  url: sourceleadUrl+"/resetCredentials?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+                	  url: sourceleadUrl+"/ws/resetCredentials?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
                 			  
                   	success: function(result) {
 			        	if((result == 'success')){

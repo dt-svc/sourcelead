@@ -1,58 +1,15 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<style type="text/css">
-.edit-details {
-text-align:left;
-}
-.edit-details ul {
-float:none;
-}
-.edit-details ul li {
-float:none;
-}
-
-.addUser-org {
-    overflow-x: auto;
-}
-
-#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.tblicons a{
-	font-size:13px;
-	}
-	.tblicons a:first-child{
-	margin-left: 0;
-	}
-	.tblicons .glyphicon-trash{
-	margin-left: 5px;
-	}
-	.tblicons a{
-	margin:0px 8px;
-	padding: 0 !important;
-	} 
-	.vendor_wrap_inn_table table tr th:last-child{
-	width:100px;
-	}
-	.removeIcon{
-	font-size:22px; position:relative; top:-5px; margin-left:15px; color:#F22613; cursor: pointer;
-	}
-.mask_time {
-	z-index: 100000;
-}	
-</style>
 
 <div id="deleteDocpopUp"></div>
-<div class="mask_time"></div> 
+<div class="mask_time" style="z-index: 100000;"></div> 
 <section class="contPopup" style="min-height:300px;">
 	<div id="viewPopupDiv"></div>
 </section>
@@ -87,6 +44,11 @@ function vendorContracts(orgRelationId){
 	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="WAITING_FOR_APPROVAL" name="contractStatus" id="contractStatus" onclick="vendorContractsList('+orgRelationId+');" >';
 	    result = result + '<label class="paddingLeft" for="onboard1">Waiting For Approval <b class="badge" id="WFACount">0</b></label>';
+	    result = result + '</li>';
+	    
+	    result = result + '<li>';
+	    result = result + '<input type="checkbox" value="WAITING_TO_SEND" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
+	    result = result + '<label class="paddingLeft" for="onboard1">Waiting To Send <b class="badge" id="WTOSCount">0</b></label>';
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
@@ -127,7 +89,7 @@ function vendorContracts(orgRelationId){
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
-		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table vendor_wrap_inn_table_last_child">';
 		result  = result + '<input type="hidden" value = "'+orgRelationId+'" id="contractRelationId"/>';
 		result  = result + '   <div id="contractloading" ></div>';
 		result  = result + '   <div id="vendorContractsList" ></div>';
@@ -159,7 +121,7 @@ function vendorContractsList(orgRelationId){
     {
 		contractStatus.push($(this).val());
     });
-	 var sourceleadUrl ='${sourceleadUrl}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
  	  if(locationList.match("yyyy-MM-dd")){
  		  contractVendorDatePattern = 'YYYY-MM-DD';
@@ -172,7 +134,7 @@ function vendorContractsList(orgRelationId){
  	  }
 	 $.ajax({  
           type : "POST",
-          url: sourceleadUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Vendor&contractStatus="+contractStatus,        
+          url: vmsUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Vendor&contractStatus="+contractStatus,        
           success :function(data) {
              			var json = JSON.parse(data);
 	                	 $("#vendorContractsList").empty();
@@ -213,7 +175,7 @@ function vendorContractsList(orgRelationId){
 	                		        } */
 	                		         result = result + '</td>';
 	                		         result = result + '<td>';
-	                		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
+	                		           	result = result + '<div class="tblminwidth-100">'+report.contractType+'</div>';
 	                		         result = result + '</td>';
 	                		    	 result = result + '<td>';
 	                		       	 result = result + '<div><span title="'+report.ownerName+'">'+report.ownerName+'</span></div>';
@@ -224,9 +186,9 @@ function vendorContractsList(orgRelationId){
 	                		         result = result + '</td>';
 	                		         
 	                		         result = result + '<td>';
-	                		         result = result + '<div class="tblminwidth-75">'+report.startDateStr;
+	                		         result = result + '<div class="tblminwidth-100">'+report.startDateStr;
 	                		         if(report.endDateStr != null && report.endDateStr != '' && report.endDateStr != 'undefined'){
-	                		        	 result = result +' | '+ report.endDateStr+'</div>';
+	                		        	 result = result +' <br> '+ report.endDateStr+'</div>';
 	                		         }else{
 	                		        	 result = result + '</div>';
 	                		         }
@@ -274,30 +236,47 @@ function vendorContractsList(orgRelationId){
 	                		         result = result + '</td>';
 	                		        
 	                		         result = result + '<td>';
-	                		         result = result + '<div class="tbldata-dotdot_80">';
+	                		         result = result + '<div class="tblminwidth-50 action-icons">';
 	                		         
 		                		         if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 	                		     			 if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.approverUserId){
-		                	     	        	 result = result +'<div class="pull-left CurDiv mr10" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i><i class="fa fa-times" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div>';
+		                	     	        	 result = result +'<div class="pull-left CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check text-success" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i><i class="fa fa-times text-danger" title="Reject" alt="Rejected" onclick="approveContract('+report.id+',\'REJECTED\');"></i></div>';
 		                	     	         }
 	                		     		  }
 	                		     		 
-	            	     	        	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-	                	       				result = result + '<div class="pull-left" href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></small></div>';
-	                	       			'</sec:authorize>';
+		                		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+	                		     		 if((report.typeOfContract == "New" || report.typeOfContract == "Custom") && (report.templateSubmissionStatus == "WAITING_TO_BE_SIGNED") && (null != report.parentContractId && '' != report.parentContractId && 'undefined' != report.parentContractId)){
+	                		     			 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></small></a><a href="${SourceLeadWeb_vmsUrl}/docusign?contractUUID='+report.contractUUID+'" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
+	                			         }else if((report.typeOfContract == "New" || report.typeOfContract == "Custom") && (report.templateSubmissionStatus == "PENDING") && (null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId)){
+	                		     			 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></small></a></div>'; 
+	                			         }else if(report.typeOfContract == "Existing"){
+	                			        	 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\',  \'application/pdf\')"></small></a></div>';
+	                			         }else if(report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" || report.templateSubmissionStatus == "FINALIZED"){
+	                			        	 result = result + '<a href="#" title="Preview"><small class="fa fa-eye" onClick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></small></a>';
+	                			         }else{
+	                			        	 if(report.typeOfContract == "New" && report.templateSubmissionStatus == "DRAFT"){
+	                			        		 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"></small></a></div>';
+	                			        	 }else{
+	                			        		 result = result + '<div class="pull-left"><a href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="viewFile(\''+report.templateFileURL+'\', \''+report.contractType+'\', \'application/pdf\')"></small></a></div>';
+	                			        	 }
+	                			         }
+	                		     		'</sec:authorize>';
+// 	            	     	        	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+// 	                	       				result = result + '<div class="pull-left" href="#" title="Preview"><small class="text-primary fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></small></div>';
+// 	                	       			'</sec:authorize>';
 	                	       			
 	                	       			if(report.templateSubmissionStatus == "DRAFT" || report.templateSubmissionStatus == "WAITING_FOR_APPROVER" || report.templateSubmissionStatus == "REJECTED" ){
 	                	       				'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	                	     	     		if(report.typeOfContract == "New"){
-	                	     	     			result = result + '<div class="pull-left ml10"><a href="/sourcelead/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
+	                	     	     			result = result + '<div class="pull-left"><a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 	                	     	     		}else if(report.typeOfContract == "Custom"){
-	                	     	     			result = result + '<div class="pull-left"><a href="/sourcelead/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
+	                	     	     			result = result + '<div class="pull-left"><a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+report.contractUUID+'" title="Edit"><i class="glyphicon glyphicon-pencil editAA text-danger"></i></a></div>';
 	                	     	     		}
 	                	       			'</sec:authorize>';
 	                	       			}
 	                	     	         
 	                	       			if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.ownerUser){
-		                	   	        	 if(report.contractStatus == "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
+		                	   	        	 if(report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
 		                	   		     			result = result +  '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a>';
 		                	   		     		}
 	                	   	         	}
@@ -331,10 +310,14 @@ function vendorContractsList(orgRelationId){
 function VendorContractpagination(){  
     $('#vendorContractListPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 7
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -346,18 +329,23 @@ function VendorContractpagination(){
 
 <script type="text/javascript">
 function previewContractPDF(uuid, templateName) {
-	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
-}</script>
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	window.open(vmsUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
+}
+
+function previewNewContractPDF(uuid, templateName) {
+ 	window.open(vmsUrl+'/viewContractPdf/'+uuid+'/'+templateName+'','_newtab');
+}
+</script>
 
 <script>
 function approveContract(recordId,status){
 	 var rowHtmlContent =  $("#row"+recordId).html();
-	var sourceleadUrl ='${sourceleadUrl}';
-	$("#contractloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	$("#contractloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/approveContract?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&status="+status,       
+        url: vmsUrl+"/approveContract?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&status="+status,       
         success :function(data) {
         	if(data == 'REJECTED'){
         		$("#row"+recordId).empty();
@@ -370,7 +358,7 @@ function approveContract(recordId,status){
     	    	 $("#removeReject"+recordId).html("");
     	        $("#removeStatus"+recordId).html("<span>Approved</span>").addClass('text-success');
         	}
-        	$("#contractloading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        	$("#contractloading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
         	vendorContracts(orgRelationId);
        },
    });  
@@ -378,16 +366,16 @@ function approveContract(recordId,status){
 
 function finalizeContract(recordId,status){
 	 var rowHtmlContent =  $("#row"+recordId).html();
-	var sourceleadUrl ='${sourceleadUrl}';
-	$("#contractloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	$("#contractloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
       type : "POST",
-       url: sourceleadUrl+"/updateContractStatus?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&status="+status,       
+       url: vmsUrl+"/updateContractStatus?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&status="+status,       
        success :function(data) {
        	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
 	        $("#removeStatus"+recordId).html("<span>Finalized</span>").addClass('text-success');
-	        $("#contractloading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	        $("#contractloading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	        vendorContracts(orgRelationId);
       },
   });  
@@ -398,13 +386,13 @@ function finalizeContract(recordId,status){
 function CountClick(contractUUID,parentId){
 	$(".mask_time").fadeIn(200);
 	$(".DocAccPopup").fadeIn(100);	
-	var sourceleadUrl ='${sourceleadUrl}';
-	$("#DocAccPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	$("#DocAccPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/getDocsByContractUUID?contractUUID="+contractUUID,       
+       url: vmsUrl+"/getDocsByContractUUID?contractUUID="+contractUUID,       
        success :function(data) {
-    	   $("#DocAccPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+    	   $("#DocAccPopupDiv").removeAttr('style');
     	    var json = JSON.parse(data);
     	    var result= "";
     	    
@@ -424,22 +412,14 @@ function CountClick(contractUUID,parentId){
 			  result = result + ' <input type="hidden" id="documentName" name="docfiles['+i+'].documentName" value="'+opt.fileName+'" />';
 				  result = result +'	       <label class="col-md-4 text-center">'+opt.fileName+'</a></label>                                                 ';
 
-				  /* if(opt.docFile != null && opt.docFile !="" && parentId == "--"){
-				  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
-				  result = result +'	       <label class="text-center">--</label>                                                 ';
-				  result = result +'	       </div>			                                                                                                                  ';
-				  $("#saveAction").empty(); 
-			  }
-			  else{ 
-				   if(parentId != "--"){ */
 						  if(opt.fileURL != null && opt.fileURL !=""){
 							  result = result +'	       <div class="col-md-8 text-center" id="removeDiv'+opt.id+'">                                                                                                             ';
-							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon"></i></span>';
-							  result = result+' <a class="glyphicon glyphicon-download-alt" href="'+opt.fileURL+'" title="Download"></a>';
-			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+sourceleadUrl+'\', \''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\')"title="preview"></a>';
+							  result = result+'	                      &nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv('+opt.id+');"><i class="fa fa-trash text-danger removeIcon_styles"></i></span>';
+							  result = result+' <a download class="glyphicon glyphicon-download-alt" href="'+opt.fileURL+'" title="Download"></a>';
+			         		  result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\')"title="preview"></a>';
 							  result = result +'	       </div>			                                                                                                                  ';
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'" style="display: none;">                                                                                                             ';
-							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
+							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Browse files..">                  ';
 							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm" onchange="uploadRequestedDocuments('+opt.id+');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
 							  result = result +'	             <input name="uploadBtn'+opt.id+'" id="uploadBtn'+opt.id+'" style="display: none;" class="upload" type="file" onclick="check('+opt.id+');">                            ';
 							  result = result +'	             </span> </label>                                                                                                                 ';
@@ -449,7 +429,7 @@ function CountClick(contractUUID,parentId){
 						  }
 						  else{
 							  result = result +'	       <div class="col-md-8" id="uploadDocumentDiv'+opt.id+'">                                                                                                             ';
-							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Document Type: .pdf format only">                  ';
+							  result = result +'				<div class="input-group positionRelative ratetype" id="uploadFileGroup'+opt.id+'" title="Browse files..">                  ';
 							  result = result +'					<label class="input-group-btn"> <span class="btn btn-primary padSm" onchange="uploadRequestedDocuments('+opt.id+');"><i class="fa fa-folder-open-o"></i>&nbsp;Browse           ';
 							  result = result +'	             <input id="uploadBtn'+opt.id+'" style="display: none;" class="upload" type="file" onclick="check('+opt.id+');">                            ';
 							  result = result +'	             </span> </label>                                                                                                                 ';
@@ -457,15 +437,6 @@ function CountClick(contractUUID,parentId){
 							  result = result +'				</div>                                                                                                                            ';
 							  result = result +'	       </div>			                                                                                                                  ';
 					  }
-				/*   }
-				  else{
-					  $("#saveAction").empty(); 
-					  result = result +'	       <div class="col-md-8 text-center">                                                                                                             ';
-					  result = result +'	       <label class="text-center">--</label>                                                 ';
-					  result = result +'	       </div>			                                                                                                                  ';
-					  $("#saveAction").empty(); 
-				  } */
-			 /*  } */
 			  result = result +'			</div>                                                                                                                                ';
 			  result = result +'			<div class="clearfix"></div>                                                                                                          ';
 			  result = result +'	 </div>  ';     
@@ -477,12 +448,13 @@ function CountClick(contractUUID,parentId){
 	  }); 
 }
 
-function removedoc(id){
+function removeResumeNameDiv(id){
 	$("#removeDiv"+id).hide();
-		 var sourceleadUrl ='${sourceleadUrl}';
+	
+		 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 $.ajax({
 	     type : "POST",
-	      url: sourceleadUrl+"/updateDocument?"+tokenParamName+"="+tokenValue+"&docuId="+id,       
+	      url: vmsUrl+"/updateDocument?${_csrf.parameterName}=${_csrf.token}&docuId="+id,       
 	      success :function(data) {
 	      	  //  $("#tr"+id).empty();
 	    	  $("#uploadDocumentDiv"+id).show();
@@ -514,8 +486,8 @@ document.getElementById("uploadBtn"+id).onchange = function () {
 }
 
 function uploadRequestedDocuments(id){
-	var sourceleadUrl ='${sourceleadUrl}';
-	fileUpload(sourceleadUrl, "uploadBtn"+id+"", "Requested Documents", "contractDoc_form");
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	fileUpload("uploadBtn"+id+"", "Requested Documents", "contractDoc_form");
 }
 </script>
 
@@ -523,30 +495,14 @@ function uploadRequestedDocuments(id){
 	function saveDocContract() {
 		var orgRelationId = $("#contractRelationId").val();
 		if ($('#contractDoc_form').validate(false, validationSettings)) {
-			var frm = $('#contractDoc_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
-	        var form = $('#contractDoc_form')[0];
- 	 	    var formData = new FormData(form); 
-			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_Doc").attr("disabled", "disabled");
-			$("#contractDoc_form").attr("disabled", "disabled");
-			$("#loadingDoc").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 		$.ajax({
-	 			 type: "POST",
-		    	 data: formData,
-			     contentType : 'application/json; charset=utf-8',
-			     enctype: 'multipart/form-data',
-		         processData: false,
-		         contentType:false,
-			     dataType : 'json',
-						url : sourceleadUrl+ "/saveDocContracts?"+tokenParamName+"="+tokenValue+"&json="+jsonData,
-						success : function(result) {
-							vendorContracts(orgRelationId);
-							contPopClose();
-						},
-					}); 
+							
+			var formData = getFormData("contractDoc_form");
+			var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+			$("#loadingDoc").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+            $.post( vmsUrl+ "/saveDocContracts?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId, formData, function(data) {
+				vendorContracts(orgRelationId);
+				contPopClose();
+			}); 
 			return true;
 		} else {
 			return false;
@@ -562,11 +518,11 @@ function uploadRequestedDocuments(id){
 function PopUp(contractUUID){
 	$(".mask_time").fadeIn(200);
 	$(".contPopup").fadeIn(100);
-	var sourceleadUrl ='${sourceleadUrl}';
-	$("#viewPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	$("#viewPopupDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/getContractByContractUUID?contractUUID="+contractUUID,       
+       url: vmsUrl+"/getContractByContractUUID?contractUUID="+contractUUID,       
        success :function(data) {
     	   $("#viewPopupDiv").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     	   
@@ -578,11 +534,11 @@ function PopUp(contractUUID){
 			
 			if(json.templateSubmissionStatus == 'DRAFT' || json.templateSubmissionStatus == 'REJECTED' || json.templateSubmissionStatus == 'WAITING_FOR_APPROVER'){
 				if('New' == json.typeOfContract){
-					result = result +	'	<a href="/sourcelead/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
+					result = result +	'	<a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
 				}else if('Existing' == json.typeOfContract){
 					result = result +	'	<i class="fa fa-times" onclick="contPopClose();"></i>';
 				}else if('Custom' == json.typeOfContract){
-					result = result +	'	<a href="/sourcelead/addCustomContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
+					result = result +	'	<a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>  <i class="fa fa-times" onclick="contPopClose();"></i>';
 				}
 			}else{
 				result = result +	'	<i class="fa fa-times" onclick="contPopClose();"></i>';
@@ -858,9 +814,9 @@ function PopUp(contractUUID){
 
 
 function previewTemplatePDF(uuid, templateName){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(uuid != null && uuid != ""){
-		window.open(sourceleadUrl+'/viewContractTemplatePdf/'+uuid+'/'+templateName+'','_newtab');
+		window.open(vmsUrl+'/viewContractTemplatePdf/'+uuid+'/'+templateName+'','_newtab');
 	}
 }
 </script>
@@ -909,10 +865,10 @@ function editClo(contractId){
 	var orgRelationId = $("#contractRelationId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#endDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
     type : "POST",
-     url: sourceleadUrl+"/updateContractEndDate?"+tokenParamName+"="+tokenValue+"&contractId="+contractId+"&endDate="+endDate,       
+     url: vmsUrl+"/updateContractEndDate?"+tokenParamName+"="+tokenValue+"&contractId="+contractId+"&endDate="+endDate,       
      success :function(data) {
     	 $("#endVal").empty();
 		  $("#endVal").append(": "+endDate);
@@ -923,4 +879,13 @@ function editClo(contractId){
 	
 }
 </script>
+
+<script>
+function PopUp(contractUUID,stage){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	localStorage.setItem("stage",stage);
+ 	window.location.replace(vmsUrl+'/viewContract?contractUUID='+contractUUID);
+}
+</script>
+
 

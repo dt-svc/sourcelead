@@ -1,2 +1,0 @@
-
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `BODY`='Dear {{inviteClient.FirstName}} {{inviteClient.LastName}},\n\n {{inviteClient.vendorOrgName}} invited you as a Client through Sourcelead platform. To login into the system, click on the login button and use the following credentials.\n\n  Username : {{inviteClient.userName}}\n  Password : {{inviteClient.Password}}\n\n {{inviteClient.acceptURL}}' WHERE `ID`='36';

@@ -5,7 +5,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
-.edit-details {
+.edit-details {                 
 text-align:left;
 }
 .edit-details ul {
@@ -89,8 +89,8 @@ function clientNotes(orgRelationId){
 	var urlForm = "";
 		
 	    urlForm = "/getNotes?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId;
-		
-	var sourceleadUrl ='${sourceleadUrl}';
+	    var sourceleadUrl ='${sourceleadUrl}';
+	    var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+urlForm,        
@@ -107,7 +107,11 @@ function clientNotes(orgRelationId){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
+   	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage != 'undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
+   	    }else{
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
+   	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content">';
@@ -153,7 +157,7 @@ output  = output + '        </div>';
 function documentpagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -183,7 +187,7 @@ function addClientNotes(orgRelationId,clientLocationId) {
      result = result +"<option value='Jobs'>Jobs</option>";
      result = result +"<option value='Contacts'>Contacts</option>";
      result = result +"<option value='Contracts'>Contracts</option>";
-     result = result +"<option value='Billing'>Billing</option>";
+     result = result +"<option value='Billing'>Invoice</option>";
      result = result +"<option value='Other'>Other</option>";
      result = result +"</select>";
      result = result +"    </div>";
@@ -194,7 +198,7 @@ function addClientNotes(orgRelationId,clientLocationId) {
      
 	result = result  +'                <div class="row clearfix"> ';
 	result = result+'	                  <div class="col-md-12">';
-	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length1-5000"  field-name="Note" class="form-control" ></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Note*" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length1-5000"  field-name="Note" class="form-control" ></textarea>';
 	result = result+'	                  </div>';
 	result = result+' <div class="col-md-9 checkBox"> ';
 	result = result+'   <input type="checkbox" class="pull-left" value= "Y" id="allowAll" name = "allowAll" checked="checked">';
@@ -301,8 +305,9 @@ var validationSettings = {
 	      		formData.append("userId",userId);
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
-	      	    
+	      	  
 				var sourceleadUrl = '${sourceleadUrl}';
+				var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 				$("#save_note").attr("disabled", "disabled");
          		$("#save_note" ).addClass('button').val('Processing..');
 				$.ajax({
@@ -312,9 +317,19 @@ var validationSettings = {
 		    	        contentType:false,
 						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&locationCode="+locationCode,
 						success : function(result) {
-							closeDocPopup();
-							clientNotes(orgRelationId);
 							
+							if (result && result.response === "INVALID_DATA") {
+							    showError(result.responseMessage);
+							} else if (result.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								closeDocPopup();
+								clientNotes(orgRelationId);
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 						},
 					});
 					$('.add-comment').toggle(200);
@@ -352,7 +367,8 @@ function getRejectedCategory(){
 <script>
 function selectCategory(){
 	$('#categoryContactTypeListDivDiv').val('').trigger("chosen:updated");
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var orgRelationId = $('#orgRelationId').val(); 
 	var clientLocationId = $('#clientLocationId').val(); 
 	var categoryType = $('#categoryType').val(); 
@@ -361,13 +377,13 @@ function selectCategory(){
 			var status = "";
 			$.ajax({
 		    	type: "POST",
-		    	url : sourceleadUrl+"/getClientReleasedRequirementList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&status="+status, 
-		        success: function(data) {
-		        	 var json = JSON.parse(data);
+		    	url : atsUrl+"/getClientReleasedRequirementList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&status="+status, 
+		        success: function(json) {
+		        	 //var json = JSON.parse(data);
 		        	 var result ="";
 		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-		        	 for(var i=0;i<json.length;i++){
-		        		 var opt = json[i];
+		        	 for(var i=0;i<json.data.length;i++){
+		        		 var opt = json.data[i];
 		        		 result = result +"<option value="+opt.id+">"+opt.jobTitle+"</option>";
 		             }
 		        	 result = result +"</select>";
@@ -382,13 +398,13 @@ function selectCategory(){
 		if(categoryType == "Contacts"){
 			$.ajax({
 		    	type: "POST",
-		    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
-		        success: function(data) {
-		        	 var json = JSON.parse(data);
+		    	url : vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
+		        success: function(json) {
+		        	// var json = JSON.parse(data);
 		        	 var result ="";
 		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-		        	 for(var i=0;i<json.length;i++){
-		        		 var opt = json[i];
+		        	 for(var i=0;i<json.data.length;i++){
+		        		 var opt = json.data[i];
 		        		 result = result +"<option value="+opt.id+">"+opt.spocName+"</option>";
 		             }
 		        	 result = result +"</select>";
@@ -404,7 +420,7 @@ function selectCategory(){
 			var contractStatus = " ";
 			 $.ajax({  
 		          type : "POST",
-		          url: sourceleadUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
+		          url: vmsUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Client&contractStatus="+contractStatus,        
 		          success :function(data) {
 		        	  var json = JSON.parse(data);
 		        	  var result ="";
@@ -432,14 +448,14 @@ function selectCategory(){
 			var payment ="";
 				$.ajax({
 			    	type: "POST",
-			    	url : sourceleadUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=receivable", 
-			        success: function(data) {
-		        	  var json = JSON.parse(data);
+			    	url : vmsUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=receivable", 
+			        success: function(json) {
+// 		        	  var json = JSON.parse(data);
 		        	  var result ="";
 		        	  result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
 		        	
-              		    for (var i = 0; i < json.length; i++) {
-              		    	var opt= json[i];
+              		    for (var i = 0; i < json.data.length; i++) {
+              		    	var opt= json.data[i];
               		    	 result = result +"<option value="+opt.id+">"+opt.invoiceId+"</option>";
               		    }
               		  result = result +"</select>";

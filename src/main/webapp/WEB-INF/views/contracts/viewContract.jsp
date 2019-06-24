@@ -3,22 +3,16 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-
-<style type="text/css">
-.chosen-container {
-    width: 100% !important;
-}
-.fullWid {width: 100% !important;}
-.viewontracts .tab-content {
-background-color: #fff;
-}
-</style>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
 
 <script type="text/javascript">
 $(document).ready(function(){
-	if("" != localStorage.getItem("stage") && null != localStorage.getItem("stage")){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	getContractTagsList();
+// 	if("" != localStorage.getItem("stage") && null != localStorage.getItem("stage")){
 		displyContract(localStorage.getItem("stage"));
-	}
+// 	}
 });
 </script>
 
@@ -28,17 +22,30 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>View Contract</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo; View Contract</div>
+     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_vmsUrl}/contractListbyStatus">Contracts</a> &raquo; View Contract</div>
     </section>
-    <div class="content-area content-new clearfix">
+    
+
+		   <div class="success_pop tagStyles" id="addContractTagAlert">
+				<i class="fa fa-check-circle"></i>
+		   		<span></span>
+		   </div>
+		   <div class="remove_pop tagStyles" id="deleteContractTagAlert">
+				<i class="fa fa-times"></i>
+		   		<span></span>
+		   </div>
+		   
+		   
+    
+    <div class="project_wrap clearfix">
     
      <div class="quickviewTabs viewontracts">
-		<ul class="nav nav-tabs">
+		<ul class="nav nav-tabs mb10">
 		   <li class="active" id="candQuickView"><a data-toggle="tab" href="#contractDetails">Contract Details</a></li>
 		   <li id="candDetailView" onclick="addContractNotes();"><a data-toggle="tab" href="#notes" >Notes</a></li>
 		 </ul>
 		
-		 <div class="tab-content">
+		 <div class="tab-content backgroundWhite">
 		   <div id="contractDetails" class="tab-pane fade in active">
 		   
 		        <div id="loading"></div>
@@ -78,11 +85,13 @@ $(document).ready(function(){
 		
 		</div>
 		</div>
-		</div>
 		</form>
+		</div>
+		
+	</ul>
 	</div>
 <div class="clearfix"></div>
-</ul>
+
 				</div>
 				<div class="clearfix">
 					<div id="viewNotesDiv"></div>	
@@ -92,9 +101,149 @@ $(document).ready(function(){
 		    </div>
 		</div>			     
 		  </div>
-     </div>
+    
+    
+      <div class="cearfix">
+		  <div class="newTagsWrap">
+			    <ul class="clearfix tagsWrap tagsWrapBor">
+				<select multiple class="chosen-select form-control" name="tagName" id="contractTagName" data-placeholder="Add Tags" data-validation="validate_Space" data-validation-optional="true">
+				</select>
+				</ul>
+				<div class="clearfix"></div>
+		  </div>
+		 </div>    
+    
      <!-- Content Area Ends--> 
 </section>
+
+
+
+
+<!--  ============================= Contract tags related scripts written by Laxman Start ================================ -->
+<script>
+var select, chosen;
+select = $("#contractTagName");
+select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosen = select.data('chosen');
+chosen.search_field.on('keyup', function(e)
+{
+	var anyKeyword = this.value.replace(",","");
+    if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+    {
+    	
+    	var par = this.parent;
+        var option = $("<option>").val(anyKeyword).text(anyKeyword);
+        select.append(option);
+        select.find(option).prop('selected', true);
+        $("#contractTagName option").each(function(){
+              $(this).siblings("[value='"+ this.value+"']").remove();
+        });
+		$("#contractTagName").trigger("chosen:updated");
+		saveContractTags("add");
+    }
+});
+
+$('.chosen-select').chosen().on('change', function(evt, params) {
+	if (params.selected && params.selected != undefined) {
+		saveContractTags("add");
+	}
+	if (params.deselected && params.deselected != undefined) {
+		saveContractTags("delete");
+	}
+	
+});
+$("#contractTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
+</script>
+<script>
+function getContractTagsList(){
+	var contractUUID ='${contractUUID}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	$.ajax({  
+        type : "POST",
+        url: vmsUrl+"/getContractTags?"+tokenParamName+"="+tokenValue+"&contractUUID="+contractUUID,        
+        success :function(json) {
+        	var result = "";
+			$.each( json.tagsList, function( i, tags ) {
+			  var existed = 0;
+                if(json.contractTags != null && json.contractTags != 'undefined' && json.contractTags != '') {
+	                var res = [];
+	                res = json.contractTags.split(",");
+	                res.forEach(function(item) {
+	                	if(tags == item){
+	                		existed = 1;
+	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+	                	}
+	                });
+                }
+                if(existed == 0){
+                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+                }
+			});
+            $("#contractTagName").empty();
+            $("#contractTagName").append(result);
+            $("#contractTagName").chosen().trigger("chosen:updated")
+
+        },
+	});
+}
+</script>
+<script>
+function saveContractTags(type){
+	 var contractUUID ='${contractUUID}';
+	 var tagName = $("#contractTagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = vmsUrl+"/saveOrUpdateTagsByContractUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&contractUUID="+contractUUID+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = vmsUrl+"/saveOrUpdateTagsByContractUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&contractUUID="+contractUUID+"&tagName="+""
+	 }
+	
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+        	$("#editRoleLoading").removeAttr('style');
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		if(type == "add"){
+        			showSuccessStatusPopup("Tags added successfully");
+        		}else if(type == "delete"){
+        			showDeleteStatusPopup("Tags deleted successfully");
+        		}
+        		
+        		getContractTagsList(contractUUID);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(vmsUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+function showSuccessStatusPopup(status) {
+	$("#addContractTagAlert").css("display","block");
+	$("#addContractTagAlert span").html(status);
+    $('#addContractTagAlert').delay(2000).fadeOut('slow');
+}
+function showDeleteStatusPopup(status) {
+	$("#deleteContractTagAlert").css("display","block");
+	$("#deleteContractTagAlert span").html(status);
+    $('#deleteContractTagAlert').delay(2000).fadeOut('slow');
+}
+</script>
+<!--  ============================= Contract tags related scripts written by Laxman Ends ================================ -->
+
+
+
+
+
+
 
 <script>
    function viewContractCommentRemoveSpaces() {
@@ -140,7 +289,7 @@ function addContractNotes(){
 	var contractUUID = getParameterByName('contractUUID');
 	    urlForm = "/getContractNotes?${_csrf.parameterName}=${_csrf.token}&contractUUID="+contractUUID;
 		
-	var sourceleadUrl ='${sourceleadUrl}';
+    var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+urlForm,        
@@ -157,8 +306,11 @@ function addContractNotes(){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
-   	    if(report.commentAuthorImage != null && report.commentAuthorImage != '' && report.commentAuthorImage != 'undefined')
+   	    if(report.commentAuthorImage != null && report.commentAuthorImage != '' && report.commentAuthorImage != 'undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
+   	    }else{
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
+   	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content comments-notes">';
@@ -203,7 +355,7 @@ function addContractNotes(){
 	      	    var locationCode ='${SourceLeadWeb_locationCode}'; 
 	      	    formData.append("locationCode",locationCode);
 	      	    
-				var sourceleadUrl = '${sourceleadUrl}';
+	      	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				$.ajax({
 						type : "POST",
 		        	    data: formData,
@@ -211,9 +363,19 @@ function addContractNotes(){
 		    	        contentType:false,
 						url : sourceleadUrl+"/storeNotes?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"locationCode="+locationCode,
 						success : function(result) {
-							closeDocPopup();
-							addContractNotes();
 							
+							if (result && result.response === "INVALID_DATA") {
+							    showError(result.responseMessage);
+							} else if (result.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								closeDocPopup();
+								addContractNotes();
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(vmsUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 							
 						},
 					});
@@ -232,26 +394,32 @@ function addContractNotes(){
 
 <script>
 function displyContract(stage){
-	var sourceleadUrl ='${sourceleadUrl}';
-	var contractUUID = getParameterByName('contractUUID');
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+// 	var contractUUID = getParameterByName('contractUUID');
+	var contractUUID ='${contractUUID}';
 	 $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/getContractByContractUUID?contractUUID="+contractUUID,       
+       url: vmsUrl+"/getContractByContractUUID?contractUUID="+contractUUID,       
        success :function(data) {
     	   
     	    var result = '';
     	    var json = JSON.parse(data);
 			result = result +	'<div class="contPopupHead clearfix">';
-			result = result +	'<h4>'+json.contractTitle+'</h4>';
+			if(json.autoGenId != null && '' != json.autoGenId && 'undefined' != json.autoGenId){
+				result = result +	'<h4>'+json.autoGenId+' - '+json.contractTitle+'</h4>';
+			}else{
+				result = result +	'<h4>'+json.contractTitle+'</h4>';
+			}
+			
 			result = result +	'<span>';
 			
 			if(json.templateSubmissionStatus == 'DRAFT' || json.templateSubmissionStatus == 'REJECTED' || json.templateSubmissionStatus == 'WAITING_FOR_APPROVER'){
 				if('New' == json.typeOfContract){
-					result = result +	'	<a href="/sourcelead/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+					result = result +	'	<a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 				}else if('Existing' == json.typeOfContract){
 					result = result +	'';
 				}else if('Custom' == json.typeOfContract){
-					result = result +	'	<a href="/sourcelead/addCustomContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+					result = result +	'	<a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 				}
 			}
 			
@@ -262,12 +430,12 @@ function displyContract(stage){
 			result = result +	'<div class="col-xs-12 col-md-12 col-lg-12 noPad clearfix mt10">';
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 			result = result +	'		<div class="col-md-4 col-sm-4">Contract Title</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractTitle+'</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8" title="'+json.contractTitle+'">: '+json.contractTitle+'</div>';
 			result = result +	'	</div>';
 			
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 			result = result +	'		<div class="col-md-4 col-sm-4">Contract Type</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractType+'</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8" title="'+json.contractType+'">: '+json.contractType+'</div>';
 			result = result +	'	</div>';
 			
 			if(json.templateName != null && 'Custom' != json.typeOfContract && 'Existing' != json.typeOfContract){
@@ -279,7 +447,7 @@ function displyContract(stage){
 			if(null != json.startDateStr && "" != json.startDateStr && 'undefined' != json.startDateStr){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Start Date</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.startDateStr+'</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8" title="'+json.startDateStr+'">: '+json.startDateStr+'</div>';
 				result = result +	'	</div>';
 			}
 			
@@ -295,12 +463,11 @@ function displyContract(stage){
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.workLocation+'</div>';
 				result = result +	'	</div>';
 			}
-			
 			if(json.contractType!="Full time offer"){
 					if(null != json.endDateStr && "" != json.endDateStr && 'undefined' != json.endDateStr){
 						result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 						result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
-						if(stage!="SIGN" &&  stage!="VERIFY" && stage!="REJECTED"){
+						if(json.templateSubmissionStatus!="SIGN" &&  json.templateSubmissionStatus!="VERIFY" && json.templateSubmissionStatus!="REJECTED"){
 							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: '+json.endDateStr+' <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
 							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="'+json.endDateStr+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+',\''+json.startDateStr+'\');"></i></div>';
 						}
@@ -313,7 +480,7 @@ function displyContract(stage){
 					else{
 						result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 						result = result +	'		<div class="col-md-4 col-sm-4">End Date </div>';
-						if(stage!="SIGN" &&  stage!="VERIFY" && stage!="REJECTED"){
+						if(json.templateSubmissionStatus!="SIGN" &&  json.templateSubmissionStatus!="VERIFY" && json.templateSubmissionStatus!="REJECTED"){
 							result = result +	'		<div class="col-md-8 col-sm-8 popRela" id="endVal">: --  <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+json.startDateStr+'\',\''+json.endDateStr+'\');"></i>';
 							result = result +	'<div class="editNewDat"><input type="text" class="form-control calendar" value="" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+json.id+',\''+json.startDateStr+'\');"></i></div>';
 						}
@@ -337,7 +504,15 @@ function displyContract(stage){
 			if(null != json.ownerName && "" != json.ownerName && 'undefined' != json.ownerName){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Signing Authority</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.ownerName+'</div>';
+				
+				if(json.templateSubmissionStatus == "WAITING_TO_BE_SIGNED" && json.isParentContract == "N"){
+					result = result +	'<div class="col-md-8 col-sm-8 popRela" id="contactUserDiv"><span id="contactUserSpan">: '+json.ownerName+'</span> <i class="fa fa-pencil popEdCo"  onclick="editContact();"></i>';
+					result = result +	'<div class="editSignature"><div class="col-md-10 padding_left"><select class="chosen-select form-control sel" id="editSigner" name="clientContact"><option>Hi</option></select></div><div class="col-md-2 paddingLeft paddingRight"><i class="fa fa-floppy-o" onclick="saveContractSigner();"></i></div></div>';
+				}
+				else{
+					result = result +	'<div class="col-md-8 col-sm-8 popRela" id="contactUserDiv">: '+json.ownerName+'</div>';	
+				}
+				result = result +	'	</div>';
 				result = result +	'	</div>';
 			}
 			
@@ -351,7 +526,7 @@ function displyContract(stage){
 			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
 				if(null != json.requirementName && "" != json.requirementName && 'undefined' != json.requirementName){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Requirement Title</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Job Title</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
 				result = result +	'	</div>';
 			}
@@ -386,21 +561,33 @@ function displyContract(stage){
 			
 			if(null != json.initiatorType && "Client" == json.initiatorType && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
+				'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\',\'ROLE_VIEW_EDIT_VENDOR\')">';
+				result = result +	'		<div class="col-md-8 col-sm-8">: <a href="'+vmsUrl+'/vendorsList?orgRelationUUID='+json.orgRelationUUID+'" title="'+json.contractWith+'">'+json.contractWith+'</a></div>';
+				'</sec:authorize>';
+				
+				'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_VENDOR\',\'ROLE_VIEW_EDIT_VENDOR\')">';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
+				'</sec:authorize>';
+				
 				result = result +	'	</div>';
 			}
 			
 			if(null != json.initiatorType && "Vendor" == json.initiatorType && json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Client</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Vendor</div>';
+				'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
+				result = result +	'		<div class="col-md-8 col-sm-8">: <a href="'+vmsUrl+'/clientDashboard?orgRelationUUID='+json.orgRelationUUID+'" title="'+json.contractWith+'"> '+json.contractWith+'</a></div>';
+				'</sec:authorize>';
+				 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">';
+	  	            result = result + '<div class="col-md-8 col-sm-8">: '+json.contractWith+'</div>';
+	  	         '</sec:authorize>';
 				result = result +	'	</div>';
 			}
 			if(json.contractType!="Full time offer"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Contact</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contactUserName+'</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8 popRela">: '+json.contactUserName+'</div>';	
 				result = result +	'	</div>';
 			}
 			
@@ -418,7 +605,7 @@ function displyContract(stage){
 				result = result +	'	</div>';
 			}
 			
-			if(null != json.rejectedReason && "" != json.rejectedReason && 'undefined' != json.rejectedReason && stage =="REJECTED"){
+			if(null != json.rejectedReason && "" != json.rejectedReason && 'undefined' != json.rejectedReason && json.templateSubmissionStatus =="REJECTED"){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Rejected Reason</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.rejectedReason+'</div>';
@@ -458,9 +645,9 @@ function displyContract(stage){
 						else{
 							result = result + '    <td>--</td>';
 						}
-						 if(opt.docFile != null && opt.docFile !=""){
-							result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadContractDocument?contractUUID='+contractUUID+'\"title="Download"></a>';
-		           			result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="previewContractDoc(\''+opt.id+'\',\''+opt.fileName+'\');"title="preview"></a>';
+						 if(opt.fileURL != null && opt.fileURL !=""){
+							result = result+'<td><div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"title="Download"></a>';
+		           			result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\', \''+opt.docFileName+'\', \''+opt.fileType+'\');"title="preview"></a>';
 						 }else{
 							 result = result + '    <td>--</td>';
 						 }
@@ -528,7 +715,7 @@ function displyContract(stage){
 			
 			if(null != json.paymentTerm && "" != json.paymentTerm && 'undefined' != json.paymentTerm){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-				result = result +	'		<div class="col-md-4 col-sm-4">Payment Term</div>';
+				result = result +	'		<div class="col-md-4 col-sm-4">Payment Frequency</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.paymentTerm+'</div>';
 				result = result +	'	</div>';
 			}
@@ -550,15 +737,20 @@ function displyContract(stage){
 		}
 			result = result +	'<h4>History</h4>';
 			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Created On</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdDateStr+'</div>';
-			result = result +	'	</div>';
+			if(null != json.createdDateStr && 'undefined' != json.createdDateStr && json.createdDateStr != ''){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Created On</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdDateStr+'</div>';
+				result = result +	'	</div>';
+			}
 			
-			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
-			result = result +	'		<div class="col-md-4 col-sm-4">Created By</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdByName+'</div>';
-			result = result +	'	</div>';
+			if(null != json.createdByName && 'undefined' != json.createdByName && json.createdByName != ''){
+				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+				result = result +	'		<div class="col-md-4 col-sm-4">Created By</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.createdByName+'</div>';
+				result = result +	'	</div>';
+			}
+			
 			if(null != json.updatedDateStr && 'undefined' != json.updatedDateStr && json.updatedDateStr != json.createdDateStr){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Updated On</div>';
@@ -579,17 +771,43 @@ function displyContract(stage){
 			result = result +	'</div>';
 			result = result +	'</div>';
 			
+			if(json.newContractCustomFieldlabelNameAndValue != null && json.newContractCustomFieldlabelNameAndValue != "" && json.newContractCustomFieldlabelNameAndValue != 'undefined'){
+				 $.each(json.newContractCustomFieldlabelNameAndValue, function(key, value) {
+					  var labelNameAndlabelData = value.toString().split("$");
+	            	  var labelName = labelNameAndlabelData[0].toString().split(",");
+					  result = result + '	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
+	            	  result = result + '	<div class="col-md-4 col-sm-4">'+labelName[1]+'</div>';
+	            	  result = result + '   <div class="col-md-8 col-sm-8">:'+labelNameAndlabelData[1]+'</div>';
+	            	  result = result + '	</div>'; 
+	              }); 
+            }
+			
 			$("#viewPopupDiv").empty();
 			$("#viewPopupDiv").append(result);
+			
+			var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+			for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+			});
        },
 	  }); 
 }
 
 
 function previewTemplatePDF(uuid, templateName){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(uuid != null && uuid != ""){
-		window.open(sourceleadUrl+'/viewContractTemplatePdf/'+uuid+'/'+templateName+'','_newtab');
+		window.open(vmsUrl+'/viewContractTemplatePdf/'+uuid+'/'+templateName+'','_newtab');
 	}
 }
 
@@ -605,9 +823,9 @@ function getParameterByName(name, url) {
 </script>
 <script type="text/javascript">
 function previewContractDoc(docId,fileName){
-	  var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	if(docId != null && docId != ""){
-		window.open(sourceleadUrl+'/viewReqContractDocPdf/'+docId+'/'+fileName+'',fileName,"height=600,width=600");
+		window.open(vmsUrl+'/viewReqContractDocPdf/'+docId+'/'+fileName+'',fileName,"height=600,width=600");
 	}  
 }
 </script>
@@ -652,16 +870,54 @@ function editClo(contractId,startDate){
 	$('.editNewDat').hide();
 	var endDate = $("#endDate").val();
 	if(endDate != ""){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		 $.ajax({
 	    type : "POST",
-	     url: sourceleadUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
+	     url: vmsUrl+"/updateContractEndDate?${_csrf.parameterName}=${_csrf.token}&contractId="+contractId+"&endDate="+endDate,       
 	     success :function(data) {
 	    	 $("#endVal").empty();
 			 $("#endVal").append(": "+endDate+' <i class="fa fa-pencil popEdCo"  onclick="editOne(\''+startDate+'\',\''+endDate+'\');"></i><div class="editNewDat"><input type="text" class="form-control calendar" value="'+endDate+'" id="endDate" name="endDate" placeholder="End date" readonly="readonly"><i class="fa fa-floppy-o" onclick="editClo('+contractId+',\''+startDate+'\');"></i></div>');
 	    },
 	}); 
 	}
+}
+
+function editContact(){
+	$(".editSignature").show();
+	var result = "";
+	<c:forEach var="user" items="${userList}">
+		var name = "";
+		if("${user.lastName}" != null && "${user.lastName}" != '' && "${user.lastName}" != 'undefined'){
+			name += "${user.firstName}" +" "+ "${user.lastName}";
+		}else{
+			name += "${user.firstName}";
+		}
+		result += '<option value="${user.id}">'+name+'</option>';
+	</c:forEach>
+	$("#editSigner").empty();
+	$("#editSigner").append(result);
+	$('#editSigner').trigger("chosen:updated");
+}
+
+function saveContractSigner(){
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	var contractUUID ='${contractUUID}';
+	var clientContact = $("#editSigner").val();
+	 $.ajax({
+		    type : "POST",
+		     url: vmsUrl+"/updateContractSigner?contractUUID="+contractUUID+"&clientContact="+clientContact,       
+		     success :function(data) {
+		    	 if (data.response === "SUCCESS") {
+		    		 var opt = data.object;
+		    		 $("#contactUserSpan").html(" : "+opt.ownerName);
+		    		 $(".editSignature").hide();
+		    	 }else if (response.indexOf('Sign In') !== -1) {
+		 			location.replace(vmsUrl);
+		 	    } else if (response.response === "AWKWARD") {
+		 		    location.href = "/errorPage";
+		 	    }
+		    },
+		}); 
 }
 </script>
 

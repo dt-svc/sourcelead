@@ -1,55 +1,14 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<style type="text/css">
-.edit-details {
-text-align:left;
-}
-.edit-details ul {
-float:none;
-}
-.edit-details ul li {
-float:none;
-}
-
-.addUser-org {
-    overflow-x: auto;
-}
-
-
-#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.tblicons a{
-	font-size:13px;
-	}
-	.tblicons a:first-child{
-	margin-left: 0;
-	}
-	.tblicons .glyphicon-trash{
-	margin-left: 5px;
-	}
-	.tblicons a{
-	margin:0px 8px;
-	padding: 0 !important;
-	} 
-	.vendor_wrap_inn_table table tr th:last-child{
-	width:100px;
-	}
-	.removeIcon{
-	font-size:22px; position:relative; top:-5px; margin-left:15px; color:#F22613; cursor: pointer;
-	}
-</style>
 
 <div id="deleteDocpopUp"></div>
 
 <script>
+$(".addUser-org").css({"overflow-x": "auto"});
 function vendorNotesList(orgRelationId,vendorLocationId){
 	var result = "";
 	result = result  +'<div class="timesheet_head">';
@@ -61,12 +20,12 @@ function vendorNotesList(orgRelationId,vendorLocationId){
 	    
 	    result = result  +'    	<a href="javascript:void(0)" onClick="addNotes('+orgRelationId+','+vendorLocationId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Note</a>                                                            ';
 		 
-		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
+		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4 editDetails"> ';
 		result = result  +'     </div>  ';
 		
 		result = result + '</ul>';
 		result = result  +'  <div class="clearfix"></div> ';
-		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table vendor_wrap_inn_table_last_child">';
 		result  = result + '   <div id="vendorNotesListDiv" ></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
@@ -102,7 +61,7 @@ function vendorNotes(orgRelationId){
 //     '${SourceLeadWeb_user.id}' 
 
 	 output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
-	  output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+	  output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table vendor_wrap_inn_table_last_child">';
      for(var i=0;i<json.length;i++){
        	var report = json[i];
        	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
@@ -110,7 +69,11 @@ function vendorNotes(orgRelationId){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
+   	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage != 'undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
+   	    }else{
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
+   	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content">';
@@ -158,7 +121,7 @@ output  = output + '        </div>';
 function documentpagination(){  
     $('#clientDocumentsPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
@@ -345,8 +308,18 @@ var validationSettings = {
 		    	        contentType:false,
 						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&locationCode="+locationCode,
 						success : function(result) {
-							closeDocPopup();
-							vendorNotes(orgRelationId);
+							if (result && result.response === "INVALID_DATA") {
+							    showError(result.responseMessage);
+							} else if (result.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								closeDocPopup();
+								vendorNotes(orgRelationId);
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 							
 						},
 					});
@@ -370,6 +343,8 @@ var validationSettings = {
 function selectClientCategory(){
 	$('#clientCategoryContactTypeListDivDiv').val('').trigger("chosen:updated");
 	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
+	var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	var orgRelationId = $('#orgRelationId').val(); 
 	var clientLocationId = $('#clientLocationId').val(); 
 	var categoryType = $('#categoryType').val(); 
@@ -379,13 +354,12 @@ function selectClientCategory(){
 			var status = "";
 			$.ajax({
 		    	type: "POST",
-		    	url : sourceleadUrl+"/getVendorJobs?"+tokenParamName+"="+tokenValue+"&orgRelationID="+orgRelationId+"&status="+status,  
-		        success: function(data) {
-		        	 var json = JSON.parse(data);
+		    	url : atsUrl+"/getVendorJobs?"+tokenParamName+"="+tokenValue+"&orgRelationID="+orgRelationId+"&status="+status,  
+		        success: function(json) {
 		        	 var result ="";
 		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-		        	 for(var i=0;i<json.length;i++){
-		        		 var opt = json[i];
+		        	 for(var i=0;i<json.data.length;i++){
+		        		 var opt = json.data[i];
 		        		 result = result +"<option value="+opt.id+">"+opt.jobTitle+"</option>";
 		             }
 		        	 result = result +"</select>";
@@ -401,13 +375,13 @@ function selectClientCategory(){
 		if(categoryType == "Contacts"){
 			$.ajax({
 		    	type: "POST",
-		    	url : sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
-		        success: function(data) {
-		        	 var json = JSON.parse(data);
+		    	url : vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&type=Client", 
+		        success: function(json) {
+		        	// var json = JSON.parse(data);
 		        	 var result ="";
 		        	 result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-		        	 for(var i=0;i<json.length;i++){
-		        		 var opt = json[i];
+		        	 for(var i=0;i<json.data.length;i++){
+		        		 var opt = json.data[i];
 		        		 result = result +"<option value="+opt.id+">"+opt.spocName+"</option>";
 		             }
 		        	 result = result +"</select>";
@@ -429,13 +403,13 @@ function selectClientCategory(){
 			var payment ="";
 				$.ajax({
 			    	type: "POST",
-			    	url : sourceleadUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=payables", 
-			        success: function(data) {
-		        	  var json = JSON.parse(data);
+			    	url : vmsUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+vendorLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=payables", 
+			        success: function(json) {
+// 		        	  var json = JSON.parse(data);
 		        	  var result ="";
 		        	  result = result +"<select id='vendorcontact' name='vendorcontact' class='chosen-select form-control'  data-validation='required' field-name='Category'>";
-              		    for (var i = 0; i < json.length; i++) {
-              		    	var opt= json[i];
+              		    for (var i = 0; i < json.data.length; i++) {
+              		    	var opt= json.data[i];
               		    	 result = result +"<option value="+opt.id+">"+opt.invoiceId+"</option>";
               		    }
               		  result = result +"</select>";
@@ -452,7 +426,7 @@ function selectClientCategory(){
 			var contractStatus = "";
 			 $.ajax({  
 		          type : "POST",
-		          url: sourceleadUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Vendor&contractStatus="+contractStatus,        
+		          url: vmsUrl+"/getClientOrVendorContracts?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&responderType=Vendor&contractStatus="+contractStatus,        
 		          success :function(data) {
 		        	  var json = JSON.parse(data);
 		        	  var result ="";

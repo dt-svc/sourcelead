@@ -35,10 +35,9 @@ function getVendorContactList(){
 		invitationStatus.push($(this).val());
     });
 	
-	var sourceleadUrl ='${sourceleadUrl}';
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var responderType = "Vendor";
-	
 	var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -54,7 +53,7 @@ function getVendorContactList(){
 	  		var formData = new FormData(form); 
 	  		var searchValue = $("#dataTableSearch").val();
 	  		searchValue = searchValue ? searchValue : "";
-	  		var url = sourceleadUrl+"/searchClientContactDetails?responderType="+responderType+"&searchValue="+searchValue+"&clientIds="+clientIds+"&status="+status+"&invitationStatus="+invitationStatus;
+	  		var url = vmsUrl+"/searchClientContactDetails?responderType="+responderType+"&searchValue="+searchValue+"&clientIds="+clientIds+"&status="+status+"&invitationStatus="+invitationStatus;
 	  	    url += "&"+$($('#vendorList_form')[0]).serialize();  
 	  	    prepareVendorContactList(url);
 	  		closePop();
@@ -238,7 +237,7 @@ function getVendorContactList(){
 				    	  	"render": function(data, type, report, meta) {
 				    	  		 var result = "";
 				    	  		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
-						   	    result = result + '<td><div class="tblminwidth-50"><i title="Remove vendor contact" class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')"; title="Remove vendor contact"></i></div></td>';
+						   	    result = result + '<td><div class="tblminwidth-50"><i title="Remove vendor contact" class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\',\''+report.spocEmail+'\')"; title="Remove vendor contact"></i></div></td>';
 						   	 '</sec:authorize>';
 						   	 
 						   	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';

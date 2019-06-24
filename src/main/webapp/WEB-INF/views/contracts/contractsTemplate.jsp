@@ -2,27 +2,9 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
-<style type="text/css">
-.statusFiler-1 {
-width: 150px;
-}
-.statusFiler-1 ul{
-padding: 5px;
-}
-.statusFiler-1 li label {
-padding-left: 5px;
-position: relative;
-top: -2px;
-}
-.statusFiler-1 li {
-padding: 2px 10px !important;
-margin: 0 !important;
-}
-</style>
 
 <!-- Content Area -->
 <section class="content-wraper">
@@ -30,14 +12,14 @@ margin: 0 !important;
   <div class="pull-left">
       <!-- <h2>Submission Templates</h2> -->
       <h2 class="pull-left">Contract Templates</h2>
-				<div class=" pull-left reportsH">
-			
-			<div class="RePop openTemplates">
-				
-			</div>
-		</div>
     </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo; Contract Template List</div>
+    
+    <div class="pull-right brud-crum">
+			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>
+			&raquo;<a href="${SourceLeadWeb_sourceleadUrl}/orgTemplates"> Templates
+				</a> &raquo; Contract Template List
+		</div>
+  
 </section>
 	
 	
@@ -47,13 +29,16 @@ $(document).ready(function(){
 });
 </script>
 	
-	
-<div class="content-area content-new clearfix">
  <div class="project_wrap">
-	<div class="timesheet_head">
-        	<ul>
-        	
-        	<li id="filterContractTypePop"><i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i>
+ 
+ <div class="reportHead  clearfix">
+      <ul class="pull-right list-unstyled list-inline">
+			
+        	<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
+				<li><a href="${SourceLeadWeb_vmsUrl}/addContractTemplate" class="newAdBtn mr5">+ Template</a></li>	
+			</sec:authorize>      
+      
+        	<li id="filterContractTypePop"><a href="javascript:void(0)" class="filtIcon" title="Filters"></a>
 	           	<div class="statusFiler-1">
 					<ul class="list-unstyled">
 						<li><input id="c1" type="checkbox" name="templateType" value="Client MSA" onclick="getTemplateList();"><label for="c1">Client MSA</label></li>
@@ -69,21 +54,19 @@ $(document).ready(function(){
 					</ul>
 				</div>	                	
 			</li>
-			
-        		<sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')">
-				<li><a href="<c:url value="/addContractTemplate" />"><i class="fa fa-plus"></i>Add Template</a></li>	
-				</sec:authorize>
-                <div class="clearfix"></div>
-            </ul>
-            <div class="clearfix"></div>
-                         
-            
-        </div>
+
+			<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='contractTemplateTableSearch'/><span class="repSearchIcon" onClick=""></span></li>
+		
+        </ul>
+        
+      </div>
+      
     <div class="project_wrap_table">
     <div id="templateList" class="datatable_filter"></div>
 	</div>
     
 </div>
+</section>
       
  <script type="text/javascript">
 function getTemplateList(){
@@ -92,11 +75,11 @@ function getTemplateList(){
 	    {
 			templateType.push($(this).val());
 	    });
-		var sourceleadUrl ='${sourceleadUrl}';
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		var searchValue = $("#contractTemplateTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getAllTemplatesByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&templateType="+templateType+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
+		var url = vmsUrl+"/getAllTemplatesByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&templateType="+templateType+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue;
 		/* url += "&"+$($('#payroll_list_form')[0]).serialize(); */
 	    prepareTemplateList(url,sourceleadUrl);
 }
@@ -107,16 +90,19 @@ function prepareTemplateList(url,sourceleadUrl){
 	 $("#templateList").removeAttr("style");
  	 $("#templateList").empty();
  	 var result = "";
- 	result = result +" <div class='clearfix'>";
+ 	 
+/*  	result = result +" <div class='clearfix'>";
  	result = result +" <div class='remove_search'>";
  	result = result +" <input type='text' placeholder='Search' id='contractTemplateTableSearch'/>";
  	result = result +"</div>";
- 	result = result +"</div>";
+ 	result = result +"</div>"; */
+ 	
  	result = result +"<table id='contractTemplatePagination' class='display' cellspacing='0' width='100%' >"; 
     result = result + '	<thead>';
 	result = result + '   <tr>';
 	result = result + '     <th>Template Title</th>';
 	result = result + '    <th>Template Type</th>';
+	result = result + '    <th>Letter Head</th>';
 	result = result + '    <th>Description</th>';
  	result = result + '    <th>Actions</th>';
 //  result = result + '    <th>Document</th>';
@@ -130,7 +116,7 @@ function prepareTemplateList(url,sourceleadUrl){
 
 <script>
 function contractTemplatePagination(url,sourceleadUrl){
-	
+	var letterHeadFlag = false;
 	var colIndex = 0;
 	/*$.fn.dataTable.moment( 'DD-MM-YYYY' );*/
     $('#contractTemplatePagination').DataTable( { 
@@ -145,6 +131,7 @@ function contractTemplatePagination(url,sourceleadUrl){
         "columns": [
             { "data": "templateName" },
             { "data": "templateType"},
+            { "data": "letterHead"},
             { "data": "description"},
             { "data": "action"}
             
@@ -175,6 +162,20 @@ function contractTemplatePagination(url,sourceleadUrl){
               		
               }
 	          },{
+		    	  "targets": colIndex++,
+	              "data": "letterHead",
+	              "render": function ( data, type, report, meta ) {
+	            	  var result = "";
+	            	  if(report.letterHead != null && report.letterHead != '' && report.letterHead !='undefined'){
+           	       	       result = result + '<div><span title="'+report.letterHead.letterHeadName+'">'+report.letterHead.letterHeadName+'</span></div>';
+            	       	   letterHeadFlag = true;
+	            	  } else{
+           			       result = result + '<div><span>---</span></div>';
+          			    }
+		              return result;
+	              		
+	              }
+		          },{
              "targets": colIndex++,
              "data": "description",
              "render": function ( data, type, report, meta ) {
@@ -194,8 +195,9 @@ function contractTemplatePagination(url,sourceleadUrl){
              "data": "action",
              "render": function ( data, type, report, meta ) {
              	var result = "";
+             	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
              	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CONTRACT_TEMPLATE\')">';
-             	result = result + '<div class="tbldata-dotdot-vsm"><a href="#" title="Preview" class="mr"><i class="fa fa-eye" onclick="previewPDF(\''+report.templateUUID+'\',\''+report.templateName+'\');" ></i></a> <a href="'+sourceleadUrl+'/editTemplate?templateId='+report.id+'" title="Edit"><i class="fa fa-edit"></i></a></div>';
+             	result = result + '<div class="tblicons"><a href="#" title="Preview" class="mr10"><i class="fa fa-eye" onclick="previewPDF(\''+report.templateUUID+'\',\''+report.templateName+'\','+letterHeadFlag+');" ></i></a> <a href="'+vmsUrl+'/editTemplate?templateId='+report.id+'" title="Edit"><i class="fa fa-pencil"></i></a></div>';
              	'</sec:authorize>';
              	return result;
                 }
@@ -207,11 +209,11 @@ function contractTemplatePagination(url,sourceleadUrl){
 	    	"aaSorting": [[0,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
-	    	"ordering": true,
+	    	"ordering": false,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>" 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>" 
  	     }
     } );
     $("#contractTemplatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -239,15 +241,20 @@ $("#filterContractTypePop, .statusFiler-1, .approved_pop").click(function(e) {
 </script>
 
 <script type="text/javascript">
-function previewPDF(id,tempName) {
-	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/testController/'+id+'/'+tempName+'','_newtab');
-}</script>
+function previewPDF(id,tempName,letterHeadFlag) {
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	if(letterHeadFlag){
+		window.open(vmsUrl+'/previewContractTemplate/'+id+'/'+tempName+'','_newtab');
+	}else{
+		window.open(vmsUrl+'/testController/'+id+'/'+tempName+'','_newtab');
+	}
+}
+</script>
 
  <script>
 function downloadPdfTemplate(templateId){
-	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/downloadContractsTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId;
+	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	window.location.href = vmsUrl+"/downloadContractsTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId;
 	/* window.location.href = sourceleadUrl+"/downloadContractsTemplate&templateId="+templateId; */
 }
 

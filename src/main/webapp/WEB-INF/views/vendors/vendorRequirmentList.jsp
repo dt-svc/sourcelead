@@ -7,10 +7,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style type="text/css">
 .collapse-div-adduser select{
-width: 100% !important;
-    padding-right: 10px !important;
-    padding-left: 10px !important;
-    border:1px solid #ccc !important
+	width: 100% !important; padding-right: 10px !important; padding-left: 10px !important; border:1px solid #ccc !important
 }
 </style>
 <div id="loading"></div>
@@ -29,7 +26,7 @@ function vendorRequirementListInclude(orgRelationID){
 	    
 	    result = result + '	<li><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
 	    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
-	    result = result + '<ul>';
+	    result = result + '<ul  class="paddingLi">';
         result = result + '<li>';
         result = result + '<input type="checkbox" value="open" name="requirementStatus" id="requirementStatus" onclick="vendorReqListFunction('+orgRelationID+');" >';
         result = result + '<label class="paddingLeft">Open</label>';
@@ -93,7 +90,8 @@ function vendorRequirementListInclude(orgRelationID){
 <script type="text/javascript">
 	function vendorReqListFunction(orgRelationID) {
 		// var orgRelationId =$("#orgRelationId").val();
-	        var sourceleadUrl = '${sourceleadUrl}';
+	        var atsUrl = '${SourceLeadWeb_atsUrl}';
+	        var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	        var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  	  if(locationList.match("yyyy-MM-dd")){
 	  		  reqVendorDatePattern = 'YYYY-MM-DD';
@@ -112,10 +110,9 @@ function vendorRequirementListInclude(orgRelationID){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 	    	type: "POST",
-	    	   url: sourceleadUrl+"/getVendorJobs?"+tokenParamName+"="+tokenValue+"&orgRelationID="+orgRelationID+"&status="+status, 	
-	    	success: function(data) {
+	    	   url: vmsUrl+"/getVendorJobs?"+tokenParamName+"="+tokenValue+"&orgRelationID="+orgRelationID+"&status="+status, 	
+	    	success: function(json) {
 	        	
-	        	var json = JSON.parse(data);
 	        
 	        	$("#vendorRequirmentListDiv").empty();
 	        	
@@ -146,12 +143,12 @@ function vendorRequirementListInclude(orgRelationID){
 		            result = result + '	 </tr>';
 		            result = result +'</thead>';
 		            result = result + '<tbody>';
-			          for (var i=0; i<json.length; i++)
+			          for (var i=0; i<json.data.length; i++)
 					  { 
-			        	  var opt = json[i];
+			        	  var opt = json.data[i];
 			        	  result = result + "<tr>";
 			            	// result = result +"<td><div title='"+opt.jobTitle+"' class='tbldata-dotdot-100'>"+opt.jobTitle+"</div></td>"; 
-			           	result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
+			           	result = result +"<td><div class='tbldata-dotdot'> <a href='"+atsUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 
 			            	  if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
 			             	 {
@@ -163,55 +160,51 @@ function vendorRequirementListInclude(orgRelationID){
 			             	 }else{
 			             		 result = result +"  <td><div class='tblminwidth-75'>----</div></td>"; 
 			             	 }
-			               	if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-			                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
-			                }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
-			                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
+			            	  
+			            	  result = result +'<td>';
+			   		        	result = result +'<div class="positionRelative">';
+				   		         for(var k=0; k<1; k++){
+				   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.locationsList[k]+'</p>';
+				   		         }
+			   		    	
+				   		        result = result +'<div class="show_Empdetails showjoblist">';
+			   		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+		
+			   		        	result = result +'<div class="emailvalues">';
+			   		        	
+	 							for(var k=0; k<opt.locationsList.length; k++){
+	 								result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
+	 			   		        	
+			   		    	 	}
+			   		        	result = result +'</div>';
+			   		        	result = result +'</div>';
+			   
 
-			                }else{
-			                    result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
-			                }
-			               	
+		   		        	result = result +'</div>';
+		   		        	result = result +'</td>';
 			               	
 			                if(opt.postedDateStr!=null && opt.postedDateStr !='' && opt.postedDateStr !='undefined'){
-			                 	 result = result +"<td><div class='tblminwidth-75'>"+opt.postedDateStr+"</div></td>";
+			                 	 result = result +"<td><div class='tblminwidth-100'>"+opt.postedDateStr+"</div></td>";
 			                  }else{
-			                 	 result = result +"<td><div class='tblminwidth-75'>----</div></td>";
+			                 	 result = result +"<td><div class='tblminwidth-100'>----</div></td>";
 			                  }
 			                
 			                
 			                if(opt.manager!=null && opt.manager!='' && opt.manager!='undefined'){
-			                  	 result = result +"<td><div class='tbldata-dotdot-100' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
+			                  	 result = result +"<td><div class='tbldata-dotdot' title='"+opt.manager+"'>"+opt.manager+"</div></td>";
 			                   }else{
-			                  	 result = result +"<td><div>----</div></td>";
+			                  	 result = result +"<td><div class='tbldata-dotdot'>----</div></td>";
 			                   }
 			                
 			            	//result = result +"<td><div>"+opt.totalApplicants+"</div></td>";
- 							result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
-			            	result = result +"<td><div>"+opt.vendorInterviewsCount+"</div></td>";
-			            	result = result +"<td><div>"+opt.vendorOfferedCount+"</div></td>";
-			            	result = result +"<td><div>"+opt.vendorBackoutCount+"</div></td>";
+ 							result = result +"<td><div class='tblminwidth-75'>"+opt.noOfSubmittedApplicants+"</div></td>";
+			            	result = result +"<td><div class='tblminwidth-75'>"+opt.vendorInterviewsCount+"</div></td>";
+			            	result = result +"<td><div class='tblminwidth-75'>"+opt.vendorOfferedCount+"</div></td>";
+			            	result = result +"<td><div class='tblminwidth-75'>"+opt.vendorBackoutCount+"</div></td>";
 			            	
 			            	result = result +"<td><div>"+opt.requirementSubmissionStatus+"</div></td>";
 			            	
 			            	result = result +"</div></td>";
-			            	/* if(opt.requirementSubmissionStatus == "OPEN"){
-			            		openCount = openCount+1;       
-       		        	 }else if(opt.requirementSubmissionStatus == "NEW"){
-       		        		newCount = newCount +1;    
-       		        	 }else if(opt.requirementSubmissionStatus == "FILLEDCLOSED"){
-       		        		filledClosedCount = filledClosedCount +1; 
-       		        	 }else if(opt.requirementSubmissionStatus == "UNFILLEDCLOSED"){
-       		        		unfilledCount = unfilledCount +1;   
-       		        	 }else if(opt.requirementSubmissionStatus == "ONHOLD"){
-       		        		onHoldCount = onHoldCount +1;   
-       		        	 }else if(opt.requirementSubmissionStatus == "CANCEL"){
-       		        		cancelCount = cancelCount +1;   
-       		        	 }else if(opt.requirementSubmissionStatus == "REJECTED"){
-       		        		rejectedCount = rejectedCount +1;   
-       		        	 }else if(opt.requirementSubmissionStatus == "CLOSED"){
-       		        		closedCount = closedCount +1;     
-       		        	 } */
 			            	
 			            	result = result +"</tr>";
 					  }
@@ -242,16 +235,20 @@ function vendorRequirementListInclude(orgRelationID){
 function contactRequirmentlistPagination(){  
     $('#vendorRequirmentPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 9
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-		
-    } );
+    });
+    $('#vendorRequirmentPagination').wrap("<div class='overflow_Auto width100Percnt'></div>");
 }
 </script>
 

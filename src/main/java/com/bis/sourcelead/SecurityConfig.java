@@ -1,6 +1,7 @@
 package com.bis.sourcelead;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
@@ -11,14 +12,17 @@ import org.springframework.core.annotation.Order;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Controller;
+
+import com.bis.sourcelead.security.CustomTokenAuthenticationFilter;
+import com.bis.sourcelead.security.JWTSecurityContextRepository;
 
 /**
  * This class is used to read the properties from properties file and configures
@@ -74,116 +78,73 @@ public class SecurityConfig  {
 
     @Configuration
     public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+    
     	@Autowired
-    	SourceleadAuthenticationProvider sourceleadAuthenticationProvider;
+    	SecurityContextRepository securityContextRepository;
+    	
+    	@Value("${sourceleadLoginUrl}")
+    	private String sourceleadLoginUrl;
+    	
+    	@Value("${sourceleadLogoutUrl}")
+    	private String sourceleadLogoutUrl;
     	
     	@Autowired
-    	SourceleadAuthenticationSuccessHandler sourceleadAuthenticationSuccessHandler;
-    	
-    	@Autowired
-    	SourceleadAuthenticationFailureHandler sourceleadAuthenticationFailureHandler;
+    	SourceleadLogoutSuccessHandler sourceleadLogoutSuccessHandler;
     	
         @Override
         protected void configure(HttpSecurity http) throws Exception {
         	http
-    		.authorizeRequests()                                                                
-    			.antMatchers("/login").permitAll() 
-    			.antMatchers("/Inlogin").permitAll() 
-    			.antMatchers("/register").permitAll() 
-    			.antMatchers("/restAuthenticate").permitAll() 
-    			.antMatchers("/registerAsProfessional").permitAll() 
-    			.antMatchers("/registerAsIndividualRecruiter").permitAll() 
-    			.antMatchers("/registerAsProfessionalFromSocialInviter").permitAll() 
-    			.antMatchers("/registerAsIndividualRecruiterFromSocialInviter").permitAll() 
-    			.antMatchers("/resetloginCredentials").permitAll() 
-    			.antMatchers("/validateCrowdSourcingEmail").permitAll() 
-    			.antMatchers("/validateCrowdSourcingUserName").permitAll() 
-    			.antMatchers("/validateCrowdSourcingResetUserName").permitAll() 
-    			.antMatchers("/resetCredentials").permitAll() 
-    			.antMatchers("/forgotPassword").permitAll() 
-    			.antMatchers("/resetPasswordWithUserName").permitAll() 
-    			.antMatchers("/resetPassword").permitAll() 
-    			.antMatchers("/referRequirementToProfessional").permitAll() 
-    			.antMatchers("/getOptionalValueList").permitAll() 
-    			.antMatchers("/openRequirements/**").permitAll() 
-    			.antMatchers("/getOpenJobsELK").permitAll()
-    			.antMatchers("/getOrgsListforOpenJobs").permitAll()
-    			.antMatchers("/openRequirementsRedirect").permitAll()
-    			.antMatchers("/openRequirementsSummary").permitAll()
-    			.antMatchers("/openJobsPublicPage").permitAll()
-    			.antMatchers("/openJobsRequiremetsAdvancedSearch").permitAll()
-    			.antMatchers("/getStatesByCountry").permitAll()
-    			.antMatchers("/getCitiesByStateAndCountry").permitAll()
-    			.antMatchers("/getAPIService").permitAll() 
-    			.antMatchers("/storeCsv").permitAll() 
-    			.antMatchers("/getRequirementProfessionalProfileDetails").permitAll() 
+
+    		.authorizeRequests()
+    			.antMatchers("/vms/resources/**").permitAll()
+    			.antMatchers("/resources/**").permitAll()
+    			.antMatchers("/vms/ws/**").permitAll()
     			.antMatchers("/ws/**").permitAll() 
-    			.antMatchers("/verifyResetPassword").permitAll() 
-    			.antMatchers("/acceptClientOrVendorInvitation").permitAll() 
-    			.antMatchers("/acceptOrRejectInterview").permitAll() 
-    			.antMatchers("/acceptOrRejectOffer").permitAll()
-    			.antMatchers("/acceptOrRejectRequirementOffer").permitAll()
-    			.antMatchers("/downloadOfferAttachment").permitAll()
-    			.antMatchers("/downloadInvoiceAttachment").permitAll()
-    			.antMatchers("/acceptOrRejectReopenTimeSheet").permitAll() 
-    			.antMatchers("/acceptOrRejectReopenExpenseBySuperUser").permitAll()
-    			.antMatchers("/acceptOrRejectReopenExpense").permitAll()
-    			.antMatchers("/publicInterviewFeedBackTemplate").permitAll()
-    			.antMatchers("/downloadRequirementAttachment").permitAll()
-    			.antMatchers("/resources/**/**").permitAll() 
-    			.antMatchers("/acceptOrRejectOrRateNegotiateApplicantRates").permitAll() 
-    			.antMatchers("/acceptOrRejectRequirement").permitAll() 
-    			.antMatchers("/storeApplicantRejectReason").permitAll() 
-    			.antMatchers("/acceptOrRejectOrRateNegotiateUserRates").permitAll()
-    			.antMatchers("/storeReject").permitAll() 
-    			.antMatchers("/getRateHistoryBySubmissionId").permitAll() 
-    			.antMatchers("/storeNegotiation").permitAll() 
     			.antMatchers("/submissionRate.jsp").permitAll() 
-    			.antMatchers("/requestForCandidateResume").permitAll() 
-    			.antMatchers("/getRequestedCandidates").permitAll() 
-    			.antMatchers("/validateCampaignToEmail").permitAll() 
-    			.antMatchers("/sendRequestForResume").permitAll() 
-    			.antMatchers("/displayOrgImageInMail/**").permitAll()
-    			.antMatchers("/countryAutoComplete").permitAll() 
-    			.antMatchers("/getStatesByCountry").permitAll()
-    			.antMatchers("/getCitiesByStateAndCountry").permitAll()
-    			.antMatchers("/saveProposeTime").permitAll()
-    			.antMatchers("/jobAlertRequirementSummary").permitAll()
-    			.antMatchers("/proposeNewTimePublicpage").permitAll()
-    			.antMatchers("/getJobDetailsForJobAlert").permitAll()
-    			.antMatchers("/storeJobAlert").permitAll()
-    			.antMatchers("/validateAlertUserEmail").permitAll()
-    			.antMatchers("/getInterviewrsViewFeedbackList").permitAll()
-    			.antMatchers("/savePublicInterviewFeddbackTemlateReason").permitAll()
-    			.antMatchers("/savePublicInterviewFeddbackTemlate").permitAll()
-    			.antMatchers("/getPublicInterviewFeedbackTemplate").permitAll()
-    			.antMatchers("/validateCrowdSourcingRegistrationEmail").permitAll()
-    			.antMatchers("/requestedDocuments").permitAll()
-    			.antMatchers("/uploadRequestedDocuments").permitAll()
-    			.antMatchers("/viewAllJobAlerts").permitAll()
-    			.antMatchers("/getAllJobsAlertList").permitAll()
-				
-    			.antMatchers("/viewJobSummaryDocumentDocView").permitAll()
-    			.antMatchers("/getActionHistoryList").permitAll()
-    			.antMatchers("/upload/*").permitAll()
-    			
-    			/*.antMatchers("/**").access("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER') OR hasRole('ROLE_APPROVER') OR hasRole('ROLE_SOURCELEAD_ADMIN') OR hasRole('ROLE_HR_MANAGER') OR hasRole('ROLE_ACCOUNT_MANAGER') OR hasRole('ROLE_SALES_MANAGER') OR hasRole('ROLE_RECRUITER') ")*/ 
-    			.antMatchers("/**").fullyAuthenticated()
+    			.antMatchers("/jobs/**").permitAll()
+    			.antMatchers("/job/**").permitAll()
+    			.antMatchers("/blog/**").permitAll()
+    			.antMatchers("/openJobs").permitAll() 
+    			.antMatchers("/saveProposeTime").permitAll() 
+    			.antMatchers("/getInterviewrsViewFeedbackList").permitAll() 
+    			.antMatchers("/ws/displayOrgImageInMail/**").permitAll() 
+    			.antMatchers("/vms/ws/displayOrgImageInMail/**").permitAll()
+    			.antMatchers("/vms/ws/unsubscribe/**").permitAll()
+    			.antMatchers("/vms/userVerification/**").permitAll()
+    			.antMatchers("/vms/storeUnsubscriptionPublic/**").permitAll()
+    			.antMatchers("/vms/isActiveUserByUserEmail/**").permitAll()
+    			.antMatchers("/openJobsPublicPage").permitAll()
+    			.antMatchers("/guestApplyToJob/**").permitAll()
+    			.antMatchers("/validateRequirementGuestCandidateEmail/**").permitAll()
+    			.antMatchers("/getGuestUserRequirmentOrgSubmissionTemplate/**").permitAll()
+    			.antMatchers("/saveGuestAddApplicant/**").permitAll()
+    			.antMatchers("/addBlogSubscription/**").permitAll()
+    			.antMatchers("/downloadReleaseNote/**").permitAll()
+    			.antMatchers("/validateBlogSubscriptionEmail/**").permitAll()
+    			.antMatchers("/vms/getRequirementSubmissionsCount/**").permitAll()
+    			.antMatchers("/parseResume/**").permitAll()
+    			.antMatchers("/vms/getDemoTimezonesList/**").permitAll()
+    			.antMatchers("/vms/getDemoModulesList/**").permitAll()
+    			.antMatchers("/vms/getActionHistoryList/**").permitAll()
+    			.antMatchers("/vms/jobCampaignSummary/**").permitAll()
+    			.antMatchers("/vms/getRequirementProfessionalProfileDetails/**").permitAll()
     			.anyRequest().authenticated()                                                   
     			.and()
-    		    .formLogin().loginPage("/login")
-      			.usernameParameter("username")
-    			.passwordParameter("password")
-    			.failureHandler(sourceleadAuthenticationFailureHandler)
-    			.successHandler(sourceleadAuthenticationSuccessHandler)
-    			.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
-    			.invalidateHttpSession(true)
-    			.and().exceptionHandling().accessDeniedPage("/403")
+    			.formLogin().loginPage("/login")
+    			.and().logout().logoutUrl(sourceleadLogoutUrl)
+    			.and().sessionManagement() .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    			.and().securityContext().securityContextRepository(securityContextRepository)
     			.and().csrf().disable();
     			
     			
         }
      }
+    
+    @Bean
+    public SecurityContextRepository securityContextRepository(@Value("${auth.token}") String tokenName, 
+                                                              @Value("${auth.secret}") String tokenSecret) {
+        return new JWTSecurityContextRepository(tokenName, tokenSecret);
+    }
 	@Bean
 	public FormattingConversionService conversionService() {
 		FormattingConversionService conversionService = new DefaultFormattingConversionService();
