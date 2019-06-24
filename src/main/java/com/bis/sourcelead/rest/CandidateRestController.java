@@ -16,22 +16,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,24 +43,26 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateDocuments;
-import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.CandidateEmployers;
-import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
+import com.bis.sourcelead.entity.CandidateSource;
+import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -101,14 +97,13 @@ import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.CandidateMarketplaceExportUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
 import com.bis.sourcelead.util.ReportsUtil;
-import com.bis.sourcelead.util.CandidateMarketplaceExportUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
-import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.util.SourceleadResumeParser;
+import com.bis.sourcelead.util.SourceleadResumeParserNew;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -160,7 +155,7 @@ public class CandidateRestController {
 	@Autowired
 	RequirementOfferHistoryService requirementOfferHistoryService;
 	@Autowired
-	private SourceleadResumeParser sourceleadResumeParser;
+	private SourceleadResumeParserNew sourceleadResumeParser;
 	@Autowired
 	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	@Autowired
@@ -251,6 +246,7 @@ public class CandidateRestController {
 			@RequestParam(value = "locationMapFile", required = false) CommonsMultipartFile locationMapFileData) {
 		Response<ResumeParserJsonUtil> response = new Response<>();
 		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
 			if (itrator.hasNext()) {
@@ -259,7 +255,8 @@ public class CandidateRestController {
 			ResumeParserJsonUtil resumeDetails = null;
 			if (null != multiFile) {
 				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
-				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country);
+				String fileName = multiFile.getOriginalFilename();
+				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country, orgLocation.getDateFormat(), fileName);
 			}
 			response.setObject(resumeDetails);
 			response.setResponse(Result.SUCCESS.name());
@@ -1588,7 +1585,139 @@ public class CandidateRestController {
 				flag = candidateService.validateSsnNumber(ssnNumber, orgLocations.getId());
 			}
 			return flag;
-		}   
+		} 
+
+	    @RequestMapping(value = {"/saveDuplicateCheckConfig"},method = RequestMethod.POST)
+		public CandidateVerificationConfig saveDuplicateCheckConfig(CandidateVerificationConfigDTO candidateVerificationConfigDTO,HttpServletRequest request) {
+			
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+			return candidateService.saveDuplicateCheckConfig(candidateVerificationConfigDTO,loginOrgLocation,user);
+			
+		}
+		
+	    @RequestMapping(value = {"/getDuplicateConfigData"},method = RequestMethod.GET)
+		public CandidateVerificationConfig getDuplicateConfigData(CandidateVerificationConfigDTO candidateVerificationConfigDTO,HttpServletRequest request) {
+			
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			return candidateService.getCandidateVerificationConfig(loginOrgLocation.getId());
+				
+		}
+
+	    @RequestMapping(value = {"/getCandidateSourceList", "/rest/getCandidateSourceList"}, method = RequestMethod.POST)
+		@ResponseBody
+		public ResponseList<CandidateSourceDTO> getCandidateSourceList(HttpServletRequest request, @RequestParam(defaultValue = "") String searchValue,CandidateSourceDTO candidateSourceDTO) {
+			ResponseList<CandidateSourceDTO> responseList = new ResponseList<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if (null != user) {
+					boolean forMobile = request.getRequestURI().contains("rest");
+					OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					String[] tableColumns = { "id", "name ", "description"};// should be
+
+					// entity names
+					int sortColumnIndex = 1; // by default sorting using invoice date
+					String sortColumnOrder = "asc"; // by default descending order
+					if (candidateSourceDTO.getOrder() != null && !candidateSourceDTO.getOrder().isEmpty()) {
+						sortColumnIndex = Integer.parseInt(candidateSourceDTO.getOrder().get(0).get("column"));
+						sortColumnOrder = candidateSourceDTO.getOrder().get(0).get("dir");
+					}
+					candidateSourceDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					candidateSourceDTO.setSortOrder(sortColumnOrder);
+					List<CandidateSourceDTO> candidateSourceDTOList = candidateService.getCandidateSourceListByOrgLocationId(loginOrgLocation.getId(), forMobile ? 1 : -1, searchValue,candidateSourceDTO);
+					responseList.setData(candidateSourceDTOList);
+					responseList.setRecordsTotal(candidateSourceDTOList.size());
+					responseList.setRecordsFiltered(candidateSourceDTOList.size());
+					responseList.setResponse(Result.SUCCESS.name());
+					responseList.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					responseList.setResponse(Result.SESSION_TIMEDOUT.name());
+					responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				responseList.setResponse(Result.AWKWARD.name());
+				responseList.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return responseList;
+		}
+	    @RequestMapping(value = "/saveCandidateSource", method = RequestMethod.POST)
+		@ResponseBody
+		public Response<Long> saveCandidateSource(HttpServletRequest request, CandidateSourceDTO candidateSourceDTO) {
+			Response<Long> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (null != user) {
+					long result = candidateService.saveCandidateSource(candidateSourceDTO,user, loginOrgLocation);
+					if(result == -1) {
+						response.setResponse(Result.DUPLICATE_NAME.name());
+						response.setResponseMessage(Result.DUPLICATE_NAME.getValue());
+					} else if(result > 0) {
+						response.setObject(result);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						response.setResponse(Result.FAILED.name());
+						response.setResponseMessage(Result.FAILED.getValue());
+					}
+				} else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return response;
+		}
+	    @RequestMapping(value = "/getCandidateSourceById", method = RequestMethod.POST)
+		@ResponseBody
+		public Response<CandidateSourceDTO> getCandidateSourceDataById(HttpServletRequest request, long candidateSourceId) throws Exception {
+			Response<CandidateSourceDTO> response = new Response<>();
+			try {
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (null != user) {
+					response.setObject(candidateService.getCandidateSourceById(candidateSourceId, user.getId(), loginOrgLocation));
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return response;
+		}
+	    
+	@RequestMapping(value = "/deleteCandidateSourceById", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> deleteCandidateSourceById(HttpServletRequest request, long candidateSourceId) throws Exception {
+
+		Response<Boolean> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (null != user) {
+				response.setObject(candidateService.deleteCandidateSourceById(candidateSourceId));
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
 
 }
 

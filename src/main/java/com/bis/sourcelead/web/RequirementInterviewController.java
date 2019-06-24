@@ -79,9 +79,9 @@ public class RequirementInterviewController {
 		     //OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		    // SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		     RequirementInterview requirementInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewId);
-		     if(requirementInterview.getInterviewStatus() != null && requirementInterview.getInterviewStatus().equalsIgnoreCase(interviewStatus)) {
-		    	 model.setViewName("requirement/interviewAcceptOrRejectOrTentative");
+		     if((requirementInterview.getInterviewStatus() !=null) && (requirementInterview.getInterviewStatus().equalsIgnoreCase("Attending") || requirementInterview.getInterviewStatus().equalsIgnoreCase("Not_Attending"))) {
 		    	 model.addObject("interviewStatus","Action_Done");
+		    	 model.setViewName("requirement/interviewAcceptOrRejectOrTentative");
 		    	 model.addObject("sourceleadUrl", sourceleadUrl);
 		     }else {
 		    	 

@@ -5,52 +5,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-#loadMoreDiv{
-text-align: center;
-font-size: 18px;
-font-weight: bold;
-vertical-align: middle;
-padding: 20px 15px;
-clear: both;
-display: inline-block;
-margin: auto;
-width: 100%;
-}
-#loadMoreDiv .fa-spinner{
-margin-right: 15px;
-}
-.filter_position .dataTables_filter {
-  position: relative !important; top: -60px !important;
-}
-</style>
-
-
-<style>
-.approvedPop {
-    position:absolute; z-index:100; width:200px; top:35px; right:2px; display:none; background-color: #fff;
-    }
-.approvedPop ul {
- width:100% !important; float: none; padding: 0;
- }
- .approvedPop ul li {
- clear: both; width: 100%; margin: 0;
- }
- 
- 
- .approvedPop1 {
-    position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none; background-color: #fff;
-    }
-.approvedPop1 ul {
- width:100% !important; float: none; padding: 0;
- }
- .approvedPop1 ul li {
- clear: both; width: 100%; margin: 0;
- }
- 
-</style>
-
-
 <script>
 var atsUrl ='${SourceLeadWeb_atsUrl}';
 $(document).ready(function() {
@@ -88,7 +42,13 @@ window.onload = function () {
 
 <script type="text/javascript">
 function usersListCheck(searchValue,searchResult){
-	getDynamciUserList();
+	if(searchResult == "universalUsersList"){
+	$("#dynamicUserDataTableSearch").val(searchValue)
+		getDynamciUserList();
+	}
+	else{
+		getDynamciUserList();
+	}
 }
 </script>
 
@@ -241,13 +201,13 @@ function getUsersSearchResult(searchValue){
 						<c:if test="${clientListSize > 0}">
 						<div class="col-md-4 positionRelative mb">
 							<div class="clearfix dynamic_search filterDynamicsearch">
-								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Clients" title="Type in a clients">
+								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Vendor" title="Type in a vendor">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
 							 <div class="clearfix filterSearch-ul">
 								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
-									<c:forEach var="client" items="${clientsList}">
-									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${client.orgRelId}" ><label>${client.clientName}</label></li>
+									<c:forEach var="vendor" items="${orgVendorList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${vendor.orgRelId}" ><label>${vendor.vendorName}</label></li>
 									</c:forEach>
 								</ul>
 							 </div> 
@@ -343,7 +303,7 @@ function getUsersSearchResult(searchValue){
 											<a href="#">Import</a>
 										<div class="immSubMenu immSubMenu-custome">
 
-												<a href="${SourceleadWeb_sourceleadUrl}/uploadForm">Associate Import</a>
+												<a href="${SourceLeadWeb_sourceleadUrl}/uploadForm">Associate Import</a>
 								 
 												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 													<a href="${SourceleadWeb_sourceleadUrl}/uploadAssociateBankForm">Associate Bank Details Import</a>
@@ -421,7 +381,7 @@ function getUsersSearchResult(searchValue){
         </ul>
       </div>
       
-              <div id="dynamicUserListViewDiv" class="filter_position positionRelative"></div> 
+              <div id="dynamicUserListViewDiv" class="filter_position filter_position_top60 positionRelative"></div> 
           </div>  
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
       <div class="row">
@@ -467,54 +427,69 @@ function myRolesFunction() {
 function myClientsFunction() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("myClientsInput");
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("myClientsUL");
-    li = ul.getElementsByTagName("li");
-    for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("label")[0];
-        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-
-        }
+    if(input != null){
+    	filter = input.value.toUpperCase();
     }
+    ul = document.getElementById("myClientsUL");
+    if(ul != null){
+    	 li = ul.getElementsByTagName("li");
+    	    for (i = 0; i < li.length; i++) {
+    	        a = li[i].getElementsByTagName("label")[0];
+    	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+    	            li[i].style.display = "";
+    	        } else {
+    	            li[i].style.display = "none";
+
+    	        }
+    	    }
+    }
+   
 }
 
 
 function myManagersFunction() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("myManagersInput");
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("myManagersUL");
-    li = ul.getElementsByTagName("li");
-    for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("label")[0];
-        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-
-        }
+    if(input != null){
+    	filter = input.value.toUpperCase();
     }
+    ul = document.getElementById("myManagersUL");
+    if(ul != null){
+    	 li = ul.getElementsByTagName("li");
+    	    for (i = 0; i < li.length; i++) {
+    	        a = li[i].getElementsByTagName("label")[0];
+    	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+    	            li[i].style.display = "";
+    	        } else {
+    	            li[i].style.display = "none";
+
+    	        }
+    	    }
+    }
+   
 }
 
 
 function myTeamsFunction() {
     var input, filter, ul, li, a, i;
     input = document.getElementById("myTeamsInput");
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("myTeamsUL");
-    li = ul.getElementsByTagName("li");
-    for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("label")[0];
-        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-        } else {
-            li[i].style.display = "none";
-
-        }
+    if(input != null){
+    	filter = input.value.toUpperCase();
     }
+    ul = document.getElementById("myTeamsUL");
+    if(ul != null){
+    	 li = ul.getElementsByTagName("li");
+    	    for (i = 0; i < li.length; i++) {
+    	        a = li[i].getElementsByTagName("label")[0];
+    	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+    	            li[i].style.display = "";
+    	        } else {
+    	            li[i].style.display = "none";
+
+    	        }
+    	    }
+    }
+   
 }
 
 
@@ -1000,7 +975,7 @@ function getUserSummary(userId){
 		    	$('#loadMoreDiv').empty(); 
 		    	$("#loading").removeAttr("style");
 		    	var result ="";
-		     	result = result + '<div id="loadMoreDiv" >No More Records..</div>';
+		     	result = result + '<div id="loadMoreDiv" class="loadMoreDiv_styles">No More Records..</div>';
 		     	$('#loadMoreDiv').append(result);
 		    }
 			  else{
@@ -1009,7 +984,7 @@ function getUserSummary(userId){
 		      	  $('#loadMoreDiv').empty(); 
 		          $("#loading").removeAttr("style");
 		          var result ="";
-		       	  result = result + '<div id="loadMoreDiv" >No  Records..</div>';
+		       	  result = result + '<div id="loadMoreDiv" class="loadMoreDiv_styles">No  Records..</div>';
 		       	  $('#usersListBody').append(result);
 		      }
   }
@@ -1266,7 +1241,7 @@ function prepareDynamicUserList(url){
 	    result = result	+ '<div class="remove_search">';
 		result = result	+ '</div>';
 		result = result	+ '</div>';
-		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		result = result	+ '<div class="project_tabs_inn_table">';
 		result = result + '<table id="dynamicUserListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';

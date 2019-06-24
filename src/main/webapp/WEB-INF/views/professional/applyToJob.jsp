@@ -11,22 +11,15 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
   
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css?staticTime=${staticTime}" />
-<script src="${SourceLeadWeb_atsUrl}/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
-<script src="${SourceLeadWeb_atsUrl}/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+<script src="/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
 <script type="text/javascript">
    var sourceleadUrl ='${sourceleadUrl}';
    var tokenParamName = "${_csrf.parameterName}";
    var tokenValue = "${_csrf.token}";
 </script>
-
-
-<style>
-.viewTemplate {
-background-color: #fff !important;
-}
-</style>
 
 <div id="popUp"></div>
 <script>
@@ -57,7 +50,7 @@ function getSubmissionDetailsSideBar(jobTitle,submissionId,candidateId,requireme
 		 $("#save_button").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
-		        url: atsUrl+"/valdateRecruiterSubmittedCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
+		        url: sourceleadUrl+"/valdateRecruiterSubmittedCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
 		        success: function(data) {
 		         	if(data == 'true'){
 			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
@@ -84,7 +77,7 @@ function getRequirementSubmissionDetails(jobTitle,submissionId,candidateId,requi
 	var loginUserId = '${SourceLeadWeb_userId}';
 	$.ajax({ 
 	    	type: "POST",
-	    	  url: atsUrl+"/getProfessionalSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId, 
+	    	  url: sourceleadUrl+"/getProfessionalSubmissionDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId, 
 	    			
 	    	  success: function(data) {
     		  var result = "";
@@ -156,7 +149,7 @@ function getInternalInterviewsList(submissionId){
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	 $.ajax({  
          type : "POST",
-         url: atsUrl+"/getAllCrowdSourcingInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
+         url: sourceleadUrl+"/getAllCrowdSourcingInterviews?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId,        
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	
@@ -373,7 +366,7 @@ function getOfferDetails(submissionId){
 	var locationCode ='${SourceLeadWeb_locationCode}'; 
 	 $.ajax({  
          type : "POST",
-         url: atsUrl+"/getCrowdSourcingOfferDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&locationCode="+locationCode,        
+         url: sourceleadUrl+"/getCrowdSourcingOfferDetails?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&locationCode="+locationCode,        
          success :function(data) {
          if(data != null && data != 'undefined' && data != "" && data != '{}'){
             		
@@ -506,7 +499,7 @@ function getOfferDetails(submissionId){
 	                        	 result = result + '<label class="col-md-5">';
 	                        	 result = result + '<strong>Attachment</strong>';
 	                        	 result = result + '</label>';
-	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a download class="glyphicon glyphicon-download-alt" href=\"'+atsUrl+'/ws/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a></p>';
+	                             result = result + '<p class="col-md-7 tbldata-dotdot-big">'+report.offerId.fileName+'<a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/ws/downloadOfferAttachment?offerId='+report.offerId.id+'\"></a></p>';
 	                        	 result = result + '</div>';
 	                    	 }else{
 	                    		 result = result + '<div class="row clearfix">';
@@ -561,7 +554,7 @@ function getOfferDetails(submissionId){
 function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 	 $.ajax({
 		   	type: "POST",
-		    url: atsUrl+"/ws/acceptOrRejectInterview?${_csrf.parameterName}=${_csrf.token}&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
+		    url: sourceleadUrl+"/ws/acceptOrRejectInterview?${_csrf.parameterName}=${_csrf.token}&interviewStatus="+interviewStatus+"&requirementInterviewId="+interviewId,	    	   
 		    success: function(data) {
 		    	 jQuery("#"+(interviewId)+"actionDiv").css("display","none");
 		    	 if(interviewStatus == "Attending"){
@@ -582,7 +575,7 @@ function changeInterviewStatus(submissionId,interviewId,interviewStatus){
 function sendMailToapplicant(submissionId,interviewId,interviewHistoryId){
 	 $.ajax({
 		   	type: "POST",
-		    url: atsUrl+"/sendMailToapplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
+		    url: sourceleadUrl+"/sendMailToapplicant?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&requirementInterviewId="+interviewId+"&interviewHistoryId="+interviewHistoryId,	    	   
 		    success: function(data) {
 		    	 jQuery("#"+(interviewHistoryId)+"applicantDiv").css("display","none");
            		 var existingVal = $("#"+(interviewHistoryId)+"notifiedDiv").text();
@@ -637,7 +630,7 @@ function acceptingOffer(offerStatus,submissionId,offerId){
 	 }
 	 $.ajax({  
          type : "POST",
-         url: atsUrl+"/acceptingOffer?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason+"&OfferId="+offerId,        
+         url: sourceleadUrl+"/acceptingOffer?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerStatus="+offerStatus+"&reason="+reason+"&OfferId="+offerId,        
          success :function(data) {
 
         	 $("#rejectOfferAlert").empty();
@@ -667,7 +660,7 @@ function notifyToApplicant(submissionId,offerId,offerHistoryId){
 	
 	  $.ajax({  
         type : "POST",
-        url: atsUrl+"/sendNotificationAboutRequirementOfferMade?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Applicant&offerHistoryId="+offerHistoryId,        
+        url: sourceleadUrl+"/sendNotificationAboutRequirementOfferMade?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&offerId="+offerId+"&notificationtype=Applicant&offerHistoryId="+offerHistoryId,        
         success :function(data) {
         	    jQuery("#"+(offerHistoryId)+"offerApplicantDiv").css("display","none");
         	    var existingVal = $("#"+(offerHistoryId)+"offerNotifiedDiv").text();
@@ -708,7 +701,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormatScript = 'yy-dd-mm'; 
 	  }
-	 generateOrgSubmissionForm(atsUrl,requirementId,finalDateFormatScript); 
+	 generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript); 
 	 
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	 var result = "";
@@ -752,7 +745,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 		
 		result = result + '</div>';
 		
-		result = result + '<div id="sjfb-fields" class="viewTemplate"> <div id="loading"></div><div id="detailsLoading"></div></div>';
+		result = result + '<div id="sjfb-fields" class="viewTemplate backgroundWhite"> <div id="loading"></div><div id="detailsLoading"></div></div>';
 		result = result + '</div>';
 		
 		result = result + '</div>'; 
@@ -947,7 +940,7 @@ function getRequirementSubmissionTemaplate(jobTitle,requirementId,referId){
 	    	
 	    	$.ajax({
 		    	type: "POST",
-		        url: atsUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
+		        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -1082,7 +1075,7 @@ function ApplicantNotifyRequiremnentProRecruter(){
 		 if(requirementId != null && requirementId != "" && requirementId != 'undefined'){
 			 $.ajax({
 			    	type: "POST",
-			        url: atsUrl+"/getRecruiterCandidatesList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateType="+candidateType, 
+			        url: sourceleadUrl+"/getRecruiterCandidatesList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&candidateType="+candidateType, 
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	var output = "";
@@ -1178,7 +1171,7 @@ function ApplicantNotifyRequiremnentProRecruter(){
 		 $('.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "POST",
-		        url: atsUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+		        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
 		        success: function(data) {
 		        	var json = data.data;
 		        	if (data.response === "FAILED") {
@@ -1261,15 +1254,29 @@ function ApplicantNotifyRequiremnentProRecruter(){
  }
 </script>
 
+<script>
+	var educationList = [];
+	var skillList = [];
+	$(function() {
+		 var i= 0;
+		 <c:forEach var="skill" items="${skillList}">
+		 	skillList[i++] = "${skill.name}";
+		 </c:forEach>
+		 var i= 0;
+		 <c:forEach var="edu" items="${educationsList}">
+		 	educationList[i++] = "${edu.name}";
+		 </c:forEach>
+	});
+</script>
 
 <script>
- $(document.body).on('change', '#uploadBtn' ,function(){
+$(document.body).on('change', '#uploadBtn' ,function(){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
- 	 if(validate_fileupload(this.value)){
- 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 if(validate_fileupload(this.value)){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#submitCandidateToJob_form')[0];
-  		var formData = new FormData(form); 
+ 		var formData = new FormData(form); 
 		   $.ajax({
 				    type: "POST",
 			    	data: formData,
@@ -1285,37 +1292,74 @@ function ApplicantNotifyRequiremnentProRecruter(){
 						} else if (response.response === "SUCCESS") {
 							if(response.object !== null) {
 								var json = response.object;
-								var name = json.name;
-								var firstName = '';
-								var lastName = '';
-								if(name != null && name != 'undefined' && name != ''){
-									 firstName = name.split(".")[0]; 
-									 lastName = name.split(".")[1]; 
-									 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-											 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-										 firstName = name;
-									 }
-								}
+								var firstName = json.firstName;
+								var lastName = json.lastName;
 								
 								
-								 $("input[name=FirstName]").val(firstName);
-					        	 $("input[name=LastName]").val(lastName);
-					        	 $("input[name=EmailId]").val(json.email);
-					        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
+								$("input[name='FirstName']").val(firstName);
+					        	 $("input[name='LastName']").val(lastName);
+					        	 $("input[name='EmailId']").val(json.email.split("<<>>")[0]);
+					        	 
+					        	 for(var e in json.phoneNumbers) {
+					        		 if(e === "0")
+						        	 	$("input[name='PhoneNumber']").val(json.phoneNumbers[e]);
+					        		 else
+					        			 $("input[name='AlternateNumber']").val(json.phoneNumbers[e]);
+					     		 }
+					        	 
+					        	 $("input[name='country']").val(json.country === null && json.country !== "" ? json.country : "");
+					        	 $("input[name='state']").val(json.state === null && json.state !== "" ? json.state : "");
+					        	 $("input[name='city']").val(json.city === null && json.city !== "" ? json.city : "");
+					        	 $("input[name='zipcode']").val(json.zipcode === null && json.zipcode !== "" ? json.zipcode : "");
+					        	 
+					        	 $("#DOB").val(json.dob !== null && json.dob !== "" ? json.dob : "");
+					        	 $("input[name='Current/LastCompany']").val(json.employeers);
+					        	 
+					        	 $("input[name='Designation']").val(json.designation !== null && json.designation !== "" ? json.designation : "");
+					        	 
+					        	 $("input[name='Education']").val(json.educations);
+					        	 
+				        	 	if(json.totalYearsExp > 0) {
+				        			$("select[name='WorkExperience']").val(json.totalYearsExp);
+				        		} else if(json.totalMonthsExp > 0) {
+				        			$("select[name='WorkExperience']").val(0);
+				        		}
+				        		
+				        		if(json.totalMonthsExp > 0) {
+				        			$("select[name='monthExp']").val(json.totalMonthsExp);
+				        		} else if(json.totalYearsExp > 0) {
+				        			$("select[name='monthExp']").val(0);
+				        		}
 					        	 
 					        	 $("#candidateSkills").empty();
-					        	 var internalOutput = "";
-		 						 <c:forEach var="skill" items="${skillsList}">
-		 						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-		 	                     </c:forEach>
+		 						
+		 						var internalOutput = "";
 		 						var skills = json.skills;
 		 						if(skills != null && skills != 'undefined' && skills != ''){
-		 							var str_array = skills.split(',');
+		 							var str_array = skills;
+		 						} else {
+		 							str_array = [];
+		 						}
+		 						
+		 					   for(var j = 0; j< skillList.length; j++){
+		 						    var existed = 0;
 		 							for(var i = 0; i < str_array.length; i++) {
 		 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-		 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+		 							   if(str_array[i] == skillList[j]){
+		 								   existed = 1;
+		 								   internalOutput = internalOutput+"<option value='"+str_array[i]+ "' selected>"+str_array[i]+"</option>";
+		 								   break;
+		 							   }
 		 							}
+		 							if(existed == 0){
+		 								internalOutput = internalOutput+"<option value='"+skillList[j]+"'>"+skillList[j]+"</option>";
+		 					        }
+		 						 }
+		 					   
+		 					   for(var e in str_array) {
+		 							internalOutput = internalOutput+"<option value='" + str_array[e] + "' selected>" + str_array[e] + "</option>";
 		 						}
+		 						
 		 						$("#candidateSkills").append(internalOutput);
 		 		        		$("#candidateSkills").trigger("chosen:updated");
 		  						
@@ -1335,8 +1379,8 @@ function ApplicantNotifyRequiremnentProRecruter(){
 						}
 					},
 				});
- 	 }
- });
+	 }
+});
 
 </script> 
 
@@ -1350,7 +1394,7 @@ function ApplicantNotifyRequiremnentProRecruter(){
 		 $("#save_button").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
-		        url: atsUrl+"/validateRequirementRecruiterCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
+		        url: sourceleadUrl+"/validateRequirementRecruiterCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&requirementId="+requirementId, 
 		        success: function(data) {
 		         	if(data == 'true'){
 			        	  $("#save_button" ).addClass('btn btn-sm btn-primary').val('SUBMIT');
@@ -1397,7 +1441,7 @@ function getResumesList(){
 	 var candidateId = '${candidateId}';
 	 $.ajax({
 	    	type: "POST",
-	        url: atsUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
+	        url: sourceleadUrl+"/getCandidateResumes?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
 	        success: function(data) {
 	        	var json = data.data;
 	        	if (data.response === "FAILED") {
@@ -1446,7 +1490,7 @@ function getResumesList(){
 	if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: atsUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId,		
+		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId,		
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -1633,7 +1677,7 @@ function getCandidateDetails(){
  	 
      $.ajax({
 	    	type: "POST",
-	        url: atsUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId,		   
+	        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId,		   
 	        success: function(data) {
 	        	if (data.response === "FAILED") {
 		    		showError(data.responseMessage);
@@ -2109,7 +2153,7 @@ $('body').on('submit', '#applyToJob_form', function(e){
 	        processData: false,
 	        contentType:false,
  	        dataType : 'json',
- 	    	url : atsUrl+"/applyToJobFromCrowdSourcing?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
+ 	    	url : sourceleadUrl+"/applyToJobFromCrowdSourcing?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	
 	        	
@@ -2129,11 +2173,11 @@ $('body').on('submit', '#applyToJob_form', function(e){
 			        	
 			       		requirementsList(0);
 		    		}else{
-		    			location.replace(atsUrl+"/requirementProfileDetails?requirementUUID="+requirementUUID); 
+		    			location.replace(sourceleadUrl+"/requirementProfileDetails?requirementUUID="+requirementUUID); 
 		    		}
 		    		
 	        	}else{
-	        		location.replace(atsUrl+"/professionalRequirements"); 
+	        		location.replace(sourceleadUrl+"/professionalRequirements"); 
 	        	}
 	        },
 	    });  
@@ -2292,7 +2336,7 @@ $('body').on('submit', '#submitCandidateToJob_form', function(e){
 	        processData: false,
 	        contentType:false,
  	        dataType : 'json',
- 	    	url : atsUrl+"/saveAddApplicant?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
+ 	    	url : sourceleadUrl+"/saveAddApplicant?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
 	        	
 				$("#loading").removeAttr("style");
@@ -2375,13 +2419,13 @@ function setRateTypesByLocation(){
 
 
 <script>
- $(document.body).on('change', '#professionaluploadBtn' ,function(){
+$(document.body).on('change', '#professionaluploadBtn' ,function(){
 	 $('#uploadFile').val(this.value.split( '\\' ).pop());
 	 $("#uploadFile").focus();
- 	 if(validate_fileupload(this.value)){
- 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 if(validate_fileupload(this.value)){
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var form = $('#applyToJob_form')[0];
-  		var formData = new FormData(form); 
+ 		var formData = new FormData(form); 
 		   $.ajax({
 				    type: "POST",
 			    	data: formData,
@@ -2397,41 +2441,74 @@ function setRateTypesByLocation(){
 						} else if (response.response === "SUCCESS") {
 							if(response.object !== null) {
 								var json = response.object;
-								var name = json.name;
-								var firstName = '';
-								var lastName = '';
-								if(name != null && name != 'undefined' && name != ''){
-									 firstName = name.split(".")[0]; 
-									 lastName = name.split(".")[1]; 
-									 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-											 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-										 firstName = name;
-									 }
-								}
+								var firstName = json.firstName;
+								var lastName = json.lastName;
 								
 								
-								 $("input[name=FirstName]").val('${SourceLeadWeb_candidate.firstName}');
-					        	 $("input[name=LastName]").val('${SourceLeadWeb_candidate.lastName}');
-					        	 $("input[name=EmailId]").val('${SourceLeadWeb_candidate.email}');
-					        	 $("input[name=PhoneNumber]").val('${SourceLeadWeb_user.mobilePhone}');
+								$("input[name='FirstName']").val(firstName);
+					        	 $("input[name='LastName']").val(lastName);
+					        	 $("input[name='EmailId']").val(json.email.split("<<>>")[0]);
 					        	 
-					        	 $("input[name=FirstName]").attr("readonly", "readonly");
-					        	 $("input[name=LastName]").attr("readonly", "readonly");
-					        	 $("input[name=EmailId]").attr("readonly", "readonly");
+					        	 for(var e in json.phoneNumbers) {
+					        		 if(e === "0")
+						        	 	$("input[name='PhoneNumber']").val(json.phoneNumbers[e]);
+					        		 else
+					        			 $("input[name='AlternateNumber']").val(json.phoneNumbers[e]);
+					     		 }
+					        	 
+					        	 $("input[name='country']").val(json.country === null && json.country !== "" ? json.country : "");
+					        	 $("input[name='state']").val(json.state === null && json.state !== "" ? json.state : "");
+					        	 $("input[name='city']").val(json.city === null && json.city !== "" ? json.city : "");
+					        	 $("input[name='zipcode']").val(json.zipcode === null && json.zipcode !== "" ? json.zipcode : "");
+					        	 
+					        	 $("#DOB").val(json.dob !== null && json.dob !== "" ? json.dob : "");
+					        	 $("input[name='Current/LastCompany']").val(json.employeers);
+					        	 
+					        	 $("input[name='Designation']").val(json.designation !== null && json.designation !== "" ? json.designation : "");
+					        	 
+					        	 $("input[name='Education']").val(json.educations);
+					        	 
+				        	 	if(json.totalYearsExp > 0) {
+				        			$("select[name='WorkExperience']").val(json.totalYearsExp);
+				        		} else if(json.totalMonthsExp > 0) {
+				        			$("select[name='WorkExperience']").val(0);
+				        		}
+				        		
+				        		if(json.totalMonthsExp > 0) {
+				        			$("select[name='monthExp']").val(json.totalMonthsExp);
+				        		} else if(json.totalYearsExp > 0) {
+				        			$("select[name='monthExp']").val(0);
+				        		}
 					        	 
 					        	 $("#candidateSkills").empty();
-					        	 var internalOutput = "";
-		 						 <c:forEach var="skill" items="${skillsList}">
-		 						    internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-		 	                     </c:forEach>
+		 						
+		 						var internalOutput = "";
 		 						var skills = json.skills;
 		 						if(skills != null && skills != 'undefined' && skills != ''){
-		 							var str_array = skills.split(',');
+		 							var str_array = skills;
+		 						} else {
+		 							str_array = [];
+		 						}
+		 						
+		 					   for(var j = 0; j< skillList.length; j++){
+		 						    var existed = 0;
 		 							for(var i = 0; i < str_array.length; i++) {
 		 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-		 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
+		 							   if(str_array[i] == skillList[j]){
+		 								   existed = 1;
+		 								   internalOutput = internalOutput+"<option value='"+str_array[i]+ "' selected>"+str_array[i]+"</option>";
+		 								   break;
+		 							   }
 		 							}
+		 							if(existed == 0){
+		 								internalOutput = internalOutput+"<option value='"+skillList[j]+"'>"+skillList[j]+"</option>";
+		 					        }
+		 						 }
+		 					   
+		 					   for(var e in str_array) {
+		 							internalOutput = internalOutput+"<option value='" + str_array[e] + "' selected>" + str_array[e] + "</option>";
 		 						}
+		 						
 		 						$("#candidateSkills").append(internalOutput);
 		 		        		$("#candidateSkills").trigger("chosen:updated");
 		  						
@@ -2451,8 +2528,8 @@ function setRateTypesByLocation(){
 						}
 					},
 				});
- 	 }
- });
+	 }
+});
 
 </script> 
 
@@ -2690,7 +2767,7 @@ function saveProposeTime(submissionId){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 					type : "POST",
-					url : atsUrl+"/saveProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&submissionId"+submissionId,
+					url : sourceleadUrl+"/saveProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&submissionId"+submissionId,
 					success : function(result) {
 						getInternalInterviewsList(submissionId);
 					},
@@ -2713,7 +2790,7 @@ function viewProposeTime(interviewId,submissionId){
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type : "POST",
-		url : atsUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
+		url : sourceleadUrl+"/getProposeTime?${_csrf.parameterName}=${_csrf.token}&interviewId="+interviewId+"&locationId="+locationId,
 		success : function(data) {
 			var json = JSON.parse(data);
 	        var result = "";
@@ -2773,7 +2850,7 @@ function acceptProposeTime(id,proposeDate,proposeTime,submissionId){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 					type : "POST",
-					url : atsUrl+"/acceptProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&proposeTimeId="+id+"&proposeDate="+proposeDate+"&proposeTime="+proposeTime,
+					url : sourceleadUrl+"/acceptProposeTime?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData+"&proposeTimeId="+id+"&proposeDate="+proposeDate+"&proposeTime="+proposeTime,
 					success : function(result) {
 						getInternalInterviewsList(submissionId);
 					},

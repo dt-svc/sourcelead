@@ -997,7 +997,7 @@ $(document).ready(function () {
 														class="fa fa-folder-open-o"></i>&nbsp;Browse File <input
 														type="file" id="uploadBtn" class="hidden upload">
 												</span>
-												</label> <input type="text" class="form-control input-sm" readonly
+												</label> <input type="text" class="form-control" readonly
 													id="uploadFile" name="docFile"
 													placeholder="Upload File ..." field-name="Upload Resume"
 													data-validation="validate_docimgpdf"
@@ -1567,7 +1567,7 @@ $(document).ready(function () {
 												<label class="col-md-3">Bill Rate / Salary&nbsp;<i
 													class='fa fa-info-circle'
 													title='Client proposed bill rate for the particular job (strictly for internal reference only)'></i></label>
-												<div class="col-md-9 pras ratetype">
+												<div class="col-md-9 ratetype">
 													<div class="input-group">
 														<c:set var="val" value="${requirement.isClientJob}" />
 														<c:choose>
@@ -1755,8 +1755,8 @@ $(document).ready(function () {
 												<div class="clearfix"></div>
 											</div>
 											<div class="form-group">
-												<label class="col-md-3">Submission Form<span
-													class="text-danger paddingLeft">* </span><i
+												<label class="col-md-3 paddingRight">Submission Form<span
+													class="text-danger">*</span><i
 													class='fa fa-info-circle'
 													title="Select client specific Submission Template to provide the applicant's information"></i></label>
 												<div class="col-md-9">
@@ -1801,6 +1801,7 @@ $(document).ready(function () {
 													</c:if>
 												</c:forEach>
 											</c:if>
+											
 											<div class="form-group">
 												<label class="col-md-3">Job Rating</label>
 												<div class="col-md-9">
@@ -1813,7 +1814,7 @@ $(document).ready(function () {
 													</div>
 												</div>
 											</div>
-
+											
 											<div class="form-group">
 												<label class="col-md-3">Incentivized</label>
 												<div class="col-md-9 toggle-button">
@@ -1826,7 +1827,6 @@ $(document).ready(function () {
 													</label>
 												</div>
 											</div>
-
 											<div class="form-group" id="nofJoiners"
 												${requirement.incentivized == 'Y' ? '' : 'style="display:none;"'}>
 												<label class="col-md-3">No. of Joiners <span
@@ -2204,6 +2204,25 @@ $(document).ready(function () {
 										</select>
 									</div>
 								</div>
+								<!--  added for workflow integration for job start here  
+								 <!--//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
+   									// below lines is commented for to move in next release build.
+								<div class="form-group">
+									<label class="col-md-3">Workflow<span
+										class="text-danger paddingLeft">*</span></label>
+									<div class="col-md-9">
+
+										<select class="chosen-select form-control"
+											data-validation="required" field-name="Workflow"
+											name="workflow" id="workflowId">
+											<c:forEach var="workflow" items="${workflowList}">
+													<option value="${workflow.id}"
+														${workflow.configureType=='Default'? 'selected' : ''}>${workflow.workFlowName}</option>
+											</c:forEach>
+										</select>
+									</div>
+								</div>-->
+								<!--  added for workflow integration for job end here -->
 								<div class="form-group" id="internalSubmissionFrom">
 									<label class="col-md-3">Application Form<span
 										class="text-danger paddingLeft">* </span><i
@@ -2344,7 +2363,7 @@ $(document).ready(function () {
 			<form role="form" id="team_form" name="team_form" method="post">
 				<div class="modal-content" id="assignTeamDiv">
 					<div class="modal-header">
-						<button data-dismiss="modal" class="close" type="button">ï¿½</button>
+						<button data-dismiss="modal" class="close" type="button"><i class="fa fa-times"></i></button>
 						<h4 class="modal-title">Add Team</h4>
 					</div>
 					<div class="modal-body clearfix">
@@ -2549,7 +2568,6 @@ function validateProfilePercentage(){
 			$("#primaryRecruiterUserId").parent().find("p").remove();
 		}
 	}
-	
 	function getSavedJobFairsForRequirement() {
 		if(requirementId > 0) {
 			$.ajax({

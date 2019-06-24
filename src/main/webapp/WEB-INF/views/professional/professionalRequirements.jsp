@@ -7,45 +7,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<style type="text/css">
-.cand-advsrch-popup .bs-caret {
-position: relative; top:8px;
-}
-.cand-advsrch-popup .bootstrap-select > .dropdown-toggle {
-padding-right: 0px;
-}
-.reportsCount.req_Crowd ul{
-padding-left: 15px; padding-right: 15px;
-}
-.reportsCount.req_Crowd ul li {
-width: auto;
-}
-.reportsCount ul li span {
-width: 40px; height: 40px;
-}
-.reportsCount ul li span i {
-font-size: 18px;
-}
-.reportsCount ul li b {
-padding: 5px 7px;
-}
-.openPostBtns a {
-padding:4px 12px; float: left;
-}
-.bg-green {
-	background: #1ab394 !important;
-}
-.bg-red {
-  background: #D84315 !important; 
-}
-
-.OpenJob h5 strong{
-	width: 70px !important; 
-}
-.ref-top{
-top: 22px;height: 32px; line-height: 18px;
-}
-</style>
 
 <script>
 $(document).ready(function() {
@@ -55,6 +16,7 @@ $(document).ready(function() {
 
 <script type="text/javascript">
 var atsUrl = '${SourceLeadWeb_atsUrl}';
+var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
 function setPostValues(title,link,picture,description,comment){
 	 if (title) {
@@ -164,7 +126,7 @@ window.onload = function () {
            </c:if>
           
           <div class="clearfix"></div> 
-         <div class="reportsCount req_Crowd clearfix">
+         <div class="reportsCount req_Crowd reqCrowd clearfix reportsCountUL">
           <ul class="clearfix">
           <%-- <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> --%>
           <li><label class="mr10"><span><i class="fa fa-folder-open-o"></i></span><b id="openActive"><input class="myCheckbox valid" type="radio" name="CSRequirementType" id="openjobs" onchange="selectRequirementType('allJobs');" value="OpenJobs">&nbsp;Jobs</label></b></li>
@@ -866,15 +828,13 @@ function requirementsList(offset){
 	if(requirementType == 'ReferredToMe' || requirementType == 'ReferredByMe'){
 		document.getElementById("advancedSearch").style.display="none";
 	}
-	
 	closePop();
 	loadChosenRequirementScripts();
 	$("#requirementsListLoading").attr('style','position:absolute; width:100%; height:30%; background-color:rgba(255,255,255,0.8); top:248px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	
 	 $.ajax({ 
 		type: "POST",
 	   	url: atsUrl+"/getCrowdSourcingRequirements?${_csrf.parameterName}=${_csrf.token}&requirementType="+requirementType+"&offset="+offset+"&postedOn="+postedOn+"&jobTitleSearch="+jobTitleSearch+"&jobLocationSearch="+jobLocationSearch+"&postedOrgName="+postedOrgName,
-	   			
+	   		
 	    success: function(data) {
        	 var json = JSON.parse(data);
        	 var result = "";
@@ -1040,15 +1000,15 @@ function requirementsList(offset){
 			 					sourceleadShareUrl = sourceleadShareUrl.split("/app")[0];
 			 					result = result +'<div class="openCtaRight">';
 				 				result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(sourceleadShareUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:url="'+(sourceleadShareUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
-				 				result = result +'<div class="openPostBtns clearfix">';
+				 				result = result +'<div class="openPostBtns clearfix openPostBtnsA">';
 				 				
 				 				if(requirements.isJobSaved != 'Y'){
 				 					result = result +'  <a href="#" title="Save Job" href="javascript:void(0)" id="saveJob'+requirements.requirementUUID+'" class="alertBtn" onclick="saveJob(\''+requirements.jobTitle+'\',\''+requirements.requirementUUID+'\','+requirements.referId+')" ><i class="fa fa-floppy-o"></i></a>';
 				 				}else{
 				 					if(requirementType == "SavedJobs"){
-				 						result = result +'  <a href="#" title="Delete Job" href="javascript:void(0)" class="alertBtn bg-red" onclick="deleteSavedJob(\''+requirements.jobTitle+'\',\''+requirements.savedJobUUID+'\',\''+requirements.requirementUUID+'\')" ><i class="fa fa-trash" style="color:#fff !important"></i></a>';
+				 						result = result +'  <a href="#" title="Delete Job" href="javascript:void(0)" class="alertBtn bgReed" onclick="deleteSavedJob(\''+requirements.jobTitle+'\',\''+requirements.savedJobUUID+'\',\''+requirements.requirementUUID+'\')" ><i class="fa fa-trash" style="color:#fff !important"></i></a>';
 				 					}else{
-				 						result = result +'  <a href="#" title="Saved Job" href="javascript:void(0)" class="alertBtn bg-green"  ><i class="fa fa-floppy-o"></i></a>';
+				 						result = result +'  <a href="#" title="Saved Job" href="javascript:void(0)" class="alertBtn bgGreeon"  ><i class="fa fa-floppy-o"></i></a>';
 				 					}
 				 					
 				 				}
@@ -1381,12 +1341,12 @@ function searchRequirement(offset){
 														result = result +' <div class="addthis_inline_share_toolbox_g28q" data-url="'+(atsUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:url="'+(atsUrl+'/job/'+requirements.url+'-'+requirements.requirementId)+'" addthis:title="'+requirements.jobTitle+'" data-title="'+requirements.jobTitle+'" addthis:description="'+requirements.jobTitle+'" data-description="'+requirements.jobTitle+'"></div>';
 														result = result +'	</div>';
 										 				result = result +'</span>'; 
-										 				result = result +'<div class="openPostBtns clearfix">';
+										 				result = result +'<div class="openPostBtns openPostBtnsA clearfix">';
 										 				
 										 				if(requirements.isJobSaved != 'Y'){
 										 					result = result +'  <a href="#" title="Save Job" href="javascript:void(0)" id="saveJob'+requirements.requirementUUID+'" class="alertBtn" onclick="saveJob(\''+requirements.jobTitle+'\',\''+requirements.requirementUUID+'\','+requirements.referId+')" ><i class="fa fa-floppy-o"></i></a>';
 										 				}else{
-										 					result = result +'  <a href="#" title="Saved Job" href="javascript:void(0)" class="alertBtn bg-green"  ><i class="fa fa-floppy-o"></i></a>';
+										 					result = result +'  <a href="#" title="Saved Job" href="javascript:void(0)" class="alertBtn bgGreeon"  ><i class="fa fa-floppy-o"></i></a>';
 										 				}
 										 				
 										 				if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
@@ -2614,7 +2574,7 @@ function saveJob(jobTitle,requirementUUID,referId){
         success: function(data) {
         	$("#saveJob"+requirementUUID).removeAttr("onclick");
         	document.getElementById("saveJob"+requirementUUID).removeAttribute("class");
-        	document.getElementById("saveJob"+requirementUUID).className = 'alertBtn bg-green';
+        	document.getElementById("saveJob"+requirementUUID).className = 'alertBtn bgGreeon';
         	document.getElementById("saveJob"+requirementUUID).removeAttribute("title");
         	document.getElementById("saveJob"+requirementUUID).title = "Saved Job";
         	

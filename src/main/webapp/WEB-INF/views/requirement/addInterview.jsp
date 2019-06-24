@@ -11,31 +11,7 @@
  </c:if>
  
 <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css?staticTime=${staticTime}" />
-<style type="text/css">
-.addinterTable .chosen-container{
-width:125px !important;
-}
-#addInterviewTbl p.jquery_form_error_message{
-padding:0!important;
-}
 
-.fullCount, .particalCount {
-	display: none;
-}
-ul.tagit li.tagit-choice-editable {
-z-index: 9 !important;
-}
-.requiresymbol {
-position: absolute; left: 1px; top:5px; font-size: 100%;
-}
-.requiresymbol2 {
-position: absolute; left: -7px; top:5px; font-size: 100%;
-}
-.add_inter table tr td {
-	position: relative;
-}
-
-</style>
 <!-- For add New Interview -->
 
 <script>
@@ -64,7 +40,7 @@ function addInterview(requirementId){
         result = result + '<label>&nbsp;&nbsp;<strong>Is Client Interview</strong>&nbsp;&nbsp;</label>';
 	} 
 	
-	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl" class="addinterTable">';
+	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl" class="addinterTable addinterTableStyles">';
 	result = result + '<tbody>';
 		result = result + '<tr id="divTsRow0">';
 			result = result + '<th>Applicant</th>';
@@ -1295,14 +1271,6 @@ function showCal(id){
   } 
 
   </script> 
-  
- <style>
-  .Highlighted a{
-	   background-color : #9ACD32 !important;
-	   font-weight:bold !important;
-	   font-size: 12pt;
-}
-  </style> 
 
 <!-- <script>
     $( "#scheduleCalendar" ).datepicker({

@@ -6,19 +6,6 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<style type="text/css">
-.center-div {
-	width: 300px;
-	height: 30px;
-	margin: 10px 220px 0;
-}
-
-.center-div input {
-	border: none;
-	background: transparent
-}
-</style>
-
 <script type="text/javascript">
 var uploadflag= true;
 		window.onload = function () {
@@ -174,6 +161,7 @@ function importAssociateBankDetail(){
 	var jsonData = encodeURIComponent(con);
 	var form = $('#upload_asso_info_form')[0];
 	var formData = new FormData(form); 
+	
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 		   	type: "POST",
@@ -185,20 +173,19 @@ function importAssociateBankDetail(){
     	    dataType : 'json',
     	    url: sourceleaAtsdUrl+"/uploadAssociateInfomation?",	   
  		    success : function(json) {
- 		    	$("#loading").removeAttr("style");
-		    	    if(json.insertedCount != null && json.insertedCount != '')
-		    	    $("#msgDiv").removeAttr("style");
-		    	    $("#msgDiv").css({ "display" : "block", "text-align" :"center" });
-		    	    if(json.insertedCount != 0){
-		 			$("#msgDiv").html(json.insertedCount+ " Associates updated");}
-		 			else{
-		 				$("#msgDiv").html("Should fill the atleast mandatory Fields").css({"background":"#d9534f"})
-		 			}
-		 			msgFadein();
-		 			if(json.pfErrorData != null && json.pfErrorData.length >0){
-		 				showFailedExcelData(json);
-		 				importassociteSel(json);
-		 			}
+ 		    	  
+	 		    	   $("#loading").removeAttr("style");
+			    	    if(json.insertedCount != 0){
+			 			    $("#msgDiv").html(json.insertedCount+ " Associates updated");
+			 			}else{
+			 				$("#msgDiv").html("Should fill the atleast mandatory Fields").css({"background":"#d9534f"})
+			 			}
+		 			
+			    	    msgFadein();
+			 			if(json.pfErrorData != null && json.pfErrorData.length >0){
+			 				showFailedExcelData(json);
+			 				importassociteSel(json);
+			 			}
 			    	},
 		 		   error: function(e){
 			        }

@@ -14,6 +14,7 @@ import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -113,6 +114,9 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
+import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 //import org.apache.commons.collections.ListUtils;
 import com.ibm.icu.util.Calendar;
 
@@ -210,6 +214,9 @@ public class RequirementController {
 	
 	@Autowired
 	private JobCustomFieldDataService jobCustomFieldDataService;
+	
+	@Autowired
+	private RequirementWorkFlowService requirementWorkFlowService;
 	
 	@Autowired
     EmailReminderService emailReminderService;
@@ -583,7 +590,19 @@ public class RequirementController {
 		List<SubmissionTemplate>   submissionTempletesList = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(orgLocations.getId(),"Submission");
 		model.addObject("submissionTempletesList", submissionTempletesList);
 		
-		
+		/*// workflow List commented by SRINIVAS SABBU.
+		List<RequirementWorkFlow> workflowList = new ArrayList<RequirementWorkFlow>();
+		workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
+		if (workflowList == null || workflowList.size() == 0) {
+			User user = new User();
+			user.setId(userId);
+			requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
+			workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
+		}
+		if (workflowList != null && workflowList.size() > 0) {
+			model.addObject("workflowList", workflowList);
+		}
+			*/
 		//client submission template 
 		if(null != requirement.getClientId()){
 			List<SubmissionTemplate>   clientSubmissionTempletesList = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(requirement.getClientId().getResponderLocationId().getId(), orgLocations.getId(),"Submission");

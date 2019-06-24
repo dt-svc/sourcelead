@@ -197,9 +197,14 @@ padding: 2px
     .mb {
     margin-bottom: 15px;
     }
+    .mt {
+    margin-top: 15px;
+    }
     .plupload_file_name {
     	width: 700px !important;
     }
+	.upresume { text-align: center; display: block;}
+	.upresumeInn { display: inline-block; padding: 0px 15px;}
 </style>
 <body>
 	<header>
@@ -244,7 +249,11 @@ padding: 2px
 		</c:if>
 		</div>
 		<div class='title'>
-		Candidate (Resume) Bulk Import
+			<c:choose>
+				<c:when test="${requirementUUID !=''}">Applicants</c:when>
+				<c:otherwise>Candidate</c:otherwise>
+			</c:choose>
+		 	(Resume) Bulk Import
 		</div>
 		<div class="clear"></div>
 	</header>
@@ -256,6 +265,18 @@ padding: 2px
                 </div>
             </div>                
             </div>
+
+<c:if test="${requirementUUID !=''}">
+	<div class="upresume mb mt">
+	<div class="upresumeInn">
+		<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit">&nbsp;&nbsp;<label for="needApplicantPermit">Need applicant permission</label>
+		</div>
+		<div class="upresumeInn">
+			<input type="checkbox" name="notifyToApplicant" value="Y" id="notifyToApplicant">&nbsp;&nbsp;<label for="notifyToApplicant">Notify to applicant</label>
+		</div> 
+	</div>
+</c:if>            
+            
 <div id="uploader">
     <p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
 </div>
@@ -323,12 +344,20 @@ var sourceleadUrl = '${sourceleadUrl}';
 
 <script type="text/javascript">
 $(function() {
+	var requirementUUID = "${requirementUUID}";
+	var reqQuery = "", needApplicantPermitQuery = "", notifyToApplicantQuery = ""; 
+	if(requirementUUID !== "") {
+		reqQuery = "requirementUUID=" + requirementUUID;
+		needApplicantPermitQuery = ($("#needApplicantPermit").length > 0 && $("#needApplicantPermit").is(":checked")) ? "&needApplicantPermit='Y'" : "";
+		notifyToApplicantQuery = ($("#notifyToApplicant").length > 0 && $("#notifyToApplicant").is(":checked")) ? "&notifyToApplicant='Y'" : "";
+	}
+	/* alert("RequirementUUID : " + requirementUUID); */
     // Setup html5 version
     $("#uploader").pluploadQueue({
         // General settings
         
         runtimes : 'html5,flash,silverlight,html4',
-        url : 'upload-resumes',
+        url : 'upload-resumes' + (requirementUUID !== "" ? "requirementUUID=" + requirementUUID : "") + ($("#needApplicantPermit").length > 0 && $("#needApplicantPermit").is(":checked") ? "&needApplicantPermit=Y" : "") + ($("#notifyToApplicant").length > 0 && $("#notifyToApplicant").is(":checked") ? "&notifyToApplicant=Y" : ""),
         chunk_size : '400kb',
         rename : false,
         dragdrop: true,
@@ -367,7 +396,7 @@ $(function() {
     				$.post("check-session", {}, function(data) {
     					if(data === "YES") {
     						uploadid = new Date().getTime();
-    						up.settings.url = 'upload-resumes?uploadid='+uploadid;
+    						up.settings.url = 'upload-resumes?uploadid='+uploadid + (requirementUUID !== "" ? "&requirementUUID=" + requirementUUID : "") + ($("#needApplicantPermit").length > 0 && $("#needApplicantPermit").is(":checked") ? "&needApplicantPermit=Y" : "") + ($("#notifyToApplicant").length > 0 && $("#notifyToApplicant").is(":checked") ? "&notifyToApplicant=Y" : "");
     						up.start();
     					} else {
     						alert("No Session found");

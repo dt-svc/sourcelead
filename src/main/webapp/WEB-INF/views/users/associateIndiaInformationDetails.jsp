@@ -284,14 +284,15 @@ function validateMinor(){
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	         };  
-	 
+	
 	 if ($('#associate_informationDetails_form').validate(false, validationSettings)){ 
 	        var formData = getFormData("associate_informationDetails_form");
+	       
 	        $("#informationDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: atsUrl+"/saveOnboardingCandidatePfEsiDetails?${_csrf.parameterName}=${_csrf.token}",
+		    	 url: sourceleadUrl+"/saveOnboardingCandidatePfEsiDetails?${_csrf.parameterName}=${_csrf.token}",
 		        success: function(response) {
 		        	$("#informationDetailsLoading").removeAttr('style');
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
@@ -306,6 +307,7 @@ function validateMinor(){
 						 document.getElementById("indLoanAndAdvancesDetails").removeAttribute("class");
 						 indLoanAndAdvancesDetails.href="#tab-4";
 						 $("#indLoanAndAdvancesDetails").click();
+						
 		        		
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
@@ -538,6 +540,7 @@ $("#nomineeShow").click(function() {
  
  <script>
  function addNomineeDetails(id){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$(".salarySetup, .comMask").fadeIn();
 	var urlPath = '';
 	if(id != null && id != 'undefined' && id != ''){
@@ -547,7 +550,7 @@ $("#nomineeShow").click(function() {
 	}
     $.ajax({
 			type: "POST",
-		    url: atsUrl + urlPath, 
+		    url: pmsUrl + urlPath, 
 		    success: function(data) {
 		    	$('#nomineePopUpDiv').empty();
 		    	$('#nomineePopUpDiv').append(data);

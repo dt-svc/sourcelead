@@ -5,7 +5,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-
+<div id="popupSaveId" class="popupWrap popupWrap2" style="display: none;"></div>
 
 <script>
 	function requirementPipelinePagination(url, requirementId, submissionType) {
@@ -13,6 +13,8 @@
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var clientSubmissions = '${clientSubmissions}';
 		var isSpocActive = '${isSpocActive}';
+		var isManager = '${isManager}';
+		var isAdmin = '${isAdmin}';
 		var colIndex = 0;
 		$('#requirementsPagination')
 				.DataTable(
@@ -55,6 +57,7 @@
 											var result = "";
 											$("#emptyPipelinelist").val(1);
 											'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
+											result = result + '<input type = hidden id ="submissionId" value='+opt.id+'>';
 											result = result
 													+ '<td><div onclick="applicantQuickViewProfile('
 													+ opt.id
@@ -353,7 +356,7 @@
 												orgName = "(" + opt.orgName
 														+ ")";
 											}
-											var candidateSource = "";
+												var candidateSource = "";
 											if (opt.candidateSource != null
 													&& opt.candidateSource != ''
 													&& opt.candidateSource != 'undefined') {
@@ -365,15 +368,23 @@
 													&& opt.createdUser != ''
 													&& opt.createdUser != 'undefined') {
 												result = result
-														+ '         <td><div><span title="'+opt.createdUser+''+orgName+''+candidateSource+'">'
+														+ ' <td><div style="width:150px;"><div class="tbldata-dotdot-vsm pull-left" title="'+opt.createdUser+''+orgName+''+candidateSource+'" class="pull-left">'
 														+ opt.createdUser + ''
 														+ orgName + '<br/>'
 														+ candidateSource
-														+ '</span></div></td>';
+														+ '</div>'
+														if(opt.orgName == null || opt.orgName == ''){
+															 if(isManager == "true" || isAdmin == "true"){
+																 result = result +'<i class="fa fa-pencil pull-left mt2 cursorPointer" onClick="applicantsourceHandler('+requirementId+','+opt.id+');"></i>';
+															 }
+															 }
+														+'</div>';
+												+'</td>';
 											} else {
 												result = result
 														+ '         <td><div><span>--</span></div></td>';
 											}
+											
 											return result;
 										}
 									},
@@ -537,28 +548,30 @@
 														result = result
 																+ "<option value='Status'>Submission</option>";
 													}
-													if (opt.previousSubmissionStatus != null
-															&& opt.previousSubmissionStatus == 'SHORTLIST') {
-														'<sec:authorize access="hasRole(\'ROLE_SHORTLIST\')">';
+													 if (opt.previousSubmissionStatus != null
+															&& opt.previousSubmissionStatus == 'SHORTLIST'
+															&& opt.submissionStatus == 'ONHOLD') {
+														
 														result = result
 																+ "<option value='shortlist'>Shortlist</option>";
-														'</sec:authorize>';
-													}
+														
+													} 
 													if (opt.previousSubmissionStatus != null
 															&& opt.previousSubmissionStatus == 'INTERVIEW'
 															&& opt.submissionStatus != 'SELECTED_ON_INTERVIEW'
+															&& opt.submissionStatus != 'SUBMIT_TO_CLIENT'
 															&& opt.submissionStatus != 'OFFERMADE'
 															&& opt.submissionStatus != 'OFFERACCEPTED') {
 														result = result
 																+ "<option value='Interview'>INTERVIEW</option>";
 													}
-													if (opt.previousSubmissionStatus != null
+													 if (opt.previousSubmissionStatus != null
 															&& opt.previousSubmissionStatus == 'SELECTED_ON_INTERVIEW'
-															&& opt.submissionStatus != 'SELECTED_ON_INTERVIEW') {
+															&& opt.submissionStatus == 'ONHOLD') {
 
 														result = result
 																+ "<option value='Selected on Interview'>Selected on Interview</option>";
-													}
+													} 
 													if (opt.previousSubmissionStatus != null
 															&& opt.previousSubmissionStatus == 'OFFERMADE'
 															&& opt.submissionStatus != 'JOINED') {
@@ -597,29 +610,30 @@
 																+ "<option value='NoResponse'>NoResponse</option>";
 													}
 
-													if (opt.submissionStatus == 'SELECTED_ON_INTERVIEW' && opt.previousSubmissionStatus != 'CLIENT_INTERVIEW') {
+													if (opt.submissionStatus == 'SELECTED_ON_INTERVIEW' && opt.previousSubmissionStatus !=null) {
 														result = result
 																+ "<option value='On Hold'>On Hold</option>";
 														result = result
 																+ "<option value='NoResponse'>NoResponse</option>";
 													}
 
-													if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW'
-															&& opt.submissionStatus != 'SUBMIT_TO_CLIENT'
+													if (opt.submissionStatus == 'CLIENT_INTERVIEW'
 															&& opt.submissionStatus != 'ONHOLD'
 															&& opt.submissionStatus != 'JOINED'
 															&& opt.submissionStatus != 'NORESPONSE') {
 														result = result
 																+ "<option value='On Hold'>On Hold</option>";
+														result = result
+														+ "<option value='NoResponse'>NoResponse</option>";
 													}
-													if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW'
+													/* if (opt.previousSubmissionStatus == 'CLIENT_INTERVIEW'
 															&& opt.submissionStatus != 'SUBMIT_TO_CLIENT'
 															&& opt.submissionStatus != 'NORESPONSE'
 															&& opt.submissionStatus != 'JOINED'
 															&& opt.submissionStatus != 'ONHOLD') {
 														result = result
 																+ "<option value='NoResponse'>NoResponse</option>";
-													}
+													} */
 													result = result
 															+ "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERMADE'
@@ -675,7 +689,6 @@
 		var candidateId = '${candidateId}';
 		var requirementId = '${requirementId}';
 		var submissionStatus = '${submissionStatus}';
-
 		if (submissionId != null && submissionId != ''
 				&& submissionId != 'undefined' && requirementId != null
 				&& requirementId != '' && requirementId != 'undefined'
@@ -740,6 +753,8 @@
 				&& submissionId != 'undefined' && candidateId != null
 				&& candidateId != '' && candidateId != 'undefined'
 				&& submissionType != "all"
+				&& submissionType != "DUPLICATE_APPLICANTS"
+				&& submissionType != "REQUEST_SENT"
 				&& submissionStatus != "SUBMIT_TO_CLIENT"
 				&& submissionStatus != "all" || submissionStatus == "REJECTED") {
 			applicantQuickViewProfile(submissionId, candidateId);
@@ -748,3 +763,71 @@
 		}
 	}
 </script>
+<script type="text/javascript">
+
+function updateUserPop(submissionId){
+$("#popupSaveId").empty();
+var result = "";	
+result = result +'<div class="clearfix">                                 ';
+result = result +'<div class="popupHead clearfix"> Assign Employee                                                                      ';
+result = result +'	<i class="closePop pull-right clPopClose" onClick="applicantsourceHandlerClose()"></i>                              ';
+result = result +'</div>                                                                                                                ';
+result = result +'<div class="cleaffix col-md-12 mt mb">                                                                                               ';
+result = result +'	<label>Assign Employee</label>                                                                                      ';
+result = result +'	<div class="mt5 width100percnt">                                                                                    ';
+result = result +'	<select class="chosen-select width100percnt" data-placeholder="Select Assign Employee" id="assignedNewPerson">      ';
+result = result +'		<option>Employee</option>                                                                                       ';
+result = result +'	</select>                                                                                                           ';
+result = result +'	</div>                                                                                                              ';
+result = result +'</div>                                                                                                                ';
+result = result +'<div class="col-md-12 mb mt5">                                                                                            ';
+result = result +'	<div class="pull-right">                                                                                            ';
+result = result +'		<button type="button" class="btn btn-primary" onclick="applicantsourceSave('+submissionId+')">Assign</button>                   ';
+result = result +'	        <button type="button" class="btn btn-default ml" onClick="applicantsourceHandlerClose()">Cancel</button>    ';
+result = result +'	 </div>                                                                                                             ';
+result = result +'</div>                                                                                                                ';
+result = result +'</div>                                                                                                                ';
+$("#popupSaveId").append(result);
+$('#assignedNewPerson').chosen();
+}
+</script>
+	
+<script>
+function applicantsourceHandler(reqId,submissionId) {
+	$(".mask, #popupSaveId").fadeIn();
+	updateUserPop(submissionId);
+	if(reqId != '' && reqId != 'undefined' && reqId != null){
+		$.ajax({
+	           type : "POST",
+	           url: atsUrl+"/updateApplicantSourceMember?&reqId="+reqId,    
+	            success :function(data) {
+		                var json = JSON.parse(data);
+	                $('#assignedNewPerson').empty();
+	                $('#assignedNewPerson').append('<option value="">--Select Assign Employee--</option>');
+	                for (var i = 0; i < json.length; i++) {
+	                    var opt = json[i];
+	                    $('#assignedNewPerson').append('<option value=' + opt.assignedUserIdTem + ' >' + opt.assignedUserName + '</option>');
+	                }
+	                $('#assignedNewPerson').trigger("chosen:updated");
+	            },
+	      }); 
+	}
+}
+function applicantsourceHandlerClose() {
+	$(".mask, #popupSaveId").fadeOut();
+}
+function applicantsourceSave(submissionId){
+	var userId = $("#assignedNewPerson").val();
+	if(userId !=null && userId !=''){
+	$.ajax({
+        type : "POST",
+        url: atsUrl+"/editApplicantSourceName?&submissionId="+submissionId+"&userId="+userId,    
+         success :function(response) {
+        	 applicantsourceHandlerClose();
+         },
+   }); 
+	}
+}
+</script>
+
+

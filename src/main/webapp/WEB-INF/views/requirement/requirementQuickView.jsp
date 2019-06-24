@@ -659,7 +659,9 @@
                     <div class="clearfix"></div>
                     
                     <div class="require_wrap_details_cta"> <b>Assign to all :</b><span>${requirement.releaseJobToAllUsers  == 'Y' ? 'YES' : 'NO'}</span></div>
-                    
+                    <div class="clearfix"></div>
+                    <%-- // below lines is commented for to move in next release build.--%>
+                    <%-- <div class="require_wrap_details_cta"> <b>Workflow :</b><span>${requirement.workflowId.workFlowName}</span></div> --%>
                     <c:if test="${!empty sourceleadSectionList}">
 						            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 						               <c:if test="${sectionOrder.index == 2}">
@@ -772,9 +774,15 @@
 			    <div class="action-pop">
 					<span class="width175">
 							<sec:authorize access="hasAnyRole('ROLE_ADD_APPLICANT')">
-							      <a href="javascript:void(0)" title="" onclick="getAddApplicant('${requirement.id}');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>
-							      <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Bulk Applicants</a>
-							      <a href="javascript:void(0)" title="" onclick="importApplicantsToJob('${requirement.id}');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Import Bulk Applicants</a>
+								<div class="immSub">
+									<a href="javascript:void(0)"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>
+							    	<div class="immSubMenu immSubMenu-custome">
+										<a href="javascript:void(0)" title="" onclick="getAddApplicant('${requirement.id}');">Add Applicant Form</a>
+									    <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();">Add Bulk Applicants</a>
+									    <a href="javascript:void(0)" title="" onclick="importApplicantsToJob('${requirement.id}');">Import Bulk Applicants</a>
+									    <a href="javascript:void(0)" title="" onclick="bulkResumeParsing('${requirement.requirementUUID}');">Bulk Resume Parsing</a>
+									</div>
+								</div>
 							</sec:authorize>
 							<sec:authorize access="hasAnyRole('ROLE_SHORTLIST')">
 							      <a href="javascript:void(0)" title="" onclick="candidateShortList('${requirement.id}');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>
@@ -836,12 +844,15 @@ function importApplicantsToJob(requirementId){
 				},
 			});
 }
+
+function bulkResumeParsing(requirementUUID) {
+	window.open(sourceleadUrl + "/bulk-resume-import.html?requirementUUID=" + requirementUUID, "_blank");
+}
 </script>
 
 
 <script>
 function getCustomDependentField(sectionId){
-	console.log(atsUrl);
 	var requirementId = '${requirement.id}';
 	var type= 'view';
 	 $.ajax({

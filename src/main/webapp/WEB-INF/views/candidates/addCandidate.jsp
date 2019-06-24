@@ -76,6 +76,19 @@
 			<div class="row form-horizontal mt myForm">
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
+				<div class="form-group">
+						<label class="col-md-3">Source</label>
+						<div class="col-md-9">
+							<select class="width100percnt selectpicker" data-live-search="true" name="candidateSource" field-name="Source" id="candidateSource" data-validation="validate_Space" data-validation-optional="true">
+								<option value="">Select Source</option>
+							<c:forEach items="${sourceCandidateList}" var="candidateSource">
+								<option value="${candidateSource.id}" >${candidateSource.name}</option>
+							</c:forEach>
+							</select>
+						</div>
+				</div>
+
+
 					<div class="form-group">
 						<label class="col-md-3">First Name<span
 							class="text-danger">&nbsp;*</span></label>
@@ -342,7 +355,7 @@
 										name="experienceYears" onchange="disableMonths();">
 										<option value="">Years</option>
 										<c:forEach begin="0" end="50" varStatus="loop">
-											<option>${loop.index}</option>
+											<option value="${loop.index}">${loop.index}</option>
 										</c:forEach>
 									</select>
 								</div>
@@ -351,7 +364,7 @@
 										id="experienceMonths" name="experienceMonths">
 										<option value="">Months</option>
 										<c:forEach begin="0" end="11" varStatus="loop">
-											<option>${loop.index}</option>
+											<option value="${loop.index}">${loop.index}</option>
 										</c:forEach>
 									</select>
 								</div>
@@ -1230,4 +1243,6 @@ $('#ssnNumber').mask('000-00-0000', {
     },
    placeholder: ""
 });
+
+$('#candidateSource').selectpicker('refresh');
 </script>
