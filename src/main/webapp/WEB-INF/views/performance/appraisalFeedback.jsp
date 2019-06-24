@@ -1,4 +1,11 @@
 
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/performance/performanceFeedbackFormView-html-generator.js"></script>
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 
 <script>
 function getAppraisalFeedbackDetails(){
@@ -19,6 +26,8 @@ function getAppraisalFeedbackDetails(){
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
 		        		
+		        		var flag = true;
+		        		var feedbackTemplateUUID = '';
 		        		var result = "";  
 		        	    result = result + '<div class="goalssummar_widget goalssummar_widgetPad clearfix">';
 		        	    
@@ -27,6 +36,8 @@ function getAppraisalFeedbackDetails(){
 		        	    	
 		        	    	result = result + '<div class="clearfix">';
 			        	    result = result + '<div class="col-md-2 col-md-offset-10">';
+			        	    
+			        	   
 			        	    result = result + '<div class="row">';
 			        	    result = result + '<label class="col-md-3 mt10">Score</label> <div class="col-md-9"><input type="text" class="form-control"></div>';
 			        	    result = result + '</div>';
@@ -40,18 +51,35 @@ function getAppraisalFeedbackDetails(){
 			        	    
 			        	    for (var i=0; i<response.data.length; i++)
 			        	    	{
-			        	    	 var opt = response.data[i];
-				        	        result = result + '<li rel="'+opt.feedbackTemplateUUID+'"><a id="feedbackTemplate'+opt.feedbackTemplateUUID+'" value="'+opt.feedbackTemplateUUID+'" onclick="getFeedbackCategoryForm(\''+opt.feedbackTemplateUUID+'\');">'+opt.templateName+'</a></li>';
+			        	    	    
+			        	    	    var opt = response.data[i];
+			        	    	    var selectedClass = '';
+			        	    	    if(flag == true){
+			        	    	    	selectedClass = 'class="active"';
+			        	    	    	flag = false;
+			        	    	    	feedbackTemplateUUID = opt.feedbackTemplateUUID;
+			        	    	    }
+			        	    	    
+				        	        result = result + '<li rel="'+opt.feedbackTemplateUUID+'"><a id="feedbackTemplate'+opt.feedbackTemplateUUID+'" '+selectedClass+' value="'+opt.feedbackTemplateUUID+'" onclick="getFeedbackCategoryForm(\''+opt.feedbackTemplateUUID+'\');">'+opt.templateName+'</a></li>';
 			        	    	}
 			        	
 			        	    result = result + '</ul>';
 			        	    result = result + '</div>';
 			        	    
+			        	    result = result + '<form id="addFeedbackTemplate_form" name="addFeedbackTemplate_form" enctype="multipart/form-data" method="post">';
 			        	    result = result + '<div class="newRolLRight">';
 			        	    result = result + '<div class="clearfix" id="tab-content">';
 			        	    result = result + '<div id="feedBackCategoryTemplateDiv">';
 			                result = result + '</div>';
 			                result = result + '</div>';
+			                
+			            	result = result + '<div class="form-footer clearfix mt">';
+			            	result = result + '<div class="pull-right mr">';
+			            	result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="saveFeedbackTemplateDetails();">Submit</button>';
+			            	result = result + '</div>';
+			            	result = result + '</div>';
+			            	result = result + '</div>';  
+			            	result = result + '</form>';
 			        	    
 			        	    result = result + '</div>';
 		        	    }else{
@@ -60,6 +88,11 @@ function getAppraisalFeedbackDetails(){
 
 		        	    $("#performanceAppraisalDiv").empty(); 
 		        	    $("#performanceAppraisalDiv").append(result);
+		        	    
+		        	    if(feedbackTemplateUUID != ''){
+		        	    	getFeedbackCategoryForm(feedbackTemplateUUID);
+		        	    }
+		        	    
 		        	    
 		        	    $("#appraisalLoading").removeAttr("style");
 		        		
@@ -78,38 +111,54 @@ function getAppraisalFeedbackDetails(){
 <script>
 function getFeedbackCategoryForm(feedbackTemplateUUID){
 	
-	
+	$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$('#feedbackTemplate li').each(function(){
 		document.getElementById("feedbackTemplate"+$(this).attr('rel')).removeAttribute("class")
 	});
-	
 	document.getElementById("feedbackTemplate"+feedbackTemplateUUID).className = 'active'
 	
 	var result = "";  
 	result = result + '<div id="tab1" class="appraQueOut">';
 	result = result + '<span class="appraQueInn">';
-	result = result + '<h3><b>Q</b>Question Text here...'+feedbackTemplateUUID+'</h3>';
-	result = result + '<ul class="clearfix">';
-	result = result + '<li class="clearfix">';
-	result = result + '<input id="a1" value=" " class="checkbox-custom" name="a" type="radio">';
-	result = result + '<label for="a1" class="checkbox-custom-label paddingright">Answer 1</label>';
-    result = result + '</li>';
-    result = result + '<li class="clearfix">';
-    result = result + '<input id="a2" value=" " class="checkbox-custom" name="a" type="radio">';
-    result = result + '<label for="a2" class="checkbox-custom-label paddingright">Answer 2</label>';
-    result = result + '</li>';
-    result = result + '<li class="clearfix">';
-    result = result + '<input id="a3" value=" " class="checkbox-custom" name="a" type="radio">';
-    result = result + '<label for="a3" class="checkbox-custom-label paddingright">Answer 3</label>';
-    result = result + '</li>';
-    result = result + '<li class="clearfix">';
-    result = result + '<input id="a4" value=" " class="checkbox-custom" name="a" type="radio">';
-    result = result + '<label for="a4" class="checkbox-custom-label paddingright">Answer 4</label>';
-    result = result + '</li>';
-    result = result + '</ul>';
+	result = result + '<div class="project_wrap_table">';
+    
+	result = result + '<h4 class="clearfix" id="viewTemplateName"></h4>';
+              
+	result = result + '<div id="sjfb-fields" class="viewTemplate">';
+      
+	result = result + '</div>';
+              
+	result = result + '</div> ';
     result = result + '</span>';
+    result = result + '</div> ';
     $("#feedBackCategoryTemplateDiv").empty(); 
     $("#feedBackCategoryTemplateDiv").append(result);
-	
+    
+    generateForm(pmsUrl,feedbackTemplateUUID);
+    $("#appraisalLoading").removeAttr("style");
 }
+</script>
+
+<script>
+function saveFeedbackTemplateDetails(){
+	if ($('#addFeedbackTemplate_form').validate(false, validationSettings)) {
+		 return true; 
+	}else {
+		return false;
+	}
+}
+
+$('body').on('blur', '#addFeedbackTemplate_form', function() {
+	$("#addFeedbackTemplate_form").showHelpOnFocus();
+	$("#addFeedbackTemplate_form").validateOnBlur(false, validationSettings);
+});
+</script>
+
+  <script type="text/javascript">
+        var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
 </script>

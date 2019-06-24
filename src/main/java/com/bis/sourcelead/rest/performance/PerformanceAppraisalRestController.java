@@ -19,6 +19,7 @@ import com.bis.sourcelead.dto.performance.PerformanceRatingScaleDTO;
 import com.bis.sourcelead.dto.performance.PerformanceTagCompetenciesDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -107,6 +108,15 @@ public class PerformanceAppraisalRestController {
 				 resObj.setResponseMessage(Result.AWKWARD.getValue());
 			}
 			 return resObj;
+	    }
+	    
+		
+	    @RequestMapping(value = "/loadPerformanceFeedbackTemplate" , method = RequestMethod.GET)
+	    public PerformanceFeedbackTemplateDTO loadPerformanceFeedbackTemplate(@RequestParam(value="templateUUID", required=false) String templateUUID) throws Exception {
+	 		
+	 	   PerformanceFeedbackTemplateDTO templateDTO  = performanceAppraisalService.getPerformanceFeedbackTemplateDTOByUUID(templateUUID);
+	 	   return templateDTO;
+	     
 	    }
 	
 }

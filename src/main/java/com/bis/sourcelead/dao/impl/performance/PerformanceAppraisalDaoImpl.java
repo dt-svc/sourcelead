@@ -421,4 +421,22 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		return feedbackTemplateDTOList;
 	}
+
+	@Override
+	public PerformanceFeedbackTemplateDTO getPerformanceFeedbackTemplateDTOByUUID(String uuid) throws Exception {
+		
+		List<PerformanceFeedbackTemplateDTO> feedbackTemplateDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query =  "SELECT "
+				+" TEMPLATE.JSON_STRING AS jsonString "           
+				+" FROM PERFORMANCE_FEEDBACK_TEMPLATE TEMPLATE "
+				+" WHERE TEMPLATE.UUID = :uuid ";
+		
+		Query feedbackQueryObj = session.createSQLQuery(query);
+		feedbackQueryObj.setString("uuid", uuid);
+		feedbackQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackTemplateDTO.class));
+		feedbackTemplateDTOList = feedbackQueryObj.list();
+		
+		return feedbackTemplateDTOList.get(0);
+	}
 }
