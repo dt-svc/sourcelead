@@ -1691,7 +1691,8 @@ public class ReportRestController {
 			@RequestMapping(value = "/applicantsJoinedListExport")
 			public void applicantsJoinedListExport(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request,HttpServletResponse response)throws Exception
 		   {
-				OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Long locationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+				OrgLocations loginOrgLocations = orgLocationService.getOrgLocationById(locationId);
 				Timezone timezone = null;
 				String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1890,8 +1891,9 @@ public class ReportRestController {
 						}
 							
 						RequirementInterview reqInterview=requirementInterviewService.getinterviewBySubmissionId(rsh.getSubmissionId().getId());
+						if(reqInterview !=null){
 						rshDTO.setInterviewOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),reqInterview.getDateOfInterview()));
-					
+						}
 					rshDTOList.add(rshDTO);
 				}
 				responseList.setData(rshDTOList);

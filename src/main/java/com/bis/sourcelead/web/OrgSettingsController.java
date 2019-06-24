@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
@@ -467,7 +470,7 @@ public class OrgSettingsController {
 		if (null != roles) {
 			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActionsForEnrollByOrgLocationIdAndOrgId(orgLocations,org);
 			if (null != roles.getActionId()) {
-				ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
+				List<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
 				List<Long> roleActonList = new ArrayList<Long>();
 				for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
 	    			 roleActonList.add(Long.parseLong(s));
@@ -481,9 +484,12 @@ public class OrgSettingsController {
 					}
 					sourceleadActionsList.add(sleadActions);
 				}
+				
+				model.addObject("tabsMap", getActionTabs(sourceleadActionsList));
 				model.addObject("actionsList", sourceleadActionsList);
 			}
 			else {
+				model.addObject("tabsMap", getActionTabs(actionsList));
 				model.addObject("actionsList", actionsList);
 			}
 			model.addObject("uuid", uuid);
@@ -502,11 +508,6 @@ public class OrgSettingsController {
 		return model;
 	}
 	
-	
-	
-	
-	
-	
 	@PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	@RequestMapping(value = "/guestEnrollRoleActions")
 	public ModelAndView guestEnrollRoleActions(HttpServletRequest request, @RequestParam(value = "uuid", required = true) String uuid) throws Exception
@@ -517,7 +518,7 @@ public class OrgSettingsController {
 		if (null != roles) {
 			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadGuestOrgActionsForEnroll();
 			if (null != roles.getActionId()) {
-				ArrayList<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
+				List<SourceleadActions> sourceleadActionsList = new ArrayList<SourceleadActions>();
 				List<Long> roleActonList = new ArrayList<Long>();
 				/*for (String s : roles.getActionId().split(",")) {
 					roleActonList.add(Long.parseLong(s));
@@ -534,9 +535,11 @@ public class OrgSettingsController {
 					}
 					sourceleadActionsList.add(sleadActions);
 				}
+				model.addObject("tabsMap", getActionTabs(sourceleadActionsList));
 				model.addObject("actionsList", sourceleadActionsList);
 			}
 			else {
+				model.addObject("tabsMap", getActionTabs(actionsList));
 				model.addObject("actionsList", actionsList);
 			}
 			model.addObject("roleDisplayName", roles.getDisplayName());
@@ -553,6 +556,41 @@ public class OrgSettingsController {
 			model.setViewName("registration/persmissionDenied");
 		}
 		return model;
+	}
+	
+	private Map<String, Set<String>> getActionTabs(List<SourceleadActions> sourceleadActionsList) {
+		Map<String, Set<String>> actionTabs = new LinkedHashMap<>();
+		try {
+			for(SourceleadActions sourceleadActions : sourceleadActionsList) {
+				String tabName = sourceleadActions.getTabs().getTabName();
+				if (tabName.equalsIgnoreCase("My Timesheets") || tabName.equalsIgnoreCase("Timesheet Approval")) {
+					tabName = "Timesheets";
+				} else if (tabName.equalsIgnoreCase("Associates List")) {
+					tabName = "Associates";
+				} else if (tabName.equalsIgnoreCase("Receivable") || tabName.equalsIgnoreCase("Payables")) {
+					tabName = "Billing";
+				} else if (tabName.equalsIgnoreCase("My Expenses") || tabName.equalsIgnoreCase("Expenses Approval")) {
+					tabName = "Expenses";
+				} else if (tabName.equalsIgnoreCase("Blogs") || tabName.equalsIgnoreCase("User Manuals")) {
+					tabName = "Resources";
+				} else if (tabName.equalsIgnoreCase("Immigrations") || tabName.equalsIgnoreCase("My Immigration")) {
+					tabName = "Immigration";
+				} else if (tabName.equalsIgnoreCase("Run Payroll") || tabName.equalsIgnoreCase("My Payroll")) {
+					tabName = "Pay Roll";
+				}
+				
+				if(actionTabs.get(tabName) != null && !actionTabs.get(tabName).isEmpty()) {
+					actionTabs.get(tabName).add(sourceleadActions.getTabs().getTabName());
+				} else {
+					Set<String> tabsList = new LinkedHashSet<>();
+					tabsList.add(sourceleadActions.getTabs().getTabName());
+					actionTabs.put(tabName, tabsList);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return actionTabs;
 	}
 	
 	

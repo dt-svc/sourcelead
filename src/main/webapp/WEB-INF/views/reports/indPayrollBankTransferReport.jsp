@@ -109,7 +109,7 @@ function payrollBankTransferExport(type){
 </script>
 <script type="text/javascript">
 function runIndPayrollBankTransferReport(){
-	$("#payrollRegisterSearch").val('');
+// 	$("#payrollRegisterSearch").val('');
 	var searchValue = $("#payrollRegisterSearch").val();
 	var payGroup = $('#payGroup').val();
 	var freqStartDate = $('#freqStartDate').val();
