@@ -246,7 +246,7 @@ public class HolidayDaoImpl  implements HolidayDAO{
 				for (Holiday holiday : holidayList) {
 					Set<HolidayShift> shiftsList = holiday.getHolidayShift();
 					for (HolidayShift shift : shiftsList) {
-						if (shift.getId().longValue() == shiftId) {
+						if (shift.getShift().getId().equals(shiftId)) {
 							shiftHolidayList.add(holiday);
 						}
 					}

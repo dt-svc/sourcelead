@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
+import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -18,6 +19,7 @@ import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
@@ -285,7 +287,13 @@ public interface CandidateDao {
 	
 	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
 
-	public List<CandidateSource> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue);
+	public CandidateVerificationConfig saveDuplicateCheckConfig(CandidateVerificationConfig candidateVerificationConfig);
+
+	public CandidateVerificationConfig getCandidateVerificationConfigBy(Long orgLocationId);
+
+	public CandidateVerificationConfig getCandidateVerificationConfigByIdAndOrglocationId(Long orgLocationId, Long id);
+
+	public List<CandidateSource> getCandidateSourceListByOrgLocationId(Long orgLocationId, int status, String searchValue,CandidateSourceDTO candidateSourceDTO);
 
 	public long saveCandidateSource(CandidateSource candidateSource);
 
@@ -297,4 +305,6 @@ public interface CandidateDao {
 
 	public void saveSourceleadDeletedCandidate(SourceleadDeletedCandidates sourceleadDeletedCandidates) throws Exception;
 
+	public List<CandidateSource> getCandidateSourceListByOrgLocationIdAndStatus(Long orgLocationId, int status) throws Exception;
+			
 }

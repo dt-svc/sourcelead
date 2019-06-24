@@ -1053,7 +1053,7 @@ public class LeaveServiceImpl implements LeaveService{
 			globalVarsMap.put("LeaveTypeName", leaveManagementHistory.getLeaveid().getLeaveType().getName());
 			
 			StringBuilder loginBuilder = new StringBuilder();
-			globalVarsMap.put("loginLink",loginBuilder.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>View Leave</div></a>").toString());
+			globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>View Leave</div></a>").toString());
 		
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		EmailScenario notificationScenario = null;
@@ -1396,15 +1396,10 @@ public class LeaveServiceImpl implements LeaveService{
 		int selfCancelledCounts = 0;
 		
 		float balanceLeaveCounts = 0;
-		int pendingLeaveCounts = 0;
 		
-		   int takenLeaveCounts = 0;
-		
-		UserRole roleId = userRoleService.getUserRoleByUserId(userId);
 		User user = userService.getUserById(userId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocationId);
-		Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocationId);
 
 		LeaveDTO leaveDto = new LeaveDTO();
 		List<Leave> leavesList = leaveDao.getAllSelfLeavesCounts(orgLocationId,userId);
@@ -2838,7 +2833,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
  		headers.add("Employee Name");
  		headers.add("Employee Type");
  		headers.add("Department");
- 		if (topleave == null) 
+ 		if (topleave != null) 
  		headers.add("Role");
  		for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
  		{

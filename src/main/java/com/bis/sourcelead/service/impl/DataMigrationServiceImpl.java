@@ -633,11 +633,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	
 				reqDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), RequirementDTO.class);
 			  
-				// if valid workflow name is not found then setting/creating new WORKFLOW for the JOB.
-	            if(StringUtils.isEmpty(reqDTO.getWorkflow())){
+				// if valid workflow name is not found then setting/creating new WORKFLOW for the JOB. SRINIVAS SABBU.
+	           /* if(StringUtils.isEmpty(reqDTO.getWorkflow())){
 	        	   RequirementWorkFlow workflow = requirementWorkflowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocation, user);
 	        	   reqDTO.setWorkflow(workflow.getId().toString());
-	           	}
+	           	}*/
 				// reqDTO = mapper.readValue(dataMigrationDTOJsonCopy, RequirementDTO.class);
 				reqDTO.setDateFormat(orgLocation.getDateFormat());
 				if (reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("SUBMITTED")) {
@@ -1160,6 +1160,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))) {
 			//	passVisaDto.setIdType(Constants.ID_TYPE_PASSPORT);
+				passVisaDto.setPassportNumber(dataMigrationDTOJsonCopy.getString("passportNo"));
 				passVisaDto.setCandidateId(dataMigrationDTOJsonCopy.getString("candidateId"));
 			//	passVisaDto.setIdNumber(dataMigrationDTOJsonCopy.getString("passportNo"));
 				passVisaDto.setValidFrom(dataMigrationDTOJsonCopy.getString("passportStartDate"));

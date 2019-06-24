@@ -770,6 +770,7 @@ public class DynamicReport {
 							col.column("Associate Name", "Associate Name", type.stringType()),
 							col.column("Associate Join Date", "Associate Join Date", type.stringType()),
 							col.column("Client Name", "Client Name", type.stringType()),
+							col.column("Project Name", "Project Name", type.stringType()),
 							col.column("Project Duration", "Project Duration", type.stringType()),
 							col.column("Pay Rate", "Pay Rate", type.stringType()),
 							col.column("Bill Rate", "Bill Rate", type.stringType()),
@@ -804,6 +805,7 @@ public class DynamicReport {
 								col.column("Associate Name", "Associate Name", type.stringType()),
 								col.column("Associate Join Date", "Associate Join Date", type.stringType()),
 								col.column("Client Name", "Client Name", type.stringType()),
+								col.column("Project Name", "Project Name", type.stringType()),
 								col.column("Project Duration", "Project Duration", type.stringType()),
 								col.column("Pay Rate", "Pay Rate", type.stringType()),
 								col.column("Bill Rate", "Bill Rate", type.stringType()),
@@ -816,7 +818,7 @@ public class DynamicReport {
   }
 	
 	private DRDataSource marginSheetReportDataSource(ResponseList<MarginSheetReportDTO> responseList) {
-		DRDataSource dataSource = new DRDataSource("Associate Id","Associate Name","Associate Join Date", "Client Name","Project Duration", "Pay Rate", "Bill Rate", "Margin");
+		DRDataSource dataSource = new DRDataSource("Associate Id","Associate Name","Associate Join Date", "Client Name","Project Name","Project Duration", "Pay Rate", "Bill Rate", "Margin");
 		for(MarginSheetReportDTO margin:responseList.getData()) {
 			String empId = "--";
 			
@@ -830,6 +832,8 @@ public class DynamicReport {
 		
 			String	clientName = margin.getClinetName();
 			
+			String	projectName = margin.getProjectName();
+			
 			String  projectDuration = margin.getProjectDuration();
 			
 			String	 payRate = margin.getPayRateCurrency() +" "+String.valueOf(margin.getPayRate())+" "+margin.getPayRateType();
@@ -838,7 +842,7 @@ public class DynamicReport {
 			 
 			String marginRate = String.valueOf(margin.getMarginRate());
 			
-			dataSource.add(empId,associateName,associateJoinDate, clientName,projectDuration, payRate,billRate,marginRate);
+			dataSource.add(empId,associateName,associateJoinDate, clientName,projectName,projectDuration, payRate,billRate,marginRate);
 		}
 		return dataSource;
 	}

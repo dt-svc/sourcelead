@@ -805,16 +805,15 @@ public class TaxServiceImpl implements TaxService {
 					.setSourceleadTaxForm(taxDao.getTaxFormType(itDeclarationSubmissionDTO.getTaxFormId()));
 
 			Map<Long, String> taxSectionMapList = new HashMap<>();
-			for (SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO : itDeclarationSubmissionDTO
-					.getSubmissionItemList()) {
-				taxSectionMapList.put(submissionItemDTO.getTaxSectionId(), submissionItemDTO.getTaxSectionName());
-			}
+			for (SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO : itDeclarationSubmissionDTO.getSubmissionItemList()){
+				taxSectionMapList.put(submissionItemDTO.getTaxSectionId(), submissionItemDTO.getTaxSectionName());}
 
 			JSONArray jsonArray = new JSONArray();
 			for (Long taxSectionId : taxSectionMapList.keySet()) {
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("taxSectionId", taxSectionId);
 				jsonObject.put("taxSectionName", taxSectionMapList.get(taxSectionId));
+				jsonObject.put("taxSectionMaxLimit", (taxDao.getTaxSection(taxSectionId)).getMaxLimit());
 				JSONArray itemArray = new JSONArray();
 				for (SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO : itDeclarationSubmissionDTO
 						.getSubmissionItemList()) {
@@ -1385,7 +1384,7 @@ public class TaxServiceImpl implements TaxService {
 				table.addCell(getCell("Employee Designation ", font8,Element.ALIGN_LEFT, 1, 18f));
 				table.addCell(getCell(can != null && can.getDesignation() != null ? can.getDesignation() : "", font8,Element.ALIGN_LEFT, 4, 18f));
 				table.addCell(getCell("Employee PAN ", font8,Element.ALIGN_LEFT, 1, 18f));
-				table.addCell(getCell(can != null && can.getPanNumber() != null ? can.getDesignation() : "", font8,Element.ALIGN_LEFT, 4, 18f));
+				table.addCell(getCell(can != null && can.getPanNumber() != null ? can.getPanNumber() : "", font8,Element.ALIGN_LEFT, 4, 18f));
 				table.addCell(getCell("Employee DOB ", font8,Element.ALIGN_LEFT, 1, 18f));
 				table.addCell(getCell(can != null && can.getDateOfBirth() != null ? can.getDateofBirthString() : "", font8,Element.ALIGN_LEFT, 2, 18f));
 				table.addCell(getCell("Gender ", font8,Element.ALIGN_LEFT, 1, 18f));
