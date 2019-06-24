@@ -111,6 +111,18 @@ function getAppraisalFeedbackDetails(){
 <script>
 function getFeedbackCategoryForm(feedbackTemplateUUID){
 	
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatScript = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormatScript = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormatScript = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormatScript = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormatScript = 'yy-dd-mm'; 
+	  }
+	
 	$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$('#feedbackTemplate li').each(function(){
 		document.getElementById("feedbackTemplate"+$(this).attr('rel')).removeAttribute("class")
@@ -134,7 +146,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID){
     $("#feedBackCategoryTemplateDiv").empty(); 
     $("#feedBackCategoryTemplateDiv").append(result);
     
-    generateForm(pmsUrl,feedbackTemplateUUID);
+    generateForm(pmsUrl,feedbackTemplateUUID,finalDateFormatScript);
     $("#appraisalLoading").removeAttr("style");
 }
 </script>
@@ -154,7 +166,17 @@ $('body').on('blur', '#addFeedbackTemplate_form', function() {
 });
 </script>
 
-  <script type="text/javascript">
+
+<script>
+
+function uploadFeedbackAttachments(id){
+	fileUpload("newUploadBtn"+id, "feedbackTemplateAttachments", "addFeedbackTemplate_form");
+	$('#newUploadFile'+id).val($("#newUploadBtn"+id).val().replace(/C:\\fakepath\\/i, ''));
+	
+}
+</script>
+
+<script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',
             borderColorOnError : '',

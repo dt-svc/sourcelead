@@ -6,7 +6,7 @@
  */
 
 //generates the form HTML
-function generateForm(pmsUrl,templateUUID) {
+function generateForm(pmsUrl,templateUUID,finalDateFormatScript) {
     //empty out the preview area
     $("#sjfb-fields").empty();
     $.ajax({
@@ -110,7 +110,7 @@ function generateForm(pmsUrl,templateUUID) {
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" field-name="'+label+'" '+datavalidation+' id="text-' + uniqueID + '">' +
+                             '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
 
                      case 'textarea':
@@ -118,7 +118,7 @@ function generateForm(pmsUrl,templateUUID) {
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-textarea">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="textarea-' + uniqueID + '"></label>' +
-                             '<textarea rows="3" field-name="'+label+'" '+datavalidation+' id="textarea-' + uniqueID + '"></textarea>' +
+                             '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id="textarea-' + uniqueID + '"></textarea>' +
                              '</div>';
 
                      case 'select':
@@ -126,7 +126,7 @@ function generateForm(pmsUrl,templateUUID) {
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="select-' + uniqueID + '"></label>' +
-                             '<select id="select-' + uniqueID + '" '+datavalidation+' field-name="'+label+'" class="choices choices-select"></select>' +
+                             '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' +
                              '</div>';
 
                      case 'radio':
@@ -153,7 +153,7 @@ function generateForm(pmsUrl,templateUUID) {
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="calandar-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation+' field-name="'+label+'" id="text-' + uniqueID + '">' +
+                             '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
                      
                      case 'scale':
@@ -164,7 +164,7 @@ function generateForm(pmsUrl,templateUUID) {
                              '<div class="slidecontainer mt clearfix">' +
                              '<span id="demo'+ uniqueID +'" class="col-md-4">1</span>' +
                              '<input type="hidden" id="scaleValue'+ uniqueID +'"></span>' +
-                             '<input type="range" min="1" max="'+dropdown+'" value="1" onmouseup="evaluateSlider('+uniqueID+');" onclick="evaluateSlider('+uniqueID+')"  id="text-' + uniqueID + '" class="rangeslider">' +
+                             '<input type="range" min="1" max="'+dropdown+'" value="1" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluateSlider('+uniqueID+');" onclick="evaluateSlider('+uniqueID+')"  id="text-' + uniqueID + '" class="rangeslider">' +
                              '</div>'+
                              '</div>';
                          
@@ -173,7 +173,7 @@ function generateForm(pmsUrl,templateUUID) {
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="hidden" id="starValue'+ uniqueID +'"></span>' +
+                             '<input type="hidden" id="starValue'+ uniqueID +'" name=\''+label.replace(/\s+/g, '')+'\'></span>' +
                              '<ul class="list-unstyled list-inline text-muted" id="starRating-' + uniqueID + '">' +
                              '<div class="clearfix mt"></div>'+
                              StarHtml+
@@ -186,11 +186,33 @@ function generateForm(pmsUrl,templateUUID) {
                          '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                          '<label for="text-' + uniqueID + '"></label>' +
                          '<div class="clearfix mt"></div>'+
-                         '<input type="file" id="text-' + uniqueID + '">' +
+                         '<input type="file" id="newUploadBtn'+uniqueID+'" onchange="uploadFeedbackAttachments(\''+uniqueID+'\');" class="upload">' +
+                         '<input type="text" class="form-control" style="display: none;" name="docFile" id="newUploadFile'+uniqueID+'" '+datavalidation+' field-name="'+label+'"  >'+
                          '</div>'; 
                  }
                  
              }
+             
+             var d = new Date();
+             var year = d.getFullYear() - 10;
+             d.setFullYear(year);
+             $(".DatePicker").datepicker({
+            	 dateFormat: finalDateFormatScript,
+            	 changeMonth: true,
+                 changeYear: true,
+                 maxDate:0,
+                 showOn: 'focus',
+                 showButtonPanel: true,
+                 closeText: 'Clear',
+                 onClose : function(selected) {
+                	  var event = arguments.callee.caller.caller.arguments[0];
+                     if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                         $(this).val('');
+                     }
+                	 $('p.jquery_form_error_message').remove();
+                 }
+                 
+             });
         },
     });
     
