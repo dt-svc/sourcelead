@@ -213,6 +213,7 @@ $('#method').on('change', function() {
 			                	$("#methodSpan"+uuid).text($("#method").val());
 			                	
 			                	closesalarySetup();
+			                	getPayRollSalarySetupList();
 			                    
 			                } else if (result.indexOf('Sign In') !== -1) {
 								location.replace(pmsUrl);
@@ -287,12 +288,12 @@ $('#method').on('change', function() {
 		
 		for (var i = 0; i < formula.length; i++) {
 			  
-			alert(formula.charAt(i));
+			//alert(formula.charAt(i));
 			  
 			  if(/^[a-zA-Z]$/.test(formula.charAt(i))){
 				  
 					
-					alert(i);
+				//	alert(i);
 					
 					
 				}
