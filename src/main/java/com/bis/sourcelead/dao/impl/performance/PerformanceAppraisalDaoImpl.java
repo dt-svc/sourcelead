@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalDao;
+import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
@@ -377,5 +378,47 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		return performanceAppraisalDetailsDTO;
 		
+	}
+
+	@Override
+	public List<PerformanceFeedbackTemplateDTO> getPerformanceAssignedFeedbackTemplateDTOList(String assignedUUID)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		List<PerformanceFeedbackTemplateDTO> feedbackTemplateDTOList = null;
+		
+		try {
+			String query =  "SELECT "
+					+" TEMPLATE.CATEGORIES "           
+					+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+					+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE "
+					+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID   "
+					+" AND ASSIGNED.UUID = :assignedUUID ";
+			
+			Query queryObj = session.createSQLQuery(query);
+			queryObj.setString("assignedUUID", assignedUUID);
+			String categories = (String) queryObj.uniqueResult();
+			
+			if(categories != null) {
+				
+				String categoriesIds [] = categories.split(",");
+				String categoriesIdsStr = "'" + StringUtils.join(categoriesIds,"','") + "'";
+				
+				String feedbackTemplateqQuery =  "SELECT "
+						+" TEMPLATE.NAME AS templateName, "  
+						+" TEMPLATE.UUID AS feedbackTemplateUUID "  
+						+" FROM PERFORMANCE_FEEDBACK_TEMPLATE TEMPLATE "
+						+" WHERE TEMPLATE.ID IN ("+categoriesIdsStr+") ";
+				
+				Query feedbackQueryObj = session.createSQLQuery(feedbackTemplateqQuery);
+				feedbackQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackTemplateDTO.class));
+				feedbackTemplateDTOList = feedbackQueryObj.list();
+		}
+	 }catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return feedbackTemplateDTOList;
 	}
 }

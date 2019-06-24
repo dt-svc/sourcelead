@@ -1,9 +1,12 @@
 package com.bis.sourcelead.service.impl.performance;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalDao;
+import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
@@ -32,6 +35,12 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 	public PerformanceAppraisalDetailsDTO getSelfAppraisalTemplateDetails(String assignedUUID, String dateFormat)
 			throws Exception {
 		return performanceAppraisalDao.getSelfAppraisalTemplateDetails(assignedUUID, dateFormat);
+	}
+
+	@Override
+	public List<PerformanceFeedbackTemplateDTO> getPerformanceAssignedFeedbackTemplateDTOList(String assignedUUID)
+			throws Exception {
+		return performanceAppraisalDao.getPerformanceAssignedFeedbackTemplateDTOList(assignedUUID);
 	}
 
 }
