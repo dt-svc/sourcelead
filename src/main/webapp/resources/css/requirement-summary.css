@@ -1,1 +1,59 @@
-.overflow-data{min-height:250px}.project_tabs_inn_table table tr td div i{color:#333!important}.remove_user_pop textarea{width:100%!important;margin:10px 0 0}#tab-2{overflow-y:hidden}.require_wrap_table,.table-overflow-hide{overflow-y:inherit!important}.require_wrap_details_cta.require_uploadfile span{width:auto!important}.require_wrap_details_cta.require_uploadfile a{margin-left:10px;float:left!important}.require_wrap_details_cta.require_uploadfile .glyphicon-download-alt{color:#00f}.skills-chosen .chosen-container-multi .chosen-choices{max-height:85px!important;overflow:auto}.project_inn_mask.projectMask-zindex{z-index:9999}.reportsCount.reportsCountNew.reportsCountCustom ul li{width:12.5%}.reportsCount.reportsCountNew ul li:nth-child(even){background-color:#f4f4f4}.m-t{margin-top:15px!important}
+.overflow-data {
+	min-height: 250px
+}
+
+.project_tabs_inn_table table tr td div i {
+	color: #333 !important
+}
+
+.remove_user_pop textarea {
+	width: 100% !important;
+	margin: 10px 0 0
+}
+
+#tab-2 {
+	overflow-y: hidden
+}
+
+.require_wrap_table, .table-overflow-hide {
+	overflow-y: inherit !important
+}
+
+.require_wrap_details_cta.require_uploadfile span {
+	width: auto !important
+}
+
+.require_wrap_details_cta.require_uploadfile a {
+	margin-left: 10px;
+	float: left !important
+}
+
+.require_wrap_details_cta.require_uploadfile .glyphicon-download-alt {
+	color: #00f
+}
+
+.skills-chosen .chosen-container-multi .chosen-choices {
+	max-height: 85px !important;
+	overflow: auto
+}
+
+.project_inn_mask.projectMask-zindex {
+	z-index: 9999
+}
+.reportsCount.reportsCountNew.reportsCountCustom ul li {
+	width: 12.5%;
+}
+.reportsCount.reportsCountNew ul li { -webkit-filter: grayscale(100%); filter: grayscale(100%); cursor: pointer;
+	-moz-box-shadow: 1px 1px 1px 1px #e4e4e4; -webkit-box-shadow: 1px 1px 1px 1px #e4e4e4; box-shadow: 1px 1px 1px 1px #e4e4e4;
+}
+.reportsCount.reportsCountNew ul li:hover {
+	background: #fafafa;
+}
+.reportsCount.reportsCountNew ul li.reqAct { filter: none; }
+.reportsCount.reportsCountNew ul li.reqAct label { color: #368ee0;}
+/* .reportsCount.reportsCountNew ul li:nth-child(even) {
+	background-color: #f4f4f4
+} */
+.m-t {
+	margin-top: 15px !important
+}
