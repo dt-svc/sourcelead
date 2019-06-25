@@ -102,6 +102,7 @@ function generateForm(pmsUrl,templateUUID,finalDateFormatScript) {
              function addFieldHTML(fieldType,required,label,hint,dropdown) {
             	 var uniqueID = Math.floor(Math.random()*999999)+1;
             	 var datavalidation = '';	
+            	 var attachmentDataValidation = '';
             	 if(required == '1'){
             		 datavalidation = 'data-validation="required"';
             	 }
@@ -111,6 +112,31 @@ function generateForm(pmsUrl,templateUUID,finalDateFormatScript) {
             		 for(var i=1; i<=dropdown; i++){
             			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+','+uniqueID+')" id="star-select'+i+uniqueID+'"></li>';
   					}
+            	 }
+            	 
+            	 if(fieldType == "file"){
+            		 if(dropdown == 'docx'){
+            			 if(required == '1'){
+            				 attachmentDataValidation = 'data-validation="required validatedoc"'
+            			 }else{
+            				 attachmentDataValidation = 'data-validation="validatedoc"'
+            			 }
+            			 
+            		 }else if(dropdown == 'xls'){
+            			 
+            			 if(required == '1'){
+            				 attachmentDataValidation = 'data-validation="required validate_importFile"'
+            			 }else{
+            				 attachmentDataValidation = 'data-validation="validate_importFile"'
+            			 }
+            			 
+            		 }else if(dropdown == 'png'){
+            			 if(required == '1'){
+            				 attachmentDataValidation = 'data-validation="required validateimage"'
+            			 }else{
+            				 attachmentDataValidation = 'data-validation="validateimage"'
+            			 }
+            		 }
             	 }
                 
 
@@ -198,7 +224,7 @@ function generateForm(pmsUrl,templateUUID,finalDateFormatScript) {
                          '<label for="text-' + uniqueID + '"></label>' +
                          '<div class="clearfix mt"></div>'+
                          '<input type="file" id="newUploadBtn'+uniqueID+'" onchange="uploadFeedbackAttachments(\''+uniqueID+'\');" class="upload">' +
-                         '<input type="text" class="form-control" style="display: none;"  name="docFile^'+label+'" id="newUploadFile'+uniqueID+'" '+datavalidation+' field-name="'+label+'"  >'+
+                         '<input type="text" class="form-control" style="display: none;"  name="docFile^'+label+'" id="newUploadFile'+uniqueID+'" '+attachmentDataValidation+' field-name="'+label+'"  >'+
                          '</div>'; 
                  }
                  
