@@ -69,13 +69,13 @@ public class PerformanceAppraisalUserFeedbackDaoImpl implements PerformanceAppra
 
 	@Override
 	public PerformanceAppraisalUserFeedback getPerformanceAppraisalUserFeedbackAssignedUserId(Long userId,
-			 Long appraisalAssignedId) throws Exception {
+			 Long appraisalAssignedId,Long feedbackTemplateId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<PerformanceAppraisalUserFeedback> performanceAppraisalUserFeedback = new ArrayList<PerformanceAppraisalUserFeedback>();
 		logger.debug("getPerformanceAppraisalUserFeedbackAssignedUserId  start");
 		performanceAppraisalUserFeedback = session.createQuery("from PerformanceAppraisalUserFeedback feedback where "
-				+ " feedback.userId.id = :userId and feedback.appraisalAssignedId = :appraisalAssignedId " ).setLong("appraisalAssignedId", appraisalAssignedId).setLong( "userId", userId).list();
+				+ " feedback.userId.id = :userId and feedback.appraisalAssignedId = :appraisalAssignedId and feedback.feedbackTemplateId = :feedbackTemplateId " ).setLong("appraisalAssignedId", appraisalAssignedId).setLong( "feedbackTemplateId", feedbackTemplateId).setLong( "userId", userId).list();
 		logger.debug("getPerformanceAppraisalUserFeedbackAssignedUserId  end");
 		if (performanceAppraisalUserFeedback.size() > 0) {
 			return performanceAppraisalUserFeedback.get(0);

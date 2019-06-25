@@ -456,11 +456,20 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		queryObj.setString("assignedUUID", assignedUUID);
 		BigInteger assignedId = (BigInteger) queryObj.uniqueResult();
 		
+		String feddbackTemplateQuery =  "SELECT "
+				+" TEMPLATE.ID "           
+				+" FROM PERFORMANCE_FEEDBACK_TEMPLATE TEMPLATE "
+				+" WHERE TEMPLATE.UUID = :templateUUID ";
+		
+		Query feddbackTemplatequeryObj = session.createSQLQuery(feddbackTemplateQuery);
+		feddbackTemplatequeryObj.setString("templateUUID", templateUUID);
+		BigInteger feedbackTemplateId = (BigInteger) feddbackTemplatequeryObj.uniqueResult();
+		
 		
 		String query =  "SELECT "
 				+" TEMPLATE.JSON_STRING AS jsonString, "
-				+ "(SELECT FEEDBACK.FEEDBACK_JSON_STRING FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId and FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId ) AS submittedJsonString, "
-				+ "(SELECT FEEDBACK.FEEDBACK_JSON_STRING_VALUES FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId and FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId ) AS submittedJsonStringValues "
+				+ "(SELECT FEEDBACK.FEEDBACK_JSON_STRING FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId AND FEEDBACK.FEEDBACK_TEMPLATE_ID = :feedbackTemplateId  ) AS submittedJsonString, "
+				+ "(SELECT FEEDBACK.FEEDBACK_JSON_STRING_VALUES FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId AND FEEDBACK.FEEDBACK_TEMPLATE_ID = :feedbackTemplateId ) AS submittedJsonStringValues "
 				+" FROM PERFORMANCE_FEEDBACK_TEMPLATE TEMPLATE "
 				+" WHERE TEMPLATE.UUID = :templateUUID ";
 		
@@ -468,6 +477,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		feedbackQueryObj.setString("templateUUID", templateUUID);
 		feedbackQueryObj.setLong("userId", userId);
 		feedbackQueryObj.setBigInteger("assignedId", assignedId);
+		feedbackQueryObj.setBigInteger("feedbackTemplateId", feedbackTemplateId);
 		feedbackQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackTemplateDTO.class));
 		feedbackTemplateDTOList = feedbackQueryObj.list();
 		

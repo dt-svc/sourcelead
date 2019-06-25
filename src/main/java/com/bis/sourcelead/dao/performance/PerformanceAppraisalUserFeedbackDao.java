@@ -6,6 +6,6 @@ public interface PerformanceAppraisalUserFeedbackDao {
 	
 	void savePerformanceAppraisalUserFeedback(PerformanceAppraisalUserFeedback performanceAppraisalUserFeedback) throws Exception;
 	
-	PerformanceAppraisalUserFeedback getPerformanceAppraisalUserFeedbackAssignedUserId(Long userId,Long appraisalAssignedId) throws Exception;
+	PerformanceAppraisalUserFeedback getPerformanceAppraisalUserFeedbackAssignedUserId(Long userId,Long appraisalAssignedId,Long feedbackTemplateId) throws Exception;
 
 }

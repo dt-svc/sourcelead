@@ -44,6 +44,10 @@ private static final long serialVersionUID = 1L;
     @JoinColumn(name="ORG_ID" )        
     private Org orgId;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="FEEDBACK_TEMPLATE_ID" )        
+    private PerformanceFeedbackTemplate feedbackTemplateId;
+	
 	@Column(name = "UUID")
 	private String uuid;
 	
@@ -175,6 +179,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public PerformanceFeedbackTemplate getFeedbackTemplateId() {
+		return feedbackTemplateId;
+	}
+
+	public void setFeedbackTemplateId(PerformanceFeedbackTemplate feedbackTemplateId) {
+		this.feedbackTemplateId = feedbackTemplateId;
 	}
 	
 	

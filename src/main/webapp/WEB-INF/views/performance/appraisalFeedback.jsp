@@ -148,8 +148,6 @@ function getFeedbackCategoryForm(feedbackTemplateUUID){
     $("#feedBackCategoryTemplateDiv").empty(); 
     $("#feedBackCategoryTemplateDiv").append(result);
     
-    alert(assignedUUID);
-    
     generateForm(pmsUrl,feedbackTemplateUUID,assignedUUID,finalDateFormatScript);
     $("#appraisalLoading").removeAttr("style");
 }

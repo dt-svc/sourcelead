@@ -39,8 +39,8 @@ public class PerformanceAppraisalUserFeedbackServiceImpl implements PerformanceA
 		
 		PerformanceAppraisalUserFeedback performanceAppraisalUserFeedback = null;
 		PerformanceAppraisalAssignedAssociates assignedAssociates = performanceAppraisalAssignedAssociatesDao.getPerformanceAppraisalAssignedAssociatesByUUID(performanceFeedbackCategoryDTO.getAssignedUUID());
-		performanceAppraisalUserFeedback = performanceAppraisalUserFeedbackDao.getPerformanceAppraisalUserFeedbackAssignedUserId(performanceFeedbackCategoryDTO.getUserId(), assignedAssociates.getId());
 		PerformanceFeedbackTemplate feedbackTemplae = performanceFeedbackTemplateDao.getPerformanceFeedbackTemplateByUUID(performanceFeedbackCategoryDTO.getFeedbackTemplateUUID());
+		performanceAppraisalUserFeedback = performanceAppraisalUserFeedbackDao.getPerformanceAppraisalUserFeedbackAssignedUserId(performanceFeedbackCategoryDTO.getUserId(), assignedAssociates.getId(),feedbackTemplae.getId());
 		
 		User user = new User();
 		user.setId(performanceFeedbackCategoryDTO.getUserId());
@@ -59,6 +59,7 @@ public class PerformanceAppraisalUserFeedbackServiceImpl implements PerformanceA
 			performanceAppraisalUserFeedback.setAppraisalAssignedId(assignedAssociates);
 			performanceAppraisalUserFeedback.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			performanceAppraisalUserFeedback.setStatus(Constants.RECORD_ACTIVE);
+			performanceAppraisalUserFeedback.setFeedbackTemplateId(feedbackTemplae);
 		}else {
 			performanceAppraisalUserFeedback.setUpdatedBy(new User());
 			performanceAppraisalUserFeedback.setUpdatedDate(new Date());
