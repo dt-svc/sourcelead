@@ -85,6 +85,8 @@ private String middleName;
 
 private String maritalStatus;
 
+private String isGlobalAccess;
+
 
 public String getReason() {
 	return reason;
@@ -359,6 +361,15 @@ public String getVendorcontact() {
 public void setVendorcontact(String vendorcontact) {
 	this.vendorcontact = vendorcontact;
 }
+
+public String getIsGlobalAccess() {
+	return isGlobalAccess;
+}
+
+public void setIsGlobalAccess(String isGlobalAccess) {
+	this.isGlobalAccess = isGlobalAccess;
+}
+
 
 
 
