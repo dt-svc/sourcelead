@@ -403,11 +403,10 @@ function discordApplicant(){
 
 	 var candidateEmail =   $("input[name=EmailId]").val();
 	var reqCoolingOffPeriod ='${requirement.reqCoolingOffPeriod}';
-	alert(""+email);
 	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	$.ajax({
 		type: "POST",
-	    url: atsUrl+"/verifyCoolingOffPeriod?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&email="+email+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId+"&mobilePhone="+mobilePhone+"&ssnNumber="+ssnNumber+"&panNumber="+panNumber+"&aadharNumber="+aadharNumber, 
+	    url: atsUrl+"/verifyCoolingOffPeriod?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&candidateEmail="+candidateEmail+"&reqCoolingOffPeriod="+reqCoolingOffPeriod+"&orgLocationId="+orgLocationId+"&mobilePhone="+mobilePhone+"&ssnNumber="+ssnNumber+"&panNumber="+panNumber+"&aadharNumber="+aadharNumber, 
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
