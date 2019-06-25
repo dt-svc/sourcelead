@@ -198,7 +198,7 @@ function generateForm(pmsUrl,templateUUID,finalDateFormatScript) {
                          '<label for="text-' + uniqueID + '"></label>' +
                          '<div class="clearfix mt"></div>'+
                          '<input type="file" id="newUploadBtn'+uniqueID+'" onchange="uploadFeedbackAttachments(\''+uniqueID+'\');" class="upload">' +
-                         '<input type="text" class="form-control" style="display: none;" name="docFile" id="newUploadFile'+uniqueID+'" '+datavalidation+' field-name="'+label+'"  >'+
+                         '<input type="text" class="form-control" style="display: none;"  name="docFile^'+label+'" id="newUploadFile'+uniqueID+'" '+datavalidation+' field-name="'+label+'"  >'+
                          '</div>'; 
                  }
                  

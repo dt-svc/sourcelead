@@ -163,14 +163,14 @@ function saveFeedbackTemplateDetails(){
 		    var form = $('#addFeedbackTemplate_form')[0];
 		    var formData = new FormData(form); 
 		    var fields = [];
-		    
+		    var flag = 0;
 		    $('.sjfb-field').each(function() {
 		    	  var $this = $(this); 
 		    	  var divId = $(this).attr('id');  
-		    	  var fieldLabel = $this.find('label:first').text().replace("*","");
+		    	  var fieldLabel = $this.find('label:first').text().replace("*","").trim();
 		    	  var inputValue = $this.find('input[type="radio"]:checked').val();
-		    	  
 		    	  var inputtype = null;
+		    	 
 		    	  
 		    	  inputtype = $(this).find('input').attr('field-type');
     			  if(inputtype != null || inputtype != '' || inputtype != 'undefined'){
@@ -237,7 +237,11 @@ function saveFeedbackTemplateDetails(){
 		     		 name = $this.find('textarea').attr('name');
 	     	      }
 		     	  
-			     	  
+		     	  if(inputtype == 'file'){
+		     		 inputValue = $("input[name = 'uploadedFileInfo["+flag+"].fileURL']").val()
+		     		 flag = flag+1;
+		     	  }
+		     	  
 		    	  fields.push({
 		              label: fieldLabel,
 		              type : inputtype,
@@ -249,7 +253,30 @@ function saveFeedbackTemplateDetails(){
 		    var con = JSON.stringify(fields);
 		    con = encodeURIComponent(con);
 		    
-		    alert(con);
+		    
+		    $.ajax({
+		    	type: "POST",
+		    	data: formData,
+		        contentType : 'application/json; charset=utf-8',
+		        enctype: 'multipart/form-data',
+		        processData: false,
+		        contentType:false,
+		        dataType : 'json',
+		    	url : pmsUrl+"/saveSubmittedFeedbackTemplate?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
+		        success: function(result) {
+		        	 	if(result.response === "SESSION_TIMEDOUT") {
+							location.replace(sourceleadUrl);
+						} else if (result.response === "AWKWARD") {
+							location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+							showError("Operation failed, please try again");
+						}
+		        },
+		    }); 
 		    
 		 return true; 
 	}else {
