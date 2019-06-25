@@ -1021,10 +1021,11 @@ public class CandidateListRestController {
 				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
 				
+				List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),1);
+				candidateDTO.setCandidateSourceList(candidateSourceList);
+				
 				if(null != can.getCandidateSource()) {
 					candidateDTO.setCandidateSource(can.getCandidateSource());
-					List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),1);
-					candidateDTO.setCandidateSourceList(candidateSourceList);
 				}
 				
 				if(can.getPanNumber() != null) {
