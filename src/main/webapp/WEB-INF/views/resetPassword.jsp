@@ -21,7 +21,7 @@
     <title>::. Reset Password .::</title>
     <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/resources/css/font-awesome.min.css">
     <link href="/resources/css/bootstrap.min.css" rel="stylesheet?staticTime=${staticTime}">
     <link href="/resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
      <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
