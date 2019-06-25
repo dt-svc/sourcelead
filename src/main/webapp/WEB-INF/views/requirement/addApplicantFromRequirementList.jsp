@@ -114,9 +114,9 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	
 	result = result + '<div class="row">';
     result = result + '	<div class="col-md-6 upresume mb" id="employmentTypeDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Employment<br/> Type<span class="paddingLeft">*</span></label>';
+	result = result + '<label class="col-md-4 paddingRight">Employment Type<span class="paddingLeft">*</span></label>';
 	result = result + '<div class="col-md-8">';
-	result = result + '<select class="form-control" id="designationType" name="designationType" onchange="getEmployementType();" field-name="Employment Type">';
+	result = result + '<select class="form-control width100percnt" id="designationType" name="designationType" onchange="getEmployementType();" field-name="Employment Type">';
 	result = result + '<option value="">--Select Employment Type--</option>';
 	result = result + '</select>';
 	result = result + '</div>';
