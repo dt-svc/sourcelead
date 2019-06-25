@@ -20,6 +20,8 @@ function generateForm(pmsUrl,templateUUID,finalDateFormatScript) {
                  $.each( data, function( k, v ) {
 
                      var fieldType = v['type'];
+                     var labelTitle = v['label'];
+                     var required =  v['req'];
 
                      //Add the field
                      $('#sjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label'],v['hint'],v['dropdown']));
@@ -38,32 +40,41 @@ function generateForm(pmsUrl,templateUUID,finalDateFormatScript) {
                      
                      //Any choices?
                      if (v['choices']) {
-
+                    	 
+                    	 var label = v['label'];
                          var uniqueID = Math.floor(Math.random()*999999)+1;
                          var selectChoice = 1;
+                         var flag = 0;
                          var selectChoiceHTML = '<option value="">----Select-----</option>';
                          $.each( v['choices'], function( k, v ) {
-
-                             if (fieldType == 'select') {
-                            	 if(selectChoice > 1){
-                            		 selectChoiceHTML = '';
-                            	 }
-                                 var choiceHTML = '<option value="'+v['label']+'">' + v['label'] + '</option>';
-                                 $currentField.find(".choices").append(selectChoiceHTML+choiceHTML);
-                                 selectChoice = selectChoice+1;
-                             }
+                         	
+                        	    if (fieldType == 'select') {
+                               	 if(selectChoice > 1){
+                               		 selectChoiceHTML = '';
+                               	 }
+                                    var choiceHTML = '<option value="'+v['label']+'">' + v['label'] + '</option>';
+                                    $currentField.find(".choices").append(selectChoiceHTML+choiceHTML);
+                                    selectChoice = selectChoice+1;
+                                }
 
                              else if (fieldType == 'radio') {
-                                 var selected = v['sel'] ? ' checked' : '';
-                                 var choiceHTML = '<span><input type="radio" name="radio-' + uniqueID + '"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</span>';
+                                 var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
+                                 if(required == 1 && flag == 0){
+                                	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                 }
                                  $currentField.find(".choices").append(choiceHTML);
                              }
 
                              else if (fieldType == 'checkbox') {
-                                 var selected = v['sel'] ? ' checked' : '';
-                                 var choiceHTML = '<span><input type="checkbox" name="checkbox-' + uniqueID + '[]"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</span>';
+                                 var selected = v['sel'] ? ' checked' : 'checked';
+                                 var choiceHTML = '<span><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
+                                 if(required == 1 && flag == 0){
+                                	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                 }
                                  $currentField.find(".choices").append(choiceHTML);
                              }
+                             
+                             flag = flag+1;
 
                          });
                      }
@@ -163,17 +174,17 @@ function generateForm(pmsUrl,templateUUID,finalDateFormatScript) {
                              '<label for="text-' + uniqueID + '"></label>' +
                              '<div class="slidecontainer mt clearfix">' +
                              '<span id="demo'+ uniqueID +'" class="col-md-4">1</span>' +
-                             '<input type="hidden" id="scaleValue'+ uniqueID +'"></span>' +
+                             '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'  id="scaleValue'+ uniqueID +'"></span>' +
                              '<input type="range" min="1" max="'+dropdown+'" value="1" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluateSlider('+uniqueID+');" onclick="evaluateSlider('+uniqueID+')"  id="text-' + uniqueID + '" class="rangeslider">' +
                              '</div>'+
                              '</div>';
                          
                      case 'star':
                          return '' +
-                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text starclass">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="hidden" id="starValue'+ uniqueID +'" name=\''+label.replace(/\s+/g, '')+'\'></span>' +
+                             '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id="starValue'+ uniqueID +'" name=\''+label.replace(/\s+/g, '')+'\'></span>' +
                              '<ul class="list-unstyled list-inline text-muted" id="starRating-' + uniqueID + '">' +
                              '<div class="clearfix mt"></div>'+
                              StarHtml+

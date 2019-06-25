@@ -154,6 +154,103 @@ function getFeedbackCategoryForm(feedbackTemplateUUID){
 <script>
 function saveFeedbackTemplateDetails(){
 	if ($('#addFeedbackTemplate_form').validate(false, validationSettings)) {
+		
+		
+		    var frm = $('#addFeedbackTemplate_form').serializeFormJSON();
+		    var con1 = JSON.stringify(frm);
+		    con1= con1.replace(/[{}]/g, "");
+		    var jsonData = encodeURIComponent(con1);
+		    var form = $('#addFeedbackTemplate_form')[0];
+		    var formData = new FormData(form); 
+		    var fields = [];
+		    
+		    $('.sjfb-field').each(function() {
+		    	  var $this = $(this); 
+		    	  var divId = $(this).attr('id');  
+		    	  var fieldLabel = $this.find('label:first').text().replace("*","");
+		    	  var inputValue = $this.find('input[type="radio"]:checked').val();
+		    	  
+		    	  var inputtype = null;
+		    	  
+		    	  inputtype = $(this).find('input').attr('field-type');
+    			  if(inputtype != null || inputtype != '' || inputtype != 'undefined'){
+    				  inputtype = $(this).find('input').attr('field-type');
+    			  }
+    			  
+    			  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+    				  inputtype = $(this).find('input').attr('type');
+    		    	  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+    		    		  if($(this).find('select').val() != null){
+    		    			  inputtype = 'select';
+    		    		  }else{
+    		    			  inputtype = 'textarea';
+    		    		  }
+    		    	  }
+    			  }
+		    	 
+		    	  
+		    	  
+		    	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		  		   inputValue = $this.find('input[type="checkbox"]:checked').val();
+		  		   if(inputValue != null){
+		  			   var selected = [];
+		             	$this.find('input[type="checkbox"]:checked').each(function() {
+		    		        selected.push($(this).val()); 
+		    		       });
+		             	inputValue = selected.toString()
+		  		   }
+		  		   
+		    	 }
+		    	 
+		    	
+		    	  if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		    		  inputValue = $this.find('input').val();
+		    	  }
+		    	  
+		  	  
+		   	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		   	    	 inputValue = $this.find('select').val();
+		   	      }
+		   	      
+		   	     if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		   	    	 inputValue = $this.find('textarea').val();
+		   	      }
+		   	      
+		   	    
+		   	     
+		   	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		   	    	inputValue = '';
+		   	      }
+		   	      
+		       	  var name = $this.find('input[type="radio"]:checked').attr('name');
+		       	  var id = $this.find('input[type="radio"]:checked').attr('id');
+		     	  if(name == null || name == '' || name == 'undefined'){
+		     		  name = $this.find('input').attr('name');
+		     		  id = $this.find('input').attr('id');
+		     	  }
+		     	  if(name == null || name == '' || name == 'undefined'){
+		     		 name = $this.find('select').attr('name');
+		     		 id = $this.find('select').attr('id');
+	   	          }
+		     	  
+		     	  if(name == null || name == '' || name == 'undefined'){
+		     		 name = $this.find('textarea').attr('name');
+	     	      }
+		     	  
+			     	  
+		    	  fields.push({
+		              label: fieldLabel,
+		              type : inputtype,
+		              id :id,
+		              name :name,
+		              value: inputValue,
+		          });
+		     });
+		    var con = JSON.stringify(fields);
+		    con = encodeURIComponent(con);
+		    
+		    alert(con);
+		    
 		 return true; 
 	}else {
 		return false;
@@ -166,15 +263,39 @@ $('body').on('blur', '#addFeedbackTemplate_form', function() {
 });
 </script>
 
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+
 
 <script>
 
 function uploadFeedbackAttachments(id){
-	fileUpload("newUploadBtn"+id, "feedbackTemplateAttachments", "addFeedbackTemplate_form");
+	fileUpload("newUploadBtn"+id, "feedbackTemplateAttachments", "addFeedbackTemplate_form","uploadedFileInfo");
 	$('#newUploadFile'+id).val($("#newUploadBtn"+id).val().replace(/C:\\fakepath\\/i, ''));
 	
 }
 </script>
+
+
+
+
 
 <script type="text/javascript">
         var validationSettings = {
