@@ -160,7 +160,7 @@
                 </td>
                 <td>
                   <div class="width150px">
-                  	<select class="chosen-select" id="associates0" name="creditDebitNoteLineItems[0].associates">
+                  	<select class="sel" id="associates0" name="creditDebitNoteLineItems[0].associates">
                   	<option selected value="">Select Associate</option>
                   		<c:forEach var="approvers" items="${approversList}">
 					<option value="${approvers.id}">${approvers.firstName}</option>	</c:forEach>
@@ -226,7 +226,7 @@
                 </td>
                 <td>
                   <div class="width150px">
-                  	<select class="chosen-select" id="associates${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].associates">
+                  	<select class="sel" id="associates${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].associates">
                   	<option selected value="">Select Associate</option>
                   		<c:forEach var="approvers" items="${approversList}">
                   		<option ${items.associates == approvers.id ? 'selected': ''} value="${approvers.id}">${approvers.firstName}</option>
@@ -421,7 +421,7 @@ function prepareDynamicRoweDiv(rowId){
    rowDiv =rowDiv+ '</td>';
    rowDiv =rowDiv+ '<td>';
    rowDiv =rowDiv+ '  <div class="width150px">';
-   rowDiv =rowDiv+ '  	<select class="chosen-select" id="associates'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].associates">';
+   rowDiv =rowDiv+ '  	<select class="sel" id="associates'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].associates">';
    rowDiv =rowDiv+ '  	<option selected value="">Select Associate</option>';
    rowDiv =rowDiv+ '  		<c:forEach var="approvers" items="${approversList}">';
    rowDiv =rowDiv+ '	<option value="${approvers.id}">${approvers.firstName}</option>	</c:forEach>';
