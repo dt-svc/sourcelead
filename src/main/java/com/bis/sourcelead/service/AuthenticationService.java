@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -37,4 +38,6 @@ public interface AuthenticationService {
 
 	/** Returns current user or {@code null} if there is no authentication or user is anonymous. */
 	UserDetails currentUser();
+
+	void getAuthentication(HttpServletRequest request, HttpSession session) throws AuthenticationException;
 }
