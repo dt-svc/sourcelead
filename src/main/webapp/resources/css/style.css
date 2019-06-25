@@ -493,6 +493,10 @@
 .appraQueInn .sjfb-field p{ top: inherit !important; left: 0px !important;}
 .appraQueInn .viewTemplate textarea ~ p.jquery_form_error_message {left: 0px !important;}
 .appraQueInn .choices span { width: 32% !important;}
+.appraQueInn .starclass p {
+	    top: 45px !important;
+    left: -10px !important;
+}
 
 
 
