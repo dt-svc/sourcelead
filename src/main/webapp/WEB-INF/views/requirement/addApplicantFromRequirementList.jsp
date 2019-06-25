@@ -1397,7 +1397,7 @@ function setRateTypesByLocation(){
 								var firstName = json.firstName;
 								var lastName = json.lastName;
 								
-								 $("input[name='FirstName']").val(firstName);
+								$("input[name='FirstName']").val(firstName);
 					        	 $("input[name='LastName']").val(lastName);
 					        	 $("input[name='EmailId']").val(json.email.split("<<>>")[0]);
 					        	 
