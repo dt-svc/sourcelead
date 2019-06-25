@@ -1016,7 +1016,10 @@ public class LeaveManagementRestController {
 			UserRole userRole = userRoleService.getUserRoleById(userRoleId);
 			
 			if(Constants.Dashboard.equalsIgnoreCase(fromType)) {
-				shiftIds = String.valueOf(userRole.getShift().getId());
+				if(userRole.getShift() != null) {
+					shiftIds = String.valueOf(userRole.getShift().getId());	
+				}
+				
 			}
 			
 			if (loginOrgLocation != null) {
