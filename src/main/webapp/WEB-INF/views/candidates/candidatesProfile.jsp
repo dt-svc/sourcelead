@@ -572,8 +572,10 @@ function editCandidate(candidateId){
 							result = result + '<label class="text-muted fontSmall">Source</label>';
 							result = result + '<select class="form-control valid width100percnt" name="candidateSource" field-name="Source" id="candidateSource" data-validation="validate_Space" data-validation-optional="true">';
 							var candidateSourceList = json.candidateSourceList;
+							result = result + '<option value="select source" >--Select Source--</option>';
 							for(var e in candidateSourceList) {
-								result = result + '<option value="'+candidateSourceList[e].id+'" '+(candidateSourceList[e].id == json.candidateSource ? "selected" : "")+'>'+ candidateSourceList[e].name +'</option>';
+								
+								result = result + '<option value="'+candidateSourceList[e].id+'" '+(candidateSourceList[e].id == json.candidateSource ? "selected" : " ")+'>'+ candidateSourceList[e].name +'</option>';
 							}
 							result = result + '</select>';
 							
