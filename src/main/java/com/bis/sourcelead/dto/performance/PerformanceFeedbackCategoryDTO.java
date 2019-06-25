@@ -17,9 +17,17 @@ public class PerformanceFeedbackCategoryDTO implements Serializable{
 	
 	private String jsonData;
 	
-	private String con;
+	private String jsonDataValues;
 	
-
+	private Long orgLocationId;
+	
+	private Long orgId;
+	
+	private Long userId;
+	
+	private String feedbackTemplateUUID;
+	
+	
 	public List<FileInfo> getUploadedFileInfo() {
 		return uploadedFileInfo;
 	}
@@ -52,12 +60,44 @@ public class PerformanceFeedbackCategoryDTO implements Serializable{
 		this.jsonData = jsonData;
 	}
 
-	public String getCon() {
-		return con;
+	public String getJsonDataValues() {
+		return jsonDataValues;
 	}
 
-	public void setCon(String con) {
-		this.con = con;
+	public void setJsonDataValues(String jsonDataValues) {
+		this.jsonDataValues = jsonDataValues;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getFeedbackTemplateUUID() {
+		return feedbackTemplateUUID;
+	}
+
+	public void setFeedbackTemplateUUID(String feedbackTemplateUUID) {
+		this.feedbackTemplateUUID = feedbackTemplateUUID;
 	}
 	
 	

@@ -73,12 +73,7 @@ function getAppraisalFeedbackDetails(){
 			                result = result + '</div>';
 			                result = result + '</div>';
 			                
-			            	result = result + '<div class="form-footer clearfix mt">';
-			            	result = result + '<div class="pull-right mr">';
-			            	result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="saveFeedbackTemplateDetails();">Submit</button>';
-			            	result = result + '</div>';
-			            	result = result + '</div>';
-			            	result = result + '</div>';  
+			            	
 			            	result = result + '</form>';
 			        	    
 			        	    result = result + '</div>';
@@ -139,6 +134,13 @@ function getFeedbackCategoryForm(feedbackTemplateUUID){
 	result = result + '<div id="sjfb-fields" class="viewTemplate">';
       
 	result = result + '</div>';
+	
+	result = result + '<div class="form-footer clearfix mt">';
+	result = result + '<div class="pull-right mr">';
+	result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="saveFeedbackTemplateDetails(\''+feedbackTemplateUUID+'\');">Submit</button>';
+	result = result + '</div>';
+	result = result + '</div>';
+	result = result + '</div>';  
               
 	result = result + '</div> ';
     result = result + '</span>';
@@ -152,7 +154,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID){
 </script>
 
 <script>
-function saveFeedbackTemplateDetails(){
+function saveFeedbackTemplateDetails(feedbackTemplateUUID){
 	if ($('#addFeedbackTemplate_form').validate(false, validationSettings)) {
 		
 		
@@ -262,7 +264,7 @@ function saveFeedbackTemplateDetails(){
 		        processData: false,
 		        contentType:false,
 		        dataType : 'json',
-		    	url : pmsUrl+"/saveSubmittedFeedbackTemplate?"+tokenParamName+"="+tokenValue+"&jsonData="+jsonData+"&con="+con,
+		    	url : pmsUrl+"/saveSubmittedFeedbackTemplate?"+tokenParamName+"="+tokenValue+"&assignedUUID="+assignedUUID+"&jsonDataValues="+con+"&feedbackTemplateUUID="+feedbackTemplateUUID,
 		        success: function(result) {
 		        	 	if(result.response === "SESSION_TIMEDOUT") {
 							location.replace(sourceleadUrl);

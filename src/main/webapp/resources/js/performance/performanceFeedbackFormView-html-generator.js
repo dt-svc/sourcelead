@@ -173,9 +173,9 @@ function generateForm(pmsUrl,templateUUID,finalDateFormatScript) {
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
                              '<div class="slidecontainer mt clearfix">' +
-                             '<span id="demo'+ uniqueID +'" class="col-md-4">1</span>' +
+                             '<span id="demo'+ uniqueID +'" class="col-md-4">0</span>' +
                              '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'  id="scaleValue'+ uniqueID +'"></span>' +
-                             '<input type="range" min="1" max="'+dropdown+'" value="1" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluateSlider('+uniqueID+');" onclick="evaluateSlider('+uniqueID+')"  id="text-' + uniqueID + '" class="rangeslider">' +
+                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluateSlider('+uniqueID+');" onclick="evaluateSlider('+uniqueID+')"  id="text-' + uniqueID + '" class="rangeslider">' +
                              '</div>'+
                              '</div>';
                          
@@ -232,7 +232,12 @@ function generateForm(pmsUrl,templateUUID,finalDateFormatScript) {
 function evaluateSlider(uniqueID){
 	var slider = document.getElementById("text-"+uniqueID).value;
 	$("#demo"+uniqueID).html(slider);
-	$("#scaleValue"+uniqueID).val(slider);
+	if(slider == 0){
+		$("#scaleValue"+uniqueID).val('');
+	}else{
+		$("#scaleValue"+uniqueID).val(slider);
+	}
+	
 	
 }
 

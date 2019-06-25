@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,22 +12,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bis.sourcelead.annotations.Validator;
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
-import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceFeedbackCategoryDTO;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalService;
-import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.service.performance.PerformanceAppraisalUserFeedbackService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -37,6 +31,9 @@ public class PerformanceAppraisalRestController {
 
 	@Autowired
 	PerformanceAppraisalService performanceAppraisalService;
+	
+	@Autowired
+	PerformanceAppraisalUserFeedbackService performanceAppraisalUserFeedbackService;
 	
 	@Value("${static.path}")
 	private String staticPath;
@@ -132,17 +129,19 @@ public class PerformanceAppraisalRestController {
 	    
 	    
 	    @RequestMapping(value = { "/saveSubmittedFeedbackTemplate", "/rest/saveSubmittedFeedbackTemplate" }, method = RequestMethod.POST)
-		public @ResponseBody Response<PerformanceFeedbackCategoryDTO> storeProject(PerformanceFeedbackCategoryDTO performanceFeedbackCategoryDTO) throws Exception {
+		public @ResponseBody Response<PerformanceFeedbackCategoryDTO> storeProject(PerformanceFeedbackCategoryDTO performanceFeedbackCategoryDTO,HttpServletRequest request) throws Exception {
 			Response<PerformanceFeedbackCategoryDTO> response =new  Response<>();
 			try {
-				performanceFeedbackCategoryDTO.setStaticPath(staticPath);
-				 
 				
-				 for(FileInfo fileInfo : performanceFeedbackCategoryDTO.getUploadedFileInfo()){
-						FileUploadUtil.moveFile(performanceFeedbackCategoryDTO.getStaticPath(), fileInfo, "feedbackTemplateAttachments");
-					}
-				 System.out.println(performanceFeedbackCategoryDTO.getCon().contains("bisLogo.jpg"));
-				
+				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 		 
+		 		 performanceFeedbackCategoryDTO.setOrgId(org.getId());
+		 		 performanceFeedbackCategoryDTO.setUserId(user.getId());
+		 		 performanceFeedbackCategoryDTO.setOrgLocationId(orgLocation.getId());
+				 performanceFeedbackCategoryDTO.setStaticPath(staticPath);
+				 performanceAppraisalUserFeedbackService.storePerformanceAppraisalUserFeedback(performanceFeedbackCategoryDTO);
 				 response.setResponse(Result.SUCCESS.name());
 				 response.setResponseMessage(Result.SUCCESS.getValue());
 			
