@@ -32,7 +32,7 @@ function reloadFunction(){
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Pending for Approval</h2>
+        <h2>Pending for Approval Timesheets</h2>
       </div>
       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"> Reports Dashboard </a>&raquo; <a href="${SourceLeadWeb_sourceleadUrl}/hrReportsList">HR Reports</a> &raquo; Pending for Approval</div>
     </section>
@@ -123,7 +123,6 @@ function getPendingForApprovalTimesheetReports(){
 	  if(dateSelection == 'custom'){
 		   fromDate = $("#fromDate").val();
 		   toDate = $("#toDate").val();
-		  
 		  if(fromDate == '' || toDate == ''){
 			  flag = false;
 			  if(fromDate == ''){
@@ -248,6 +247,7 @@ function getPendingForApprovalTimesheetReports(){
 		        $("#pendingForApprovalTimesheetDiv").empty();
 				$("#pendingForApprovalTimesheetDiv").append(result);
 				dynamicMissingTimesheetReportPagination();
+				document.getElementById("customSearch").style.display="none";
 		    }
 		 });
 	  }	  
