@@ -145,6 +145,7 @@ public class Constants {
 	public static final String INVITE_USER = "Invite User";
 	public static final String BLOG_SUBSCRIPTION = "blogSubscription";
 	public static final String EXPENSES_EMAIL_TO_MANAGER = "ExpensesEmailToManager";
+	public static final String MAILTO_LEVEL2_WHENLEVEL1_SUBMITSEXPENSE = "MailToLevel2WhenLevel1SubmitsExpense";
 	public static final String INVITE_CLIENT = "Invite Client";
 	public static final String INVITE_VENDOR = "Invite Vendor";
 	public static final String MODIFY_CONTRACT_ENDDATE = "ModifyContractEndDate";
@@ -192,6 +193,7 @@ public class Constants {
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
+	public static final String MAILTO_MANAGER1ANDEMPLOYEE_WHEN_MANAGER2REOPENS = "MailToManager1andEmployeeWhenManager2ReopensExpense";
 	
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
