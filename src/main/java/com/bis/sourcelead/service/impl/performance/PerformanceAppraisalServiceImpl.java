@@ -48,4 +48,10 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 		return performanceAppraisalDao.getPerformanceFeedbackTemplateDTOByUUID(uuid);
 	}
 
+	@Override
+	public PerformanceFeedbackTemplateDTO getPerformanceSubmittedFeedbackTemplateDTOByUUID(String templateUUID,
+			String assignedUUID, Long userId) throws Exception {
+		return performanceAppraisalDao.getPerformanceSubmittedFeedbackTemplateDTOByUUID(templateUUID, assignedUUID, userId);
+	}
+
 }

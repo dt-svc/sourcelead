@@ -6,12 +6,12 @@
  */
 
 //generates the form HTML
-function generateForm(pmsUrl,templateUUID,finalDateFormatScript) {
+function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
     //empty out the preview area
     $("#sjfb-fields").empty();
     $.ajax({
     	type: "GET",
-        url: pmsUrl+"/loadPerformanceFeedbackTemplate?templateUUID="+templateUUID, 
+        url: pmsUrl+"/loadPerformanceFeedbackTemplate?templateUUID="+templateUUID+"&assignedUUID="+assignedUUID, 
         success: function(result) {
         	 var data = eval(result.jsonString);
         	 

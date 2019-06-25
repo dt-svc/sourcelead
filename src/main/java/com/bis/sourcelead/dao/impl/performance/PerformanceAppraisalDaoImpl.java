@@ -439,4 +439,38 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		return feedbackTemplateDTOList.get(0);
 	}
+
+	@Override
+	public PerformanceFeedbackTemplateDTO getPerformanceSubmittedFeedbackTemplateDTOByUUID(String templateUUID,
+			String assignedUUID, Long userId) throws Exception {
+		
+		List<PerformanceFeedbackTemplateDTO> feedbackTemplateDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String assignedQuery =  "SELECT "
+				+" ASSIGNED.ID "           
+				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED "
+				+" WHERE ASSIGNED.UUID = :assignedUUID ";
+		
+		Query queryObj = session.createSQLQuery(assignedQuery);
+		queryObj.setString("assignedUUID", assignedUUID);
+		BigInteger assignedId = (BigInteger) queryObj.uniqueResult();
+		
+		
+		String query =  "SELECT "
+				+" TEMPLATE.JSON_STRING AS jsonString, "
+				+ "(SELECT FEEDBACK.FEEDBACK_JSON_STRING FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId and FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId ) AS submittedJsonString, "
+				+ "(SELECT FEEDBACK.FEEDBACK_JSON_STRING_VALUES FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId and FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId ) AS submittedJsonStringValues "
+				+" FROM PERFORMANCE_FEEDBACK_TEMPLATE TEMPLATE "
+				+" WHERE TEMPLATE.UUID = :templateUUID ";
+		
+		Query feedbackQueryObj = session.createSQLQuery(query);
+		feedbackQueryObj.setString("templateUUID", templateUUID);
+		feedbackQueryObj.setLong("userId", userId);
+		feedbackQueryObj.setBigInteger("assignedId", assignedId);
+		feedbackQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackTemplateDTO.class));
+		feedbackTemplateDTOList = feedbackQueryObj.list();
+		
+		return feedbackTemplateDTOList.get(0);
+	}
 }

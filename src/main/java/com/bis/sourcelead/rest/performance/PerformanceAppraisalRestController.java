@@ -120,9 +120,11 @@ public class PerformanceAppraisalRestController {
 	    
 		
 	    @RequestMapping(value = "/loadPerformanceFeedbackTemplate" , method = RequestMethod.GET)
-	    public PerformanceFeedbackTemplateDTO loadPerformanceFeedbackTemplate(@RequestParam(value="templateUUID", required=false) String templateUUID) throws Exception {
+	    public PerformanceFeedbackTemplateDTO loadPerformanceFeedbackTemplate(@RequestParam(value="templateUUID", required=false) String templateUUID,
+	    		@RequestParam(value="assignedUUID", required=false) String assignedUUID,HttpServletRequest request) throws Exception {
 	 		
-	 	   PerformanceFeedbackTemplateDTO templateDTO  = performanceAppraisalService.getPerformanceFeedbackTemplateDTOByUUID(templateUUID);
+	       User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	   PerformanceFeedbackTemplateDTO templateDTO  = performanceAppraisalService.getPerformanceSubmittedFeedbackTemplateDTOByUUID(templateUUID,assignedUUID,user.getId());
 	 	   return templateDTO;
 	     
 	    }
