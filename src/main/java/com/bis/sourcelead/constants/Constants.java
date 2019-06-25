@@ -125,6 +125,15 @@ public class Constants {
 	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_REJECT_THE_EXPENSE = "MailToManager1WhenManager2orAdminRejectTheExpense";
 
 	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_APPROVESTHE_EXPENSE = "MailToManager1WhenManager2orAdminApprovesTheExpense";
+	
+	public static final String MAIL_TO_EMPLOYEE_WHEN_MANAGER_SUBMIT_THE_TIMESHEET = "MailToEmployeeWhenManagerSubmitTheTimesheet";
+
+
+	public static final String MAIL_TO_MANAGER1_WHENMANAGER2_OR_ADMINREJECT_THETIMESHEET = "MailToManager1WhenManager2orAdminRejectTheTimesheet";
+
+	public static final String MAIL_TO_MANAGER1_WHENMANAGER2_OR_ADMINAPPROVES_THETIMESHEET = "MailToManager1WhenManager2orAdminApprovesTheTimesheet";
+	
+	public static final String MAIL_TO_THE_MANAGER_TIMESHEET_SUBMISSION = "Mail To Manager when the Timesheet Submission";
 
 
 	
@@ -298,6 +307,7 @@ public class Constants {
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";
 	public static final String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
+	public static final String APPLICANT_SOURCE_CHANGE_EMAIL_NOTIFICATION = "ApplicantSourceChange";
 	public static final String SHARE_RECOMENDED_APPLICANT = "Share Recomended Applicant";
 	public static final String SHARE_RECOMENDED_APPLICANT_NOTIFICATION = "Share Recommended Applicant Notification";
 	public static final String APPROVER_UPDATED_CONTRACT = "approverUpdatedContract";
