@@ -709,11 +709,11 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 						  "	his.PAYROLL_PAYHEAD as payrollPayheadId, "+
 						  "	his.MONTHLY as payHeadAmount, "+
 						  "	payHead.SHORT_CODE as shortCode, "+
-						  "	pfESI.UAN_NUMBER as uanNumber, "+
-						  "	pfESI.PF_NUMBER as pfNumber, "+
-						  "	pfESI.ESI_NUMBER as esiNumber, "+
-						  "	pfESI.ELIGIBLE_FOR_ESI as eligibleForEsi, "+
-						  "	pfESI.ELIGIBLE_FOR_PF as eligibleForPf, "+
+						  "	pfEsi.UAN_NUMBER as uanNumber, "+
+						  "	pfEsi.PF_NUMBER as pfNumber, "+
+						  "	pfEsi.ESI_NUMBER as esiNumber, "+
+						  "	pfEsi.ELIGIBLE_FOR_ESI as eligibleForEsi, "+
+						  "	pfEsi.ELIGIBLE_FOR_PF as eligibleForPf, "+
 						  "	tax.EMPLOYEE_ESI as employeeEsi, "+
 						  "	tax.EMPLOYER_ESI as employerEsi, "+
 						  "	tax.EMPLOYEE_PF as employeePf, "+
@@ -727,7 +727,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 						  "	AND payroll.CANDIDATE_ID = can.ID  "+
 						  "	AND payroll.EMPLOYEE_ID = employee.ID "+  
 						  "	AND employee.DEPARTMENT_ID = department.ID "+  
-						  "	AND payroll.CANDIDATE_ID = pfESI.CANDIDATE_ID "+
+						  "	AND payroll.CANDIDATE_ID = pfEsi.CANDIDATE_ID "+
 						  "	AND freq.ORG_LOCATION_ID =:orgloationId  "+
 						  "	AND ( date(freq.FREQUENCY_START_DATE) BETWEEN :startDate and :endDate) "+ 
 						  "	AND tax.CT_FINANCIAL_YEAR  =:financialYear "+
@@ -750,7 +750,7 @@ String countQuery  =  " select count(*) FROM PAYROLL_PAYHEAD payHead, IND_PAY_SH
 					  "	AND payroll.CANDIDATE_ID = can.ID  "+
 					  "	AND payroll.EMPLOYEE_ID = employee.ID "+  
 					  "	AND employee.DEPARTMENT_ID = department.ID "+  
-					  "	AND payroll.CANDIDATE_ID = pfESI.CANDIDATE_ID "+
+					  "	AND payroll.CANDIDATE_ID = pfEsi.CANDIDATE_ID "+
 					  "	AND freq.ORG_LOCATION_ID =:orgloationId  "+
 					  "	AND ( date(freq.FREQUENCY_START_DATE) BETWEEN :startDate and :endDate) "+ 
 					  "	AND tax.CT_FINANCIAL_YEAR  =:financialYear "+

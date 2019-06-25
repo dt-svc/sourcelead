@@ -379,7 +379,6 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				if(employeePayroll != null && employeePayroll.getStatus() == 0)
 					continue;
 					
-				
 				INDPayrollDTO payrollDTO = new INDPayrollDTO();
 				if(employeePayroll.getId() != null) {
 					payrollDTO.setId(employeePayroll.getId());
