@@ -1478,6 +1478,7 @@ function Immigration() {
 	        	if(result=='success'){
 	        		$('#uploadCanDocPop').hide();
 	            	$('.popMask').fadeOut();
+	        		$(".comMask").fadeOut();
 	            	showSuccessMsg("Successfully Uploaded File.");
 	            	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'',curUscisMyImmi);
 	        	     
