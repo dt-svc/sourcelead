@@ -109,7 +109,7 @@
 		<div class="form-group row">
         <label class="col-md-3 paddingRight">Payment Account</label>
         <div class="col-md-9">
-          <select class="form-control" id="account"  field-name="paymentAccountId Name" name="account">
+          <select class="form-control sel" id="account"  field-name="paymentAccountId Name" name="account">
              <option value="">--Select Account--</option>
               <c:forEach items="${paymentAccountList}" var="paymentAccount">
                   <option value="${paymentAccount.id}" ${paymentAccount.id == creditDebitNote.account ? 'selected' : ""}>${paymentAccount.accountType == "WEPAY" ? paymentAccount.email.concat(" (WePay)") : paymentAccount.accountNumber.concat(" (").concat(paymentAccount.bankName).concat(")")}</option>
