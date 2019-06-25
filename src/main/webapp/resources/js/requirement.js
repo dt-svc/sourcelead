@@ -546,7 +546,7 @@ function checkAllColumns(obj){// updated
 		           		var result = "";
 		       		  	//'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">'; 
 		           	 if(roleActionsArray.indexOf("ROLE_VIEW_REQUIREMENT") > -1 || roleActionsArray.indexOf("ROLE_VIEW_EDIT_REQUIREMENT") > -1){
-		       		    	result = result +"<td><a href='/ats/jobFairSummary?uuid="+opt.uuid+"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+		       		    	result = result +"<td><a href='/ats/jobFairSummary?uuid="+opt.uuid+"'><div class='proj_show width150px'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		           	 }//'</sec:authorize>';
 			            return result;
 		            }
