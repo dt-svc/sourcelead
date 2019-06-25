@@ -114,9 +114,9 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	
 	result = result + '<div class="row">';
     result = result + '	<div class="col-md-6 upresume mb" id="employmentTypeDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Employment<br/> Type<span class="paddingLeft">*</span></label>';
+	result = result + '<label class="col-md-4 paddingRight">Employment Type<span class="paddingLeft">*</span></label>';
 	result = result + '<div class="col-md-8">';
-	result = result + '<select class="form-control" id="designationType" name="designationType" onchange="getEmployementType();" field-name="Employment Type">';
+	result = result + '<select class="form-control width100percnt" id="designationType" name="designationType" onchange="getEmployementType();" field-name="Employment Type">';
 	result = result + '<option value="">--Select Employment Type--</option>';
 	result = result + '</select>';
 	result = result + '</div>';
@@ -1406,7 +1406,8 @@ function setRateTypesByLocation(){
 		 	                     </c:forEach>
 		 						var skills = json.skills;
 		 						if(skills != null && skills != 'undefined' && skills != ''){
-		 							var str_array = skills.split(',');
+		 							//var str_array = skills.split(','); not required already array no need to split 
+		 							var str_array = skills;
 		 							for(var i = 0; i < str_array.length; i++) {
 		 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
 		 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
