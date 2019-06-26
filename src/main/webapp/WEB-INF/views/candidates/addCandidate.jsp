@@ -341,7 +341,7 @@
 										name="experienceYears" onchange="disableMonths();">
 										<option value="">Years</option>
 										<c:forEach begin="0" end="50" varStatus="loop">
-											<option>${loop.index}</option>
+											<option value="${loop.index}">${loop.index}</option>
 										</c:forEach>
 									</select>
 								</div>
@@ -350,7 +350,7 @@
 										id="experienceMonths" name="experienceMonths">
 										<option value="">Months</option>
 										<c:forEach begin="0" end="11" varStatus="loop">
-											<option>${loop.index}</option>
+											<option value="${loop.index}">${loop.index}</option>
 										</c:forEach>
 									</select>
 								</div>
