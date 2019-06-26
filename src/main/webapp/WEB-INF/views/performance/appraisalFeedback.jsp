@@ -156,7 +156,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID){
 <script>
 function saveFeedbackTemplateDetails(feedbackTemplateUUID){
 	if ($('#addFeedbackTemplate_form').validate(false, validationSettings)) {
-		
+		$("#appraisalLoading").attr('style','position:absolute; width:200%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
 		    var frm = $('#addFeedbackTemplate_form').serializeFormJSON();
 		    var con1 = JSON.stringify(frm);
@@ -271,7 +271,8 @@ function saveFeedbackTemplateDetails(feedbackTemplateUUID){
 						} else if (result.response === "AWKWARD") {
 							location.href = "/errorPage";
 						} else if (result.response === "SUCCESS") {
-							
+							getFeedbackCategoryForm(feedbackTemplateUUID);
+							$("#appraisalLoading").removeAttr("style");
 						} else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
 						} else {

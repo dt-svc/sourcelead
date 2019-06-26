@@ -13,7 +13,13 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
     	type: "GET",
         url: pmsUrl+"/loadPerformanceFeedbackTemplate?templateUUID="+templateUUID+"&assignedUUID="+assignedUUID, 
         success: function(result) {
-        	 var data = eval(result.jsonString);
+        	var data = null;
+        	if(result.submittedJsonString != null){
+        		data = eval(result.submittedJsonString);
+        	}else{
+        		data = eval(result.jsonString);
+        	}
+        	  
         	 
         	 if (data) {
                  //go through each saved field object and render the form HTML
@@ -37,48 +43,152 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
                     	 $currentField.find('label').text(v['label']+reqSymbol);
                      }
                      
-                     
-                     //Any choices?
-                     if (v['choices']) {
+                    
+                     if(result.submittedJsonStringValues != null && result.submittedJsonStringValues != '' && result.submittedJsonStringValues != 'undefined'){
+                    	 if (v['choices']) {
+                    		 var selectChoice = 1;
+                        	 var selectChoiceHTML = '<option value="">----Select-----</option>';
+                             var uniqueID = Math.floor(Math.random()*999999)+1;
+                             $.each( v['choices'], function( k1, v1 ) {
+                            	 var label = v1['label'];
+                                if (fieldType == 'radio') {
+                            	  var details = eval(result.submittedJsonStringValues);
+                              	   $.each(details, function( k2, v2 ) {
+                              		   if(v['label'] == v2['label']){
+                              			   var values = v2['value'].split(",");
+                              			   for(var i=0; i<values.length; i++){
+                              				 var selected = '';
+                              				   if(values[i] == v1['label']){
+                              					 selected = v1['sel'] ? ' checked' : 'checked';
+                              				   }else{
+                              					 selected = v1['sel'] ? ' checked' : '';
+                              				   }
+                                             
+                                             var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+                                             if(required == 1 && flag == 0){
+                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                             }
+                                             $currentField.find(".choices").append(choiceHTML);
+                              			   }
+                              		   }
+                              	   });
+                                 }
+                                 else if (fieldType == 'checkbox') {
+                                	 var details = eval(result.submittedJsonStringValues);
+                                	 var selected = '';
+                                	 $.each(details, function( k3, v3 ) {
+                                		 if(v['label'] == v3['label']){
+                                			 var values = v3['value'].split(",");
+                                			 for(var i=0; i<values.length; i++){
+                                				 if(values[i] == v1['label']){
+                                  					 selected = "checked";
+                              				     }
+                                			 }
+                                             
+                                             var choiceHTML = '<span><input type="checkbox" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+                                             if(required == 1 && flag == 0){
+                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                             }
+                                             $currentField.find(".choices").append(choiceHTML);
+                                		 }
+                                	 });
+                                 }else if (fieldType == 'select') {
+                                	 var details = eval(result.submittedJsonStringValues);
+                                	 var selected = '';
+                                	 $.each(details, function( k4, v4 ) {
+                                		 if(v['label'] == v4['label']){
+                                				 if(v4['value'] == v1['label']){
+                                  					 selected = "selected";
+                              				     }
+                                				 if(selectChoice > 1){
+                                               		 selectChoiceHTML = '';
+                                               	 }
+                                             
+                                				 var choiceHTML = '<option value="'+v1['label']+'" '+selected+'>' + v1['label'] + '</option>';
+                                                 $currentField.find(".choices").append(selectChoiceHTML+choiceHTML);
+                                                 selectChoice = selectChoice+1;
+                                		 }
+                                	 });
+                                 }
+                             });
+                         }
                     	 
-                    	 var label = v['label'];
-                         var uniqueID = Math.floor(Math.random()*999999)+1;
-                         var selectChoice = 1;
-                         var flag = 0;
-                         var selectChoiceHTML = '<option value="">----Select-----</option>';
-                         $.each( v['choices'], function( k, v ) {
-                         	
-                        	    if (fieldType == 'select') {
-                               	 if(selectChoice > 1){
-                               		 selectChoiceHTML = '';
-                               	 }
-                                    var choiceHTML = '<option value="'+v['label']+'">' + v['label'] + '</option>';
-                                    $currentField.find(".choices").append(selectChoiceHTML+choiceHTML);
-                                    selectChoice = selectChoice+1;
-                                }
+                    	 if(fieldType == 'textarea' || fieldType == 'text' || fieldType == 'calendar' || fieldType == 'scale' || fieldType == 'star'){
+    	                   	 var details = eval(result.submittedJsonStringValues);
+    	                   	 var label = v['label'];
+    	                	 $.each(details, function( k3, v3 ) {
+    	                		 if(label == v3['label']){
+    	                			 if(fieldType == 'textarea'){
+    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+    	                					 $('#textarea-'+ label.replace(/\s+/g, '')).html(v3['value']);
+    	                				 }
+    	                			 }else if(fieldType == 'text'){
+    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+    	                					 $('#text-'+ label.replace(/\s+/g, '')).val(v3['value']);
+    	                				 }
+    	                				
+    	                			 }else if(fieldType == 'calendar'){
+    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+    	                					 $('#calendar-'+ label.replace(/\s+/g, '')).val(v3['value']);
+    	                				 }
+    	                			 }else if(fieldType == 'scale'){
+    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+    	                					 evaluateSlider(label.replace(/\s+/g, ''),v3['value'])
+    	                				 }
+    	                			 }
+    	                			 else if(fieldType == 'star'){
+    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+    	                					 fillStarValues(v['dropdown'],label.replace(/\s+/g, ''),v3['value'])
+    	                				 }
+    	                			 }
+    	                			
+    	                		 }
+    	                	 });
+    	                  }
+                    	 
+                     }else{
+                    	 
+                    	 //Any choices?
+                         if (v['choices']) {
+                        	 var label = v['label'];
+                             var uniqueID = Math.floor(Math.random()*999999)+1;
+                             var selectChoice = 1;
+                             var flag = 0;
+                             var selectChoiceHTML = '<option value="">----Select-----</option>';
+                             $.each( v['choices'], function( k, v ) {
+                             	
+                            	    if (fieldType == 'select') {
+                                   	 if(selectChoice > 1){
+                                   		 selectChoiceHTML = '';
+                                   	 }
+                                        var choiceHTML = '<option value="'+v['label']+'">' + v['label'] + '</option>';
+                                        $currentField.find(".choices").append(selectChoiceHTML+choiceHTML);
+                                        selectChoice = selectChoice+1;
+                                    }
 
-                             else if (fieldType == 'radio') {
-                                 var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
-                                 if(required == 1 && flag == 0){
-                                	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                 else if (fieldType == 'radio') {
+                                     var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
+                                     if(required == 1 && flag == 0){
+                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                     }
+                                     $currentField.find(".choices").append(choiceHTML);
                                  }
-                                 $currentField.find(".choices").append(choiceHTML);
-                             }
 
-                             else if (fieldType == 'checkbox') {
-                                 var selected = v['sel'] ? ' checked' : 'checked';
-                                 var choiceHTML = '<span><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
-                                 if(required == 1 && flag == 0){
-                                	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                 else if (fieldType == 'checkbox') {
+                                     var selected = v['sel'] ? ' checked' : 'checked';
+                                     var choiceHTML = '<span><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
+                                     if(required == 1 && flag == 0){
+                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                     }
+                                     $currentField.find(".choices").append(choiceHTML);
                                  }
-                                 $currentField.find(".choices").append(choiceHTML);
-                             }
-                             
-                             flag = flag+1;
+                                 
+                                 flag = flag+1;
 
-                         });
+                             });
+                         }
                      }
-
+                     
                      //Is it required?
                      if (v['req']) {
                          if (fieldType == 'text') { $currentField.find("input").prop('required',true).addClass('required-choice') }
@@ -110,7 +220,7 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
             	 if(fieldType == "star"){
             		 var StarHtml = '';
             		 for(var i=1; i<=dropdown; i++){
-            			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+','+uniqueID+')" id="star-select'+i+uniqueID+'"></li>';
+            			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
   					}
             	 }
             	 
@@ -147,7 +257,7 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/\s+/g, '')+'\' >' +
                              '</div>';
 
                      case 'textarea':
@@ -155,7 +265,7 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-textarea">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="textarea-' + uniqueID + '"></label>' +
-                             '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id="textarea-' + uniqueID + '"></textarea>' +
+                             '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/\s+/g, '')+'\' ></textarea>' +
                              '</div>';
 
                      case 'select':
@@ -190,7 +300,7 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="calandar-' + uniqueID + '"></label>' +
-                             '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/\s+/g, '')+'\' >' +
                              '</div>';
                      
                      case 'scale':
@@ -199,9 +309,9 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
                              '<div class="slidecontainer mt clearfix">' +
-                             '<span id="demo'+ uniqueID +'" class="col-md-4">0</span>' +
-                             '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'  id="scaleValue'+ uniqueID +'"></span>' +
-                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluateSlider('+uniqueID+');" onclick="evaluateSlider('+uniqueID+')"  id="text-' + uniqueID + '" class="rangeslider">' +
+                             '<span id=\'demo-'+label.replace(/\s+/g, '')+'\' class="col-md-4">0</span>' +
+                             '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/\s+/g, '')+'\' ></span>' +
+                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluateSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluateSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/\s+/g, '')+'\' class="rangeslider">' +
                              '</div>'+
                              '</div>';
                          
@@ -210,7 +320,7 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text starclass">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id="starValue'+ uniqueID +'" name=\''+label.replace(/\s+/g, '')+'\'></span>' +
+                             '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' +
                              '<ul class="list-unstyled list-inline text-muted" id="starRating-' + uniqueID + '">' +
                              '<div class="clearfix mt"></div>'+
                              StarHtml+
@@ -255,28 +365,38 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
     
 }
 
-function evaluateSlider(uniqueID){
-	var slider = document.getElementById("text-"+uniqueID).value;
-	$("#demo"+uniqueID).html(slider);
-	if(slider == 0){
-		$("#scaleValue"+uniqueID).val('');
+function evaluateSlider(label,value){
+	var slider = '';
+	
+	if(value != null && value != '' && value != 'undefined'){
+		slider = value;
 	}else{
-		$("#scaleValue"+uniqueID).val(slider);
+		 slider = document.getElementById("scale-"+label).value;
+	}
+	 $("#scale-"+label).val(slider);
+	$("#demo-"+label).html(slider);
+	if(slider == 0){
+		$("#scaleValue-"+label).val('');
+	}else{
+		$("#scaleValue-"+label).val(slider);
 	}
 	
 	
 }
 
-function fillStarValues(i,uniqueID){
+function fillStarValues(i,label,value){
 	
-	$("#starValue"+uniqueID).val(i);
+	if(value != null && value != 'undefined' && value != ''){
+		i = value;
+	}
+	$("#starValue-"+label).val(i);
 	
 	for(var k=1; k<=i; k++){
-		$("#star-select"+k+uniqueID).removeClass('text-muted').addClass('textWarning');
+		$("#star-select"+k+label).removeClass('text-muted').addClass('textWarning');
 	}
 	
 	for(var k=i+1; k<=6; k++){
-		$("#star-select"+k+uniqueID).removeClass('textWarning').addClass('text-muted');
+		$("#star-select"+k+label).removeClass('textWarning').addClass('text-muted');
 	}
 }
 

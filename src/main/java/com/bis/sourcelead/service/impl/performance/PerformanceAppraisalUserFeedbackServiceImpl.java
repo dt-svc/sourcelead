@@ -61,7 +61,7 @@ public class PerformanceAppraisalUserFeedbackServiceImpl implements PerformanceA
 			performanceAppraisalUserFeedback.setStatus(Constants.RECORD_ACTIVE);
 			performanceAppraisalUserFeedback.setFeedbackTemplateId(feedbackTemplae);
 		}else {
-			performanceAppraisalUserFeedback.setUpdatedBy(new User());
+			performanceAppraisalUserFeedback.setUpdatedBy(user);
 			performanceAppraisalUserFeedback.setUpdatedDate(new Date());
 		}
 		
