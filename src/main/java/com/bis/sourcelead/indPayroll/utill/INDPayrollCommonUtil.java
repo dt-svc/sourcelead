@@ -373,12 +373,12 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	
 	public List<INDPayrollDTO> getINDPayrollDTOFromIndEmployeePayroll(Set<IndEmployeePayroll> payrollList,OrgLocations orgLocations) throws Exception {
 		List<INDPayrollDTO> payrollDTOList = new ArrayList<>();
-		if(payrollList != null && !payrollList.isEmpty()) {
+		System.out.println(" inside getINDPayrollDTOFromIndEmployeePayroll   >>>>>>>>>>>>>");
+		if(payrollList != null && !payrollList.isEmpty()) {		
 			for(IndEmployeePayroll employeePayroll :payrollList) {
 				if(employeePayroll != null && employeePayroll.getStatus() == 0)
 					continue;
 					
-				
 				INDPayrollDTO payrollDTO = new INDPayrollDTO();
 				if(employeePayroll.getId() != null) {
 					payrollDTO.setId(employeePayroll.getId());
@@ -450,6 +450,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				payrollDTOList.add(payrollDTO);
 			}
 		}
+		System.out.println(" completed getINDPayrollDTOFromIndEmployeePayroll   >>>>>>>>>>>>>");
 		 return payrollDTOList;
 	}
 	
@@ -1498,7 +1499,8 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		}
 		
 		SourceleadTaxITDeclarationSubmission itDeclarationSubmission = taxService.getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(employee.getUser().getId(), orgLocation.getId(), fromYear + "-" + toYear);
-		if(itDeclarationSubmission != null) {
+		
+		if(itDeclarationSubmission != null && itDeclarationSubmission.getStatus() ==1) {
 			JSONArray jsonArray = new JSONArray(itDeclarationSubmission.getSubmissionItems());
 			if (jsonArray != null) {
 				for (int i = 0; i < jsonArray.length(); i++) {
@@ -1508,13 +1510,28 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 							JSONObject itemsJsonObject = jsonObject.getJSONArray("items").getJSONObject(j);
 							itemsJsonObject.get("amount");
 							itemsJsonObject.get("maxLimit");
-							if(StringUtils.isNotBlank(itemsJsonObject.get("amount").toString()) && NumberUtils.isNumber(itemsJsonObject.get("amount").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > 0) {
-								if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) > Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
-									tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("maxLimit").toString());
-								}else if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) && Double.parseDouble(itemsJsonObject.get("amount").toString()) <= Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
-									tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("amount").toString());
-								}
+							if(StringUtils.isNotBlank(itemsJsonObject.get("amount").toString()) 
+									&& NumberUtils.isNumber(itemsJsonObject.get("amount").toString()) 
+									&& Double.parseDouble(itemsJsonObject.get("amount").toString()) > 0) {
+								if(Double.parseDouble(itemsJsonObject.get("maxLimit").toString()) > 0) {
+									//when amount is greater then maxLimit
+									if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) 
+										&& Double.parseDouble(itemsJsonObject.get("amount").toString()) > Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
+										tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("maxLimit").toString());
+									//When amount is small or equal to maxLimit 	
+								    }else if(NumberUtils.isNumber(itemsJsonObject.get("maxLimit").toString()) 
+										 && Double.parseDouble(itemsJsonObject.get("amount").toString()) <= Double.parseDouble(itemsJsonObject.get("maxLimit").toString())) {
+										 tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("amount").toString());}
+							    }else { 
+								    tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(itemsJsonObject.get("amount").toString());   }
 							}
+						}
+						//if tdsTaxExemption for section exceeds the Tax section Max limit 
+						if(jsonObject.has("taxSectionMaxLimit")  && Double.parseDouble(jsonObject.get("taxSectionMaxLimit").toString()) > 0 
+								&& Double.parseDouble(jsonObject.get("taxSectionMaxLimit").toString()) <= tdsExemptionTotal) {
+						    if(StringUtils.isNotBlank(jsonObject.get("taxSectionMaxLimit").toString()) && NumberUtils.isNumber(jsonObject.get("taxSectionMaxLimit").toString())) {
+							         tdsExemptionTotal = tdsExemptionTotal + Double.parseDouble(jsonObject.get("taxSectionMaxLimit").toString());
+						     }
 						}
 					}
 				}
