@@ -309,7 +309,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		 query1.append("and (iep.employee.departmentId.departmentName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' ")
 		       .append("OR (iep.candidate.firstName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR (iep.candidate.lastName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
-		       .append("OR concat(iep.candidate.firstName,iep.candidate.lastName) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
+		       .append("OR (iep.candidate.middelName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR concat(iep.candidate.firstName,' ',iep.candidate.middelName,' ',iep.candidate.lastName) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
 			   .append("OR iep.employee.employeeId like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )");
 		}
 		
@@ -419,9 +420,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		StringBuilder query1 = new StringBuilder("");
 		if(indEmployeePayrollDTO.getSearchValue() !=null && !"".equalsIgnoreCase(indEmployeePayrollDTO.getSearchValue())) {
 		 query1.append("and (iep.employee.departmentId.departmentName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' ")
-		       .append("OR (candidate.firstName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
-	           .append("OR (candidate.lastName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
-	           .append("OR concat(candidate.firstName,candidate.lastName) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
+		       .append("OR (iep.candidate.firstName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+	           .append("OR (iep.candidate.lastName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+	           .append("OR (iep.candidate.middelName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+	           .append("OR concat(iep.candidate.firstName,iep.candidate.middelName,iep.candidate.lastName) like '%" + indEmployeePayrollDTO.getSearchValue().replaceAll(" ", "") + "%' ")
 		       .append("OR (iep.paymentAccount.accountNumber like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR (iep.paymentAccount.bankName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR (iep.paymentAccount.routingNumber like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
@@ -432,7 +434,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		List<IndEmployeePayroll> indEmployeePayrollList = null;
 		List<Long> countlist  = null;
 		//List Query
-		String query = "from IndEmployeePayroll iep  left join fetch iep.candidate candidate left join fetch iep.indPaysheetFrequency ipf where  ipf.userGroup.id =:groupId and ipf.frequencyStartDate =:frequencyStartDate and ipf.frequencyEndDate =:frequencyEndDate and ipf.approverStatus ='APPROVED' and ipf.orgLocation.id =:orgLoactionId  "+query1+"";
+		String query = "from IndEmployeePayroll iep  left join fetch iep.paymentAccount payment left join fetch iep.indPaysheetFrequency ipf where  ipf.userGroup.id =:groupId and ipf.frequencyStartDate =:frequencyStartDate and ipf.frequencyEndDate =:frequencyEndDate and ipf.approverStatus ='APPROVED' and ipf.orgLocation.id =:orgLoactionId  "+query1+"";
 		
 		//count Query
 		String countQuery  = "Select count (*) from IndEmployeePayroll iep where  iep.indPaysheetFrequency.userGroup.id =:groupId and iep.indPaysheetFrequency.frequencyStartDate =:frequencyStartDate and iep.indPaysheetFrequency.frequencyEndDate =:frequencyEndDate and iep.indPaysheetFrequency.approverStatus ='APPROVED' and iep.indPaysheetFrequency.orgLocation.id =:orgLoactionId "+query1+"";
@@ -481,7 +483,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		 query1.append("and (iep.employee.departmentId.departmentName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' ")
 		       .append("OR (iep.candidate.firstName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR (iep.candidate.lastName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
-		       .append("OR concat(iep.candidate.firstName,iep.candidate.lastName) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
+		       .append("OR (iep.candidate.middelName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR concat(iep.candidate.firstName,' ',iep.candidate.lastName,' ',iep.candidate.middelName) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
 			   .append("OR iep.employee.employeeId like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )");
 		}
 		
@@ -538,7 +541,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		 query1.append("and (iep.employee.departmentId.departmentName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' ")
 		       .append("OR (iep.candidate.firstName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR (iep.candidate.lastName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
-		       .append("OR concat(iep.candidate.firstName,iep.candidate.lastName) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
+		       .append("OR (iep.candidate.middelName like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR concat(iep.candidate.firstName,' ',iep.candidate.lastName,' ',iep.candidate.middelName) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
 			   .append("OR iep.employee.employeeId like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )");
 		}
 		
@@ -599,7 +603,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			 Calendar cal = Calendar.getInstance();
 			 cal.setTime(startDate);
 			 cal.set(Calendar.YEAR, sFCal.get(Calendar.YEAR));
-			 if(cal.getTime().after(sDate) && cal.getTime().before(eDate)) {
+			 if((cal.getTime().after(sDate) || cal.getTime().equals(sDate)) && cal.getTime().before(eDate)) {
 				 sDate = cal.getTime();
 				 cal.add(Calendar.MONTH, 1);  
 				 cal.set(Calendar.DAY_OF_MONTH, 1);  
@@ -629,6 +633,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 						" employee.HIRE_DATE as deteOfJoin, "+
 					    " can.FIRST_NAME as firstName, "+
 				        " can.LAST_NAME as lastName, "+
+				        " can.MIDDLE_NAME as middleName, "+
 				        " payHead.NAME as payHeadName, "+
 				        " his.MONTHLY as payHeadAmount, "+
 				        " payroll.GROSS_PAY as grossPay, "+
@@ -665,7 +670,8 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		 query1.append("and (employee.EMPLOYEE_ID like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' ")
 		       .append("OR (can.FIRST_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR (can.LAST_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
-		       .append("OR concat(can.FIRST_NAME,can.LAST_NAME) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
+		       .append("OR (can.MIDDLE_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR concat(can.FIRST_NAME,can.LAST_NAME,can.MIDDLE_NAME) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
 		       .append("OR (pfEsi.UAN_NUMBER like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR (pfEsi.PF_NUMBER like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR (pfEsi.ESI_NUMBER like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
@@ -705,15 +711,16 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 						  "	employee.HIRE_DATE as deteOfJoin, "+
 						  "	can.FIRST_NAME as firstName, "+
 						  "	can.LAST_NAME as lastName,  "+
+						  "	can.MIDDLE_NAME as middleName,  "+
 						  "	payHead.NAME as payHeadName, "+
 						  "	his.PAYROLL_PAYHEAD as payrollPayheadId, "+
 						  "	his.MONTHLY as payHeadAmount, "+
 						  "	payHead.SHORT_CODE as shortCode, "+
-						  "	pfESI.UAN_NUMBER as uanNumber, "+
-						  "	pfESI.PF_NUMBER as pfNumber, "+
-						  "	pfESI.ESI_NUMBER as esiNumber, "+
-						  "	pfESI.ELIGIBLE_FOR_ESI as eligibleForEsi, "+
-						  "	pfESI.ELIGIBLE_FOR_PF as eligibleForPf, "+
+						  "	pfEsi.UAN_NUMBER as uanNumber, "+
+						  "	pfEsi.PF_NUMBER as pfNumber, "+
+						  "	pfEsi.ESI_NUMBER as esiNumber, "+
+						  "	pfEsi.ELIGIBLE_FOR_ESI as eligibleForEsi, "+
+						  "	pfEsi.ELIGIBLE_FOR_PF as eligibleForPf, "+
 						  "	tax.EMPLOYEE_ESI as employeeEsi, "+
 						  "	tax.EMPLOYER_ESI as employerEsi, "+
 						  "	tax.EMPLOYEE_PF as employeePf, "+
@@ -727,7 +734,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 						  "	AND payroll.CANDIDATE_ID = can.ID  "+
 						  "	AND payroll.EMPLOYEE_ID = employee.ID "+  
 						  "	AND employee.DEPARTMENT_ID = department.ID "+  
-						  "	AND payroll.CANDIDATE_ID = pfESI.CANDIDATE_ID "+
+						  "	AND payroll.CANDIDATE_ID = pfEsi.CANDIDATE_ID "+
 						  "	AND freq.ORG_LOCATION_ID =:orgloationId  "+
 						  "	AND ( date(freq.FREQUENCY_START_DATE) BETWEEN :startDate and :endDate) "+ 
 						  "	AND tax.CT_FINANCIAL_YEAR  =:financialYear "+
@@ -750,7 +757,7 @@ String countQuery  =  " select count(*) FROM PAYROLL_PAYHEAD payHead, IND_PAY_SH
 					  "	AND payroll.CANDIDATE_ID = can.ID  "+
 					  "	AND payroll.EMPLOYEE_ID = employee.ID "+  
 					  "	AND employee.DEPARTMENT_ID = department.ID "+  
-					  "	AND payroll.CANDIDATE_ID = pfESI.CANDIDATE_ID "+
+					  "	AND payroll.CANDIDATE_ID = pfEsi.CANDIDATE_ID "+
 					  "	AND freq.ORG_LOCATION_ID =:orgloationId  "+
 					  "	AND ( date(freq.FREQUENCY_START_DATE) BETWEEN :startDate and :endDate) "+ 
 					  "	AND tax.CT_FINANCIAL_YEAR  =:financialYear "+
@@ -804,7 +811,8 @@ String countQuery  =  " select count(*) FROM PAYROLL_PAYHEAD payHead, IND_PAY_SH
 		 query1.append("and (dept.DEPARTMENT_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' ")
 		       .append("OR (can.FIRST_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR (can.LAST_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
-		       .append("OR concat(can.FIRST_NAME,can.LAST_NAME) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
+		       .append("OR (can.MIDDLE_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR concat(can.FIRST_NAME,can.LAST_NAME,can.MIDDLE_NAME) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
 			   .append("OR emp.EMPLOYEE_ID like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )");
 		}
 		List<IndEmployeePayrollDTO> indEmployeePayrollList = null;
@@ -821,6 +829,7 @@ String countQuery  =  " select count(*) FROM PAYROLL_PAYHEAD payHead, IND_PAY_SH
 				       " emp.EMPLOYEE_ID as employeeid, "+
 					   " can.FIRST_NAME as firstName, "+
 					   " can.LAST_NAME as lastName, "+
+					   " can.MIDDLE_NAME as middleName, "+
 					   " asih.INCREMENT_PERCENTAGE as incresePercentage, "+
 					   " asih.EFFECTIVE_DATE as effectiveDate, "+
 					   " dept.DEPARTMENT_NAME as departmentName "+
