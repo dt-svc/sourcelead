@@ -441,6 +441,22 @@ function uploadAddApplicantCandidateDoc(){
 	$('#newUploadFiles').val(uploadfiles.replace(/C:\\fakepath\\/i, ''));
 }
 </script> -->
+
+<script>
+	var educationList = [];
+	var skillList = [];
+	$(function() {
+		 var i= 0;
+		 <c:forEach var="skill" items="${skillList}">
+		 	skillList[i++] = "${skill.name}";
+		 </c:forEach>
+		 var i= 0;
+		 <c:forEach var="edu" items="${educationsList}">
+		 	educationList[i++] = "${edu.name}";
+		 </c:forEach>
+	});
+</script>
+
 <script>
 
  $(document.body).on('change', '#uploadBtn' ,function(){
@@ -496,43 +512,72 @@ function uploadAddApplicantCandidateDoc(){
 						} else if (response.response === "SUCCESS") {
 							if(response.object !== null) {
 								var json = response.object;
-								var name = json.name;
-								var firstName = '';
-								var lastName = '';
-								if(name != null && name != 'undefined' && name != ''){
-									 firstName = name.split(".")[0]; 
-									 lastName = name.split(".")[1]; 
-									 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-											 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-										 firstName = name;
-									 }
-								}
+								var firstName = json.firstName;
+								var lastName = json.lastName;
 								
-								 $("input[name=FirstName]").val(firstName);
-					        	 $("input[name=LastName]").val(lastName);
-					        	 $("input[name=EmailId]").val(json.email);
-					        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
+								$("input[name='FirstName']").val(firstName);
+					        	 $("input[name='LastName']").val(lastName);
+					        	 $("input[name='EmailId']").val(json.email.split("<<>>")[0]);
 					        	 
-					        	 // Here parseresume skills and parseresume skills,lookup skills duplicate check
+					        	 for(var e in json.phoneNumbers) {
+					        		 if(e === "0")
+						        	 	$("input[name='PhoneNumber']").val(json.phoneNumbers[e]);
+					        		 else
+					        			 $("input[name='AlternateNumber']").val(json.phoneNumbers[e]);
+					     		 }
+					        	 
+					        	 $("input[name='country']").val(json.country === null && json.country !== "" ? json.country : "");
+					        	 $("input[name='state']").val(json.state === null && json.state !== "" ? json.state : "");
+					        	 $("input[name='city']").val(json.city === null && json.city !== "" ? json.city : "");
+					        	 $("input[name='zipcode']").val(json.zipcode === null && json.zipcode !== "" ? json.zipcode : "");
+					        	 
+					        	 $("#DOB").val(json.dob !== null && json.dob !== "" ? json.dob : "");
+					        	 $("input[name='Current/LastCompany']").val(json.employeers);
+					        	 
+					        	 $("input[name='Designation']").val(json.designation !== null && json.designation !== "" ? json.designation : "");
+					        	 
+					        	 $("input[name='Education']").val(json.educations);
+					        	 
+				        	 	if(json.totalYearsExp > 0) {
+				        			$("select[name='WorkExperience']").val(json.totalYearsExp);
+				        		} else if(json.totalMonthsExp > 0) {
+				        			$("select[name='WorkExperience']").val(0);
+				        		}
+				        		
+				        		if(json.totalMonthsExp > 0) {
+				        			$("select[name='monthExp']").val(json.totalMonthsExp);
+				        		} else if(json.totalYearsExp > 0) {
+				        			$("select[name='monthExp']").val(0);
+				        		}
+					        	 
 					        	 $("#candidateSkills").empty();
-					        	 var internalOutput = "";
-						        	 var skills = json.skills;
-			 						 <c:forEach var="skill" items="${skillsList}">
-			 						var existed = 0;
-			 						if(skills != null && skills != 'undefined' && skills != ''){
-			 							var str_array = skills.split(',');
-			 							for(var i = 0; i < str_array.length; i++) {
-			 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-			 							  if(str_array[i] == "${skill.name}"){
-			 								 existed = 1;
-			 								internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-			 							  }
-			 							}
-			 						}
-			 						if(existed == 0){
-			 							internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-					                }
-			 	                     </c:forEach>
+		 						
+		 						var internalOutput = "";
+		 						var skills = json.skills;
+		 						if(skills != null && skills != 'undefined' && skills != ''){
+		 							var str_array = skills;
+		 						} else {
+		 							str_array = [];
+		 						}
+		 						
+		 					   for(var j = 0; j< skillList.length; j++){
+		 						    var existed = 0;
+		 							for(var i = 0; i < str_array.length; i++) {
+		 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
+		 							   if(str_array[i] == skillList[j]){
+		 								   existed = 1;
+		 								   internalOutput = internalOutput+"<option value='"+str_array[i]+ "' selected>"+str_array[i]+"</option>";
+		 								   break;
+		 							   }
+		 							}
+		 							if(existed == 0){
+		 								internalOutput = internalOutput+"<option value='"+skillList[j]+"'>"+skillList[j]+"</option>";
+		 					        }
+		 						 }
+		 					   
+		 					   for(var e in str_array) {
+		 							internalOutput = internalOutput+"<option value='" + str_array[e] + "' selected>" + str_array[e] + "</option>";
+		 						}
 		 						
 		 						$("#candidateSkills").append(internalOutput);
 		 		        		$("#candidateSkills").trigger("chosen:updated");
