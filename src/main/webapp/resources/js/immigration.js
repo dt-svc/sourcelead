@@ -872,7 +872,7 @@ function Immigration() {
 	                	}else{
 	                		showSuccessMsg("Successfully New Document Details Added.");
 	                	}
-	                	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'','');
+	                	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'','',curUscisMyImmi);
 	                }
 	                $("#canDocSave_Button1").removeAttr("disabled");
 	            }
@@ -1059,9 +1059,7 @@ function Immigration() {
 	
 	
 	this.displayImmigrationCandidateDocs = function(candidateId,templateid,immigrationId,searchVal,myImmigrationStatus,curUscisMyImmi){
-		if(curUscisMyImmi == null){
-			curUscisMyImmi = "";
-		}
+		
 		$.ajax({
 	        url: vmsUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId+"&searchVal="+searchVal+
 	        "&myImmigration="+myImmigrationStatus+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
@@ -1472,7 +1470,7 @@ function Immigration() {
 		var immigrationId = $('#immigrationID').val();
 		var id = $("#uploadIdSave").val();
 		var templateId = $('#templateID').val();
-		var curUscisMyImmi =
+	
 		$.ajax({
 	        url: vmsUrl + immiModulePath + "/uploadRequstedDoc?id="+id+"&candidateId="+candidateId+"&immigrationId="+immigrationId,
 	        type: "POST",
