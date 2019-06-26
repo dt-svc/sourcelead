@@ -544,7 +544,7 @@ function getVendorDetails(){
 						<div class="form-group">
 							<label class="col-md-3">Status</label>
 							<div class="col-md-9">
-								<select class="form-control" id="spocStatus"
+								<select class="form-control valid sel" id="spocStatus"
 									name="spocStatus">
 									<option value="Active">Active</option>
 									<option value="In-Active">In-Active</option>
