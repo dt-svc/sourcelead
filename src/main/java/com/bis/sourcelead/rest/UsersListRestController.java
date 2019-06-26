@@ -2436,6 +2436,10 @@ public class UsersListRestController {
 				   candidate.setWorkLocation(workLocation);
 			}
 			
+			if(addUserDTO.getDateofBirth() != null) {
+				candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofBirth()));
+			}
+			
 			if(StringUtils.isNotBlank(addUserDTO.getPanNumber())){
 				   candidate.setPanNumber(addUserDTO.getPanNumber());
 			}
