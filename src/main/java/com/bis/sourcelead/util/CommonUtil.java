@@ -2739,6 +2739,14 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 						}
 					}
 				});
+				if(requirementSubmission.getSourceSubmission() != null){
+		        	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
+			           if(parentSubmission != null){
+			        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+			        	   parentSubmission.setUpdatedDate(currentDate());
+			        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
+			           }
+		           }
 			}
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
