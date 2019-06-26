@@ -33,9 +33,10 @@
 <script>
 	$(document).ready(function() {
 		var stab = '${stab}';
+		var redirectionTab = '${redirectionTab}';
 		if(stab != null && stab != '' && stab != 'undefined' && stab == 'payroll'){
 			payrollDiv();
-		}else if (stab != null && stab != '' && stab != 'undefined' && stab == 'forms'){
+		}else if ((stab != null && stab != '' && stab != 'undefined' && stab == 'forms') || (redirectionTab == 'forms' && redirectionTab != null)){
 			formsDiv();
 			highlight('formsLi');
 		}else{
