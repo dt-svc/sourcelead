@@ -155,7 +155,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		String hed = weekFrequencyDates.toString();
 		String[] dateHeaders =hed.split(",");
 		LinkedList<String> headersLinkedList = new LinkedList<>();
-		String[] firstheaders = {"Employee Name","Employee Email","Phnone No","Emp Type","Rate","Project","Client","Vendor","Frequency"};
+		String[] firstheaders = {"Employee Name","Employee Email","Phone No","Emp Type","Rate","Project","Client","Vendor","Frequency"};
 		String[] secondHeader ={"Total","Total Billable","Total Non-Billable","ProjectToDate","Project Hours Billable","Project Hours Non-Billable","LastMonth","LastMonth Billable","LastMonth  Non-Billable","Stage"};
 		
 		
@@ -534,7 +534,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		String hed = weekFrequencyDates.toString();
 		String[] dateHeaders =hed.split(",");
 		LinkedList<String> headersLinkedList = new LinkedList<>();
-		String[] firstheaders = {"Emp Id","Employee Name","Employee Email","Phnone No","Emp Type","Rate","Project","Client","Vendor","Frequency"};
+		String[] firstheaders = {"Emp Id","Employee Name","Employee Email","Phone No","Emp Type","Rate","Project","Client","Vendor","Frequency"};
 		String[] secondHeader ={"Total","Total Billable","Total Non-Billable","ProjectToDate","Project Hours Billable","Project Hours Non-Billable","LastMonth","LastMonth Billable","LastMonth  Non-Billable","Stage"};
 				headersLinkedList.addAll(Arrays.asList(firstheaders));
 				headersLinkedList.addAll(Arrays.asList(dateHeaders));
