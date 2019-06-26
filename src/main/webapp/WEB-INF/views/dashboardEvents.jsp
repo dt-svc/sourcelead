@@ -1,6 +1,11 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
+
+<style type="text/css">
+#eventCalendar .ui-widget.ui-widget-content { width:100% !important; background: #ededed !important; }
+</style>
+
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  <!-- Applicant Authorization -->
       <div class="mb eventAlert clearfix col-md-12 noPad">
@@ -31,7 +36,7 @@
         
       <!-- show Calendar -->
         <div class="col-xs-12 col-md-5 mb mt">
-            <div id="eventCalendar"></div>
+            <div id="eventCalendar" class="eventCalendarDashboad"></div>
             <div id="jobFairCalendar" style="display: none;"></div>
         </div>
 
@@ -1259,5 +1264,4 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });
-</script>
-      
+</script>      
