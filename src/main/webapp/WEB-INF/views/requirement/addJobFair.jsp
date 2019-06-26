@@ -74,7 +74,7 @@
 					</div>
 					
 					<div class="col-md-5 noPad mt">
-						<div class="col-md-6">
+						<div class="col-md-3">
 							<label class="clearfix">Posted On ${jobFair.postedFrom}<span class="text-danger">&nbsp;*</span></label>
 							<div class="clearfix dropdown-select">
 								<select class="form-control" id="requirementsTimeRange" field-name="Posted From" data-validation="required"
@@ -89,14 +89,13 @@
 								</select>
 							</div>
 						</div>
-						<div class="col-md-6">
+						<div class="col-md-9">
 							<label class="clearfix">Select Client</label>
 							<div class="clearfix dropdown-select">
 								<div class="row">
 									<div class="col-md-12">
-										<select class="form-control" name="clientList" field-name="Client" 
+										<select data-placerholder="Select Client" multiple class="chosen-select" name="clientList" field-name="Client" 
 											id="clientList" ${jobFair.id == 0 ? "disabled='disabled'" : ""}>
-											<option value="">--Select client--</option>
 												<c:choose>
 													<c:when test="${jobFair.selectedClient != null && jobFair.selectedClient != ''}">
 														<c:forEach var="team" items="${add_clientList}">
@@ -221,6 +220,7 @@
 	var dateFormat = '';
 	$(document).ready(function() {
 		$("#clientList").trigger('chosen:update');
+		$("#clientList").chosen();
 		/* $('#clientList').find('option:first-child').prop('selected', false).end().trigger('chosen:updated'); */
 		
 		$("#requirementsList").trigger('chosen:update');
