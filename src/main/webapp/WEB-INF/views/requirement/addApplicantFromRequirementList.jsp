@@ -1406,7 +1406,8 @@ function setRateTypesByLocation(){
 		 	                     </c:forEach>
 		 						var skills = json.skills;
 		 						if(skills != null && skills != 'undefined' && skills != ''){
-		 							var str_array = skills.split(',');
+		 							//var str_array = skills.split(','); not required already array no need to split 
+		 							var str_array = skills;
 		 							for(var i = 0; i < str_array.length; i++) {
 		 							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
 		 							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
