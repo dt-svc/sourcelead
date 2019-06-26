@@ -232,7 +232,7 @@ public class ExpensesApprovalRestController {
                      String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getEndDate()); 
                       
                      //For Employee 
-                     sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user, projectMembers.getProjectMemberCandidteId().getConsultantUser(), orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason); 
+                     expensesEmailsUtil.sendEmailNotificationToEmployee(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user, projectMembers.getProjectMemberCandidteId().getConsultantUser(), orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason); 
                       
                      if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() == 2 ){ 
                          //For Approvers of EndClient 
@@ -269,7 +269,7 @@ public class ExpensesApprovalRestController {
                      String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getEndDate()); 
                     //For Employee 
                    if( eah.getHierarchyId().getLevel() != 1) { 
-                     sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user,projectMembers.getProjectMemberCandidteId().getConsultantUser(), orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason); 
+                	   expensesEmailsUtil.sendEmailNotificationToEmployee(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user,projectMembers.getProjectMemberCandidteId().getConsultantUser(), orgLoc, projectMembers, startDate, endDate, "approved", rejectedReason); 
                    } 
                      if(eah.getHierarchyId() != null && eah.getHierarchyId().getLevel() == 1 && submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue())){ 
                          //For Approvers of EndClient 
@@ -462,7 +462,8 @@ public class ExpensesApprovalRestController {
              actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString(); 
  
              notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE,Constants.ENTITY_TYPE_NOTIFICATION); 
-         } 
+         
+        }
          // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once  
         String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario); 
         notificationScenario.setBody(notificationBody); 
