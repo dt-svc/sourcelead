@@ -2739,6 +2739,14 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 						}
 					}
 				});
+				if(requirementSubmission.getSourceSubmission() != null){
+		        	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
+			           if(parentSubmission != null){
+			        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+			        	   parentSubmission.setUpdatedDate(currentDate());
+			        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
+			           }
+		           }
 			}
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
@@ -3036,6 +3044,18 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		headerMap.put("email", "Email");
 		return headerMap;
 		
+	}
+
+	public static String getCaptilizedText(String text) {
+		String convertedText = "";
+		try {
+			for(String t : text.split(" ")) {
+				convertedText += (convertedText.isEmpty() ? "" : " ") + t.substring(0, 1).toUpperCase() + t.substring(1).toLowerCase();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return convertedText;
 	}
 	
 }
