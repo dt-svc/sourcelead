@@ -167,14 +167,14 @@ function saveFeedbackTemplateDetails(feedbackTemplateUUID){
 		    var formData = new FormData(form); 
 		    var fields = [];
 		    var fileCount = 0;
-		    var flag = 1;
+		   
 		    $('.sjfb-field').each(function() {
 		    	  var $this = $(this); 
 		    	  var divId = $(this).attr('id');  
 		    	  var fieldLabel = $this.find('label:first').text().replace("*","").trim();
 		    	  var inputValue = $this.find('input[type="radio"]:checked').val();
 		    	  var inputtype = null;
-		    	 
+		    	  var flag = 1;
 		    	  
 		    	  inputtype = $(this).find('input').attr('field-type');
     			  if(inputtype != null || inputtype != '' || inputtype != 'undefined'){
@@ -244,14 +244,9 @@ function saveFeedbackTemplateDetails(feedbackTemplateUUID){
 		     	  if(inputtype == 'file'){
 		     		 inputValue = $("input[name = 'uploadedFileInfo["+fileCount+"].fileURL']").val()
 		     		 name = $("input[name = 'uploadedFileInfo["+fileCount+"].fileName']").val();
-		     		if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
-		     			 flag = 0;
-		     		 }else{
-		     			 fileCount = fileCount+1;
-		     		 }
+		     		 fileCount = fileCount+1;
 		     	  }
-		     	
-		     	  if(flag == 1){
+		     	  
 		     		  fields.push({
 			              label: fieldLabel,
 			              type : inputtype,
@@ -259,7 +254,6 @@ function saveFeedbackTemplateDetails(feedbackTemplateUUID){
 			              name :name,
 			              value: inputValue,
 			          });  
-		     	  }
 		    	
 		     });
 		    var con = JSON.stringify(fields);

@@ -146,17 +146,20 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
     	                				 }
     	                			 }
     	                			 
-    	                			 else if(fieldType == 'file' && v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+    	                			 else if(fieldType == 'file'){
     	                					  var fileHtml = '';
     	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileURL'  data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['value']+"' />";
     	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileName' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['name']+"' />";
     	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].status' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='1' />";
     	                					  $("#addFeedbackTemplate_form").append(fileHtml);
-    	                					  $('#newUploadFile'+label.replace(/\s+/g, '')).val(v3['name']);
-	                					      $("#download-"+label.replace(/\s+/g, '')).attr("href",v3['value']);
-	                					      $("#attachmentTitle-"+label.replace(/\s+/g, '')).html(v3['name']);
-	                					      document.getElementById("download-"+label.replace(/\s+/g, '')).style.display="";
 	                					      fileCount = fileCount+1;
+	                					      
+	                					      if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+	                					    	  $('#newUploadFile'+label.replace(/\s+/g, '')).val(v3['name']);
+		                					      $("#download-"+label.replace(/\s+/g, '')).attr("href",v3['value']);
+		                					      $("#attachmentTitle-"+label.replace(/\s+/g, '')).html(v3['name']);
+		                					      document.getElementById("download-"+label.replace(/\s+/g, '')).style.display="";
+	                					      }
     	                			 }
     	                			
     	                		 }

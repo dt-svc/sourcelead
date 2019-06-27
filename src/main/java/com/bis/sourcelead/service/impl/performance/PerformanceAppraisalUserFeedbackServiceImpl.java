@@ -67,17 +67,19 @@ public class PerformanceAppraisalUserFeedbackServiceImpl implements PerformanceA
 		
 		performanceAppraisalUserFeedback.setFeedbackJsonString(feedbackTemplae.getJsonString());
 		performanceAppraisalUserFeedback.setFeedbackJsonStringValues(performanceFeedbackCategoryDTO.getJsonDataValues());
-		performanceAppraisalUserFeedbackDao.savePerformanceAppraisalUserFeedback(performanceAppraisalUserFeedback);	
+		
 		
 		if(performanceFeedbackCategoryDTO.getUploadedFileInfo() != null && !performanceFeedbackCategoryDTO.getUploadedFileInfo().isEmpty()) {
 			performanceFeedbackCategoryDTO.setStaticPath(performanceFeedbackCategoryDTO.getStaticPath());
 			 for(FileInfo fileInfo : performanceFeedbackCategoryDTO.getUploadedFileInfo()){
-				 if(fileInfo.getStatus() == 0) {
+				 if(fileInfo.getFileURL() != null && fileInfo.getStatus() == 0) {
 					 FileUploadUtil.moveFile(performanceFeedbackCategoryDTO.getStaticPath(), fileInfo, "feedbackTemplateAttachments");
 				 }
 					
 				}
 		}
+		
+		performanceAppraisalUserFeedbackDao.savePerformanceAppraisalUserFeedback(performanceAppraisalUserFeedback);	
 		
 	}
 
