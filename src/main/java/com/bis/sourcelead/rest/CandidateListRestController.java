@@ -1008,6 +1008,10 @@ public class CandidateListRestController {
 				candidateDTO.setCurrentRate(can.getCurrentRate());
 				candidateDTO.setEmail(can.getEmail());
 				candidateDTO.setNoticePeriod(can.getNoticePeriod());
+				
+				if(can.getOtherNoticePeriod() != null) {
+				candidateDTO.setOtherNoticePeriod(can.getOtherNoticePeriod());
+				}
 				candidateDTO.setDesignation(can.getDesignation());
 				candidateDTO.setPrimarySkill(can.getPrimarySkill());
 				candidateDTO.setAddress(can.getAddress());
