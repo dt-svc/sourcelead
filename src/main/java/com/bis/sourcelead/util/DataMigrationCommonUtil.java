@@ -2740,7 +2740,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			//DateOfJoin
 			if(!dataMigrationDTOJsonCopy.getString("dateofJoin").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("dateofJoin"))) {
 				try {
-					DateFormat formatter = new SimpleDateFormat("DD-MM-yyyy"); 
+					DateFormat formatter = new SimpleDateFormat("dd-mm-yyyy"); 
 					Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.getString("dateofJoin"));
 					String dateofjoin = formatter.format(date);
 					dataMigrationDTOJsonCopy.put("dateofJoin", dateofjoin);
