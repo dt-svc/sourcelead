@@ -247,7 +247,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 			    	   		result = result + '<ul class="list-unstyled list-inline">';
 			    	   		result = result + '<span id="statusDiv">';
 			    	   		if(json.submissionRateStatus != 'ACCEPTED' && json.submissionRateStatus != 'REJECTED' && json.submissionStatus != 'SUBMISSION' && json.submissionStatus != 'REJECTED' && json.submissionStatus != 'SHORTLIST' && json.submissionStatus != 'OFFERMADE' && json.submissionStatus != 'INTERVIEW' && json.submissionStatus != 'SUBMIT_TO_CLIENT' && json.submissionStatus != 'OFFERREJECTED' && json.submissionStatus != 'OFFERACCEPTED' && json.submissionStatus != 'JOINED'){   
-								result = result + '	<li><i class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptCandidate(\''+submissionId+'\',\'accept\');"></i>';
+								result = result + '	<li><i id="acceptCandidate" class="fa fa-check labelsuccess" title="Accept Applicant Authorization" onClick="acceptCandidate(\''+submissionId+'\',\'accept\');"></i>';
 								result = result + '		<div class="acceptreject-pop" id="accpet-div">';
 								result = result + '		</div>';
 								result = result + '	</li>';
@@ -1614,8 +1614,10 @@ function getApplicantOtherizationRejectedCategory(){
 		         }; 
 			 if ($('#accept_form').validate(false, validationSettings)){
 	      		var formData = getFormData('accept_form'); 
+	      		$("#acceptCandidate").addClass("disabled");
+	      		$("#reject_candidate").attr("disabled", "disabled");
 				$("#accept_candidate").attr("disabled", "disabled");
-         		$("#accept_candidate" ).addClass('button').val('Processing..');
+         		$("#reject_candidate" ).addClass('button').val('Processing..');
 				
 				$.ajax({
 						type : "POST",
