@@ -13,7 +13,7 @@
         <div class="dashNewWrapHead event_calendar">
             <h4 class="pull-left">Events</h4>
             <sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">
-            <button class="btn btn-primary pull-left btn-sm ml mt7" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
+            <button id="scheduleInterview" class="btn btn-primary pull-left btn-sm ml mt7" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
             </sec:authorize>
             
             
@@ -167,6 +167,7 @@
 
 <script type="text/javascript">
 function getJobFairs() {
+	$("#scheduleInterview").hide();
 	$("#interviewsTab").removeClass("active");
 	$("#dashboardEventsDiv").hide();
 	$(".dashboardoverIcon").hide();
@@ -178,6 +179,7 @@ function getJobFairs() {
 }
 
 function getInterviewsandTasks() {
+	$("#scheduleInterview").show();
 	$("#interviewsTab").addClass("active");
 	$("#dashboardEventsDiv").show();
 	$(".dashboardoverIcon").show();
