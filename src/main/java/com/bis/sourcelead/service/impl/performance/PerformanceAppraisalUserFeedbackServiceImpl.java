@@ -72,7 +72,10 @@ public class PerformanceAppraisalUserFeedbackServiceImpl implements PerformanceA
 		if(performanceFeedbackCategoryDTO.getUploadedFileInfo() != null && !performanceFeedbackCategoryDTO.getUploadedFileInfo().isEmpty()) {
 			performanceFeedbackCategoryDTO.setStaticPath(performanceFeedbackCategoryDTO.getStaticPath());
 			 for(FileInfo fileInfo : performanceFeedbackCategoryDTO.getUploadedFileInfo()){
-					FileUploadUtil.moveFile(performanceFeedbackCategoryDTO.getStaticPath(), fileInfo, "feedbackTemplateAttachments");
+				 if(fileInfo.getStatus() == 0) {
+					 FileUploadUtil.moveFile(performanceFeedbackCategoryDTO.getStaticPath(), fileInfo, "feedbackTemplateAttachments");
+				 }
+					
 				}
 		}
 		

@@ -19,8 +19,9 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
         	}else{
         		data = eval(result.jsonString);
         	}
-        	  
         	 
+        	var attachmentCount = 0;
+        	var fileCount = 0;
         	 if (data) {
                  //go through each saved field object and render the form HTML
                  $.each( data, function( k, v ) {
@@ -28,10 +29,13 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
                      var fieldType = v['type'];
                      var labelTitle = v['label'];
                      var required =  v['req'];
-
                      //Add the field
-                     $('#sjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label'],v['hint'],v['dropdown']));
+                     $('#sjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label'],v['hint'],v['dropdown'],attachmentCount));
                      var $currentField = $('#sjfb-fields .sjfb-field').last();
+                     
+                     if(fieldType == "file"){
+                    	 attachmentCount = attachmentCount+1;
+                     }
                      
                      var reqSymbol = '';
                 	 if(v['req'] == '1'){
@@ -113,7 +117,7 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
                              });
                          }
                     	 
-                    	 if(fieldType == 'textarea' || fieldType == 'text' || fieldType == 'calendar' || fieldType == 'scale' || fieldType == 'star'){
+                    	 if(fieldType == 'textarea' || fieldType == 'text' || fieldType == 'calendar' || fieldType == 'scale' || fieldType == 'star' || fieldType == 'file'){
     	                   	 var details = eval(result.submittedJsonStringValues);
     	                   	 var label = v['label'];
     	                	 $.each(details, function( k3, v3 ) {
@@ -140,6 +144,16 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
     	                					 fillStarValues(v['dropdown'],label.replace(/\s+/g, ''),v3['value'])
     	                				 }
+    	                			 }
+    	                			 
+    	                			 else if(fieldType == 'file' && v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+    	                					  var fileHtml = '';
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileURL'  data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['value']+"' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileName' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['name']+"' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].status' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='1' />";
+    	                					  $("#addFeedbackTemplate_form").append(fileHtml);
+    	                					  $('#newUploadFile'+label.replace(/\s+/g, '')).val(v3['name']);
+    	                					  fileCount = fileCount+1;
     	                			 }
     	                			
     	                		 }
@@ -209,10 +223,11 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
         	 
         	 
         	  //HTML templates for rendering frontend form fields
-             function addFieldHTML(fieldType,required,label,hint,dropdown) {
+             function addFieldHTML(fieldType,required,label,hint,dropdown,attachmentCount) {
             	 var uniqueID = Math.floor(Math.random()*999999)+1;
             	 var datavalidation = '';	
             	 var attachmentDataValidation = '';
+            	 var attachmentDataValidationOptional = ''
             	 if(required == '1'){
             		 datavalidation = 'data-validation="required"';
             	 }
@@ -229,6 +244,7 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
             			 if(required == '1'){
             				 attachmentDataValidation = 'data-validation="required validatedoc"'
             			 }else{
+            				 attachmentDataValidationOptional = 'data-validation-optional="true"'
             				 attachmentDataValidation = 'data-validation="validatedoc"'
             			 }
             			 
@@ -237,6 +253,7 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
             			 if(required == '1'){
             				 attachmentDataValidation = 'data-validation="required validate_importFile"'
             			 }else{
+            				 attachmentDataValidationOptional = 'data-validation-optional="true"'
             				 attachmentDataValidation = 'data-validation="validate_importFile"'
             			 }
             			 
@@ -244,6 +261,7 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
             			 if(required == '1'){
             				 attachmentDataValidation = 'data-validation="required validateimage"'
             			 }else{
+            				 attachmentDataValidationOptional = 'data-validation-optional="true"'
             				 attachmentDataValidation = 'data-validation="validateimage"'
             			 }
             		 }
@@ -333,8 +351,8 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
                          '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                          '<label for="text-' + uniqueID + '"></label>' +
                          '<div class="clearfix mt"></div>'+
-                         '<input type="file" id="newUploadBtn'+uniqueID+'" onchange="uploadFeedbackAttachments(\''+uniqueID+'\');" class="upload">' +
-                         '<input type="text" class="form-control" style="display: none;"  name="docFile^'+label+'" id="newUploadFile'+uniqueID+'" '+attachmentDataValidation+' field-name="'+label+'"  >'+
+                         '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
+                         '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >'+
                          '</div>'; 
                  }
                  

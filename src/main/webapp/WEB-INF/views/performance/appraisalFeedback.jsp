@@ -4,6 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/performance/performanceAppraisal.js"></script>
 <script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/performance/performanceFeedbackFormView-html-generator.js"></script>
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 
@@ -165,7 +166,8 @@ function saveFeedbackTemplateDetails(feedbackTemplateUUID){
 		    var form = $('#addFeedbackTemplate_form')[0];
 		    var formData = new FormData(form); 
 		    var fields = [];
-		    var flag = 0;
+		    var fileCount = 0;
+		    var flag = 1;
 		    $('.sjfb-field').each(function() {
 		    	  var $this = $(this); 
 		    	  var divId = $(this).attr('id');  
@@ -240,17 +242,25 @@ function saveFeedbackTemplateDetails(feedbackTemplateUUID){
 	     	      }
 		     	  
 		     	  if(inputtype == 'file'){
-		     		 inputValue = $("input[name = 'uploadedFileInfo["+flag+"].fileURL']").val()
-		     		 flag = flag+1;
+		     		 inputValue = $("input[name = 'uploadedFileInfo["+fileCount+"].fileURL']").val()
+		     		 name = $("input[name = 'uploadedFileInfo["+fileCount+"].fileName']").val();
+		     		if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		     			 flag = 0;
+		     		 }else{
+		     			 fileCount = fileCount+1;
+		     		 }
 		     	  }
-		     	  
-		    	  fields.push({
-		              label: fieldLabel,
-		              type : inputtype,
-		              id :id,
-		              name :name,
-		              value: inputValue,
-		          });
+		     	
+		     	  if(flag == 1){
+		     		  fields.push({
+			              label: fieldLabel,
+			              type : inputtype,
+			              id :id,
+			              name :name,
+			              value: inputValue,
+			          });  
+		     	  }
+		    	
 		     });
 		    var con = JSON.stringify(fields);
 		    con = encodeURIComponent(con);
@@ -271,7 +281,7 @@ function saveFeedbackTemplateDetails(feedbackTemplateUUID){
 						} else if (result.response === "AWKWARD") {
 							location.href = "/errorPage";
 						} else if (result.response === "SUCCESS") {
-							getFeedbackCategoryForm(feedbackTemplateUUID);
+							getAppraisalFeedbackDetails();
 							$("#appraisalLoading").removeAttr("style");
 						} else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
@@ -316,8 +326,8 @@ $('body').on('blur', '#addFeedbackTemplate_form', function() {
 
 <script>
 
-function uploadFeedbackAttachments(id){
-	fileUpload("newUploadBtn"+id, "feedbackTemplateAttachments", "addFeedbackTemplate_form","uploadedFileInfo");
+function uploadFeedbackAttachments(id,attachmentCount){
+	appraisalFeedbackFileUpload("newUploadBtn"+id, "feedbackTemplateAttachments", "addFeedbackTemplate_form","uploadedFileInfo",attachmentCount);
 	$('#newUploadFile'+id).val($("#newUploadBtn"+id).val().replace(/C:\\fakepath\\/i, ''));
 	
 }
