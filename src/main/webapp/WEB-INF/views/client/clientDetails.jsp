@@ -416,7 +416,7 @@ margin-bottom: 15px;
 						}else{
 								result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 								result = result + '<div class="user_summary_edit_cta">';
-								result = result + '<label>Client Nameeee<span class="text-danger">&nbsp; *</span> </label>';
+								result = result + '<label>Client Name<span class="text-danger">&nbsp; *</span> </label>';
 								result = result + '<input type="text"  id="clientName" name="orgName" value="'+json.orgName+'" data-validation="required validate_Space validate_length length2-250" field-name="client name" placeholder="client name">';
 								result = result + '</div>';
 								
