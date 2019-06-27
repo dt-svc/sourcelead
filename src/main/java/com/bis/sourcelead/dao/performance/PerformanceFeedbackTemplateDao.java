@@ -14,4 +14,6 @@ public interface PerformanceFeedbackTemplateDao {
 	List<PerformanceFeedbackTemplate> getPerformanceFeedbackTemplateList(Long orgLocationId) throws Exception;
 	
 	List<PerformanceFeedbackTemplateDTO> getPerformanceFeedbackTemplateDTOList(Long orgLocationId) throws Exception;
+	
+	PerformanceFeedbackTemplate getPerformanceFeedbackTemplateByUUID(String uuid) throws Exception;
 }

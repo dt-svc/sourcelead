@@ -13,4 +13,6 @@ public interface PerformanceAppraisalAssignedAssociatesDao {
 	void deleteAppraisalAssignedAssociate(PerformanceAppraisalAssignedAssociates performanceAppraisalAssignedAssociates) throws Exception;
 	
 	PerformanceAppraisalAssignedAssociates getPerformanceAppraisalAssignedAssociatesByUUID(String uuid) throws Exception;
+	
+	boolean isGoalsConfiguredForAssignedPerformanceApprisal(String uuid) throws Exception;
 }

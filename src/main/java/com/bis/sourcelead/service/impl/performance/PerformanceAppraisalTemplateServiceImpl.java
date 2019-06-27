@@ -172,6 +172,14 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getJsonCategoriesString())) {
 			template.setCategoriesJsonString(performanceAppraisalTemplateDTO.getJsonCategoriesString());
 		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalGoals()) && 
+				performanceAppraisalTemplateDTO.getAppraisalGoals().equalsIgnoreCase(Constants.YES)) {
+			template.setIsGoalsConfigured(performanceAppraisalTemplateDTO.getAppraisalGoals());
+		}else{
+			template.setIsGoalsConfigured(Constants.NO);
+		}
+		
 		template.setOrgLocationId(orgLocations);
 		template.setStatus(Constants.RECORD_ACTIVE);
 		performanceAppraisalTemplateDao.savePerformanceAppraisalTemplate(template);

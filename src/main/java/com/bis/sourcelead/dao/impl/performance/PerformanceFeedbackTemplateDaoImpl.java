@@ -102,4 +102,18 @@ public class PerformanceFeedbackTemplateDaoImpl implements PerformanceFeedbackTe
 		templateDTOList = queryObj.list();
 		return templateDTOList;
 	}
+
+	@Override
+	public PerformanceFeedbackTemplate getPerformanceFeedbackTemplateByUUID(String uuid) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceFeedbackTemplate> performanceFeedbackTemplate = new ArrayList<PerformanceFeedbackTemplate>();
+		logger.debug("getPerformanceFeedbackTemplateByUUID  start");
+		performanceFeedbackTemplate = session.createQuery("from PerformanceFeedbackTemplate template where template.uuid = :uuid " ).setString( "uuid", uuid).list();
+		logger.debug("getPerformanceFeedbackTemplateByUUID  end");
+		if (performanceFeedbackTemplate.size() > 0) {
+			return performanceFeedbackTemplate.get(0);
+		} else {
+			return null;
+		}
+	}
 }

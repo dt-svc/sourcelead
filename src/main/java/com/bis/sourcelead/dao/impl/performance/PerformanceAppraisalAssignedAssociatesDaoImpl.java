@@ -209,4 +209,26 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 			return null;
 		}
 	 }
+
+	@Override
+	public boolean isGoalsConfiguredForAssignedPerformanceApprisal(String uuid) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = true;
+		String query =  "SELECT "
+				+" TEMPLATE.IS_GOALS_CONFIGURED "           
+				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+				+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE "
+				+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID   "
+				+" AND ASSIGNED.UUID = :assignedUUID ";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("assignedUUID", uuid);
+		String isGoalsConfigured = (String) queryObj.uniqueResult();
+		if(isGoalsConfigured == null || isGoalsConfigured.equalsIgnoreCase("N")) {
+			flag = false;
+		}
+		
+		return flag;
+	}
 }

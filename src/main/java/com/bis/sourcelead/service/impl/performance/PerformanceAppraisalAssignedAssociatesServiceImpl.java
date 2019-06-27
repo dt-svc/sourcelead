@@ -97,4 +97,9 @@ public class PerformanceAppraisalAssignedAssociatesServiceImpl implements Perfor
 		return performanceAppraisalAssignedAssociatesDao.getPerformanceAppraisalAssignedAssociatesByUUID(uuid);
 	}
 
+	@Override
+	public boolean isGoalsConfiguredForAssignedPerformanceApprisal(String uuid) throws Exception {
+		return performanceAppraisalAssignedAssociatesDao.isGoalsConfiguredForAssignedPerformanceApprisal(uuid);
+	}
+
 }

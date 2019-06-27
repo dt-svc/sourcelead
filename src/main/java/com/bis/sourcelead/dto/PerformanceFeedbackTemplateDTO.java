@@ -16,6 +16,10 @@ public class PerformanceFeedbackTemplateDTO implements Serializable{
 	private BigInteger templateId;
 	
 	private String feedbackTemplateUUID;
+	
+	private String submittedJsonString;
+	
+	private String submittedJsonStringValues;
 
 	public String getTemplateName() {
 		return templateName;
@@ -55,6 +59,22 @@ public class PerformanceFeedbackTemplateDTO implements Serializable{
 
 	public void setFeedbackTemplateUUID(String feedbackTemplateUUID) {
 		this.feedbackTemplateUUID = feedbackTemplateUUID;
+	}
+
+	public String getSubmittedJsonString() {
+		return submittedJsonString;
+	}
+
+	public void setSubmittedJsonString(String submittedJsonString) {
+		this.submittedJsonString = submittedJsonString;
+	}
+
+	public String getSubmittedJsonStringValues() {
+		return submittedJsonStringValues;
+	}
+
+	public void setSubmittedJsonStringValues(String submittedJsonStringValues) {
+		this.submittedJsonStringValues = submittedJsonStringValues;
 	}
 	
 
