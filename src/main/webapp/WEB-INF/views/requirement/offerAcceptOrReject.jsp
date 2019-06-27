@@ -114,6 +114,7 @@
 
 
 <script type="text/javascript">
+var atsUrl ='${SourceLeadWeb_atsUrl}';
 	function storeReject() {
 			var sourceleadUrl = '${sourceleadUrl}';
 			var offerId = '${offerId}';
@@ -125,7 +126,7 @@
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/ws/acceptOrRejectOffer?${_csrf.parameterName}=${_csrf.token}&offerStatus="+offerStatus+"&offerId="+offerId+"&rejectedReason="+rejectedReason,
+						url : atsUrl+"/ws/acceptOrRejectOffer?${_csrf.parameterName}=${_csrf.token}&offerStatus="+offerStatus+"&offerId="+offerId+"&rejectedReason="+rejectedReason,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();
