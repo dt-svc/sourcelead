@@ -2726,7 +2726,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				activitySummary.append("Employment Type").append(" : ").append("---").append(" ");
 		candidate.setDesignationType(candidateDto.getDesignationType());
 		
-		  if(candidate.getDesignationType() != null && candidate.getDesignationType().equalsIgnoreCase("Other")) {
+		  if(candidate.getDesignationType() != null && "Other".equalsIgnoreCase(candidate.getDesignationType())) {
 		    	candidate.setDesignationOtherType(candidateDto.getDesignationOtherType());
 		    }
 		
