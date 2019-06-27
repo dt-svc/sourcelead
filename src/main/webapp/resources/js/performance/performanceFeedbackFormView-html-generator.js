@@ -153,7 +153,10 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
     	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].status' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='1' />";
     	                					  $("#addFeedbackTemplate_form").append(fileHtml);
     	                					  $('#newUploadFile'+label.replace(/\s+/g, '')).val(v3['name']);
-    	                					  fileCount = fileCount+1;
+	                					      $("#download-"+label.replace(/\s+/g, '')).attr("href",v3['value']);
+	                					      $("#attachmentTitle-"+label.replace(/\s+/g, '')).html(v3['name']);
+	                					      document.getElementById("download-"+label.replace(/\s+/g, '')).style.display="";
+	                					      fileCount = fileCount+1;
     	                			 }
     	                			
     	                		 }
@@ -353,6 +356,7 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
                          '<div class="clearfix mt"></div>'+
                          '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
                          '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >'+
+                         '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/\s+/g, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/\s+/g, '')+'\'></span></a>'+
                          '</div>'; 
                  }
                  
