@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto.performance;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 public class PerformanceAppraisalTemplateDetailsDTO implements Serializable{
 
@@ -45,6 +46,8 @@ private static final long serialVersionUID = 1L;
 	private String resourceManagerImgUrl;
 	
 	private String reportingManagerImgUrl;
+	
+	private BigInteger orgLocationId;
 	
 
 	public String getName() {
@@ -206,6 +209,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setReportingManagerReviewEndDate(String reportingManagerReviewEndDate) {
 		this.reportingManagerReviewEndDate = reportingManagerReviewEndDate;
+	}
+
+	public BigInteger getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(BigInteger orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 	
 	

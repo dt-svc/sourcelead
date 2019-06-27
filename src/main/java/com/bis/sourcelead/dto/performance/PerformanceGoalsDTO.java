@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto.performance;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,17 @@ public class PerformanceGoalsDTO implements Serializable{
 	private BigInteger subGoalsCount;
 	
 	private String teamName;
+	
+	private BigDecimal toalAssignedGoalsCount;
+	
+	private BigDecimal toalAssignedInprogressGoalsCount;
+	
+	private BigDecimal toalAssignedCompletedGoalsCount;
+	
+	private BigDecimal toalAssignedOverDueGoalsCount;
+	
+	private BigDecimal toalAssignedNotStartedGoalsCount;
+	
 	
 
 	public Long getGoalId() {
@@ -274,6 +286,46 @@ public class PerformanceGoalsDTO implements Serializable{
 
 	public void setTeamName(String teamName) {
 		this.teamName = teamName;
+	}
+
+	public BigDecimal getToalAssignedGoalsCount() {
+		return toalAssignedGoalsCount;
+	}
+
+	public void setToalAssignedGoalsCount(BigDecimal toalAssignedGoalsCount) {
+		this.toalAssignedGoalsCount = toalAssignedGoalsCount;
+	}
+
+	public BigDecimal getToalAssignedInprogressGoalsCount() {
+		return toalAssignedInprogressGoalsCount;
+	}
+
+	public void setToalAssignedInprogressGoalsCount(BigDecimal toalAssignedInprogressGoalsCount) {
+		this.toalAssignedInprogressGoalsCount = toalAssignedInprogressGoalsCount;
+	}
+
+	public BigDecimal getToalAssignedCompletedGoalsCount() {
+		return toalAssignedCompletedGoalsCount;
+	}
+
+	public void setToalAssignedCompletedGoalsCount(BigDecimal toalAssignedCompletedGoalsCount) {
+		this.toalAssignedCompletedGoalsCount = toalAssignedCompletedGoalsCount;
+	}
+
+	public BigDecimal getToalAssignedOverDueGoalsCount() {
+		return toalAssignedOverDueGoalsCount;
+	}
+
+	public void setToalAssignedOverDueGoalsCount(BigDecimal toalAssignedOverDueGoalsCount) {
+		this.toalAssignedOverDueGoalsCount = toalAssignedOverDueGoalsCount;
+	}
+
+	public BigDecimal getToalAssignedNotStartedGoalsCount() {
+		return toalAssignedNotStartedGoalsCount;
+	}
+
+	public void setToalAssignedNotStartedGoalsCount(BigDecimal toalAssignedNotStartedGoalsCount) {
+		this.toalAssignedNotStartedGoalsCount = toalAssignedNotStartedGoalsCount;
 	}
 
 	

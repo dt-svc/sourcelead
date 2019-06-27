@@ -9,6 +9,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDetailsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -482,5 +484,67 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		feedbackTemplateDTOList = feedbackQueryObj.list();
 		
 		return feedbackTemplateDTOList.get(0);
+	}
+
+	@Override
+	public PerformanceGoalsDTO getperformanceGoalsDetails(String assignedUUID, Long userId) throws Exception {
+		
+		List<PerformanceAppraisalTemplateDetailsDTO> templateDetailsList = new ArrayList<PerformanceAppraisalTemplateDetailsDTO>();
+		List<PerformanceGoalsDTO> goalDetailsList = new ArrayList<PerformanceGoalsDTO>();
+		String mysqlDateFormat = "\"%Y-%m-%d\"";
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = true;
+		String query =  "SELECT "
+				+" ASSIGNED.ORG_LOCATION_ID AS orgLocationId, "  
+				+" DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+mysqlDateFormat+") AS appraisalStartDate, "
+				+" DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+mysqlDateFormat+") AS appraisalEndDate "
+				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+				+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE "
+				+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID   "
+				+" AND ASSIGNED.UUID = :assignedUUID ";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("assignedUUID", assignedUUID);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalTemplateDetailsDTO.class));
+		templateDetailsList = queryObj.list();
+		PerformanceAppraisalTemplateDetailsDTO templateDTO = templateDetailsList.get(0);
+		
+		
+		String goalsQuery = "SELECT " + 
+				"  COUNT(Q1.GOAL_ID) AS toalAssignedGoalsCount, SUM(CASE WHEN (Q1.PERCENTAGE_DONE > 0 AND Q1.PERCENTAGE_DONE < 100)" + 
+				"  THEN 1 ELSE 0 END) AS toalAssignedInprogressGoalsCount," + 
+				"  SUM(CASE WHEN (Q1.PERCENTAGE_DONE = 0 OR Q1.PERCENTAGE_DONE IS NULL) THEN 1 ELSE 0 END) AS toalAssignedNotStartedGoalsCount," + 
+				"  SUM(CASE WHEN Q1.PERCENTAGE_DONE = 100 THEN 1 ELSE 0 END) AS toalAssignedCompletedGoalsCount," + 
+				"  SUM(CASE WHEN" + 
+				"  ((Q1.PERCENTAGE_DONE > '0' AND Q1.PERCENTAGE_DONE < '100') || (Q1.PERCENTAGE_DONE = '0') || (Q1.PERCENTAGE_DONE IS NULL)) " + 
+				"	AND DATEDIFF(Q1.END_DATE,CURDATE()) < 0 THEN 1 ELSE 0 END) AS toalAssignedOverDueGoalsCount" + 
+				"  FROM" + 
+				"    (SELECT " + 
+				"            ASSIGN.GOAL_ID," + 
+				"            GOALS.END_DATE," + 
+				"            GOALS.PERCENTAGE_DONE" + 
+				"    FROM" + 
+				"       PERFORMANCE_GOALS GOALS, performance_goals_assign_to ASSIGN" + 
+				"    WHERE" + 
+				"        ASSIGN.GOAL_ID = GOALS.ID" + 
+				"            AND DATEDIFF('"+templateDTO.getAppraisalStartDate()+"', GOALS.START_DATE) >= 0" + 
+				"            AND DATEDIFF(GOALS.END_DATE, '"+templateDTO.getAppraisalEndDate()+"') <= 0" + 
+				"            AND ASSIGN.ASSIGNED_USER_ID = :userId" + 
+				"            AND ASSIGN.ORG_LOCATION_ID = :orgLocationId" + 
+				"    GROUP BY ASSIGN.GOAL_ID) Q1";
+		
+		
+		Query goalsQueryObj = session.createSQLQuery(goalsQuery)
+				.addScalar("toalAssignedGoalsCount", StandardBasicTypes.BIG_DECIMAL)
+				.addScalar("toalAssignedInprogressGoalsCount", StandardBasicTypes.BIG_DECIMAL)
+				.addScalar("toalAssignedNotStartedGoalsCount", StandardBasicTypes.BIG_DECIMAL)
+				.addScalar("toalAssignedCompletedGoalsCount", StandardBasicTypes.BIG_DECIMAL);
+		goalsQueryObj.setLong("userId", userId);
+		goalsQueryObj.setBigInteger("orgLocationId", templateDTO.getOrgLocationId());
+		goalsQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceGoalsDTO.class));
+		goalDetailsList = goalsQueryObj.list();
+		PerformanceGoalsDTO goalsDTO = goalDetailsList.get(0);
+		
+		return goalsDTO;
 	}
 }

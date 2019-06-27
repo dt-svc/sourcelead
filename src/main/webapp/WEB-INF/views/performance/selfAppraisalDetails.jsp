@@ -49,13 +49,17 @@ $(document).ready(function() {
                             Feedback
                         </a>
                       </li>
-                      <li title="Goals">
-                          <a href="selfappraisal-goals.html" class="clearfix mb0">
+                      
+                      <c:if test="${isGolasConfigured == 'Y'}">
+                      <li title="Goals" id="goalsWidget">
+                          <a onclick="getAppraisalGoalsDetails();" class="clearfix mb0">
                             <div class="goalsIcon"></div>
                             <div class="clearfix"></div>
                              Goals
                           </a>
                       </li>
+                      </c:if>
+                      
                       <li title="Project">
                           <a href="selfappraisal-tasks.html" class="clearfix mb0">
                           <div class="taksIcon"></div>
@@ -85,3 +89,4 @@ $(document).ready(function() {
 
 <jsp:include page="../performance/templateOverView.jsp" />   
 <jsp:include page="../performance/appraisalFeedback.jsp" />   
+<jsp:include page="../performance/appraisalGoals.jsp" />  

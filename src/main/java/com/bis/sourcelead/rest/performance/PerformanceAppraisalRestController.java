@@ -18,6 +18,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceFeedbackCategoryDTO;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -132,7 +133,7 @@ public class PerformanceAppraisalRestController {
 	    
 	    @RequestMapping(value = { "/saveSubmittedFeedbackTemplate", "/rest/saveSubmittedFeedbackTemplate" }, method = RequestMethod.POST)
 		public @ResponseBody Response<PerformanceFeedbackCategoryDTO> storeProject(PerformanceFeedbackCategoryDTO performanceFeedbackCategoryDTO,HttpServletRequest request) throws Exception {
-			Response<PerformanceFeedbackCategoryDTO> response =new  Response<>();
+			Response<PerformanceFeedbackCategoryDTO> response = new  Response<>();
 			try {
 				
 				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -154,6 +155,24 @@ public class PerformanceAppraisalRestController {
 			}
 			return response;
 		}
+	    
+	    @RequestMapping(value = "/getAssignedGoalsDetailsList", method = RequestMethod.GET)
+		public Response<PerformanceGoalsDTO> getAssignedGoalsDetailsList(HttpServletRequest request, 
+				@RequestParam(value = "assignedUUID", required = true) String assignedUUID){
+	    	 Response<PerformanceGoalsDTO> resObj = new  Response<>();
+			 try {
+				 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				 PerformanceGoalsDTO performanceGoalsDTO =  performanceAppraisalService.getperformanceGoalsDetails(assignedUUID, user.getId());
+				 resObj.setObject(performanceGoalsDTO);
+				 resObj.setResponse(Result.SUCCESS.name());
+				 resObj.setResponseMessage(Result.SUCCESS.getValue());
+			    
+			 }catch (Exception e) {
+				 resObj.setResponse(Result.AWKWARD.name());
+				 resObj.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			 return resObj;
+	    }
 	    
 	
 }

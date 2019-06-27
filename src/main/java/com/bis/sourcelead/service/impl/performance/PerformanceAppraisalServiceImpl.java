@@ -10,6 +10,7 @@ import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalService;
 
 @Service
@@ -52,6 +53,11 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 	public PerformanceFeedbackTemplateDTO getPerformanceSubmittedFeedbackTemplateDTOByUUID(String templateUUID,
 			String assignedUUID, Long userId) throws Exception {
 		return performanceAppraisalDao.getPerformanceSubmittedFeedbackTemplateDTOByUUID(templateUUID, assignedUUID, userId);
+	}
+
+	@Override
+	public PerformanceGoalsDTO getperformanceGoalsDetails(String assignedUUID, Long userId) throws Exception {
+		return performanceAppraisalDao.getperformanceGoalsDetails(assignedUUID, userId);
 	}
 
 }
