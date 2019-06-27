@@ -1016,7 +1016,10 @@ public class LeaveManagementRestController {
 			UserRole userRole = userRoleService.getUserRoleById(userRoleId);
 			
 			if(Constants.Dashboard.equalsIgnoreCase(fromType)) {
-				shiftIds = String.valueOf(userRole.getShift().getId());
+				if(userRole.getShift() != null) {
+					shiftIds = String.valueOf(userRole.getShift().getId());	
+				}
+				
 			}
 			
 			if (loginOrgLocation != null) {
@@ -2201,11 +2204,6 @@ public class LeaveManagementRestController {
 		if (user1 != null){
 			Leave leave = leaveService.getLeaveByLeaveUUId(leaveUUID);
 		 if(leave !=null) {
-			 leaveManagementHistory.setFromStage(leave.getStatus());
-			 leave.setDeleteReason(reason);
-			 leave.setCancelledBy(user);
-			 leave.setStatus(Constants.LEAVE_CANCELLED);
-			 leaveDao.saveLeave(leave);
 			 isCancelled = true;
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
@@ -2234,6 +2232,12 @@ public class LeaveManagementRestController {
 				 }
 				 leaveDao.saveLeave(updatingLeave);
 			 }
+			
+			 leaveManagementHistory.setFromStage(leave.getStatus());
+			 leave.setDeleteReason(reason);
+			 leave.setCancelledBy(user);
+			 leave.setStatus(Constants.LEAVE_CANCELLED);
+			 leaveDao.saveLeave(leave);
 		 }
 		 else{
 				response.setResponse(Result.INVALID_DATA.name());
