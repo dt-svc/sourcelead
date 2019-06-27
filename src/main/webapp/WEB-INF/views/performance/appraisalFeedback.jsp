@@ -39,9 +39,9 @@ function getAppraisalFeedbackDetails(){
 			        	    result = result + '<div class="col-md-2 col-md-offset-10">';
 			        	    
 			        	   
-			        	    result = result + '<div class="row">';
+			        	   /*  result = result + '<div class="row">';
 			        	    result = result + '<label class="col-md-3 mt10">Score</label> <div class="col-md-9"><input type="text" class="form-control"></div>';
-			        	    result = result + '</div>';
+			        	    result = result + '</div>'; */
 			        	    result = result + '</div>';
 			        	    result = result + '<div class="clearfix"></div>';
 			        	    result = result + '</div>';
