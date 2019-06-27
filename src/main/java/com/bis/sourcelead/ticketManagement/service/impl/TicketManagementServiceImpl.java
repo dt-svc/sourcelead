@@ -4,9 +4,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -805,7 +807,6 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 		}
 		return ticketCommentDTO;
 	}
-
 	@Override
 	public Boolean saveTicketComment(TicketCommentDTO ticketCommentDTO, User user, OrgLocations orgLocations) {
 		try {
@@ -825,11 +826,18 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 			ticketComment.setCommentMentionedUsers(ticketCommentDTO.getMentionedUserIds());
 			boolean result = ticketManagementDao.saveTicketComment(ticketComment);
 			if(result) {
-				for(String userId : ticketCommentDTO.getMentionedUserIds().split(",")) {
-					//send comment email to userId
-					User toUser = userDao.getUserById(Long.parseLong(userId));
-					if(userId != null)
-						sendTicketCommentEmailToUser(user, ticketComment, toUser, orgLocations);
+				if (ticketCommentDTO.getMentionedUserIds() != null && !ticketCommentDTO.getMentionedUserIds().isEmpty()) {
+					Set<Long> userIdSet = new HashSet<>();
+					for (String userId : ticketCommentDTO.getMentionedUserIds().split(",")) {
+						// send comment email to userId
+						if (ticketComment.getCreatedBy().getId() != Long.parseLong(userId)) {
+							if (userId != null && !userIdSet.contains(Long.parseLong(userId))) {
+								User toUser = userDao.getUserById(Long.parseLong(userId));
+								userIdSet.add(Long.parseLong(userId));
+								sendTicketCommentEmailToUser(user, ticketComment, toUser, orgLocations);
+							}
+						}
+					}
 				}
 			}
 			return result;
