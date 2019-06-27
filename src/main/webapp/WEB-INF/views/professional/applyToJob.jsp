@@ -2443,18 +2443,22 @@ $(document.body).on('change', '#professionaluploadBtn' ,function(){
 								var json = response.object;
 								var firstName = json.firstName;
 								var lastName = json.lastName;
-								
-								
-								$("input[name='FirstName']").val(firstName);
+								/* $("input[name='FirstName']").val(firstName);
 					        	 $("input[name='LastName']").val(lastName);
 					        	 $("input[name='EmailId']").val(json.email.split("<<>>")[0]);
-					        	 
-					        	 for(var e in json.phoneNumbers) {
+					        	  */
+					        	  
+					        	  $("input[name=FirstName]").val('${SourceLeadWeb_candidate.firstName}');
+					        	  $("input[name=LastName]").val('${SourceLeadWeb_candidate.lastName}');
+					        	  $("input[name=EmailId]").val('${SourceLeadWeb_candidate.email}');
+					        	  
+					        	  for(var e in json.phoneNumbers) {
 					        		 if(e === "0")
-						        	 	$("input[name='PhoneNumber']").val(json.phoneNumbers[e]);
+							        	  $("input[name=PhoneNumber]").val('${SourceLeadWeb_user.mobilePhone}');
+	/* 					        	 	$("input[name='PhoneNumber']").val(json.phoneNumbers[e]); */
 					        		 else
 					        			 $("input[name='AlternateNumber']").val(json.phoneNumbers[e]);
-					     		 }
+					     		 } 
 					        	 
 					        	 $("input[name='country']").val(json.country === null && json.country !== "" ? json.country : "");
 					        	 $("input[name='state']").val(json.state === null && json.state !== "" ? json.state : "");
