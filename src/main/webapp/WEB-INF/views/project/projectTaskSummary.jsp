@@ -67,7 +67,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		priorityColorPic();
 		severityColorPic(); 
 	    description('${projectTask.id}');  
-	    
+	    getSavedTaskDetails();
 	});
 function priorityColorPic(){
 	var colorValue= $('select#taskpriorityId option:selected').attr("colorProp");

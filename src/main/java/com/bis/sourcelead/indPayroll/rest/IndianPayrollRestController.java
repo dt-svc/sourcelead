@@ -557,11 +557,14 @@ public class IndianPayrollRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = null;
 		try {
+			System.out.println(" inisde generateINDPayroll   >>>>>>>>>>>>>");
 			PreCheckINDPayrollDTO preCheckINDPayrollDTO = iNDPayrollCommonUtil.payrollPrerequisiteCheck(orgLocation, generateINDPayrollDTO.getPayPeriod());
 			if(preCheckINDPayrollDTO.getIsPTConfigured() && preCheckINDPayrollDTO.getIsTDSConfigured()) {
 				generateINDPayrollDTO.setPreCheckINDPayrollDTO(preCheckINDPayrollDTO);
 				indPaysheetFrequencyDTO =  generateINDPayrollService.generateINDPayroll(orgLocation, generateINDPayrollDTO, loginUser);
+				
 				SourceLeadSessionManager.setSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID(), indPaysheetFrequencyDTO);
+				System.out.println(" completed generateINDPayroll   >>>>>>>>>>>>>");
 				return indPaysheetFrequencyDTO;
 			}else {
 				indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
@@ -629,13 +632,16 @@ public class IndianPayrollRestController {
     	ModelAndView model = new ModelAndView();
    		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		try {
+			System.out.println(" inside getApproveInfoIndPayroll   >>>>>>>>>>>>>");
 	   		Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+	   		System.out.println(" after sessionObj getApproveInfoIndPayroll   >>>>>>>>>>>>>" +sessionObj);
 	   		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = null;
 		    if(sessionObj != null) {
 		    	indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
-		    }else {
+		     }else {
 		    	Response<IndPaysheetFrequencyDTO> freqResponse = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID(), orgLocation);
 		    	indPaysheetFrequencyDTO =freqResponse.getObject();
+		    	System.out.println(" freqResponse data inside getApproveInfoIndPayroll   >>>>>>>>>>>>>" +freqResponse);
 		    }
 		    List<INDPayrollDTO> ipDTOList = new ArrayList<>();
 		    for(INDPayrollDTO ipDTO : indPaysheetFrequencyDTO.getIndPayrollDTO()) {
@@ -669,7 +675,9 @@ public class IndianPayrollRestController {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.out.println(" completed  getApproveInfoIndPayroll   >>>>>>>>>>>>>");
    		return model;
+   		
    	}
     
     @RequestMapping(value = { "/removePaysheetFrequencyFromSession","/rest/removePaysheetFrequencyFromSession" }, method = RequestMethod.POST)
