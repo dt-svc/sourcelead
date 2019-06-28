@@ -432,7 +432,7 @@ function addAttachment(entityRowId,from){
 	                 
 					<div class="col-md-12 minHeight mb">
 						<label>Description<span class='text-danger'>&nbsp;*</span></label>
-						<textarea rows="2"  id="entryDesREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
+						<textarea rows="2"  id="entryDesREPLACEROWID" name="expenseEntry[REPLACENAMEROWID].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_length length1-5000" onblur="removeWhiteSpacesAdd(REPLACEROWID);"></textarea>
 					</div>		
 	                   <div id='attachmentSection' class='col-md-4 minHeight'>
 	                   <label>Attachments<span class="text-danger">&nbsp;*</span></label>
