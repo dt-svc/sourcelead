@@ -908,19 +908,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String statusSubQuery3 = "";
 			String statusSubQuery4 = "";
 
-		   statusSubQuery = " reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id) and reqSub.submissionStatus <> 'REJECTED'";
+		   statusSubQuery = " reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.email<>'') and reqSub.submissionStatus <> 'REJECTED'";
 		  if(candidateVerificationConfig != null) {
 		  if(candidateVerificationConfig.getAadharNumber() == true){
-			 	statusSubQuery1 = " OR reqSub.candidate.aadharNumber IN(select tempReqSub.candidate.aadharNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+			 	statusSubQuery1 = " OR reqSub.candidate.aadharNumber IN(select tempReqSub.candidate.aadharNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.aadharNumber<>'')";
 			}
 		   if(candidateVerificationConfig.getPanNumber() == true){
-					statusSubQuery2 = " OR reqSub.candidate.panNumber IN(select tempReqSub.candidate.panNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+					statusSubQuery2 = " OR reqSub.candidate.panNumber IN(select tempReqSub.candidate.panNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.panNumber<>'')";
 			}
 			if(candidateVerificationConfig.getMobilePhone()== true){
-			 statusSubQuery3 = " OR reqSub.candidate.mobilePhone IN(select tempReqSub.candidate.mobilePhone from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+			 statusSubQuery3 = " OR reqSub.candidate.mobilePhone IN(select tempReqSub.candidate.mobilePhone from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.mobilePhone<>'')";
 			}
 			if(candidateVerificationConfig.getSsnNumber()== true){
-				 statusSubQuery4 = " OR reqSub.candidate.ssnNumber IN(select tempReqSub.candidate.ssnNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+				 statusSubQuery4 = " OR reqSub.candidate.ssnNumber IN(select tempReqSub.candidate.ssnNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.ssnNumber<>'')";
 			}
 		  }
 			statusSubQuery = "and reqSub.submissionStatus <> 'REJECTED' and ("+statusSubQuery+statusSubQuery1+statusSubQuery2+statusSubQuery3+statusSubQuery4+")";
@@ -3499,19 +3499,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						statusSubQuery = " and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' "
 								+ " OR reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED') "; 
 					}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(requirementSubmissionsDTO.getSubmissionType())){
-						emailSubQuery = "reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+						emailSubQuery = "reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.email<>'')";
 						if(candidateVerificationConfig !=null) {
 						if(candidateVerificationConfig.getAadharNumber() == true){
-							statusSubQuery1 = " or reqSub.candidate.aadharNumber IN(select tempReqSub.candidate.aadharNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+							statusSubQuery1 = " or reqSub.candidate.aadharNumber IN(select tempReqSub.candidate.aadharNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.aadharNumber<>'')";
 						}
 						if(candidateVerificationConfig.getPanNumber() == true){
-							statusSubQuery2 = " or reqSub.candidate.panNumber IN(select tempReqSub.candidate.panNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+							statusSubQuery2 = " or reqSub.candidate.panNumber IN(select tempReqSub.candidate.panNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.panNumber<>'')";
 						}
 						 if(candidateVerificationConfig.getMobilePhone()== true){
-							statusSubQuery3 = " or reqSub.candidate.mobilePhone IN(select tempReqSub.candidate.mobilePhone from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+							statusSubQuery3 = " or reqSub.candidate.mobilePhone IN(select tempReqSub.candidate.mobilePhone from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.mobilePhone<>'')";
 						}
 						if(candidateVerificationConfig.getSsnNumber()== true){
-							statusSubQuery4 = " or reqSub.candidate.ssnNumber IN(select tempReqSub.candidate.ssnNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+							statusSubQuery4 = " or reqSub.candidate.ssnNumber IN(select tempReqSub.candidate.ssnNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.ssnNumber<>'')";
 						}
 						}
 						
