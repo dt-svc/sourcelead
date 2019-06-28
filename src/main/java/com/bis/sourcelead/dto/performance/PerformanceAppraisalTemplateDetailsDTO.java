@@ -49,6 +49,8 @@ private static final long serialVersionUID = 1L;
 	
 	private BigInteger orgLocationId;
 	
+	private BigInteger appraisalAssignedUserId;
+	
 
 	public String getName() {
 		return name;
@@ -218,6 +220,16 @@ private static final long serialVersionUID = 1L;
 	public void setOrgLocationId(BigInteger orgLocationId) {
 		this.orgLocationId = orgLocationId;
 	}
+
+	public BigInteger getAppraisalAssignedUserId() {
+		return appraisalAssignedUserId;
+	}
+
+	public void setAppraisalAssignedUserId(BigInteger appraisalAssignedUserId) {
+		this.appraisalAssignedUserId = appraisalAssignedUserId;
+	}
+
+	
 	
 	
 }

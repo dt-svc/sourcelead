@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalDao;
 import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
+import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
@@ -334,14 +335,14 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 						+ "(SELECT (CONCAT(USR.FIRST_NAME,' ',IFNULL(USR.MIDDLE_NAME, ''),IFNULL(USR.LAST_NAME, ''))) FROM USER USR WHERE USR.ID = UR.RESOURCE_MANAGER_ID) AS resourceManager, "
 						+ "(SELECT USR.FILE_URL FROM USER USR WHERE USR.ID = UR.RESOURCE_MANAGER_ID) AS resourceManagerImgUrl "
 						
-						+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
-						+ "PERFORMANCE_APPRAISAL_PEERS PEERS ,"
-						+ "USER_ROLE UR ,"
-						+ "USER U ,"
-						+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE "
-						+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND ASSIGNED.PEER_ID = PEERS.ID  "
-						+ "AND ASSIGNED.USER_ID = UR.USER_ID "
-						+ "AND UR.REPORTING_MANAGER_ID = U.ID  AND UR.ORG_LOCATIONS_ID = ASSIGNED.ORG_LOCATION_ID "
+						+ "FROM PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE, "
+						+ "PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED "
+						+ "LEFT JOIN PERFORMANCE_APPRAISAL_PEERS PEERS  ON ASSIGNED.PEER_ID = PEERS.ID, "
+						+ "USER U "
+					    + "LEFT JOIN  USER_ROLE UR ON U.ID = UR.REPORTING_MANAGER_ID "
+						  
+						+"WHERE  "
+						+ "UR.REPORTING_MANAGER_ID = U.ID  AND UR.ORG_LOCATIONS_ID = ASSIGNED.ORG_LOCATION_ID "
 						+" AND ASSIGNED.UUID = :assignedUUID ";
 			
 		Query queryObj = session.createSQLQuery(query);
@@ -496,6 +497,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		boolean flag = true;
 		String query =  "SELECT "
 				+" ASSIGNED.ORG_LOCATION_ID AS orgLocationId, "  
+				+" ASSIGNED.USER_ID AS appraisalAssignedUserId, " 
 				+" DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+mysqlDateFormat+") AS appraisalStartDate, "
 				+" DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+mysqlDateFormat+") AS appraisalEndDate "
 				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
@@ -527,10 +529,10 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 				"       PERFORMANCE_GOALS GOALS, performance_goals_assign_to ASSIGN" + 
 				"    WHERE" + 
 				"        ASSIGN.GOAL_ID = GOALS.ID" + 
-				"            AND DATEDIFF('"+templateDTO.getAppraisalStartDate()+"', GOALS.START_DATE) >= 0" + 
+				"            AND DATEDIFF('"+templateDTO.getAppraisalStartDate()+"', GOALS.START_DATE) <= 0" + 
 				"            AND DATEDIFF(GOALS.END_DATE, '"+templateDTO.getAppraisalEndDate()+"') <= 0" + 
 				"            AND ASSIGN.ASSIGNED_USER_ID = :userId" + 
-				"            AND ASSIGN.ORG_LOCATION_ID = :orgLocationId" + 
+				"            AND ASSIGN.ORG_LOCATION_ID = :orgLocationId AND ASSIGN.STATUS = '1' " + 
 				"    GROUP BY ASSIGN.GOAL_ID) Q1";
 		
 		
@@ -539,12 +541,65 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 				.addScalar("toalAssignedInprogressGoalsCount", StandardBasicTypes.BIG_DECIMAL)
 				.addScalar("toalAssignedNotStartedGoalsCount", StandardBasicTypes.BIG_DECIMAL)
 				.addScalar("toalAssignedCompletedGoalsCount", StandardBasicTypes.BIG_DECIMAL);
-		goalsQueryObj.setLong("userId", userId);
+		goalsQueryObj.setBigInteger("userId", templateDTO.getAppraisalAssignedUserId());
 		goalsQueryObj.setBigInteger("orgLocationId", templateDTO.getOrgLocationId());
 		goalsQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceGoalsDTO.class));
 		goalDetailsList = goalsQueryObj.list();
 		PerformanceGoalsDTO goalsDTO = goalDetailsList.get(0);
 		
 		return goalsDTO;
+	}
+
+	@Override
+	public List<ProjectassignTasksDTO> getPerformanceAssignedProjectAssignedTasksDTOList(String assignedUUID)
+			throws Exception {
+
+		List<PerformanceAppraisalTemplateDetailsDTO> templateDetailsList = new ArrayList<PerformanceAppraisalTemplateDetailsDTO>();
+		String mysqlDateFormat = "\"%Y-%m-%d\"";
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ProjectassignTasksDTO> projectassignTaskList = null;
+		try {
+		String query =  "SELECT "
+				+" ASSIGNED.ORG_LOCATION_ID AS orgLocationId, " 
+				+" ASSIGNED.USER_ID AS appraisalAssignedUserId, " 
+				+" DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+mysqlDateFormat+") AS appraisalStartDate, "
+				+" DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+mysqlDateFormat+") AS appraisalEndDate "
+				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+				+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE "
+				+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID   "
+				+" AND ASSIGNED.UUID = :assignedUUID ";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("assignedUUID", assignedUUID);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalTemplateDetailsDTO.class));
+		templateDetailsList = queryObj.list();
+		PerformanceAppraisalTemplateDetailsDTO templateDTO = templateDetailsList.get(0);
+		
+		
+		String projectTaskQuery = " SELECT proj.PROJECT_NAME as projectName, " + 
+				   " can.ID as candidateId, " + 
+			       " lData.NAME as taskStatus " + 
+			       " FROM sourcelead.PROJECT_ASSIGN_TASK assignTask,PROJECT_TASKS ptasks,PROJECTS proj,LOOKUP_DATA lData,PROJECT_MEMBERS projMem,CANDIDATE can, PROJECT_CLIENTS pc, User user " + 
+			       " where assignTask.PROJECT_TASK_ID = ptasks.ID AND ptasks.PROJECT_ID = proj.ID  " + 
+			       " AND lData.ID = ptasks.TASK_STATUS " + 
+			       " AND projMem.ID = assignTask.PROJECT_MEMBER_ID " + 
+			       " AND can.ID = projMem.CANDIDATE_ID " + 
+			       " AND can.CONSULTANT_USER_ID = user.ID " + 
+			       " AND pc.PROJECT_ID = proj.ID "+
+			       " AND can.ORG_LOCATION_ID = pc.ORG_LOCATIONS_ID "+
+			       " AND pc.ORG_LOCATIONS_ID = :orgLocationId AND user.ID = :userId "+
+		           " AND DATEDIFF('"+templateDTO.getAppraisalStartDate()+"',assignTask.CREATED_DATE) <= 0" + 
+				   " AND DATEDIFF(assignTask.CREATED_DATE,'"+templateDTO.getAppraisalEndDate()+"') <= 0" ;
+			       
+			        Query projectTaskQueryObj = session.createSQLQuery(projectTaskQuery);
+			        projectTaskQueryObj.setBigInteger("userId", templateDTO.getAppraisalAssignedUserId());
+			        projectTaskQueryObj.setBigInteger("orgLocationId", templateDTO.getOrgLocationId());
+			        projectTaskQueryObj.setResultTransformer(Transformers.aliasToBean(ProjectassignTasksDTO.class));
+					projectassignTaskList = projectTaskQueryObj.list();
+					
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return projectassignTaskList;
 	}
 }

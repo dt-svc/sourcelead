@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.performance;
 import java.util.List;
 
 import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
+import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
@@ -23,4 +24,6 @@ public interface PerformanceAppraisalDao {
 	PerformanceFeedbackTemplateDTO getPerformanceSubmittedFeedbackTemplateDTOByUUID(String templateUUID,String assignedUUID,Long userId) throws Exception;
 	
 	PerformanceGoalsDTO getperformanceGoalsDetails(String assignedUUID,Long userId) throws Exception;
+	
+	List<ProjectassignTasksDTO> getPerformanceAssignedProjectAssignedTasksDTOList(String assignedUUID) throws Exception;
 }

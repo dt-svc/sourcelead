@@ -60,8 +60,8 @@ $(document).ready(function() {
                       </li>
                       </c:if>
                       
-                      <li title="Project">
-                          <a href="selfappraisal-tasks.html" class="clearfix mb0">
+                      <li title="Project"  id="tasksWidget">
+                          <a onclick="getAppraisalTaskDetails();" class="clearfix mb0">
                           <div class="taksIcon"></div>
                           <div class="clearfix"></div>
                           Tasks
@@ -90,3 +90,4 @@ $(document).ready(function() {
 <jsp:include page="../performance/templateOverView.jsp" />   
 <jsp:include page="../performance/appraisalFeedback.jsp" />   
 <jsp:include page="../performance/appraisalGoals.jsp" />  
+<jsp:include page="../performance/appraisalTasks.jsp" /> 

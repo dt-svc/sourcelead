@@ -27,6 +27,64 @@ function getAppraisalGoalsDetails(){
 		        	} else if (response.response === "SUCCESS") {
 		        		
 		        		var result = "";  
+		        		
+		        		var assignedGoals = 0;
+		        		var inprogressGoals = 0;
+		        		var completedGoals = 0;
+		        		var overDueGoals = 0;
+		        		var notStartedGoals = 0;
+		        		
+		        		if(response.object.toalAssignedGoalsCount != null){
+		        			assignedGoals = response.object.toalAssignedGoalsCount;
+		        		}
+		        		
+		        		if(response.object.toalAssignedInprogressGoalsCount != null){
+		        			inprogressGoals = response.object.toalAssignedInprogressGoalsCount;
+		        		}
+		        		
+		        		if(response.object.toalAssignedCompletedGoalsCount != null){
+		        			completedGoals = response.object.toalAssignedCompletedGoalsCount;
+		        		}
+		        		
+		        		if(response.object.toalAssignedOverDueGoalsCount != null){
+		        			overDueGoals = response.object.toalAssignedOverDueGoalsCount;
+		        		}
+		        		
+		        		if(response.object.toalAssignedNotStartedGoalsCount != null){
+		        			notStartedGoals = response.object.toalAssignedNotStartedGoalsCount;
+		        		}
+		        		
+		        		
+		        		result = result + '<div class="clearfix mt">';
+		        		result = result + '<ul class="assiGoalWrap clearfix">';
+		        		result = result + '<li>';
+		        		result = result + '<div class="goalsIcon"></div>';
+		        		result = result + '<p>Total Goals Assigned</p>';
+		        		result = result + '<span>'+assignedGoals+'</span>';
+		        		result = result + '</li>';
+		        		result = result + '<li>';
+		        		result = result + '<div class="goalsIcon"></div>'; 
+		        		result = result + '<p>In-progress Goals</p>';
+		        		result = result + '<span class="inprogC">'+inprogressGoals+'</span>';
+		        		result = result + '</li>';
+		        		result = result + '<li>';
+		        		result = result + '<div class="goalsIcon"></div>';
+		        		result = result + '<p>Completed Goals</p>';
+		        		result = result + '<span class="compleC">'+completedGoals+'</span>';
+		        		result = result + '</li>';
+		        		result = result + '<li>';
+		        		result = result + '<div class="goalsIcon"></div>';
+		        		result = result + '<p>Overdue Goals</p>';
+		        		result = result + '<span class="overC">'+overDueGoals+'</span>';
+		        		result = result + '</li>';
+		        		result = result + '<li>';
+		        		result = result + '<div class="goalsIcon"></div>';
+		        		result = result + '<p>Goals Not Started</p>';
+		        		result = result + '<span class="notC">'+notStartedGoals+'</span>';
+		        		result = result + '</li>';
+		        		result = result + '</ul>';
+		        		result = result + '</div>';
+	                    
 		        	    $("#performanceAppraisalDiv").empty(); 
 		        	    $("#performanceAppraisalDiv").append(result);
 		        	    $("#appraisalLoading").removeAttr("style");
