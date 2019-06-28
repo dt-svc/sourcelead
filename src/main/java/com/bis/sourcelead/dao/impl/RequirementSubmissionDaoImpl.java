@@ -3391,7 +3391,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 								}
 							 //left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes
 								String sourceSubmissionIdQuery = "from RequirementSubmission reqSub  where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  "; 
-								List<RequirementSubmission> finalSourceList = session.createQuery(sourceSubmissionIdQuery.toString())
+								List<RequirementSubmission> finalSourceList = session.createQuery(sourceSubmissionIdQuery.toString()+" "+searchQuery)
 																					.setFirstResult(requirementSubmissionsDTO.getStart())
 																					.setMaxResults(requirementSubmissionsDTO.getLength())
 																					.setParameterList("sourceSubmissionIds", sourceSubmissionIds)
@@ -3546,7 +3546,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							
 				            String whereCondition = subQueryForVendors;
 							
-							Query queryForVendors = session.createQuery(from+" "+whereCondition+"  GROUP BY reqSub.id  ORDER BY reqSub.id DESC");
+							Query queryForVendors = session.createQuery(from+" "+whereCondition+" "+searchQuery+"  GROUP BY reqSub.id  ORDER BY reqSub.id DESC");
 							queryForVendors.setFirstResult(requirementSubmissionsDTO.getStart());
 							queryForVendors.setMaxResults(requirementSubmissionsDTO.getLength());
 							for (String str : queryForVendors.getNamedParameters())
