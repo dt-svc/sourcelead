@@ -299,6 +299,13 @@ public class OrgSettingsController {
 		 }
 		 
 		 model.addObject("modulesList", modulesList);*/
+		SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+		SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
+		SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
+		SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
+		SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
+		SourceLeadSessionManager.setSessionAttribute(request, "zipCode", orgLocations.getZipCode());
+		SourceLeadSessionManager.setSessionAttribute(request, "businessType", orgLocations.getBusinessType()); // above lines are added by SRINIVAS SABBU on 28-June-2019.
 		SourceLeadSessionManager.setSessionAttribute(request, "profilePercentage", orgLocations.getProfilePercentage());
 		SourceLeadSessionManager.setSessionAttribute(request, "showCompanyNameInMarkeplace", orgLocations.getShowCompanyNameInMarkeplace());
 		SourceLeadSessionManager.setSessionAttribute(request, "careerPageKey", orgLocations.getOrg().getCareerPageKey());
