@@ -49,7 +49,7 @@
  <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  <jsp:include page="candidatesTimelineActivity.jsp"></jsp:include>
  <jsp:include page="requirementListForSubmission.jsp"></jsp:include>
- <jsp:include page="candidatesAssessment.jsp"></jsp:include>
+ <%-- <jsp:include page="candidatesAssessment.jsp"></jsp:include> --%>
  <div class="new_side_wrap">
 	<div class="new_side_wrap_inn">
 		<div class="new_side_wrap_cta">
