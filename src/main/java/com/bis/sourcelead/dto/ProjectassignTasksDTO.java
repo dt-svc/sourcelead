@@ -76,6 +76,8 @@ public class ProjectassignTasksDTO extends SearchDTO implements Serializable{
 	private String toDate;
 	
 	private String taskType;
+	
+	private Integer totalTasks;
 
 	public BigInteger getAssignId() {
 		return assignId;
@@ -332,5 +334,15 @@ public class ProjectassignTasksDTO extends SearchDTO implements Serializable{
 	public void setTaskType(String taskType) {
 		this.taskType = taskType;
 	}
+
+	public Integer getTotalTasks() {
+		return totalTasks;
+	}
+
+	public void setTotalTasks(Integer totalTasks) {
+		this.totalTasks = totalTasks;
+	}
+	
+	
 }
 
