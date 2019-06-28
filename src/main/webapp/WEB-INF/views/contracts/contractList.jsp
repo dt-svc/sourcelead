@@ -629,7 +629,7 @@ function preparedContractListVendorDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -862,7 +862,7 @@ function preparedContractListClientDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1091,7 +1091,7 @@ function preparedContractListApplicantDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1218,6 +1218,7 @@ function preparedContractApplicantListDraftPagination(url,tabType){
 		    	    	    	    	    	    "data": "action",
 		    	    	    	    	    	    "render": function(data, type, res, meta) {
 		    	    	    	    	    	      var result = "";
+		    	    	    	    	    	      alert(res.templateSubmissionStatus)
 		    	    	    	    			     	if(res.templateSubmissionStatus == "DRAFT"){
 		    	    	    	    			     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		    	    	    	    			     		if(res.typeOfContract == "New"){
@@ -1236,7 +1237,7 @@ function preparedContractApplicantListDraftPagination(url,tabType){
 		    	    	    	    			     			result = result + '| <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+res.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    			     		}
 		    	    	    	    			     		'</sec:authorize>';
-		    	    	    	    	    	      }else if(res.templateSubmissionStatus == "Finalized"){
+		    	    	    	    	    	      }else if(res.templateSubmissionStatus == "FINALIZED"){
 		    	    	    	    	    	    	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		    	    	    	    	 		         if(res.typeOfContract == "New"){
 		    	    	    	    	 		        	result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye mr10" onclick="previewNewContractPDF(\''+res.contractUUID+'\', \''+res.contractTitle+'\')"></i></a></div>';
@@ -1315,7 +1316,7 @@ function preparedContractListVendorWFA(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1536,7 +1537,7 @@ function preparedContractListClientWFA(url,tabType){
 		$("#vendorContractsList").empty();
 	    $("#clientContractsList").empty();
 	    $("#applicantsContractsList").empty();
-	    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	    var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  locationDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -1691,13 +1692,14 @@ function preparedClientContractListWFAPagination(url,tabType){
 		    	    	    	    	    	      var opt = "";
 		    	    	    	    	    	      opt = opt + '<div class="tbldata-dotdot-vsm">';
 		    	    	    	    	        	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-		    	    	    	    	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
+		    	    	    	    	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_userId}' == output.approverUserId){
 		    	    	    	    	      	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+output.id+',\'REJECTED\');"></i></div></div>';
 		    	    	    	    	      	         }
 		    	    	    	    	        	  }else if(output.templateSubmissionStatus == "WAITING_TO_SEND" && (output.isOwner == "Y" || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN")){
 		    	    	    	    	        		  opt = opt + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+output.contractUUID+'\');"></i></a>';
 		    	    	    	    	        	  }
-		    	    	    	    	        		  
+		    	    	    	    	        		 
+
 		    	    	    	    	     	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 		    	    	    	    	     	     		if(output.typeOfContract == "New"){
 		    	    	    	    	     	     			opt = opt + '| <a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -1751,7 +1753,7 @@ function preparedContractListApplicantWFA(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1890,9 +1892,12 @@ function preparedApplicantContractListWFAPagination(url,tabType){
 		    	    	    	    	    	      var result = "";
 		    	    	    	    	    	      result = result + '<div class="tbldata-dotdot_80">';
 		    	    	    	    			     	if(res.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-		    	    	    	    						if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == res.approverUserId){
+		    	    	    	    						if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_userId}' == res.approverUserId){
 		    	    	    	    							result = result +' <div><div class="CurDiv" id="removeStatus'+res.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+res.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+res.id+',\'REJECTED\');"></i></div></div>';
 		    	    	    	    						}
+		    	    	    	    			     	 }else if(res.templateSubmissionStatus == "WAITING_TO_SEND" && (res.isOwner == "Y" || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_userId}' == res.approverUserId)){
+		    	    	    	    	 	        		  result = result + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+res.contractUUID+'\');"></i></a>';
+		    	    	    	    	 	        	  }
 		    	    	    	    			     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		    	    	    	    			     		if(res.typeOfContract == "New"){
 		    	    	    	    			     			result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+res.contractUUID+'\', \''+res.contractTitle+'\')"></i></a>';
@@ -1909,7 +1914,6 @@ function preparedApplicantContractListWFAPagination(url,tabType){
 		    	    	    	    			     		}
 		    	    	    	    			     		'</sec:authorize>';
 		    	    	    	    			     		//res = res + '</div>';
-		    	    	    	    		     	  }
 		    	    	    	    			     	result = result + '</div></td>';
 		    	    	    	    	    	     return result; 
 		    	    	    	    	    	    }
@@ -1950,7 +1954,7 @@ function preparedContractListVendorWTS(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2164,7 +2168,7 @@ function preparedContractListClientWTS(url,tabType){
 		$("#vendorContractsList").empty();
 	    $("#clientContractsList").empty();
 	    $("#applicantsContractsList").empty();
-	    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	    var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  locationDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -2376,7 +2380,7 @@ function preparedContractListApplicantWTS(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2560,7 +2564,7 @@ function preparedContractListVendorWTV(url,tabType){
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
     
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2777,7 +2781,7 @@ function preparedContractListClientWTV(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2989,7 +2993,7 @@ function preparedContractListApplicantWTV(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -3025,6 +3029,7 @@ function preparedContractApplicantListWTV(url,tabType){
 }
 
 function preparedContractApplicantListWTVPagination(url,tabType){
+	alert(url+"==================="+tabType)
 	var colIndex = 0;
     $('#contractListTableWTV2').DataTable( {
             "processing": true,
@@ -3105,11 +3110,11 @@ function preparedContractApplicantListWTVPagination(url,tabType){
 	    	    	    	    	    	    "data": "reqDocCount",
 	    	    	    	    	    	    "render": function(data, type, res, meta) {
 	    	    	    	    	    	      var result = "";
-	    	    	    	    	    	      if(appReport.reqDocCount!="0"){
-	    	    	    	    	    	    	  result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+appReport.contractUUID+'\',\''+appReport.parentId+'\');">'+appReport.reqDocCount+'</div>'; 
+	    	    	    	    	    	      if(res.reqDocCount!="0"){
+	    	    	    	    	    	    	  result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+res.contractUUID+'\',\''+res.parentId+'\');">'+res.reqDocCount+'</div>'; 
 	    	    	    	    			         }
 	    	    	    	    			         else{
-	    	    	    	    			        	 result = result + '<div class="tblminwidth-75 ">'+appReport.reqDocCount+'</div>';
+	    	    	    	    			        	 result = result + '<div class="tblminwidth-75 ">'+res.reqDocCount+'</div>';
 	    	    	    	    			         }		 
 	    	    	    	    	    	     return result; 
 	    	    	    	    	    	    }
@@ -3125,21 +3130,21 @@ function preparedContractApplicantListWTVPagination(url,tabType){
 	    	    	    	    	    	    	"targets": colIndex++,
 		    	    	    	    	    	    "data": "action",
 		    	    	    	    	    	    "render": function(data, type, res, meta) {
-		    	    	    	    	    	      var result = "";
-		    	    	    	    	    	      res = res + '<div class="tbldata-dotdot_80">';
-		    	    	    	    	 		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == appReport.ownerUser){
-		    	    	    	    			        	 if(appReport.contractStatus != "completed" && appReport.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && appReport.templateSubmissionStatus != "FINALIZED"){
-		    	    	    	    				        	 res = res +  '<a id="removeStatus'+appReport.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+appReport.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+		    	    	    	    	    	    	var result = "";
+		    	    	    	    	    	    	result = result + '<div class="tbldata-dotdot_80">';
+		    	    	    	    	 		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || res.IsOwner == 'Y'){
+		    	    	    	    	 		        	 if(res.contractStatus != "completed" && res.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && res.templateSubmissionStatus != "FINALIZED"){
+		    	    	    	    			        		 result = result +  '<a id="removeStatus'+res.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+res.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
 		    	    	    	    				     		}
 		    	    	    	    			         }
 		    	    	    	    			         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		    	    	    	    			         if(appReport.typeOfContract == "New"){
-		    	    	    	    			        	 res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		    	    	    	    			         if(res.typeOfContract == "New"){
+		    	    	    	    			        	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+res.contractUUID+'\', \''+res.contractTitle+'\')"></i></a>';
 		    	    	    	    			         }else{
-		    	    	    	    			         res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.fileURL+'\', \''+appReport.fileName+'\', \''+appReport.fileType+'\')"></i></a>';
+		    	    	    	    			        	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+res.fileURL+'\', \''+res.fileName+'\', \''+res.fileType+'\')"></i></a>';
 		    	    	    	    			         }
 		    	    	    	    			         '</sec:authorize>';
-		    	    	    	    			         res = res + '</div></td>';
+		    	    	    	    			         result = result + '</div></td>';
 		    	    	    	    	    	     return result; 
 		    	    	    	    	    	    }
 		    	    	    	   }],

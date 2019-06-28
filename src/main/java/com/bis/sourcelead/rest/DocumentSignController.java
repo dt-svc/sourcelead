@@ -105,8 +105,12 @@ public class DocumentSignController {
 		}else {
 		 fileName = contract.getContractsTemplate().getTemplateName();
 		}
-		
-		String userData = docuSignUtil.createDir(staticPath,req,fileName,String.valueOf(contract.getContractOrgLocationId().getId()),String.valueOf(contract.getContractOrgLocationId().getOrg().getId()),true);
+		String userData = null;
+		if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(contract.getContractType())) {
+			 userData = docuSignUtil.createDir(staticPath,req,fileName,"full01","full02",true);
+		} else {
+			 userData = docuSignUtil.createDir(staticPath,req,fileName,String.valueOf(contract.getContractOrgLocationId().getId()),String.valueOf(contract.getContractOrgLocationId().getOrg().getId()),true);
+		}
 		logger.info("folder creation path in our local system : "+userData);
 		userInfo.setFileName(fileName);
 		userInfo.setFileURL(userData);
@@ -188,40 +192,66 @@ public class DocumentSignController {
 		String url = signDocumentService.addSignaturetoPdf(coordinatesInfo, result);
 		if(contractId != null) {
 			contracts  = contractsTemplateService.getContractById(contractId);
-			Contracts parentContract  = contracts.getParentContractId();
-    		if(null != parentContract.getId()){
-    			String parentFromStage = contracts.getTemplateSubmissionStatus();
-    			String childFromStage = parentContract.getTemplateSubmissionStatus();
-//				childContarct.setId(childContarct.getId());
-    			contracts.setTemplateSubmissionStatus(Constants.SEND_FOR_VERIFICATION);
-//				contracts.setId(contracts.getId());
-				if(url.contains(result)) {
-					url = url.replace(result, "");
-				}
-				parentContract.setTemplateFileURL(url);
-				contracts.setTemplateFileURL(url);
-				parentContract.setTemplateSubmissionStatus(Constants.WAITING_TO_BE_VERIFY);
-				contractsTemplateService.saveNewContract(contracts);
-				contractsTemplateService.saveNewContract(parentContract);
-				contractSignedByReceiver(contracts);
-				
-				ContractsHistory parentContractsHistory = new ContractsHistory();
-				parentContractsHistory.setFromStage(parentFromStage);
-				parentContractsHistory.setContractsId(contracts);
-				parentContractsHistory.setToStage(contracts.getTemplateSubmissionStatus());
-				parentContractsHistory.setCreatedDate(new Date());
-				parentContractsHistory.setUpdatedDate(new Date());
-				contractsTemplateDao.saveContractsHistory(parentContractsHistory);
-				
-				ContractsHistory childContractsHistory = new ContractsHistory();
-    			childContractsHistory.setFromStage(childFromStage);
-				childContractsHistory.setContractsId(parentContract);
-				childContractsHistory.setToStage(parentContract.getTemplateSubmissionStatus());
-				childContractsHistory.setCreatedDate(new Date());
-				childContractsHistory.setUpdatedDate(new Date());
-				contractsTemplateDao.saveContractsHistory(childContractsHistory);
-				
+			Contracts parentContract  = null;
+			if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(contracts.getContractType())) {
+				 parentContract  = contracts;
+				 
+				 	String parentFromStage = parentContract.getTemplateSubmissionStatus();
+				    parentContract.setTemplateSubmissionStatus(Constants.WAITING_TO_BE_VERIFY);
+					if(url.contains(result)) {
+						url = url.replace(result, "");
+					}
+					parentContract.setTemplateFileURL(url);
+					contractsTemplateService.saveNewContract(parentContract);
+					contractSignedByReceiver(parentContract);
+					
+					ContractsHistory parentContractsHistory = new ContractsHistory();
+					parentContractsHistory.setFromStage(parentFromStage);
+					parentContractsHistory.setContractsId(contracts);
+					parentContractsHistory.setToStage(parentContract.getTemplateSubmissionStatus());
+					parentContractsHistory.setCreatedDate(new Date());
+					parentContractsHistory.setUpdatedDate(new Date());
+					contractsTemplateDao.saveContractsHistory(parentContractsHistory);
+				 
+				 
+			}else {
+				 parentContract  = contracts.getParentContractId();
+				 
+				 if(null != parentContract.getId()){
+		    			String parentFromStage = contracts.getTemplateSubmissionStatus();
+		    			String childFromStage = parentContract.getTemplateSubmissionStatus();
+//						childContarct.setId(childContarct.getId());
+		    			contracts.setTemplateSubmissionStatus(Constants.SEND_FOR_VERIFICATION);
+//						contracts.setId(contracts.getId());
+						if(url.contains(result)) {
+							url = url.replace(result, "");
+						}
+						parentContract.setTemplateFileURL(url);
+						contracts.setTemplateFileURL(url);
+						parentContract.setTemplateSubmissionStatus(Constants.WAITING_TO_BE_VERIFY);
+						contractsTemplateService.saveNewContract(contracts);
+						contractsTemplateService.saveNewContract(parentContract);
+						contractSignedByReceiver(contracts);
+						
+						ContractsHistory parentContractsHistory = new ContractsHistory();
+						parentContractsHistory.setFromStage(parentFromStage);
+						parentContractsHistory.setContractsId(contracts);
+						parentContractsHistory.setToStage(contracts.getTemplateSubmissionStatus());
+						parentContractsHistory.setCreatedDate(new Date());
+						parentContractsHistory.setUpdatedDate(new Date());
+						contractsTemplateDao.saveContractsHistory(parentContractsHistory);
+						
+						ContractsHistory childContractsHistory = new ContractsHistory();
+		    			childContractsHistory.setFromStage(childFromStage);
+						childContractsHistory.setContractsId(parentContract);
+						childContractsHistory.setToStage(parentContract.getTemplateSubmissionStatus());
+						childContractsHistory.setCreatedDate(new Date());
+						childContractsHistory.setUpdatedDate(new Date());
+						contractsTemplateDao.saveContractsHistory(childContractsHistory);
+						
+					}
 			}
+    		
 		}
 		return "{\"FileName\" : \"signed.pdf\"}";
 	}
@@ -229,84 +259,171 @@ public class DocumentSignController {
 	
 	private void contractSignedByReceiver(Contracts contracts) throws Exception
 	{
-		for(ContractOwnerHierarchy coh : contracts.getParentContractId().getOwnerHierarchyList()){
-			User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
-			User receiver = coh.getOwnerUserId();
-			EmailMessage emailMessage = new EmailMessage();
-			 emailMessage.setFirstName(owner.getFirstName());
-			 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
-				 emailMessage.setLastName(owner.getLastName());
-			 }else{
-				 emailMessage.setLastName("");
-			 }
-			 emailMessage.setToEmail(owner.getEmail());
-			 emailMessage.setFromEmail(receiver.getEmail());
-			 emailMessage.setCreatedBy("sladmin");
-			 if(receiver.getLastName()!= null && !"".equalsIgnoreCase(receiver.getLastName())){
-				 StringBuilder sb = new StringBuilder();
-				 emailMessage.setFromName(sb.append(receiver.getFirstName()).append(" ").append(receiver.getLastName()).toString());
-			 }else{
-				 emailMessage.setFromName(receiver.getFirstName());
-			 }
-			 
-			//setting the class filed values
-			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 
-			 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
-				 globalVarsMap.put("contractTitle", contracts.getContractTitle());
+		if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(contracts.getContractType())) {
+			
+			for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
+				User owner = userService.getUserByUserCode(coh.getOwnerUserId().getUserCode());
+//				User receiver = coh.getOwnerUserId();
+				User sender = contracts.getCandidate().getConsultantUser();
+				EmailMessage emailMessage = new EmailMessage();
+				 emailMessage.setFirstName(owner.getFirstName());
+				 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+					 emailMessage.setLastName(owner.getLastName());
 				 }else{
-					 globalVarsMap.put("contractTitle","--");
+					 emailMessage.setLastName("");
 				 }
-			 
-			 if(owner.getFirstName() != null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName() != null && !"".equalsIgnoreCase(owner.getLastName())){
-				StringBuilder ownersb = new StringBuilder();
-				 globalVarsMap.put("ownerUser", ownersb.append(owner.getFirstName()).append(" ").append(owner.getLastName()).toString());
+				 emailMessage.setToEmail(owner.getEmail());
+				 emailMessage.setFromEmail(sender.getEmail());
+				 emailMessage.setCreatedBy("sladmin");
+				 if(sender.getLastName()!= null && !"".equalsIgnoreCase(sender.getLastName())){
+					 StringBuilder sb = new StringBuilder();
+					 emailMessage.setFromName(sb.append(sender.getFirstName()).append(" ").append(sender.getLastName()).toString());
 				 }else{
-					 globalVarsMap.put("ownerUser",owner.getFirstName());
+					 emailMessage.setFromName(sender.getFirstName());
 				 }
-			 
-			 if(receiver.getFirstName() != null && !"".equalsIgnoreCase(receiver.getFirstName()) && receiver.getLastName() != null && !"".equalsIgnoreCase(receiver.getLastName())){
-					StringBuilder receiversb = new StringBuilder();
-					 globalVarsMap.put("receiverUser", receiversb.append(receiver.getFirstName()).append(" ").append(receiver.getLastName()).toString());
+				 
+				//setting the class filed values
+				 Map<String, String> globalVarsMap = new HashMap<String, String>();
+				 
+				 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
+					 globalVarsMap.put("contractTitle", contracts.getContractTitle());
 					 }else{
-						 globalVarsMap.put("receiverUser",receiver.getFirstName());
+						 globalVarsMap.put("contractTitle","--");
 					 }
+				 
+				 if(owner.getFirstName() != null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName() != null && !"".equalsIgnoreCase(owner.getLastName())){
+					StringBuilder ownersb = new StringBuilder();
+					 globalVarsMap.put("ownerUser", ownersb.append(owner.getFirstName()).append(" ").append(owner.getLastName()).toString());
+					 }else{
+						 globalVarsMap.put("ownerUser",owner.getFirstName());
+					 }
+				 
+				 if(sender.getFirstName() != null && !"".equalsIgnoreCase(sender.getFirstName()) && sender.getLastName() != null && !"".equalsIgnoreCase(sender.getLastName())){
+						StringBuilder receiversb = new StringBuilder();
+						 globalVarsMap.put("receiverUser", receiversb.append(sender.getFirstName()).append(" ").append(sender.getLastName()).toString());
+						 }else{
+							 globalVarsMap.put("receiverUser",sender.getFirstName());
+						 }
+				
+				 if(contracts.getOrgLocationId() != null){
+					 globalVarsMap.put("receiverOrg", contracts.getOrgLocationId().getOrgLocationName());
+					 }else{
+						 globalVarsMap.put("receiverOrg","--");
+					 }
+				 
+				 
+				 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_EMAIL);
+				 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_NOTIFICATION);
+				 
+				 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
+				 notificationScenario.setBody(notificationbody);
+
+				
+				 //covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+				 String url = sourceleadUrl;
+				 
+				 
+				 //construct HTML template using required data
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, contracts.getOrgLocationId().getOrg(),contracts.getOrgLocationId());
+				 emailMessage.setSubject(subject);
+				 emailMessage.setMessageBody(emailTemplate);
+				
+				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+				 StringBuilder notificationLink = new StringBuilder();
+				 String actionLink="";
+			     actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=verify").toString();
+
+				 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 
+			 emailScenerioUtil.sendNotification(actionLink,sender,owner, contracts.getOrgLocationId(), notificationScenario,new HashMap<String,String>());
+			}
 			
-			 if(contracts.getContractOrgLocationId() != null){
-				 globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getOrg().getOrgName());
+		}else {
+			
+			for(ContractOwnerHierarchy coh : contracts.getParentContractId().getOwnerHierarchyList()){
+				User owner = userService.getUserByUserCode(contracts.getOwnerUserId().getUserCode());
+				User receiver = coh.getOwnerUserId();
+				EmailMessage emailMessage = new EmailMessage();
+				 emailMessage.setFirstName(owner.getFirstName());
+				 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
+					 emailMessage.setLastName(owner.getLastName());
 				 }else{
-					 globalVarsMap.put("receiverOrg","--");
+					 emailMessage.setLastName("");
 				 }
-			 
-			 
-			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_EMAIL);
-			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_NOTIFICATION);
-			 
-			 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
-			 notificationScenario.setBody(notificationbody);
+				 emailMessage.setToEmail(owner.getEmail());
+				 emailMessage.setFromEmail(receiver.getEmail());
+				 emailMessage.setCreatedBy("sladmin");
+				 if(receiver.getLastName()!= null && !"".equalsIgnoreCase(receiver.getLastName())){
+					 StringBuilder sb = new StringBuilder();
+					 emailMessage.setFromName(sb.append(receiver.getFirstName()).append(" ").append(receiver.getLastName()).toString());
+				 }else{
+					 emailMessage.setFromName(receiver.getFirstName());
+				 }
+				 
+				//setting the class filed values
+				 Map<String, String> globalVarsMap = new HashMap<String, String>();
+				 
+				 if(contracts.getContractTitle()!= null && !"".equalsIgnoreCase(contracts.getContractTitle())){
+					 globalVarsMap.put("contractTitle", contracts.getContractTitle());
+					 }else{
+						 globalVarsMap.put("contractTitle","--");
+					 }
+				 
+				 if(owner.getFirstName() != null && !"".equalsIgnoreCase(owner.getFirstName()) && owner.getLastName() != null && !"".equalsIgnoreCase(owner.getLastName())){
+					StringBuilder ownersb = new StringBuilder();
+					 globalVarsMap.put("ownerUser", ownersb.append(owner.getFirstName()).append(" ").append(owner.getLastName()).toString());
+					 }else{
+						 globalVarsMap.put("ownerUser",owner.getFirstName());
+					 }
+				 
+				 if(receiver.getFirstName() != null && !"".equalsIgnoreCase(receiver.getFirstName()) && receiver.getLastName() != null && !"".equalsIgnoreCase(receiver.getLastName())){
+						StringBuilder receiversb = new StringBuilder();
+						 globalVarsMap.put("receiverUser", receiversb.append(receiver.getFirstName()).append(" ").append(receiver.getLastName()).toString());
+						 }else{
+							 globalVarsMap.put("receiverUser",receiver.getFirstName());
+						 }
+				
+				 if(contracts.getContractOrgLocationId() != null){
+					 globalVarsMap.put("receiverOrg", contracts.getContractOrgLocationId().getOrg().getOrgName());
+					 }else{
+						 globalVarsMap.put("receiverOrg","--");
+					 }
+				 
+				 
+				 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_EMAIL);
+				 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_NOTIFICATION);
+				 
+				 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
+				 notificationScenario.setBody(notificationbody);
 
-			
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;
-			 
-			 
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, contracts.getOrgLocationId().getOrg(),contracts.getOrgLocationId());
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			
-			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-			 StringBuilder notificationLink = new StringBuilder();
-			 String actionLink="";
-		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=verify").toString();
+				
+				 //covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+				 String url = sourceleadUrl;
+				 
+				 
+				 //construct HTML template using required data
+				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, contracts.getOrgLocationId().getOrg(),contracts.getOrgLocationId());
+				 emailMessage.setSubject(subject);
+				 emailMessage.setMessageBody(emailTemplate);
+				
+				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+				 StringBuilder notificationLink = new StringBuilder();
+				 String actionLink="";
+			     actionLink = notificationLink.append(sourceleadUrl).append("/").append("contractListbyStatus?"+"contractType="+contracts.getContractType()+"&status=verify").toString();
 
-			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-			 
-		 emailScenerioUtil.sendNotification(actionLink,receiver,owner, contracts.getOrgLocationId(), notificationScenario,new HashMap<String,String>());
+				 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 
+			 emailScenerioUtil.sendNotification(actionLink,receiver,owner, contracts.getOrgLocationId(), notificationScenario,new HashMap<String,String>());
+			}
+			
 		}
 	}
 

@@ -478,38 +478,60 @@ public class ContractRestController {
 		 * contractsTemplateService.saveNewContract(parentContracts);
 		 * contractsTemplateService.saveNewContract(contracts); }
 		 */
-		if ((Constants.WAITING_TO_BE_VERIFY).equalsIgnoreCase(status)) {
-			Contracts childContarct = contractsTemplateService.getChildContractById(contracts.getId());
-			String fromStage = childContarct.getTemplateSubmissionStatus();
-			String parentFromStage = contracts.getTemplateSubmissionStatus();
-			if (null != childContarct.getParentContractId()) {
-				childContarct.setId(childContarct.getId());
-				childContarct.setTemplateSubmissionStatus(Constants.FINALIZED);
-				contracts.setId(contracts.getId());
+		if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(contracts.getContractType())) {
+			
+			if ((Constants.WAITING_TO_BE_VERIFY).equalsIgnoreCase(status)) {
+//				Contracts childContarct = contractsTemplateService.getChildContractById(contracts.getId());
+				String fromStage = contracts.getTemplateSubmissionStatus();
 				contracts.setTemplateSubmissionStatus(Constants.FINALIZED);
+				contractsTemplateService.saveNewContract(contracts);
+				ContractsHistory contractsHistory = new ContractsHistory();
+				contractsHistory.setFromStage(fromStage);
+				contractsHistory.setContractsId(contracts);
+				contractsHistory.setToStage(Constants.FINALIZED);
+				contractsHistory.setCreatedDate(new Date());
+				contractsHistory.setUpdatedDate(new Date());
+				contractsHistory.setCreatedBy(user.getUserCode());
+				contractsHistory.setUpdatedBy(user.getUserCode());
+				contractsTemplateDao.saveContractsHistory(contractsHistory);
+//				contractsTemplateService.sendFinalisedMailToReceiver(contracts, orgLocation, user);
 			}
-			contractsTemplateService.saveNewContract(childContarct);
-			ContractsHistory childContractsHistory = new ContractsHistory();
-			childContractsHistory.setFromStage(fromStage);
-			childContractsHistory.setContractsId(childContarct);
-			childContractsHistory.setToStage(Constants.FINALIZED);
-			childContractsHistory.setCreatedDate(new Date());
-			childContractsHistory.setUpdatedDate(new Date());
-			childContractsHistory.setCreatedBy(user.getUserCode());
-			childContractsHistory.setUpdatedBy(user.getUserCode());
-			contractsTemplateDao.saveContractsHistory(childContractsHistory);
-			contractsTemplateService.saveNewContract(contracts);
-			ContractsHistory parentContractsHistory = new ContractsHistory();
-			parentContractsHistory.setFromStage(parentFromStage);
-			parentContractsHistory.setContractsId(contracts);
-			parentContractsHistory.setToStage(Constants.FINALIZED);
-			parentContractsHistory.setCreatedDate(new Date());
-			parentContractsHistory.setUpdatedDate(new Date());
-			parentContractsHistory.setCreatedBy(user.getUserCode());
-			parentContractsHistory.setUpdatedBy(user.getUserCode());
-			contractsTemplateDao.saveContractsHistory(parentContractsHistory);
-			contractsTemplateService.sendFinalisedMailToReceiver(contracts, orgLocation, user);
+			
+		}else {
+			if ((Constants.WAITING_TO_BE_VERIFY).equalsIgnoreCase(status)) {
+				Contracts childContarct = contractsTemplateService.getChildContractById(contracts.getId());
+				String fromStage = childContarct.getTemplateSubmissionStatus();
+				String parentFromStage = contracts.getTemplateSubmissionStatus();
+				if (null != childContarct.getParentContractId()) {
+					childContarct.setId(childContarct.getId());
+					childContarct.setTemplateSubmissionStatus(Constants.FINALIZED);
+					contracts.setId(contracts.getId());
+					contracts.setTemplateSubmissionStatus(Constants.FINALIZED);
+				}
+				contractsTemplateService.saveNewContract(childContarct);
+				ContractsHistory childContractsHistory = new ContractsHistory();
+				childContractsHistory.setFromStage(fromStage);
+				childContractsHistory.setContractsId(childContarct);
+				childContractsHistory.setToStage(Constants.FINALIZED);
+				childContractsHistory.setCreatedDate(new Date());
+				childContractsHistory.setUpdatedDate(new Date());
+				childContractsHistory.setCreatedBy(user.getUserCode());
+				childContractsHistory.setUpdatedBy(user.getUserCode());
+				contractsTemplateDao.saveContractsHistory(childContractsHistory);
+				contractsTemplateService.saveNewContract(contracts);
+				ContractsHistory parentContractsHistory = new ContractsHistory();
+				parentContractsHistory.setFromStage(parentFromStage);
+				parentContractsHistory.setContractsId(contracts);
+				parentContractsHistory.setToStage(Constants.FINALIZED);
+				parentContractsHistory.setCreatedDate(new Date());
+				parentContractsHistory.setUpdatedDate(new Date());
+				parentContractsHistory.setCreatedBy(user.getUserCode());
+				parentContractsHistory.setUpdatedBy(user.getUserCode());
+				contractsTemplateDao.saveContractsHistory(parentContractsHistory);
+				contractsTemplateService.sendFinalisedMailToReceiver(contracts, orgLocation, user);
+			}
 		}
+		
 		return "success";
 	}
 	
