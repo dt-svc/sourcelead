@@ -5,10 +5,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Transient;
-
-import com.bis.sourcelead.annotations.Required;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.bis.sourcelead.dto.performance.AppraisalProjectsTasksDTO;
 
 @SuppressWarnings("serial")
 public class ProjectassignTasksDTO extends SearchDTO implements Serializable{
@@ -78,6 +75,10 @@ public class ProjectassignTasksDTO extends SearchDTO implements Serializable{
 	private String taskType;
 	
 	private Integer totalTasks;
+	
+	List<AppraisalProjectsTasksDTO> appraisalProjectsTasksList;
+	
+	private BigInteger projectId;
 
 	public BigInteger getAssignId() {
 		return assignId;
@@ -341,6 +342,22 @@ public class ProjectassignTasksDTO extends SearchDTO implements Serializable{
 
 	public void setTotalTasks(Integer totalTasks) {
 		this.totalTasks = totalTasks;
+	}
+
+	public List<AppraisalProjectsTasksDTO> getAppraisalProjectsTasksList() {
+		return appraisalProjectsTasksList;
+	}
+
+	public void setAppraisalProjectsTasksList(List<AppraisalProjectsTasksDTO> appraisalProjectsTasksList) {
+		this.appraisalProjectsTasksList = appraisalProjectsTasksList;
+	}
+
+	public BigInteger getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(BigInteger projectId) {
+		this.projectId = projectId;
 	}
 	
 	
