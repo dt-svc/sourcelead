@@ -42,7 +42,7 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
             <span class="ml10">Phone Number</span> </div>
             <div class="clearfix"></div>
         </div>
-
+      <c:if test="${loginCountryName == 'India' }">
         <div class="col-md-12 mb">
           <div class="checkbox-new mt">
             <input id="panNumber" class="checkbox-custom" name="panNumber" type="checkbox" value="No">
@@ -50,6 +50,7 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
             <span class="ml10">Pan Number</span> </div>
             <div class="clearfix"></div>
         </div>
+        </c:if>
       <c:if test="${loginCountryName == 'United States' }">
         <div class="col-md-12 mb">
           <div class="checkbox-new mt">
