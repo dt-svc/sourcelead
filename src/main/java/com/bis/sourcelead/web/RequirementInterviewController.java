@@ -190,6 +190,7 @@ public class RequirementInterviewController {
 						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_TENTATIVE);
 						 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
 					 }*/
+					 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 					
 					List<ProposeTime> proposeTime=proposeTimeService.getProposeTimeByInterViewId(Long.parseLong(requirementInterviewId));
