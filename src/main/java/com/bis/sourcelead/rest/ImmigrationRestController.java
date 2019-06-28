@@ -268,8 +268,8 @@ public class ImmigrationRestController {
 		
 		logger.debug(" inisde getCandidatePassportDetails controller test -->");
 		List<CandidatePassport> passportList = new ArrayList<CandidatePassport>();
-		Long orgLocationId = (Long)  SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
-		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocationId);
+		OrgLocations  orgLocation = (OrgLocations)  SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocation.getId());
 		Date toDayDate = new Date();
 		try {
 			passportList = immigrationCommonService.getCandidatePassportDetails(candidateId,searchValue);
