@@ -62,9 +62,9 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 	}
 
 	@Override
-	public List<ProjectassignTasksDTO> getPerformanceAssignedProjectAssignedTasksDTOList(String assignedUUID)
+	public List<ProjectassignTasksDTO> getPerformanceAssignedProjectAssignedTasksDTOList(String assignedUUID,String dateFormat)
 			throws Exception {
-		return performanceAppraisalDao.getPerformanceAssignedProjectAssignedTasksDTOList(assignedUUID);
+		return performanceAppraisalDao.getPerformanceAssignedProjectAssignedTasksDTOList(assignedUUID, dateFormat);
 	}
 
 }

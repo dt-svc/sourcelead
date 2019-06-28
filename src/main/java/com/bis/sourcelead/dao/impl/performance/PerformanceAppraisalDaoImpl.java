@@ -551,7 +551,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 	}
 
 	@Override
-	public List<ProjectassignTasksDTO> getPerformanceAssignedProjectAssignedTasksDTOList(String assignedUUID)
+	public List<ProjectassignTasksDTO> getPerformanceAssignedProjectAssignedTasksDTOList(String assignedUUID,String dateFormat)
 			throws Exception {
 
 		List<PerformanceAppraisalTemplateDetailsDTO> templateDetailsList = new ArrayList<PerformanceAppraisalTemplateDetailsDTO>();
@@ -575,8 +575,23 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		templateDetailsList = queryObj.list();
 		PerformanceAppraisalTemplateDetailsDTO templateDTO = templateDetailsList.get(0);
 		
+		String appraisalDateFormat =  "";
+		
+		if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%Y-%m-%d\"";
+		}else if("dd-MM-yyyy".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%d-%m-%Y\"";
+		}else if("MM-dd-yyyy".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%m-%d-%Y\"";
+		}else if("yyyy-dd-MM".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%Y-%d-%m\"";
+		}
+		
 		
 		String projectTaskQuery = " SELECT proj.PROJECT_NAME as projectName, " + 
+				   " proj.ID as projectId, " + 
+				   " DATE_FORMAT(proj.START_DATE,"+appraisalDateFormat+") AS fromDate, " +
+				   " DATE_FORMAT(proj.END_DATE,"+appraisalDateFormat+") AS toDate, " +
 				   " can.ID as candidateId, " + 
 			       " lData.NAME as taskStatus " + 
 			       " FROM sourcelead.PROJECT_ASSIGN_TASK assignTask,PROJECT_TASKS ptasks,PROJECTS proj,LOOKUP_DATA lData,PROJECT_MEMBERS projMem,CANDIDATE can, PROJECT_CLIENTS pc, User user " + 

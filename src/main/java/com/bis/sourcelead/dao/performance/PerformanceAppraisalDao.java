@@ -25,5 +25,5 @@ public interface PerformanceAppraisalDao {
 	
 	PerformanceGoalsDTO getperformanceGoalsDetails(String assignedUUID,Long userId) throws Exception;
 	
-	List<ProjectassignTasksDTO> getPerformanceAssignedProjectAssignedTasksDTOList(String assignedUUID) throws Exception;
+	List<ProjectassignTasksDTO> getPerformanceAssignedProjectAssignedTasksDTOList(String assignedUUID,String dateFormat) throws Exception;
 }

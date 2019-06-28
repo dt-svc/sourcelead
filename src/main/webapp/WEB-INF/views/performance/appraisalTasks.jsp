@@ -72,7 +72,62 @@ function getProjectDetails(assignedUUID){
     						}
     					}
         	    	
-        	    	result = result + '</ul>';   
+        	    	result = result + '</ul>'; 
+        	    	
+        	    	
+        	    	result = result + '<span class="positionRelative reportHead clearfix"><h4 class="col-md-12">Assigned Projects</h4></span>';   
+        	    	result = result + '<span class="project_tabs_inn_table">';
+        	    	result = result + '<table>';
+        	    	result = result + '<thead>';
+        	    	result = result + '<tr>';
+        	    	result = result + '<th>Project Title</th>';
+        	    	result = result + '<th>Duration</th>';
+        	    	result = result + '<th>Tasks Assigned</th>';
+        			for (var i=0; i<1; i++)
+       				{
+    					var report = response.object;
+    					if(report != null && report != "" && report != "undefined"){
+    						for(var k in report.assignMembersMap){
+    							result = result +'     <th>'+k+'</th>';
+    						}
+    					}
+       				}
+        			
+        				
+        	    	result = result + '</tr>';
+        	    	result = result + '</thead>';
+        	    	result = result + '<tbody>';
+        	    	
+        	    	
+					for (var i=0; i< response.object.appraisalProjectsTasksList.length; i++){
+						result = result + '<tr>';
+						var report = response.object.appraisalProjectsTasksList[i];
+						var duration = '';
+						if(report.endDate != null && report.endDate != '' && report.endDate != 'undefined'){
+							duration = report.startDate+" to "+report.endDate
+						}else{
+							duration = report.startDate
+						}
+        				
+						result = result + '<td><span class="tbldata-dotdot">'+report.projectName+'</span></td>';
+	        	    	result = result + '<td> <span class="tblminwidth-125">'+duration+'</span></td>';
+	        	    	result = result + '<td><span class="tblminwidth-50">'+report.totalProjectTasks+'</span></td>';
+	        	    	
+	        	    	 for(var k in report.assignProjectsMap){
+	        	    		 result = result + '<td><span class="tblminwidth-50">'+report.assignProjectsMap[k]+'</span></td>';
+	 			        }
+	        	    	 result = result + '</tr>';
+        			}
+        	    	
+        	    	
+        	    	
+        	    	 
+        	    	
+        	    	result = result + '</tbody>';
+        	    	result = result + '</table>';
+        	    	result = result + '</span>';
+        	    	
+        	    	
         	        result = result + '</div> ';
         	        $("#appraisalTasksDiv").empty(); 
         	        $("#appraisalTasksDiv").append(result);

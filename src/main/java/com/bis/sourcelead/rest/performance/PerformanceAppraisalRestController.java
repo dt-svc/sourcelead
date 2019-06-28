@@ -22,6 +22,7 @@ import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.performance.AppraisalProjectsTasksDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceFeedbackCategoryDTO;
@@ -184,10 +185,11 @@ public class PerformanceAppraisalRestController {
 	    @RequestMapping(value = "/getAssignedFeedbackProjectTasksDetailsList", method = RequestMethod.GET)
 		public Response<ProjectassignTasksDTO> getAssignedFeedbackProjectTasksDetailsList(HttpServletRequest request, 
 				@RequestParam(value = "assignedUUID", required = true) String assignedUUID){
+	    	 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    	Response<ProjectassignTasksDTO> resObj = new  Response<>();
 	    	 ProjectassignTasksDTO taskDTO = null;
 			 try {
-				 List<ProjectassignTasksDTO> performanceTasksDTOList =  performanceAppraisalService.getPerformanceAssignedProjectAssignedTasksDTOList(assignedUUID);
+				 List<ProjectassignTasksDTO> performanceTasksDTOList =  performanceAppraisalService.getPerformanceAssignedProjectAssignedTasksDTOList(assignedUUID,orgLocation.getDateFormat());
 				 if(performanceTasksDTOList != null && !performanceTasksDTOList.isEmpty()) {
 					 Map<String, List<ProjectassignTasksDTO>> map = performanceTasksDTOList.stream().collect(Collectors.groupingBy(ProjectassignTasksDTO::getTaskStatus,Collectors.toList()));
 					  Map<BigInteger, List<ProjectassignTasksDTO>> canMap = performanceTasksDTOList.stream().collect(Collectors.groupingBy(ProjectassignTasksDTO::getCandidateId,Collectors.toList()));
@@ -201,6 +203,27 @@ public class PerformanceAppraisalRestController {
 							  taskDTO.setAssignMembersMap(innerMap);
 							  taskDTO.setTotalTasks(performanceTasksDTOList.size());
 						  }
+						  
+						  
+						  Map<String, List<ProjectassignTasksDTO>> projectMap = performanceTasksDTOList.stream().collect(Collectors.groupingBy(ProjectassignTasksDTO::getTaskStatus,Collectors.toList()));
+						  Map<BigInteger, List<ProjectassignTasksDTO>> projMap = performanceTasksDTOList.stream().collect(Collectors.groupingBy(ProjectassignTasksDTO::getProjectId,Collectors.toList()));
+						  List<AppraisalProjectsTasksDTO> projectTasksList = new CopyOnWriteArrayList<AppraisalProjectsTasksDTO>(); 
+						  for (Map.Entry<BigInteger, List<ProjectassignTasksDTO>> entry : projMap.entrySet())  {
+								  AppraisalProjectsTasksDTO projectDTO = new AppraisalProjectsTasksDTO();
+								  Map<String,String> innerMap = new HashMap<>();
+								  ProjectassignTasksDTO dto = entry.getValue().get(0);
+								  projectDTO.setProjectName(dto.getProjectName());
+								  projectDTO.setTotalProjectTasks(entry.getValue().size());
+								  projectDTO.setStartDate(dto.getFromDate());
+								  projectDTO.setEndDate(dto.getToDate());
+								  for (Map.Entry<String, List<ProjectassignTasksDTO>> projectEntry : projectMap.entrySet())  {
+								  List<ProjectassignTasksDTO> s = entry.getValue().stream().filter(pd->projectEntry.getKey().equalsIgnoreCase(pd.getTaskStatus())).collect(Collectors.toList());
+								  innerMap.put(projectEntry.getKey(), String.valueOf(s.size()));
+								  }
+								  projectDTO.setAssignProjectsMap(innerMap);
+								  projectTasksList.add(projectDTO);
+							  }
+						  taskDTO.setAppraisalProjectsTasksList(projectTasksList); 
 				 }
 				 
 				 resObj.setObject(taskDTO);
