@@ -111,7 +111,7 @@ function getProjectDetails(assignedUUID){
         				
 						result = result + '<td><span class="tbldata-dotdot">'+report.projectName+'</span></td>';
 	        	    	result = result + '<td> <span class="tblminwidth-125">'+duration+'</span></td>';
-	        	    	result = result + '<td><span class="tblminwidth-50">'+report.totalProjectTasks+'</span></td>';
+	        	    	result = result + '<td><span class="tblminwidth-50 text-primary"><b>'+report.totalProjectTasks+'</b></span></td>';
 	        	    	
 	        	    	 for(var k in report.assignProjectsMap){
 	        	    		 result = result + '<td><span class="tblminwidth-50">'+report.assignProjectsMap[k]+'</span></td>';
