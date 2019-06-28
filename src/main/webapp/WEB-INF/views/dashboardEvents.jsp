@@ -179,6 +179,7 @@ function getJobFairs() {
 }
 
 function getInterviewsandTasks() {
+	$("#eventCalendar").find("select.ui-datepicker-month, select.ui-datepicker-year").addClass("sel");
 	$("#scheduleInterview").show();
 	$("#interviewsTab").addClass("active");
 	$("#dashboardEventsDiv").show();
@@ -1127,6 +1128,7 @@ function cancelAddInterviewDiv(){
 	function getJobFairCalendar(dates) {
 		$("#eventCalendar").hide();
 		$("#jobFairCalendar").show();
+		$("#jobFairCalendar").find("select.ui-datepicker-month, select.ui-datepicker-year").addClass("sel");
 		$("#jobFairCalendar").datepicker({
 		  changeMonth: true,
 	      changeYear: true,
@@ -1148,14 +1150,18 @@ $(function(){
  
 <style>
 .Highlighted a {
-	background-color : #9ACD32 !important;
-	font-weight:bold !important;
-	font-size: 12pt;
+	background-color:#9ACD32 !important; font-weight:bold !important; font-size: 12pt;
+	color:#fff !important; border-radius:8px;
 }
 .HighlightedFair a {
-	background-color : #32A7CD !important;
-	font-weight:bold !important;
-	font-size: 12pt;
+	background-color : #32A7CD !important; font-weight:bold !important;
+	font-size: 12pt; border: 1px solid #32A7CD; color:#fff !important;
+}
+#jobFairCalendar .ui-widget-content a, #scheduleCalendar .ui-widget-content a,
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight,
+#eventCalendar .ui-widget-content a, #scheduleCalendar .ui-widget-content a
+{
+	border-radius:8px; border: 1px solid #ededed; height: 32px;
 }
 </style>
   	
@@ -1264,4 +1270,4 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });
-</script>      
+</script>    
