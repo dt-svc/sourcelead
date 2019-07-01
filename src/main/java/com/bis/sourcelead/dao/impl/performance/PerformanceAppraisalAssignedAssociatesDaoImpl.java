@@ -120,10 +120,15 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 					"CAND.GENERATED_ID AS associateId, " + 
 					"U.FILE_URL AS userImgUrl, " + 
 					"CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS associateName, " +
-					"CAND.EMAIL AS associateEmail, " + 
 					"CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS reportingManager, " +
 					"DATEDIFF(CURRENT_DATE(),'"+appriasalTemplate.getAppraisalStartDate()+"') AS daysDifference, " + 
-					"R.DISPLAY_NAME AS associateRole " + 
+					"R.DISPLAY_NAME AS associateRole, " + 
+					 "(SELECT " + 
+					 "user.EMAIL " + 
+					 "FROM " + 
+					 "USER user  " + 
+					 "WHERE " + 
+					 "user.ID = CAND.CONSULTANT_USER_ID) AS associateEmail " + 
 							             
 					"FROM " + 
 					"USER_ROLE UR ," + 
@@ -133,7 +138,7 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 					"ROLES R " + 
 					"WHERE ASSIGNED.USER_ID = CAND.CONSULTANT_USER_ID AND ASSIGNED.USER_ID = UR.USER_ID " + 
 					"AND UR.REPORTING_MANAGER_ID = U.ID AND UR.ROLE_ID = R.ID " + 
-					"AND ASSIGNED.APPRAISAL_TEMPLATE_ID = :appriasalTemplateId GROUP BY UR.ID )Q1 "+querySeachStr+sortingQry;
+					"AND ASSIGNED.APPRAISAL_TEMPLATE_ID = :appriasalTemplateId GROUP BY UR.USER_ID )Q1 "+querySeachStr+sortingQry;
 			
 			String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
 					" FROM" + 

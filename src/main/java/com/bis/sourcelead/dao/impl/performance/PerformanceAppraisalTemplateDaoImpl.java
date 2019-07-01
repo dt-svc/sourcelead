@@ -192,7 +192,6 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 					"CAND.CONSULTANT_USER_ID AS userId, " +
 					"U.FILE_URL AS userImgUrl, " + 
 					"CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS associateName, " +
-					"U.EMAIL AS associateEmail, " + 
 					"CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS reportingManager, " +
 					"UR.ROLE_ID AS userRoleId, " + 
 					"R.DISPLAY_NAME AS associateRole, " + 
@@ -201,7 +200,14 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 					 "FROM " + 
 					 "PERFORMANCE_APPRAISAL_PEERS PEERS  " + 
 					 "WHERE " + 
-					 "PEERS.ORG_LOCATION_ID = :orgLocationId AND PEERS.USER_ID = CAND.CONSULTANT_USER_ID) AS peersCount " + 
+					 "PEERS.ORG_LOCATION_ID = :orgLocationId AND PEERS.USER_ID = CAND.CONSULTANT_USER_ID) AS peersCount, " + 
+					 
+					 "(SELECT " + 
+					 "user.EMAIL " + 
+					 "FROM " + 
+					 "USER user  " + 
+					 "WHERE " + 
+					 "CAND.ORG_LOCATION_ID = :orgLocationId AND user.ID = CAND.CONSULTANT_USER_ID) AS associateEmail " + 
 							             
 					"FROM " + 
 					"USER_ROLE UR ," + 
