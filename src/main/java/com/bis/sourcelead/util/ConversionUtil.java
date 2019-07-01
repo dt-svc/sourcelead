@@ -78,7 +78,7 @@ public class ConversionUtil {
 			case Constants.RATE_TYPE_SEMI_MONTHLY:
 				return Float.parseFloat(rate) / 87;
 			case Constants.RATE_TYPE_MONTHLY: 
-				return Float.parseFloat(rate) / 184;
+				return Float.parseFloat(rate) / 176;
 			case Constants.RATE_TYPE_BI_MONTHLY:
 				return Float.parseFloat(rate) / 368;
 			default:
