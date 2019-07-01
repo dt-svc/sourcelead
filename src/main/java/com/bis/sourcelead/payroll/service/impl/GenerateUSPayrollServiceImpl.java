@@ -2,6 +2,7 @@ package com.bis.sourcelead.payroll.service.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1420,6 +1421,8 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 	{
 		Response<PayAdjustmentDTO> res = new Response<>();
 		try {
+			String payRollRegularHoursAmt = null;
+			BigDecimal regularHoursAmtBigDecimal = null;
 			PayAdjustmentHistory payAdjHistory = new PayAdjustmentHistory();
 			double regHrs = 0;
 			double otHrs = 0;
@@ -1487,7 +1490,17 @@ private Set<BankDataHistory> getBankDataHistory(AssociateTaxDedContriView associ
 			payroll.setPostTaxContribution(BigDecimal.valueOf(postTaxContriSum));
 			if(!PayrollConstant.SALARY.equalsIgnoreCase(payAdjustmentDTO.getAssSalType()) && !PayrollConstant.LCA_WAGE.equalsIgnoreCase(payAdjustmentDTO.getAssSalType())) {
 				payroll.setRegularHours(payAdjustmentDTO.getRegularHours());
-				payroll.setRegularHoursAmount(new BigDecimal(payAdjustmentDTO.getRegularHoursAmt()));
+				
+				// June-27-2019 -> NumberFormatException occurs while editing hourly draft payroll for 
+				// regularHoursAmt when it is given blank.
+				// payroll.setRegularHoursAmount(new BigDecimal(payAdjustmentDTO.getRegularHoursAmt()));
+				// Added ternary operator to check for blank value for payAdjustmentDTO.getRegularHoursAmt().
+				payRollRegularHoursAmt = payAdjustmentDTO.getRegularHoursAmt();
+				regularHoursAmtBigDecimal =
+						new BigDecimal(payRollRegularHoursAmt = StringUtils.isBlank(payRollRegularHoursAmt) ? new BigDecimal("0.00", MathContext.DECIMAL64).toString() : payRollRegularHoursAmt);
+				payroll.setRegularHoursAmount(regularHoursAmtBigDecimal);
+				//.
+				
 				payroll.setOverTimeHours(payAdjustmentDTO.getOverTimeHours());
 				payroll.setOverTimeAmount(new BigDecimal(payAdjustmentDTO.getOverTimeHoursAmt()));
 			}else {
