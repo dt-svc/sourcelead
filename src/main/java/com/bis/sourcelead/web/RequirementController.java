@@ -128,6 +128,9 @@ public class RequirementController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${atsUrl}")
+	private String atsUrl;
+	
 	@Autowired
 	CountriesService countriesService;
 	
@@ -1284,6 +1287,7 @@ public class RequirementController {
 		model.addObject("offerStatus",offerStatus);
 		model.addObject("offerId",offerId);
 		model.addObject("requirementOffers",requirementOffers);
+		model.addObject("SourceLeadWeb_atsUrl", atsUrl);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("permission",permission);
 		
