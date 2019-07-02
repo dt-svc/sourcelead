@@ -2513,9 +2513,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		
 		 String noticePeriod = null;
+		 candidate.setOtherNoticePeriod(null);
 		if(candidateDto.getNoticePeriod() != null)
 			noticePeriod = candidateDto.getNoticePeriod().replaceAll("\\s+", " ");
-		
+		    
 	    if(noticePeriod != null) {
 		if(candidate.getNoticePeriod() != null  && candidate.getNoticePeriod() != "" && !noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())){
 			 activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(noticePeriod).append(Constants.NEW_VALUE_TAG_END).append(" ");
