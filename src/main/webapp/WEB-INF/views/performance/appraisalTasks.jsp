@@ -299,6 +299,26 @@ function getGeneralTaskDetails(assignedUUID){
 	        	    if(response.object != null){
 	        	    	
 	        	    	var result = "";  
+	        	    	var openTasksCount = 0;
+	        	    	var inprogressCount = 0;
+	        	    	var completedCount = 0;
+	        	    	var overdueCount = 0;
+	        	    	
+	        	    	if(response.object.openTasksCount != null){
+	        	    		openTasksCount = response.object.openTasksCount
+	        	    	}
+	        	    	
+	        	    	if(response.object.inprogressCount != null){
+	        	    		inprogressCount = response.object.inprogressCount
+	        	    	}
+	        	    	
+	        	    	if(response.object.completedCount != null){
+	        	    		completedCount = response.object.completedCount
+	        	    	}
+	        	    	
+	        	    	if(response.object.overdueCount != null){
+	        	    		overdueCount = response.object.overdueCount
+	        	    	}
 	        	    	
 	        	    	
 	        	    	result = result + '<div id="tab1" class="appraQueOut">';
@@ -311,22 +331,22 @@ function getGeneralTaskDetails(assignedUUID){
 	        	    	
 	        	    	result = result + '<li>';
 	        	    	result = result + '<p>Open Tasks</p>';
-	        	    	result = result + '<span>'+response.object.openTasksCount+'</span>';
+	        	    	result = result + '<span>'+openTasksCount+'</span>';
 	        	    	result = result + '</li>';
 	        	    	
 	        	    	result = result + '<li>';
 	        	    	result = result + '<p>In-Progress Taks</p>';
-	        	    	result = result + '<span>'+response.object.inprogressCount+'</span>';
+	        	    	result = result + '<span>'+inprogressCount+'</span>';
 	        	    	result = result + '</li>';
 	        	    	
 	        	    	result = result + '<li>';
 	        	    	result = result + '<p>Completed Tasks</p>';
-	        	    	result = result + '<span>'+response.object.completedCount+'</span>';
+	        	    	result = result + '<span>'+completedCount+'</span>';
 	        	    	result = result + '</li>';
 	        	    	
 	        	    	result = result + '<li>';
 	        	    	result = result + '<p>Over Due Tasks</p>';
-	        	    	result = result + '<span>'+response.object.overdueCount+'</span>';
+	        	    	result = result + '<span>'+overdueCount+'</span>';
 	        	    	result = result + '</li>';
 	        	    	
 	        	    	result = result + '</ul>';
