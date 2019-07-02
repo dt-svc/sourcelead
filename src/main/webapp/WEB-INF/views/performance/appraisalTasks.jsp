@@ -214,6 +214,7 @@ function getJobsDetails(assignedUUID){
         	    	result = result + '<thead>';
         	    	result = result + '<tr>';
         	    	result = result + '<th>Job Title</th>';
+        	    	result = result + '<th>Client</th>';
         	    	result = result + '<th>Submissions</th>';
         	    	result = result + '<th>Offer Made</th>';
         	    	result = result + '<th>Offer Accepted</th>';
@@ -229,8 +230,12 @@ function getJobsDetails(assignedUUID){
 					for (var i=0; i< response.object.appraisalJobDetailsList.length; i++){
 						result = result + '<tr>';
 						var report = response.object.appraisalJobDetailsList[i];
-						var duration = '';
-						result = result + '<td><span class="tbldata-dotdot">'+report.requirementName+'</span></td>';
+						result = result + '<td><span class="tbldata-dotdot" title="'+report.requirementName+'">'+report.requirementName+'</span></td>';
+						if(report.clientName != null){
+							result = result + '<td><span class="tbldata-dotdot-vsm" title="'+report.clientName+'">'+report.clientName+'</span></td>';
+						}else{
+							result = result + '<td><span class="tbldata-dotdot-vsm" >----</span></td>';
+						}
 	        	    	result = result + '<td><span class="tblminwidth-50 text-primary"><b>'+report.submittedCandidatesCount+'</b></span></td>';
 	        	    	result = result + '<td><span class="tblminwidth-50"><b>'+report.offerMadeCount+'</b></span></td>';
 	        	    	result = result + '<td><span class="tblminwidth-50"><b>'+report.offerAcceptedCount+'</b></span></td>';

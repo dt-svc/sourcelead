@@ -668,7 +668,16 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 				"  SUBMISSION_HISTORY.FROM_STAGE AS fromSubmissionStage," + 
 				"  SUBMISSION_HISTORY.REQUIREMENT_SUBMISSION_ID AS submissionId, " + 
 				"  REQ.ID AS requirementId, " + 
-				"  REQ.JOB_TITLE AS requirementName " + 
+				"  REQ.JOB_TITLE AS requirementName, " + 
+				
+				"  (SELECT " +
+				"  ORG_NAME" +
+				"  FROM" +
+				"  ORG_LOCATIONS OL," +
+				"  ORG_RELATIONS ORL" +
+				"  WHERE" +
+				"  (OL.ID = ORL.LOCATION_ID OR OL.ID = ORL.RESPONDER_LOCATION_ID) AND OL.ID != REQ.ORG_LOCATION_ID AND ORL.ID = REQ.ORG_RELATION_ID AND REQ.ORG_RELATION_ID IS NOT NULL ) AS clientName " +
+				
 				"  FROM" + 
 				"  REQUIREMENT_SUBMISSION_HISTORY SUBMISSION_HISTORY, REQUIREMENT_SUBMISSION SUBMISSION, REQUIREMENT REQ " + 
 				"  WHERE" + 

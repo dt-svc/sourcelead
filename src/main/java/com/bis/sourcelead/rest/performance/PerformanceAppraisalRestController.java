@@ -294,6 +294,7 @@ public class PerformanceAppraisalRestController {
 						  List<PerformanceJobsDetailsDTO> jobEntrydtoList = entry.getValue();
 						  PerformanceJobsDetailsDTO dto = entry.getValue().get(0);
 						  jobsDetailsDTO.setRequirementName(dto.getRequirementName());
+						  jobsDetailsDTO.setClientName(dto.getClientName());
 						  if(jobEntrydtoList != null && !jobEntrydtoList.isEmpty()) {
 							  
 							  submittedCandidatesCount = 0;

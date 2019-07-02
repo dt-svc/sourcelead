@@ -31,9 +31,9 @@ public class PerformanceJobsDetailsDTO implements Serializable{
 	
 	private String requirementName;
 	
-	private Map<String,String> assignjobDetailsMap;
-	
 	private BigInteger submissionId;
+	
+	private String clientName;
 	
 	List<AppraisalJobsSubmissionDetailsDTO> appraisalJobDetailsList;
 
@@ -101,13 +101,6 @@ public class PerformanceJobsDetailsDTO implements Serializable{
 		this.requirementName = requirementName;
 	}
 
-	public Map<String, String> getAssignjobDetailsMap() {
-		return assignjobDetailsMap;
-	}
-
-	public void setAssignjobDetailsMap(Map<String, String> assignjobDetailsMap) {
-		this.assignjobDetailsMap = assignjobDetailsMap;
-	}
 
 	public BigInteger getSubmissionId() {
 		return submissionId;
@@ -147,6 +140,14 @@ public class PerformanceJobsDetailsDTO implements Serializable{
 
 	public void setClientOfferAcceptedCount(Integer clientOfferAcceptedCount) {
 		this.clientOfferAcceptedCount = clientOfferAcceptedCount;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
 	}
 
 	
