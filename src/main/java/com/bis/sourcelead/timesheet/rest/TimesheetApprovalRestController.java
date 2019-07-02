@@ -574,7 +574,11 @@ public class TimesheetApprovalRestController {
 			 ts.setProfileImageFileUrl(fileUrl);
 			 ts.setProjectMemberId(projectMember.getId());
 			 ts.setEmployeeName(projectMember.getProjectMemberCandidteId().getFullName());
-			 ts.setEmployeeEmail(projectMember.getProjectMemberCandidteId().getEmail());
+			 if(projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
+				 ts.setEmployeeEmail(projectMember.getProjectMemberCandidteId().getConsultantUser().getEmail());
+			 }else {
+				ts.setEmployeeEmail(projectMember.getProjectMemberCandidteId().getEmail()); 
+			 }
 			 ts.setEmployeePhoneNo(projectMember.getProjectMemberCandidteId().getMobilePhone());
 			 timesheetApprovalDTO.setWeekFrequency(timesheetApprovalDTO.getFrequencyStartDate().trim()+"To"+timesheetApprovalDTO.getFrequencyEndDate().trim());
 			 if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
