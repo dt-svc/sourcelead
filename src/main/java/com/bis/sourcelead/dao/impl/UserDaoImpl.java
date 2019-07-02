@@ -2243,7 +2243,7 @@ public class UserDaoImpl implements UserDao {
 				//Map<Long,List<Long>> requirementMap = new HashMap<Long,List<Long>>();
 				Set<BigInteger> jobIds = new HashSet<>();
 				Set<BigInteger> primaryUserjobIds = new HashSet<>();
-				Set<BigInteger> approverUserjobIds = new HashSet<>();
+				Set<BigInteger> assinedUserjobIds = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
 					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId())){
@@ -2292,8 +2292,9 @@ public class UserDaoImpl implements UserDao {
 								&& ((reportDTO.getPrimaryUserId() != null &&  reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue()) ||(reportDTO.getPrimaryUserId() == null)) 
 								&& (reportDTO.getManagerUserId() != null && reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
 							userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
-							if(userDTO != null){
+							if(userDTO != null && !assinedUserjobIds.contains(reportDTO.getRequirementId())){
 									jobIds.add(reportDTO.getRequirementId());
+									assinedUserjobIds.add(reportDTO.getRequirementId());
 									userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
 							}
 						}

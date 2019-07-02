@@ -373,12 +373,12 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	
 	public List<INDPayrollDTO> getINDPayrollDTOFromIndEmployeePayroll(Set<IndEmployeePayroll> payrollList,OrgLocations orgLocations) throws Exception {
 		List<INDPayrollDTO> payrollDTOList = new ArrayList<>();
-		if(payrollList != null && !payrollList.isEmpty()) {
+		System.out.println(" inside getINDPayrollDTOFromIndEmployeePayroll   >>>>>>>>>>>>>");
+		if(payrollList != null && !payrollList.isEmpty()) {		
 			for(IndEmployeePayroll employeePayroll :payrollList) {
 				if(employeePayroll != null && employeePayroll.getStatus() == 0)
 					continue;
 					
-				
 				INDPayrollDTO payrollDTO = new INDPayrollDTO();
 				if(employeePayroll.getId() != null) {
 					payrollDTO.setId(employeePayroll.getId());
@@ -450,6 +450,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				payrollDTOList.add(payrollDTO);
 			}
 		}
+		System.out.println(" completed getINDPayrollDTOFromIndEmployeePayroll   >>>>>>>>>>>>>");
 		 return payrollDTOList;
 	}
 	
