@@ -368,7 +368,7 @@ public class RequirementWorkflowController {
 		
 	@RequestMapping(value = "/saveRequirementWorkflowStage")
 	public @ResponseBody Response<String> saveRequirementWorkflowStage(HttpServletRequest request,
-			@RequestParam(value = "chosenColumnJson", required = false) String chosenColumnJson,
+			@RequestParam(value = "chosenColumnStr", required = false) String chosenColumnStr,
 			RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO) {
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
@@ -378,9 +378,9 @@ public class RequirementWorkflowController {
 		logger.debug("before saveRequirementWorkflowStage>>> orgLocationid "+orgLocations.getId());
 			try {
 				if (user != null && null != requirementWorkFlowStagesDTO) {
-					if(chosenColumnJson != null && StringUtils.isNotBlank(chosenColumnJson))
+					if(StringUtils.isNotBlank(chosenColumnStr)) // chosenColumnStr is a comma separated string passed form the UI.
 					{
-						requirementWorkFlowStagesDTO.setChosenColumns(chosenColumnJson);
+						requirementWorkFlowStagesDTO.setChosenColumns(chosenColumnStr);
 					}
 					requirementWorkFlowService.saveRequirementWorkflowStageByWorkflowId(requirementWorkFlowStagesDTO, orgLocations, user);
 					response.setResponse(Result.SUCCESS.name());
