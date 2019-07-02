@@ -26,6 +26,7 @@ import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDetailsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceGeneralTasksDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceJobsDetailsDTO;
 import com.bis.sourcelead.entity.User;
@@ -695,5 +696,83 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		}
 		
 		return jobDetailsList;
+	}
+
+	@Override
+	public PerformanceGeneralTasksDetailsDTO getGeneralTasksDetails(String assignedUUID, String dateFormat)
+			throws Exception {
+		
+		List<PerformanceAppraisalTemplateDetailsDTO> templateDetailsList = new ArrayList<PerformanceAppraisalTemplateDetailsDTO>();
+		String mysqlDateFormat = "\"%Y-%m-%d\"";
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceGeneralTasksDetailsDTO> generalTaskList = null;
+		PerformanceGeneralTasksDetailsDTO generalTaskDTO = null;
+		try {
+		String query =  "SELECT "
+				+" ASSIGNED.ORG_LOCATION_ID AS orgLocationId, " 
+				+" ASSIGNED.USER_ID AS appraisalAssignedUserId, " 
+				+" DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+mysqlDateFormat+") AS appraisalStartDate, "
+				+" DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+mysqlDateFormat+") AS appraisalEndDate "
+				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+				+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE "
+				+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID   "
+				+" AND ASSIGNED.UUID = :assignedUUID ";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("assignedUUID", assignedUUID);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalTemplateDetailsDTO.class));
+		templateDetailsList = queryObj.list();
+		PerformanceAppraisalTemplateDetailsDTO templateDTO = templateDetailsList.get(0);
+		
+		String appraisalDateFormat =  "";
+		
+		if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%Y-%m-%d\"";
+		}else if("dd-MM-yyyy".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%d-%m-%Y\"";
+		}else if("MM-dd-yyyy".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%m-%d-%Y\"";
+		}else if("yyyy-dd-MM".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%Y-%d-%m\"";
+		}
+		
+		
+		String generalTasksQuery = "SELECT " + 
+				"  COUNT(Q1.ID) AS tasksCount, " +
+				"  SUM(CASE WHEN Q1.TASK_STATUS = 'Closed' THEN 1 ELSE 0 END) AS completedCount, " + 
+				"  SUM(CASE WHEN (Q1.TASK_STATUS = 'Open' AND DATEDIFF(DATE_FORMAT(Q1.TASK_DATE,"+mysqlDateFormat+"),CURDATE()) >= 0) THEN 1 ELSE 0 END) AS openTasksCount, " + 
+				"  SUM(CASE WHEN (Q1.TASK_STATUS = 'In-Progress' AND DATEDIFF(DATE_FORMAT(Q1.TASK_DATE,"+mysqlDateFormat+"),CURDATE()) >= 0) THEN 1 ELSE 0 END) AS inprogressCount, " +
+				"  SUM(CASE WHEN ((Q1.TASK_STATUS = 'Open' OR Q1.TASK_STATUS = 'In-Progress') AND DATEDIFF(DATE_FORMAT(Q1.TASK_DATE,"+mysqlDateFormat+"),CURDATE()) < 0) THEN 1 ELSE 0 END) AS overdueCount " +
+				"  FROM" + 
+				"    (SELECT " + 
+				"            T.ID, " + 
+				"            T.TASK_DATE, " + 
+				"            T.TASK_STATUS" + 
+				"    FROM" + 
+				"       TASKS T" + 
+				"    WHERE" + 
+				"        T.ASSIGNED_USER_ID = :userId" + 
+				"        AND T.ASSIGNED_ORGLOCATION_ID = :orgLocationId " + 
+				"        AND DATEDIFF('"+templateDTO.getAppraisalStartDate()+"',DATE_FORMAT(T.TASK_DATE,"+mysqlDateFormat+")) <= 0" + 
+				"        AND DATEDIFF(DATE_FORMAT(T.TASK_DATE,"+mysqlDateFormat+"),'"+templateDTO.getAppraisalEndDate()+"') <= 0" + 
+				"    ) Q1";
+		
+		
+		Query generalTaskQueryObj = session.createSQLQuery(generalTasksQuery)
+				.addScalar("tasksCount", StandardBasicTypes.INTEGER)
+				.addScalar("openTasksCount", StandardBasicTypes.INTEGER)
+				.addScalar("completedCount", StandardBasicTypes.INTEGER)
+				.addScalar("inprogressCount", StandardBasicTypes.INTEGER)
+				.addScalar("overdueCount", StandardBasicTypes.INTEGER);
+		generalTaskQueryObj.setBigInteger("userId", templateDTO.getAppraisalAssignedUserId());
+		generalTaskQueryObj.setBigInteger("orgLocationId", templateDTO.getOrgLocationId());
+		generalTaskQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceGeneralTasksDetailsDTO.class));
+		generalTaskList = generalTaskQueryObj.list();
+		generalTaskDTO = generalTaskList.get(0);
+					
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return generalTaskDTO;
 	}
 }

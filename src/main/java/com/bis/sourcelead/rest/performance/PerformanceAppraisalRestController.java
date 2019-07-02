@@ -26,6 +26,7 @@ import com.bis.sourcelead.dto.performance.AppraisalProjectsTasksDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceFeedbackCategoryDTO;
+import com.bis.sourcelead.dto.performance.PerformanceGeneralTasksDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceJobsDetailsDTO;
 import com.bis.sourcelead.entity.Org;
@@ -354,6 +355,26 @@ public class PerformanceAppraisalRestController {
 				 resObj.setResponseMessage(Result.AWKWARD.getValue());
 			}
 			 return resObj;
+	    }
+	    
+	    
+	    
+	    
+	    @RequestMapping(value = "/getAssignedFeedbackGeneralTaskDetailsList", method = RequestMethod.GET)
+	  		public Response<PerformanceGeneralTasksDetailsDTO> getAssignedFeedbackGeneralTaskDetailsList(HttpServletRequest request, 
+	  				@RequestParam(value = "assignedUUID", required = true) String assignedUUID){
+	    
+	    	 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     Response<PerformanceGeneralTasksDetailsDTO> resObj = new  Response<PerformanceGeneralTasksDetailsDTO>();
+		     try {
+				PerformanceGeneralTasksDetailsDTO taskDetailsDTO = performanceAppraisalService.getGeneralTasksDetails(assignedUUID, orgLocation.getDateFormat());
+				 resObj.setObject(taskDetailsDTO);
+				 resObj.setResponse(Result.SUCCESS.name());
+				 resObj.setResponseMessage(Result.SUCCESS.getValue());
+		     } catch (Exception e) {
+				e.printStackTrace();
+			}
+	    	return resObj;
 	    }
 	    
 	

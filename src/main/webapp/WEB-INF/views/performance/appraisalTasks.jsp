@@ -16,7 +16,7 @@ function getAppraisalTaskDetails(){
     result = result + '<ul id="nav" class="clearfix">';
     result = result + '<li><a id="projectDetails" onclick="getProjectDetails(\''+assignedUUID+'\');" class="active">Projects</a></li>';
     result = result + '<li><a id="jobDetails" onclick="getJobsDetails(\''+assignedUUID+'\');" class="">Jobs</a></li>';
-    result = result + '<li><a href="#" class="">General Tasks</a></li>';
+    result = result + '<li><a id="generalTaskDetails" onclick="getGeneralTaskDetails(\''+assignedUUID+'\');" class="">General Tasks</a></li>';
     result = result + '</ul>';
     result = result + '</div>';
     
@@ -37,6 +37,7 @@ function getAppraisalTaskDetails(){
 
 function getProjectDetails(assignedUUID){
 	 document.getElementById("jobDetails").removeAttribute("class");
+	 document.getElementById("generalTaskDetails").removeAttribute("class");
 	 document.getElementById("projectDetails").className = 'active';
 	 $("#appraisalTasksDiv").empty(); 
 	 
@@ -152,6 +153,7 @@ function getProjectDetails(assignedUUID){
 function getJobsDetails(assignedUUID){
 	
 	   document.getElementById("projectDetails").removeAttribute("class");
+	   document.getElementById("generalTaskDetails").removeAttribute("class");
 	   document.getElementById("jobDetails").className = 'active';
 	   $("#appraisalTasksDiv").empty(); 
 	
@@ -171,7 +173,8 @@ function getJobsDetails(assignedUUID){
         		
         	    if(response.object != null){
         	    	var result = "";  
-        	    	 result = result + '<div id="tab1" class="appraQueOut">';
+        	    	
+        	    	result = result + '<div id="tab1" class="appraQueOut">';
         	    	result = result + '<ul class="assiTaskWrap clearfix">';
         	    	
         	    	result = result + '<li>';
@@ -270,6 +273,82 @@ function getJobsDetails(assignedUUID){
         	}
 			},
 	}); 
+}
+
+
+function getGeneralTaskDetails(assignedUUID){
+	 document.getElementById("jobDetails").removeAttribute("class");
+	 document.getElementById("projectDetails").removeAttribute("class");
+	 document.getElementById("generalTaskDetails").className = 'active';
+	 $("#appraisalTasksDiv").empty(); 
+	 
+	 $("#tasksLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+			  type: "GET",
+			    url: pmsUrl+"/getAssignedFeedbackGeneralTaskDetailsList?assignedUUID="+assignedUUID,
+			     success :function(response) {
+			    	 
+			    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+		    		    showError(response.responseMessage);
+		    		    $("#tasksLoading").removeAttr('style');
+		    		}
+	        	else if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		
+	        	    if(response.object != null){
+	        	    	
+	        	    	var result = "";  
+	        	    	
+	        	    	
+	        	    	result = result + '<div id="tab1" class="appraQueOut">';
+	        	    	result = result + '<ul class="assiTaskWrap clearfix">';
+	        	    	
+	        	    	result = result + '<li>';
+	        	    	result = result + '<p>Total Tasks</p>';
+	        	    	result = result + '<span>'+response.object.tasksCount+'</span>';
+	        	    	result = result + '</li>';
+	        	    	
+	        	    	result = result + '<li>';
+	        	    	result = result + '<p>Open Tasks</p>';
+	        	    	result = result + '<span>'+response.object.openTasksCount+'</span>';
+	        	    	result = result + '</li>';
+	        	    	
+	        	    	result = result + '<li>';
+	        	    	result = result + '<p>In-Progress Taks</p>';
+	        	    	result = result + '<span>'+response.object.inprogressCount+'</span>';
+	        	    	result = result + '</li>';
+	        	    	
+	        	    	result = result + '<li>';
+	        	    	result = result + '<p>Completed Tasks</p>';
+	        	    	result = result + '<span>'+response.object.completedCount+'</span>';
+	        	    	result = result + '</li>';
+	        	    	
+	        	    	result = result + '<li>';
+	        	    	result = result + '<p>Over Due Tasks</p>';
+	        	    	result = result + '<span>'+response.object.overdueCount+'</span>';
+	        	    	result = result + '</li>';
+	        	    	
+	        	    	result = result + '</ul>';
+	        	    	result = result + '</div> ';
+	        	    	
+	        	        $("#appraisalTasksDiv").append(result);
+	        	        
+	        	        $("#tasksLoading").removeAttr("style");
+	        	    }else{
+	        	    	 var result = "";  
+	        	    	 result = result + '<div class="odd"><div valign="top" colspan="3" class="dataTables_empty"></div></div>';
+	         	         $("#appraisalTasksDiv").append(result);
+	         	        $("#tasksLoading").removeAttr("style");
+	        	    }
+	        		
+	        	}else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+				},
+		});
 }
 
 </script>
