@@ -8,6 +8,8 @@ public class AppraisalJobsSubmissionDetailsDTO implements Serializable{
 	
 	private String requirementName;
 	
+	private String clientName;
+	
 	private Integer submittedCandidatesCount;
 	
 	private Integer offerMadeCount;
@@ -74,6 +76,14 @@ public class AppraisalJobsSubmissionDetailsDTO implements Serializable{
 
 	public void setClientOfferAcceptedCount(Integer clientOfferAcceptedCount) {
 		this.clientOfferAcceptedCount = clientOfferAcceptedCount;
+	}
+
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
 	}
 	
 	
