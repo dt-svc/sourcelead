@@ -335,7 +335,7 @@ function getGeneralTaskDetails(assignedUUID){
 	        	    	result = result + '</li>';
 	        	    	
 	        	    	result = result + '<li>';
-	        	    	result = result + '<p>In-Progress Taks</p>';
+	        	    	result = result + '<p>In-Progress Tasks</p>';
 	        	    	result = result + '<span>'+inprogressCount+'</span>';
 	        	    	result = result + '</li>';
 	        	    	
