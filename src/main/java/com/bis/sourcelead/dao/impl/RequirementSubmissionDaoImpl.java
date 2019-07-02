@@ -749,7 +749,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
              }else if(ss.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
                  submissionStages = "and (reqSub.submissionStatus = 'SUBMIT_TO_CLIENT')";
              }else if(ss.equalsIgnoreCase("INTERVIEWED")){
-                 submissionStages = "and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW')";
+                 submissionStages = "and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW' OR reqSub.submissionStatus = 'INTERVIEW_ACCEPT')";
              }else if(ss.equalsIgnoreCase("REJECTED")){
                  submissionStages = "and (reqSub.submissionStatus = 'REJECTED')";
              }else if(ss.equalsIgnoreCase("REQUESTSENT")){
@@ -3494,7 +3494,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					String statusSubQuery3 = "";
 					String statusSubQuery4 = "";
 					if(requirementSubmissionsDTO.getSubmissionType() != null && "INTERVIEW".equalsIgnoreCase(requirementSubmissionsDTO.getSubmissionType())){
-						statusSubQuery = " and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW') "; 
+						statusSubQuery = " and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW' OR reqSub.submissionStatus = 'INTERVIEW_ACCEPT') "; 
 					}else if(requirementSubmissionsDTO.getSubmissionType() != null && "OFFERMADE".equalsIgnoreCase(requirementSubmissionsDTO.getSubmissionType())){
 						statusSubQuery = " and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' "
 								+ " OR reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED') "; 
