@@ -14,6 +14,7 @@ function getAppraisalFeedbackDetails(){
 	    document.getElementById("feedbackWidget").className = 'activeApprisalwidget';
 	    document.getElementById("goalsWidget").removeAttribute("class");
 	    document.getElementById("tasksWidget").removeAttribute("class");
+	    $("#performanceAppraisalDiv").empty();  
 	    	
 	    	$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
@@ -85,7 +86,6 @@ function getAppraisalFeedbackDetails(){
 		        	    	 result = result + '<div class="odd"><div valign="top" colspan="4" class="dataTables_empty"></div></div>';
 		        	    }
 
-		        	    $("#performanceAppraisalDiv").empty(); 
 		        	    $("#performanceAppraisalDiv").append(result);
 		        	    
 		        	    if(feedbackTemplateUUID != ''){
