@@ -231,11 +231,11 @@ function getPendingApprovalExpenseReports(){
 	        		  }else{
 	        			  approvedBy = "--";
 	        		  }
-	        		  if(report.reportingManager != null && report.reportingManager != '' && report.reportingManager != 'undefined'){
+	        		 /*  if(report.reportingManager != null && report.reportingManager != '' && report.reportingManager != 'undefined'){
 	        			  reportingManager = report.reportingManager;
 	        		  }else{
-	        			  reportingManager = " ";
-	        		  }
+	        			  reportingManager = "";
+	        		  } */
 	        		  /*   if(report.noofDaysPending != null && report.noofDaysPending != '' && report.noofDaysPending != 'undefined'){
 	        			  noofDaysPending = report.noofDaysPending;
 	        		  }else{
@@ -249,7 +249,8 @@ function getPendingApprovalExpenseReports(){
 	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.projectName +'" class="tbldata-dotdot-sm">'+projectName+'</div></td>';
 	              //result = result	+ '   <td><div title ='+report.employeId +'><class="tbldata-dotdot-me">'+frequency+'</div></td>';
 	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.approvalMechanism +'" class="tbldata-dotdot-sm">'+approvalMechanism+'</div></td>';
-	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.managerOne +','+report.reportingManager+'" class="tbldata-dotdot-vsm">'+managerOne+','+reportingManager+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.managerOne +'" class="tbldata-dotdot-sm">'+managerOne+'</div></td>';
+	             /*  result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.managerOne +','+report.reportingManager+'" class="tbldata-dotdot-vsm">'+managerOne + (reportingManager != null ? ','+reportingManager: "")+' </div></td>'; */
 	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.managerTwo +'" class="tbldata-dotdot-vsm">'+managerTwo+'</div></td>';
 	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.submittedAmount +'" class="tblminwidth-50">'+submittedAmount+'</div></td>';
 	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.submittedOn +'" class="tbldata-dotdot-vsm">'+submittedOn+'</div></td>';
