@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalDao;
 import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
@@ -26,6 +27,8 @@ import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceJobsDetailsDTO;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -616,5 +619,72 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 			e.printStackTrace();
 		}
 		return projectassignTaskList;
+	}
+
+	@Override
+	public List<PerformanceJobsDetailsDTO> getPerformanceJobsDetails(String assignedUUID, String dateFormat)
+			throws Exception {
+		
+		List<PerformanceJobsDetailsDTO> jobDetailsList = null;
+		List<PerformanceAppraisalTemplateDetailsDTO> templateDetailsList = new ArrayList<PerformanceAppraisalTemplateDetailsDTO>();
+		String mysqlDateFormat = "\"%Y-%m-%d\"";
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+		String query =  "SELECT "
+				+" ASSIGNED.ORG_LOCATION_ID AS orgLocationId, " 
+				+" ASSIGNED.USER_ID AS appraisalAssignedUserId, "
+				+" U.USER_CODE AS assignedUserCode," 
+				+" DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+mysqlDateFormat+") AS appraisalStartDate, "
+				+" DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+mysqlDateFormat+") AS appraisalEndDate "
+				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+				+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE, USER U "
+				+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID  AND ASSIGNED.USER_ID = U.ID "
+				+" AND ASSIGNED.UUID = :assignedUUID ";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("assignedUUID", assignedUUID);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalTemplateDetailsDTO.class));
+		templateDetailsList = queryObj.list();
+		PerformanceAppraisalTemplateDetailsDTO templateDTO = templateDetailsList.get(0);
+		
+		String assignedQuery =  "SELECT "
+				+" ASSIGNTO.REQUIREMENT_ID " 
+				+" FROM REQUIREMENT_ASSIGN_TO ASSIGNTO , "
+				+" REQUIREMENT REQ "
+				+" WHERE ASSIGNTO.REQUIREMENT_ID =  REQ.ID AND ASSIGNTO.ASSIGN_USER_ID = :userId "
+				+" AND REQ.ORG_LOCATION_ID = :orgLocationId "
+				+" AND DATEDIFF('"+templateDTO.getAppraisalStartDate()+"',ASSIGNTO.CREATED_DATE) <= 0"  
+				+" AND DATEDIFF(ASSIGNTO.CREATED_DATE,'"+templateDTO.getAppraisalEndDate()+"') <= 0" ;
+		
+		Query assignedQueryObj = session.createSQLQuery(assignedQuery);
+		assignedQueryObj.setBigInteger("userId", templateDTO.getAppraisalAssignedUserId());
+		assignedQueryObj.setBigInteger("orgLocationId", templateDTO.getOrgLocationId());
+		List<BigInteger> requirementList =  assignedQueryObj.list();
+		
+		String requirementIdStr = "'" + StringUtils.join(requirementList,"','") + "'";
+
+		String submissionsQuery = "SELECT " + 
+				"  SUBMISSION_HISTORY.TO_STAGE AS submissionStage," + 
+				"  SUBMISSION_HISTORY.FROM_STAGE AS fromSubmissionStage," + 
+				"  SUBMISSION_HISTORY.REQUIREMENT_SUBMISSION_ID AS submissionId, " + 
+				"  REQ.ID AS requirementId, " + 
+				"  REQ.JOB_TITLE AS requirementName " + 
+				"  FROM" + 
+				"  REQUIREMENT_SUBMISSION_HISTORY SUBMISSION_HISTORY, REQUIREMENT_SUBMISSION SUBMISSION, REQUIREMENT REQ " + 
+				"  WHERE" + 
+				"  SUBMISSION_HISTORY.REQUIREMENT_SUBMISSION_ID = SUBMISSION.ID AND SUBMISSION.REQUIREMENT_ID = REQ.ID " + 
+				"  AND SUBMISSION.CREATED_BY = :userCode " + 
+				"  AND REQ.ID IN ("+requirementIdStr+") ";
+		
+		Query jobQueryObj = session.createSQLQuery(submissionsQuery);
+		jobQueryObj.setString("userCode", templateDTO.getAssignedUserCode());
+		jobQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceJobsDetailsDTO.class));
+		jobDetailsList =  jobQueryObj.list();
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return jobDetailsList;
 	}
 }

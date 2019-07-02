@@ -51,6 +51,8 @@ private static final long serialVersionUID = 1L;
 	
 	private BigInteger appraisalAssignedUserId;
 	
+	private String assignedUserCode;
+	
 
 	public String getName() {
 		return name;
@@ -227,6 +229,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setAppraisalAssignedUserId(BigInteger appraisalAssignedUserId) {
 		this.appraisalAssignedUserId = appraisalAssignedUserId;
+	}
+
+	public String getAssignedUserCode() {
+		return assignedUserCode;
+	}
+
+	public void setAssignedUserCode(String assignedUserCode) {
+		this.assignedUserCode = assignedUserCode;
 	}
 
 	

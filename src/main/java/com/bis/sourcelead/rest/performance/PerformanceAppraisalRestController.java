@@ -1,7 +1,6 @@
 package com.bis.sourcelead.rest.performance;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +21,13 @@ import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.performance.AppraisalJobsSubmissionDetailsDTO;
 import com.bis.sourcelead.dto.performance.AppraisalProjectsTasksDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceFeedbackCategoryDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceJobsDetailsDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -227,6 +228,122 @@ public class PerformanceAppraisalRestController {
 				 }
 				 
 				 resObj.setObject(taskDTO);
+				 resObj.setResponse(Result.SUCCESS.name());
+				 resObj.setResponseMessage(Result.SUCCESS.getValue());
+			    
+			 }catch (Exception e) {
+				 e.printStackTrace();
+				 resObj.setResponse(Result.AWKWARD.name());
+				 resObj.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			 return resObj;
+	    }
+	    
+	    
+	    
+	    @RequestMapping(value = "/getAssignedFeedbackJobsDetailsList", method = RequestMethod.GET)
+		public Response<PerformanceJobsDetailsDTO> getAssignedFeedbackJobsDetailsList(HttpServletRequest request, 
+				@RequestParam(value = "assignedUUID", required = true) String assignedUUID){
+	    	 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    	Response<PerformanceJobsDetailsDTO> resObj = new  Response<PerformanceJobsDetailsDTO>();
+	    	 PerformanceJobsDetailsDTO performanceJobsDetailsDTO = null;
+			 try {
+				 List<PerformanceJobsDetailsDTO> performanceJobsDetailsDTOList =  performanceAppraisalService.getPerformanceJobsDetails(assignedUUID,orgLocation.getDateFormat());
+				 if(performanceJobsDetailsDTOList != null && !performanceJobsDetailsDTOList.isEmpty()) {
+					 performanceJobsDetailsDTO = new PerformanceJobsDetailsDTO();	
+						
+						 Integer submittedCandidatesCount = 0;
+						 Integer offerMadeCount = 0;
+						 Integer clientOfferMadeCount = 0;
+						 Integer offerAcceptedCount = 0;
+						 Integer clientOfferAcceptedCount = 0;
+						 Integer joinedCount = 0;
+						
+					 for(PerformanceJobsDetailsDTO jobsDTO : performanceJobsDetailsDTOList) {
+						if(jobsDTO.getSubmissionStage().equalsIgnoreCase("SUBMISSION")) {
+							submittedCandidatesCount = submittedCandidatesCount+1;
+						}
+						else if(jobsDTO.getSubmissionStage().equalsIgnoreCase("OFFERMADE")) {
+							offerMadeCount = offerMadeCount+1;
+						}
+						else if(jobsDTO.getSubmissionStage().equalsIgnoreCase("CLIENT_OFFERMADE")) {
+							clientOfferMadeCount = clientOfferMadeCount+1;
+						}
+						else if(jobsDTO.getSubmissionStage().equalsIgnoreCase("OFFERACCEPTED")) {
+							offerAcceptedCount = offerAcceptedCount+1;
+						}
+						else if((jobsDTO.getFromSubmissionStage().equalsIgnoreCase("client_offer_made") || jobsDTO.getFromSubmissionStage().equalsIgnoreCase("CLIENT_OFFERMADE")) 
+								&& jobsDTO.getSubmissionStage().equalsIgnoreCase("CLIENT_OFFERACCEPTED")) {
+							clientOfferAcceptedCount = clientOfferAcceptedCount+1;
+						}
+						else if(jobsDTO.getSubmissionStage().equalsIgnoreCase("JOINED")) {
+							joinedCount = joinedCount+1;
+						}
+					}
+					 performanceJobsDetailsDTO.setSubmittedCandidatesCount(submittedCandidatesCount);
+					 performanceJobsDetailsDTO.setOfferMadeCount(offerMadeCount);
+					 performanceJobsDetailsDTO.setOfferAcceptedCount(offerAcceptedCount);
+					 performanceJobsDetailsDTO.setJoinedCount(joinedCount);
+					 performanceJobsDetailsDTO.setClientOfferMadeCount(clientOfferMadeCount);
+					 performanceJobsDetailsDTO.setClientOfferAcceptedCount(clientOfferAcceptedCount);
+					 
+					 Map<BigInteger, List<PerformanceJobsDetailsDTO>> requirementMap = performanceJobsDetailsDTOList.stream().collect(Collectors.groupingBy(PerformanceJobsDetailsDTO::getRequirementId,Collectors.toList()));
+					 List<AppraisalJobsSubmissionDetailsDTO> jobDetailsList = new CopyOnWriteArrayList<AppraisalJobsSubmissionDetailsDTO>(); 
+					 for (Map.Entry<BigInteger, List<PerformanceJobsDetailsDTO>> entry : requirementMap.entrySet())  {
+						 AppraisalJobsSubmissionDetailsDTO jobsDetailsDTO = new AppraisalJobsSubmissionDetailsDTO();
+						  List<PerformanceJobsDetailsDTO> jobEntrydtoList = entry.getValue();
+						  PerformanceJobsDetailsDTO dto = entry.getValue().get(0);
+						  jobsDetailsDTO.setRequirementName(dto.getRequirementName());
+						  if(jobEntrydtoList != null && !jobEntrydtoList.isEmpty()) {
+							  
+							  submittedCandidatesCount = 0;
+							  offerMadeCount = 0;
+							  offerAcceptedCount = 0;
+							  joinedCount = 0;
+							  clientOfferMadeCount = 0;
+							  clientOfferAcceptedCount = 0;
+							   
+							  for(PerformanceJobsDetailsDTO jobDetails : jobEntrydtoList) {
+								  							  
+								  if(jobDetails.getSubmissionStage().equalsIgnoreCase("SUBMISSION")) {
+										submittedCandidatesCount = submittedCandidatesCount+1;
+									}
+									else if(jobDetails.getSubmissionStage().equalsIgnoreCase("OFFERMADE")) {
+										offerMadeCount = offerMadeCount+1;
+									}
+									else if(jobDetails.getSubmissionStage().equalsIgnoreCase("CLIENT_OFFERMADE")) {
+										clientOfferMadeCount = clientOfferMadeCount+1;
+									}
+									else if(jobDetails.getSubmissionStage().equalsIgnoreCase("OFFERACCEPTED")) {
+										offerAcceptedCount = offerAcceptedCount+1;
+									}
+									else if((jobDetails.getFromSubmissionStage().equalsIgnoreCase("client_offer_made") || jobDetails.getFromSubmissionStage().equalsIgnoreCase("CLIENT_OFFERMADE")) 
+											&& jobDetails.getSubmissionStage().equalsIgnoreCase("CLIENT_OFFERACCEPTED")) {
+										clientOfferAcceptedCount = clientOfferAcceptedCount+1;
+									}
+									else if(jobDetails.getSubmissionStage().equalsIgnoreCase("JOINED")) {
+										joinedCount = joinedCount+1;
+									}
+								  
+							    }
+							    
+							     jobsDetailsDTO.setSubmittedCandidatesCount(submittedCandidatesCount);
+								 jobsDetailsDTO.setOfferMadeCount(offerMadeCount);
+								 jobsDetailsDTO.setOfferAcceptedCount(offerAcceptedCount);
+								 jobsDetailsDTO.setJoinedCount(joinedCount);
+								 jobsDetailsDTO.setClientOfferMadeCount(clientOfferMadeCount);
+								 jobsDetailsDTO.setClientOfferAcceptedCount(clientOfferAcceptedCount);
+								 
+								 jobDetailsList.add(jobsDetailsDTO);
+						  }
+						     
+					 }
+					 performanceJobsDetailsDTO.setAppraisalJobDetailsList(jobDetailsList);
+				 }
+				 
+				
+				 
+				 resObj.setObject(performanceJobsDetailsDTO);
 				 resObj.setResponse(Result.SUCCESS.name());
 				 resObj.setResponseMessage(Result.SUCCESS.getValue());
 			    
