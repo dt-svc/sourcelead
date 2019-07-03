@@ -320,6 +320,7 @@ $("#toDate").datepicker();
 								$("#availableAssociatesReporttableList")
 										.append(text);
 							} else {
+								$("#exportOptions").hide();
 								$("#availableAssociatesReporttableList").empty();
 								$("#availableAssociatesReporttableList")
 										.append(
