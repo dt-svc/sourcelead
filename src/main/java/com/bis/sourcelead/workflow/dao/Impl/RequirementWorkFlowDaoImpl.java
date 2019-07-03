@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
@@ -791,5 +792,22 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 		}
 		return workflowStagesList;
 	}
+
+	@Override
+	public List<Requirement> getRequirementListByWorkflowIdAndOrgLocationId(String uuid, Long id) throws Exception {
+		// TODO Auto-generated method stub
+		List<Requirement> requirementList = new ArrayList<Requirement>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Requirement requirement where requirement.workflowId.uuid =:uuid and requirement.orgLocationId.id=:id";
+			requirementList = session.createQuery(query).setString("uuid", uuid).setLong("id", id).list();
+			return requirementList;
+		} catch (Exception e) {
+			logger.error(e + " in getRequirementsByWorkflowIdAndOrgLocationId DAO");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }
 	

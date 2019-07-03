@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -1041,7 +1043,24 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			return null;
 		}
 	}
-	
+
+
+	@Override
+	public TreeMap<Long, String> checkWorkflowInRequirements(String workflowUuid, Long id)  {
+		try {
+		TreeMap<Long, String> requirementMap = new TreeMap<Long, String>();
+		List<Requirement> requirementList = requirementWorkFlowDao.getRequirementListByWorkflowIdAndOrgLocationId(workflowUuid, id);
+		if(requirementList != null && requirementList.size() > 0) {
+			for(Requirement requirement : requirementList) {
+				requirementMap.put(requirement.getId(), requirement.getJobTitle());
+			}
+			return requirementMap;
+		}
+		return null;
+	}catch(Exception e) {
+		e.printStackTrace();
+		return null;
+	}
 	}
 
-
+}
