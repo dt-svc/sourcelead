@@ -255,6 +255,7 @@
 					<div class="clearfix text-center">
 						<h4>Performance Management</h4>
 					</div>
+					</a>
 				</div>		
 				
 				<sec:authorize access="hasRole('ROLE_TICKET_CONFIGURATION')">
