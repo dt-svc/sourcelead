@@ -12,7 +12,9 @@
 function getAppraisalFeedbackDetails(){
 	    
 	    document.getElementById("feedbackWidget").className = 'activeApprisalwidget';
-	    document.getElementById("goalsWidget").removeAttribute("class");
+	    if('${isGolasConfigured}' == 'Y'){
+			  document.getElementById("goalsWidget").removeAttribute("class");
+		  }
 	    document.getElementById("tasksWidget").removeAttribute("class");
 	    $("#performanceAppraisalDiv").empty();  
 	    	

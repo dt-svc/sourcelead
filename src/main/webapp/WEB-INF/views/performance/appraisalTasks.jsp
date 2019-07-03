@@ -8,7 +8,9 @@ function getAppraisalTaskDetails(){
 	
 	 document.getElementById("tasksWidget").className = 'activeApprisalwidget';
 	 document.getElementById("feedbackWidget").className = 'activeApprisalwidget';
-	 document.getElementById("goalsWidget").className = 'activeApprisalwidget';
+	 if('${isGolasConfigured}' == 'Y'){
+		 document.getElementById("goalsWidget").className = 'activeApprisalwidget';
+	  }
 	  
 	var result = "";  
     result = result + '<div class="goalssummar_widget goalssummar_widgetPad clearfix">';
