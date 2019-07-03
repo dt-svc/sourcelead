@@ -2114,6 +2114,10 @@ this.enableResourceManagerAppraisalPeriod = function(){
 			        		 performanceManagement.rolesList(response.object.appraisalRoles);
 			        		 performanceManagement.employeeTypeList(response.object.appraisalEmpType);
 			        		 var percentageMap = new Map();
+			        		 var selfPercentageMap = new Map();
+			        		 var peerPercentageMap = new Map();
+			        		 var resourceMgrPercentageMap = new Map();
+			        		 var reportingMgrPercentageMap = new Map();
 			        		 var selfPercentage = 0;
 			        		 var peerPercentage = 0;
 			        		 var reportingMgrPercentage = 0;
@@ -2135,19 +2139,19 @@ this.enableResourceManagerAppraisalPeriod = function(){
 				        				   	  $('#appraisalCategories').removeAttr('data-validation-optional');
 				        				   	  
 				        				   	  if(v['self'] != 'undefined'){
-				        				   		selfPercentage = v['self'];
+				        				   		selfPercentageMap.set(v['templateId'],v['self']);
 				        				   	  }
 				        				   	  
 				        				   	 if(v['peer'] != 'undefined'){
-				        				   		peerPercentage = v['peer'];
+				        				   		peerPercentageMap.set(v['templateId'],v['peer']);
 					        				   	  }
 				        				   	 
 				        				   	 if(v['resourceManager'] != 'undefined'){
-				        				   		resourceMgrPercentage = v['resourceManager'];
+				        				   		resourceMgrPercentageMap.set(v['templateId'],v['resourceManager']);
 					        				   	  }
 				        				   	 
 				        				   	 if(v['reportingManager'] != 'undefined'){
-				        				   		reportingMgrPercentage = v['reportingManager'];
+				        				   		reportingMgrPercentageMap.set(v['templateId'],v['reportingManager']);
 					        				   	  }
 				        				   	
 				        				  }
@@ -2185,7 +2189,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
 			        		}
 			        		 
 			        		 if(percentageMap.size > 0){
-			        			 performanceManagement.feedbackCategoriesList(response.object.appraisalCategories,percentageMap,selfPercentage,peerPercentage,resourceMgrPercentage,reportingMgrPercentage);
+			        			 performanceManagement.feedbackCategoriesList(response.object.appraisalCategories,percentageMap,selfPercentageMap,peerPercentageMap,resourceMgrPercentageMap,reportingMgrPercentageMap);
 			        		 }else{
 			        			 performanceManagement.feedbackCategoriesList();
 			        		 }
@@ -2327,8 +2331,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
 	    });
   }
   
-  
-  this.feedbackCategoriesList = function(categoriesIds,percentageMap,selfPercentage,peerPercentage,resourceMgrPercentage,reportingMgrPercentage){
+  this.feedbackCategoriesList = function(categoriesIds,percentageMap,selfPercentageMap,peerPercentageMap,resourceMgrPercentageMap,reportingMgrPercentageMap){
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getFeedBackCategoriesListForPerformanceAppraisal", 
@@ -2340,7 +2343,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
 		        		if(categoriesIds != null && categoriesIds != '' && categoriesIds != 'undefined'){
 		        			var categIds = categoriesIds.split(",");
 		        			if (categIds.indexOf(opt.templateId.toString()) > -1) {
-		        				performanceManagement.editSelectedTemplateRows(opt.templateId,opt.templateName,percentageMap.get(opt.templateId),selfPercentage,peerPercentage,resourceMgrPercentage,reportingMgrPercentage);
+		        				performanceManagement.editSelectedTemplateRows(opt.templateId,opt.templateName,percentageMap.get(opt.templateId),selfPercentageMap.get(opt.templateId),peerPercentageMap.get(opt.templateId),resourceMgrPercentageMap.get(opt.templateId),reportingMgrPercentageMap.get(opt.templateId));
 		        				output = output + "<option value='" +opt.templateId+ "' selected>"+opt.templateName+"</option>";
 		        			}else{
 		        				output = output + "<option value='" +opt.templateId+ "'>"+opt.templateName+"</option>";
