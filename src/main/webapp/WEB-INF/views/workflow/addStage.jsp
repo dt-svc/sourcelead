@@ -29,9 +29,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
   
   <c:choose>
   <c:when test = "${not empty stageName}">
-  <div class="clearfix mt col-md-6">
-      <div class="clearfix row">
-        <div class="form-group clearfix">
+      <div class="clearfix mt row">
+        <div class="col-md-6">
           <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-9" id = "StageNameDiv">
             <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
@@ -41,9 +40,16 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
           </div>
         </div>
-      </div>
-      <div class="clearfix row">
-        <div class="form-group clearfix">
+      <div class="col-md-6">
+          <label class="col-md-3">Short Code<span class="text-danger paddingLeft">&nbsp;*</span></label>
+          <div class="col-md-5" id = "ShortCodeDiv">
+            <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
+            value = "<c:out value='${stageShortCode}'/>" data-validation="required validate_length length1-20"
+             onkeydown="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');">
+          </div>
+        </div>
+      <div class="clearfix"></div>
+        <div class="col-md-6 clearfix mt">
           <label class="col-md-3">Description</label>
           <div class="col-md-9">
             <textarea rows="2"  class="form-control" id="stageDescription" placeholder="Description" field-name="Description"
@@ -51,24 +57,12 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           </div>
         </div>
       </div>
-      <div class="form-group clearfix">
-          <label class="col-md-3">Short Code<span class="text-danger paddingLeft">&nbsp;*</span></label>
-          <div class="col-md-9" id = "ShortCodeDiv">
-            <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
-            value = "<c:out value='${stageShortCode}'/>"
-             onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
-			onblur= "requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
-            data-validation="required validate_length length1-50"/>
-            
-          </div>
-        </div>
-    </div>
-    
+      
 		</c:when>
 							<c:otherwise>
-							<div class="clearfix mt col-md-6">
-      <div class="clearfix row">
-        <div class="form-group clearfix">
+	<div class="clearfix mt row">
+        
+        <div class="col-md-6">
           <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-9" id = "StageNameDiv">
             <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
@@ -78,26 +72,24 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
           </div>
         </div>
-      </div>
-      <div class="clearfix row">
-        <div class="form-group clearfix">
+
+		<div class="col-md-6">
+          <label class="col-md-3">Short Code<span class="text-danger paddingLeft">&nbsp;*</span></label>
+          <div class="col-md-5" id = "ShortCodeDiv">
+            <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
+            onkeydown="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
+            data-validation="required validate_length length1-20">
+          </div>
+        </div>
+      <div class="clearfix"></div>
+      <div class="col-md-6 clearfix mt">
           <label class="col-md-3">Description</label>
           <div class="col-md-9">
-            <textarea rows="2"  class="form-control" id="stageDescription" placeholder="Description" field-name="Description"
-								data-validation="validate_length length1-500" data-validation-optional="true"></textarea>
+            <textarea rows="2"  class="form-control" id="stageDescription" placeholder="Description" field-name="Description" data-validation="validate_length length1-500" data-validation-optional="true"></textarea>
           </div>
-        </div>
       </div>
-      <div class="form-group clearfix">
-          <label class="col-md-3">Short Code<span class="text-danger paddingLeft">&nbsp;*</span></label>
-          <div class="col-md-9" id = "ShortCodeDiv">
-            <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
-            onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
-			onblur= "requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
-            data-validation="required validate_length length1-50"/>
-            
-          </div>
-        </div>
+      
+        
     </div>
 							
 							</c:otherwise>
