@@ -1687,8 +1687,6 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
         String toDate = dateFormat.format(availableAssociatesDTO.getToDate());
         int noOfHours =((orgLocations.getAverageWorkingHours())*(orgLocations.getWorkingDaysPerWeek()));
         String query = "select pm.id as id,"
-                /*+ " pm.employee.employeeId as empId,"
-                + " pm.employee.user.firstName as empName,"*/
                 + " pm.employee.id as empId,"
                 + " concat(pm.projectMemberCandidteId.firstName,' ',(case when pm.projectMemberCandidteId.lastName is null then '' else pm.projectMemberCandidteId.lastName end)) as empName,"
                 + " pm.projects.projectName as projectName,"
@@ -1700,24 +1698,31 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
                 + "  (( pm.percentageOfWork)/100) * " + noOfHours + " as hoursperWeek,"
                 + "  pm.masterCandidateId.id as masterCandidateId"
                 + " from ProjectMembers pm "
-//                + " where pm.projects.orgLocationsId=:orgLocations"
+                + " where pm.projectClientsId.orgLocationsId =:orgLocations"
                 + "";
  
-            query += " where '" + fromDate + "' >= (case when pm.projectEndDate is null and pm.projects.endDate is null"
+            query += " and '" + fromDate + "' <= (case when pm.projectEndDate is null and pm.projects.endDate is null"
                     + "        then pm.projectAssignedDate"
                             + " else (case when pm.projectEndDate is null "
                             + "            then pm.projectAssignedDate "
                             + "            else pm.projectAssignedDate end) "
                     + "end)";
             
-            query += " and '" + toDate + "' <= (case when pm.projectEndDate is null and pm.projects.endDate is null"
-                    + "        then '" + toDate + "' "
+            query += " and '" + toDate + "' >= (case when pm.projectEndDate is null and pm.projects.endDate is null"
+                    + "        then pm.projectAssignedDate"
                             + " else (case when pm.projectEndDate is null "
-                            + "            then (case when pm.projects.endDate is null"
-                            + "                    then '" + toDate + "'"
-                            + "                    else pm.projectEndDate end)"
-                            + "            else pm.projectEndDate end) "
+                            + "            then pm.projectAssignedDate "
+                            + "            else pm.projectAssignedDate end) "
                     + "end)";
+            
+//            query += " and '" + toDate + "' <= (case when pm.projectEndDate is null and pm.projects.endDate is null"
+//                    + "        then '" + toDate + "' "
+//                            + " else (case when pm.projectEndDate is null "
+//                            + "            then (case when pm.projects.endDate is null"
+//                            + "                    then '" + toDate + "'"
+//                            + "                    else pm.projectEndDate end)"
+//                            + "            else pm.projectEndDate end) "
+//                    + "end)";
 
         if (availableAssociatesDTO.getProjectsIds() != null && !availableAssociatesDTO.getProjectsIds().isEmpty()) {
             String projectIds = "";
@@ -1736,7 +1741,9 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
             
         }
         Query queryObj = session.createQuery(query);
-     return queryObj.list();
+        queryObj.setLong("orgLocations",orgLocations.getId());
+        List<Object[]> queryObjList = queryObj.list();
+     return queryObjList;
     } catch (Exception e) {
         e.printStackTrace();
     }
