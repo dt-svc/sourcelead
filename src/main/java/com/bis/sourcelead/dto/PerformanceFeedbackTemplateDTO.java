@@ -20,6 +20,16 @@ public class PerformanceFeedbackTemplateDTO implements Serializable{
 	private String submittedJsonString;
 	
 	private String submittedJsonStringValues;
+	
+	private String categoriesJsonString;
+	
+	private String categoryScore;
+	
+	private String feedbackTemplateId;
+	
+	private String categoriesTotalScore;
+	
+	
 
 	public String getTemplateName() {
 		return templateName;
@@ -75,6 +85,38 @@ public class PerformanceFeedbackTemplateDTO implements Serializable{
 
 	public void setSubmittedJsonStringValues(String submittedJsonStringValues) {
 		this.submittedJsonStringValues = submittedJsonStringValues;
+	}
+
+	public String getCategoriesJsonString() {
+		return categoriesJsonString;
+	}
+
+	public void setCategoriesJsonString(String categoriesJsonString) {
+		this.categoriesJsonString = categoriesJsonString;
+	}
+
+	public String getCategoryScore() {
+		return categoryScore;
+	}
+
+	public void setCategoryScore(String categoryScore) {
+		this.categoryScore = categoryScore;
+	}
+
+	public String getFeedbackTemplateId() {
+		return feedbackTemplateId;
+	}
+
+	public void setFeedbackTemplateId(String feedbackTemplateId) {
+		this.feedbackTemplateId = feedbackTemplateId;
+	}
+
+	public String getCategoriesTotalScore() {
+		return categoriesTotalScore;
+	}
+
+	public void setCategoriesTotalScore(String categoriesTotalScore) {
+		this.categoriesTotalScore = categoriesTotalScore;
 	}
 	
 
