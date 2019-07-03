@@ -124,6 +124,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				requirementWorkFlowStages.setStatus(requirementDefaultWorkFlowStages.get(i).getStatus());
 				requirementWorkFlowStages.setCommentRequired(Constants.YES);
 				requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
+				requirementWorkFlowStages.setStageShortCode(requirementDefaultWorkFlowStages.get(i).getStageShortCode());
 				requirementWorkFlowStages.setCreatedDate(new Date());
 				requirementWorkFlowStages.setCreatedBy(user);
 				requirementWorkFlowStages.setUpdatedDate(new Date());
@@ -781,6 +782,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStages.setCommentRequired(workFlowStages.get(i).getCommentRequired());
 			requirementWorkFlowStages.setRequiredStatsList(workFlowStages.get(i).getRequiredStatsList());
 			requirementWorkFlowStages.setChosenColumns(workFlowStages.get(i).getChosenColumns());
+			requirementWorkFlowStages.setStageShortCode(workFlowStages.get(i).getStageShortCode());
 			requirementWorkFlowStages.setCreatedDate(new Date());
 			requirementWorkFlowStages.setCreatedBy(user);
 			requirementWorkFlowStages.setUpdatedDate(new Date());

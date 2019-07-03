@@ -32,6 +32,9 @@ import com.bis.sourcelead.entity.User;
 	@Column(name = "DESCRIPTION",  columnDefinition = "LONGTEXT default NULL")
 	private String  description;
 	
+	@Column(name = "STAGE_SHORT_CODE")
+	private String stageShortCode;
+	
 	@Column(name = "SEQ_ORDER")
 	private Integer seqOrder;
 	
@@ -77,6 +80,14 @@ import com.bis.sourcelead.entity.User;
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public String getStageShortCode() {
+		return stageShortCode;
+	}
+
+	public void setStageShortCode(String stageShortCode) {
+		this.stageShortCode = stageShortCode;
 	}
 
 	public Integer getSeqOrder() {
