@@ -127,6 +127,12 @@ function editCandidate(candidateId){
 	            			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
 	            			 		city = json.city;            			 		
 	            			 	}
+	            			 	
+	            			 	var otherNoticePeriod = '';
+	            			 	if(json.otherNoticePeriod != null && json.otherNoticePeriod != '' && json.otherNoticePeriod != 'undefined'){
+	            			 		otherNoticePeriod = json.otherNoticePeriod;            			 		
+	            			 	}
+	            			 	
 								var result ='';
 								result = result + '		    <div class="edit-details col-md-8 edit-candaite canprofile-popright"> <i class="fa fa-close close-div" onclick="cancelEdit();"></i>';
 								result  = result + '         <form id="candidateProfileEdit_form" name="candidateProfileEdit_form" method="post">';
@@ -225,15 +231,20 @@ function editCandidate(candidateId){
 								result = result + '<div class="clearfix mb10">';
 								
 								result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-								result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
+								result = result + '<select class="form-control" id="noticePeriodEdit" name="noticePeriod" field-name="Notice Period" onchange="updateOtherNoticePeriod();">';
 								result = result + '<option value="">--Select Notice Period--</option>';
 								result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
 								result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
 								result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
 								result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'>2 Months</option>';
 								result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'>3 Months</option>';
+								result = result + '<option  '+(json.noticePeriod == "Other" ? "selected" : '') +'>Other</option>';
 								result = result + ' </select>';
 								result = result + ' </div>';
+								
+								result = result + '<div class="col-md-6 noticePeriodUpdateDiv" id="noticePeriodUpdateDiv" style="display:none">';
+								result = result + '<input type="text" class="form-control input-sm" name="otherNoticePeriod"  id="otherNoticePeriodEdit" value="'+otherNoticePeriod+'" placeholder=" Notice Period Other" field-name="Other Notice Period" data-validation="validate_Space validate_length length1-150" data-validation-optional="true">';
+								result = result + '</div>';
 								
 								result = result + '</div>';
 
@@ -430,6 +441,9 @@ function editCandidate(candidateId){
 								initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude');
 								getVendorsByOrgLocation();
 								employementType();
+								if(json.noticePeriod == "Other"){
+									$("#noticePeriodUpdateDiv").show();
+							      }
 								$(".edit-details").toggleClass("edit-details-active");
 								$(".collapse-div").removeClass("edit-details-active");
 								
@@ -1930,6 +1944,23 @@ function employementType(){
          
     }); 
  }  
+</script>
+
+<!-- Notice Period Type Other Script written By Prasad K-->
+
+<script>
+function updateOtherNoticePeriod(){
+	 var noticePeriod = $('#noticePeriodEdit').val(); 
+	if(noticePeriod == 'Other' &&  noticePeriod != '' && noticePeriod !='undefined'){
+		  document.getElementById("noticePeriodUpdateDiv").style.display="block";
+		  $('#otherNoticePeriodEdit').removeAttr('data-validation-optional');
+          $("#otherNoticePeriodEdit").attr("data-validation", "validate_Space required validate_length length1-150");
+	}else{
+		   document.getElementById("noticePeriodUpdateDiv").style.display="none";
+		   $("#otherNoticePeriodEdit").attr("data-validation-optional", "true");
+		   $("#noticePeriodUpdateDiv").find('p.jquery_form_error_message').remove();
+	} 
+}
 </script>
  
  <!--  Type Script View/edit script end here -->
