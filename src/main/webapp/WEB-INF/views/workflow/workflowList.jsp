@@ -19,6 +19,7 @@ $(document).ready(function() {
       Application Workflow
       </div>
     </section>
+    <div id="popUp"></div> 
     <sec:authorize access="hasRole('ROLE_ADD_WORKFLOW')"> 
     <div class="project_wrap clearfix">
       <div class="timesheet_out" id="payrollRegister" style="display: block;">

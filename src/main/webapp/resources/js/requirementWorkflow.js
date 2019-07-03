@@ -277,7 +277,7 @@ function RequirementWorkflow(){
 	 	  		result = result +"<li><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
 			 }
 	  		 if(roleActionsArray.indexOf("ROLE_DELETE_WORKFLOW")  > -1){
-	 	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick='requirementWorkflow.deleteWorkflowEntry(\""+uuid+"\", \""+workFlowName+"\")'></i></li>";
+	  			result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick='requirementWorkflow.checkWorkflowInRequirements(\""+uuid+"\", \""+workFlowName+"\")'></i></li>";
 				 }
 	  		 if(roleActionsArray.indexOf("ROLE_ADD_WORKFLOW")  > -1){
 	 			result = result +"<li><i onclick='requirementWorkflow.cloneWorkFlow(\""+uuid+"\",\""+workFlowName+"\",\""+description+"\");'class='fa fa fa-clone cursorPointer text-primary' title='Clone'></i></li>";
@@ -321,7 +321,7 @@ function RequirementWorkflow(){
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 			result = result +"	<b href='javascript:void(0)'><input type='button' value='Ok' onclick='requirementWorkflow.removeWorkFlowEntry(\""+workflowuuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='requirementWorkflow.cancel();'></b>";
 			result = result +"	</div>";
-			$("#popUp").append(result);
+			$("#popUp").empty().append(result);
 			$("#remove_user_pop").slideDown(200);
 			$(".project_inn_mask").fadeIn(200);
 		}
@@ -1068,5 +1068,58 @@ function RequirementWorkflow(){
 						 })
 						 }
 				 }
+				 
+				 this.checkWorkflowInRequirements = function(workflowUuid, workflowName){
+					 var jobId = null; 
+					 var jobTitle = null;
+					 var jobsArray = new Array();
+					 var allJobsArray = new Array();
+					 var txtMessage = "Cannot Delete "+workflowName+", mapped to the following jobs.";
+					 $.ajax({
+						 type : "GET",
+						 url : sourceleadUrl + "/checkWorkflowInRequirements?workflowUuid="+workflowUuid,
+						 success : function(dataList){
+							 if(dataList != null){
+								 var obj = JSON.stringify(dataList);
+								 var requirementList = obj.replace(/[{}]/g, "").split(',');
+								 for(var j=0;j< requirementList.length; j++){
+										var n = requirementList[j].indexOf(':');
+										jobId = requirementList[j].slice(1, n-1);
+										jobTitle = requirementList[j].slice(n+2, requirementList[j].length-1);
+										if(j<5){
+											jobsArray.push(jobTitle);
+										}
+										else{
+											allJobsArray.push(" "+jobTitle);
+										}
+									}
+								$(".project_inn_mask").remove();
+								var result = "";
+								result = result +"<div class='project_inn_mask'></div>";
+								result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+								result = result +"<div class='clearfix'><input value='"+txtMessage+"' class='u_can_color width100percnt' type='button'></div>";
+								result = result+"<div>"	
+								for(var i=0; i< jobsArray.length; i++){
+									result = result + "&nbsp"+jobsArray[i]+", ";
+								}
+								result = result + '<span class="text-success" title="'+allJobsArray+'">more..</span>';
+								result = result+"</div>"
+								result = result +"<div class='clearfix'><input id='confirm-id' class='width100percnt' type='button'  value='Ok' onClick='requirementWorkflow.cancelWorkflowPopup();'></div>";
+								result = result +"</div>";
+								$("#popUp").empty().append(result);
+								$("#remove_user_pop").slideDown(200);
+								$(".project_inn_mask").fadeIn(200);
+						 }
+							 else{
+								 requirementWorkflow.deleteWorkflowEntry(workflowUuid, workflowName);
+							 }
+						 }
+					 })
+				 }
+				 
+				 this.cancelWorkflowPopup = function(){
+						$("#remove_user_pop").fadeOut(200);
+						$(".project_inn_mask").fadeOut(200);
+					}
 				 
 }

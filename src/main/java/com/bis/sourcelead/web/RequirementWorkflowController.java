@@ -3,6 +3,7 @@ package com.bis.sourcelead.web;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -726,6 +727,15 @@ public class RequirementWorkflowController {
 			response.setResponse(flag);
 			logger.debug("after validateStageShortCode for "+orgLocationId+" orgLocation");
 			return response;
+			
+		}
+		
+		@RequestMapping(value = "/checkWorkflowInRequirements")
+		@ResponseBody
+		public TreeMap<Long, String> checkWorkflowInRequirements(@RequestParam(value = "workflowUuid", required = true)String workflowUuid,
+				HttpServletRequest request)throws Exception {
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			return requirementWorkFlowService.checkWorkflowInRequirements(workflowUuid, orgLocationId);
 			
 		}
 }
