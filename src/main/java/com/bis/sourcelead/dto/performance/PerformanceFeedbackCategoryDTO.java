@@ -27,6 +27,8 @@ public class PerformanceFeedbackCategoryDTO implements Serializable{
 	
 	private String feedbackTemplateUUID;
 	
+	private Integer categoryScore;
+	
 	
 	public List<FileInfo> getUploadedFileInfo() {
 		return uploadedFileInfo;
@@ -98,6 +100,14 @@ public class PerformanceFeedbackCategoryDTO implements Serializable{
 
 	public void setFeedbackTemplateUUID(String feedbackTemplateUUID) {
 		this.feedbackTemplateUUID = feedbackTemplateUUID;
+	}
+
+	public Integer getCategoryScore() {
+		return categoryScore;
+	}
+
+	public void setCategoryScore(Integer categoryScore) {
+		this.categoryScore = categoryScore;
 	}
 	
 	

@@ -57,6 +57,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "FEEDBACK_JSON_STRING_VALUES", columnDefinition = "LONGTEXT default NULL")
 	private String feedbackJsonStringValues;
 	
+	@Column(name = "SCORE ")
+	private Integer score;
+	
 	@Column(name = "STATUS ")
 	private Integer status;
 	
@@ -139,6 +142,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setFeedbackJsonStringValues(String feedbackJsonStringValues) {
 		this.feedbackJsonStringValues = feedbackJsonStringValues;
+	}
+
+	public Integer getScore() {
+		return score;
+	}
+
+	public void setScore(Integer score) {
+		this.score = score;
 	}
 
 	public Integer getStatus() {

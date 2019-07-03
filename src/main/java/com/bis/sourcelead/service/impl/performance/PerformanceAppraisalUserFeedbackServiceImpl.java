@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalAssignedAssociatesDao;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalUserFeedbackDao;
+import com.bis.sourcelead.dao.performance.PerformanceFeedbackDao;
 import com.bis.sourcelead.dao.performance.PerformanceFeedbackTemplateDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.performance.PerformanceFeedbackCategoryDTO;
@@ -16,6 +17,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalAssignedAssociates;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalUserFeedback;
+import com.bis.sourcelead.entity.performance.PerformanceFeedback;
 import com.bis.sourcelead.entity.performance.PerformanceFeedbackTemplate;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalUserFeedbackService;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -32,6 +34,9 @@ public class PerformanceAppraisalUserFeedbackServiceImpl implements PerformanceA
 	
 	@Autowired
 	PerformanceFeedbackTemplateDao performanceFeedbackTemplateDao;
+	
+	@Autowired
+	PerformanceFeedbackDao performanceFeedbackDao;
 	
 	@Override
 	public void storePerformanceAppraisalUserFeedback(PerformanceFeedbackCategoryDTO performanceFeedbackCategoryDTO)
@@ -67,7 +72,7 @@ public class PerformanceAppraisalUserFeedbackServiceImpl implements PerformanceA
 		
 		performanceAppraisalUserFeedback.setFeedbackJsonString(feedbackTemplae.getJsonString());
 		performanceAppraisalUserFeedback.setFeedbackJsonStringValues(performanceFeedbackCategoryDTO.getJsonDataValues());
-		
+		performanceAppraisalUserFeedback.setScore(performanceFeedbackCategoryDTO.getCategoryScore());
 		
 		if(performanceFeedbackCategoryDTO.getUploadedFileInfo() != null && !performanceFeedbackCategoryDTO.getUploadedFileInfo().isEmpty()) {
 			performanceFeedbackCategoryDTO.setStaticPath(performanceFeedbackCategoryDTO.getStaticPath());
@@ -80,6 +85,29 @@ public class PerformanceAppraisalUserFeedbackServiceImpl implements PerformanceA
 		}
 		
 		performanceAppraisalUserFeedbackDao.savePerformanceAppraisalUserFeedback(performanceAppraisalUserFeedback);	
+		
+		PerformanceFeedback performanceFeedback = null;
+		performanceFeedback = performanceFeedbackDao.getPerformanceFeedbackByAssignedUserId(performanceFeedbackCategoryDTO.getUserId(), assignedAssociates.getId());
+		if(performanceFeedback == null) {
+			performanceFeedback = new PerformanceFeedback();
+			performanceFeedback.setUserId(user);
+			performanceFeedback.setOrgLocationId(orgLocations);
+			performanceFeedback.setOrgId(org);
+			performanceFeedback.setCreatedBy(user);
+			performanceFeedback.setCreatedDate(new Date());
+			performanceFeedback.setAppraisalAssignedId(assignedAssociates);
+			performanceFeedback.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			performanceFeedback.setStatus(Constants.RECORD_ACTIVE);
+			performanceFeedback.setFeedbackCategoriesScore(performanceFeedbackCategoryDTO.getCategoryScore());
+			performanceFeedback.setSubmissionStage("Draft");
+		}else {
+			performanceFeedback.setUpdatedBy(user);
+			performanceFeedback.setUpdatedDate(new Date());
+			Integer categoryScore = performanceAppraisalUserFeedbackDao.getFeedbackCategoriesScore(performanceFeedbackCategoryDTO.getUserId(), assignedAssociates.getId());
+			performanceFeedback.setFeedbackCategoriesScore(categoryScore);
+		}
+		
+		performanceFeedbackDao.savePerformanceFeedback(performanceFeedback);
 		
 	}
 

@@ -453,6 +453,19 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		List<PerformanceFeedbackTemplateDTO> feedbackTemplateDTOList = null;
 		Session session = this.sessionFactory.getCurrentSession();
+		PerformanceFeedbackTemplateDTO performanceFeedbackTemplateDTO = new PerformanceFeedbackTemplateDTO();
+		
+		
+		String assignedCategoriesQuery =  "SELECT "
+				+" TEMPLATE.CATEGORIES_JSON_STRING "           
+				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+				+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE"
+				+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND ASSIGNED.UUID = :assignedUUID ";
+		
+		Query assignedCategoriesQueryObj = session.createSQLQuery(assignedCategoriesQuery);
+		assignedCategoriesQueryObj.setString("assignedUUID", assignedUUID);
+		String categoriesJsonString = (String) assignedCategoriesQueryObj.uniqueResult();
+		
 		
 		String assignedQuery =  "SELECT "
 				+" ASSIGNED.ID "           
@@ -475,20 +488,31 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		String query =  "SELECT "
 				+" TEMPLATE.JSON_STRING AS jsonString, "
+				+" TEMPLATE.ID AS feedbackTemplateId, "
 				+ "(SELECT FEEDBACK.FEEDBACK_JSON_STRING FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId AND FEEDBACK.FEEDBACK_TEMPLATE_ID = :feedbackTemplateId  ) AS submittedJsonString, "
-				+ "(SELECT FEEDBACK.FEEDBACK_JSON_STRING_VALUES FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId AND FEEDBACK.FEEDBACK_TEMPLATE_ID = :feedbackTemplateId ) AS submittedJsonStringValues "
+				+ "(SELECT FEEDBACK.FEEDBACK_JSON_STRING_VALUES FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId AND FEEDBACK.FEEDBACK_TEMPLATE_ID = :feedbackTemplateId ) AS submittedJsonStringValues, "
+				+ "(SELECT FEEDBACK.SCORE FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId AND FEEDBACK.FEEDBACK_TEMPLATE_ID = :feedbackTemplateId ) AS categoryScore, "
+				+ "(SELECT FEEDBACK.FEEDBACK_CATEGORIES_SCORE FROM PERFORMANCE_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId ) AS categoriesTotalScore "
 				+" FROM PERFORMANCE_FEEDBACK_TEMPLATE TEMPLATE "
 				+" WHERE TEMPLATE.UUID = :templateUUID ";
 		
-		Query feedbackQueryObj = session.createSQLQuery(query);
+		Query feedbackQueryObj = session.createSQLQuery(query)
+				.addScalar("jsonString", StandardBasicTypes.STRING)
+				.addScalar("feedbackTemplateId", StandardBasicTypes.STRING)
+				.addScalar("submittedJsonString", StandardBasicTypes.STRING)
+				.addScalar("submittedJsonStringValues", StandardBasicTypes.STRING)
+				.addScalar("categoryScore", StandardBasicTypes.STRING)
+				.addScalar("categoriesTotalScore", StandardBasicTypes.STRING);
 		feedbackQueryObj.setString("templateUUID", templateUUID);
 		feedbackQueryObj.setLong("userId", userId);
 		feedbackQueryObj.setBigInteger("assignedId", assignedId);
 		feedbackQueryObj.setBigInteger("feedbackTemplateId", feedbackTemplateId);
 		feedbackQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackTemplateDTO.class));
 		feedbackTemplateDTOList = feedbackQueryObj.list();
+		performanceFeedbackTemplateDTO = feedbackTemplateDTOList.get(0);
+		performanceFeedbackTemplateDTO.setCategoriesJsonString(categoriesJsonString);
 		
-		return feedbackTemplateDTOList.get(0);
+		return performanceFeedbackTemplateDTO;
 	}
 
 	@Override

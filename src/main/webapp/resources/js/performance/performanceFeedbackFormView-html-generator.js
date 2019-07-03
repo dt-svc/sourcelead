@@ -365,6 +365,44 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
                  
              }
              
+             
+             
+             
+             if(result.categoriesJsonString != null 
+    				 && result.categoriesJsonString != '' 
+    					 && result.categoriesJsonString != 'undefined'){
+    			var data = eval(result.categoriesJsonString);
+        		 if (data) {
+        			  $.each( data, function( k, v ) {
+        				  if(v['type'] == "feedbackTemplate"){
+        					if(v['templateId'] == result.feedbackTemplateId){
+        						if(v['self'] != 'undefined'){
+            				   	  var selfPercentage = v['self'];
+            				   	  var options = '<option value="">-Select Score-</option>';
+            				   	  for(var i=0; i<=selfPercentage; i++){
+            				   		var selected = '';
+            				   		if(result.categoryScore != null){
+            				   			if(i == result.categoryScore){
+            				   				selected = "selected";
+            				   			}
+            				   		 }
+            				   		options = options+'<option value="'+i+'" '+selected+'>'+i+'</option>';
+            				   	  }
+        				   	    }
+        						    $("#categoryScore").empty(); 
+        						    $("#categoryScore").append(options);
+        						    
+        						    if(result.categoriesTotalScore != null){
+        						    	  $("#totalCategoryScore").val(result.categoriesTotalScore); 
+        						    }
+        					}
+        				  }
+        				 
+        			  });
+        		 }
+    		}
+             
+             
              var d = new Date();
              var year = d.getFullYear() - 10;
              d.setFullYear(year);

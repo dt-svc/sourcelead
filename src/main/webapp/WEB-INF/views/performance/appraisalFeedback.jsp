@@ -45,9 +45,9 @@ function getAppraisalFeedbackDetails(){
 			        	    result = result + '<div class="col-md-2 col-md-offset-10">';
 			        	    
 			        	   
-			        	   /*  result = result + '<div class="row">';
-			        	    result = result + '<label class="col-md-3 mt10">Score</label> <div class="col-md-9"><input type="text" class="form-control"></div>';
-			        	    result = result + '</div>'; */
+			        	    result = result + '<div class="row">';
+			        	    result = result + '<label class="col-md-3 mt10">Score</label> <div class="col-md-9"><input type="text" id="totalCategoryScore" value="0" disabled class="form-control"></div>';
+			        	    result = result + '</div>'; 
 			        	    result = result + '</div>';
 			        	    result = result + '<div class="clearfix"></div>';
 			        	    result = result + '</div>';
@@ -75,7 +75,7 @@ function getAppraisalFeedbackDetails(){
 			        	    
 			        	    result = result + '<form id="addFeedbackTemplate_form" name="addFeedbackTemplate_form" enctype="multipart/form-data" method="post">';
 			        	    result = result + '<div class="newRolLRight">';
-			        	    result = result + '<div class="clearfix" id="tab-content">';
+			        	    result = result + '<div class="clearfix bor_top" id="tab-content">';
 			        	    result = result + '<div id="feedBackCategoryTemplateDiv">';
 			                result = result + '</div>';
 			                result = result + '</div>';
@@ -135,7 +135,13 @@ function getFeedbackCategoryForm(feedbackTemplateUUID){
 	result = result + '<span class="appraQueInn">';
 	result = result + '<div class="project_wrap_table">';
     
-	result = result + '<h4 class="clearfix" id="viewTemplateName"></h4>';
+	result = result + '<h4 class="clearfix mb10" id="viewTemplateName"></h4>';
+    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
+    result = result + '<label>Category Score</label>';
+    result = result + '<select class="form-control pull-left" id="categoryScore" name="categoryScore"  field-name="Category Score" data-validation="required" >';
+    result = result + '<option value="">-Select Score-</option>';
+    result = result + '</select>';
+    result = result + '</div></div>';
               
 	result = result + '<div id="sjfb-fields" class="viewTemplate">';
       

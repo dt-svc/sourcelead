@@ -1,9 +1,11 @@
 package com.bis.sourcelead.dao.impl.performance;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -15,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalUserFeedbackDao;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalUserFeedback;
-import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -82,5 +83,22 @@ public class PerformanceAppraisalUserFeedbackDaoImpl implements PerformanceAppra
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public Integer getFeedbackCategoriesScore(Long userId, Long appraisalAssignedId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String categoryCountQuery =  "SELECT "
+				+" SUM(FEEDBACK.SCORE) " 
+				+" FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK "
+				+" WHERE FEEDBACK.APPRAISAL_ASSIGNED_ID = :appraisalAssignedId "
+				+" AND FEEDBACK.USER_ID = :userId ";
+		
+		Query categoryCountQueryObj = session.createSQLQuery(categoryCountQuery);
+		categoryCountQueryObj.setLong("userId", userId);
+		categoryCountQueryObj.setLong("appraisalAssignedId", appraisalAssignedId);
+		BigDecimal categoriesTotalCount = (BigDecimal) categoryCountQueryObj.uniqueResult();
+		
+		return categoriesTotalCount.intValue();
 	}
 }
