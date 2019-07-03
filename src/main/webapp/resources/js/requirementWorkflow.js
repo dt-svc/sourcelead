@@ -588,8 +588,10 @@ function RequirementWorkflow(){
 						chosenColumns.push($(this).val());
 					});
 					
-					var chosenColumnJson = JSON.stringify(chosenColumns);
+					//var chosenColumnJson = JSON.stringify(chosenColumns.join()).replace(/"/g, '');
 					
+				     var choosenCloumnString = encodeURI(chosenColumns.join().replace(/"/g, '')); // encodeURI function used to escape special characters in header string.
+				     
 					 var previousStageUuid = $("#previousStageUuid").val();
 					
 					
@@ -620,7 +622,7 @@ function RequirementWorkflow(){
 						 data : formData,
 						url : sourceleadUrl + "/saveRequirementWorkflowStage?description="+description+"&uuid="+stageUuid+
 								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+
-								"&lastStage="+lastStage+"&commentRequired="+commentReq+"&requiredStatsList="+requiredStatsList+"&chosenColumnJson="+chosenColumnJson,
+								"&lastStage="+lastStage+"&commentRequired="+commentReq+"&requiredStatsList="+requiredStatsList+"&chosenColumnStr="+choosenCloumnString,
 						success : function(dataList) {
 							if (dataList.response === "AWKWARD") {
 				      	    location.href = "/errorPage";
