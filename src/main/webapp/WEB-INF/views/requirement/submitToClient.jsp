@@ -362,10 +362,12 @@ function addEmailtemplate(requirementId){
 			 var selectedRatePer =  $(elem).attr("subrateper");
 			 selectedShortlistsRatePer[index] = selectedRatePer;
 			 
-			 if(selectedRate != '' && selectedRate != null && selectedRate != 'undefined' && (selectedRatePer == '' || selectedRatePer == null || selectedRatePer == 'undefined')){
+			 if((selectedRate == '' || selectedRate == null || selectedRate == 'undefined') || (selectedRatePer == '' || selectedRatePer == null || selectedRatePer == 'undefined')){
 				 isCountinue = false;
-			 }else if((selectedRate == '' || selectedRate == null || selectedRate == 'undefined') && selectedRatePer != '' && selectedRatePer != null && selectedRatePer != 'undefined'){
-				 isCountinue = false;
+			 }else if((selectedRate != '' || selectedRate != null || selectedRate != 'undefined') && (selectedRatePer == '' || selectedRatePer == null || selectedRatePer == 'undefined')){
+				 isCountinue = false; 
+			 }else if((selectedRatePer != '' || selectedRatePer != null || selectedRatePer != 'undefined') && (selectedRate == '' || selectedRate == null || selectedRate == 'undefined')){
+				 isCountinue = false; 
 			 }
 		 });
 		 
