@@ -523,9 +523,14 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		String mysqlDateFormat = "\"%Y-%m-%d\"";
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = true;
+		PerformanceGoalsDTO goalsDTO = null;
+		
+		try {
 		String query =  "SELECT "
 				+" ASSIGNED.ORG_LOCATION_ID AS orgLocationId, "  
 				+" ASSIGNED.USER_ID AS appraisalAssignedUserId, " 
+				+" ASSIGNED.ID AS appraisalAssignedId, " 
+				+" TEMPLATE.CATEGORIES_JSON_STRING AS categoriesJsonString, " 
 				+" DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+mysqlDateFormat+") AS appraisalStartDate, "
 				+" DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+mysqlDateFormat+") AS appraisalEndDate "
 				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
@@ -538,6 +543,17 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalTemplateDetailsDTO.class));
 		templateDetailsList = queryObj.list();
 		PerformanceAppraisalTemplateDetailsDTO templateDTO = templateDetailsList.get(0);
+		
+		
+		String goalsScoreQuery =  "SELECT "
+				+" FEEDBACK.GOALS_SCORE "           
+				+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
+				+" WHERE FEEDBACK.APPRAISAL_ASSIGNED_ID = :appraisalAssignedId AND FEEDBACK.USER_ID = :userId ";
+		
+		Query goalsScoreQueryObj = session.createSQLQuery(goalsScoreQuery);
+		goalsScoreQueryObj.setBigInteger("appraisalAssignedId", templateDTO.getAppraisalAssignedId());
+		goalsScoreQueryObj.setBigInteger("userId", templateDTO.getAppraisalAssignedUserId());
+		Integer goalsScore = (Integer) goalsScoreQueryObj.uniqueResult();
 		
 		
 		String goalsQuery = "SELECT " + 
@@ -554,7 +570,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 				"            GOALS.END_DATE," + 
 				"            GOALS.PERCENTAGE_DONE" + 
 				"    FROM" + 
-				"       PERFORMANCE_GOALS GOALS, performance_goals_assign_to ASSIGN" + 
+				"       PERFORMANCE_GOALS GOALS, PERFORMANCE_GOALS_ASSIGN_TO ASSIGN " + 
 				"    WHERE" + 
 				"        ASSIGN.GOAL_ID = GOALS.ID" + 
 				"            AND DATEDIFF('"+templateDTO.getAppraisalStartDate()+"', GOALS.START_DATE) <= 0" + 
@@ -573,8 +589,12 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		goalsQueryObj.setBigInteger("orgLocationId", templateDTO.getOrgLocationId());
 		goalsQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceGoalsDTO.class));
 		goalDetailsList = goalsQueryObj.list();
-		PerformanceGoalsDTO goalsDTO = goalDetailsList.get(0);
-		
+		goalsDTO = goalDetailsList.get(0);
+		goalsDTO.setCategoriesJsonString(templateDTO.getCategoriesJsonString());
+		goalsDTO.setGoalsScore(goalsScore);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		return goalsDTO;
 	}
 

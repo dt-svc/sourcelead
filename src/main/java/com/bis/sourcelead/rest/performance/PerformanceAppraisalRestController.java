@@ -27,6 +27,7 @@ import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceFeedbackCategoryDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGeneralTasksDetailsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceJobsDetailsDTO;
 import com.bis.sourcelead.entity.Org;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalUserFeedbackService;
+import com.bis.sourcelead.service.performance.PerformanceGoalsAssignToService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -45,6 +47,9 @@ public class PerformanceAppraisalRestController {
 	
 	@Autowired
 	PerformanceAppraisalUserFeedbackService performanceAppraisalUserFeedbackService;
+	
+	@Autowired
+	PerformanceGoalsAssignToService performanceGoalsAssignToService;
 	
 	@Value("${static.path}")
 	private String staticPath;
@@ -377,5 +382,25 @@ public class PerformanceAppraisalRestController {
 	    	return resObj;
 	    }
 	    
-	
+	    @RequestMapping(value = { "/saveAssignedPerformanceGoalsScore", "/rest/saveAssignedPerformanceGoalsScore" }, method = RequestMethod.POST)
+		public @ResponseBody Response<PerformanceGoalsAssignToDTO> saveAssignedPerformanceGoalsScore(PerformanceGoalsAssignToDTO performanceGoalsAssignToDTO,HttpServletRequest request) throws Exception {
+	    	 Response<PerformanceGoalsAssignToDTO> resObj = new  Response<PerformanceGoalsAssignToDTO>();
+	    	try {
+				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 		 performanceGoalsAssignToDTO.setOrgId(org.getId());
+		 		 performanceGoalsAssignToDTO.setUserId(user.getId());
+		 		 performanceGoalsAssignToDTO.setOrgLocationId(orgLocation.getId());
+		 		 performanceGoalsAssignToService.saveAssignedPerformanceGoalsScore(performanceGoalsAssignToDTO);
+		 		 resObj.setResponse(Result.SUCCESS.name());
+		 		 resObj.setResponseMessage(Result.SUCCESS.getValue());
+			
+			}catch (Exception e) {
+				e.printStackTrace();
+				resObj.setResponse(Result.AWKWARD.name());
+				resObj.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return resObj;
+		}
 }

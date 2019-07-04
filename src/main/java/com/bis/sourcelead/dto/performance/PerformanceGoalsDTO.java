@@ -78,6 +78,10 @@ public class PerformanceGoalsDTO implements Serializable{
 	
 	private BigDecimal toalAssignedNotStartedGoalsCount;
 	
+	private String categoriesJsonString;
+	
+	private Integer goalsScore;
+	
 	
 
 	public Long getGoalId() {
@@ -326,6 +330,22 @@ public class PerformanceGoalsDTO implements Serializable{
 
 	public void setToalAssignedNotStartedGoalsCount(BigDecimal toalAssignedNotStartedGoalsCount) {
 		this.toalAssignedNotStartedGoalsCount = toalAssignedNotStartedGoalsCount;
+	}
+
+	public String getCategoriesJsonString() {
+		return categoriesJsonString;
+	}
+
+	public void setCategoriesJsonString(String categoriesJsonString) {
+		this.categoriesJsonString = categoriesJsonString;
+	}
+
+	public Integer getGoalsScore() {
+		return goalsScore;
+	}
+
+	public void setGoalsScore(Integer goalsScore) {
+		this.goalsScore = goalsScore;
 	}
 
 	

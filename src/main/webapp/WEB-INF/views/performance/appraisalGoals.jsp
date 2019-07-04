@@ -13,7 +13,7 @@ function getAppraisalGoalsDetails(){
 	     document.getElementById("tasksWidget").removeAttribute("class");
 	     $("#performanceAppraisalDiv").empty();  
 	    	
-	    	$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	     $("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    	$.ajax({
 	  		  type: "GET",
@@ -57,6 +57,40 @@ function getAppraisalGoalsDetails(){
 		        		}
 		        		
 		        		
+		        	    if(response.object.categoriesJsonString != null 
+		       				 && response.object.categoriesJsonString != '' 
+		       					 && response.object.categoriesJsonString != 'undefined'){
+		       			var data = eval(response.object.categoriesJsonString);
+		           		 if (data) {
+		           			  $.each( data, function( k, v ) {
+		           				  if(v['type'] == "goalsWeightage"){
+		               				   	  var goalsWeightage = v['weightage'];
+		               				   	  var options = '<option value="">-Select Score-</option>';
+		               				   	  for(var i=0; i<=goalsWeightage; i++){
+		               				   		var selected = '';
+		               				   		 if(response.object.goalsScore != null){
+		               				   			if(i == response.object.goalsScore){
+		               				   				selected = "selected";
+		               				   			}
+		               				   		 } 
+		               				   		options = options+'<option value="'+i+'" '+selected+'>'+i+'</option>';
+		               				   	  }
+		               				   	  
+	               				    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
+		   		        		    result = result + '<label>Goals Score</label>';
+		   		        		    result = result + '<select class="form-control pull-left" id="goalsScore" onchange="saveGoalsScore(\''+assignedUUID+'\');" name="goalsScore"  field-name="Goals Score">';
+		   		        		    result = result + options;
+		   		        		    result = result + '</select>';
+		   		        		    result = result + '</div></div>';
+		           						   
+		           				  }
+		           				 
+		           			  });
+		           		 }
+		       		 }
+		        		
+	        		   
+		        		    
 		        		result = result + '<div class="clearfix mt">';
 		        		result = result + '<ul class="assiGoalWrap clearfix">';
 		        		result = result + '<li>';
@@ -99,5 +133,27 @@ function getAppraisalGoalsDetails(){
 			}); 
 	    
 		
+}
+
+
+
+function saveGoalsScore(assignedUUID){
+	var goalsScore = $("#goalsScore").val();
+	if(goalsScore){
+		$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+			  type: "POST",
+			    url: pmsUrl+"/saveAssignedPerformanceGoalsScore?assignedUUID="+assignedUUID+"&goalsScore="+goalsScore,
+			     success :function(response) {
+			    	 if (response.response === "SUCCESS") {
+			    		 $("#appraisalLoading").removeAttr("style");
+			    	 }
+			    	 else if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			    	 }
+			     },
+		}); 
+	}
+
 }
 </script>

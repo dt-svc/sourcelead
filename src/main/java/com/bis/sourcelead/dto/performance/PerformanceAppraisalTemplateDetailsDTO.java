@@ -53,6 +53,10 @@ private static final long serialVersionUID = 1L;
 	
 	private String assignedUserCode;
 	
+	private String categoriesJsonString;
+	
+	private BigInteger appraisalAssignedId;
+	
 
 	public String getName() {
 		return name;
@@ -237,6 +241,22 @@ private static final long serialVersionUID = 1L;
 
 	public void setAssignedUserCode(String assignedUserCode) {
 		this.assignedUserCode = assignedUserCode;
+	}
+
+	public String getCategoriesJsonString() {
+		return categoriesJsonString;
+	}
+
+	public void setCategoriesJsonString(String categoriesJsonString) {
+		this.categoriesJsonString = categoriesJsonString;
+	}
+
+	public BigInteger getAppraisalAssignedId() {
+		return appraisalAssignedId;
+	}
+
+	public void setAppraisalAssignedId(BigInteger appraisalAssignedId) {
+		this.appraisalAssignedId = appraisalAssignedId;
 	}
 
 	
