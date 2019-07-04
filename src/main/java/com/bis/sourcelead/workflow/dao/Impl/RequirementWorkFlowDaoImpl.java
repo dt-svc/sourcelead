@@ -795,7 +795,7 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 
 	@Override
 	public List<Requirement> getRequirementListByWorkflowIdAndOrgLocationId(String uuid, Long id) throws Exception {
-		// TODO Auto-generated method stub
+		logger.debug("Running getRequirementListByWorkflowIdAndOrgLocationId DAO");
 		List<Requirement> requirementList = new ArrayList<Requirement>();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -803,9 +803,26 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 			requirementList = session.createQuery(query).setString("uuid", uuid).setLong("id", id).list();
 			return requirementList;
 		} catch (Exception e) {
-			logger.error(e + " in getRequirementsByWorkflowIdAndOrgLocationId DAO");
+			logger.error(e + " in getRequirementListByWorkflowIdAndOrgLocationId DAO");
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	@Override
+	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesListByUuidAndOrgLocationId(String uuid, Long id, String stageUuid){
+		logger.debug("Running getRequirementWorkflowStagesListByUuidAndOrgLocationId DAO");
+		List<RequirementWorkFlowStages> workflowstages = new ArrayList<RequirementWorkFlowStages>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String queryString = "from RequirementWorkFlowStages stage where stage.orgLocationId.id = :id and stage.requirementWorkFlowId.uuid = :uuid "
+					+ " and stage.uuid <> :stageUuid";
+			workflowstages = session.createQuery(queryString).setString("uuid", uuid).setLong("id", id).setString("stageUuid", stageUuid).list();
+			return workflowstages;
+		} catch (Exception e) {
+			logger.error(e +" in getRequirementWorkflowStagesListByUuidAndOrgLocationId DAO");
+			e.printStackTrace();
+			return workflowstages;
 		}
 	}
 
