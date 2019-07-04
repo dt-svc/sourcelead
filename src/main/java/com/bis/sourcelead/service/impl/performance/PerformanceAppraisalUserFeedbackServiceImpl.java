@@ -99,12 +99,29 @@ public class PerformanceAppraisalUserFeedbackServiceImpl implements PerformanceA
 			performanceFeedback.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			performanceFeedback.setStatus(Constants.RECORD_ACTIVE);
 			performanceFeedback.setFeedbackCategoriesScore(performanceFeedbackCategoryDTO.getCategoryScore());
+			performanceFeedback.setFinalScore(performanceFeedbackCategoryDTO.getCategoryScore());
 			performanceFeedback.setSubmissionStage("Draft");
 		}else {
 			performanceFeedback.setUpdatedBy(user);
 			performanceFeedback.setUpdatedDate(new Date());
 			Integer categoryScore = performanceAppraisalUserFeedbackDao.getFeedbackCategoriesScore(performanceFeedbackCategoryDTO.getUserId(), assignedAssociates.getId());
 			performanceFeedback.setFeedbackCategoriesScore(categoryScore);
+			Integer goalsScore = 0;
+			Integer tasksScore = 0;
+			Integer competenciesScore = 0;
+			if(performanceFeedback.getGoalsScore() != null) {
+				goalsScore = performanceFeedback.getGoalsScore();
+			}
+			if(performanceFeedback.getTasksScore() != null) {
+				tasksScore = performanceFeedback.getTasksScore();
+			}
+			if(performanceFeedback.getCompetenciesScore() != null) {
+				competenciesScore = performanceFeedback.getCompetenciesScore();
+			}
+			
+			Integer finalScore = categoryScore+goalsScore+tasksScore+competenciesScore;
+			performanceFeedback.setFinalScore(finalScore);
+			
 		}
 		
 		performanceFeedbackDao.savePerformanceFeedback(performanceFeedback);

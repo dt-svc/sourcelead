@@ -7,6 +7,7 @@ import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
+import com.bis.sourcelead.dto.performance.PerformanceFeedbackDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGeneralTasksDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceJobsDetailsDTO;
@@ -32,4 +33,6 @@ public interface PerformanceAppraisalDao {
 	List<PerformanceJobsDetailsDTO> getPerformanceJobsDetails(String assignedUUID,String dateFormat) throws Exception;
 	
 	PerformanceGeneralTasksDetailsDTO getGeneralTasksDetails(String assignedUUID,String dateFormat) throws Exception;
+	
+	PerformanceFeedbackDTO getPerformanceFeedbackDetails(String assignedUUID,Long userId) throws Exception;
 }

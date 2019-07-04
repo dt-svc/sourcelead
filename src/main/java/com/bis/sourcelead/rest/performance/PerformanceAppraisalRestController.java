@@ -26,6 +26,7 @@ import com.bis.sourcelead.dto.performance.AppraisalProjectsTasksDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceFeedbackCategoryDTO;
+import com.bis.sourcelead.dto.performance.PerformanceFeedbackDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGeneralTasksDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
@@ -36,6 +37,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalUserFeedbackService;
+import com.bis.sourcelead.service.performance.PerformanceFeedbackService;
 import com.bis.sourcelead.service.performance.PerformanceGoalsAssignToService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -50,6 +52,9 @@ public class PerformanceAppraisalRestController {
 	
 	@Autowired
 	PerformanceGoalsAssignToService performanceGoalsAssignToService;
+	
+	@Autowired
+	PerformanceFeedbackService performanceFeedbackService;
 	
 	@Value("${static.path}")
 	private String staticPath;
@@ -382,17 +387,17 @@ public class PerformanceAppraisalRestController {
 	    	return resObj;
 	    }
 	    
-	    @RequestMapping(value = { "/saveAssignedPerformanceGoalsScore", "/rest/saveAssignedPerformanceGoalsScore" }, method = RequestMethod.POST)
-		public @ResponseBody Response<PerformanceGoalsAssignToDTO> saveAssignedPerformanceGoalsScore(PerformanceGoalsAssignToDTO performanceGoalsAssignToDTO,HttpServletRequest request) throws Exception {
-	    	 Response<PerformanceGoalsAssignToDTO> resObj = new  Response<PerformanceGoalsAssignToDTO>();
+	    @RequestMapping(value = { "/saveAssignedPerformanceFeedback", "/rest/saveAssignedPerformanceFeedback" }, method = RequestMethod.POST)
+		public @ResponseBody Response<PerformanceFeedbackDTO> saveAssignedPerformanceGoalsScore(PerformanceFeedbackDTO performanceFeedbackDTO,HttpServletRequest request) throws Exception {
+	    	 Response<PerformanceFeedbackDTO> resObj = new  Response<PerformanceFeedbackDTO>();
 	    	try {
 				 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 		 performanceGoalsAssignToDTO.setOrgId(org.getId());
-		 		 performanceGoalsAssignToDTO.setUserId(user.getId());
-		 		 performanceGoalsAssignToDTO.setOrgLocationId(orgLocation.getId());
-		 		 performanceGoalsAssignToService.saveAssignedPerformanceGoalsScore(performanceGoalsAssignToDTO);
+		 		 performanceFeedbackDTO.setOrgId(org.getId());
+		 		 performanceFeedbackDTO.setUserId(user.getId());
+		 		 performanceFeedbackDTO.setOrgLocationId(orgLocation.getId());
+		 		 performanceFeedbackService.saveAssignedPerformanceFeedback(performanceFeedbackDTO);
 		 		 resObj.setResponse(Result.SUCCESS.name());
 		 		 resObj.setResponseMessage(Result.SUCCESS.getValue());
 			
@@ -403,4 +408,24 @@ public class PerformanceAppraisalRestController {
 			}
 			return resObj;
 		}
+	    
+	    
+	    @RequestMapping(value = "/getAppraisalFeedbackDetails", method = RequestMethod.GET)
+  		public Response<PerformanceFeedbackDTO> getAppraisalFeedbackDetails(HttpServletRequest request, 
+  				@RequestParam(value = "assignedUUID", required = true) String assignedUUID){
+    
+    	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	     Response<PerformanceFeedbackDTO> resObj = new  Response<PerformanceFeedbackDTO>();
+	     try {
+	    	 PerformanceFeedbackDTO performanceFeedbackDTO = performanceAppraisalService.getPerformanceFeedbackDetails(assignedUUID,user.getId());
+	    	 resObj.setObject(performanceFeedbackDTO);
+			 resObj.setResponse(Result.SUCCESS.name());
+			 resObj.setResponseMessage(Result.SUCCESS.getValue());
+	     } catch (Exception e) {
+			e.printStackTrace();
+			resObj.setResponse(Result.AWKWARD.name());
+			resObj.setResponseMessage(Result.AWKWARD.getValue());
+		}
+    	return resObj;
+    }
 }

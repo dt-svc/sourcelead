@@ -11,6 +11,7 @@ function getAppraisalGoalsDetails(){
 	     document.getElementById("goalsWidget").className = 'activeApprisalwidget';
 	     document.getElementById("feedbackWidget").className = 'activeApprisalwidget';
 	     document.getElementById("tasksWidget").removeAttribute("class");
+	     document.getElementById("finalScoreWidget").removeAttribute("class");
 	     $("#performanceAppraisalDiv").empty();  
 	    	
 	     $("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -143,7 +144,7 @@ function saveGoalsScore(assignedUUID){
 		$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			  type: "POST",
-			    url: pmsUrl+"/saveAssignedPerformanceGoalsScore?assignedUUID="+assignedUUID+"&goalsScore="+goalsScore,
+			    url: pmsUrl+"/saveAssignedPerformanceFeedback?assignedUUID="+assignedUUID+"&goalsScore="+goalsScore,
 			     success :function(response) {
 			    	 if (response.response === "SUCCESS") {
 			    		 $("#appraisalLoading").removeAttr("style");

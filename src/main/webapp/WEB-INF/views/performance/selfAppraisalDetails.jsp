@@ -67,8 +67,8 @@ $(document).ready(function() {
                           Tasks
                       </a>
                       </li>
-                      <li title="Final Score">
-                          <a href="selfappraisal-finalscore.html" class="clearfix mb0">
+                      <li title="Final Score" id="finalScoreWidget">
+                          <a onclick="getAppraisalFinalScoreDetails();" class="clearfix mb0">
                           <div class="finalScoreIcon"></div>
                           <div class="clearfix"></div>
                         Final Score
@@ -91,3 +91,4 @@ $(document).ready(function() {
 <jsp:include page="../performance/appraisalFeedback.jsp" />   
 <jsp:include page="../performance/appraisalGoals.jsp" />  
 <jsp:include page="../performance/appraisalTasks.jsp" /> 
+<jsp:include page="../performance/appraisalFinalScore.jsp" /> 

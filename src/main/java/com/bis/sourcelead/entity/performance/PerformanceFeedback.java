@@ -65,6 +65,9 @@ public class PerformanceFeedback implements Serializable{
 	@Column(name = "SUBMISSION_STAGE")
 	private String submissionStage;
 	
+	@Column(name = "COMMENTS", columnDefinition = "LONGTEXT default NULL")
+	private String comments;
+	
 	@Column(name = "STATUS ")
 	private Integer status;
 	
@@ -217,6 +220,14 @@ public class PerformanceFeedback implements Serializable{
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 	
 	

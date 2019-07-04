@@ -11,6 +11,7 @@ import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
+import com.bis.sourcelead.dto.performance.PerformanceFeedbackDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGeneralTasksDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceJobsDetailsDTO;
@@ -80,5 +81,13 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 			throws Exception {
 		return performanceAppraisalDao.getGeneralTasksDetails(assignedUUID, dateFormat);
 	}
+
+	@Override
+	public PerformanceFeedbackDTO getPerformanceFeedbackDetails(String assignedUUID, Long userId)
+			throws Exception {
+		return performanceAppraisalDao.getPerformanceFeedbackDetails(assignedUUID, userId);
+	}
+
+	
 
 }

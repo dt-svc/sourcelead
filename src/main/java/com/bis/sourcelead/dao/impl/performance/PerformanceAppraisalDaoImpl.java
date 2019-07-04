@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalDao;
 import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
@@ -26,10 +25,10 @@ import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDetailsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceFeedbackDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGeneralTasksDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceJobsDetailsDTO;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -818,5 +817,44 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 			e.printStackTrace();
 		}
 		return generalTaskDTO;
+	}
+
+	
+
+	@Override
+	public PerformanceFeedbackDTO getPerformanceFeedbackDetails(String assignedUUID, Long userId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String assignedCategoriesQuery =  "SELECT "
+				+" ASSIGNED.ID AS appraisalAssignedId, "  
+				+" TEMPLATE.CATEGORIES_JSON_STRING AS categoriesJsonString "           
+				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+				+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE"
+				+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND ASSIGNED.UUID = :assignedUUID ";
+		
+		Query queryObj = session.createSQLQuery(assignedCategoriesQuery);
+		queryObj.setString("assignedUUID", assignedUUID);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalTemplateDetailsDTO.class));
+		List<PerformanceAppraisalTemplateDetailsDTO> templateDetailsList = queryObj.list();
+		PerformanceAppraisalTemplateDetailsDTO templateDTO = templateDetailsList.get(0);
+		
+		
+		String performanceFeedbackQuery =  "SELECT "
+				+" FEEDBAK.FINAL_SCORE AS finalScore, " 
+				+" FEEDBAK.TASKS_SCORE AS tasksScore, "
+				+" FEEDBAK.COMMENTS AS comments " 
+				+" FROM PERFORMANCE_FEEDBACK FEEDBAK "
+				+" WHERE FEEDBAK.APPRAISAL_ASSIGNED_ID = :appraisalAssignedId AND FEEDBAK.USER_ID = :userId ";
+		
+		Query performanceFeedbackObj = session.createSQLQuery(performanceFeedbackQuery);
+		performanceFeedbackObj.setBigInteger("appraisalAssignedId", templateDTO.getAppraisalAssignedId());
+		performanceFeedbackObj.setLong("userId", userId);
+		performanceFeedbackObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackDTO.class));
+		List<PerformanceFeedbackDTO> performanceFeedbackList = performanceFeedbackObj.list();
+		PerformanceFeedbackDTO feedBackDTO = performanceFeedbackList.get(0);
+		feedBackDTO.setJsonCategoriesString(templateDTO.getCategoriesJsonString());
+		
+		return feedBackDTO;
 	}
 }

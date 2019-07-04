@@ -9,6 +9,7 @@ function getTemplateOverViewDetails(){
 		  document.getElementById("goalsWidget").removeAttribute("class");
 	  }
       document.getElementById("tasksWidget").removeAttribute("class");
+      document.getElementById("finalScoreWidget").removeAttribute("class");
       
       $("#performanceAppraisalDiv").empty(); 
     

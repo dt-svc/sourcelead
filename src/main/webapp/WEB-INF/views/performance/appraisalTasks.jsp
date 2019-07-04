@@ -11,8 +11,10 @@ function getAppraisalTaskDetails(){
 	 if('${isGolasConfigured}' == 'Y'){
 		 document.getElementById("goalsWidget").className = 'activeApprisalwidget';
 	  }
-	  
-	var result = "";  
+	 document.getElementById("finalScoreWidget").removeAttribute("class");
+	
+	 var result = "";  
+	
     result = result + '<div class="goalssummar_widget goalssummar_widgetPad clearfix">';
     result = result + '<div class="newRolLeft">';
     result = result + '<ul id="nav" class="clearfix">';
@@ -23,6 +25,13 @@ function getAppraisalTaskDetails(){
     result = result + '</div>';
     
     result = result + '<div class="newRolLRight" id="tasksLoading">';
+    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
+    result = result + '<label>Category Score</label>';
+    result = result + '<select class="form-control pull-left" id="tasksScore" name="tasksScore" onchange="saveTasksScore(\''+assignedUUID+'\');"  field-name="Tasks Score">';
+    result = result + '<option value="">-Tasks Score-</option>';
+    result = result + '</select>';
+    result = result + '</div></div>';
+    
     result = result + '<div class="clearfix" id="tab-content">';
     result = result + '<div id="appraisalTasksDiv">';
     result = result + '</div>';
@@ -33,7 +42,9 @@ function getAppraisalTaskDetails(){
     $("#performanceAppraisalDiv").empty(); 
     $("#performanceAppraisalDiv").append(result);
     
+    getTasksScore(assignedUUID);
     getProjectDetails(assignedUUID);
+    
 }
 
 
@@ -373,4 +384,62 @@ function getGeneralTaskDetails(assignedUUID){
 		});
 }
 
+
+function getTasksScore(assignedUUID){
+	
+	$.ajax({
+		  type: "GET",
+		    url: pmsUrl+"/getAppraisalFeedbackDetails?assignedUUID="+assignedUUID,
+		     success :function(response) {
+		    	 
+		    	 if(response.object.jsonCategoriesString != null 
+	       				 && response.object.jsonCategoriesString != '' 
+	       					 && response.object.jsonCategoriesString != 'undefined'){
+	       			var data = eval(response.object.jsonCategoriesString);
+	           		 if (data) {
+	           			  $.each( data, function( k, v ) {
+	           				  if(v['type'] == "projectTasksWeightage"){
+	               				   	  var taskWeightage = v['weightage'];
+	               				   	  var options = '<option value="">-Select Score-</option>';
+	               				   	  for(var i=0; i<=taskWeightage; i++){
+	               				   		var selected = '';
+	               				   		 if(response.object.tasksScore != null){
+	               				   			if(i == response.object.tasksScore){
+	               				   				selected = "selected";
+	               				   			}
+	               				   		 }  
+	               				   		options = options+'<option value="'+i+'" '+selected+'>'+i+'</option>';
+	               				   	  }
+	               				   	  
+	               				   $("#tasksScore").empty(); 
+       						       $("#tasksScore").append(options);   
+	           				  }
+	           				 
+	           			  });
+	           		 }
+	       		 }
+		     },
+	});
+}
+
+
+function saveTasksScore(assignedUUID){
+	var tasksScore = $("#tasksScore").val();
+	if(tasksScore){
+		$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+			  type: "POST",
+			    url: pmsUrl+"/saveAssignedPerformanceFeedback?assignedUUID="+assignedUUID+"&tasksScore="+tasksScore,
+			     success :function(response) {
+			    	 if (response.response === "SUCCESS") {
+			    		 $("#appraisalLoading").removeAttr("style");
+			    	 }
+			    	 else if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			    	 }
+			     },
+		}); 
+	}
+
+}
 </script>
