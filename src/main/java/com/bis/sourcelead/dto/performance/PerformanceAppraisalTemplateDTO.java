@@ -88,6 +88,10 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private BigInteger templateAssignedUserCount;
 	
+	private String appraisalAssignedUser;
+	
+	private String appraisalAssignedUserImgUrl;
+	
 	private int start;
 	
 	private int length;
@@ -456,6 +460,22 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 
 	public void setDaysDiff(char daysDiff) {
 		this.daysDiff = daysDiff;
+	}
+
+	public String getAppraisalAssignedUser() {
+		return appraisalAssignedUser;
+	}
+
+	public void setAppraisalAssignedUser(String appraisalAssignedUser) {
+		this.appraisalAssignedUser = appraisalAssignedUser;
+	}
+
+	public String getAppraisalAssignedUserImgUrl() {
+		return appraisalAssignedUserImgUrl;
+	}
+
+	public void setAppraisalAssignedUserImgUrl(String appraisalAssignedUserImgUrl) {
+		this.appraisalAssignedUserImgUrl = appraisalAssignedUserImgUrl;
 	}
 
 	
