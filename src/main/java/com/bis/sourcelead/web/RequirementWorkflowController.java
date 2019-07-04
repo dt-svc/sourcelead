@@ -250,7 +250,7 @@ public class RequirementWorkflowController {
 		try {
 			
 
-			String[] tableColumns = { "workFlowName","description", "noOfStages", "status"};
+			String[] tableColumns = { "workFlowName","description", "noOfStages", "status","updatedBy"};
 		  	int sortColumnIndex = -1; 
 	  		String sortColumnOrder = "desc"; 
  	  		if (requirementWorkFlowDTO.getOrder() != null && !requirementWorkFlowDTO.getOrder().isEmpty()) {
