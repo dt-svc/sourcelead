@@ -92,4 +92,6 @@ public interface RequirementWorkFlowDao {
 	List<RequirementWorkFlowStages> getRequirementWorkflowStagesByWorkflowIdAndOrglocations(Long workflowId, OrgLocations orgLocations);
 	
 	List<Requirement> getRequirementListByWorkflowIdAndOrgLocationId(String uuid, Long id)throws Exception;
+	
+	List<RequirementWorkFlowStages> getRequirementWorkflowStagesListByUuidAndOrgLocationId(String uuid, Long id, String stageUuid)throws Exception;
 }
