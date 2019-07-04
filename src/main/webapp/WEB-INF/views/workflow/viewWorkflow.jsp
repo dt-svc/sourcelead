@@ -118,37 +118,42 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			<div class="row">
 				<div class="col-md-10">
 				<div>
-					<c:if test = "${requirementWorkFlowStages.stageName == 'Submission'}">
-						<span class="submissionShare pull-left"></span>
-					</c:if>
-					<c:if test = "${requirementWorkFlowStages.stageName == 'Short List'}">
-						<span class='shortlilstedIC pull-left'></span>
-					</c:if>
-					<c:if test = "${requirementWorkFlowStages.stageName == 'Submit to Client'}">
-						<span class='shortlilstedIC pull-left'></span>
-					</c:if>
-					<c:if test = "${requirementWorkFlowStages.stageName == 'Interview'}">
-						<span class='invterviewIC pull-left'></span>
-					</c:if>
-					<c:if test = "${requirementWorkFlowStages.stageName == 'Offer'}">
-						<span class='jobOfferIC pull-left'></span>
-					</c:if>
-					<c:if test = "${requirementWorkFlowStages.stageName == 'Reject'}">
-						<span class='submissionShare pull-left'></span>
-					</c:if>
-					<c:if test = "${requirementWorkFlowStages.stageName == 'Joined'}">
-						<span class='joinedIC pull-left'></span>
-					</c:if>
-					<c:if test = "${requirementWorkFlowStages.stageName == 'Backout'}">
-						<span class='submissionShare pull-left'></span>
-					</c:if>
-					<c:if test = "${requirementWorkFlowStages.stageName == 'On-hold'}">
-						<span class='submissionShare pull-left'></span>
-					</c:if>
-					<c:if test = "${requirementWorkFlowStages.stageName == 'No Response'}">
-						<span class='submissionShare pull-left'></span>
-					</c:if>
+				<c:choose>
+					<c:when test = "${requirementWorkFlowStages.stageName == 'Submission'}">
+						<i class='fa fa-check-square-o fa-2x text-muted pull-left'></i>
+					</c:when>
+					<c:when test = "${requirementWorkFlowStages.stageName == 'Short List'}">
+						<i class='fa fa-list-ul fa-2x text-muted pull-left'></i>
+					</c:when>
+					<c:when test = "${requirementWorkFlowStages.stageName == 'Submit to Client'}">
+						<i class='fa fa-send fa-2x text-muted pull-left'></i>
+					</c:when>
+					<c:when test = "${requirementWorkFlowStages.stageName == 'Interview'}">
+						<i class='fa fa-handshake-o fa-2x text-muted pull-left'></i>
+					</c:when>
+					<c:when test = "${requirementWorkFlowStages.stageName == 'Offer'}">
+						<i class='fa fa-envelope-open-o fa-2x text-muted pull-left'></i>
+					</c:when>
+					<c:when test = "${requirementWorkFlowStages.stageName == 'Reject'}">
+						<i class='fa fa-ban pull-left fa-2x text-muted'></i>
+					</c:when>
+					<c:when test = "${requirementWorkFlowStages.stageName == 'Joined'}">
+						<i class='fa fa-id-badge pull-left fa-2x text-muted'></i>
+					</c:when>
+					<c:when test = "${requirementWorkFlowStages.stageName == 'Backout'}">
+						<i class='fa fa-arrow-circle-left pull-left fa-2x text-muted'></i>
+					</c:when>
+					<c:when test = "${requirementWorkFlowStages.stageName == 'On-hold'}">
+						<i class='fa fa-pause-circle-o pull-left fa-2x text-muted'></i>
+					</c:when>
+					<c:when test = "${requirementWorkFlowStages.stageName == 'No Response'}">
+						<i class='fa fa-exclamation-circle pull-left fa-2x text-muted'></i>
+					</c:when>
 					
+					<c:otherwise>
+						<i class='fa fa-gears pull-left fa-2x text-muted'></i>
+					</c:otherwise>
+					</c:choose>
 					<h4 class="pull-left mt10 ml">${requirementWorkFlowStages.stageName}</h4>
 				</div>
 				</div>
