@@ -303,7 +303,7 @@
             <div class="checkbox-new pull-left mt10">
               <input id="appraisalProjectTasks" class="checkbox-custom" name="appraisalProjectTasks" type="checkbox" value="N" onclick="performanceManagement.changeAppraisalProjectTasksStatus();">
               <label for="appraisalProjectTasks" class="checkbox-custom-label"></label>
-              <span class="ml10 text-muted">Project Task</span>
+              <span class="ml10 text-muted">Tasks</span>
             </div>
           </div>
           <div class="col-md-5" id="projectTasksWeightageDiv">
