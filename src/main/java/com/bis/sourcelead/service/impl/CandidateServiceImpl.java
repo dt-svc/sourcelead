@@ -2726,6 +2726,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				activitySummary.append("Employment Type").append(" : ").append("---").append(" ");
 		candidate.setDesignationType(candidateDto.getDesignationType());
 		
+		  if(candidate.getDesignationType() != null && "Other".equalsIgnoreCase(candidate.getDesignationType())) {
+		    	candidate.setDesignationOtherType(candidateDto.getDesignationOtherType());
+		    }
+		
 			if(candidate.getExperienceYears() != null  && candidate.getExperienceYears() != "" && !candidateDto.getExperienceYears().equalsIgnoreCase(candidate.getExperienceYears())){
 				activitySummary.append("Experience Years").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExperienceYears()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceYears()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}else if((candidate.getExperienceYears() != null || candidate.getExperienceYears() != "" ||  candidateDto.getExperienceYears().equalsIgnoreCase(candidate.getExperienceYears())) && candidateDto.getExperienceYears() !="" ){
@@ -2760,6 +2764,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			activitySummary.append("Notice Period").append(" : ").append("---").append(" ");
 			candidate.setNoticePeriod(noticePeriod);	
 	     }
+	    
+	    if(candidate.getNoticePeriod() != null && candidate.getNoticePeriod().equalsIgnoreCase("Other")) {
+	    	candidate.setOtherNoticePeriod(candidateDto.getOtherNoticePeriod());
+	    }
 		
 		if(candidateDto.getAddress() !=null){
 			if(candidate.getAddress() != null   && candidate.getAddress() != "" && !candidateDto.getAddress().equalsIgnoreCase(candidate.getAddress())){
