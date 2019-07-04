@@ -64,20 +64,26 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <div class="form-group clearfix">
             <label class="col-md-3">Name<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-9" id = "workflowNameDiv">
-									<input type="text"
+						
+						<c:choose>
+						<c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
+						<input type="text"
 										value='<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}"/>'
 										class="form-control" id="workFlowName" name="workFlowName"
 										placeholder="WorkFlow Name" field-name="WorkFlow Name"
 										data-validation="required validate_length length1-100"
-										onkeyup="requirementWorkflow.validateWorkflowName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
-										<c:choose>
-							<c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
-							readonly>
-							</c:when>
-								<c:otherwise>
-							>
-							</c:otherwise>
+										onkeyup="requirementWorkflow.validateWorkflowName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');" readonly>
+						</c:when>
+						<c:otherwise>
+						<input type="text"
+										value='<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}"/>'
+										class="form-control" id="workFlowName" name="workFlowName"
+										placeholder="WorkFlow Name" field-name="WorkFlow Name"
+										data-validation="required validate_length length1-100"
+										onkeyup="requirementWorkflow.validateWorkflowName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');">
+						</c:otherwise>
 						</c:choose>
+						
 								</div>
           </div>
         </div>
@@ -85,19 +91,18 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <div class="form-group clearfix">
             <label class="col-md-3">Description</label>
             <div class="col-md-9">
-              <textarea rows="2" 
-              value = ''
-              class="form-control" name="description" id="description" placeholder="Description" field-name="Description"
-								data-validation="validate_length length1-500" data-validation-optional="true"
-								<c:choose>
-							<c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
-							readonly> <c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/>
-							</c:when>
-								<c:otherwise>
-							> <c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/>
-							</c:otherwise>
-						</c:choose>
-								</textarea>
+            
+            <c:choose>
+            <c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
+            <textarea rows="2"  value = '' class="form-control" name="description" id="description" placeholder="Description" field-name="Description"
+			data-validation="validate_length length1-500" data-validation-optional="true" readonly><c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/></textarea>
+            </c:when>
+            <c:otherwise>
+            <textarea rows="2"  value = '' class="form-control" name="description" id="description" placeholder="Description" field-name="Description"
+			data-validation="validate_length length1-500" data-validation-optional="true"><c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/></textarea>
+            </c:otherwise>
+            </c:choose>
+								
             </div>
           </div>
         </div>
@@ -151,7 +156,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					</c:when>
 					
 					<c:otherwise>
-						<i class='fa fa-gears pull-left fa-2x text-muted'></i>
+						<i class='fa fa-sitemap pull-left fa-2x text-muted'></i>
 					</c:otherwise>
 					</c:choose>
 					<h4 class="pull-left mt10 ml">${requirementWorkFlowStages.stageName}</h4>
@@ -203,9 +208,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					<div class="clearfix">
 						<div class="pull-right">
 						<c:choose>
-							<c:when
-								test="${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
-									
+							<c:when test="${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
 									<input value="Save" id="saveReqWorkFlow"
 										onclick="requirementWorkflow.saveRequirementViewWorkFlow('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');"
 										class="btn btn-primary" type="button"> <input
