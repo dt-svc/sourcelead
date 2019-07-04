@@ -10,6 +10,9 @@ $(document).ready(function() {
 <script src="/resources/js/requirementWorkflow.js?staticTime=${staticTime}"></script>
 <div class="wraper"> 
   <section class="content-wraper">
+  <div class="success_pop" id="selector" >
+	       <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+			</div>
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Application Workflow</h2>

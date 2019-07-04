@@ -270,7 +270,7 @@ function RequirementWorkflow(){
 	  		result = result +"<label class='switch mr positionRelativeTop10' title='Default'>"
 	  		result = result +"<input type='checkbox' name='' "+ (status == 1 ?'checked':'')+" >";
 	  		 if(roleActionsArray.indexOf("ROLE_EDIT_VIEW_WORKFLOW")  > -1){
-	 	  		result = result +"<div class='slider round' onclick = 'requirementWorkflow.changeWorkflowStatus(\""+uuid+"\", \""+status+"\");'></div>";
+	 	  		result = result +"<div class='slider round' onclick = 'requirementWorkflow.changeWorkflowStatus(\""+uuid+"\", \""+status+"\", \""+workFlowName+"\");'></div>";
 				 }
 	  		result = result +"</label></li>";
 	  		 if(roleActionsArray.indexOf("ROLE_EDIT_VIEW_WORKFLOW")  > -1){
@@ -287,12 +287,18 @@ function RequirementWorkflow(){
 		return result;
 	}
 
-	this.changeWorkflowStatus = function(uuid, status){
+	this.changeWorkflowStatus = function(uuid, status, workFlowName){
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/getWorkflowList?uuid="+uuid+"&status="+status,
 			success : function(dataList) {
 				requirementWorkflow.getDynamicWorkflowList();
+				if(status == 1){
+					status = 'In-Active';
+				}if(status == 0){
+					status = 'Active';
+				}
+				requirementWorkflow.showSuccessMsg(workFlowName+" is "+status);
 			}
 			});
 				
