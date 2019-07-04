@@ -160,7 +160,7 @@ function getParserEmailList(){
 		    	
 		    	 $("#emailparsingList").empty();
 	        	 $("#emailparsingList").append(result);
-	        	 
+	        	 allowOnlyConfigResumeEmailParserForOrg();// disables the add buttion for adding anohter email to the resume parsing. 
 		    },
      });
 	
