@@ -1054,7 +1054,7 @@ function RequirementWorkflow(){
 					 if(stageShortCode != null && stageShortCode.length > 0){
 						 $.ajax({
 							 type: "GET",
-							 url : sourceleadUrl+"/validateStageShortCode?workflowUuid="+workflowUuid+"&stageShortCode="+stageShortCode,
+							 url : sourceleadUrl+"/validateStageShortCode?workflowUuid="+workflowUuid+"&stageShortCode="+stageShortCode+"&currentStageUuid="+currentStageUuid,
 							 success:function(dataList){
 								 if (dataList.response =="true" || dataList.response =="special") {
 									 $('#ShortCodeDiv').find('p.jquery_form_error_message').remove();
