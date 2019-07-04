@@ -1083,14 +1083,15 @@ function RequirementWorkflow(){
 								 var obj = JSON.stringify(dataList);
 								 var requirementList = obj.replace(/[{}]/g, "").split(',');
 								 for(var j=0;j< requirementList.length; j++){
+									 var count =j;
 										var n = requirementList[j].indexOf(':');
 										jobId = requirementList[j].slice(1, n-1);
 										jobTitle = requirementList[j].slice(n+2, requirementList[j].length-1);
 										if(j<5){
-											jobsArray.push(jobTitle);
+											jobsArray.push(++count+'. '+jobTitle);
 										}
 										else{
-											allJobsArray.push(" "+jobTitle);
+											allJobsArray.push(' '+(++count)+'. '+jobTitle);
 										}
 									}
 								$(".project_inn_mask").remove();
