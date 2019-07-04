@@ -42,34 +42,34 @@ function RequirementWorkflow(){
 		this.dynamicSpan = function(stageName){
 			if(stageName != null){
 					if(stageName == "Submission"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-check-square-o fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Short List"){
-						return "<span class='shortlilstedIC pull-left'></span>";
+						return "<i class='fa fa-list-ul fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Submit to Client"){
-						return "<span class='shortlilstedIC pull-left'></span>";
+						return "<i class='fa fa-send fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Interview"){
-						return "<span class='invterviewIC pull-left'></span>";
+						return "<i class='fa fa-handshake-o fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Offer"){
-						return "<span class='jobOfferIC pull-left'></span>";
+						return "<i class='fa fa-envelope-open-o fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Reject"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-ban pull-left fa-2x text-muted'></i>"
 					}
 					if(stageName == "Joined"){
-						return "<span class='joinedIC pull-left'></span>";
+						return "<i class='fa fa-id-badge pull-left fa-2x text-muted'></i>";
 					}
 					if(stageName == "Backout"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-arrow-circle-left pull-left fa-2x text-muted'></i>"
 					}
 					if(stageName == "On-hold"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-pause-circle-o pull-left fa-2x text-muted'></i>";
 					}
 					if(stageName == "No Response"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-exclamation-circle pull-left fa-2x text-muted'></i>";
 					}
 				}
 			}
