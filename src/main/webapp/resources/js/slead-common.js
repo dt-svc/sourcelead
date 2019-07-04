@@ -503,10 +503,16 @@ function applyResumeData(json) {
 		}
 		
 		if(json.gender != null) {
+			var genderEle = null;
 			if(json.gender.toLowerCase() === "male") {
-				$("input[value='Male']").prop("checked", true);
+				genderEle =  $("input[value='Male']");
+				
 			} else if(json.gender.toLowerCase() === "female") {
-				$("input[value='Female']").prop("checked", true);
+				genderEle = $("input[value='Female']");
+			}
+			if(genderEle !== null) {
+				$(genderEle).prop("checked", true);
+				genderCheckValidation(genderEle);
 			}
 		}
 		
