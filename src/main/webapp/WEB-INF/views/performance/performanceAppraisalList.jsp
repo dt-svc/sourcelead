@@ -59,6 +59,9 @@ function getAppraisalList(appraisalType){
 	 	result = result + '<table id="appraisalAssignListTable" class="display mt10" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
+		if(appraisalType == 'peers'){
+			result = result + '<th>Employee</th>';
+		}
 	  	result = result + '<th>Appraisal Name</th>';
 	  	result = result + '<th>Appraisal Period</th>';
 	  	result = result + '<th>Process Period</th>';
@@ -147,9 +150,8 @@ function appraisalAssignPagination(url,appraisalType){
               "render": function ( data, type, opt, meta ) {
             	     var result = "";
             	     result = result +"<td>";
-            	     result = result +"<div class='mt10 mb10'>";
-            	     result = result +"<div class='tblminwidth-75 clearfix'>"+opt.appraisalStartDate+"</div>";
-            	     result = result +"<div class='tblminwidth-75 clearfix mt5'>"+opt.appraisalEndDate+"</div>";
+            	     result = result +"<div>";
+            	     result = result + opt.appraisalStartDate+" to "+opt.appraisalEndDate;
             	     result = result +"</div>";
             	     result = result +"</td>";
 		             return result;
@@ -163,9 +165,8 @@ function appraisalAssignPagination(url,appraisalType){
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	     result = result +"<td>";
-	            	     result = result +"<div class='mt10 mb10'>";
-	            	     result = result +"<div class='tblminwidth-75 clearfix'>"+opt.appraisalProcessStartDate+"</div>";
-	            	     result = result +"<div class='tblminwidth-75 clearfix mt5'>"+opt.appraisalProcessEndDate+"</div>";
+	            	     result = result +"<div>";
+	            	     result = result + opt.appraisalProcessStartDate+" to "+opt.appraisalProcessEndDate;
 	            	     result = result +"</div>";
 	            	     result = result +"</td>";
 			             return result;
@@ -177,9 +178,9 @@ function appraisalAssignPagination(url,appraisalType){
 	              "render": function ( data, type, opt, meta ) {
 	            	     var result = "";
 	            	     result = result +"<td>";
-	            	     result = result +"<div class='mt10 mb10'>";
-	            	     result = result +"<div class='tblminwidth-75 clearfix'>"+opt.selfAppraisalStartDate+"</div>";
-	            	     result = result +"<div class='tblminwidth-75 clearfix mt5'>"+opt.selfAppraisalEndDate+"</div>";
+	            	     
+	            	     result = result +"<div>";
+	            	     result = result + opt.selfAppraisalStartDate+" to "+opt.selfAppraisalEndDate;
 	            	     result = result +"</div>";
 	            	     result = result +"</td>";
 			             return result;
@@ -240,6 +241,7 @@ function appraisalAssignPeersPagination(url,appraisalType){
           pages: 2
         }),
         "columns": [
+        	{ "data": "appraisalAssignedUser" },
             { "data": "name" },
             { "data": "appraisalStartDate"},
             { "data": "appraisalProcessStartDate"},
@@ -247,15 +249,30 @@ function appraisalAssignPeersPagination(url,appraisalType){
             { "data": "status"}
         ],
         "columnDefs": [ {
+    	  	"targets": colIndex++,
+    	  	"data": "appraisalAssignedUser",
+    	  	"sortable": false,
+    	  	"render": function(data, type, opt, meta) {
+    	  		 var result = "";
+    	  		 
+	       	     result = result +"<td>";
+	       	     result = result +"<div class='clearfix tbldata-dotdot-big'>";
+	   	  	  	 result = result +"<div class='selfAppraisalImg pull-left'>";
+	   	  		 result = result +"<img onerror='predefineAssociateImage(this);' src='"+opt.appraisalAssignedUserImgUrl+"'> </div>";
+	   	  		 result = result +"<div class='UserTextLeft pull-left' title='"+opt.appraisalAssignedUser+"'>"+opt.appraisalAssignedUser+"</div>";
+	   	  	     result = result +"</div>";
+	   	  		 result = result +"</td>";
+    	  		 
+	             return result;
+    	  	}
+      },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "name",
 	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		 result = result +"<td>";
-             	     result = result +"<div class='width300px'>";
-             	     result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.name+"'>"+opt.name+"</div>";
-             	     result = result +"</div>";
+             	     result = result +"<div class='tbldata-dotdot' title='"+opt.name+"'>"+opt.name+"</div>";
              	     result = result +"</td>";
 	    	  		 
 		             return result;
@@ -267,9 +284,8 @@ function appraisalAssignPeersPagination(url,appraisalType){
               "render": function ( data, type, opt, meta ) {
             	     var result = "";
             	     result = result +"<td>";
-            	     result = result +"<div class='mt10 mb10'>";
-            	     result = result +"<div class='tblminwidth-75 clearfix'>"+opt.appraisalStartDate+"</div>";
-            	     result = result +"<div class='tblminwidth-75 clearfix mt5'>"+opt.appraisalEndDate+"</div>";
+            	     result = result +"<div>";
+            	     result = result + opt.appraisalStartDate+" to "+opt.appraisalEndDate;
             	     result = result +"</div>";
             	     result = result +"</td>";
 		             return result;
@@ -283,23 +299,21 @@ function appraisalAssignPeersPagination(url,appraisalType){
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	     result = result +"<td>";
-	            	     result = result +"<div class='mt10 mb10'>";
-	            	     result = result +"<div class='tblminwidth-75 clearfix'>"+opt.appraisalProcessStartDate+"</div>";
-	            	     result = result +"<div class='tblminwidth-75 clearfix mt5'>"+opt.appraisalProcessEndDate+"</div>";
+	            	     result = result +"<div>";
+	            	     result = result + opt.appraisalProcessStartDate+" to "+opt.appraisalProcessEndDate;
 	            	     result = result +"</div>";
 	            	     result = result +"</td>";
 			             return result;
 	              }
 		     }, {
 		    	  "targets": colIndex++,
-	              "data": "selfAppraisalEndDate",
+	              "data": "peerReviewStartDate",
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	     var result = "";
 	            	     result = result +"<td>";
-	            	     result = result +"<div class='mt10 mb10'>";
-	            	     result = result +"<div class='tblminwidth-75 clearfix'>"+opt.peerReviewStartDate+"</div>";
-	            	     result = result +"<div class='tblminwidth-75 clearfix mt5'>"+opt.peerReviewEndDate+"</div>";
+	            	     result = result +"<div>";
+	            	     result = result + opt.peerReviewStartDate+" to "+opt.peerReviewEndDate;
 	            	     result = result +"</div>";
 	            	     result = result +"</td>";
 			             return result;
@@ -319,7 +333,7 @@ function appraisalAssignPeersPagination(url,appraisalType){
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
-	    	"aaSorting": [[1,'desc']],
+	    	"aaSorting": [[2,'desc']],
 	    	"ordering": false,
 	    	"oLanguage": {
 	     		"sSearch": "",
@@ -343,4 +357,10 @@ function appraisalAssignPeersPagination(url,appraisalType){
     	   }
     	});
 }
+</script>
+
+<script>
+	function predefineAssociateImage(imageId){
+		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
+	}
 </script>

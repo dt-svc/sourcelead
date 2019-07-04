@@ -196,6 +196,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		StringBuilder query1 = new StringBuilder("");
 		if(performanceAppraisalTemplateDTO.getSearchValue() != null && !"".equalsIgnoreCase(performanceAppraisalTemplateDTO.getSearchValue())) {
 			 query1.append(" Q1.name like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.appraisalAssignedUser like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
 			 .append("OR Q1.appraisalStartDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
 			 .append("OR Q1.appraisalEndDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
 			 .append("OR Q1.appraisalProcessStartDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
@@ -237,6 +238,8 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 					 "SELECT " + 
 					"TEMPLATE.NAME AS name, " + 
 					"ASSIGNED.UUID AS templateUUId, " + 
+					"CONCAT (U.FIRST_NAME,' ',IFNULL(U.MIDDLE_NAME,''),IFNULL(U.LAST_NAME,'')) AS appraisalAssignedUser, " +
+					"U.FILE_URL AS appraisalAssignedUserImgUrl, " + 
 					"DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+appraisalDateFormat+") AS appraisalStartDate, "+
 					"DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+appraisalDateFormat+") AS appraisalEndDate, "+
 					"DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_START_DATE,"+appraisalDateFormat+") AS appraisalProcessStartDate, "+
@@ -248,8 +251,9 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 					"FROM " + 
 					"PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, " + 
 					"PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE, " + 
+					"USER U, " + 
 					"PERFORMANCE_APPRAISAL_PEERS PEERS " + 
-					"WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND PEERS.ID = ASSIGNED.PEER_ID  " + 
+					"WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND PEERS.ID = ASSIGNED.PEER_ID AND ASSIGNED.USER_ID = U.ID  " + 
 					"AND ASSIGNED.ORG_LOCATION_ID = :orgLocationId AND FIND_IN_SET('"+userId+"',PEERS.PEER_USER_ID) > 0)Q1 "+querySeachStr+sortingQry;
 			
 			String  countQuery = "SELECT COUNT(*) AS TOTAL" + 

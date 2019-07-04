@@ -85,7 +85,7 @@ public class PerformanceAppraisalRestController {
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
  		 
-		String[] tableColumns = { "name", "appraisalStartDate", "appraisalProcessStartDate", "peerReviewStartDate", "status" };
+		String[] tableColumns = { "appraisalAssignedUser", "name", "appraisalStartDate", "appraisalProcessStartDate", "peerReviewStartDate", "status" };
 		int sortColumnIndex = 1; // by default sorting using updated date
 		String sortColumnOrder = "desc"; // by default descending order
 		if (performanceAppraisalTemplateDTO.getOrder() != null && !performanceAppraisalTemplateDTO.getOrder().isEmpty()) {
