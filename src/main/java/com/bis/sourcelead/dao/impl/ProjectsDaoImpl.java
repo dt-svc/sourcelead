@@ -1692,15 +1692,20 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
                 + " pm.projects.projectName as projectName,"
                 + " pm.projects.startDate as projectStartDate,"
                 + " pm.projects.endDate as projectEndDate ,"
-                + " pm.projectAssignedDate as empStartDate,"
-                + " pm.projectEndDate as empEndDate,"
+                + " pmHistory.projectAssignedDate as empStartDate,"
+                + " pmHistory.projectTerminationDate as empEndDate,"
                 + "  pm.percentageOfWork as availableHours,"
                 + "  (( pm.percentageOfWork)/100) * " + noOfHours + " as hoursperWeek,"
                 + "  pm.masterCandidateId.id as masterCandidateId"
                 + " from ProjectMembers pm "
-                + " where pm.projectClientsId.orgLocationsId =:orgLocations"
+                + " join pm.memberHistoryList pmHistory "
+                + " where pmHistory.status='OPEN' and pm.projectClientsId.orgLocationsId =:orgLocations and pm.projectAssignedDate <= '"+toDate+"'"
                 + "";
- 
+        
+
+        
+        
+       /* 		
             query += " and '" + fromDate + "' <= (case when pm.projectEndDate is null and pm.projects.endDate is null"
                     + "        then pm.projectAssignedDate"
                             + " else (case when pm.projectEndDate is null "
@@ -1713,7 +1718,12 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
                             + " else (case when pm.projectEndDate is null "
                             + "            then pm.projectAssignedDate "
                             + "            else pm.projectAssignedDate end) "
-                    + "end)";
+                    + "end)";*/
+            
+          /*  query += " and pm.projectAssignedDate <= "+toDate+"";*/
+            
+            
+            
             
 //            query += " and '" + toDate + "' <= (case when pm.projectEndDate is null and pm.projects.endDate is null"
 //                    + "        then '" + toDate + "' "
@@ -1740,9 +1750,15 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
             query += " and pm.projectMemberCandidteId.id in (" + userIds + ")";
             
         }
+        query += " and pm.projects.projectStatus = '" +  Project_Status.INPROGRESS.name()+ "'";
         Query queryObj = session.createQuery(query);
         queryObj.setLong("orgLocations",orgLocations.getId());
         List<Object[]> queryObjList = queryObj.list();
+        
+        
+        
+        
+        
      return queryObjList;
     } catch (Exception e) {
         e.printStackTrace();
