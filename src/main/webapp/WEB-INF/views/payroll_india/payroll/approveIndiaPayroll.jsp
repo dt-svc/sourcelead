@@ -88,9 +88,13 @@
 function sentForApprove(){
 	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var feqUUID = $("#paySheetFrequency").val();
+	var excludeEmpArr = [];
+	$("input:checkbox[name=empPayroll]:checked").each(function(){
+		excludeEmpArr.push($(this).val());
+	});
 	$.ajax({
         type : "POST",
-        url: pmsUrl+"/approveIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
+        url: pmsUrl+"/approveIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,    
          success :function(result) { 
         	 
         	 $(location).attr('href', 'runIndianPayRoll?stab=payroll');
