@@ -123,7 +123,14 @@
 	 	<div title="--">--</div>
 	</td> 
 </c:if>
-
+<c:if test="${not empty expensesDTO.billingStatus}">
+	 <td> <div>${expensesDTO.billingStatus}</div></td>
+</c:if>
+<c:if test="${empty expensesDTO.billingStatus}">
+	<td>
+	 	<div title="--">--</div>
+	</td> 
+</c:if>
 </tr>
 </c:forEach>
 
