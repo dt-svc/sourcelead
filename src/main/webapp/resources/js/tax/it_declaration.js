@@ -46,7 +46,7 @@ $(document).ready(function() {
 			        			$(".success_pop").css("display","block");
 				        		$(".success_pop span").html("ITDeclaration added successfully....");
 				        		setTimeout(function() {
-				        			location.href = pmsUrl + "/runIndianPayRoll";
+				        			location.href = pmsUrl + "/runIndianPayRoll?stab=forms";
 						 		}, 100);
 			        		}
 			        	} else if (response.response === "INVALID_DATA" || response.response === "DUPLICATE_TAX_RECORD") {
@@ -260,8 +260,9 @@ function closeChangeStatusPopup() {
 
 function getItDeclarationSubmissionList(uuid, financialYear, pageNo) {
 	var pageSize = $("#pageSize").val();
+	var searchValue = $("#formSearch").val();  
 	$("#formList").empty();
-	$.post(sourceleadUrl + "/itDeclaration/list", {uuid:uuid, financialYear:financialYear, pageNo:pageNo, pageSize:pageSize}, function(response) {
+	$.post(sourceleadUrl + "/itDeclaration/list", {uuid:uuid, financialYear:financialYear,pageNo:pageNo, pageSize:pageSize,searchValue:searchValue}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
 		} else if (response.response === "AWKWARD") {

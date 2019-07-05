@@ -255,6 +255,7 @@
 					<div class="clearfix text-center">
 						<h4>Performance Management</h4>
 					</div>
+					</a>
 				</div>		
 				
 				<sec:authorize access="hasRole('ROLE_TICKET_CONFIGURATION')">
@@ -288,7 +289,7 @@
 	            <div class="dropdown pull-right report-dropdown"> <span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown"> <span class="caret cursorPointer"></span> </span>
 	              <ul class="dropdown-menu minHeight50 maxHeight250">
 	                <li><a href="${SourceLeadWeb_atsUrl}/candidateSourceList">Source</a></li>
-	                <li><a href="${SourceLeadWeb_atsUrl}/candidateDuplicateVerification">Candidate Duplicate Verification</a></li>
+	                <li><a href="${SourceLeadWeb_atsUrl}/candidateDuplicateVerification">Duplicate Verification</a></li>
 	              </ul>
 	            </div>
 	            <!-- Dropdown -->
@@ -300,7 +301,7 @@
 				
 				<div class="col-md-2 reportNewCta">
 					<a href="${SourceLeadWeb_sourceleadUrl}/clockInOutConfig">
-							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+							<div class="clearfix text-center mb10"><i class="clockAni clockIcon"></i></div>
 					<div class="clearfix text-center">
 						<h4>Clock In - Clock Out</h4>
 					</div>
