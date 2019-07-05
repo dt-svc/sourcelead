@@ -481,9 +481,9 @@ public class EMailJobScheduler {
 	 * @Reason as this schedule job is blocking IPAddress in QA server, and anyhow we aren't using this functionality.
 	 *  	   So, commented for now. If needed will open later
 	 **/
-   // 
-	//@Scheduled(cron = "0/30 * * * * *")// Scheduled for every 30 seconds for testing need to comment after testing.
-	@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every 15 Minutes.
+   // commented on 07 July 2019 .
+	/*@Scheduled(cron = "0/30 * * * * *")// Scheduled for every 30 seconds for testing need to comment after testing.
+	//@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every 15 Minutes.
 	@Async
 	public void runJobSchedulerEmailJobParsingAtOrgLevel() { // reads the email configured at org level and parse the
 																// Jobs(attachments)in inbox folder.
@@ -512,8 +512,8 @@ public class EMailJobScheduler {
 					List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.RESUME_PARSING, true);
 						File tempfolder = null;
 					for(EmailScenarioConfiguration email :  emailsList) {
-						System.out.println(" **************Parsisng started for Email id is :" + email.getEmailId());
-						logger.debug("***********Parsisng started  Email id is :" + email.getEmailId());
+						System.out.println("orgLocationId is "+orgLocationId+" **************Parsisng started for Email id is :" + email.getEmailId());
+						logger.debug("orgLocationId is "+orgLocationId+" **************Parsisng started for Email id is :" + email.getEmailId());
 						tempfolder = new File(staticPath+ System.getProperty("file.separator") +"tempResumes" );
 						if (!tempfolder.exists()) tempfolder.mkdirs(); // if not exist create the folder with path.
 						 new ReadEmail().readEMailAttachments(orgLocationId, email, tempfolder);  //downloads the attachments from the configured email by user level to temp folder.
@@ -541,7 +541,7 @@ public class EMailJobScheduler {
 			e.printStackTrace();
 		}
        }
-	}
+	}*/
 	
    @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
    //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..

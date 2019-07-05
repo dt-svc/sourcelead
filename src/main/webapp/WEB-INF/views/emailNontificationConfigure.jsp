@@ -85,7 +85,7 @@
             
             <!--  Email parsing -->
             
-            <div class="clearfix mt">
+            <!-- <div class="clearfix mt">
                   <div class="reportHead clearfix">
                   <h5 class='pull-left ml mt'>Parsing Email Configuraiton</h5>
                      <ul class="pull-right list-unstyled list-inline">
@@ -93,7 +93,7 @@
                      </ul>
                   </div> 			
                  <div id="emailparsingList"></div>  
-            </div>
+            </div> -->
             
             
             <!--  Email parsing -->
@@ -426,10 +426,10 @@ function changeDefaultemailConfig(ele, id) {
  <div id="emailfromMail" class="popupWrap popupWrapFixed">
    <jsp:include page="addMailPopUp.jsp"></jsp:include>
 </div>
-
+<%-- commented on 07 July 2019 
 <div id="emailparsingPopUp" class="popupWrap popupWrapFixed">
 	 <jsp:include page="addParserMailPopUp.jsp"></jsp:include>
-</div>
+</div> --%>
 
 
  <script>
