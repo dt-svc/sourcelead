@@ -77,6 +77,65 @@ public class CustomDashBoardRestController {
 	 * @return ModelAndView
 	 * 
 	 */
+	
+	
+	/**
+	 * 
+	 * Return Dash Board Report Configuration jsp
+	 * @return ModelAndView
+	 */
+	
+	@RequestMapping(value="/configureCustomDashBoardReport")
+	public ModelAndView configureCustomDashBoardReport(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		try {
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("customdashboard/customDashBoardReportConf");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
+	
+	/**
+	 * 
+	 * Return Dash Board Module Configuration jsp
+	 * @return ModelAndView
+	 */
+	
+	@RequestMapping(value="/configureCustomDashBoardModule")
+	public ModelAndView configureCustomDashBoardModule(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		try {
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("customdashboard/customDashBoardModuleConf");
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
+	
+	/**
+	 * Return Dash Board View jsp
+	 * 
+	 * 
+	 * @return ModelAndView
+	 */
+	
+	@RequestMapping(value="/configureCustomDashBoardView")
+	ModelAndView configureCustomDashBoardView(HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		try {
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("customdashboard/customDashBoardView");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
+	
+	
 	@RequestMapping(value = "/addCustomDashBoardConf")
 	public ModelAndView addConfigureCustomDashBoard(HttpServletRequest request,HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();

@@ -98,7 +98,7 @@
 	<div class="col-md-6">
 		<div class="pull-right">
 		  <input value="Save" class="btn btn-primary" type="button" onclick="saveCustomDashBoard();">
-			<a href="javascript:void(0)"><input value="Cancel" class="btn btn-default ml" type="button"></a>
+			<a href="javascript:void(0)"><input value="Cancel" class="btn btn-default ml" type="button" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoard'"></a>
 		</div>
 	</div>
 	</div>

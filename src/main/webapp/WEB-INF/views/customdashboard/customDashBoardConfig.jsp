@@ -45,8 +45,8 @@ $(document).ready(function(){
   <div class="popupWrap popupWrapFixed" id="addComponets">
       <div class="popupHead"><span>Add Components</span><i class="closePop pull-right popClose"></i></div>
       <div class="popupContent adddashComp">
-          <a href="add-dashboard-reports.html"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-report.svg">Reports</a>
-          <a href="add-dashboard-modules.html"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-module.svg">Modules</a>
+          <a href="${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoardReport"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-report.svg">Reports</a>
+          <a href="${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoardModule"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-module.svg">Modules</a>
       </div>
   </div>
 
@@ -90,7 +90,7 @@ $(document).ready(function(){
 					result = result + '  <li class="mr5"><i class="fa fa-plus cursorPointer text-primary" title="Add Components" id="addCustomComponents'+opt.customDashBoardConfId+'" onclick="showPopup('+opt.customDashBoardConfId+');"></i></li>';
 					result = result + '  <li class="mr5"><a href="'+sourceleadUrl+'/editCustomDashBoardConf?customDashBoardUUID='+opt.customDashBoardConfUUID+'"><i class="fa fa-pencil cursorPointer" title="Edit"></a></i></li>';
 					result = result + '  <li class="mr5"><i class="fa fa-trash cursorPointer" title="Delete"></i></li>';
-					result = result + '  <li class="mr5"><a href="dashboard-view.html"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
+					result = result + '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardView"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
 					result = result + ' </ul>';
 					result = result + ' </div>';
 					result = result + '  </td>';               
