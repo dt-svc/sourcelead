@@ -176,7 +176,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					}else {
 						draftPayroll = indPaysheetFrequencyDTO.getIndPayrollDTO()
 								.stream()
-								.filter(p->p.getEmployeeDesignationType() != null && (PayrollConstant.NEW.equalsIgnoreCase(p.getApproverStatus()) || PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus()))&& p.getPayType().equalsIgnoreCase(generateINDPayrollDTO.getPaytype()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
+								.filter(p->p.getEmployeeDesignationType() != null && (PayrollConstant.NEW.equalsIgnoreCase(p.getApproverStatus()) || PayrollConstant.DRAFT.equalsIgnoreCase(p.getApproverStatus())) && p.getPayType().equalsIgnoreCase(generateINDPayrollDTO.getPaytype()) && !PayrollConstant.C2C.equalsIgnoreCase(p.getEmployeeDesignationType()))
 								.collect(Collectors.toList());
 					}
 					indPaysheetFrequencyDTO.setIndPayrollDTO(draftPayroll);
@@ -243,7 +243,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					employeePayroll.setEmpPayRate(payRate);
 					employeePayroll.setCandidate(assoSal.getCandidate());
 					employeePayroll.setPayrollPaySlipInd(payrollPaySlipIndService.getActivePayslipByOrglocationId(orgLocation.getId()));
-					employeePayroll.setPayCheckDate(paySheetFreq.getPayCheckDate());
+					employeePayroll.setPayCheckDate(commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), paySheetFreq.getPayCheckDate()));
 					employeePayroll.setRegularHoursAmount(regularHoursAmount);
 					employeePayroll.setType(Constants.REGULAR);
 					if (employee != null) {
@@ -442,8 +442,8 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 					employeePayroll.setStatus(Constants.RECORD_ACTIVE);
 					employeePayroll.setCreatedBy(loginUser.getId());
 					employeePayroll.setUpdatedBy(loginUser.getId());
-					employeePayroll.setCreatedDate(new Date());
-					employeePayroll.setUpdatedDate(new Date());
+					employeePayroll.setCreatedDate(commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), new Date()));
+					employeePayroll.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), new Date()));
 					
 					Double overTimeHours =  timeSheetDayEntriesService.getOverTimeHoursByMasterCandidateIdAndOrgLocationWithStartEndDates( assoSal.getCandidate().getMasterCandidateId().getId(), paySheetFreq.getFrequencyStartDate(), paySheetFreq.getFrequencyEndDate(), orgLocation);
 					employeePayroll.setOverTimeHours(overTimeHours.toString());

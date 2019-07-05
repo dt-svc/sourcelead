@@ -10,6 +10,7 @@ import com.bis.sourcelead.indPayroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
+import com.bis.sourcelead.payroll.entity.EmployeeSessionIndPayroll;
 
 public interface IndPaysheetFrequencyDao {
 
@@ -45,4 +46,9 @@ public interface IndPaysheetFrequencyDao {
 
 	ResponseList<IndEmployeePayrollDTO> getPayrollSalaryRegisterReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations);
 
+	public EmployeeSessionIndPayroll saveEmployeeSessionIndPayroll(EmployeeSessionIndPayroll employeeSessionIndPayroll) throws Exception;
+
+	List<EmployeeSessionIndPayroll>  getEmployeeSessionList(String paySheetFrequencyUUID) throws Exception ;
+	
+	void deleteIndPayrollCaheRecoedByPaySheetFrequencyUUID(List<EmployeeSessionIndPayroll> indPayrollCahe);
 }
