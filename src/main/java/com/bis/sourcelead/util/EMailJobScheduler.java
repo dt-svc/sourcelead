@@ -513,7 +513,7 @@ public class EMailJobScheduler {
 						List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.RESUME_PARSING, true);
 							File tempfolder = null;
 						for(EmailScenarioConfiguration email :  emailsList) {
-							System.out.println(" **************Parsisng started for Email id is :" + email.getEmailId());
+							System.out.println(" ord is "+org.getId()+", orgLocationId ,"+orgLocationId+"**************Parsisng started for Email id is :" + email.getEmailId());
 							logger.debug("***********Parsisng started  Email id is :" + email.getEmailId());
 							tempfolder = new File(staticPath+ System.getProperty("file.separator") +"tempResumes" );
 							if (!tempfolder.exists()) tempfolder.mkdirs(); // if not exist create the folder with path.
