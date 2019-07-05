@@ -49,7 +49,7 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 		List<CustomDashBoardConfiguration> customDashBoardConf = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from CustomDashBoardConfiguration customDashBoardConf where customDashBoardConf.orgLocations.id = :orgLocationId";
+			String query = "from CustomDashBoardConfiguration customDashBoardConf where customDashBoardConf.orgLocations.id = :orgLocationId AND customDashBoardConf.status = 1";
 			customDashBoardConf = session.createQuery(query).setLong("orgLocationId", locationId).list();
 
 		} catch (Exception e) {

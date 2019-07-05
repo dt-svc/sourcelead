@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
 import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardAssociatesConf;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
@@ -23,14 +25,19 @@ import com.bis.sourcelead.dashboard.entity.CustomDashBoardRoleConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashboardConfService;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.LetterHead;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.enums.Result;
+
 
 @RestController
 @RequestMapping("/app")
@@ -48,6 +55,12 @@ public class CustomDashBoardRestController {
 	
 	@Autowired
 	CustomDashboardConfService customDashboardConfService;
+	
+	@Autowired
+	CustomDashBoardConfDao customDashBoardConfDao;
+	
+	@Autowired
+	OrgService orgService;
 	
 	
 	/**
@@ -185,4 +198,31 @@ public class CustomDashBoardRestController {
 		return model;
 		
 	}
+	
+	
+	/**
+	 * delete custom dashboard configuration by changing status
+	 * 
+	 * @param customDashBoardUUID
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	
+	@RequestMapping(value = "/deleteCustomDashBoardConf", method = RequestMethod.POST)
+	public @ResponseBody  void  deleteCustomDashBoardConf(@RequestParam("customDashBoardUUID") String customDashBoardUUID,HttpServletRequest req, HttpServletResponse res) throws Exception
+	{
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+			CustomDashBoardConfiguration customDashBoardConf = customDashboardConfService.getCustomDashboardConfByUUID(customDashBoardUUID, orgLocation.getId());
+			customDashBoardConf.setStatus(0);
+			customDashBoardConfDao.saveCustomDashBoardConf(customDashBoardConf);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
 }

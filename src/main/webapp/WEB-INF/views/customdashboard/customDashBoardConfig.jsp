@@ -74,6 +74,7 @@ $(document).ready(function(){
 			result = result + '</thead>';
 			result = result + '<tbody>';
 			
+			
 			if(data != null && data.length >0){
 				for(var i=0; i<data.length; i++){
 					var opt = data[i];
@@ -89,7 +90,7 @@ $(document).ready(function(){
 					result = result + ' <ul class="list-unstyled list-inline">';
 					result = result + '  <li class="mr5"><i class="fa fa-plus cursorPointer text-primary" title="Add Components" id="addCustomComponents'+opt.customDashBoardConfId+'" onclick="showPopup('+opt.customDashBoardConfId+');"></i></li>';
 					result = result + '  <li class="mr5"><a href="'+sourceleadUrl+'/editCustomDashBoardConf?customDashBoardUUID='+opt.customDashBoardConfUUID+'"><i class="fa fa-pencil cursorPointer" title="Edit"></a></i></li>';
-					result = result + '  <li class="mr5"><i class="fa fa-trash cursorPointer" title="Delete"></i></li>';
+					result = result + '  <li class="mr5"><a href="javascript:void(0)" title="Delete"><i class="fa fa-trash textDelete" onclick="deleteCustomDashBoardConf(\''+opt.customDashBoardConfUUID+'\');"></i></a></li> ';
 					result = result + '  <li class="mr5"><a href="dashboard-view.html"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
 					result = result + ' </ul>';
 					result = result + ' </div>';
@@ -107,6 +108,7 @@ $(document).ready(function(){
 		}); 
   }
   </script>
+  
   
   <script>
 function customDashBoardConfigureTable(){ 
@@ -172,8 +174,17 @@ function showPopup(id){
 }
 </script>
 
-
-
+ <script>
+function deleteCustomDashBoardConf(customDashBoardUUID){
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/deleteCustomDashBoardConf?"+tokenParamName+"="+tokenValue+"&customDashBoardUUID="+customDashBoardUUID,
+		    success: function(data) {
+			 	getCustomDashBoardConfiguredList();
+		    }
+	     });
+}
+</script>
 
 
 
