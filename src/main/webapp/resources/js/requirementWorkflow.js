@@ -6,6 +6,8 @@ var lastStage = "";
 var commentReq = "";
 var questionnaireId = null;
 var questionnaireName = null;
+var deletedStageUuids = new Array();
+var workflowName = "";
 
 function RequirementWorkflow(){
 	
@@ -84,6 +86,7 @@ function RequirementWorkflow(){
 	     
 		  if ($('#requirementWorkFlowForm').validate(false, validationSettings)) {
 			  var formData = getFormData("requirementWorkFlowForm");
+			  workflowName = $('#workFlowName').val();
 			   $("#saveReqWorkFlow").attr("disabled", "disabled");
 	           $("#saveReqWorkFlow").addClass('button').val('Processing..'); 
 	           
@@ -101,7 +104,7 @@ function RequirementWorkflow(){
 							showError("Invalid data");
 						}else{
 							
-							location.replace(sourceleadUrl+"/workflowList");	
+							location.replace(sourceleadUrl+"/workflowList?workflowName="+workflowName);	
 							
 						}
 		        	} else if (result.indexOf('Sign In') !== -1) {
@@ -325,7 +328,7 @@ function RequirementWorkflow(){
 			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Do you want to delete "+workFlowName+"</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"	<b href='javascript:void(0)'><input type='button' value='Ok' onclick='requirementWorkflow.removeWorkFlowEntry(\""+workflowuuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='requirementWorkflow.cancel();'></b>";
+			result = result +"	<b href='javascript:void(0)'><input type='button' value='Ok' onclick='requirementWorkflow.removeWorkFlowEntry(\""+workflowuuid+"\", \""+workFlowName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='requirementWorkflow.cancel();'></b>";
 			result = result +"	</div>";
 			$("#popUp").empty().append(result);
 			$("#remove_user_pop").slideDown(200);
@@ -338,7 +341,7 @@ function RequirementWorkflow(){
 			$(".project_inn_mask").fadeOut(200);
 			}	
 
-		this.removeWorkFlowEntry = function(workflowuuid){
+		this.removeWorkFlowEntry = function(workflowuuid, workFlowName){
 			$("#popUp").empty();
 			 $(".project_inn_mask").fadeOut(200);
 			 
@@ -352,6 +355,7 @@ function RequirementWorkflow(){
 			 		success: function(result) {
 	 		  			if(result = "Success"){
 	 		  				requirementWorkflow.getWorkflowList();
+	 		  				requirementWorkflow.showSuccessMsg("Successfully deleted "+workFlowName);
 	 		  			}
 				    }		
 			 	})
@@ -367,7 +371,7 @@ function RequirementWorkflow(){
 		}
 
 
-		this.saveRequirementViewWorkFlow = function(workflowUuid){
+		this.saveRequirementViewWorkFlow = function(workflowUuid, stageName){
 		      var validationSettings = {
 		           errorMessagePosition: 'element',
 		           borderColorOnError: '',
@@ -377,6 +381,7 @@ function RequirementWorkflow(){
 		     
 			  if ($('#requirementWorkFlowForm').validate(false, validationSettings)) {
 				  var formData = getFormData("requirementWorkFlowForm");
+				  workflowName = $('#workFlowName').val();
 				   $("#saveReqWorkFlow").attr("disabled", "disabled");
 		           $("#saveReqWorkFlow").addClass('button').val('Processing..'); 
 			 $.ajax({
@@ -392,27 +397,39 @@ function RequirementWorkflow(){
 								$("#saveReqWorkFlow").removeAttr('button').val('Save');	
 								showError("Invalid data");
 							}else{
-								
-								location.replace(sourceleadUrl+"/workflowList");	
-								
+								if(deletedStageUuids.length == 0){
+									location.replace(sourceleadUrl+"/workflowList?workflowName="+workflowName);	
+								}
 							}
 			        	} else if (result.indexOf('Sign In') !== -1) {
 			        		location.replace(sourceleadUrl);
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
-		           },
+		           },complete: function (result) {
+		        	    if(deletedStageUuids.length > 0){
+		        	   requirementWorkflow.deleteRequirementWorkflowStages(deletedStageUuids, workflowUuid, stageName, workflowName);
+		        	   }
+		            }
 		       });
 		     } 
 		}
 
+		this.deleteDynamicStages = function(stageUuid, workflowUuid, stageName){
+			$("#popUp").empty();
+		     $(".project_inn_mask").fadeOut(200);
+			$("ul#stageList li:contains('"+stageName+"')").remove();
+			requirementWorkflow.showSuccessMsg("Successfully Deleted "+stageName);
+			deletedStageUuids.push(stageUuid);
+		}
+		
 		this.deletepopup = function(stageUuid, stageName, workflowUuid){
 			var result = "";
 			$("#popUp").empty();
 			result = result +" <div class='project_inn_mask'></div>"; 
 			result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +" <p>Do you want to delete "+stageName+"?</p>";
-			result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteRequirementWorkflowStage(\''+stageUuid+'\', \''+workflowUuid+'\', \''+stageName+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
+			result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteDynamicStages(\''+stageUuid+'\', \''+workflowUuid+'\', \''+stageName+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
 			result = result +" </div>";
 			$("#popUp").append(result);
 			$("#remove_user_pop").slideDown(200);
@@ -436,16 +453,13 @@ function RequirementWorkflow(){
 				}
 			});
 			
-			this.deleteRequirementWorkflowStage = function(stageUuid, workflowUuid, stageName){
-				 $("#popUp").empty();
-			     $(".project_inn_mask").fadeOut(200);
+			this.deleteRequirementWorkflowStages = function(deletedStageUuids, workflowUuid, stageName, workflowName){
 				$.ajax({
 					type : "GET",
-					url : sourceleadUrl + "/deleteRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid,
+					url : sourceleadUrl + "/deleteRequirementWorkflowStage?deletedStageUuids="+deletedStageUuids+"&requirementWorkFlowUuid="+workflowUuid,
 					success : function(dataList){
 						if(dataList == "Success"){
-						      $("ul#stageList li:contains('"+stageName+"')").remove();
-						      requirementWorkflow.showSuccessMsg("Successfully Deleted "+stageName);
+							location.replace(sourceleadUrl+"/workflowList?workflowName="+workflowName);	
 						}else{
 							 showError("Operation failed, please try again");
 						}

@@ -73,9 +73,13 @@ public class RequirementWorkflowController {
 	}
 	
 	@RequestMapping(value = "/workflowList")
-	public ModelAndView workflowList(HttpServletRequest request) throws Exception{
+	public ModelAndView workflowList(HttpServletRequest request, 
+			@RequestParam(value = "workflowName", required = false)String workflowName)throws Exception{
 		ModelAndView modelandview = new ModelAndView();
 		modelandview.setViewName("workflow/workflowList");
+		if(StringUtils.isNotBlank(workflowName)) {
+			modelandview.addObject("workflowName", workflowName);
+		}
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		User user = new User();
@@ -490,21 +494,29 @@ public class RequirementWorkflowController {
 		
 		@RequestMapping(value = { "/deleteRequirementWorkflowStage" })
 		public @ResponseBody String deleteRequirementWorkflowStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
-				HttpServletRequest request) throws Exception {
+				HttpServletRequest request) {
+			try {
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 			Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 			User user = new User();
 			user.setId(userId);
-			Boolean flag;
+			Boolean flag = false;
 			logger.debug("before deleteRequirementWorkflowStage>>> orgLocationid "+orgLocations.getId());
-			flag = requirementWorkFlowService.saveRequirementWorkFlowStagesBySeqOrder(requirementWorkFlowStagesDTO, orgLocations, user);
+			String[] deletedStageUuids = requirementWorkFlowStagesDTO.getDeletedStageUuids();
+			for(int i=0; i< deletedStageUuids.length; i++) {
+				requirementWorkFlowStagesDTO.setUuid(deletedStageUuids[i]);
+				flag = requirementWorkFlowService.saveRequirementWorkFlowStagesBySeqOrder(requirementWorkFlowStagesDTO, orgLocations, user);
+			}
 			if(flag == true) {
 				return Constants.SUCCESS;
 			}
 			logger.debug("afer deleteRequirementWorkflowStage>>> orgLocationid "+orgLocations.getId());
 			return Constants.FAILED;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return Constants.FAILED;
 		}
-
+		}
 		
 		@RequestMapping(value = "/saveWorkFlowDetails", method = RequestMethod.POST)
 		public @ResponseBody ResponseList<String> saveWorkFlowDetails(
