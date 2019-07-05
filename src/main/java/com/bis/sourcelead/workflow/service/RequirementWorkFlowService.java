@@ -3,9 +3,11 @@ package com.bis.sourcelead.workflow.service;
 
 
 import java.util.List;
+import java.util.TreeMap;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
@@ -89,6 +91,7 @@ public interface RequirementWorkFlowService {
 
 	List<RequirementWorkFlowStages> getRequirementWorkflowStagesByWorkflowIdAndOrglocations(Long workflowId, OrgLocations orgLocations);
 	
-	String validateStageShortCode(Long id, String shortCode, String workflowUuid)throws Exception;
+	String validateStageShortCode(Long id, String shortCode, String workflowUuid, String stageUuid)throws Exception;
 	
+	TreeMap<Long, String> checkWorkflowInRequirements(String workflowUuid, Long id)throws Exception;
 }

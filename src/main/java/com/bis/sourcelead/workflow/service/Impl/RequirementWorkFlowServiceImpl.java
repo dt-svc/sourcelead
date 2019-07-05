@@ -7,7 +7,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -122,6 +125,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				requirementWorkFlowStages.setStatus(requirementDefaultWorkFlowStages.get(i).getStatus());
 				requirementWorkFlowStages.setCommentRequired(Constants.YES);
 				requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
+				requirementWorkFlowStages.setStageShortCode(requirementDefaultWorkFlowStages.get(i).getStageShortCode());
 				requirementWorkFlowStages.setCreatedDate(new Date());
 				requirementWorkFlowStages.setCreatedBy(user);
 				requirementWorkFlowStages.setUpdatedDate(new Date());
@@ -566,7 +570,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 		
 		if(requirementWorkFlowStagesDTO.getStageShortCode() != null && StringUtils.isNotBlank(requirementWorkFlowStagesDTO.getStageShortCode())) {
-			workFlowStage.setStageShortCode(requirementWorkFlowStagesDTO.getStageShortCode());
+			workFlowStage.setStageShortCode(requirementWorkFlowStagesDTO.getStageShortCode().toUpperCase(Locale.ROOT));
 		}
 		
 		if(requirementWorkFlowStagesDTO.getRequirementQuestionnaireTemplateId() != null) {
@@ -779,6 +783,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStages.setCommentRequired(workFlowStages.get(i).getCommentRequired());
 			requirementWorkFlowStages.setRequiredStatsList(workFlowStages.get(i).getRequiredStatsList());
 			requirementWorkFlowStages.setChosenColumns(workFlowStages.get(i).getChosenColumns());
+			requirementWorkFlowStages.setStageShortCode(workFlowStages.get(i).getStageShortCode());
 			requirementWorkFlowStages.setCreatedDate(new Date());
 			requirementWorkFlowStages.setCreatedBy(user);
 			requirementWorkFlowStages.setUpdatedDate(new Date());
@@ -891,7 +896,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		logger.debug("Finished getNextRequirementWorkflowStagesByWorkflowUuid Service for "+orgLocations.getId()+" orgLocation");
 		return workFlowStagesDTO;
 	}catch(Exception e) {
-		logger.error(e+" in getNextRequirementWorkflowStagesByWorkflowUuid Service for "+orgLocations.getId()+" orgLocation");;
+		logger.error(e+" in getNextRequirementWorkflowStagesByWorkflowUuid Service for "+orgLocations.getId()+" orgLocation");
 		e.printStackTrace();
 		return null;
 	}
@@ -1009,8 +1014,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public String validateStageShortCode(Long id, String shortCode, String workflowUuid) {
-		// TODO Auto-generated method stub
+	public String validateStageShortCode(Long id, String shortCode, String workflowUuid, String stageUuid) {
 		logger.debug("Started validateStageShortCode Service for "+id+" orgLocation and "+shortCode+" shortCode");
 		List<RequirementWorkFlowStages> workflowStages = new ArrayList<RequirementWorkFlowStages>();
 		String flag = null;
@@ -1021,7 +1025,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				nonSpecialFlag = Pattern.matches(nonSpecialChars, shortCode);
 			}
 			if(nonSpecialFlag == true) {
-			workflowStages = requirementWorkFlowDao.getRequirementWorkflowStagesListByUuid(workflowUuid, id);
+			workflowStages = requirementWorkFlowDao.getRequirementWorkflowStagesListByUuidAndOrgLocationId(workflowUuid, id, stageUuid);
 			if(workflowStages != null && workflowStages.size() > 0) {
 				if(shortCode != null && !StringUtils.isBlank(shortCode)) {
 					Stream<RequirementWorkFlowStages> stageStream = workflowStages.stream().filter(stage -> stage.getStageShortCode().equalsIgnoreCase(shortCode));
@@ -1041,7 +1045,27 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			return null;
 		}
 	}
-	
+
+
+	@Override
+	public TreeMap<Long, String> checkWorkflowInRequirements(String workflowUuid, Long id)  {
+		logger.debug("Started checkWorkflowInRequirements Service for "+id+" orgLocation");
+		try {
+		TreeMap<Long, String> requirementMap = new TreeMap<Long, String>();
+		List<Requirement> requirementList = requirementWorkFlowDao.getRequirementListByWorkflowIdAndOrgLocationId(workflowUuid, id);
+		if(requirementList != null && requirementList.size() > 0) {
+			for(Requirement requirement : requirementList) {
+				requirementMap.put(requirement.getId(), requirement.getJobTitle());
+			}
+			return requirementMap;
+		}
+		logger.debug("Finished checkWorkflowInRequirements Service for "+id+" orgLocation");
+		return null;
+	}catch(Exception e) {
+		e.printStackTrace();
+		logger.error(e+" in checkWorkflowInRequirements Service for "+id+" orgLocation");
+		return null;
+	}
 	}
 
-
+}

@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
@@ -791,5 +792,39 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 		}
 		return workflowStagesList;
 	}
+
+	@Override
+	public List<Requirement> getRequirementListByWorkflowIdAndOrgLocationId(String uuid, Long id) throws Exception {
+		logger.debug("Running getRequirementListByWorkflowIdAndOrgLocationId DAO");
+		List<Requirement> requirementList = new ArrayList<Requirement>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Requirement requirement where requirement.workflowId.uuid =:uuid and requirement.orgLocationId.id=:id";
+			requirementList = session.createQuery(query).setString("uuid", uuid).setLong("id", id).list();
+			return requirementList;
+		} catch (Exception e) {
+			logger.error(e + " in getRequirementListByWorkflowIdAndOrgLocationId DAO");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesListByUuidAndOrgLocationId(String uuid, Long id, String stageUuid){
+		logger.debug("Running getRequirementWorkflowStagesListByUuidAndOrgLocationId DAO");
+		List<RequirementWorkFlowStages> workflowstages = new ArrayList<RequirementWorkFlowStages>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String queryString = "from RequirementWorkFlowStages stage where stage.orgLocationId.id = :id and stage.requirementWorkFlowId.uuid = :uuid "
+					+ " and stage.uuid <> :stageUuid";
+			workflowstages = session.createQuery(queryString).setString("uuid", uuid).setLong("id", id).setString("stageUuid", stageUuid).list();
+			return workflowstages;
+		} catch (Exception e) {
+			logger.error(e +" in getRequirementWorkflowStagesListByUuidAndOrgLocationId DAO");
+			e.printStackTrace();
+			return workflowstages;
+		}
+	}
+
 }
 	
