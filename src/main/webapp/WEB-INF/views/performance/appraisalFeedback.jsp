@@ -239,7 +239,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 					    	  if(v['type'] != 'file'){
 					    		  result = result + '<div class="col-md-5">'+v['value']+'</div>';
 					    	  }else{
-					    			result = result +"<a href='"+v['value']+"'><img class='performanceThumbImg' onerror='predefineOrgImage(this);' data-id='orgLogoImage' src="+v['value']+" alt='image'><a>";
+					    			result = result +"<img class='performanceThumbImg' onerror='predefineOrgImage(this);' data-id='orgLogoImage' src="+v['value']+" alt='image'>";
 					       	    	result = result +"</div>";
 					    	  }
 					    	 
