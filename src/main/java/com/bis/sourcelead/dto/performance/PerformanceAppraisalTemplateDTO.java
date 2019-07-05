@@ -58,6 +58,8 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private BigInteger templateId;
 	
+	private BigInteger assignedId;
+	
 	@Required(desc="goalsWeightage", dependsOn = "appraisalGoals", parentValue = "Y")
 	private String goalsWeightage;
 	
@@ -109,6 +111,8 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	private String dayDiff;
 	
 	private char daysDiff;
+	
+	private String submissionStage;
 	
 	public Long getAppraisalTemplateId() {
 		return appraisalTemplateId;
@@ -476,6 +480,22 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 
 	public void setAppraisalAssignedUserImgUrl(String appraisalAssignedUserImgUrl) {
 		this.appraisalAssignedUserImgUrl = appraisalAssignedUserImgUrl;
+	}
+
+	public BigInteger getAssignedId() {
+		return assignedId;
+	}
+
+	public void setAssignedId(BigInteger assignedId) {
+		this.assignedId = assignedId;
+	}
+
+	public String getSubmissionStage() {
+		return submissionStage;
+	}
+
+	public void setSubmissionStage(String submissionStage) {
+		this.submissionStage = submissionStage;
 	}
 
 	
