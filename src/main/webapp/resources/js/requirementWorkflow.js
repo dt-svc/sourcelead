@@ -361,8 +361,8 @@ function RequirementWorkflow(){
 			 	})
 		}
 		
-		 this.editStage = function(stageUuid, workflowUuid){
-			window.location.href = sourceleadUrl + "/editStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid;
+		 this.editStage = function(stageUuid, workflowUuid, workFlowName){
+			window.location.href = sourceleadUrl + "/editStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid+"&workflowName="+workFlowName;
 			
 		} 
 
@@ -652,7 +652,7 @@ function RequirementWorkflow(){
 									$("#saveStageButton").removeAttr('button').val('Save');	
 									showError("Invalid data");
 								}else{
-									window.location.replace(sourceleadUrl+"/workflowList");
+									window.location.replace(sourceleadUrl+"/workflowList?workflowName="+workFlowName);	
 								}
 				      	} else if (dataList.indexOf('Sign In') !== -1) {
 				      		location.replace(sourceleadUrl);
@@ -726,9 +726,6 @@ function RequirementWorkflow(){
 						});
 				}
 
-					 this.cancelAddStage = function(){
-						 window.location.href = sourceleadUrl+"/workflowList";
-					 }
 					 
 					 this.createNewtask = function() {
 						 requirementWorkflow.getAllActiveUsersList();
