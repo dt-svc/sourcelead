@@ -44,7 +44,18 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
          <c:if test = "${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
           <li>
           <c:if test="${not empty requirementWorkFlowStagesDTO}">
-          <a class="newAdBtn mr5"  href="${SourceLeadWeb_sourceleadUrl}/addStage?uuid=<c:out value="${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}" />" title="Add">+ Stage</a>
+         <div class="col-md-3">  
+
+         <c:choose>
+         <c:when test="${requirementWorkFlowStagesDTO[0].stageCount == 15 || requirementWorkFlowStagesDTO[0].stageCount > 15}">
+         <a  class="btn btn-primary pull-right btn-sm"  id = "stageButton" href="#" onclick ="requirementWorkflow.alertStageCount();" title="Add">+ Stage</a>
+         </c:when>
+         <c:otherwise>
+         <a  class="btn btn-primary pull-right btn-sm"  id = "stageButton" href="${SourceLeadWeb_sourceleadUrl}/addStage?uuid=<c:out value="${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}" />" title="Add">+ Stage</a>
+         </c:otherwise>
+         </c:choose>
+
+         </div>
           </c:if>
           </li>
          </c:if>
@@ -58,7 +69,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
        
     </div>
 	</c:if>
-
+</div>
     
     <c:if test="${not empty requirementWorkFlowStagesDTO}">
     <div class="clearfix backgroundWhite mb">
