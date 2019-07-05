@@ -43,9 +43,9 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 	}
 
 	@Override
-	public List<PerformanceFeedbackTemplateDTO> getPerformanceAssignedFeedbackTemplateDTOList(String assignedUUID)
+	public List<PerformanceFeedbackTemplateDTO> getPerformanceAssignedFeedbackTemplateDTOList(String assignedUUID,String templateIds)
 			throws Exception {
-		return performanceAppraisalDao.getPerformanceAssignedFeedbackTemplateDTOList(assignedUUID);
+		return performanceAppraisalDao.getPerformanceAssignedFeedbackTemplateDTOList(assignedUUID,templateIds);
 	}
 
 	@Override
@@ -86,6 +86,11 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 	public PerformanceFeedbackDTO getPerformanceFeedbackDetails(String assignedUUID, Long userId)
 			throws Exception {
 		return performanceAppraisalDao.getPerformanceFeedbackDetails(assignedUUID, userId);
+	}
+
+	@Override
+	public String getJsonCategoriesString(String assignedUUID) throws Exception {
+		return performanceAppraisalDao.getJsonCategoriesString(assignedUUID);
 	}
 
 	

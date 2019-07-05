@@ -78,13 +78,25 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(performanceAppraisalTemplateDTO.getSearchValue() != null && !"".equalsIgnoreCase(performanceAppraisalTemplateDTO.getSearchValue())) {
-			 query1.append(" Q1.name like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			
+				if(performanceAppraisalTemplateDTO.getSearchValue().toLowerCase().equalsIgnoreCase("New")){
+					performanceAppraisalTemplateDTO.setSearchValue(" ");
+				}
+				
+				if(performanceAppraisalTemplateDTO.getSearchValue().toLowerCase().equalsIgnoreCase("Submitted For Review") || 
+						performanceAppraisalTemplateDTO.getSearchValue().toLowerCase().startsWith("Submitted") ||
+						performanceAppraisalTemplateDTO.getSearchValue().toLowerCase().startsWith("Review")){
+					performanceAppraisalTemplateDTO.setSearchValue("Submitted_For_Review");
+				}
+			
+			  query1.append(" Q1.name like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
 			 .append("OR Q1.appraisalStartDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
 			 .append("OR Q1.appraisalEndDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
 			 .append("OR Q1.appraisalProcessStartDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
 			 .append("OR Q1.appraisalProcessEndDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
 			 .append("OR Q1.selfAppraisalStartDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
-			 .append("OR Q1.selfAppraisalEndDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ");
+			 .append("OR Q1.selfAppraisalEndDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
+			 .append("OR Q1.submissionStage like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ");
 			 
 		}
 		
@@ -125,7 +137,8 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 					"DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_END_DATE,"+appraisalDateFormat+") AS appraisalProcessEndDate, "+
 					"DATE_FORMAT(TEMPLATE.SELF_APPRAISAL_START_DATE,"+appraisalDateFormat+") AS selfAppraisalStartDate, "+
 					"DATE_FORMAT(TEMPLATE.SELF_APPRAISAL_END_DATE,"+appraisalDateFormat+") AS selfAppraisalEndDate, "+
-					"CONVERT(CURRENT_DATE() >= TEMPLATE.SELF_APPRAISAL_START_DATE,CHAR)AS dayDiff " + 
+					"CONVERT(CURRENT_DATE() >= TEMPLATE.SELF_APPRAISAL_START_DATE,CHAR)AS dayDiff, " + 
+					"(SELECT FEEDBACK.SUBMISSION_STAGE FROM PERFORMANCE_FEEDBACK FEEDBACK WHERE FEEDBACK.APPRAISAL_ASSIGNED_ID = ASSIGNED.ID) AS submissionStage " + 
 							             
 					"FROM " + 
 					"PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, " + 
@@ -195,6 +208,17 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(performanceAppraisalTemplateDTO.getSearchValue() != null && !"".equalsIgnoreCase(performanceAppraisalTemplateDTO.getSearchValue())) {
+			
+			if(performanceAppraisalTemplateDTO.getSearchValue().toLowerCase().equalsIgnoreCase("New")){
+				performanceAppraisalTemplateDTO.setSearchValue(" ");
+			}
+			
+			if(performanceAppraisalTemplateDTO.getSearchValue().toLowerCase().equalsIgnoreCase("Submitted For Review") || 
+					performanceAppraisalTemplateDTO.getSearchValue().toLowerCase().startsWith("Submitted") ||
+					performanceAppraisalTemplateDTO.getSearchValue().toLowerCase().startsWith("Review")){
+				performanceAppraisalTemplateDTO.setSearchValue("Submitted_For_Review");
+			}
+			
 			 query1.append(" Q1.name like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
 			 .append("OR Q1.appraisalAssignedUser like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
 			 .append("OR Q1.appraisalStartDate like '%" + performanceAppraisalTemplateDTO.getSearchValue() + "%' ")
@@ -246,7 +270,8 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 					"DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_END_DATE,"+appraisalDateFormat+") AS appraisalProcessEndDate, "+
 					"DATE_FORMAT(TEMPLATE.PEER_REVIEW_START_DATE,"+appraisalDateFormat+") AS peerReviewStartDate, "+
 					"DATE_FORMAT(TEMPLATE.PEER_REVIEW_END_DATE,"+appraisalDateFormat+") AS peerReviewEndDate, "+
-					"CONVERT(CURRENT_DATE() >= TEMPLATE.PEER_REVIEW_START_DATE,CHAR)AS dayDiff " + 
+					"CONVERT(CURRENT_DATE() >= TEMPLATE.PEER_REVIEW_START_DATE,CHAR)AS dayDiff, " + 
+					"(SELECT FEEDBACK.SUBMISSION_STAGE FROM PERFORMANCE_FEEDBACK FEEDBACK WHERE FEEDBACK.APPRAISAL_ASSIGNED_ID = ASSIGNED.ID) AS submissionStage " + 
 							             
 					"FROM " + 
 					"PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, " + 
@@ -334,6 +359,8 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 						+" DATE_FORMAT(TEMPLATE.APPROVING_FROM_END_DATE,"+appraisalDateFormat+") AS reportingManagerReviewEndDate, "
 						+" DATE_FORMAT(TEMPLATE.RESOURCE_MANAGER_REVIEW_START_DATE,"+appraisalDateFormat+") AS resourceManagerReviewStartDate, "
 						+" DATE_FORMAT(TEMPLATE.RESOURCE_MANAGER_REVIEW_END_DATE,"+appraisalDateFormat+") AS resourceManagerReviewEndDate, "
+						+" DATE_FORMAT(TEMPLATE.PEER_REVIEW_START_DATE,"+appraisalDateFormat+") AS peerReviewStartDate, "
+						+" DATE_FORMAT(TEMPLATE.PEER_REVIEW_END_DATE,"+appraisalDateFormat+") AS peerReviewEndDate, "
 						+" TEMPLATE.DESCRIPTION AS description, "
 						+" TEMPLATE.DESCRIPTION_DISPLAY AS descriptionDisplay, "
 						+" PEERS.PEER_USER_ID AS peerIds, "
@@ -391,7 +418,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 	}
 
 	@Override
-	public List<PerformanceFeedbackTemplateDTO> getPerformanceAssignedFeedbackTemplateDTOList(String assignedUUID)
+	public List<PerformanceFeedbackTemplateDTO> getPerformanceAssignedFeedbackTemplateDTOList(String assignedUUID,String templateIds)
 			throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -399,20 +426,9 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		List<PerformanceFeedbackTemplateDTO> feedbackTemplateDTOList = null;
 		
 		try {
-			String query =  "SELECT "
-					+" TEMPLATE.CATEGORIES "           
-					+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
-					+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE "
-					+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID   "
-					+" AND ASSIGNED.UUID = :assignedUUID ";
-			
-			Query queryObj = session.createSQLQuery(query);
-			queryObj.setString("assignedUUID", assignedUUID);
-			String categories = (String) queryObj.uniqueResult();
-			
-			if(categories != null) {
+			if(templateIds != null) {
 				
-				String categoriesIds [] = categories.split(",");
+				String categoriesIds [] = templateIds.split(",");
 				String categoriesIdsStr = "'" + StringUtils.join(categoriesIds,"','") + "'";
 				
 				String feedbackTemplateqQuery =  "SELECT "
@@ -860,5 +876,22 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		feedBackDTO.setJsonCategoriesString(templateDTO.getCategoriesJsonString());
 		
 		return feedBackDTO;
+	}
+
+	@Override
+	public String getJsonCategoriesString(String assignedUUID) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String assignedCategoriesQuery =  "SELECT "
+				+" TEMPLATE.CATEGORIES_JSON_STRING AS categoriesJsonString "           
+				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+				+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE"
+				+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND ASSIGNED.UUID = :assignedUUID ";
+		
+		Query categoriesQueryObj = session.createSQLQuery(assignedCategoriesQuery);
+		categoriesQueryObj.setString("assignedUUID", assignedUUID);
+		String jsonCategoriesString = (String) categoriesQueryObj.uniqueResult();
+		
+		return jsonCategoriesString;
 	}
 }

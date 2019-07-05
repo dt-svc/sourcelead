@@ -187,11 +187,19 @@ function appraisalAssignPagination(url,appraisalType){
 	              }
 		     }, {
 		    	  "targets": colIndex++,
-	              "data": "actions",
+	              "data": "status",
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result	+ '<td>--</td>';
+	            	    var submissionStage = '';
+	            	    if(opt.submissionStage == null || opt.submissionStage == '' || opt.submissionStage == 'undefined'){
+	            	    	submissionStage = 'New';
+	            	    }else if(opt.submissionStage == 'Submitted_For_Review'){
+	            	    	submissionStage = 'Submitted For Review'
+	            	    }else{
+	            	    	submissionStage = opt.submissionStage;
+	            	    }
+	            	    result = result	+ '<td><div class="tblminwidth-50">'+submissionStage+'</div></td>';
 	            		return result;
 	              }
 		     }],
@@ -256,12 +264,15 @@ function appraisalAssignPeersPagination(url,appraisalType){
     	  		 var result = "";
     	  		 
 	       	     result = result +"<td>";
-	       	     result = result +"<div class='clearfix tbldata-dotdot-big'>";
+	       	     result = result +'<a href="'+pmsUrl+'/peerAppraisalDetails?assignedUUID='+opt.templateUUId+'" >';
+	       	     result = result +"<div class='proj_show clearfix tbldata-dotdot-big'>";
 	   	  	  	 result = result +"<div class='selfAppraisalImg pull-left'>";
-	   	  		 result = result +"<img onerror='predefineAssociateImage(this);' src='"+opt.appraisalAssignedUserImgUrl+"'> </div>";
-	   	  		 result = result +"<div class='UserTextLeft pull-left' title='"+opt.appraisalAssignedUser+"'>"+opt.appraisalAssignedUser+"</div>";
+	   	  	     result = result +"<img onerror='predefineAssociateImage(this);' src='"+opt.appraisalAssignedUserImgUrl+"'> </div>";
+	   	  		 result = result +"<div class='proj_show tbldata-dotdot_140 UserTextLeft pull-left' title='"+opt.appraisalAssignedUser+"'>"+opt.appraisalAssignedUser+"</div>";
+	   	  	     result = result +'<i class="fa fa-binoculars pull-right"></i></div></a>';
 	   	  	     result = result +"</div>";
 	   	  		 result = result +"</td>";
+	   	  		 
     	  		 
 	             return result;
     	  	}
@@ -320,11 +331,19 @@ function appraisalAssignPeersPagination(url,appraisalType){
 	              }
 		     }, {
 		    	  "targets": colIndex++,
-	              "data": "actions",
+	              "data": "status",
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result	+ '<td>--</td>';
+	            	    var submissionStage = '';
+	            	    if(opt.submissionStage == null || opt.submissionStage == '' || opt.submissionStage == 'undefined'){
+	            	    	submissionStage = 'New';
+	            	    }else if(opt.submissionStage == 'Submitted_For_Review'){
+	            	    	submissionStage = 'Submitted For Review'
+	            	    }else{
+	            	    	submissionStage = opt.submissionStage;
+	            	    }
+	            	    result = result	+ '<td><div class="tblminwidth-50">'+submissionStage+'</div></td>';
 	            		return result;
 	              }
 		     }],

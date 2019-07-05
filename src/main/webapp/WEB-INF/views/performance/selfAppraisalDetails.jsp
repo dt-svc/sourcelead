@@ -14,7 +14,7 @@ var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 
  <script>
 $(document).ready(function() {
-	getTemplateOverViewDetails();
+	getTemplateOverViewDetails('self');
 });
 </script>
 
@@ -37,13 +37,13 @@ $(document).ready(function() {
                 <div class="selfAppraisalWidget clearfix">
                 <ul class="list-unstyled list-inline">
                       <li class="activeApprisalwidget" title="overview">
-                        <a onclick="getTemplateOverViewDetails();" class="clearfix mb0"> 
+                        <a onclick="getTemplateOverViewDetails('self');" class="clearfix mb0"> 
                         <div class="overviewIcon"></div>
                           Overview
                         </a>
                       </li>
                       <li title="Feedback" id="feedbackWidget">
-                          <a onclick="getAppraisalFeedbackDetails();"  class="clearfix mb0">
+                          <a onclick="getAppraisalFeedbackDetails('self');"  class="clearfix mb0">
                             <div class="categoryIcon"></div>
                             <div class="clearfix"></div>
                             Feedback
@@ -68,7 +68,7 @@ $(document).ready(function() {
                       </a>
                       </li>
                       <li title="Final Score" id="finalScoreWidget">
-                          <a onclick="getAppraisalFinalScoreDetails();" class="clearfix mb0">
+                          <a onclick="getAppraisalFinalScoreDetails('self');" class="clearfix mb0">
                           <div class="finalScoreIcon"></div>
                           <div class="clearfix"></div>
                         Final Score

@@ -77,5 +77,25 @@ public class PerformanceAppraisalController {
 			return model;
 		}
 	 
+	 
+	 @RequestMapping(value = "/peerAppraisalDetails")
+	 public ModelAndView peerAppraisalDetails(HttpServletRequest request,
+			 @RequestParam(value="assignedUUID", required=false) String assignedUUID) throws Exception {
+		    
+				ModelAndView model = new ModelAndView();
+				
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.PERFORMANCE_MY_APPRAISAL);
+					request.getSession().setAttribute("sessionData",sessionData);
+				
+					model.addObject("assignedUUID", assignedUUID);
+					model.setViewName("performance/peerAppraisalDetails");
+					return model;
+	}
+	 
 
 }

@@ -2,13 +2,16 @@
 
 
 <script>
-function getTemplateOverViewDetails(){
-   
+function getTemplateOverViewDetails(appraisalType){
 	  document.getElementById("feedbackWidget").removeAttribute("class");
-	  if('${isGolasConfigured}' == 'Y'){
-		  document.getElementById("goalsWidget").removeAttribute("class");
+	  
+	  if(appraisalType == 'self'){
+		  if('${isGolasConfigured}' == 'Y'){
+			  document.getElementById("goalsWidget").removeAttribute("class");
+		  }
+	      document.getElementById("tasksWidget").removeAttribute("class");
 	  }
-      document.getElementById("tasksWidget").removeAttribute("class");
+	
       document.getElementById("finalScoreWidget").removeAttribute("class");
       
       $("#performanceAppraisalDiv").empty(); 
@@ -54,13 +57,23 @@ function getTemplateOverViewDetails(){
 				    	  result = result + '<label class="col-md-2 paddingRight">Process Period<span class="pull-right paddingLeft">:</span></label>';
 				    	  result = result + '<div class="col-md-5">'+response.object.appraisalTemplate.appraisalProcessStartDate+'<span class="text-muted ml mr">to</span>'+response.object.appraisalTemplate.appraisalProcessEndDate+'</div>';
 				    	  result = result + '</div>';
-				    	  result = result + '<div class="form-group clearfix">';
-				    	  result = result + '<label class="col-md-2 paddingRight">Due Date<span class="pull-right paddingLeft">:</span></label>';
-				    	  result = result + '<div class="col-md-5">'+response.object.appraisalTemplate.selfAppraisalEndDate+'</div>';
-				    	  result = result + '</div>';
 				    	 
+				    	  if(appraisalType == 'self'){
+				    		  result = result + '<div class="form-group clearfix">';
+					    	  result = result + '<label class="col-md-2 paddingRight">Due Date<span class="pull-right paddingLeft">:</span></label>';
+					    	  result = result + '<div class="col-md-5">'+response.object.appraisalTemplate.selfAppraisalEndDate+'</div>';
+					    	  result = result + '</div>';
+				    	  }
 				    	  
- 							if(response.object.peersList.length > 0){
+				    	  if(appraisalType == 'peer'){
+				    		  result = result + '<div class="form-group clearfix">';
+					    	  result = result + '<label class="col-md-2 paddingRight">Due Date<span class="pull-right paddingLeft">:</span></label>';
+					    	  result = result + '<div class="col-md-5">'+response.object.appraisalTemplate.peerReviewEndDate+'</div>';
+					    	  result = result + '</div>';
+				    	  }
+				    	  
+				    	  
+ 							if(response.object.peersList.length > 0 && appraisalType == 'self'){
 				    		  
  								  result = result + '<div class="form-group clearfix">';
  						    	  result = result + '<label class="col-md-2 paddingRight mt10">Peers<span class="pull-right paddingLeft">:</span></label>';

@@ -20,7 +20,7 @@ public interface PerformanceAppraisalService {
 	
 	PerformanceAppraisalDetailsDTO getSelfAppraisalTemplateDetails(String assignedUUID, String dateFormat) throws Exception;
 	
-	List<PerformanceFeedbackTemplateDTO> getPerformanceAssignedFeedbackTemplateDTOList(String assignedUUID) throws Exception;
+	List<PerformanceFeedbackTemplateDTO> getPerformanceAssignedFeedbackTemplateDTOList(String assignedUUID,String templateIds) throws Exception;
 	
 	PerformanceFeedbackTemplateDTO getPerformanceFeedbackTemplateDTOByUUID(String uuid) throws Exception;
 	
@@ -35,4 +35,6 @@ public interface PerformanceAppraisalService {
 	PerformanceGeneralTasksDetailsDTO getGeneralTasksDetails(String assignedUUID,String dateFormat) throws Exception;
 	
 	PerformanceFeedbackDTO getPerformanceFeedbackDetails(String assignedUUID,Long userId) throws Exception;
+	
+	String getJsonCategoriesString(String assignedUUID) throws Exception;
 }

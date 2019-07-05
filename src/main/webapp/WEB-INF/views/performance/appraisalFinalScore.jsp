@@ -4,18 +4,23 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
-function getAppraisalFinalScoreDetails(){
+function getAppraisalFinalScoreDetails(appraisalType){
 	
-	 document.getElementById("tasksWidget").className = 'activeApprisalwidget';
 	 document.getElementById("feedbackWidget").className = 'activeApprisalwidget';
-	 if('${isGolasConfigured}' == 'Y'){
-		 document.getElementById("goalsWidget").className = 'activeApprisalwidget';
-	  }
 	 document.getElementById("finalScoreWidget").className = 'activeApprisalwidget'
+	 
+	  if(appraisalType == 'self'){
+		  document.getElementById("tasksWidget").className = 'activeApprisalwidget';
+			 if('${isGolasConfigured}' == 'Y'){
+				 document.getElementById("goalsWidget").className = 'activeApprisalwidget';
+			  }
+	  }
+	
+	
 	 
 	 var result = "";  
 	 var draft = "Draft";
-	 var submit = "Submit_For_Review";
+	 var submit = "Submitted_For_Review";
 	 
 	 result = result + '<div class="clearfix mt mb">';
 	 result = result + '<form id="appraisalFinalScore_form" name="appraisalFinalScore_form"  method="post">';

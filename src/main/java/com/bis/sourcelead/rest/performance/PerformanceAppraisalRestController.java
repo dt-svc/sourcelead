@@ -124,10 +124,10 @@ public class PerformanceAppraisalRestController {
 
 	    @RequestMapping(value = "/getAssignedFeedbackTemplateList", method = RequestMethod.GET)
 		public ResponseList<PerformanceFeedbackTemplateDTO> getAssignedFeedbackTemplateList(HttpServletRequest request, 
-				@RequestParam(value = "assignedUUID", required = true) String assignedUUID){
+				@RequestParam(value = "assignedUUID", required = true) String assignedUUID,@RequestParam(value = "templateIds", required = true) String templateIds){
 	    	 ResponseList<PerformanceFeedbackTemplateDTO> resObj = new ResponseList<>();
 			 try {
-				 List<PerformanceFeedbackTemplateDTO> feedbackTemplateDTOList =  performanceAppraisalService.getPerformanceAssignedFeedbackTemplateDTOList(assignedUUID);
+				 List<PerformanceFeedbackTemplateDTO> feedbackTemplateDTOList =  performanceAppraisalService.getPerformanceAssignedFeedbackTemplateDTOList(assignedUUID,templateIds);
 				 resObj.setData(feedbackTemplateDTOList);
 				 resObj.setResponse(Result.SUCCESS.name());
 				 resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -427,5 +427,19 @@ public class PerformanceAppraisalRestController {
 			resObj.setResponseMessage(Result.AWKWARD.getValue());
 		}
     	return resObj;
+    }
+	    
+	    
+    @RequestMapping(value = "/getJsonCategoriesString", method = RequestMethod.GET)
+  		public String getJsonCategoriesString(@RequestParam(value = "assignedUUID", required = true) String assignedUUID){
+    
+	     Response<PerformanceFeedbackDTO> resObj = new  Response<PerformanceFeedbackDTO>();
+	     String jsonCategoriesString = null;
+	     try {
+	    	 jsonCategoriesString = performanceAppraisalService.getJsonCategoriesString(assignedUUID);
+	     } catch (Exception e) {
+			e.printStackTrace();
+		}
+    	return jsonCategoriesString;
     }
 }

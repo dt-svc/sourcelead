@@ -9,21 +9,62 @@
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 
 <script>
-function getAppraisalFeedbackDetails(){
-	    
+
+function getAppraisalFeedbackDetails(appraisalType){
 	    document.getElementById("feedbackWidget").className = 'activeApprisalwidget';
-	    if('${isGolasConfigured}' == 'Y'){
-			  document.getElementById("goalsWidget").removeAttribute("class");
-		  }
-	    document.getElementById("tasksWidget").removeAttribute("class");
+	    if(appraisalType == 'self'){
+	        if('${isGolasConfigured}' == 'Y'){
+				  document.getElementById("goalsWidget").removeAttribute("class");
+			  }
+		    document.getElementById("tasksWidget").removeAttribute("class");
+	    }
 	    document.getElementById("finalScoreWidget").removeAttribute("class");
 	    $("#performanceAppraisalDiv").empty();  
+	    
+	    $("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    
+	    $.ajax({
+	  		  type: "GET",
+	  		    url: pmsUrl+"/getJsonCategoriesString?assignedUUID="+assignedUUID,
+	  		     success :function(jsonCategoriesString) {
+	  		    	var templateIds = new Array();
+	  		    	 if(jsonCategoriesString != null 
+		       				 && jsonCategoriesString != '' 
+		       					 && jsonCategoriesString != 'undefined'){
+		       			var data = eval(jsonCategoriesString);
+		           		 if (data) {
+		           			  $.each( data, function( k, v ) {
+		           				  if(v['type'] == "feedbackTemplate"){
+		           					if(appraisalType == 'self'){
+		           					 if(typeof v['self'] != 'undefined'){
+			           						templateIds.push(v['templateId']);
+		           					   }
+		           					}else if(appraisalType == 'peer'){
+			           					 if(typeof v['peer'] != 'undefined'){
+				           						templateIds.push(v['templateId']);
+			           					   }
+			           					}
+		           					 
+		           				  }
+		           				 
+		           			  });
+		           		 }
+		       		 }
+	  		    	 
+	  		    	getAppraisalFeedbackForm(templateIds,appraisalType);
+	  		     },
+	    });
+}
+
+
+function getAppraisalFeedbackForm(templateIds,appraisalType){
+	    
 	    	
 	    	$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    	$.ajax({
 	  		  type: "GET",
-	  		    url: pmsUrl+"/getAssignedFeedbackTemplateList?assignedUUID="+assignedUUID,
+	  		    url: pmsUrl+"/getAssignedFeedbackTemplateList?assignedUUID="+assignedUUID+"&templateIds="+templateIds,
 	  		     success :function(response) {
 	  		    	 
 	  		    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
@@ -68,7 +109,7 @@ function getAppraisalFeedbackDetails(){
 			        	    	    	feedbackTemplateUUID = opt.feedbackTemplateUUID;
 			        	    	    }
 			        	    	    
-				        	        result = result + '<li rel="'+opt.feedbackTemplateUUID+'"><a id="feedbackTemplate'+opt.feedbackTemplateUUID+'" '+selectedClass+' value="'+opt.feedbackTemplateUUID+'" onclick="getFeedbackCategoryForm(\''+opt.feedbackTemplateUUID+'\');">'+opt.templateName+'</a></li>';
+				        	        result = result + '<li rel="'+opt.feedbackTemplateUUID+'"><a id="feedbackTemplate'+opt.feedbackTemplateUUID+'" '+selectedClass+' value="'+opt.feedbackTemplateUUID+'" onclick="getFeedbackCategoryForm(\''+opt.feedbackTemplateUUID+'\',\''+appraisalType+'\');">'+opt.templateName+'</a></li>';
 			        	    	}
 			        	
 			        	    result = result + '</ul>';
@@ -92,7 +133,7 @@ function getAppraisalFeedbackDetails(){
 		        	    $("#performanceAppraisalDiv").append(result);
 		        	    
 		        	    if(feedbackTemplateUUID != ''){
-		        	    	getFeedbackCategoryForm(feedbackTemplateUUID);
+		        	    	getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType);
 		        	    }
 		        	    
 		        	    
@@ -111,7 +152,7 @@ function getAppraisalFeedbackDetails(){
 </script>
 
 <script>
-function getFeedbackCategoryForm(feedbackTemplateUUID){
+function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 	
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
@@ -150,7 +191,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID){
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="saveFeedbackTemplateDetails(\''+feedbackTemplateUUID+'\');">Submit</button>';
+	result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="saveFeedbackTemplateDetails(\''+feedbackTemplateUUID+'\',\''+appraisalType+'\');">Submit</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
@@ -167,7 +208,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID){
 </script>
 
 <script>
-function saveFeedbackTemplateDetails(feedbackTemplateUUID){
+function saveFeedbackTemplateDetails(feedbackTemplateUUID,appraisalType){
 	if ($('#addFeedbackTemplate_form').validate(false, validationSettings)) {
 		$("#appraisalLoading").attr('style','position:absolute; width:200%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
@@ -287,7 +328,7 @@ function saveFeedbackTemplateDetails(feedbackTemplateUUID){
 						} else if (result.response === "AWKWARD") {
 							location.href = "/errorPage";
 						} else if (result.response === "SUCCESS") {
-							getAppraisalFeedbackDetails();
+							getAppraisalFeedbackDetails(appraisalType);
 							$("#appraisalLoading").removeAttr("style");
 						} else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);

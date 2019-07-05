@@ -33,6 +33,10 @@ private static final long serialVersionUID = 1L;
 	
 	private String reportingManagerReviewEndDate;
 	
+	private String peerReviewStartDate;
+	
+	private String peerReviewEndDate;
+	
 	private String description ;
 	
 	private String descriptionDisplay;
@@ -257,6 +261,22 @@ private static final long serialVersionUID = 1L;
 
 	public void setAppraisalAssignedId(BigInteger appraisalAssignedId) {
 		this.appraisalAssignedId = appraisalAssignedId;
+	}
+
+	public String getPeerReviewStartDate() {
+		return peerReviewStartDate;
+	}
+
+	public void setPeerReviewStartDate(String peerReviewStartDate) {
+		this.peerReviewStartDate = peerReviewStartDate;
+	}
+
+	public String getPeerReviewEndDate() {
+		return peerReviewEndDate;
+	}
+
+	public void setPeerReviewEndDate(String peerReviewEndDate) {
+		this.peerReviewEndDate = peerReviewEndDate;
 	}
 
 	
