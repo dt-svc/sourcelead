@@ -124,7 +124,7 @@
 	</td> 
 </c:if>
 <c:if test="${not empty expensesDTO.billingStatus}">
-	 <td> <div>${expensesDTO.billingStatus}</div></td>
+	 <td> <div>${expensesDTO.billingStatus == "paid" ? "Paid" :"Un-paid"}</div></td>
 </c:if>
 <c:if test="${empty expensesDTO.billingStatus}">
 	<td>
