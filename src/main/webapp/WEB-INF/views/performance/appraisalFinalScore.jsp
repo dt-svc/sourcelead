@@ -48,7 +48,7 @@ function getAppraisalFinalScoreDetails(appraisalType){
 	 result = result + '<div class="quetionwidgetFooter clearfix mt">';
            
 	 result = result + '<div class="pull-right">';
-	 result = result + '<button type="button" class="btn btn-info" onclick="saveFinalScore(\''+draft+'\',\''+assignedUUID+'\');">Save</button>';
+	 result = result + '<button type="button" class="btn btn-info" onclick="saveFinalScore(\''+draft+'\',\''+assignedUUID+'\');">Save As Draft</button>';
 	 result = result + '<button type="button" class="btn btn-primary mr ml" onclick="saveFinalScore(\''+submit+'\',\''+assignedUUID+'\');">Submit for Review</button>';
 	 result = result + '</form>';
 	 result = result + '</div>';

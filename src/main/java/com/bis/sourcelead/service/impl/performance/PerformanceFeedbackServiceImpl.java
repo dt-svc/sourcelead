@@ -103,4 +103,10 @@ public class PerformanceFeedbackServiceImpl implements PerformanceFeedbackServic
 		
 	}
 
+	@Override
+	public PerformanceFeedback getPerformanceFeedbackByAssignedUserId(Long userId, Long appraisalAssignedId)
+			throws Exception {
+		return performanceFeedbackDao.getPerformanceFeedbackByAssignedUserId(userId, appraisalAssignedId)
+	}
+
 }

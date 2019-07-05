@@ -9,14 +9,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.performance.PerformanceFeedbackDTO;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalAssignedAssociatesService;
+import com.bis.sourcelead.service.performance.PerformanceAppraisalService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 public class PerformanceAppraisalController {
 	
 	@Autowired
 	PerformanceAppraisalAssignedAssociatesService performanceAppraisalAssignedAssociatesService;
+	
+	@Autowired
+	PerformanceAppraisalService performanceAppraisalService;
 	
 	
 	 @RequestMapping(value = "/performanceAppraisalList")
@@ -42,7 +49,7 @@ public class PerformanceAppraisalController {
 			 @RequestParam(value="assignedUUID", required=false) String assignedUUID) throws Exception {
 		    
 				ModelAndView model = new ModelAndView();
-				
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 					if(sessionData == null)
 					{
@@ -57,6 +64,8 @@ public class PerformanceAppraisalController {
 					}else {
 						model.addObject("isGolasConfigured", Constants.NO);
 					}
+					PerformanceFeedbackDTO performanceFeedbackDTO = performanceAppraisalService.getPerformanceFeedbackDetails(assignedUUID,user.getId());
+					model.addObject("submissionStage", performanceFeedbackDTO.getSubmissionStage());
 					model.addObject("assignedUUID", assignedUUID);
 					model.setViewName("performance/selfAppraisalDetails");
 					return model;
@@ -83,7 +92,7 @@ public class PerformanceAppraisalController {
 			 @RequestParam(value="assignedUUID", required=false) String assignedUUID) throws Exception {
 		    
 				ModelAndView model = new ModelAndView();
-				
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 					if(sessionData == null)
 					{
@@ -92,6 +101,8 @@ public class PerformanceAppraisalController {
 					sessionData.setNav(Constants.PERFORMANCE_MY_APPRAISAL);
 					request.getSession().setAttribute("sessionData",sessionData);
 				
+					PerformanceFeedbackDTO performanceFeedbackDTO = performanceAppraisalService.getPerformanceFeedbackDetails(assignedUUID,user.getId());
+					model.addObject("submissionStage", performanceFeedbackDTO.getSubmissionStage());
 					model.addObject("assignedUUID", assignedUUID);
 					model.setViewName("performance/peerAppraisalDetails");
 					return model;

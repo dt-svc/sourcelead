@@ -845,6 +845,8 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 	public PerformanceFeedbackDTO getPerformanceFeedbackDetails(String assignedUUID, Long userId)
 			throws Exception {
 		
+		PerformanceFeedbackDTO feedBackDTO = new PerformanceFeedbackDTO();
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		String assignedCategoriesQuery =  "SELECT "
 				+" ASSIGNED.ID AS appraisalAssignedId, "  
@@ -863,6 +865,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		String performanceFeedbackQuery =  "SELECT "
 				+" FEEDBAK.FINAL_SCORE AS finalScore, " 
 				+" FEEDBAK.TASKS_SCORE AS tasksScore, "
+				+" FEEDBAK.SUBMISSION_STAGE AS submissionStage, "
 				+" FEEDBAK.COMMENTS AS comments " 
 				+" FROM PERFORMANCE_FEEDBACK FEEDBAK "
 				+" WHERE FEEDBAK.APPRAISAL_ASSIGNED_ID = :appraisalAssignedId AND FEEDBAK.USER_ID = :userId ";
@@ -872,7 +875,9 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		performanceFeedbackObj.setLong("userId", userId);
 		performanceFeedbackObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackDTO.class));
 		List<PerformanceFeedbackDTO> performanceFeedbackList = performanceFeedbackObj.list();
-		PerformanceFeedbackDTO feedBackDTO = performanceFeedbackList.get(0);
+		if(performanceFeedbackList != null && !performanceFeedbackList.isEmpty()) {
+			feedBackDTO = performanceFeedbackList.get(0);
+		}
 		feedBackDTO.setJsonCategoriesString(templateDTO.getCategoriesJsonString());
 		
 		return feedBackDTO;

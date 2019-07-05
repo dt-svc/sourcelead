@@ -122,6 +122,7 @@ function getAppraisalFeedbackForm(templateIds,appraisalType){
 			                result = result + '</div>';
 			                result = result + '</div>';
 			                
+			                result = result + '<div id="feedBackCategoryTemplateDiv">';
 			            	
 			            	result = result + '</form>';
 			        	    
@@ -154,6 +155,8 @@ function getAppraisalFeedbackForm(templateIds,appraisalType){
 <script>
 function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 	
+	var submissionStage = '${submissionStage}';
+	
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -172,39 +175,104 @@ function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 	});
 	document.getElementById("feedbackTemplate"+feedbackTemplateUUID).className = 'active'
 	
-	var result = "";  
-	result = result + '<div id="tab1" class="appraQueOut">';
-	result = result + '<span class="appraQueInn">';
-	result = result + '<div class="project_wrap_table">';
-    
-	result = result + '<h4 class="clearfix mb10" id="viewTemplateName"></h4>';
-    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
-    result = result + '<label>Category Score</label>';
-    result = result + '<select class="form-control pull-left" id="categoryScore" name="categoryScore"  field-name="Category Score" data-validation="required" >';
-    result = result + '<option value="">-Select Score-</option>';
-    result = result + '</select>';
-    result = result + '</div></div>';
-              
-	result = result + '<div id="sjfb-fields" class="viewTemplate">';
-      
-	result = result + '</div>';
+		if(submissionStage != 'Submitted_For_Review'){
+			var result = ""; 
+			result = result + '<div id="tab1" class="appraQueOut">';
+			result = result + '<span class="appraQueInn">';
+			result = result + '<div class="project_wrap_table">';
+		    
+			result = result + '<h4 class="clearfix mb10" id="viewTemplateName"></h4>';
+		    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
+		    result = result + '<label>Category Score</label>';
+		    result = result + '<select class="form-control pull-left" id="categoryScore" name="categoryScore"  field-name="Category Score" data-validation="required" >';
+		    result = result + '<option value="">-Select Score-</option>';
+		    result = result + '</select>';
+		    result = result + '</div></div>';
+		              
+			result = result + '<div id="sjfb-fields" class="viewTemplate">';
+		      
+			result = result + '</div>';
+			
+			result = result + '<div class="form-footer clearfix mt">';
+			result = result + '<div class="pull-right mr">';
+			result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="saveFeedbackTemplateDetails(\''+feedbackTemplateUUID+'\',\''+appraisalType+'\');">Submit</button>';
+			result = result + '</div>';
+			result = result + '</div>';
+			result = result + '</div>';  
+		              
+			result = result + '</div> ';
+		    result = result + '</span>';
+		    result = result + '</div> ';
+		    
+		    $("#feedBackCategoryTemplateDiv").empty(); 
+		    $("#feedBackCategoryTemplateDiv").append(result);
+		    generateForm(pmsUrl,feedbackTemplateUUID,assignedUUID,finalDateFormatScript);
+		    
+		}else{
+			
+			
+			
+			 
+			 
+			
+			$.ajax({
+		  		  type: "GET",
+		  		   url: pmsUrl+"/loadPerformanceFeedbackTemplate?templateUUID="+feedbackTemplateUUID+"&assignedUUID="+assignedUUID, 
+		  		     success :function(result) {
+		  		    	 
+		  		    	var data = eval(result.submittedJsonStringValues);
+		  		    	var categoryScore = result.categoryScore;
+		  		    	var categoriesTotalScore = result.categoriesTotalScore
+		  		    	var result = ""; 
+		  		    	result = result + '<div id="tab1" class="appraQueOut">';
+		  				result = result + '<span class="appraQueInn">';
+		  				result = result + '<div class="project_wrap_table">';
+		  				result = result + '<h4 class="clearfix mb10" id="viewTemplateName"></h4>';
+		  			    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
+		  			    result = result + '<label>Category Score :</label>';
+		  			    result = result + '<div class="pull-left  mb10">'+categoryScore+'</div>';
+		  			    result = result + '</div></div>';
+		  			    
+			  			  $.each( data, function( k, v ) {
+			  				  result = result + '<div class="form-group clearfix">';
+					    	  result = result + '<label class="col-md-3 paddingRight">'+v['label']+'<span class="pull-right paddingLeft">:</span></label>';
+					    	  if(v['type'] != 'file'){
+					    		  result = result + '<div class="col-md-5">'+v['value']+'</div>';
+					    	  }else{
+					    			result = result +"<a href='"+v['value']+"'><img class='performanceThumbImg' onerror='predefineOrgImage(this);' data-id='orgLogoImage' src="+v['value']+" alt='image'><a>";
+					       	    	result = result +"</div>";
+					    	  }
+					    	 
+					    	  result = result + '</div>';
+			  			  });
+		  			              
+		  				          
+		  				result = result + '</div>';
+		  			    result = result + '</span>';
+		  			    result = result + '</div>';
+		  			    
+		  			    $("#feedBackCategoryTemplateDiv").empty(); 
+				        $("#feedBackCategoryTemplateDiv").append(result);
+				        
+				        if(categoriesTotalScore != null){
+					    	  $("#totalCategoryScore").val(categoriesTotalScore); 
+					    }
+		  			
+		  		     },
+		  		   
+			});
+			 
+		}
 	
-	result = result + '<div class="form-footer clearfix mt">';
-	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="saveFeedbackTemplateDetails(\''+feedbackTemplateUUID+'\',\''+appraisalType+'\');">Submit</button>';
-	result = result + '</div>';
-	result = result + '</div>';
-	result = result + '</div>';  
-              
-	result = result + '</div> ';
-    result = result + '</span>';
-    result = result + '</div> ';
-    $("#feedBackCategoryTemplateDiv").empty(); 
-    $("#feedBackCategoryTemplateDiv").append(result);
-    
-    generateForm(pmsUrl,feedbackTemplateUUID,assignedUUID,finalDateFormatScript);
+  
     $("#appraisalLoading").removeAttr("style");
 }
+</script>
+
+<script>
+	function predefineOrgImage(imageId){
+		$(imageId).attr('src','/resources/images/office-image.jpg');
+	}
 </script>
 
 <script>
