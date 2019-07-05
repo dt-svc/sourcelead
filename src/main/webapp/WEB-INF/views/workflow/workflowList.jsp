@@ -10,6 +10,9 @@ $(document).ready(function() {
 <script src="/resources/js/requirementWorkflow.js?staticTime=${staticTime}"></script>
 <div class="wraper"> 
   <section class="content-wraper">
+  <div class="success_pop" id="selector" >
+	       <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+			</div>
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Application Workflow</h2>
@@ -19,6 +22,7 @@ $(document).ready(function() {
       Application Workflow
       </div>
     </section>
+    <div id="popUp"></div> 
     <sec:authorize access="hasRole('ROLE_ADD_WORKFLOW')"> 
     <div class="project_wrap clearfix">
       <div class="timesheet_out" id="payrollRegister" style="display: block;">

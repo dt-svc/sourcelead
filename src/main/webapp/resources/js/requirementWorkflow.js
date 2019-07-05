@@ -42,34 +42,34 @@ function RequirementWorkflow(){
 		this.dynamicSpan = function(stageName){
 			if(stageName != null){
 					if(stageName == "Submission"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-check-square-o fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Short List"){
-						return "<span class='shortlilstedIC pull-left'></span>";
+						return "<i class='fa fa-list-ul fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Submit to Client"){
-						return "<span class='shortlilstedIC pull-left'></span>";
+						return "<i class='fa fa-send fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Interview"){
-						return "<span class='invterviewIC pull-left'></span>";
+						return "<i class='fa fa-handshake-o fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Offer"){
-						return "<span class='jobOfferIC pull-left'></span>";
+						return "<i class='fa fa-envelope-open-o fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Reject"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-ban pull-left fa-2x text-muted'></i>"
 					}
 					if(stageName == "Joined"){
-						return "<span class='joinedIC pull-left'></span>";
+						return "<i class='fa fa-id-badge pull-left fa-2x text-muted'></i>";
 					}
 					if(stageName == "Backout"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-arrow-circle-left pull-left fa-2x text-muted'></i>"
 					}
 					if(stageName == "On-hold"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-pause-circle-o pull-left fa-2x text-muted'></i>";
 					}
 					if(stageName == "No Response"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-exclamation-circle pull-left fa-2x text-muted'></i>";
 					}
 				}
 			}
@@ -270,14 +270,14 @@ function RequirementWorkflow(){
 	  		result = result +"<label class='switch mr positionRelativeTop10' title='Default'>"
 	  		result = result +"<input type='checkbox' name='' "+ (status == 1 ?'checked':'')+" >";
 	  		 if(roleActionsArray.indexOf("ROLE_EDIT_VIEW_WORKFLOW")  > -1){
-	 	  		result = result +"<div class='slider round' onclick = 'requirementWorkflow.changeWorkflowStatus(\""+uuid+"\", \""+status+"\");'></div>";
+	 	  		result = result +"<div class='slider round' onclick = 'requirementWorkflow.changeWorkflowStatus(\""+uuid+"\", \""+status+"\", \""+workFlowName+"\");'></div>";
 				 }
 	  		result = result +"</label></li>";
 	  		 if(roleActionsArray.indexOf("ROLE_EDIT_VIEW_WORKFLOW")  > -1){
 	 	  		result = result +"<li><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
 			 }
 	  		 if(roleActionsArray.indexOf("ROLE_DELETE_WORKFLOW")  > -1){
-	 	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick='requirementWorkflow.deleteWorkflowEntry(\""+uuid+"\", \""+workFlowName+"\")'></i></li>";
+	  			result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick='requirementWorkflow.checkWorkflowInRequirements(\""+uuid+"\", \""+workFlowName+"\")'></i></li>";
 				 }
 	  		 if(roleActionsArray.indexOf("ROLE_ADD_WORKFLOW")  > -1){
 	 			result = result +"<li><i onclick='requirementWorkflow.cloneWorkFlow(\""+uuid+"\",\""+workFlowName+"\",\""+description+"\");'class='fa fa fa-clone cursorPointer text-primary' title='Clone'></i></li>";
@@ -287,12 +287,18 @@ function RequirementWorkflow(){
 		return result;
 	}
 
-	this.changeWorkflowStatus = function(uuid, status){
+	this.changeWorkflowStatus = function(uuid, status, workFlowName){
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/getWorkflowList?uuid="+uuid+"&status="+status,
 			success : function(dataList) {
 				requirementWorkflow.getDynamicWorkflowList();
+				if(status == 1){
+					status = 'In-Active';
+				}if(status == 0){
+					status = 'Active';
+				}
+				requirementWorkflow.showSuccessMsg(workFlowName+" is "+status);
 			}
 			});
 				
@@ -321,7 +327,7 @@ function RequirementWorkflow(){
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 			result = result +"	<b href='javascript:void(0)'><input type='button' value='Ok' onclick='requirementWorkflow.removeWorkFlowEntry(\""+workflowuuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='requirementWorkflow.cancel();'></b>";
 			result = result +"	</div>";
-			$("#popUp").append(result);
+			$("#popUp").empty().append(result);
 			$("#remove_user_pop").slideDown(200);
 			$(".project_inn_mask").fadeIn(200);
 		}
@@ -1048,7 +1054,7 @@ function RequirementWorkflow(){
 					 if(stageShortCode != null && stageShortCode.length > 0){
 						 $.ajax({
 							 type: "GET",
-							 url : sourceleadUrl+"/validateStageShortCode?workflowUuid="+workflowUuid+"&stageShortCode="+stageShortCode,
+							 url : sourceleadUrl+"/validateStageShortCode?workflowUuid="+workflowUuid+"&stageShortCode="+stageShortCode+"&currentStageUuid="+currentStageUuid,
 							 success:function(dataList){
 								 if (dataList.response =="true" || dataList.response =="special") {
 									 $('#ShortCodeDiv').find('p.jquery_form_error_message').remove();
@@ -1068,5 +1074,59 @@ function RequirementWorkflow(){
 						 })
 						 }
 				 }
+				 
+				 this.checkWorkflowInRequirements = function(workflowUuid, workflowName){
+					 var jobId = null; 
+					 var jobTitle = null;
+					 var jobsArray = new Array();
+					 var allJobsArray = new Array();
+					 var txtMessage = "Cannot Delete "+workflowName+", mapped to the following jobs.";
+					 $.ajax({
+						 type : "GET",
+						 url : sourceleadUrl + "/checkWorkflowInRequirements?workflowUuid="+workflowUuid,
+						 success : function(dataList){
+							 if(dataList != null){
+								 var obj = JSON.stringify(dataList);
+								 var requirementList = obj.replace(/[{}]/g, "").split(',');
+								 for(var j=0;j< requirementList.length; j++){
+									 var count =j;
+										var n = requirementList[j].indexOf(':');
+										jobId = requirementList[j].slice(1, n-1);
+										jobTitle = requirementList[j].slice(n+2, requirementList[j].length-1);
+										if(j<5){
+											jobsArray.push(++count+'. '+jobTitle);
+										}
+										else{
+											allJobsArray.push(' '+(++count)+'. '+jobTitle);
+										}
+									}
+								$(".project_inn_mask").remove();
+								var result = "";
+								result = result +"<div class='project_inn_mask'></div>";
+								result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+								result = result +"<div class='clearfix'><input value='"+txtMessage+"' class='u_can_color width100percnt' type='button'></div>";
+								result = result+"<div>"	
+								for(var i=0; i< jobsArray.length; i++){
+									result = result + "&nbsp"+jobsArray[i]+", ";
+								}
+								result = result + '<span class="text-success" title="'+allJobsArray+'">more..</span>';
+								result = result+"</div>"
+								result = result +"<div class='clearfix'><input id='confirm-id' class='width100percnt' type='button'  value='Ok' onClick='requirementWorkflow.cancelWorkflowPopup();'></div>";
+								result = result +"</div>";
+								$("#popUp").empty().append(result);
+								$("#remove_user_pop").slideDown(200);
+								$(".project_inn_mask").fadeIn(200);
+						 }
+							 else{
+								 requirementWorkflow.deleteWorkflowEntry(workflowUuid, workflowName);
+							 }
+						 }
+					 })
+				 }
+				 
+				 this.cancelWorkflowPopup = function(){
+						$("#remove_user_pop").fadeOut(200);
+						$(".project_inn_mask").fadeOut(200);
+					}
 				 
 }

@@ -3,6 +3,7 @@ package com.bis.sourcelead.web;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -249,7 +250,7 @@ public class RequirementWorkflowController {
 		try {
 			
 
-			String[] tableColumns = { "workFlowName","description", "noOfStages", "status"};
+			String[] tableColumns = { "workFlowName","description", "noOfStages", "status","updatedBy"};
 		  	int sortColumnIndex = -1; 
 	  		String sortColumnOrder = "desc"; 
  	  		if (requirementWorkFlowDTO.getOrder() != null && !requirementWorkFlowDTO.getOrder().isEmpty()) {
@@ -717,15 +718,25 @@ public class RequirementWorkflowController {
 		public Response<String> validateStageShortCode(
 				@RequestParam(value = "stageShortCode", required = true)String stageShortCode,
 				@RequestParam(value = "workflowUuid", required = true)String workflowUuid,
+				@RequestParam(value = "currentStageUuid", required = false)String stageUuid,
 				HttpServletRequest request) throws Exception{
 			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
 			String flag ;
 			Response<String> response = new Response<String>();
 			logger.debug("before validateStageShortCode for "+orgLocationId+" orgLocation");
-			flag = requirementWorkFlowService.validateStageShortCode(orgLocationId, stageShortCode, workflowUuid);
+			flag = requirementWorkFlowService.validateStageShortCode(orgLocationId, stageShortCode, workflowUuid, stageUuid);
 			response.setResponse(flag);
 			logger.debug("after validateStageShortCode for "+orgLocationId+" orgLocation");
 			return response;
+			
+		}
+		
+		@RequestMapping(value = "/checkWorkflowInRequirements")
+		@ResponseBody
+		public TreeMap<Long, String> checkWorkflowInRequirements(@RequestParam(value = "workflowUuid", required = true)String workflowUuid,
+				HttpServletRequest request)throws Exception {
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			return requirementWorkFlowService.checkWorkflowInRequirements(workflowUuid, orgLocationId);
 			
 		}
 }

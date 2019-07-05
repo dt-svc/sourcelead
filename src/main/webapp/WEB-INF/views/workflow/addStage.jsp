@@ -45,7 +45,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <div class="col-md-5" id = "ShortCodeDiv">
             <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
             value = "<c:out value='${stageShortCode}'/>" data-validation="required validate_length length1-20"
-             onkeydown="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');">
+             onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
+             style="text-transform:uppercase" >
           </div>
         </div>
       <div class="clearfix"></div>
@@ -77,8 +78,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <label class="col-md-3">Short Code<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-5" id = "ShortCodeDiv">
             <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
-            onkeydown="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
-            data-validation="required validate_length length1-20">
+            onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
+            data-validation="required validate_length length1-20" style="text-transform:uppercase" >
           </div>
         </div>
       <div class="clearfix"></div>
