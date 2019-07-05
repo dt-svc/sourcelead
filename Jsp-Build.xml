@@ -1,5 +1,5 @@
-<project name="app-jsp" basedir="../" default="copy-jsp">
-	<condition property="unix">
+<project name="sourcelead-jsp" basedir="../" default="copy-jsp">
+   <condition property="unix">
 		<os family="unix" />
 	</condition>
 
@@ -13,55 +13,55 @@
 	<condition property="root.dir" value="/root">
 		<isset property="unix" />
 	</condition>
-
-	<!--Location Of Tomcat-Server -->
+	
+    <!--Location Of Tomcat-Server -->
 	<property name="tomcat.dir" value="/apache-tomcat-8.0.38" />
 
 	<target name="copy-jsp">
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/WEB-INF/views" includeEmptyDirs="no">
-			<fileset dir="admin/src/main/webapp/WEB-INF/views">
+			<fileset dir="venkat_admin/src/main/webapp/WEB-INF/views">
 				<patternset>
-					<include name="**/*.jsp" />
+					<include name="**/*.jsp"/>
 				</patternset>
 			</fileset>
 		</copy>
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/resources/css" includeEmptyDirs="no">
-			<fileset dir="admin/src/main/webapp/resources/css">
+			<fileset dir="venkat_admin/src/main/webapp/resources/css">
 				<patternset>
-					<include name="**/*.css" />
+					<include name="**/*.css"/>
 				</patternset>
 			</fileset>
 		</copy>
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/resources/js" includeEmptyDirs="no">
-			<fileset dir="admin/src/main/webapp/resources/js">
+			<fileset dir="venkat_admin/src/main/webapp/resources/js">
 				<patternset>
-					<include name="**/*.js" />
+					<include name="**/*.js"/>
 				</patternset>
 			</fileset>
 		</copy>
-
+		
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/resources/images" includeEmptyDirs="no">
-			<fileset dir="admin/src/main/webapp/resources/images">
-				<patternset>
-					<include name="**/*.jpg" />
-					<include name="**/*.png" />
-					<include name="**/*.jpeg" />
-					<include name="**/*.gif" />
-				</patternset>
-			</fileset>
-		</copy>
-		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/resources/fonts" includeEmptyDirs="no">
-			<fileset dir="admin/src/main/webapp/resources/fonts">
-				<patternset>
-					<include name="**/*.otf" />
-					<include name="**/*.eot" />
-					<include name="**/*.svg" />
-					<include name="**/*.ttf" />
-					<include name="**/*.woff" />
-					<include name="**/*.woff2" />
-				</patternset>
-			</fileset>
-		</copy>
+			      <fileset dir="venkat_admin/src/main/webapp/resources/images">
+						<patternset>
+							<include name="**/*.jpg"/>
+							<include name="**/*.png"/>
+							<include name="**/*.jpeg"/>
+							<include name="**/*.gif"/>
+						</patternset>
+					</fileset>
+	    </copy>
+        <copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/admin/resources/fonts" includeEmptyDirs="no">
+			      <fileset dir="venkat_admin/src/main/webapp/resources/fonts">
+						<patternset>
+							<include name="**/*.otf"/>
+							<include name="**/*.eot"/>
+							<include name="**/*.svg"/>
+							<include name="**/*.ttf"/>
+							<include name="**/*.woff"/>
+							<include name="**/*.woff2"/>
+						</patternset>
+					</fileset>
+	    </copy>
 	</target>
 
 </project>

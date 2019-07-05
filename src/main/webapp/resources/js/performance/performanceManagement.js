@@ -2369,24 +2369,34 @@ this.enableResourceManagerAppraisalPeriod = function(){
 		var reportingMngText = "";
 		var resMngText = "";
 		
-		var isSelfChecked = $("#isSelfAppraisalRequired").is(":checked");
-		if(isSelfChecked){
-			selfRevText = '<div class="categorySubCta" id="selfCategoryPercentDiv'+id+'"><span>Self Appraisal<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'self\')"></i></span><input type="text" value="'+selfPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="selfCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+		if(typeof selfPercentage != "undefined"){
+			var isSelfChecked = $("#isSelfAppraisalRequired").is(":checked");
+			if(isSelfChecked){
+				selfRevText = '<div class="categorySubCta" id="selfCategoryPercentDiv'+id+'"><span>Self Appraisal<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'self\')"></i></span><input type="text" value="'+selfPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="selfCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+			}
 		}
 		
-		var isPeerChecked = $("#isPeerReviewRequired").is(":checked");
-		if(isPeerChecked){
-			peerRevText = '<div class="categorySubCta" id="peerCategoryPercentDiv'+id+'"><span>Peer Review<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'peer\')"></i></span><input type="text" value="'+peerPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="peerCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+		
+		if(typeof peerPercentage != "undefined"){
+			var isPeerChecked = $("#isPeerReviewRequired").is(":checked");
+			if(isPeerChecked){
+				peerRevText = '<div class="categorySubCta" id="peerCategoryPercentDiv'+id+'"><span>Peer Review<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'peer\')"></i></span><input type="text" value="'+peerPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="peerCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+			}
+		}
+	
+		if(typeof reportingMgrPercentage != "undefined"){
+			var isRepMngChecked = $("#isReportingManagerAppraisalRequired").is(":checked");
+			if(isRepMngChecked){
+				reportingMngText = '<div class="categorySubCta" id="reportingMngCategoryPercentDiv'+id+'"><span>Reporting Manager<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'reportingManager\')"></i></span><input type="text" value="'+reportingMgrPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="reportingMngCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+			}
 		}
 		
-		var isRepMngChecked = $("#isReportingManagerAppraisalRequired").is(":checked");
-		if(isRepMngChecked){
-			reportingMngText = '<div class="categorySubCta" id="reportingMngCategoryPercentDiv'+id+'"><span>Reporting Manager<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'reportingManager\')"></i></span><input type="text" value="'+reportingMgrPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="reportingMngCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
-		}
 		
-		var isResMngChecked = $("#isResourceManagerAppraisalRequired").is(":checked");
-		if(isResMngChecked){
-			resMngText = '<div class="categorySubCta" id="resourceMngcategoryPercentDiv'+id+'"><span>Resource Manager<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'resourceManager\')"></i></span><input type="text" value="'+resourceMgrPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="resourceMngcategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+		if(typeof resourceMgrPercentage != "undefined"){
+			var isResMngChecked = $("#isResourceManagerAppraisalRequired").is(":checked");
+			if(isResMngChecked){
+				resMngText = '<div class="categorySubCta" id="resourceMngcategoryPercentDiv'+id+'"><span>Resource Manager<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'resourceManager\')"></i></span><input type="text" value="'+resourceMgrPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="resourceMngcategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+			}
 		}
 		
 		
