@@ -117,6 +117,7 @@ public class RequirementWorkflowController {
 		
 		modelandview.setViewName("workflow/addStage");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
+		modelandview.addObject("workFlowName", requirementWorkFlowDTO.getWorkFlowName());
 		modelandview.addObject("workflowUuid", requirementWorkFlowStagesDTO.get(0).getRequirementWorkFlowUuid());
 		return modelandview;
 	}
@@ -659,7 +660,8 @@ public class RequirementWorkflowController {
 		
 		@RequestMapping(value = "/editStage")
 		public ModelAndView editStage(HttpServletRequest request,
-				RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO) throws Exception{
+				RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
+				@RequestParam(value = "workflowName", required = false)String workflowName) throws Exception{
 			ModelAndView modelandview = new ModelAndView();
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 			RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO();
@@ -669,7 +671,9 @@ public class RequirementWorkflowController {
 			RequirementWorkFlowStages stages = requirementWorkFlowService.getRequirementWorkFlowStageForEditStage(requirementWorkFlowStagesDTO, orgLocations);
 			
 			List<RequirementWorkFlowStagesDTO> stagesDTO = requirementWorkFlowService.getNextRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
-			
+			if(StringUtils.isNotBlank(workflowName)) {
+				modelandview.addObject("workFlowName", workflowName);
+			}
 			modelandview.setViewName("workflow/addStage");
 			modelandview.addObject("stageName", stages.getStageName());
 			modelandview.addObject("description", stages.getDescription());

@@ -401,11 +401,11 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <div class="pull-right mr">
           
           <c:if test="${not empty requirementWorkFlowStagesDTO}">  
-            <input value="Save" class="btn btn-primary" type="button" id="saveStageButton"
+            <input value="Save & Finish" class="btn btn-primary" type="button" id="saveStageButton"
             onclick = "requirementWorkflow.validateAndSaveStage('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');">
 		  </c:if>  
           
-            <input value="Cancel" class="btn btn-default ml" type="button" onclick = "requirementWorkflow.cancelAddStage();">
+            <input value="Cancel" class="btn btn-default ml" type="button" onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');">
           </div>
         </div>
       </div>
@@ -416,7 +416,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 <script>
 var currentStageUuid = $("#currentStageUuid").val();
 $(document).ready(function() {
-	
+	workFlowName = '${workFlowName}';
 	commentReq = $("#commentRequired").val();
 		
 		$("#commentRequired").click(function(){

@@ -51,7 +51,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
          <a  class="btn btn-primary pull-right btn-sm"  id = "stageButton" href="#" onclick ="requirementWorkflow.alertStageCount();" title="Add">+ Stage</a>
          </c:when>
          <c:otherwise>
-         <a  class="btn btn-primary pull-right btn-sm"  id = "stageButton" href="${SourceLeadWeb_sourceleadUrl}/addStage?uuid=<c:out value="${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}" />" title="Add">+ Stage</a>
+         <a class="newAdBtn mr5"  
+          href="${SourceLeadWeb_sourceleadUrl}/addStage?uuid=<c:out value="${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}"/>&workFlowName=<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}" />" title="Add">+ Stage</a>
          </c:otherwise>
          </c:choose>
 
@@ -186,7 +187,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 						<li>
 							<a title="Edit" 
 							onclick = 'requirementWorkflow.editStage("${requirementWorkFlowStages.uuid}",
-							"${requirementWorkFlowStages.requirementWorkFlowUuid}")'>
+							"${requirementWorkFlowStages.requirementWorkFlowUuid}",
+							"<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}" />")'>
 							<i class="fa fa-pencil"></i></a>
 						</li>
 						</sec:authorize>
