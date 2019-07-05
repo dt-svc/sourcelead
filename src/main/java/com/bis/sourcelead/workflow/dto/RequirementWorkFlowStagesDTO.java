@@ -46,6 +46,8 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 	
 	private String stageShortCode;
 	
+	private String[] deletedStageUuids;
+	
 	public long getId() {
 		return id;
 	}
@@ -206,5 +208,14 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 		this.stageShortCode = stageShortCode;
 	}
 
+	public String[] getDeletedStageUuids() {
+		return deletedStageUuids;
+	}
+
+	public void setDeletedStageUuids(String[] deletedStageUuids) {
+		this.deletedStageUuids = deletedStageUuids;
+	}
+
+	
 	
 }
