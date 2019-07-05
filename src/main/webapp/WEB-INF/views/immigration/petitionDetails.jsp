@@ -548,7 +548,7 @@
             <div class="form-group">
               <label class="col-md-4">Previous LCA Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="Previous LCA Number" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" >
+                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="Previous LCA No Autofill Enabled For 2 Numbers" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" >
               </div>
             </div>
             </c:if>
@@ -769,7 +769,7 @@
              <div class="form-group">
               <label class="col-md-4">LCA Number</label>
               <div class="col-md-8">
-                 <input type="text" class="form-control"  name="lcaNumber" id="lcaNumber" value="${immigrationDTO.lcaNumber}" placeholder="LCA Number" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" onkeypress="selectBeneficiary();">
+                 <input type="text" class="form-control"  name="lcaNumber" id="lcaNumber" value="${immigrationDTO.lcaNumber}" placeholder="LCA No Autofill Enabled For 2 Numbers" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" onkeypress="selectBeneficiary();">
               </div>
             </div>
             </c:if>

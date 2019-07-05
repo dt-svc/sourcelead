@@ -15,7 +15,7 @@ function getAddRecomendedApplicant(requirementId){
 	generateOrgSubmissionForm(sourceleadUrl,requirementId)
 	var result = "";
 	result = result + '<form id="addRecomApplicant_form" name="addRecomApplicant_form" enctype="multipart/form-data" method="post">';
-	result = result + '<h3>Add Applsdfsdfsdficant</h3>';
+	result = result + '<h3>Add Applicant</h3>';
 	result = result + '<div class="form-horizontal clearfix">';
 	result = result + '<input type="hidden" id="requirementId" name="requirementId" value='+requirementId+'>';
 	
