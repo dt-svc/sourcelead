@@ -7,6 +7,9 @@
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 	<script src="/resources/js/requirementWorkflow.js?staticTime=${staticTime}"></script>
+	<script>
+	deletedStageUuids.length = 0;
+</script>
 <div class="wraper"> 
 <div id="popUp"></div>
 <form id="requirementWorkFlowForm" name="requirementWorkFlowForm">
@@ -210,7 +213,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 						<c:choose>
 							<c:when test="${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
 									<input value="Save" id="saveReqWorkFlow"
-										onclick="requirementWorkflow.saveRequirementViewWorkFlow('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');"
+										onclick="requirementWorkflow.saveRequirementViewWorkFlow('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+','${requirementWorkFlowStages.stageName}');"
 										class="btn btn-primary" type="button"> <input
 										value="Cancel" class="btn btn-default ml" type="button"
 										onclick="requirementWorkflow.cancelViewWorkflow();">
