@@ -490,11 +490,11 @@ public class EMailJobScheduler {
 		// Saves the resumes at org level specific folder and updates the org level
 		// candidates table with parsed information.
 		logger.info("******************  Parsing resumes is Started each org level environment value is ::: "+environment);
-		
+		logger.info("******************  startEmailParsingProcessvalue is ::: "+startEmailParsingProcess);
 		if(environment != null && !environment.trim().equalsIgnoreCase("local") && startEmailParsingProcess) {
 			logger.debug("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
-			//System.out.println("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
-			//System.out.println("=========== isEmailParsingProcess started ======================="+startEmailParsingProcess);
+			System.out.println("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
+			System.out.println("=========== isEmailParsingProcess started ======================="+startEmailParsingProcess);
 			logger.debug("=========== isEmailParsingProcess started ======================="+startEmailParsingProcess);
 			startEmailParsingProcess = false;
 		try {
@@ -512,7 +512,7 @@ public class EMailJobScheduler {
 					List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.RESUME_PARSING, true);
 						File tempfolder = null;
 					for(EmailScenarioConfiguration email :  emailsList) {
-						//System.out.println(" **************Parsisng started for Email id is :" + email.getEmailId());
+						System.out.println(" **************Parsisng started for Email id is :" + email.getEmailId());
 						logger.debug("***********Parsisng started  Email id is :" + email.getEmailId());
 						tempfolder = new File(staticPath+ System.getProperty("file.separator") +"tempResumes" );
 						if (!tempfolder.exists()) tempfolder.mkdirs(); // if not exist create the folder with path.
@@ -531,12 +531,13 @@ public class EMailJobScheduler {
 
 			}
 			startEmailParsingProcess = true;
-			//System.out.println("****************** Parsing resumes is Completed..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
+			System.out.println("****************** Parsing resumes is Completed..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
 			logger.debug("****************** Parsing resumes is Completed..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
 			logger.debug("=========== isEmailParsingProcessComplted ======================="+startEmailParsingProcess);
-			//System.out.println("=========== isEmailParsingProcessComplted ======================="+startEmailParsingProcess);
+			System.out.println("=========== isEmailParsingProcessComplted ======================="+startEmailParsingProcess);
 		} catch (Exception e) {
 			logger.error("*****************Exception caught while Job parsing shceduler *************"+e.getMessage());
+			startEmailParsingProcess = true;
 			e.printStackTrace();
 		}
        }
