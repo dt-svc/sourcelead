@@ -46,5 +46,6 @@ public interface EmailScenarioConfigurationService {
 	Boolean validateParser(String parserEmailId,Long orgLocId);
 
 	int changeDefaultParserEmailConfig(String uuid, Long orgLocationId, boolean activeFlag, Date updatedDate);
-
+	
+	int getResumeParserEmailCountForOrg(Long id);
 }
