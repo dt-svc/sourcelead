@@ -279,6 +279,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStagesDTO.setStageName(workFlowStages.getStageName());
 			requirementWorkFlowStagesDTO.setEditable(workFlowStages.getEditable());
 			requirementWorkFlowStagesDTO.setUuid(workFlowStages.getUuid());
+			requirementWorkFlowStagesDTO.setStageCount(requirementWorkFlow.getNoOfStages());
 			workFlowStagesDTO.add(requirementWorkFlowStagesDTO);
 		}	
 		}
