@@ -133,7 +133,7 @@ function appraisalAssignPagination(url,appraisalType){
 	    	  		 var result = "";
 	             	 result = result +'<td>';
 	            	 result = result +"<div class='width300px'>";
-	           	     result = result +'<a href="'+pmsUrl+'/selfAppraisalDetails?assignedUUID='+opt.templateUUId+'" >';
+	           	     result = result +'<a href="'+pmsUrl+'/selfAppraisalDetails?assignedUUID='+opt.assignedUUID+'" >';
 	           	     result = result +'<div class="proj_show tbldata-dotdot_140 pull-left"><span class="pull-left" title="'+opt.name+'">'+opt.name+'</span>';
 	           	     result = result +'<i class="fa fa-binoculars pull-right"></i></div></a>';
 	           	     result = result +"</div>";
@@ -264,7 +264,7 @@ function appraisalAssignPeersPagination(url,appraisalType){
     	  		 var result = "";
     	  		 
 	       	     result = result +"<td>";
-	       	     result = result +'<a href="'+pmsUrl+'/peerAppraisalDetails?assignedUUID='+opt.templateUUId+'" >';
+	       	     result = result +'<a href="'+pmsUrl+'/peerAppraisalDetails?assignedUUID='+opt.assignedUUID+'" >';
 	       	     result = result +"<div class='proj_show clearfix tbldata-dotdot-big'>";
 	   	  	  	 result = result +"<div class='selfAppraisalImg pull-left'>";
 	   	  	     result = result +"<img onerror='predefineAssociateImage(this);' src='"+opt.appraisalAssignedUserImgUrl+"'> </div>";

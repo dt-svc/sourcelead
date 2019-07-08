@@ -156,7 +156,6 @@ function getAppraisalFeedbackForm(templateIds,appraisalType){
 function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 	
 	var submissionStage = '${submissionStage}';
-	alert(submissionStage);
 	
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';

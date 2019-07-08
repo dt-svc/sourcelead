@@ -130,7 +130,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 			 		 "FROM (" + 
 					 "SELECT " + 
 					"TEMPLATE.NAME AS name, " + 
-					"ASSIGNED.UUID AS templateUUId, " + 
+					"ASSIGNED.UUID AS assignedUUID, " + 
 					"DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+appraisalDateFormat+") AS appraisalStartDate, "+
 					"DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+appraisalDateFormat+") AS appraisalEndDate, "+
 					"DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_START_DATE,"+appraisalDateFormat+") AS appraisalProcessStartDate, "+
@@ -261,7 +261,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 			 		 "FROM (" + 
 					 "SELECT " + 
 					"TEMPLATE.NAME AS name, " + 
-					"ASSIGNED.UUID AS templateUUId, " + 
+					"ASSIGNED.UUID AS assignedUUID, " + 
 					"CONCAT (U.FIRST_NAME,' ',IFNULL(U.MIDDLE_NAME,''),IFNULL(U.LAST_NAME,'')) AS appraisalAssignedUser, " +
 					"U.FILE_URL AS appraisalAssignedUserImgUrl, " + 
 					"DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+appraisalDateFormat+") AS appraisalStartDate, "+
