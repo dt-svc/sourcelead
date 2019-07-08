@@ -6,6 +6,7 @@
 <script>
 function getAppraisalTaskDetails(){
 	
+	 var submissionStage = '${submissionStage}';
 	 document.getElementById("tasksWidget").className = 'activeApprisalwidget';
 	 document.getElementById("feedbackWidget").className = 'activeApprisalwidget';
 	 if('${isGolasConfigured}' == 'Y'){
@@ -26,10 +27,16 @@ function getAppraisalTaskDetails(){
     
     result = result + '<div class="newRolLRight" id="tasksLoading">';
     result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
-    result = result + '<label>Category Score</label>';
+    result = result + '<label>Category Score :</label>';
+    
+    if(submissionStage != 'Submitted_For_Review'){
     result = result + '<select class="form-control pull-left" id="tasksScore" name="tasksScore" onchange="saveTasksScore(\''+assignedUUID+'\');"  field-name="Tasks Score">';
     result = result + '<option value="">-Tasks Score-</option>';
     result = result + '</select>';
+    }else{
+    	 result = result + '<input type="text" id="totalTasksScore" disabled class="form-control pull-left"></div>';
+    }
+   
     result = result + '</div></div>';
     
     result = result + '<div class="clearfix" id="tab-content">';
@@ -386,7 +393,7 @@ function getGeneralTaskDetails(assignedUUID){
 
 
 function getTasksScore(assignedUUID){
-	
+	 var submissionStage = '${submissionStage}';
 	$.ajax({
 		  type: "GET",
 		    url: pmsUrl+"/getAppraisalFeedbackDetails?assignedUUID="+assignedUUID,
@@ -413,6 +420,15 @@ function getTasksScore(assignedUUID){
 	               				   	  
 	               				   $("#tasksScore").empty(); 
        						       $("#tasksScore").append(options);   
+       						       
+       						    if(submissionStage == 'Submitted_For_Review'){
+       						    	if(response.object.tasksScore != null){
+       						    		$("#totalTasksScore").val(response.object.tasksScore); 
+       						    	}else{
+       						    		$("#totalTasksScore").val('0');
+       						    	}
+       						        
+       						    }
 	           				  }
 	           				 
 	           			  });

@@ -7,7 +7,7 @@
 
 <script>
 function getAppraisalGoalsDetails(){
-	    
+	     var submissionStage = '${submissionStage}';
 	     document.getElementById("goalsWidget").className = 'activeApprisalwidget';
 	     document.getElementById("feedbackWidget").className = 'activeApprisalwidget';
 	     document.getElementById("tasksWidget").removeAttribute("class");
@@ -78,10 +78,19 @@ function getAppraisalGoalsDetails(){
 		               				   	  }
 		               				   	  
 	               				    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
-		   		        		    result = result + '<label>Goals Score</label>';
+		   		        		    result = result + '<label>Goals Score : </label>';
+		   		        		   
+		   		        		 if(submissionStage != 'Submitted_For_Review'){
 		   		        		    result = result + '<select class="form-control pull-left" id="goalsScore" onchange="saveGoalsScore(\''+assignedUUID+'\');" name="goalsScore"  field-name="Goals Score">';
 		   		        		    result = result + options;
 		   		        		    result = result + '</select>';
+		   		        		 }else{
+		   		        			 if(response.object.goalsScore != null){
+		   		        				 result = result + '<input type="text" id="totalTasksScore" disabled value="'+response.object.goalsScore+'" class="form-control pull-left"></div>';
+		   		        			 }else{
+		   		        				result = result + '<input type="text" id="totalTasksScore" disabled  value="0" class="form-control pull-left"></div>';
+		   		        			 }
+		   		        		 }
 		   		        		    result = result + '</div></div>';
 		           						   
 		           				  }

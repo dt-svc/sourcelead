@@ -15,7 +15,7 @@ function getAppraisalFinalScoreDetails(appraisalType){
 				 document.getElementById("goalsWidget").className = 'activeApprisalwidget';
 			  }
 	  }
-	
+	 var submissionStage = '${submissionStage}';
 	
 	 
 	 var result = "";  
@@ -23,34 +23,57 @@ function getAppraisalFinalScoreDetails(appraisalType){
 	 var submit = "Submitted_For_Review";
 	 
 	 result = result + '<div class="clearfix mt mb">';
-	 result = result + '<form id="appraisalFinalScore_form" name="appraisalFinalScore_form"  method="post">';
-	 result = result + '<div class="clearfix col-md-8">';
-	 result = result + '</div>';
-	 result = result + '<div class="col-md-8 mb">';
-	 result = result + '<h4>Final Score</h4>';
-	 result = result + '<div class="row">';
-	 result = result + '<label class="clearfix col-md-2">Score</label>';
-	 result = result + '<div class="clearfix col-md-4">';
-	 result = result + '<input type="text" id="finalScore" disabled class="form-control">';
-	 result = result + '</div>';
-	 result = result + '</div>';
-	 result = result + '</div>';
-	 result = result + '<div class="clearfix"></div>';
-	 result = result + '<div class="col-md-8 mb">';
-	 result = result + '<div class="row">';
-	 result = result + '<label class="clearfix col-md-2">Comments</label>';
-	 result = result + '<div class="clearfix col-md-9">';
-	 result = result + '<textarea class="form-control" rows="4" name="comments" id="comments" field-name="Comments" data-validation="validate_Space required"></textarea>';
-	 result = result + '</div>';
-	 result = result + '</div>';
-	 result = result + '</div>';
-	 result = result + '<div class="clearfix"></div>';
-	 result = result + '<div class="quetionwidgetFooter clearfix mt">';
-           
-	 result = result + '<div class="pull-right">';
-	 result = result + '<button type="button" class="btn btn-info" onclick="saveFinalScore(\''+draft+'\',\''+assignedUUID+'\');">Save As Draft</button>';
-	 result = result + '<button type="button" class="btn btn-primary mr ml" onclick="saveFinalScore(\''+submit+'\',\''+assignedUUID+'\');">Submit for Review</button>';
-	 result = result + '</form>';
+	 if(submissionStage != 'Submitted_For_Review'){
+		 result = result + '<form id="appraisalFinalScore_form" name="appraisalFinalScore_form"  method="post">';
+		 result = result + '<div class="clearfix col-md-8">';
+		 result = result + '</div>';
+		 result = result + '<div class="col-md-8 mb">';
+		 result = result + '<h4>Final Score</h4>';
+		 result = result + '<div class="row">';
+		 result = result + '<label class="clearfix col-md-2">Score</label>';
+		 result = result + '<div class="clearfix col-md-4">';
+		 result = result + '<input type="text" id="finalScore" disabled class="form-control">';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 result = result + '<div class="clearfix"></div>';
+		 result = result + '<div class="col-md-8 mb">';
+		 result = result + '<div class="row">';
+		 result = result + '<label class="clearfix col-md-2">Comments</label>';
+		 result = result + '<div class="clearfix col-md-9">';
+		 result = result + '<textarea class="form-control" rows="4" name="comments" id="comments" field-name="Comments" data-validation="validate_Space required"></textarea>';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 result = result + '<div class="clearfix"></div>';
+		 result = result + '<div class="quetionwidgetFooter clearfix mt">';
+		
+		 result = result + '<div class="pull-right">';
+		 result = result + '<button type="button" class="btn btn-info" onclick="saveFinalScore(\''+draft+'\',\''+assignedUUID+'\');">Save As Draft</button>';
+		 result = result + '<button type="button" class="btn btn-primary mr ml" onclick="saveFinalScore(\''+submit+'\',\''+assignedUUID+'\');">Submit for Review</button>';
+		 result = result + '</div>';
+		 result = result + '</form>';
+	 }else{
+		 result = result + '<div class="col-md-8 mb">';
+		 result = result + '<h4>Final Score</h4>';
+		 result = result + '<div class="row">';
+		 result = result + '<label class="clearfix col-md-2">Score</label>';
+		 result = result + '<div class="clearfix col-md-4">';
+		 result = result + '<input type="text" id="finalScore" disabled class="form-control">';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 result = result + '<div class="clearfix"></div>';
+		 result = result + '<div class="col-md-8 mb">';
+		 result = result + '<div class="row">';
+		 result = result + '<label class="clearfix col-md-2">Comments</label>';
+		 result = result + '<div class="clearfix col-md-9">';
+		 result = result + '<textarea class="form-control" rows="4" disabled name="comments" id="comments" field-name="Comments" data-validation="validate_Space required"></textarea>';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 result = result + '<div class="clearfix"></div>';
+	 }
 	 result = result + '</div>';
 	 
 	 $("#performanceAppraisalDiv").empty(); 

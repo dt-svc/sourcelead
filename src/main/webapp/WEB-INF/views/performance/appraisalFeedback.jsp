@@ -156,6 +156,7 @@ function getAppraisalFeedbackForm(templateIds,appraisalType){
 function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 	
 	var submissionStage = '${submissionStage}';
+	alert(submissionStage);
 	
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
@@ -183,7 +184,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 		    
 			result = result + '<h4 class="clearfix mb10" id="viewTemplateName"></h4>';
 		    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
-		    result = result + '<label>Category Score</label>';
+		    result = result + '<label>Category Score :</label>';
 		    result = result + '<select class="form-control pull-left" id="categoryScore" name="categoryScore"  field-name="Category Score" data-validation="required" >';
 		    result = result + '<option value="">-Select Score-</option>';
 		    result = result + '</select>';
@@ -209,10 +210,6 @@ function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 		    generateForm(pmsUrl,feedbackTemplateUUID,assignedUUID,finalDateFormatScript);
 		    
 		}else{
-			
-			
-			
-			 
 			 
 			
 			$.ajax({
@@ -222,6 +219,9 @@ function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 		  		    	 
 		  		    	var data = eval(result.submittedJsonStringValues);
 		  		    	var categoryScore = result.categoryScore;
+		  		    	if(categoryScore == null){
+		  		    		categoryScore = 0;
+		  		    	}
 		  		    	var categoriesTotalScore = result.categoriesTotalScore
 		  		    	var result = ""; 
 		  		    	result = result + '<div id="tab1" class="appraQueOut">';
@@ -230,7 +230,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 		  				result = result + '<h4 class="clearfix mb10" id="viewTemplateName"></h4>';
 		  			    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
 		  			    result = result + '<label>Category Score :</label>';
-		  			    result = result + '<div class="pull-left  mb10">'+categoryScore+'</div>';
+		  			    result = result + '<input type="text" disabled value="'+categoryScore+'" class="form-control pull-left"></div>';
 		  			    result = result + '</div></div>';
 		  			    
 			  			  $.each( data, function( k, v ) {
@@ -239,8 +239,11 @@ function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 					    	  if(v['type'] != 'file'){
 					    		  result = result + '<div class="col-md-5">'+v['value']+'</div>';
 					    	  }else{
-					    			result = result +"<img class='performanceThumbImg' onerror='predefineOrgImage(this);' data-id='orgLogoImage' src="+v['value']+" alt='image'>";
-					       	    	result = result +"</div>";
+					    		  if(v['value'] != null){
+					    			  result = result +"<a href="+v['value']+"><img class='performanceThumbImg' onerror='predefineOrgImage(this);' data-id='orgLogoImage' src="+v['value']+" alt='image'></a>";
+					    		  }else{
+					    			  result = result +"-----";
+					    		  }
 					    	  }
 					    	 
 					    	  result = result + '</div>';
@@ -271,7 +274,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','/resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/applied_icon.png');
 	}
 </script>
 
