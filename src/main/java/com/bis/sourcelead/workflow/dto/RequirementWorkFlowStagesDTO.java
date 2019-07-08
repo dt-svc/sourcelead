@@ -208,7 +208,8 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 
 	public void setStageCount(Integer stageCount) {
 		this.stageCount = stageCount;
-
+	}	
+		
 	public String getStageShortCode() {
 		return stageShortCode;
 	}
