@@ -1150,7 +1150,7 @@ function RequirementWorkflow(){
 					 var jobTitle = null;
 					 var jobsArray = new Array();
 					 var allJobsArray = new Array();
-					 var txtMessage = "Cannot Delete "+workflowName+", mapped to the following jobs.";
+					 var txtMessage = "Can't Delete "+workflowName+", Mapped To The Following Jobs !";
 					 $.ajax({
 						 type : "GET",
 						 url : sourceleadUrl + "/checkWorkflowInRequirements?workflowUuid="+workflowUuid,
@@ -1174,16 +1174,17 @@ function RequirementWorkflow(){
 								var result = "";
 								result = result +"<div class='project_inn_mask'></div>";
 								result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-								result = result +"<div class='clearfix'><input value='"+txtMessage+"' class='u_can_color width100percnt' type='button'></div>";
-								result = result+"<div>"	
+								result = result +"<div class='clearfix'><p id='popupMsg'></p></div>";
+								result = result+"<div class='modal-body'>"	
 								for(var i=0; i< jobsArray.length; i++){
 									result = result + "&nbsp"+jobsArray[i]+", ";
 								}
 								result = result + '<span class="text-success" title="'+allJobsArray+'">more..</span>';
 								result = result+"</div>"
-								result = result +"<div class='clearfix'><input id='confirm-id' class='width100percnt' type='button'  value='Ok' onClick='requirementWorkflow.cancelWorkflowPopup();'></div>";
+								result = result +"<div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='requirementWorkflow.cancelWorkflowPopup();'></div>";
 								result = result +"</div>";
 								$("#popUp").empty().append(result);
+								$("#popupMsg").empty().append('<strong>'+txtMessage+'</strong>');
 								$("#remove_user_pop").slideDown(200);
 								$(".project_inn_mask").fadeIn(200);
 						 }
@@ -1199,4 +1200,17 @@ function RequirementWorkflow(){
 						$(".project_inn_mask").fadeOut(200);
 					}
 				 
+				 this.alertStageCount = function(){
+					 $(".project_inn_mask").remove();
+						var result = "";
+						result = result +" <div class='project_inn_mask'></div>";
+						result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+						result = result +" <div class='modal-body'><p id='popupMsg'></p></div>";
+						result = result +" <div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='requirementWorkflow.cancelWorkflowPopup();'></div>";
+						result = result +" </div>";
+						$("#popUp").empty().append(result);
+						$("#popupMsg").empty().append("<strong>Can't Add More Than 15 Stages Per Workflow !</strong>");
+						$("#remove_user_pop").slideDown(200);
+						$(".project_inn_mask").fadeIn(200);
+				 }
 }
