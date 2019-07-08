@@ -298,8 +298,8 @@ public class TaxSubmissionController {
 	@RequestMapping(value = "/itDeclaration/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(HttpServletRequest request,
-			@RequestParam(defaultValue = "") String uuid, @RequestParam(defaultValue = "") String financialYear, String searchValue,
-			Paginator paginator) {
+			@RequestParam(defaultValue = "") String uuid, @RequestParam(defaultValue = "") String financialYear,
+			Paginator paginator, @RequestParam(defaultValue = "") String searchValue) {
 		ResponseList<SourceleadTaxITDeclarationSubmissionDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");

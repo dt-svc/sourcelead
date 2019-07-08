@@ -107,7 +107,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		
 		$("#formSearch").keyup(function(e) {
 			if(e.which === 13) {
-				getItDeclarationSubmissionList('${uuid}', '${financialYear}', 0);
+				getItDeclarationSubmissionList('${uuid}', '${financialYear}', 0, '${formSearch}');
 			}
 		});
 	})
