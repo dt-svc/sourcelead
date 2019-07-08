@@ -44,7 +44,11 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 	
 	private String chosenColumns ;
 	
+	private Integer stageCount;
+
 	private String stageShortCode;
+	
+	private String[] deletedStageUuids;
 	
 	public long getId() {
 		return id;
@@ -198,6 +202,13 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 		this.chosenColumns = chosenColumns;
 	}
 
+	public Integer getStageCount() {
+		return stageCount;
+	}
+
+	public void setStageCount(Integer stageCount) {
+		this.stageCount = stageCount;
+
 	public String getStageShortCode() {
 		return stageShortCode;
 	}
@@ -206,5 +217,14 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 		this.stageShortCode = stageShortCode;
 	}
 
+	public String[] getDeletedStageUuids() {
+		return deletedStageUuids;
+	}
+
+	public void setDeletedStageUuids(String[] deletedStageUuids) {
+		this.deletedStageUuids = deletedStageUuids;
+	}
+
+	
 	
 }
