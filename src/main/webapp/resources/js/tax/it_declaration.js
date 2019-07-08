@@ -260,8 +260,9 @@ function closeChangeStatusPopup() {
 
 function getItDeclarationSubmissionList(uuid, financialYear, pageNo) {
 	var pageSize = $("#pageSize").val();
+	var searchValue = $("#formSearch").val();  
 	$("#formList").empty();
-	$.post(sourceleadUrl + "/itDeclaration/list", {uuid:uuid, financialYear:financialYear, pageNo:pageNo, pageSize:pageSize}, function(response) {
+	$.post(sourceleadUrl + "/itDeclaration/list", {uuid:uuid, financialYear:financialYear,pageNo:pageNo, pageSize:pageSize,searchValue:searchValue}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
 		} else if (response.response === "AWKWARD") {
