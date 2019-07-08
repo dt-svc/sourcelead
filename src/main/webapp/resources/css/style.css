@@ -501,11 +501,11 @@
 .appraQueInn .glyphicon {    position: absolute; right: 23%; top: 24px;}
 
 
-.subScoreWrap { float: right; text-align: right; width: 235px;}
+.subScoreWrap { float: right; text-align: right; width: 240px;}
 .subScoreWrap label { float: left;padding: 10px 15px 0px 0px;}
-.subScoreWrap select {float: right !important; width: 120px; padding: 6px 5px;}
+.subScoreWrap select, .subScoreWrap input {float: right !important; width: 120px; padding: 6px 5px;}
 .subScoreWrap p { position: relative; top: 5px; float: right;}
 .bor_top { border-top:1px solid #ccc; }
-.performanceThumbImg { width: 150px; max-height: 80px;}
+.performanceThumbImg { max-width: 150px; width: auto; max-height: 80px;}
 
 
