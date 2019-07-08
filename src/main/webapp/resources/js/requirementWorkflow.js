@@ -370,7 +370,66 @@ function RequirementWorkflow(){
 			window.location.href = sourceleadUrl + "/workflowList";
 		}
 
-
+		 this.saveRequirementAndAddAStage = function(workflowUuid, stageName, workflowName){
+		 var validationSettings = {
+		           errorMessagePosition: 'element',
+		           borderColorOnError: '',
+		           scrollToTopOnError: true,
+		           dateFormat: 'yyyy/mm/dd'
+		       };
+		     
+			  if ($('#requirementWorkFlowForm').validate(false, validationSettings)) {
+				  var formData = getFormData("requirementWorkFlowForm");
+				  workflowName = $('#workFlowName').val();
+				   $("#stageButton").attr("disabled", "disabled");
+		           $("#stageButton").addClass('button').val('Processing..'); 
+			 $.ajax({
+		           type: "POST",
+		           data : formData,
+		           url:sourceleadUrl+"/saveWorkFlowDetails?uuid="+workflowUuid,
+		           success: function (result) {
+						if (result.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (result.response === "SUCCESS") {
+			        		if(result.object === "DataMissing") {
+								$("#stageButton").removeAttr("disabled");
+								$("#stageButton").removeAttr('button').val('Save');	
+								showError("Invalid data");
+							}else{
+								if(deletedStageUuids.length == 0){
+									 window.location.href = sourceleadUrl + "/addStage?uuid="+workflowUuid+"&workFlowName="+workflowName;
+								}
+							}
+			        	} else if (result.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+		           },complete: function (result) {
+		        	    if(deletedStageUuids.length > 0){
+		        	   requirementWorkflow.goTOAddStage(deletedStageUuids, workflowUuid, stageName, workflowName);
+		        	   }
+		            }
+		       });
+		     } 
+		 }
+		 
+		 this.goTOAddStage = function(deletedStageUuids, workflowUuid, stageName, workflowName){
+				$.ajax({
+					type : "GET",
+					url : sourceleadUrl + "/deleteRequirementWorkflowStage?deletedStageUuids="+deletedStageUuids+"&requirementWorkFlowUuid="+workflowUuid,
+					success : function(dataList){
+						if(dataList == "Success"){
+							window.location.href = sourceleadUrl + "/addStage?uuid="+workflowUuid+"&workFlowName="+workflowName;
+						}else{
+							 showError("Operation failed, please try again");
+						}
+						}
+					});
+					
+			}
+		 
+		
 		this.saveRequirementViewWorkFlow = function(workflowUuid, stageName){
 		      var validationSettings = {
 		           errorMessagePosition: 'element',
