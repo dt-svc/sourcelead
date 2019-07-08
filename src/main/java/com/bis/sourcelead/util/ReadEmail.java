@@ -126,6 +126,7 @@ public class ReadEmail {
 									System.out.println("*****saving file name :>>>>>>>>> :" + fileName);
 									logger.debug("*****saving file name :>>>>>>>>> :" + fileName);
 									String fullfilepath = saveDirectory + System.getProperty("file.separator") + fileName;
+									logger.debug("*file fullfilepath saved at location :>>>>>>>>> :" + fullfilepath);
 									part.saveFile(fullfilepath); // Save the file in folder.
 								}
 
