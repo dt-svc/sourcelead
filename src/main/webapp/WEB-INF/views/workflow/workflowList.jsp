@@ -5,7 +5,13 @@
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 $(document).ready(function() {
 	requirementWorkflow.getWorkflowList();
+	
+	var dynamicWorkflowName = '${workflowName}';
+	if(dynamicWorkflowName != ""){
+		requirementWorkflow.showSuccessMsg("Successfully saved "+dynamicWorkflowName);
+	}
 });
+
 </script>
 <script src="/resources/js/requirementWorkflow.js?staticTime=${staticTime}"></script>
 <div class="wraper"> 
