@@ -109,4 +109,73 @@ public class PerformanceAppraisalController {
 	}
 	 
 
+	 @RequestMapping(value = "/employeePerformanceAppraisalList")
+	 public ModelAndView employeePerformanceAppraisalList(HttpServletRequest request) throws Exception {
+		    
+				ModelAndView model = new ModelAndView();
+				
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.PERFORMANCE_MY_APPRAISAL);
+					
+					request.getSession().setAttribute("sessionData",sessionData);
+					
+					model.setViewName("performance/employeePerformanceAppraisalList");
+					return model;
+	}
+	
+	 @RequestMapping(value = "/appraisalEmployeesList")
+	 public ModelAndView appraisalEmployeesList(HttpServletRequest request,
+			 @RequestParam(value="templateUUID", required=true) String templateUUID) throws Exception {
+		    
+				ModelAndView model = new ModelAndView();
+				
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.PERFORMANCE_MY_APPRAISAL);
+					
+					request.getSession().setAttribute("sessionData",sessionData);
+					model.addObject("templateUUID", templateUUID);
+					model.setViewName("performance/appraisalEmployeesList");
+					return model;
+	}
+	 
+	 
+	 
+	 @RequestMapping(value = "/employeeAppraisalDetails")
+	 public ModelAndView employeeAppraisalDetails(HttpServletRequest request,
+			 @RequestParam(value="assignedUUID", required=false) String assignedUUID,
+			 @RequestParam(value="templateUUID", required=false) String templateUUID) throws Exception {
+		    
+				ModelAndView model = new ModelAndView();
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.PERFORMANCE_MY_APPRAISAL);
+					request.getSession().setAttribute("sessionData",sessionData);
+					
+					boolean isGolasConfigured = performanceAppraisalAssignedAssociatesService.isGoalsConfiguredForAssignedPerformanceApprisal(assignedUUID);
+					if(isGolasConfigured == true) {
+						model.addObject("isGolasConfigured", Constants.YES);
+					}else {
+						model.addObject("isGolasConfigured", Constants.NO);
+					}
+				
+					PerformanceFeedbackDTO performanceFeedbackDTO = performanceAppraisalService.getPerformanceFeedbackDetails(assignedUUID,user.getId());
+					model.addObject("submissionStage", performanceFeedbackDTO.getSubmissionStage());
+					model.addObject("assignedUUID", assignedUUID);
+					model.addObject("templateUUID", templateUUID);
+					model.setViewName("performance/employeeAppraisalDetails");
+					return model;
+	}
+	 
 }

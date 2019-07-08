@@ -84,7 +84,7 @@ $(document).ready(function() {
               
               </div>
               </div>
-             
+             </div>
 </section>
 
 <jsp:include page="../performance/templateOverView.jsp" />   

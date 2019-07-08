@@ -442,4 +442,44 @@ public class PerformanceAppraisalRestController {
 		}
     	return jsonCategoriesString;
     }
+    
+    
+    @RequestMapping(value = "/getEmployeeAssignedAppraisalList", method = RequestMethod.GET)
+	public ResponseList<PerformanceAppraisalTemplateDTO> getEmployeeAssignedAppraisalList(PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO,HttpServletRequest request) throws Exception {
+		
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+ 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+ 		 
+		String[] tableColumns = { "name", "appraisalStartDate", "appraisalEndate", "appraisalProcessStartDate", "status" };
+		int sortColumnIndex = 1; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (performanceAppraisalTemplateDTO.getOrder() != null && !performanceAppraisalTemplateDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(performanceAppraisalTemplateDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = performanceAppraisalTemplateDTO.getOrder().get(0).get("dir");
+		}
+		performanceAppraisalTemplateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		performanceAppraisalTemplateDTO.setSortOrder(sortColumnOrder);
+		ResponseList<PerformanceAppraisalTemplateDTO> myAppraisalAssignedList = performanceAppraisalService.getEmployeeAssignedAppraisalList(performanceAppraisalTemplateDTO, user.getId(), orgLocation.getId(), orgLocation.getDateFormat());
+		return myAppraisalAssignedList;
+	}
+    
+    @RequestMapping(value = "/getAppraisalAssignedEmployeesList", method = RequestMethod.GET)
+	public ResponseList<PerformanceAppraisalTemplateDTO> getAppraisalAssignedEmployeesList(PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO,HttpServletRequest request) throws Exception {
+		
+		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+ 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+ 		 
+		String[] tableColumns = { "appraisalAssignedUser", "appraisalProcessStartDate", "appraisalStartDate", "appraisalEndate", "status" };
+		int sortColumnIndex = 1; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (performanceAppraisalTemplateDTO.getOrder() != null && !performanceAppraisalTemplateDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(performanceAppraisalTemplateDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = performanceAppraisalTemplateDTO.getOrder().get(0).get("dir");
+		}
+		performanceAppraisalTemplateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		performanceAppraisalTemplateDTO.setSortOrder(sortColumnOrder);
+		ResponseList<PerformanceAppraisalTemplateDTO> myAppraisalAssignedList = performanceAppraisalService.getAppraisalAssignedEmployeesList(performanceAppraisalTemplateDTO, user.getId(), orgLocation.getId(), orgLocation.getDateFormat());
+		return myAppraisalAssignedList;
+	}
+    
 }

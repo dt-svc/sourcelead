@@ -37,4 +37,8 @@ public interface PerformanceAppraisalDao {
 	PerformanceFeedbackDTO getPerformanceFeedbackDetails(String assignedUUID,Long userId) throws Exception;
 	
 	String getJsonCategoriesString(String assignedUUID) throws Exception;
+	
+	ResponseList<PerformanceAppraisalTemplateDTO> getEmployeeAssignedAppraisalList(PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO,Long userId,Long orgLocationId,String dateFormat) throws Exception;
+	
+	ResponseList<PerformanceAppraisalTemplateDTO> getAppraisalAssignedEmployeesList(PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO,Long userId,Long orgLocationId,String dateFormat) throws Exception;
 }

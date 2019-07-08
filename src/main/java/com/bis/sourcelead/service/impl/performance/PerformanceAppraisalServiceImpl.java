@@ -93,6 +93,20 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 		return performanceAppraisalDao.getJsonCategoriesString(assignedUUID);
 	}
 
+	@Override
+	public ResponseList<PerformanceAppraisalTemplateDTO> getEmployeeAssignedAppraisalList(
+			PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO, Long userId, Long orgLocationId,
+			String dateFormat) throws Exception {
+		return performanceAppraisalDao.getEmployeeAssignedAppraisalList(performanceAppraisalTemplateDTO, userId, orgLocationId, dateFormat);
+	}
+
+	@Override
+	public ResponseList<PerformanceAppraisalTemplateDTO> getAppraisalAssignedEmployeesList(
+			PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO, Long userId, Long orgLocationId,
+			String dateFormat) throws Exception {
+		return performanceAppraisalDao.getAppraisalAssignedEmployeesList(performanceAppraisalTemplateDTO, userId, orgLocationId, dateFormat);
+	}
+
 	
 
 }
