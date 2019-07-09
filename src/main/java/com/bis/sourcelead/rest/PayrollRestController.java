@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -208,10 +209,14 @@ public class PayrollRestController {
 	@RequestMapping(value = { "/calculateAssociateSalaryInd","/rest/calculateAssociateSalaryInd" })
 	public ModelAndView calculateAssociateSalaryInd(AssociatePayrollPayheadHistoryDTO associatePayrollPayheadHistoryDTO, HttpServletRequest request) throws Exception
 	{
-	 	ModelAndView model = new ModelAndView();
+	 	
+		System.out.println(" inside calculateAssociateSalaryInd   >>>>>>>>>>>>>");
+		ModelAndView model = new ModelAndView();
 	 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList = null;
+	 	System.out.println(" before SourceLeadSessionManager.getSessionAttribute   >>>>>>>>>>>>>");
 	 	Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, associatePayrollPayheadHistoryDTO.getPaySheetFrequencyUUID());
+	 	System.out.println(" after SourceLeadSessionManager.getSessionAttribute sessionObj  >>>>>>>>>>>>>"+sessionObj);
 	 	INDPayrollDTO indPayrollDTO = null;
 	    if(sessionObj != null) {
 	    	IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
@@ -238,8 +243,16 @@ public class PayrollRestController {
 	   		if(indEmployeePayroll != null) {
 	   			payrollList.add(indEmployeePayroll);
 	   		}
-	   		indPayrollDTO = iNDPayrollCommonUtil.getINDPayrollDTOFromIndEmployeePayroll(payrollList, orgLocation).iterator().next();
+	   		System.out.println(" inisde indPayrollDTOLst   >>>>>>>>>>>>>");
+	   		List<INDPayrollDTO>	indPayrollDTOLst = iNDPayrollCommonUtil.getINDPayrollDTOFromIndEmployeePayroll(payrollList, orgLocation);
+	   		System.out.println(" inisde indPayrollDTOLst   >>>>>>>>>>>>>");
+	   		if(indPayrollDTOLst!= null && indPayrollDTOLst.size()>0) {
+	   			System.out.println(" First records indPayrollDTOLst   >>>>>>>>>>>>>"+indPayrollDTOLst.get(0));
+	   			indPayrollDTO = indPayrollDTOLst.get(0);
+	   		}
+	   		System.out.println(" value  indPayrollDTOLst   >>>>>>>>>>>>>"+indPayrollDTO);
 	   	    associatePayrollPayheadDTOList = indPayrollDTO.getPayHeadHistoryDTOList();
+	   	    
 	   	}
 		 
 		if(associatePayrollPayheadDTOList != null && !associatePayrollPayheadDTOList.isEmpty()) {
@@ -259,6 +272,7 @@ public class PayrollRestController {
 		
 		model.setViewName("payroll_india/payroll/associatePayrollSummaryInd");
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		System.out.println(" completed calculateAssociateSalaryInd   >>>>>>>>>>>>>");
 		return model;
 	}
 	
