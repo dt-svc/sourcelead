@@ -1164,4 +1164,111 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 	
 	
 	}
+
+	@Override
+	public List<PerformanceAppraisalPeersDTO> getAppraisalAssignedPeers(String assignedUUID) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceAppraisalTemplateDetailsDTO> templateDetailsList = new ArrayList<PerformanceAppraisalTemplateDetailsDTO>();
+		List<PerformanceAppraisalPeersDTO> peersList = new ArrayList<PerformanceAppraisalPeersDTO>();
+		PerformanceAppraisalTemplateDetailsDTO templateDTO = null;
+		
+		try {
+		
+		String query =  "SELECT "
+						+ "PEERS.PEER_USER_ID AS peerIds "
+						+ "FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED "
+						+ "LEFT JOIN PERFORMANCE_APPRAISAL_PEERS PEERS  ON ASSIGNED.PEER_ID = PEERS.ID "
+						  
+						+ "WHERE ASSIGNED.UUID = :assignedUUID ";
+			
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("assignedUUID", assignedUUID);
+		String peerIds = (String) queryObj.uniqueResult();
+		
+		if(peerIds != null) {
+			
+			String peerUserIds [] = peerIds.split(",");
+			String peerUserIdStr = "'" + StringUtils.join(peerUserIds,"','") + "'";
+			
+			String peersQuery =  "SELECT " + 
+								 "CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS associateName, " +
+								 "U.FILE_URL AS userImgUrl, " +
+								 "U.USER_CODE AS userCode " + 
+										             
+								 "FROM " + 
+								 "USER U " + 
+								 "WHERE U.ID IN ("+peerUserIdStr+") ";
+			
+			
+			Query peerQueryObj = session.createSQLQuery(peersQuery);
+			peerQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalPeersDTO.class));
+			peersList = peerQueryObj.list();
+						
+		}
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return peersList;
+		
+	}
+
+	@Override
+	public Integer getPeersTotalCategoriesCount(String assignedUUID, String templateUUID) throws Exception {
+
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer totalScore = 0;
+		
+		String assignedQuery =  "SELECT "
+				+" ASSIGNED.ID "           
+				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED "
+				+" WHERE ASSIGNED.UUID = :assignedUUID ";
+		
+		Query queryObj = session.createSQLQuery(assignedQuery);
+		queryObj.setString("assignedUUID", assignedUUID);
+		BigInteger assignedId = (BigInteger) queryObj.uniqueResult();
+		
+		
+		String query =  "SELECT "
+				+ "PEERS.PEER_USER_ID AS peerIds "
+				+ "FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED "
+				+ "LEFT JOIN PERFORMANCE_APPRAISAL_PEERS PEERS  ON ASSIGNED.PEER_ID = PEERS.ID "
+				+ "WHERE ASSIGNED.UUID = :assignedUUID ";
+	
+
+		Query peerQueryObj = session.createSQLQuery(query);
+		peerQueryObj.setString("assignedUUID", assignedUUID);
+		String peerIds = (String) peerQueryObj.uniqueResult();
+		
+		if(peerIds != null) {
+			
+			String peerUserIds [] = peerIds.split(",");
+			String peerUserIdStr = "'" + StringUtils.join(peerUserIds,"','") + "'";
+			
+			
+			String peersQuery =  "SELECT "
+					+" FEEDBACK.FEEDBACK_CATEGORIES_SCORE  "
+					+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
+					+" WHERE FEEDBACK.USER_ID IN ("+peerUserIdStr+") AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId  ";
+			
+			Query categoryScoreQueryObj = session.createSQLQuery(peersQuery);
+			categoryScoreQueryObj.setBigInteger("assignedId", assignedId);
+			List<Integer> scoresList = (List<Integer>) categoryScoreQueryObj.list();
+			
+			
+			if(scoresList != null && !scoresList.isEmpty()) {
+				for(Integer score : scoresList) {
+					totalScore = totalScore+score;
+				}
+			}
+						
+		}
+		
+
+		return totalScore;
+	}
 }

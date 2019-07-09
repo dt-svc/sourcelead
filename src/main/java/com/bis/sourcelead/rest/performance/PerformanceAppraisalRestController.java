@@ -24,17 +24,18 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.AppraisalJobsSubmissionDetailsDTO;
 import com.bis.sourcelead.dto.performance.AppraisalProjectsTasksDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceFeedbackCategoryDTO;
 import com.bis.sourcelead.dto.performance.PerformanceFeedbackDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGeneralTasksDetailsDTO;
-import com.bis.sourcelead.dto.performance.PerformanceGoalsAssignToDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceJobsDetailsDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalAssignedAssociatesService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalUserFeedbackService;
@@ -59,6 +60,9 @@ public class PerformanceAppraisalRestController {
 	
 	@Autowired
 	PerformanceAppraisalAssignedAssociatesService performanceAppraisalAssignedAssociatesService;
+	
+	@Autowired
+	UserService userService;
 	
 	@Value("${static.path}")
 	private String staticPath;
@@ -161,6 +165,19 @@ public class PerformanceAppraisalRestController {
 	 		
 	       Long userId = performanceAppraisalAssignedAssociatesService.getAppraisalAssignedUserByUUID(assignedUUID);
 	 	   PerformanceFeedbackTemplateDTO templateDTO  = performanceAppraisalService.getPerformanceSubmittedFeedbackTemplateDTOByUUID(templateUUID,assignedUUID,userId);
+	 	   return templateDTO;
+	     
+	    }
+	    
+	    @RequestMapping(value = "/loadPeerPerformanceFeedbackTemplate" , method = RequestMethod.GET)
+	    public PerformanceFeedbackTemplateDTO loadPeerPerformanceFeedbackTemplate(@RequestParam(value="templateUUID", required=false) String templateUUID,
+	    		@RequestParam(value="assignedUUID", required=false) String assignedUUID,@RequestParam(value="peerUserCode", required=false) String peerUserCode,
+	    		HttpServletRequest request) throws Exception {
+	 		
+	       User peerUser = userService.getUserByUserCode(peerUserCode);
+	 	   PerformanceFeedbackTemplateDTO templateDTO  = performanceAppraisalService.getPerformanceSubmittedFeedbackTemplateDTOByUUID(templateUUID,assignedUUID,peerUser.getId());
+	 	   Integer peerTotalScore = performanceAppraisalService.getPeersTotalCategoriesCount(assignedUUID, templateUUID);
+	 	   templateDTO.setCategoriesTotalScore(String.valueOf(peerTotalScore));
 	 	   return templateDTO;
 	     
 	    }
@@ -496,5 +513,25 @@ public class PerformanceAppraisalRestController {
 		ResponseList<PerformanceAppraisalTemplateDTO> myAppraisalAssignedList = performanceAppraisalService.getAppraisalAssignedEmployeesList(performanceAppraisalTemplateDTO, user.getId(), orgLocation.getId(), orgLocation.getDateFormat());
 		return myAppraisalAssignedList;
 	}
+    
+    
+    @RequestMapping(value = "/getAppraisalAssignedPeers", method = RequestMethod.GET)
+	public ResponseList<PerformanceAppraisalPeersDTO> getAppraisalAssignedPeers(HttpServletRequest request, 
+				@RequestParam(value = "assignedUUID", required = true) String assignedUUID) throws Exception {
+		
+    	 ResponseList<PerformanceAppraisalPeersDTO> resObj = new ResponseList<>();
+		 try {
+			 List<PerformanceAppraisalPeersDTO> peersList =  performanceAppraisalService.getAppraisalAssignedPeers(assignedUUID);
+			 resObj.setData(peersList);
+			 resObj.setResponse(Result.SUCCESS.name());
+			 resObj.setResponseMessage(Result.SUCCESS.getValue());
+		    
+		 }catch (Exception e) {
+			 resObj.setResponse(Result.AWKWARD.name());
+			 resObj.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		 return resObj;
+	}
+    
     
 }

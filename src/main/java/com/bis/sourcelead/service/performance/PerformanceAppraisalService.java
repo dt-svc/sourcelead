@@ -6,6 +6,7 @@ import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceFeedbackDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGeneralTasksDetailsDTO;
@@ -41,4 +42,8 @@ public interface PerformanceAppraisalService {
 	ResponseList<PerformanceAppraisalTemplateDTO> getEmployeeAssignedAppraisalList(PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO,Long userId,Long orgLocationId,String dateFormat) throws Exception;
 	
 	ResponseList<PerformanceAppraisalTemplateDTO> getAppraisalAssignedEmployeesList(PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO,Long userId,Long orgLocationId,String dateFormat) throws Exception;
+	
+	List<PerformanceAppraisalPeersDTO> getAppraisalAssignedPeers(String assignedUUID) throws Exception;
+	
+	Integer getPeersTotalCategoriesCount(String assignedUUID,String templateUUID) throws Exception;
 }

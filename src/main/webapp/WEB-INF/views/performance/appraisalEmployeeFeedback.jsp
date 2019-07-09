@@ -31,7 +31,7 @@ function getAppraisalFeedbackDetails(){
 	result = result + '<div class="feedbackTabs">';
 	result = result + '<ul class="clearfix">';
 	result = result + '<li class="active" onclick="getAppraisalFeedbackDetails(self)" id="selfTab">Self</li>';
-	result = result + '<li id="peersTab">Peers</li>';
+	result = result + '<li id="peersTab"  onclick="getAppraisalPeersList()">Peers</li>';
 	result = result + '<li id="managerTab">Manager</li>';
 	result = result + '</ul>';
 	result = result + '</div>';
@@ -40,14 +40,13 @@ function getAppraisalFeedbackDetails(){
 	result = result + '<div class="col-xs-12 col-sm-12 backgroundWhite">';
 	result = result + '<div id="selfTab_div" class="minHeight_225">';
 	
-	result = result + '<div id="feedBackCategoryTemplateDiv">';
-     
-    result = result + '</div>';
-    result = result + '</div>';  
+	result = result + '<div id="peersListDiv"></div>';
+	result = result + '<div id="feedBackCategoryTemplateDiv"></div>';
      
 	result = result + '</div>';
 	result = result + '</div>';
 	
+	$("#peersListDiv").empty();
 	$("#performanceAppraisalDiv").append(result);
 	
 	getAppraisalFeedbackForm('self');
@@ -57,7 +56,7 @@ function getAppraisalFeedbackDetails(){
 
 
 <script>
-function getAppraisalFeedbackForm(appraisalType){
+function getAppraisalFeedbackForm(appraisalType,userCode){
 	
     $("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     
@@ -88,14 +87,13 @@ function getAppraisalFeedbackForm(appraisalType){
 	           			  });
 	           		 }
 	       		 }
-  		    	getAppraisalFeedbackTemplates(templateIds);
+  		    	getAppraisalFeedbackTemplates(templateIds,userCode);
   		     },
     }); 
 }
 
 
-function getAppraisalFeedbackTemplates(templateIds){
-	
+function getAppraisalFeedbackTemplates(templateIds,userCode){
 	$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 
 	$.ajax({
@@ -145,7 +143,12 @@ function getAppraisalFeedbackTemplates(templateIds){
         	    	    	feedbackTemplateUUID = opt.feedbackTemplateUUID;
         	    	    }
         	    	    
-	        	        result = result + '<li rel="'+opt.feedbackTemplateUUID+'"><a id="feedbackTemplate'+opt.feedbackTemplateUUID+'" '+selectedClass+' value="'+opt.feedbackTemplateUUID+'" onclick="getFeedbackCategoryForm(\''+opt.feedbackTemplateUUID+'\');">'+opt.templateName+'</a></li>';
+        	    	    if(typeof userCode != 'undefined'){
+        	    	    	 result = result + '<li rel="'+opt.feedbackTemplateUUID+'"><a id="feedbackTemplate'+opt.feedbackTemplateUUID+'" '+selectedClass+' value="'+opt.feedbackTemplateUUID+'" onclick="getPeersFeedbackCategoryForm(\''+opt.feedbackTemplateUUID+'\',\''+userCode+'\');">'+opt.templateName+'</a></li>';
+        	    	    }else{
+        	    	    	 result = result + '<li rel="'+opt.feedbackTemplateUUID+'"><a id="feedbackTemplate'+opt.feedbackTemplateUUID+'" '+selectedClass+' value="'+opt.feedbackTemplateUUID+'" onclick="getFeedbackCategoryForm(\''+opt.feedbackTemplateUUID+'\');">'+opt.templateName+'</a></li>';
+        	    	    }
+	        	       
         	    	}
         	
         	    result = result + '</ul>';
@@ -164,9 +167,13 @@ function getAppraisalFeedbackTemplates(templateIds){
         	    }
 
         	    $("#feedBackCategoryTemplateDiv").append(result);
-        	    
           	 if(feedbackTemplateUUID != ''){
-        	    	getFeedbackCategoryForm(feedbackTemplateUUID);
+          		 if(typeof userCode != 'undefined'){
+          			getPeersFeedbackCategoryForm(feedbackTemplateUUID,userCode);
+          		 }else{
+          			getFeedbackCategoryForm(feedbackTemplateUUID);
+          		 }
+        	    	
         	    } 
         	    
         	    
@@ -189,21 +196,6 @@ function getAppraisalFeedbackTemplates(templateIds){
 
 <script>
 function getFeedbackCategoryForm(feedbackTemplateUUID){
-	
-	
-	var submissionStage = '${submissionStage}';
-	
-	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatScript = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatScript = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatScript = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatScript = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatScript = 'yy-dd-mm'; 
-	  }
 	
 	$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$('#feedbackTemplate li').each(function(){
@@ -242,7 +234,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID){
 						    		  result = result + '<div class="col-md-5">'+v['value']+'</div>';
 						    	  }else{
 						    		  if(v['value'] != null){
-						    			  result = result +"<a href="+v['value']+"><img class='performanceThumbImg' onerror='predefineOrgImage(this);' data-id='orgLogoImage' src="+v['value']+" alt='image'></a>";
+						    			  result = result +"<a href="+v['value']+"><img class='performanceThumbImg' onerror='predefineDocImage(this);' data-id='orgLogoImage' src="+v['value']+" alt='image'></a>";
 						    		  }else{
 						    			  result = result +"-----";
 						    		  }
@@ -277,4 +269,175 @@ function getFeedbackCategoryForm(feedbackTemplateUUID){
   
     $("#appraisalLoading").removeAttr("style");
 }
+</script>
+
+
+<script>
+function getPeersFeedbackCategoryForm(feedbackTemplateUUID,userCode){
+	
+	$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$('#feedbackTemplate li').each(function(){
+		document.getElementById("feedbackTemplate"+$(this).attr('rel')).removeAttribute("class")
+	});
+	document.getElementById("feedbackTemplate"+feedbackTemplateUUID).className = 'active'
+			
+			$.ajax({
+		  		  type: "GET",
+		  		   url: pmsUrl+"/loadPeerPerformanceFeedbackTemplate?templateUUID="+feedbackTemplateUUID+"&assignedUUID="+assignedUUID+"&peerUserCode="+userCode, 
+		  		     success :function(report) {
+		  		    	 
+		  		    	var result = ""; 
+		  		    	var categoriesTotalScore = report.categoriesTotalScore
+		  		    	
+		  		    	if(report.submittedJsonStringValues != null){
+		  		    		var data = eval(report.submittedJsonStringValues);
+			  		    	var categoryScore = report.categoryScore;
+			  		    	if(categoryScore == null){
+			  		    		categoryScore = 0;
+			  		    	}
+			  		    	result = result + '<div id="tab1" class="appraQueOut">';
+			  				result = result + '<span class="appraQueInn">';
+			  				result = result + '<div class="project_wrap_table">';
+			  				result = result + '<h4 class="clearfix mb10" id="viewTemplateName"></h4>';
+			  			    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
+			  			    result = result + '<label>Category Score :</label>';
+			  			    result = result + '<input type="text" disabled value="'+categoryScore+'" class="form-control pull-left"></div>';
+			  			    result = result + '</div></div>';
+			  			    
+				  			  $.each( data, function( k, v ) {
+				  				  result = result + '<div class="form-group clearfix">';
+						    	  result = result + '<label class="col-md-3 paddingRight">'+v['label']+'<span class="pull-right paddingLeft">:</span></label>';
+						    	  if(v['type'] != 'file'){
+						    		  result = result + '<div class="col-md-5">'+v['value']+'</div>';
+						    	  }else{
+						    		  if(v['value'] != null){
+						    			  result = result +"<a href="+v['value']+"><img class='performanceThumbImg' onerror='predefineDocImage(this);' data-id='orgLogoImage' src="+v['value']+" alt='image'></a>";
+						    		  }else{
+						    			  result = result +"-----";
+						    		  }
+						    	  }
+						    	 
+						    	  result = result + '</div>';
+				  			  });
+			  			              
+			  				          
+			  				result = result + '</div>';
+			  			    result = result + '</span>';
+			  			    result = result + '</div>';
+			  			    
+			  			    $("#feedBackTemplateDiv").empty(); 
+					        $("#feedBackTemplateDiv").append(result);
+					        
+					       
+		  		    	}else{
+	  		    		    result = result + '<div class="odd"><div valign="top" colspan="4" class="dataTables_empty"></div></div>';
+	  		    		    $("#feedBackTemplateDiv").empty(); 
+					        $("#feedBackTemplateDiv").append(result);
+	  		    	     } 
+		  		    	
+		  		    	 if(categoriesTotalScore != null){
+					    	  $("#totalCategoryScore").val(categoriesTotalScore); 
+					    }
+		  		    	
+		  			
+		  		     },
+		  		   
+			});
+			 
+	
+  
+    $("#appraisalLoading").removeAttr("style");
+}
+</script>
+
+
+
+<script>
+function getAppraisalPeersList(){
+	$("#feedBackCategoryTemplateDiv").empty();  
+	document.getElementById("selfTab").removeAttribute("class");
+	document.getElementById("peersTab").className = 'active';
+	
+	$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$.ajax({
+		  type: "GET",
+		   url: pmsUrl+"/getAppraisalAssignedPeers?assignedUUID="+assignedUUID, 
+		     success :function(peerResult) {
+		    	 
+		    	var result = ""; 
+		    	var flag = true;
+		    	var userCode = '';
+		    	if(peerResult.data != null){
+		    		
+		    		result = result + '<div id="peersTab_div">';
+		    		result = result + '<div class="row mt mb">';
+		    		result = result + '<div class="clearfix" id="selfAppraisalpeersDiv">';
+		    		result = result + '<ul id="feedbackPeerUsers" class="list-inline list-unstyled selfAppraisalpeersLi mb0">';
+		    		
+		    	    for (var i=0; i<peerResult.data.length; i++)
+        	    	{
+        	    	    
+        	    	    var opt = peerResult.data[i];
+        	    	     var selectedClass = '';
+        	    	    if(flag == true){
+        	    	    	selectedClass = 'class="peeruser-active"';
+        	    	    	userCode = opt.userCode;
+        	    	    	flag = false;
+        	    	    } 
+        	    	    
+        	    	    result = result + '<li '+selectedClass+' id="peerUser'+opt.userCode+'"  rel="'+opt.userCode+'" onclick="getPeerUserDetails(\''+opt.userCode+'\');">';
+    		    		result = result + '<div class="selfAppraisalImg">';
+    		    		result = result + '<img onerror="predefineUserImage(this);" src="'+opt.userImgUrl+'" alt="Image">';
+    		    		result = result + '</div>';
+    		    		result = result + '<span class="selfAppraisalpeerName">'+opt.associateName+'</span>';
+    		    		result = result + '</li>';
+        	    	    
+        	    	}
+		    		
+		    		
+		    		result = result + '</ul>';
+		    		result = result + '</div>';
+		    		result = result + '</div>';
+		    		result = result + '</div>';
+		    		$("#peersListDiv").empty();
+		    		$("#peersListDiv").append(result);
+		    		$("#appraisalLoading").removeAttr("style");
+		    		getAppraisalFeedbackForm('peer',userCode);
+		    		
+		    	}else{
+	    		    result = result + '<div class="odd"><div valign="top" colspan="4" class="dataTables_empty"></div></div>';
+			        $("#peersListDiv").append(result);
+			        $("#appraisalLoading").removeAttr("style");
+	    	     } 
+		    	
+			
+		     },
+		   
+	});
+}
+</script>
+
+<script>
+	function predefineUserImage(imageId){
+		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
+	}
+</script>
+
+<script>
+function getPeerUserDetails(userCode){
+	 $('#feedbackPeerUsers li').each(function(){
+		document.getElementById("peerUser"+$(this).attr('rel')).removeAttribute("class")
+	});
+	 
+	document.getElementById("peerUser"+userCode).className = 'peeruser-active' 
+		 $("#feedBackCategoryTemplateDiv").empty();
+    getAppraisalFeedbackForm('peer',userCode);
+	
+}
+</script>
+
+<script>
+	function predefineDocImage(imageId){
+		$(imageId).attr('src','/resources/images/applied_icon.png');
+	}
 </script>

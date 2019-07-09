@@ -242,7 +242,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 						    		  result = result + '<div class="col-md-5">'+v['value']+'</div>';
 						    	  }else{
 						    		  if(v['value'] != null){
-						    			  result = result +"<a href="+v['value']+"><img class='performanceThumbImg' onerror='predefineOrgImage(this);' data-id='orgLogoImage' src="+v['value']+" alt='image'></a>";
+						    			  result = result +"<a href="+v['value']+"><img class='performanceThumbImg' onerror='predefineDocImage(this);' data-id='orgLogoImage' src="+v['value']+" alt='image'></a>";
 						    		  }else{
 						    			  result = result +"-----";
 						    		  }
@@ -281,7 +281,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 </script>
 
 <script>
-	function predefineOrgImage(imageId){
+	function predefineDocImage(imageId){
 		$(imageId).attr('src','/resources/images/applied_icon.png');
 	}
 </script>
