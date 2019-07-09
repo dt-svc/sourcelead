@@ -204,8 +204,10 @@ $("#addComment").click(function(){
 	$("#ticketCommentPopup, .mask").show();
 });
 function closeTicketComment(){
-	$("#ticketCommentId").val(0);
+	var ticketIdEdit = $("#ticketCommentId").val();
+	if(ticketIdEdit ==null || ticketIdEdit =="" || ticketIdEdit =="undefined"){
 	$("#ticketComment").val("");
+	}
 	$('.fr-element.fr-view').html("");
 	$("#ticketCommentPopup, .mask").hide();
 }
