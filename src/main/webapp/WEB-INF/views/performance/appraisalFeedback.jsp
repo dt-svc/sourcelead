@@ -214,51 +214,60 @@ function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 			$.ajax({
 		  		  type: "GET",
 		  		   url: pmsUrl+"/loadPerformanceFeedbackTemplate?templateUUID="+feedbackTemplateUUID+"&assignedUUID="+assignedUUID, 
-		  		     success :function(result) {
+		  		     success :function(report) {
 		  		    	 
-		  		    	var data = eval(result.submittedJsonStringValues);
-		  		    	var categoryScore = result.categoryScore;
-		  		    	if(categoryScore == null){
-		  		    		categoryScore = 0;
-		  		    	}
-		  		    	var categoriesTotalScore = result.categoriesTotalScore
+		  		    	
 		  		    	var result = ""; 
-		  		    	result = result + '<div id="tab1" class="appraQueOut">';
-		  				result = result + '<span class="appraQueInn">';
-		  				result = result + '<div class="project_wrap_table">';
-		  				result = result + '<h4 class="clearfix mb10" id="viewTemplateName"></h4>';
-		  			    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
-		  			    result = result + '<label>Category Score :</label>';
-		  			    result = result + '<input type="text" disabled value="'+categoryScore+'" class="form-control pull-left"></div>';
-		  			    result = result + '</div></div>';
-		  			    
-			  			  $.each( data, function( k, v ) {
-			  				  result = result + '<div class="form-group clearfix">';
-					    	  result = result + '<label class="col-md-3 paddingRight">'+v['label']+'<span class="pull-right paddingLeft">:</span></label>';
-					    	  if(v['type'] != 'file'){
-					    		  result = result + '<div class="col-md-5">'+v['value']+'</div>';
-					    	  }else{
-					    		  if(v['value'] != null){
-					    			  result = result +"<a href="+v['value']+"><img class='performanceThumbImg' onerror='predefineOrgImage(this);' data-id='orgLogoImage' src="+v['value']+" alt='image'></a>";
-					    		  }else{
-					    			  result = result +"-----";
-					    		  }
-					    	  }
-					    	 
-					    	  result = result + '</div>';
-			  			  });
-		  			              
-		  				          
-		  				result = result + '</div>';
-		  			    result = result + '</span>';
-		  			    result = result + '</div>';
-		  			    
-		  			    $("#feedBackCategoryTemplateDiv").empty(); 
-				        $("#feedBackCategoryTemplateDiv").append(result);
-				        
-				        if(categoriesTotalScore != null){
-					    	  $("#totalCategoryScore").val(categoriesTotalScore); 
-					    }
+		  		    	
+		  		    	if(report.submittedJsonStringValues != null){
+		  		    		var data = eval(report.submittedJsonStringValues);
+			  		    	var categoryScore = report.categoryScore;
+			  		    	if(categoryScore == null){
+			  		    		categoryScore = 0;
+			  		    	}
+			  		    	var categoriesTotalScore = report.categoriesTotalScore
+			  		    	result = result + '<div id="tab1" class="appraQueOut">';
+			  				result = result + '<span class="appraQueInn">';
+			  				result = result + '<div class="project_wrap_table">';
+			  				result = result + '<h4 class="clearfix mb10" id="viewTemplateName"></h4>';
+			  			    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
+			  			    result = result + '<label>Category Score :</label>';
+			  			    result = result + '<input type="text" disabled value="'+categoryScore+'" class="form-control pull-left"></div>';
+			  			    result = result + '</div></div>';
+			  			    
+				  			  $.each( data, function( k, v ) {
+				  				  result = result + '<div class="form-group clearfix">';
+						    	  result = result + '<label class="col-md-3 paddingRight">'+v['label']+'<span class="pull-right paddingLeft">:</span></label>';
+						    	  if(v['type'] != 'file'){
+						    		  result = result + '<div class="col-md-5">'+v['value']+'</div>';
+						    	  }else{
+						    		  if(v['value'] != null){
+						    			  result = result +"<a href="+v['value']+"><img class='performanceThumbImg' onerror='predefineOrgImage(this);' data-id='orgLogoImage' src="+v['value']+" alt='image'></a>";
+						    		  }else{
+						    			  result = result +"-----";
+						    		  }
+						    	  }
+						    	 
+						    	  result = result + '</div>';
+				  			  });
+			  			              
+			  				          
+			  				result = result + '</div>';
+			  			    result = result + '</span>';
+			  			    result = result + '</div>';
+			  			    
+			  			    $("#feedBackCategoryTemplateDiv").empty(); 
+					        $("#feedBackCategoryTemplateDiv").append(result);
+					        
+					        if(categoriesTotalScore != null){
+						    	  $("#totalCategoryScore").val(categoriesTotalScore); 
+						    }
+		  		    	}else{
+		  		    		    result = result + '<div class="odd"><div valign="top" colspan="4" class="dataTables_empty"></div></div>';
+		  		    		    $("#feedBackCategoryTemplateDiv").empty(); 
+						        $("#feedBackCategoryTemplateDiv").append(result);
+		  		    	}
+		  		    	
 		  			
 		  		     },
 		  		   

@@ -35,6 +35,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.performance.PerformanceAppraisalAssignedAssociatesService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalUserFeedbackService;
 import com.bis.sourcelead.service.performance.PerformanceFeedbackService;
@@ -55,6 +56,9 @@ public class PerformanceAppraisalRestController {
 	
 	@Autowired
 	PerformanceFeedbackService performanceFeedbackService;
+	
+	@Autowired
+	PerformanceAppraisalAssignedAssociatesService performanceAppraisalAssignedAssociatesService;
 	
 	@Value("${static.path}")
 	private String staticPath;
@@ -146,6 +150,17 @@ public class PerformanceAppraisalRestController {
 	 		
 	       User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	   PerformanceFeedbackTemplateDTO templateDTO  = performanceAppraisalService.getPerformanceSubmittedFeedbackTemplateDTOByUUID(templateUUID,assignedUUID,user.getId());
+	 	   return templateDTO;
+	     
+	    }
+	    
+	    
+	    @RequestMapping(value = "/loadSelfPerformanceFeedbackTemplate" , method = RequestMethod.GET)
+	    public PerformanceFeedbackTemplateDTO loadSelfPerformanceFeedbackTemplate(@RequestParam(value="templateUUID", required=false) String templateUUID,
+	    		@RequestParam(value="assignedUUID", required=false) String assignedUUID,HttpServletRequest request) throws Exception {
+	 		
+	       Long userId = performanceAppraisalAssignedAssociatesService.getAppraisalAssignedUserByUUID(assignedUUID);
+	 	   PerformanceFeedbackTemplateDTO templateDTO  = performanceAppraisalService.getPerformanceSubmittedFeedbackTemplateDTOByUUID(templateUUID,assignedUUID,userId);
 	 	   return templateDTO;
 	     
 	    }
