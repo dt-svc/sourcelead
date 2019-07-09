@@ -3,7 +3,7 @@ package com.bis.sourcelead.util;
 public enum SourceleadResumeParserRegEx {
 	
 	ELIMINATE_KEYWORDS("\\b(CURRICULLUM VITAE)\\b"),
-	
+	ELIMINATE_RESUME_NAME_KEYWORDS("\\b(RESUME|CV|NAME(:?))\\b"),
 	NAME("\\b(CANDIDATE(:?)|FIRST NAME(:?))\\b"),
 	
 	LINK("(?:^|[\\W])((ht|f)tp(s?):\\/\\/|www\\.)(([\\w\\-]+\\.){1,}?([\\w\\-.~]+\\/?)*[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};']*)"),

@@ -234,5 +234,9 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 		return emailScenarioConfigurationDao.changeDefaultParserEmailConfig(uuid,orgLocationId, activeFlag, updatedDate);
 	}
 
+	@Override
+	public int getResumeParserEmailCountForOrg(Long id) {
+		return emailScenarioConfigurationDao.getResumeParserEmailCountForOrg(id);
+	}
 
 }
