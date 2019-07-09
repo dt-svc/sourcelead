@@ -271,7 +271,6 @@ function addInvoice(){
 	$("input[id^=totalAmountRow]").each(function() {
 		 if($(this).next('p').length >0){
 			 Duevalidate = false;
-			 console.log(" inside Duevalidate"+Duevalidate)
 			 return false;
 		  }	 
 	  });
@@ -313,7 +312,6 @@ function addInvoice(){
 $('body').on('blur', '#paymentForm', function() {
 	$("#paymentForm").showHelpOnFocus();
 	$("#paymentForm").validateOnBlur(false, validationSettings);
-	console.log("inisde last form action");
 	
 	// using for adding error message for input filed again.
 	$("input[id^=totalAmountRow]").each(function() {

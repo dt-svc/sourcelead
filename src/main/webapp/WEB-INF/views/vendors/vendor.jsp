@@ -11,22 +11,6 @@ window.onload = function () {
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 </script>
 
-<style>
-.project_tabs {
-    border:none !important;
-    }
-    
-.disabledLink
-{
-	color: #333;
-	text-decoration : none;
-	pointer-events: none;
-}
-
-
-
-</style>
-
 <script>
 	$(document).ready(function() {
 		document.getElementById("client_form").reset();
@@ -235,13 +219,7 @@ function getVendorDetails(){
 
 
 <style>
-.clsDatePicker {
-	z-index: 100000 !important;
-}
-
-.ui-front {
-	z-index: 9999999;
-}
+.ui-front { z-index: 9999999; }
 </style>
 
 
@@ -272,7 +250,7 @@ function getVendorDetails(){
 			  </ul>
 			  <div class="clearfix"></div>
 			  
-		 <div class="project_tabs">
+		 <div class="project_tabs projectTabs_brdnone">
 		 <div class="clearfix form-area form-horizontal toggle-div remove-div  newPrTabs_inn mt" id="tab-a">
 			 <form:form id="client_form" name="client_form" method="post">
 			<div class="clearfix form-horizontal inner-content">
@@ -566,7 +544,7 @@ function getVendorDetails(){
 						<div class="form-group">
 							<label class="col-md-3">Status</label>
 							<div class="col-md-9">
-								<select class="form-control" id="spocStatus"
+								<select class="form-control valid sel" id="spocStatus"
 									name="spocStatus">
 									<option value="Active">Active</option>
 									<option value="In-Active">In-Active</option>

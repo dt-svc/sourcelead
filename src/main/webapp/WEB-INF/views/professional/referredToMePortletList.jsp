@@ -2,17 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- <style type="text/css">
- .require_wrap_details_cta b {
-    width: 110px;
-}
-.top_o{
-top:0 !important;
-}
-.repoPositi .dataTables_filter {
-    top: 0px !important;
-}
- </style>
 
 <script>
 $(document).ready(function() {
@@ -144,7 +133,7 @@ function portletListFilter(requirementStatus){
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result =""; 
-	    	   result = result + '<div class="require_wrap_table overflow-data filter-position repoPositi">';
+	    	   result = result + '<div class="require_wrap_table overflow-data filter-position repoPositi repo_positi">';
 	    	   result = result + '<div class="clerfix">';
 	    	   result = result + '<table id="professionalDashboardPortletPagenation" class="display" cellspacing="0" width="100%"">';
 	           result = result + '<thead>';

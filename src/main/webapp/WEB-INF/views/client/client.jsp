@@ -18,22 +18,6 @@ window.onload = function () {
 		 </c:forEach>
 	});
 </script>
- 
-<style>
-.clsDatePicker {
-	z-index: 100000 !important;
-}
-
-.ui-front {
-    z-index: 9999999;
-}
-.margintop {
-margin-top: -50px;
-}
-</style>
-
-
-
 
 <!-- Content Area -->
 <section class="content-wraper">

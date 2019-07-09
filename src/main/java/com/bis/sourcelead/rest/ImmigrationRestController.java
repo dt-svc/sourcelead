@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
-//import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
@@ -64,10 +62,8 @@ import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadNotesService;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -89,9 +85,6 @@ public class ImmigrationRestController {
 
 	@Value("${static.path}")
 	private String staticPath;
-
-	@Autowired
-	private CountriesService countriesService;
 
 	@Autowired
 	private CandidateEducationService candidateEducationService;
@@ -121,9 +114,6 @@ public class ImmigrationRestController {
 	ImmigrationActivityCommonUtil immigrationActivityCommonUtil;
 
 	@Autowired
-	private RequirementService requirementService;
-
-	@Autowired
 	private SourceleadNotesService sourceleadNotesService;
 
 	@Autowired
@@ -134,9 +124,6 @@ public class ImmigrationRestController {
 	
 	@Autowired
 	private OrgLocationService orgLocationService;
-	
-	/*@Autowired
-	LcaActivityCommonUtil lcaActivityCommonUtil;*/
 	
 	
 	// for mobile 
@@ -281,8 +268,8 @@ public class ImmigrationRestController {
 		
 		logger.debug(" inisde getCandidatePassportDetails controller test -->");
 		List<CandidatePassport> passportList = new ArrayList<CandidatePassport>();
-		Long orgLocationId = (Long)  SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
-		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocationId);
+		OrgLocations  orgLocation = (OrgLocations)  SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocation.getId());
 		Date toDayDate = new Date();
 		try {
 			passportList = immigrationCommonService.getCandidatePassportDetails(candidateId,searchValue);
@@ -1286,4 +1273,26 @@ public class ImmigrationRestController {
 		}
 		return response;
 	}
+	
+	//Visa Type from lookupdata
+		@RequestMapping(value = { "/getVisaTypeLookUpdata" })
+		public ResponseList<String> getVisaTypeLookUpdata(
+				 HttpServletRequest request)
+				throws Exception {
+			ResponseList<String> responseList = new ResponseList<String>();
+			List<String> canVisaList = lookUpDataService.getAllVisaByCategory();
+			responseList.setData(canVisaList);
+			return responseList;
+		}
+		
+		//get document Types from lookup data
+		@RequestMapping(value = { "/getDocumentTypeLookUpdata" })
+		public ResponseList<LookUpData> getDocumentTypeLookUpdata(
+				 HttpServletRequest request)
+				throws Exception {
+			ResponseList<LookUpData> responseList = new ResponseList<LookUpData>();
+			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+			responseList.setData(documentsList);
+			return responseList;
+		}
 }

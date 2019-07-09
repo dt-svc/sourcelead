@@ -1003,7 +1003,8 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	    }
 	}
 	function clearFilters(){
-		location.reload();
+		$("#immiListSerach").val('');
+		getDynamicImmigrationsList();
 	}
 </script>
 

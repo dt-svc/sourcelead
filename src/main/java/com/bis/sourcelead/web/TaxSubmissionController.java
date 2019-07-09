@@ -33,12 +33,15 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -62,6 +65,12 @@ public class TaxSubmissionController {
 	UserRoleService userRoleService;
 	
 	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
+	@Autowired
 	private CommonUtil commonUtil;
 
 	// forms tab org/user
@@ -78,6 +87,7 @@ public class TaxSubmissionController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			if (user != null) {
 				if (!uuid.isEmpty()) {
+					modelAndView.addObject("financialYear", financialYear);
 					modelAndView.addObject("uuid", uuid);
 					SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, false, false);
 					if (sourceleadTaxFormDTO != null) {
@@ -154,12 +164,23 @@ public class TaxSubmissionController {
 							"orgLocations");
 					List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
 					modelAndView.addObject("userRoleList", userRoleList);
+					
+					List<Employees> employeeList = employeesService.getEmployeesByLocationId(orgLocations.getId());
+					if(employeeList != null && !employeeList.isEmpty()) {
+						for(Employees employee : employeeList) {
+							employee.setPanNumber(candidateService.getCandidatePanNumberByUserId(employee.getUser().getId(), orgLocations.getId()));
+//							System.out.println("User Id :" + employee.getUser().getId() + "UserName : " + employee.getUser().getFullName() + " Emp ID : " + employee.getEmployeeId() + " Pan : " + employee.getPanNumber() + " DOB : " + employee.getUser().getDateOfBirth());
+							employee.setDateOfBirth(candidateService.getCandidateDateOfBirthByUserId(employee.getUser().getId(), orgLocations));
+						}
+					}
+					modelAndView.addObject("employeeList", employeeList);
+					
 					if (!formUUID.isEmpty()) {
 						modelAndView.addObject("editForm", request.getRequestURL().toString().contains("editForm"));
 						modelAndView.addObject("viewForm", request.getRequestURL().toString().contains("viewForm"));
 						modelAndView.addObject("uuid", uuid);
 						SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO = taxService
-								.getITDeclarationSubmission(uuid, formUUID);
+								.getITDeclarationSubmission(uuid, formUUID, orgLocations.getId());
 						modelAndView.addObject("form", itDeclarationSubmissionDTO);
 						modelAndView.addObject("documents",
 								taxService.getUploadedDocumentsBySubmissionId(itDeclarationSubmissionDTO.getId()));
@@ -190,12 +211,22 @@ public class TaxSubmissionController {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, true, false);
+				
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				List<Employees> employeeList = employeesService.getEmployeesByLocationId(orgLocations.getId());
+				if(employeeList != null && !employeeList.isEmpty()) {
+					for(Employees employee : employeeList) {
+						employee.setPanNumber(candidateService.getCandidatePanNumberByUserId(employee.getUser().getId(), orgLocations.getId()));
+//						System.out.println("User Id :" + employee.getUser().getId() + "UserName : " + employee.getUser().getFullName() + " Emp ID : " + employee.getEmployeeId() + " Pan : " + employee.getPanNumber() + " DOB : " + employee.getUser().getDateOfBirth());
+						employee.setDateOfBirth(candidateService.getCandidateDateOfBirthByUserId(employee.getUser().getId(), orgLocations));
+					}
+				}
+				modelAndView.addObject("employeeList", employeeList);
+				
 				modelAndView.addObject("form", sourceleadTaxFormDTO);
 				modelAndView.addObject("formList", taxService.getTaxFormTypeList(false));
 				modelAndView.addObject("activeFormTabUUID", uuid);
 				TaxAdminController.setYears(modelAndView, null);
-				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-						"orgLocations");
 				List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
 				modelAndView.addObject("userRoleList", userRoleList);
 				if (autoSelectUser) {
@@ -267,7 +298,7 @@ public class TaxSubmissionController {
 	@RequestMapping(value = "/itDeclaration/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(HttpServletRequest request,
-			@RequestParam(defaultValue = "") String uuid, @RequestParam(defaultValue = "") String financialYear,
+			@RequestParam(defaultValue = "") String uuid, @RequestParam(defaultValue = "") String financialYear, String searchValue,
 			Paginator paginator) {
 		ResponseList<SourceleadTaxITDeclarationSubmissionDTO> response = new ResponseList<>();
 		try {
@@ -276,7 +307,7 @@ public class TaxSubmissionController {
 					"orgLocations");
 			if (user != null) {
 				List<SourceleadTaxITDeclarationSubmissionDTO> itDeclarationSubmissionDTOList = taxService
-						.getITDeclarationSubmissionList(orgLocations.getId(), uuid, financialYear, paginator);
+						.getITDeclarationSubmissionList(orgLocations.getId(), uuid, financialYear, searchValue, paginator);
 				response.setData(itDeclarationSubmissionDTOList);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -330,10 +361,10 @@ public class TaxSubmissionController {
 			if (sourceleadTaxITDeclarationSubmissionDetails != null) {
 				if (exportType.equalsIgnoreCase("excel")) {
 					file = taxService.exportItDeclarationSubmissionExcel(sourceleadTaxITDeclarationSubmissionDetails,
-							loginUser, orgLoc, user);
+							loginUser, orgLoc.getId(), user);
 				} else {
 					file = taxService.exportItDeclarationSubmissionPdf(sourceleadTaxITDeclarationSubmissionDetails,
-							loginUser, orgLoc, user);
+							loginUser, orgLoc.getId(), user);
 				}
 			}
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());

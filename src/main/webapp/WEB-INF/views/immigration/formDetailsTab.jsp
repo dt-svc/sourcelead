@@ -297,8 +297,9 @@
 			
 			$("#immigraFormTabSerach").keyup(function (e) {
 			    if (e.which === 13) {
-			    	var searchVal = $("#immigraFormTabSerach").val();
-			    	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,searchVal);
+			    	var searchFormVal = $("#immigraFormTabSerach").val();
+					if(searchFormVal) searchFormVal = searchFormVal.trim();
+			    	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,searchFormVal,'${curUscisMyImmi}');
 			    }
 			});
 			</script>
@@ -324,7 +325,7 @@ $("#formZipfile").click(function() {
 		return;
 	$.post("downloadImmigrationFormZip",{immigrationId: immigrationId}, function(data) {//  passing empty value for docId to do immigration level zip download
 		if(data !== "" && data.indexOf("Documents Found") === -1){
-			location.href = '${SourceLeadWeb_vmsUrl}/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
+			location.href = '${SourceLeadWeb_sourceleadUrl}/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
 		}
 		else if(data !== "" && data.indexOf("immigrationId Found") !== -1){
 			alert(data);

@@ -4,6 +4,7 @@
  
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 <%-- 
      @author : David Raju.
      this script is for edit Candidate.
@@ -11,48 +12,6 @@
      2.parameter : csrf token .
      3.ajax url implementation in CandidateListRestController.
 --%>
-<style>
-	.er .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
-	width:100px;
-	}
-	.er .btn-default{
-	background:#337ab7;
-	border:1px solid #ccc;
-	color:#fff;
-	text-shadow: none;
-	}
-	.clsDatePicker {
-		z-index: 100000 !important;
-	}
-	#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.selp-custom-min .btn-default{
-	/* z-index: -55 !important; */
-	-webkit-border-radius:0 3px 3px 0;
-	-moz-border-radius:0 3px 3px 0;
-	-ms-border-radius:0 3px 3px 0;
-	border-radius:0 3px 3px 0;
-	}
-	.selp-custom-min .open {
-	z-index: 999999999 !important;
-	}
-	.ratetype p {
-	bottom: -14px;
-	left:0px !important;
-	position: absolute;
-	}
-	
-	.pras.req-title p{
-	bottom:-14px;
-	}
-	.exprience .select-field select{
-	background-position: 96% center !important;
-	}
-	</style>
-	
 
 <c:if test="${!empty msg}">
 	        <div class="success_pop" id="selector"  style="display: block;">
@@ -60,11 +19,6 @@
 			</div>
 	     </c:if>
 
-<style type="text/css">
-.require_wrap_details{
-text-align:left;
-}
-</style>
 <script>
 function editCandidate(candidateId){
 	  $("#profileEditPopup").show();

@@ -67,7 +67,7 @@
 						       <td><div><i id="edit" onclick="immigration.editPassportDetailsByRowId(${passportdetails.id});"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
 				 onclick="deleteImmigrationRecord('immigration.deletePassportDetails',${passportdetails.id});" 
-				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i> ></div></td>
+				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>
 						        

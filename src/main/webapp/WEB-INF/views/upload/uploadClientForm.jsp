@@ -4,19 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<style type="text/css">
-.center-div{
-width:300px;
-height:30px;
-margin:10px 220px 0;
-}
-.center-div input {
-	border:none;
-	background:transparent
-}
-</style>
-  
   
 <script>
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
@@ -54,7 +41,9 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = ${SourceLeadWeb_vmsUrl}/uploadClientForm">
+
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/uploadClientForm'">
+			
 				</div>
 			  </div>
 			</div>

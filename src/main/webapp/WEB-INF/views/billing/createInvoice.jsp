@@ -10,22 +10,6 @@
 <script src="/resources/js/jquery.mask.min.js"></script>
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
-<style type="text/css">
-.inline_field, .inline_field:focus {
-	width:100px !important; text-align:center;
-}
-.timesheet_week_comm .form-group {
-margin-bottom: 0;
-}
-.timesheet_week_comm.invoiceDocs_add span .fa-times {
-    margin: 6px;
-}
-.project_wrap_table table i{
-    font-size: 13px;
-}    
-</style>
-
-
 <script type="text/javascript">
 $(document).ready(function(){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
@@ -797,8 +781,8 @@ if(selectedTextInvoice =='percentage'){
 				var text = "";
 				var cell0 = row.insertCell(0);
 				text = text+"<div  class='inputCustom'>";
-				text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" placeholder="Start Date">';
-				text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" placeholder="End Date">';
+				text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" readonly="readonly" placeholder="Start Date">';
+				text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" readonly="readonly" placeholder="End Date">';
 				text = text+'</div>';
 				cell0.innerHTML = text;
 				
@@ -983,8 +967,8 @@ function cancelDelDoc(){
 			var text = "";
 			var cell0 = row.insertCell(0);
 			text = text+"<div  class='inputCustom'>";
-			text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" placeholder="Start Date">';
-			text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" placeholder="End Date">';
+			text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" readonly="readonly" placeholder="Start Date">';
+			text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" readonly="readonly" placeholder="End Date">';
 			text = text+'</div>';
 			cell0.innerHTML = text;
 			

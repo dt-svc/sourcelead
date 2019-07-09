@@ -98,10 +98,10 @@ import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.InvoiceDocumentsService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.CustomInvoicePDFHelper;
@@ -1188,6 +1188,9 @@ return responseList;
 			invoice.setCurrencyCode(invoice.getCurrencyCode());
 			invoice.setDueDateStr(formatter.format(invoice.getDueDate()));
 			invoice.setInvoiceDateStr(formatter.format(invoice.getInvoiceDate()));
+			if(invoice.getNotifyToOthers() !=null){
+			invoice.setNotifyToOthers(invoice.getNotifyToOthers().replaceAll(",", ", "));
+			}
 			if(invoice.getPaymentAccount() != null) {
 				invoice.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null));
 			}
@@ -1467,7 +1470,7 @@ return responseList;
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
 				ProjectMembers subPm = sah.getSubmissionId().getProjectMembers();
-				ProjectMembers projectMember = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(subPm.getMasterCandidateId().getId(), Long.parseLong(projectId), orgLocation.getId(),isGlobalAccess);
+				ProjectMembers projectMember = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForFinance(subPm.getMasterCandidateId().getId(), Long.parseLong(projectId), orgLocation.getId(),isGlobalAccess);
 				// Candidate candidate =
 				// candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
 				Candidate candidate = projectMember.getProjectMemberCandidteId();

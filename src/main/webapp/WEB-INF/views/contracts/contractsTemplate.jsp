@@ -209,7 +209,7 @@ function contractTemplatePagination(url,sourceleadUrl){
 	    	"aaSorting": [[0,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
-	    	"ordering": true,
+	    	"ordering": false,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 

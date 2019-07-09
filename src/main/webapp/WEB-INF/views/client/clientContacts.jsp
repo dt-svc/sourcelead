@@ -5,16 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<style type="text/css">
-.collapse-div-adduser select{
-width: 100% !important;
-    padding-right: 10px !important;
-    padding-left: 10px !important;
-    border:1px solid #ccc !important
-}
-</style>
-
 <script>
 function clientContacts(orgRelationID,clientLocationId){
 	
@@ -216,25 +206,6 @@ function clientContacts(orgRelationID,clientLocationId){
 			    $("#clientContactList").append(result); 
 	    	    clientMsgFadein();
  				contactPagination();
-    		$("#tab-4").empty();  
-    		$("#tab-2-addContact").empty();  
-    	    $("#tab-2-addContact").append(res);
-    		$("#tab-2").empty();  
-    	    $("#tab-2").append(result);  
-    	    $("#testDiv").show();
-    	    
-    	    $(".project-tabs-menu a").click(
-					function(event) {
-						event.preventDefault();
-						$(this).parent().addClass("current");
-						$(this).parent().siblings().removeClass(
-								"current");
-						var tab = $(this).attr("href");
-						$(".project_tabs_inn").not(tab).css(
-								"display", "none");
-						$(tab).fadeIn();
-					});
-    	    contactPagination();
 	        },
 	    });
 	}

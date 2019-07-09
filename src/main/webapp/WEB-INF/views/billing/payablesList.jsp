@@ -10,44 +10,10 @@
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 $(document).ready(function(){
+	$(".ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br").css({'z-index':'900000 !important'});
 	getPayableInvoiceList();
 });
 </script>
-
-
-<style type="text/css">
-.invoiceId_Anchor a {
-	color: #337ab7 !important;
-}
-
-.successBtn {
-	background-color: #1ab394;
-	border-color: #1ab394;
-	border: 1px solid;
-	color: #fff;
-	padding: 1px 5px;
-	border-radius: 3px;
-	font-size: 13px;
-	width: 60px;
-}
-
-.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
-	z-index: 900000 !important;
-}
-
-.modal {
-	z-index: 15000;
-}
-
-.remove_user_pop.remove_user_pop_a {
-	z-index: 18000;
-}
-
-.popCusDate{
-	right: 16px; bottom: -40px; top: inherit; background: #fff; border: none; padding: 8px 10px 8px 5px;
-}
-</style>
-
 <input type="hidden" id="emptyPayableInvoiceId"
 	name="emptyPayableInvoiceId" />
 <div class="success_pop" id="selector1" style="display: none;">
@@ -216,7 +182,7 @@ $(document).ready(function(){
 <!-- Add invoice Popup -->
 
 <div class="pop_mask"></div>
-<div id="recvPymntpopOnline" class="modal" style="display: none;">
+<div id="recvPymntpopOnline" class="modal zIndexStyle" style="display: none;">
     
     <div class="modal-dialog modal-lg ">
         <div class="modal-content">                                                     
@@ -453,7 +419,7 @@ function validMask(){
 </script>
 <!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
-<div id="recvPymntpop" class="modal" style="display: none;">
+<div id="recvPymntpop" class="modal zIndexStyle" style="display: none;">
 	<div id="receivePaymentId"></div>
 </div>
 
@@ -471,63 +437,6 @@ function cancelTermination(){
 	$("#remove_user_pop, .project_inn_mask").fadeOut();
 }
 
-function showInvoiceStartDate(){
-    
-    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatClientInvoiceDate = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
-	  }
-	  
-	
-	$('#billingStartDate').datepicker({
-		changeMonth: true,
-		changeYear: true, 
-		dateFormat : finalDateFormatClientInvoiceDate,
-		onSelect : function(selected) {
-			 var dt = $(this).datepicker('getDate', '+1d');
-	            dt.setDate(dt.getDate() + 1);
-			$("#billingEndDate").datepicker("option", "minDate", dt);
-			removeStartdateval();
-		}
-	}).datepicker('show');;
-}
-	
-function showInvoiceEndDate(){
-   var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-  	  var finalDateFormatClientInvoiceDate = '';
-  	  if(locationDate.match("yyyy-MM-dd")){
-  		  finalDateFormatClientInvoiceDate = 'yy-mm-dd';
-  	  }if(locationDate.match("dd-MM-yyyy")){
-  		  finalDateFormatClientInvoiceDate = 'dd-mm-yy'; 
-  	  }if(locationDate.match("MM-dd-yyyy")){
-  		  finalDateFormatClientInvoiceDate = 'mm-dd-yy'; 
-  	  }if(locationDate.match("yyyy-dd-MM")){
-  		  finalDateFormatClientInvoiceDate = 'yy-dd-mm'; 
-  	  }
-   
-   
-	$('#billingEndDate').datepicker({
-		changeMonth: true,
-		changeYear: true, 
-		dateFormat : finalDateFormatClientInvoiceDate,
-		beforeShow: function(){
-	           this.value='';
-	     },
-		onSelect : function(selected) {
-			   var dt = $(this).datepicker('getDate', '-1d');
-	            dt.setDate(dt.getDate() - 1);
-			$("#billingStartDate").datepicker("option", "maxDate", dt);
-			removeEnddateval();
-		}
-	}).datepicker('show');;
-}
 </script>
 <!-- modal pop -->
 <script>
@@ -738,7 +647,7 @@ function payablePagination(url){
                                       else
 										result = result +'           <span class="textSuccess pull-left" title="Accepted">Accepted</span> </td>';
 									}else if(report.invoiceStatus == "Linked"){
-										result = result +' <a class="successBtn primary pull-left cursorPointer" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
+										result = result +' <a class="successBtn successBtn-custom primary pull-left cursorPointer" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 									}else if(report.invoiceStatus == "Void"){
 										result = result +'           <span class="colorRed pull-left">Void</span>   ';	
 									}
@@ -762,7 +671,7 @@ function payablePagination(url){
 										
 								}else{
 									if(report.invoiceStatus == "Linked"){
-										result = result +' <a class="successBtn primary pull-left" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
+										result = result +' <a class="successBtn successBtn-custom primary pull-left" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 									}else if(report.invoiceStatus == "Received"){
 										result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
 									}else if(report.invoiceStatus == "Void"){
@@ -815,26 +724,26 @@ function payablePagination(url){
 				    	result = result +'         <td>';
 				    	if(report.invoiceStatus == "Rejected" && report.invoiceParentId != null){
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor invoiceId-anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
 						}
 				    	else if(report.invoiceStatus == "DRAFT" || (report.invoiceStatus == "Rejected" && report.invoiceParentId == null)){
 							if(report.projectId != null && report.projectId != '' && report.projectId != 'undefined'){
 								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_BILL\')">';
-								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
+								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor invoiceId-anchor"><a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'&projectId='+report.projectId+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 								'</sec:authorize>';
 							}else{
-								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
+								result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor invoiceId-anchor"><a href="'+vmsUrl+'/getInvoiceByUUID?invoiceUUID='+report.invoiceUUID+'" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';
 							}
 							
 						}
 				    	else if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked"){
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor invoiceId-anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
 						}else{
 							'<sec:authorize access="hasAnyRole(\'ROLE_BILL_PAYMENT_HISTORY\')">';
-							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
+							result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor invoiceId-anchor"><a href="'+vmsUrl+'/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Payables" title = "'+report.invoiceId+'">'+report.invoiceId+'</a></div>   ';				
 							'</sec:authorize>';
 						}
 						
@@ -1265,16 +1174,45 @@ $(document).ready(function() {
             if (selectVal == "custom") {
             	var result = '';
             	result  = result + '<div class="col-md-6 paddingLeft" id="errStartDate">';                                                                       
-            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showInvoiceStartDate();" id="billingStartDate" placeholder="Start Date"> ';
+            	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingStartDate" readonly = "readonly" placeholder="Start Date"> ';
             	result = result +'   </div> ';
             	result = result +'   <div class="col-md-6 noPad" id="errEndDate">';
-            	result = result +'     <input type="text" class="form-control input-sm calendar" onclick="showInvoiceEndDate();" id="billingEndDate" placeholder="End Date">';
+            	result = result +'     <input type="text" class="form-control input-sm calendar" id="billingEndDate" readonly = "readonly" placeholder="End Date">';
             	result = result +'   </div>';
                 $(".custom_search").empty().append(result);
                 $(".custom_search").show();
             }else {
                 $(".custom_search").empty().hide();
             }
+            
+            var locationDate ='${SourceLeadWeb_dateFormat}'; 
+        	  var finalDateFormatEduSave = getJSDateFormat(locationDate);
+        	  
+        	$('#billingStartDate').datepicker({
+        	      dateFormat: finalDateFormatEduSave,
+        	      changeMonth: true,
+        	  	  changeYear: true, 
+        	      onSelect: function (selected) {
+        	            //var dt = new Date(selected);
+        	            var dt = $(this).datepicker('getDate', '+1d');
+        	            dt.setDate(dt.getDate() + 1);
+        	            $("#billingEndDate").datepicker("option", "minDate", dt);
+        	          removeStartdateval();
+        	        }
+        	  });
+        	  
+        	  $('#billingEndDate').datepicker({
+        	      dateFormat: finalDateFormatEduSave,
+        	      changeMonth: true,
+        	  	  changeYear: true, 
+        	        onSelect: function (selected) {
+        	            //var dt = new Date(selected);
+        	            var dt = $(this).datepicker('getDate', '-1d');
+        	            dt.setDate(dt.getDate() - 1);
+        	            $("#billingStartDate").datepicker("option", "maxDate", dt);
+        	          removeEnddateval();
+        	        }
+        	  });
         }
        
 </script>
@@ -1681,8 +1619,8 @@ function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,invoiceUUID)
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Proceed' onclick='proceedToMergeBill("+checkVal+",\""+invoiceUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
-	$("#payable_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$("#payable_pop").fadeIn(200).css({"z-index":"999999"});
+	$(".project_inn_mask").fadeIn(200).css({"z-index":"105000"});
 	
 }
 
@@ -1918,6 +1856,13 @@ function resetBillsFilter(){
 	getPayableInvoiceList();
 	
 }
+function resetingBillsFilter(){
+	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	document.getElementById("invoiceDateRadio").checked = true;
+	$(".custom_search").empty().hide();
+	
+}
 </script>
 
 
@@ -2018,7 +1963,7 @@ function resetBillsFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="getPayableInvoiceList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetBillsFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingBillsFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>

@@ -10,22 +10,6 @@
 <script src="/resources/js/jquery.mask.min.js"></script>
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
-<style type="text/css">
-.inline_field, .inline_field:focus {
-	width:100px !important; text-align:center;
-}
-.timesheet_week_comm .form-group {
-margin-bottom: 0;
-}
-.timesheet_week_comm.invoiceDocs_add span .fa-times {
-    margin: 6px;
-}
-.project_wrap_table table i{
-    font-size: 13px;
-}    
-</style>
-
-
 <script type="text/javascript">
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 
