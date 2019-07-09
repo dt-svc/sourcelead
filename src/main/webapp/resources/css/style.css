@@ -516,7 +516,6 @@
 	list-style-type: none; float: left; padding: 10px 25px;  border-bottom: 4px solid #f5f5f5; color: #666; cursor: pointer;
 	}
 .feedbackTabs ul li.active {border-bottom: 4px solid #006bbb; color: #006bbb; background-color: #fff;}
-
-
+ul.selfAppraisalpeersLi li.peeruser-active { background: #ededed; border: 1px solid #cecdcd; box-shadow: none;}
 
 
