@@ -944,7 +944,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	@Override
 	public String validateWorkflowStageName(Long id, String name, String uuid, String stageUuid) throws Exception {
 		logger.debug("Started validateWorkflowStageName Service for "+id+" orgLocation and "+name+" stage");
-		String nonSpecialChars = "^(?!_)(?!.*__)(?!-)(?!.*--)[\\w .-]+(?<!-)(?<!_)$";
+		String nonSpecialChars = "[a-zA-Z]{2,}|^[a-zA-Z]{2,}[_]|^[a-zA-Z]{2,}[_]{1}[0-9]{1,}$";
 		String flag = null;
 		Boolean nonSpecialFlag = false;
 		Long workflowId = null;
@@ -1019,7 +1019,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		logger.debug("Started validateStageShortCode Service for "+id+" orgLocation and "+shortCode+" shortCode");
 		List<RequirementWorkFlowStages> workflowStages = new ArrayList<RequirementWorkFlowStages>();
 		String flag = null;
-		String nonSpecialChars = "^(?!_)(?!.*__)(?!-)(?!.*--)[\\w .-]+(?<!-)(?<!_)$";
+		String nonSpecialChars = "[a-zA-Z]{2,}|^[a-zA-Z]{2,}[_]|^[a-zA-Z]{2,}[_]{1}[0-9]{1,}$";
 		Boolean nonSpecialFlag = false;
 		try {
 			if(shortCode != null && !StringUtils.isBlank(shortCode)) {
