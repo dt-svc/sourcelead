@@ -20,10 +20,16 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 </script>
   <section class="content-wraper">
     <section class="content-header clearfix">
-       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Submission List</div>
+       <div class="pull-left">
+        <h2>Duplicate Verification</h2>
+      </div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Submission List</div>
     </section>
     
+   
+   <div class="project_wrap_table backgroundWhite clearfix">
     <!-- checkbox div -->
+    <div class="col-md-12 clearfix"><h4 class="mt mb">Find Duplicate by :</h4></div>
     <form name="duplicate_check_form" id="duplicate_check_form">
     <input type="hidden" id="configId" name="duplicateConfigID"/>
     <div id="configLoading"></div>
@@ -71,7 +77,7 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
         </c:if>
 
 
-        <div class="clearfix mt col-md-10 mb">
+        <div class="clearfix mt col-md-12 mb">
           <div class="pull-right">
             <button type="button" class="btn btn-primary mr" onclick="saveDuplicateCheckConfig();">Save</button>
             <button type="button" class="btn btn-default" onclick="cancelDuplicateCheckConfig();">Cancel</button>
@@ -80,6 +86,7 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
         </div>
          </form>
         <!-- checkbox div ends --> 
+        </div>
 </section>
 
 <script>
