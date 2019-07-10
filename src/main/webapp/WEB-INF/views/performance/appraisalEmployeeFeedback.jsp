@@ -247,6 +247,21 @@ function getFeedbackCategoryForm(feedbackTemplateUUID){
 			  			    result = result + '<input type="text" disabled value="'+categoryScore+'" class="form-control pull-left"></div>';
 			  			    result = result + '</div></div>';
 			  			    
+			  			    result = result + '<div class="form-group clearfix">';
+			  			    result = result + '<label class="col-md-3 paddingRight">Submission Stage<span class="pull-right paddingLeft">:</span></label>';
+			  			    if(report.submissionStage != null){
+			  			    	var submissionStage
+			  			    	if(report.submissionStage == 'Submitted_For_Review'){
+			  			    		submissionStage = 'Submitted For Review'
+			  			    	}else{
+			  			    		submissionStage = report.submissionStage
+			  			    	}
+			  			    	result = result + '<div class="col-md-5">'+submissionStage+'</div>';
+			  			    }else{
+			  			    	result = result + '<div class="col-md-5">New</div>';
+			  			    }
+			  			    result = result + '</div>';
+			  			    
 				  			  $.each( data, function( k, v ) {
 				  				  result = result + '<div class="form-group clearfix">';
 						    	  result = result + '<label class="col-md-3 paddingRight">'+v['label']+'<span class="pull-right paddingLeft">:</span></label>';
@@ -323,6 +338,21 @@ function getPeersFeedbackCategoryForm(feedbackTemplateUUID,userCode){
 			  			    result = result + '<label>Category Score :</label>';
 			  			    result = result + '<input type="text" disabled value="'+categoryScore+'" class="form-control pull-left"></div>';
 			  			    result = result + '</div></div>';
+			  			    
+			  			    result = result + '<div class="form-group clearfix">';
+			  			    result = result + '<label class="col-md-3 paddingRight">Submission Stage<span class="pull-right paddingLeft">:</span></label>';
+			  			    if(report.submissionStage != null){
+			  			    	var submissionStage
+			  			    	if(report.submissionStage == 'Submitted_For_Review'){
+			  			    		submissionStage = 'Submitted For Review'
+			  			    	}else{
+			  			    		submissionStage = report.submissionStage
+			  			    	}
+			  			    	result = result + '<div class="col-md-5">'+submissionStage+'</div>';
+			  			    }else{
+			  			    	result = result + '<div class="col-md-5">New</div>';
+			  			    }
+			  			    result = result + '</div>';
 			  			    
 				  			  $.each( data, function( k, v ) {
 				  				  result = result + '<div class="form-group clearfix">';
@@ -457,6 +487,21 @@ function getManagerFeedbackCategoryForm(feedbackTemplateUUID,userCode,appraisalT
 					  			    result = result + '<label>Category Score :</label>';
 					  			    result = result + '<input type="text" disabled value="'+categoryScore+'" class="form-control pull-left"></div>';
 					  			    result = result + '</div></div>';
+					  			    
+					  			    result = result + '<div class="form-group clearfix">';
+					  			    result = result + '<label class="col-md-3 paddingRight">Submission Stage<span class="pull-right paddingLeft">:</span></label>';
+					  			    if(report.submissionStage != null){
+					  			    	var submissionStage
+					  			    	if(report.submissionStage == 'Submitted_For_Review'){
+					  			    		submissionStage = 'Submitted For Review'
+					  			    	}else{
+					  			    		submissionStage = report.submissionStage
+					  			    	}
+					  			    	result = result + '<div class="col-md-5">'+submissionStage+'</div>';
+					  			    }else{
+					  			    	result = result + '<div class="col-md-5">New</div>';
+					  			    }
+					  			    result = result + '</div>';
 					  			    
 						  			  $.each( data, function( k, v ) {
 						  				  result = result + '<div class="form-group clearfix">';
