@@ -448,7 +448,7 @@ function getManagerFeedbackCategoryForm(feedbackTemplateUUID,userCode,appraisalT
 				
 				result = result + '<div class="form-footer clearfix mt">';
 				result = result + '<div class="pull-right mr">';
-				result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="saveFeedbackTemplateDetails(\''+feedbackTemplateUUID+'\');">Submit</button>';
+				result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="saveFeedbackTemplateDetails(\''+feedbackTemplateUUID+'\',\''+userCode+'\',\''+appraisalType+'\');">Submit</button>';
 				result = result + '</div>';
 				result = result + '</div>';
 				result = result + '</div>';  
@@ -738,7 +738,7 @@ function getManagerUserDetails(managerType,userCode){
 </script>
 
 <script>
-function saveFeedbackTemplateDetails(feedbackTemplateUUID){
+function saveFeedbackTemplateDetails(feedbackTemplateUUID,userCode,appraisalType){
 	if ($('#addFeedbackTemplate_form').validate(false, validationSettings)) {
 		$("#appraisalLoading").attr('style','position:absolute; width:200%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		
@@ -858,6 +858,7 @@ function saveFeedbackTemplateDetails(feedbackTemplateUUID){
 						} else if (result.response === "AWKWARD") {
 							location.href = "/errorPage";
 						} else if (result.response === "SUCCESS") {
+							getManagerFeedbackCategoryForm(feedbackTemplateUUID,userCode,appraisalType);
 							$("#appraisalLoading").removeAttr("style");
 						} else if (result.indexOf('Sign In') !== -1) {
 							location.replace(sourceleadUrl);
