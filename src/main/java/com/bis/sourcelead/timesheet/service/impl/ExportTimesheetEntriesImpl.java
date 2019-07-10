@@ -143,6 +143,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	
 	@Autowired
 	TimesheetApprovalFrequencyGeneratorUtil timesheetApprovalFrequencyGeneratorUtil;
+	
 
 	@Override
 	public File exportTimesheets(ProjectMembers projectMember, String frequencyStartDate,String frequencyEndDate,OrgLocations orgLocations,String requestFrom,User loginUser,String globalUser) throws Exception {
@@ -916,11 +917,21 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}else{
 		timeSheetApprovalArray[1] = "--";
 	}
-	if(projMembers.getProjectMemberCandidteId().getMobilePhone() != null && !"".equalsIgnoreCase(projMembers.getProjectMemberCandidteId().getMobilePhone())){
-		timeSheetApprovalArray[2] = projMembers.getProjectMemberCandidteId().getMobilePhone();
-	}else{
-		timeSheetApprovalArray[2] = "--";
+	if(projMembers.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase(Constants.OFFSHORE_C2C)) {
+		if(projMembers.getProjectMemberCandidteId().getParentCandidateId() != null && !"".equalsIgnoreCase(projMembers.getProjectMemberCandidteId().getParentCandidateId().toString())) {
+			timeSheetApprovalArray[2] = projMembers.getProjectMemberCandidteId().getParentCandidateId().getMobilePhone();
+		}else {
+			timeSheetApprovalArray[2] = "--";
+		}
+	}else {
+		if(projMembers.getProjectMemberCandidteId().getMobilePhone() != null && !"".equalsIgnoreCase(projMembers.getProjectMemberCandidteId().getMobilePhone())){
+			timeSheetApprovalArray[2] = projMembers.getProjectMemberCandidteId().getMobilePhone();
+		}
+		else{
+			timeSheetApprovalArray[2] = "--";	
+		}
 	}
+	
 	
 	if(null != projectMember.getProjectClientsId().getOrgRelationId()){
    	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(projectMember.getProjectClientsId().getOrgRelationId().getId());
@@ -1139,10 +1150,29 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			writeRow.createCell(1).setCellValue(projectMember.getProjectMemberCandidteId().getEmail());
 			createExcelsheet.setColumnWidth(1, 10000);
 		}
-		if (projectMember.getProjectMemberCandidteId().getMobilePhone() != null && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getMobilePhone())) {
-			writeRow.createCell(2).setCellValue(projectMember.getProjectMemberCandidteId().getMobilePhone());
-			createExcelsheet.setColumnWidth(2, 10000);
+		if(projMembers.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase(Constants.OFFSHORE_C2C)) {
+			if(projMembers.getProjectMemberCandidteId().getParentCandidateId() != null && !"".equalsIgnoreCase(projMembers.getProjectMemberCandidteId().getParentCandidateId().toString())) {
+				writeRow.createCell(2).setCellValue(projMembers.getProjectMemberCandidteId().getParentCandidateId().getMobilePhone());
+				createExcelsheet.setColumnWidth(2, 10000);
+			}else {
+				writeRow.createCell(2).setCellValue("--");
+			}
+		}else {
+			if(projMembers.getProjectMemberCandidteId().getMobilePhone() != null && !"".equalsIgnoreCase(projMembers.getProjectMemberCandidteId().getMobilePhone())){
+				writeRow.createCell(2).setCellValue(projMembers.getProjectMemberCandidteId().getMobilePhone());
+				createExcelsheet.setColumnWidth(2, 10000);
+			}
+			else{
+				writeRow.createCell(2).setCellValue("--");	
+			}
 		}
+		/*
+		 * if (projectMember.getProjectMemberCandidteId().getMobilePhone() != null &&
+		 * !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().
+		 * getMobilePhone())) {
+		 * writeRow.createCell(2).setCellValue(projectMember.getProjectMemberCandidteId(
+		 * ).getMobilePhone()); createExcelsheet.setColumnWidth(2, 10000); }
+		 */
 		if(projectMember.getProjectClientsId().getOrgRelationId()!= null){
 		   	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(projectMember.getProjectClientsId().getOrgRelationId().getId());
 		  	 if(null != projectMember.getProjectClientsId().getOrgRelationId().getLocationId() && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == loginOrg.getId().longValue()){
