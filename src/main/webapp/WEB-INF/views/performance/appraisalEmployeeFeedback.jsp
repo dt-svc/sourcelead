@@ -572,7 +572,7 @@ function getAppraisalPeersList(){
 		    	var result = ""; 
 		    	var flag = true;
 		    	var userCode = '';
-		    	if(peerResult.data != null){
+		    	if(peerResult.data != null && peerResult.data.length > 0){
 		    		
 		    		result = result + '<div id="peersTab_div">';
 		    		result = result + '<div class="row mt mb">';
@@ -643,7 +643,7 @@ function getAppraisalManagersList(){
 		    	var userCode = '';
 		    	var managerType = '';
 		    	var selectedManager = '';
-		    	if(managerResult.data != null){
+		    	if(managerResult.data != null && managerResult.data.length > 0){
 		    		
 		    		result = result + '<div id="peersTab_div">';
 		    		result = result + '<div class="row mt mb">';
