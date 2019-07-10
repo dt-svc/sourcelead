@@ -43,6 +43,8 @@ private static final long serialVersionUID = 1L;
 	
 	private List<Map<String, String>> order;
 	
+	private String userCode;
+	
 	
 
 	public BigInteger getUserId() {
@@ -179,6 +181,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
 	}
 
 }

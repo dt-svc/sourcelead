@@ -236,4 +236,21 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 		
 		return flag;
 	}
+
+	@Override
+	public Long getAppraisalAssignedUserByUUID(String uuid) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query =  "SELECT "
+				+" ASSIGNED.USER_ID "           
+				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED "
+				+" WHERE ASSIGNED.UUID = :assignedUUID ";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("assignedUUID", uuid);
+		BigInteger userId = (BigInteger) queryObj.uniqueResult();
+		
+		return userId.longValue();
+	
+	}
 }

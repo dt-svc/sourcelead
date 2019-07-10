@@ -15,4 +15,6 @@ public interface PerformanceAppraisalAssignedAssociatesDao {
 	PerformanceAppraisalAssignedAssociates getPerformanceAppraisalAssignedAssociatesByUUID(String uuid) throws Exception;
 	
 	boolean isGoalsConfiguredForAssignedPerformanceApprisal(String uuid) throws Exception;
+	
+	Long getAppraisalAssignedUserByUUID(String uuid) throws Exception;
 }

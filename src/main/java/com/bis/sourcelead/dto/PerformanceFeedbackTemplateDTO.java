@@ -29,6 +29,8 @@ public class PerformanceFeedbackTemplateDTO implements Serializable{
 	
 	private String categoriesTotalScore;
 	
+	private String submissionStage;
+	
 	
 
 	public String getTemplateName() {
@@ -117,6 +119,14 @@ public class PerformanceFeedbackTemplateDTO implements Serializable{
 
 	public void setCategoriesTotalScore(String categoriesTotalScore) {
 		this.categoriesTotalScore = categoriesTotalScore;
+	}
+
+	public String getSubmissionStage() {
+		return submissionStage;
+	}
+
+	public void setSubmissionStage(String submissionStage) {
+		this.submissionStage = submissionStage;
 	}
 	
 
