@@ -10,6 +10,7 @@ import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalManagersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceFeedbackDTO;
@@ -116,6 +117,11 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 	@Override
 	public Integer getPeersTotalCategoriesCount(String assignedUUID, String templateUUID) throws Exception {
 		return performanceAppraisalDao.getPeersTotalCategoriesCount(assignedUUID, templateUUID);
+	}
+
+	@Override
+	public List<PerformanceAppraisalManagersDTO> getAppraisalAssignedManagers(String assignedUUID) throws Exception {
+		return performanceAppraisalDao.getAppraisalAssignedManagers(assignedUUID);
 	}
 
 	

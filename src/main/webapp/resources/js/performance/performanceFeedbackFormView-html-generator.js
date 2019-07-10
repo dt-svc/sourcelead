@@ -6,7 +6,7 @@
  */
 
 //generates the form HTML
-function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
+function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript,appraisalType) {
     //empty out the preview area
     $("#sjfb-fields").empty();
     $.ajax({
@@ -376,7 +376,7 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
         			  $.each( data, function( k, v ) {
         				  if(v['type'] == "feedbackTemplate"){
         					if(v['templateId'] == result.feedbackTemplateId){
-        						if(v['self'] != 'undefined'){
+        						if(v['self'] != 'undefined' && appraisalType == 'self'){
             				   	  var selfPercentage = v['self'];
             				   	  var options = '<option value="">-Select Score-</option>';
             				   	  for(var i=0; i<=selfPercentage; i++){
@@ -389,6 +389,49 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript) {
             				   		options = options+'<option value="'+i+'" '+selected+'>'+i+'</option>';
             				   	  }
         				   	    }
+        						
+        						if(v['peer'] != 'undefined' && appraisalType == 'peer'){
+              				   	  var selfPercentage = v['peer'];
+              				   	  var options = '<option value="">-Select Score-</option>';
+              				   	  for(var i=0; i<=selfPercentage; i++){
+              				   		var selected = '';
+              				   		if(result.categoryScore != null){
+              				   			if(i == result.categoryScore){
+              				   				selected = "selected";
+              				   			}
+              				   		 }
+              				   		options = options+'<option value="'+i+'" '+selected+'>'+i+'</option>';
+              				   	  }
+          				   	    }
+        						
+        						if(v['resourceManager'] != 'undefined' && appraisalType == 'resourceManager'){
+                				   	  var selfPercentage = v['resourceManager'];
+                				   	  var options = '<option value="">-Select Score-</option>';
+                				   	  for(var i=0; i<=selfPercentage; i++){
+                				   		var selected = '';
+                				   		if(result.categoryScore != null){
+                				   			if(i == result.categoryScore){
+                				   				selected = "selected";
+                				   			}
+                				   		 }
+                				   		options = options+'<option value="'+i+'" '+selected+'>'+i+'</option>';
+                				   	  }
+            				   	    }
+        						
+        						if(v['reportingManager'] != 'undefined' && appraisalType == 'reportingManager'){
+              				   	  var selfPercentage = v['reportingManager'];
+              				   	  var options = '<option value="">-Select Score-</option>';
+              				   	  for(var i=0; i<=selfPercentage; i++){
+              				   		var selected = '';
+              				   		if(result.categoryScore != null){
+              				   			if(i == result.categoryScore){
+              				   				selected = "selected";
+              				   			}
+              				   		 }
+              				   		options = options+'<option value="'+i+'" '+selected+'>'+i+'</option>';
+              				   	  }
+          				   	    }
+        						
         						    $("#categoryScore").empty(); 
         						    $("#categoryScore").append(options);
         						    

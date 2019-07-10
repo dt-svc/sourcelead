@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl.performance;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -22,6 +23,7 @@ import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalManagersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDetailsDTO;
@@ -511,7 +513,8 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 				+ "(SELECT FEEDBACK.FEEDBACK_JSON_STRING FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId AND FEEDBACK.FEEDBACK_TEMPLATE_ID = :feedbackTemplateId  ) AS submittedJsonString, "
 				+ "(SELECT FEEDBACK.FEEDBACK_JSON_STRING_VALUES FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId AND FEEDBACK.FEEDBACK_TEMPLATE_ID = :feedbackTemplateId ) AS submittedJsonStringValues, "
 				+ "(SELECT FEEDBACK.SCORE FROM PERFORMANCE_APPRAISAL_USER_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId AND FEEDBACK.FEEDBACK_TEMPLATE_ID = :feedbackTemplateId ) AS categoryScore, "
-				+ "(SELECT FEEDBACK.FEEDBACK_CATEGORIES_SCORE FROM PERFORMANCE_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId ) AS categoriesTotalScore "
+				+ "(SELECT FEEDBACK.FEEDBACK_CATEGORIES_SCORE FROM PERFORMANCE_FEEDBACK FEEDBACK WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId ) AS categoriesTotalScore, "
+				+ "(SELECT FEEDBACK.SUBMISSION_STAGE FROM PERFORMANCE_FEEDBACK FEEDBACK WHERE FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId AND FEEDBACK.USER_ID = :userId) AS submissionStage " 
 				+" FROM PERFORMANCE_FEEDBACK_TEMPLATE TEMPLATE "
 				+" WHERE TEMPLATE.UUID = :templateUUID ";
 		
@@ -521,7 +524,8 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 				.addScalar("submittedJsonString", StandardBasicTypes.STRING)
 				.addScalar("submittedJsonStringValues", StandardBasicTypes.STRING)
 				.addScalar("categoryScore", StandardBasicTypes.STRING)
-				.addScalar("categoriesTotalScore", StandardBasicTypes.STRING);
+				.addScalar("categoriesTotalScore", StandardBasicTypes.STRING)
+				.addScalar("submissionStage", StandardBasicTypes.STRING);
 		feedbackQueryObj.setString("templateUUID", templateUUID);
 		feedbackQueryObj.setLong("userId", userId);
 		feedbackQueryObj.setBigInteger("assignedId", assignedId);
@@ -1270,5 +1274,71 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 
 		return totalScore;
+	}
+
+	@Override
+	public List<PerformanceAppraisalManagersDTO> getAppraisalAssignedManagers(String assignedUUID) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceAppraisalManagersDTO> managersList = new ArrayList<>();
+		PerformanceAppraisalManagersDTO resourceManagerDTO = null;
+		PerformanceAppraisalManagersDTO reportingManagerDTO = null;
+		try {
+			
+			
+			
+		String reportingMgrQuery =  "SELECT "
+				    + "CONCAT (U.FIRST_NAME,' ',IFNULL(U.MIDDLE_NAME,''),IFNULL(U.LAST_NAME,'')) AS managerName, " 
+					+ "U.FILE_URL AS managerImgUrl, "
+					+ "U.USER_CODE AS userCode "
+					
+					+ "FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+					+ "USER U "
+					+ "LEFT JOIN  USER_ROLE UR ON U.ID = UR.REPORTING_MANAGER_ID "
+					  
+					+" WHERE  "
+					+" UR.USER_ID = ASSIGNED.USER_ID  AND UR.ORG_LOCATIONS_ID = ASSIGNED.ORG_LOCATION_ID "
+					+" AND ASSIGNED.UUID = :assignedUUID ";
+		
+	Query reportingMgrQueryObj = session.createSQLQuery(reportingMgrQuery);
+	reportingMgrQueryObj.setString("assignedUUID", assignedUUID);
+	reportingMgrQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalManagersDTO.class));
+	List<PerformanceAppraisalManagersDTO>  reportingManagerList = reportingMgrQueryObj.list();
+	if(reportingManagerList != null && !reportingManagerList.isEmpty()) {
+		reportingManagerDTO = reportingManagerList.get(0);
+		reportingManagerDTO.setManagerType("reportingManager");
+		managersList.add(reportingManagerDTO);
+	}
+			
+		
+			String resourceMgrQuery =  "SELECT "
+				    + "CONCAT (U.FIRST_NAME,' ',IFNULL(U.MIDDLE_NAME,''),IFNULL(U.LAST_NAME,'')) AS managerName, " 
+					+ "U.FILE_URL AS managerImgUrl, "
+					+ "U.USER_CODE AS userCode "
+					
+					+ "FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+					+ "USER U "
+					+ "LEFT JOIN  USER_ROLE UR ON U.ID = UR.RESOURCE_MANAGER_ID "
+					  
+					+" WHERE  "
+					+" UR.USER_ID = ASSIGNED.USER_ID  AND UR.ORG_LOCATIONS_ID = ASSIGNED.ORG_LOCATION_ID "
+					+" AND ASSIGNED.UUID = :assignedUUID ";
+		
+	Query resourceMgrQueryObj = session.createSQLQuery(resourceMgrQuery);
+	resourceMgrQueryObj.setString("assignedUUID", assignedUUID);
+	resourceMgrQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalManagersDTO.class));
+	List<PerformanceAppraisalManagersDTO>  resourceManagerList = resourceMgrQueryObj.list();
+	if(resourceManagerList != null) {
+		resourceManagerDTO = resourceManagerList.get(0);
+		resourceManagerDTO.setManagerType("resourceManager");
+		managersList.add(resourceManagerDTO);
+	}
+	
+	}catch (Exception e) {
+			e.printStackTrace();
+	}
+		
+		
+	return managersList;
 	}
 }

@@ -24,6 +24,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.AppraisalJobsSubmissionDetailsDTO;
 import com.bis.sourcelead.dto.performance.AppraisalProjectsTasksDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalManagersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceFeedbackCategoryDTO;
@@ -181,6 +182,20 @@ public class PerformanceAppraisalRestController {
 	 	   return templateDTO;
 	     
 	    }
+	    
+	    @RequestMapping(value = "/loadManagerPerformanceFeedbackTemplate" , method = RequestMethod.GET)
+	    public PerformanceFeedbackTemplateDTO loadManagerPerformanceFeedbackTemplate(@RequestParam(value="templateUUID", required=false) String templateUUID,
+	    		@RequestParam(value="assignedUUID", required=false) String assignedUUID,@RequestParam(value="managerUserCode", required=false) String managerUserCode,
+	    		HttpServletRequest request) throws Exception {
+	 		
+	       User managerUser = userService.getUserByUserCode(managerUserCode);
+	 	   PerformanceFeedbackTemplateDTO templateDTO  = performanceAppraisalService.getPerformanceSubmittedFeedbackTemplateDTOByUUID(templateUUID,assignedUUID,managerUser.getId());
+	 	   return templateDTO;
+	     
+	    }
+	    
+	    
+	    
 	    
 	    
 	    @RequestMapping(value = { "/saveSubmittedFeedbackTemplate", "/rest/saveSubmittedFeedbackTemplate" }, method = RequestMethod.POST)
@@ -532,6 +547,25 @@ public class PerformanceAppraisalRestController {
 		}
 		 return resObj;
 	}
+    
+    
+    @RequestMapping(value = "/getAppraisalAssignedManagers", method = RequestMethod.GET)
+   	public ResponseList<PerformanceAppraisalManagersDTO> getAppraisalAssignedManagers(HttpServletRequest request, 
+   				@RequestParam(value = "assignedUUID", required = true) String assignedUUID) throws Exception {
+   		
+       	 ResponseList<PerformanceAppraisalManagersDTO> resObj = new ResponseList<>();
+   		 try {
+   			 List<PerformanceAppraisalManagersDTO> managersList =  performanceAppraisalService.getAppraisalAssignedManagers(assignedUUID);
+   			 resObj.setData(managersList);
+   			 resObj.setResponse(Result.SUCCESS.name());
+   			 resObj.setResponseMessage(Result.SUCCESS.getValue());
+   		    
+   		 }catch (Exception e) {
+   			 resObj.setResponse(Result.AWKWARD.name());
+   			 resObj.setResponseMessage(Result.AWKWARD.getValue());
+   		}
+   		 return resObj;
+   	}
     
     
 }

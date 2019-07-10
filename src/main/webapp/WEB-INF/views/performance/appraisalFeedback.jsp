@@ -206,7 +206,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 		    
 		    $("#feedBackCategoryTemplateDiv").empty(); 
 		    $("#feedBackCategoryTemplateDiv").append(result);
-		    generateForm(pmsUrl,feedbackTemplateUUID,assignedUUID,finalDateFormatScript);
+		    generateForm(pmsUrl,feedbackTemplateUUID,assignedUUID,finalDateFormatScript,appraisalType);
 		    
 		}else{
 			 
