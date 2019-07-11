@@ -123,14 +123,16 @@ public class RequirementWorkflowController {
 	}
 	
 	@RequestMapping(value = "/questionnaireList")
-	public ModelAndView goToquestionnaireList(HttpServletRequest request) throws Exception{
+	public ModelAndView goToquestionnaireList(HttpServletRequest request,
+			@RequestParam(value = "templateName", required = false)String templateName) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
 		logger.debug("inside goToquestionnaireList>>> ");
+		if(StringUtils.isNotBlank(templateName)) {
+		modelandview.addObject("templateName", templateName);
+		}
 		modelandview.setViewName("workflow/questionnaireList");
 		return modelandview;
 	}
-	
-	
 	@RequestMapping(value = "/getQuestionnaireList" , method = RequestMethod.GET)
 	public @ResponseBody ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireList(
 			RequirementQuestionnaireTemplateDTO requirementQuestionnaireTemplateDTO,
@@ -283,7 +285,8 @@ public class RequirementWorkflowController {
 			@RequestParam(value = "templateId", required = false) String templateId,
 			@RequestParam(value = "timeLimitMinutes", required = false) Integer timeLimitMinutes,
 			@RequestParam(value = "timeLimitSeconds", required = false) Integer timeLimitSeconds,
-			@RequestParam(value = "jsonStringData", required = false) String jsonStringData, HttpServletRequest request)
+			@RequestParam(value = "jsonStringData", required = false) String jsonStringData, 
+	        @RequestParam(value = "templateName", required = false) String templateName, HttpServletRequest request)
 			throws Exception {
 
 		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
