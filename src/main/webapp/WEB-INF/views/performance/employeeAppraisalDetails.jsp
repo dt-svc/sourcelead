@@ -69,7 +69,7 @@ $(document).ready(function() {
                       </a>
                       </li>
                       <li title="Final Score" id="finalScoreWidget">
-                          <a onclick="getAppraisalFinalScoreDetails('self');" class="clearfix mb0">
+                          <a onclick="getAppraisalFinalScoreDetails();" class="clearfix mb0">
                           <div class="finalScoreIcon"></div>
                           <div class="clearfix"></div>
                         Final Score
@@ -91,3 +91,7 @@ $(document).ready(function() {
 	
 	<jsp:include page="../performance/templateOverView.jsp" />  
 	<jsp:include page="../performance/appraisalEmployeeFeedback.jsp" />   
+	<jsp:include page="../performance/appraisalGoals.jsp" /> 
+	<jsp:include page="../performance/appraisalTasks.jsp" /> 
+	<jsp:include page="../performance/employeeAppraisalFinalScore.jsp" /> 
+	

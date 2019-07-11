@@ -124,6 +124,12 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 		return performanceAppraisalDao.getAppraisalAssignedManagers(assignedUUID);
 	}
 
+	@Override
+	public List<PerformanceFeedbackDTO> getEmployeePerformanceFeedbackDetails(String assignedUUID, Long userId)
+			throws Exception {
+		return performanceAppraisalDao.getEmployeePerformanceFeedbackDetails(assignedUUID, userId);
+	}
+
 	
 
 }

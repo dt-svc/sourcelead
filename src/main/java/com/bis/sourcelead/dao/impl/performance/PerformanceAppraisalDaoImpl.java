@@ -1341,4 +1341,94 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 	return managersList;
 	}
+
+	@Override
+	public List<PerformanceFeedbackDTO> getEmployeePerformanceFeedbackDetails(String assignedUUID, Long userId)
+			throws Exception {
+
+		List<PerformanceFeedbackDTO> employeeScoreList = new ArrayList<>();
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer peersScore = 0;
+		PerformanceAppraisalTemplateDetailsDTO selfUserDetails = new PerformanceAppraisalTemplateDetailsDTO();
+		
+		String assignedQuery =  "SELECT "
+				+" ASSIGNED.ID AS appraisalAssignedId, "  
+				+" ASSIGNED.USER_ID AS appraisalAssignedUserId, "   
+				+" PEERS.PEER_USER_ID AS peerIds "
+				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED "
+				+" LEFT JOIN PERFORMANCE_APPRAISAL_PEERS PEERS  ON ASSIGNED.PEER_ID = PEERS.ID "
+				+" WHERE ASSIGNED.UUID = :assignedUUID ";
+		
+		Query queryObj = session.createSQLQuery(assignedQuery);
+		queryObj.setString("assignedUUID", assignedUUID);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalTemplateDetailsDTO.class));
+		List<PerformanceAppraisalTemplateDetailsDTO>  appraisalAssignedUserList = queryObj.list();
+		if(appraisalAssignedUserList != null) {
+			selfUserDetails = appraisalAssignedUserList.get(0);
+		}
+		
+		
+		String selfQuery =  "SELECT "
+				+" FEEDBACK.FINAL_SCORE  "
+				+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
+				+" WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId  ";
+		
+		Query selfScoreQueryObj = session.createSQLQuery(selfQuery);
+		selfScoreQueryObj.setBigInteger("assignedId", selfUserDetails.getAppraisalAssignedId());
+		selfScoreQueryObj.setBigInteger("userId", selfUserDetails.getAppraisalAssignedUserId());
+		Integer selfScore = (Integer) selfScoreQueryObj.uniqueResult();
+		PerformanceFeedbackDTO selfFeedbackDTO = new PerformanceFeedbackDTO();
+		selfFeedbackDTO.setScoreType("Self");
+		selfFeedbackDTO.setFinalScore(selfScore);
+		employeeScoreList.add(selfFeedbackDTO);
+		
+		if(selfUserDetails.getPeerIds() != null) {
+			
+			String peerUserIds [] = selfUserDetails.getPeerIds().split(",");
+			String peerUserIdStr = "'" + StringUtils.join(peerUserIds,"','") + "'";
+			
+			
+			String peersQuery =  "SELECT "
+					+" FEEDBACK.FINAL_SCORE  "
+					+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
+					+" WHERE FEEDBACK.USER_ID IN ("+peerUserIdStr+") AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId  ";
+			
+			Query peerScoreQueryObj = session.createSQLQuery(peersQuery);
+			peerScoreQueryObj.setBigInteger("assignedId", selfUserDetails.getAppraisalAssignedId());
+			List<Integer> scoresList = (List<Integer>) peerScoreQueryObj.list();
+			
+			
+			if(scoresList != null && !scoresList.isEmpty()) {
+				for(Integer score : scoresList) {
+					peersScore = peersScore+score;
+					double peerScore = (double) peersScore / scoresList.size();
+					PerformanceFeedbackDTO peersFeedbackDTO = new PerformanceFeedbackDTO();
+					peersFeedbackDTO.setScoreType("Peers");
+					peersFeedbackDTO.setPeersScore(peerScore);
+					employeeScoreList.add(peersFeedbackDTO);
+				}
+			}
+						
+		}
+		
+		
+		String managerQuery =  "SELECT "
+				+" FEEDBACK.FINAL_SCORE AS finalScore, "
+				+" FEEDBACK.COMMENTS AS comments "
+				+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
+				+" WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId  ";
+		
+		Query managerScoreQueryObj = session.createSQLQuery(managerQuery);
+		managerScoreQueryObj.setBigInteger("assignedId", selfUserDetails.getAppraisalAssignedId());
+		managerScoreQueryObj.setLong("userId", userId);
+		managerScoreQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackDTO.class));
+		List<PerformanceFeedbackDTO>  managerDetailsList = managerScoreQueryObj.list();
+		if(managerDetailsList != null && !managerDetailsList.isEmpty()) {
+			PerformanceFeedbackDTO managerFeedbackDTO = managerDetailsList.get(0);
+			managerFeedbackDTO.setScoreType("Manager");
+			employeeScoreList.add(managerFeedbackDTO);
+		}
+		
+		return employeeScoreList;
+	}
 }

@@ -568,4 +568,24 @@ public class PerformanceAppraisalRestController {
    	}
     
     
+    @RequestMapping(value = "/getEmployeePerformanceFeedbackDetails", method = RequestMethod.GET)
+		public ResponseList<PerformanceFeedbackDTO> getEmployeePerformanceFeedbackDetails(HttpServletRequest request, 
+				@RequestParam(value = "assignedUUID", required = true) String assignedUUID){
+
+	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+     ResponseList<PerformanceFeedbackDTO> resObj = new  ResponseList<>();
+     try {
+    	 List<PerformanceFeedbackDTO> performanceFeedbackDTOList = performanceAppraisalService.getEmployeePerformanceFeedbackDetails(assignedUUID,user.getId());
+    	 resObj.setData(performanceFeedbackDTOList);
+		 resObj.setResponse(Result.SUCCESS.name());
+		 resObj.setResponseMessage(Result.SUCCESS.getValue());
+     } catch (Exception e) {
+		e.printStackTrace();
+		resObj.setResponse(Result.AWKWARD.name());
+		resObj.setResponseMessage(Result.AWKWARD.getValue());
+	}
+	return resObj;
+}
+    
+    
 }

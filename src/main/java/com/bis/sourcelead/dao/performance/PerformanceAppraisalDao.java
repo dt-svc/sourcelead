@@ -49,4 +49,6 @@ public interface PerformanceAppraisalDao {
 	Integer getPeersTotalCategoriesCount(String assignedUUID,String templateUUID) throws Exception;
 	
 	List<PerformanceAppraisalManagersDTO> getAppraisalAssignedManagers(String assignedUUID) throws Exception;
+	
+	List<PerformanceFeedbackDTO> getEmployeePerformanceFeedbackDetails(String assignedUUID,Long userId) throws Exception;
 }

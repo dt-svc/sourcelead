@@ -29,6 +29,10 @@ public class PerformanceFeedbackDTO implements Serializable{
 	private String assignedUUID;
 	
 	private String comments;
+	
+	private String scoreType;
+	
+	private double peersScore;
 
 	public String getJsonCategoriesString() {
 		return jsonCategoriesString;
@@ -125,7 +129,21 @@ public class PerformanceFeedbackDTO implements Serializable{
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-	
-	
-	
+
+	public String getScoreType() {
+		return scoreType;
+	}
+
+	public void setScoreType(String scoreType) {
+		this.scoreType = scoreType;
+	}
+
+	public double getPeersScore() {
+		return peersScore;
+	}
+
+	public void setPeersScore(double peersScore) {
+		this.peersScore = peersScore;
+	}
+
 }
