@@ -51,4 +51,7 @@ public interface IndPaysheetFrequencyDao {
 	List<EmployeeSessionIndPayroll>  getEmployeeSessionList(String paySheetFrequencyUUID) throws Exception ;
 	
 	void deleteIndPayrollCaheRecoedByPaySheetFrequencyUUID(List<EmployeeSessionIndPayroll> indPayrollCahe);
+	
+	public EmployeeSessionIndPayroll updateThePayHeadHistoryJsonObjectBYExclueUUID(String excludeUUID)throws Exception;
+
 }

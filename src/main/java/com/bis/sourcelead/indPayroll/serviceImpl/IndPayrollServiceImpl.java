@@ -93,6 +93,11 @@ public class IndPayrollServiceImpl  implements IndPayrollService{
 	public void deleteIndPayrollCaheRecoedByPaySheetFrequencyUUID(List<EmployeeSessionIndPayroll> indPayrollCahe) {
 		indPaysheetFrequencyDao.deleteIndPayrollCaheRecoedByPaySheetFrequencyUUID(indPayrollCahe);
 	}
+
+	@Override
+	public EmployeeSessionIndPayroll updateThePayHeadHistoryJsonObjectBYExclueUUID(String excludeUUID) throws Exception {
+		return indPaysheetFrequencyDao.updateThePayHeadHistoryJsonObjectBYExclueUUID(excludeUUID);
+	}
 	
 	
 }

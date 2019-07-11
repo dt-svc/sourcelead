@@ -122,8 +122,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 	}
 
 	@Override
-	public IndPaysheetFrequencyDTO generateINDPayroll(OrgLocations orgLocation,
-			GenerateINDPayrollDTO generateINDPayrollDTO, User loginUser) throws Exception {
+	public IndPaysheetFrequencyDTO generateINDPayroll(OrgLocations orgLocation,GenerateINDPayrollDTO generateINDPayrollDTO, User loginUser) throws Exception {
 
 		String dates[] = generateINDPayrollDTO.getPayPeriod().split(",");
 		Date freqStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));

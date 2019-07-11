@@ -17,4 +17,5 @@ public interface IndPayrollService {
 
 	void deleteIndPayrollCaheRecoedByPaySheetFrequencyUUID(List<EmployeeSessionIndPayroll> indPayrollCahe);
 	
+	public EmployeeSessionIndPayroll updateThePayHeadHistoryJsonObjectBYExclueUUID(String excludeUUID)throws Exception;
 }
