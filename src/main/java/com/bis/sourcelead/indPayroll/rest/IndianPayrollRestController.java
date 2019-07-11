@@ -8,7 +8,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,6 +63,7 @@ import com.bis.sourcelead.indPayroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndApprovePayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.indPayroll.dto.PreCheckINDPayrollDTO;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.indPayroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.indPayroll.service.GenerateINDPayrollService;
@@ -559,7 +562,15 @@ public class IndianPayrollRestController {
 	      } 
     
 
-	//  To initiate The Payroll
+	
+	/**
+	 * Initiate payroll
+	 * @param generateINDPayrollDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@SuppressWarnings("null")
 	@RequestMapping(value = { "/generateINDPayroll","/rest/generateINDPayroll" }, method = RequestMethod.POST)
 	public IndPaysheetFrequencyDTO generateINDPayroll(GenerateINDPayrollDTO generateINDPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -596,7 +607,11 @@ public class IndianPayrollRestController {
 	   	 	    for(INDPayrollDTO ipDTO : indPaysheetFrequencyDTO.getIndPayrollDTO()) {
 	   	 	    	EmployeeSessionIndPayroll empSession = new EmployeeSessionIndPayroll();
 	   	 	    	
-	   	 	           employeeJsonObject.put("empId", ipDTO.getEmpId());
+		   	 	    	if(StringUtils.isNotBlank(ipDTO.getEmpId())) {
+		   	 	    		employeeJsonObject.put("empId", ipDTO.getEmpId());
+		   	 	    	}else {
+		   	 	    		employeeJsonObject.put("empId", "");
+		   	 	    	}
 	   	 	           employeeJsonObject.put("employee", ipDTO.getEmployee());
 	   	 	           employeeJsonObject.put("empName", ipDTO.getEmpName());
 	   	 	           employeeJsonObject.put("regularHours", ipDTO.getRegularHours());
@@ -678,15 +693,13 @@ public class IndianPayrollRestController {
 	}
     
 	/**
-	 * @author VenkatKesav
+	 * Send payroll for Approval
 	 * @param indApprovePayrollDTO
 	 * @param request
 	 * @param response
 	 * @return
 	 * @throws Exception
 	 */
-	
-    // Send payroll for Approval
     @RequestMapping(value = { "/sentForApproveIndPayroll","/rest/sentForApproveIndPayroll" }, method = RequestMethod.POST)
    	public IndApprovePayrollDTO sentForApproveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
@@ -745,7 +758,15 @@ public class IndianPayrollRestController {
    		
    	}
     
-    //Confirm payroll
+    
+    /**
+     * Confirm payroll
+     * @param indApprovePayrollDTO
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
     @SuppressWarnings("null")
 	@RequestMapping(value = { "/getApproveInfoIndPayroll","/rest/getApproveInfoIndPayroll" }, method = RequestMethod.GET)
    	public ModelAndView getApproveInfoIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -840,7 +861,16 @@ public class IndianPayrollRestController {
    	}
     
     
-    @RequestMapping(value = { "/approveIndPayroll","/rest/approveIndPayroll" }, method = RequestMethod.POST)
+    /**
+     * Approve the Payroll
+     * @param indApprovePayrollDTO
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @SuppressWarnings("null")
+	@RequestMapping(value = { "/approveIndPayroll","/rest/approveIndPayroll" }, method = RequestMethod.POST)
 	public Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -857,19 +887,27 @@ public class IndianPayrollRestController {
 			if(emp != null && emp.size() > 0) {
 				  indPaysheetFrequencyDTO = iNDPayrollCommonUtil.indPaySheetFrequencyDTODetails(emp,indPaysheetFrequencyDTO);
 
-		    	  //generate the list of employes required to run the payroll 
 				   List<INDPayrollDTO> ipDTOList = iNDPayrollCommonUtil.genarateTheListOfEmployeforIntitatePayroll(emp,indApprovePayrollDTO,mapper);
 				
 				   indPaysheetFrequencyDTO.setIndPayrollDTO(ipDTOList);
 		    	indPaysheetFrequency = iNDPayrollCommonUtil.getIndPaysheetFrequencyFromIndPaysheetFrequencyDTO(indPaysheetFrequencyDTO, orgLocation);
 		    }else {
+		    	
 		    	 indPaysheetFrequency = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+//		    		Exclude logic
+		    	  Set<IndEmployeePayroll> payrollList = new HashSet<IndEmployeePayroll>();
+				    for(IndEmployeePayroll payroll : indPaysheetFrequency.getIndEmployeepayroll()) {
+				    	if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(payroll.getIndEmpPayrollUUID())) {
+				    		payrollList.add(payroll);
+				    	}
+				    }
+					indPaysheetFrequency.setIndEmployeepayroll(payrollList);
 		    }
-//		    SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+
 			 res = indPaysheetFrequencyService.approveIndPayroll(indApprovePayrollDTO,indPaysheetFrequency,orgLocation,loginUser);
 		}catch(Exception e) {
 			e.printStackTrace();
-			SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+//			SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
 		}
 	 	
 		return res;
