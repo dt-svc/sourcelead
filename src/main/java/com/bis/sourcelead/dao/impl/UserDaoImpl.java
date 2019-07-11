@@ -2244,6 +2244,7 @@ public class UserDaoImpl implements UserDao {
 				Set<BigInteger> jobIds = new HashSet<>();
 				Set<BigInteger> primaryUserjobIds = new HashSet<>();
 				Set<BigInteger> assinedUserjobIds = new HashSet<>();
+				Set<String> assinedUserids = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
 					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId())){
@@ -2265,35 +2266,15 @@ public class UserDaoImpl implements UserDao {
 					}
 					
 					
-					/*userDTO = associatesListMap.get(reportDTO.getApproverUserId());
-					if(userDTO != null){
-						approverUserjobIds.add(reportDTO.getRequirementId());
-						BigDecimal bd = new BigDecimal(approverUserjobIds.size());
-						if(userDTO.getUserRequirementsCount() != null) {
-							bd = bd.add(userDTO.getUserRequirementsCount());
-						}
-						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
-					}*/
-					
-					//for reference
-					/*if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")
-							&& (reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue() 
-							&& reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
-						userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
-						if(userDTO != null){
-								jobIds.add(reportDTO.getRequirementId());
-								System.out.println("assign");
-								userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
-						}
-					}*/
 					
 					if(reportDTO.getAssignedUserId() != null){
 						if(reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")
 								&& ((reportDTO.getPrimaryUserId() != null &&  reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue()) ||(reportDTO.getPrimaryUserId() == null)) 
 								&& (reportDTO.getManagerUserId() != null && reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
 							userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
-							if(userDTO != null && !assinedUserjobIds.contains(reportDTO.getRequirementId())){
+							if(userDTO != null && !assinedUserids.contains(reportDTO.getRequirementId().toString()+","+reportDTO.getAssignedUserId().toString())){
 									jobIds.add(reportDTO.getRequirementId());
+									assinedUserids.add(reportDTO.getRequirementId().toString()+","+reportDTO.getAssignedUserId().toString());
 									assinedUserjobIds.add(reportDTO.getRequirementId());
 									userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
 							}
@@ -2302,18 +2283,6 @@ public class UserDaoImpl implements UserDao {
 					
 				}
 				
-				
-				
-				
-			/*if(RecruiterReportAssociateList != null && !RecruiterReportAssociateList.isEmpty()) {
-					for(RecruiterReportAssociateCountView associateReportView : RecruiterReportAssociateList) {
-						UserDTO userDTO = associatesListMap.get(associateReportView.getAssociateUserId());
-						if(associateReportView.getJobCount() != null) {
-							userDTO.setUserRequirementsCount(associateReportView.getJobCount());
-						}
-						
-					}
-				}*/
 				
 				List<RecruiterReportView> recruiterReportViewList = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, fromDate, toDate,isGlobalUser, orgId);
 				if(recruiterReportViewList != null && !recruiterReportViewList.isEmpty()) {
