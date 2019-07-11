@@ -23,30 +23,6 @@ public class EmployeeSessionIndPayroll {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@Column(name= "EMPLOYEE_ID")
-	private String employeeId;
-	
-	@Column(name ="EMPLOYE_NAME")
-	private String employeeName;
-	
-	@Column(name ="REGULAR_HOURS")
-	private String regularHours;
-	
-	@Column(name="OT_HOURS")
-	private String overtimeHours;
-	
-	@Column(name="NO_OF_LEAVES")
-	private BigDecimal noOfLeaves;
-	
-	@Column(name="GROSS_PAY")
-	private BigDecimal grossPay;
-	
-	@Column(name="TDS")
-	private BigDecimal tds;
-	
-	@Column(name="NET_PAY")
-	private BigDecimal netPay;
-	
 	@Column(name="EXCLUDE_UUID")
 	private String excludeUUID;
 
@@ -75,71 +51,6 @@ public class EmployeeSessionIndPayroll {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getEmployeeId() {
-		return employeeId;
-	}
-
-	public void setEmployeeId(String employeeId) {
-		this.employeeId = employeeId;
-	}
-
-	public String getEmployeeName() {
-		return employeeName;
-	}
-
-	public void setEmployeeName(String employeeName) {
-		this.employeeName = employeeName;
-	}
-
-	public String getOvertimeHours() {
-		return overtimeHours;
-	}
-
-	public void setOvertimeHours(String overtimeHours) {
-		this.overtimeHours = overtimeHours;
-	}
-
-	public String getRegularHours() {
-		return regularHours;
-	}
-
-	public void setRegularHours(String regularHours) {
-		this.regularHours = regularHours;
-	}
-
-	 
-	public BigDecimal getNoOfLeaves() {
-		return noOfLeaves;
-	}
-
-	public void setNoOfLeaves(BigDecimal noOfLeaves) {
-		this.noOfLeaves = noOfLeaves;
-	}
-
-	public BigDecimal getGrossPay() {
-		return grossPay;
-	}
-
-	public void setGrossPay(BigDecimal grossPay) {
-		this.grossPay = grossPay;
-	}
-
-	public BigDecimal getTds() {
-		return tds;
-	}
-
-	public void setTds(BigDecimal tds) {
-		this.tds = tds;
-	}
-
-	public BigDecimal getNetPay() {
-		return netPay;
-	}
-
-	public void setNetPay(BigDecimal netPay) {
-		this.netPay = netPay;
 	}
 
 	public String getExcludeUUID() {
