@@ -25,10 +25,12 @@ import com.bis.sourcelead.indPayroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
+import com.bis.sourcelead.indPayroll.service.IndPayrollService;
 import com.bis.sourcelead.indPayroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
 import com.bis.sourcelead.payroll.entity.ConfigurePayrollApprover;
+import com.bis.sourcelead.payroll.entity.EmployeeSessionIndPayroll;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.service.PaymentAccountService;
@@ -53,6 +55,9 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	
 	@Autowired
 	PaymentAccountService paymentAccountService;
+	
+	@Autowired
+	IndPayrollService indPayrollService;
 	
 	@Override
 	public ResponseList<IndPaysheetFrequency> getIndPaysheetFrequencyListByOrgLocationId(OrgLocations orgLocation,
@@ -132,6 +137,10 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 				}
 				indPaysheetFrequency.setIndEmployeepayroll(indEmployeepayrollList);
 				IndPaysheetFrequency savedPF = indPaysheetFrequencyDao.addIndPaysheetFrequency(indPaysheetFrequency);
+				//ind payroll cache removing unnecessary value after aprove and submitForAproval
+				List<EmployeeSessionIndPayroll> IndPayrollCahe = indPayrollService.getEmployeeSessionList(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+				if(IndPayrollCahe != null && IndPayrollCahe.size() > 0)
+				indPayrollService.deleteIndPayrollCaheRecoedByPaySheetFrequencyUUID(IndPayrollCahe);
 				if (savedPF != null && StringUtils.isNotEmpty(savedPF.getApproverStatus()) && savedPF.getApproverStatus().equalsIgnoreCase(PayrollConstant.SENT)) {
 					res.setResponse(Result.SUCCESS.name());
 					res.setResponseMessage(Result.SUCCESS.getValue());
@@ -196,6 +205,11 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 				}
 				indPaysheetFrequency.setIndEmployeepayroll(payrollList);
 				IndPaysheetFrequency savedPF = indPaysheetFrequencyDao.addIndPaysheetFrequency(indPaysheetFrequency);
+				
+				//ind payroll cache removing unnecessary value after aprove and submitForAproval
+				List<EmployeeSessionIndPayroll> IndPayrollCahe = indPayrollService.getEmployeeSessionList(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+				indPayrollService.deleteIndPayrollCaheRecoedByPaySheetFrequencyUUID(IndPayrollCahe);
+				
 				if (savedPF != null) {
 					res.setResponse(Result.SUCCESS.name());
 					res.setResponseMessage(Result.SUCCESS.getValue());
