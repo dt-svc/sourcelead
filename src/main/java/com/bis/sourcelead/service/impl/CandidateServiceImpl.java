@@ -2520,6 +2520,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			activitySummary.append("Notice Period").append(" : ").append("---").append(" ");
 			candidate.setNoticePeriod(noticePeriod);	
 	     }
+	    
+	    if(candidate.getNoticePeriod() != null && "Other".equalsIgnoreCase(candidate.getNoticePeriod())) {
+	    		   candidate.setOtherNoticePeriod(candidateDto.getOtherNoticePeriod());
+	    	    }
 		
 		if(candidateDto.getAddress() !=null){
 			if(candidate.getAddress() != null   && candidate.getAddress() != "" && !candidateDto.getAddress().equalsIgnoreCase(candidate.getAddress())){
