@@ -215,7 +215,34 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
     @JsonProperty
+    private String currentCtc;
+    
+    @Transient
+    @JsonProperty
 	private String expectedCTC;
+    
+    // start  WORKFLOW related columns added by SRINIVAS 
+    @Transient
+    @JsonProperty
+    private String alternateNumber;
+    
+    @Transient
+    @JsonProperty
+   	private String location;
+    
+    @Transient
+    @JsonProperty
+   	private String dateOfBirthStr;
+    
+    @Transient
+    @JsonProperty
+    private String education;
+    
+    @Transient
+    @JsonProperty
+	private String noticePeriod;
+	
+    // END  WORKFLOW related columns added by SRINIVAS 
     
     @Transient
     @JsonProperty
@@ -675,6 +702,14 @@ public class RequirementSubmission implements Serializable{
 
 	public String getExpectedCTC() {
 		return expectedCTC;
+	}
+
+	public String getCurrentCtc() {
+		return currentCtc;
+	}
+
+	public void setCurrentCtc(String currentCtc) {
+		this.currentCtc = currentCtc;
 	}
 
 	public void setExpectedCTC(String expectedCTC) {
@@ -1754,6 +1789,47 @@ public class RequirementSubmission implements Serializable{
 
 	public void setInvoiceGenerateDate(String invoiceGenerateDate) {
 		this.invoiceGenerateDate = invoiceGenerateDate;
+	}
+
+	public String getAlternateNumber() {
+		return alternateNumber;
+	}
+
+	public void setAlternateNumber(String alternateNumber) {
+		this.alternateNumber = alternateNumber;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+
+	public String getDateOfBirthStr() {
+		return dateOfBirthStr;
+	}
+
+	public void setDateOfBirthStr(String dateOfBirthStr) {
+		this.dateOfBirthStr = dateOfBirthStr;
+	}
+
+	public String getEducation() {
+		return education;
+	}
+
+	public void setEducation(String education) {
+		this.education = education;
+	}
+
+	public String getNoticePeriod() {
+		return noticePeriod;
+	}
+
+	public void setNoticePeriod(String noticePeriod) {
+		this.noticePeriod = noticePeriod;
 	}
 	
 	

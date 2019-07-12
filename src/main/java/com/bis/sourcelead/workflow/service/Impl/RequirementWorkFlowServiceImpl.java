@@ -4,6 +4,7 @@ package com.bis.sourcelead.workflow.service.Impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -1067,6 +1068,12 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		logger.error(e+" in checkWorkflowInRequirements Service for "+id+" orgLocation");
 		return null;
 	}
+	}
+
+
+	@Override
+	public LinkedHashMap<String, String> getColumnsMapbyWorkflowStage(String shortCode, Long workflowId, Long orgLocationId) {
+		return requirementWorkFlowDao.getColumnsMapbyWorkflowStage(shortCode, workflowId, orgLocationId);
 	}
 
 }

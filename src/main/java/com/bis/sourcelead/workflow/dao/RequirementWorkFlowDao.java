@@ -1,6 +1,7 @@
 package com.bis.sourcelead.workflow.dao;
 
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
@@ -94,4 +95,6 @@ public interface RequirementWorkFlowDao {
 	List<Requirement> getRequirementListByWorkflowIdAndOrgLocationId(String uuid, Long id)throws Exception;
 	
 	List<RequirementWorkFlowStages> getRequirementWorkflowStagesListByUuidAndOrgLocationId(String uuid, Long id, String stageUuid)throws Exception;
+
+	LinkedHashMap<String, String> getColumnsMapbyWorkflowStage(String shortCode, Long workflowId, Long orgLocationId);
 }
