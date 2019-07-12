@@ -8533,34 +8533,31 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
     animation: blinkAnimation 1s infinite; -webkit-animation: blinkAnimation 1s infinite;
     -moz-animation: blinkAnimation 1s infinite; -ms-animation: blinkAnimation 1s infinite;
 }
-      @keyframes blinkAnimation {
-          0 {opacity: 1}
-          50% { opacity: 0 }
-          100% { opacity: 1 }
-      }
-      @-webkit-keyframes blinkAnimation {
-          0 { opacity: 1}
-          50% { opacity: 0 }
-          100% { opacity: 1 }
-      }
-      
-      @-moz-keyframes blinkAnimation {
-          0 { opacity: 1}
-          50% { opacity: 0}
-          100% { opacity: 1}
-      }
-      
-      @-o-keyframes blinkAnimation {
-          0 { opacity: 1}
-          50% { opacity: 0}
-          100% { opacity: 1}
-      }
-      
-      @keyframes blinkAnimation {
-          0 { opacity: 1}
-          50% { opacity: 0}
-          100% { opacity: 1}
-      }
+@keyframes blinkAnimation {
+    0 {opacity: 1}
+    50% { opacity: 0 }
+          { opacity: 1 }
+}
+@-webkit-keyframes blinkAnimation {
+    0 { opacity: 1}
+    50% { opacity: 0 }
+    100% { opacity: 1 }
+}
+@-moz-keyframes blinkAnimation {
+    0 { opacity: 1}
+    50% { opacity: 0}
+    100% { opacity: 1}
+}
+@-o-keyframes blinkAnimation {
+    0 { opacity: 1}
+    50% { opacity: 0}
+    100% { opacity: 1}
+}
+@keyframes blinkAnimation {
+    0 { opacity: 1}
+    50% { opacity: 0}
+    100% { opacity: 1}
+}
 .tbldata-dotdot-large {
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 500px; display: block; margin: 0 auto;
 }
@@ -8575,7 +8572,7 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .tabImg { padding: 6px 0px; line-height: 36px;}
 .adddashComp { text-align: center;}
 .adddashComp a {
-    display: inline-block; width: 180px; margin: 10px 10px 20px; text-align: center; background-color: #f5f5f5;
+    display: inline-block; width: 180px; margin: 10px 10px 20px; text-align: center; background-color: #f5f5f5;                  
     padding: 15px; font-size: 15px; font-weight: 400; color: #656565; border: 1px solid #ededed;
 }
 .adddashComp a img { width: 60%; display: block; margin: 0px auto 10px; opacity: 0.8;}
@@ -8699,3 +8696,70 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .appraQueInn h3 b { display: inline-block; padding: 0px 5px 0px 0px; color: #F94447; font-weight: 600;}
 .appraQueInn ul { min-height: unset; max-height: unset; padding: 10px 0px 0px;}
 .appraQueInn ul li {width: 24%; color: #454545; font-weight: 400; font-size:14px; padding: 3px 6px;}
+
+.assiGoalWrap {width: auto; margin: 0px 0px; padding: 0px 0px;}
+.assiGoalWrap li {
+    list-style-type: none; float: left; width: 20%; margin: 0px 0px 0px -1px; text-align: center; border: 1px solid #ededed;
+    padding: 15px;
+}
+.assiGoalWrap li img { width: 70px;}
+.assiGoalWrap li p { padding: 10px 0px 10px; font-weight: 500; font-size: 15px; color: #787878; margin: 0px;}
+.assiGoalWrap li span {padding: 0px 0px 10px; display: block; font-weight: 500; font-size: 26px; color: #337ab7;}
+.assiGoalWrap li span.inprogC {color: #e29a35;}
+.assiGoalWrap li span.compleC {color: #5cb85c;}
+.assiGoalWrap li span.overC {color: #d9534f;}
+.assiGoalWrap li span.notC {color: #5bc0de;}
+
+.assiTaskWrap {width: auto; margin: 0px 0px 20px !important; padding: 0px 0px; max-height: unset !important; min-height: unset !important;}
+.assiTaskWrap li {
+    list-style-type: none; float: left; width: 19% !important; margin: 0px 0.5%; text-align: center; border: 1px solid #ededed;
+    padding: 8px 20px !important; height: 95px !important;
+}
+.assiTaskWrap li img { width: 70px;}
+.assiTaskWrap li p { padding: 5px 0px 5px; font-weight: 400; font-size: 14px; color: #787878; margin: 0px;}
+.assiTaskWrap li span {padding: 0px 0px 10px; display: block; font-weight: 500; font-size: 26px; color: #337ab7;}
+
+.perfOrgOut {
+    position: relative; padding: 0px 0px 0px 60%;
+}
+.perfOrgWrap { position: absolute; top: 0px; left:0px; width:58%; z-index: 50;}
+.perfOrgWrap h2 {
+    margin:0px 0px; font-size:15px; color:#666;  padding: 12px 20px; border-bottom: 1px solid #dedede;
+}
+.orgSlider { position:relative; z-index: 100;}
+.orgSlider h2 {
+    margin:0px 0px; font-size:15px; color:#666;  padding: 12px 20px; border-bottom: 1px solid #dedede;
+}
+.orgView {
+    display:inline-block; padding:0px 15px 0px 5px; cursor:pointer;
+}
+.orgView.orgViewAct { transform: rotate(180deg); padding:0px 5px 0px 15px;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
