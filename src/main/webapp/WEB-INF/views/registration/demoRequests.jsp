@@ -50,8 +50,8 @@
                 
                 
                 <li id="filterDropDown1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
-                	<div id="filter1ApprovePop1" class="approvedPop1">
-                    	<ul>
+                	<div id="filter1ApprovePop1" class="approved_pop approvedPop1">
+                    	<ul class="noPad">
                     	    <li><input id="c6"  type="checkbox" name="filterStatus" value ="Requested"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;Requested</label></li>
                         	<li><input id="c7"  type="checkbox" name="filterStatus" value ="Onhold"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;Onhold</label></li>
 							<li><input id="c9" type="checkbox" name="filterStatus" value ="Completed"  onclick="getDemoOrgsList();"><label for="c9">&nbsp;Completed</label></li>
@@ -267,7 +267,7 @@ function demoOrgsListPagination(url,sourceleadUrl){
 	            			  result = result +"<option value='Completed'>Completed</option>";
 	            		  }
 	            		  else if(opt.orgRequestStatus == "Completed"){
-	            			  result = result + '<td><div class="tblminwidth-75">'+opt.orgRequestStatus+'</div></td>';
+	            			  result = result + "<option disabled selected>"+opt.orgRequestStatus+"</option>";
 	            		  }
 	            	 
 	            		return result;
