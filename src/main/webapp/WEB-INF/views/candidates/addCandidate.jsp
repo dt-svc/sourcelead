@@ -507,26 +507,11 @@
 						</div>
 					</div>
 
-
-					<div class="form-group">
-						<label class="col-md-3">Previous Employers</label>
-						<div class="col-md-9">
-							<input type="text" class="form-control" id="candidateEmployers"
-								name="candidateEmployers" value="${candidateEmployers}"
-								field-name="Employers"
-								data-validation="validate_Space validate_length length2-250"
-								data-validation-optional="true" value="">
-						</div>
-					</div>
-
-
-
-
 					<div class="form-group">
 						<label class="col-md-3">Notice Period</label>
 						<div class="col-md-9">
 							<select class="form-control valid selectpicker" id="noticePeriod"
-								name="noticePeriod">
+								name="noticePeriod" onchange="getNoticePeriodOther(this);">
 								<option value="">---Select Notice Period---</option>
 								<option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately 
                             available</option>
@@ -538,14 +523,38 @@
                                     Months</option>
 								<option ${noticePeriod  == '3 Months' ? 'selected' : ''}>3
                                     Months</option>
+                                  <option ${noticePeriod  == 'Other' ? 'selected' : ''}>Other</option>
 							</select>
 
 						</div>
 					</div>
+					
+					<div class="form-group noticePeriodDiv" id="noticePeriodDiv"
+						style="display: none">
+						<label class="col-md-3">Other Notice Period</label>
+						<div class="col-md-9">
+						<input type="text" class="form-control" id="otherNoticePeriod"
+								name="otherNoticePeriod"
+								value="${candidate.otherNoticePeriod}" field-name="Other Notice Period"
+								value="" data-validation="validate_Space validate_length length1-150"
+									data-validation-optional="true">
+						</div>
+					</div>
+
+                    <div class="form-group">
+						<label class="col-md-3">Previous Employers</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="candidateEmployers"
+								name="candidateEmployers" value="${candidateEmployers}"
+								field-name="Employers"
+								data-validation="validate_Space validate_length length2-250"
+								data-validation-optional="true" value="">
+						</div>
+					</div>
+
 
 					<div class="clearfix"></div>
-					<div class="form-group innerForm_formGroup">
-
+					<!-- <div class="form-group innerForm_formGroup"> -->
 						<div class="form-group">
 							<label class="col-md-3">Attach Resume</label>
 							<div class="col-md-9 zindex positionRelative">
@@ -611,9 +620,9 @@
 							</div>
 						</div>
 
-					</div>
+					<!-- </div> -->
 
-					<div class="form-group innerForm_formGroup">
+					<!-- <div class="form-group innerForm_formGroup"> -->
 						<div class="form-group">
 							<label class="col-md-3">Education</label>
 							<div class="col-md-9 mySkillsUl">
@@ -638,7 +647,7 @@
 									data-validation-optional="true"></textarea>
 							</div>
 						</div>
-					</div>
+					<!-- </div> -->
 
 					<div class="clearfix"></div>
 					<c:forEach var="section" items="${sourceleadSectionList}"
@@ -1007,6 +1016,23 @@
     }
 </script>
 
+<!-- Notice Period Other Script starts here -->
+<script>
+ function getNoticePeriodOther(noticePeriod) {
+   
+       if (noticePeriod.value == 'Other') {
+	            document.getElementById("noticePeriodDiv").style.display = "block";
+	            $("#otherNoticePeriod").attr("data-validation-optional", "true");
+	            $("#otherNoticePeriod").attr("data-validation", "validate_Space validate_length length2-250");
+	        } else {
+	            document.getElementById("noticePeriodDiv").style.display = "none";
+	            $("#otherNoticePeriod").attr("data-validation-optional", "true");
+	            $("#noticePeriodDiv").find('p.jquery_form_error_message').remove();
+           
+	        }
+       
+    }
+</script>
 
 <!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
 <script>
