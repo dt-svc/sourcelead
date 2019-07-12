@@ -86,6 +86,15 @@ public class PerformanceAppraisalController {
 			return model;
 		}
 	 
+	 @RequestMapping(value = "/performanceOrgChartList")
+		public ModelAndView performanceOrgChartList(HttpServletRequest request) throws Exception{
+			ModelAndView model = new ModelAndView();
+			model.setViewName("performance/performanceOrgChart");
+			return model;
+		}
+	 
+	 
+	 
 	 
 	 @RequestMapping(value = "/peerAppraisalDetails")
 	 public ModelAndView peerAppraisalDetails(HttpServletRequest request,

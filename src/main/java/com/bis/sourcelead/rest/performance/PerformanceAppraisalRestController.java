@@ -21,6 +21,7 @@ import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.performance.AppraisalJobsSubmissionDetailsDTO;
 import com.bis.sourcelead.dto.performance.AppraisalProjectsTasksDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalDetailsDTO;
@@ -36,6 +37,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalAssignedAssociatesService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalService;
@@ -64,6 +66,9 @@ public class PerformanceAppraisalRestController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	OrgService orgService;
 	
 	@Value("${static.path}")
 	private String staticPath;
@@ -607,5 +612,11 @@ public class PerformanceAppraisalRestController {
 	return resObj;
 }
     
+    @RequestMapping(value = "/performanceOrgChart", method = RequestMethod.POST)
+    public List<UserDTO> performanceOrgChart(HttpServletRequest request, @RequestParam(defaultValue = "0") long id) throws Exception {
+        
+        OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        return orgService.getUserListForOrgChart(id == 0 ? loginOrgLocation.getId() : id);
+    }
     
 }
