@@ -393,8 +393,6 @@ function getPeersFeedbackCategoryForm(feedbackTemplateUUID,userCode){
 		  		     },
 		  		   
 			});
-			 
-	
   
     $("#appraisalLoading").removeAttr("style");
 }
@@ -411,8 +409,9 @@ function getManagerFeedbackCategoryForm(feedbackTemplateUUID,userCode,appraisalT
 	document.getElementById("feedbackTemplate"+feedbackTemplateUUID).className = 'active'
 	
 		var loginUserCode = '${SourceLeadWeb_userCode}';
+		var submissionStage = '${submissionStage}';
 		
-		if(loginUserCode == userCode){
+		if(loginUserCode == userCode && submissionStage != 'Submitted_For_Review'){
 	    		
 	    		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	    		  var finalDateFormatScript = '';

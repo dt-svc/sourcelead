@@ -33,6 +33,10 @@ public class PerformanceFeedbackDTO implements Serializable{
 	private String scoreType;
 	
 	private double peersScore;
+	
+	private Integer appliedLeaves;
+	
+	private String timeSheetHours;
 
 	public String getJsonCategoriesString() {
 		return jsonCategoriesString;
@@ -145,5 +149,23 @@ public class PerformanceFeedbackDTO implements Serializable{
 	public void setPeersScore(double peersScore) {
 		this.peersScore = peersScore;
 	}
+
+	public Integer getAppliedLeaves() {
+		return appliedLeaves;
+	}
+
+	public void setAppliedLeaves(Integer appliedLeaves) {
+		this.appliedLeaves = appliedLeaves;
+	}
+
+	public String getTimeSheetHours() {
+		return timeSheetHours;
+	}
+
+	public void setTimeSheetHours(String timeSheetHours) {
+		this.timeSheetHours = timeSheetHours;
+	}
+
+	
 
 }

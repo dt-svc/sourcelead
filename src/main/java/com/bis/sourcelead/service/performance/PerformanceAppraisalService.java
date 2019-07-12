@@ -51,4 +51,6 @@ public interface PerformanceAppraisalService {
 	List<PerformanceAppraisalManagersDTO> getAppraisalAssignedManagers(String assignedUUID) throws Exception;
 	
 	List<PerformanceFeedbackDTO> getEmployeePerformanceFeedbackDetails(String assignedUUID,Long userId) throws Exception;
+	
+	PerformanceFeedbackDTO getAppraisalUserLeavesAndTimesheetDetails(String assignedUUID,String dateFormat) throws Exception;
 }

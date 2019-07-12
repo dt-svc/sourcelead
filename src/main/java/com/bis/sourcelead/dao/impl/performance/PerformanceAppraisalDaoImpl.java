@@ -1,9 +1,10 @@
 package com.bis.sourcelead.dao.impl.performance;
 
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.LeaveDao;
+import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalDao;
 import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
@@ -31,6 +35,9 @@ import com.bis.sourcelead.dto.performance.PerformanceFeedbackDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGeneralTasksDetailsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceJobsDetailsDTO;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.payroll.dto.TotalHoursDTO;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -44,6 +51,12 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 	
 	@Autowired
 	CommonUtil commonUtil;
+	
+	@Autowired
+	LeaveDao leaveDao;
+	
+	@Autowired
+	UserGroupDao userGroupDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -278,10 +291,9 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 					"FROM " + 
 					"PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, " + 
 					"PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE, " + 
-					"USER U, " + 
-					"PERFORMANCE_APPRAISAL_PEERS PEERS " + 
-					"WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND PEERS.ID = ASSIGNED.PEER_ID AND ASSIGNED.USER_ID = U.ID  " + 
-					"AND ASSIGNED.ORG_LOCATION_ID = :orgLocationId AND FIND_IN_SET('"+userId+"',PEERS.PEER_USER_ID) > 0)Q1 "+querySeachStr+sortingQry;
+					"USER U " + 
+					"WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND ASSIGNED.USER_ID = U.ID  " + 
+					"AND ASSIGNED.ORG_LOCATION_ID = :orgLocationId AND FIND_IN_SET('"+userId+"',ASSIGNED.PEER_USER_ID) > 0)Q1 "+querySeachStr+sortingQry;
 			
 			String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
 					" FROM" + 
@@ -350,36 +362,33 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		}
 		
 		String query =  "SELECT "
-						+" TEMPLATE.NAME AS name, "           
-						+" DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+appraisalDateFormat+") AS appraisalStartDate, "
-						+" DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+appraisalDateFormat+") AS appraisalEndDate, "
-						+" DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_START_DATE,"+appraisalDateFormat+") AS appraisalProcessStartDate, "
-						+" DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_END_DATE,"+appraisalDateFormat+") AS appraisalProcessEndDate, "
-						+" DATE_FORMAT(TEMPLATE.SELF_APPRAISAL_START_DATE,"+appraisalDateFormat+") AS selfAppraisalStartDate, "
-						+" DATE_FORMAT(TEMPLATE.SELF_APPRAISAL_END_DATE,"+appraisalDateFormat+") AS selfAppraisalEndDate, "
-						+" DATE_FORMAT(TEMPLATE.APPROVING_FROM_START_DATE,"+appraisalDateFormat+") AS reportingManagerReviewStartDate, "
-						+" DATE_FORMAT(TEMPLATE.APPROVING_FROM_END_DATE,"+appraisalDateFormat+") AS reportingManagerReviewEndDate, "
-						+" DATE_FORMAT(TEMPLATE.RESOURCE_MANAGER_REVIEW_START_DATE,"+appraisalDateFormat+") AS resourceManagerReviewStartDate, "
-						+" DATE_FORMAT(TEMPLATE.RESOURCE_MANAGER_REVIEW_END_DATE,"+appraisalDateFormat+") AS resourceManagerReviewEndDate, "
-						+" DATE_FORMAT(TEMPLATE.PEER_REVIEW_START_DATE,"+appraisalDateFormat+") AS peerReviewStartDate, "
-						+" DATE_FORMAT(TEMPLATE.PEER_REVIEW_END_DATE,"+appraisalDateFormat+") AS peerReviewEndDate, "
-						+" TEMPLATE.DESCRIPTION AS description, "
-						+" TEMPLATE.DESCRIPTION_DISPLAY AS descriptionDisplay, "
-						+" PEERS.PEER_USER_ID AS peerIds, "
-						+" CONCAT (U.FIRST_NAME,' ',IFNULL(U.MIDDLE_NAME,''),IFNULL(U.LAST_NAME,'')) AS reportingManager, " 
-						+ "U.FILE_URL AS reportingManagerImgUrl, "
-						+ "(SELECT (CONCAT(USR.FIRST_NAME,' ',IFNULL(USR.MIDDLE_NAME, ''),IFNULL(USR.LAST_NAME, ''))) FROM USER USR WHERE USR.ID = UR.RESOURCE_MANAGER_ID) AS resourceManager, "
-						+ "(SELECT USR.FILE_URL FROM USER USR WHERE USR.ID = UR.RESOURCE_MANAGER_ID) AS resourceManagerImgUrl "
-						
-						+ "FROM PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE, "
-						+ "PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED "
-						+ "LEFT JOIN PERFORMANCE_APPRAISAL_PEERS PEERS  ON ASSIGNED.PEER_ID = PEERS.ID, "
-						+ "USER U "
-					    + "LEFT JOIN  USER_ROLE UR ON U.ID = UR.REPORTING_MANAGER_ID "
-						  
-						+"WHERE  "
-						+ "UR.REPORTING_MANAGER_ID = U.ID  AND UR.ORG_LOCATIONS_ID = ASSIGNED.ORG_LOCATION_ID "
-						+" AND ASSIGNED.UUID = :assignedUUID ";
+				+" TEMPLATE.NAME AS name, "           
+				+" DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+appraisalDateFormat+") AS appraisalStartDate, "
+				+" DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+appraisalDateFormat+") AS appraisalEndDate, "
+				+" DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_START_DATE,"+appraisalDateFormat+") AS appraisalProcessStartDate, "
+				+" DATE_FORMAT(TEMPLATE.PROCESS_PERIOD_END_DATE,"+appraisalDateFormat+") AS appraisalProcessEndDate, "
+				+" DATE_FORMAT(TEMPLATE.SELF_APPRAISAL_START_DATE,"+appraisalDateFormat+") AS selfAppraisalStartDate, "
+				+" DATE_FORMAT(TEMPLATE.SELF_APPRAISAL_END_DATE,"+appraisalDateFormat+") AS selfAppraisalEndDate, "
+				+" DATE_FORMAT(TEMPLATE.APPROVING_FROM_START_DATE,"+appraisalDateFormat+") AS reportingManagerReviewStartDate, "
+				+" DATE_FORMAT(TEMPLATE.APPROVING_FROM_END_DATE,"+appraisalDateFormat+") AS reportingManagerReviewEndDate, "
+				+" DATE_FORMAT(TEMPLATE.RESOURCE_MANAGER_REVIEW_START_DATE,"+appraisalDateFormat+") AS resourceManagerReviewStartDate, "
+				+" DATE_FORMAT(TEMPLATE.RESOURCE_MANAGER_REVIEW_END_DATE,"+appraisalDateFormat+") AS resourceManagerReviewEndDate, "
+				+" DATE_FORMAT(TEMPLATE.PEER_REVIEW_START_DATE,"+appraisalDateFormat+") AS peerReviewStartDate, "
+				+" DATE_FORMAT(TEMPLATE.PEER_REVIEW_END_DATE,"+appraisalDateFormat+") AS peerReviewEndDate, "
+				+" TEMPLATE.DESCRIPTION AS description, "
+				+" TEMPLATE.DESCRIPTION_DISPLAY AS descriptionDisplay, "
+				+" ASSIGNED.PEER_USER_ID AS peerIds, "
+				+" CONCAT (U.FIRST_NAME,' ',IFNULL(U.MIDDLE_NAME,''),IFNULL(U.LAST_NAME,'')) AS reportingManager, " 
+				+ "U.FILE_URL AS reportingManagerImgUrl, "
+				+ "(SELECT (CONCAT(USR.FIRST_NAME,' ',IFNULL(USR.MIDDLE_NAME, ''),IFNULL(USR.LAST_NAME, ''))) FROM USER USR WHERE USR.ID = ASSIGNED.RESOURCE_MANAGER_ID) AS resourceManager, "
+				+ "(SELECT USR.FILE_URL FROM USER USR WHERE USR.ID = ASSIGNED.RESOURCE_MANAGER_ID) AS resourceManagerImgUrl "
+				
+				+ "FROM PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE, "
+				+ "PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+				+ "USER U "
+				  
+				+" WHERE ASSIGNED.REPORTING_MANAGER_ID = U.ID "
+				+" AND ASSIGNED.UUID = :assignedUUID ";
 			
 		Query queryObj = session.createSQLQuery(query);
 		queryObj.setString("assignedUUID", assignedUUID);
@@ -970,11 +979,10 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 					
 					
 				    "FROM PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE, " +
-				    "PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, " +
-				    "USER_ROLE UR  " +
+				    "PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED " +
 				    
-					"WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND UR.USER_ID = ASSIGNED.USER_ID AND "+ 
-					"(UR.REPORTING_MANAGER_ID = :userId OR UR.RESOURCE_MANAGER_ID = :userId ) " + 
+					"WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND "+ 
+					"(ASSIGNED.REPORTING_MANAGER_ID = :userId OR ASSIGNED.RESOURCE_MANAGER_ID = :userId ) " + 
 					"AND ASSIGNED.ORG_LOCATION_ID = :orgLocationId )Q1 "+querySeachStr+sortingQry;
 			
 			String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
@@ -1180,10 +1188,8 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		try {
 		
 		String query =  "SELECT "
-						+ "PEERS.PEER_USER_ID AS peerIds "
+						+ "ASSIGNED.PEER_USER_ID AS peerIds "
 						+ "FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED "
-						+ "LEFT JOIN PERFORMANCE_APPRAISAL_PEERS PEERS  ON ASSIGNED.PEER_ID = PEERS.ID "
-						  
 						+ "WHERE ASSIGNED.UUID = :assignedUUID ";
 			
 		
@@ -1294,10 +1300,9 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 					
 					+ "FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
 					+ "USER U "
-					+ "LEFT JOIN  USER_ROLE UR ON U.ID = UR.REPORTING_MANAGER_ID "
 					  
 					+" WHERE  "
-					+" UR.USER_ID = ASSIGNED.USER_ID  AND UR.ORG_LOCATIONS_ID = ASSIGNED.ORG_LOCATION_ID "
+					+" U.ID = ASSIGNED.REPORTING_MANAGER_ID  "
 					+" AND ASSIGNED.UUID = :assignedUUID ";
 		
 	Query reportingMgrQueryObj = session.createSQLQuery(reportingMgrQuery);
@@ -1318,10 +1323,9 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 					
 					+ "FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
 					+ "USER U "
-					+ "LEFT JOIN  USER_ROLE UR ON U.ID = UR.RESOURCE_MANAGER_ID "
 					  
 					+" WHERE  "
-					+" UR.USER_ID = ASSIGNED.USER_ID  AND UR.ORG_LOCATIONS_ID = ASSIGNED.ORG_LOCATION_ID "
+					+" U.ID = ASSIGNED.RESOURCE_MANAGER_ID  "
 					+" AND ASSIGNED.UUID = :assignedUUID ";
 		
 	Query resourceMgrQueryObj = session.createSQLQuery(resourceMgrQuery);
@@ -1354,9 +1358,8 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		String assignedQuery =  "SELECT "
 				+" ASSIGNED.ID AS appraisalAssignedId, "  
 				+" ASSIGNED.USER_ID AS appraisalAssignedUserId, "   
-				+" PEERS.PEER_USER_ID AS peerIds "
+				+" ASSIGNED.PEER_USER_ID AS peerIds "
 				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED "
-				+" LEFT JOIN PERFORMANCE_APPRAISAL_PEERS PEERS  ON ASSIGNED.PEER_ID = PEERS.ID "
 				+" WHERE ASSIGNED.UUID = :assignedUUID ";
 		
 		Query queryObj = session.createSQLQuery(assignedQuery);
@@ -1430,5 +1433,82 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		}
 		
 		return employeeScoreList;
+	}
+
+	@Override
+	public PerformanceFeedbackDTO getAppraisalUserLeavesAndTimesheetDetails(String assignedUUID,String dateFormat) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		PerformanceAppraisalTemplateDetailsDTO selfUserDetails = new PerformanceAppraisalTemplateDetailsDTO();
+		Integer leavesCount = 0;
+		PerformanceFeedbackDTO feedbackDTO = new PerformanceFeedbackDTO();
+		
+		String appraisalDateFormat =  "";
+		
+		try {
+		
+		if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%Y-%m-%d\"";
+		}else if("dd-MM-yyyy".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%d-%m-%Y\"";
+		}else if("MM-dd-yyyy".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%m-%d-%Y\"";
+		}else if("yyyy-dd-MM".equalsIgnoreCase(dateFormat)) {
+			appraisalDateFormat = "\"%Y-%d-%m\"";
+		}
+		
+		String assignedQuery =  "SELECT "
+				+" ASSIGNED.ORG_LOCATION_ID AS orgLocationId, "  
+				+" ASSIGNED.USER_ID AS appraisalAssignedUserId, " 
+				+" DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+appraisalDateFormat+") AS appraisalStartDate, "  
+				+" DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+appraisalDateFormat+") AS appraisalEndDate, "  
+				+" ASSIGNED.PEER_USER_ID AS peerIds "
+				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+				+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE "
+				+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND ASSIGNED.UUID = :assignedUUID ";
+		
+		Query queryObj = session.createSQLQuery(assignedQuery);
+		queryObj.setString("assignedUUID", assignedUUID);
+		queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalTemplateDetailsDTO.class));
+		List<PerformanceAppraisalTemplateDetailsDTO>  appraisalAssignedUserList = queryObj.list();
+		if(appraisalAssignedUserList != null) {
+			selfUserDetails = appraisalAssignedUserList.get(0);
+		}
+		
+		OrgLocations orgLocation = new OrgLocations();
+		orgLocation.setId(selfUserDetails.getOrgLocationId().longValue());
+		orgLocation.setDateFormat(dateFormat);
+		
+		List<AppliedLeaveDateView> leavesList =  leaveDao.getLeaveByUserIdAndFromToDate(selfUserDetails.getAppraisalAssignedUserId().longValue(), orgLocation, selfUserDetails.getAppraisalStartDate(), selfUserDetails.getAppraisalEndDate());
+		if(leavesList != null && !leavesList.isEmpty()) {
+			leavesCount = leavesList.size();
+		}
+		feedbackDTO.setAppliedLeaves(leavesCount);
+		
+		String candidateQuery =  "SELECT "
+				+" CAND.ID  "
+				+" FROM CANDIDATE CAND "
+				+" WHERE CAND.CONSULTANT_USER_ID = :userId AND CAND.ORG_LOCATION_ID = :orgLocationId ";
+		
+		Query candidateQueryObj = session.createSQLQuery(candidateQuery);
+		candidateQueryObj.setBigInteger("userId", selfUserDetails.getAppraisalAssignedUserId());
+		candidateQueryObj.setBigInteger("orgLocationId", selfUserDetails.getOrgLocationId());
+		BigInteger candidateId = (BigInteger) candidateQueryObj.uniqueResult();
+		
+		Date appraisalStartDate =  commonUtil.orgLocationDateFormat(dateFormat, selfUserDetails.getAppraisalStartDate());
+		Date appraisalEndDate =  commonUtil.orgLocationDateFormat(dateFormat, selfUserDetails.getAppraisalEndDate());
+		
+		List<TotalHoursDTO> totalHoursDTOList =  userGroupDao.getTotalHoursByCandidateId(candidateId.longValue(), appraisalStartDate, appraisalEndDate);
+		if(totalHoursDTOList != null && !totalHoursDTOList.isEmpty()) {
+			TotalHoursDTO totalHoursDTO = totalHoursDTOList.get(0);
+			feedbackDTO.setTimeSheetHours(totalHoursDTO.getTotalHours());
+		}
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		
+		return feedbackDTO;
 	}
 }

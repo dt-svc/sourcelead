@@ -130,6 +130,11 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 		return performanceAppraisalDao.getEmployeePerformanceFeedbackDetails(assignedUUID, userId);
 	}
 
+	@Override
+	public PerformanceFeedbackDTO getAppraisalUserLeavesAndTimesheetDetails(String assignedUUID,String dateFormat) throws Exception {
+		return performanceAppraisalDao.getAppraisalUserLeavesAndTimesheetDetails(assignedUUID,dateFormat);
+	}
+
 	
 
 }
