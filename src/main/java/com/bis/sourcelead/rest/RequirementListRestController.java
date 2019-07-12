@@ -953,7 +953,115 @@ public class RequirementListRestController {
 		
 	}
 	
-	
+	/**
+	 * load loadSubmissionsListByRequirementId using RequirementId
+	 * @param request
+	 * @param response
+	 * @return json
+	 * @throws Exception
+	 */
+	@RequestMapping(value = {"/loadWorkflowSubmissionsListByRequirementId", "/rest/loadWorkflowSubmissionsListByRequirementId"}, method = RequestMethod.POST)
+	public @ResponseBody  ResponseList<RequirementSubmission> loadWorkflowSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(requirementSubmissionsDTO.getOrgLocationId());
+		Timezone timezone = (Timezone) SourceLeadSessionManager.getSessionAttribute(request, "timezone");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		ResponseList<RequirementSubmission> list = new ResponseList<>();
+		System.out.println("inside loadWorkflowSubmissionsListByRequirementId >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		if(user != null && StringUtils.isNotBlank(requirementSubmissionsDTO.getWorkflowSatgeColumns() )) {
+				try {
+					System.out.println("search Vlaue is  >>>>>>>>>>>>>>>>>>"+ requirementSubmissionsDTO.getSearchValue());
+					if(requirementSubmissionsDTO.getSubmissionType() != null && requirementSubmissionsDTO.getSearchValue() != null && !requirementSubmissionsDTO.getSearchValue().equalsIgnoreCase("'")) {
+						//if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("all")){
+							String[] tableColumns = requirementSubmissionsDTO.getWorkflowSatgeColumns().split(",");
+						//}
+						System.out.println("tableColumns >>>>>>>>>>>>>>>>>>"+ requirementSubmissionsDTO.getWorkflowSatgeColumns());
+					    int sortColumnIndex = 1; //by default sorting using updated date
+						String sortColumnOrder = "desc"; //by default descending order
+						if(requirementSubmissionsDTO.getOrder() != null && !requirementSubmissionsDTO.getOrder().isEmpty()) {
+							sortColumnIndex = Integer.parseInt(requirementSubmissionsDTO.getOrder().get(0).get("column"));
+							sortColumnOrder = requirementSubmissionsDTO.getOrder().get(0).get("dir");
+						}
+						
+						requirementSubmissionsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+						requirementSubmissionsDTO.setSortOrder(sortColumnOrder);
+						
+						list = requirementSubmissionService.loadWorkflowSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation);
+						
+						if (list.getData() != null && list.getData().size() > 0) {
+							for (RequirementSubmission requirementSubmission : list.getData()) {
+									RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = null;
+									Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList = requirementSubmission.getRequirementSubmissionTemplateFieldsList();
+									for(RequirementSubmissionTemplateFields templateFields : requirementSubmissionTemplateFieldsList){
+										if(templateFields.getRequirementSubmission().getId().equals(requirementSubmission.getId())){
+											requirementSubmissionTemplateFields = templateFields;
+										}
+									}
+									
+									String candidateName = "";
+									if (requirementSubmissionTemplateFields != null) {
+										if (!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())) {
+											StringBuilder candidateNameSB = new StringBuilder();
+											candidateName = candidateNameSB.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString();
+										}
+										else {
+											candidateName = requirementSubmissionTemplateFields.getFirstName();
+										}
+										requirementSubmission.setCandidateName(candidateName);
+										requirementSubmission.setCandidateEmail(requirementSubmission.getCandidate().getEmail());
+										requirementSubmission.setExpectedCTC(requirementSubmissionTemplateFields.getExpectedCTC());
+										requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
+										requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
+										// added by SRINIVAS SABBU
+										requirementSubmission.setAlternateNumber(requirementSubmissionTemplateFields.getAlternateNumber());
+										requirementSubmission.setLocation(requirementSubmissionTemplateFields.getLocation());
+										requirementSubmission.setDateOfBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirementSubmissionTemplateFields.getDateOfBirth()));
+										requirementSubmission.setCurrentCtc(requirementSubmissionTemplateFields.getCurrentCTC());
+										requirementSubmission.setEducation(requirementSubmissionTemplateFields.getEducation());
+										requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), requirementSubmission.getCreatedDate()));
+										requirementSubmission.setNoticePeriod(requirementSubmissionTemplateFields.getNoticePeriod());
+										
+									}
+									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
+									
+									
+									if(requirementSubmission.getSubmissionStatus() != null) {
+										ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
+										if(status != null)
+						  				requirementSubmission.setSubmissionDisplayStatus(status.getValue());
+									}
+									if (requirementSubmission.getVendorLocationId() != null) {
+										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
+									}
+									else {
+										if (requirementSubmission.getRecruiterUserId() == null
+												&& requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
+											requirementSubmission.setCandidateSource(requirementSubmission.getCandidate().getCandidateType());
+										}
+										if (requirementSubmission.getRecruiterUserId() != null) {
+											requirementSubmission.setCandidateSource("Individual Recruiter");
+										}
+									}
+							}
+						}
+					} else {
+						List<RequirementSubmission> rsList = new LinkedList<>();
+						list.setData(rsList);
+					}
+				list.setResponse(Result.SUCCESS.name());
+				list.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				e.printStackTrace();
+			list.setResponse(Result.AWKWARD.name());
+			list.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		}else {
+		list.setResponse(Result.SESSION_TIMEDOUT.name());
+		list.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return list;
+		
+	}
 	@RequestMapping(value = "/saveChangedStatus", method = RequestMethod.POST)
 	@ResponseBody
 	Response<String> saveChangedStatus(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "status", required = false) String status, HttpServletRequest request) throws Exception
