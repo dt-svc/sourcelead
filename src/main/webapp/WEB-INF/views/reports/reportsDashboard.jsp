@@ -204,7 +204,7 @@
                 </sec:authorize>
                 
                 <sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
-				<li><a href="${appPath}/pendingForApprovalReport">Pending for Approval</a></li>
+				<li><a href="${appPath}/pendingForApprovalReport">Pending for Approval Timesheet(s)</a></li>
 				</sec:authorize>
 				<%-- <li><a href="${SourceLeadWeb_sourceleadUrl}/pendingForExpenseApprovalReport">Pending for Approval Expenses</a></li> --%>
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
@@ -511,7 +511,7 @@
                 </sec:authorize>
                 
                 <sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
-				<li><a href="${appPath}/pendingForApprovalReport">Pending for Approval</a></li>
+				<li><a href="${appPath}/pendingForApprovalReport">Pending for Approval Timesheets</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">

@@ -101,6 +101,7 @@ public class MissingTimesheetsReoprtsRestController {
 	@Autowired
     ExpensesService expensesService;
 
+	@Autowired
 	private DynamicReport dynamicReport;
 
 
