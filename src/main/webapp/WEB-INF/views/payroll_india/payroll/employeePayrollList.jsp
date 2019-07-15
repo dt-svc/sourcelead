@@ -376,9 +376,13 @@ $('#reviewTab').click(function(){
 	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 $("#bulkimportPOP, .mask").fadeIn();
 	 var feqUUID = $("#paySheetFrequency").val();
+	 var excludeEmpArr = [];
+		$("input:checkbox[name=empPayroll]:checked").each(function(){
+			excludeEmpArr.push($(this).val());
+		});
 	 $.ajax({
 	        type : "GET",
-	        url: pmsUrl+"/bulkPayAdjustmentsForFrequencyInd?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID,    
+	        url: pmsUrl+"/bulkPayAdjustmentsForFrequencyInd?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,    
 	         success :function(result) {
 	        	 $("#bulkimportPOP").empty();
 	             $("#bulkimportPOP").append(result);
