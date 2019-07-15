@@ -49,7 +49,7 @@
 			
                 
             </div>
-            <ul>
+            <ul id="orgChartAppraisalTemplate">
                <div id="employeeAppraisalList"></div>
             </ul>
         </div>
@@ -203,14 +203,14 @@ function getUserPerformanceDetails(userCode){
 		    		 for (var i=0; i<response.data.length; i++)
 	        	    	{
 		    			 var opt = response.data[i];
-		    			 
+		    			 var selectedClass = '';
 		    			 if(flag == false){
 	        	    	    	selectedClass = 'class="act"';
 	        	    	    	assignedUUID = opt.assignedUUID;
 	        	    	    	flag = true;
 	        	    	    } 
 		    			 
-		            	 result = result +'<li onclick="getEmployeeAppraisalOverView(\''+opt.assignedUUID+'\')"><a '+selectedClass+' href="javascript:viod(0)">'+opt.name+'<span>'+opt.appraisalStartDate+'  to '+opt.appraisalEndDate+'</span></a></li>';
+		            	 result = result +'<li onclick="getEmployeeAppraisalOverView(\''+opt.assignedUUID+'\')" rel="'+opt.assignedUUID+'"><a '+selectedClass+' id="orgChartAppraisalTemplate'+opt.assignedUUID+'" href="javascript:viod(0)">'+opt.name+'<span>'+opt.appraisalStartDate+'  to '+opt.appraisalEndDate+'</span></a></li>';
 		           	     result = result +"</div>";
 	        	    	}
 		    	 }else{
@@ -237,6 +237,12 @@ function getEmployeeAppraisalOverView(assignedUUID){
 	 $("#goalsOverView").attr("onclick", "getAppraisalGoalsDetails('"+assignedUUID+"')");
 	 $("#tasksOverView").attr("onclick", "getAppraisalTaskDetails('"+assignedUUID+"')");
 	 $("#finalOverView").attr("onclick", "getAppraisalFinalScoreDetails('"+assignedUUID+"')");
+	 
+	 $('#orgChartAppraisalTemplate li').each(function(){
+			document.getElementById("orgChartAppraisalTemplate"+$(this).attr('rel')).removeAttribute("class")
+		});
+		document.getElementById("orgChartAppraisalTemplate"+assignedUUID).className = 'act'
+		
 	 getTemplateOverViewDetails(assignedUUID);
 }
 </script>
