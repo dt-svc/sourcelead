@@ -23,7 +23,7 @@ function getAppraisalTaskDetails(performanceAssignedUUID){
     result = result + '</ul>';
     result = result + '</div>';
     
-    result = result + '<div class="newRolLRight" id="tasksLoading">';
+    result = result + '<div class="newRolLRight orgChartRolLRight" id="tasksLoading">';
     result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
     result = result + '<label>Category Score :</label>';
     

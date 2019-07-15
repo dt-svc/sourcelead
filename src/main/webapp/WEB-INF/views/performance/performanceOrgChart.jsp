@@ -230,6 +230,11 @@ function getUserPerformanceDetails(userCode){
 		    	 
 		    	 if(flag){
 		    		 getTemplateOverViewDetails(assignedUUID);
+		    		 $("#templateOverView").attr("onclick", "getTemplateOverViewDetails('"+assignedUUID+"')");
+		    		 $("#feedbackOverView").attr("onclick", "getAppraisalFeedbackDetails('"+assignedUUID+"')");
+		    		 $("#goalsOverView").attr("onclick", "getAppraisalGoalsDetails('"+assignedUUID+"')");
+		    		 $("#tasksOverView").attr("onclick", "getAppraisalTaskDetails('"+assignedUUID+"')");
+		    		 $("#finalOverView").attr("onclick", "getAppraisalFinalScoreDetails('"+assignedUUID+"')");
 		    	 }
 		    	 
 		     },
@@ -238,18 +243,18 @@ function getUserPerformanceDetails(userCode){
 }
 
 function getEmployeeAppraisalOverView(assignedUUID){
-	 $("#templateOverView").attr("onclick", "getTemplateOverViewDetails('"+assignedUUID+"')");
-	 $("#feedbackOverView").attr("onclick", "getAppraisalFeedbackDetails('"+assignedUUID+"')");
-	 $("#goalsOverView").attr("onclick", "getAppraisalGoalsDetails('"+assignedUUID+"')");
-	 $("#tasksOverView").attr("onclick", "getAppraisalTaskDetails('"+assignedUUID+"')");
-	 $("#finalOverView").attr("onclick", "getAppraisalFinalScoreDetails('"+assignedUUID+"')");
-	 
 	 $('#orgChartAppraisalTemplate li').each(function(){
 			document.getElementById("orgChartAppraisalTemplate"+$(this).attr('rel')).removeAttribute("class")
 		});
 		document.getElementById("orgChartAppraisalTemplate"+assignedUUID).className = 'act'
 		
-	 getTemplateOverViewDetails(assignedUUID);
+	    getTemplateOverViewDetails(assignedUUID);
+		
+		 $("#templateOverView").attr("onclick", "getTemplateOverViewDetails('"+assignedUUID+"')");
+		 $("#feedbackOverView").attr("onclick", "getAppraisalFeedbackDetails('"+assignedUUID+"')");
+		 $("#goalsOverView").attr("onclick", "getAppraisalGoalsDetails('"+assignedUUID+"')");
+		 $("#tasksOverView").attr("onclick", "getAppraisalTaskDetails('"+assignedUUID+"')");
+		 $("#finalOverView").attr("onclick", "getAppraisalFinalScoreDetails('"+assignedUUID+"')");
 }
 </script>
 
