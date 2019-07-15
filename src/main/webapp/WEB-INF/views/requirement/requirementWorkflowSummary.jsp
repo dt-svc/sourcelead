@@ -773,6 +773,7 @@ function updateReuqirementStatusReject(status){
 --%>
 <script>
 	function getColumnsMapbyWorkflowStage(requirementId, submissionType) {
+	//	 submissionType = 'SCRNG'; 
 		 var workflowId ='${workflowId}';
 		    $("#actionsDiv" ).show();
 			$("#emptyPipelinelist").val('');
@@ -789,35 +790,26 @@ function updateReuqirementStatusReject(status){
 			type : "POST",
 			url : sourceleadUrl + "/getColumnsMapbyWorkflowStage?shortCode="+submissionType+"&workflowId="+ workflowId,
 			 success : function(columnsMap) {
-				//console.log(columnsMap)
+				//alert(columnsMap)
 				var columnsArr=[];
 				$.map( columnsMap, function( colProp, colName ) {
 					columnsArr.push(colProp);
 	             });
-				 submissionType = 'all';
+				//submissionType = 'ONHOLD';
 				var url = atsUrl+"/loadWorkflowSubmissionsListByRequirementId?searchValue="+searchValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&orgLocationId="+orgLocationId+"&userId="+userId+"&loginUserRole="+loginUserRole+"&userCode="+userCode+"&clientSubmissions="+clientSubmissions+"&workflowSatgeColumns="+columnsArr;
 				 requirementWorkflowPipelineList(url, requirementId, submissionType, columnsMap);
+				
 			}
 		});
+		
+		
 	}
 </script>
 <script>  
 function requirementWorkflowPipeline(requirementId,workflowShortCode){
-	$("#actionsDiv" ).show();
-	$("#emptyPipelinelist").val('');
-	var atsUrl = '${SourceLeadWeb_atsUrl}';
-	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	var userId = '${SourceLeadWeb_userId}';
-	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-	var userCode = '${SourceLeadWeb_userCode}';
-	var searchValue = $("#submissionDataTableSearch").val();
-	var clientSubmissions = '${clientSubmissions}';
-	searchValue = searchValue ? searchValue : "";
 	//var url = atsUrl+"/loadWorkflowSubmissionsListByRequirementId?searchValue="+searchValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&orgLocationId="+orgLocationId+"&userId="+userId+"&loginUserRole="+loginUserRole+"&userCode="+userCode+"&clientSubmissions="+clientSubmissions;
 	getColumnsMapbyWorkflowStage(requirementId, workflowShortCode);
-	
 	}
-
 </script>
 <script>
 /* var tableHeaders = '';

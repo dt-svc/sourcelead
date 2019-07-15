@@ -10,6 +10,7 @@
 <script>
 var columnPropArr=[];
 var columnDefs =[];
+var searchVal = "";
 function requirementWorkflowPipelineList(url, requirementId, submissionType, columnsMap){
 	var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
@@ -52,6 +53,7 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 	  result = result + '<table id="requirementsPagination" class="display" cellspacing="0" width="100%"">';
 	  result = result + '<thead>';
 	  result = result + '<tr>';
+	  columnPropArr=[]; // empty the values;
 	  $.map( columnsMap, function( colProp, colName ) {
 		  if(colName == 'DOB' || colName == 'Applied on'){
 			  result = result + '<th>'+colName+'<br>(<small class="custom-small">'+requirementPipelineListDate+'</small>)</th>';
@@ -65,6 +67,8 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 	  result = result + '       </thead>';
 	  result = result + '       <tbody>';
     $("#status-data").append(result);
+    // below is line of searchval.
+    if (searchVal) $("#submissionDataTableSearch").val(searchVal);
     requirementWorkflowPipelinePagination(url, requirementId, submissionType, columnsMap)
     result = result + '       </tbody>';
     result = result + '     </table>';
@@ -87,7 +91,7 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 		    }
 
 		  
-			
+		    columnDefs = [] // empty the array values.
      for (var i in columnPropArr) {
 		    if(columnPropArr[i] =="candidateName" ){
 		    	columnDefs.push(
@@ -717,8 +721,12 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 		$("#requirementsPagination").wrap(
 				"<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 		$("input[type=search]").hide();
-	
-
+		$("#submissionDataTableSearch").keyup(function(e) {
+			if (e.which === 13) {
+				searchVal = $("#submissionDataTableSearch").val();
+				requirementWorkflowPipeline(requirementId, submissionType);
+			}
+		});
 	}
 </script>
 <script type="text/javascript">
