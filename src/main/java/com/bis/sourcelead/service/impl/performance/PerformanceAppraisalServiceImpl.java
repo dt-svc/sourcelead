@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl.performance;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,6 +134,12 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 	@Override
 	public PerformanceFeedbackDTO getAppraisalUserLeavesAndTimesheetDetails(String assignedUUID,String dateFormat) throws Exception {
 		return performanceAppraisalDao.getAppraisalUserLeavesAndTimesheetDetails(assignedUUID,dateFormat);
+	}
+
+	@Override
+	public List<PerformanceAppraisalTemplateDTO> getEmployeePerformanceAppraisalList(Long userId, Long orgLocationId, Date startDate,
+			Date endDate,String dateFormat) throws Exception {
+		return performanceAppraisalDao.getEmployeePerformanceAppraisalList(userId, orgLocationId, startDate, endDate, dateFormat);
 	}
 
 	

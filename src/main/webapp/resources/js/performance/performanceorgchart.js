@@ -695,7 +695,7 @@
       if (opts.nodeTemplate) {
         $nodeDiv.append(opts.nodeTemplate(nodeData));
       } else {
-        $nodeDiv.append('<div class="title">' + nodeData[opts.nodeTitle] + '</div>')
+        $nodeDiv.append('<div class="title"><a href="#" onclick="getUserPerformanceDetails(\''+nodeData[opts.nodeCode]+'\')">' + nodeData[opts.nodeTitle] + '</div>')
           .append(typeof opts.nodeContent !== 'undefined' ? '<div class="content">' + (nodeData[opts.nodeContent] || '') + '</div>' : '');
       }
       // append 4 direction arrows or expand/collapse buttons

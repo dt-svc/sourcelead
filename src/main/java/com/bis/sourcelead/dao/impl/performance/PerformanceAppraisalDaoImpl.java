@@ -1511,4 +1511,51 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		return feedbackDTO;
 	}
+
+	@Override
+	public List<PerformanceAppraisalTemplateDTO> getEmployeePerformanceAppraisalList(Long userId, Long orgLocationId, Date startDate,
+			Date endDate,String dateFormat) throws Exception {
+		
+		
+	    Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceAppraisalTemplateDTO> appraisalTemplateDetailsList = new ArrayList<>();
+		String appraisalDateFormat =  "";
+		try {
+			
+			if("yyyy-MM-dd".equalsIgnoreCase(dateFormat)) {
+				appraisalDateFormat = "\"%Y-%m-%d\"";
+			}else if("dd-MM-yyyy".equalsIgnoreCase(dateFormat)) {
+				appraisalDateFormat = "\"%d-%m-%Y\"";
+			}else if("MM-dd-yyyy".equalsIgnoreCase(dateFormat)) {
+				appraisalDateFormat = "\"%m-%d-%Y\"";
+			}else if("yyyy-dd-MM".equalsIgnoreCase(dateFormat)) {
+				appraisalDateFormat = "\"%Y-%d-%m\"";
+			}
+			
+			java.sql.Date appraisalStartDate = new java.sql.Date(startDate.getTime());
+		    java.sql.Date appraisalEndDate = new java.sql.Date(endDate.getTime());
+			
+			String assignedQuery =  "SELECT "
+					+" ASSIGNED.UUID AS assignedUUID, " 
+					+" TEMPLATE.UUID AS templateUUId, " 
+					+" TEMPLATE.NAME AS name, " 
+					+" DATE_FORMAT(TEMPLATE.APPRAISAL_START_DATE,"+appraisalDateFormat+") AS appraisalStartDate, "  
+					+" DATE_FORMAT(TEMPLATE.APPRAISAL_END_DATE,"+appraisalDateFormat+") AS appraisalEndDate "  
+					+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
+					+" PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE "
+					+" WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND "
+					+" ASSIGNED.USER_ID = :userId AND ASSIGNED.ORG_LOCATION_ID = :orgLocationId AND"
+					+" (TEMPLATE.APPRAISAL_START_DATE BETWEEN '"+appraisalStartDate+"' AND '"+appraisalEndDate+"') ";
+			
+			Query queryObj = session.createSQLQuery(assignedQuery);
+			queryObj.setLong("userId", userId);
+			queryObj.setLong("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalTemplateDTO.class));
+			appraisalTemplateDetailsList = queryObj.list();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	    
+		return appraisalTemplateDetailsList;
+	}
 }

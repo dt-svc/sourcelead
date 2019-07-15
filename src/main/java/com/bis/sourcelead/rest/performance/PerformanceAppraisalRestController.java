@@ -1,6 +1,8 @@
 package com.bis.sourcelead.rest.performance;
 
 import java.math.BigInteger;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -618,5 +621,49 @@ public class PerformanceAppraisalRestController {
         OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         return orgService.getUserListForOrgChart(id == 0 ? loginOrgLocation.getId() : id);
     }
+    
+    
+    @RequestMapping(value = "/getOrgChartEmployeeAppraisalList", method = RequestMethod.GET)
+   	public ResponseList<PerformanceAppraisalTemplateDTO> getOrgChartEmployeeAppraisalList(PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO,HttpServletRequest request) throws Exception {
+   		
+	    OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    ResponseList<PerformanceAppraisalTemplateDTO> resObj = new  ResponseList<>();
+	     try {
+	    	    
+	    	 Date startDate = null;
+	    	 Date endDate = null;
+	    	 
+	    	 if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalStartDate()) &&
+	    			 StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalEndDate())) {
+	    		 
+	    	 }else {
+	    		 int year = Calendar.getInstance().get(Calendar.YEAR);
+		    	    Calendar calendarStart = Calendar.getInstance();
+		    	    calendarStart.set(Calendar.YEAR,year);
+		    	    calendarStart.set(Calendar.MONTH,0);
+		    	    calendarStart.set(Calendar.DAY_OF_MONTH,1);
+		    	    startDate = calendarStart.getTime();
+
+		    	    Calendar calendarEnd=Calendar.getInstance();
+		    	    calendarEnd.set(Calendar.YEAR,year);
+		    	    calendarEnd.set(Calendar.MONTH,11);
+		    	    calendarEnd.set(Calendar.DAY_OF_MONTH,31);
+		    	    endDate=calendarEnd.getTime();
+	    	 }
+	    	 	
+	    	    
+	    	    User appraisalUser = userService.getUserByUserCode(performanceAppraisalTemplateDTO.getUserCode());
+	    	 
+	    	 List<PerformanceAppraisalTemplateDTO> appraisalTemplateList = performanceAppraisalService.getEmployeePerformanceAppraisalList(appraisalUser.getId(), orgLocation.getId(), startDate, endDate, orgLocation.getDateFormat());
+	    	 resObj.setData(appraisalTemplateList);
+			 resObj.setResponse(Result.SUCCESS.name());
+			 resObj.setResponseMessage(Result.SUCCESS.getValue());
+	     } catch (Exception e) {
+			e.printStackTrace();
+			resObj.setResponse(Result.AWKWARD.name());
+			resObj.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return resObj;
+   	}
     
 }

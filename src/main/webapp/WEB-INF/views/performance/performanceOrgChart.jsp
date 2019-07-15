@@ -10,7 +10,7 @@
 
 
 
-<section class="content-wraper contentWraper">
+<section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
 			<h2>Employee Org Chart</h2>
@@ -24,164 +24,92 @@
 	<div class="project_wrap clearfix posiR overX">
 
         <div class="profOrgLeft">
-            <h3>Appraisal Heading</h3>
+            <h3>Appraisal Date</h3>
             <div class="profOrgDate clearfix">
-                <input type="text" placeholder="from" />
-                <input type="text" placeholder="to" />
-                <button>Go</button>
+	  			  <div class="row">
+					  <div class="col-md-8 valMsgPosition">
+						  <div class="input-group">
+							  <input type="text" class="form-control calendar"  value="" id="appraisalStartDate" placeholder="Start Date" name="appraisalStartDate" readonly="readonly">
+							  <span class="input-group-addon" onClick="clearAppraisalStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						  </div>
+					  </div>
+					  
+					  <div class="clearfix mt10"></div>
+					  
+					  <div class="col-md-8 valMsgPosition mt10">
+						   <div class="input-group">
+						     <input type="text" class="form-control calendar" value="" id="appraisalEndDate" placeholder="End Date" name="appraisalEndDate" readonly="readonly">
+						     <span class="input-group-addon" onClick="clearAppraisalEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						   </div>
+					  </div>
+					  
+					  <button id="searchButton">Go</button>
+					 
+				  </div>
+			
+                
             </div>
             <ul>
-                <li><a class="act" href="javascript:viod(0)">Appraisal Name<span>from 06/05/19 - to 01/07/2020</span></a></li>
-                <li><a href="javascript:viod(0)">Appraisal Name<span>from 06/05/19 - to 01/07/2020</span></a></li>
-                <li><a href="javascript:viod(0)">Appraisal Name<span>from 06/05/19 - to 01/07/2020</span></a></li>
-                <li><a href="javascript:viod(0)">Appraisal Name<span>from 06/05/19 - to 01/07/2020</span></a></li>
-                <li><a href="javascript:viod(0)">Appraisal Name<span>from 06/05/19 - to 01/07/2020</span></a></li>
+               <div id="employeeAppraisalList"></div>
             </ul>
         </div>
 
-        <div class="profOrgRight">
+    <div class="profOrgRight">
             <div class="immiStepsHead clearfix">
+            <div id="appraisalLoading"/>
+            <input type="hidden" id="appraisalUserCode"/>
             <div class="selfAppraisalWidget clearfix">
             <ul class="list-unstyled list-inline">
-                    <li class="activeApprisalwidget" title="overview">
-                    <a href="selfappraisal-view.html" class="clearfix mb0"> 
-                    <div class="overviewIcon"></div>
-                        Overview
-                    </a>
-                    </li>
-                    <li title="Feedback">
-                        <a href="selfappraisal-category.html" class="clearfix mb0">
-                        <div class="categoryIcon"></div>
-                        <div class="clearfix"></div>
-                        Feedback
-                    </a>
-                    </li>
-                    <li title="Goals">
-                        <a href="selfappraisal-goals.html" class="clearfix mb0">
-                        <div class="goalsIcon"></div>
-                        <div class="clearfix"></div>
-                            Goals
+                      <li class="activeApprisalwidget" title="overview">
+                        <a id="templateOverView" class="clearfix mb0"> 
+                        <div class="overviewIcon"></div>
+                          Overview
                         </a>
-                    </li>
-                    <li title="Project">
-                        <a href="selfappraisal-tasks.html" class="clearfix mb0">
-                        <div class="taksIcon"></div>
-                        <div class="clearfix"></div>
-                        Tasks
-                    </a>
-                    </li>
-                    <li title="Final Score">
-                        <a href="selfappraisal-finalscore.html" class="clearfix mb0">
-                        <div class="finalScoreIcon"></div>
-                        <div class="clearfix"></div>
-                    Final Score
-                    </a>
-                    </li>
-                    <div class="clearfix"></div>
-                </ul>
+                      </li>
+                      <li title="Feedback" id="feedbackWidget">
+                          <a id="feedbackOverView"  class="clearfix mb0">
+                            <div class="categoryIcon"></div>
+                            <div class="clearfix"></div>
+                            Feedback
+                        </a>
+                      </li>
+                      
+                      <li title="Goals" id="goalsWidget">
+                          <a id="goalsOverView" class="clearfix mb0">
+                            <div class="goalsIcon"></div>
+                            <div class="clearfix"></div>
+                             Goals
+                          </a>
+                      </li>
+                      
+                      <li title="Project"  id="tasksWidget">
+                          <a id="tasksOverView" class="clearfix mb0">
+                          <div class="taksIcon"></div>
+                          <div class="clearfix"></div>
+                          Tasks
+                      </a>
+                      </li>
+                      <li title="Final Score" id="finalScoreWidget">
+                          <a id="finalOverView" class="clearfix mb0">
+                          <div class="finalScoreIcon"></div>
+                          <div class="clearfix"></div>
+                        Final Score
+                        </a>
+                      </li>
+                      <div class="clearfix"></div>
+                    </ul>
+                      <div id="performanceAppraisalDiv"></div>
                 </div>
             </div>
-
-            <div class="clearfix goalssummar_widget">
-                        <div class="clearfix">
-                        <div class="form-group clearfix">
-                            <label class="col-md-2 paddingRight">Appraisal Name<span class="pull-right paddingLeft">:</span></label>
-                            <div class="col-md-5">Name</div>
-                        </div>
-                        <div class="form-group clearfix">
-                            <label class="col-md-2 paddingRight">Process Period<span class="pull-right paddingLeft">:</span></label>
-                            <div class="col-md-5">01/04/2018 <span class="text-muted ml mr">to</span> 01/04/2019</div>
-                        </div>
-                        <div class="form-group clearfix">
-                            <label class="col-md-2 paddingRight">Due Date<span class="pull-right paddingLeft">:</span></label>
-                            <div class="col-md-5">01/04/2018</div>
-                        </div>
-                        <div class="form-group clearfix">
-                            <label class="col-md-2 paddingRight mt10">Peers<span class="pull-right paddingLeft">:</span></label>
-                            <div class="col-md-10">
-                            <ul class="list-inline list-unstyled selfAppraisalpeersList mb0">
-                                <li>
-                                    <div class="selfAppraisalImg">
-                                        <img src="../images/24.jpg" alt="Image">
-                                    </div>
-                                    <span class="selfAppraisalpeerName">Employee Name1</span>
-                                </li>
-                                <li>
-                                    <div class="selfAppraisalImg">
-                                        <img src="../images/24.jpg" alt="Image">
-                                    </div>
-                                    <span class="selfAppraisalpeerName">Employee Name2</span>
-                                </li>
-                                <li>
-                                    <div class="selfAppraisalImg">
-                                        <img src="../images/24.jpg" alt="Image">
-                                    </div>
-                                    <span class="selfAppraisalpeerName">Employee Name3</span>
-                                </li>
-                                <li>
-                                    <div class="selfAppraisalImg">
-                                        <img src="../images/24.jpg" alt="Image">
-                                    </div>
-                                    <span class="selfAppraisalpeerName">Employee Name4</span>
-                                </li>
-                                <li>
-                                    <div class="selfAppraisalImg">
-                                        <img src="../images/24.jpg" alt="Image">
-                                    </div>
-                                    <span class="selfAppraisalpeerName">Employee Name5</span>
-                                </li>
-                                <li>
-                                    <div class="selfAppraisalImg">
-                                        <img src="../images/24.jpg" alt="Image">
-                                    </div>
-                                    <span class="selfAppraisalpeerName">Employee Name6</span>
-                                </li>
-                                <li>
-                                    <div class="selfAppraisalImg">
-                                        <img src="../images/24.jpg" alt="Image">
-                                    </div>
-                                    <span class="selfAppraisalpeerName">Employee Name6</span>
-                                </li>
-
-                            </ul>  
-
-                            
-                            
-                            </div>
-                        </div>
-
-                        <div class="form-group clearfix">
-                            <label class="col-md-2 paddingRight mt10">Manager<span class="pull-right paddingLeft">:</span></label>
-                            <div class="col-md-5">
-                            
-                                <div class="selfAppraisalImg">
-                                    <img src="../images/24.jpg" alt="Image">
-                                </div>
-                                <span class="selfAppraisalpeerName">Ramraj Kumar Savaram
-                                    </span>
-                            </div>
-                            </div>
+        </div> 
         
-                            <div class="form-group clearfix">
-                                <label class="col-md-2 paddingRight">Review  Peirod<span class="pull-right paddingLeft">:</span></label>
-                                <div class="col-md-5">1 Year</div>
-                            </div>
-
-
-                        <div class="form-group clearfix">
-                            <label class="col-md-2 paddingRight">Description<span class="pull-right paddingLeft">:</span></label>
-                            <div class="col-md-10"> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </div>
-                        </div>
-
-                        </div>
-            </div>
-        </div>
+        
+        
 
         <div class="orgMask"></div>
         <div class="orgPop">
             <div class="perfOrgWrap">
-                <h2><span>Org Chart Heading</span>
-                    
+                     <h2><span></span>
 				 <div class="pull-right posiR"><input type="text" id='orgChartSearch' class="repSearchBar" placeholder="Search" />
                         <span class="repSearchIcon" id='orgChartSearchButton'></span>
                     </div>
@@ -194,8 +122,118 @@
 
     </div>
 </section>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> -->
 <script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/performance/performanceorgchart.js"></script>
+
+<jsp:include page="../performance/orgChart/employeePerformanceOverView.jsp" /> 
+<jsp:include page="../performance/orgChart/employeeAppraisalFeedback.jsp" /> 
+<jsp:include page="../performance/orgChart/employeeAppraisalGoals.jsp" /> 
+<jsp:include page="../performance/orgChart/employeeAppraisalTasks.jsp" />
+<jsp:include page="../performance/orgChart/employeeAppraisalFinal.jsp" />
+
+<script>
+$(document).ready(function(){
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormat = '';
+	  if(locationDate.match("yyyy-MM-dd")){
+		  finalDateFormat = 'yy-mm-dd';
+	  }if(locationDate.match("dd-MM-yyyy")){
+		  finalDateFormat = 'dd-mm-yy'; 
+	  }if(locationDate.match("MM-dd-yyyy")){
+		  finalDateFormat = 'mm-dd-yy'; 
+	  }if(locationDate.match("yyyy-dd-MM")){
+		  finalDateFormat = 'yy-dd-mm'; 
+	  }
+	  
+	  $('#appraisalStartDate').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  onSelect : function(selected) {
+	  		var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate() + 1);
+			$("#appraisalEndDate").datepicker("option", "minDate", dt);
+	 	  }
+	  });
+
+
+	  $('#appraisalEndDate').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  onSelect : function(selected) {
+	  		var dt = $(this).datepicker('getDate', '-1d');
+			dt.setDate(dt.getDate() - 1);
+			$("#appraisalStartDate").datepicker("option", "maxDate", dt);
+	 	  }
+	  });
+});
+</script>
+
+<script>
+function getUserPerformanceDetails(userCode){
+   $("#performanceAppraisalDiv").empty();  
+   $("#templateOverView").removeAttr("onclick");
+   $("#feedbackOverView").removeAttr("onclick");
+   $("#goalsOverView").removeAttr("onclick");
+   $("#tasksOverView").removeAttr("onclick");
+   $("#finalOverView").removeAttr("onclick");
+   
+   $("#searchButton").removeAttr("onclick");
+   $("#searchButton").attr("onclick", "getUserPerformanceDetails('"+userCode+"')");
+   
+   var appraisalStartDate = $("#appraisalStartDate").val();
+   var appraisalEndDate = $("#appraisalEndDate").val();
+   
+     document.getElementById("tasksWidget").removeAttribute("class");
+	 document.getElementById("feedbackWidget").removeAttribute("class");
+	 document.getElementById("goalsWidget").removeAttribute("class");
+	 document.getElementById("finalScoreWidget").removeAttribute("class");
+   
+	 $("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$.ajax({
+		  type: "GET",
+		    url: pmsUrl+"/getOrgChartEmployeeAppraisalList?userCode="+userCode+"&appraisalStartDate="+appraisalStartDate+"&appraisalEndDate="+appraisalEndDate,
+		     success :function(response) {
+		    	 
+		    	 var result = "";
+		    	 var dataResult = '';
+		    	 
+		    	 if(response.data != null && response.data.length > 0){
+		    		 for (var i=0; i<response.data.length; i++)
+	        	    	{
+		    			 var opt = response.data[i];
+		    			 
+		            	 result = result +'<li onclick="getEmployeeAppraisalOverView(\''+opt.assignedUUID+'\')"><a href="javascript:viod(0)">'+opt.name+'<span>'+opt.appraisalStartDate+'  to '+opt.appraisalEndDate+'</span></a></li>';
+		           	     result = result +"</div>";
+	        	    	}
+		    	 }else{
+		    		 result = result + '<div><span class="ml colorRed">No Appraisals Found</span></div>';
+		    		 dataResult = dataResult + '<div class="odd"><div valign="top" colspan="4" class="dataTables_empty"></div></div>';
+		    	 }
+		    	 
+		    	 $("#employeeAppraisalList").empty(); 
+		    	 $("#employeeAppraisalList").append(result);
+		    	 $("#performanceAppraisalDiv").append(dataResult);
+		     },
+	});
+	$("#appraisalLoading").removeAttr("style");
+}
+
+function getEmployeeAppraisalOverView(assignedUUID){
+	 $("#templateOverView").attr("onclick", "getTemplateOverViewDetails('"+assignedUUID+"')");
+	 $("#feedbackOverView").attr("onclick", "getAppraisalFeedbackDetails('"+assignedUUID+"')");
+	 $("#goalsOverView").attr("onclick", "getAppraisalGoalsDetails('"+assignedUUID+"')");
+	 $("#tasksOverView").attr("onclick", "getAppraisalTaskDetails('"+assignedUUID+"')");
+	 $("#finalOverView").attr("onclick", "getAppraisalFinalScoreDetails('"+assignedUUID+"')");
+	 getTemplateOverViewDetails(assignedUUID);
+}
+</script>
+
+
+
+
+
 <script>
 $(document).ready(function(){
     $(".orgArr").click(function(){
@@ -348,4 +386,17 @@ function initChart(data) {
 	function predefineUserImage(imageId){
 		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
+	
+  function clearAppraisalStartDate(){
+		  $("#appraisalStartDate").val("");
+		  $("#appraisalEndDate").val("");
+		  
+		  $("input[id$='appraisalStartDate'], input[id$='appraisalEndDate']").datepicker( "option", "maxDate", null );
+		  $("input[id$='appraisalStartDate'], input[id$='appraisalEndDate']").datepicker( "option", "minDate", null );
+	  }
+	  
+  function clearAppraisalEndDate(){
+		  $("#appraisalEndDate").val("");
+		  $("input[id$='appraisalStartDate'], input[id$='appraisalEndDate']").datepicker( "option", "maxDate", null );
+	  }
 </script>

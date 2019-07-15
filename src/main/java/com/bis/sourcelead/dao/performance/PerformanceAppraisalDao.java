@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.performance;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.PerformanceFeedbackTemplateDTO;
@@ -53,4 +54,6 @@ public interface PerformanceAppraisalDao {
 	List<PerformanceFeedbackDTO> getEmployeePerformanceFeedbackDetails(String assignedUUID,Long userId) throws Exception;
 	
 	PerformanceFeedbackDTO getAppraisalUserLeavesAndTimesheetDetails(String assignedUUID,String dateFormat) throws Exception;
+	
+	List<PerformanceAppraisalTemplateDTO> getEmployeePerformanceAppraisalList(Long userId, Long orgLocationId, Date startDate, Date endDate,String dateFormat) throws Exception;
 }
