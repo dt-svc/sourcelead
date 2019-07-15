@@ -44,6 +44,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
@@ -64,6 +65,8 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementInterviewService;
@@ -148,6 +151,9 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	RecommendationsService recommendationsService;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -1377,7 +1383,8 @@ public class SubmissionsRestController {
 			@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long locationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(locationId);
 		Response<String> response =  new Response<>();
 	 	if(user != null) {
 			try {
@@ -1403,6 +1410,9 @@ public class SubmissionsRestController {
 					}
 						
 				});
+				// for URL redirections from mail
+				String redirectURL = "/requirementSummary-params-requirementUUID="+savedrRequirementSubmission.getRequirement().getRequirementUUID();
+				sendMailtoNewAssignedUser(user,updatedUser,savedrRequirementSubmission,orgLocations,redirectURL);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch (Exception e) {
@@ -1415,6 +1425,57 @@ public class SubmissionsRestController {
 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
 		return response;
+	}
+	
+	public void sendMailtoNewAssignedUser(User loginUser,User toUser,RequirementSubmission requirementSubmission ,OrgLocations orgLocations,String redirectURL) throws Exception{
+		
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(toUser.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(
+				msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		
+			globalVarsMap.put("jobTitle", requirementSubmission.getRequirement().getJobTitle());
+		
+			globalVarsMap.put("applicantName", requirementSubmission.getCandidate().getFullName());
+	
+			globalVarsMap.put("assignedUser", toUser.getFullName());
+			
+			globalVarsMap.put("loginUser", loginUser.getFullName());
+			
+			globalVarsMap.put("loginOrg", orgLocations.getOrg().getOrgName());
+		
+		
+		StringBuilder linkBuild = new StringBuilder();
+		globalVarsMap.put("viewApplicant", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +atsUrl+redirectURL+"&redirectOrgLocationId="+orgLocations.getId()).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Applicant</div></a>")
+				.toString());
+		
+	
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+				Constants.APPLICANT_SOURCE_CHANGE_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+		// covert subject,body and signature
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
+				notificationScenario);
+		notificationScenario.setBody(notificationbody);
+		// construct HTML template using required data
+		StringBuilder actionLinkStringBuilder = new StringBuilder();
+		
+		String actionLink = actionLinkStringBuilder.append(atsUrl).append("/requirementSummary?requirementUUID=")
+				.append(requirementSubmission.getRequirement().getRequirementUUID()).toString();
+	
+		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario,
+				new HashMap<String, String>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations,
+				Constants.APPLICANT_SOURCE_CHANGE_EMAIL_NOTIFICATION, new ArrayList<EmailAttachment>());
+		
 	}
 	
 	@RequestMapping(value = "/getRequirementOfferSubmissionById")

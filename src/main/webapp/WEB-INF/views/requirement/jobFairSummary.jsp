@@ -26,7 +26,7 @@
 						</li>
 						
 					</ul>
-					<button class="btn btn-primary pull-right btn-sm mr" onclick="editJobFair();" type="button">Edit</button>
+					<button class="btn btn-primary pull-right btn-sm mr mt5" onclick="editJobFair();" type="button">Edit</button>
 					<div class="clearfix"></div>
 					<div class="project_tabs">
 						<div id="detailsDiv" class="require_wrap_details">

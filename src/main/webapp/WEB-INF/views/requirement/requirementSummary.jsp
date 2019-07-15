@@ -1037,9 +1037,9 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     	                result = result +"	<div class='col-md-12 mt10 mb'>";
     	                result = result +"    <div class='clearfix inputfiledColor'>";
     	                if(obj != null && obj != 'undefined' && obj != ""){
-    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='"+obj.updatedDateStr+"' type='text' field-name='Join Date'>";
+    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate"+submissionId+"'  readonly='readonly' value='"+obj.updatedDateStr+"' type='text' field-name='Join Date'>";
     	                }else{
-    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='' type='text' field-name='Join Date'>";
+    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate"+submissionId+"'  readonly='readonly' value='' type='text' field-name='Join Date'>";
     	                }
     	                result = result +"    </div>";
     	                result = result +"    <div id='joinDateErrorDiv'></div>";
@@ -1061,7 +1061,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     	            	  }if(locationDate.match("yyyy-dd-MM")){
     	            		  jsDateFormat = 'yy-dd-mm'; 
     	            	  }
-    	            	  $('#joinDate').datepicker({
+    	            	  $('#joinDate'+submissionId).datepicker({
     	            	      dateFormat: jsDateFormat,
     	            	      changeMonth: true,
     	            	  	  changeYear: true,
@@ -1222,7 +1222,7 @@ function cancelBackOutApplicant(submissionId,requirementId,submissionType){
 function cancelJoinedRequest(submissionId,requirementId,submissionType){ 
 	 $("#joinedApplicant"+submissionId).fadeOut(200);
 	 $(".project_inn_mask").fadeOut(200);
-	 $("#joinDate").val("");
+	 $("#joinDate"+submissionId+"").val("");
 	 pipelineBySubmissionType(requirementId,submissionType);
 };
 
@@ -1322,7 +1322,7 @@ $('body').on('blur', '#backOut_form', function() {
 
 function saveJoinedRequestForApplicant(submissionId,requirementId,submissionType){
 	if ($('#joinedApplicant_form').validate(false, validationSettings)) {
-		if($('#joinDate').val() != null && $('#joinDate').val() != ''){
+		if($('#joinDate'+submissionId+'').val() != null && $('#joinDate'+submissionId+'').val() != ''){
 		var formData =  getFormData('joinedApplicant_form'); 
 		$("#saveBackOut").attr("disabled", true);
 		$.ajax({
@@ -1840,15 +1840,17 @@ function clientSideBar(candidateId,recScore){
 	              		       }
 				            
 				             
-				              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
-				                    	 
-				             result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
-				             
-	             		       }else{
-	             		                                                	  
-	                   		     result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
-	             		     
-	             		       }
+				              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined' && json.noticePeriod != 'Other'){
+			                    	 
+					               result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
+					             
+		             		       }else if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined' && json.noticePeriod == 'Other'){
+		             		                                                	  
+		                   		     result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+"---"+json.otherNoticePeriod+'</span></li>';  
+		             		     
+		             		       }else{
+		             		    	  result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';    
+		             		       }
 				              result = result+'</ul>';
 				              result = result+'<div class="clearfix"></div>';
 				              result = result+'<div class="clearfix">';
@@ -2013,35 +2015,45 @@ function requirementStatusBar(requirementId){
 		result = result + '<ul>';
 		result = result + '<li title="Applicants" id="applicantli" onclick="requirementPipeline('+requirementId+',\''+all+'\');tabEnable(this);" class="reqAct">';
 		result = result + '	<span><i class="fa fa-users"></i></span><b id="applicantsCount">0</b>';
+		result = result + '<div class="clearfix small mt10"><label class="mb0 fontSmall tooltip-pipeline">Applicants</label></div>';
 		result = result + '</li>';
 		result = result + '<li title="Duplicate Applicants" class="" id="duplicataplctli" onclick="requirementPipeline('+requirementId+',\''+duplicateApplicantCount+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-files-o"></i></span><b id="duplicateApplicantsCount">0</b>';
+		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Duplicate Applicants</label></div>';
 		result = result + '</li>';
 		result = result + '<li title="Request Sent" id="requestSentli" onclick="requirementPipeline('+requirementId+',\''+requestSent+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-check"></i></span><b id="requestSent">0</b>';
+		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Request Sent</label></div>';
 		result = result + '</li>';
 		result = result + '<li title="Shortlisted" class="" id="shortListli" onclick="requirementPipeline('+requirementId+',\''+shortList+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-list-ul"></i></span><b id="shortlistCount">0</b>';
+		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Shortlisted</label></div>';
 		result = result + '</li>';
 		if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
 		result = result + '<li title="Submit to Client" id="submitToClientli" onclick="requirementPipeline('+requirementId+',\''+submitToClient+'\');tabEnable(this);">';
 		result = result + '	<span class="cliColor"><i class="fa fa-send"></i></span><b id="submitToClientCount">0</b>';
+		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Submit to Client</label></div>';
 		result = result + '</li>';
 		}
 		result = result + '<li title="Interviews" class="" id="interviewli" onclick="requirementPipeline('+requirementId+',\''+interview+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-handshake-o"></i></span><b id="interviewCount">0</b>';
+		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Interviews</label></div>';
 		result = result + '</li>';
 		result = result + '<li title="Offers" id="offerMadeli" onclick="requirementPipeline('+requirementId+',\''+offerMade+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount">0</b>';
+		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Offers</label></div>';
 		result = result + '</li>';
 		result = result + '<li title="Joined" id="joinedli" onclick="requirementPipeline('+requirementId+',\''+joined+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-id-badge"></i></span><b id="joinedCount">0</b>';
+		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Joined</label></div>';
 		result = result + '</li>';
 		result = result + '<li title="Rejected" class="" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
 		result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>';
+		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Rejected</label></div>';
 		result = result + '</li>';
 		result = result + '<li title="Back-Out" id="backoutli" onclick="requirementPipeline('+requirementId+',\''+backout+'\');tabEnable(this);">';
 		result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="backoutCount">0</b>';
+		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Back-Out</label></div>';
 		result = result + '</li>';
 		result = result + '<div class="clearfix"></div>';
 	    result = result + '</ul>';

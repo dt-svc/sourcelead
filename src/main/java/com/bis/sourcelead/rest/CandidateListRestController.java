@@ -1008,6 +1008,10 @@ public class CandidateListRestController {
 				candidateDTO.setCurrentRate(can.getCurrentRate());
 				candidateDTO.setEmail(can.getEmail());
 				candidateDTO.setNoticePeriod(can.getNoticePeriod());
+				
+				if(can.getOtherNoticePeriod() != null) {
+				candidateDTO.setOtherNoticePeriod(can.getOtherNoticePeriod());
+				}
 				candidateDTO.setDesignation(can.getDesignation());
 				candidateDTO.setPrimarySkill(can.getPrimarySkill());
 				candidateDTO.setAddress(can.getAddress());
@@ -1021,10 +1025,11 @@ public class CandidateListRestController {
 				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
 				
+				List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),1);
+				candidateDTO.setCandidateSourceList(candidateSourceList);
+				
 				if(null != can.getCandidateSource()) {
 					candidateDTO.setCandidateSource(can.getCandidateSource());
-					List<CandidateSourceDTO> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationId(loginOrgLocation.getId(), 1, null, null);
-					candidateDTO.setCandidateSourceList(candidateSourceList);
 				}
 				
 				if(can.getPanNumber() != null) {
