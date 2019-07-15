@@ -44,6 +44,9 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 
 		boolean authenticated = checkToken(httpRequest, httpResponse);
 		if (authenticated) {
+			 authenticationService.getAuthentication(httpRequest,httpRequest.getSession());
+		}
+		if (authenticated) {
 			checkLogout(httpRequest,httpResponse);
 		}
 		checkLogin(httpRequest, httpResponse,chain);

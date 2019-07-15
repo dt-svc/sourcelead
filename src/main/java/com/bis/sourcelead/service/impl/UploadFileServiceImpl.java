@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -57,13 +55,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.LookUpDataDao;
 import com.bis.sourcelead.dao.MasterCandidateDao;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -94,7 +92,6 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * 
@@ -163,6 +160,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	@Autowired
 	PayrollDeductionDao payrollDeductionDao;
+	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -258,6 +258,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 					userImport.setGrade(record.get(Constants.ASSOCIATE_GRADE));
 					
 					userImport.setManager(record.get(Constants.MANAGER));
+					
+					
 					/*if(record.get(Constants.INVOICE_FREQUENCY) !=null || !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))){
 						userImport.setInvoiceFrequency(record.get(Constants.INVOICE_FREQUENCY));
 					}else{
@@ -495,6 +497,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 								 }
 								 savedRecordCount = saveBulkUser(userImport,orgLocations,user,isMailChecked,savedRecordCount);
 							 }
+							 
+							 
 						}
 					} else {
 						if (row.getRowNum() > 0) {
@@ -1963,6 +1967,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				userRole.setShift(shift);
 			}
 		}
+		
+		if(StringUtils.isNotBlank(userImport.getIsGlobalAccess())) {
+			userRole.setIsGlobal(userImport.getIsGlobalAccess());
+		}
+		
 		userRole.setReportingManager(reportUser);
 		userRole.setResourceManager(reportUser);
 		userRole.setRoles(role);
@@ -2042,9 +2051,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			employee.setUser(userExisted);
 			employeesService.addEmployee(employee);
 			
-			if(userImport.getIsMailChecked() !=null){
+			/*if(userImport.getIsMailChecked() !=null){
 				userService.sendEmail(userExisted, loginUser, password,orgLocations.getId());
-			}
+			}*/
+			
+			userService.sendEmail(userExisted, loginUser, password,orgLocations.getId());
 			
 			MasterCandidate masterCandidate = null;
 			masterCandidate = getMasterCandidateByInteligence(userExisted);
@@ -2087,10 +2098,14 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		   
 			employee.setUser(user);
 			employeesService.addEmployee(employee);
-			if(userImport.getIsMailChecked() !=null){
+			
+			/*if(userImport.getIsMailChecked() !=null){
 				userService.sendEmail(user, loginUser, password,orgLocations.getId());
 				registrationService.sendActivationEmail(user,orgLocations);
-			}
+			}*/
+			
+			userService.sendEmail(user, loginUser, password,orgLocations.getId());
+			registrationService.sendActivationEmail(user,orgLocations);
 			
 			associateBalanceLeaveService.addAssociateLeaveType(user,orgLocations.getId(),employee,userRole);
 			
@@ -2103,6 +2118,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 			storeCandidate(user, orgLocations, masterCandidate,orgRelation,orgspoc,userImport);
 		}
+		
+		userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 		
 	}
 	

@@ -1,10 +1,11 @@
 package com.bis.sourcelead.payroll.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import com.bis.sourcelead.dto.SearchDTO;
 
-public class AssociatePayrollPayheadHistoryDTO  extends SearchDTO{
+public class AssociatePayrollPayheadHistoryDTO  implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	private Long id;

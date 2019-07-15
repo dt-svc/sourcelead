@@ -1,5 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -18,12 +21,17 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadUserDetailsService;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
+import com.bis.sourcelead.dto.UserDetailsDTO;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.TokenInfo;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.AuthenticationService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.TokenManager;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
  * Service responsible for all around authentication, token checks, etc.
@@ -82,6 +90,39 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 				return newToken;
 			}
 			return null;	
+	}
+	@Override
+	public void getAuthentication(HttpServletRequest request,HttpSession session) throws AuthenticationException {
+		Authentication authentication =null;
+			try {
+				authentication = SecurityContextHolder.getContext().getAuthentication();
+			}catch(BadCredentialsException e) {
+				if(!e.getMessage().equalsIgnoreCase("redirect_to_dashboard")) {
+					throw new BadCredentialsException(e.getMessage().toString());
+				}
+			}
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			if (authentication.getName() != null) {
+				String userName =  (String) authentication.getName();
+				UserDetails userDetails = sourceleadUserDetailsService.loadUserByUsername(userName);
+				 UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
+				    userDetailsDTO.setUsername(userDetails.getUsername());
+				    userDetailsDTO.setPassword(userDetails.getPassword());
+				    if(userDetails.getAuthorities() != null) {
+				    	List<String> roles = userDetails.getAuthorities().stream().map(ga -> ga.getAuthority()).collect(Collectors.toList());
+				    	userDetailsDTO.setRoles(roles);
+				    }
+					User user = userService.findByUserName(userDetails.getUsername());
+					
+					UserRole userRole;
+					try {
+						userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+						SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", userRole.getOrgLocations());
+						Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), userRole.getOrgLocations().getId());
+						SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
+					} catch (Exception e) {}
+					SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+			}
 	}
 
 	@Override
