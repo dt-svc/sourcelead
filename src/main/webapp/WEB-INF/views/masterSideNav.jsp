@@ -371,6 +371,7 @@
                                 <li class="${sessionData.nav == 'Goals' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" title="Goals"><i class="fa fa-chevron-right"></i> Goals</a></li>
                                 <li class="${sessionData.nav == 'My Appraisal' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceAppraisalList" title="My Appraisal"><i class="fa fa-chevron-right"></i> My Appraisal</a></li>
                                 <li class="${sessionData.nav == 'Employee Appraisal' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/employeePerformanceAppraisalList" title="Employee Appraisal"><i class="fa fa-chevron-right"></i> Employee Appraisal</a></li>
+                                <li class="${sessionData.nav == 'Org Chart' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceOrgChartList" title="Org Chart"><i class="fa fa-chevron-right"></i> Org Chart</a></li>
                      </ul>
                               
 			  </li>
