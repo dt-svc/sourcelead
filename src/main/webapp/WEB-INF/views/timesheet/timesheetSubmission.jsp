@@ -500,7 +500,7 @@
 															 </div>
 														</td>
 														<td>
-															<input type="text" name="timsheetAttachments[${attCount.index}].weekComment" ${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APPROVED' ? '' : 'readonly="readonly"'}  class="form-control  input-sm" value="${attachment.weekComment}" placeholder="Comment" />
+															<input type="text" name="timsheetAttachments[${attCount.index}].weekComment" ${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APPROVED' ? '' : 'readonly="readonly"'}  class="form-control  input-sm" value="${attachment.weekComment}" placeholder="Comment"  title ="'${attachment.weekComment}'"/>
 														</td>
 													    </tr>
 												    </c:forEach>
@@ -1425,7 +1425,9 @@ function addTimeSheetRow() {
         }
         
         function setTicketNumber(entryIndex,taskNumberId){
-        	if($("#" + taskNumberId).val() != null && $("#" + taskNumberId).val() !="undefined"){
+        	//val.trim().match(/^[A-Za-z0-9][A-Z a-z 0-9]*$/) !== null;
+        	if($("#" + taskNumberId).val() != null && $("#" + taskNumberId).val() !="undefined" && $("#" + taskNumberId).val().trim().match(/^[A-Za-z0-9][A-Z a-z 0-9]*$/)){
+        		alert($("#" + taskNumberId).val());
         		   var end = parseInt(entryIndex)+7;
 	          	  for (i = entryIndex; i < end; i++) {
 	          		   $("[name='timesheetSubmission.timesheetEntries["+i+"].ticketNumber']").val($("#"+taskNumberId).val());
