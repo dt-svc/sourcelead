@@ -243,7 +243,7 @@ function filterNodes(keyWord) {
       window.alert('Please type key word firstly.');
       return;
     } else {
-    	  //clearFilterResult();
+    	  clearFilterResult();
       var $chart = $('#chart-container');
       // disalbe the expand/collapse feture
       $chart.addClass('noncollapsable');
@@ -253,12 +253,14 @@ function filterNodes(keyWord) {
         }).addClass('matched')
         .closest('table').parents('table').find('tr:first').find('.node').addClass('retained');
       // hide the unmatched nodes
+      $chart.find('.matched,.retained').each(function(index, node) {
         $(node).removeClass('slide-up')
           .closest('.nodes').removeClass('hidden')
           .siblings('.lines').removeClass('hidden');
         var $unmatched = $(node).closest('table').parent().siblings().find('.node:first:not(.matched,.retained)')
           .closest('table').parent().addClass('hidden');
         $unmatched.parent().prev().children().slice(1, $unmatched.length * 2 + 1).addClass('hidden');
+      });
       // hide the redundant descendant nodes of the matched nodes
       $chart.find('.matched').each(function(index, node) {
         if (!$(node).closest('tr').siblings(':last').find('.matched').length) {
