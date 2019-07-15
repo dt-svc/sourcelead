@@ -3442,10 +3442,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				 writeRow.createCell(0).setCellValue(candidate.getOrderNo());}
 			else {
 				writeRow.createCell(0).setCellValue("--");
+			}			
+			if(candidate.getOrderDate() !=null) {
+				writeRow.createCell(1).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getOrderDate()));
 			}
-			if(candidate.getOrderDate() !=null && !"".equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getOrderDate()))) {
-				
-				writeRow.createCell(1).setCellValue(candidate.getOrderDate());}
 			else {
 				writeRow.createCell(1).setCellValue("--");
 			}
