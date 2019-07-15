@@ -1425,9 +1425,7 @@ function addTimeSheetRow() {
         }
         
         function setTicketNumber(entryIndex,taskNumberId){
-        	//val.trim().match(/^[A-Za-z0-9][A-Z a-z 0-9]*$/) !== null;
-        	if($("#" + taskNumberId).val() != null && $("#" + taskNumberId).val() !="undefined" && $("#" + taskNumberId).val().trim().match(/^[A-Za-z0-9][A-Z a-z 0-9]*$/)){
-        		alert($("#" + taskNumberId).val());
+        	if($("#" + taskNumberId).val() != null && $("#" + taskNumberId).val() !="undefined"){
         		   var end = parseInt(entryIndex)+7;
 	          	  for (i = entryIndex; i < end; i++) {
 	          		   $("[name='timesheetSubmission.timesheetEntries["+i+"].ticketNumber']").val($("#"+taskNumberId).val());
