@@ -405,9 +405,9 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		java.sql.Date sqlStartDate = new java.sql.Date(fqStartDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(fqEndDate.getTime());
 		String subqry = " AND ass.candidate.designationType <> '"+PayrollConstant.C2C+"' AND ass.candidate.id NOT IN( select empPayroll.candidate.id from IndEmployeePayroll empPayroll WHERE "
-				          + " empPayroll.indPaysheetFrequency.userGroup.id =:groupId  AND empPayroll.indPaysheetFrequency.orgLocation.id = :orgLocationId  AND "
-			  	          + " empPayroll.indPaysheetFrequency.frequencyStartDate = :startDate  AND empPayroll.indPaysheetFrequency.frequencyEndDate = :endDate  AND empPayroll.status = '1' )";
-		if(Constants.ALL_RECORDS.equalsIgnoreCase(payType)) {
+		          + " empPayroll.indPaysheetFrequency.userGroup.id =:groupId  AND empPayroll.indPaysheetFrequency.orgLocation.id = :orgLocationId  AND "
+	  	          + " empPayroll.indPaysheetFrequency.frequencyStartDate = :startDate  AND empPayroll.indPaysheetFrequency.frequencyEndDate = :endDate  AND empPayroll.status = '1' and empPayroll.submitForAproverStatus != 'DRAFT')";
+       if(Constants.ALL_RECORDS.equalsIgnoreCase(payType)) {
 			qry = "from AssociateSalaryInd ass WHERE (ass.stopSalary IS NULL OR ass.stopSalary = 'NO')  AND ass.orgLocations.id = :orgLocationId  AND ass.groupId = :groupId  AND ass.status = '1' "+subqry;
 			 assList = session.createQuery(qry).setLong("orgLocationId", orgLocation.getId()).setLong("groupId", groupId).setDate("startDate", sqlStartDate)
 						.setDate("endDate", sqlEndDate).list();
