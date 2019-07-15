@@ -387,7 +387,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 				+ "PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED, "
 				+ "USER U "
 				  
-				+" WHERE ASSIGNED.REPORTING_MANAGER_ID = U.ID "
+				+" WHERE ASSIGNED.REPORTING_MANAGER_ID = U.ID AND ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID "
 				+" AND ASSIGNED.UUID = :assignedUUID ";
 			
 		Query queryObj = session.createSQLQuery(query);

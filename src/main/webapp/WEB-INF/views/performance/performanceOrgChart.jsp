@@ -122,7 +122,6 @@
 
     </div>
 </section>
-<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> -->
 <script type="text/javascript" src="${SourceLeadWeb_pmsUrl}/resources/js/performance/performanceorgchart.js"></script>
 
 <jsp:include page="../performance/orgChart/employeePerformanceOverView.jsp" /> 
@@ -198,13 +197,20 @@ function getUserPerformanceDetails(userCode){
 		    	 
 		    	 var result = "";
 		    	 var dataResult = '';
-		    	 
+		    	 var assignedUUID = '';
+		    	 var flag = false;
 		    	 if(response.data != null && response.data.length > 0){
 		    		 for (var i=0; i<response.data.length; i++)
 	        	    	{
 		    			 var opt = response.data[i];
 		    			 
-		            	 result = result +'<li onclick="getEmployeeAppraisalOverView(\''+opt.assignedUUID+'\')"><a href="javascript:viod(0)">'+opt.name+'<span>'+opt.appraisalStartDate+'  to '+opt.appraisalEndDate+'</span></a></li>';
+		    			 if(flag == false){
+	        	    	    	selectedClass = 'class="act"';
+	        	    	    	assignedUUID = opt.assignedUUID;
+	        	    	    	flag = true;
+	        	    	    } 
+		    			 
+		            	 result = result +'<li onclick="getEmployeeAppraisalOverView(\''+opt.assignedUUID+'\')"><a '+selectedClass+' href="javascript:viod(0)">'+opt.name+'<span>'+opt.appraisalStartDate+'  to '+opt.appraisalEndDate+'</span></a></li>';
 		           	     result = result +"</div>";
 	        	    	}
 		    	 }else{
@@ -215,6 +221,11 @@ function getUserPerformanceDetails(userCode){
 		    	 $("#employeeAppraisalList").empty(); 
 		    	 $("#employeeAppraisalList").append(result);
 		    	 $("#performanceAppraisalDiv").append(dataResult);
+		    	 
+		    	 if(flag){
+		    		 getTemplateOverViewDetails(assignedUUID);
+		    	 }
+		    	 
 		     },
 	});
 	$("#appraisalLoading").removeAttr("style");
@@ -325,6 +336,7 @@ function filterNodes(keyWord) {
 	    			obj.userCode = ds[i].userCode;
 	    			obj.name = ds[i].name;
 	    			obj.designation = ds[i].designation;
+	    			obj.email = ds[i].email;
 	    			if(ds[i].fileURL && ds[i].fileURL !== "")
 	          			obj.avatar = sourceleadUrl.replace("/app", "")+ds[i].fileURL;
 	    			else 
@@ -371,10 +383,13 @@ function initChart(data) {
 	   var secondMenuIcon = $('<i>', {
 	     'class': 'fa fa-user second-menu-icon',
 	     click: function() {
+	    	 $(".second-menu").hide();
 	       $(this).siblings('.second-menu').toggle();
 	     }
 	   });
-	   var secondMenu = '<div class="second-menu"><img class="avatar" onerror="predefineUserImage(this);" src="'+data.avatar+'"></div>';
+	   var secondMenu = '<div class="second-menu"><img class="avatar" onerror="predefineUserImage(this);" src="'+data.avatar+'"><h4>'+data.designation+'</h4><p>'+data.email+'</p></div>';
+
+	   
 	   $node.append(secondMenuIcon).append(secondMenu);
 	   }
 	   });
