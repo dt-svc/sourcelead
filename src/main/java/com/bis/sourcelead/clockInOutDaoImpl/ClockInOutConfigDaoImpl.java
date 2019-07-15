@@ -712,7 +712,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		try {
 			
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Breaks brk where brk.clockInOutId =:clockInId";
+			String query = "from Breaks brk where brk.clockInOutId =:clockInId and brk.breakEndTime is NOT NULL";
 			breakList = session.createQuery(query).setLong("clockInId", clockInId).list();
 			
 		} catch (Exception e) {
