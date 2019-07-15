@@ -132,6 +132,7 @@
 
 <script>
 $(document).ready(function(){
+	
 	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormat = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -166,6 +167,11 @@ $(document).ready(function(){
 			$("#appraisalStartDate").datepicker("option", "maxDate", dt);
 	 	  }
 	  });
+	  
+	     var dataResult = '';
+		 dataResult = dataResult + '<div class="odd"><div valign="top" colspan="4" class="dataTables_empty"></div></div>';
+		 $("#performanceAppraisalDiv").append(dataResult);
+
 });
 </script>
 
