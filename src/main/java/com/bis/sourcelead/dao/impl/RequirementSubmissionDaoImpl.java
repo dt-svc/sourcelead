@@ -60,6 +60,8 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.util.CommonUtil;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
+
 @Repository
 public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Autowired
@@ -3306,7 +3308,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			List<RequirementSubmission> requirementSubmissionList = null;
 			ResponseList<RequirementSubmission> response = new ResponseList<>();
-			
+			List<String> chosenColumnsLst = new ArrayList<String>(Arrays.asList(requirementSubmissionsDTO.getWorkflowSatgeColumns().split(",")));
+			System.out.println(" chosen columns are here ::::::::::::>"+requirementSubmissionsDTO.getWorkflowSatgeColumns());
+			if(StringUtils.isNotBlank(requirementSubmissionsDTO.getWorkflowSatgeColumns())) {
+				
+			}
 			StringBuilder searchQuery = new StringBuilder("");
 			if(requirementSubmissionsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(requirementSubmissionsDTO.getSearchValue())) {
 				
@@ -3323,21 +3329,56 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						String newDate = parsedDate.format(f2);
 						Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
 						sqlDate = new java.sql.Date(searchDate.getTime()); 
-						searchQuery.append("and (reqSub.createdDate like '" + sqlDate + "%' )");
+						// if columns list contains "Applied On" and "DOB" columns in header list.
+						 if(chosenColumnsLst.contains("createdDateStr") && chosenColumnsLst.contains("dateOfBirthStr")) {
+							 searchQuery.append("and (reqSub.createdDate like '" + sqlDate + "%' OR reqSub.candidate.dateOfBirth like '" + sqlDate + "%')");
+						 }
+						 //if contains "Applied On" 
+						 else if(chosenColumnsLst.contains("createdDateStr")) {
+							 searchQuery.append("and (reqSub.createdDate like '" + sqlDate + "%' )");
+						 } //if contains "DOB" 
+						 else if(chosenColumnsLst.contains("dateOfBirthStr")) {
+							 searchQuery.append("and (reqSub.candidate.dateOfBirth like like '" + sqlDate + "%' )");
+						 }
 					 }catch (Exception e) {
 						 searchQuery.append("");
 					 }
 				}else {
-		 searchQuery.append(" and (reqSub.candidate.firstName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+		         // below are the list of mandatory search fileds for every stage in a workflow.
+				searchQuery.append(" and (reqSub.candidate.firstName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
 					.append("OR reqSub.candidate.lastName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
 					.append("OR (concat(reqSub.candidate.firstName,' ',reqSub.candidate.lastName) like '%" + requirementSubmissionsDTO.getSearchValue().trim().replaceAll(" +", " ")+ "%')" )
 					.append("OR reqSub.candidate.email like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.candidate.mobilePhone like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.candidate.expectedRate like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.createdUser like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.candidateScore like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.candidate.experienceYears like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
-					.append("OR reqSub.submissionStatus like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					.append("OR reqSub.candidate.mobilePhone like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+				// above are mandatory columns for every stage hence included in filters as default columns.
+					 if(chosenColumnsLst.contains("alternateNumber")) {
+						 searchQuery.append("OR reqSub.candidate.alternateMobilePhone like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 if(chosenColumnsLst.contains("location")) {
+						 searchQuery.append("OR reqSub.candidate.location like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 if(chosenColumnsLst.contains("workExperience")) {
+						 searchQuery.append("OR reqSub.candidate.experienceYears like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 if(chosenColumnsLst.contains("currentCtc")) {
+						 searchQuery.append("OR reqSub.candidate.currentRate like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 if(chosenColumnsLst.contains("expectedCTC")) {
+						 searchQuery.append("OR reqSub.candidate.expectedRate like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 // below filter condition need to be work out later.
+					/* if(chosenColumnsLst.contains("education")) {
+						 searchQuery.append("OR reqSub.candidate.candidateEducation.name like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }*/
+					 if(chosenColumnsLst.contains("noticePeriod")) {
+						 searchQuery.append("OR reqSub.candidate.noticePeriod like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 if(chosenColumnsLst.contains("createdUser")) { // below filter is used for "SOURCE" column UI header.						 
+						 searchQuery.append("OR reqSub.createdUser like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 if(chosenColumnsLst.contains("Status")) {
+						 searchQuery.append("OR reqSub.submissionStatus like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
 				   
 					/*String[] nameBytes = requirementSubmissionsDTO.getSearchValue().split(" ");
 					for(String nameByte : nameBytes) {
