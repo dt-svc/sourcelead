@@ -7,7 +7,7 @@
  <script type="text/javascript">
 		window.onload = function () {
 			getEmailList();
-			var status ='${emailSceconf.status}';
+			var status ='${emailSceconf.verifiedStatus}';
 			if(status == "Y"){
 				configuredMail();
 			}
@@ -89,7 +89,7 @@
                   <div class="reportHead clearfix">
                   <h5 class='pull-left ml mt'>Parsing Email Configuraiton</h5>
                      <ul class="pull-right list-unstyled list-inline">
-                     	<li><a href="javascript:void(0)" class="action newAdBtn mr5" onClick="addEmailparsingPopUp();">+ Add</a></li>
+                     	<li><a id= "parserEmailAdd" href="javascript:void(0)" class="action newAdBtn mr5" onClick="addEmailparsingPopUp();">+ Add</a></li>
                      </ul>
                   </div> 			
                  <div id="emailparsingList"></div>  
@@ -445,6 +445,12 @@ function changeDefaultemailConfig(ele, id) {
 	 $('#emailNotify').find('p.jquery_form_error_message').remove();
 	 $('#passwordsnotify').find('p.jquery_form_error_message').remove();	
 	 $(".colorBtn").removeClass("disableBtn");	  
+	
+	 var domainName = $('#emailId').val().split("@")[1];
+	 if(typeof domainName != 'undefiend' && domainName != ""){
+		 $('#parserEmailId').val("@"+domainName);
+		 $('#parserPasswordId').val("");
+	 }
  }
  
  /* function closeEmailNotifications() {
