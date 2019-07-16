@@ -8668,6 +8668,7 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .newRolLRight { width: auto; padding: 15px 0px 0px 15px; float: left; width: 78%;}
 .newRolLRight ul { margin: 0px 0px; padding: 0px 0px; min-height: 400px; max-height: 680px; overflow: auto;} 
 .newRolLRight ul li { list-style-type: none; float: left; display: block; padding: 6px; width: 50%;}
+.newRolLRight.orgChartRolLRight {width: 72%;}
 #viewmoresDiv {position: absolute; top: -36px; right: 17px;}  
 .valMsgPosition { position: relative;}
 .valMsgPosition p { position: absolute; left: -15px; top: 40px;}
@@ -8722,10 +8723,12 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .perfOrgOut {
     position: relative; padding: 0px 0px 0px 60%;
 }
-.perfOrgWrap { position: absolute; top: 0px; left:0px; width:58%; z-index: 50;}
+.perfOrgWrap { width:100%; position: relative; height: 100%;}
 .perfOrgWrap h2 {
-    margin:0px 0px; font-size:15px; color:#666;  padding: 12px 20px; border-bottom: 1px solid #dedede;
+    margin:0px 0px; font-size:15px; color:#666;  padding: 0px 20px; border-bottom: 1px solid #dedede;
+    height: 45px;
 }
+.perfOrgWrap h2 span { display: inline-block; line-height:45px;}
 .orgSlider { position:relative; z-index: 100;}
 .orgSlider h2 {
     margin:0px 0px; font-size:15px; color:#666;  padding: 12px 20px; border-bottom: 1px solid #dedede;
@@ -8736,12 +8739,55 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .orgView.orgViewAct { transform: rotate(180deg); padding:0px 5px 0px 15px;}
 
 
+.profOrgLeft { float:left; width:22%;}
+.profOrgLeft h3 { padding: 10px 20px; margin: 0px 0px; font-size: 15px; font-weight: 500; color: #666;}
+.profOrgLeft ul { padding:5px 0px; margin:0px 0px;}
+.profOrgLeft ul li { list-style-type:none; padding:2px 0px; border-bottom: 1px solid #ededed;}
+.profOrgLeft ul li a {display:block; padding:10px 20px; color:#666; font-size:15px; font-weight:500; border-left:5px solid #fff; }
+.profOrgLeft ul li a span { display:block; font-size:13px; padding:3px 0px 0px 0px; color:#787878;}
+.profOrgLeft ul li a:hover, .profOrgLeft ul li a.act {
+    border-left:5px solid #0084bf; color:#0084bf;
+}
+.profOrgDate {
+    padding:5px 10px 14px; border-bottom:1px solid #dedede;
+}
+.profOrgDate input {
+    width:40%; float: left; margin:0px 5px 0px 0px; border:1px solid #dedede; border-radius:2px; height: 30px;
+    padding:0px 10px; font-size:14px; color:#454545;
+    background-image: url(../images/calendar.png); background-repeat: no-repeat; background-size: 15px;
+    background-position: 90% center;
+}
+.profOrgDate button {
+    width:15%; float: left; margin:0px 0px; border:1px solid #dedede; border-radius:5px; height: 30px;
+    padding:0px; font-size:16px; color:#fff; background-color:#0084bf;
+}
+.profOrgRight { float:left; width:78%; border-left:1px solid #ededed; min-height: 530px; }
 
+.orgMask {
+    position: absolute; width:100%; height:100%; background-color:rgba(0,0,0,0.3); left: 0px; top: 0px; z-index: 100;
+    opacity: 1; visibility: visible; -webkit-transition:0.2s all ease-in-out; transition:0.2s all ease-in-out;
+}
+.orgMaskfade {opacity: 0; visibility: hidden;}
+.orgPop {
+    position: absolute; width:60%; height: 100%; z-index: 1000; top:0px; left: 0px; background-color:#fff;
+    border-right:3px solid #0084bf; -webkit-transition:0.3s all ease-in-out; transition:0.3s all ease-in-out;
+}
+.orgPopAct { left: -59.4%;}
+.perfOrgWrap .posiR { padding:6px 0px 0px 0px;}
+.perfOrgWrap .repSearchIcon { top:6px;}
 
+.orgArr {
+    position: absolute; right:-30px; top:45%; width:56px; height: 56px; border-radius:50%; background-color:#0084bf;
+    background-image: url(../images/arr-L.svg); background-repeat: no-repeat; background-size: 30px; background-position: center;
+    cursor: pointer; -webkit-transition:0.2s all ease-in-out; transition:0.2s all ease-in-out;
+}
+.orgPopAct .orgArr {-moz-transform: rotate(180deg); -webkit-transform: rotate(180deg); transform: rotate(180deg); background-position: 7px center;}
+.overX { overflow-x:hidden;}
 
-
-
-
+.clearSearch{
+position: absolute; right: 32px; top: 12px; width: 20px; height: 20px; text-align: center; line-height: 20px; color: #dc3e3e;
+cursor: pointer;
+}
 
 
 

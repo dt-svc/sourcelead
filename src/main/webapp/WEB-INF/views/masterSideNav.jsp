@@ -354,27 +354,53 @@
 				    <c:if test="${tabName == 'Leave Management'}">
 		             <li class="${sessionData.nav == 'Leave Management' ? 'navActive' : ''}"><a href="${SourceLeadWeb_pmsUrl}/leaveManagementReports" title="Leave Management"><span class="navIcons leaveIcon"></span><b>Leave Management</b></a></li>
 		          	</c:if>	
+		          	
           </c:forEach>
 	         
           	  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
           			 <li class="${sessionData.nav == 'Taxes' ? 'navActive' : ''}"><a href="${SourceLeadWeb_sourceleadUrl}/stateTax/list" title="Taxes"><span class="navIcons finIcon"></span><b>Taxes</b></a></li>
        	 	  </c:if>
        	 	  
-	            	
+   	 	  <sec:authorize access="hasAnyRole('ROLE_ADD_MY_GOALS','ROLE_ADD_TEAM_GOALS','ROLE_ADD_MY_APPRAISAL','ROLE_ADD_EMPLOYEE_APPRAISAL','ROLE_ADD_EMPLOYEE_APPRAISAL', 'ROLE_EMPLOYEE_PERFORMANCE_ORG_CHART')"> 
 			<li>
-														  
 				  <a href="#" class="performanceli" title="Performance">
 					<span class="navIcons finIcon"></span><b>Performance</b> <i class="fa fa-fw fa-caret-down"></i>
 				  </a>
 					  
-				     <ul class="collapses" style="display: none">
-                                <li class="${sessionData.nav == 'Goals' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" title="Goals"><i class="fa fa-chevron-right"></i> Goals</a></li>
-                                <li class="${sessionData.nav == 'My Appraisal' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceAppraisalList" title="My Appraisal"><i class="fa fa-chevron-right"></i> My Appraisal</a></li>
-                                <li class="${sessionData.nav == 'Employee Appraisal' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/employeePerformanceAppraisalList" title="Employee Appraisal"><i class="fa fa-chevron-right"></i> Employee Appraisal</a></li>
-                                <li class="${sessionData.nav == 'Org Chart' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceOrgChartList" title="Org Chart"><i class="fa fa-chevron-right"></i> Org Chart</a></li>
-                     </ul>
+			        <ul class="collapses" style="display: none">
+                               <sec:authorize access="hasAnyRole('ROLE_ADD_MY_GOALS','ROLE_ADD_TEAM_GOALS')"> 
+                                
+                                <sec:authorize access="hasRole('ROLE_ADD_MY_GOALS') && hasRole('ROLE_ADD_TEAM_GOALS')"> 
+                               	 <li class="${sessionData.nav == 'Goals' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" title="Goals"><i class="fa fa-chevron-right"></i> Goals</a></li>
+                                </sec:authorize>
+                                
+                                <sec:authorize access="hasRole('ROLE_ADD_MY_GOALS') && !hasRole('ROLE_ADD_TEAM_GOALS')"> 
+                               	 <li class="${sessionData.nav == 'Goals' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" title="Goals"><i class="fa fa-chevron-right"></i> Goals</a></li>
+                                </sec:authorize>
+                                
+                                <sec:authorize access="!hasRole('ROLE_ADD_MY_GOALS') && hasRole('ROLE_ADD_TEAM_GOALS')"> 
+                               	 <li class="${sessionData.nav == 'Goals' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceTeamGoalsList" title="Goals"><i class="fa fa-chevron-right"></i> Goals</a></li>
+                                </sec:authorize>
+                                	
+                               </sec:authorize>
+                               
+                               <sec:authorize access="hasRole('ROLE_ADD_MY_APPRAISAL')"> 
+                               		<li class="${sessionData.nav == 'My Appraisal' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceAppraisalList" title="My Appraisal"><i class="fa fa-chevron-right"></i> My Appraisal</a></li>
+                                </sec:authorize>
+                               
+                                <sec:authorize access="hasRole('ROLE_ADD_EMPLOYEE_APPRAISAL')">
+                                	<li class="${sessionData.nav == 'Employee Appraisal' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/employeePerformanceAppraisalList" title="Employee Appraisal"><i class="fa fa-chevron-right"></i> Employee Appraisal</a></li>
+                               </sec:authorize>
+                               
+                               <sec:authorize access="hasRole('ROLE_EMPLOYEE_PERFORMANCE_ORG_CHART')">
+                               		<li class="${sessionData.nav == 'Org Chart' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceOrgChartList" title="Org Chart"><i class="fa fa-chevron-right"></i> Org Chart</a></li>
+                              </sec:authorize>
+                               
+                    </ul>
                               
 			  </li>
+			</sec:authorize>
+			
           	
         </ul>
         </nav>

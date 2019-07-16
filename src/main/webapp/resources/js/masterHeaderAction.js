@@ -102,7 +102,7 @@
     	   $(this).next('ul').slideToggle();
            $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli ").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli ").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi, .campaignsli, .resourcesli, ., .performanceli ").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".backofficeLi").click(function(){
     	   $(this).next('ul').slideToggle();
@@ -155,6 +155,13 @@
            $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli, .campaignsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
            $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli, .campaignsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+       });
+       
+       $(".payrollli").click(function(){
+    	   $(this).next('ul').slideToggle();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .performanceli, .campaignsli").next('ul').slideUp();
+           $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .performanceli, .campaignsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        
        

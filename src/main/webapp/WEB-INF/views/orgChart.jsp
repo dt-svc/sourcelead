@@ -86,7 +86,7 @@ function filterNodes(keyWord) {
       $chart.addClass('noncollapsable');
       // distinguish the matched nodes and the unmatched nodes according to the given key word
       $chart.find('.node').filter(function(index, node) {
-          return $(node).text().toLowerCase().indexOf(keyWord) > -1;
+          return $(node).text().toLowerCase().indexOf(keyWord.toLowerCase()) > -1;
         }).addClass('matched')
         .closest('table').parents('table').find('tr:first').find('.node').addClass('retained');
       // hide the unmatched nodes
