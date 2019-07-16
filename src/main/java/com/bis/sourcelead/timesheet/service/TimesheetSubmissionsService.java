@@ -73,7 +73,7 @@ public interface TimesheetSubmissionsService {
 	
 	public Integer getUsersTimeSheetSubmissionsCountBasedOnStatus(Long userId,String approvalStatus,Long orgLocationId)throws Exception;
 	
-	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(Long userId,Long orgLocationId, String timesheetCountType) throws Exception;
+	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(Long userId,Long orgLocationId,Long orgId, String timesheetCountType) throws Exception;
 	
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long userId,Long orgLocationId,Long orgId,String countType,String isGlobalUser,Boolean isAdmin) throws Exception;
 	
@@ -95,4 +95,7 @@ public interface TimesheetSubmissionsService {
 
 	public TimesheetSubmissions getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(Long projectId,Long masterCanidateId, Date frequencyStartDate, Date frequencyEndDate);
 
+	public String getWeekCommentByCurrentFrequency(Date startDate,Date endDate,Long projectId,Long  masterCandidateId) throws Exception;
+	
+	public void updateWeekCommentForAllSubmissions(String weekComment,Date startDate,Date endDate,Long projectId,Long  masterCandidateId) throws Exception;
 }

@@ -707,7 +707,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}
 	
 	@Override
-	public File timeSheetApprovelExport(User user, OrgLocations orgLocations, Date startDate, Date endDate,String timesheetFrequency, String client,String project, String stage,String frequencyMonth,String weekFrequency,String globalUser) throws Exception {
+	public File timeSheetApprovelExport(User user, OrgLocations orgLocations, Date startDate, Date endDate,String timesheetFrequency, String client,String project, String stage,String frequencyMonth,String weekFrequency,String globalUser,String searchValue) throws Exception {
 		Long clientId;
 		if(!client.equalsIgnoreCase("") && !client.equalsIgnoreCase("All")){
 		 clientId = Long.parseLong(client) ;
@@ -721,7 +721,6 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		}else{
 			projectId = null;
 		}
-		String searchValue = "";
 		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId,projectId, stage, orgLocations.getId(), user.getId(),searchValue,"",0,0,"",globalUser);
 		 HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
          if(projectMembers != null){
@@ -1059,7 +1058,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	
 	
 	@Override
-	public File timeSheetApprovelExportExcel(User user, OrgLocations orgLocations,Date startDate,Date endDate,String timesheetFrequency,String client,String project,String stage,String frequencyMonth,String weekFrequency,String globalUser) throws Exception {
+	public File timeSheetApprovelExportExcel(User user, OrgLocations orgLocations,Date startDate,Date endDate,String timesheetFrequency,String client,String project,String stage,String frequencyMonth,String weekFrequency,String globalUser,String searchValue) throws Exception {
 		File file= null;
 		Long clientId;
 		if(!client.equalsIgnoreCase("") && !client.equalsIgnoreCase("All")){
@@ -1081,7 +1080,6 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(orgLocations.getOrgLocationName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
 		Row writeRow = null;
 		// to get list of project members from data base.
-		String searchValue = "";
 		ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId,projectId,stage, orgLocations.getId(), user.getId(),searchValue,"",0,0,"",globalUser);
 		HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
         if(projectMembers != null){

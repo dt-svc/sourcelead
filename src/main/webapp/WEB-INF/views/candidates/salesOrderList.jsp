@@ -408,8 +408,11 @@
 	function goToWalletList(){
 	    location.href = "${appPath}/walletList";
 	}
-	function refreshPage(){
-		location.reload();
+ 	function refreshPage(){
+		resetSalesOrderFilter();
+		$("#searchByValue").val('');
+		getDynamicSalesOrderList();
+		
 	}
   </script>
 <script>

@@ -32,9 +32,9 @@ function reloadFunction(){
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Pending for Approval</h2>
+        <h2>Pending for Approval Timesheets</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Reports Dashboard </a>&raquo; <a href="<c:url value='${appPath}/hrReportsList'/>">HR Reports</a> &raquo; Pending for Approval</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"> Reports Dashboard </a>&raquo; <a href="${SourceLeadWeb_sourceleadUrl}/hrReportsList">HR Reports</a> &raquo; Pending for Approval</div>
     </section>
 
     <div class="ReqRepHead clearfix">
@@ -82,16 +82,29 @@ function reloadFunction(){
 		<div class="clearfix"></div>
 		</div>
     </div>
+    
      
-  <div class="vendor_wrap mt">
-	<div class="tableStyles">
-      <div class="clearfix datatable_filter positionRelative dataFilterNew mt10 exportButton_custom">
+   <div class="vendor_wrap mt">
+	<div class="tableStyles overflow_inherint">
+      <div class="clearfix datatable_filter positionRelative mt10 exportButton_custom">
+      	<div class="positionRelative timesheet_head clearfix">
+      	<ul class="pull-right list-unstyled list-inline">
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop" style="display: none;">
+						<span>
+		           	   		<a href="javascript:void(0)" onclick="timesheetsPendingExport('Pdf');" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="timesheetsPendingExport('Excel');" title="Excel">Export Excel</a>            
+						</span>
+					</div>
+				</li>
+        </ul>
+      	</div>
          <div id="pendingForApprovalTimesheetDiv"></div>
       </div>
 
 	<div class="clearfix"></div>
 	</div>
-	</div>
+	</div> 
     
   </section>
  
@@ -140,7 +153,12 @@ function getPendingForApprovalTimesheetReports(){
 		        result = result	+ '    <th>Emp Type</th> ';
 		        result = result	+ '    <th>Project</th>  ';
 		        result = result	+ '    <th>Duration</th>';
-		        result = result	+ '    <th>Manager</th> ';
+		        result = result	+ '    <th>Manager 1</th> ';
+		        result = result	+ '    <th>Manager 2</th> ';
+		        result = result	+ '    <th>Approval Mechanism</th> ';
+		        result = result	+ '    <th>No.of hours</th> ';
+		        result = result	+ '    <th>Approved By</th> ';
+		        result = result	+ '    <th>Approved Date</th> ';
 		        result = result	+ '    <th>Submitted On</th> ';
 		        result = result	+ '    <th>no.of days</th>';
 		        result = result	+ '  </tr> ';
@@ -170,10 +188,36 @@ function getPendingForApprovalTimesheetReports(){
 	        		  }else{
 	        			  frequency = "--";
 	        		  }
-	        		  if(report.managerName != null && report.managerName != '' && report.managerName != 'undefined'){
-	        			  managerName = report.managerName;
+	        		  if(report.manager1 != null && report.manager1 != '' && report.manager1 != 'undefined'){
+	        			  manager1 = report.manager1;
 	        		  }else{
-	        			  managerName = "--";
+	        			  manager1 = "--";
+	        		  }
+	        		  if(report.manager2 != null && report.manager2 != '' && report.manager2 != 'undefined'){
+	        			  manager2 = report.manager2;
+	        		  }else{
+	        			  manager2 = manager1;
+	        			  manager1 = "--";
+	        		  }
+	        		  if(report.approvalMechanism != null && report.approvalMechanism != '' && report.approvalMechanism != 'undefined'){
+	        			  approvalMechanism = report.approvalMechanism;
+	        		  }else{
+	        			  approvalMechanism = "--";
+	        		  }
+	        		  if(report.noOfHours != null && report.noOfHours != '' && report.noOfHours != 'undefined'){
+	        			  noOfHours = report.noOfHours;
+	        		  }else{
+	        			  noOfHours = "--";
+	        		  }
+	        		  if(report.approved_By != null && report.approved_By != '' && report.approved_By!= 'undefined'){
+	        			  approved_By = report.approved_By;
+	        		  }else{
+	        			  approved_By = "--";
+	        		  }
+	        		  if(report.approvedDate != null && report.approvedDate != '' && report.approvedDate!= 'undefined'){
+	        			  approvedDate = report.approvedDate;
+	        		  }else{
+	        			  approvedDate = "--";
 	        		  }
 	        		  if(report.dueDays != null && report.dueDays != '' && report.dueDays != 'undefined'){
 	        			  dueDays = report.dueDays;
@@ -182,13 +226,18 @@ function getPendingForApprovalTimesheetReports(){
 	        		  }
 		    	   
 		    	  result = result	+ '<tr>';
-				  result = result	+ '	  <td><div class="tbldata-dotdot-sm">'+employeName+'</div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+employeType+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+projectName+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-me">'+frequency+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+managerName+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-sm">'+report.submittedOn+' </div></td>';
-	              result = result	+ '   <td><div class="tbldata-dotdot-vsm">'+dueDays+'  Days</div></td>';
+				  result = result	+ '	  <td><div class="tbldata-dotdot-sm" title="'+employeName+'">'+employeName+'</div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+employeType+'">'+employeType+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+projectName+'">'+projectName+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-me" title="'+frequency+'">'+frequency+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+manager1+'">'+manager1+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+manager2+'">'+manager2+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+approvalMechanism+'">'+approvalMechanism+' </div></td>';
+	              result = result   + '   <td><div class="tbldata-dotdot-sm" title="'+noOfHours+'">'+noOfHours+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+approved_By+'">'+approved_By+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+approvedDate+'">'+approvedDate+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-sm" title="'+report.submittedOn+'">'+report.submittedOn+' </div></td>';
+	              result = result	+ '   <td><div class="tbldata-dotdot-vsm" title="'+dueDays+' Days">'+dueDays+'  Days</div></td>';
 	              result = result	+ '	</tr>';
    				}
 		        result = result +'</tbody>';
@@ -219,6 +268,7 @@ function dynamicMissingTimesheetReportPagination(){
      		"sZeroRecords": "", "sEmptyTable": ""
      	}
     });
+    $('#pendingForApprovalTimesheet').wrap("<div class='overflow_Auto width100percnt'></div>");
     $("#pendingForApprovalTimesheetDiv").find('a.buttons-excel').prop("title", "Export to Excel");
 	$("#pendingForApprovalTimesheetDiv").find('a.buttons-pdf').prop("title", "Export to PDF");
 }
@@ -272,5 +322,70 @@ function dynamicMissingTimesheetReportPagination(){
   function removeErrTo(){
 	  document.getElementById("toDateDiv").style.display="none";
   }
+  </script>
+  
+  <script>
+  function getActions(){
+  	$(".action-pop").slideToggle(200);
+  	$(".newActPop").slideUp(200);
+  }	
+  $("html").click(function(){
+  	$(".action-pop").slideUp(200);
+  });
+  $(".action, .action-pop").click(function(e){
+   	e.stopPropagation();
+  });	
+
+
+  function newActions(){
+  	$(".newActPop").slideToggle(200);
+  	$(".action-pop").slideUp(200);
+  }
+  $("html").click(function(){
+  	$(".newActPop").slideUp(200);
+  });
+  $(".overIcon, .newActPop").click(function(e){
+   	e.stopPropagation();
+  });	
+  </script>
+  
+  <!-- ============================================= Export related functionality  By Akshay   ====================================== -->
+  
+  <script>
+  function timesheetsPendingExport(exportType){
+	  var flag = true;
+	  var projectIds = $("#projectIds").val();
+	  if(projectIds == null){
+		  projectIds = '';
+	  }
+	  var dateSelection = $("#dateSelection").val(); 
+	  var fromDate = '';
+	  var toDate = '';
+	  if(dateSelection == 'custom'){
+		   fromDate = $("#fromDate").val();
+		   toDate = $("#toDate").val();
+		  
+		  if(fromDate == '' || toDate == ''){
+			  flag = false;
+			  if(fromDate == ''){
+				  document.getElementById("fromDateDiv").style.display="block";
+			  }else{
+				  document.getElementById("fromDateDiv").style.display="none";
+			  }
+			  if(toDate == ''){
+				  document.getElementById("toDateDiv").style.display="block";
+			  }else{
+				  document.getElementById("toDateDiv").style.display="none";
+			  }
+		  }else{
+			  document.getElementById("fromDateDiv").style.display="none";
+			  document.getElementById("toDateDiv").style.display="none";
+		  }
+		  
+	  }
+		if(flag){
+		window.location.href = sourceleadUrl+"/getTimesheetsPendingExportListByOrgLocationId?${_csrf.parameterName}=${_csrf.token}&projectIds="+projectIds+"&dateSelection="+dateSelection+"&fromDate="+fromDate+"&toDate="+toDate+"&exportType="+exportType;
+		}
+	}
   </script>
 <jsp:include page="../masterFooter.jsp" />

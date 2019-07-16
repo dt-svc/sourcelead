@@ -36,6 +36,7 @@ import com.bis.sourcelead.dto.ReportsTimeDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimeReportsSubmissionDetailsDTO;
 import com.bis.sourcelead.dto.TimesheetReportsDTO;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
@@ -79,6 +81,9 @@ public class TimesheetReportsRestController {
 	
 	@Autowired
 	private AppliedLeaveDateService appliedLeaveDateService;
+	
+	@Autowired
+	private EmployeesService employeesService;
 	
 	@RequestMapping(value = "/timesheetReportsDiv", method = RequestMethod.POST ) 
 	public ModelAndView prapareTimesheetReports(TimesheetReportsDTO timesheetReportsDTO,HttpServletRequest request) throws Exception {
@@ -281,8 +286,10 @@ public class TimesheetReportsRestController {
              if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
             	 details.setDesignationType(projectMember.getProjectMemberCandidteId().getDesignationType());
              }
-             if(null != projectMember && projectMember.getEmployee() != null && projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotEmpty(projectMember.getEmployee().getEmployeeId())){
-            	  details.setEmployeeId(projectMember.getEmployee().getEmployeeId());
+             if(consultantUser != null){
+            	   Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(consultantUser.getId(),orgLocations.getId());
+            	   if(employee != null)
+            	   details.setEmployeeId(employee.getEmployeeId());
              }
 		     if(null != projectMember && null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId()){
 		    	 OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
@@ -296,14 +303,16 @@ public class TimesheetReportsRestController {
 		     }else{
 		    	 details.setFrequrncy("--"); 
 		     }
-		     if(projectMember.getEmployee() != null && null != projectMember.getEmployee().getRate() && !"".equalsIgnoreCase(projectMember.getEmployee().getRate())){
-		    	 StringBuilder rate = new StringBuilder();
-		    	 if(null != projectMember.getEmployee().getCurrentCurrency() && !"".equalsIgnoreCase(projectMember.getEmployee().getCurrentCurrency())){
-		    		 details.setRate(rate.append(projectMember.getEmployee().getCurrentCurrency()).append("-").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString()); 
+		     
+		     
+	    	 StringBuilder rate = new StringBuilder();
+	    	 if( projectMember.getPayRate() != null && StringUtils.isNotEmpty(projectMember.getPayRateType())) {
+	    		 if(StringUtils.isNotEmpty(projectMember.getPayRateCurrency())){
+		    		 details.setRate(rate.append(projectMember.getPayRateCurrency()).append("-").append(projectMember.getPayRate()).append("/").append(projectMember.getPayRateType()).toString()); 
 		    	 }else{
-		    		 details.setRate(rate.append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString());
-		    	 }
-		     }else{
+		    		 details.setRate(rate.append(projectMember.getPayRate()).append("/").append(projectMember.getPayRateType()).toString());
+		    	 } 
+	    	 }else{
 		    	 details.setRate("--");	 
 		     }
 		     User pmUser = null;

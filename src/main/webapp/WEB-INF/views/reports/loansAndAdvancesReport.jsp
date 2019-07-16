@@ -28,7 +28,7 @@
         <div class="clearfix row">
           <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12 paddingRight">Loan Name</label>
+              <label class="clearfix">Loan Name</label>
 				<div class="dropdown-select">
                     <select class="form-control chosen-select" name="loanName" id="loanName" field-name="Name">
                         
@@ -39,9 +39,9 @@
 			
 			<div class="col-md-5">
 			<div class="form-group">
-              <label class="col-md-12">Emp Type</label>
-              <div class="col-md-12">
-                <select class="form-control" id="designType"
+              <label class="clearfix">Emp Type</label>
+              <div class="clearfix">
+                <select class="sel" id="designType"
 								name="designType"
 								field-name="Employment type">
 								<option value="">--Select Employment Type--</option>
@@ -60,7 +60,7 @@
 			
 			<div class="col-md-5">
 			<div class="form-group">
-              <label class="col-md-12">Status</label>
+              <label class="clearfix">Status</label>
                <div class="dropdown-select">
                     <select class="form-control" data-placeholder="Select Type" id="loanAndAdvStatus" name="loanAndAdvStatus" field-name="Status">
                       <option value="">-- Select Status --</option>
@@ -75,16 +75,16 @@
 			  
 			  <div class="col-md-5">
             <div class="form-group">
-              <label class="col-md-12">From Date</label>
-              <div class="col-md-12">
+              <label class="clearfix">From Date<span class="text-danger">&nbsp;*</span></label>
+              <div class="clearfix">
                 	<input type="text" class="form-control calendar" id="fromDate" data-validation="required" field-name="From Date">
               </div>
             </div>
 			</div>
             <div class="col-md-5">
              <div class="form-group">
-              <label class="col-md-12">To Date</label>
-              <div class="col-md-12">
+              <label class="clearfix">To Date<span class="text-danger">&nbsp;*</span></label>
+              <div class="clearfix">
                 	<input type="text" class="form-control calendar" id="toDate" data-validation="required" field-name="To Date">
               </div>
             </div>
@@ -112,7 +112,7 @@
   <ul class="pull-right list-unstyled list-inline">
     <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
       <div class="newActPop" style="">
-       <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+       <span><a href="javascript:void(0)" onclick="exportLoanAndAdvanceReportPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportLoanAndAdvanceReportExcel();" title="Excel">Export Excel</a> </span> </div>
     </li>
     <li class="">
       <input class="repSearchBar" placeholder="Search" id="dataTableSearch" type="text">
@@ -121,8 +121,13 @@
 </div>
 
 
-        
-       <div id="deductionReportDIV" class="clearfix require_wrap_table datatable_filter"> </div> 
+        <div class="require_wrap_table tableFirstSecond clearfix datatable_filter">
+<!--        <div id="deductionReportDIV" class="clearfix require_wrap_table datatable_filter">  -->
+          
+           				<div id="popUp"></div>
+	                 <input type="hidden" id="loanAndAdvanceDataLength" value="0"/>
+	                 <div id="deductionReportDIV"></div>
+          </div>
         
         
       </div>
@@ -286,6 +291,7 @@ function getLoanNames(){
 		result = result + "</table>";
 		$("#deductionReportDIV").append(result);
 		payCheckDateData(url);
+		$("#loanAndAdvanceDataLength").val(0);
 
 	}
 </script>
@@ -336,6 +342,7 @@ function getLoanNames(){
 									"data" : "employeeId",
 									"sortable": true,
 									"render" : function(data, type, opt, meta) {
+										   $("#loanAndAdvanceDataLength").val(1);
 										     var result = "";
 										     if(opt.employeeId != null && opt.employeeId != '' && opt.employeeId != 'undefined'){
 										    	 result = result+ ' <td><div class="tblminwidth-75">'+opt.employeeId+'</div></td>';
@@ -527,6 +534,75 @@ function resetLoanReport(){
 	$("#fromDate").trigger("chosen:updated");
 	$("#toDate").val('');
 	$("#toDate").trigger("chosen:updated");
+}
+</script>
+
+<script>
+function exportLoanAndAdvanceReportPdf(){
+	var searchValue = $("#dataTableSearch").val();
+	var fromDate = $('#fromDate').val();
+	var toDate = $('#toDate').val();
+	
+  var loanAndAdvanceDataLength = $("#loanAndAdvanceDataLength").val();
+	  
+	  if(loanAndAdvanceDataLength > 0){
+		  
+			if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
+				window.location.href = sourceleadUrl+ "/getLoanAndAdvancesReportExport?${_csrf.parameterName}=${_csrf.token}&fromDate="+fromDate+"&toDate="+toDate+"&exportType=pdf&searchValue="+searchValue;
+			}
+	   }else{
+		   
+		   var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='loan_and_advance_popup' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Loan And Advance Report List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelLoanAndAdvance();' style='width : 100%'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#loan_and_advance_popup").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+		   
+	   }
+	  
+}
+</script>
+
+<script>
+function cancelLoanAndAdvance(){
+ 	$("#popUp").empty();
+ 	$(".project_inn_mask").fadeOut(200);
+ }
+</script>
+
+<script>
+function exportLoanAndAdvanceReportExcel(){
+	var searchValue = $("#dataTableSearch").val();
+	var fromDate = $('#fromDate').val();
+	var toDate = $('#toDate').val();
+	
+  var loanAndAdvanceDataLength = $("#loanAndAdvanceDataLength").val();
+	  
+	  if(loanAndAdvanceDataLength > 0){
+		  
+			if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
+				window.location.href = sourceleadUrl+ "/getLoanAndAdvancesReportExport?${_csrf.parameterName}=${_csrf.token}&fromDate="+fromDate+"&toDate="+toDate+"&exportType=excel&searchValue="+searchValue;
+			}
+	   }else{
+		   
+		   var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='loan_and_advance_popup' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Loan And Advance Report List is Empty</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelLoanAndAdvance();' style='width : 100%'></b>";
+			result = result +"	</div>";
+			$("#popUp").append(result);
+			$("#loan_and_advance_popup").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+		   
+	   }
+	  
 }
 </script>
 

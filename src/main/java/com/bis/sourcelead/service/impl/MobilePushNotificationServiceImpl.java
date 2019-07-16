@@ -58,26 +58,17 @@ public class MobilePushNotificationServiceImpl implements MobilePushNotification
 			mpn.setStatus(Constants.RECORD_ACTIVE);
 			mpn.setCreatedDate(new Date());
 			mobilePushNotificationDao.saveMobileDeviceTokenInformaion(mpn);
-			
-            List<MobileDeviceTokenInformaion> iosTokeknLis = mobilePushNotificationDao.mobileDeviceTokenInformaionList(mdti.getUserId().getId(),"IOS");{
-            	if(iosTokeknLis != null) {
-            		for(MobileDeviceTokenInformaion mdtf :iosTokeknLis) {
+            List<MobileDeviceTokenInformaion> mobileTokeknLis = mobilePushNotificationDao.mobileDeviceTokenInformaionLisByUserId(mdti.getUserId().getId());
+            {
+            	if(mobileTokeknLis != null) {
+            		for(MobileDeviceTokenInformaion mdtf :mobileTokeknLis) {
                 		mobilePushNotificationDTO.setDeviceToken(mdtf.getDeviceToken());
-                		pushNotificationUtill.sendIOSPushNotification(mobilePushNotificationDTO);
-                	}
-            	}
-            	
-            }
-            //not implemented in Android push notification dont delete the code
-           /* List<MobileDeviceTokenInformaion> andriodTokeknLis = mobilePushNotificationDao.mobileDeviceTokenInformaionList(mdti.getUserId().getId(),"Android");{
-            	if(andriodTokeknLis != null) {
-            		for(MobileDeviceTokenInformaion mdtf :andriodTokeknLis) {
-                		mobilePushNotificationDTO.setDeviceToken(mdtf.getDeviceToken());
+                		mobilePushNotificationDTO.setDeviceType(mdtf.getDeviceType());
                 		pushNotificationUtill.sendAndriodPushNotification(mobilePushNotificationDTO);
                 	}
             	}
             	
-            }*/
+            }
 		}
 		return "success";
 	}

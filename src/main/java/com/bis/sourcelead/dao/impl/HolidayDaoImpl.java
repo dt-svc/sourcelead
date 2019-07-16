@@ -232,14 +232,10 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	}
 
 	@Override
-	public List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date startDate, Date endDate, Long orgLocationId,
-			List<Long> excludeIds) throws Exception {
-		if(excludeIds == null || excludeIds.isEmpty()) {
-			excludeIds.add(0l);
-		}
+	public List<Holiday> getHolidaybyLocationIdAndFromdateForTimesheets(Date startDate, Date endDate, Long orgLocationId,Long userId,Long workLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Holiday hday where ((hday.fromDate  between  :startDate and :endDate) or (hday.toDate  between  :startDate and :endDate) or (hday.fromDate = :startDate or hday.fromDate = :endDate)or (hday.toDate = :startDate or hday.toDate = :endDate)) and hday.id NOT IN(:excludeIds) and hday.orgLocations.id = :orgLocationId and hday.status != '0'";
-		List<Holiday> holiday = session.createQuery(query).setParameterList("excludeIds",excludeIds).setParameter("startDate", startDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).list();
+		String query = "from Holiday hday where ((hday.fromDate  between  :startDate and :endDate) or (hday.toDate  between  :startDate and :endDate) or (hday.fromDate = :startDate or hday.fromDate = :endDate)or (hday.toDate = :startDate or hday.toDate = :endDate)) and hday.id NOT IN(select udh.holiday.id from UserDroppedHolidays udh where udh.user.id = :userId and udh.orgLocations.id = :workLocationId and udh.toDate = hday.toDate and udh.fromDate = hday.fromDate and udh.status = '1') and hday.orgLocations.id = :orgLocationId and hday.status != '0'";
+		List<Holiday> holiday = session.createQuery(query).setParameter("startDate", startDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).setLong("userId", userId) .setLong("workLocationId", workLocationId).list();
 		if (holiday.size() > 0) {
 			return holiday;
 		}

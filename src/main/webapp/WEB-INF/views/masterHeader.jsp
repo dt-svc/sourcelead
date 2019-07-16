@@ -37,6 +37,7 @@ $(document).ready(function(){
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead</title>
@@ -65,7 +66,7 @@ $(document).ready(function(){
 <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
-<c:if test='${viewPage != "vendors/vendorsList" && viewPage != "reports/usersUsageReportList"
+<c:if test='${viewPage != "reports/usersUsageReportList"
             && viewPage != "reports/employeeTasksReportList"  && viewPage != "reports/overdueTaskReport"}'>
 <script src="/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
 </c:if>
@@ -1671,6 +1672,7 @@ $(document).ready(function(){
 	localStorage.setItem('pause_sec',0);
 	localStorage.setItem('stopwatch_time', null);
 	localStorage.setItem('stopwatch_sec', 0);
+	localStorage.clear();
 	$("#subMenu").click(function(){
 		$(".subMenuView").slideToggle(100);
 	});
@@ -2315,22 +2317,6 @@ obj = {
 	init: function () {
 	
 	obj.element = $('#stopwatch, #stopwatchPop');
-	
-	var currTime = new Date().getTime() / 1000;
-	currTime = parseInt(currTime);
-	var storedTime = localStorage.getItem('stopwatch_time');
-	var sleepedSec = storedTime==null ? 0 : currTime - parseInt(storedTime);
-	obj.currentSec = localStorage.getItem('stopwatch_sec');
-	obj.currentSec = obj.currentSec ? parseInt(obj.currentSec) + sleepedSec : 0;
-	var pauseValue = localStorage.getItem('pauseValue');
-	if(obj.currentSec && pauseValue != 'pause') {
-		obj.refresh();
-		$('#reset').attr("disabled",true);
-	}else if(pauseValue == 'pause'){
-		var pauseData = localStorage.getItem('pauseData');
-		obj.element.html(pauseData);
-	}
-	
 
 },
 event: function (type) {
@@ -2339,48 +2325,23 @@ event: function (type) {
 	$(".clockAni").css("background-image","url(/resources/images/clock-ani.gif)");
 	$(".clockAniAct").show();
 	obj.element.removeClass('blink');
-// 	obj.currentSec = 0;
-// 	obj.refresh();
-// 	localStorage.setItem('pauseValue', null);
-// 	localStorage.setItem('pauseData', null);
 	saveClockInOutTime('ClockIn');
 	break;
 	case 'play':
 	$(".clockAni").css("background-image","url(/resources/images/clock-ani.gif)");
 	$(".clockAniAct").show();
-// 	obj.element.removeClass('blink');
-// 	localStorage.setItem('pauseValue', null);
-// 	localStorage.setItem('pauseData', null);
-// 	var pauseSec = localStorage.getItem('pause_sec');
-// 	obj.currentSec = pauseSec; 
-// 	obj.refresh();
 	saveBreakTime('play');
 	break;
 	case 'pause':
 	$(".clockAni").css("background-image","url(/resources/images/clock.jpg)");
 	$(".clockAniAct").hide();
-// 	obj.element.addClass('blink');
-// 	localStorage.setItem('pauseValue', 'pause');
-// 	var totalTime = localStorage.getItem('total_Time');
-// 	localStorage.setItem('pauseData', totalTime);
-// 	clearTimeout(obj.refreshInterval);
 	saveBreakTime('pause');
 	break;
 	case 'reset':
 	$(".clockAni").css("background-image","url(/resources/images/clock.jpg)");
 	$(".clockAniAct").hide();
-// 	clearTimeout(obj.refreshInterval);
-// 	var totalTime = localStorage.getItem('total_Time');
-// 	localStorage.setItem('stopwatch_time', null);
-// 	localStorage.setItem('stopwatch_sec', 0);
-// 	obj.currentSec = 0;
-// 	obj.element.html('00:00:00');
-// 	localStorage.setItem('pauseValue', null);
-// 	localStorage.setItem('pauseData', null);
-// 	localStorage.setItem('pause_sec',0);
 	obj.element.removeClass('blink');
 	
-	// $('div > input').attr("disabled",false);
 	saveClockInOutTime('ClockOut');
 	window.setTimeout(function() {
 		getTimeReports();
@@ -2389,26 +2350,7 @@ event: function (type) {
 	
 	}
 },
-refresh: function(pauseValue,pauseData) {
 
-	var sec = '';
-	sec = obj.currentSec++;
-	var hour = parseInt(sec/3600);
-	sec = sec % 3600;
-	var min = parseInt(sec/60);
-	sec = sec % 60;
-	localStorage.setItem('pause_sec',obj.currentSec);
-	
-	localStorage.setItem('stopwatch_sec', obj.currentSec);
-	obj.element.html((hour > 9 ? hour : '0' + hour) + ':' + (min > 9 ? min : '0' + min) + ':' + (sec > 9 ? sec : '0' + sec));
-	localStorage.setItem('total_Time',(hour > 9 ? hour : '0' + hour) + ':' + (min > 9 ? min : '0' + min) + ':' + (sec > 9 ? sec : '0' + sec));
-	var currTime = new Date().getTime() / 1000;
-	currTime = parseInt(currTime);
-	localStorage.setItem('stopwatch_time', currTime);
-	
-	obj.refreshInterval = setTimeout('obj.refresh()', 1000);
-
-}
 }
 
 
@@ -2428,7 +2370,6 @@ function updateClockInOutTime(){
 		data : formData,
 		url: sourceleadUrl+"/updateClockInOutTime", 
 		success :function(data) {
-		// $("#clockInOutId").val(data.id);
 		},	
 		}); 
 }

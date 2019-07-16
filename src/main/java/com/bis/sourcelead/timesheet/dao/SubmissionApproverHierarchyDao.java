@@ -75,7 +75,7 @@ public interface SubmissionApproverHierarchyDao {
 	
 	public List<SubmissionApproverHierarchy>  getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLogin(Long userId, String submissionStatus); 
 	
-	public Integer getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(Long masterCandidateId, String submissionStatus, Long orgLocationId);
+	public Integer getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(Long masterCandidateId, String submissionStatus, Long orgLocationId,Long orgId);
 
 	public List<SubmissionApproverHierarchy>  getTotalApprovedOrRejectedListByuserIdAndProjectIdForApprover(Long userId,Long projectId, String approvalStatus);
 
@@ -128,5 +128,5 @@ public interface SubmissionApproverHierarchyDao {
 
 	public LinkedHashMap<Date, Float> getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(Long projectId, Long pmMasterCandidateId, Date startDate, Date endDate,DateFormat format,String dateFormat) throws Exception;
 
-
+	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForPendinApproveTimesheetsByProjectMemberId(Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId);
 }

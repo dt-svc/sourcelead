@@ -71,15 +71,6 @@ $(function(){
 });
 </script>
 
-<style type="text/css">
-.selectChosen .chosen-container {
-width: 100% !important;
-}
-.icon1 {
-right: 15px;
-}
-</style>
-
 <div class="wraper"> 
 	<section class="comLogBg">
 			<section class="comLogInn">

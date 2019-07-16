@@ -232,6 +232,7 @@ public class LoginSessionController {
 				request.getSession().removeAttribute("userRoleId");
 			} else {
 				userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+				orgLocations = userRole.getOrgLocations();
 			}
 		} else {
 			userRole = userRoleService.getUserRoleById(userRoleId);
@@ -257,7 +258,7 @@ public class LoginSessionController {
 					userLoginSession.getAuthenticated());
 		}
 		
-		Employees emp = employeeService.getEmployeeByUserId(user.getId());
+		Employees emp = employeeService.getEmployeeByUserAndOrgLocationId(user.getId(),orgLocations.getId());
 		if(emp != null) {
 			SourceLeadSessionManager.setSessionAttribute(request, "joiningDate",
 					emp.getHireDate());
@@ -540,6 +541,9 @@ public class LoginSessionController {
 
 			List<LookUpData> skillList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillList", skillList);
+			
+			List<LookUpData> educationList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationList", educationList);
 
 			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService
 					.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(

@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
 import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.Response;
@@ -126,6 +127,9 @@ public class SubmissionsRestController {
 
 	@Autowired
 	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	private RequirementSubmissionHistoryDao requirementSubmissionHistoryDao;
 
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
@@ -720,6 +724,7 @@ public class SubmissionsRestController {
 					RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 					RequirementSubmission submission = requirementSubmissionService .getRequirementSubmissionById(Long.parseLong(submissionId[i]));
 					requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+					submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
 					submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
 					submission.setUpdatedBy(user.getUserCode());
 					submission.setUpdatedUser(user.getFullName());
@@ -1469,4 +1474,49 @@ public class SubmissionsRestController {
 		return response;
 	}
 
+	@RequestMapping(value = "/app/editApplicantSourceName", method = RequestMethod.POST)
+	public @ResponseBody Response<String> editApplicantSourceName(@RequestParam(value = "submissionId", required = false) Long submissionId, 
+			@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<String> response =  new Response<>();
+	 	if(user != null) {
+			try {
+				RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+				User updatedUser = userService.getUserById(userId);
+				requirementSubmission.setUpdatedDate(new Date());
+				requirementSubmission.setUpdatedBy(user.getUserCode());
+				requirementSubmission.setCreatedBy(updatedUser.getUserCode());
+				requirementSubmission.setCreatedUser(updatedUser.getFullName());
+				RequirementSubmission savedrRequirementSubmission = requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				List<RequirementSubmissionHistory> requirementSubmissionHistoryList= requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndSubId(orgLocations.getId(),savedrRequirementSubmission.getId());
+				requirementSubmissionHistoryList.forEach(requirementSubmissionHistory->{
+					try {
+						requirementSubmissionHistory.setUpdatedBy(user.getUserCode());
+						requirementSubmissionHistory.setUpdatedDate(new Date());
+						requirementSubmissionHistory.setCreatedBy(requirementSubmission.getCreatedBy());
+						requirementSubmissionHistory.setCreatedUser(updatedUser.getFullName());
+						requirementSubmissionHistory.setMasterUserCode(requirementSubmission.getCreatedBy());
+						requirementSubmissionHistoryDao.updateRequirementHistory(requirementSubmissionHistory);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+						
+				});
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch (Exception e) {
+				e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	
 }

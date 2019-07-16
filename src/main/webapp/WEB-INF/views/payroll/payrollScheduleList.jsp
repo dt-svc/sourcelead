@@ -12,21 +12,6 @@ $(document).ready(function(){
 
 </script>
 
-
-<style>
-.Highlighted a {
-	background-color : #9ACD32 !important;
-	font-weight:bold !important;
-	font-size: 12pt;
-}
-
-/* .Hil a { */
-/* 	background-color : #DC143C !important; */
-/* 	font-weight:bold !important; */
-/* 	font-size: 12pt; */
-/* } */
-</style>
-
 <!-- Content Area -->
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">

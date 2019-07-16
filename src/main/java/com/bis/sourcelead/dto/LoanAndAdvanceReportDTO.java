@@ -54,6 +54,16 @@ public class LoanAndAdvanceReportDTO extends SearchDTO implements Serializable{
      private String toDate;
      
      private BigInteger filterCount;
+     
+     private String exportType;
+     
+	public String getExportType() {
+		return exportType;
+	}
+
+	public void setExportType(String exportType) {
+		this.exportType = exportType;
+	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;

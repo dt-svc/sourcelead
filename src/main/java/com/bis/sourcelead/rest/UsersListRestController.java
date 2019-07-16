@@ -2439,6 +2439,17 @@ public class UsersListRestController {
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			
+			//For offshoreC2C candidates
+			if(candidate != null && candidate.getWorkLocation() != null) {
+				List<Candidate> candidatesList = candidateService.getCandidatesForUpdateWorkLocation(candidate.getMasterCandidateId().getId(), orgLocations.getOrg().getId());
+				if(candidatesList != null && !candidatesList.isEmpty()) {
+					for(Candidate offshoreCandiate : candidatesList) {
+						offshoreCandiate.setWorkLocation(candidate.getWorkLocation());
+						candidateService.saveOrUpdateCandidate(offshoreCandiate);
+					}
+				}
+			}
+			
 			if(StringUtils.isNotBlank(addUserDTO.getVendors())){
 				if(currentVendorOrgRelation == null || (currentVendorOrgRelation != null && !currentVendorOrgRelation.getId().equals(orgRelation.getId()))) {
 					List<ProjectMembers> projectMembersList = projectMembersService.getAllActiveProjectsByUserIdAndOrgLocationId(user.getId(), orgLocations.getId());

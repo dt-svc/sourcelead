@@ -1158,14 +1158,15 @@ function resetCandidateFilter(){
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
 	document.getElementById("candidateCheck").checked = true;
-	document.getElementById("myCandidatesRadio").checked = true;
+	/* document.getElementById("myCandidatesRadio").checked = true; */
 	$("#globalMarketSearh").val("");
 	$("#candidateLocation").val("");
 	//candidateList('gMarketPlace');
 	getGloblaMarketPlaceCandidates('listModel');
 }
 function refreshPage(){
-  location.reload(); // refresh the page.
+	resetCandidateFilter();
+	// refresh the page.
 }
 </script>
 <script> 

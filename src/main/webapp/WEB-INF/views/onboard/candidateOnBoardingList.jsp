@@ -11,13 +11,6 @@
 
 
 
-
-<style>
-.settPop .form-control {
-    height: auto !important; 
-}
-</style>
-
 <script> 
 	$(document).ready(function(){
 		
@@ -510,7 +503,7 @@ function offboardPagination(url,sourceleadUrl){
  function rejectedReason(onboardCandidateUUID,candidateName,candidateEmail){
 	
 	    var result = "";
-		result = result + '	<div class="settPop">';
+		result = result + '	<div class="settPop sett_pop">';
 		result = result + '	<div id="loading"></div>';
 		result = result + '<form id="rejectedReason_form" name="rejectedReason_form" method="post">';
 		result = result + '<input type="hidden" name="onboardCandidateUUID" value="'+onboardCandidateUUID+'">';

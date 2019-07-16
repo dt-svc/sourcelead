@@ -12,16 +12,10 @@
      2.parameter : csrf token .
      3.ajax url implementation in CandidateListRestController.
 --%>
+
 <style>
 .er .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){width:100px;}
 .er .btn-default{ background:#337ab7; border:1px solid #ccc; color:#fff; text-shadow: none;}
-.clsDatePicker { z-index: 100000 !important; }
-#uploadFileGroup p.jquery_form_error_message{ position: absolute; left:0; bottom:-16px;}
-.selp-custom-min .btn-default{ -webkit-border-radius:0 3px 3px 0; -moz-border-radius:0 3px 3px 0; -ms-border-radius:0 3px 3px 0; border-radius:0 3px 3px 0; }
-.ratetype p { bottom: -14px; left:0px !important; position: absolute;}
-.pras.req-title p{ bottom:-14px; }
-.exprience .select-field select{ background-position: 96% center !important;}
-.require_wrap_details{ text-align:left;}
 </style>
 	
 	<script>
@@ -402,7 +396,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="clearfix mb">';
 							result = result + '<div class="col-md-6">';
-							result = result + '<div class="input-group er ratetype">';
+							result = result + '<div class="input-group er ratetype-error-styles">';
 							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
 							result = result + ' <select class="selct-picker" id="currentRateCurrency" name="currentRateCurrency">';
 							result = result + ' <option '+(json.currentRateCurrency == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
@@ -855,7 +849,7 @@ function candidateProfile(candidateId,candidateType){
 								   result = result + '</div>';
 							/* } */
 							result = result + '<div id="profileEditPopup"></div>';
-							result = result +'<div class="require_wrap_details candidate_wrap_details">';	 
+							result = result +'<div class="require_wrap_details candidate_wrap_details require_wrap_details_text_left">';	 
 							result = result +'		<h1>Summary:</h1>';
 							if(json.summary != null && json.summary != '' && json.summary != 'undifined'){
 							result = result +'	    <textarea placeholder="Enter description" readonly>'+json.summary+'</textarea>';
