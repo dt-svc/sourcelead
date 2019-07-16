@@ -14,7 +14,6 @@ import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
 import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardAssociatesConf;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
-import com.bis.sourcelead.dashboard.entity.CustomDashBoardRoleConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashboardConfService;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -37,13 +36,18 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 			}else {
 				customDashBoardConf = new CustomDashBoardConfiguration();
 			}
+			if(StringUtils.isNotBlank(customDashBoardConfDTO.getRoles())) {
+				customDashBoardConf.setRoleId(Long.parseLong(customDashBoardConfDTO.getRoles()));
+			}else {
+				customDashBoardConf.setRoleId(null);
+			}
 			customDashBoardConf.setDashboardName(customDashBoardConfDTO.getDashBoardName());
 			customDashBoardConf.setDescription(customDashBoardConfDTO.getDescription());
 			customDashBoardConf.setApplicableFor(customDashBoardConfDTO.getApplicableFor());
 			customDashBoardConf.setOrgLocations(orgLocation);
 			customDashBoardConf.setStatus(1);
-			Set<CustomDashBoardRoleConfiguration> dashBoardRoleConfSet = getDashBoardRoleConfSet(customDashBoardConf,customDashBoardConfDTO.getRoles(),loginUsrId);
-			customDashBoardConf.setDashBoardRoleConf(dashBoardRoleConfSet);
+//			Set<CustomDashBoardRoleConfiguration> dashBoardRoleConfSet = getDashBoardRoleConfSet(customDashBoardConf,customDashBoardConfDTO.getRoles(),loginUsrId);
+//			customDashBoardConf.setDashBoardRoleConf(dashBoardRoleConfSet);
 			Set<CustomDashBoardAssociatesConf> dashBoardAssociatesConfSet  = getDashBoardAssociatesSet(customDashBoardConf,customDashBoardConfDTO.getAssociates(),loginUsrId);
 			customDashBoardConf.setDashboardConfUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			customDashBoardConf.setCreatedDate(new Date());
@@ -94,43 +98,6 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 		return dashBoardAssociatesConf;
 	}
 
-
-	/**
-	 * populating Dash Board  Roles Configuration
-	 * @param customDashBoardConf
-	 * @param roles
-	 * @param loginUsrId 
-	 * @return Set<CustomDashBoardRoleConfiguration>
-	 */
-	private Set<CustomDashBoardRoleConfiguration> getDashBoardRoleConfSet(CustomDashBoardConfiguration customDashBoardConf, String roles, Long loginUsrId)
-	{
-		Set<CustomDashBoardRoleConfiguration> customDashBoardRoleConfSet = new HashSet<>();
-		try {
-			if(StringUtils.isNotBlank(roles)) {
-				String [] roleArr = roles.split(",");
-				if(customDashBoardConf.getId() != null) {
-					int deleted = customDashBoardConfDao.deleteExistedDashBoardRoles(customDashBoardConf.getId());
-				}
-				for(String roleId : roleArr) {
-					CustomDashBoardRoleConfiguration customDashBoardRoleConf = new CustomDashBoardRoleConfiguration();
-					customDashBoardRoleConf.setDashBoardConfId(customDashBoardConf);
-					customDashBoardRoleConf.setRoleId(Long.parseLong(roleId));
-					customDashBoardRoleConf.setStatus(1);
-					customDashBoardRoleConf.setCreatedDate(new Date());
-					customDashBoardRoleConf.setUpdatedDate(new Date());
-					customDashBoardRoleConf.setCreatedBy(loginUsrId);
-					customDashBoardRoleConf.setUpdatedBy(loginUsrId);
-					customDashBoardRoleConfSet.add(customDashBoardRoleConf);
-				}	
-				
-				Set<CustomDashBoardRoleConfiguration> existedRoles = customDashBoardConf.getDashBoardRoleConf();
-			}
-			
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		return customDashBoardRoleConfSet;
-	}
 
 
 	@Override
