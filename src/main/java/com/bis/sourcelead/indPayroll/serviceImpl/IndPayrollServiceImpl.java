@@ -20,6 +20,7 @@ import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.indPayroll.service.IndPayrollService;
+import com.bis.sourcelead.payroll.entity.EmployeeSessionIndPayroll;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Service
@@ -38,6 +39,8 @@ public class IndPayrollServiceImpl  implements IndPayrollService{
 	
 	@Autowired
 	IndPaysheetFrequencyDao indPaysheetFrequencyDao;
+	
+	
 	
 	
 	@Override
@@ -74,6 +77,26 @@ public class IndPayrollServiceImpl  implements IndPayrollService{
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return res;
+	}
+
+	@Override
+	public EmployeeSessionIndPayroll saveEmployeeSessionIndPayroll(EmployeeSessionIndPayroll employeeSessionIndPayroll) throws Exception {
+		return indPaysheetFrequencyDao.saveEmployeeSessionIndPayroll(employeeSessionIndPayroll);
+	}
+
+	@Override
+	public List<EmployeeSessionIndPayroll> getEmployeeSessionList(String paySheetFrequencyUUID) throws Exception {
+		return indPaysheetFrequencyDao.getEmployeeSessionList(paySheetFrequencyUUID);
+	}
+
+	@Override
+	public void deleteIndPayrollCaheRecoedByPaySheetFrequencyUUID(List<EmployeeSessionIndPayroll> indPayrollCahe) {
+		indPaysheetFrequencyDao.deleteIndPayrollCaheRecoedByPaySheetFrequencyUUID(indPayrollCahe);
+	}
+
+	@Override
+	public EmployeeSessionIndPayroll updateThePayHeadHistoryJsonObjectBYExclueUUID(String excludeUUID) throws Exception {
+		return indPaysheetFrequencyDao.updateThePayHeadHistoryJsonObjectBYExclueUUID(excludeUUID);
 	}
 	
 	

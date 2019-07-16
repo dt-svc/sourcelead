@@ -466,6 +466,15 @@ public class CandidateServiceImpl implements CandidateService {
 			}
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		
+		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, activitySummary.toString(), "CANDIDATE");
+		}else {
+			if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.MANUAL_CANDIDATE)){
+				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");
+			}else if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.IMPORT_CANDIDATE)){
+				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, "", "CANDIDATE");
+			}
+		}
 		if(candidateDto.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:candidateDto.getCustomFormData()) {
 				if(customFields != null && customFields.getCustomFormFieldId() > 0 ) {
@@ -2752,10 +2761,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		
 		 String noticePeriod = null;
+		 candidate.setOtherNoticePeriod(null);
 		if(candidateDto.getNoticePeriod() != null)
 			noticePeriod = candidateDto.getNoticePeriod().replaceAll("\\s+", " ");
 		
+		
 	    if(noticePeriod != null) {
+	    	
 		if(candidate.getNoticePeriod() != null  && candidate.getNoticePeriod() != "" && !noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())){
 			 activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(noticePeriod).append(Constants.NEW_VALUE_TAG_END).append(" ");
 		}else if((candidate.getNoticePeriod() != null || candidate.getNoticePeriod() != "" ||  noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())) && noticePeriod !="" ){
@@ -2836,15 +2848,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidate.setCandidateHistory(candiateHistoryList);
 		
 		HashSet<CandidateTimelineActivity> candiateTimeLineActivityList = null;
-		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
-			candiateTimeLineActivityList = candidateTimelineActivityService.getCandidateTimelineActivityDetails(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, activitySummary.toString(), "CANDIDATE");
-		}else{
-			if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.MANUAL_CANDIDATE)){
-				candiateTimeLineActivityList = candidateTimelineActivityService.getCandidateTimelineActivityDetails(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");
-			}else if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.IMPORT_CANDIDATE)){
-				candiateTimeLineActivityList = candidateTimelineActivityService.getCandidateTimelineActivityDetails(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, "", "CANDIDATE");
-			}
-		}
+		
 		candidate.setCandidateTimeLineActivity(candiateTimeLineActivityList);
 		
 		
