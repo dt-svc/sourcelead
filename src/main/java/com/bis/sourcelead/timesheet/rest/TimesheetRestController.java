@@ -5538,9 +5538,9 @@ public class TimesheetRestController {
 						freshSaHierarchyList.add(saHierarchy);
 					}
 					if(StringUtils.isEmpty(tsDTO.getWeekComment())) {
-						String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
-						if(StringUtils.isNotEmpty(comment));
-						timesheetSubmissions.setWeekcomments(comment);
+						//String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
+						//if(StringUtils.isNotEmpty(comment));
+						timesheetSubmissions.setWeekcomments(tsDTO.getWeekComment());
 					}else {
 						timesheetSubmissions.setWeekcomments(tsDTO.getWeekComment());
 					}
