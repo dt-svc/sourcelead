@@ -1367,9 +1367,12 @@ public class CandidateDaoImpl implements CandidateDao {
 				candDTO.setCurrentRate(candidate.getCurrentRate());
 				candDTO.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
 				candDTO.setCurrentRateType(candidate.getCurrentRateType());
-				candDTO.setEmail(candidate.getEmail());
+				if(candidate.getConsultantUser() != null) {
+					candDTO.setEmail(candidate.getConsultantUser().getEmail());
+				}else {
+					candDTO.setEmail(candidate.getEmail());
+				}
 				candDTO.setMobilePhone(candidate.getMobilePhone());
-
 				candidatesDTOList.add(candDTO);
 			}
 		}

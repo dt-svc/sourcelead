@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Objects;
 
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.EmailScenarioConfigurationDao;
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -332,5 +335,14 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 		logger.error(" Exception caught while updating the EmailScenarioConfiguration "+e.getMessage() );
 		 return count;
 	}
+	}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int getResumeParserEmailCountForOrg(Long orgLocId) {
+         int count = 0;
+		Session session =  this.sessionFactory.getCurrentSession();
+		String sqlQuery ="SELECT COUNT(*)  AS count FROM EMAIL_SCENARIO_CONFIGURATION WHERE USAGE_TYPE ='"+Constants.RESUME_PARSING+"' AND ORG_lOCATION_ID=:orgLocId";
+		count =  (int) ((SQLQuery) session.createSQLQuery(sqlQuery).setLong("orgLocId", orgLocId)).addScalar("count", StandardBasicTypes.INTEGER).uniqueResult();
+		return count;
 	}
 }
