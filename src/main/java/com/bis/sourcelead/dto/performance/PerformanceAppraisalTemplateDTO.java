@@ -116,6 +116,10 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private String assignedUUID;
 	
+	private String userCode;
+	
+	
+	
 	public Long getAppraisalTemplateId() {
 		return appraisalTemplateId;
 	}
@@ -506,6 +510,14 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 
 	public void setAssignedUUID(String assignedUUID) {
 		this.assignedUUID = assignedUUID;
+	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
 	}
 
 	

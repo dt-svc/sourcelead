@@ -14,9 +14,11 @@ import com.bis.sourcelead.dto.performance.AppraisalAssignedAssociatesDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalAssignedAssociates;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalPeers;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.performance.PerformanceAppraisalAssignedAssociatesService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -31,6 +33,9 @@ public class PerformanceAppraisalAssignedAssociatesServiceImpl implements Perfor
 	
 	@Autowired
 	PerformanceAppraisalPeersDao performanceAppraisalPeersDao;
+	
+	@Autowired
+	UserRoleService userRoleService;
 
 	@Override
 	public void storePerformanceAppraisalAssignedAssociates(
@@ -55,6 +60,7 @@ public class PerformanceAppraisalAssignedAssociatesServiceImpl implements Perfor
 				PerformanceAppraisalPeers appraisalPeers = performanceAppraisalPeersDao.getPerformanceAppraisalPeersByUserIdAndOrgLocationId(Long.valueOf(assignedUserIds[i]), appraisalAssignedAssociatesDTO.getOrgLocationId());
 				if(appraisalPeers != null) {
 					assignedAssociates.setPeerId(appraisalPeers);
+					assignedAssociates.setPeerUserId(appraisalPeers.getPeerUserId());
 				}
 				User assignedUser = new User();
 				assignedUser.setId(Long.valueOf(assignedUserIds[i]));
@@ -62,6 +68,17 @@ public class PerformanceAppraisalAssignedAssociatesServiceImpl implements Perfor
 				assignedAssociates.setOrgId(loginOrg);
 				assignedAssociates.setOrgLocationId(loginOrgLocation);
 				assignedAssociates.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(Long.valueOf(assignedUserIds[i]), appraisalAssignedAssociatesDTO.getOrgLocationId());
+				
+				if(userRole.getResourceManager() != null) {
+					assignedAssociates.setResourceManagerId(userRole.getResourceManager());
+				}
+				
+				if(userRole.getReportingManager() != null) {
+					assignedAssociates.setReportingManagerId(userRole.getReportingManager());
+				}
+				
+				assignedAssociates.setAppraisalStage(Constants.NEW_TYPE);
 				assignedAssociates.setStatus(Constants.RECORD_ACTIVE);
 				assignedAssociates.setCreatedBy(loginUser);
 				assignedAssociates.setCreatedDate(new Date());

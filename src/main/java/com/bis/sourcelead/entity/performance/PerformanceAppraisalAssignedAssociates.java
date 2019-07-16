@@ -40,6 +40,9 @@ private static final long serialVersionUID = 1L;
     @JoinColumn(name="PEER_ID" )        
     private PerformanceAppraisalPeers peerId;
 	
+	@Column(name = "PEER_USER_ID", columnDefinition = "TEXT default NULL")
+	private String peerUserId;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID" )        
     private OrgLocations orgLocationId;
@@ -48,8 +51,20 @@ private static final long serialVersionUID = 1L;
     @JoinColumn(name="ORG_ID" )        
     private Org orgId;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="REPORTING_MANAGER_ID" )        
+    private User reportingManagerId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="RESOURCE_MANAGER_ID" )        
+    private User resourceManagerId;
+	
 	@Column(name = "UUID")
 	private String uuid;
+	
+	@Column(name = "APPRAISAL_STAGE")
+	private String appraisalStage;
+	
 	
 	@Column(name = "STATUS ")
 	private Integer status;
@@ -97,6 +112,14 @@ private static final long serialVersionUID = 1L;
 	public PerformanceAppraisalPeers getPeerId() {
 		return peerId;
 	}
+	
+	public String getPeerUserId() {
+		return peerUserId;
+	}
+
+	public void setPeerUserId(String peerUserId) {
+		this.peerUserId = peerUserId;
+	}
 
 	public void setPeerId(PerformanceAppraisalPeers peerId) {
 		this.peerId = peerId;
@@ -116,6 +139,22 @@ private static final long serialVersionUID = 1L;
 
 	public void setOrgId(Org orgId) {
 		this.orgId = orgId;
+	}
+	
+	public User getReportingManagerId() {
+		return reportingManagerId;
+	}
+
+	public void setReportingManagerId(User reportingManagerId) {
+		this.reportingManagerId = reportingManagerId;
+	}
+
+	public User getResourceManagerId() {
+		return resourceManagerId;
+	}
+
+	public void setResourceManagerId(User resourceManagerId) {
+		this.resourceManagerId = resourceManagerId;
 	}
 
 	public String getUuid() {
@@ -164,6 +203,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getAppraisalStage() {
+		return appraisalStage;
+	}
+
+	public void setAppraisalStage(String appraisalStage) {
+		this.appraisalStage = appraisalStage;
 	}
 	
 	

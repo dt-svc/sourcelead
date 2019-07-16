@@ -381,7 +381,7 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.openSession();
 		List<UserDTO> userList = new ArrayList<>();
 		try{
-			String query = "SELECT U.ID,U.USER_CODE,U.FIRST_NAME, U.LAST_NAME, U.FILE_URL, R.DISPLAY_NAME, UR.REPORTING_MANAGER_ID, O.PRIMARY_CONTACT_USER_ID " + 
+			String query = "SELECT U.ID,U.USER_CODE,U.FIRST_NAME, U.LAST_NAME, U.EMAIL, U.FILE_URL, R.DISPLAY_NAME, UR.REPORTING_MANAGER_ID, O.PRIMARY_CONTACT_USER_ID " + 
 					" FROM USER U, USER_ROLE UR, ROLES R, ORG O, ORG_LOCATIONS OL " + 
 					" WHERE R.ID = UR.ROLE_ID AND U.ID = UR.USER_ID AND UR.ORG_LOCATIONS_ID = :orgLocationId AND R.ID NOT IN (95,96) "+ 
 					" AND O.ID = OL.ORG_ID AND OL.ID = UR.ORG_LOCATIONS_ID AND UR.USER_STATE !='INACTIVE' ORDER BY UR.REPORTING_MANAGER_ID;";
@@ -395,6 +395,8 @@ public class OrgDaoImpl implements OrgDao {
 				user.setName(record[i++].toString());
 				String lastName = record[i] == null ? "" : record[i].toString();
 				user.setName(user.getName()+(lastName.isEmpty() ? "" : " "+ lastName));
+				i++;
+				user.setEmail(record[i] == null ? "" : record[i].toString());
 				i++;
 				user.setFileURL(record[i] == null ? "" : record[i].toString());
 				i++;
