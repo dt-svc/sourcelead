@@ -2244,6 +2244,7 @@ public class UserDaoImpl implements UserDao {
 				Set<BigInteger> jobIds = new HashSet<>();
 				Set<BigInteger> primaryUserjobIds = new HashSet<>();
 				Set<BigInteger> approverUserjobIds = new HashSet<>();
+				Set<String> assinedUserids = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
 					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId())){
@@ -2292,8 +2293,9 @@ public class UserDaoImpl implements UserDao {
 								&& ((reportDTO.getPrimaryUserId() != null &&  reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue()) ||(reportDTO.getPrimaryUserId() == null)) 
 								&& (reportDTO.getManagerUserId() != null && reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
 							userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
-							if(userDTO != null){
+							if(userDTO != null && !assinedUserids.contains(reportDTO.getRequirementId().toString()+","+reportDTO.getAssignedUserId().toString())){
 									jobIds.add(reportDTO.getRequirementId());
+									assinedUserids.add(reportDTO.getRequirementId().toString()+","+reportDTO.getAssignedUserId().toString());
 									userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
 							}
 						}
