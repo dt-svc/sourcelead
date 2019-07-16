@@ -101,23 +101,6 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 
 	@Override
 	@Transactional
-	public int deleteExistedDashBoardRoles(Long customDashBoardConfId)
-	{
-		int isDeleted = 0;
-		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			String query = "delete from CustomDashBoardRoleConfiguration roleConf where roleConf.dashBoardConfId.id =:customDashBoardConfId ";
-			Query qry = session.createQuery(query).setLong("customDashBoardConfId", customDashBoardConfId);
-			int i = qry.executeUpdate();
-			return i;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return isDeleted;
-	}
-
-	@Override
-	@Transactional
 	public int deleteExistedDashBoardAssociates(Long customDashBoardConfId)
 	{
 		int isDeleted = 0;
