@@ -89,6 +89,8 @@ public class CandidateDTO extends SearchDTO{
 
 	private String noticePeriod;
 	
+	private String otherNoticePeriod;
+	
 	private String vendor;
 
 	private String designation;
@@ -505,6 +507,15 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setNoticePeriod(String noticePeriod) {
 		this.noticePeriod = noticePeriod;
+	}
+	
+	
+	public String getOtherNoticePeriod() {
+		return otherNoticePeriod;
+	}
+
+	public void setOtherNoticePeriod(String otherNoticePeriod) {
+		this.otherNoticePeriod = otherNoticePeriod;
 	}
 
 	public String getDesignation() {

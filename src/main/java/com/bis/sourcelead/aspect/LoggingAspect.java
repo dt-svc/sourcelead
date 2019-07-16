@@ -15,6 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -183,6 +184,9 @@ public class LoggingAspect {
 		if(StringUtils.isNotBlank(actionUUID) && loginOrgLocation != null) {
 			userLoginLogoutSession = new UserLoginLogoutSession();
 		    userLoginLogoutSession.setId(actionId);
+		    User user = new User();
+		    user.setId(userId);
+		    userLoginLogoutSession.setUserId(user);
 			actionHistoryService.saveActionHistory(methodName,userLoginLogoutSession,loginOrgLocation,type,userId);
 		}
 		    

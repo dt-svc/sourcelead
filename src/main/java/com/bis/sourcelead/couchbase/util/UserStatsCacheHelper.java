@@ -1,5 +1,7 @@
 package com.bis.sourcelead.couchbase.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -608,7 +610,9 @@ public class UserStatsCacheHelper {
 		 orgLocationDTO.setWebsite(orgLocations.getWebsite());
 		 
 		 if(orgLocations.getCreatedDate() != null) {
-			 orgLocationDTO.setCreatedDate(orgLocations.getCreatedDate().toString());
+			 DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			    String sDate = df.format(orgLocations.getCreatedDate());
+			 orgLocationDTO.setCreatedDate(sDate);
 		 }
 		 
 		 if(StringUtils.isNotBlank(orgLocations.getWeekOffDays())) {
