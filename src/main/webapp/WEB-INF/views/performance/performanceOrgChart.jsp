@@ -22,7 +22,7 @@
 	</section>
 	
 	<div class="project_wrap clearfix posiR overX">
-
+	<div id="choicepopUp"></div>
         <div class="profOrgLeft">
             <h3>Appraisal Date</h3>
             <div class="profOrgDate clearfix">
@@ -108,10 +108,12 @@
 
         <div class="orgMask"></div>
         <div class="orgPop">
+        <div id="orgChartDivLoading"/>
             <div class="perfOrgWrap">
                      <h2><span></span>
 				 <div class="pull-right posiR"><input type="text" id='orgChartSearch' class="repSearchBar" placeholder="Search" />
                         <span class="repSearchIcon" id='orgChartSearchButton'></span>
+                        <i class="fa fa-times clearSearch" id="orgChartSearchClear"></i>
                     </div>
 		
                 </h2>
@@ -176,6 +178,46 @@ $(document).ready(function(){
 </script>
 
 <script>
+function getUserPerformanceDateDetails(userCode){
+	  var appraisalStartDate = $("#appraisalStartDate").val();
+	   var appraisalEndDate = $("#appraisalEndDate").val();
+	   if(((appraisalStartDate != null && appraisalStartDate != 'undefined' && appraisalStartDate != '')  && 
+			   (appraisalEndDate == null || appraisalEndDate == 'undefined' || appraisalEndDate == '')) || 
+			   
+			   ((appraisalStartDate == null || appraisalStartDate == 'undefined' || appraisalStartDate == '')  && 
+					   (appraisalEndDate != null && appraisalEndDate != 'undefined' && appraisalEndDate != ''))){
+		   alertMessage();
+	   }else{
+		   getUserPerformanceDetails(userCode);
+	   }
+}
+
+</script>
+
+<script type="text/javascript">
+function alertMessage(){
+    var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Provide both Start and End dates</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"	</div>";
+	$("#choicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#choicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
 function getUserPerformanceDetails(userCode){
    $("#performanceAppraisalDiv").empty();  
    $("#templateOverView").removeAttr("onclick");
@@ -185,7 +227,7 @@ function getUserPerformanceDetails(userCode){
    $("#finalOverView").removeAttr("onclick");
    
    $("#searchButton").removeAttr("onclick");
-   $("#searchButton").attr("onclick", "getUserPerformanceDetails('"+userCode+"')");
+   $("#searchButton").attr("onclick", "getUserPerformanceDateDetails('"+userCode+"')");
    
    var appraisalStartDate = $("#appraisalStartDate").val();
    var appraisalEndDate = $("#appraisalEndDate").val();
@@ -265,11 +307,15 @@ function getEmployeeAppraisalOverView(assignedUUID){
 <script>
 $(document).ready(function(){
     $(".orgArr").click(function(){
-        $(this).toggleClass("act");
         $(".orgPop").toggleClass("orgPopAct");
         $(".orgMask").toggleClass("orgMaskfade");
     });
 });
+
+function closeOrgchartPopUp(){
+       $(".orgPop").toggleClass("orgPopAct");
+       $(".orgMask").toggleClass("orgMaskfade");
+}
 </script>
 
 <script>
@@ -298,10 +344,10 @@ $(document).ready(function(){
 		filterNodes(keyword);
 	});
 	
-	/* $("#orgChartSearchClear").click(function() {
+	 $("#orgChartSearchClear").click(function() {
 		$("#orgChartSearch").val('');
 		clearFilterResult();
-	});  */
+	}); 
 });
 
 function filterNodes(keyWord) {
@@ -344,6 +390,7 @@ function filterNodes(keyWord) {
   }
   var data = {};
   function getOrgChartData(id) {
+	  $("#orgChartDivLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.post('${SourceLeadWeb_pmsUrl}/performanceOrgChart', {id: id}, function(ds) {
 	         data = {};
 	    $.each(ds, function(i) {
@@ -384,6 +431,7 @@ function filterNodes(keyWord) {
 	    });
 	    
 	   initChart(data);
+	   $("#orgChartDivLoading").removeAttr("style");
 	});
 }
 
@@ -397,14 +445,19 @@ function initChart(data) {
        'nodeID': 'id',
        'nodeCode': 'userCode',
 	   'createNode': function($node, data) {
-	   var secondMenuIcon = $('<i>', {
-	     'class': 'fa fa-user second-menu-icon',
-	     click: function() {
-	    	 $(".second-menu").hide();
-	       $(this).siblings('.second-menu').toggle();
-	     }
+		   var secondMenuIcon = $('<i>', {
+			   'class': 'fa fa-user second-menu-icon',
+			   click: function() {
+			   var ele = $(this).parent().find(".second-menu");
+			   var style = $(ele).attr("style");
+			   $(".second-menu").hide();
+			   if(style === "display: block;")
+			   $(ele).hide();
+			   else
+			   $(ele).show();
+			   }
 	   });
-	   var secondMenu = '<div class="second-menu"><img class="avatar" onerror="predefineUserImage(this);" src="'+data.avatar+'"><h4>'+data.designation+'</h4><p>'+data.email+'</p></div>';
+	   var secondMenu = '<div class="second-menu"><img class="avatar" onerror="predefineUserImage(this);" src="'+data.avatar+'"><h4>'+data.designation+'</h4><p title="'+data.email+'">'+data.email+'</p></div>';
 
 	   
 	   $node.append(secondMenuIcon).append(secondMenu);
