@@ -14,7 +14,5 @@ public interface CustomDashBoardConfDao {
 
 	CustomDashBoardConfiguration getCustomDashboardConfById(Long customDashBoardConfId, Long orgLocationId);
 
-	int deleteExistedDashBoardRoles(Long customDashBoardConfId);
-
 	int deleteExistedDashBoardAssociates(Long customDashBoardConfId);
 }
