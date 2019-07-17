@@ -344,6 +344,7 @@ public class UserLoginHelper {
 		Integer expensesTabCount = 0;
 		Integer resourcesTabCount = 0;
 		Integer paryrollTabCount = 0;
+		Integer performanceTabCount = 0;
 		
 		boolean isJobsTabAccessable = false;
 		SourceLeadSessionManager.setSessionAttribute(req, "isJobsTabAccessable", "N");
@@ -379,6 +380,11 @@ public class UserLoginHelper {
 						paryrollTabCount = paryrollTabCount+1;
 					}
 					
+					if(tab.equalsIgnoreCase("Goals") || tab.equalsIgnoreCase("My Appraisal") || tab.equalsIgnoreCase("Employee Appraisal") 
+							|| tab.equalsIgnoreCase("Org Chart")){
+						performanceTabCount = performanceTabCount+1;
+					}
+					
 					if (isReportTabAccessable == false) {
 						if(tab.equalsIgnoreCase("Reports")) {
 							isReportTabAccessable = true;
@@ -409,6 +415,7 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "expensesTabCount", expensesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "resourcesTabCount", resourcesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "paryrollTabCount", paryrollTabCount);
+			SourceLeadSessionManager.setSessionAttribute(req, "performanceTabCount", performanceTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "actionsList", actionsList);
 			
 			/*List<Long> jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(req, "requirementIdsList");
