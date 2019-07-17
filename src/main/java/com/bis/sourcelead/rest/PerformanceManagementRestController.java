@@ -824,8 +824,8 @@ public class PerformanceManagementRestController {
 	     }
 	    
 	    
-	    @RequestMapping(value = "/updatePeersToAssignedAppraisl", method = RequestMethod.POST)
-	 	public Response<String> updatePeersToAssignedAppraisl(PerformancePeersDTO performancePeersDTO,
+	    @RequestMapping(value = "/updatePeersToAssignedAppraisal", method = RequestMethod.POST)
+	 	public Response<String> updatePeersToAssignedAppraisal(PerformancePeersDTO performancePeersDTO,
 				HttpServletRequest request){
 	    	 Response<String> response = new Response<>(); 
 	 		 try {

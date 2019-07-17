@@ -170,6 +170,99 @@ function PerformanceManagement(){
 		});
 	
 	
+	this.validateFeedbackTemplateName = function(){
+		var templateName = document.getElementById("templateName").value.trim(); 
+		var templateId = $("#templateId").val();
+		if(templateId == 'undefined' || templateId == null){
+			templateId = '';
+		}
+		
+		if(templateName != null && templateName != '' && templateName != 'undefined'){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/validateFeedbackTemplateName?templateName="+templateName+"&templateId="+templateId,
+		        success: function(result) {
+		        	if (result == 'invalid') {
+		        		$("#template_save_button").attr("disabled", "disabled");
+		        		$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#templateName").after( "<p class='jquery_form_error_message'>" + templateName + " is Already Existed</span>");
+						document.getElementById("templateName").setAttribute( 'record-exist', 'yes');
+						document.getElementById("templateName").setAttribute( 'record-exist-errorMsg', templateName +"  already existed");
+		        	}else{
+		        		$('input#templateName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#templateName').attr('class','valid form-control');
+						$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#template_save_button").removeAttr("disabled")
+		        	}
+		        }
+			 });
+		}
+	}	
+	
+	
+	
+	this.validateAppraisalTemplateName = function(){
+		var appraisalName = document.getElementById("appraisalName").value.trim(); 
+		var appraisalTemplateId = $("#appraisalTemplateId").val();
+		if(appraisalTemplateId == 'undefined' || appraisalTemplateId == null){
+			appraisalTemplateId = '';
+		}
+		
+		if(appraisalName != null && appraisalName != '' && appraisalName != 'undefined'){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/validateAppraisalTemplateName?appraisalName="+appraisalName+"&appraisalTemplateId="+appraisalTemplateId,
+		        success: function(result) {
+		        	if (result == 'invalid') {
+		        		$("#savePerformanceBudget").attr("disabled", "disabled");
+		        		$('#appraisalNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#appraisalName").after( "<p class='jquery_form_error_message'>" + appraisalName + " is Already Existed</span>");
+						document.getElementById("appraisalName").setAttribute( 'record-exist', 'yes');
+						document.getElementById("appraisalName").setAttribute( 'record-exist-errorMsg', appraisalName +"  already existed");
+		        	}else{
+		        		$('input#appraisalName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#appraisalName').attr('class','valid form-control');
+						$('#appraisalNameDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#savePerformanceBudget").removeAttr("disabled")
+		        	}
+		        }
+			 });
+		}
+	}
+	
+	
+	
+	this.validatePerformanceBadgeName = function(){
+		var badgeName = document.getElementById("badgeName").value.trim(); 
+		var badgeId = $("#badgeId").val();
+		if(badgeId == 'undefined' || badgeId == null){
+			badgeId = '';
+		}
+		
+		if(badgeName != null && badgeName != '' && badgeName != 'undefined'){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/validatePerformanceBadgeName?badgeName="+badgeName+"&badgeId="+badgeId,
+		        success: function(result) {
+		        	if (result == 'invalid') {
+		        		$("#savePerformanceBadge").attr("disabled", "disabled");
+		        		$('#badgeNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#badgeName").after( "<p class='jquery_form_error_message'>" + badgeName + " is Already Existed</span>");
+						document.getElementById("badgeName").setAttribute( 'record-exist', 'yes');
+						document.getElementById("badgeName").setAttribute( 'record-exist-errorMsg', badgeName +"  already existed");
+		        	}else{
+		        		$('input#badgeName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#badgeName').attr('class','valid form-control');
+						$('#badgeNameDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#savePerformanceBadge").removeAttr("disabled")
+		        	}
+		        }
+			 });
+		}
+	}
 	
 
 	this.validateRatingLevelName = function(){
@@ -981,12 +1074,20 @@ function PerformanceManagement(){
 			  });
 		  });
 	   
-	   
+  }
+  
+  this.getProcessPeriodCalendars = function(){
+	  
+	    var appraisalStartDate = $('#appraisalStartDate').val();
+		var appraisalEndDate =   $('#appraisalEndDate').val();
+		var finalDateFormat = getJSDateFormat(locationDateFormat);
 		$(function() {
 			  $('#appraisalProcessStartDate').datepicker({
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
+			      minDate : appraisalStartDate,
+				  maxDate : appraisalEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -1004,6 +1105,8 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
+			  	  minDate : appraisalStartDate,
+				  maxDate : appraisalEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '-1d');
 					dt.setDate(dt.getDate() - 1);
@@ -1013,13 +1116,20 @@ function PerformanceManagement(){
 			  });
 	  });
 	   
-	   
-	   
+  }   
+	this.getAppraisalTypesCalendars = function(){  
+		
+		    var appraisalProcessStartDate = $('#appraisalProcessStartDate').val();
+			var appraisalProcessEndDate =   $('#appraisalProcessEndDate').val();
+			var finalDateFormat = getJSDateFormat(locationDateFormat);
+			
 	    $(function() {
 			  $('#selfAppraisalStartDate').datepicker({
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
+			  	  minDate : appraisalProcessStartDate,
+				  maxDate : appraisalProcessEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -1037,6 +1147,8 @@ function PerformanceManagement(){
 					      dateFormat: finalDateFormat,
 					      changeMonth: true,
 					  	  changeYear: true, 
+					  	  minDate : appraisalProcessStartDate,
+						  maxDate : appraisalProcessEndDate,
 					  	  onSelect : function(selected) {
 					  		var dt = $(this).datepicker('getDate', '-1d');
 							dt.setDate(dt.getDate() - 1);
@@ -1053,6 +1165,8 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
+			  	  minDate : appraisalProcessStartDate,
+				  maxDate : appraisalProcessEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -1070,6 +1184,8 @@ function PerformanceManagement(){
 				      dateFormat: finalDateFormat,
 				      changeMonth: true,
 				  	  changeYear: true, 
+				  	  minDate : appraisalProcessStartDate,
+					  maxDate : appraisalProcessEndDate,
 				  	  onSelect : function(selected) {
 				  		var dt = $(this).datepicker('getDate', '-1d');
 						dt.setDate(dt.getDate() - 1);
@@ -1085,6 +1201,8 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
+			  	  minDate : appraisalProcessStartDate,
+				  maxDate : appraisalProcessEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -1102,6 +1220,8 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
+			  	  minDate : appraisalProcessStartDate,
+				  maxDate : appraisalProcessEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '-1d');
 					dt.setDate(dt.getDate() - 1);
@@ -1117,6 +1237,8 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
+			  	  minDate : appraisalProcessStartDate,
+				  maxDate : appraisalProcessEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -1134,6 +1256,8 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
+			  	  minDate : appraisalProcessStartDate,
+				  maxDate : appraisalProcessEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '-1d');
 					dt.setDate(dt.getDate() - 1);

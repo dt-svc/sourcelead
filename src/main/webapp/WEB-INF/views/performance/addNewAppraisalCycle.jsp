@@ -18,7 +18,7 @@
 		        <input type="hidden" name="appraisalTemplateId" id="appraisalTemplateId"/>
 			        <div class="form-group" id="appraisalNameDiv">
 			          <label class="col-md-3">Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
-			          <div class="col-md-9"><input type="text" class="form-control" name="name" id="appraisalName" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250"></div>
+			          <div class="col-md-9"><input type="text" class="form-control" name="name" id="appraisalName" onblur="performanceManagement.validateAppraisalTemplateName()" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250"></div>
 			        </div>
 			        
 			        <div class="form-group" id="appraisalStartDateDiv">
@@ -118,7 +118,7 @@
 						  <div class="row">
 							 <div class="col-md-6 valMsgPosition" id="appraisalProcessStartDateDiv">
 								  <div class="input-group">
-									 <input type="text" class="form-control calendar" value="" id="appraisalProcessStartDate" name="appraisalProcessStartDate" field-name="Process Start Date" data-validation="required" readonly="readonly" >
+									 <input type="text" class="form-control calendar" value="" onclick="performanceManagement.getProcessPeriodCalendars();" id="appraisalProcessStartDate" name="appraisalProcessStartDate" field-name="Process Start Date" data-validation="required" readonly="readonly" >
 								     <span class="input-group-addon" onClick="performanceManagement.clearAppraisalProcessStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 								  </div>
 							 </div>
@@ -144,13 +144,13 @@
 						  			  <div class="row">
 							  <div class="col-md-6 valMsgPosition" id="selfAppraisalStartDateDiv">
 								  <div class="input-group">
-									  <input type="text" class="form-control calendar" disabled value="" id="selfAppraisalStartDate" name="selfAppraisalStartDate" field-name="Self Appraisal Start Date" data-validation-optional="true" readonly="readonly" >
+									  <input type="text" class="form-control calendar" disabled value="" onclick="performanceManagement.getAppraisalTypesCalendars();" id="selfAppraisalStartDate" name="selfAppraisalStartDate" field-name="Self Appraisal Start Date" data-validation-optional="true" readonly="readonly" >
 									  <span class="input-group-addon" onClick="performanceManagement.clearSelfAppraisalStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 								  </div>
 							  </div>
 							  <div class="col-md-6 valMsgPosition" id="selfAppraisalEndDateDiv">
 								   <div class="input-group">
-								     <input type="text" class="form-control calendar" disabled value="" id="selfAppraisalEndDate" name="selfAppraisalEndDate" field-name="Self Appraisal End Date" data-validation-optional="true" readonly="readonly" >
+								     <input type="text" class="form-control calendar" disabled value="" onclick="performanceManagement.getAppraisalTypesCalendars();"  id="selfAppraisalEndDate" name="selfAppraisalEndDate" field-name="Self Appraisal End Date" data-validation-optional="true" readonly="readonly" >
 								     <span class="input-group-addon" onClick="performanceManagement.clearSelfAppraisalEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 								   </div>
 							  </div>
@@ -172,13 +172,13 @@
 						  <div class="row">
 							 <div class="col-md-6 valMsgPosition" id="appraisalApprovingStartDateDiv">
 								  <div class="input-group">
-									 <input type="text" class="form-control calendar" disabled value="" id="appraisalApprovingStartDate" name="appraisalApprovingStartDate" field-name="Reporting Manager Review Start Date" data-validation-optional="true" readonly="readonly" >
+									 <input type="text" class="form-control calendar" disabled value="" onclick="performanceManagement.getAppraisalTypesCalendars();"  id="appraisalApprovingStartDate" name="appraisalApprovingStartDate" field-name="Reporting Manager Review Start Date" data-validation-optional="true" readonly="readonly" >
 								     <span class="input-group-addon" onClick="performanceManagement.clearAppraisalApprovingStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 								  </div>
 							 </div>
 							  <div class="col-md-6 valMsgPosition" id="appraisalApprovingEndDateDiv">
 							  <div class="input-group">
-							  	<input type="text" class="form-control calendar" disabled value="" id="appraisalApprovingEndDate" name="appraisalApprovingEndDate" field-name="Reporting Manager Review End Date" data-validation-optional="true" readonly="readonly" >
+							  	<input type="text" class="form-control calendar" disabled value="" onclick="performanceManagement.getAppraisalTypesCalendars();"  id="appraisalApprovingEndDate" name="appraisalApprovingEndDate" field-name="Reporting Manager Review End Date" data-validation-optional="true" readonly="readonly" >
 							    <span class="input-group-addon" onClick="performanceManagement.clearAppraisalApprovingEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 							  </div>
 							  </div>
@@ -200,13 +200,13 @@
 						  <div class="row">
 							 <div class="col-md-6 valMsgPosition" id="peerReviewStartDateDiv">
 								  <div class="input-group">
-									 <input type="text" class="form-control calendar" disabled value="" id="peerReviewStartDate" name="peerReviewStartDate" field-name="Peer Review Start Date" data-validation-optional="true" readonly="readonly" >
+									 <input type="text" class="form-control calendar" disabled value="" onclick="performanceManagement.getAppraisalTypesCalendars();"  id="peerReviewStartDate" name="peerReviewStartDate" field-name="Peer Review Start Date" data-validation-optional="true" readonly="readonly" >
 								     <span class="input-group-addon" onClick="performanceManagement.clearPeerReviewStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 								  </div>
 							 </div>
 							  <div class="col-md-6 valMsgPosition" id="peerReviewEndDateDiv">
 							  <div class="input-group">
-							  	<input type="text" class="form-control calendar" disabled value="" id="peerReviewEndDate" name="peerReviewEndDate" field-name="Peer Review End Date" data-validation-optional="true" readonly="readonly" >
+							  	<input type="text" class="form-control calendar" disabled value="" onclick="performanceManagement.getAppraisalTypesCalendars();"  id="peerReviewEndDate" name="peerReviewEndDate" field-name="Peer Review End Date" data-validation-optional="true" readonly="readonly" >
 							    <span class="input-group-addon" onClick="performanceManagement.clearPeerReviewEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 							  </div>
 							  </div>
@@ -228,13 +228,13 @@
 						  <div class="row">
 							 <div class="col-md-6 valMsgPosition" id="resourceManagerReviewStartDateDiv">
 								  <div class="input-group">
-									 <input type="text" class="form-control calendar" disabled value="" id="resourceManagerReviewStartDate" name="resourceManagerReviewStartDate" field-name="Resource Manager Review Start Date" data-validation-optional="true" readonly="readonly" >
+									 <input type="text" class="form-control calendar" disabled value="" onclick="performanceManagement.getAppraisalTypesCalendars();"  id="resourceManagerReviewStartDate" name="resourceManagerReviewStartDate" field-name="Resource Manager Review Start Date" data-validation-optional="true" readonly="readonly" >
 								     <span class="input-group-addon" onClick="performanceManagement.clearResourceManagerReviewStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 								  </div>
 							 </div>
 							  <div class="col-md-6 valMsgPosition" id="resourceManagerReviewEndDateDiv">
 							  <div class="input-group">
-							  	<input type="text" class="form-control calendar" disabled value="" id="resourceManagerReviewEndDate" name="resourceManagerReviewEndDate" field-name="Resource Manager Review End Date" data-validation-optional="true" readonly="readonly" >
+							  	<input type="text" class="form-control calendar" disabled value="" onclick="performanceManagement.getAppraisalTypesCalendars();"  id="resourceManagerReviewEndDate" name="resourceManagerReviewEndDate" field-name="Resource Manager Review End Date" data-validation-optional="true" readonly="readonly" >
 							    <span class="input-group-addon" onClick="performanceManagement.clearResourceManagerReviewEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 							  </div>
 							  </div>
