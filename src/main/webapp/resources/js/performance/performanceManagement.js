@@ -1768,6 +1768,8 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
   }
   
   this.validatePercentageTotalSumValue = function(){
+	  
+	  
 	  var percentage = 0;
 	  $(".multiTemplates").each(function() {	
 		  percentage = Number(percentage)+Number($("#percent"+$(this).data("template_id")).val());
@@ -1786,10 +1788,10 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 			 percentage = Number(percentage)+Number(projectTasksWeightage);
 			
 		}
-		
 	 $(".multiCompetencies").each(function() {	
 		  percentage = Number(percentage)+Number($("#competenciesPercent"+$(this).data("template_id")).val());
 	  });
+	 
 	  
 	  if(percentage > 100){
 		    $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
@@ -1798,7 +1800,7 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 		    $('#percentTotalSum').attr('record-exist','yes');
 		    $('#percentTotalSum').attr('record-exist-errorMsg','Total percentage should not more than 100'); 
 		    $("#savePerformanceBudget").attr("disabled", "disabled");
-	  }if(percentage < 100){
+	  }else if(percentage < 100){
 		    $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
 		    $('#percentTotalSum').attr('class','error signin_fild');
 		    $('#percentTotalSum').after("<p class='jquery_form_error_message'>Total percentage should equal 100</p>");
