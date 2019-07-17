@@ -38,10 +38,27 @@ function getTemplateOverViewDetails(assignedUUID){
 		        			resourceManagerImgUrl = '/resources/images/userprofileImg.jpg';
 		        		}
 		        		
-		        		
+		        		var appraisalAssignedUserImgUrl = '';
+		        		if(response.object.appraisalTemplate.appraisalAssignedUserImgUrl != null){
+		        			appraisalAssignedUserImgUrl = response.object.appraisalTemplate.appraisalAssignedUserImgUrl;
+		        		}else{
+		        			appraisalAssignedUserImgUrl = '/resources/images/userprofileImg.jpg';
+		        		}
 		        		
 		        		  var result = "";
 				    	  result = result + '<div class="clearfix goalssummar_widget">';
+				    	  
+				    	  result = result + '<div class="form-group clearfix">';
+				    	  result = result + '<label class="col-md-2 paddingRight mt10">Employee<span class="pull-right paddingLeft">:</span></label>';
+				    	  result = result + '<div class="col-md-5">';
+			                      
+				    	  result = result + '<div class="selfAppraisalImg">';
+				    	  result = result + '<img src="'+appraisalAssignedUserImgUrl+'" alt="Image">';
+				    	  result = result + '</div>';
+				    	  result = result + '<span class="selfAppraisalpeerName">'+response.object.appraisalTemplate.appraisalAssignedUser+'</span>';
+				    	  result = result + '</div>';
+				    	  result = result + '</div>';
+				    	  
 				    	  result = result + '<div class="clearfix">';
 				    	  result = result + '<div class="form-group clearfix">';
 				    	  result = result + '<label class="col-md-2 paddingRight">Appraisal Name<span class="pull-right paddingLeft">:</span></label>';
