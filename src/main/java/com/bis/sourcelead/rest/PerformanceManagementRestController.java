@@ -43,7 +43,6 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalAssignedAssociates;
-import com.bis.sourcelead.entity.performance.PerformanceAppraisalPeers;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.entity.performance.PerformanceBadges;
 import com.bis.sourcelead.entity.performance.PerformanceCompetencies;
@@ -395,9 +394,14 @@ public class PerformanceManagementRestController {
  			@RequestParam(value = "templateUUId", required = true) String templateUUId){
  		 String resObj = null;
  		 try {
- 			 PerformanceAppraisalTemplate template =  performanceAppraisalTemplateService.getPerformanceAppraisalTemplateByUUID(templateUUId);
- 			template.setStatus(Constants.RECORD_INACTIVE);
- 			performanceAppraisalTemplateService.savePerformanceAppraisalTemplate(template);
+ 			PerformanceAppraisalTemplate template =  performanceAppraisalTemplateService.getPerformanceAppraisalTemplateByUUID(templateUUId);
+ 			List<PerformanceAppraisalAssignedAssociates> assignedList = performanceAppraisalAssignedAssociatesService.getPerformanceAppraisalAssignedAssociatesListByTemplateId(template.getId());
+ 			if(assignedList != null && !assignedList.isEmpty()) {
+ 				for(PerformanceAppraisalAssignedAssociates assigned : assignedList) {
+ 					performanceAppraisalAssignedAssociatesService.deleteAppraisalAssignedAssociate(assigned);
+ 				}
+ 			}
+ 			 performanceAppraisalTemplateService.deletePerformanceAppraisalTemplate(template);
  			 resObj = Result.SUCCESS.name();
  		    
  		 }catch (Exception e) {
@@ -620,7 +624,23 @@ public class PerformanceManagementRestController {
 	}
 	
 	
-	 
+	@RequestMapping(value = "/getAppraisalAssignedPeersList", method = RequestMethod.GET)
+	public ResponseList<PerformanceAppraisalPeersDTO> getAppraisalAssignedPeersList(PerformanceAppraisalPeersDTO performanceAppraisalPeersDTO,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		
+		String[] tableColumns = {"action", "associateId", "associateName", "associateEmail"};
+		int sortColumnIndex = 1; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (performanceAppraisalPeersDTO.getOrder() != null && !performanceAppraisalPeersDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(performanceAppraisalPeersDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = performanceAppraisalPeersDTO.getOrder().get(0).get("dir");
+		}
+		performanceAppraisalPeersDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		performanceAppraisalPeersDTO.setSortOrder(sortColumnOrder);
+		ResponseList<PerformanceAppraisalPeersDTO> performancePeersList = performanceAppraisalTemplateService.getPerformanceAssignedPeersList(performanceAppraisalPeersDTO, orgLocationId);
+		return performancePeersList;
+	}
 	 
 	 
 	    @RequestMapping(value = "/getTagCompetenceList", method = RequestMethod.GET)
@@ -803,6 +823,32 @@ public class PerformanceManagementRestController {
 	 		 return response;
 	     }
 	    
+	    
+	    @RequestMapping(value = "/updatePeersToAssignedAppraisl", method = RequestMethod.POST)
+	 	public Response<String> updatePeersToAssignedAppraisl(PerformancePeersDTO performancePeersDTO,
+				HttpServletRequest request){
+	    	 Response<String> response = new Response<>(); 
+	 		 try {
+	 			 
+	 			 if(StringUtils.isNotBlank(performancePeersDTO.getAppraisalAssignedUUId())) {
+	 				PerformanceAppraisalAssignedAssociates assigned = performanceAppraisalAssignedAssociatesService.getPerformanceAppraisalAssignedAssociatesByUUID(performancePeersDTO.getAppraisalAssignedUUId());
+	 			    if(assigned != null) {
+	 			    	assigned.setPeerUserId(performancePeersDTO.getPeerUserIds());
+	 			    	performanceAppraisalAssignedAssociatesService.savePerformanceAppraisalAssignedAssociates(assigned);
+	 			    }
+	 			 }
+	 				response.setObject("success");
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+	 			
+	 		 }catch (Exception e) {
+	 			response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
+	 		}
+	 		 return response;
+	     }
+	    
 	    @RequestMapping(value = "/getAssociateAssignedPeers", method = RequestMethod.GET)
 		public ResponseList<PerformanceAppraisalPeersDTO> getAssociateAssignedPeers(@RequestParam(value = "userId", required = true) Long userId,
 				HttpServletRequest request){
@@ -810,6 +856,26 @@ public class PerformanceManagementRestController {
 			 try {
 				 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 				 List<PerformanceAppraisalPeersDTO> peersDTOList =  performanceAppraisalPeersService.getAssociateAssignedPeersList(userId, orgLocationId);
+				 resObj.setData(peersDTOList);
+				 resObj.setResponse(Result.SUCCESS.name());
+				 resObj.setResponseMessage(Result.SUCCESS.getValue());
+			    
+			 }catch (Exception e) {
+				 resObj.setResponse(Result.AWKWARD.name());
+				 resObj.setResponseMessage(Result.AWKWARD.getValue());
+				 e.printStackTrace();
+			}
+			 return resObj;
+	    }
+	    
+	    
+	    
+	    @RequestMapping(value = "/getAssociateAssignedPeersListForAppraisal", method = RequestMethod.GET)
+		public ResponseList<PerformanceAppraisalPeersDTO> getAssociateAssignedPeersListForAppraisal(@RequestParam(value = "assignedUUID", required = true) String assignedUUID,
+				HttpServletRequest request){
+	    	ResponseList<PerformanceAppraisalPeersDTO> resObj = new ResponseList<>();
+			 try {
+				 List<PerformanceAppraisalPeersDTO> peersDTOList =  performanceAppraisalPeersService.getAssociateAssignedPeersListForAppraisal(assignedUUID);
 				 resObj.setData(peersDTOList);
 				 resObj.setResponse(Result.SUCCESS.name());
 				 resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -850,6 +916,7 @@ public class PerformanceManagementRestController {
 		@RequestMapping(value = "/getAppraisalAssignedAssociatesList", method = RequestMethod.GET)
 		public ResponseList<AppraisalAssignedAssociatesDTO> getAppraisalAssignedAssociatesList(AppraisalAssignedAssociatesDTO appraisalAssignedAssociatesDTO,HttpServletRequest request) throws Exception {
 			
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			String[] tableColumns = { "associateId", "associateName", "associateEmail", "associateRole", "reportingManager" };
 			int sortColumnIndex = 1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default descending order
@@ -859,6 +926,7 @@ public class PerformanceManagementRestController {
 			}
 			appraisalAssignedAssociatesDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			appraisalAssignedAssociatesDTO.setSortOrder(sortColumnOrder);
+			appraisalAssignedAssociatesDTO.setOrgLocationId(orgLocation.getId());
 			ResponseList<AppraisalAssignedAssociatesDTO> appraisalAssignedAssociatesList = performanceAppraisalAssignedAssociatesService.getAppraisalAssignedAssociatesList(appraisalAssignedAssociatesDTO);
 			return appraisalAssignedAssociatesList;
 		}

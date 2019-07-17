@@ -165,7 +165,7 @@
   }
   
   
-  function appraisalPeerPagination(url,userId,userRoleId,uuid){
+  function appraisalPeerPagination(url,userId,userRoleId){
 	  
 	  var colIndex = 0;
 	    $('#peersListTable').DataTable( { 
@@ -276,19 +276,7 @@
 	    $("#peersListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
 	    $("input[type=search]").hide();
 	    
-	    /* $("#peersDataTableSearch").keyup(function(e) {
-	    	   if(e.which === 13) {
-	   		    $('#peersDataTableSearch').parent().find('p.jquery_form_error_message').remove();
-	   	    	var searchData = $('#peersDataTableSearch').val();
-	   	    	
-	   	 	if(searchData.endsWith("-") || searchData.endsWith("\\") || searchData.endsWith("//") || searchData.endsWith("%")){
-		    		$("#peersDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
-		    	}else{
-		    		getPeersList(userId,userRoleId,uuid);
-		    	}
-	   	    	$('#peersDataTableSearch').val(searchData);
-	    	   }
-	    	}); */
+	    
   }
   
   

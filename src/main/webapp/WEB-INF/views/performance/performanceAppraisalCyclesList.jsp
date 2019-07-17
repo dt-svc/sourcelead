@@ -17,6 +17,8 @@
       
        <div class="contentareaInner-styles clearfix">
       <div class="timesheet_out" id="payrollRegister" style="display: block;">
+     <div id="appraisalChoicepopUp"></div>
+     <div id="appraisalListLoading"></div>
         <div class="clearfix">
             
           </div>
@@ -56,10 +58,10 @@
 								  <ul class="list-unstyled list-inline">
 									  <li><a onclick="performanceManagement.assignAppraisalCycle('${appraisal.templateUUId}');" title="Assign"><i class="fa fa-user-plus cursorPointer text-primary"></i></a></li>
 									  <li><a onclick="performanceManagement.addNewAppraisalCycle('${appraisal.templateUUId}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
-							  	      <c:if test="${appraisal.templateAssignedUserCount == 0}">
-							  	      <li><a onclick="performanceManagement.deleteAppraisalCycle('${appraisal.templateUUId}');" title="Delete"><i class="fa fa-trash"></i></a></li>
+							  	      <c:if test="${appraisal.templateSubmittedCount == 0}">
+							  	      <li><a onclick="deleteAppraisalMessage('${appraisal.templateUUId}');" title="Delete"><i class="fa fa-trash"></i></a></li>
 								      </c:if>
-								      <c:if test="${appraisal.templateAssignedUserCount > 0}">
+								      <c:if test="${appraisal.templateSubmittedCount > 0}">
 								      <li><a href="javascript:vois(0)" title="Assigned Associates Count" onclick="performanceManagement.templateAssignedAssociates('${appraisal.templateUUId}');">${appraisal.templateAssignedUserCount}</a>
 								      </c:if>
 								  </ul>
@@ -75,4 +77,27 @@
         </div>
       </div>
       
+      
+<script type="text/javascript">
+function deleteAppraisalMessage(templateUUId){
+    var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure for permanent delete?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok"  onClick="performanceManagement.deleteAppraisalCycle(\''+templateUUId+'\');" ><input class="u_can_color" type="button"  value="Cancel" onclick="cancel();"></b>';
+	result = result +"	</div>";
+	$("#appraisalChoicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#appraisalChoicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
        
