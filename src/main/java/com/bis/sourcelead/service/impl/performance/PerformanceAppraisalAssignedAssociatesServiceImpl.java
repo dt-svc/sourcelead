@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl.performance;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -122,6 +123,18 @@ public class PerformanceAppraisalAssignedAssociatesServiceImpl implements Perfor
 	@Override
 	public Long getAppraisalAssignedUserByUUID(String uuid) throws Exception {
 		return performanceAppraisalAssignedAssociatesDao.getAppraisalAssignedUserByUUID(uuid);
+	}
+
+	@Override
+	public List<PerformanceAppraisalAssignedAssociates> getPerformanceAppraisalAssignedAssociatesListByTemplateId(
+			Long templateId) throws Exception {
+		return performanceAppraisalAssignedAssociatesDao.getPerformanceAppraisalAssignedAssociatesListByTemplateId(templateId);
+	}
+
+	@Override
+	public void deletePerformanceAppraisalAssignedAssociates(
+			PerformanceAppraisalAssignedAssociates performanceAppraisalAssignedAssociates) throws Exception {
+		performanceAppraisalAssignedAssociatesDao.deleteAppraisalAssignedAssociate(performanceAppraisalAssignedAssociates);
 	}
 
 }

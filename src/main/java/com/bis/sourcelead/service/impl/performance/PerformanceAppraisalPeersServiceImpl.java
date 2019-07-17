@@ -81,5 +81,11 @@ public class PerformanceAppraisalPeersServiceImpl implements PerformanceAppraisa
 		return performanceAppraisalPeersDao.getAssociateAssignedPeersList(userId, orgLocationId);
 	}
 
+	@Override
+	public List<PerformanceAppraisalPeersDTO> getAssociateAssignedPeersListForAppraisal(String assignedUUID)
+			throws Exception {
+		return performanceAppraisalPeersDao.getAssociateAssignedPeersListForAppraisal(assignedUUID);
+	}
+
 }
 	

@@ -12,4 +12,6 @@ public interface PerformanceAppraisalPeersDao {
 	PerformanceAppraisalPeers getPerformanceAppraisalPeersByUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 	
 	List<PerformanceAppraisalPeersDTO> getAssociateAssignedPeersList(Long userId,Long orgLocationId) throws Exception;
+	
+	List<PerformanceAppraisalPeersDTO> getAssociateAssignedPeersListForAppraisal(String assignedUUID) throws Exception;
 }

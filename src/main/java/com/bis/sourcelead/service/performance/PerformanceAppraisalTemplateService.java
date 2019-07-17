@@ -28,4 +28,8 @@ public interface PerformanceAppraisalTemplateService {
 	
 	List<PerformanceAppraisalTemplateDTO> getPerformanceAppraisalTemplateDTOList(Long orgLocationId,String dateFormat) throws Exception;
 	
+	void deletePerformanceAppraisalTemplate(PerformanceAppraisalTemplate performanceAppraisalTemplate) throws Exception;
+	
+	ResponseList<PerformanceAppraisalPeersDTO> getPerformanceAssignedPeersList(PerformanceAppraisalPeersDTO performanceAppraisalPeersDTO,Long orgLocationId) throws Exception;
+	
 }

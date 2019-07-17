@@ -140,4 +140,63 @@ public class PerformanceAppraisalPeersDaoImpl implements PerformanceAppraisalPee
 
 		return assignedPeersList;
 	}
+
+	@Override
+	public List<PerformanceAppraisalPeersDTO> getAssociateAssignedPeersListForAppraisal(String assignedUUID)
+			throws Exception {
+		
+
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		Query queryObj = null;
+		List<PerformanceAppraisalPeersDTO> assignedPeersList = null;
+		
+		String peersQuery =  "SELECT " + 
+				 "ASSIGNED.PEER_USER_ID " + 
+				 "FROM " + 
+				 "PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED  " + 
+				 "WHERE " + 
+				 "ASSIGNED.UUID = :assignedUUID ";
+
+					Query peersQueryObj = session.createSQLQuery(peersQuery);
+					peersQueryObj.setParameter("assignedUUID", assignedUUID);
+					String peersUsers = (String) peersQueryObj.uniqueResult();
+					
+					if(peersUsers != null) {
+					
+					String peerUserIds [] = peersUsers.split(",");
+					String peerUserIdStr = "'" + StringUtils.join(peerUserIds,"','") + "'";
+					
+					try {
+						query = "SELECT Q1.* " + 
+						 		 "FROM (" + 
+								 "SELECT " + 
+								 "CAND.GENERATED_ID AS associateId, " + 
+								 "CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS associateName, " +
+								 "U.FILE_URL AS userImgUrl, " + 
+								 "R.DISPLAY_NAME AS associateRole, " + 
+								 "U.EMAIL AS associateEmail " + 
+										             
+								"FROM " + 
+								"USER U ," + 
+								"USER_ROLE UR ," + 
+								"ROLES R, " + 
+								"CANDIDATE CAND " + 
+								"WHERE U.ID = CAND.CONSULTANT_USER_ID AND UR.ROLE_ID = R.ID AND CAND.CONSULTANT_USER_ID = UR.USER_ID " + 
+								"AND U.ID IN ("+peerUserIdStr+") GROUP BY CAND.CONSULTANT_USER_ID)Q1 ";
+						
+					}catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+					queryObj = session.createSQLQuery(query);
+					queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalPeersDTO.class));
+					assignedPeersList = queryObj.list();
+				}
+					
+
+		return assignedPeersList;
+	
+	}
 }

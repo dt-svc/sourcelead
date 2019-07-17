@@ -90,6 +90,8 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private BigInteger templateAssignedUserCount;
 	
+	private BigInteger templateSubmittedCount;
+	
 	private String appraisalAssignedUser;
 	
 	private String appraisalAssignedUserImgUrl;
@@ -117,6 +119,8 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	private String assignedUUID;
 	
 	private String userCode;
+	
+	
 	
 	
 	
@@ -518,6 +522,14 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 
 	public void setUserCode(String userCode) {
 		this.userCode = userCode;
+	}
+
+	public BigInteger getTemplateSubmittedCount() {
+		return templateSubmittedCount;
+	}
+
+	public void setTemplateSubmittedCount(BigInteger templateSubmittedCount) {
+		this.templateSubmittedCount = templateSubmittedCount;
 	}
 
 	

@@ -10,6 +10,8 @@ public class PerformanceAppraisalPeersDTO implements Serializable{
 private static final long serialVersionUID = 1L;
 
     private String appraisalTemplateUUId;
+    
+    private String appraisalAssignedUUId;
 	
 	private BigInteger userId;
 	
@@ -189,6 +191,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setUserCode(String userCode) {
 		this.userCode = userCode;
+	}
+
+	public String getAppraisalAssignedUUId() {
+		return appraisalAssignedUUId;
+	}
+
+	public void setAppraisalAssignedUUId(String appraisalAssignedUUId) {
+		this.appraisalAssignedUUId = appraisalAssignedUUId;
 	}
 
 }

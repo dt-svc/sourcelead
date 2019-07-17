@@ -313,4 +313,16 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		return performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateDTOList(orgLocationId,dateFormat);
 	}
 
+	@Override
+	public void deletePerformanceAppraisalTemplate(PerformanceAppraisalTemplate performanceAppraisalTemplate)
+			throws Exception {
+		performanceAppraisalTemplateDao.deletePerformanceAppraisalTemplate(performanceAppraisalTemplate);
+	}
+
+	@Override
+	public ResponseList<PerformanceAppraisalPeersDTO> getPerformanceAssignedPeersList(
+			PerformanceAppraisalPeersDTO performanceAppraisalPeersDTO, Long orgLocationId) throws Exception {
+		return performanceAppraisalTemplateDao.getPerformanceAssignedPeersList(performanceAppraisalPeersDTO, orgLocationId);
+	}
+
 }

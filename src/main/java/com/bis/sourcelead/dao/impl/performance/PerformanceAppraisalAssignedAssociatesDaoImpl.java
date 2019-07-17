@@ -21,8 +21,6 @@ import com.bis.sourcelead.dao.performance.PerformanceAppraisalAssignedAssociates
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalTemplateDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.AppraisalAssignedAssociatesDTO;
-import com.bis.sourcelead.dto.performance.PerformanceAppraisalAssignToListDTO;
-import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalAssignedAssociates;
 import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -128,7 +126,21 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 					 "FROM " + 
 					 "USER user  " + 
 					 "WHERE " + 
-					 "user.ID = CAND.CONSULTANT_USER_ID) AS associateEmail " + 
+					 "user.ID = ASSIGNED.USER_ID) AS associateEmail, " + 
+					 
+					 "(SELECT " + 
+					 "user.ID " + 
+					 "FROM " + 
+					 "USER user  " + 
+					 "WHERE " + 
+					 "user.ID = ASSIGNED.USER_ID) AS assignedUserId, " + 
+					 
+					 "(SELECT " + 
+					 "userrole.ROLE_ID " + 
+					 "FROM " + 
+					 "USER_ROLE userrole  " + 
+					 "WHERE " + 
+					 "userrole.USER_ID = ASSIGNED.USER_ID AND userrole.ORG_LOCATIONS_ID = :orgLocationId) AS assignedUserRoleId " +
 							             
 					"FROM " + 
 					"USER_ROLE UR ," + 
@@ -148,13 +160,14 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 		
 		queryObj = session.createSQLQuery(query);
 		queryObj.setParameter("appriasalTemplateId", appriasalTemplate.getId());
+		queryObj.setParameter("orgLocationId", appraisalAssignedAssociatesDTO.getOrgLocationId());
 		
 		queryObj.setResultTransformer(Transformers.aliasToBean(AppraisalAssignedAssociatesDTO.class));
 		queryObj.setFirstResult(appraisalAssignedAssociatesDTO.getStart());
 		queryObj.setMaxResults(appraisalAssignedAssociatesDTO.getLength());
 		assignToList = queryObj.list();
 		
-		countlist = session.createSQLQuery(countQuery).setLong("appriasalTemplateId", appriasalTemplate.getId()).list();
+		countlist = session.createSQLQuery(countQuery).setLong("appriasalTemplateId", appriasalTemplate.getId()).setLong("orgLocationId", appraisalAssignedAssociatesDTO.getOrgLocationId()).list();
 		filterCount = countlist.iterator().next().intValue();
 			
 			
@@ -252,5 +265,34 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 		
 		return userId.longValue();
 	
+	}
+
+	@Override
+	public List<PerformanceAppraisalAssignedAssociates> getPerformanceAppraisalAssignedAssociatesListByTemplateId(
+			Long templateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+
+	    String query = "from PerformanceAppraisalAssignedAssociates assigned where assigned.appraisalTemplateId = :templateId  ";
+
+	    List<PerformanceAppraisalAssignedAssociates> assignedList = session.createQuery(query.toString()).setLong( "templateId", templateId).list();
+        return assignedList;
+	}
+
+	@Override
+	public void deletePerformanceAppraisalAssignedAssociates(
+			PerformanceAppraisalAssignedAssociates performanceAppraisalAssignedAssociates) throws Exception {
+		
+		logger.debug("Adding deletePerformanceAppraisalAssignedAssociates");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (performanceAppraisalAssignedAssociates != null) {
+				session.delete(performanceAppraisalAssignedAssociates);
+			}
+			logger.debug("deletePerformanceAppraisalAssignedAssociates Added Successfully");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		
 	}
 }

@@ -45,6 +45,10 @@ public class AppraisalAssignedAssociatesDTO implements Serializable{
 	
 	private String sortOrder;
 	
+	private BigInteger assignedUserId;
+	
+	private BigInteger assignedUserRoleId;
+	
 	private List<Map<String, String>> order;
 
 	public Long getOrgLocationId() {
@@ -197,6 +201,22 @@ public class AppraisalAssignedAssociatesDTO implements Serializable{
 
 	public void setDaysDifference(Integer daysDifference) {
 		this.daysDifference = daysDifference;
+	}
+
+	public BigInteger getAssignedUserId() {
+		return assignedUserId;
+	}
+
+	public void setAssignedUserId(BigInteger assignedUserId) {
+		this.assignedUserId = assignedUserId;
+	}
+
+	public BigInteger getAssignedUserRoleId() {
+		return assignedUserRoleId;
+	}
+
+	public void setAssignedUserRoleId(BigInteger assignedUserRoleId) {
+		this.assignedUserRoleId = assignedUserRoleId;
 	}
 
 	
