@@ -61,6 +61,10 @@ private static final long serialVersionUID = 1L;
 	
 	private BigInteger appraisalAssignedId;
 	
+	private String appraisalAssignedUser;
+	
+	private String appraisalAssignedUserImgUrl;
+	
 
 	public String getName() {
 		return name;
@@ -277,6 +281,22 @@ private static final long serialVersionUID = 1L;
 
 	public void setPeerReviewEndDate(String peerReviewEndDate) {
 		this.peerReviewEndDate = peerReviewEndDate;
+	}
+
+	public String getAppraisalAssignedUser() {
+		return appraisalAssignedUser;
+	}
+
+	public void setAppraisalAssignedUser(String appraisalAssignedUser) {
+		this.appraisalAssignedUser = appraisalAssignedUser;
+	}
+
+	public String getAppraisalAssignedUserImgUrl() {
+		return appraisalAssignedUserImgUrl;
+	}
+
+	public void setAppraisalAssignedUserImgUrl(String appraisalAssignedUserImgUrl) {
+		this.appraisalAssignedUserImgUrl = appraisalAssignedUserImgUrl;
 	}
 
 	
