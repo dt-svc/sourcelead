@@ -1762,7 +1762,9 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 			 $('#percentageDiv'+id).find('p.jquery_form_error_message').remove(); 
 			 $('input#percentageValidation'+id).removeAttr( "class record-exist record-exist-errormsg");
 			 $('#percentageDiv'+id).find('p.jquery_form_error_message').remove();
+			 performanceManagement.validateCategoryPercentageTotalSumValue();
 		 }
+		 
   }
   
   this.validatePercentageTotalSumValue = function(){
@@ -1795,6 +1797,13 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 		    $('#percentTotalSum').after("<p class='jquery_form_error_message'>Total percentage should not more than 100</p>");
 		    $('#percentTotalSum').attr('record-exist','yes');
 		    $('#percentTotalSum').attr('record-exist-errorMsg','Total percentage should not more than 100'); 
+		    $("#savePerformanceBudget").attr("disabled", "disabled");
+	  }if(percentage < 100){
+		    $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
+		    $('#percentTotalSum').attr('class','error signin_fild');
+		    $('#percentTotalSum').after("<p class='jquery_form_error_message'>Total percentage should equal 100</p>");
+		    $('#percentTotalSum').attr('record-exist','yes');
+		    $('#percentTotalSum').attr('record-exist-errorMsg','Total percentage should equal 100'); 
 		    $("#savePerformanceBudget").attr("disabled", "disabled");
 	  }else{
 		     $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 

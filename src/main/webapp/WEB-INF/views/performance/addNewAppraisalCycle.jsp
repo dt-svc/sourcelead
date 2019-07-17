@@ -353,7 +353,7 @@
 		</div> 
 		  <div class="clearfix"></div>       
 	        <div class="popupFoot text-right">
-	           <button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="performanceManagement.saveAppraisalCycleDetails();" >Save</button>
+	           <button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="performanceManagement.validatePercentageTotalSumValue(); performanceManagement.saveAppraisalCycleDetails();" >Save</button>
 	           <button type="button" class="slBtn md popClose"  onclick="performanceManagement.viewAppraisalCycle();" >Cancel</button>
 	        </div>
 	        
