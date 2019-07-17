@@ -134,8 +134,8 @@
 	     	     <div class="col-md-5" id="appraisalTasksWeightage"></div>
    	      </div>
    	      
-   	       <label class="paddingRight"><strong>Performance Competencies</strong></label></label>
-   	       <div class="col-md-5" id="appraisalPerformanceCompetencies"></div>
+   	       <!-- <label class="paddingRight"><strong>Performance Competencies</strong></label></label>
+   	       <div class="col-md-5" id="appraisalPerformanceCompetencies"></div> -->
      	     
 	     	     
 		</div>

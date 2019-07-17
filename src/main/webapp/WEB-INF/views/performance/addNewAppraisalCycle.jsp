@@ -313,7 +313,7 @@
         
        	<div class="clearfix"></div>
        	
-   		 <div class="clearfix mb">
+   		 <!--<div class="clearfix mb">
             <div class="col-md-12">
               <div class="checkbox-new pull-left mt10">
                 <input id="performanceComptencies" class="checkbox-custom" name="performanceComptencies" type="checkbox" onclick="performanceManagement.checkPerformanceComptencies();">
@@ -323,7 +323,7 @@
             </div>
           </div>
 				
-		<div class="clearfix mb">		
+		 <div class="clearfix mb">		
 		<div class="col-md-6" id="performanceComptenciesDiv" style="display: none;">
 		  <label class="col-md-3">Competency<span class="text-danger paddingLeft"></span></label>
 		  <div class="col-md-9">
@@ -335,7 +335,7 @@
 		  <input type="hidden" name="jsonComptencyCategoriesString" id="jsonComptencyCategoriesString"/>
 		<div class="clearfix"></div>
 		</div> 
-		</div>
+		</div> -->
 		
 		<div class="clearfix mb">
 			<div class="col-md-6">
