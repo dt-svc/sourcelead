@@ -32,4 +32,6 @@ public interface PerformanceAppraisalTemplateService {
 	
 	ResponseList<PerformanceAppraisalPeersDTO> getPerformanceAssignedPeersList(PerformanceAppraisalPeersDTO performanceAppraisalPeersDTO,Long orgLocationId) throws Exception;
 	
+	boolean isAppraisalTemplateNameExisted(Long orgLocationId, String appraisalName) throws Exception;
+	
 }

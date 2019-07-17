@@ -325,4 +325,9 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		return performanceAppraisalTemplateDao.getPerformanceAssignedPeersList(performanceAppraisalPeersDTO, orgLocationId);
 	}
 
+	@Override
+	public boolean isAppraisalTemplateNameExisted(Long orgLocationId, String appraisalName) throws Exception {
+		return performanceAppraisalTemplateDao.isAppraisalTemplateNameExisted(orgLocationId, appraisalName);
+	}
+
 }

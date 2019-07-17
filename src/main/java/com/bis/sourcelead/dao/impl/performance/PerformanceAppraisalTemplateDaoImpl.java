@@ -576,5 +576,27 @@ public class PerformanceAppraisalTemplateDaoImpl implements PerformanceAppraisal
 	
 	}
 
+	@Override
+	public boolean isAppraisalTemplateNameExisted(Long orgLocationId, String appraisalName) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		boolean flag = false;
+		query =  "SELECT "
+				+" LOWER(TEMPLATE.NAME) AS name "
+				+" FROM PERFORMANCE_APPRAISAL_TEMPLATE TEMPLATE "
+				+" WHERE "
+				+" TEMPLATE.ORG_LOCATION_ID = :orgLocationId AND TEMPLATE.STATUS = '1' ";
+		
+		List<String> templateNamesList = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
+		    if(templateNamesList != null &&  !templateNamesList.isEmpty() ) {
+			  if(templateNamesList.contains(appraisalName.toLowerCase()) == true) {
+				  flag = true;
+			  }
+		  }
+		
+		return flag;
+	}
+
 	
 }

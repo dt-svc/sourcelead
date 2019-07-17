@@ -27,5 +27,7 @@ public interface PerformanceAppraisalTemplateDao {
 	void deletePerformanceAppraisalTemplate(PerformanceAppraisalTemplate performanceAppraisalTemplate) throws Exception;
 	
 	ResponseList<PerformanceAppraisalPeersDTO> getPerformanceAssignedPeersList(PerformanceAppraisalPeersDTO performanceAppraisalPeersDTO,Long orgLocationId) throws Exception;
+	
+	boolean isAppraisalTemplateNameExisted(Long orgLocationId, String appraisalName) throws Exception;
 
 }
