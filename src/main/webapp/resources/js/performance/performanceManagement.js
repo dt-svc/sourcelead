@@ -495,6 +495,19 @@ function PerformanceManagement(){
   			}); 
     }
     
+    
+    this.viewAppraisalTemplate = function(templateUUId){
+    	$.ajax({
+  		  type: "GET",
+  		    url: sourceleadUrl+"/getPerformanceAppraisalTemplateDetails",
+  		     success :function(response) {
+  		    	    $("#performanceManagementDiv").empty();  
+  		    	    $("#performanceManagementDiv").append(response);
+  		    	    performanceManagement.appraisalTemplateDetails(templateUUId);
+  				},
+  			}); 
+    }
+    
     this.assignAppraisalCycle = function(uuid){
     	$.ajax({
   		  type: "GET",
@@ -1531,7 +1544,7 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 	        },
 	    });
   }
-  
+
   
   $(document).on('change', '#comptencyCategories', function(evt, params) {
 		if (params.selected != undefined) {
@@ -2107,6 +2120,233 @@ this.enableResourceManagerAppraisalPeriod = function(){
   }
   
   
+  this.appraisalTemplateDetails = function(templateUUId){
+	  $("#appraisalDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  
+	  $.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAppraisalCycleTemplateDetailsById?templateUUId="+templateUUId,
+		     success :function(response) {
+		    	 
+		    		if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+     	    		    showError(response.responseMessage);
+     	    		    $("#appraisalDetailsLoading").removeAttr('style');
+     	    		}
+		        	else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		 $("#appraisalName").html(response.object.name);
+		        		 $("#appraisalStartDate").html(response.object.appraisalStartDate);
+		        		 $("#appraisalEndDate").html(response.object.appraisalEndDate);
+		        		 
+		        		 if(response.object.appraisalDepartment != null && response.object.appraisalDepartment != 'undefined' && response.object.appraisalDepartment != ''){
+		        			 performanceManagement.appraisalDepartmentsList(response.object.appraisalDepartment);
+		        		 }
+		        		
+		        		 
+		        		 if(response.object.appraisalRoles != null && response.object.appraisalRoles != 'undefined' && response.object.appraisalRoles != ''){
+		        			 performanceManagement.appraisalRolesList(response.object.appraisalRoles);
+		        		 }
+		        		
+		        		 
+		        		 if(response.object.appraisalEmpType != null && response.object.appraisalEmpType != 'undefined' && response.object.appraisalEmpType != ''){
+		        			 performanceManagement.appraisalEmployeeTypeList(response.object.appraisalEmpType);
+		        		 }
+		        		 
+		        		 if(response.object.descriptionDisplay != null 
+		        				 && response.object.descriptionDisplay != ''
+		        					 && response.object.descriptionDisplay != 'undefined'){
+		        			 $("#descriptionDisplay").html("Yes");
+		        			 
+		        		 }else{
+		        			 $("#descriptionDisplay").html("No");
+		        		 }
+		        		 
+		        		 if(response.object.description != null 
+		        				 && response.object.description != ''
+		        					 && response.object.description != 'undefined'){
+		        			 
+		        			 $("#appraisalDescription").html(response.object.description);
+		        		 }
+		        		 
+		        		 if(response.object.appraisalProcessStartDate != null 
+		        				 && response.object.appraisalProcessStartDate != ''
+		        					 && response.object.appraisalProcessStartDate != 'undefined'){
+		        			 $("#appraisalProcessStartDate").html(response.object.appraisalProcessStartDate);
+		        			 $("#appraisalProcessEndDate").html(response.object.appraisalProcessEndDate);
+		        		 }
+		        		 
+		        		 if(response.object.selfAppraisalStartDate != null 
+		        				 && response.object.selfAppraisalStartDate != ''
+		        					 && response.object.selfAppraisalStartDate != 'undefined'){
+		        			 $("#selfAppraisalStartDate").html(response.object.selfAppraisalStartDate);
+		        			 $("#selfAppraisalEndDate").html(response.object.selfAppraisalStartDate);
+		        		 }
+		        		 
+		        		 if(response.object.peerReviewStartDate != null 
+		        				 && response.object.peerReviewStartDate != ''
+		        					 && response.object.peerReviewStartDate != 'undefined'){
+		        			 $("#peerReviewStartDate").html(response.object.peerReviewStartDate);
+		        			 $("#peerReviewEndDate").html(response.object.peerReviewEndDate);
+		        		 }
+		        		
+		        		 if(response.object.resourceManagerReviewStartDate != null 
+		        				 && response.object.resourceManagerReviewStartDate != ''
+		        					 && response.object.resourceManagerReviewStartDate != 'undefined'){
+		        			 $("#resourceManagerReviewStartDate").html(response.object.resourceManagerReviewStartDate);
+		        			 $("#resourceManagerReviewEndDate").html(response.object.resourceManagerReviewEndDate);
+		        		 }
+		        		 
+		        		 if(response.object.appraisalApprovingStartDate != null 
+		        				 && response.object.appraisalApprovingStartDate != ''
+		        					 && response.object.appraisalApprovingStartDate != 'undefined'){
+		        			 $("#reportingManagerReviewStartDate").html(response.object.appraisalApprovingStartDate);
+		        			 $("#reportingManagerReviewEndDate").html(response.object.appraisalApprovingEndDate);
+		        		 }
+		        		 
+		        		 var percentageMap = new Map();
+		        		 var selfPercentageMap = new Map();
+		        		 var peerPercentageMap = new Map();
+		        		 var resourceMgrPercentageMap = new Map();
+		        		 var reportingMgrPercentageMap = new Map();
+		        		 var selfPercentage = 0;
+		        		 var peerPercentage = 0;
+		        		 var reportingMgrPercentage = 0;
+		        		 var resourceMgrPercentage = 0;
+		        		 var competenciesPercentageMap = new Map();
+		        		 if(response.object.jsonCategoriesString != null 
+		        				 && response.object.jsonCategoriesString != '' 
+		        					 && response.object.jsonCategoriesString != 'undefined'){
+		        			var data = eval(response.object.jsonCategoriesString);
+		        			
+			        		 if (data) {
+			        			  $.each( data, function( k, v ) {
+			        				  
+			        				  if(v['type'] == "feedbackTemplate"){
+			        					  percentageMap.set(v['templateId'],v['percentage'])
+			        				   	  
+			        				   	  if(v['self'] != 'undefined'){
+			        				   		selfPercentageMap.set(v['templateId'],v['self']);
+			        				   	  }
+			        				   	  
+			        				   	 if(v['peer'] != 'undefined'){
+			        				   		peerPercentageMap.set(v['templateId'],v['peer']);
+				        				   	  }
+			        				   	 
+			        				   	 if(v['resourceManager'] != 'undefined'){
+			        				   		resourceMgrPercentageMap.set(v['templateId'],v['resourceManager']);
+				        				   	  }
+			        				   	 
+			        				   	 if(v['reportingManager'] != 'undefined'){
+			        				   		reportingMgrPercentageMap.set(v['templateId'],v['reportingManager']);
+				        				   	  }
+			        				   	
+			        				  }
+			        				  
+			        				  if(v['type'] == "goalsWeightage"){
+						        			  $("#appraisalGoalsWeightage").html(v['weightage']) 
+			        				  }
+			        				  
+			        				  if(v['type'] == "projectTasksWeightage"){
+						        			  $("#appraisalTasksWeightage").html(v['weightage']) 
+			        				  }
+			        				  
+			        				  if(v['type'] == "competencies"){
+			        					  competenciesPercentageMap.set(v['competenciesId'],v['percentage'])
+			        				   	
+			        				  }
+			        			  });
+			        		 }
+		        		}
+		        		
+		        		 if(percentageMap.size > 0){
+		        			 performanceManagement.appraisalFeebackCategoriesDetails(response.object.appraisalCategories,percentageMap,selfPercentageMap,peerPercentageMap,resourceMgrPercentageMap,reportingMgrPercentageMap);
+		        		 }
+		        		
+	        			  if(competenciesPercentageMap.size > 0){
+		        			 performanceManagement.appraisalCompetenciesDetails(response.object.comptencyCategories,competenciesPercentageMap);
+		        		 }
+		        		
+		        		 
+		        		 $("#appraisalDetailsLoading").removeAttr('style');
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
+		    	  
+				},
+			});
+  }
+  
+  
+  
+  this.appraisalDepartmentsList = function(departmentIds){
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getDepartmentsListForPerformanceAppraisal", 
+	        success: function(json) {
+	        	var departments = '';
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		var deptIds = departmentIds.split(",");
+	        			if (deptIds.indexOf(opt.deptId.toString()) > -1) {
+	        				departments = departments + opt.departmentName+", ";
+	        			}
+		        		
+		        		
+				}
+		        $('#appraisalDepartments').html(departments.substring(0, departments.length - 2));
+	        },
+	    });
+  }
+  
+  this.appraisalRolesList = function(rolesIds){
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getRolesListForPerformanceAppraisal", 
+	        success: function(json) {
+	        	var roles = '';
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		var userRoleIds = rolesIds.split(",");
+	        			if (userRoleIds.indexOf(opt.rolesId.toString()) > -1) {
+	        				roles = roles + opt.displayName+", ";
+	        				
+	        			}
+		        		
+		        		
+				}
+	        	$('#appraisalRoles').html(roles.substring(0, roles.length - 2));
+	        },
+	    });
+  }
+  
+  
+  this.appraisalEmployeeTypeList = function(employeeTypes){
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getEmployeeTypesForPerformanceAppraisal", 
+	        success: function(json) {
+	        	var employeeType = ''
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var empType = json[i];
+		        		var employeeType = employeeTypes.split(", ");
+	        			if (employeeType.indexOf(empType.toString()) > -2) {
+	        				employeeType = employeeType + empType+",";
+	        			}
+		        		
+		        		
+				}
+	        	$('appraisalEmlployeeType').html(employeeType.substring(0, employeeType.length - 1));
+	        },
+	    });
+  }
+  
+  
   this.editAppraisalCycle = function(templateUUId){
 	  
  	  $("#appraisalDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -2454,6 +2694,71 @@ this.enableResourceManagerAppraisalPeriod = function(){
 	        },
 	    });
   }
+  
+ 
+  this.appraisalFeebackCategoriesDetails = function(categoriesIds,percentageMap,selfPercentageMap,peerPercentageMap,resourceMgrPercentageMap,reportingMgrPercentageMap){
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getFeedBackCategoriesListForPerformanceAppraisal", 
+	        success: function(json) {
+	        	var output = "";
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		var categIds = categoriesIds.split(",");
+	        			if (categIds.indexOf(opt.templateId.toString()) > -1) {
+        					output = output + '<span class="clearfix mt"><strong>'+opt.templateName+'</strong></span>';	
+        					output = output + '<div class="clearfix mt10"></div>';
+	        				if(typeof selfPercentageMap.get(opt.templateId) != "undefined"){
+	        					output = output + '<span class="clearfix mt">Self : <span>'+selfPercentageMap.get(opt.templateId);
+	        				}
+	        				if(typeof peerPercentageMap.get(opt.templateId) != "undefined"){
+	        					output = output + '<span class="clearfix mt">Peer : <span>'+peerPercentageMap.get(opt.templateId);
+	        				}
+	        				if(typeof resourceMgrPercentageMap.get(opt.templateId) != "undefined"){
+	        					output = output + '<span class="clearfix mt">Resource Manager : <span>'+resourceMgrPercentageMap.get(opt.templateId);
+	        				}
+	        				if(typeof reportingMgrPercentageMap.get(opt.templateId) != "undefined"){
+	        					output = output + '<span class="clearfix mt">Reporting Manager : <span>'+reportingMgrPercentageMap.get(opt.templateId);
+	        				}
+	        				output = output + '<div class="clearfix mt10"></div>';	
+	        				
+	        			}
+		        		
+		        		
+				}
+		        $('#appraisalFeedbackCategories').html(output);
+	        },
+	    });
+	  
+  }
+  
+  
+
+  this.appraisalCompetenciesDetails = function(categoriesIds,percentageMap){
+  	  $.ajax({
+  	    	type: "GET",
+  	        url: sourceleadUrl+"/getPerformanceCompetenceListForTagging", 
+  	        success: function(json) {
+  	        	var output = "";
+  	        	for (var i=0; i<json.length; i++)
+  				{
+  		        		var opt = json[i];
+  		        		var categIds = categoriesIds.split(",");
+  	        			if (categIds.indexOf(opt.id.toString()) > -1) {
+  	        				output = output + '<span class="clearfix mt"><strong>'+opt.name+'</strong></span>';	
+        					output = output + '<div class="clearfix mt10"></div>';
+        					output = output + '<span class="clearfix mt">Percentage : <span>'+percentageMap.get(opt.id);
+        					
+  	        			}
+  		        		
+  		        		
+  				}
+  		        $('#appraisalPerformanceCompetencies').html(output);
+  	        },
+  	    });
+  }
+    
   
   this.feedbackCategoriesList = function(categoriesIds,percentageMap,selfPercentageMap,peerPercentageMap,resourceMgrPercentageMap,reportingMgrPercentageMap){
 	  $.ajax({

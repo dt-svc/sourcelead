@@ -57,8 +57,9 @@
 							  <div class="tblminwidth-50">
 								  <ul class="list-unstyled list-inline">
 									  <li><a onclick="performanceManagement.assignAppraisalCycle('${appraisal.templateUUId}');" title="Assign"><i class="fa fa-user-plus cursorPointer text-primary"></i></a></li>
-									  <li><a onclick="performanceManagement.addNewAppraisalCycle('${appraisal.templateUUId}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
+									  <li><a onclick="performanceManagement.viewAppraisalTemplate('${appraisal.templateUUId}');" title="View Template"><i class="fa fa-eye"></i></a></li>
 							  	      <c:if test="${appraisal.templateSubmittedCount == 0}">
+							  	      <li><a onclick="performanceManagement.addNewAppraisalCycle('${appraisal.templateUUId}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
 							  	      <li><a onclick="deleteAppraisalMessage('${appraisal.templateUUId}');" title="Delete"><i class="fa fa-trash"></i></a></li>
 								      </c:if>
 								      <c:if test="${appraisal.templateSubmittedCount > 0}">
