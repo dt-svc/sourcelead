@@ -83,7 +83,7 @@ function getTemplateOverViewDetails(assignedUUID){
  	 						    	  result = result + '<div class="selfAppraisalImg">';
  	 						    	  result = result + '<img src="'+peerUserImgUrl+'" alt="Image">';
  	 						    	  result = result + '</div>';
- 	 						    	  result = result + '<span class="selfAppraisalpeerName">'+opt.associateName+'</span>';
+ 	 						    	  result = result + '<span class="selfAppraisalpeerName mr">'+opt.associateName+'</span>';
  	 						    	  result = result + '</li>';
  									}
 
