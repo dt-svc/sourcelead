@@ -34,7 +34,7 @@ function getAppraisalFinalScoreDetails(performanceAssignedUUID){
 		 result = result + '<label class="clearfix col-md-2">Score</label>';
 		 result = result + '</div>';
 		 result = result + '<div class="clearfix col-md-2">';
-		 result = result + '<input type="text" id="selfScore" disbled class="form-control">';
+		 result = result + '<input type="text" id="selfScore" disabled class="form-control">';
 		 result = result + '</div>';
 		 result = result + '</div>';
 		 result = result + '</div>';
@@ -47,7 +47,7 @@ function getAppraisalFinalScoreDetails(performanceAssignedUUID){
 		 result = result + '<label class="clearfix col-md-2">Score</label>';
 		 result = result + '</div>';
 		 result = result + '<div class="clearfix col-md-2">';
-		 result = result + '<input type="text" id="peerScore" disbled class="form-control">';
+		 result = result + '<input type="text" id="peerScore" disabled class="form-control">';
 		 result = result + '</div>';
 		 result = result + '</div>';
 		 result = result + '</div>';
