@@ -2,6 +2,20 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="/resources/js/requirementWorkflow.js?staticTime=${staticTime}"></script>
+
+<script>
+//var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+$(document).ready(function() {
+	//requirementWorkflow.getWorkflowQuestionnnaireList();
+	
+	var templateName = '${templateName}';
+	if(templateName != ""){
+		requirementWorkflow.showSuccessMsg("Successfully saved "+templateName);
+	}
+});
+
+</script>
+
 <script>
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
@@ -40,6 +54,9 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </div>
 <div id="popUp"></div>
     <div id="choicepopUp"></div>
+    <div class="success_pop" id="selector" >
+	       <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+			</div>
 <script>
 $(document).ready(function() {
 	requirementWorkflow.getWorkflowQuestionnnaireList();

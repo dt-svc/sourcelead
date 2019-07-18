@@ -995,24 +995,24 @@ function RequirementWorkflow(){
 				 $("#popUp").empty();
 				 result = result +" <div class='project_inn_mask'></div>"; 
 				 result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-
 				 result = result +" <p>Do you want to delete "+name+"?</p>";
 				 result = result + ' <div id="voidInvoiceId"/>';
-				 result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteQuestionnaire(\''+uuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
+				 result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteQuestionnaire(\''+uuid+'\',\''+name+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
 				 result = result +" </div>";
 				 $("#popUp").append(result);
 				 $("#remove_user_pop").slideDown(200);
 				 $(".project_inn_mask").fadeIn(200);
 				 }
-
-				 this.deleteQuestionnaire = function(uuid){
+				 this.deleteQuestionnaire = function(uuid,name){
 				 	  $.ajax({
 				 	    	type: "POST",
 				 	        url: sourceleadUrl+"/deleteQuestionnaireTemplateById?templateUuid="+uuid, 
 				 	       success: function(result) {
 				 	           if (result.response === "AWKWARD") {
 				 	        	    location.href = "/errorPage";
-				 	        	} else if (result.response === "SUCCESS") {
+				 	        	} else if (result.response === "SUCCESS")
+				 	        	{
+				 	        		 requirementWorkflow.showSuccessMsg("Successfully Deleted " +name); 
 				 	        		requirementWorkflow.getWorkflowQuestionnnaireList();
 				 	        		$(".mask, #modalTasktype").fadeOut();
 				 	        	} else {
