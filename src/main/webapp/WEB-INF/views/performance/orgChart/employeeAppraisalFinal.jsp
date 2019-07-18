@@ -53,14 +53,37 @@ function getAppraisalFinalScoreDetails(performanceAssignedUUID){
 		 result = result + '</div>';
 
 		 result = result + '<div class="clearfix mt mb">';
-		 result = result + '<h4 class="text-muted">Manager</h4>';
+		 result = result + '<h4 class="text-muted">Reporting Manager</h4>';
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '<div class="row">';
 		 result = result + '<div class="col2Custom10">';
 		 result = result + '<label class="clearfix col-md-2">Score</label>';
 		 result = result + '</div>';
 		 result = result + '<div class="clearfix col-md-2">';
-		 result = result + '<input type="text" id="finalScore" disabled class="form-control">';
+		 result = result + '<input type="text" id="reportingMgrFinalScore" disabled class="form-control">';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 result = result + '<div class="row mt">';
+		 result = result + '<div class="col2Custom10">';
+		 result = result + '<label class="clearfix col-md-2">Comment</label>';
+		 result = result + '</div>';
+		 
+		 result = result + '<div class="clearfix col-md-10 colmd10">';
+		 result = result + '<textarea class="form-control" rows="4" disabled name="reportingMgrComments" id="comments" ></textarea>';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 
+		 
+		 result = result + '<div class="clearfix mt mb">';
+		 result = result + '<h4 class="text-muted">Resource Manager</h4>';
+		 result = result + '<div class="clearfix"></div>';
+		 result = result + '<div class="row">';
+		 result = result + '<div class="col2Custom10">';
+		 result = result + '<label class="clearfix col-md-2">Score</label>';
+		 result = result + '</div>';
+		 result = result + '<div class="clearfix col-md-2">';
+		 result = result + '<input type="text" id="resourceMgrFinalScore" disabled class="form-control">';
 		 result = result + '</div>';
 		 result = result + '</div>';
 		 result = result + '<div class="row mt">';
@@ -69,7 +92,7 @@ function getAppraisalFinalScoreDetails(performanceAssignedUUID){
 		 result = result + '</div>';
 	                     
 		 result = result + '<div class="clearfix col-md-10 colmd10">';
-		 result = result + '<textarea class="form-control" rows="4" disabled name="comments" id="comments" ></textarea>';
+		 result = result + '<textarea class="form-control" rows="4" disabled name="resourceMgrComments" id="comments" ></textarea>';
 		 result = result + '</div>';
 		 result = result + '</div>';
 		 result = result + '</div>';
@@ -128,15 +151,25 @@ function getFinalScore(assignedUUID){
 		    		 for (var i=0; i<response.data.length; i++)
 	        	    	{
 		    			 var opt = response.data[i];
-		     			 if(opt.scoreType == 'Manager'){
+		    			 if(opt.scoreType == 'Reporting Manager'){
 		    				 var finalScore = 0;
 		    				 if(opt.finalScore != null && typeof opt.finalScore != 'undefined'){
 		    					 finalScore = opt.finalScore;
 		    				 }
-		    				 $("#finalScore").val(finalScore);
+		    				 $("#reportingMgrFinalScore").val(finalScore);
 		    				
 		    				 if(opt.comments != null){
-		    		    		 $("textarea[name=comments]").val(opt.comments);
+		    		    		 $("textarea[name=reportingMgrComments]").val(opt.comments);
+		    		    	 } 
+		    			 }else if(opt.scoreType == 'Resource Manager'){
+		    				 var finalScore = 0;
+		    				 if(opt.finalScore != null && typeof opt.finalScore != 'undefined'){
+		    					 finalScore = opt.finalScore;
+		    				 }
+		    				 $("#resourceMgrFinalScore").val(finalScore);
+		    				
+		    				 if(opt.comments != null){
+		    		    		 $("textarea[name=resourceMgrComments]").val(opt.comments);
 		    		    	 } 
 		    			 }else if(opt.scoreType == 'Self'){
 		    				 var selfScore = 0;

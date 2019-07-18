@@ -39,7 +39,7 @@ function getAppraisalFinalScoreDetails(appraisalType){
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '<div class="col-md-8 mb">';
 		 result = result + '<div class="row">';
-		 result = result + '<label class="clearfix col-md-2">Comments</label>';
+		 result = result + '<label class="clearfix col-md-2">Comments<span class="text-danger paddingLeft">&nbsp;*</span></label>';
 		 result = result + '<div class="clearfix col-md-9">';
 		 result = result + '<textarea class="form-control" rows="4" name="comments" id="comments" field-name="Comments" data-validation="validate_Space required"></textarea>';
 		 result = result + '</div>';

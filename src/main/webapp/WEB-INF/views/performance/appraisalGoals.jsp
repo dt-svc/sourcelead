@@ -79,7 +79,7 @@ function getAppraisalGoalsDetails(){
 		               				   	  
 	               				    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
 		   		        		    result = result + '<label>Goals Score : </label>';
-		   		        		   
+		   		        		    
 		   		        		 if(submissionStage != 'Submitted_For_Review'){
 		   		        		    result = result + '<select class="form-control pull-left" id="goalsScore" onchange="saveGoalsScore(\''+assignedUUID+'\');" name="goalsScore"  field-name="Goals Score">';
 		   		        		    result = result + options;

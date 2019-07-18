@@ -65,6 +65,10 @@ private static final long serialVersionUID = 1L;
 	
 	private String appraisalAssignedUserImgUrl;
 	
+	private BigInteger reportingManagerUserId;
+	
+	private BigInteger resourceManagerUserId;
+	
 
 	public String getName() {
 		return name;
@@ -297,6 +301,22 @@ private static final long serialVersionUID = 1L;
 
 	public void setAppraisalAssignedUserImgUrl(String appraisalAssignedUserImgUrl) {
 		this.appraisalAssignedUserImgUrl = appraisalAssignedUserImgUrl;
+	}
+
+	public BigInteger getReportingManagerUserId() {
+		return reportingManagerUserId;
+	}
+
+	public void setReportingManagerUserId(BigInteger reportingManagerUserId) {
+		this.reportingManagerUserId = reportingManagerUserId;
+	}
+
+	public BigInteger getResourceManagerUserId() {
+		return resourceManagerUserId;
+	}
+
+	public void setResourceManagerUserId(BigInteger resourceManagerUserId) {
+		this.resourceManagerUserId = resourceManagerUserId;
 	}
 
 	

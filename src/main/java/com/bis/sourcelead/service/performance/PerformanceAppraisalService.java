@@ -41,9 +41,9 @@ public interface PerformanceAppraisalService {
 	
 	String getJsonCategoriesString(String assignedUUID) throws Exception;
 	
-	ResponseList<PerformanceAppraisalTemplateDTO> getEmployeeAssignedAppraisalList(PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO,Long userId,Long orgLocationId,String dateFormat) throws Exception;
+	ResponseList<PerformanceAppraisalTemplateDTO> getEmployeeAssignedAppraisalList(PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO,Long userId,Long orgLocationId,String dateFormat,Long orgId,String isGlobalUser) throws Exception;
 	
-	ResponseList<PerformanceAppraisalTemplateDTO> getAppraisalAssignedEmployeesList(PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO,Long userId,Long orgLocationId,String dateFormat) throws Exception;
+	ResponseList<PerformanceAppraisalTemplateDTO> getAppraisalAssignedEmployeesList(PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO,Long userId,Long orgLocationId,String dateFormat,Long orgId, String isGlobalUser) throws Exception;
 	
 	List<PerformanceAppraisalPeersDTO> getAppraisalAssignedPeers(String assignedUUID) throws Exception;
 	

@@ -504,6 +504,8 @@ public class PerformanceAppraisalRestController {
 		
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+ 		 String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+ 		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
  		 
 		String[] tableColumns = { "name", "appraisalStartDate", "appraisalEndate", "appraisalProcessStartDate", "status" };
 		int sortColumnIndex = 1; // by default sorting using updated date
@@ -514,7 +516,7 @@ public class PerformanceAppraisalRestController {
 		}
 		performanceAppraisalTemplateDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		performanceAppraisalTemplateDTO.setSortOrder(sortColumnOrder);
-		ResponseList<PerformanceAppraisalTemplateDTO> myAppraisalAssignedList = performanceAppraisalService.getEmployeeAssignedAppraisalList(performanceAppraisalTemplateDTO, user.getId(), orgLocation.getId(), orgLocation.getDateFormat());
+		ResponseList<PerformanceAppraisalTemplateDTO> myAppraisalAssignedList = performanceAppraisalService.getEmployeeAssignedAppraisalList(performanceAppraisalTemplateDTO, user.getId(), orgLocation.getId(), orgLocation.getDateFormat(),org.getId(),isGlobalUser);
 		return myAppraisalAssignedList;
 	}
     
@@ -523,6 +525,8 @@ public class PerformanceAppraisalRestController {
 		
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
  		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+ 		 String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+ 		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
  		 
 		String[] tableColumns = { "appraisalAssignedUser", "appraisalProcessStartDate", "appraisalStartDate", "appraisalEndate", "status" };
 		int sortColumnIndex = 1; // by default sorting using updated date
@@ -533,7 +537,7 @@ public class PerformanceAppraisalRestController {
 		}
 		performanceAppraisalTemplateDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		performanceAppraisalTemplateDTO.setSortOrder(sortColumnOrder);
-		ResponseList<PerformanceAppraisalTemplateDTO> myAppraisalAssignedList = performanceAppraisalService.getAppraisalAssignedEmployeesList(performanceAppraisalTemplateDTO, user.getId(), orgLocation.getId(), orgLocation.getDateFormat());
+		ResponseList<PerformanceAppraisalTemplateDTO> myAppraisalAssignedList = performanceAppraisalService.getAppraisalAssignedEmployeesList(performanceAppraisalTemplateDTO, user.getId(), orgLocation.getId(), orgLocation.getDateFormat(),org.getId(),isGlobalUser);
 		return myAppraisalAssignedList;
 	}
     
