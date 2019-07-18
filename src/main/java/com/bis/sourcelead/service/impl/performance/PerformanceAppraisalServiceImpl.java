@@ -99,15 +99,15 @@ public class PerformanceAppraisalServiceImpl implements PerformanceAppraisalServ
 	@Override
 	public ResponseList<PerformanceAppraisalTemplateDTO> getEmployeeAssignedAppraisalList(
 			PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO, Long userId, Long orgLocationId,
-			String dateFormat) throws Exception {
-		return performanceAppraisalDao.getEmployeeAssignedAppraisalList(performanceAppraisalTemplateDTO, userId, orgLocationId, dateFormat);
+			String dateFormat,Long orgId,String isGlobalUser) throws Exception {
+		return performanceAppraisalDao.getEmployeeAssignedAppraisalList(performanceAppraisalTemplateDTO, userId, orgLocationId, dateFormat,orgId,isGlobalUser);
 	}
 
 	@Override
 	public ResponseList<PerformanceAppraisalTemplateDTO> getAppraisalAssignedEmployeesList(
 			PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO, Long userId, Long orgLocationId,
-			String dateFormat) throws Exception {
-		return performanceAppraisalDao.getAppraisalAssignedEmployeesList(performanceAppraisalTemplateDTO, userId, orgLocationId, dateFormat);
+			String dateFormat,Long orgId, String isGlobalUser) throws Exception {
+		return performanceAppraisalDao.getAppraisalAssignedEmployeesList(performanceAppraisalTemplateDTO, userId, orgLocationId, dateFormat,orgId,isGlobalUser);
 	}
 
 	@Override

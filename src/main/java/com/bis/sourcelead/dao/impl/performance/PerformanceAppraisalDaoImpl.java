@@ -586,7 +586,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		Query goalsScoreQueryObj = session.createSQLQuery(goalsScoreQuery);
 		goalsScoreQueryObj.setBigInteger("appraisalAssignedId", templateDTO.getAppraisalAssignedId());
-		goalsScoreQueryObj.setBigInteger("userId", templateDTO.getAppraisalAssignedUserId());
+		goalsScoreQueryObj.setLong("userId", userId);
 		Integer goalsScore = (Integer) goalsScoreQueryObj.uniqueResult();
 		
 		
@@ -918,7 +918,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 	@Override
 	public ResponseList<PerformanceAppraisalTemplateDTO> getEmployeeAssignedAppraisalList(
 			PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO, Long userId, Long orgLocationId,
-			String dateFormat) throws Exception {
+			String dateFormat,Long orgId,String isGlobalUser) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
@@ -929,6 +929,13 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		Integer filterCount = 0;
 		ResponseList<PerformanceAppraisalTemplateDTO> response = new ResponseList<>();
 		String querySeachStr = "";
+		String globalPermission = "";
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			globalPermission = "ASSIGNED.ORG_ID = '"+orgId+"'";
+		}else {
+			globalPermission = "ASSIGNED.ORG_LOCATION_ID = '"+orgLocationId+"'";
+		}
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(performanceAppraisalTemplateDTO.getSearchValue() != null && !"".equalsIgnoreCase(performanceAppraisalTemplateDTO.getSearchValue())) {
@@ -985,7 +992,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 				    
 					"WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND "+ 
 					"(ASSIGNED.REPORTING_MANAGER_ID = :userId OR ASSIGNED.RESOURCE_MANAGER_ID = :userId ) " + 
-					"AND ASSIGNED.ORG_LOCATION_ID = :orgLocationId )Q1 "+querySeachStr+sortingQry;
+					"AND "+globalPermission+" )Q1 "+querySeachStr+sortingQry;
 			
 			String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
 					" FROM" + 
@@ -994,7 +1001,6 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 			
 			
 			queryObj = session.createSQLQuery(query);
-			queryObj.setParameter("orgLocationId", orgLocationId);
 			queryObj.setParameter("userId", userId);
 			
 			queryObj.setResultTransformer(Transformers.aliasToBean(PerformanceAppraisalTemplateDTO.class));
@@ -1002,7 +1008,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 			queryObj.setMaxResults(performanceAppraisalTemplateDTO.getLength());
 			assignToList = queryObj.list();
 			
-			countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+			countlist = session.createSQLQuery(countQuery).setLong("userId", userId).list();
 			filterCount = countlist.iterator().next().intValue();
 				
 			
@@ -1035,7 +1041,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 	@Override
 	public ResponseList<PerformanceAppraisalTemplateDTO> getAppraisalAssignedEmployeesList(
 			PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO, Long userId, Long orgLocationId,
-			String dateFormat) throws Exception {
+			String dateFormat,Long orgId, String isGlobalUser) throws Exception {
 		
 
 		
@@ -1058,6 +1064,14 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		Query goalsScoreQueryObj = session.createSQLQuery(goalsScoreQuery);
 		goalsScoreQueryObj.setString("templateUUId", performanceAppraisalTemplateDTO.getTemplateUUId());
 		BigInteger templateId = (BigInteger) goalsScoreQueryObj.uniqueResult();
+		
+		String globalPermission = "";
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			globalPermission = "AND ASSIGNED.ORG_ID = '"+orgId+"'";
+		}else {
+			globalPermission = "AND ASSIGNED.ORG_LOCATION_ID = '"+orgLocationId+"'";
+		}
 		
 		
 		StringBuilder query1 = new StringBuilder("");
@@ -1130,7 +1144,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 				    
 					"WHERE ASSIGNED.APPRAISAL_TEMPLATE_ID = TEMPLATE.ID AND ASSIGNED.USER_ID = U.ID AND UR.USER_ID = ASSIGNED.USER_ID AND "+ 
 					"(UR.REPORTING_MANAGER_ID = :userId OR UR.RESOURCE_MANAGER_ID = :userId ) " + 
-					"AND ASSIGNED.APPRAISAL_TEMPLATE_ID = :templateId AND ASSIGNED.ORG_LOCATION_ID = :orgLocationId )Q1 "+querySeachStr+sortingQry;
+					"AND ASSIGNED.APPRAISAL_TEMPLATE_ID = :templateId "+globalPermission+" )Q1 "+querySeachStr+sortingQry;
 			
 			String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
 					" FROM" + 
@@ -1139,7 +1153,6 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 			
 			
 			queryObj = session.createSQLQuery(query);
-			queryObj.setParameter("orgLocationId", orgLocationId);
 			queryObj.setParameter("userId", userId);
 			queryObj.setParameter("templateId", templateId);
 			
@@ -1148,7 +1161,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 			queryObj.setMaxResults(performanceAppraisalTemplateDTO.getLength());
 			assignToList = queryObj.list();
 			
-			countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("templateId", templateId.longValue()).list();
+			countlist = session.createSQLQuery(countQuery).setLong("userId", userId).setLong("templateId", templateId.longValue()).list();
 			filterCount = countlist.iterator().next().intValue();
 				
 			
@@ -1360,7 +1373,9 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		String assignedQuery =  "SELECT "
 				+" ASSIGNED.ID AS appraisalAssignedId, "  
 				+" ASSIGNED.USER_ID AS appraisalAssignedUserId, "   
-				+" ASSIGNED.PEER_USER_ID AS peerIds "
+				+" ASSIGNED.PEER_USER_ID AS peerIds, "
+				+" ASSIGNED.REPORTING_MANAGER_ID AS reportingManagerUserId, "   
+				+" ASSIGNED.RESOURCE_MANAGER_ID AS resourceManagerUserId "   
 				+" FROM PERFORMANCE_APPRAISAL_ASSIGNED_ASSOCIATES ASSIGNED "
 				+" WHERE ASSIGNED.UUID = :assignedUUID ";
 		
@@ -1416,23 +1431,64 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 						
 		}
 		
-		
-		String managerQuery =  "SELECT "
-				+" FEEDBACK.FINAL_SCORE AS finalScore, "
-				+" FEEDBACK.COMMENTS AS comments "
-				+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
-				+" WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId  ";
-		
-		Query managerScoreQueryObj = session.createSQLQuery(managerQuery);
-		managerScoreQueryObj.setBigInteger("assignedId", selfUserDetails.getAppraisalAssignedId());
-		managerScoreQueryObj.setLong("userId", userId);
-		managerScoreQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackDTO.class));
-		List<PerformanceFeedbackDTO>  managerDetailsList = managerScoreQueryObj.list();
-		if(managerDetailsList != null && !managerDetailsList.isEmpty()) {
-			PerformanceFeedbackDTO managerFeedbackDTO = managerDetailsList.get(0);
-			managerFeedbackDTO.setScoreType("Manager");
-			employeeScoreList.add(managerFeedbackDTO);
+		if(selfUserDetails.getReportingManagerUserId() != null) {
+			String managerQuery =  "SELECT "
+					+" FEEDBACK.FINAL_SCORE AS finalScore, "
+					+" FEEDBACK.COMMENTS AS comments "
+					+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
+					+" WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId  ";
+			
+			Query managerScoreQueryObj = session.createSQLQuery(managerQuery);
+			managerScoreQueryObj.setBigInteger("assignedId", selfUserDetails.getAppraisalAssignedId());
+			managerScoreQueryObj.setBigInteger("userId", selfUserDetails.getReportingManagerUserId());
+			managerScoreQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackDTO.class));
+			List<PerformanceFeedbackDTO>  managerDetailsList = managerScoreQueryObj.list();
+			if(managerDetailsList != null && !managerDetailsList.isEmpty()) {
+				PerformanceFeedbackDTO managerFeedbackDTO = managerDetailsList.get(0);
+				managerFeedbackDTO.setScoreType("Reporting Manager");
+				managerFeedbackDTO.setManagerUserId(selfUserDetails.getReportingManagerUserId());
+				employeeScoreList.add(managerFeedbackDTO);
+			}
 		}
+		
+		if(selfUserDetails.getResourceManagerUserId() != null) {
+			String managerQuery =  "SELECT "
+					+" FEEDBACK.FINAL_SCORE AS finalScore, "
+					+" FEEDBACK.COMMENTS AS comments "
+					+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
+					+" WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId  ";
+			
+			Query managerScoreQueryObj = session.createSQLQuery(managerQuery);
+			managerScoreQueryObj.setBigInteger("assignedId", selfUserDetails.getAppraisalAssignedId());
+			managerScoreQueryObj.setBigInteger("userId", selfUserDetails.getResourceManagerUserId());
+			managerScoreQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackDTO.class));
+			List<PerformanceFeedbackDTO>  managerDetailsList = managerScoreQueryObj.list();
+			if(managerDetailsList != null && !managerDetailsList.isEmpty()) {
+				PerformanceFeedbackDTO managerFeedbackDTO = managerDetailsList.get(0);
+				managerFeedbackDTO.setScoreType("Resource Manager");
+				managerFeedbackDTO.setManagerUserId(selfUserDetails.getResourceManagerUserId());
+				employeeScoreList.add(managerFeedbackDTO);
+			}
+		}
+		
+		
+			String managerQuery =  "SELECT "
+					+" FEEDBACK.FINAL_SCORE AS finalScore, "
+					+" FEEDBACK.COMMENTS AS comments "
+					+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
+					+" WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId  ";
+			
+			Query managerScoreQueryObj = session.createSQLQuery(managerQuery);
+			managerScoreQueryObj.setBigInteger("assignedId", selfUserDetails.getAppraisalAssignedId());
+			managerScoreQueryObj.setLong("userId", userId);
+			managerScoreQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackDTO.class));
+			List<PerformanceFeedbackDTO>  managerDetailsList = managerScoreQueryObj.list();
+			if(managerDetailsList != null && !managerDetailsList.isEmpty()) {
+				PerformanceFeedbackDTO managerFeedbackDTO = managerDetailsList.get(0);
+				managerFeedbackDTO.setScoreType("Manager");
+				employeeScoreList.add(managerFeedbackDTO);
+			}
+		
 		
 		return employeeScoreList;
 	}

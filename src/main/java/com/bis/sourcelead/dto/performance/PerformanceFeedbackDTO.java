@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto.performance;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 public class PerformanceFeedbackDTO implements Serializable{
 
@@ -37,6 +38,8 @@ public class PerformanceFeedbackDTO implements Serializable{
 	private Integer appliedLeaves;
 	
 	private String timeSheetHours;
+	
+	private BigInteger managerUserId;
 
 	public String getJsonCategoriesString() {
 		return jsonCategoriesString;
@@ -164,6 +167,14 @@ public class PerformanceFeedbackDTO implements Serializable{
 
 	public void setTimeSheetHours(String timeSheetHours) {
 		this.timeSheetHours = timeSheetHours;
+	}
+
+	public BigInteger getManagerUserId() {
+		return managerUserId;
+	}
+
+	public void setManagerUserId(BigInteger managerUserId) {
+		this.managerUserId = managerUserId;
 	}
 
 	
