@@ -43,10 +43,24 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
       <div class="col-md-6">
           <label class="col-md-3">Short Code<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-5" id = "ShortCodeDiv">
-            <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
+          
+          <c:choose>
+          <c:when test="${configureType == 'Customize'}">
+           <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
+            value = "<c:out value='${stageShortCode}'/>" data-validation="required validate_length length1-20"
+             onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
+             style="text-transform:uppercase" disabled>
+          </c:when>
+          <c:otherwise>
+           <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
             value = "<c:out value='${stageShortCode}'/>" data-validation="required validate_length length1-20"
              onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
              style="text-transform:uppercase" >
+          </c:otherwise>
+          </c:choose>
+           
+          
+          
           </div>
         </div>
       <div class="clearfix"></div>
