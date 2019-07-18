@@ -117,7 +117,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				
 				if(requirementDefaultWorkFlowStages.get(i).getEditable().equalsIgnoreCase(Constants.YES)) {
-					requirementWorkFlowStages.setConfigureType(Constants.CLIENT);
+					requirementWorkFlowStages.setConfigureType(Constants.CUSTOMIZE);
 				}else {
 					requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
 				}
@@ -280,6 +280,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStagesDTO.setStageName(workFlowStages.getStageName());
 			requirementWorkFlowStagesDTO.setEditable(workFlowStages.getEditable());
 			requirementWorkFlowStagesDTO.setUuid(workFlowStages.getUuid());
+			requirementWorkFlowStagesDTO.setConfigureType(workFlowStages.getConfigureType());
 			requirementWorkFlowStagesDTO.setStageCount(requirementWorkFlow.getNoOfStages());
 			workFlowStagesDTO.add(requirementWorkFlowStagesDTO);
 		}	
@@ -773,12 +774,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStages.setDescription(workFlowStages.get(i).getDescription());
 			requirementWorkFlowStages.setSeqOrder(workFlowStages.get(i).getSeqOrder());
 			requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-			
-			if(workFlowStages.get(i).getEditable().equalsIgnoreCase(Constants.YES)) {
-				requirementWorkFlowStages.setConfigureType(Constants.CLIENT);
-			}else {
-				requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
-			}
+			requirementWorkFlowStages.setConfigureType(workFlowStages.get(i).getConfigureType());
 			
 			requirementWorkFlowStages.setEditable(workFlowStages.get(i).getEditable());
 			requirementWorkFlowStages.setStatus(workFlowStages.get(i).getStatus());

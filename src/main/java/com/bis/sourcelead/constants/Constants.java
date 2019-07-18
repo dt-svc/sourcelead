@@ -639,6 +639,7 @@ public class Constants {
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
 	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
+	public static final String CUSTOMIZE = "Customize";
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
 	// "Workflow" removed from the below list as it planned for next build SRINIVA SABBU 07- JUNE-2019.
