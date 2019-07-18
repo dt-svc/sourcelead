@@ -1178,9 +1178,15 @@ function RequirementWorkflow(){
 								result = result +"<div class='clearfix'><p id='popupMsg'></p></div>";
 								result = result+"<div class='modal-body'>"	
 								for(var i=0; i< jobsArray.length; i++){
-									result = result + "&nbsp"+jobsArray[i]+", ";
+									if(jobsArray.length == 1){
+										result = result + "&nbsp"+jobsArray[i]+".";
+									}else{
+										result = result + "&nbsp"+jobsArray[i]+", ";
+									}
 								}
+								if(allJobsArray.length > 1){
 								result = result + '<span class="text-success" title="'+allJobsArray+'">more..</span>';
+								}
 								result = result+"</div>"
 								result = result +"<div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='requirementWorkflow.cancelWorkflowPopup();'></div>";
 								result = result +"</div>";
