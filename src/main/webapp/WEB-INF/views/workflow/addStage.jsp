@@ -432,7 +432,7 @@ var currentStageUuid = $("#currentStageUuid").val();
 $(document).ready(function() {
 	workFlowName = '${workFlowName}';
 	commentReq = $("#commentRequired").val();
-		
+	configureType = "${configureType}";	
 		$("#commentRequired").click(function(){
 			if(commentReq == "Y"){
 				commentReq = "N";
