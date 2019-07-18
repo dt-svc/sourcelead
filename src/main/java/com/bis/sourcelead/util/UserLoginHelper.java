@@ -933,10 +933,18 @@ public class UserLoginHelper {
 		if(orgLocationJson.get("orgName").toString() != null) {
 			orgLocations.setOrgName(orgLocationJson.get("orgName").toString());
 		}
+		
+		if(orgLocationJson.get("imgUrl").toString() != null) {
+			orgLocations.setOrgImgUrl(orgLocationJson.get("imgUrl").toString());
+		}
+		
+		
 		orgLocations.setOrgCode(orgLocationJson.get("orgCode").toString());
 		orgLocations.setCurrencyCode(orgLocationJson.get("currencyCode").toString());
 		orgLocations.setCountryCode(orgLocationJson.get("countryCode").toString());
 		orgLocations.setCountry(orgLocationJson.get("country").toString());
+		orgLocations.setCity(orgLocationJson.get("city").toString());
+		orgLocations.setState(orgLocationJson.get("state").toString());
 		orgLocations.setOrgId(Long.valueOf(orgLocationJson.get("orgId").toString()));
 		orgLocations.setOrgLocationName(orgLocationJson.get("orgLocationName").toString());
 		if(orgLocationJson.get("createdDate") != null && orgLocationJson.get("createdDate").toString() != null) {
