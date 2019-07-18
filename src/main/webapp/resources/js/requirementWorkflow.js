@@ -8,6 +8,7 @@ var questionnaireId = null;
 var questionnaireName = null;
 var deletedStageUuids = new Array();
 var workflowName = "";
+var configureType = "";
 
 function RequirementWorkflow(){
 	
@@ -701,7 +702,7 @@ function RequirementWorkflow(){
 						 data : formData,
 						url : sourceleadUrl + "/saveRequirementWorkflowStage?description="+description+"&uuid="+stageUuid+
 								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+
-								"&lastStage="+lastStage+"&commentRequired="+commentReq+"&requiredStatsList="+requiredStatsList+"&chosenColumnStr="+choosenCloumnString,
+								"&lastStage="+lastStage+"&commentRequired="+commentReq+"&requiredStatsList="+requiredStatsList+"&chosenColumnStr="+choosenCloumnString+"&configureType="+configureType,
 						success : function(dataList) {
 							if (dataList.response === "AWKWARD") {
 				      	    location.href = "/errorPage";
