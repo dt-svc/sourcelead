@@ -69,7 +69,7 @@ public class RequirementLocationsDaoImpl implements RequirementLocationsDao{
 		 
 		logger.debug("In getRequirementLocationsListByRequirementId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementLocations rl  where rl.requirementId.id = :requirementId ";  
+		String query = "from RequirementLocations rl left join fetch rl.requirementId where rl.requirementId.id = :requirementId ";  
 		List<RequirementLocations> requirementLocationsList = session.createQuery(query).setLong("requirementId", requirementId).setCacheable(true).list();
 		return requirementLocationsList;
 		 
