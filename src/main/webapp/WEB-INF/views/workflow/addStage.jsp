@@ -49,7 +49,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
            <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
             value = "<c:out value='${stageShortCode}'/>" data-validation="required validate_length length1-20"
              onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
-             style="text-transform:uppercase" readonly>
+             style="text-transform:uppercase" disabled>
           </c:when>
           <c:otherwise>
            <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
