@@ -191,13 +191,22 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 						</li>
 						</sec:authorize>
                              <sec:authorize access="hasRole('ROLE_DELETE_WORKFLOW')">
-						<li>
+                        
+                        <c:choose>
+                        <c:when test="${requirementWorkFlowStages.configureType != 'Customize'}">
+                        <li>
 							<a title="Delete" 
 							onclick = 'requirementWorkflow.deletepopup("${requirementWorkFlowStages.uuid}",
 							"${requirementWorkFlowStages.stageName}",
 							"${requirementWorkFlowStages.requirementWorkFlowUuid}")'>
 							<i class="fa fa-trash"></i></a>
-						</li>
+							</li>
+							</c:when>
+                        <c:otherwise>
+                        <li></li><li></li>
+                        </c:otherwise>
+                        </c:choose>   
+						
 						</sec:authorize>
 						</c:if>	
 						<c:if test = "${requirementWorkFlowStages.editable == 'N'}">	
