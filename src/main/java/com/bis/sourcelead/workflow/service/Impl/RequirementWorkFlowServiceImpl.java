@@ -560,7 +560,12 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				workFlowStage.setStatus(Constants.RECORD_ACTIVE);
 			}
 			workFlowStage.setOrgLocationId(orgLocations);
-			workFlowStage.setConfigureType(Constants.CLIENT);
+			if(StringUtils.equalsIgnoreCase(requirementWorkFlowStagesDTO.getConfigureType(), Constants.CUSTOMIZE)) {
+				workFlowStage.setConfigureType(Constants.CUSTOMIZE);
+			}else {
+				workFlowStage.setConfigureType(Constants.CLIENT);
+			}
+			
 			workFlowStage.setEditable(Constants.YES);
 			workFlowStage.setCreatedDate(new Date());
 			workFlowStage.setCreatedBy(user);
