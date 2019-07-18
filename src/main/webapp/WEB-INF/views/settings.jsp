@@ -178,8 +178,8 @@
 								</span>
 								
 									<ul class="dropdown-menu minHeight50 maxHeight250" role="menu" aria-labelledby="menu12">
-									<li><a href="${SourceLeadWeb_atsUrl}/campaignSendersList">Senders</a></li>
-									<li><a href="${SourceLeadWeb_atsUrl}/recipientsList">Recipients</a></li>
+									<li><a href="${SourceLeadWeb_sourceleadUrl}/campaignSendersList">Senders</a></li>
+									<li><a href="${SourceLeadWeb_sourceleadUrl}/recipientsList">Recipients</a></li>
 									</ul>
 								</div>
 								<!-- Dropdown -->
