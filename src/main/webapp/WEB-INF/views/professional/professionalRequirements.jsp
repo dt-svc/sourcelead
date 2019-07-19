@@ -934,7 +934,7 @@ function requirementsList(offset){
 			 				result = result +'</div>';
 			 				
 			 				result = result +'<h5>';
-							result = result +'<strong>Locations : </strong>';
+							result = result +'<strong class="tblminwidth-90">Locations : </strong>';
 			 				
 			 				result = result +'<ul>';
 			 				if(requirements.locationsList != null){
@@ -944,7 +944,7 @@ function requirementsList(offset){
 			 				}
 			 				result = result +'</ul>';
 			 				result = result +'<div class="clearfix"></div>';
-			 				result = result +'<strong>Skills :</strong>';
+			 				result = result +'<strong class="tblminwidth-90 mt2">Skills :</strong>';
 			 				result = result +'<ul>';
 			 				
 			 				if(requirements.skillsList != null){
@@ -1274,7 +1274,7 @@ function searchRequirement(offset){
 									 				result = result +'</span>';
 									 				result = result +'<h5>';
 									 				
-									 				result = result +'<strong>Locations : </strong>';
+									 				result = result +'<strong class="tblminwidth-90">Locations : </strong>';
 									 				
 									 				result = result +'<ul>';
 									 				if(requirements.locationsList != null){
@@ -1284,7 +1284,7 @@ function searchRequirement(offset){
 									 				}
 									 				result = result +'</ul>';
 									 				
-									 				result = result +'<strong>Skills :</strong>';
+									 				result = result +'<strong class="tblminwidth-90 mt2">Skills :</strong>';
 									 				result = result +'<ul>';
 									 				if(requirements.skillsList != null){
 									 					description =  description+'Skills :'+requirements.skillsList+";";
@@ -2612,5 +2612,5 @@ function deleteSavedJob(jobTitle,savedJobUUID,requirementUUID){
 }
 </script>
 
-<script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>	
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a60382a93e935c2"></script>
 <jsp:include page="../socialinviterscripts.jsp" />
