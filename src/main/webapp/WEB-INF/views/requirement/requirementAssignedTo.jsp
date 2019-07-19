@@ -535,8 +535,10 @@ function paginations(){
 			finalSelectedIds.set(assignedIdVal[j], assignedIdVal[j]);
 		}
 		
-		$("#forAssignedToCount1").text(assignedToEditCount);
-		$("#forAssignedToCount2").text(assignedToEditCount);
+		$("#forAssignedToCount1").text(finalSelectedIds.size);
+		$("#forAssignedToCount2").text(finalSelectedIds.size);
+		/* $("#forAssignedToCount1").text(assignedToEditCount);
+		$("#forAssignedToCount2").text(assignedToEditCount); */
 		
 			$.ajax({
 		           type : "POST",
