@@ -91,4 +91,9 @@ public class PerformanceBadgesServiceImpl implements PerformanceBadgesService{
 		 return badge;
 	}
 
+	@Override
+	public boolean isPerformanceBadgeNameExisted(Long orgLocationId, String badgeName) throws Exception {
+		return performanceBadgesDao.isPerformanceBadgeNameExisted(orgLocationId, badgeName);
+	}
+
 }

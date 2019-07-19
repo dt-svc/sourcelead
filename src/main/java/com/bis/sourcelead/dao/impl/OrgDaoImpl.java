@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -381,7 +382,7 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.openSession();
 		List<UserDTO> userList = new ArrayList<>();
 		try{
-			String query = "SELECT U.ID,U.USER_CODE,U.FIRST_NAME, U.LAST_NAME, U.FILE_URL, R.DISPLAY_NAME, UR.REPORTING_MANAGER_ID, O.PRIMARY_CONTACT_USER_ID " + 
+			String query = "SELECT U.ID,U.USER_CODE,U.FIRST_NAME, U.LAST_NAME, U.EMAIL, U.FILE_URL, R.DISPLAY_NAME, UR.REPORTING_MANAGER_ID, UR.RESOURCE_MANAGER_ID, O.PRIMARY_CONTACT_USER_ID " + 
 					" FROM USER U, USER_ROLE UR, ROLES R, ORG O, ORG_LOCATIONS OL " + 
 					" WHERE R.ID = UR.ROLE_ID AND U.ID = UR.USER_ID AND UR.ORG_LOCATIONS_ID = :orgLocationId AND R.ID NOT IN (95,96) "+ 
 					" AND O.ID = OL.ORG_ID AND OL.ID = UR.ORG_LOCATIONS_ID AND UR.USER_STATE !='INACTIVE' ORDER BY UR.REPORTING_MANAGER_ID;";
@@ -396,13 +397,30 @@ public class OrgDaoImpl implements OrgDao {
 				String lastName = record[i] == null ? "" : record[i].toString();
 				user.setName(user.getName()+(lastName.isEmpty() ? "" : " "+ lastName));
 				i++;
+				user.setEmail(record[i] == null ? "" : record[i].toString());
+				i++;
 				user.setFileURL(record[i] == null ? "" : record[i].toString());
 				i++;
 				user.setDesignation(record[i] == null ? "" : record[i].toString());
 				i++;
 				String parentId = record[i] == null ? null : record[i].toString();
 				i++;
-				user.setParentId(Long.valueOf(parentId == null ? record[i++].toString() : parentId));
+				
+				if(parentId != null) {
+					String globalQuery = "SELECT UR.ID FROM USER_ROLE UR WHERE UR.USER_ID = :userId  AND UR.ORG_LOCATIONS_ID = :orgLocationId ";
+					BigInteger userRoleId = (BigInteger) session.createSQLQuery(globalQuery).setLong("userId", Long.valueOf(parentId)).setLong("orgLocationId", orgLocationId).uniqueResult();
+				    if(userRoleId == null) {
+				    	String resouceparentId = record[i] == null ? null : record[i].toString();
+						i++;
+						user.setParentId(Long.valueOf(resouceparentId == null ? record[i].toString() : resouceparentId));
+				    }else {
+						user.setParentId(Long.valueOf(parentId == null ? record[i+1].toString() : parentId));
+					}
+				}else {
+					user.setParentId(Long.valueOf(parentId == null ? record[i+1].toString() : parentId));
+				}
+				
+				
 				if(user.getId() == user.getParentId()) {
 					user.setParentId(0);
 					userList.add(0, user);
