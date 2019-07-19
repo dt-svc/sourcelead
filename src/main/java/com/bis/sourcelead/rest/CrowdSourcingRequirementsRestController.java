@@ -31,6 +31,7 @@ import org.elasticsearch.search.SearchHit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,22 +49,20 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.BlogCategoryDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ContactsGroupDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserBankAccountsDTO;
+import com.bis.sourcelead.dto.MobileServiceApplyJobDTO;
 import com.bis.sourcelead.dto.ReferContactsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementReferDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.SourceleadBlogDTO;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.BlogCategory;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContactsGroup;
 import com.bis.sourcelead.entity.CrowdSourcingUserBankAccounts;
@@ -729,6 +728,52 @@ public class CrowdSourcingRequirementsRestController {
 	}
 	
 	
+	@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+	@RequestMapping(value = "/rest/applyToJobFromMobileCrowdSourcing", method = RequestMethod.POST)
+	public String applyToJobFromMobileCrowdSourcing(MobileServiceApplyJobDTO mobileServiceApplyJobDTO, HttpServletRequest request)
+			throws Exception {
+		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		
+		JSONArray jsonArray = new JSONArray(mobileServiceApplyJobDTO.getSubmissionDetails());
+		JSONObject jsonObj = null;
+		String jsonObjStringValue = null; 
+		 for (int i = 0; i < jsonArray.length(); i++) {
+			 JSONParser parser = new JSONParser();
+			 org.json.simple.JSONObject jsonObjVal = (org.json.simple.JSONObject) parser.parse(jsonArray.get(i).toString());
+			 for (Object okey : jsonObjVal.keySet()) {
+				 String keyStr = (String) okey;
+				 if(keyStr.equalsIgnoreCase("submissionHistory")) {
+					 String keyvalue = jsonObjVal.get(keyStr).toString();
+					 String jsonStringValues = keyvalue.substring(1, keyvalue.length()-1);
+					 jsonObj = new JSONObject(jsonStringValues);
+					 
+				 }
+				 
+				 if(keyStr.equalsIgnoreCase("submission")) {
+					 jsonObjStringValue = jsonObjVal.get(keyStr).toString();
+				 }
+				
+			 }
+         }
+		
+		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmissionFromCrowdSourcing(jsonObj,user, jsonObjStringValue,orgLocations);
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+		requirementSubmissionHistory.setFromStage("NEW");
+		
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
+		Requirement requirement = requirementSubmission.getRequirement();
+		Integer count = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
+		requirement.setTotalApplicantsForRequirement(count);
+		
+	    RequirementDTO requirementDTO=commonUtil.getRequirementDTO(requirement);
+		requirementElkUtil.saveElkRequirement(requirement,requirementDTO);
+		return "success";
+
+	}
 	
 	
 	@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
