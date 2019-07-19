@@ -1108,6 +1108,14 @@ public class Candidate implements Serializable {
 	public void setNoticePeriod(String noticePeriod) {
 		this.noticePeriod = noticePeriod;
 	}
+    
+	public String getOtherNoticePeriod() {
+		return otherNoticePeriod;
+	}
+
+	public void setOtherNoticePeriod(String otherNoticePeriod) {
+		this.otherNoticePeriod = otherNoticePeriod;
+	}
 
 	public String getOtherNoticePeriod() {
 		return otherNoticePeriod;
