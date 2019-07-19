@@ -763,6 +763,12 @@
       <artifactId>firebase-server-sdk</artifactId>
       <version>3.0.0</version>
     </dependency>
+    
+    <dependency>
+            <groupId>com.maxmind.geoip</groupId>
+            <artifactId>geoip-api</artifactId>
+            <version>1.2.14</version>
+        </dependency>
      
     </dependencies>
 

@@ -41,6 +41,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.geoLocation.GeoIPv4;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -59,6 +60,9 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private GeoIPv4 geoIPv4;
 
 	@Override
 	public ClockInOutConfig saveClockInOutConfiguration(ClockInOutConfigDTO clockInOutConfigDTO, OrgLocations loginOrgLocation,Long userId) {
@@ -146,7 +150,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		return clockInOutConfigDao.getClockInOutConfigBasedOnOrgLocationId(orgLocationId);
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "static-access" })
 	@Override
 	public ClockInOut saveClockInOutTime(ClockInOutDTO clockInOutDTO,OrgLocations loginOrgLocation, User loginUser) {
 		
@@ -182,6 +186,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 				clockInOut.setClockInDateTime(currentDate);
 				clockInOut.setClockInTime(timeValue);
 				clockInOut.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), currentDate));
+		    	clockInOut.setGeoLocationData(geoIPv4.getLocation(clockInOutDTO.getIpAddress()).toString());
 			}
 			
 			if(Constants.CLOCK_OUT.equalsIgnoreCase(clockInOutDTO.getType())) {
@@ -217,6 +222,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			clockInOut.setProjectId(clockInOutDTO.getProjects());
 			clockInOut.setProjectsTaskId(clockInOutDTO.getProjectTasks());
 			clockInOut.setGeneralTaskId(clockInOutDTO.getGeneralTasks());
+			clockInOut.setComments(clockInOutDTO.getComments());
 			
 			clockInOut = clockInOutConfigDao.saveClockInOutTime(clockInOut);
 		} catch (Exception e) {
