@@ -1154,8 +1154,10 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Map<String, Object> params = new HashMap<String,Object>();
 		StringBuilder query1 = new StringBuilder("");
 		if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
-		 query1.append("and( (userRole.user.firstName like '" + userDTO.getSearchValue().replace("'", "") + "%' OR userRole.user.lastName like '%" + userDTO.getSearchValue().replace("'", "") + "' )")
-			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + userDTO.getSearchValue().replace("'", "").replaceAll("[\\s]+", "").trim() + "%')" )
+			 query1.append("and(userRole.user.firstName like '" + userDTO.getSearchValue().replace("'", "") + "%' ")
+		       .append("OR (userRole.user.lastName like '%" + userDTO.getSearchValue().replace("'", "") + "' )")
+		       .append("OR (userRole.user.middelName like '%" + userDTO.getSearchValue().replace("'", "") + "' )")
+			   .append("OR (concat(userRole.user.firstName,' ',userRole.user.middelName,' ',userRole.user.lastName) like '%" + userDTO.getSearchValue().replace("'", "") + "%')" )
 		       .append("OR userRole.user.email like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
 			   .append("OR userRole.user.mobilePhone like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
 			   .append("OR userRole.roles.displayName like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
