@@ -1818,10 +1818,16 @@ function updateDesignationOtherType(){
 <script>
 function updateOtherNoticePeriod(){
 	 var noticePeriod = $('#noticePeriodEdit').val(); 
+	 var editVal = $('#otherNoticePeriodEdit').val();
+	/* if(editVal != null && editVal != '' && editVal != 'undefined'){
+		 document.getElementById("noticePeriodUpdateDiv").style.display="block";
+		  $("#otherNoticePeriodEdit").attr("data-validation-optional", "true");
+		  $("#otherNoticePeriodEdit").attr("data-validation", "validate_Space validate_length length1-150");
+	} */
 	if(noticePeriod == 'Other' &&  noticePeriod != '' && noticePeriod !='undefined'){
 		  document.getElementById("noticePeriodUpdateDiv").style.display="block";
-		  $("#otherNoticePeriodEdit").attr("data-validation-optional", "true");
-		  $("#otherNoticePeriodEdit").attr("data-validation", "validate_Space validate_length length2-250");
+		  $('#otherNoticePeriodEdit').removeAttr('data-validation-optional');
+          $("#otherNoticePeriodEdit").attr("data-validation", "validate_Space required validate_length length1-150");
 	}else{
 		   document.getElementById("noticePeriodUpdateDiv").style.display="none";
 		  $("#otherNoticePeriodEdit").attr("data-validation-optional", "true");
