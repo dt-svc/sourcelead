@@ -8582,7 +8582,7 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .adddashComp a:hover { box-shadow: 0px 5px 5px rgba(0, 0, 4, 0.15); background-color: #fff;}
 .newDashSection { position: relative; min-height: 460px;}
 .newDashSection.newDashSectionMdu { position: relative; min-height: 550px;}
-.newDashLeft { position: absolute; width: 250px; background-color: #f6f6f6; height: 100%;}
+.newDashLeft { position: absolute; width: 250px; background-color: #f6f6f6; height: 100%; max-height: 550px; overflow: auto;}
 .newDashLeft ul { margin: 0px 0px; padding: 10px 0px;}
 .newDashLeft ul li {list-style-type: none;}
 .newDashLeft ul li a {
@@ -8699,3 +8699,10 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .appraQueInn h3 b { display: inline-block; padding: 0px 5px 0px 0px; color: #F94447; font-weight: 600;}
 .appraQueInn ul { min-height: unset; max-height: unset; padding: 10px 0px 0px;}
 .appraQueInn ul li {width: 24%; color: #454545; font-weight: 400; font-size:14px; padding: 3px 6px;}
+
+.tabHide { display: none;}
+.tabHide.tabActive { display: block;}
+
+
+
+

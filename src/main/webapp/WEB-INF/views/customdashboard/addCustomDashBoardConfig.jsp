@@ -50,31 +50,9 @@
         <div class="clearfix mb" id="applicableForErrorDIV">
           <label class="col-md-4">Applicable for <span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-2"><input type="radio" id="applicableForAll" name="applicableFor" oncick="fireFunction();" value="All" ${customDashBoardConf.applicableFor=='All'?'checked':''}><label for="a" class="paddingLeft" data-validation="required"> All</label> </div>
-<%--           <div class="col-md-2"><input type="radio" id="applicableForRoles" name="applicableFor" value="Roles" ${customDashBoardConf.applicableFor=='Roles'?'checked':''}><label for="b" class="paddingLeft" data-validation="required"> Roles</label></div>  --%>
           <div class="col-md-3"><input type="radio" id="applicableForAssociates" name="applicableFor" value="Associates" ${customDashBoardConf.applicableFor=='Associates'?'checked':''}><label for="c" class="paddingLeft" data-validation="required"> Associates</label></div> 
         </div>   
 
-      <%--   <div class="clearfix mb" id="RolesShow" style="display: none;">
-        <div id ="rolesErrorDIV">
-        <label class="col-md-4">Roles</label>
-        <div class="col-md-8">
-              <select multiple class="chosen-select form-control" id="roles" name="roles" field-name="Roles">
-                <c:if test="${not empty selectedRoles}">
-                     <c:forEach var="role" items="${roles}">
-                             <c:forEach var="selectedRoles" items="${selectedRoles}">
-	                     		<option value="${role.id}" ${selectedRoles.roleId  == role.id ? 'selected' : ''} >${role.displayName}</option>
-                       		</c:forEach>
-                      </c:forEach>
-                </c:if>
-              <c:if test="${empty selectedRoles}">
-                  <c:forEach var="role" items="${roles}">
-                      <option value="${role.id}">${role.displayName}</option>
-                   </c:forEach>
-              </c:if>
-              </select>          	
-        </div>
-        </div>
-      </div>   --%>
       
       <div class="clearfix mb" id="AssociatesShow" style="display: none;">
           <label class="col-md-4">Associates</label>
@@ -188,7 +166,7 @@ function calRadioButton(){
  		getAssociateListBasedOnRole();
      }
      if (checkedValue == "All") {
-         $("#AssociatesShow").show();
+         $("#AssociatesShow").hide();
          $('#associates').removeAttr('data-validation');
  		$('#associates').attr('data-validation-optional', "true");
  		$('#associates').find('p.jquery_form_error_message').remove();
