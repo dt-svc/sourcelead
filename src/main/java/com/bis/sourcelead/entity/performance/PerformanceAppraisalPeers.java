@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -34,12 +35,16 @@ public class PerformanceAppraisalPeers implements Serializable{
 	private Integer peerCount;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="USER_ID", nullable=false )        
+    @JoinColumn(name="USER_ID")        
     private User userId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
+    @JoinColumn(name="ORG_LOCATION_ID" )        
     private OrgLocations orgLocationId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="ORG_ID" )        
+    private Org orgId;
 	
 	@Column(name = "UUID")
 	private String uuid;
@@ -51,14 +56,14 @@ public class PerformanceAppraisalPeers implements Serializable{
 	private Date createdDate;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="CREATED_BY", nullable=false )        
+    @JoinColumn(name="CREATED_BY" )        
     private User createdBy;
 	
 	@Column(name = " UPDATED_DATE ")
 	private Date updatedDate;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="UPDATED_BY", nullable=false )        
+    @JoinColumn(name="UPDATED_BY")        
     private User updatedBy;
 	
 	
@@ -102,6 +107,14 @@ public class PerformanceAppraisalPeers implements Serializable{
 
 	public void setOrgLocationId(OrgLocations orgLocationId) {
 		this.orgLocationId = orgLocationId;
+	}
+	
+	public Org getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Org orgId) {
+		this.orgId = orgId;
 	}
 
 	public String getUuid() {
