@@ -344,6 +344,7 @@ public class UserLoginHelper {
 		Integer expensesTabCount = 0;
 		Integer resourcesTabCount = 0;
 		Integer paryrollTabCount = 0;
+		Integer performanceTabCount = 0;
 		
 		boolean isJobsTabAccessable = false;
 		SourceLeadSessionManager.setSessionAttribute(req, "isJobsTabAccessable", "N");
@@ -379,6 +380,11 @@ public class UserLoginHelper {
 						paryrollTabCount = paryrollTabCount+1;
 					}
 					
+					if(tab.equalsIgnoreCase("Goals") || tab.equalsIgnoreCase("My Appraisal") || tab.equalsIgnoreCase("Employee Appraisal") 
+							|| tab.equalsIgnoreCase("Org Chart")){
+						performanceTabCount = performanceTabCount+1;
+					}
+					
 					if (isReportTabAccessable == false) {
 						if(tab.equalsIgnoreCase("Reports")) {
 							isReportTabAccessable = true;
@@ -409,6 +415,7 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "expensesTabCount", expensesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "resourcesTabCount", resourcesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "paryrollTabCount", paryrollTabCount);
+			SourceLeadSessionManager.setSessionAttribute(req, "performanceTabCount", performanceTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "actionsList", actionsList);
 			
 			/*List<Long> jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(req, "requirementIdsList");
@@ -926,10 +933,18 @@ public class UserLoginHelper {
 		if(orgLocationJson.get("orgName").toString() != null) {
 			orgLocations.setOrgName(orgLocationJson.get("orgName").toString());
 		}
+		
+		if(orgLocationJson.get("imgUrl").toString() != null) {
+			orgLocations.setOrgImgUrl(orgLocationJson.get("imgUrl").toString());
+		}
+		
+		
 		orgLocations.setOrgCode(orgLocationJson.get("orgCode").toString());
 		orgLocations.setCurrencyCode(orgLocationJson.get("currencyCode").toString());
 		orgLocations.setCountryCode(orgLocationJson.get("countryCode").toString());
 		orgLocations.setCountry(orgLocationJson.get("country").toString());
+		orgLocations.setCity(orgLocationJson.get("city").toString());
+		orgLocations.setState(orgLocationJson.get("state").toString());
 		orgLocations.setOrgId(Long.valueOf(orgLocationJson.get("orgId").toString()));
 		orgLocations.setOrgLocationName(orgLocationJson.get("orgLocationName").toString());
 		if(orgLocationJson.get("createdDate") != null && orgLocationJson.get("createdDate").toString() != null) {
