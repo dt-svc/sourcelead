@@ -34,7 +34,7 @@ s	</section>
 				<div class="col-md-6" id = "ticketDivId">
 					<label class="col-md-3">Ticket Id <b class="valStar">*</b></label>
 					<div class="col-md-9">
-						<input type="text" class="form-control" name="generatedId" value="${ticketSummary.generatedId}" id="ticketId" field-name="Ticket Id"  onblur="validateTicketId('${ticketSummary.id}');" data-validation="required validate_length length1-100">
+						<input type="text" class="form-control" name="generatedId" value="${ticketSummary.generatedId}" id="ticketId" field-name="Ticket Id"  onblur="validateTicketId('${ticketSummary.id}');" data-validation="required validate_length length1-20">
 					</div>
 					<div class="clearfix"></div>
 				</div>
