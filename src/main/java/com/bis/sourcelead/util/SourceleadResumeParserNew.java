@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
@@ -30,12 +31,17 @@ import com.bis.sourcelead.constants.Constants;
 @Component
 public class SourceleadResumeParserNew {
 	
+	
 	/**
 	 * 
 	 * @author Mahaveer Manoj
 	 * @purpose Using 3rd party API, we are parsing resume(s)
 	 * 
 	 */
+	
+	
+	@Value("${static.path}")
+    private String staticPath;
 	
 	/*
 	private String serviceURL = "http://cvxdemo.daxtra.com";
@@ -771,10 +777,7 @@ public class SourceleadResumeParserNew {
 		String result = "";
 		Set<String> keywordsSet = new HashSet<>();
 		try {
-			String fn = "/dictionary/" + textFile;
-			URL url = getClass().getResource(fn);
-			File file = new File(url.toURI());
-			
+			File file = new File(staticPath+"/dictionary/"+textFile);
 			String keywords = "";
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			while (br.readLine() != null) {
@@ -801,9 +804,7 @@ public class SourceleadResumeParserNew {
 //		String skills = "";
 		Set<String> skillsSet = new HashSet<>();
 		try {
-			String fn = "/dictionary/skills.txt";
-			URL url = getClass().getResource(fn);
-			File file = new File(url.toURI());
+			File file = new File(staticPath+"/dictionary/skills.txt");
 			String skillKeywords = "";
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			while (br.readLine() != null) {

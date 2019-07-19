@@ -934,7 +934,7 @@ public class UserLoginHelper {
 			orgLocations.setOrgName(orgLocationJson.get("orgName").toString());
 		}
 		
-		if(orgLocationJson.get("imgUrl").toString() != null) {
+		if(orgLocationJson.get("imgUrl") != null) {
 			orgLocations.setOrgImgUrl(orgLocationJson.get("imgUrl").toString());
 		}
 		
@@ -943,8 +943,14 @@ public class UserLoginHelper {
 		orgLocations.setCurrencyCode(orgLocationJson.get("currencyCode").toString());
 		orgLocations.setCountryCode(orgLocationJson.get("countryCode").toString());
 		orgLocations.setCountry(orgLocationJson.get("country").toString());
-		orgLocations.setCity(orgLocationJson.get("city").toString());
-		orgLocations.setState(orgLocationJson.get("state").toString());
+		if(orgLocationJson.get("city") != null) {
+			orgLocations.setCity(orgLocationJson.get("city").toString());
+		}
+		
+		if(orgLocationJson.get("state") != null) {
+			orgLocations.setState(orgLocationJson.get("state").toString());
+		}
+		
 		orgLocations.setOrgId(Long.valueOf(orgLocationJson.get("orgId").toString()));
 		orgLocations.setOrgLocationName(orgLocationJson.get("orgLocationName").toString());
 		if(orgLocationJson.get("createdDate") != null && orgLocationJson.get("createdDate").toString() != null) {
