@@ -4302,9 +4302,10 @@ function profileDetails(candidateId){
 <script>
 function assocSalarySummary(candidateId){
 	var locationCode = '${SourceLeadWeb_locationCode}';
+	var userCode = '${userCode}';
 	$.ajax({
 		  type: "GET",
-		    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&locationCode="+locationCode,
+		    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&locationCode="+locationCode+"&userCode="+userCode,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();
