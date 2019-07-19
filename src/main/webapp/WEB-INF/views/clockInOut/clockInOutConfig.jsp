@@ -44,7 +44,7 @@
           </div>          
         </div>
 
-        <div class="clockCta">
+        <div class="clockCta" id="clockcheckSampDiv">
           <p>Track employee clock in hours based on the tasks assigned?</p> 
           <div class="clockRadio">
             <input id="radio-4" name="isTrackTaskAssigned" type="radio" value="YES">
@@ -54,7 +54,7 @@
             <input id="radio-3" name="isTrackTaskAssigned" type="radio" value="NO" checked>
             <label for="radio-3" class="radio-label" id="hideClSub">No</label>
           </div> 
-          <div class="clockSub">
+          <div class="clockSub" id="clockcheckDiv">
               <div class="clockcheck"><input type="checkbox" id="a" name="isJobChecked" value="YES"> <label for="a">Jobs</label></div>
               <div class="clockcheck"><input type="checkbox" id="b" name="isProjectTasksChecked" value="YES"> <label for="b">Project Tasks</label></div>
               <div class="clockcheck"><input type="checkbox" id="c" name="isGeneralTaskChecked" value="YES"> <label for="c">General Tasks</label></div>
@@ -142,6 +142,10 @@ $("#clSub").click(function(){
 
 $("#hideClSub").click(function(){
   $(".clockSub").hide();
+  $('#clockcheckSampDiv').find('p.jquery_form_error_message').remove();
+  $("#a").prop("checked", false);
+  $("#b").prop("checked", false);
+  $("#c").prop("checked", false);
 });
 
 $(".clockAni").click(function(){
@@ -162,16 +166,53 @@ $(".popClose").click(function() {
  function saveClockInOutConfigure(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var formData = getFormData("clock_InOut_form");
-	 $("#clockInOutLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-     $.ajax({
- 	      type: "POST",
- 	      data: formData,
-       	  url:sourceleadUrl+"/saveClockInOutConfigure",
-         	success: function(json) {
-         		getClockInOutConfigData();
-         		$("#clockInOutLoading").removeAttr('style');
-	        },  
-     });
+
+	 var rate_value = "";
+	 if (document.getElementById('radio-4').checked) {
+ 		 rate_value = document.getElementById('radio-4').value;
+	 }
+	 
+	 if (document.getElementById('radio-3').checked) {
+ 		 rate_value = document.getElementById('radio-3').value;
+	 }
+	 
+	 if(rate_value === "YES"){
+		 
+		 if((document.getElementById('a').checked) ||  (document.getElementById('b').checked) || (document.getElementById('c').checked)){
+			 
+			 $('#clockcheckSampDiv').find('p.jquery_form_error_message').remove();
+			 $("#clockInOutLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		     $.ajax({
+		 	      type: "POST",
+		 	      data: formData,
+		       	  url:sourceleadUrl+"/saveClockInOutConfigure",
+		         	success: function(json) {
+		         		getClockInOutConfigData();
+		         		$("#clockInOutLoading").removeAttr('style');
+			        },  
+		     });
+			 
+		 }else{
+			 $('#clockcheckSampDiv').find('p.jquery_form_error_message').remove();
+	         $("#clockcheckDiv").after( "<p class='jquery_form_error_message' style='color:#f12929; font-size: 12px;'>Select at least one Field</p>");
+		 }
+
+			 
+		 
+	 }else{
+		 $('#clockcheckSampDiv').find('p.jquery_form_error_message').remove();
+		 $("#clockInOutLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	     $.ajax({
+	 	      type: "POST",
+	 	      data: formData,
+	       	  url:sourceleadUrl+"/saveClockInOutConfigure",
+	         	success: function(json) {
+	         		getClockInOutConfigData();
+	         		$("#clockInOutLoading").removeAttr('style');
+		        },  
+	     });
+	 }
+	 
 	 
  }
  
