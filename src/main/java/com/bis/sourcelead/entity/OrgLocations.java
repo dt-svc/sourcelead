@@ -332,6 +332,9 @@ public class OrgLocations implements Serializable{
     
     @Transient
    	private Long orgId;
+    
+    @Transient
+    private String orgImgUrl;
    
    
    
@@ -1155,6 +1158,14 @@ public class OrgLocations implements Serializable{
 
 	public void setOrgId(Long orgId) {
 		this.orgId = orgId;
+	}
+
+	public String getOrgImgUrl() {
+		return orgImgUrl;
+	}
+
+	public void setOrgImgUrl(String orgImgUrl) {
+		this.orgImgUrl = orgImgUrl;
 	}
 	
 }
