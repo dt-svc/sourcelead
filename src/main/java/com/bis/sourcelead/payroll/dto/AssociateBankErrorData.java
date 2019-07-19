@@ -10,6 +10,8 @@ public class AssociateBankErrorData {
 	
 	private int insertedCount;
 	
+	private boolean emptyStatus;
+	
 	private List<AssociatePfEsiDetailsDTO> pfErrorData;
 	
 	private List<IndAssociatePaymentAccountDTO> bdErrorData;
@@ -48,6 +50,14 @@ public class AssociateBankErrorData {
 
 	public void setBdErrorData(List<IndAssociatePaymentAccountDTO> bdErrorData) {
 		this.bdErrorData = bdErrorData;
+	}
+
+	public boolean isEmptyStatus() {
+		return emptyStatus;
+	}
+
+	public void setEmptyStatus(boolean emptyStatus) {
+		this.emptyStatus = emptyStatus;
 	}
 	
 	
