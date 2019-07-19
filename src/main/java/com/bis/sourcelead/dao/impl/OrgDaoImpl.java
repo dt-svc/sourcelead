@@ -412,7 +412,6 @@ public class OrgDaoImpl implements OrgDao {
 				    if(userRoleId == null) {
 				    	String resouceparentId = record[i] == null ? null : record[i].toString();
 						i++;
-						System.out.println(record[i].toString());
 						user.setParentId(Long.valueOf(resouceparentId == null ? record[i].toString() : resouceparentId));
 				    }else {
 						user.setParentId(Long.valueOf(parentId == null ? record[i+1].toString() : parentId));
