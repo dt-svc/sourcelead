@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.dto.performance.PerformanceRatingLevelDTO;
 import com.bis.sourcelead.dto.performance.PerformanceRatingScaleDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -147,13 +148,26 @@ public class PerformanceManagementController {
 	public ModelAndView getPerformanceAppraisalCyclesList(HttpServletRequest request) throws Exception{
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<PerformanceAppraisalTemplate> appraisalTemplatesList = performanceAppraisalTemplateService.getPerformanceAppraisalTemplateList(orgLocation.getId());
+		List<PerformanceAppraisalTemplateDTO> appraisalTemplatesList = performanceAppraisalTemplateService.getPerformanceAppraisalTemplateDTOList(orgLocation.getId(),orgLocation.getDateFormat());
 		model.addObject("appraisalTemplatesList", appraisalTemplatesList);
 		model.addObject("appraisalTemplatesListSize", appraisalTemplatesList.size());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("performance/performanceAppraisalCyclesList");
 		return model;
 	}
+	
+	
+	
+	
+	@RequestMapping(value = "/getPerformanceAppraisalTemplateDetails")
+	public ModelAndView getPerformanceAppraisalTemplateDetails(HttpServletRequest request) throws Exception{
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("performance/appraisalTemplateDetails");
+		return model;
+	}
+	
+	
 	
 	@RequestMapping(value = "/getPerformanceAppraisalAssignToList")
 	public ModelAndView getPerformanceAppraisalAssignToList(@RequestParam(value = "uuid", required = true) String uuid,
@@ -249,7 +263,7 @@ public class PerformanceManagementController {
 		String result = null;
 		if(ratingLevelId != null){
 			 PerformanceRatingLevelDTO ratingLevelDTO =  performanceRatingLevelService.getPerformanceRatingLevelDetailsById(ratingLevelId);
-			 if(ratingLevelDTO.getName().toLowerCase().equalsIgnoreCase(ratingLevelName)) {
+			 if(ratingLevelDTO.getName().toLowerCase().equalsIgnoreCase(ratingLevelName.toLowerCase())) {
 				 result = "valid";
 			 }else {
 				 boolean flag  = performanceRatingLevelService.isRatingLevelNameExisted(orgLocationId, ratingLevelName);
@@ -262,6 +276,109 @@ public class PerformanceManagementController {
 		}
 		else{
 			boolean flag  = performanceRatingLevelService.isRatingLevelNameExisted(orgLocationId, ratingLevelName);
+			if(flag == true){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
+		
+	}
+	
+	
+	
+	@RequestMapping(value = "/validateFeedbackTemplateName", method = RequestMethod.GET)
+	@ResponseBody String validateFeedbackTemplateName(@RequestParam(value = "templateName", required = true) String templateName,
+			@RequestParam(value = "templateId", required = false) Long templateId,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
+		
+		String result = null;
+		if(templateId != null){
+			 PerformanceFeedbackTemplate feedbackTemplate =  performanceFeedbackTemplateService.getPerformanceFeedbackTemplateById(templateId);
+			 if(feedbackTemplate.getName().toLowerCase().equalsIgnoreCase(templateName.toLowerCase())) {
+				 result = "valid";
+			 }else {
+				 boolean flag  = performanceFeedbackTemplateService.isTemplateNameExisted(orgLocationId, templateName);
+					if(flag == true){
+						result = "invalid";
+					}else{
+						result = "valid";
+					} 
+			 }
+		}
+		else{
+			boolean flag  = performanceFeedbackTemplateService.isTemplateNameExisted(orgLocationId, templateName);
+			if(flag == true){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
+		
+	}
+	
+	
+	
+	@RequestMapping(value = "/validateAppraisalTemplateName", method = RequestMethod.GET)
+	@ResponseBody String validateAppraisalTemplateName(@RequestParam(value = "appraisalName", required = true) String appraisalName,
+			@RequestParam(value = "appraisalTemplateId", required = false) Long appraisalTemplateId,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
+		
+		String result = null;
+		if(appraisalTemplateId != null){
+			PerformanceAppraisalTemplate appraisalTemplate =  performanceAppraisalTemplateService.getPerformanceAppraisalTemplateById(appraisalTemplateId);
+			 if(appraisalTemplate.getName().toLowerCase().equalsIgnoreCase(appraisalName.toLowerCase())) {
+				 result = "valid";
+			 }else {
+				 boolean flag  = performanceAppraisalTemplateService.isAppraisalTemplateNameExisted(orgLocationId, appraisalName);
+					if(flag == true){
+						result = "invalid";
+					}else{
+						result = "valid";
+					} 
+			 }
+		}
+		else{
+			boolean flag  = performanceAppraisalTemplateService.isAppraisalTemplateNameExisted(orgLocationId, appraisalName);
+			if(flag == true){
+				result = "invalid";
+			}else{
+				result = "valid";
+			}
+		}
+		
+		return result;
+		
+	}
+	
+	@RequestMapping(value = "/validatePerformanceBadgeName", method = RequestMethod.GET)
+	@ResponseBody String validatePerformanceBadgeName(@RequestParam(value = "badgeName", required = true) String badgeName,
+			@RequestParam(value = "badgeId", required = false) Long badgeId,HttpServletRequest request) throws Exception {
+		
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
+		
+		String result = null;
+		if(badgeId != null){
+			PerformanceBadges performanceBadges =  performanceBadgesService.getPerformanceBadgesDetailsById(badgeId);
+			 if(performanceBadges.getName().toLowerCase().equalsIgnoreCase(badgeName.toLowerCase())) {
+				 result = "valid";
+			 }else {
+				 boolean flag  = performanceBadgesService.isPerformanceBadgeNameExisted(orgLocationId, badgeName);
+					if(flag == true){
+						result = "invalid";
+					}else{
+						result = "valid";
+					} 
+			 }
+		}
+		else{
+			boolean flag  = performanceBadgesService.isPerformanceBadgeNameExisted(orgLocationId, badgeName);
 			if(flag == true){
 				result = "invalid";
 			}else{
@@ -344,7 +461,18 @@ public class PerformanceManagementController {
 		
 	}
 	
-	
+	@RequestMapping(value = "/getTemplateAssignedAssociatesList")
+	public ModelAndView getTemplateAssignedAssociatesList(@RequestParam(value = "uuid", required = true) String uuid,
+			HttpServletRequest request) throws Exception{
+		
+		PerformanceAppraisalTemplate template = performanceAppraisalTemplateService.getPerformanceAppraisalTemplateByUUID(uuid);
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("uuid", uuid);
+		model.addObject("templateName", template.getName());
+		model.setViewName("performance/appraisalAssignedAssociates");
+		return model;
+	}
 	
 	
 }

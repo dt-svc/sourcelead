@@ -584,6 +584,9 @@ public class OrgSettingsController {
 					tabName = "Immigration";
 				} else if (tabName.equalsIgnoreCase("Run Payroll") || tabName.equalsIgnoreCase("My Payroll")) {
 					tabName = "Pay Roll";
+				}else if (tabName.equalsIgnoreCase("Goals") || tabName.equalsIgnoreCase("My Appraisal") || tabName.equalsIgnoreCase("Employee Appraisal") 
+						|| tabName.equalsIgnoreCase("Org Chart")) {
+					tabName = "Performance Management";
 				}
 				
 				if(actionTabs.get(tabName) != null && !actionTabs.get(tabName).isEmpty()) {
