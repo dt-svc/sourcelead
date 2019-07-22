@@ -242,7 +242,11 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 		
 		Map<String,  List<String>> accGroupByEmailList = new HashMap<String, List<String>>();
 		canMap.forEach((k, v) -> {
-			   accGroupByEmailList.put(k, paymentDetailsList.stream().filter(t -> t.getEmail() != null && t.getEmail().equals(k) && t.getAccountNumber() != null).map(PaymentAccount::getAccountNumber).collect(Collectors.toList()));  });
+			   accGroupByEmailList.put(k, paymentDetailsList
+					   .stream()
+					   .filter(t -> t.getEmail() != null && t.getEmail().equals(k) && t.getAccountNumber() != null)
+					   .map(PaymentAccount::getAccountNumber)
+					   .collect(Collectors.toList()));  });
 		
 		int insertedCount = 0;
 		try {
@@ -442,13 +446,14 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				
 				List<PayrollPayheadDTO> payHeadDTOList = payrollPayheadService.getPayrollPayheadList(orgLocation).getData();
 				Map<Long, String> mapPayheadIdAndName = payHeadDTOList.stream().collect(Collectors.toMap(PayrollPayheadDTO::getId, PayrollPayheadDTO::getName));
-				Map<String, String> mapPayheadShortCodeAndName = payHeadDTOList.stream().collect(Collectors.toMap(PayrollPayheadDTO::getShortCode, PayrollPayheadDTO::getName));
+				Map<String, String> mapPayheadShortCodeAndName = payHeadDTOList
+																		       .stream()
+																		       .filter(t -> t.getActive().equalsIgnoreCase("YES"))
+																		       .collect(Collectors.toMap(PayrollPayheadDTO::getShortCode, PayrollPayheadDTO::getName));
 				
 				List<AssociateSalaryInd> associateSalaryIndList = payrollPayheadService.getAssociateSalaryIndListByOrgLocationsId(orgLocation.getId());
 				Map<String, String> associateSalaryIndCanEmailAndUUID = new HashMap<String, String>();
 				for (AssociateSalaryInd i : associateSalaryIndList) associateSalaryIndCanEmailAndUUID.put(i.getCandidate().getEmail(), i.getUuid());
-				
-				
 				
 				workbook = WorkbookFactory.create(fis);
 				int numberOfSheets = workbook.getNumberOfSheets();
