@@ -2603,7 +2603,7 @@ function customizeScore(requirementId){
 			        result = result +'		                    <div class="col-md-3 paddingRight lblup ">   ';
 			        result = result +'		                   <label>Choose City</label>';
 			        result = result +'                              <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">';
-			        result = result +'                              <i class="fa fa-refresh btn btn-primary refresh-icon mr2 ref-top" title="Refresh" onClick="refreshGoogleApiCity(\''+apiLocation+'\');"></i>';
+			        result = result +'                              <i class="fa fa-refresh btn btn-primary refresh-icon mr2" title="Refresh" onClick="refreshGoogleApiCity(\''+apiLocation+'\');"></i>';
 			        result = result +'		                  </div>  ';
 			        
 			        result = result +'		                  <div class="col-md-7 paddingRight lblup"> ';   
