@@ -151,6 +151,10 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			}				
 			insertedCount =  associatePfEsiDao.saveAssociateInformation(orgLocation.getId(), list, canMap);
 			associateBankErrorData.setPfErrorData(errorlist);
+			if(errorlist.isEmpty() && list.isEmpty()){
+				associateBankErrorData.setEmptyStatus(true);
+			}else{associateBankErrorData.setEmptyStatus(false);
+			}
 			associateBankErrorData.setInsertedCount(list.size());
 			fis.close();
 		} catch (IOException e) {

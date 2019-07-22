@@ -178,10 +178,10 @@ function importAssociateBankDetail(){
  		    	    if(json.insertedCount != null && json.insertedCount != '')
  		    	    $("#msgDiv").removeAttr("style");
  		    	    $("#msgDiv").css({ "display" : "block", "text-align" :"center" });
- 		    	    if(json.insertedCount != 0){
- 		 			$("#msgDiv").html(json.insertedCount+ " Associate PF/ESI details are updated");}
+ 		    	   if(json.emptyStatus == 1){
+ 		    			$("#msgDiv").html("Should fill the atleast mandatory Fields").css({"background":"#d9534f"})}
  		 			else{
- 		 				$("#msgDiv").html("Should fill the atleast mandatory Fields").css({"background":"#d9534f"})
+ 		 				$("#msgDiv").html(json.insertedCount+ " Associate PF/ESI details are updated");
  		 			}
  		 			msgFadein();
  		 			if(json.pfErrorData != null && json.pfErrorData.length >0){
