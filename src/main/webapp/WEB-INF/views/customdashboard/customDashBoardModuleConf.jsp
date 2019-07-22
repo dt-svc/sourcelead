@@ -17,6 +17,7 @@ $(document).ready(function(){
       <div class="pull-right brud-crum"><a href="${appPath}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${appPath}/configureCustomDashBoard">Dashboarrd list </a> &raquo; Add Dashboard Modules</div>
     </section>
     
+    <div id="loading"></div>
     <div class="project_wrap newDashSection newDashSectionMdu clearfix">
         <div class="newDashLeft">
         <div id="tabsListDiv"></div>
@@ -24,190 +25,6 @@ $(document).ready(function(){
 
         <div class="newDashRight">
             <div class="clearfix" id="tab-content">
-        <!--     <div id="tab1">
-                <ul id="subtabslist"></ul>
-            </div>
-            
-            <div id="tab2">
-                <ul>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Vendors by Contact</label>
-                    </li>
-				</ul>
-            </div>
-            
-            <div id="tab3">
-                <ul>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Assigned Jobs</label>
-                    </li>
-                    <li class=" clearfix">
-                        <input id="b" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="b" class="checkbox-custom-label paddingright">Jobs Pipeline</label>
-                    </li>
-                    <li class="clearfix">
-                        <input id="c" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="c" class="checkbox-custom-label paddingright">Interview</label>
-                    </li>
-                    <li class="clearfix">
-                        <input id="d" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="d" class="checkbox-custom-label paddingright">Job Fair</label>
-                    </li> 
-                    <li class=" clearfix">
-                        <input id="b" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="b" class="checkbox-custom-label paddingright">Jobs Pipeline</label>
-                    </li>
-                    <li class="clearfix">
-                        <input id="c" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="c" class="checkbox-custom-label paddingright">Applicant Permission</label>
-                    </li>
-                    <li class="clearfix">
-                        <input id="d" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="d" class="checkbox-custom-label paddingright">Submit to Client</label>
-                    </li> 
-                    <li class=" clearfix">
-                        <input id="b" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="b" class="checkbox-custom-label paddingright">Applicants Joined</label>
-                    </li>                                       
-				</ul>
-            </div>
-            
-            <div id="tab4">
-                <ul>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Recently Added</label>
-                    </li>
-                    <li class=" clearfix">
-                        <input id="b" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="b" class="checkbox-custom-label paddingright">Requested Documents</label>
-                    </li>
-                    <li class="clearfix">
-                        <input id="c" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="c" class="checkbox-custom-label paddingright">Purchase Orderlist</label>
-                    </li>
-                    <li class="clearfix">
-                        <input id="d" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="d" class="checkbox-custom-label paddingright">Sales Order list</label>
-                    </li>
-				</ul>
-            </div>
-
-            <div id="tab5">
-                <ul>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Candidates on onboarding</label>
-                    </li>
-                    <li class=" clearfix">
-                        <input id="b" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="b" class="checkbox-custom-label paddingright">Current onboard</label>
-                    </li>
-                    <li class="clearfix">
-                        <input id="c" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="c" class="checkbox-custom-label paddingright">Current Offboard</label>
-                    </li>
-				</ul>
-            </div>
-            
-            <div id="tab6">
-                <ul>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Project Requests</label>
-                    </li>
-                    <li class=" clearfix">
-                        <input id="b" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="b" class="checkbox-custom-label paddingright">Assigned Project Tasks</label>
-                    </li>
-				</ul>
-            </div>
-
-            <div id="tab7">
-                <ul>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Timesheets</label>
-                    </li>
-                    <li class=" clearfix">
-                        <input id="b" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="b" class="checkbox-custom-label paddingright">Submited for Approval</label>
-                    </li>
-				</ul>
-            </div>
-
-            <div id="tab8">
-                <ul>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Expenses</label>
-                    </li>
-                    <li class=" clearfix">
-                        <input id="b" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="b" class="checkbox-custom-label paddingright">Submited  Expenses</label>
-                    </li>
-				</ul>
-            </div>
-
-            <div id="tab9">
-                <ul>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Read for Contract</label>
-                    </li>
-                    <li class=" clearfix">
-                        <input id="b" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="b" class="checkbox-custom-label paddingright">Counter Sign</label>
-                    </li>
-                    <li class=" clearfix">
-                        <input id="b" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="b" class="checkbox-custom-label paddingright">Sign</label>
-                    </li>   
-                    <li class=" clearfix">
-                        <input id="b" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="b" class="checkbox-custom-label paddingright">Waiting for Approval</label>
-                    </li>                                        
-				</ul>
-            </div>
-
-            <div id="tab10">
-                <ul>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Candidates ready for Invoices</label>
-                    </li>
-				</ul>
-            </div>
-
-            <div id="tab11">
-                <ul>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Leave Management</label>
-                    </li>
-				</ul>
-            </div>
-
-            <div id="tab12">
-                <ul>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">My Pays</label>
-                    </li>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Approve Payroll</label>
-                    </li>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Submited It Forms</label>
-                    </li>                                        
-				</ul>
-            </div>  -->
-
-
         </div>
         
     <div class="footerstyelsNew">
@@ -219,7 +36,62 @@ $(document).ready(function(){
         </div>
 
 	</div>
+	<div id="actionsPopUp"></div>
   </section>
+  
+  
+  <script>
+  function saveCustomModuleConfiguration(){
+	  alert("Hi");
+	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+		
+	  var subModuleIds = [];
+		 $("input[name='subModule[]']:checked").each( function (i) {
+			 subModuleIds[i] = $(this).val();
+		});
+		 alert(subModuleIds.length);
+		if(subModuleIds.length > 0){
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$.ajax({ 
+		    	type: "POST",
+		    	url: sourceleadUrl+"/saveRoleActions?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid+"&actionIds="+actionIds,
+		        success: function(result) {
+		        	if((result == 'success')){
+		        		location.replace(sourceleadUrl+"/enrollRoleActions?uuid="+uuid); 
+			        } 
+		        },
+		 }); 
+		}else{
+			alertMessage("Select atleast one Sub Module");
+		}
+	  
+  }
+  
+  
+  
+  
+  
+  function alertMessage(message){
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a pofix'>";
+		result = result +"		<p>"+message+"</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' style='width:100%' type='button' value='Ok' onclick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#actionsPopUp").append(result);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+
+	}
+  </script>
+  
+<script type="text/javascript">
+function cancel(){
+	$("#actionsPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 
 <script>
 function getRoleBasedModules(){
@@ -243,7 +115,7 @@ function getRoleBasedModules(){
 				for(var j=0;j<json.subTabsDTO.length;j++){
 					var opt = json.subTabsDTO[j];
 					output = output + '<li class="clearfix">';
-					output = output + '<input id="sTab'+opt.subTabId+'" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">';
+					output = output + '<input id="sTab'+opt.subTabId+'" value=" " class="checkbox-custom" name="subModule[]" type="checkbox">';
 					output = output + '<label for="sTab'+opt.subTabId+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
 					output = output + '</li>';
 						
@@ -288,29 +160,6 @@ function activeTabClick(tabName){
 	
 }
 
-</script>
-
-
-
-
-<script>
-function showSubTabs(tabId){
-	$("#subtabslist").empty(); 
-	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-		$.get(sourceleadUrl+"/getSubModules?"+tokenParamName+"="+tokenValue+"&tabId="+tabId, function(json) {
-			var res = "";
-				for(var i=0;i<json.length;i++){
-					var opt = json[i];
-					res = res + '<li class="clearfix">';
-					res = res + '<input id="sTab'+i+'" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">';
-					res = res + '<label for="sTab'+i+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
-					res = res + '</li>';
-				}
-				$("#tab1").show();
-			    $("#subtabslist").append(res);
-			    
-		}); 
-}
 </script>
 
 

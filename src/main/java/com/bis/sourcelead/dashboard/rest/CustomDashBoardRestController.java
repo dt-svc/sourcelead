@@ -110,7 +110,7 @@ public class CustomDashBoardRestController {
 	 */
 	
 	@RequestMapping(value="/configureCustomDashBoardModule")
-	public ModelAndView configureCustomDashBoardModule(HttpServletRequest request, HttpServletResponse response) {
+	public ModelAndView configureCustomDashBoardModule(@RequestParam(value = "customDashBoardConfUUID",required = false) String customDashBoardConfUUID, HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 		try {
 			model.addObject("sourceleadUrl", sourceleadUrl);
