@@ -14,4 +14,6 @@ public interface PerformanceFeedbackTemplateService {
 	List<PerformanceFeedbackTemplate> getPerformanceFeedbackTemplateList(Long orgLocationId) throws Exception;
 	
 	List<PerformanceFeedbackTemplateDTO> getPerformanceFeedbackTemplateDTOList(Long orgLocationId) throws Exception;
+	
+	boolean isTemplateNameExisted(Long orgLocationId, String templateName) throws Exception;
 }

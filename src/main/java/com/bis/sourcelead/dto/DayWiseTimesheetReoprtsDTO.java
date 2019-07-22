@@ -35,6 +35,8 @@ public class DayWiseTimesheetReoprtsDTO extends SearchDTO {
 	
 	private String associateStatus;
 	
+	private String loginUserRoleType;
+	
 	
 	public String getAssociateStatus() {
 		return associateStatus;
@@ -138,6 +140,14 @@ public class DayWiseTimesheetReoprtsDTO extends SearchDTO {
 
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
+	}
+
+	public String getLoginUserRoleType() {
+		return loginUserRoleType;
+	}
+
+	public void setLoginUserRoleType(String loginUserRoleType) {
+		this.loginUserRoleType = loginUserRoleType;
 	}
 	
 	

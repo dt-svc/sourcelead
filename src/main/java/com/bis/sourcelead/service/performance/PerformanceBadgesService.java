@@ -16,4 +16,6 @@ public interface PerformanceBadgesService {
 	PerformanceBadges savePerformanceBadges(PerformanceBadges performanceBadges) throws Exception;
 	
 	PerformanceBadges getPerformanceBadgesDetailsById(Long id) throws Exception;
+	
+	boolean isPerformanceBadgeNameExisted(Long orgLocationId, String badgeName) throws Exception;
 }
