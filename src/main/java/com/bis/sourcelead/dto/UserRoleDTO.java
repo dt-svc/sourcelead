@@ -28,6 +28,7 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	private String userType;
 	private String noOfActivites;
 	private String orgClients;
+	private String orgVendors;
 	private String orgManagers;
 	private String orgTeams;
 	private String orgDepartments;
@@ -232,6 +233,12 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	public void setClients(String clients)
 	{
 		this.clients = clients;
+	}
+	public String getOrgVendors() {
+		return orgVendors;
+	}
+	public void setOrgVendors(String orgVendors) {
+		this.orgVendors = orgVendors;
 	}
 	
 	
