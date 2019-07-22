@@ -24,11 +24,11 @@ $(document).ready(function(){
 
         <div class="newDashRight">
             <div class="clearfix" id="tab-content">
-            <div id="tab1">
+        <!--     <div id="tab1">
                 <ul id="subtabslist"></ul>
             </div>
             
-           <!--  <div id="tab2">
+            <div id="tab2">
                 <ul>
                     <li class="clearfix">
                         <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
@@ -205,14 +205,14 @@ $(document).ready(function(){
                         <label for="a" class="checkbox-custom-label paddingright">Submited It Forms</label>
                     </li>                                        
 				</ul>
-            </div> -->
+            </div>  -->
 
 
         </div>
         
     <div class="footerstyelsNew">
         <div class="pull-right mr">
-            <input value="Add" class="btn btn-primary mr" type="button">
+            <input value="Add" class="btn btn-primary mr" type="button" onclick="saveCustomModuleConfiguration();">
         </div>
     </div>
 
@@ -227,20 +227,42 @@ function getRoleBasedModules(){
 		$.get(sourceleadUrl+"/getRoleBasedModules?"+tokenParamName+"="+tokenValue, function(res) {
 		
 			var result = "";
+			var output = "";
 			result = result + '<ul id="menuTabs" class="clearfix">';
 			for(var i=0;i<res.length;i++){
 				var json = res[i];
 				if(i==0){
-					result = result + '<li rel="'+json.tabName+'" onclick="showSubTabs('+json.id+');"><a href="#" id="menuTabs'+json.tabName+'" onclick="activeTabClick(\''+json.tabName+'\');" class="active">'+json.tabName+'</a></li>';
+					result = result + '<li rel="'+json.tabName+'" ><a href="#" id="menuTabs'+json.tabName+'" onclick="activeTabClick(\''+json.tabName+'\');" class="active">'+json.tabName+'</a></li>';
 				}else{
-					result = result + '<li  rel="'+json.tabName+'" onclick="showSubTabs('+json.id+');"><a href="#" id="menuTabs'+json.tabName+'" onclick="activeTabClick(\''+json.tabName+'\');">'+json.tabName+'</a></li>';
+					result = result + '<li  rel="'+json.tabName+'" ><a href="#" id="menuTabs'+json.tabName+'" onclick="activeTabClick(\''+json.tabName+'\');">'+json.tabName+'</a></li>';
 				}
 				
+				
+				output = output + '<div id="tab'+i+'">';
+				output = output + '<ul>';
+				for(var j=0;j<json.subTabsDTO.length;j++){
+					var opt = json.subTabsDTO[j];
+					output = output + '<li class="clearfix">';
+					output = output + '<input id="sTab'+opt.subTabId+'" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">';
+					output = output + '<label for="sTab'+opt.subTabId+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
+					output = output + '</li>';
+						
+				}
+				output = output + '</ul>'
+				output = output + '</div>';
+				
 			}
+			
 			result = result + '</ul>';
 			
 			$("#tabsListDiv").empty();
 			$("#tabsListDiv").append(result);
+			$("#tab-content").append(output);
+			$('#tab-content div').hide();
+			
+			
+			
+		
 		}); 
 }
 </script>
@@ -257,13 +279,18 @@ function activeTabClick(tabName){
 	});
 	document.getElementById("menuTabs"+tabName).className = 'active';
 	$('#tab-content div').hide();
-
-    var indexer = $(this).index(); 
-    $('#tab-content div:eq(' + indexer + ')').fadeIn(); 
+	
+	
+	$('#menuTabs li').click(function() {
+        var indexer = $(this).index(); 
+        $('#tab-content div:eq(' + indexer + ')').fadeIn(); 
+    });  
 	
 }
 
 </script>
+
+
 
 
 <script>
@@ -275,8 +302,8 @@ function showSubTabs(tabId){
 				for(var i=0;i<json.length;i++){
 					var opt = json[i];
 					res = res + '<li class="clearfix">';
-					res = res + '<input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">';
-					res = res + '<label for="a" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
+					res = res + '<input id="sTab'+i+'" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">';
+					res = res + '<label for="sTab'+i+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
 					res = res + '</li>';
 				}
 				$("#tab1").show();
