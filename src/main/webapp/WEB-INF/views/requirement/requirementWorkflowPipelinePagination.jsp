@@ -11,6 +11,8 @@
 var columnPropArr=[];
 var columnDefs =[];
 var searchVal = "";
+var  isWorkflowConfiured=true;
+
 function requirementWorkflowPipelineList(url, requirementId, submissionType, columnsMap){
 	var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
@@ -316,19 +318,19 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 					return result;
 				}
 			});	
- 		}else if(columnPropArr[i] == "education" ){
+ 		}else if(columnPropArr[i] == "candidateScore" ){
 	 		columnDefs.push({
 				"targets" : colIndex++,
-				"data" : "education",
+				"data" : "candidateScore",
 				"render" : function(data, type, opt,
 						meta) {
 					var result = "";
-					if (opt.education != null
-							&& opt.education != ''
-							&& opt.education != 'undefined') {
+					if (opt.candidateScore != null
+							&& opt.candidateScore != ''
+							&& opt.candidateScore != 'undefined') {
 						result = result
 								+ '         <td><div><span>'
-								+ opt.education
+								+ opt.candidateScore
 								+ '</span></div></td>';
 					} else {
 						result = result
