@@ -524,6 +524,8 @@
 								<option ${noticePeriod  == '3 Months' ? 'selected' : ''}>3
                                     Months</option>
                                   <option ${noticePeriod  == 'Other' ? 'selected' : ''}>Other</option>
+
+
 							</select>
 
 						</div>
@@ -534,14 +536,17 @@
 						<label class="col-md-3">Other Notice Period</label>
 						<div class="col-md-9">
 						<input type="text" class="form-control" id="otherNoticePeriod"
+
+
+
 								name="otherNoticePeriod"
 								value="${candidate.otherNoticePeriod}" field-name="Other Notice Period"
 								value="" data-validation="validate_Space validate_length length1-150"
 									data-validation-optional="true">
 						</div>
 					</div>
-
                     <div class="form-group">
+
 						<label class="col-md-3">Previous Employers</label>
 						<div class="col-md-9">
 							<input type="text" class="form-control" id="candidateEmployers"
@@ -551,7 +556,6 @@
 								data-validation-optional="true" value="">
 						</div>
 					</div>
-
 
 					<div class="clearfix"></div>
 					<!-- <div class="form-group innerForm_formGroup"> -->
@@ -572,6 +576,7 @@
 								</div>
 							</div>
 						</div>
+
 
 						<div class="form-group">
 							<label class="col-md-3">Skills</label>
@@ -622,7 +627,28 @@
 
 					<!-- </div> -->
 
-					<!-- <div class="form-group innerForm_formGroup"> -->
+
+					<div class="form-group innerForm_formGroup">
+					
+					   <div class="form-group">
+							<label class="col-md-3">Attach Resume</label>
+							<div class="col-md-9 zindex positionRelative">
+								<div class="input-group col-md-12" id="uploadFileGroup"
+									style="margin: 0 auto">
+									<label class="input-group-btn"> <span
+										class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse
+											File <input type="file" style="display: none;" id="uploadBtn"
+											class="upload"> </span>
+									</label> <input type="text" class="form-control" readonly
+										id="uploadFile" name="docFile" placeholder="Upload Resume ..."
+										field-name="Upload Resume" data-validation="validatedoc "
+										data-validation-optional="true">
+									<div class="clearUpload"></div>
+								</div>
+							</div>
+						</div>
+						
+
 						<div class="form-group">
 							<label class="col-md-3">Education</label>
 							<div class="col-md-9 mySkillsUl">
@@ -1018,12 +1044,12 @@
 
 <!-- Notice Period Other Script starts here -->
 <script>
- function getNoticePeriodOther(noticePeriod) {
-   
-       if (noticePeriod.value == 'Other') {
+
+    function getNoticePeriodOther(noticePeriod) {
+        if (noticePeriod.value == 'Other') {
 	            document.getElementById("noticePeriodDiv").style.display = "block";
-	            $("#otherNoticePeriod").attr("data-validation-optional", "true");
-	            $("#otherNoticePeriod").attr("data-validation", "validate_Space validate_length length2-250");
+	            $('#otherNoticePeriod').removeAttr('data-validation-optional');
+	            $("#otherNoticePeriod").attr("data-validation", "validate_Space required validate_length length1-150");
 	        } else {
 	            document.getElementById("noticePeriodDiv").style.display = "none";
 	            $("#otherNoticePeriod").attr("data-validation-optional", "true");
@@ -1031,7 +1057,9 @@
            
 	        }
        
-    }
+     
+	        }
+
 </script>
 
 <!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->

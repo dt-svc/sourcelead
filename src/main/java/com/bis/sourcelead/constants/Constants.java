@@ -1021,7 +1021,7 @@ public class Constants {
 	
 	public static final String[] JOBFAIR_EXPORT_HEADERS = {"Generated ID", "Title", "Start Date", "End Date", "No.of Jobs", "Applicants", "Offered", "Venue", "Status"};
 	
-	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense ID","purpose","Project","Client","Start Date","End Date","No of Items","Amount","Status"};
+	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense ID","purpose","Project","Client","Start Date","End Date","No of Items","Amount","Status","Billing Status"};
 
     public static final String BILLABLE_HOURS = "BILLABLE_HOURS";
 	public static final String JOB_ALERT_DURATION_DIALY = "Daily";

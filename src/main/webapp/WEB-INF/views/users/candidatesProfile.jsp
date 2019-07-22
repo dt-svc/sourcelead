@@ -157,6 +157,11 @@ function editCandidate(candidateId){
             			 		ssnNumber = json.ssnNumber;            			 		
             			 	}
             			 	
+            			 	var otherNoticePeriod = '';
+            			 	if(json.otherNoticePeriod != null && json.otherNoticePeriod != '' && json.otherNoticePeriod != 'undefined'){
+            			 		otherNoticePeriod = json.otherNoticePeriod;            			 		
+            			 	}
+            			 	
 							var result ='';
 							result  = result + '<div class="success_pop" id="selector1" style="display: none;">';
 						    result  = result + '<i class="fa fa-check-circle"></i><span id="candMsgDiv"></span>';
@@ -381,15 +386,20 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
+							result = result + '<select class="form-control" id="noticePeriodEdit" name="noticePeriod" field-name="Notice Period" onchange="updateOtherNoticePeriod();">';
 							result = result + '<option value="">--Select Notice Period--</option>';
 							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
 							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
 							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
 							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'>2 Months</option>';
 							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'>3 Months</option>';
+							result = result + '<option  '+(json.noticePeriod == "Other" ? "selected" : '') +'>Other</option>';
 							result = result + ' </select>';
 							result = result + ' </div>';
+							
+							result = result + '<div class="col-md-6 noticePeriodUpdateDiv" id="noticePeriodUpdateDiv" style="display:none">';
+							result = result + '<input type="text" class="form-control input-sm" name="otherNoticePeriod"  id="otherNoticePeriodEdit" value="'+otherNoticePeriod+'" placeholder=" Notice Period Other" field-name="Other Notice Period" data-validation="validate_Space validate_length length1-150" data-validation-optional="true">';
+							result = result + '</div>';
 							
 							result = result + '</div>';
 
@@ -596,6 +606,9 @@ function editCandidate(candidateId){
 								$("#designationTypeDiv").show();
 						      }
 							employementType();
+							if(json.noticePeriod == "Other"){
+								$("#noticePeriodUpdateDiv").show();
+						      }
 							getVendorsByOrgLocation();
 							$(".candidate-editdetails").addClass("candidate-editdetails-active");
 // 							$(".collapse-div").removeClass("edit-details-active");
@@ -2083,3 +2096,22 @@ $('input#ssnNumber').mask('000-00-0000', {
    placeholder: ""
 });
 </script>
+
+<!-- Notice Period Type Other Script written By Prasad K-->
+
+<script>
+function updateOtherNoticePeriod(){
+	 var noticePeriod = $('#noticePeriodEdit').val(); 
+	if(noticePeriod == 'Other' &&  noticePeriod != '' && noticePeriod !='undefined'){
+		  document.getElementById("noticePeriodUpdateDiv").style.display="block";
+		  $('#otherNoticePeriodEdit').removeAttr('data-validation-optional');
+          $("#otherNoticePeriodEdit").attr("data-validation", "validate_Space required validate_length length1-150");
+	}else{
+		   document.getElementById("noticePeriodUpdateDiv").style.display="none";
+		   $("#otherNoticePeriodEdit").attr("data-validation-optional", "true");
+		   $("#noticePeriodUpdateDiv").find('p.jquery_form_error_message').remove();
+	} 
+}
+</script>
+
+
