@@ -447,26 +447,26 @@
            </div>
          </div>
          
-         
-         <div class="form-group noticePeriodDiv" id="noticePeriodDiv"
-					style="display: none">
-			<label class="col-md-3">Other Notice Period</label>
-				<div class="col-md-9">
-					<input type="text" class="form-control" id="otherNoticePeriod"
-							name="otherNoticePeriod"
-							value="${candidate.otherNoticePeriod}" field-name="Other Notice Period"
-							value="" data-validation="validate_Space validate_length length1-150"
-								data-validation-optional="true">
-				</div>
-		  </div>
-         
-         
-          <div class="form-group">
+          <div class="form-group noticePeriodDiv" id="noticePeriodDiv"
+						style="display: none">
+						<label class="col-md-3">Other Notice Period</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="otherNoticePeriod"
+								name="otherNoticePeriod"
+								value="${candidate.otherNoticePeriod}" field-name="Other Notice Period"
+								data-validation="validate_Space validate_length length1-150"
+									data-validation-optional="true">
+						</div>
+					</div>
+					
+		<div class="form-group">
           <label class="col-md-3">Employer's</label>
           <div class="col-md-9">
             <input type="text" class="form-control" id="candidateEmployers" name="candidateEmployers" value="${candidateEmployers}"  field-name="Employers" data-validation="validate_Space validate_length length2-250" data-validation-optional="true"  value="">
           </div>
         </div>
+         
+
         <!--  <div class="form-group innerForm_formGroup"> -->
           
          
@@ -509,7 +509,9 @@
           </div>
          </div>
         
-       <!--  </div> -->
+
+        <!-- </div> -->
+
         
       <!--   <div class="form-group innerForm_formGroup"> -->
         <div class="form-group">
@@ -815,19 +817,22 @@ function getDesignationType(designationType){
 
 <!-- Notice Period Other Script starts here -->
 <script>
- function getNoticePeriodOther(noticePeriod) {
-       if (noticePeriod.value == 'Other') {
+
+    function getNoticePeriodOther(noticePeriod) {
+        if (noticePeriod.value == 'Other') {
 	            document.getElementById("noticePeriodDiv").style.display = "block";
-	            $("#otherNoticePeriod").attr("data-validation-optional", "true");
-	            $("#otherNoticePeriod").attr("data-validation", "validate_Space validate_length length2-250");
+	            $('#otherNoticePeriod').removeAttr('data-validation-optional');
+	            $("#otherNoticePeriod").attr("data-validation", "validate_Space required validate_length length1-150");
+
 	        } else {
 	            document.getElementById("noticePeriodDiv").style.display = "none";
 	            $("#otherNoticePeriod").attr("data-validation-optional", "true");
 	            $("#noticePeriodDiv").find('p.jquery_form_error_message').remove();
-           
+
 	        }
     }
 </script>
+
 
 <!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
 <script>

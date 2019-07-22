@@ -937,7 +937,7 @@ function requirementsList(offset){
 			 				result = result +'<b><i class="fa fa-plane" title="Immigration Status"></i>'+visaType+'</b>';
 			 				result = result +'</div>';
 			 				result = result +'<h5>';
-							result = result +'<strong>Locations : </strong>';
+							result = result +'<strong class="tblminwidth-90">Locations : </strong>';
 			 				
 			 				result = result +'<ul>';
 			 				if(requirements.locationsList != null){
@@ -947,7 +947,7 @@ function requirementsList(offset){
 			 				}
 			 				result = result +'</ul>';
 			 				result = result +'<div class="clearfix"></div>';
-			 				result = result +'<strong>Skills :</strong>';
+			 				result = result +'<strong class="tblminwidth-90 mt2">Skills :</strong>';
 			 				result = result +'<ul>';
 			 				
 			 				if(requirements.skillsList != null){
@@ -1278,7 +1278,7 @@ function searchRequirement(offset){
 									 				result = result +'</span>';
 									 				result = result +'<h5>';
 									 				
-									 				result = result +'<strong>Locations : </strong>';
+									 				result = result +'<strong class="tblminwidth-90">Locations : </strong>';
 									 				
 									 				result = result +'<ul>';
 									 				if(requirements.locationsList != null){
@@ -1288,7 +1288,7 @@ function searchRequirement(offset){
 									 				}
 									 				result = result +'</ul>';
 									 				
-									 				result = result +'<strong>Skills :</strong>';
+									 				result = result +'<strong class="tblminwidth-90 mt2">Skills :</strong>';
 									 				result = result +'<ul>';
 									 				if(requirements.skillsList != null){
 									 					description =  description+'Skills :'+requirements.skillsList+";";
