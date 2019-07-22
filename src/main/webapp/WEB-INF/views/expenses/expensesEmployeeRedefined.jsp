@@ -23,7 +23,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				<th>End Date<br>(<small class='custom-small'>${orgLocationDateFormat}</small>)</th>
 				<th>No of Items</th>                                                              
 				<th>Amount</th>                                                                   
-				<th>Status</th>                                                                   
+				<th>Status</th>     
+				<th>Billing Status</th>                                                               
 			</tr>                                                                             
 		</thead>                                                                          
 	<tbody>
