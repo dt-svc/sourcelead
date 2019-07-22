@@ -1,6 +1,8 @@
 package com.bis.sourcelead.dashboard.service.Impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +18,12 @@ import com.bis.sourcelead.dashboard.entity.CustomDashBoardAssociatesConf;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashboardConfService;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SubTabsDTO;
+import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.SubTabs;
+import com.bis.sourcelead.entity.Tabs;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -24,6 +31,9 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 	
 	@Autowired
 	private CustomDashBoardConfDao customDashBoardConfDao;
+	
+	@Autowired
+	private TabsService tabsService;
 	
 	@Override
 	public CustomDashBoardConfiguration saveCustomDashBoardConf(CustomDashBoardConfDTO customDashBoardConfDTO, OrgLocations orgLocation,Long loginUsrId)
@@ -136,6 +146,69 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 	public CustomDashBoardConfiguration getCustomDashboardConfById(Long customDashBoardConfID, Long orgLocationId)
 	{
 		return customDashBoardConfDao.getCustomDashboardConfById(customDashBoardConfID,orgLocationId);
+	}
+
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public List<TabsDTO> getRoleBasedModules(Long locationId, long roleId)
+	{
+		List<TabsDTO> tabs = new ArrayList<>();
+		try {
+			List<Tabs> tbs =  tabsService.getTabsByRoleIdAndOrgLocationId(roleId, locationId);
+			for(Tabs tab: tbs) {
+				if(!"Associates".equalsIgnoreCase(tab.getTabName().trim()) && !"Settings".equalsIgnoreCase(tab.getTabName().trim()) &&
+						!"Campaigns".equalsIgnoreCase(tab.getTabName().trim()) && !"Back Office".equalsIgnoreCase(tab.getTabName().trim())
+						&& !"Immigration".equalsIgnoreCase(tab.getTabName().trim()) && !"Reports".equalsIgnoreCase(tab.getTabName().trim())) {
+					
+					TabsDTO tabsDTO = new TabsDTO();
+					tabsDTO.setId(tab.getId());
+					tabsDTO.setTabName(tab.getTabName());
+					Set<SubTabs> set = tab.getSubTabs();
+					List<SubTabsDTO> stabList = new ArrayList<>();
+					if(set != null && set.size() >0) {
+						for(SubTabs sTab : set) {
+							SubTabsDTO subTabsDTO = new SubTabsDTO();
+							subTabsDTO.setSubTabId(sTab.getId());
+							subTabsDTO.setSubTabDisplayName(sTab.getSubtabDisplayName());
+							subTabsDTO.setSubTabName(sTab.getSubTabName());
+							stabList.add(subTabsDTO);
+						}
+						
+					}
+					tabsDTO.setSubTabsDTO(stabList);
+					tabs.add(tabsDTO);
+				}
+			}
+			Collections.sort(tabs, new Comparator() {  
+		        @Override  
+		        public int compare(Object obj1, Object obj2) {  
+		        	TabsDTO tab1 = (TabsDTO)obj1;  
+		        	TabsDTO tab2 = (TabsDTO)obj2; 
+		        	return tab1.getTabName().compareToIgnoreCase(tab2.getTabName());  
+		        }  
+		    });
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return tabs;
+	}
+
+
+	@Override
+	public List<SubTabsDTO> getSubModules(Long tabId)
+	{
+		List<SubTabs> subTabs = customDashBoardConfDao.getSubModules(tabId);
+		List<SubTabsDTO> stablist = new ArrayList<>();
+		for(SubTabs sTab : subTabs) {
+			SubTabsDTO subTabsDTO = new SubTabsDTO();
+			subTabsDTO.setSubTabId(sTab.getId());
+			subTabsDTO.setSubTabDisplayName(sTab.getSubtabDisplayName());
+			subTabsDTO.setSubTabName(sTab.getSubTabName());
+			stablist.add(subTabsDTO);
+		}
+		return stablist;
 	}
 	
 }

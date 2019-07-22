@@ -4,6 +4,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
+<script>
+$(document).ready(function(){
+	 getRoleBasedModules();
+	});
+</script>
 
 
 <section class="content-wraper">
@@ -14,31 +19,13 @@
     
     <div class="project_wrap newDashSection newDashSectionMdu clearfix">
         <div class="newDashLeft">
-            <ul id="nav" class="clearfix">
-                <li><a href="#" class="active">Clients</a></li>
-                <li><a href="#">Vendors</a></li>
-                <li><a href="#">Jobs</a></li>
-                <li><a href="#">Candidates</a></li>
-                <li><a href="#">Onboard & Offboard</a></li>
-                <li><a href="#">Projects</a></li>
-                <li><a href="#">timesheets</a></li>
-                <li><a href="#">Expenses</a></li>
-                <li><a href="#">Contracts</a></li>
-                <li><a href="#">Finance</a></li>
-                <li><a href="#">Leave Management</a></li>
-                <li><a href="#">Payroll</a></li>
-            </ul>
+        <div id="tabsListDiv"></div>
         </div>
 
         <div class="newDashRight">
             <div class="clearfix" id="tab-content">
-            <div id="tab1">
-                <ul>
-                    <li class="clearfix">
-                        <input id="a" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Client by Contact</label>
-                    </li>
-				</ul>
+        <!--     <div id="tab1">
+                <ul id="subtabslist"></ul>
             </div>
             
             <div id="tab2">
@@ -218,14 +205,14 @@
                         <label for="a" class="checkbox-custom-label paddingright">Submited It Forms</label>
                     </li>                                        
 				</ul>
-            </div>
+            </div>  -->
 
 
         </div>
         
     <div class="footerstyelsNew">
         <div class="pull-right mr">
-            <input value="Add" class="btn btn-primary mr" type="button">
+            <input value="Add" class="btn btn-primary mr" type="button" onclick="saveCustomModuleConfiguration();">
         </div>
     </div>
 
@@ -233,21 +220,98 @@
 
 	</div>
   </section>
-  
-  <script>
-$(document).ready(function(){
-    $('#tab-content div').hide();
-    $('#tab-content div:first').show();
 
-    $('#nav li').click(function() {
-        $('#nav li a').removeClass("active");
-        $(this).find('a').addClass("active");
-        $('#tab-content div').hide();
+<script>
+function getRoleBasedModules(){
+	    var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+		$.get(sourceleadUrl+"/getRoleBasedModules?"+tokenParamName+"="+tokenValue, function(res) {
+		
+			var result = "";
+			var output = "";
+			result = result + '<ul id="menuTabs" class="clearfix">';
+			for(var i=0;i<res.length;i++){
+				var json = res[i];
+				if(i==0){
+					result = result + '<li rel="'+json.tabName+'" ><a href="#" id="menuTabs'+json.tabName+'" onclick="activeTabClick(\''+json.tabName+'\');" class="active">'+json.tabName+'</a></li>';
+				}else{
+					result = result + '<li  rel="'+json.tabName+'" ><a href="#" id="menuTabs'+json.tabName+'" onclick="activeTabClick(\''+json.tabName+'\');">'+json.tabName+'</a></li>';
+				}
+				
+				
+				output = output + '<div id="tab'+i+'">';
+				output = output + '<ul>';
+				for(var j=0;j<json.subTabsDTO.length;j++){
+					var opt = json.subTabsDTO[j];
+					output = output + '<li class="clearfix">';
+					output = output + '<input id="sTab'+opt.subTabId+'" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">';
+					output = output + '<label for="sTab'+opt.subTabId+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
+					output = output + '</li>';
+						
+				}
+				output = output + '</ul>'
+				output = output + '</div>';
+				
+			}
+			
+			result = result + '</ul>';
+			
+			$("#tabsListDiv").empty();
+			$("#tabsListDiv").append(result);
+			$("#tab-content").append(output);
+			$('#tab-content div').hide();
+			
+			
+			
+		
+		}); 
+}
+</script>
 
+
+<script>
+$('#tab-content div').hide();
+$('#tab-content div:first').show();
+
+function activeTabClick(tabName){
+	
+	$('#menuTabs li').each(function(){
+		document.getElementById("menuTabs"+$(this).attr('rel')).removeAttribute("class");	
+	});
+	document.getElementById("menuTabs"+tabName).className = 'active';
+	$('#tab-content div').hide();
+	
+	
+	$('#menuTabs li').click(function() {
         var indexer = $(this).index(); 
         $('#tab-content div:eq(' + indexer + ')').fadeIn(); 
     });  
-});
+	
+}
 
 </script>
+
+
+
+
+<script>
+function showSubTabs(tabId){
+	$("#subtabslist").empty(); 
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+		$.get(sourceleadUrl+"/getSubModules?"+tokenParamName+"="+tokenValue+"&tabId="+tabId, function(json) {
+			var res = "";
+				for(var i=0;i<json.length;i++){
+					var opt = json[i];
+					res = res + '<li class="clearfix">';
+					res = res + '<input id="sTab'+i+'" value=" " class="checkbox-custom" name="mailIds[]" type="checkbox">';
+					res = res + '<label for="sTab'+i+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
+					res = res + '</li>';
+				}
+				$("#tab1").show();
+			    $("#subtabslist").append(res);
+			    
+		}); 
+}
+</script>
+
+
 <jsp:include page="../masterFooter.jsp" />
