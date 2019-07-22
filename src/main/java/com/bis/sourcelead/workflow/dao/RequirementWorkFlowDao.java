@@ -97,4 +97,6 @@ public interface RequirementWorkFlowDao {
 	List<RequirementWorkFlowStages> getRequirementWorkflowStagesListByUuidAndOrgLocationId(String uuid, Long id, String stageUuid)throws Exception;
 
 	LinkedHashMap<String, String> getColumnsMapbyWorkflowStage(String shortCode, Long workflowId, Long orgLocationId);
+
+	RequirementWorkFlowStages getRequirementWorkFlowStagesDetails(String shortCode, Long workflowId, Long orgLocationId);
 }

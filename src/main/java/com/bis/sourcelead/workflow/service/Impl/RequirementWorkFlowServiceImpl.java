@@ -560,12 +560,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				workFlowStage.setStatus(Constants.RECORD_ACTIVE);
 			}
 			workFlowStage.setOrgLocationId(orgLocations);
-			if(StringUtils.equalsIgnoreCase(requirementWorkFlowStagesDTO.getConfigureType(), Constants.CUSTOMIZE)) {
-				workFlowStage.setConfigureType(Constants.CUSTOMIZE);
-			}else {
-				workFlowStage.setConfigureType(Constants.CLIENT);
-			}
-			
+			workFlowStage.setConfigureType(Constants.CLIENT);
 			workFlowStage.setEditable(Constants.YES);
 			workFlowStage.setCreatedDate(new Date());
 			workFlowStage.setCreatedBy(user);
@@ -1075,6 +1070,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	@Override
 	public LinkedHashMap<String, String> getColumnsMapbyWorkflowStage(String shortCode, Long workflowId, Long orgLocationId) {
 		return requirementWorkFlowDao.getColumnsMapbyWorkflowStage(shortCode, workflowId, orgLocationId);
+	}
+
+
+	@Override
+	public RequirementWorkFlowStages getRequirementWorkFlowStagesDetails(String shortCode, Long workflowId,
+			Long orgLocationId) {
+		return requirementWorkFlowDao.getRequirementWorkFlowStagesDetails(shortCode, workflowId, orgLocationId);
 	}
 
 }
