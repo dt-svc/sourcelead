@@ -157,7 +157,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
 			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
 			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
-			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND ACANLOC.IS_ASSOCIATE = 'Y' AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
+			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID  AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
 			    			       
 			    //To get Employee and department details
 				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
@@ -239,7 +239,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
 			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
 			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
-			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND ACANLOC.IS_ASSOCIATE = 'Y' AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
+			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID  AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
 			    			       
 			    //To get Employee and department details
 				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
@@ -307,7 +307,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
 			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
 			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
-			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND ACANLOC.IS_ASSOCIATE = 'Y' AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
+			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID  AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
 			    			       
 			    //To get Employee and department details
 				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "

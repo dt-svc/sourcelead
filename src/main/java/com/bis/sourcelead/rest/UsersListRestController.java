@@ -2420,6 +2420,9 @@ public class UsersListRestController {
 					   if(canlist != null && !canlist.isEmpty()) {
 						   for(Candidate can :canlist) {
 							   can.setWorkLocation(workLocation);
+							   can.setFirstName(addUserDTO.getFirstName());
+							   can.setLastName(addUserDTO.getLastName());
+							   can.setMiddelName(addUserDTO.getMiddleName());
 							   candidateService.saveOrUpdateCandidate(can);
 							   candidateService.saveOrUpdateCandidateElkDocument(can);
 						   }
