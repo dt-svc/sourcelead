@@ -1165,7 +1165,12 @@ function addApplicantSubmission(){
 			    		$("body").css('overflow-y', 'auto');
 			    		var allApplicants = 'all';
 			    		requirementPipeline(requirementId,allApplicants); 
-			    		requirementStatusBar(requirementId);
+			    		if(typeof isWorkflowConfiured != 'undefined' && isWorkflowConfiured){
+			    			requirementWorkflowStatusBar(requirementId);
+			    		}else{
+			    			requirementStatusBar(requirementId);
+			    		}
+			    		
 					} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
