@@ -199,6 +199,9 @@ function changeBillingStatus(id, ele){
 			    	if(from != null && from != '' && from != 'undefined' && from == 'dashboard'){
 				    	 var table = $('#example').DataTable();
 				    	 table.row('#row'+expenseId).remove().draw( false );
+				    	 
+				    	 $(ele).find("option[data-name='select']").hide();
+				    	 
 		        	 }
 		        	 else{
 		        		 $("#row"+expenseId).empty();

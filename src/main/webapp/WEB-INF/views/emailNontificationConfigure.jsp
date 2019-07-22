@@ -85,15 +85,15 @@
             
             <!--  Email parsing -->
             
-            <div class="clearfix mt">
+            <!-- <div class="clearfix mt">
                   <div class="reportHead clearfix">
                   <h5 class='pull-left ml mt'>Parsing Email Configuraiton</h5>
                      <ul class="pull-right list-unstyled list-inline">
-                     	<li><a href="javascript:void(0)" class="action newAdBtn mr5" onClick="addEmailparsingPopUp();">+ Add</a></li>
+                     	<li><a id= "parserEmailAdd" href="javascript:void(0)" class="action newAdBtn mr5" onClick="addEmailparsingPopUp();">+ Add</a></li>
                      </ul>
                   </div> 			
                  <div id="emailparsingList"></div>  
-            </div>
+            </div> -->
             
             
             <!--  Email parsing -->
@@ -426,10 +426,10 @@ function changeDefaultemailConfig(ele, id) {
  <div id="emailfromMail" class="popupWrap popupWrapFixed">
    <jsp:include page="addMailPopUp.jsp"></jsp:include>
 </div>
-
+<%-- commented on 07 July 2019 
 <div id="emailparsingPopUp" class="popupWrap popupWrapFixed">
 	 <jsp:include page="addParserMailPopUp.jsp"></jsp:include>
-</div>
+</div> --%>
 
 
  <script>
