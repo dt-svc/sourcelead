@@ -38,7 +38,6 @@ function campaignSender(ele,senderId, fromType) {
 								$("input#cpnNickName").after( "<p class='jquery_form_error_message'>You already have a sender identity with the same nickname.</span>");
 							}else if(data == '400Body'){
 								$("#senderLoading").removeAttr("style");
-								/*$("#campaignSender").hide();*/
 								maxAlertSenderPopUp();
 							}
 						});

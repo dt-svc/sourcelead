@@ -204,14 +204,14 @@ $('body').on('blur', '#ticketComment_form', function() {
 	$("#ticketComment_form").showHelpOnFocus();
 	$("#ticketComment_form").validateOnBlur(false, validationSettings);  
 });
-function closeTicketComment() {
-	$("#add-comment").fadeOut();	
-	$("#ticketCommentId").val(0);
-	$("#ticketComment").html("");
-	selectedUsers = [];
+
+function closeTicketComment(){
+	var ticketIdEdit = $("#ticketCommentId").val();
+	if(ticketIdEdit ==null || ticketIdEdit =="" || ticketIdEdit =="undefined"){
+	$("#ticketComment").val("");
+	}
 	$('.fr-element.fr-view').html("");
 	$("#ticketCommentPopup, .mask").hide();
-	
 }
 
 function editTicketComment(ticketId) {
