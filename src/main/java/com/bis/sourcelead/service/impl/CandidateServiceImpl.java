@@ -3977,6 +3977,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		
 	}
 
+	@Override
+	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	}
 
