@@ -17,6 +17,8 @@
       
        <div class="contentareaInner-styles clearfix">
       <div class="timesheet_out" id="payrollRegister" style="display: block;">
+     <div id="appraisalChoicepopUp"></div>
+     <div id="appraisalListLoading"></div>
         <div class="clearfix">
             
           </div>
@@ -34,7 +36,7 @@
               <thead>
                 <tr>
                   <th>Cycle Name</th>
-                  <th>Performance Period</th>
+                  <th>Performance Period<br>(<small class="custom-small">${SourceLeadWeb_dateFormat == 'dd-MM-yyyy' ? 'DD-MM-YYYY' : 'SourceLeadWeb_dateFormat' == 'yyyy-MM-dd' ? 'YYYY-MM-DD' : 'SourceLeadWeb_dateFormat' == 'MM-dd-yyyy' ? 'MM-DD-YYYY' : 'SourceLeadWeb_dateFormat' == 'yyyy-dd-MM' ? 'YYYY-DD-MM' : '' }</small>)</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -47,16 +49,22 @@
 		                  <td><div class="tblminwidth-75">${appraisal.name}</div></td>
 		                  <td>
 							  <div>
-							  <span class="tblminwidth-75 mr">${appraisal.appraisalStartDateStr}</span>
-							  <span class="tblminwidth-75">${appraisal.appraisalEndDateStr}</span>
+							  <span class="tblminwidth-75 mr">${appraisal.selfAppraisalStartDate}</span>
+							  <span class="tblminwidth-75">${appraisal.selfAppraisalEndDate}</span>
 							  </div>
 						  </td>
 		                  <td>
 							  <div class="tblminwidth-50">
 								  <ul class="list-unstyled list-inline">
-									  <li><a onclick="performanceManagement.assignAppraisalCycle('${appraisal.uuid}');" title="Assign"><i class="fa fa-user-plus cursorPointer text-primary"></i></a></li>
-									  <li><a onclick="performanceManagement.addNewAppraisalCycle('${appraisal.id}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
-							  	      <li><a onclick="performanceManagement.deleteAppraisalCycle('${appraisal.id}');" title="Delete"><i class="fa fa-trash"></i></a></li>
+									  <li><a onclick="performanceManagement.assignAppraisalCycle('${appraisal.templateUUId}');" title="Assign"><i class="fa fa-user-plus cursorPointer text-primary"></i></a></li>
+									  <li><a onclick="performanceManagement.viewAppraisalTemplate('${appraisal.templateUUId}');" title="View Template"><i class="fa fa-eye"></i></a></li>
+							  	      <c:if test="${appraisal.templateSubmittedCount == 0}">
+							  	      <li><a onclick="performanceManagement.addNewAppraisalCycle('${appraisal.templateUUId}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
+							  	      <li><a onclick="deleteAppraisalMessage('${appraisal.templateUUId}');" title="Delete"><i class="fa fa-trash"></i></a></li>
+								      </c:if>
+								      <c:if test="${appraisal.templateSubmittedCount > 0}">
+								      <li><a href="javascript:vois(0)" title="Assigned Associates Count" onclick="performanceManagement.templateAssignedAssociates('${appraisal.templateUUId}');">${appraisal.templateAssignedUserCount}</a>
+								      </c:if>
 								  </ul>
 							  </div>
 						  </td>
@@ -69,4 +77,28 @@
           </div>
         </div>
       </div>
+      
+      
+<script type="text/javascript">
+function deleteAppraisalMessage(templateUUId){
+    var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure for permanent delete?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok"  onClick="performanceManagement.deleteAppraisalCycle(\''+templateUUId+'\');" ><input class="u_can_color" type="button"  value="Cancel" onclick="cancel();"></b>';
+	result = result +"	</div>";
+	$("#appraisalChoicepopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancel(){
+	$("#appraisalChoicepopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
        

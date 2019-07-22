@@ -478,3 +478,44 @@
 	position: fixed !important
 }
 .mt10 { margin-top: 10px !important; }
+
+.appraQueInn .viewTemplate .sjfb-field input[type=text], .appraQueInn  .viewTemplate .sjfb-field textarea {
+	width: 100% !important;
+}
+.appraQueInn .viewTemplate .sjfb-field input[type=text], .appraQueInn .viewTemplate .sjfb-field select, .appraQueInn .viewTemplate .sjfb-field textarea {
+	width: 100% !important;
+}
+.appraQueInn { display: block;}
+.appraQueInn .list-inline  { min-height: unset !important; max-height: unset !important; overflow: inherit;} 
+.appraQueInn .list-inline li { width: inherit !important;} 
+.appraQueInn .sjfb-field { float: left;}
+.appraQueInn .sjfb-field label { width: 45%;}
+.appraQueInn .sjfb-field p{ top: inherit !important; left: 0px !important;}
+.appraQueInn .viewTemplate textarea ~ p.jquery_form_error_message {left: 0px !important;}
+.appraQueInn .choices span { width: 32% !important;}
+.appraQueInn .starclass p {
+	    top: 45px !important;
+    left: -10px !important;
+}
+
+.appraQueInn .glyphicon {    position: absolute; right: 23%; top: 24px;}
+
+
+.subScoreWrap { float: right; text-align: right; width: 240px;}
+.subScoreWrap label { float: left;padding: 10px 15px 0px 0px;}
+.subScoreWrap select, .subScoreWrap input {float: right !important; width: 120px; padding: 6px 5px;}
+.subScoreWrap p { position: relative; top: 5px; float: right;}
+.bor_top { border-top:1px solid #ccc; }
+.performanceThumbImg { max-width: 150px; width: auto; max-height: 80px;}
+
+
+
+.feedbackTabs { padding: 0px 0px; margin: 0px 0px; border-bottom: 1px solid #dedede;}
+.feedbackTabs ul { margin: 0px 0px; padding: 0px 0px;}
+.feedbackTabs ul li {
+	list-style-type: none; float: left; padding: 10px 25px;  border-bottom: 4px solid #f5f5f5; color: #666; cursor: pointer;
+	}
+.feedbackTabs ul li.active {border-bottom: 4px solid #006bbb; color: #006bbb; background-color: #fff;}
+ul.selfAppraisalpeersLi li.peeruser-active { background: #ededed; border: 1px solid #cecdcd; box-shadow: none;}
+
+
