@@ -97,4 +97,7 @@ public interface RequirementWorkFlowService {
 	TreeMap<Long, String> checkWorkflowInRequirements(String workflowUuid, Long id)throws Exception;
 	
 	LinkedHashMap<String, String> getColumnsMapbyWorkflowStage(String shortCode, Long workflowId, Long orgLocationId);
+	
+	RequirementWorkFlowStages getRequirementWorkFlowStagesDetails(String shortCode, Long workflowId, Long orgLocationId);
+	
 }

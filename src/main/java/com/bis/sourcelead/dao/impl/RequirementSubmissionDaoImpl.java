@@ -3366,10 +3366,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					 if(chosenColumnsLst.contains("expectedCTC")) {
 						 searchQuery.append("OR reqSub.candidate.expectedRate like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
 					 }
-					 // below filter condition need to be work out later.
-					/* if(chosenColumnsLst.contains("education")) {
-						 searchQuery.append("OR reqSub.candidate.candidateEducation.name like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
-					 }*/
+					if(chosenColumnsLst.contains("candidateScore")) {
+						 searchQuery.append("OR reqSub.candidateEducation.name like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
 					 if(chosenColumnsLst.contains("noticePeriod")) {
 						 searchQuery.append("OR reqSub.candidate.noticePeriod like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
 					 }
