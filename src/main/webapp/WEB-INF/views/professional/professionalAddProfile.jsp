@@ -442,12 +442,13 @@
 			//It will escape all the special characters
 			$("#store_candidate").attr("disabled", "disabled");
 			$("#store_candidate").addClass('button').val('Processing..');
+			var atsUrl = '${SourceLeadWeb_atsUrl}';
 			$.ajax({
 						type : "POST",
 		        	    data: formData,
 		    	        processData: false,
 		    	        contentType:false,
-		        	    url : sourceleadUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
+		        	    url : atsUrl+"/storeProfessionalParseCandidate?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,
 						success : function(response) {
 							
 							if (response && response.response === "INVALID_DATA") {
@@ -560,11 +561,12 @@ function validate_fileupload(fileName)
  function validateCandidateEmail() {
 	 var email = document.getElementById("email").value; 
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	 if(email != null && email != ""){
 		
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Candidate", 
+		        url: atsUrl+"/validateCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&candidateType=Candidate", 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";

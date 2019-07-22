@@ -47,9 +47,10 @@ function getProfessionalInfo(){
 	var userId = '${SourceLeadWeb_userId}';
 	var candidateId = '${SourceLeadWeb_candidateId}';
 	var locationCode = '${SourceLeadWeb_locationCode}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode, 	   
+	    url: atsUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode, 	   
 		    success: function(json) {
 		    	/*  var json = JSON.parse(data); */
 		    	 if(json.firstName != null && json.firstName != '' && json.firstName !='undefined'){
