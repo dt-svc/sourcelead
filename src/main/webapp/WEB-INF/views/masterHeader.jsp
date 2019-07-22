@@ -862,6 +862,7 @@ function preventTabkey(e){
 </div>
 <form id="clock_inout_form" name="clock_inout_form">
 <input type="hidden" id="clockInOutId" name="clockInOutId">
+<input type="hidden" id="ipAddressId" name="ipAddress">
 <input type="hidden" id="breakId" name="breakId">
 <div class="clockWrap">
 <div class="clockIn clearfix">
@@ -1673,6 +1674,9 @@ $(document).ready(function(){
 	localStorage.setItem('stopwatch_time', null);
 	localStorage.setItem('stopwatch_sec', 0);
 	localStorage.clear();
+	 $.getJSON("https://jsonip.com?callback=?", function(data) {
+	        $("#ipAddressId").val(data.ip);
+	      });
 	$("#subMenu").click(function(){
 		$(".subMenuView").slideToggle(100);
 	});
@@ -2166,7 +2170,6 @@ function getAssignedProjects(obj){
 
 <script>
 function getProjectTasksByProject(obj){
-
 	var projectId = $("#projectDropDownDiv").val();
 	if(projectId != null && projectId != "" && projectId != "undefined"){
 		$.ajax({
@@ -2278,6 +2281,8 @@ function getExistedClockTime(){
 		$('#start,#play').attr("disabled",true);
 		$('#reset, #pause').attr("disabled",false);
 		$("#clockInTimeId").text(' : '+data.clockInDateStr +' '+data.clockInTime);
+		
+		$("#comments").val(data.comments);
 		
 		getExistedBreakTime(data.id);
 		}else{

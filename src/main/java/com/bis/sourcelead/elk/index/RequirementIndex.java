@@ -211,6 +211,8 @@ public class RequirementIndex implements Serializable {
 	
 	private String process;
 	
+	private Long workflowId;
+	
 	public String getPrimaryRecruiterUserId() {
 		return primaryRecruiterUserId;
 	}
@@ -1072,4 +1074,13 @@ public class RequirementIndex implements Serializable {
 		this.process = process;
 	}
 
+	public Long getWorkflowId() {
+		return workflowId;
+	}
+
+	public void setWorkflowId(Long workflowId) {
+		this.workflowId = workflowId;
+	}
+
+	
 }
