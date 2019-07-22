@@ -840,7 +840,7 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 				put("Applicant Name", "candidateName"); 	put("Applicant Mail Id", "candidateEmail"); put("Phone Number","phoneNumber");
 				put("Alternate Number", "alternateNumber"); 	put("location", "location"); put("DOB","dateOfBirthStr");
 				put("Experience", "workExperience"); 	put("Current CTC", "currentCtc"); put("Rate [Expected CTC]","expectedCTC");
-				put("Education", "education"); 	put("Notice Period", "noticePeriod"); put("Applied on","createdDateStr");
+				put("Score", "candidateScore"); 	put("Notice Period", "noticePeriod"); put("Applied on","createdDateStr");
 				put("Source", "createdUser"); 
 				
 			}
@@ -848,7 +848,6 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String queryString = "select chosenColumns from RequirementWorkFlowStages stage where stage.orgLocationId.id = :orgLocationId and stage.stageShortCode = :shortCode and stage.requirementWorkFlowId.id =:workflowId ";
-					
 			String commaSeparatedColumns = (String) session.createQuery(queryString).setLong("workflowId", workflowId).setLong("orgLocationId", orgLocationId).setString("shortCode", shortCode).uniqueResult();
 			chosenColumnsArr = commaSeparatedColumns.split(",");
 		   // preparing column headers and entity colmn mappings as map and returns as response.
@@ -864,6 +863,23 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 			e.printStackTrace();
 			return stageColumnMap;
 		}
+	}
+
+	@Override
+	public RequirementWorkFlowStages getRequirementWorkFlowStagesDetails(String shortCode, Long workflowId,
+			Long orgLocationId) {
+		// TODO Auto-generated method stub
+		RequirementWorkFlowStages workflowSatge = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String queryString = "from RequirementWorkFlowStages stage where stage.orgLocationId.id = :orgLocationId and stage.stageShortCode = :shortCode and stage.requirementWorkFlowId.id =:workflowId ";
+			workflowSatge = (RequirementWorkFlowStages) session.createQuery(queryString).setLong("workflowId", workflowId).setLong("orgLocationId", orgLocationId).setString("shortCode", shortCode).uniqueResult();
+		} catch (Exception e) {
+			logger.error(e +" in getColumnsMapbyWorkflowStage DAO");
+			e.printStackTrace();
+			
+		}
+		return workflowSatge;
 	}
 
 }
