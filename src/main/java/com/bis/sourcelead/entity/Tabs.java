@@ -1,7 +1,9 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,12 +12,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "TABS")
@@ -54,7 +57,10 @@ public class Tabs implements Serializable{
 	private String tabIcon;
 	
     
-    
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "tabs")
+	private Set<SubTabs> subTabs;
+	
+	
 
 	public Long getId() {
 		return id;
@@ -110,6 +116,16 @@ public class Tabs implements Serializable{
 
 	public void setTabIcon(String tabIcon) {
 		this.tabIcon = tabIcon;
+	}
+
+	public Set<SubTabs> getSubTabs()
+	{
+		return subTabs;
+	}
+
+	public void setSubTabs(Set<SubTabs> subTabs)
+	{
+		this.subTabs = subTabs;
 	}
     
     
