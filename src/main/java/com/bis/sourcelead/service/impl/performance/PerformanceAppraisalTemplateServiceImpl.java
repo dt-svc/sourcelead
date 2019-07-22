@@ -11,6 +11,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.performance.PerformanceAppraisalTemplateDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalAssignToListDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalPeersDTO;
 import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -171,6 +172,14 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getJsonCategoriesString())) {
 			template.setCategoriesJsonString(performanceAppraisalTemplateDTO.getJsonCategoriesString());
 		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalGoals()) && 
+				performanceAppraisalTemplateDTO.getAppraisalGoals().equalsIgnoreCase(Constants.YES)) {
+			template.setIsGoalsConfigured(performanceAppraisalTemplateDTO.getAppraisalGoals());
+		}else{
+			template.setIsGoalsConfigured(Constants.NO);
+		}
+		
 		template.setOrgLocationId(orgLocations);
 		template.setStatus(Constants.RECORD_ACTIVE);
 		performanceAppraisalTemplateDao.savePerformanceAppraisalTemplate(template);
@@ -183,9 +192,9 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 	}
 
 	@Override
-	public PerformanceAppraisalTemplateDTO getPerformanceAppraisalTemplateDTOById(Long id) throws Exception {
+	public PerformanceAppraisalTemplateDTO getPerformanceAppraisalTemplateDTOById(String templateUUId) throws Exception {
 		   PerformanceAppraisalTemplateDTO templateDTO = new PerformanceAppraisalTemplateDTO();
-		   PerformanceAppraisalTemplate template = performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateById(id);
+		   PerformanceAppraisalTemplate template = performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateByUUID(templateUUId);
 		   templateDTO.setAppraisalTemplateId(template.getId());
 		   templateDTO.setName(template.getName());
 		   templateDTO.setAppraisalStartDate(template.getAppraisalStartDateStr());
@@ -290,6 +299,35 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 	@Override
 	public PerformanceAppraisalTemplate getPerformanceAppraisalTemplateByUUID(String uuid) throws Exception {
 		return performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateByUUID(uuid);
+	}
+
+	@Override
+	public ResponseList<PerformanceAppraisalPeersDTO> getPerformancePeersList(
+			PerformanceAppraisalPeersDTO performanceAppraisalPeersDTO, Long orgLocationId) throws Exception {
+		return performanceAppraisalTemplateDao.getPerformancePeersList(performanceAppraisalPeersDTO, orgLocationId);
+	}
+
+	@Override
+	public List<PerformanceAppraisalTemplateDTO> getPerformanceAppraisalTemplateDTOList(Long orgLocationId,String dateFormat)
+			throws Exception {
+		return performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateDTOList(orgLocationId,dateFormat);
+	}
+
+	@Override
+	public void deletePerformanceAppraisalTemplate(PerformanceAppraisalTemplate performanceAppraisalTemplate)
+			throws Exception {
+		performanceAppraisalTemplateDao.deletePerformanceAppraisalTemplate(performanceAppraisalTemplate);
+	}
+
+	@Override
+	public ResponseList<PerformanceAppraisalPeersDTO> getPerformanceAssignedPeersList(
+			PerformanceAppraisalPeersDTO performanceAppraisalPeersDTO, Long orgLocationId) throws Exception {
+		return performanceAppraisalTemplateDao.getPerformanceAssignedPeersList(performanceAppraisalPeersDTO, orgLocationId);
+	}
+
+	@Override
+	public boolean isAppraisalTemplateNameExisted(Long orgLocationId, String appraisalName) throws Exception {
+		return performanceAppraisalTemplateDao.isAppraisalTemplateNameExisted(orgLocationId, appraisalName);
 	}
 
 }

@@ -11,7 +11,11 @@ public class PerformanceAppraisalAssignToListDTO implements Serializable{
 	
 	private BigInteger userId;
 	
+	private BigInteger userRoleId;
+	
 	private String associateId;
+	
+	private String userImgUrl;
 	
 	private String associateName;
 	
@@ -22,6 +26,8 @@ public class PerformanceAppraisalAssignToListDTO implements Serializable{
 	private String reportingManager;
 	
 	private String appraisalTemplateUUId;
+	
+	private BigInteger peersCount;
 	
 	private int start;
 	
@@ -43,6 +49,14 @@ public class PerformanceAppraisalAssignToListDTO implements Serializable{
 
 	public void setUserId(BigInteger userId) {
 		this.userId = userId;
+	}
+	
+	public BigInteger getUserRoleId() {
+		return userRoleId;
+	}
+
+	public void setUserRoleId(BigInteger userRoleId) {
+		this.userRoleId = userRoleId;
 	}
 
 	public String getAssociateId() {
@@ -139,6 +153,22 @@ public class PerformanceAppraisalAssignToListDTO implements Serializable{
 
 	public void setAppraisalTemplateUUId(String appraisalTemplateUUId) {
 		this.appraisalTemplateUUId = appraisalTemplateUUId;
+	}
+
+	public BigInteger getPeersCount() {
+		return peersCount;
+	}
+
+	public void setPeersCount(BigInteger peersCount) {
+		this.peersCount = peersCount;
+	}
+
+	public String getUserImgUrl() {
+		return userImgUrl;
+	}
+
+	public void setUserImgUrl(String userImgUrl) {
+		this.userImgUrl = userImgUrl;
 	}
 	
 	
