@@ -23,6 +23,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateReportSummaryDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @SuppressWarnings("unchecked")
 @Repository
@@ -60,6 +62,9 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 	
 	@Autowired
 	private ClockInOutUtil clockInOutUtil;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	@Transactional
@@ -707,7 +712,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		try {
 			
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Breaks brk where brk.clockInOutId =:clockInId";
+			String query = "from Breaks brk where brk.clockInOutId =:clockInId and brk.breakEndTime is NOT NULL";
 			breakList = session.createQuery(query).setLong("clockInId", clockInId).list();
 			
 		} catch (Exception e) {
@@ -898,6 +903,38 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		}else {
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional
+	public List<ClockInOut> getListOfClockDataBasedOnDate(String selectedDate, OrgLocations loginOrgLocation, Long userId) {
+		List<ClockInOut> clockList = null;
+		try {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			Date date = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), selectedDate);
+			java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT clk.CLOCK_IN_TIME as clockInTime,")
+			.append("clk.CLOCK_IN_DATE as clockInDate,")
+			.append("task.TASK_NAME as projectTaskName,")
+			.append("clk.TOTAL_TIME as totalTime,")
+			.append("clk.COMMENTS as comments,")
+			.append("clk.CLOCK_OUT_TIME as clockOutTime, ")
+			.append("clk.CLOCK_OUT_DATE as clockOutDate ")
+			.append("FROM CLOCK_INOUT clk INNER JOIN PROJECT_TASKS task ")
+			.append("ON clk.PROJECTS_TASK_ID = task.ID and clk.USER_ID =:userId and clk.ORG_LOCATION_ID =:orgLocationId and clk.CLOCK_IN_DATE =:sqlDate and clk.CLOCK_OUT_DATE is NOT NULL");
+			
+			clockList = session.createSQLQuery(sb.toString())
+			.setLong("userId", userId)
+			.setLong("orgLocationId", loginOrgLocation.getId())
+			.setDate("sqlDate", sqlDate)
+			.setResultTransformer(Transformers.aliasToBean(ClockInOutUserTimeEntryDTO.class)).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return clockList;
 	}
 
 }

@@ -842,7 +842,7 @@ function importApplicantsToJob(requirementId){
 }
 
 function bulkResumeParsing(requirementUUID) {
-	location.href = sourceleadUrl + "/bulk-resume-import.html?requirementUUID=" + requirementUUID;
+	window.open(sourceleadUrl + "/bulk-resume-import.html?requirementUUID=" + requirementUUID, "_blank");
 }	
 </script>
 

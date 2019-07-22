@@ -27,7 +27,7 @@ s	</section>
 				<div class="col-md-6">
 					<label class="col-md-3">Ticket Title <b class="valStar">*</b></label>
 					<div class="col-md-9">
-						<input type="text" class="form-control" name="title" value="${ticketSummary.title}" id ="ticketTitleId" field-name="Ticket Title" data-validation="required validate_length length1-100">
+						<input type="text" class="form-control" name="title" value="${ticketSummary.title}" id ="ticketTitleId" field-name="Ticket Title" data-validation="required validate_length length1-20">
 					</div>
 					<div class="clearfix"></div>
 				</div>
