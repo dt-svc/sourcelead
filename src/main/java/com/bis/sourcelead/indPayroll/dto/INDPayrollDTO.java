@@ -1,5 +1,6 @@
 package com.bis.sourcelead.indPayroll.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -7,7 +8,10 @@ import java.util.List;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesHistoryDTO;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 
-public class INDPayrollDTO {
+public class INDPayrollDTO implements Serializable {
+	 
+	private static final long serialVersionUID = 1L;
+
 	private Long id;
 	
 	private Long empPayrollId;
@@ -66,19 +70,21 @@ public class INDPayrollDTO {
 	 
 	 private String paySheetFrequencyUUID;
 
-	 private Date payCheckDate;
+	 private String payCheckDate;
 		
-	 private Date createdDate;
+	 private String createdDate;
 	
 	 private Long createdBy;
 	
-	 private Date updatedDate;
+	 private String updatedDate;
 	
  	 private Long updatedBy;
 	 
 	 List<AssociatePayrollPayheadHistoryDTO> payHeadHistoryDTOList;
 	 
 	 List<AssociateLoanAndAdvancesHistoryDTO> loanAdvHistoryDTOList;
+	 
+	 List<INDPayrollDTO> employeIndPayrollDTO;
 	 
 	 private Long payrollPaySlipInd;
 	 
@@ -330,23 +336,6 @@ public class INDPayrollDTO {
 		this.employee = employee;
 	}
 
-	
-	public Date getPayCheckDate() {
-		return payCheckDate;
-	}
-
-	public void setPayCheckDate(Date payCheckDate) {
-		this.payCheckDate = payCheckDate;
-	}
-
-	public Date getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
-
 	public Long getCreatedBy() {
 		return createdBy;
 	}
@@ -355,13 +344,6 @@ public class INDPayrollDTO {
 		this.createdBy = createdBy;
 	}
 
-	public Date getUpdatedDate() {
-		return updatedDate;
-	}
-
-	public void setUpdatedDate(Date updatedDate) {
-		this.updatedDate = updatedDate;
-	}
 
 	public Long getUpdatedBy() {
 		return updatedBy;
@@ -378,6 +360,36 @@ public class INDPayrollDTO {
 	public void setPayrollPaySlipInd(Long payrollPaySlipInd) {
 		this.payrollPaySlipInd = payrollPaySlipInd;
 	}
-	
-	
+
+	public String getPayCheckDate() {
+		return payCheckDate;
+	}
+
+	public void setPayCheckDate(String payCheckDate) {
+		this.payCheckDate = payCheckDate;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public List<INDPayrollDTO> getEmployeIndPayrollDTO() {
+		return employeIndPayrollDTO;
+	}
+
+	public void setEmployeIndPayrollDTO(List<INDPayrollDTO> employeIndPayrollDTO) {
+		this.employeIndPayrollDTO = employeIndPayrollDTO;
+	}
 }

@@ -1,0 +1,28 @@
+package com.bis.sourcelead.service.performance;
+
+import java.util.List;
+
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.performance.AppraisalAssignedAssociatesDTO;
+import com.bis.sourcelead.entity.performance.PerformanceAppraisalAssignedAssociates;
+
+public interface PerformanceAppraisalAssignedAssociatesService {
+
+	void storePerformanceAppraisalAssignedAssociates(AppraisalAssignedAssociatesDTO appraisalAssignedAssociatesDTO) throws Exception;
+	
+	PerformanceAppraisalAssignedAssociates savePerformanceAppraisalAssignedAssociates(PerformanceAppraisalAssignedAssociates performanceAppraisalAssignedAssociates) throws Exception;
+	
+	ResponseList<AppraisalAssignedAssociatesDTO> getAppraisalAssignedAssociatesList(AppraisalAssignedAssociatesDTO appraisalAssignedAssociatesDTO) throws Exception;
+	
+	void deleteAppraisalAssignedAssociate(PerformanceAppraisalAssignedAssociates performanceAppraisalAssignedAssociates) throws Exception;
+	
+	PerformanceAppraisalAssignedAssociates getPerformanceAppraisalAssignedAssociatesByUUID(String uuid) throws Exception;
+	
+	boolean isGoalsConfiguredForAssignedPerformanceApprisal(String uuid) throws Exception;
+	
+	Long getAppraisalAssignedUserByUUID(String uuid) throws Exception;
+	
+	List<PerformanceAppraisalAssignedAssociates> getPerformanceAppraisalAssignedAssociatesListByTemplateId(Long templateId) throws Exception;
+	
+	void deletePerformanceAppraisalAssignedAssociates(PerformanceAppraisalAssignedAssociates performanceAppraisalAssignedAssociates) throws Exception;
+}
