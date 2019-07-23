@@ -70,7 +70,7 @@ public class PerformanceGoalsRestController {
 			  userRolesList = performanceGoalsService.getReportingManagersUsersForAssigningGoals(userId,orgLocationId);
 			  UserRole userRole = userRoleService.getUserRoleById(userRoleId);
 			  PerformanceGoalsAssignToDTO managerDTO = new PerformanceGoalsAssignToDTO();
-			  managerDTO.setAssignedUserId(BigInteger.valueOf(userRole.getId()));
+			  managerDTO.setAssignedUserId(BigInteger.valueOf(userRole.getUser().getId()));
 			  managerDTO.setAssignedUser(userRole.getUser().getFullName());
 			  userRolesList.add(managerDTO);
 			  resObj.setData(userRolesList);
