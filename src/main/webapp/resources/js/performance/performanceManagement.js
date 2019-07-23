@@ -2191,7 +2191,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
 		        				 && response.object.selfAppraisalStartDate != ''
 		        					 && response.object.selfAppraisalStartDate != 'undefined'){
 		        			 $("#selfAppraisalStartDate").html(response.object.selfAppraisalStartDate);
-		        			 $("#selfAppraisalEndDate").html(response.object.selfAppraisalStartDate);
+		        			 $("#selfAppraisalEndDate").html(response.object.selfAppraisalEndDate);
 		        		 }
 		        		 
 		        		 if(response.object.peerReviewStartDate != null 

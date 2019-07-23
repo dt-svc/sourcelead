@@ -131,7 +131,7 @@
 	    result = result +"<div class='pull-right' id='peersSearchDiv'>";
 	    result = result +" <input type='hidden' id='appraisalAssignedUUId' value='"+assignedUUID+"'/>";
 	    result = result +" <input type='text' placeholder='Search' id='peersDataTableSearch' class='repSearchBar'/>";
-	 	result = result +' <span class="cursorPointer faSearch" title="Search"><i class="fa fa-search" onClick="getPeersList(\''+userId+'\',\''+userRoleId+'\',\''+uuid+'\');"></i></span>';
+	 	result = result +' <span class="cursorPointer faSearch" title="Search"><i class="fa fa-search" onClick="getPeersList(\''+userId+'\',\''+userRoleId+'\',\''+uuid+'\',\''+assignedUUID+'\');"></i></span>';
 	 	result = result +"</div>";
 	 	
 	 	result = result +" <div class='require_wrap_table tableFirstSecond clearfix'>";
