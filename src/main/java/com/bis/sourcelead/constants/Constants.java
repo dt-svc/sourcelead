@@ -555,6 +555,9 @@ public class Constants {
 	public static final String MYPAYROLL = "MyPayroll";
 	public static final String RUNPAYROLL = "RunPayroll";
 	public static final String PERFORMANCE = "Performance";
+	public static final String PERFORMANCE_GOALS = "Goals";
+	public static final String PERFORMANCE_MY_APPRAISAL = "My Appraisal";
+	public static final String PERFORMANCE_EMPLOYEE_APPRAISAL = "Employee Appraisal";
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/
@@ -1025,7 +1028,7 @@ public class Constants {
 	
 	public static final String[] JOBFAIR_EXPORT_HEADERS = {"Generated ID", "Title", "Start Date", "End Date", "No.of Jobs", "Applicants", "Offered", "Venue", "Status"};
 	
-	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense ID","purpose","Project","Client","Start Date","End Date","No of Items","Amount","Status"};
+	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense ID","purpose","Project","Client","Start Date","End Date","No of Items","Amount","Status","Billing Status"};
 
 	public static final String[] RECRUITER_REPORTS_HEADERS = { "Associate Name", "Jobs","Candidates","Applicants", "Shortlisted","Submitted","Interviewed", "Offered", "Rejected","Joined","Back-Out","OnHold", "No-Response"};
 

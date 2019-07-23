@@ -11,5 +11,7 @@ public interface PerformanceBadgesDao {
 	PerformanceBadges storePerformanceBadges(PerformanceBadges performanceBadges) throws Exception;
 	
 	PerformanceBadges getPerformanceBadgesById(Long id) throws Exception;
+	
+	boolean isPerformanceBadgeNameExisted(Long orgLocationId, String badgeName) throws Exception;
 
 }
