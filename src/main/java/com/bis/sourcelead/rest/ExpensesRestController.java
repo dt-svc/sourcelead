@@ -111,15 +111,19 @@ public class ExpensesRestController {
 	
 	@RequestMapping(value = "/rest/getExpensesList")
     public ResponseList<ExpensesDTO> getExpensesListForMobile(@RequestBody ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception{
-		return getExpensesList( elDTO, request);
+		try {
+			return getExpensesList( elDTO, request);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
     }
 	
 	@RequestMapping(value = "/getExpensesList" , method=RequestMethod.POST)
     public ModelAndView getExpensesListForWeb( ExpensesListUtilDTO elDTO,HttpServletRequest request){
 		 ModelAndView model = new ModelAndView();
 		 try {
-				Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
-				OrgLocations orgLoc = orgLocationService.getOrgLocationById(orgLocId);
+			 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			int start = elDTO.getStart();
 			int length = 0;
 			if(elDTO.getPageNo()<1) {
@@ -139,7 +143,7 @@ public class ExpensesRestController {
 			ResponseList<ExpensesDTO> expenseEmployeeList = getExpensesList( elDTO, request);
 		     model.addObject("expensesDTOList",expenseEmployeeList.getData());
 		     model.addObject("sourceleadUrl",sourceleadUrl);
-		     model.addObject("orgLocationDateFormat",orgLoc.getDateFormat().toUpperCase());
+		     model.addObject("orgLocationDateFormat",orgLocations.getDateFormat().toUpperCase());
 		     model.addObject("totalRows",expenseEmployeeList.getRecordsFiltered());
 			 model.addObject("pageCount",elDTO.getPageNo());
 			 model.addObject("pageSize",elDTO.getLength());
