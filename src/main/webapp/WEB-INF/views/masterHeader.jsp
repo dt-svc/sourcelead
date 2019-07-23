@@ -1269,6 +1269,7 @@ function tasksList(status){
             	
        			result = result + ' <select id="myTaskState'+report.id+'" name="myTaskState" onChange="updateMyTaskStatus('+report.id+');">';
        			result = result  +' <option '+(report.taskStatus == "Open" ? "selected" : '') +'>Open</option>';
+       			result = result  +' <option '+(report.taskStatus == "In-Progress" ? "selected" : '') +'>In-Progress</option>';
 	            result = result  +'	<option '+(report.taskStatus == "Closed" ? "selected" : '') +'>Closed</option>';
                	result = result + ' </select>';
             		 

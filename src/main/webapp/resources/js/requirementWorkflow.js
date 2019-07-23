@@ -8,6 +8,7 @@ var questionnaireId = null;
 var questionnaireName = null;
 var deletedStageUuids = new Array();
 var workflowName = "";
+var configureType = "";
 
 function RequirementWorkflow(){
 	
@@ -701,7 +702,7 @@ function RequirementWorkflow(){
 						 data : formData,
 						url : sourceleadUrl + "/saveRequirementWorkflowStage?description="+description+"&uuid="+stageUuid+
 								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+
-								"&lastStage="+lastStage+"&commentRequired="+commentReq+"&requiredStatsList="+requiredStatsList+"&chosenColumnStr="+choosenCloumnString,
+								"&lastStage="+lastStage+"&commentRequired="+commentReq+"&requiredStatsList="+requiredStatsList+"&chosenColumnStr="+choosenCloumnString+"&configureType="+configureType,
 						success : function(dataList) {
 							if (dataList.response === "AWKWARD") {
 				      	    location.href = "/errorPage";
@@ -1177,9 +1178,15 @@ function RequirementWorkflow(){
 								result = result +"<div class='clearfix'><p id='popupMsg'></p></div>";
 								result = result+"<div class='modal-body'>"	
 								for(var i=0; i< jobsArray.length; i++){
-									result = result + "&nbsp"+jobsArray[i]+", ";
+									if(jobsArray.length == 1){
+										result = result + "&nbsp"+jobsArray[i]+".";
+									}else{
+										result = result + "&nbsp"+jobsArray[i]+", ";
+									}
 								}
+								if(allJobsArray.length > 1){
 								result = result + '<span class="text-success" title="'+allJobsArray+'">more..</span>';
+								}
 								result = result+"</div>"
 								result = result +"<div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='requirementWorkflow.cancelWorkflowPopup();'></div>";
 								result = result +"</div>";

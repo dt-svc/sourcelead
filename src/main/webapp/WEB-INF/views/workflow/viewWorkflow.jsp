@@ -85,7 +85,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 										class="form-control" id="workFlowName" name="workFlowName"
 										placeholder="WorkFlow Name" field-name="WorkFlow Name"
 										data-validation="required validate_length length1-100"
-										onkeyup="requirementWorkflow.validateWorkflowName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');" readonly>
+										onkeyup="requirementWorkflow.validateWorkflowName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');" disabled>
 						</c:when>
 						<c:otherwise>
 						<input type="text"
@@ -108,7 +108,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
             <c:choose>
             <c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
             <textarea rows="2"  value = '' class="form-control" name="description" id="description" placeholder="Description" field-name="Description"
-			data-validation="validate_length length1-500" data-validation-optional="true" readonly><c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/></textarea>
+			data-validation="validate_length length1-500" data-validation-optional="true" disabled><c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/></textarea>
             </c:when>
             <c:otherwise>
             <textarea rows="2"  value = '' class="form-control" name="description" id="description" placeholder="Description" field-name="Description"
@@ -191,13 +191,22 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 						</li>
 						</sec:authorize>
                              <sec:authorize access="hasRole('ROLE_DELETE_WORKFLOW')">
-						<li>
+                        
+                        <c:choose>
+                        <c:when test="${requirementWorkFlowStages.configureType != 'Customize'}">
+                        <li>
 							<a title="Delete" 
 							onclick = 'requirementWorkflow.deletepopup("${requirementWorkFlowStages.uuid}",
 							"${requirementWorkFlowStages.stageName}",
 							"${requirementWorkFlowStages.requirementWorkFlowUuid}")'>
 							<i class="fa fa-trash"></i></a>
-						</li>
+							</li>
+							</c:when>
+                        <c:otherwise>
+                        <li></li><li></li>
+                        </c:otherwise>
+                        </c:choose>   
+						
 						</sec:authorize>
 						</c:if>	
 						<c:if test = "${requirementWorkFlowStages.editable == 'N'}">	

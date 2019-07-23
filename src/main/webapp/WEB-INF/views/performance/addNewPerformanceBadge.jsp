@@ -15,7 +15,7 @@
 	            <div class="clearfix mb" id="badgeNameDiv">
 	                <label class="noPad">Badge Name <span class="text-danger">&nbsp;*</span></label>
 	                <div class="clearfix">
-			                    <input type="text" id="badgeName" name="name" class="form-control" placeholder="Name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250">
+			                    <input type="text" id="badgeName" name="name" onblur="performanceManagement.validatePerformanceBadgeName()" class="form-control" placeholder="Name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250">
 	                </div>
 	                 
 	            </div>
@@ -40,7 +40,7 @@
 	        </div>
         
 	        <div class="popupFoot text-right">
-	           <button type="button" class="slBtn md colorBtn" id="savePerformanceBudget" onclick="performanceManagement.savePerformanceBadgeDetails();" >Save</button>
+	           <button type="button" class="slBtn md colorBtn" id="savePerformanceBadge" onclick="performanceManagement.savePerformanceBadgeDetails();" >Save</button>
 	           <button type="button" class="slBtn md popClose"  onclick="performanceManagement.closeBadgePopup();" >Cancel</button>
 	        </div>
 	 </form:form>

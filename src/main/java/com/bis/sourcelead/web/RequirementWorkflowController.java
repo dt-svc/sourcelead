@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -693,6 +694,7 @@ public class RequirementWorkflowController {
 			modelandview.addObject("currentStageUuid", requirementWorkFlowStagesDTO.getUuid().trim());
 			modelandview.addObject("workflowUuid", requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid());
 			modelandview.addObject("requirementWorkFlowStagesDTO", stagesDTO);
+			modelandview.addObject("configureType", stages.getConfigureType());
 			logger.debug("after  editStage>>> orgLocationid "+orgLocations.getId());
 			return modelandview;
 		}
@@ -756,6 +758,15 @@ public class RequirementWorkflowController {
 				HttpServletRequest request)throws Exception {
 			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
 			return requirementWorkFlowService.checkWorkflowInRequirements(workflowUuid, orgLocationId);
+			
+		}
+		
+		@RequestMapping(value = "/getColumnsMapbyWorkflowStage")
+		@ResponseBody
+		public LinkedHashMap<String, String> getColumnsMapbyWorkflowStage(@RequestParam(value = "shortCode", required = true)String shortCode, @RequestParam(value = "workflowId", required = true)Long workflowId,
+				HttpServletRequest request)throws Exception {
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			return requirementWorkFlowService.getColumnsMapbyWorkflowStage(shortCode, workflowId, orgLocationId);
 			
 		}
 }
