@@ -111,6 +111,7 @@
 	var allTeamsAndRoles = new Map();
 	var selectedUserIds = new Array();
 	var dynamicSelectedUsers = new Array();
+	var finalSelectedIds = new Map();
 	function defaultAssignMembers() {
 
 		$("input:checkbox[name=team]:checked").each(function() {
@@ -252,6 +253,7 @@ function deSelectAssignUsers(){
 		$(this).closest( 'tr' )[0].remove();
 		$("#assignToDataTableId input[type=checkbox]").each(function(){
 			if(deSelectedId == $(this).attr('value')){
+				finalSelectedIds.delete($(this).attr('value'));
 				$(this).prop('disabled', false);
 			}
 	     });
@@ -275,6 +277,10 @@ function deSelectAssignUsers(){
 function selectAssignUsers(){
 	$("#selectedUsersGrid").empty();
 	selectAssignUsersIds = [];
+	for (var [key, value] of finalSelectedIds) {
+			selectAssignUsersIds.push(value);
+			}
+
 	$("input:checkbox[name=team]:checked").each(function(){
 		var thisRow = $(this).closest( 'tr' )[0];
 	    $("#selectedUsersGrid").append($(thisRow).clone());
@@ -517,8 +523,17 @@ function paginations(){
 	     });
 		$("#assignedTeamId").val(assignedIdVal);
 		handleTeamRoleClick();
-		$("#forAssignedToCount1").text(assignedToEditCount);
-		$("#forAssignedToCount2").text(assignedToEditCount);
+		
+		for(var i=0; i< selectedUserIds.length; i++){
+					finalSelectedIds.set(selectedUserIds[i], selectedUserIds[i]);
+				}
+				for(var j=0; j< assignedIdVal.length; j++){
+					finalSelectedIds.set(assignedIdVal[j], assignedIdVal[j]);
+				}
+				$("#forAssignedToCount1").text(finalSelectedIds.size);
+				$("#forAssignedToCount2").text(finalSelectedIds.size);
+		/* $("#forAssignedToCount1").text(assignedToEditCount);
+		$("#forAssignedToCount2").text(assignedToEditCount); */
 			$.ajax({
 		           type : "POST",
 		           url: atsUrl+"/saveOrUpdateAssignToTeam?"+tokenParamName+"="+tokenValue+"&assignedIdVal="+assignedIdVal+"&requirementId="+requirementId,    

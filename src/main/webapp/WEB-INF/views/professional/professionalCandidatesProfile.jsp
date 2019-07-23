@@ -545,9 +545,10 @@ function editCandidate(candidateId){
 <script>
 function professionalProfile(candidateId){
 	  var skillsList = '${skillsList}'; 
+		var atsUrl = '${SourceLeadWeb_atsUrl}';
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
+         url: atsUrl+"/getCandidateById?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
          success :function(result) { 
       	   	 if(result.response === "SESSION_TIMEDOUT") {
 					location.replace(sourceleadUrl);
