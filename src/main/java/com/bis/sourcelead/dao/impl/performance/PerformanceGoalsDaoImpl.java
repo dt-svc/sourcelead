@@ -115,9 +115,9 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				    
 					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
-				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
+				    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
 				    + " OL.ID = :orgLocationId"
-				    + " GROUP BY ASSIGN.GOAL_ID";
+				    + " GROUP BY ASSIGN.ASSIGNED_USER_ID";
 			 
 		        
 				Query selfQueryString = session.createSQLQuery(selfQuery);
@@ -129,7 +129,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				
 				
 				String assignedQuery ="SELECT"
-						+ " COUNT(DISTINCT ASSIGN.GOAL_ID) AS REQ_COUNT"
+						+ " COUNT(ASSIGN.GOAL_ID) AS REQ_COUNT"
 						+ " FROM"
 						    + " PERFORMANCE_GOALS_ASSIGN_TO ASSIGN,"
 						    + " PERFORMANCE_GOALS GOALS,"
@@ -183,10 +183,10 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 					+ " (GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') AND "
-				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
+				    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
 				    + " DATEDIFF(GOALS.END_DATE,CURDATE()) >= 0 AND "
 				    + " OL.ID = :orgLocationId"
-				    + " GROUP BY ASSIGN.GOAL_ID";
+				    + " GROUP BY ASSIGN.ASSIGNED_USER_ID";
 			 
 		        
 				Query selfQueryString = session.createSQLQuery(selfQuery);
@@ -255,9 +255,9 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 					+ " GOALS.PERCENTAGE_DONE = '100' AND "
-				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
+				    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
 				    + " OL.ID = :orgLocationId"
-				    + " GROUP BY ASSIGN.GOAL_ID";
+				    + " GROUP BY ASSIGN.ASSIGNED_USER_ID";
 			 
 		        
 				Query selfQueryString = session.createSQLQuery(selfQuery);
@@ -325,10 +325,10 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS ='1' AND "
 					+ " ((GOALS.PERCENTAGE_DONE > '0' AND GOALS.PERCENTAGE_DONE < '100') || (GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
-				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
+				    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
 				    + " DATEDIFF(GOALS.END_DATE,CURDATE()) < 0 AND "
 				    + " OL.ID = :orgLocationId"
-				    + " GROUP BY ASSIGN.GOAL_ID";
+				    + " GROUP BY ASSIGN.ASSIGNED_USER_ID";
 			 
 		        
 				Query selfQueryString = session.createSQLQuery(selfQuery);
@@ -396,10 +396,10 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 					+ " WHERE  OL.ID = ASSIGN.ORG_LOCATION_ID AND GOALS.ID = ASSIGN.GOAL_ID AND "+goalTypeStr+" "
 					+ " GOALS.CREATED_BY = :userId AND GOALS.STATUS = '1' AND "
 					+ " ((GOALS.PERCENTAGE_DONE = '0') || (GOALS.PERCENTAGE_DONE IS NULL)) AND "
-				    + " ASSIGN.ASSIGNED_USER_ID <> :userId AND "
+				    + " ASSIGN.ASSIGNED_USER_ID = :userId AND "
 				    + " DATEDIFF(GOALS.END_DATE,CURDATE()) >= 0 AND "
 				    + " OL.ID = :orgLocationId"
-				    + " GROUP BY ASSIGN.GOAL_ID";
+				    + " GROUP BY ASSIGN.ASSIGNED_USER_ID";
 			 
 		        
 				Query selfQueryString = session.createSQLQuery(selfQuery);

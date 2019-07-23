@@ -127,7 +127,11 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					<div class="project_details_cta">
 						<strong>Created By:</strong><span>${expenses.createdBy}</span><div class="clearfix"></div>
 					</div>
-					                   			
+				<c:if test="${expenses.billingStatus != null}">
+                    <div class="project_details_cta">
+                     <strong>Billing Status:</strong><span>${expenses.billingStatus}</span><div class="clearfix"></div>
+                    </div>
+                </c:if>
 					<div class="clearfix"></div>
 				</div>
            
