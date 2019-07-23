@@ -228,10 +228,11 @@ public class ExpensesRestController {
 			if(StringUtils.isNotEmpty(eedDTO.getExpenseId())) {
 				purpose = "editExpense";
 			}
-			
-			List<ProjectClients> projectClientsList = projectClientService.getAllProjectClientsForExpensesByApproverUserAndOrgLocationId(loginUser.getId(),orgLocations.getId(),eedDTO.getIsGlobalUser(),purpose);
+			// Below method works expense approval fetch only assign project
+			List<ProjectClients> projectClientList = projectClientService.getProjectClientsListByLoginUserAndOrgLocationIdForTimesheetApproval(orgLocations.getId(), loginUser.getId(),eedDTO.getIsGlobalUser());
+			//List<ProjectClients> projectClientsList = projectClientService.getAllProjectClientsForExpensesByApproverUserAndOrgLocationId(loginUser.getId(),orgLocations.getId(),eedDTO.getIsGlobalUser(),purpose);
 			ArrayList<ProjectsDTO> projectsList = new ArrayList<>();
-			for(ProjectClients pc : projectClientsList){
+			for(ProjectClients pc : projectClientList){
 				Projects projects = pc.getProjectId();
 				if(projects.getOrgLocationsId()== null)
 				continue;
