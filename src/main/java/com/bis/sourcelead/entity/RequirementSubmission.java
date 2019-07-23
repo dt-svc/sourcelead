@@ -242,6 +242,11 @@ public class RequirementSubmission implements Serializable{
     @JsonProperty
 	private String noticePeriod;
 	
+    @Transient
+    @JsonProperty
+	private List<String> workflowStages;
+	
+    
     // END  WORKFLOW related columns added by SRINIVAS 
     
     @Transient
@@ -623,6 +628,7 @@ public class RequirementSubmission implements Serializable{
 	@JsonProperty
 	private String invoiceGenerateDate;
 
+    
     
 	public int getProfilePercentage()
 	{
@@ -1831,6 +1837,14 @@ public class RequirementSubmission implements Serializable{
 	public void setNoticePeriod(String noticePeriod) {
 		this.noticePeriod = noticePeriod;
 	}
-	
+
+	public List<String> getWorkflowStages() {
+		return workflowStages;
+	}
+
+	public void setWorkflowStages(List<String> workflowStages) {
+		this.workflowStages = workflowStages;
+	}
+
 	
 }
