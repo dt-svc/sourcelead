@@ -4,6 +4,7 @@ package com.bis.sourcelead.workflow.service.Impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -116,7 +117,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				
 				if(requirementDefaultWorkFlowStages.get(i).getEditable().equalsIgnoreCase(Constants.YES)) {
-					requirementWorkFlowStages.setConfigureType(Constants.CLIENT);
+					requirementWorkFlowStages.setConfigureType(Constants.CUSTOMIZE);
 				}else {
 					requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
 				}
@@ -279,6 +280,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStagesDTO.setStageName(workFlowStages.getStageName());
 			requirementWorkFlowStagesDTO.setEditable(workFlowStages.getEditable());
 			requirementWorkFlowStagesDTO.setUuid(workFlowStages.getUuid());
+			requirementWorkFlowStagesDTO.setConfigureType(workFlowStages.getConfigureType());
 			requirementWorkFlowStagesDTO.setStageCount(requirementWorkFlow.getNoOfStages());
 			workFlowStagesDTO.add(requirementWorkFlowStagesDTO);
 		}	
@@ -772,12 +774,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStages.setDescription(workFlowStages.get(i).getDescription());
 			requirementWorkFlowStages.setSeqOrder(workFlowStages.get(i).getSeqOrder());
 			requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-			
-			if(workFlowStages.get(i).getEditable().equalsIgnoreCase(Constants.YES)) {
-				requirementWorkFlowStages.setConfigureType(Constants.CLIENT);
-			}else {
-				requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
-			}
+			requirementWorkFlowStages.setConfigureType(workFlowStages.get(i).getConfigureType());
 			
 			requirementWorkFlowStages.setEditable(workFlowStages.get(i).getEditable());
 			requirementWorkFlowStages.setStatus(workFlowStages.get(i).getStatus());
@@ -1067,6 +1064,19 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		logger.error(e+" in checkWorkflowInRequirements Service for "+id+" orgLocation");
 		return null;
 	}
+	}
+
+
+	@Override
+	public LinkedHashMap<String, String> getColumnsMapbyWorkflowStage(String shortCode, Long workflowId, Long orgLocationId) {
+		return requirementWorkFlowDao.getColumnsMapbyWorkflowStage(shortCode, workflowId, orgLocationId);
+	}
+
+
+	@Override
+	public RequirementWorkFlowStages getRequirementWorkFlowStagesDetails(String shortCode, Long workflowId,
+			Long orgLocationId) {
+		return requirementWorkFlowDao.getRequirementWorkFlowStagesDetails(shortCode, workflowId, orgLocationId);
 	}
 
 }

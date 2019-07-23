@@ -3767,5 +3767,14 @@ public class CandidateDaoImpl implements CandidateDao {
 		return null;
 	}
 
+	@Override
+	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.parentCandidateId.id=:candidateId and can.designationType = '"+Constants.OFFSHORE_C2C+"'";
+		List<Candidate> list = session.createQuery(query).setLong("candidateId", candidateId).list();
+		return list;
+	
+	}
+
 
 }

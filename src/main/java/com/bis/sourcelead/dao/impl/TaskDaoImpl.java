@@ -79,7 +79,7 @@ public class TaskDaoImpl implements TaskDao {
 
 		if (Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)) {
 			query = "from Tasks tasks where tasks.assignedUserId =:userId " + subQuery
-					+ " and ((tasks.ownerOrglocationId =:OrgLocationId) OR (tasks.assignedOrglocationId =:OrgLocationId)) and  tasks.taskStatus = 'Open' ORDER BY tasks.createdDate DESC";
+					+ " and ((tasks.ownerOrglocationId =:OrgLocationId) OR (tasks.assignedOrglocationId =:OrgLocationId)) and  (tasks.taskStatus = 'Open' OR tasks.taskStatus = 'In-Progress') ORDER BY tasks.createdDate DESC";
 			// query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and
 			// tasks.assignedUserId =:userId "+subQuery+" ORDER BY tasks.createdDate DESC";
 		} else if (Constants.TASK_STATUS_ASSIGNTASK.equalsIgnoreCase(taskStatus)) {

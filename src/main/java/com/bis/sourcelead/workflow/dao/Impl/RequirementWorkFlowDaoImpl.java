@@ -4,6 +4,8 @@ package com.bis.sourcelead.workflow.dao.Impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -824,6 +826,60 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 			e.printStackTrace();
 			return workflowstages;
 		}
+	}
+
+	@Override
+	public LinkedHashMap<String, String> getColumnsMapbyWorkflowStage(String shortCode, Long workflowId, Long orgLocationId) {
+		logger.debug("Running getColumnsMapbyWorkflowStage DAO");
+		LinkedHashMap<String, String> stageColumnMap = new LinkedHashMap<String, String> ();
+		String[] chosenColumnsArr;
+		// below list column headers and entity column mappings for all the user chosen column at stage UI. 
+		//Total 14 = 13(chosen list) + 1(Default status column) columns are providing for the user to select at add stage UI.
+		LinkedHashMap<String, String> allColumnsMap = new LinkedHashMap<String, String> (){
+			{
+				put("Applicant Name", "candidateName"); 	put("Applicant Mail Id", "candidateEmail"); put("Phone Number","phoneNumber");
+				put("Alternate Number", "alternateNumber"); 	put("location", "location"); put("DOB","dateOfBirthStr");
+				put("Experience", "workExperience"); 	put("Current CTC", "currentCtc"); put("Rate [Expected CTC]","expectedCTC");
+				put("Score", "candidateScore"); 	put("Notice Period", "noticePeriod"); put("Applied on","createdDateStr");
+				put("Source", "createdUser"); 
+				
+			}
+		};
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String queryString = "select chosenColumns from RequirementWorkFlowStages stage where stage.orgLocationId.id = :orgLocationId and stage.stageShortCode = :shortCode and stage.requirementWorkFlowId.id =:workflowId ";
+			String commaSeparatedColumns = (String) session.createQuery(queryString).setLong("workflowId", workflowId).setLong("orgLocationId", orgLocationId).setString("shortCode", shortCode).uniqueResult();
+			chosenColumnsArr = commaSeparatedColumns.split(",");
+		   // preparing column headers and entity colmn mappings as map and returns as response.
+			if(chosenColumnsArr != null && chosenColumnsArr.length>0) {
+				for(String column: chosenColumnsArr) {
+					stageColumnMap.put(column, allColumnsMap.get(column));
+				}
+				stageColumnMap.put("Status", "submissionStatus"); // Status is adding for every stage as Default column for every dynamic stage.
+			}
+			return stageColumnMap;
+		} catch (Exception e) {
+			logger.error(e +" in getColumnsMapbyWorkflowStage DAO");
+			e.printStackTrace();
+			return stageColumnMap;
+		}
+	}
+
+	@Override
+	public RequirementWorkFlowStages getRequirementWorkFlowStagesDetails(String shortCode, Long workflowId,
+			Long orgLocationId) {
+		// TODO Auto-generated method stub
+		RequirementWorkFlowStages workflowSatge = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String queryString = "from RequirementWorkFlowStages stage where stage.orgLocationId.id = :orgLocationId and stage.stageShortCode = :shortCode and stage.requirementWorkFlowId.id =:workflowId ";
+			workflowSatge = (RequirementWorkFlowStages) session.createQuery(queryString).setLong("workflowId", workflowId).setLong("orgLocationId", orgLocationId).setString("shortCode", shortCode).uniqueResult();
+		} catch (Exception e) {
+			logger.error(e +" in getColumnsMapbyWorkflowStage DAO");
+			e.printStackTrace();
+			
+		}
+		return workflowSatge;
 	}
 
 }

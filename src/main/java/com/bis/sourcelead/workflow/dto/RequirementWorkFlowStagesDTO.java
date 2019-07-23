@@ -50,6 +50,8 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 	
 	private String[] deletedStageUuids;
 	
+	private String configureType;
+	
 	public long getId() {
 		return id;
 	}
@@ -224,6 +226,14 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 
 	public void setDeletedStageUuids(String[] deletedStageUuids) {
 		this.deletedStageUuids = deletedStageUuids;
+	}
+
+	public String getConfigureType() {
+		return configureType;
+	}
+
+	public void setConfigureType(String configureType) {
+		this.configureType = configureType;
 	}
 
 	

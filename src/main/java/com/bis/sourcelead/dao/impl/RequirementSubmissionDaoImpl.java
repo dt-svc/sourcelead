@@ -60,6 +60,8 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.util.CommonUtil;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
+
 @Repository
 public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Autowired
@@ -3300,6 +3302,240 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		}
 		
 		
+		@Override
+		@Transactional(rollbackFor = { Exception.class })
+		public ResponseList<RequirementSubmission> loadWorkflowSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocations,CandidateVerificationConfig candidateVerificationConfig) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<RequirementSubmission> requirementSubmissionList = null;
+			ResponseList<RequirementSubmission> response = new ResponseList<>();
+			List<String> chosenColumnsLst = new ArrayList<String>(Arrays.asList(requirementSubmissionsDTO.getWorkflowSatgeColumns().split(",")));
+			System.out.println(" chosen columns are here ::::::::::::>"+requirementSubmissionsDTO.getWorkflowSatgeColumns());
+			if(StringUtils.isNotBlank(requirementSubmissionsDTO.getWorkflowSatgeColumns())) {
+				
+			}
+			StringBuilder searchQuery = new StringBuilder("");
+			if(requirementSubmissionsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(requirementSubmissionsDTO.getSearchValue())) {
+				
+				java.sql.Date sqlDate = null;
+				 
+				 Pattern pattern = Pattern.compile("^(([0-9]{0,4})[-{1}]([0-9]{0,4})[-{1}]([0-9]{0,4}))$");
+				 Matcher matcher = pattern.matcher(requirementSubmissionsDTO.getSearchValue());
+				 if (matcher.find()) {
+					try {
+						String searchValue = requirementSubmissionsDTO.getSearchValue();
+						DateTimeFormatter f = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat()).toFormatter();
+						LocalDate parsedDate = LocalDate.parse(searchValue, f);
+						DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+						String newDate = parsedDate.format(f2);
+						Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
+						sqlDate = new java.sql.Date(searchDate.getTime()); 
+						// if columns list contains "Applied On" and "DOB" columns in header list.
+						 if(chosenColumnsLst.contains("createdDateStr") && chosenColumnsLst.contains("dateOfBirthStr")) {
+							 searchQuery.append("and (reqSub.createdDate like '" + sqlDate + "%' OR reqSub.candidate.dateOfBirth like '" + sqlDate + "%')");
+						 }
+						 //if contains "Applied On" 
+						 else if(chosenColumnsLst.contains("createdDateStr")) {
+							 searchQuery.append("and (reqSub.createdDate like '" + sqlDate + "%' )");
+						 } //if contains "DOB" 
+						 else if(chosenColumnsLst.contains("dateOfBirthStr")) {
+							 searchQuery.append("and (reqSub.candidate.dateOfBirth like like '" + sqlDate + "%' )");
+						 }
+					 }catch (Exception e) {
+						 searchQuery.append("");
+					 }
+				}else {
+		         // below are the list of mandatory search fileds for every stage in a workflow.
+				searchQuery.append(" and (reqSub.candidate.firstName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSub.candidate.lastName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR (concat(reqSub.candidate.firstName,' ',reqSub.candidate.lastName) like '%" + requirementSubmissionsDTO.getSearchValue().trim().replaceAll(" +", " ")+ "%')" )
+					.append("OR reqSub.candidate.email like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR reqSub.candidate.mobilePhone like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+				// above are mandatory columns for every stage hence included in filters as default columns.
+					 if(chosenColumnsLst.contains("alternateNumber")) {
+						 searchQuery.append("OR reqSub.candidate.alternateMobilePhone like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 if(chosenColumnsLst.contains("location")) {
+						 searchQuery.append("OR reqSub.candidate.location like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 if(chosenColumnsLst.contains("workExperience")) {
+						 searchQuery.append("OR reqSub.candidate.experienceYears like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 if(chosenColumnsLst.contains("currentCtc")) {
+						 searchQuery.append("OR reqSub.candidate.currentRate like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 if(chosenColumnsLst.contains("expectedCTC")) {
+						 searchQuery.append("OR reqSub.candidate.expectedRate like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					if(chosenColumnsLst.contains("candidateScore")) {
+						 searchQuery.append("OR reqSub.candidateEducation.name like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 if(chosenColumnsLst.contains("noticePeriod")) {
+						 searchQuery.append("OR reqSub.candidate.noticePeriod like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 if(chosenColumnsLst.contains("createdUser")) { // below filter is used for "SOURCE" column UI header.						 
+						 searchQuery.append("OR reqSub.createdUser like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+					 if(chosenColumnsLst.contains("Status")) {
+						 searchQuery.append("OR reqSub.submissionStatus like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
+					 }
+				   
+					/*String[] nameBytes = requirementSubmissionsDTO.getSearchValue().split(" ");
+					for(String nameByte : nameBytes) {
+						searchQuery.append("OR reqSub.candidate.firstName like '%" + nameByte + "%' ")
+						.append("OR reqSub.candidate.lastName like '%" + nameByte + "%' ");
+						
+					}*/
+					searchQuery.append(" )");
+					}
+				}
+			System.out.println("requirementSubmissionsDTO.getSubmissionType())   "+requirementSubmissionsDTO.getSubmissionType());
+			
+			if(StringUtils.isNotBlank(requirementSubmissionsDTO.getSubmissionType())){
+				Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementSubmissionsDTO.getRequirementId());
+				String[] releasedBy =null;
+				
+				ArrayList<RequirementSubmission> finalList  = new ArrayList<RequirementSubmission>();
+				
+				if(!"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
+					releasedBy = requirement.getReleasedBy().split(",");
+				}
+		        Map<String, Object> params = new HashMap<String,Object>();
+		        //left join fetch reqSub.requirement req left join fetch reqSub.candidate reqSubCandidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes
+				String from = "from RequirementSubmission reqSub  "; 
+				String subQuery = "";
+				// These conditions are to check  for vendors  Submitted Applicants  and Requirement who Released
+					if(null != releasedBy && releasedBy.length > 0){
+						
+						String subQueryForVendors = "where reqSub.requirement.id IN ( select rq.id from Requirement rq where     rq.parentRequirement.id =:requirementId and  rq.spocId.id IN ( "
+								+ "                                                    select orgSpock.id from OrgSpoc orgSpock  where  orgSpock.clientUser.id =:userId and orgSpock.clientLocationId.id =:loginOrgLocation )   "
+								+ "                                                      and reqSub.id IN( select sourceSub.sourceSubmission.id from   RequirementSubmission sourceSub    ) ) ";
+														params.put("userId",requirementSubmissionsDTO.getUserId());
+														params.put("loginOrgLocation",requirementSubmissionsDTO.getOrgLocationId());
+														params.put("requirementId",requirementSubmissionsDTO.getRequirementId());
+			            String whereCondition = subQueryForVendors;
+						
+						Query queryForVendors = session.createQuery(from+" "+whereCondition+"  GROUP BY reqSub.id  ORDER BY reqSub.id DESC");
+						queryForVendors.setFirstResult(requirementSubmissionsDTO.getStart());
+						queryForVendors.setMaxResults(requirementSubmissionsDTO.getLength());
+						for (String str : queryForVendors.getNamedParameters())
+				        {
+							if(str.equalsIgnoreCase("requirementId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("loginOrgLocation") ){
+								queryForVendors.setLong(str, (long) params.get( str ));
+							}else{
+								queryForVendors.setParameter( str, params.get( str ) );
+							}
+				        }
+						
+						List<RequirementSubmission> vendorSubmittedApplicants = queryForVendors.list() ; 
+						 List<Long> sourceSubmissionIds = new ArrayList<Long>();
+						 if(null != vendorSubmittedApplicants && vendorSubmittedApplicants.size() >0 ){
+							 for(RequirementSubmission rs :vendorSubmittedApplicants){
+									sourceSubmissionIds.add(rs.getId());
+								}
+							 //left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes
+								String sourceSubmissionIdQuery = "from RequirementSubmission reqSub  where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  "; 
+								List<RequirementSubmission> finalSourceList = session.createQuery(sourceSubmissionIdQuery.toString()+" "+searchQuery)
+																					.setFirstResult(requirementSubmissionsDTO.getStart())
+																					.setMaxResults(requirementSubmissionsDTO.getLength())
+																					.setParameterList("sourceSubmissionIds", sourceSubmissionIds)
+																					.list();
+								finalList.addAll(finalSourceList);
+						   }
+					}
+					/// These Conditions are for  own Organization  Submitted Applicants
+					if(requirementSubmissionsDTO.getLoginUserRole().equalsIgnoreCase("ROLE_ADMIN") || requirementSubmissionsDTO.getLoginUserRole().equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
+						subQuery = " where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId and reqSub.submissionStatus = '"+requirementSubmissionsDTO.getSubmissionType()+"'";
+						params.put("loginOrgLocation",requirementSubmissionsDTO.getOrgLocationId());
+						params.put("requirementId",requirementSubmissionsDTO.getRequirementId());
+						
+						// This Condition is if The Requirement is Released by the login User
+					}else{
+						//This is for Requirement Manger 
+						String subQuery1 = "(reqSub.requirement.managerUserId.id  =:userId or reqSub.requirement.primaryRecruiterUserId.id  =:userId) ";
+						params.put("userId",requirementSubmissionsDTO.getUserId());
+						
+						//This is for Requirement Created by
+						String subQuery6 = "reqSub.requirement.createdBy =:requirementUsercode ";
+						params.put("requirementUsercode",requirementSubmissionsDTO.getUserId());
+						
+						// This is if the user is  created by 
+						String subQuery2 = "((reqSub.createdBy =:usercode) OR (reqSub.candidate.candidateType = 'Professional') OR (reqSub.recruiterUserId IS NOT NULL))";
+						params.put("usercode",requirementSubmissionsDTO.getUserCode());
+						
+						//  this is if the  user is   Assign Team  Owner
+						String subQuery3 = "reqSub.requirement.id IN ( select rat.requirementId from RequirementAssignTo rat where rat.teamId.id IN ( select t.id from Team t where t.ownerUserId.id =:userId))";
+						params.put("userId",requirementSubmissionsDTO.getUserId());
+						
+						 //  this is if the  user is   ApproverHirachy   Member  from Requirement i,e login user is approver for given Requirement
+						String subQuery5 = "reqSub.requirement.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";
+						params.put("userId",requirementSubmissionsDTO.getUserId());
+						
+						if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery5 != "" || subQuery6 !="" ){
+							subQuery = "where reqSub.submissionStatus = '"+requirementSubmissionsDTO.getSubmissionType()+"' and reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery6+")  OR ("+subQuery5+")   )";
+							params.put("loginOrgLocation",requirementSubmissionsDTO.getOrgLocationId());
+							params.put("requirementId",requirementSubmissionsDTO.getRequirementId());
+						}
+					}
+					
+					String whereCondition = subQuery;
+					
+					Query query = session.createQuery(from+" "+whereCondition+" "+searchQuery+" ORDER BY reqSub.id DESC");
+					query.setFirstResult(requirementSubmissionsDTO.getStart());
+					query.setMaxResults(requirementSubmissionsDTO.getLength());
+					for (String str : query.getNamedParameters())
+			        {
+						if(str.equalsIgnoreCase("requirementId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("loginOrgLocation") || str.equalsIgnoreCase("requirementUsercode")){
+							query.setLong(str, (long) params.get( str ));
+						}else{
+							query.setParameter( str, params.get( str ) );
+						}
+			        }
+					
+					List<RequirementSubmission> ownApplicantsList = query.list() ;
+				    finalList.addAll(ownApplicantsList);
+				    requirementSubmissionList = finalList.stream().distinct().collect(Collectors.toList());
+				    
+				    int count = 0;
+				    int filteredCount = 0;
+				    Query countQuery = session.createQuery(from+" "+whereCondition+" ORDER BY reqSub.id DESC");
+					for (String str : countQuery.getNamedParameters())
+			        {
+						if(str.equalsIgnoreCase("requirementId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("loginOrgLocation") || str.equalsIgnoreCase("requirementUsercode")){
+							countQuery.setLong(str, (long) params.get( str ));
+						}else{
+							countQuery.setParameter( str, params.get( str ) );
+						}
+			        }
+					List<Long> countlist = countQuery.list();
+					if(countlist != null && !countlist.isEmpty()) {
+						count = countlist.size();
+					}
+					
+					
+					if (requirementSubmissionsDTO != null) {
+						Query filteredCountQuery = session.createQuery(from+" "+whereCondition+" "+searchQuery+" ORDER BY reqSub.id DESC");
+						for (String str : filteredCountQuery.getNamedParameters())
+				        {
+							if(str.equalsIgnoreCase("requirementId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("loginOrgLocation") || str.equalsIgnoreCase("requirementUsercode")){
+								filteredCountQuery.setLong(str, (long) params.get( str ));
+							}else{
+								filteredCountQuery.setParameter( str, params.get( str ) );
+							}
+				        }
+						List<Long> filteredCountlist = countQuery.list();
+						if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
+							filteredCount = filteredCountlist.size();
+						}
+					}
+					response.setRecordsFiltered(filteredCount);
+					response.setRecordsTotal(count);
+			}else{
+				System.out.println("else condition executed in DAO imple service ...................>");
+			}
+				response.setData(requirementSubmissionList);
+				return response;
+		}
+
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
 		public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocations,CandidateVerificationConfig candidateVerificationConfig) throws Exception {

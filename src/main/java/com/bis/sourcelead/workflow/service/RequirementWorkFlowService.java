@@ -2,6 +2,7 @@ package com.bis.sourcelead.workflow.service;
 
 
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -94,4 +95,9 @@ public interface RequirementWorkFlowService {
 	String validateStageShortCode(Long id, String shortCode, String workflowUuid, String stageUuid)throws Exception;
 	
 	TreeMap<Long, String> checkWorkflowInRequirements(String workflowUuid, Long id)throws Exception;
+	
+	LinkedHashMap<String, String> getColumnsMapbyWorkflowStage(String shortCode, Long workflowId, Long orgLocationId);
+	
+	RequirementWorkFlowStages getRequirementWorkFlowStagesDetails(String shortCode, Long workflowId, Long orgLocationId);
+	
 }

@@ -1019,7 +1019,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	        cell1.setColspan(18);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{5,5,5,7,6,6,4,5,5});
+            table.setWidths(new int[]{5,5,5,7,6,6,4,5,5,6});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -1126,6 +1126,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 							}else{
 								expenseArray[8] = "--";
 							}
+							if(null != expenseId.getBillingStatus()){
+								expenseArray[9] = expenseId.getBillingStatus();
+								}else{
+								expenseArray[9] = "--";
+								}
 							
 			}
 			arrayList.add(expenseArray);
@@ -1225,6 +1230,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 						if(null != expenseId.getExpenseStatus()){
 							writeRow.createCell(8).setCellValue(expenseId.getExpenseStatus().getValue());
 							createExcelsheet.autoSizeColumn(8);
+						}
+						if(null != expenseId.getBillingStatus()){
+							writeRow.createCell(9).setCellValue(expenseId.getBillingStatus());
+							createExcelsheet.autoSizeColumn(9);
 						}
 		}
 	return createExcelsheet;

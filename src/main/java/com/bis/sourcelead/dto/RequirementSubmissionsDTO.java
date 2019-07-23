@@ -75,7 +75,16 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	private List<Contracts>contractsList;
 	
 	private Boolean generateDate = false;
-		
+	
+	private String workflowSatgeColumns; // contains comma separated string.
+	
+	
+	public String getWorkflowSatgeColumns() {
+		return workflowSatgeColumns;
+	}
+	public void setWorkflowSatgeColumns(String workflowSatgeColumns) {
+		this.workflowSatgeColumns = workflowSatgeColumns;
+	}
 	public long getRequirementId()
 	{
 		return requirementId;
