@@ -255,6 +255,9 @@ function selectAllSubmitToClient(){
 	var rowcollectionsc =  oTable.$("input[name='shortlist[]']:checked", {"page": "all"});
 	 rowcollectionsc.each(function(index,elem){
 		 selectedShortlists[index] = $(elem).val();
+		 var rowId=$(elem).val();
+		 $(elem).closest("tr").find('[type=checkbox]').attr("subrate", $("#submissionRate"+rowId).val());
+		 $(elem).closest("tr").find('[type=checkbox]').attr("subrateper", $("#submissionRateType"+rowId).val());
 		 
 	 });
 	 
@@ -270,6 +273,9 @@ function getSubmitToClientCheckedCandidatesCount(){
 	 var rowcollectionsc =  oTable.$("input[name='shortlist[]']:checked", {"page": "all"});
 	 rowcollectionsc.each(function(index,elem){
 		 selectedShortlists[index] = $(elem).val();
+		 var rowId=$(elem).val();
+		 $(elem).closest("tr").find('[type=checkbox]').attr("subrate", $("#submissionRate"+rowId).val());
+		 $(elem).closest("tr").find('[type=checkbox]').attr("subrateper", $("#submissionRateType"+rowId).val());
 		 
 	 });
 	 
