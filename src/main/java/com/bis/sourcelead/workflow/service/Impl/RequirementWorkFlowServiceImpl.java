@@ -5,6 +5,7 @@ package com.bis.sourcelead.workflow.service.Impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -1077,6 +1079,48 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	public RequirementWorkFlowStages getRequirementWorkFlowStagesDetails(String shortCode, Long workflowId,
 			Long orgLocationId) {
 		return requirementWorkFlowDao.getRequirementWorkFlowStagesDetails(shortCode, workflowId, orgLocationId);
+	}
+
+
+	@Override
+	public List<String> getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(Long workflowId,
+			OrgLocations orgLocation, String submissionType) throws Exception {
+		logger.debug("Started getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service for "
+				+ orgLocation.getId() + " orgLocation");
+		try {
+			List<RequirementWorkFlowStages> requirementWorkFlowStages = requirementWorkFlowDao
+					.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(workflowId, orgLocation);
+			List<String> stageShortCodeList = new ArrayList<String>();
+			List<String> stageShortCodes = new ArrayList<String>();
+			List<String> stages = new ArrayList<String>();
+			LinkedHashMap<String, String> linkedMap = new LinkedHashMap<String, String>();
+			if (requirementWorkFlowStages != null && requirementWorkFlowStages.size() > 0) {
+				for (RequirementWorkFlowStages stage : requirementWorkFlowStages) {
+					stageShortCodeList.add(stage.getStageShortCode());
+					linkedMap.put(stage.getStageShortCode(), stage.getStageName());
+				}
+				for (int i = 0; i < requirementWorkFlowStages.size();) {
+					while (stageShortCodeList.indexOf(submissionType) < i) {
+						if (!stageShortCodeList.get(i).equals(submissionType)) {
+							stageShortCodes.add(stageShortCodeList.get(i));
+						}
+						break;
+					}
+					i++;
+				}
+				for (String shortCode : stageShortCodes) {
+					stages.add(linkedMap.get(shortCode));
+				}
+			}
+			logger.debug("Finished getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service for "
+					+ orgLocation.getId() + " orgLocation");
+			return stages;
+		} catch (Exception e) {
+			logger.error(e + " in getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service for "
+					+ orgLocation.getId() + " orgLocation");
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }
