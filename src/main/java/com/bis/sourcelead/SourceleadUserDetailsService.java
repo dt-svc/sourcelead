@@ -90,6 +90,7 @@ public class SourceleadUserDetailsService implements UserDetailsService {
 					e.printStackTrace();
 				}
  		  }else{
+ 			 orgLocations = userRole.getOrgLocations();
  			  try {
 					actionsList = sourceleadActionsService.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(userRole.getRoles().getId());
 				} catch (Exception e) {
@@ -103,7 +104,6 @@ public class SourceleadUserDetailsService implements UserDetailsService {
      			  userRole.setUserState(Status.ACTIVE);
      			  userRole.setNewlyLoginUser(Constants.YES);
      			  userRoleService.addUserRole(userRole);
-
      			  /*
                     * Update USER DB data as ElasticSearch Documents
                     */
