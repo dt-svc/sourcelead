@@ -2062,7 +2062,13 @@ function requirementWorkflowStatusBar(requirementId){
 	    var interview = 'INTERVIEW';
 	    var offerMade = 'OFFERMADE'; 
 	    var joined = 'JOINED';
-	    
+	    var rejected = 'REJECTED';
+	    var backout = 'BACKOUT';
+	    var onhold = 'ON_HOLD';
+        var submitToClient = 'SUBMIT_TO_CLIENT';
+        var clientSubmissions = '${clientSubmissions}';
+        var isSpocActive = '${isSpocActive}';
+	       
         result = result + '<div class="reportsCount reportsCountNew reportsCountNewBig reportsCountCustom" id="customLi">';
 		result = result + '<ul>';
 		result = result + '<li title="Applicants" id="applicantli" onclick="requirementPipeline('+requirementId+',\''+all+'\');tabEnable(this);" class="reqAct">';
@@ -2080,39 +2086,65 @@ function requirementWorkflowStatusBar(requirementId){
 		// Start here getting dynamically configured stages for the workflow. 
 		 <c:forEach var="stage" items="${stagesList}">
 			<c:choose>
-				 <c:when test = "${stage.stageName =='Submission'}">
-					result = result + '<li title="${stage.stageName}" id="requestSentli" onclick="requirementPipeline('+requirementId+',\''+submission+'\');tabEnable(this);">';
-					result = result + '	<span><i class="fa fa-check"></i></span><b id="submission">0</b>';
+				 <c:when test = "${stage.stageShortCode =='SUBMISSION'}">
+					result = result + '<li title="${stage.stageName}" id="Submission" onclick="requirementPipeline('+requirementId+',\''+submission+'\');tabEnable(this);">';
+					result = result + '	<span><i class="fa fa-check-square-o"></i></span><b id="submission">0</b>';
 					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">${stage.stageName}</label></div>';
 					result = result + '</li>';
 				</c:when>
-				<c:when test = "${stage.stageName =='Short List'}">
+				<c:when test = "${stage.stageShortCode =='SHORTLIST'}">
 				    result = result + '<li title="Shortlisted" class="" id="shortListli" onclick="requirementPipeline('+requirementId+',\''+shortList+'\');tabEnable(this);">';
 				    result = result + '	<span><i class="fa fa-list-ul"></i></span><b id="shortlistCount">0</b>';
 				    result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Shortlisted</label></div>';
 				    result = result + '</li>';
 				 </c:when>
-				  <c:when test = "${stage.stageName =='Interview'}">
+				  <c:when test = "${stage.stageShortCode =='INTERVIEW'}">
 				    result = result + '<li title="Interviews" class="" id="interviewli" onclick="requirementPipeline('+requirementId+',\''+interview+'\');tabEnable(this);">';
 					result = result + '	<span><i class="fa fa-handshake-o"></i></span><b id="interviewCount">0</b>';
 					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Interviews</label></div>';
 					result = result + '</li>';
 				 </c:when>
-			   <c:when test = "${stage.stageName =='Offer'}">
+			   <c:when test = "${stage.stageShortCode =='OFFERMADE'}">
 				    result = result + '<li title="Offers" id="offerMadeli" onclick="requirementPipeline('+requirementId+',\''+offerMade+'\');tabEnable(this);">';
 					result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount">0</b>';
 					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Offers</label></div>';
 					result = result + '</li>';
 				</c:when>
-			   <c:when test = "${stage.stageName =='Joined'}">
+			   <c:when test = "${stage.stageShortCode =='JOINED'}">
 					result = result + '<li title="Joined" id="joinedli" onclick="requirementPipeline('+requirementId+',\''+joined+'\');tabEnable(this);">';
 					result = result + '	<span><i class="fa fa-id-badge"></i></span><b id="joinedCount">0</b>';
 					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Joined</label></div>';
 					result = result + '</li>';
 			  </c:when>
+			  <c:when test = "${stage.stageShortCode =='REJECTED'}">
+			 	result = result + '<li title="Rejected" class="" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
+				result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>';
+				result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Rejected</label></div>';
+				result = result + '</li>';
+		     </c:when>
+		     <c:when test = "${stage.stageShortCode =='BACKOUT'}">
+		        result = result + '<li title="Back-Out" id="backoutli" onclick="requirementPipeline('+requirementId+',\''+backout+'\');tabEnable(this);">';
+				result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="backoutCount">0</b>';
+				result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Back-Out</label></div>';
+				result = result + '</li>';
+		     </c:when>
+		     <c:when test = "${stage.stageShortCode =='ON_HOLD'}">
+		        result = result + '<li title="On-hold" id="fa fa-pause-circle-o" onclick="requirementPipeline('+requirementId+',\''+onhold+'\');tabEnable(this);">';
+				result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="OnholdCount">0</b>';
+				result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">On-hold</label></div>';
+				result = result + '</li>';
+		     </c:when>
+		     <c:when test = "${stage.stageShortCode =='SUBMIT_TO_CLIENT'}"> 
+			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
+					result = result + '<li title="Submit to Client" id="submitToClientli" onclick="requirementPipeline('+requirementId+',\''+submitToClient+'\');tabEnable(this);">';
+					result = result + '	<span class="cliColor"><i class="fa fa-send"></i></span><b id="submitToClientCount">0</b>';
+					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Submit to Client</label></div>';
+					result = result + '</li>';
+			}
+		  </c:when>
 			  <c:otherwise>
-				result = result + '<li title="${stage.stageName}" id="requestSentli" onclick=requirementWorkflowPipeline('+requirementId+',\'${stage.stageShortCode}\');tabEnable(this);>';
-				result = result + '	<span><i class="fa fa-check"></i></span><b id="submission">0</b>';
+				result = result + '<li title="${stage.stageName}" id="${stage.stageShortCode}" onclick=requirementWorkflowPipeline('+requirementId+',\'${stage.stageShortCode}\');tabEnable(this);>';
+				result = result + '	<span><i class="fa fa-sitemap"></i></span><b id="${stage.stageShortCode}Count">0</b>';
 				result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">${stage.stageName}</label></div>';
 				result = result + '</li>';
 			  </c:otherwise>
