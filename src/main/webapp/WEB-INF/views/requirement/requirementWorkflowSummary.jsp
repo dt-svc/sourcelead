@@ -796,7 +796,7 @@ function updateReuqirementStatusReject(status){
 					columnsArr.push(colProp);
 	             });
 				//submissionType = 'ONHOLD';
-				var url = atsUrl+"/loadWorkflowSubmissionsListByRequirementId?searchValue="+searchValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&orgLocationId="+orgLocationId+"&userId="+userId+"&loginUserRole="+loginUserRole+"&userCode="+userCode+"&clientSubmissions="+clientSubmissions+"&workflowSatgeColumns="+columnsArr;
+				var url = atsUrl+"/loadWorkflowSubmissionsListByRequirementId?searchValue="+searchValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&orgLocationId="+orgLocationId+"&userId="+userId+"&loginUserRole="+loginUserRole+"&userCode="+userCode+"&clientSubmissions="+clientSubmissions+"&workflowSatgeColumns="+columnsArr+"&workFlowId="+workflowId;
 				 requirementWorkflowPipelineList(url, requirementId, submissionType, columnsMap);
 				
 			}
@@ -3547,6 +3547,7 @@ return result;
 <jsp:include page="requirementPipelinePaginationSC.jsp" />
 <jsp:include page="requirementPipelinePaginationJoined.jsp" />
 <jsp:include page="requirementPipelinePaginationSL.jsp" />
+
 
 <jsp:include page="addOffer.jsp" />
 <jsp:include page="shortlist.jsp" />

@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -122,6 +123,8 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
+import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 
 /**
  * Handles requests for the Candidate List Service.
@@ -198,6 +201,8 @@ public class RequirementListRestController {
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 	
+	@Autowired
+	RequirementWorkFlowService requirementWorkFlowService;
 	
 	protected boolean isNullOrEmpty(String str)
 	{
@@ -970,6 +975,7 @@ public class RequirementListRestController {
 		System.out.println("inside loadWorkflowSubmissionsListByRequirementId >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 		if(user != null && StringUtils.isNotBlank(requirementSubmissionsDTO.getWorkflowSatgeColumns() )) {
 				try {
+					
 					System.out.println("search Vlaue is  >>>>>>>>>>>>>>>>>>"+ requirementSubmissionsDTO.getSearchValue());
 					if(requirementSubmissionsDTO.getSubmissionType() != null && requirementSubmissionsDTO.getSearchValue() != null && !requirementSubmissionsDTO.getSearchValue().equalsIgnoreCase("'")) {
 						//if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("all")){
@@ -1021,6 +1027,10 @@ public class RequirementListRestController {
 										requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), requirementSubmission.getCreatedDate()));
 										requirementSubmission.setNoticePeriod(requirementSubmissionTemplateFields.getNoticePeriod());
 										
+										List<String> stages = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(requirementSubmissionsDTO.getWorkFlowId(), orgLocation, requirementSubmissionsDTO.getSubmissionType());
+										if(stages!= null && stages.size() >0) {
+											requirementSubmission.setWorkflowStages(stages);
+										}
 									}
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 									
