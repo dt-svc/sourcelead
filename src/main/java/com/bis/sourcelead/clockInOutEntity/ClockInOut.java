@@ -94,6 +94,9 @@ public class ClockInOut {
 	@Column(name = "TOTAL_TIME")
 	private String totalTime;
 	
+	@Column(name = "GEO_LOCATION_DATA", columnDefinition = "TEXT default NULL")
+	private String geoLocationData;
+	
 	@JsonProperty
 	@Transient
 	private String clockInDateStr;
@@ -300,6 +303,14 @@ public class ClockInOut {
 
 	public void setClockOutDateStr(String clockOutDateStr) {
 		this.clockOutDateStr = clockOutDateStr;
+	}
+
+	public String getGeoLocationData() {
+		return geoLocationData;
+	}
+
+	public void setGeoLocationData(String geoLocationData) {
+		this.geoLocationData = geoLocationData;
 	}
 
 }

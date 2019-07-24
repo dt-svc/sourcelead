@@ -847,10 +847,10 @@ public class FileUploadUtil {
 		List<ResumeParserJsonUtil> successList = new ArrayList<>();
 		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
 		List<ResumeParserJsonUtil> existedList = new ArrayList<>();
-		//System.out.println("inside processConfiguredEmailShedulerForResumesParsing -->"+fileInfoList.size());
+		System.out.println("inside processConfiguredEmailShedulerForResumesParsing -->"+fileInfoList.size());
 		logger.debug("********inside  parsing resumes**********fileInfoList size is **==>"+fileInfoList.size());
 		for (FileInfo fileInfo : fileInfoList) {
-				//System.out.println("File name is -->"+fileInfo.getFileName());
+				System.out.println("File name is -->"+fileInfo.getFileName());
 			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace(
 					"resumes",
 					StringUtils.isNotBlank(fileInfo.getTempFolderName()) ? fileInfo.getTempFolderName() : "temp"));
@@ -917,11 +917,11 @@ public class FileUploadUtil {
 				failedList.add(resume);
 			}
 		}
-		//System.out.println("Succesfully parsed resumes count ==> "+successList.size());
+		System.out.println("Succesfully parsed resumes count ==> "+successList.size());
 		logger.debug("Succesfully parsed resumes count ==>"+successList.size());
-		//System.out.println("Existed resumes count ==> "+existedList.size());
+		System.out.println("Existed resumes count ==> "+existedList.size());
 		logger.debug("Existed resumes count ==> "+existedList.size());
-		//System.out.println("Failed resumes count ==> "+failedList.size());
+		System.out.println("Failed resumes count ==> "+failedList.size());
 		logger.debug("Failed resumes count ==> "+failedList.size());
 	}
 	
