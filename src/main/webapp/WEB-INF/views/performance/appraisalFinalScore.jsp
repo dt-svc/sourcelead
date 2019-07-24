@@ -124,7 +124,7 @@ function getFinalScore(assignedUUID){
 					
 					if (response.response === "SUCCESS") {
 						$("#appraisalLoading").removeAttr("style");
-						location.replace(pmsUrl+"/selfAppraisalDetails?assignedUUID="+assignedUUID);	
+						location.replace(pmsUrl+"/peerAppraisalDetails?assignedUUID="+assignedUUID);	
 			    	 }
 			    	 else if (response.response === "AWKWARD") {
 			        	location.href = "/errorPage";
