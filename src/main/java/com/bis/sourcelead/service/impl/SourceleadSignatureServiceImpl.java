@@ -263,9 +263,9 @@ public class SourceleadSignatureServiceImpl implements SourceleadSignatureServic
 	    		 signatureHTML.append("<p style='margin:0'>"+startem+"<span style='color: "+signature.getFontColor()+"; '><span style='font-family: "+signature.getFontFamily()+"; "+fontWeight+" "+underline+" font-size: "+signature.getFontSize()+";'>"+userRole.getDesignation()+"</span></span>"+endem+"</p>");
 	    	 }
 	    	 
-	    	 if(signature.getLabelName().equalsIgnoreCase("Logo") && signature.getStatus() == 1 && !isNullOrEmpty(orgLocations.getOrg().getFileContentType())){
+	    	 if(signature.getLabelName().equalsIgnoreCase("Logo") && signature.getStatus() == 1 && !isNullOrEmpty(orgLocations.getOrgImgUrl())){
 	    		 
-	    		 signatureHTML.append("<p><img src='"+orgLocations.getOrg().getFileUrl()+"'  style='height:60px; width: 100px; '></p>");
+	    		 signatureHTML.append("<p><img src='"+orgLocations.getOrgImgUrl()+"'  style='height:60px; width: 100px; '></p>");
 	    	 
 	    	 }
 	     

@@ -555,6 +555,9 @@ public class Constants {
 	public static final String MYPAYROLL = "MyPayroll";
 	public static final String RUNPAYROLL = "RunPayroll";
 	public static final String PERFORMANCE = "Performance";
+	public static final String PERFORMANCE_GOALS = "Goals";
+	public static final String PERFORMANCE_MY_APPRAISAL = "My Appraisal";
+	public static final String PERFORMANCE_EMPLOYEE_APPRAISAL = "Employee Appraisal";
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/

@@ -38,5 +38,10 @@ public class PerformanceFeedbackTemplateServiceImpl implements PerformanceFeedba
 		return performanceFeedbackTemplateDao.getPerformanceFeedbackTemplateDTOList(orgLocationId);
 	}
 
+	@Override
+	public boolean isTemplateNameExisted(Long orgLocationId, String templateName) throws Exception {
+		return performanceFeedbackTemplateDao.isTemplateNameExisted(orgLocationId, templateName);
+	}
+
 	
 }
