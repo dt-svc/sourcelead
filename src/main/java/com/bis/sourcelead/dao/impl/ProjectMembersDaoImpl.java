@@ -1779,7 +1779,10 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			}
 		}
 		
-		
+		String loginUserRoleQuery = "";
+		if(dayWiseTimesheetReoprtsDto.getLoginUserRoleType() != null && !dayWiseTimesheetReoprtsDto.getLoginUserRoleType().equalsIgnoreCase("ROLE_ADMIN")) {
+			loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and urole.userState = 'ACTIVE' and urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"')) ";
+		}
 		
 		String employmentTypeQuery = "";
 		String query= "";
@@ -1803,6 +1806,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+projectQuery
 					  +dateQuery
 					  +employmentTypeQuery
+					  +loginUserRoleQuery
 					  +memberStatusQuery
 					  +groupByCandidateId;
 		}else if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("client")){
@@ -1811,6 +1815,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					 +projectQuery
 					  +dateQuery
 					  +employmentTypeQuery
+					  +loginUserRoleQuery
 					  +memberStatusQuery
 					  +groupByCandidateId;
 		}else {
@@ -1819,6 +1824,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+projectQuery
 					  +dateQuery
 					  +employmentTypeQuery
+					  +loginUserRoleQuery
 					  +memberStatusQuery
 					  +groupByCandidateId;
 		}
