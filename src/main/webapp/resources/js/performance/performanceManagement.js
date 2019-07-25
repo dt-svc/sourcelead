@@ -1280,7 +1280,30 @@ function PerformanceManagement(){
 			  });
 	  });
 			
-			
+  }
+	
+	
+  this.validatePerformanceCategoriesCheckBox = function(){
+	  
+	    var isSelfChecked = $("#isSelfAppraisalRequired").is(":checked");
+		var isPeerChecked = $("#isPeerReviewRequired").is(":checked");
+		var isRepMngChecked = $("#isReportingManagerAppraisalRequired").is(":checked");
+		var isResMngChecked = $("#isResourceManagerAppraisalRequired").is(":checked");
+		
+		if(isSelfChecked == true || isPeerChecked == true || isRepMngChecked == true || isResMngChecked == true){
+			 $("#feedbackCategory").removeAttr("disabled");
+		}else{
+			  $("#feedbackCategory").attr("disabled", "disabled");
+			  document.getElementById("feedbackCategory").checked = false; 
+			  document.getElementById("fedbackCategoriesDiv").style.display="none";
+			  
+			  $('#fedbackCategoriesDiv').find('p.jquery_form_error_message').remove(); 
+			  $('#appraisalCategories').attr('data-validation-optional',"true");
+		   	  $('#appraisalCategories').removeAttr("data-validation","required"); 
+		   	  $('#appraisalCategories').val('').trigger('chosen:updated');
+		   	  $("#selectedTemplatesDiv").empty();
+		   	  $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
+		}
   }
   
   
@@ -1857,6 +1880,8 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 		  });
 		  
 	  }
+	  
+	  performanceManagement.validatePerformanceCategoriesCheckBox();	
   }
   
   
@@ -1900,6 +1925,8 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 				 }
 			  });
 	  }
+	  
+	  performanceManagement.validatePerformanceCategoriesCheckBox();	
   }
   
   
@@ -1943,6 +1970,8 @@ this.enablePeerReviewPeriod = function(){
 				 }
 			  });
 	  }
+	  
+	  performanceManagement.validatePerformanceCategoriesCheckBox();	
   }
 
 this.enableResourceManagerAppraisalPeriod = function(){
@@ -1984,6 +2013,8 @@ this.enableResourceManagerAppraisalPeriod = function(){
 				 }
 			  });
 	  }
+	  
+	  performanceManagement.validatePerformanceCategoriesCheckBox();	
 }
   
   
