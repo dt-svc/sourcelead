@@ -1377,6 +1377,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	    			countOfDoc  = contractRequestDocumentsService.getCountOfDocByContractedId(contracts.getId());
 	    			clientConDto.setReqDocCount(countOfDoc);
 	    		}
+	    		clientConDto.setCreatedBy(contracts.getCreatedBy());
 	    		clientContractsList.add(clientConDto);
 			}
 			responseList.setRecordsFiltered(clientContractsList.size());
