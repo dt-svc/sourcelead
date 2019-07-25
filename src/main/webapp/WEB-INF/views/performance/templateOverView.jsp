@@ -65,13 +65,6 @@ function getTemplateOverViewDetails(appraisalType){
 					    	  result = result + '</div>';
 				    	  }
 				    	  
-				    	  if(appraisalType == 'peer' || appraisalType == 'manager'){
-				    		  result = result + '<div class="form-group clearfix">';
-					    	  result = result + '<label class="col-md-2 paddingRight">Due Date<span class="pull-right paddingLeft">:</span></label>';
-					    	  result = result + '<div class="col-md-5">'+response.object.appraisalTemplate.peerReviewEndDate+'</div>';
-					    	  result = result + '</div>';
-				    	  }
-				    	  
 				    	  
  							if(response.object.peersList.length > 0 && (appraisalType == 'self' || appraisalType == 'manager')){
 				    		  
@@ -103,7 +96,12 @@ function getTemplateOverViewDetails(appraisalType){
  						    	  result = result + '</div>';
 				    	    }
  							
- 							
+ 							 if(appraisalType == 'peer' || appraisalType == 'manager'){
+ 					    		  result = result + '<div class="form-group clearfix">';
+ 						    	  result = result + '<label class="col-md-2 paddingRight">Peer Due Date<span class="pull-right paddingLeft">:</span></label>';
+ 						    	  result = result + '<div class="col-md-5">'+response.object.appraisalTemplate.peerReviewEndDate+'</div>';
+ 						    	  result = result + '</div>';
+ 					    	  }
  
 				    	  if(response.object.appraisalTemplate.reportingManager != null){
 				    		  
