@@ -170,6 +170,7 @@ function appraisalAssignedAssociatesPagination(url,templateUUId){
 	            	    
 	            	    if(opt.daysDifference < 0){
 	            	    	 result = result	+ '<td><i class="fa fa-edit cursorPointer text-danger ml10" onclick="editPeer(\''+opt.assignedUserId+'\',\''+opt.assignedUserRoleId+'\',\''+templateUUId+'\',\''+opt.uuid+'\');"></i></a></td>';
+	            	    	 result = result	+ '<a><i class="fa fa-users cursorPointer text-primary ml10" title="Peers" onclick="associateAssignedPeers(\''+opt.uuid+'\');"></i></a></div></td>';
 	            	    	 result = result	+ '<td><i class="fa fa-trash cursorPointer text-danger ml10" onclick="deleteAssignedAssociate(\''+opt.uuid+'\',\''+templateUUId+'\');"></i></a></td>';
 	            	    }else{
 	            	    	result = result	+ '<a><i class="fa fa-users cursorPointer text-primary ml10" title="Peers" onclick="associateAssignedPeers(\''+opt.uuid+'\');"></i></a></div></td>';
