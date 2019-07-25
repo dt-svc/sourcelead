@@ -37,14 +37,14 @@ function getAppraisalTaskDetails(){
     	 result = result + '<input type="text" id="totalTasksScore" disabled class="form-control pull-left"></div>';
     }
    
-    result = result + '</div></div>';
+    result = result + '</div>';
     
     result = result + '<div class="clearfix" id="tab-content">';
     result = result + '<div id="appraisalTasksDiv">';
     result = result + '</div>';
     result = result + '</div>';
     
-    result = result + '</div>';
+    result = result + '</div></div>';
     
     $("#performanceAppraisalDiv").empty(); 
     $("#performanceAppraisalDiv").append(result);
