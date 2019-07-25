@@ -169,7 +169,7 @@ function getAppraisalFeedbackTemplates(templateIds,appraisalType,userCode){
                 
                 
         	    result = result + '<div class="newRolLRight orgChartRolLRight">';
-        	    result = result + '<div class="clearfix bor_top" id="tab-content">';
+        	    result = result + '<div class="clearfix" id="tab-content">';
         	    result = result + '<div id="feedBackTemplateDiv">';
                 result = result + '</div>';
                 result = result + '</div>';
