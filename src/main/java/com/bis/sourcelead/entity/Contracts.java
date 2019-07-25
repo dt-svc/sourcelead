@@ -54,6 +54,7 @@ public class Contracts {
 	private String typeOfContract;
 	
 	
+	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.EAGER) 
     @JoinColumn(name="TEMPLATE_ID", nullable=false )  
 	private ContractsTemplate contractsTemplate; 

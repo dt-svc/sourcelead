@@ -90,6 +90,8 @@ public class ContractsDTO extends SearchDTO implements Serializable {
 	
 	private String userRoleName;
 	
+	private String contractAnotherStage;
+	
 	public String getStaticPath()
 	{
 		return staticPath;
@@ -711,6 +713,13 @@ public class ContractsDTO extends SearchDTO implements Serializable {
 	{
 		this.userRoleName = userRoleName;
 	}
-	
+
+	public String getContractAnotherStage() {
+		return contractAnotherStage;
+	}
+
+	public void setContractAnotherStage(String contractAnotherStage) {
+		this.contractAnotherStage = contractAnotherStage;
+	}
 	
 }
