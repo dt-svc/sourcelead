@@ -2161,7 +2161,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
 		        		
 		        		 
 		        		 if(response.object.appraisalEmpType != null && response.object.appraisalEmpType != 'undefined' && response.object.appraisalEmpType != ''){
-		        			 performanceManagement.appraisalEmployeeTypeList(response.object.appraisalEmpType);
+		        			 $('#appraisalEmlployementType').html(response.object.appraisalEmpType);
 		        		 }
 		        		 
 		        		 if(response.object.descriptionDisplay != null 
@@ -2335,27 +2335,6 @@ this.enableResourceManagerAppraisalPeriod = function(){
 	    });
   }
   
-  
-  this.appraisalEmployeeTypeList = function(employeeTypes){
-	  $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getEmployeeTypesForPerformanceAppraisal", 
-	        success: function(json) {
-	        	var employeeType = ''
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var empType = json[i];
-		        		var employeeType = employeeTypes.split(", ");
-	        			if (employeeType.indexOf(empType.toString()) > -2) {
-	        				employeeType = employeeType + empType+",";
-	        			}
-		        		
-		        		
-				}
-	        	$('appraisalEmlployeeType').html(employeeType.substring(0, employeeType.length - 1));
-	        },
-	    });
-  }
   
   
   this.editAppraisalCycle = function(templateUUId){
