@@ -10,6 +10,8 @@ public class AssociateBankErrorData {
 	
 	private int insertedCount;
 	
+	private int count;
+	
 	private List<AssociatePfEsiDetailsDTO> pfErrorData;
 	
 	private List<IndAssociatePaymentAccountDTO> bdErrorData;
@@ -48,6 +50,14 @@ public class AssociateBankErrorData {
 
 	public void setBdErrorData(List<IndAssociatePaymentAccountDTO> bdErrorData) {
 		this.bdErrorData = bdErrorData;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 	
 }
