@@ -442,7 +442,9 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				
 				List<PayrollPayheadDTO> payHeadDTOList = payrollPayheadService.getPayrollPayheadList(orgLocation).getData();
 				Map<Long, String> mapPayheadIdAndName = payHeadDTOList.stream().collect(Collectors.toMap(PayrollPayheadDTO::getId, PayrollPayheadDTO::getName));
-				Map<String, String> mapPayheadShortCodeAndName = payHeadDTOList.stream().collect(Collectors.toMap(PayrollPayheadDTO::getShortCode, PayrollPayheadDTO::getName));
+				Map<String, String> mapPayheadShortCodeAndName = payHeadDTOList.stream()
+																			   .filter(t -> t.getActive().equalsIgnoreCase("YES"))
+																			   .collect(Collectors.toMap(PayrollPayheadDTO::getShortCode, PayrollPayheadDTO::getName));
 				
 				List<AssociateSalaryInd> associateSalaryIndList = payrollPayheadService.getAssociateSalaryIndListByOrgLocationsId(orgLocation.getId());
 				Map<String, String> associateSalaryIndCanEmailAndUUID = new HashMap<String, String>();

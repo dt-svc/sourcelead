@@ -434,7 +434,6 @@ function changeTaskStatus(projectTaskId){
  
 <div class="vendor_wrap_mask"></div>
 	
-// Edit pop
 <script type="text/javascript">
 $(document).ready(function() {
     $(".glyphicon-edit").click(function(){
