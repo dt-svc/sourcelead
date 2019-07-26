@@ -402,7 +402,12 @@ public class ContractRestController {
 	}
 	
 	@RequestMapping(value = "/getAllClientContractsByOrgLocationIdandStatus", method = RequestMethod.GET)
-	public @ResponseBody ResponseList<ClientContractsDTO> getAllClientContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType, @RequestParam(value = "tabType", required = false) String tabType, @RequestParam(value = "contractsType", required = false) String contractsType, @RequestParam(value = "contractStatus", required = false) String contractStatus, @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) throws Exception
+	public @ResponseBody ResponseList<ClientContractsDTO> getAllClientContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType
+			, @RequestParam(value = "tabType", required = false) String tabType
+			, @RequestParam(value = "contractsType", required = false) String contractsType
+			, @RequestParam(value = "contractStatus", required = false) String contractStatus
+			, @RequestParam(value = "searchValue", required = false) String searchValue
+			, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
