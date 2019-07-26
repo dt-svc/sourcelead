@@ -116,7 +116,6 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 					 "SELECT " + 
 					"ASSIGNED.UUID AS uuid, " + 
 					"CAND.GENERATED_ID AS associateId, " + 
-					"U.FILE_URL AS userImgUrl, " + 
 					"CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS associateName, " +
 					"CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS reportingManager, " +
 					"DATEDIFF(CURRENT_DATE(),'"+appriasalTemplate.getAppraisalStartDate()+"') AS daysDifference, " + 
@@ -134,6 +133,13 @@ public class PerformanceAppraisalAssignedAssociatesDaoImpl implements Performanc
 					 "USER user  " + 
 					 "WHERE " + 
 					 "user.ID = ASSIGNED.USER_ID) AS assignedUserId, " + 
+					 
+					 "(SELECT " + 
+					 "user.FILE_URL " + 
+					 "FROM " + 
+					 "USER user  " + 
+					 "WHERE " + 
+					 "user.ID = ASSIGNED.USER_ID) AS userImgUrl, " +
 					 
 					 "(SELECT " + 
 					 "userrole.ROLE_ID " + 

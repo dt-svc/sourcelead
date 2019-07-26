@@ -152,6 +152,10 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 			}				
 			insertedCount =  associatePfEsiDao.saveAssociateInformation(orgLocation.getId(), list, canMap);
 			associateBankErrorData.setPfErrorData(errorlist);
+			if(errorlist.isEmpty() && list.isEmpty()){
+				associateBankErrorData.setCount(0);
+			}else{associateBankErrorData.setCount(1);
+			}
 			associateBankErrorData.setInsertedCount(list.size());
 			fis.close();
 		} catch (IOException e) {
@@ -433,7 +437,9 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 				
 				List<PayrollPayheadDTO> payHeadDTOList = payrollPayheadService.getPayrollPayheadList(orgLocation).getData();
 				Map<Long, String> mapPayheadIdAndName = payHeadDTOList.stream().collect(Collectors.toMap(PayrollPayheadDTO::getId, PayrollPayheadDTO::getName));
-				Map<String, String> mapPayheadShortCodeAndName = payHeadDTOList.stream().collect(Collectors.toMap(PayrollPayheadDTO::getShortCode, PayrollPayheadDTO::getName));
+				Map<String, String> mapPayheadShortCodeAndName = payHeadDTOList.stream()
+						                                                       .filter(t -> t.getActive().equalsIgnoreCase("YES"))
+						                                                       .collect(Collectors.toMap(PayrollPayheadDTO::getShortCode, PayrollPayheadDTO::getName));
 				
 				List<AssociateSalaryInd> associateSalaryIndList = payrollPayheadService.getAssociateSalaryIndListByOrgLocationsId(orgLocation.getId());
 				Map<String, String> associateSalaryIndCanEmailAndUUID = new HashMap<String, String>();
