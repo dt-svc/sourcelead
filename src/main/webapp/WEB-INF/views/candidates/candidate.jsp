@@ -240,11 +240,12 @@
 					
 					<div class="form-group">
 						<label class="col-md-3">Marital Status</label>
+						<div class="col-md-9">
 						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
 						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
 						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
 						<label class="paddingLeft paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>
-				
+						</div>
 					</div>
 					
 					<div class="form-group">
@@ -372,7 +373,7 @@
             <label class="col-md-3">Current Rate</label>
             <div class="col-md-9">
              <div class="input-group er ratetype">
-                <div class="input-group-btn tblminwidth-75">
+                <div class="input-group-btn">
                   
                   <select class="selectpicker" id="currentRateCurrency" name="currentRateCurrency">
                  
@@ -410,7 +411,7 @@
             <label class="col-md-3">Expected Rate</label>
             <div class="col-md-9">
              <div class="input-group er ratetype">
-                <div class="input-group-btn tblminwidth-75">
+                <div class="input-group-btn">
                   
                   <select class="selectpicker" id="expectedRateCurrencey" name="expectedRateCurrencey">
                  
@@ -453,19 +454,31 @@
         <div class="form-group">
          <label class="col-md-3">Notice Period</label>
           <div class="col-md-9">
-               <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod">
+               <select class="form-control valid selectpicker" id="noticePeriod" name="noticePeriod" onchange="getNoticePeriodOther(this);">
                  <option value="">--Select Notice Period--</option>
                  <option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately available</option>
                  <option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15 Days</option>
                  <option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1 Month</option>
                  <option ${noticePeriod  == '2 Months' ? 'selected' : ''}>2 Months</option>
                  <option ${noticePeriod  == '3 Months' ? 'selected' : ''}>3 Months</option>
+                  <option ${noticePeriod  == 'Other' ? 'selected' : ''}>Other</option>
                </select>
            </div>
          </div>
          
+           <div class="form-group noticePeriodDiv" id="noticePeriodDiv"
+						style="display: none">
+						<label class="col-md-3">Other Notice Period</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="otherNoticePeriod"
+								name="otherNoticePeriod"
+								value="${candidate.otherNoticePeriod}" field-name="Other Notice Period"
+								data-validation="validate_Space validate_length length1-150"
+									data-validation-optional="true">
+						</div>
+					</div>
          
-         <div class="form-group innerForm_formGroup">
+         <!-- <div class="form-group innerForm_formGroup"> -->
           
          
           <div class="form-group">
@@ -507,9 +520,10 @@
           </div>
          </div>
         
-        </div>
+       <!--  </div>
         
-        <div class="form-group innerForm_formGroup">
+        <div class="form-group innerForm_formGroup"> -->
+        
         <div class="form-group">
               <label class="col-md-3">Education</label>
               <div class="col-md-9 mySkillsUl">
@@ -532,7 +546,7 @@
             <textarea rows="2" class="form-control" id="summary" name="summary" value="${summary}" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true"></textarea>
           </div>
         </div>
-        </div>
+        <!-- </div> -->
         <div class="clearfix"></div>
         <div class="form-group">
             <label class="col-md-3"></label>
@@ -810,6 +824,24 @@ function getDesignationType(designationType){
 	
 	$('#designationType + p').remove();
 }
+</script>
+
+<!-- Notice Period Other Script starts here -->
+<script>
+    function getNoticePeriodOther(noticePeriod) {
+    
+        if (noticePeriod.value == 'Other') {
+	            document.getElementById("noticePeriodDiv").style.display = "block";
+	            $('#otherNoticePeriod').removeAttr('data-validation-optional');
+	            $("#otherNoticePeriod").attr("data-validation", "validate_Space required validate_length length1-150");
+	        } else {
+	            document.getElementById("noticePeriodDiv").style.display = "none";
+	            $("#otherNoticePeriod").attr("data-validation-optional", "true");
+	            $("#noticePeriodDiv").find('p.jquery_form_error_message').remove();
+	           
+	        }
+        
+    }
 </script>
 
 <!-- This script for Current Rate ,Rate Type,Expected Rate, Expected Rate Type validation checks -->
