@@ -275,10 +275,24 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		String userRoleCondition = "";
 		Long userId = user.getId();
 		String userCode = user.getUserCode();
+	/*	if(contractsDTO.getUserRoleName() != null && "ROLE_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName()) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName())){
+			userRoleCondition = "";
+		}else if("WAITING_FOR_APPROVER".equalsIgnoreCase(contractsDTO.getContractSubmissionType())){
+			userRoleCondition = "and (contracts.createdBy =:userCode or (contracts.id IN (select coh.contract.id from ContractOwnerHierarchy coh where coh.ownerUserId.id =:userId)) or contracts.ownerUserId.id = :userId) ";
+		}else {
+			userRoleCondition = "and (contracts.approverUser.id =:userId OR contracts.createdBy =:userCode) ";
+		}*/
+		
 		if(contractsDTO.getUserRoleName() != null && "ROLE_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName()) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName())){
 			userRoleCondition = "";
-		}else{
-			userRoleCondition = "and (contracts.approverUser.id =:userId OR contracts.createdBy =:userCode or (contracts.id IN (select coh.contract.id from ContractOwnerHierarchy coh where coh.ownerUserId.id =:userId)) or contracts.ownerUserId.id = :userId) ";
+		}else if(Constants.DRAFT.equalsIgnoreCase(contractsDTO.getContractSubmissionType())){
+			userRoleCondition = "and contracts.createdBy =:userCode ";
+		}else if(Constants.WAITING_FOR_APPROVER.equalsIgnoreCase(contractsDTO.getContractSubmissionType()) || Constants.WAITING_TO_BE_SIGNED.equalsIgnoreCase(contractsDTO.getContractSubmissionType())){
+			userRoleCondition = "and (contracts.approverUser.id =:userId or contracts.createdBy =:userCode or (contracts.id IN (select coh.contract.id from ContractOwnerHierarchy coh where coh.ownerUserId.id =:userId)) or contracts.ownerUserId.id = :userId) ";
+		}else if(Constants.WAITING_TO_BE_VERIFY.equalsIgnoreCase(contractsDTO.getContractSubmissionType()) || Constants.FINALIZED.equalsIgnoreCase(contractsDTO.getContractSubmissionType())){
+			userRoleCondition = "and ((contracts.id IN (select coh.contract.id from ContractOwnerHierarchy coh where coh.ownerUserId.id =:userId)) or contracts.ownerUserId.id = :userId) ";
+		}else {
+			userRoleCondition = "and (contracts.approverUser.id =:userId OR contracts.createdBy =:userCode) ";
 		}
 		
 		/*String ownerCondition = "";
@@ -338,7 +352,11 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		}else if("WAITING_TO_BE_SIGNED".equalsIgnoreCase(contractsDTO.getContractSubmissionType())){
 			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_TO_BE_SIGNED' or contracts.templateSubmissionStatus = 'PENDING') ";
 		}else{
-			subquery1 += " contracts.templateSubmissionStatus = '"+contractsDTO.getContractSubmissionType()+"'";
+			if(Constants.WAITING_TO_BE_VERIFY.equalsIgnoreCase(contractsDTO.getContractSubmissionType()) && Constants.VENDOR.equalsIgnoreCase(contractsDTO.getTabType())) {
+				subquery1 += " contracts.templateSubmissionStatus = 'SEND_FOR_VERIFICATION'";
+			}else {
+				subquery1 += " contracts.templateSubmissionStatus = '"+contractsDTO.getContractSubmissionType()+"'";
+			}
 		}
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -359,6 +377,8 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.contractType like '%"+contractsDTO.getTabType()+"%' "+subQuery+" "+userRoleCondition+" and contracts.templateSubmissionStatus IN (:contractStatus)";
 			if(contractsDTO.getUserRoleName() != null && "ROLE_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName()) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName())){
 				ContractsList = session.createQuery(query +query1.toString()).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).list();
+			}else if(Constants.DRAFT.equalsIgnoreCase(contractsDTO.getContractSubmissionType())){
+				ContractsList = session.createQuery(query +query1.toString()).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).setString("userCode", userCode).list();
 			}else{
 				ContractsList = session.createQuery(query +query1.toString()).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).setLong("userId", userId).setString("userCode", userCode).list();
 			}
@@ -378,6 +398,10 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "where contracts.orgLocationId.id = :orgLocationId and "+subquery1+" and contracts.contractType like '%"+contractsDTO.getTabType()+"%' "+subQuery+" "+userRoleCondition;
 			if(contractsDTO.getUserRoleName() != null && "ROLE_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName()) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(contractsDTO.getUserRoleName())){
 				ContractsList = session.createQuery(query +query1.toString()).setLong("orgLocationId", orgLocation.getId()).list();
+			}else if(Constants.DRAFT.equalsIgnoreCase(contractsDTO.getContractSubmissionType())){
+				ContractsList = session.createQuery(query +query1.toString()).setLong("orgLocationId", orgLocation.getId()).setString("userCode", userCode).list();
+			}else if(Constants.WAITING_TO_BE_VERIFY.equalsIgnoreCase(contractsDTO.getContractSubmissionType()) || Constants.FINALIZED.equalsIgnoreCase(contractsDTO.getContractSubmissionType())){
+				ContractsList = session.createQuery(query +query1.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("userId", userId).list();
 			}else{
 				ContractsList = session.createQuery(query +query1.toString()).setLong("orgLocationId", orgLocation.getId()).setLong("userId", userId).setString("userCode", userCode).list();
 			}
@@ -396,6 +420,8 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		String userCode = user.getUserCode();
 		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 			userRoleCondition = "";
+		}else if(Constants.DRAFT.equalsIgnoreCase(contractStatus)){
+			userRoleCondition = "and contracts.createdBy =:userCode ";
 		}else{
 			userRoleCondition = "and (contracts.approverUser.id =:userId OR contracts.ownerUserId.id =:userId OR contracts.createdBy =:userCode) ";
 		}
@@ -462,6 +488,8 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition+" and contracts.templateSubmissionStatus IN (:contractStatus)";
 			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).list();
+			}else if(Constants.DRAFT.equalsIgnoreCase(contractStatus)){
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).setString("userCode", userCode).list();
 			}else{
 				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameterList("contractStatus", statusList).setLong("userId", userId).setString("userCode", userCode).list();
 			}
@@ -481,6 +509,8 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "where contracts.orgLocationId.id = :orgLocationId and "+subquery1+" and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition;
 			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
 				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).list();
+			}else if(Constants.DRAFT.equalsIgnoreCase(contractStatus)){
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("userCode", userCode).list();
 			}else{
 				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setLong("userId", userId).setString("userCode", userCode).list();
 			}
