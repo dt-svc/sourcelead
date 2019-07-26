@@ -42,8 +42,14 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 <div class="project_wrap">
     <div class="perfTabs">
     	<ul class="clearfix">
-    		<li><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" class="Act">My Goals</a></li>
+    		 <sec:authorize access="hasRole('ROLE_ADD_MY_GOALS')">
+    		 <li><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" class="Act">My Goals</a></li>
+    		 </sec:authorize>
+    		
+    		<sec:authorize access="hasRole('ROLE_ADD_TEAM_GOALS')">
     		<li><a href="${SourceLeadWeb_pmsUrl}/performanceTeamGoalsList">Team Goals</a></li>
+    		</sec:authorize>
+    		
     	</ul>
     </div>  
     
