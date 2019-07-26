@@ -3,7 +3,7 @@
 					<div class="col-md-5">
 						<div class="clearfix">
 							<label class="clearfix">Company Identification Number<span class="text-danger">&nbsp;*</span></label>
-							<div class="clearfix">
+							<div class="clearfix" id="cinDiv">
 							 <input  class="form-control" type="text" name="cin" id="cin" field-name="Company Identification Number" value="${informationDetails.cin}" data-validation="required validate_Space validate_length length1-21">
 							</div>
 						</div>
@@ -11,7 +11,7 @@
 					<div class="col-md-5">
 						<div class="clearfix">
 							<label class="clearfix">GSTIN<span class="text-danger">&nbsp;*</span></label>
-							<div class="clearfix">
+							<div class="clearfix" id="gstinDiv">
 							  <input  class="form-control" type="text" name="gstin" id="gstin"  value="${informationDetails.gstin}" field-name="GSTIN" data-validation="required validate_Space validate_length length1-21">
 							</div>
 						</div>
@@ -36,7 +36,7 @@
 						<div class="col-md-5">
 							<div class="clearfix">
 								<label class="clearfix">Pan<span class="text-danger">&nbsp;*</span></label>
-								<div class="clearfix">
+								<div class="clearfix" id="panDiv">
 								 <input  class="form-control" type="text" name="pan" id="pan" field-name="PAN"  value="${informationDetails.pan}" data-validation="required validate_Space validate_length length1-10">
 								</div>
 							</div>
@@ -44,7 +44,7 @@
 						<div class="col-md-5">
 							<div class="clearfix">
 								<label class="clearfix">Tan<span class="text-danger">&nbsp;*</span></label>
-								<div class="clearfix">
+								<div class="clearfix" id="tanDiv">
 								 <input  class="form-control" type="text" name="tan" id="tan" field-name="TAN" value="${informationDetails.tan}" data-validation="required validate_Space validate_length length1-10">
 								</div>
 							</div>
@@ -53,7 +53,7 @@
 						<div class="col-md-5">
 							<div class="clearfix">
 								<label class="clearfix">TDS<span class="text-danger">&nbsp;*</span></label>
-								<div class="clearfix">
+								<div class="clearfix" id="tdsDiv">
 								<input  class="form-control" type="text" name="tds" id="tds" field-name="TDS" value="${informationDetails.tds}" data-validation="required validate_Space validate_length length1-100">
 								</div>
 							</div>
@@ -65,7 +65,7 @@
 						<div class="col-md-5">
 							<div class="clearfix">
 								<label class="clearfix">Provident Fund Number<span class="text-danger">&nbsp;*</span></label>
-								<div class="clearfix">
+								<div class="clearfix" id="pfNumberDiv">
 								 <input  class="form-control" type="text" name="pfNumber" id="pfNumber" value="${informationDetails.pfNumber}" field-name="Provident Fund Number" data-validation="required validate_Space validate_length length7-15">
 								</div>
 							</div>
@@ -86,7 +86,7 @@
 						<div class="col-md-5">
 							<div class="clearfix">
 								<label class="clearfix">ESI Number<span class="text-danger">&nbsp;*</span></label>
-								<div class="clearfix">
+								<div class="clearfix" id="esiNumberDiv">
 								 <input  class="form-control" type="text" name="esiNumber" id="esiNumber" field-name="ESI Number" value="${informationDetails.esiNumber}" data-validation="required validate_Space validate_length length10-20">
 								</div>
 							</div>
@@ -107,7 +107,7 @@
 						<div class="col-md-5">
 							<div class="clearfix">
 								<label class="clearfix">Professional Tax Number<span class="text-danger">&nbsp;*</span></label>
-								<div class="clearfix">
+								<div class="clearfix" id="ptNumberDiv">
 								 <input  class="form-control" type="text" name="ptNumber" id="ptNumber" field-name="Professional Tax Number" value="${informationDetails.ptNumber}" data-validation="required validate_Space validate_length length7-15">
 								</div>
 							</div>
@@ -124,5 +124,5 @@
 					</div>
 					
 					
-					
+	
 					
