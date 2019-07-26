@@ -28,7 +28,7 @@
 
         <div class="clearfix mb" id="applicableForErrorDIV">
           <label class="col-md-4">Applicable for <span class="text-danger paddingLeft">&nbsp;*</span></label>
-          <div class="col-md-2"><input type="radio" id="applicableForAll" name="applicableFor" value="All" ${customDashBoardConf.applicableFor=='All'?'checked':''}><label for="a" class="paddingLeft" data-validation="required"> All</label> </div>
+          <div class="col-md-2"><input type="radio" id="applicableForAll" name="applicableFor" oncick="fireFunction();" value="All" ${customDashBoardConf.applicableFor=='All'?'checked':''}><label for="a" class="paddingLeft" data-validation="required"> All</label> </div>
           <div class="col-md-2"><input type="radio" id="applicableForRoles" name="applicableFor" value="Roles" ${customDashBoardConf.applicableFor=='Roles'?'checked':''}><label for="b" class="paddingLeft" data-validation="required"> Roles</label></div> 
           <div class="col-md-3"><input type="radio" id="applicableForAssociates" name="applicableFor" value="Associates" ${customDashBoardConf.applicableFor=='Associates'?'checked':''}><label for="c" class="paddingLeft" data-validation="required"> Associates</label></div> 
         </div>   
@@ -128,13 +128,21 @@
 
 
 <script>
+
+$("input[type='radio']").click(function(){
+	calRadioButton();
+ });
+
+</script>
+
+<script>
  
 if ($("#applicableForAssociates").prop("checked") || $("#applicableForAll").prop("checked") || $("#applicableForRoles").prop("checked")) {
 	calRadioButton();
 	}
 	
 function calRadioButton(){
-	var checkedValue = $("input[name='applicableFor']:checked").val();
+	 var checkedValue = $("input[name='applicableFor']:checked").val();
 	 if (checkedValue == "Roles") {
          $("#AssociatesShow").hide();
          $("#RolesShow").show();
@@ -210,5 +218,7 @@ function calRadioButton(){
 		$("#dashboard_conf_form").validateOnBlur(false, validationSettings);
 	}); 
 </script>
+
+
 
 <jsp:include page="../masterFooter.jsp" />
