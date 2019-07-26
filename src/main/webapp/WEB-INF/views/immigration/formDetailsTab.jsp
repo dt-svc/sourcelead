@@ -297,8 +297,9 @@
 			
 			$("#immigraFormTabSerach").keyup(function (e) {
 			    if (e.which === 13) {
-			    	var searchVal = $("#immigraFormTabSerach").val();
-			    	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,searchVal);
+			    	var searchFormVal = $("#immigraFormTabSerach").val();
+					if(searchFormVal) searchFormVal = searchFormVal.trim();
+			    	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,searchFormVal,'${curUscisMyImmi}');
 			    }
 			});
 			</script>

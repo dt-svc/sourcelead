@@ -46,7 +46,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                            <div class="pull-left">                                                                                                                                                                ';
  result = result + '			                            <strong>${SourceLeadWeb_currencyCode}</strong>                                                                                                                                         ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
- result = result + '			                            <div class="pull-right ml10">                                                                                                                                                          ';
+ result = result + '			                            <div class="pull-right ml10 invoiCount">                                                                                                                                                          ';
  result = result + '			                            <div class="count" id="unbilledAmoumt"></div>                                                                                                                                          ';
  result = result + '			                                <h5>Draft Bills <span class="paddingLeft" id="draftInvoiceCount"></span></h5>                                                                                                   ';
  result = result + '			                                </div>                                                                                                                                                                             ';
@@ -58,7 +58,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                        <div class="pull-left">                                                                                                                                                                    ';
  result = result + '			                         <strong>${SourceLeadWeb_currencyCode}</strong>                                                                                                                                            ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
- result = result + '			                            <div class="pull-right ml10">                                                                                                                                                          ';
+ result = result + '			                            <div class="pull-right ml10 invoiCount">                                                                                                                                                          ';
  result = result + '			                            <div class="count" id="dueAfterInvoiceAmount"></div>                                                                                                                                   ';
  result = result + '			                        <h5>Overdue Bills<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>                                                                                                       ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
@@ -71,7 +71,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                        <div class="pull-left">                                                                                                                                                                    ';
  result = result + '			                            <strong>${SourceLeadWeb_currencyCode}</strong>                                                                                                                                         ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
- result = result + '			                            <div class="pull-right ml10">                                                                                                                                                          ';
+ result = result + '			                            <div class="pull-right ml10 invoiCount">                                                                                                                                                          ';
  result = result + '			                            <div class="count" id="dueBeforeInvoiceAmount"></div>                                                                                                                                  ';
  result = result + '			                        <h5>Open Bills<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>                                                                                                         ';
  result = result + '			                        </div>                                                                                                                                                                                     ';
@@ -83,7 +83,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                        <div class="pull-left">                                                                                                                                                                    ';
  result = result + '			                           <strong>${SourceLeadWeb_currencyCode}</strong>                                                                                                                                          ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
- result = result + '			                            <div class="pull-right ml10">                                                                                                                                                          ';
+ result = result + '			                            <div class="pull-right ml10 invoiCount">                                                                                                                                                          ';
  result = result + '			                            <div class="count" id="paidInvoiceAmount"></div>                                                                                                                                       ';
  result = result + '			                        <h5>Paid Bills<span class="paddingLeft" id="paidInvoiceCount"></span></h5>                                                                                                              ';
  result = result + '			                            </div>                                                                                                                                                                                 ';
@@ -1453,7 +1453,7 @@ function resetBillFilter(orgRelationId,vendorLocationId){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet"  class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetBillFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>

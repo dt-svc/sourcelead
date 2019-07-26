@@ -8,6 +8,7 @@ var familyMemberId = '';
 var templateId='';
 var formNames = [];
 var myImmigrationPage ="";
+var curUscisMyImmi ="";
 
 function Immigration() {
     this.gotoTemplatePreviousPage = function (temp) {
@@ -89,7 +90,7 @@ function Immigration() {
 		                	}else{
 		                		showSuccessMsg("Successfully added New Education Details.");
 			                }
-		                immigration.getCandidateEducationList(candidateId);
+		                immigration.getCandidateEducationList(candidateId,curUscisMyImmi);
                    }else{
                    	 showError("Operation failed, please try again");
                    }
@@ -420,7 +421,7 @@ function Immigration() {
     			                    	}else{
     			                    		showSuccessMsg("Successfully New Visa Details Added.");
     			                    	}
-    									immigration.displayVisaDetails(candidateId);
+    									immigration.displayVisaDetails(candidateId,curUscisMyImmi);
     								
     		                    }else{
     		                    	 showError("Operation failed, please try again");
@@ -463,7 +464,7 @@ function Immigration() {
     			                    		showSuccessMsg("Successfully New Passport Details Added.");
     			                    	}
     										
-    									immigration.displayPassportDetails(candidateId);
+    									immigration.displayPassportDetails(candidateId,curUscisMyImmi);
     								
     		                    }else{
     		                    	 showError("Operation failed, please try again");
@@ -528,9 +529,10 @@ function Immigration() {
 	    });
 	}
 
-    this.displayPassportDetails=function(candidateId,searchValue){
+    this.displayPassportDetails=function(candidateId,curUscisMyImmi,searchValue){
+    	if(searchValue) searchValue =searchValue.trim();
    		$.ajax({
-           url: vmsUrl + immiModulePath + "/getCandidatePassportDetails?candidateId="+candidateId+ "&searchValue=" + searchValue+"&myImmigrationPage="+myImmigrationPage,
+           url: vmsUrl + immiModulePath + "/getCandidatePassportDetails?candidateId="+candidateId+ "&searchValue=" + searchValue+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
            type: "GET",
            success: function (result) {
                $("#passportsTab").html(result);
@@ -539,9 +541,10 @@ function Immigration() {
        });
    }
     
-    this.displayVisaDetails=function(candidateId,searchValue){
+    this.displayVisaDetails=function(candidateId,curUscisMyImmi,searchValue){
+    	if(searchValue) searchValue =searchValue.trim();
    		$.ajax({
-           url: vmsUrl + immiModulePath + "/getCandidateVisaDetails?candidateId="+candidateId+ "&searchValue=" + searchValue+"&myImmigrationPage="+myImmigrationPage,
+           url: vmsUrl + immiModulePath + "/getCandidateVisaDetails?candidateId="+candidateId+ "&searchValue=" + searchValue+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
            type: "GET",
            success: function (result) {
                $("#visasTab").html(result);
@@ -620,9 +623,9 @@ function Immigration() {
 		});
 	}
     
-   this.getLcaDetailsInfo=function(immigrationId){
+   this.getLcaDetailsInfo=function(immigrationId,curUscisMyImmi){
   		$.ajax({
-          url: vmsUrl + immiModulePath +"/getLcaDetails?immigrationId="+immigrationId,
+          url: vmsUrl + immiModulePath +"/getLcaDetails?immigrationId="+immigrationId+"&myImmigrationPage="+myImmigrationPage,
           type: "GET",
           success: function (result) {
               $("#lcaTab").html(result);
@@ -668,7 +671,7 @@ function Immigration() {
                 	}else{
                 		showSuccessMsg("Successfully New Family Details Added.");
                 	}
-       				immigration.displayFamilyDetails(candidateId); 
+       				immigration.displayFamilyDetails(candidateId,curUscisMyImmi); 
        				}else{
                    	 showError("Operation failed, please try again");
                    }
@@ -709,7 +712,7 @@ function Immigration() {
 	                	}else{
 	                		showSuccessMsg("Successfully New Form Details Added.");
 	                	}
-	                	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'');
+	                	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'',curUscisMyImmi);
 	                }
 	                $("#canFormSave_Button").removeAttr("disabled");
 	            }
@@ -732,22 +735,24 @@ function Immigration() {
             success: function (result) {
             	if(result =='success'){
             		showSuccessMsg("Successfully Record Deleted.");
-            		immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'');
+            		immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'',curUscisMyImmi);
             		deleteImmigrationPopupDiv();
             	}
             }
         });
     }
     
-    this.displayFamilyDetails=function(candidateId){
-    	var searchVal= $("#familySerach").val();
+    this.displayFamilyDetails=function(candidateId,curUscisMyImmi){
+    	var searchFamilyVal= $("#familySerach").val();
+    	if(searchFamilyVal) searchFamilyVal = searchFamilyVal.trim();
+    	
     	$.ajax({
-            url: vmsUrl + immiModulePath + "/getCandidateFamilyDetails?candidateId="+candidateId+"&searchVal="+searchVal+"&myImmigrationPage="+myImmigrationPage,
+            url: vmsUrl + immiModulePath + "/getCandidateFamilyDetails?candidateId="+candidateId+"&searchVal="+searchFamilyVal+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
             type: "GET",
             success: function (result) {
                 $("#familiesTab").html(result);
                 addfamilyPopupEventListener();
-                $("#familySerach").val(searchVal);
+                $("#familySerach").val(searchFamilyVal);
             }
         });
     }	
@@ -758,7 +763,7 @@ function Immigration() {
             success: function (result) {
             	if(result=='success'){
             		showSuccessMsg("Successfully Record Deleted.");
-            	     immigration.displayFamilyDetails(candidateId) //candidateId global variable
+            	     immigration.displayFamilyDetails(candidateId, curUscisMyImmi) //candidateId global variable
             	     deleteImmigrationPopupDiv();
             	}
             }
@@ -807,10 +812,12 @@ function Immigration() {
         });
 	}
 	
-	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId,searchVal,myImmigrationStatus){
+	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId,searchVal,myImmigrationStatus,curUscisMyImmi){
+		var searchVal = $("#immigraFormTabSerach").val();
+		if(searchVal) searchVal = searchVal.trim();
 		$.ajax({
 	        url: vmsUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId+
-	        "&searchVal="+searchVal+"&myImmigration="+myImmigrationStatus+"&myImmigrationPage="+myImmigrationPage,
+	        "&searchVal="+searchVal+"&myImmigration="+myImmigrationStatus+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
 	        type: "GET",
 	        success: function (result) {
 	        	console.info(result);
@@ -846,6 +853,7 @@ function Immigration() {
 			if ($('#candidate_Immigration_document_form').validate(false, validationSettings)) {
 		 
 				var formData = getFormData("candidate_Immigration_document_form");
+				$("#canDocSave_Button1").attr("disabled",true);
 				var candidateId = $('#candidateID').val();
 				var templateId = $('#templateID').val();
 				var immigrationId = $('#immigrationID').val();
@@ -864,7 +872,7 @@ function Immigration() {
 	                	}else{
 	                		showSuccessMsg("Successfully New Document Details Added.");
 	                	}
-	                	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
+	                	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'','',curUscisMyImmi);
 	                }
 	                $("#canDocSave_Button1").removeAttr("disabled");
 	            }
@@ -949,15 +957,12 @@ function Immigration() {
 	        success: function (result) {
 	        	if(result=='success'){
 	        		showSuccessMsg("Successfully Record Deleted.");
-	        		immigration.getCandidateEmployerList(candidateId) //candidateId global variable
+	        		immigration.getCandidateEmployerList(candidateId,curUscisMyImmi) //candidateId global variable
 	        		deleteImmigrationPopupDiv();
 	        	}
 	        }
 	    });
 	}
-
-	
-
 	
 	this.saveEmployerDetails = function(status) {
 		applyKeyEventsToYears();
@@ -1016,7 +1021,7 @@ function Immigration() {
 	                    }else{
 	                    	showSuccessMsg("Successfully new Employees Details.");
 	                    	}
-	                	immigration.getCandidateEmployerList(candidateId);
+	                	immigration.getCandidateEmployerList(candidateId,curUscisMyImmi);
 	                }else{
 	                	 showError("Operation failed, please try again");
 	                }
@@ -1038,10 +1043,11 @@ function Immigration() {
 
 
 	
-	this.getCandidateEmployerList = function(candidateId){
+	this.getCandidateEmployerList = function(candidateId, curUscisMyImmi){
 		var searchEmployerVal = $("#employersDataSearch").val();
+		if(searchEmployerVal) searchEmployerVal = searchEmployerVal.trim();
 		$.ajax({
-	        url: vmsUrl + immiModulePath + "/getCandidateEmployerList?candidateId="+candidateId+"&searchVal="+searchEmployerVal+"&myImmigrationPage="+myImmigrationPage,
+	        url: vmsUrl + immiModulePath + "/getCandidateEmployerList?candidateId="+candidateId+"&searchVal="+searchEmployerVal+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
 	        type: "GET",
 	        success: function (result) {
 	            $("#employersTab").html(result);
@@ -1052,10 +1058,11 @@ function Immigration() {
 	
 	
 	
-	this.displayImmigrationCandidateDocs = function(candidateId,templateid,immigrationId,searchVal,myImmigrationStatus){
+	this.displayImmigrationCandidateDocs = function(candidateId,templateid,immigrationId,searchVal,myImmigrationStatus,curUscisMyImmi){
+		
 		$.ajax({
 	        url: vmsUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId+"&searchVal="+searchVal+
-	        "&myImmigration="+myImmigrationStatus+"&myImmigrationPage="+myImmigrationPage,
+	        "&myImmigration="+myImmigrationStatus+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
 	        type: "GET",
 	        success: function (result) {
 	            $("#docsTab").html(result);
@@ -1073,7 +1080,7 @@ function Immigration() {
 	        success: function (result) {
 	        	if(result=='success'){
 	        		showSuccessMsg("Successfully Record Deleted.");
-	        	  immigration.getCandidateEducationList(candidateId) //candidateId global variable
+	        	  immigration.getCandidateEducationList(candidateId, curUscisMyImmi) //candidateId global variable
 	        	  deleteImmigrationPopupDiv();
 	        	}
 	        }
@@ -1119,10 +1126,11 @@ function Immigration() {
 	}
 
 
-	this.getCandidateEducationList = function(candidateId){
+	this.getCandidateEducationList = function(candidateId,curUscisMyImmi){
 		var searchVal = $("#educationSearchVal").val();
+		if(searchVal) searchVal = searchVal.trim();
 		$.ajax({
-	        url: vmsUrl + immiModulePath + "/getCandidateEducationList?candidateId="+candidateId+"&searchVal="+searchVal+"&myImmigrationPage="+myImmigrationPage,
+	        url: vmsUrl + immiModulePath + "/getCandidateEducationList?candidateId="+candidateId+"&searchVal="+searchVal+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
 	        type: "GET",
 	        success: function (result) {
 	            $("#educationsTab").html(result);
@@ -1192,14 +1200,15 @@ function Immigration() {
 		
 	}
 
-	this.getCandidateResidenceList = function(candidateId){
-		var searchVal= $("#residenceSearch").val();
+	this.getCandidateResidenceList = function(candidateId,curUscisMyImmi){
+		var searchResidenceVal= $("#residenceSearch").val();
+		if(searchResidenceVal) searchResidenceVal = searchResidenceVal.trim();
 		$.ajax({
-	        url: vmsUrl + immiModulePath + "/getCandidateResidenceList?candidateId="+candidateId+"&searchVal="+searchVal+"&myImmigrationPage="+myImmigrationPage,
+	        url: vmsUrl + immiModulePath + "/getCandidateResidenceList?candidateId="+candidateId+"&searchVal="+searchResidenceVal+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
 	       type: "GET",
 	        success: function (result) {
 	           $("#residencesTab").html(result);
-	           $("#residenceSearch").val(searchVal);
+	           $("#residenceSearch").val(searchResidenceVal);
 	       }
 	   });
 	}
@@ -1212,7 +1221,7 @@ function Immigration() {
 	        success: function (result) {
 	        	if(result=='success'){
 	        		showSuccessMsg("Successfully Record Deleted.");
-	        		immigration.getCandidateResidenceList(candidateId) //candidateId global variable
+	        		immigration.getCandidateResidenceList(candidateId, curUscisMyImmi) //candidateId global variable
 	        		deleteImmigrationPopupDiv();
 	        	     
 	        	}
@@ -1262,7 +1271,7 @@ function Immigration() {
 		        success: function (result) {
 		        	if(result=='success'){
 		        			showSuccessMsg("Successfully Record Deleted.");
-		        			immigration.displayVisaDetails(candidateId);
+		        			immigration.displayVisaDetails(candidateId,curUscisMyImmi);
 		            	    deleteImmigrationPopupDiv(); // removes the existing added delete popup div in html code.
 		        	}
 		        	
@@ -1279,7 +1288,7 @@ function Immigration() {
 		        	if(result=='success'){
 		        		
 		        			showSuccessMsg("Successfully Record Deleted.");
-		        			immigration.displayPassportDetails(candidateId);
+		        			immigration.displayPassportDetails(candidateId,curUscisMyImmi);
 		        		
 		            	    deleteImmigrationPopupDiv(); // removes the existing added delete popup div in html code.
 		        	}
@@ -1297,7 +1306,7 @@ function Immigration() {
 		        };
 			var searchValue =document.getElementById("searchValuePassport").value; 
 			var candidateId = $('#candidateID').val();
-			immigration.displayPassportDetails(candidateId,searchValue);
+			immigration.displayPassportDetails(candidateId,curUscisMyImmi,searchValue);
 		}
 
 		this.searchVisaValue = function(){
@@ -1309,7 +1318,7 @@ function Immigration() {
 		        };
 			var searchValue =document.getElementById("searchValueVisa").value; 
 			var candidateId = $('#candidateID').val();
-			immigration.displayVisaDetails(candidateId,searchValue);
+			immigration.displayVisaDetails(candidateId,curUscisMyImmi,searchValue);
 			
 		}
 	 
@@ -1358,7 +1367,7 @@ function Immigration() {
 	    	                       +"&immigrationId="+immigrationId+"&extensionDate="+extensionDate+"&visaId="+visaId, 
 	        success: function(visaDetails) {
 	        	showSuccessMsg("Successfully Visa Date updated.");
-	        	immigration.displayVisaDetails(candidateId);
+	        	immigration.displayVisaDetails(candidateId,curUscisMyImmi);
 	        }
 		});
 		
@@ -1444,7 +1453,7 @@ function Immigration() {
 	        success: function (result) {
 	        	if(result=='success'){
 	        	showSuccessMsg("Successfully Record Deleted.");
-	            immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
+	            immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'',curUscisMyImmi);
 	        	deleteImmigrationPopupDiv();
 	        	}
 	        }
@@ -1461,6 +1470,7 @@ function Immigration() {
 		var immigrationId = $('#immigrationID').val();
 		var id = $("#uploadIdSave").val();
 		var templateId = $('#templateID').val();
+	
 		$.ajax({
 	        url: vmsUrl + immiModulePath + "/uploadRequstedDoc?id="+id+"&candidateId="+candidateId+"&immigrationId="+immigrationId,
 	        type: "POST",
@@ -1469,8 +1479,9 @@ function Immigration() {
 	        	if(result=='success'){
 	        		$('#uploadCanDocPop').hide();
 	            	$('.popMask').fadeOut();
+	        		$(".comMask").fadeOut();
 	            	showSuccessMsg("Successfully Uploaded File.");
-	            	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
+	            	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'',curUscisMyImmi);
 	        	     
 	        	}
 	        }
@@ -1495,7 +1506,7 @@ function Immigration() {
 	        		$('#uploadFormPop').hide();
 	            	$('.popMask').fadeOut();
 	            	showSuccessMsg("Successfully Uploaded File.");
-	            	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,''); 
+	            	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'',''); 
 	        	}
 	        }
 	    });
@@ -1812,7 +1823,7 @@ function Immigration() {
 				                   }else if(result.response === 'SUCCESS') {
 				                	    $(".popMask").fadeOut(200);
 					    				$("#popLcaView").hide(100);
-					                   	immigration.getLcaDetailsInfo(immigrationId);
+					                   	immigration.getLcaDetailsInfo(immigrationId,curUscisMyImmi);
 				                   }else{
 				                   	 showError("Operation failed, please try again");
 				                   }
