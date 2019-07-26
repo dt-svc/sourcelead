@@ -435,7 +435,7 @@ function getManagerFeedbackCategoryForm(feedbackTemplateUUID,userCode,appraisalT
 			    
 				result = result + '<h4 class="clearfix mb10" id="viewTemplateName"></h4>';
 			    result = result + '<div class="clearfix mb10"><div class="subScoreWrap">';
-			    result = result + '<label>Category Score :</label>';
+			    result = result + '<label>Category Score<span class="text-danger paddingLeft">&nbsp;*</span></label>';
 			    result = result + '<select class="form-control pull-left" id="categoryScore" name="categoryScore"  field-name="Category Score" data-validation="required" >';
 			    result = result + '<option value="">-Select Score-</option>';
 			    result = result + '</select>';
