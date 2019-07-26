@@ -49,7 +49,7 @@
      	 </div>
      	 <div class="form-group"> 
    			 <label class="col-md-4 paddingRight">Employee Type<span class="pull-right paddingLeft">:</span></label>
-     	     <div class="col-md-5" id="appraisalEmlployeeType"></div>
+     	     <div class="col-md-5" id="appraisalEmlployementType"></div>
      	 </div>     
      	</div>
      	
