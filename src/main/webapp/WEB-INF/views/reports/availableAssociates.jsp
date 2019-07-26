@@ -38,22 +38,26 @@
             </div>
           </div>
            <div class="clearfix"></div>
-          <div class="col-md-2">
-            <div class="row" id="fromDateDiv">
-              <label class="col-md-12 paddingRight">From</label>
-              <div class="col-md-12">
-                <input type="text" class="form-control calendar" name = "fromDate" id="fromDate" field-name="From Date" data-validation="required" readonly>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-2">
-            <div class="row" id="toDateDiv">
-              <label class="col-md-12 paddingRight">To</label>
-              <div class="col-md-12">
-                <input type="text" class="form-control calendar" name = "toDate" id="toDate" field-name="To Date" data-validation="required" readonly>
-              </div>
-            </div>
-          </div>
+         <div class="col-md-2">
+                        <div class="row" id="fromDateDiv">
+                            <label class="col-md-12 paddingRight">From <span class="text-danger">*</span></label>
+                            <div class="col-md-12">
+                                <input type="text" class="form-control calendar" name="fromDate"
+                                    id="fromDate" field-name="From Date"  data-validation="required"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="row" id="toDateDiv">
+                            <label class="col-md-12 paddingRight">To <span class="text-danger">*</span></label>
+                            <div class="col-md-12">
+                                <input type="text" class="form-control calendar" name="toDate"
+                                    id="toDate" field-name="To Date"  data-validation="required"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
         </div>
         <div class="clearfix footerstyelsNew">
           <div class="col-lg-12">
@@ -172,101 +176,142 @@
       }
       </script>
       
-      <script>
-      function prepareReport(){
-    	  var associates =$("#associatesId").val();
-    	  var projects = $("#projects").val();
-    	  var fromDate = $('#fromDate').val();
-  		  var toDate = $('#toDate').val();
-    	       if(associates == null || associates == ''|| associates == 'undefined'){
-    		  associates = '';
-    	            }
-    	       if(projects == null || projects == ''|| projects == 'undefined'){
-    		  projects = '';
-    	             }
-    		  if ($('#availableAssociatesFormId').validate(false, validationSettings)){
-    			  $("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
-    			  var formData = getFormData1("availableAssociatesFormId");
-    			  $.ajax({
-    				  url: sourceleadUrl+"/prepareReport",
-  		            type: "POST",
-  		            data: formData,
-  	 		        processData: false,
-  	 		        contentType:false, 
-  		            success: function (result) {
-  		            	document.getElementById("avlbAssociatesReporttableDiv").style.display="block";
-  		            	$("#availableAssociatesReporttableList").show();
-  		          	if(result && result.response === "SUCCESS" && result.object != null && result.object != "") {
-  		          	  var text = "";
-  		          	  text += "<table class='table mb0'>";
-	  		          text += "  <thead>";
-	  		          text += "    <tr>";
-	  		          text += "      <th><div class='width180px text-center'>Project Name</div></th>";
-	  		          text += "      <th><div class='width180px text-center'>Project Duration</div></th>";
-	  		          text += "      <th><div class='width180px text-center'>Associate Duration</div></th>";
-	  		          text += "      <th><div class='width180px text-center'>Availability %</div></th>";
-	  		          text += "      <th><div class='width180px text-center'>No. of Hours</div></th>";
-	  		          text += "    </tr>";
-	  		          text += "  </thead>";
-	  		          text += "  <tbody>";
-	
-	  		          for(var e in result.object) {
-	  		            text += "<tr>";
-	  		            text += "  <td colspan='5' class='noPad'>";
-	  		            text += "    <table class='table mb0'>";
-	  		            text += "      <tbody>";
-	  		            text += "        <tr>";
-	  		            text += "          <td colspan='5'><div class='text-left textBold text-muted'>" + e.split("<<>>")[1] + " </div></td>";
-	  		            text += "        </tr>";
-	  		            var reportList = result.object[e];
-	  		            var totalavailable=0,totalHours=0,orgWorkingHours = 0;
-	  		              for(var e1 in reportList) {
-	  		                var report = reportList[e1];
-	  		                text += "          <tr>";
-	  		                text += "            <td><div class='width180px text-center'>"+(report.projectName !== null ? report.projectName : "--" ) +" </div></td>";
-	  		                text += "            <td><div class='width180px text-center'>"+(report.projectStartDate !== null ? report.projectStartDate : "--") + " to " + (report.projectEndDate !== null ? report.projectEndDate : "--") +" </div></td>";
-	  		                text += "            <td><div class='width180px text-center'>"+(report.empStartDate !== null ? report.empStartDate : "--") + " to " + (report.empEndDate !== null ? report.empEndDate : "--") +" </div></td>";
-	  		                text += "            <td><div class='width180px'> "+(report.availableHours !== null ? report.availableHours  : "--" ) +" </div></td>";
-	  		                text += "            <td><div class='width180px'>"+ (report.hoursperWeek !== null ? parseFloat(report.hoursperWeek).toFixed(2) : "----") +"</div></td>";
-	  		                text += "          </tr>";
-	  		                
-	  		                totalavailable  +=  (report.availableHours !== null && report.availableHours !== "") ? parseFloat(report.availableHours) : 0;
-							totalHours      +=  (report.hoursperWeek !== null && report.hoursperWeek !== "") ? parseFloat(report.hoursperWeek) : 0;
-							orgWorkingHours = report.orgWorkingHours;  
-	  		              }
-	  		        	
-							total = (totalavailable >= 100 ? 0 : 100 - totalavailable);
-							hours = (totalHours >= orgWorkingHours ? 0 : (orgWorkingHours - totalHours).toFixed(2));
-	  		            text += "      </tbody>";
-	  		            text += "      <tfoot>";
-	  		            text += "        <tr>";
-	  		            text += "          <td colspan='2'></td>";
-	  		            text += "          <td>Total</td>";
-	  		            text += "          <td><div class='width180px'>"+total+"</div></td>";
-	  		            text += "          <td><div class='width180px'>"+hours+"</div></td>";
-	  		            text += "        </tr>";
-	  		            text += "      </tfoot>";
-	  		            text += "    </table>";
-	  		            text += "  </td>";
-	  		            text += "</tr>";
-	  		          }
-	  		        	text += "</tbody>";
-	  		      		text += "</table>";
-  							$("#exportOptions").show();
-  							$("#availableAssociatesReporttableList").empty();
-  							$("#availableAssociatesReporttableList").append(text);
-  						} else {
-  							$("#availableAssociatesReporttableList").append("<div class='dataTables_empty'></div>");
-  						}
-  		            	
-  		            }
-    			  })
-      }else{
-    	  return false;
+     <script>
+    function prepareReport() {
+        var associates = $("#associatesId").val();
+        var projects = $("#projects").val();
+        var fromDate = $('#fromDate').val();
+        var toDate = $('#toDate').val();
+        if (associates == null || associates == '' || associates == 'undefined') {
+            associates = '';
         }
-     }
-      </script>
-      
+        if (projects == null || projects == '' || projects == 'undefined') {
+            projects = '';
+        }
+        if ($('#availableAssociatesFormId').validate(false, validationSettings)) {
+            $("#loadingId")
+                    .attr(
+                            'style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+           var formData = getFormData1("availableAssociatesFormId");
+                            $.ajax({
+                                        url : sourceleadUrl + "/prepareReport",
+                        type : "POST",
+                        data : formData,
+                        processData : false,
+                        contentType : false,
+                        success : function(result) {
+                            document
+                                    .getElementById("avlbAssociatesReporttableDiv").style.display = "block";
+                            $("#availableAssociatesReporttableList").show();
+                            if (result && result.response === "SUCCESS"
+                                    && result.object != null
+                                    && result.object != "") {
+                                var text = "";
+                                text += "<table class='table mb0'>";
+                                text += " <thead>";
+                                text += " <tr>";
+                                text += " <th><div class='width180px text-center'>Project Name</div></th>";
+                                text += " <th><div class='width180px text-center'>Project Duration</div></th>";
+                                text += " <th><div class='width180px text-center'>Associate Duration</div></th>";
+                                text += " <th><div class='width180px text-center'>Availability %</div></th>";
+                                text += " <th><div class='width180px text-center'>No. of Hours</div></th>";
+                                text += " </tr>";
+                                text += " </thead>";
+                                text += " <tbody>";
+
+                                for ( var e in result.object) {
+                                    text += "<tr>";
+                                    text += " <td colspan='5' class='noPad'>";
+                                    text += " <table class='table mb0'>";
+                                    text += " <tbody>";
+                                    text += " <tr>";
+                                    text += " <td colspan='5'><div class='text-left textBold text-muted'>"
+                                            + e.split("<<>>")[1]
+                                            + " </div></td>";
+                                    text += " </tr>";
+                                    var reportList = result.object[e];
+                                    var totalavailable = 0, totalHours = 0, orgWorkingHours = 0;
+                                    for ( var e1 in reportList) {
+                                        var report = reportList[e1];
+                                        text += " <tr>";
+                                        text += " <td><div class='width180px text-center'>"
+                                                + (report.projectName !== null ? report.projectName
+                                                        : "--")
+                                                + " </div></td>";
+                                        text += " <td><div class='width180px text-center'>"
+                                                + (report.projectStartDate !== null ? report.projectStartDate
+                                                        : "--")
+                                                + " To "
+                                                + (report.projectEndDate !== null ? report.projectEndDate
+                                                        : "--")
+                                                + " </div></td>";
+                                        text += " <td><div class='width180px text-center'>"
+                                                + (report.empStartDate !== null ? report.empStartDate
+                                                        : "--")
+                                                + " To "
+                                                + (report.empEndDate !== null ? report.empEndDate
+                                                        : "--")
+                                                + " </div></td>";
+                                        text += " <td><div class='width180px'> "
+                                                + (report.availableHours !== null ? report.availableHours
+                                                        : "--")
+                                                + " </div></td>";
+                                        text += " <td><div class='width180px'>"
+                                                + (report.hoursperWeek !== null ? parseFloat(
+                                                        report.hoursperWeek)
+                                                        .toFixed(2)
+                                                        : "----")
+                                                + "</div></td>";
+                                        text += " </tr>";
+
+                                        totalavailable += (report.availableHours !== null && report.availableHours !== "") ? parseFloat(report.availableHours)
+                                                : 0;
+                                        totalHours += (report.hoursperWeek !== null && report.hoursperWeek !== "") ? parseFloat(report.hoursperWeek)
+                                                : 0;
+                                        orgWorkingHours = report.orgWorkingHours;
+                                    }
+
+                                    total = (totalavailable >= 100 ? 0
+                                            : 100 - totalavailable);
+                                    hours = (totalHours >= orgWorkingHours ? 0
+                                            : (orgWorkingHours - totalHours)
+                                                    .toFixed(2));
+                                    text += " </tbody>";
+                                    text += " <tfoot>";
+                                    text += " <tr>";
+                                    text += " <td colspan='2'></td>";
+                                    text += " <td>Total</td>";
+                                    text += " <td><div class='width180px'>"
+                                            + total + "</div></td>";
+                                    text += " <td><div class='width180px'>"
+                                            + hours + "</div></td>";
+                                    text += " </tr>";
+                                    text += " </tfoot>";
+                                    text += " </table>";
+                                    text += " </td>";
+                                    text += "</tr>";
+                                }
+                                text += "</tbody>";
+                                text += "</table>";
+                                $("#exportOptions").show();
+                                $("#availableAssociatesReporttableList").empty();
+                                $("#availableAssociatesReporttableList")
+                                        .append(text);
+                            } else {
+                                $("#exportOptions").hide();
+                                $("#availableAssociatesReporttableList").empty();
+                                $("#availableAssociatesReporttableList")
+                                        .append(
+                                                "<div class='dataTables_empty'></div>");
+                            }
+
+                        }
+                    })
+        } else {
+            return false;
+        }
+    }
+</script>
       <script>
       function reportExport(type){
           var associates =$("#associatesId").val();

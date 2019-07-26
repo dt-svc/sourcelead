@@ -168,19 +168,19 @@
   </section>
   
   <div class="popupWrap" id="ticketCommentPopup" role="dialog">
-	<%-- <form role="form" id="ticketComment_form" name="sourceleadTicketComment_form" method="post"> --%>
-		<input type="hidden" id="ticketCommentId" name="id" value="0"/>
+	 <form role="form" id="ticketComment_form" name="sourceleadTicketComment_form" method="post"> 
+		<input type="hidden" id="ticketCommentId" name="id" value="0" data-validation="required validate_length length1-1000"/>
 		<div class="ticketCommentCont">
 			<div class="clearfix">
-				<!-- <textarea rows="8" class="form-control clearfix mb10 valid error" placeholder="Comments here..." id="ticketComment" name="comment" field-name="Comment" data-validation="required validate_length length1-5000" style="border-color: rgb(204, 204, 204);"></textarea> -->
-				<div contenteditable="true" id="ticketComment" style="height: 100px; border: 1px solid #CECECE;"></div>
+				<textarea rows="8" class="form-control clearfix mb10 valid error" placeholder="Comments here..." id="ticketComment" name="comment" field-name="Comment" data-validation="required validate_length length1-5000" style="border-color: rgb(204, 204, 204);"></textarea>
+				<!-- <div contenteditable="true" id="ticketComment" style="height: 100px; border: 1px solid #CECECE;"></div> -->
 			</div>
 		</div>
 		<div class="popupFoot text-right">
 			<button type="button" class="slBtn md colorBtn" onclick="saveTicketComment('${ticketSummary.id}');">Save</button>
 			<button type="button" class="slBtn md popClose" onclick="closeTicketComment();">Cancel</button>
 		</div>
-	<%-- </form> --%>
+	 </form> 
 </div>
 					
   <script> 
@@ -200,12 +200,15 @@ $(document).ready(function(){
 	$(".add-ticketcomment").attr('style', "right:30px !important; top:45px");
 });
 $("#addComment").click(function(){
-	$("#ticketComment").empty();
+	$("#ticketComment").val("");
 	$("#ticketCommentPopup, .mask").show();
 });
 function closeTicketComment(){
-	$("#ticketCommentId").val(0);
+	var ticketIdEdit = $("#ticketCommentId").val();
+	$('#ticketComment_form').find('p.jquery_form_error_message').remove();
+	if(ticketIdEdit ==null || ticketIdEdit =="" || ticketIdEdit =="undefined"){
 	$("#ticketComment").val("");
+	}
 	$('.fr-element.fr-view').html("");
 	$("#ticketCommentPopup, .mask").hide();
 }

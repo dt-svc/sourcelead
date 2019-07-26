@@ -6,8 +6,8 @@
 
 <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
 <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
-<script type="text/javascript" src="${SourceLeadWeb_sourceleadUrl}/resources/js/campaignRecipient.js"></script>
-<script type="text/javascript" src="${SourceLeadWeb_sourceleadUrl}/resources/js/campaignSender.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/campaignRecipient.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/campaignSender.js"></script>
 
 
 <script>

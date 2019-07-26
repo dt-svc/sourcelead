@@ -30,7 +30,7 @@
 		<div class="col-md-2">
 			<div class="pull-right">
 				<button type="button" class="btn btn-sm btn-primary mr"
-					onclick="saveCandiateDataFields();">Import</button>
+					onclick="saveCandiateDataFields();" id="candBulkImport">Import</button>
 				
 				<button type="button" class="btn btn-sm btn-primary"
 					onclick="cancelFileImport();">Cancel</button>
@@ -58,6 +58,8 @@
 	function saveCandiateDataFields() {
 		if ($('#dataMigration_form').validate(false, validationSettings)) {
 			var formData = getFormData1("dataMigration_form");
+			/* $("#candBulkImport").attr("disabled",true); */
+			$('#candBulkImport').prop('disabled', true);
 			var sessionId = '${SourceLeadWeb_sessionId}';
 			var inviteEmail = '';
 			if($("#inviteEmail").val() != null && $("#inviteEmail").val() != 'undefined' && $("#inviteEmail").val() != ''){

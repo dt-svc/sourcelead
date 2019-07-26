@@ -22,8 +22,9 @@ INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_N
 	
 #NOTIFICATION
 
+SET SQL_SAFE_UPDATES = 0;
 UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Manager_Name],\n[Login_User] Rejected the Expenses of [Employee_Name] for the Project [Project_Name]' WHERE `UNIQUE_SCENARIO_NAME`='MailToManager1WhenManager2orAdminRejectTheExpense' and `ENTITY_TYPE`='Notification';
-
+SET SQL_SAFE_UPDATES = 1;
                           
 
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES   ((SELECT `ID` FROM `EMAIL_SCENARIO` WHERE `UNIQUE_SCENARIO_NAME` = 'ExpensesApprovalRejectedEmailToEmployee' AND `ENTITY_TYPE` = 'Email'), 'loginURL', '[Login_Link]');
