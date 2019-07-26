@@ -193,19 +193,21 @@ public void ConnectCouchbase() throws IOException, SQLException {
 		 for (int i = 0; i < jsonArray.length(); i++) {
 			 JSONParser parser = new JSONParser();
 			 JSONObject jsonObjVal = (JSONObject) parser.parse(jsonArray.get(i).toString());
+			 String s1 = jsonObjVal.toString();
+			 System.out.println(s1);
 			 for (Object okey : jsonObjVal.keySet()) {
 				 String keyStr = (String) okey;
 				 if(keyStr.equalsIgnoreCase("someName")) {
 					 String keyvalue = jsonObjVal.get(keyStr).toString();
 					 String jsonStringValues = keyvalue.substring(1, keyvalue.length()-1);
 					 org.json.JSONObject jsonObj = new org.json.JSONObject(jsonStringValues);
-					 System.out.println(jsonObj);
+					// System.out.println(jsonObj);
 					 
 				 }
 				 
 				 if(keyStr.equalsIgnoreCase("otherName")) {
 					 String keyvalue = jsonObjVal.get(keyStr).toString();
-					 System.out.println(keyvalue);
+					// System.out.println(keyvalue);
 				 }
 				
 				/* if(keyStr.equalsIgnoreCase("otherName")) {
