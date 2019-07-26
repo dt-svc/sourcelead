@@ -54,8 +54,8 @@
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result + '<th class="text-center"><input type="checkbox" id="sharedcheckbox" onclick="toggleAssignList(this);"/></th>'; 
-		result = result + '<th>Associate Id</th>';
-	  	result = result + '<th>Associate Name</th>';
+		result = result + '<th>Associate Name</th>';
+	  	result = result + '<th>Associate Id</th>';
 	  	result = result + '<th>Email</th>';
 	  	result = result + '<th>Role</th>';
 	  	result = result + '<th>Reporting Manager</th>';
@@ -94,8 +94,8 @@ function appraisalAssignPagination(url,uuid){
           pages: 2
         }),
         "columns": [
-            { "data": "associateId" },
-            { "data": "associateName"},
+            { "data": "associateName" },
+            { "data": "associateId"},
             { "data": "associateEmail"},
             { "data": "associateRole"},
             { "data": "reportingManager"},
@@ -126,29 +126,33 @@ function appraisalAssignPagination(url,uuid){
 	    	  	}
 	      },{
 	    	  	"targets": colIndex++,
-	    	  	"data": "associateId",
+	    	  	"data": "associateName",
 	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
-	    	  		 var result = "";
-                	 result = result +"<td>";
-	    	  	  	 result = result +"<div class='UserTextLeft tabImg clearfix'>";
-	    	  		 result = result +"<img class='m-t-xs pull-left' onerror='predefineAssociateImage(this);' src='"+opt.userImgUrl+"'>";
-	    	  		 result = result +"<div class='pull-left' title='"+opt.associateId+"'>"+opt.associateId+"</div>";
-	    	  		 result = result +"</div>";
-	    	  		 result = result +"</td>";
+	    	  		
+	    	  		var result = "";
+	    	  		 result = result +"<td>";
+		   	  	  	 result = result +"<div class='UserTextLeft tabImg clearfix'>";
+		   	  	     result = result +"<img onerror='predefineAssociateImage(this);' src='"+opt.userImgUrl+"' class='m-t-xs pull-left'>";
+		   	  		 result = result +"<div class='tbldata-dotdot-vsm pull-left' title='"+opt.associateName+"'>"+opt.associateName+"</div>";
+		   	  	     result = result +"</div>";
+		   	  		 result = result +"</td>";
 	    	  		 
 		             return result;
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
-              "data": "associateName",
+              "data": "associateId",
               "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	     var result = "";
 	    	  	   	 result = result +"<td>";
-             	     result = result +"<div class='width300px'>";
-             	     result = result +"<div class='tbldata-dotdot-big pull-left' title='"+opt.associateName+"'>"+opt.associateName+"</div>";
-             	     result = result +"</div>";
+	    	  	   	 if(opt.associateId != null){
+	    	  	   	  result = result +"<div class='tbldata-dotdot-vsm' title='"+opt.associateId+"'>"+opt.associateId+"</div>";
+	    	  	   	 }else{
+	    	  	   	  result = result +"<div class='tbldata-dotdot-vsm'>----</div>";
+	    	  	   	 }
+             	   
              	     result = result +"</td>";
 		             return result;
               		
