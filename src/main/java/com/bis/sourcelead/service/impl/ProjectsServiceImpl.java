@@ -4000,6 +4000,17 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
 		Map<String, List<AvailableAssociatesDTO>> map = null;
 		try {
+			
+			if(availableAssociatesDTO.getUserIds() == null || availableAssociatesDTO.getUserIds().isEmpty()) {
+				List<Long> userIdList = new LinkedList<>();
+				List<Candidate> empList = projectMembersService.getAllAvailableAssociates(orgLocations.getId());
+				for(Candidate c : empList) {
+					userIdList.add(c.getId());
+				}
+				availableAssociatesDTO.setUserIds(userIdList);
+			}
+			
+			
 			List<Object[]> objectList = projectsDao.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations);
 			List<AvailableAssociatesDTO> availableAssociatesDTOList = new ArrayList<>();
 			if (objectList != null && !objectList.isEmpty()) {

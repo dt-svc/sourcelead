@@ -1,4 +1,3 @@
-
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -534,7 +533,7 @@
 													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'INTERVIEW' && opt.submissionStatus != 'SELECTED_ON_INTERVIEW' && opt.submissionStatus != 'OFFERMADE' && opt.submissionStatus != 'OFFERACCEPTED'){
 														result = result + "<option value='Interview'>INTERVIEW</option>";
 													}
-													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SELECTED_ON_INTERVIEW' && opt.submissionStatus != 'ONHOLD'){
+													if(opt.previousSubmissionStatus != null && opt.previousSubmissionStatus == 'SELECTED_ON_INTERVIEW' && opt.submissionStatus == 'ONHOLD'){
 													
 														result = result + "<option value='Selected on Interview'>Selected on Interview</option>";
 													}

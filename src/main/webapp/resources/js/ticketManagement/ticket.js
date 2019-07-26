@@ -183,7 +183,12 @@ function validateTicketId(ticketId) {
 		    });
 	 }
 }
-
+var validationSettings = {
+        errorMessagePosition : 'element',
+        borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+        };
 function saveTicket() {
 	var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 	if ($('#addTicketManagementForm').validate(false, validationSettings)) {
@@ -197,6 +202,8 @@ function saveTicket() {
 			}
 		}
 		var formData = getFormData1("addTicketManagementForm");
+	    document.getElementById("addTicket").disabled = true;
+		
 		$.ajax({
 			 type : "POST",
 			 data: formData,

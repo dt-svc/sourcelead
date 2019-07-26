@@ -175,11 +175,21 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			  <div class="clearfix"></div>
 			  <div class="form-group">
 				<label class="col-md-3">Add Comment</label>
+				
 				<div class="col-md-9">
 				  <label class="switch">
-					<input type="checkbox" checked="">
+				  <c:choose>
+					<c:when test = "${commentRequired == 'Y'}">
+					<input id = "commentRequired" type="checkbox" checked="" value = "Y">
+					</c:when>
+					<c:otherwise>
+					<input id = "commentRequired" type="checkbox" value = "N">
+					</c:otherwise>
+					</c:choose>
 					<span class="slider round"></span> </label>
 				</div>
+				
+			  	
 			  </div>
 			</div>
 		  </div>
@@ -248,6 +258,18 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 <script>
 var currentStageUuid = $("#currentStageUuid").val();
 $(document).ready(function() {
+	commentReq = $("#commentRequired").val();
+	
+	$("#commentRequired").click(function(){
+		if(commentReq == "Y"){
+			commentReq = "N";
+		}
+		else{
+			commentReq = "Y";
+		}
+	})
+		
+	
 	requirementWorkflow.getRequirementQuestionnaireTemplates();
 	
 	$("#saveTaskButton").attr("disabled", true);
