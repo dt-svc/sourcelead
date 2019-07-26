@@ -2432,8 +2432,21 @@ public class UsersListRestController {
 		    }
 			
 			if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
-				   OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+				 OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
 				   candidate.setWorkLocation(workLocation);
+				   if(candidate.getId() != null) {
+					   List<Candidate> canlist = candidateService.getOffshoreCandidatesByParentCandidateId(candidate.getId());
+					   if(canlist != null && !canlist.isEmpty()) {
+						   for(Candidate can :canlist) {
+							   can.setWorkLocation(workLocation);
+							   can.setFirstName(addUserDTO.getFirstName());
+							   can.setLastName(addUserDTO.getLastName());
+							   can.setMiddelName(addUserDTO.getMiddleName());
+							   candidateService.saveOrUpdateCandidate(can);
+							   candidateService.saveOrUpdateCandidateElkDocument(can);
+						   }
+					   }
+				   }
 			}
 			
 			if(addUserDTO.getDateofBirth() != null) {

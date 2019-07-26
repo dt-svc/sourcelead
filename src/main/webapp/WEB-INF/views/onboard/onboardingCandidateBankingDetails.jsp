@@ -318,7 +318,7 @@
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
               <label class="clearfix">BSR Number <span class="text-danger">&nbsp;*</span></label>
 	           <div class="clearfix">
-	                <input type="number" id="paymentBSRNumber" data-min='9' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control"/>
+	                <input type="number" id="paymentBSRNumber" data-min='4' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control"/>
 	           </div>
            </div>
            
