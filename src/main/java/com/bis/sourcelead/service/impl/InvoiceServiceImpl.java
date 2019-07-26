@@ -1948,14 +1948,14 @@ public class InvoiceServiceImpl implements InvoiceService {
 			String vendorCurrencyCode =  conversionUtil.getVendorOrgCurrencyCode(vendorOrgLocation.getCountry());
 			if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
 			 applicantsList = requirementSubmissionDao.getCandidateForInvoiceJobClosure(orgLocation, user, client.getId());
-			 if(orgRelation.getGenerateInvoice().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && applicantsList!=null && applicantsList.size() >0){
+			 if(orgRelation.getGenerateInvoice() !=null && orgRelation.getGenerateInvoice().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && applicantsList!=null && applicantsList.size() >0){
  					List<RequirementSubmission> applicant = new ArrayList<RequirementSubmission>();
  					applicant.add(applicantsList.get(0));
  				   applicantsList = applicant;
  				}	
 			}else{
 				applicantsList = requirementSubmissionDao.getCandidateForBillJobClosure(orgLocation, user, client.getId());
-				 if(orgRelation.getGenerateBill().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && applicantsList!=null && applicantsList.size() >0){
+				 if(orgRelation.getGenerateBill() !=null && orgRelation.getGenerateBill().equalsIgnoreCase(Constants.FINANCE_TYPE_INDIVIDUAL) && applicantsList!=null && applicantsList.size() >0){
 	 					List<RequirementSubmission> applicant = new ArrayList<RequirementSubmission>();
 	 					applicant.add(applicantsList.get(0));
 	 				   applicantsList = applicant;

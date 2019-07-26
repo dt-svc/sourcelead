@@ -459,7 +459,7 @@ public class FileUploadUtil {
 			immFormFolder.mkdir(); // make a immigration directory.
 
 			File files[] = folder.listFiles();
-			if (folder.exists() || folder.list().length >0) {
+			if (folder.exists() && folder.list().length >0) {
 				DocsFoundFlag =true;
 			}
 			
@@ -507,7 +507,7 @@ public class FileUploadUtil {
 			immDocFolder.mkdir(); // make a immigration doc folder .
 			File docfolder = new File(staticPath, orgId + "/" + orgLocationId + "/immigrationCandidateDocuments");
 			files = docfolder.listFiles();
-			if (docfolder.exists() || docfolder.list().length > 0) {
+			if (docfolder.exists() && docfolder.list().length > 0) {
 				DocsFoundFlag =true;
 			}
 			inStream = null;
@@ -547,7 +547,7 @@ public class FileUploadUtil {
 			if(candidateResume != null) {
 				File resumeDocfolder = new File(staticPath, orgId + "/" + orgLocationId + "/resumes");
 				files = resumeDocfolder.listFiles();
-				if (resumeDocfolder.exists() || resumeDocfolder.list().length > 0) {
+				if (resumeDocfolder.exists() && resumeDocfolder.list().length > 0) {
 					DocsFoundFlag =true;
 				}
 				inStream = null;
@@ -591,7 +591,7 @@ public class FileUploadUtil {
 			
 			File employerAndEduDocfolder = new File(staticPath, orgId + "/" + orgLocationId + "/candidateDocuments");
 			files = employerAndEduDocfolder.listFiles();
-			if (employerAndEduDocfolder.exists() || employerAndEduDocfolder.list().length > 0) {
+			if (employerAndEduDocfolder.exists() && employerAndEduDocfolder.list().length > 0) {
 				DocsFoundFlag =true;
 			}
 			empDocFolder.mkdir(); // make a Employer doc folder .
