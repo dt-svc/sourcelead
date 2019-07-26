@@ -140,7 +140,10 @@
 	     	     
 		</div>
 		
-		
+		<div class="clearfix"></div>       
+	        <div class="popupFoot text-right">
+	           <button type="button" class="slBtn md colorBtn"  onclick="performanceManagement.viewAppraisalCycle();" >Go To List >></button>
+	        </div>
      </div>
      </div>
     </div>

@@ -49,7 +49,7 @@
 		                  <td><div class="tblminwidth-75">${appraisal.name}</div></td>
 		                  <td>
 							  <div>
-							  <span class="tblminwidth-75 mr">${appraisal.selfAppraisalStartDate}</span>
+							  <span class="tblminwidth-75 mr">${appraisal.selfAppraisalStartDate} &nbsp;&nbsp;&nbsp;to </span>
 							  <span class="tblminwidth-75">${appraisal.selfAppraisalEndDate}</span>
 							  </div>
 						  </td>
