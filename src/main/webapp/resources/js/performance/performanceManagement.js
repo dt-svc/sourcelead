@@ -1280,7 +1280,30 @@ function PerformanceManagement(){
 			  });
 	  });
 			
-			
+  }
+	
+	
+  this.validatePerformanceCategoriesCheckBox = function(){
+	  
+	    var isSelfChecked = $("#isSelfAppraisalRequired").is(":checked");
+		var isPeerChecked = $("#isPeerReviewRequired").is(":checked");
+		var isRepMngChecked = $("#isReportingManagerAppraisalRequired").is(":checked");
+		var isResMngChecked = $("#isResourceManagerAppraisalRequired").is(":checked");
+		
+		if(isSelfChecked == true || isPeerChecked == true || isRepMngChecked == true || isResMngChecked == true){
+			 $("#feedbackCategory").removeAttr("disabled");
+		}else{
+			  $("#feedbackCategory").attr("disabled", "disabled");
+			  document.getElementById("feedbackCategory").checked = false; 
+			  document.getElementById("fedbackCategoriesDiv").style.display="none";
+			  
+			  $('#fedbackCategoriesDiv').find('p.jquery_form_error_message').remove(); 
+			  $('#appraisalCategories').attr('data-validation-optional',"true");
+		   	  $('#appraisalCategories').removeAttr("data-validation","required"); 
+		   	  $('#appraisalCategories').val('').trigger('chosen:updated');
+		   	  $("#selectedTemplatesDiv").empty();
+		   	  $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
+		}
   }
   
   
@@ -1857,6 +1880,8 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 		  });
 		  
 	  }
+	  
+	  performanceManagement.validatePerformanceCategoriesCheckBox();	
   }
   
   
@@ -1900,6 +1925,8 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 				 }
 			  });
 	  }
+	  
+	  performanceManagement.validatePerformanceCategoriesCheckBox();	
   }
   
   
@@ -1943,6 +1970,8 @@ this.enablePeerReviewPeriod = function(){
 				 }
 			  });
 	  }
+	  
+	  performanceManagement.validatePerformanceCategoriesCheckBox();	
   }
 
 this.enableResourceManagerAppraisalPeriod = function(){
@@ -1984,6 +2013,8 @@ this.enableResourceManagerAppraisalPeriod = function(){
 				 }
 			  });
 	  }
+	  
+	  performanceManagement.validatePerformanceCategoriesCheckBox();	
 }
   
   
@@ -2161,7 +2192,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
 		        		
 		        		 
 		        		 if(response.object.appraisalEmpType != null && response.object.appraisalEmpType != 'undefined' && response.object.appraisalEmpType != ''){
-		        			 performanceManagement.appraisalEmployeeTypeList(response.object.appraisalEmpType);
+		        			 $('#appraisalEmlployementType').html(response.object.appraisalEmpType);
 		        		 }
 		        		 
 		        		 if(response.object.descriptionDisplay != null 
@@ -2191,7 +2222,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
 		        				 && response.object.selfAppraisalStartDate != ''
 		        					 && response.object.selfAppraisalStartDate != 'undefined'){
 		        			 $("#selfAppraisalStartDate").html(response.object.selfAppraisalStartDate);
-		        			 $("#selfAppraisalEndDate").html(response.object.selfAppraisalStartDate);
+		        			 $("#selfAppraisalEndDate").html(response.object.selfAppraisalEndDate);
 		        		 }
 		        		 
 		        		 if(response.object.peerReviewStartDate != null 
@@ -2335,27 +2366,6 @@ this.enableResourceManagerAppraisalPeriod = function(){
 	    });
   }
   
-  
-  this.appraisalEmployeeTypeList = function(employeeTypes){
-	  $.ajax({
-	    	type: "GET",
-	        url: sourceleadUrl+"/getEmployeeTypesForPerformanceAppraisal", 
-	        success: function(json) {
-	        	var employeeType = ''
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var empType = json[i];
-		        		var employeeType = employeeTypes.split(", ");
-	        			if (employeeType.indexOf(empType.toString()) > -2) {
-	        				employeeType = employeeType + empType+",";
-	        			}
-		        		
-		        		
-				}
-	        	$('appraisalEmlployeeType').html(employeeType.substring(0, employeeType.length - 1));
-	        },
-	    });
-  }
   
   
   this.editAppraisalCycle = function(templateUUId){
