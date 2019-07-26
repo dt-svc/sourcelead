@@ -542,7 +542,7 @@ function invoicePagination(url){
 						}else if(report.invoiceStatus == "Void"){
 							result = result +'           <span class="colorRed pull-left">Void</span>   ';	
 						}else{
-							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
+							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept" id = "acceptInvoiceId"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 
 						}                                                                         
 
@@ -932,7 +932,10 @@ function sendReminder(invoiceUUID){
 
 <script>
 function acceptedInvoice(invoiceUUID){
+	$('body #acceptInvoiceId').prop('onclick', null);
+	$("#acceptInvoiceId").prop("disabled",true);
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	//$("#acceptInvoiceId").prop("disabled",true);
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
