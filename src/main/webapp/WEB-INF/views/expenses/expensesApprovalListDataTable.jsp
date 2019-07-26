@@ -200,6 +200,7 @@ function searchExpensesDataIcon(){
 			url : pmsUrl + "/updateBillingStatus?billingStatus="
 					+ billingStatus + "&expenseId=" + id,
 			success : function(data) {
+				$(ele).find("option[data-name='select']").hide();
 				if (data.response === "SESSION_TIMEDOUT") {
 					location.replace(sourceleadUrl);
 				} else if (data.response === "AWKWARD") {

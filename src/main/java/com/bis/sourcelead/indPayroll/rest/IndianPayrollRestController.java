@@ -8,7 +8,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.eclipse.core.internal.runtime.PrintStackUtil;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +37,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AssociateLoanAndAdvancesDTO;
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesHistoryDTO;
 import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
 import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
@@ -57,14 +63,17 @@ import com.bis.sourcelead.indPayroll.dto.INDPayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndApprovePayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.indPayroll.dto.PreCheckINDPayrollDTO;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.indPayroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.indPayroll.service.GenerateINDPayrollService;
+import com.bis.sourcelead.indPayroll.service.IndPayrollService;
 import com.bis.sourcelead.indPayroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.dto.GenerateINDPayrollDTO;
+import com.bis.sourcelead.payroll.entity.EmployeeSessionIndPayroll;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -82,6 +91,8 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.dynamicReport.IndPaySlipPdf;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
@@ -152,6 +163,9 @@ public class IndianPayrollRestController {
 	
 	@Autowired
 	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	private IndPayrollService  indPayrollService;
 	
 	
 	
@@ -548,6 +562,15 @@ public class IndianPayrollRestController {
 	      } 
     
 
+	
+	/**
+	 * Initiate payroll
+	 * @param generateINDPayrollDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@SuppressWarnings("null")
 	@RequestMapping(value = { "/generateINDPayroll","/rest/generateINDPayroll" }, method = RequestMethod.POST)
 	public IndPaysheetFrequencyDTO generateINDPayroll(GenerateINDPayrollDTO generateINDPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -555,7 +578,7 @@ public class IndianPayrollRestController {
 		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocationId);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = null;
+		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
 		try {
 			System.out.println(" inisde generateINDPayroll   >>>>>>>>>>>>>");
 			PreCheckINDPayrollDTO preCheckINDPayrollDTO = iNDPayrollCommonUtil.payrollPrerequisiteCheck(orgLocation, generateINDPayrollDTO.getPayPeriod());
@@ -563,7 +586,99 @@ public class IndianPayrollRestController {
 				generateINDPayrollDTO.setPreCheckINDPayrollDTO(preCheckINDPayrollDTO);
 				indPaysheetFrequencyDTO =  generateINDPayrollService.generateINDPayroll(orgLocation, generateINDPayrollDTO, loginUser);
 				
-				SourceLeadSessionManager.setSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID(), indPaysheetFrequencyDTO);
+				if(indPaysheetFrequencyDTO != null) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("groupName", indPaysheetFrequencyDTO.getGroupName());
+				jsonObject.put("frequencyStartDateStr", indPaysheetFrequencyDTO.getFrequencyStartDateStr());
+				jsonObject.put("frequencyEndDateStr", indPaysheetFrequencyDTO.getFrequencyEndDateStr());
+				jsonObject.put("payCheckDateStr", indPaysheetFrequencyDTO.getPayCheckDateStr());
+				jsonObject.put("approverStatus", indPaysheetFrequencyDTO.getApproverStatus());
+				jsonObject.put("payRunId", indPaysheetFrequencyDTO.getPayRunId());
+				jsonObject.put("groupId", indPaysheetFrequencyDTO.getGroupId());
+				jsonObject.put("createDate", indPaysheetFrequencyDTO.getCreatedDate());
+				jsonObject.put("createdBy", indPaysheetFrequencyDTO.getCreatedBy());
+				jsonObject.put("actionPerformedBy", indPaysheetFrequencyDTO.getActionPerformedBy());
+				jsonObject.put("orgLocationId", indPaysheetFrequencyDTO.getOrgLocationId());
+				jsonObject.put("updatedBy", indPaysheetFrequencyDTO.getUpdatedBy());
+				jsonObject.put("updatedDate", indPaysheetFrequencyDTO.getUpdatedDate());
+				
+				Gson gson = new GsonBuilder().create();
+				JSONObject employeeJsonObject = new JSONObject();
+	   	 	    for(INDPayrollDTO ipDTO : indPaysheetFrequencyDTO.getIndPayrollDTO()) {
+	   	 	    	EmployeeSessionIndPayroll empSession = new EmployeeSessionIndPayroll();
+	   	 	    	
+		   	 	    	if(StringUtils.isNotBlank(ipDTO.getEmpId())) {
+		   	 	    		employeeJsonObject.put("empId", ipDTO.getEmpId());
+		   	 	    	}else {
+		   	 	    		employeeJsonObject.put("empId", "");
+		   	 	    	}
+	   	 	           employeeJsonObject.put("employee", ipDTO.getEmployee());
+	   	 	           employeeJsonObject.put("empName", ipDTO.getEmpName());
+	   	 	           employeeJsonObject.put("regularHours", ipDTO.getRegularHours());
+	   	 	           employeeJsonObject.put("overtimeHours", ipDTO.getOvertimeHours());
+	   	 	           employeeJsonObject.put("grossPay", ipDTO.getGrossPay());
+	   	 	           employeeJsonObject.put("netPay", ipDTO.getNetPay());
+	   	 	           employeeJsonObject.put("lopAmount", ipDTO.getLopAmount());
+	   	 	           employeeJsonObject.put("regularHrsAmt", ipDTO.getRegularHrsAmt());
+	   	 	           employeeJsonObject.put("noOfLeaves", ipDTO.getNoOfLeaves());
+	   	 	           employeeJsonObject.put("noOfDays", ipDTO.getNoOfDays());
+	   	 	           employeeJsonObject.put("totalHours", ipDTO.getTotalHours());
+	   	 	           employeeJsonObject.put("candidateId", ipDTO.getCandidateId());
+	   	 	           employeeJsonObject.put("approverStatus", ipDTO.getApproverStatus());
+	   	 	           employeeJsonObject.put("employeeDesignationType", ipDTO.getEmployeeDesignationType());
+	   	 	           employeeJsonObject.put("tds", ipDTO.getTds());
+	   	 	           employeeJsonObject.put("professionalTax", ipDTO.getProfessionalTax());
+	   	 	           employeeJsonObject.put("payType", ipDTO.getPayType());
+	   	 	           employeeJsonObject.put("indEmpPayrollUUID", ipDTO.getIndEmpPayrollUUID());
+	   	 	           employeeJsonObject.put("payrollPaySlipInd", ipDTO.getPayrollPaySlipInd());
+	   	 	           employeeJsonObject.put("paySheetFrequencyUUID", ipDTO.getPaySheetFrequencyUUID());
+	   	 	           employeeJsonObject.put("payCheckDate", ipDTO.getPayCheckDate());
+	   	 	           employeeJsonObject.put("createdDate", ipDTO.getCreatedDate());
+	   	 	           employeeJsonObject.put("createdBy", ipDTO.getCreatedBy());
+	   	 	           employeeJsonObject.put("updatedDate", ipDTO.getUpdatedDate());
+	   	 	           employeeJsonObject.put("updatedBy", ipDTO.getUpdatedBy());
+	   	 	           
+	   	 	           empSession.setExcludeUUID(ipDTO.getIndEmpPayrollUUID());
+					   empSession.setPaysheetUUID(ipDTO.getPaySheetFrequencyUUID());
+					   empSession.setJsonIndEmployeePayrollCache(employeeJsonObject.toString());
+					   empSession.setJsonString(jsonObject.toString());
+	   	 	    
+						/*if(!ipDTO.getEmpId().isEmpty() && ipDTO.getEmpId() != null) {
+							empSession.setEmployeeId(ipDTO.getEmpId());
+						}else {
+							empSession.setEmployeeId(null);
+						}
+						empSession.setEmployeeName(ipDTO.getEmpName());
+						empSession.setRegularHours(ipDTO.getRegularHours());
+						empSession.setGrossPay(ipDTO.getGrossPay());
+						empSession.setTds(ipDTO.getTds());
+						empSession.setNoOfLeaves(ipDTO.getNoOfLeaves());
+						empSession.setNetPay(ipDTO.getNetPay());
+						empSession.setOvertimeHours(ipDTO.getOvertimeHours());
+						empSession.setExcludeUUID(ipDTO.getIndEmpPayrollUUID());
+						empSession.setPaysheetUUID(ipDTO.getPaySheetFrequencyUUID());*/
+
+						if(!ipDTO.getPayHeadHistoryDTOList().isEmpty() ) {
+							empSession.setJsonPayHeadHistory(gson.toJson(ipDTO.getPayHeadHistoryDTOList()));
+						}else {
+							empSession.setJsonPayHeadHistory(null);
+						}
+						if(!ipDTO.getLoanAdvHistoryDTOList().isEmpty()) {
+							empSession.setJsonLoanAdvHistory(gson.toJson(ipDTO.getLoanAdvHistoryDTOList()));
+						}else {
+							empSession.setJsonLoanAdvHistory(null);
+						}
+						empSession.setJsonEmployee(gson.toJson(indPaysheetFrequencyDTO.getIndPayrollDTO()));
+						indPayrollService.saveEmployeeSessionIndPayroll(empSession);
+				}
+				}
+// 				In wars session is not working due to this created temporary table (IND_PAYROLL_CACHE) for saving getting the data across the multiple requests   
+//              Storing the list of INDPayrollDTO values in the  IND_PAYROLL_CACHE and also dependency dto's are saving in the form of JSONString 
+// 				Dependency columns JSON_STRING - > Payroll related basic information like netpay,empName,grosPay etc...
+// 				Dependency columns JSON_PAYHEADHISTORY -> storing list of AssociatePayrollPayheadHistoryDTO information
+// 				Dependency columns JSON_LOANADVHISTORY -> storing of AssociateLoanAndAdvancesHistoryDTO information 
+//				SourceLeadSessionManager.setSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID(), indPaysheetFrequencyDTO);
+				
 				System.out.println(" completed generateINDPayroll   >>>>>>>>>>>>>");
 				return indPaysheetFrequencyDTO;
 			}else {
@@ -572,36 +687,54 @@ public class IndianPayrollRestController {
 				return indPaysheetFrequencyDTO;
 			}
 		}catch (Exception e) {
+			e.printStackTrace();
 			return indPaysheetFrequencyDTO;
 		}
 	}
     
-    
+	/**
+	 * Send payroll for Approval
+	 * @param indApprovePayrollDTO
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
     @RequestMapping(value = { "/sentForApproveIndPayroll","/rest/sentForApproveIndPayroll" }, method = RequestMethod.POST)
    	public IndApprovePayrollDTO sentForApproveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
    		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
    		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-   	    Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
-   	    if(sessionObj != null) {
+//   	    Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+   		List<EmployeeSessionIndPayroll> emp = indPayrollService.getEmployeeSessionList(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+		 ObjectMapper mapper = new ObjectMapper();
+		
+   	    if(emp != null && emp.size() > 0) {
    	    	try {
-   	    		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
-   	    		
-   	    		//exclude employees logic start
+   	    		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
+//   	    		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
+				  indPaysheetFrequencyDTO = iNDPayrollCommonUtil.indPaySheetFrequencyDTODetails(emp,indPaysheetFrequencyDTO);
+
+				  
+   	    		/*//exclude employees logic start
    	    		List<INDPayrollDTO> ipDTOList = new ArrayList<>();
 	   	 	    for(INDPayrollDTO ipDTO : indPaysheetFrequencyDTO.getIndPayrollDTO()) {
 	   	 	    	if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(ipDTO.getIndEmpPayrollUUID())) {
 	   	 	    		ipDTOList.add(ipDTO);
 	   	 	    	}
-	   	 	    }
+	   	 	    }*/
+				//generate the list of employes required to run the payroll 
+				List<INDPayrollDTO> ipDTOList = iNDPayrollCommonUtil.genarateTheListOfEmployeforIntitatePayroll(emp,indApprovePayrollDTO,mapper);
+				
 	   	 	    indPaysheetFrequencyDTO.setIndPayrollDTO(ipDTOList);
 	   	 	    //exclude employees logic end
    	    		
    	   	        Response<IndApprovePayrollDTO> res = indPaysheetFrequencyService.sentForApproveIndPayroll(indApprovePayrollDTO,indPaysheetFrequencyDTO, orgLocation,loginUser);
-   	   	        SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+//   	   	        SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
    	   	        return res.getObject();
    	    	}catch(Exception e) {
-   	    	     SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+   	    		e.printStackTrace();
+//   	    	     SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
    	    	}
 	    }else {
 	    	 Response<IndPaysheetFrequencyDTO> resp = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID(),orgLocation);
@@ -618,7 +751,7 @@ public class IndianPayrollRestController {
    	 	    //exclude employees logic end
 	   	 	    
 	    	 Response<IndApprovePayrollDTO> res = indPaysheetFrequencyService.sentForApproveIndPayroll(indApprovePayrollDTO,indPaysheetFrequencyDTO, orgLocation,loginUser);
-   	         SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+//   	         SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
    	         return res.getObject();
 	    }
 		return indApprovePayrollDTO;
@@ -626,16 +759,49 @@ public class IndianPayrollRestController {
    	}
     
     
-    @RequestMapping(value = { "/getApproveInfoIndPayroll","/rest/getApproveInfoIndPayroll" }, method = RequestMethod.GET)
+    /**
+     * Confirm payroll
+     * @param indApprovePayrollDTO
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @SuppressWarnings("null")
+	@RequestMapping(value = { "/getApproveInfoIndPayroll","/rest/getApproveInfoIndPayroll" }, method = RequestMethod.GET)
    	public ModelAndView getApproveInfoIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
     	ModelAndView model = new ModelAndView();
    		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		try {
-			System.out.println(" inside getApproveInfoIndPayroll   >>>>>>>>>>>>>");
+			
+			List<EmployeeSessionIndPayroll> emp = indPayrollService.getEmployeeSessionList(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+			 ObjectMapper mapper = new ObjectMapper();
+			IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
+			List<INDPayrollDTO> ipDTOList = new ArrayList<>();
+//	 		Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
+		    
+			if(emp != null && emp.size() > 0) {
+				  indPaysheetFrequencyDTO = iNDPayrollCommonUtil.indPaySheetFrequencyDTODetails(emp,indPaysheetFrequencyDTO);
+				  ipDTOList = iNDPayrollCommonUtil.genarateTheListOfEmployeforIntitatePayroll(emp,indApprovePayrollDTO,mapper);
+			}else {
+				Response<IndPaysheetFrequencyDTO> freqResponse = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID(), orgLocation);
+		    	indPaysheetFrequencyDTO =freqResponse.getObject();
+		    	
+		    	  for(INDPayrollDTO ipDTO : indPaysheetFrequencyDTO.getIndPayrollDTO()) {
+				    	if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(ipDTO.getIndEmpPayrollUUID())) {
+				    		ipDTOList.add(ipDTO);
+				    	}
+				    }
+		    	  
+		    	System.out.println(" freqResponse data inside getApproveInfoIndPayroll   >>>>>>>>>>>>>" +freqResponse);
+			}
+			
+			
+			/*System.out.println(" inside getApproveInfoIndPayroll   >>>>>>>>>>>>>");
 	   		Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
 	   		System.out.println(" after sessionObj getApproveInfoIndPayroll   >>>>>>>>>>>>>" +sessionObj);
-	   		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = null;
+	   		
 		    if(sessionObj != null) {
 		    	indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
 		     }else {
@@ -648,10 +814,15 @@ public class IndianPayrollRestController {
 		    	if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(ipDTO.getIndEmpPayrollUUID())) {
 		    		ipDTOList.add(ipDTO);
 		    	}
-		    }
+		    }*/
+		    
+		   //generate the list of employes required to run the payroll 
+		    
+		   
 	   		model.addObject("freqResponse",indPaysheetFrequencyDTO);
-	   		
-	   		List<AssociatePayrollPayheadHistoryDTO> allAssociatesPayrollPayheadList =ipDTOList.stream().map(empPayrollDTO->empPayrollDTO.getPayHeadHistoryDTOList()).flatMap(List::stream).collect(Collectors.toList());
+	   		List<AssociatePayrollPayheadHistoryDTO> allAssociatesPayrollPayheadList = ipDTOList.stream()
+	   																				  .map(empPayrollDTO->empPayrollDTO.getPayHeadHistoryDTOList())
+	   																				  .flatMap(List::stream).collect(Collectors.toList());
 	   		
 	   		ResponseList<PayrollPayheadDTO> orgLevelPayheads = payrollPayheadService.getPayrollPayheadList(orgLocation);
 	   		
@@ -690,7 +861,16 @@ public class IndianPayrollRestController {
    	}
     
     
-    @RequestMapping(value = { "/approveIndPayroll","/rest/approveIndPayroll" }, method = RequestMethod.POST)
+    /**
+     * Approve the Payroll
+     * @param indApprovePayrollDTO
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @SuppressWarnings("null")
+	@RequestMapping(value = { "/approveIndPayroll","/rest/approveIndPayroll" }, method = RequestMethod.POST)
 	public Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -698,17 +878,36 @@ public class IndianPayrollRestController {
 		Response<IndApprovePayrollDTO> res = null;
 		try {
 			IndPaysheetFrequency indPaysheetFrequency = null;
-			Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
-		    if(sessionObj != null) {
-		    	IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
+//			Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+			
+			List<EmployeeSessionIndPayroll> emp = indPayrollService.getEmployeeSessionList(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+			ObjectMapper mapper = new ObjectMapper();
+			IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
+
+			if(emp != null && emp.size() > 0) {
+				  indPaysheetFrequencyDTO = iNDPayrollCommonUtil.indPaySheetFrequencyDTODetails(emp,indPaysheetFrequencyDTO);
+
+				   List<INDPayrollDTO> ipDTOList = iNDPayrollCommonUtil.genarateTheListOfEmployeforIntitatePayroll(emp,indApprovePayrollDTO,mapper);
+				
+				   indPaysheetFrequencyDTO.setIndPayrollDTO(ipDTOList);
 		    	indPaysheetFrequency = iNDPayrollCommonUtil.getIndPaysheetFrequencyFromIndPaysheetFrequencyDTO(indPaysheetFrequencyDTO, orgLocation);
 		    }else {
+		    	
 		    	 indPaysheetFrequency = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+//		    		Exclude logic
+		    	  Set<IndEmployeePayroll> payrollList = new HashSet<IndEmployeePayroll>();
+				    for(IndEmployeePayroll payroll : indPaysheetFrequency.getIndEmployeepayroll()) {
+				    	if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(payroll.getIndEmpPayrollUUID())) {
+				    		payrollList.add(payroll);
+				    	}
+				    }
+					indPaysheetFrequency.setIndEmployeepayroll(payrollList);
 		    }
-		    SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+
 			 res = indPaysheetFrequencyService.approveIndPayroll(indApprovePayrollDTO,indPaysheetFrequency,orgLocation,loginUser);
 		}catch(Exception e) {
-			SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
+			e.printStackTrace();
+//			SourceLeadSessionManager.removeSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
 		}
 	 	
 		return res;
