@@ -1371,9 +1371,10 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 @RequestMapping(value = "/saveLocationAssociate" , method = RequestMethod.POST)
 	 public String saveLocationAssociate(AddAssociateDTO addAssociateDTO, HttpServletRequest request)
 			throws Exception {
-		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		   Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		   Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
            User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+           OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 	       candidateService.saveOrglocationAsssociate(addAssociateDTO, loginUser, orgLocations, org); 
          
            return "success";
