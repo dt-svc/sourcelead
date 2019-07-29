@@ -2442,6 +2442,7 @@ public class UsersListRestController {
 							   can.setFirstName(addUserDTO.getFirstName());
 							   can.setLastName(addUserDTO.getLastName());
 							   can.setMiddelName(addUserDTO.getMiddleName());
+							   can.setMobilePhone(addUserDTO.getPhoneNumber());
 							   candidateService.saveOrUpdateCandidate(can);
 							   candidateService.saveOrUpdateCandidateElkDocument(can);
 						   }
@@ -2449,7 +2450,7 @@ public class UsersListRestController {
 				   }
 			}
 			
-			if(addUserDTO.getDateofBirth() != null) {
+			if(StringUtils.isNotBlank(addUserDTO.getDateofBirth())){
 				candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofBirth()));
 			}
 			
