@@ -42,13 +42,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 <div class="project_wrap">
     <div class="perfTabs">
     	<ul class="clearfix">
-    		 <sec:authorize access="hasRole('ROLE_ADD_MY_GOALS')">
     		 <li><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" class="Act">My Goals</a></li>
-    		 </sec:authorize>
-    		
-    		<sec:authorize access="hasRole('ROLE_ADD_TEAM_GOALS')">
     		<li><a href="${SourceLeadWeb_pmsUrl}/performanceTeamGoalsList">Team Goals</a></li>
-    		</sec:authorize>
     		
     	</ul>
     </div>  
@@ -99,15 +94,16 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		
 <div class="positionRelative reportHead clearfix mt">
       	<span class="pull-left refreIcon"><a onclick="getGoalsList();" class="refeIcon" title="Refresh"></a></span>
+      	 
       	<ul class="pull-right list-unstyled list-inline">
-						<li>
-								<a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a>
-							</li>
-					<li>
+      	<sec:authorize access="hasRole('ROLE_ADD_MY_GOALS')">
+			<li>
 					<a class="newAdBtn mr5" href="${SourceLeadWeb_pmsUrl}/addNewGoal" >+ Goal</a>
 	  		</li>
+	    </sec:authorize>
 	  		<li id="goalsListSearch"><input type="text" class="repSearchBar"  id='goalsDataTableSearch'/><span class="repSearchIcon" onClick="goalsDataTableList();"></span></li>
         </ul>
+      
      <div class="clearfix"></div>       
            
            <div class="candidate_wrap_table datatable_filter positionRelative" style='position:relative; top:-25px;'>
@@ -560,7 +556,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 	result = result + '<table id="goalsListTable" class="display mt10" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
-		result = result +'	<th>Gole Name</th>';
+		result = result +'	<th>Goal Name</th>';
 		result = result +'  <th>Percentage</th>';
 	  	result = result +'  <th>End Date<br>(<small class="custom-small">'+goalsListDate+'</small>)</th>';
 	  	result = result +'  <th>Actions</th>';
@@ -712,7 +708,7 @@ function deletePerformanceGoal(goalUUID){
 	    	if (response.response === "AWKWARD") {
 	      		location.href = "/errorPage";
 	      	} else if (response.response === "SUCCESS") {
-	      		location.replace(pmsUrl+"/performanceTeamGoalsList");
+	      		location.replace(pmsUrl+"/performanceGoalsList");
 	      	}
 		        
 	       },   
