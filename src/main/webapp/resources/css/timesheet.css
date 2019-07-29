@@ -306,7 +306,7 @@ a { cursor:pointer;}
 .project_wrap_table table tr td div b.proj_deactivate { background-color:#ef4c4c;}
 .project_wrap_table table tr td div b.proj_process { background-color:#d98f47;}
 .project_wrap_table table tr td div b a { color: #fff !important;}
-.proj_show { cursor: pointer; color:#368ee0;}                 
+.proj_show { cursor: pointer; color:#368ee0 !important;}                 
 .proj_show i { font-size:12px; color:#375d81; float:right; padding:4px 0px 0px 0px; visibility:hidden; opacity:0;}
 .project_wrap_table table tr:hover .proj_show i { visibility:visible; opacity:1;}
 .clients_wrap_table table tr:hover .proj_show i { visibility:visible; opacity:1;}  
@@ -8533,34 +8533,31 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
     animation: blinkAnimation 1s infinite; -webkit-animation: blinkAnimation 1s infinite;
     -moz-animation: blinkAnimation 1s infinite; -ms-animation: blinkAnimation 1s infinite;
 }
-      @keyframes blinkAnimation {
-          0 {opacity: 1}
-          50% { opacity: 0 }
-          100% { opacity: 1 }
-      }
-      @-webkit-keyframes blinkAnimation {
-          0 { opacity: 1}
-          50% { opacity: 0 }
-          100% { opacity: 1 }
-      }
-      
-      @-moz-keyframes blinkAnimation {
-          0 { opacity: 1}
-          50% { opacity: 0}
-          100% { opacity: 1}
-      }
-      
-      @-o-keyframes blinkAnimation {
-          0 { opacity: 1}
-          50% { opacity: 0}
-          100% { opacity: 1}
-      }
-      
-      @keyframes blinkAnimation {
-          0 { opacity: 1}
-          50% { opacity: 0}
-          100% { opacity: 1}
-      }
+@keyframes blinkAnimation {
+    0 {opacity: 1}
+    50% { opacity: 0 }
+          { opacity: 1 }
+}
+@-webkit-keyframes blinkAnimation {
+    0 { opacity: 1}
+    50% { opacity: 0 }
+    100% { opacity: 1 }
+}
+@-moz-keyframes blinkAnimation {
+    0 { opacity: 1}
+    50% { opacity: 0}
+    100% { opacity: 1}
+}
+@-o-keyframes blinkAnimation {
+    0 { opacity: 1}
+    50% { opacity: 0}
+    100% { opacity: 1}
+}
+@keyframes blinkAnimation {
+    0 { opacity: 1}
+    50% { opacity: 0}
+    100% { opacity: 1}
+}
 .tbldata-dotdot-large {
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 500px; display: block; margin: 0 auto;
 }
@@ -8575,14 +8572,14 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .tabImg { padding: 6px 0px; line-height: 36px;}
 .adddashComp { text-align: center;}
 .adddashComp a {
-    display: inline-block; width: 180px; margin: 10px 10px 20px; text-align: center; background-color: #f5f5f5;
+    display: inline-block; width: 180px; margin: 10px 10px 20px; text-align: center; background-color: #f5f5f5;                  
     padding: 15px; font-size: 15px; font-weight: 400; color: #656565; border: 1px solid #ededed;
 }
 .adddashComp a img { width: 60%; display: block; margin: 0px auto 10px; opacity: 0.8;}
 .adddashComp a:hover { box-shadow: 0px 5px 5px rgba(0, 0, 4, 0.15); background-color: #fff;}
 .newDashSection { position: relative; min-height: 460px;}
 .newDashSection.newDashSectionMdu { position: relative; min-height: 550px;}
-.newDashLeft { position: absolute; width: 250px; background-color: #f6f6f6; height: 100%; max-height: 550px; overflow: auto;}
+.newDashLeft { position: absolute; width: 250px; background-color: #f6f6f6; height: 100%;}
 .newDashLeft ul { margin: 0px 0px; padding: 10px 0px;}
 .newDashLeft ul li {list-style-type: none;}
 .newDashLeft ul li a {
@@ -8671,6 +8668,7 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .newRolLRight { width: auto; padding: 15px 0px 0px 15px; float: left; width: 78%;}
 .newRolLRight ul { margin: 0px 0px; padding: 0px 0px; min-height: 400px; max-height: 680px; overflow: auto;} 
 .newRolLRight ul li { list-style-type: none; float: left; display: block; padding: 6px; width: 50%;}
+.newRolLRight.orgChartRolLRight {width: 72%;}
 #viewmoresDiv {position: absolute; top: -36px; right: 17px;}  
 .valMsgPosition { position: relative;}
 .valMsgPosition p { position: absolute; left: -15px; top: 40px;}
@@ -8700,8 +8698,111 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .appraQueInn ul { min-height: unset; max-height: unset; padding: 10px 0px 0px;}
 .appraQueInn ul li {width: 24%; color: #454545; font-weight: 400; font-size:14px; padding: 3px 6px;}
 
-.tabHide { display: none;}
-.tabHide.tabActive { display: block;}
+.assiGoalWrap {width: auto; margin: 0px 0px; padding: 0px 0px;}
+.assiGoalWrap li {
+    list-style-type: none; float: left; width: 20%; margin: 0px 0px 0px -1px; text-align: center; border: 1px solid #ededed;
+    padding: 15px;
+}
+.assiGoalWrap li img { width: 70px;}
+.assiGoalWrap li p { padding: 10px 0px 10px; font-weight: 500; font-size: 15px; color: #787878; margin: 0px;}
+.assiGoalWrap li span {padding: 0px 0px 10px; display: block; font-weight: 500; font-size: 26px; color: #337ab7;}
+.assiGoalWrap li span.inprogC {color: #e29a35;}
+.assiGoalWrap li span.compleC {color: #5cb85c;}
+.assiGoalWrap li span.overC {color: #d9534f;}
+.assiGoalWrap li span.notC {color: #5bc0de;}
+
+.assiTaskWrap {width: auto; margin: 0px 0px 20px !important; padding: 0px 0px; max-height: unset !important; min-height: unset !important;}
+.assiTaskWrap li {
+    list-style-type: none; float: left; width: 19% !important; margin: 0px 0.5%; text-align: center; border: 1px solid #ededed;
+    padding: 8px 20px !important; height: 95px !important;
+}
+.assiTaskWrap li img { width: 70px;}
+.assiTaskWrap li p { padding: 5px 0px 5px; font-weight: 400; font-size: 14px; color: #787878; margin: 0px;}
+.assiTaskWrap li span {padding: 0px 0px 10px; display: block; font-weight: 500; font-size: 26px; color: #337ab7;}
+
+.perfOrgOut {
+    position: relative; padding: 0px 0px 0px 60%;
+}
+.perfOrgWrap { width:100%; position: relative; height: 100%;}
+.perfOrgWrap h2 {
+    margin:0px 0px; font-size:15px; color:#666;  padding: 0px 20px; border-bottom: 1px solid #dedede;
+    height: 45px;
+}
+.perfOrgWrap h2 span { display: inline-block; line-height:45px;}
+.orgSlider { position:relative; z-index: 100;}
+.orgSlider h2 {
+    margin:0px 0px; font-size:15px; color:#666;  padding: 12px 20px; border-bottom: 1px solid #dedede;
+}
+.orgView {
+    display:inline-block; padding:0px 15px 0px 5px; cursor:pointer;
+}
+.orgView.orgViewAct { transform: rotate(180deg); padding:0px 5px 0px 15px;}
+
+
+.profOrgLeft { float:left; width:22%;}
+.profOrgLeft h3 { padding: 10px 20px; margin: 0px 0px; font-size: 15px; font-weight: 500; color: #666;}
+.profOrgLeft ul { padding:5px 0px; margin:0px 0px;}
+.profOrgLeft ul li { list-style-type:none; padding:2px 0px; border-bottom: 1px solid #ededed;}
+.profOrgLeft ul li a {display:block; padding:10px 20px; color:#666; font-size:15px; font-weight:500; border-left:5px solid #fff; }
+.profOrgLeft ul li a span { display:block; font-size:13px; padding:3px 0px 0px 0px; color:#787878;}
+.profOrgLeft ul li a:hover, .profOrgLeft ul li a.act {
+    border-left:5px solid #0084bf; color:#0084bf;
+}
+.profOrgDate {
+    padding:5px 10px 14px; border-bottom:1px solid #dedede;
+}
+.profOrgDate input {
+    width:40%; float: left; margin:0px 5px 0px 0px; border:1px solid #dedede; border-radius:2px; height: 30px;
+    padding:0px 10px; font-size:14px; color:#454545;
+    background-image: url(../images/calendar.png); background-repeat: no-repeat; background-size: 15px;
+    background-position: 90% center;
+}
+.profOrgDate button {
+    width:15%; float: left; margin:0px 0px; border:1px solid #dedede; border-radius:5px; height: 30px;
+    padding:0px; font-size:16px; color:#fff; background-color:#0084bf;
+}
+.profOrgRight { float:left; width:78%; border-left:1px solid #ededed; min-height: 530px; }
+
+.orgMask {
+    position: absolute; width:100%; height:100%; background-color:rgba(0,0,0,0.3); left: 0px; top: 0px; z-index: 100;
+    opacity: 1; visibility: visible; -webkit-transition:0.2s all ease-in-out; transition:0.2s all ease-in-out;
+}
+.orgMaskfade {opacity: 0; visibility: hidden;}
+.orgPop {
+    position: absolute; width:60%; height: 100%; z-index: 1000; top:0px; left: 0px; background-color:#fff;
+    border-right:3px solid #0084bf; -webkit-transition:0.3s all ease-in-out; transition:0.3s all ease-in-out;
+}
+.orgPopAct { left: -59.4%;}
+.perfOrgWrap .posiR { padding:6px 0px 0px 0px;}
+.perfOrgWrap .repSearchIcon { top:6px;}
+
+.orgArr {
+    position: absolute; right:-30px; top:45%; width:56px; height: 56px; border-radius:50%; background-color:#0084bf;
+    background-image: url(../images/arr-L.svg); background-repeat: no-repeat; background-size: 30px; background-position: center;
+    cursor: pointer; -webkit-transition:0.2s all ease-in-out; transition:0.2s all ease-in-out;
+}
+.orgPopAct .orgArr {-moz-transform: rotate(180deg); -webkit-transform: rotate(180deg); transform: rotate(180deg); background-position: 7px center;}
+.overX { overflow-x:hidden;}
+
+.clearSearch{
+position: absolute; right: 32px; top: 12px; width: 20px; height: 20px; text-align: center; line-height: 20px; color: #dc3e3e;
+cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
