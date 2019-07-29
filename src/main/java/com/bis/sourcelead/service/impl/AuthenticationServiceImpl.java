@@ -23,6 +23,7 @@ import com.bis.sourcelead.SourceleadUserDetailsService;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dto.UserDetailsDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TokenInfo;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -117,7 +118,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 					UserRole userRole;
 					try {
 						userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
-						SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", userRole.getOrgLocations());
+						OrgLocations orgLocations = userRole.getOrgLocations();
+						if(orgLocations.getTimezone() != null) {
+							orgLocations.setTimeZoneId(orgLocations.getTimezone().getId() + "");
+						}
+						SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 						Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), userRole.getOrgLocations().getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 					} catch (Exception e) {}
