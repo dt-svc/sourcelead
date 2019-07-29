@@ -2317,7 +2317,7 @@ function getSignaturePreview(){
 	
 	   $.ajax({
 			type : "POST",
-			url : atsUrl+"/getSignaturePreview?${_csrf.parameterName}=${_csrf.token}",
+			url : sourceleadUrl+"/getSignaturePreview?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				
 				$("#campaignSignatrue").html(result);
@@ -3488,7 +3488,7 @@ var validationSettings = {
 function cancelBtn(){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-	  location.replace(sourceleadUrl+"/settings/${SourceLeadWeb_orgLocationId}");
+	  location.replace(sourceleadUrl+"/settings");
 }
 
 </script>
