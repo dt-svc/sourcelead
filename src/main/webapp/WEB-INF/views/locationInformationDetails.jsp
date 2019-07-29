@@ -22,7 +22,18 @@
 
 <script type="text/javascript">
 function resetInformation(){
-	//$("informationDetails_form").validate().resetForm();
+	$('#cinDiv').find('p.jquery_form_error_message').remove();
+	$('#gstinDiv').find('p.jquery_form_error_message').remove();
+	$('#incorporationDateDiv').find('p.jquery_form_error_message').remove();
+	$('#panDiv').find('p.jquery_form_error_message').remove();
+	$('#tanDiv').find('p.jquery_form_error_message').remove();
+	$('#tdsDiv').find('p.jquery_form_error_message').remove();
+	$('#pfNumberDiv').find('p.jquery_form_error_message').remove();
+	$('#pfregistrationDateDiv').find('p.jquery_form_error_message').remove();
+	$('#esiNumberDiv').find('p.jquery_form_error_message').remove();
+	$('#esiregistrationDateDiv').find('p.jquery_form_error_message').remove();
+	$('#ptNumberDiv').find('p.jquery_form_error_message').remove();
+	$('#ptregistrationDateDiv').find('p.jquery_form_error_message').remove(); 
 }
 
 $(function(){
