@@ -39,7 +39,7 @@
 			<li><a href="${SourceLeadWeb_vmsUrl}/immigration/loadNewLCA" class="newAdBtn mr5">+ New </a></li>
 		</sec:authorize>	
 			<li>
-			    <select id="daysFilter" onchange="getDynamicLCAList()" style="padding: 3px 5px;">
+			    <select id="daysFilter" class="sel" onchange="getDynamicLCAList()" style="padding: 3px 5px;">
                    
                     <option value="All" selected >All</option>
                     <option value="7">Expires In 7 Days</option>
@@ -446,8 +446,8 @@ function deleteLcaListId(lcaUuid){ // only stauts updated with reason. active 1 
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_lca_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"	<div class='clearfix mt'></div>";
 		result = result +"		<textarea  id='reasonForLca' name='reasonForSpoc'    data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; 
-		result = result +" <b>Do you want to remove record</b>";
 		result = result + ' <div id="reasonForLcaDiv"/>';
 		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onClick='deleteLcaDetailsByRowId(\""+lcaUuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelLcaDelete();'></b>";
 		result = result +"	</div>";
