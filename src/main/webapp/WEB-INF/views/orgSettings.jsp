@@ -2281,10 +2281,11 @@ var validationSettings = {
 		scrollToTopOnError : true,
 		dateFormat : 'yyyy/mm/dd' 
    };  
+   
          $('body').on('submit', '#signature_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
+        		  var sourceleadUrl = '${sourceleadUrl}';
         		    e.preventDefault(); 
-        		    var atsUrl = '${SourceLeadWeb_atsUrl}';
         			var frm = $('#signature_form').serializeFormJSON();
         			var con = JSON.stringify(frm);
         			con = con.replace(/[{}]/g, ""); 
@@ -2293,7 +2294,7 @@ var validationSettings = {
 	           		
         		     $.ajax({
         				type : "POST",
-        				url : atsUrl+"/saveOrgSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+        				url : sourceleadUrl+"/saveOrgSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
         				success : function(result) {
         					loadSignature();
         				},
