@@ -92,6 +92,14 @@ function editCandidate(candidateId){
             			 		designationOtherType = '';  
             			 	 }
             			 	
+            			 	
+            			 	var otherNoticePeriod = '';
+            			 	if(json.otherNoticePeriod != null && json.otherNoticePeriod != '' && json.otherNoticePeriod != 'undefined'){
+            			 		otherNoticePeriod = json.otherNoticePeriod;            			 		
+            			 	}else{
+            			 		otherNoticePeriod = '';  
+            			 	 }
+            			 	
             			 	var summary = '';
             			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
             			 		summary = json.summary;            			 		
@@ -376,18 +384,24 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
+							result = result + '<select class="form-control" id="noticePeriodEdit" name="noticePeriod" field-name="Notice Period" onchange="updateOtherNoticePeriod();">';
 							result = result + '<option value="">--Select Notice Period--</option>';
 							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
 							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
 							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
 							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'>2 Months</option>';
 							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'>3 Months</option>';
+							result = result + '<option  '+(json.noticePeriod == "Other" ? "selected" : '') +'>Other</option>';
 							result = result + ' </select>';
 							result = result + ' </div>';
 							
+							
+                             
+							
+							result = result + '<div class="col-md-6 noticePeriodUpdateDiv" id="noticePeriodUpdateDiv" style="display:none">';
+							result = result + '<input type="text" class="form-control input-sm" name="otherNoticePeriod"  id="otherNoticePeriodEdit" value="'+otherNoticePeriod+'" placeholder=" Notice Period Other" field-name="Other Notice Period" data-validation="validate_Space validate_length length1-150" data-validation-optional="true">';
 							result = result + '</div>';
-
+							result = result + '</div>';
 							
 							result = result + '<div class="clearfix mb">';
 							result = result + '<div class="col-md-6">';
@@ -572,8 +586,10 @@ function editCandidate(candidateId){
 							result = result + '<label class="text-muted fontSmall">Source</label>';
 							result = result + '<select class="form-control valid width100percnt" name="candidateSource" field-name="Source" id="candidateSource" data-validation="validate_Space" data-validation-optional="true">';
 							var candidateSourceList = json.candidateSourceList;
+							result = result + '<option value="select source" >--Select Source--</option>';
 							for(var e in candidateSourceList) {
-								result = result + '<option value="'+candidateSourceList[e].id+'" '+(candidateSourceList[e].id == json.candidateSource ? "selected" : "")+'>'+ candidateSourceList[e].name +'</option>';
+								
+								result = result + '<option value="'+candidateSourceList[e].id+'" '+(candidateSourceList[e].id == json.candidateSource ? "selected" : " ")+'>'+ candidateSourceList[e].name +'</option>';
 							}
 							result = result + '</select>';
 							
@@ -604,6 +620,10 @@ function editCandidate(candidateId){
 							
 							if(json.designationType == "Other"){
 								$("#designationTypeDiv").show();
+						      }
+							
+							if(json.noticePeriod == "Other"){
+								$("#noticePeriodUpdateDiv").show();
 						      }
 							employementType();
 							getVendorsByOrgLocation();
@@ -926,7 +946,7 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 									   if(isAssociate != "Y"){
 										   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
-										   result = result + ' <a href="javascript:void(0)" onClick="deleteCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Delete</a>';
+										   //result = result + ' <a href="javascript:void(0)" onClick="deleteCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Delete</a>';
 									   }
 									   '</sec:authorize>';
 								   } else {
@@ -1792,6 +1812,30 @@ function updateDesignationOtherType(){
 	} 
 }
 </script>
+
+<!-- Notice Period Type Other Script written By Prasad K-->
+
+<script>
+function updateOtherNoticePeriod(){
+	 var noticePeriod = $('#noticePeriodEdit').val(); 
+	 var editVal = $('#otherNoticePeriodEdit').val();
+	/* if(editVal != null && editVal != '' && editVal != 'undefined'){
+		 document.getElementById("noticePeriodUpdateDiv").style.display="block";
+		  $("#otherNoticePeriodEdit").attr("data-validation-optional", "true");
+		  $("#otherNoticePeriodEdit").attr("data-validation", "validate_Space validate_length length1-150");
+	} */
+	if(noticePeriod == 'Other' &&  noticePeriod != '' && noticePeriod !='undefined'){
+		  document.getElementById("noticePeriodUpdateDiv").style.display="block";
+		  $('#otherNoticePeriodEdit').removeAttr('data-validation-optional');
+          $("#otherNoticePeriodEdit").attr("data-validation", "validate_Space required validate_length length1-150");
+	}else{
+		   document.getElementById("noticePeriodUpdateDiv").style.display="none";
+		  $("#otherNoticePeriodEdit").attr("data-validation-optional", "true");
+		  $("#noticePeriodUpdateDiv").find('p.jquery_form_error_message').remove();
+	} 
+}
+</script>
+
 
 
 <!-- Candidate Email validation script starts here -->

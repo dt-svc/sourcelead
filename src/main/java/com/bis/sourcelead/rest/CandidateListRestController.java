@@ -811,21 +811,6 @@ public class CandidateListRestController {
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("tags", keywd));
 
-		Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
-		if (matcher.find()) {
-			Float expYears = Float.valueOf(matcher.group());
-			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceYears", expYears));
-			// QueryBuilderList.add(QueryBuilders.matchPhraseQuery("experienceMonths",
-			// keywd));
-			String mobileKeywd = matcher.group().replaceAll("[+91]", "");
-			QueryBuilderList.add(QueryBuilders.matchQuery("alternateMobilePhone", mobileKeywd));
-			QueryBuilderList.add(QueryBuilders.matchQuery("mobilePhone", mobileKeywd));
-		}
-		if (StringUtils.isNumeric(keywd)) {
-			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("currentRate", keywd));
-			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("expectedRate", keywd));
-		}
-
 		return QueryBuilderList;
 	}
 	
@@ -1023,6 +1008,10 @@ public class CandidateListRestController {
 				candidateDTO.setCurrentRate(can.getCurrentRate());
 				candidateDTO.setEmail(can.getEmail());
 				candidateDTO.setNoticePeriod(can.getNoticePeriod());
+				
+				if(can.getOtherNoticePeriod() != null) {
+				candidateDTO.setOtherNoticePeriod(can.getOtherNoticePeriod());
+				}
 				candidateDTO.setDesignation(can.getDesignation());
 				candidateDTO.setPrimarySkill(can.getPrimarySkill());
 				candidateDTO.setAddress(can.getAddress());
@@ -1036,10 +1025,11 @@ public class CandidateListRestController {
 				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
 				
+				List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),1);
+				candidateDTO.setCandidateSourceList(candidateSourceList);
+				
 				if(null != can.getCandidateSource()) {
 					candidateDTO.setCandidateSource(can.getCandidateSource());
-					List<CandidateSourceDTO> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationId(loginOrgLocation.getId(), 1, null, null);
-					candidateDTO.setCandidateSourceList(candidateSourceList);
 				}
 				
 				if(can.getPanNumber() != null) {
