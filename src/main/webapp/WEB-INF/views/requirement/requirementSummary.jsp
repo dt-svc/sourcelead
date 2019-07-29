@@ -1840,15 +1840,17 @@ function clientSideBar(candidateId,recScore){
 	              		       }
 				            
 				             
-				              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
-				                    	 
-				             result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
-				             
-	             		       }else{
-	             		                                                	  
-	                   		     result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
-	             		     
-	             		       }
+				              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined' && json.noticePeriod != 'Other'){
+			                    	 
+					               result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
+					             
+		             		       }else if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined' && json.noticePeriod == 'Other'){
+		             		                                                	  
+		                   		     result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+"---"+json.otherNoticePeriod+'</span></li>';  
+		             		     
+		             		       }else{
+		             		    	  result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';    
+		             		       }
 				              result = result+'</ul>';
 				              result = result+'<div class="clearfix"></div>';
 				              result = result+'<div class="clearfix">';
@@ -2614,7 +2616,7 @@ function customizeScore(requirementId){
 			        result = result +'		                    <div class="col-md-3 paddingRight lblup ">   ';
 			        result = result +'		                   <label>Choose City</label>';
 			        result = result +'                              <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">';
-			        result = result +'                              <i class="fa fa-refresh btn btn-primary refresh-icon mr2 ref-top" title="Refresh" onClick="refreshGoogleApiCity(\''+apiLocation+'\');"></i>';
+			        result = result +'                              <i class="fa fa-refresh btn btn-primary refresh-icon mr2" title="Refresh" onClick="refreshGoogleApiCity(\''+apiLocation+'\');"></i>';
 			        result = result +'		                  </div>  ';
 			        
 			        result = result +'		                  <div class="col-md-7 paddingRight lblup"> ';   

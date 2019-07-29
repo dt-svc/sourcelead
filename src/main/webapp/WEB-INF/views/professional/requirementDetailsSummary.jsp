@@ -104,7 +104,7 @@ function publicRequirementProfile(requirementUUID){
 	var referUUID = '${referUUID}';
 	$.ajax({
 	   	type: "GET",
-	    url: atsUrl+"/ws/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&contactUUID="+contactUUID, 	   
+	    url: atsUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID+"&referUUID="+referUUID, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var result = "";
