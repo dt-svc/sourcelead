@@ -170,6 +170,99 @@ function PerformanceManagement(){
 		});
 	
 	
+	this.validateFeedbackTemplateName = function(){
+		var templateName = document.getElementById("templateName").value.trim(); 
+		var templateId = $("#templateId").val();
+		if(templateId == 'undefined' || templateId == null){
+			templateId = '';
+		}
+		
+		if(templateName != null && templateName != '' && templateName != 'undefined'){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/validateFeedbackTemplateName?templateName="+templateName+"&templateId="+templateId,
+		        success: function(result) {
+		        	if (result == 'invalid') {
+		        		$("#template_save_button").attr("disabled", "disabled");
+		        		$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#templateName").after( "<p class='jquery_form_error_message'>" + templateName + " is Already Existed</span>");
+						document.getElementById("templateName").setAttribute( 'record-exist', 'yes');
+						document.getElementById("templateName").setAttribute( 'record-exist-errorMsg', templateName +"  already existed");
+		        	}else{
+		        		$('input#templateName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#templateName').attr('class','valid form-control');
+						$('#templateNameDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#template_save_button").removeAttr("disabled")
+		        	}
+		        }
+			 });
+		}
+	}	
+	
+	
+	
+	this.validateAppraisalTemplateName = function(){
+		var appraisalName = document.getElementById("appraisalName").value.trim(); 
+		var appraisalTemplateId = $("#appraisalTemplateId").val();
+		if(appraisalTemplateId == 'undefined' || appraisalTemplateId == null){
+			appraisalTemplateId = '';
+		}
+		
+		if(appraisalName != null && appraisalName != '' && appraisalName != 'undefined'){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/validateAppraisalTemplateName?appraisalName="+appraisalName+"&appraisalTemplateId="+appraisalTemplateId,
+		        success: function(result) {
+		        	if (result == 'invalid') {
+		        		$("#savePerformanceBudget").attr("disabled", "disabled");
+		        		$('#appraisalNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#appraisalName").after( "<p class='jquery_form_error_message'>" + appraisalName + " is Already Existed</span>");
+						document.getElementById("appraisalName").setAttribute( 'record-exist', 'yes');
+						document.getElementById("appraisalName").setAttribute( 'record-exist-errorMsg', appraisalName +"  already existed");
+		        	}else{
+		        		$('input#appraisalName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#appraisalName').attr('class','valid form-control');
+						$('#appraisalNameDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#savePerformanceBudget").removeAttr("disabled")
+		        	}
+		        }
+			 });
+		}
+	}
+	
+	
+	
+	this.validatePerformanceBadgeName = function(){
+		var badgeName = document.getElementById("badgeName").value.trim(); 
+		var badgeId = $("#badgeId").val();
+		if(badgeId == 'undefined' || badgeId == null){
+			badgeId = '';
+		}
+		
+		if(badgeName != null && badgeName != '' && badgeName != 'undefined'){
+			$.ajax({
+		    	type: "GET",
+		    	 url: sourceleadUrl+"/validatePerformanceBadgeName?badgeName="+badgeName+"&badgeId="+badgeId,
+		        success: function(result) {
+		        	if (result == 'invalid') {
+		        		$("#savePerformanceBadge").attr("disabled", "disabled");
+		        		$('#badgeNameDiv').find('p.jquery_form_error_message').remove();
+		        		$("input#badgeName").after( "<p class='jquery_form_error_message'>" + badgeName + " is Already Existed</span>");
+						document.getElementById("badgeName").setAttribute( 'record-exist', 'yes');
+						document.getElementById("badgeName").setAttribute( 'record-exist-errorMsg', badgeName +"  already existed");
+		        	}else{
+		        		$('input#badgeName').removeAttr("class record-exist record-exist-errormsg");
+						$('input#badgeName').attr('class','valid form-control');
+						$('#badgeNameDiv').find('p.jquery_form_error_message').remove();
+						
+		        		$("#savePerformanceBadge").removeAttr("disabled")
+		        	}
+		        }
+			 });
+		}
+	}
 	
 
 	this.validateRatingLevelName = function(){
@@ -364,7 +457,7 @@ function PerformanceManagement(){
     			
     }
     
-    this.addNewAppraisalCycle = function(templateId){
+    this.addNewAppraisalCycle = function(templateUUId){
     	$.ajax({
   		  type: "GET",
   		    url: sourceleadUrl+"/addNewAppraisalCycle",
@@ -372,11 +465,11 @@ function PerformanceManagement(){
   		    	    $("#performanceManagementDiv").empty();  
   		    	    $("#performanceManagementDiv").append(response);
   		    	    
-  		    	    if(templateId != null && templateId != '' && templateId != 'undefined'){
-  		    	    	 performanceManagement.editAppraisalCycle(templateId);
+  		    	    if(templateUUId != null && templateUUId != '' && templateUUId != 'undefined'){
+  		    	    	 performanceManagement.editAppraisalCycle(templateUUId);
   		    	    }
   		    	   
-  		    	   if(templateId == null || templateId == '' || templateId == 'undefined'){
+  		    	   if(templateUUId == null || templateUUId == '' || templateUUId == 'undefined'){
   		    		performanceManagement.departmentsList();
   		    		performanceManagement.rolesList();
   		    		performanceManagement.employeeTypeList();
@@ -402,6 +495,19 @@ function PerformanceManagement(){
   			}); 
     }
     
+    
+    this.viewAppraisalTemplate = function(templateUUId){
+    	$.ajax({
+  		  type: "GET",
+  		    url: sourceleadUrl+"/getPerformanceAppraisalTemplateDetails",
+  		     success :function(response) {
+  		    	    $("#performanceManagementDiv").empty();  
+  		    	    $("#performanceManagementDiv").append(response);
+  		    	    performanceManagement.appraisalTemplateDetails(templateUUId);
+  				},
+  			}); 
+    }
+    
     this.assignAppraisalCycle = function(uuid){
     	$.ajax({
   		  type: "GET",
@@ -412,6 +518,18 @@ function PerformanceManagement(){
   		    	    getAppraisalAssignToList(uuid);
   				},
   			}); 
+    }
+    
+    this.templateAssignedAssociates = function(uuid){
+    	$.ajax({
+    		  type: "GET",
+    		    url: sourceleadUrl+"/getTemplateAssignedAssociatesList?uuid="+uuid,
+    		     success :function(response) {
+    		    	    $("#performanceManagementDiv").empty();  
+    		    	    $("#performanceManagementDiv").append(response);
+    		    	    getAppraisalAssignedAssociatesList(uuid);
+    				},
+    			}); 
     }
 
 
@@ -943,7 +1061,6 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  minDate:0,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -961,7 +1078,6 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  minDate:0,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '-1d');
 					dt.setDate(dt.getDate() - 1);
@@ -971,13 +1087,20 @@ function PerformanceManagement(){
 			  });
 		  });
 	   
-	   
+  }
+  
+  this.getProcessPeriodCalendars = function(){
+	  
+	    var appraisalStartDate = $('#appraisalStartDate').val();
+		var appraisalEndDate =   $('#appraisalEndDate').val();
+		var finalDateFormat = getJSDateFormat(locationDateFormat);
 		$(function() {
 			  $('#appraisalProcessStartDate').datepicker({
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  minDate:0,
+			      minDate : appraisalStartDate,
+				  maxDate : appraisalEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -995,7 +1118,8 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  minDate:0,
+			  	  minDate : appraisalStartDate,
+				  maxDate : appraisalEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '-1d');
 					dt.setDate(dt.getDate() - 1);
@@ -1005,14 +1129,20 @@ function PerformanceManagement(){
 			  });
 	  });
 	   
-	   
-	   
+  }   
+	this.getAppraisalTypesCalendars = function(){  
+		
+		    var appraisalProcessStartDate = $('#appraisalProcessStartDate').val();
+			var appraisalProcessEndDate =   $('#appraisalProcessEndDate').val();
+			var finalDateFormat = getJSDateFormat(locationDateFormat);
+			
 	    $(function() {
 			  $('#selfAppraisalStartDate').datepicker({
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  minDate:0,
+			  	  minDate : appraisalProcessStartDate,
+				  maxDate : appraisalProcessEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -1030,7 +1160,8 @@ function PerformanceManagement(){
 					      dateFormat: finalDateFormat,
 					      changeMonth: true,
 					  	  changeYear: true, 
-					  	  minDate:0,
+					  	  minDate : appraisalProcessStartDate,
+						  maxDate : appraisalProcessEndDate,
 					  	  onSelect : function(selected) {
 					  		var dt = $(this).datepicker('getDate', '-1d');
 							dt.setDate(dt.getDate() - 1);
@@ -1047,7 +1178,8 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  minDate:0,
+			  	  minDate : appraisalProcessStartDate,
+				  maxDate : appraisalProcessEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -1065,7 +1197,8 @@ function PerformanceManagement(){
 				      dateFormat: finalDateFormat,
 				      changeMonth: true,
 				  	  changeYear: true, 
-				  	  minDate:0,
+				  	  minDate : appraisalProcessStartDate,
+					  maxDate : appraisalProcessEndDate,
 				  	  onSelect : function(selected) {
 				  		var dt = $(this).datepicker('getDate', '-1d');
 						dt.setDate(dt.getDate() - 1);
@@ -1081,7 +1214,8 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  minDate:0,
+			  	  minDate : appraisalProcessStartDate,
+				  maxDate : appraisalProcessEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -1099,7 +1233,8 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  minDate:0,
+			  	  minDate : appraisalProcessStartDate,
+				  maxDate : appraisalProcessEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '-1d');
 					dt.setDate(dt.getDate() - 1);
@@ -1115,7 +1250,8 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  minDate:0,
+			  	  minDate : appraisalProcessStartDate,
+				  maxDate : appraisalProcessEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate() + 1);
@@ -1133,7 +1269,8 @@ function PerformanceManagement(){
 			      dateFormat: finalDateFormat,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  minDate:0,
+			  	  minDate : appraisalProcessStartDate,
+				  maxDate : appraisalProcessEndDate,
 			  	  onSelect : function(selected) {
 			  		var dt = $(this).datepicker('getDate', '-1d');
 					dt.setDate(dt.getDate() - 1);
@@ -1407,7 +1544,7 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 	        },
 	    });
   }
-  
+
   
   $(document).on('change', '#comptencyCategories', function(evt, params) {
 		if (params.selected != undefined) {
@@ -1625,10 +1762,14 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 			 $('#percentageDiv'+id).find('p.jquery_form_error_message').remove(); 
 			 $('input#percentageValidation'+id).removeAttr( "class record-exist record-exist-errormsg");
 			 $('#percentageDiv'+id).find('p.jquery_form_error_message').remove();
+			 performanceManagement.validateCategoryPercentageTotalSumValue();
 		 }
+		 
   }
   
   this.validatePercentageTotalSumValue = function(){
+	  
+	  
 	  var percentage = 0;
 	  $(".multiTemplates").each(function() {	
 		  percentage = Number(percentage)+Number($("#percent"+$(this).data("template_id")).val());
@@ -1647,10 +1788,10 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 			 percentage = Number(percentage)+Number(projectTasksWeightage);
 			
 		}
-		
 	 $(".multiCompetencies").each(function() {	
 		  percentage = Number(percentage)+Number($("#competenciesPercent"+$(this).data("template_id")).val());
 	  });
+	 
 	  
 	  if(percentage > 100){
 		    $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
@@ -1658,6 +1799,13 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 		    $('#percentTotalSum').after("<p class='jquery_form_error_message'>Total percentage should not more than 100</p>");
 		    $('#percentTotalSum').attr('record-exist','yes');
 		    $('#percentTotalSum').attr('record-exist-errorMsg','Total percentage should not more than 100'); 
+		    $("#savePerformanceBudget").attr("disabled", "disabled");
+	  }else if(percentage < 100){
+		    $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
+		    $('#percentTotalSum').attr('class','error signin_fild');
+		    $('#percentTotalSum').after("<p class='jquery_form_error_message'>Total percentage should equal 100</p>");
+		    $('#percentTotalSum').attr('record-exist','yes');
+		    $('#percentTotalSum').attr('record-exist-errorMsg','Total percentage should equal 100'); 
 		    $("#savePerformanceBudget").attr("disabled", "disabled");
 	  }else{
 		     $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
@@ -1983,12 +2131,239 @@ this.enableResourceManagerAppraisalPeriod = function(){
   }
   
   
-  this.editAppraisalCycle = function(templateId){
+  this.appraisalTemplateDetails = function(templateUUId){
+	  $("#appraisalDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  
+	  $.ajax({
+		  type: "GET",
+		    url: sourceleadUrl+"/getAppraisalCycleTemplateDetailsById?templateUUId="+templateUUId,
+		     success :function(response) {
+		    	 
+		    		if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+     	    		    showError(response.responseMessage);
+     	    		    $("#appraisalDetailsLoading").removeAttr('style');
+     	    		}
+		        	else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		 $("#appraisalName").html(response.object.name);
+		        		 $("#appraisalStartDate").html(response.object.appraisalStartDate);
+		        		 $("#appraisalEndDate").html(response.object.appraisalEndDate);
+		        		 
+		        		 if(response.object.appraisalDepartment != null && response.object.appraisalDepartment != 'undefined' && response.object.appraisalDepartment != ''){
+		        			 performanceManagement.appraisalDepartmentsList(response.object.appraisalDepartment);
+		        		 }
+		        		
+		        		 
+		        		 if(response.object.appraisalRoles != null && response.object.appraisalRoles != 'undefined' && response.object.appraisalRoles != ''){
+		        			 performanceManagement.appraisalRolesList(response.object.appraisalRoles);
+		        		 }
+		        		
+		        		 
+		        		 if(response.object.appraisalEmpType != null && response.object.appraisalEmpType != 'undefined' && response.object.appraisalEmpType != ''){
+		        			 performanceManagement.appraisalEmployeeTypeList(response.object.appraisalEmpType);
+		        		 }
+		        		 
+		        		 if(response.object.descriptionDisplay != null 
+		        				 && response.object.descriptionDisplay != ''
+		        					 && response.object.descriptionDisplay != 'undefined'){
+		        			 $("#descriptionDisplay").html("Yes");
+		        			 
+		        		 }else{
+		        			 $("#descriptionDisplay").html("No");
+		        		 }
+		        		 
+		        		 if(response.object.description != null 
+		        				 && response.object.description != ''
+		        					 && response.object.description != 'undefined'){
+		        			 
+		        			 $("#appraisalDescription").html(response.object.description);
+		        		 }
+		        		 
+		        		 if(response.object.appraisalProcessStartDate != null 
+		        				 && response.object.appraisalProcessStartDate != ''
+		        					 && response.object.appraisalProcessStartDate != 'undefined'){
+		        			 $("#appraisalProcessStartDate").html(response.object.appraisalProcessStartDate);
+		        			 $("#appraisalProcessEndDate").html(response.object.appraisalProcessEndDate);
+		        		 }
+		        		 
+		        		 if(response.object.selfAppraisalStartDate != null 
+		        				 && response.object.selfAppraisalStartDate != ''
+		        					 && response.object.selfAppraisalStartDate != 'undefined'){
+		        			 $("#selfAppraisalStartDate").html(response.object.selfAppraisalStartDate);
+		        			 $("#selfAppraisalEndDate").html(response.object.selfAppraisalEndDate);
+		        		 }
+		        		 
+		        		 if(response.object.peerReviewStartDate != null 
+		        				 && response.object.peerReviewStartDate != ''
+		        					 && response.object.peerReviewStartDate != 'undefined'){
+		        			 $("#peerReviewStartDate").html(response.object.peerReviewStartDate);
+		        			 $("#peerReviewEndDate").html(response.object.peerReviewEndDate);
+		        		 }
+		        		
+		        		 if(response.object.resourceManagerReviewStartDate != null 
+		        				 && response.object.resourceManagerReviewStartDate != ''
+		        					 && response.object.resourceManagerReviewStartDate != 'undefined'){
+		        			 $("#resourceManagerReviewStartDate").html(response.object.resourceManagerReviewStartDate);
+		        			 $("#resourceManagerReviewEndDate").html(response.object.resourceManagerReviewEndDate);
+		        		 }
+		        		 
+		        		 if(response.object.appraisalApprovingStartDate != null 
+		        				 && response.object.appraisalApprovingStartDate != ''
+		        					 && response.object.appraisalApprovingStartDate != 'undefined'){
+		        			 $("#reportingManagerReviewStartDate").html(response.object.appraisalApprovingStartDate);
+		        			 $("#reportingManagerReviewEndDate").html(response.object.appraisalApprovingEndDate);
+		        		 }
+		        		 
+		        		 var percentageMap = new Map();
+		        		 var selfPercentageMap = new Map();
+		        		 var peerPercentageMap = new Map();
+		        		 var resourceMgrPercentageMap = new Map();
+		        		 var reportingMgrPercentageMap = new Map();
+		        		 var selfPercentage = 0;
+		        		 var peerPercentage = 0;
+		        		 var reportingMgrPercentage = 0;
+		        		 var resourceMgrPercentage = 0;
+		        		 var competenciesPercentageMap = new Map();
+		        		 if(response.object.jsonCategoriesString != null 
+		        				 && response.object.jsonCategoriesString != '' 
+		        					 && response.object.jsonCategoriesString != 'undefined'){
+		        			var data = eval(response.object.jsonCategoriesString);
+		        			
+			        		 if (data) {
+			        			  $.each( data, function( k, v ) {
+			        				  
+			        				  if(v['type'] == "feedbackTemplate"){
+			        					  percentageMap.set(v['templateId'],v['percentage'])
+			        				   	  
+			        				   	  if(v['self'] != 'undefined'){
+			        				   		selfPercentageMap.set(v['templateId'],v['self']);
+			        				   	  }
+			        				   	  
+			        				   	 if(v['peer'] != 'undefined'){
+			        				   		peerPercentageMap.set(v['templateId'],v['peer']);
+				        				   	  }
+			        				   	 
+			        				   	 if(v['resourceManager'] != 'undefined'){
+			        				   		resourceMgrPercentageMap.set(v['templateId'],v['resourceManager']);
+				        				   	  }
+			        				   	 
+			        				   	 if(v['reportingManager'] != 'undefined'){
+			        				   		reportingMgrPercentageMap.set(v['templateId'],v['reportingManager']);
+				        				   	  }
+			        				   	
+			        				  }
+			        				  
+			        				  if(v['type'] == "goalsWeightage"){
+						        			  $("#appraisalGoalsWeightage").html(v['weightage']) 
+			        				  }
+			        				  
+			        				  if(v['type'] == "projectTasksWeightage"){
+						        			  $("#appraisalTasksWeightage").html(v['weightage']) 
+			        				  }
+			        				  
+			        				  if(v['type'] == "competencies"){
+			        					  competenciesPercentageMap.set(v['competenciesId'],v['percentage'])
+			        				   	
+			        				  }
+			        			  });
+			        		 }
+		        		}
+		        		
+		        		 if(percentageMap.size > 0){
+		        			 performanceManagement.appraisalFeebackCategoriesDetails(response.object.appraisalCategories,percentageMap,selfPercentageMap,peerPercentageMap,resourceMgrPercentageMap,reportingMgrPercentageMap);
+		        		 }
+		        		
+	        			  if(competenciesPercentageMap.size > 0){
+		        			 performanceManagement.appraisalCompetenciesDetails(response.object.comptencyCategories,competenciesPercentageMap);
+		        		 }
+		        		
+		        		 
+		        		 $("#appraisalDetailsLoading").removeAttr('style');
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
+		    	  
+				},
+			});
+  }
+  
+  
+  
+  this.appraisalDepartmentsList = function(departmentIds){
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getDepartmentsListForPerformanceAppraisal", 
+	        success: function(json) {
+	        	var departments = '';
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		var deptIds = departmentIds.split(",");
+	        			if (deptIds.indexOf(opt.deptId.toString()) > -1) {
+	        				departments = departments + opt.departmentName+", ";
+	        			}
+		        		
+		        		
+				}
+		        $('#appraisalDepartments').html(departments.substring(0, departments.length - 2));
+	        },
+	    });
+  }
+  
+  this.appraisalRolesList = function(rolesIds){
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getRolesListForPerformanceAppraisal", 
+	        success: function(json) {
+	        	var roles = '';
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		var userRoleIds = rolesIds.split(",");
+	        			if (userRoleIds.indexOf(opt.rolesId.toString()) > -1) {
+	        				roles = roles + opt.displayName+", ";
+	        				
+	        			}
+		        		
+		        		
+				}
+	        	$('#appraisalRoles').html(roles.substring(0, roles.length - 2));
+	        },
+	    });
+  }
+  
+  
+  this.appraisalEmployeeTypeList = function(employeeTypes){
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getEmployeeTypesForPerformanceAppraisal", 
+	        success: function(json) {
+	        	var employeeType = ''
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var empType = json[i];
+		        		var employeeType = employeeTypes.split(", ");
+	        			if (employeeType.indexOf(empType.toString()) > -2) {
+	        				employeeType = employeeType + empType+",";
+	        			}
+		        		
+		        		
+				}
+	        	$('appraisalEmlployeeType').html(employeeType.substring(0, employeeType.length - 1));
+	        },
+	    });
+  }
+  
+  
+  this.editAppraisalCycle = function(templateUUId){
 	  
  	  $("#appraisalDetailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			  type: "GET",
-			    url: sourceleadUrl+"/getAppraisalCycleTemplateDetailsById?templateId="+templateId,
+			    url: sourceleadUrl+"/getAppraisalCycleTemplateDetailsById?templateUUId="+templateUUId,
 			     success :function(response) {
 			    	 
 			    		if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
@@ -2114,6 +2489,10 @@ this.enableResourceManagerAppraisalPeriod = function(){
 			        		 performanceManagement.rolesList(response.object.appraisalRoles);
 			        		 performanceManagement.employeeTypeList(response.object.appraisalEmpType);
 			        		 var percentageMap = new Map();
+			        		 var selfPercentageMap = new Map();
+			        		 var peerPercentageMap = new Map();
+			        		 var resourceMgrPercentageMap = new Map();
+			        		 var reportingMgrPercentageMap = new Map();
 			        		 var selfPercentage = 0;
 			        		 var peerPercentage = 0;
 			        		 var reportingMgrPercentage = 0;
@@ -2135,19 +2514,19 @@ this.enableResourceManagerAppraisalPeriod = function(){
 				        				   	  $('#appraisalCategories').removeAttr('data-validation-optional');
 				        				   	  
 				        				   	  if(v['self'] != 'undefined'){
-				        				   		selfPercentage = v['self'];
+				        				   		selfPercentageMap.set(v['templateId'],v['self']);
 				        				   	  }
 				        				   	  
 				        				   	 if(v['peer'] != 'undefined'){
-				        				   		peerPercentage = v['peer'];
+				        				   		peerPercentageMap.set(v['templateId'],v['peer']);
 					        				   	  }
 				        				   	 
 				        				   	 if(v['resourceManager'] != 'undefined'){
-				        				   		resourceMgrPercentage = v['resourceManager'];
+				        				   		resourceMgrPercentageMap.set(v['templateId'],v['resourceManager']);
 					        				   	  }
 				        				   	 
 				        				   	 if(v['reportingManager'] != 'undefined'){
-				        				   		reportingMgrPercentage = v['reportingManager'];
+				        				   		reportingMgrPercentageMap.set(v['templateId'],v['reportingManager']);
 					        				   	  }
 				        				   	
 				        				  }
@@ -2185,7 +2564,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
 			        		}
 			        		 
 			        		 if(percentageMap.size > 0){
-			        			 performanceManagement.feedbackCategoriesList(response.object.appraisalCategories,percentageMap,selfPercentage,peerPercentage,resourceMgrPercentage,reportingMgrPercentage);
+			        			 performanceManagement.feedbackCategoriesList(response.object.appraisalCategories,percentageMap,selfPercentageMap,peerPercentageMap,resourceMgrPercentageMap,reportingMgrPercentageMap);
 			        		 }else{
 			        			 performanceManagement.feedbackCategoriesList();
 			        		 }
@@ -2327,8 +2706,72 @@ this.enableResourceManagerAppraisalPeriod = function(){
 	    });
   }
   
+ 
+  this.appraisalFeebackCategoriesDetails = function(categoriesIds,percentageMap,selfPercentageMap,peerPercentageMap,resourceMgrPercentageMap,reportingMgrPercentageMap){
+	  $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getFeedBackCategoriesListForPerformanceAppraisal", 
+	        success: function(json) {
+	        	var output = "";
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		var categIds = categoriesIds.split(",");
+	        			if (categIds.indexOf(opt.templateId.toString()) > -1) {
+        					output = output + '<span class="clearfix mt"><strong>'+opt.templateName+'</strong></span>';	
+        					output = output + '<div class="clearfix mt10"></div>';
+	        				if(typeof selfPercentageMap.get(opt.templateId) != "undefined"){
+	        					output = output + '<span class="clearfix mt">Self : <span>'+selfPercentageMap.get(opt.templateId);
+	        				}
+	        				if(typeof peerPercentageMap.get(opt.templateId) != "undefined"){
+	        					output = output + '<span class="clearfix mt">Peer : <span>'+peerPercentageMap.get(opt.templateId);
+	        				}
+	        				if(typeof resourceMgrPercentageMap.get(opt.templateId) != "undefined"){
+	        					output = output + '<span class="clearfix mt">Resource Manager : <span>'+resourceMgrPercentageMap.get(opt.templateId);
+	        				}
+	        				if(typeof reportingMgrPercentageMap.get(opt.templateId) != "undefined"){
+	        					output = output + '<span class="clearfix mt">Reporting Manager : <span>'+reportingMgrPercentageMap.get(opt.templateId);
+	        				}
+	        				output = output + '<div class="clearfix mt10"></div>';	
+	        				
+	        			}
+		        		
+		        		
+				}
+		        $('#appraisalFeedbackCategories').html(output);
+	        },
+	    });
+	  
+  }
   
-  this.feedbackCategoriesList = function(categoriesIds,percentageMap,selfPercentage,peerPercentage,resourceMgrPercentage,reportingMgrPercentage){
+  
+
+  this.appraisalCompetenciesDetails = function(categoriesIds,percentageMap){
+  	  $.ajax({
+  	    	type: "GET",
+  	        url: sourceleadUrl+"/getPerformanceCompetenceListForTagging", 
+  	        success: function(json) {
+  	        	var output = "";
+  	        	for (var i=0; i<json.length; i++)
+  				{
+  		        		var opt = json[i];
+  		        		var categIds = categoriesIds.split(",");
+  	        			if (categIds.indexOf(opt.id.toString()) > -1) {
+  	        				output = output + '<span class="clearfix mt"><strong>'+opt.name+'</strong></span>';	
+        					output = output + '<div class="clearfix mt10"></div>';
+        					output = output + '<span class="clearfix mt">Percentage : <span>'+percentageMap.get(opt.id);
+        					
+  	        			}
+  		        		
+  		        		
+  				}
+  		        $('#appraisalPerformanceCompetencies').html(output);
+  	        },
+  	    });
+  }
+    
+  
+  this.feedbackCategoriesList = function(categoriesIds,percentageMap,selfPercentageMap,peerPercentageMap,resourceMgrPercentageMap,reportingMgrPercentageMap){
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getFeedBackCategoriesListForPerformanceAppraisal", 
@@ -2340,7 +2783,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
 		        		if(categoriesIds != null && categoriesIds != '' && categoriesIds != 'undefined'){
 		        			var categIds = categoriesIds.split(",");
 		        			if (categIds.indexOf(opt.templateId.toString()) > -1) {
-		        				performanceManagement.editSelectedTemplateRows(opt.templateId,opt.templateName,percentageMap.get(opt.templateId),selfPercentage,peerPercentage,resourceMgrPercentage,reportingMgrPercentage);
+		        				performanceManagement.editSelectedTemplateRows(opt.templateId,opt.templateName,percentageMap.get(opt.templateId),selfPercentageMap.get(opt.templateId),peerPercentageMap.get(opt.templateId),resourceMgrPercentageMap.get(opt.templateId),reportingMgrPercentageMap.get(opt.templateId));
 		        				output = output + "<option value='" +opt.templateId+ "' selected>"+opt.templateName+"</option>";
 		        			}else{
 		        				output = output + "<option value='" +opt.templateId+ "'>"+opt.templateName+"</option>";
@@ -2366,24 +2809,34 @@ this.enableResourceManagerAppraisalPeriod = function(){
 		var reportingMngText = "";
 		var resMngText = "";
 		
-		var isSelfChecked = $("#isSelfAppraisalRequired").is(":checked");
-		if(isSelfChecked){
-			selfRevText = '<div class="categorySubCta" id="selfCategoryPercentDiv'+id+'"><span>Self Appraisal<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'self\')"></i></span><input type="text" value="'+selfPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="selfCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+		if(typeof selfPercentage != "undefined"){
+			var isSelfChecked = $("#isSelfAppraisalRequired").is(":checked");
+			if(isSelfChecked){
+				selfRevText = '<div class="categorySubCta" id="selfCategoryPercentDiv'+id+'"><span>Self Appraisal<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'self\')"></i></span><input type="text" value="'+selfPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="selfCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+			}
 		}
 		
-		var isPeerChecked = $("#isPeerReviewRequired").is(":checked");
-		if(isPeerChecked){
-			peerRevText = '<div class="categorySubCta" id="peerCategoryPercentDiv'+id+'"><span>Peer Review<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'peer\')"></i></span><input type="text" value="'+peerPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="peerCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+		
+		if(typeof peerPercentage != "undefined"){
+			var isPeerChecked = $("#isPeerReviewRequired").is(":checked");
+			if(isPeerChecked){
+				peerRevText = '<div class="categorySubCta" id="peerCategoryPercentDiv'+id+'"><span>Peer Review<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'peer\')"></i></span><input type="text" value="'+peerPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="peerCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+			}
+		}
+	
+		if(typeof reportingMgrPercentage != "undefined"){
+			var isRepMngChecked = $("#isReportingManagerAppraisalRequired").is(":checked");
+			if(isRepMngChecked){
+				reportingMngText = '<div class="categorySubCta" id="reportingMngCategoryPercentDiv'+id+'"><span>Reporting Manager<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'reportingManager\')"></i></span><input type="text" value="'+reportingMgrPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="reportingMngCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+			}
 		}
 		
-		var isRepMngChecked = $("#isReportingManagerAppraisalRequired").is(":checked");
-		if(isRepMngChecked){
-			reportingMngText = '<div class="categorySubCta" id="reportingMngCategoryPercentDiv'+id+'"><span>Reporting Manager<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'reportingManager\')"></i></span><input type="text" value="'+reportingMgrPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="reportingMngCategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
-		}
 		
-		var isResMngChecked = $("#isResourceManagerAppraisalRequired").is(":checked");
-		if(isResMngChecked){
-			resMngText = '<div class="categorySubCta" id="resourceMngcategoryPercentDiv'+id+'"><span>Resource Manager<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'resourceManager\')"></i></span><input type="text" value="'+resourceMgrPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="resourceMngcategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+		if(typeof resourceMgrPercentage != "undefined"){
+			var isResMngChecked = $("#isResourceManagerAppraisalRequired").is(":checked");
+			if(isResMngChecked){
+				resMngText = '<div class="categorySubCta" id="resourceMngcategoryPercentDiv'+id+'"><span>Resource Manager<i class="fa fa-close" onclick="performanceManagement.closeSelectedCategoryDiv('+id+',\'resourceManager\')"></i></span><input type="text" value="'+resourceMgrPercentage+'" onblur="performanceManagement.validatePercentage('+id+');performanceManagement.validateCategoryPercentageTotalSumValue();" id="resourceMngcategoryPercent'+id+'" class="form-control" field-name="Percentage" placeholder="Percentage" data-validation="validate_int required"></div>'
+			}
 		}
 		
 		
@@ -2411,11 +2864,11 @@ this.enableResourceManagerAppraisalPeriod = function(){
   }
   
   
-  this.deleteAppraisalCycle = function(templateId){
-
+  this.deleteAppraisalCycle = function(templateUUId){
+	  $("#appraisalListLoading").attr('style','position:absolute; width:100%; height:200%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			  type: "POST",
-			    url: sourceleadUrl+"/deleteAppraisalCycleTemplateById?templateId="+templateId,
+			    url: sourceleadUrl+"/deleteAppraisalCycleTemplateById?templateUUId="+templateUUId,
 			     success :function(response) {
 			    	 
 			    		if (response && (response === "INVALID_DATA" || response === "INVALID_USER")) {
@@ -2424,6 +2877,7 @@ this.enableResourceManagerAppraisalPeriod = function(){
 			        	else if (response === "AWKWARD") {
 			        	    location.href = "/errorPage";
 			        	} else if (response === "SUCCESS") {
+			        		$("#appraisalListLoading").removeAttr('style');
 			        		performanceManagement.viewAppraisalCycle();
 			        	} else if (response.indexOf('Sign In') !== -1) {
 			        		location.replace(sourceleadUrl);

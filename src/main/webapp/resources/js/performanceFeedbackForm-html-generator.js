@@ -172,9 +172,9 @@ function generateForm(sourceleadUrl,templateId) {
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
                              '<div class="slidecontainer mt clearfix">' +
-                             '<span id="demo'+ uniqueID +'" class="col-md-4">1</span>' +
+                             '<span id="demo'+ uniqueID +'" class="col-md-4">0</span>' +
                              '<input type="hidden" id="scaleValue'+ uniqueID +'"></span>' +
-                             '<input type="range" min="1" max="'+dropdown+'" value="1" onmouseup="evaluateSlider('+uniqueID+');" onclick="evaluateSlider('+uniqueID+')"  id="text-' + uniqueID + '" class="rangeslider">' +
+                             '<input type="range" min="0" max="'+dropdown+'" value="0" onmouseup="evaluateSlider('+uniqueID+');" onclick="evaluateSlider('+uniqueID+')"  id="text-' + uniqueID + '" class="rangeslider">' +
                              '</div>'+
                              '</div>';
                          

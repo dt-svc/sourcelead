@@ -436,7 +436,7 @@ public class RegistrationRestController {
 		
 		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		
 	    	try{
 	    		if(user != null){
@@ -445,7 +445,7 @@ public class RegistrationRestController {
 					ModelMapper mapper1 = new ModelMapper();
 					registration = mapper1.map(locationEnrollmentDTO, Registration.class);
 				   
-					registrationService.addRegistration(registration,user,orgLocations.getId(),candidateDTO);
+					registrationService.addRegistration(registration,user,orgLocationId,candidateDTO);
 					StringBuilder orgCreateMsg = new StringBuilder();
 					SourceLeadSessionManager.setSessionAttribute(request, "orgCreateMsg", orgCreateMsg.append(registration.getCompanyName()).append(" Org has created sucessfully.").toString());
 					response.setResponse(Result.SUCCESS.name());

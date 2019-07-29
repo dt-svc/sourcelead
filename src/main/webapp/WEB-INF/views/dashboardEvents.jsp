@@ -6,6 +6,19 @@
 #eventCalendar .ui-widget.ui-widget-content { width:100% !important; background: #ededed !important; }
 </style>
 
+<script>
+$(document).on('click', '.ui-datepicker-next', function () {
+	  $(".ui-datepicker-year, .ui-datepicker-month").addClass("sel");
+});
+$(document).on('click', '.ui-datepicker-prev', function () {
+	  $(".ui-datepicker-year, .ui-datepicker-month").addClass("sel");
+});
+$(document).on('click', '#interviewsTab', function () {
+	  $(".ui-datepicker-year, .ui-datepicker-month").addClass("sel");
+});
+
+
+</script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  <!-- Applicant Authorization -->
       <div class="mb eventAlert clearfix col-md-12 noPad">
@@ -1149,14 +1162,6 @@ $(function(){
 </script>  
  
 <style>
-.Highlighted a {
-	background-color:#9ACD32 !important; font-weight:bold !important; font-size: 12pt;
-	color:#fff !important; border-radius:8px;
-}
-.HighlightedFair a {
-	background-color : #32A7CD !important; font-weight:bold !important;
-	font-size: 12pt; border: 1px solid #32A7CD; color:#fff !important;
-}
 #jobFairCalendar .ui-widget-content a, #scheduleCalendar .ui-widget-content a,
 .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight,
 #eventCalendar .ui-widget-content a, #scheduleCalendar .ui-widget-content a
