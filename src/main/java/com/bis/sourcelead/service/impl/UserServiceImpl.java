@@ -531,6 +531,9 @@ public class UserServiceImpl implements UserService {
 				}else{
 					candidate.setAadharNumber(null);
 				}
+				if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+					candidate.setSsnNumber(addUserDTO.getSsn());
+			    }
 				if(StringUtils.isNotBlank(addUserDTO.getVendors())){
 					OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
 					candidate.setOrgRelationId(orgRelation);

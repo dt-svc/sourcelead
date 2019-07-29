@@ -1499,4 +1499,7 @@ public class Constants {
 	
 	public static final String NOTIFICATION_LEAVE_TITLE = "Leave Status";
 	
+	public static final String[] ELIMINATE_NAME_KEYWORDS = { "CANDIDATE", "FIRST NAME", "NAME" };
+	
+	
 }
