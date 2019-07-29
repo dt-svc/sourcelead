@@ -14,10 +14,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.timesheet.dao.DayEntryReportsDao;
 import com.bis.sourcelead.util.CalendarUtil;
 
@@ -29,6 +31,9 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	UserRoleDao userRoleDao;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -53,6 +58,11 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		ResponseList<DayWiseTimesheetReoprtsListDTO> response = new ResponseList<DayWiseTimesheetReoprtsListDTO>();
 		Session session = sessionFactory.getCurrentSession();
 		
+		UserRole userRole = userRoleDao.getUserRoleByUserIdAndLocationId(loginUser.getId(), orgloc.getId());
+		String userRoleQuery = "";
+		if(userRole.getRoles() != null && !userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN")) {
+			userRoleQuery = " AND UR.REPORTING_MANAGER_ID = '"+loginUser.getId()+"'";
+		}
 		
 		List<Long> userHierarchyIds =  userDao.getUserHierarchyIdList(loginUser.getId());
 		String userHierarchyIdString = "0";
@@ -156,7 +166,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
 			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
 			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
-			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND ACANLOC.IS_ASSOCIATE = 'Y' AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
+			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID  AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
 			    			       
 			    //To get Employee and department details
 				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
@@ -172,7 +182,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    			
 			    }
                 query = query+ " LEFT JOIN ORG_LOCATIONS ORGLOC ON ORGLOC.ID =  PC.ORG_LOCATIONS_ID "
-                + " WHERE "+subQuery+" AND SAH.SUBMISSION_ID =  TS.ID  " 
+                + " WHERE "+subQuery+" "+userRoleQuery+" AND SAH.SUBMISSION_ID =  TS.ID  " 
 				+ " AND SAH.ID IN (SELECT SUBSAH.ID FROM SUBMISSION_APPROVER_HIERARCHY SUBSAH WHERE "
 				+ "                  SUBSAH.SUBMISSION_ID = TS.ID "
 				+ "                  AND  "
@@ -238,7 +248,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
 			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
 			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
-			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND ACANLOC.IS_ASSOCIATE = 'Y' AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
+			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID  AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
 			    			       
 			    //To get Employee and department details
 				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
@@ -254,7 +264,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    + "   LEFT JOIN ORG_LOCATIONS LOC ON LOC.ID = UR.ORG_LOCATIONS_ID "
 			   
 			    
-				+ "   WHERE "+subQuery
+				+ "   WHERE "+subQuery+userRoleQuery
 				+ "   AND LT.TIMESHEET_AUTOFILL = 'Y' AND (LV.STATUS = 'APPROVED' OR LV.STATUS = 'PENDING')AND AL.APPLY_LEAVE_DATE IS NOT NULL AND AL.APPLY_LEAVE_DATE BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' group by CONCAT(U.ID,AL.APPLY_LEAVE_DATE)"
 				+ ") "
 				+ "  UNION ALL "
@@ -306,7 +316,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
 			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
 			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
-			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND ACANLOC.IS_ASSOCIATE = 'Y' AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
+			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID  AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
 			    			       
 			    //To get Employee and department details
 				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
@@ -316,7 +326,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    
 			    + "   LEFT JOIN HOLIDAY_RESTRICT_DAYS HRD ON HRD.ORGLOCATION_ID = CAN.WORK_LOCATION "
 			    + "   LEFT JOIN HOLIDAY HD ON HD.ID = HRD.HOLIDAY_ID "
-				+ "   WHERE "+subQuery
+				+ "   WHERE "+subQuery+userRoleQuery
 				+ "    AND HRD.DAY IS NOT NULL AND HRD.DAY BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' AND HD.ID NOT IN(SELECT UDH.HOLIDAY_ID FROM USER_DROPPED_HOLIDAYS UDH WHERE UDH.USER_ID = U.ID AND UDH.STATUS = '1') group by CONCAT(U.ID,HRD.DAY)"
 				+ ") "
 				+ " )Q1 ORDER BY Q1.timesheetDate ASC  "; 

@@ -749,7 +749,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
              }else if(ss.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
                  submissionStages = "and (reqSub.submissionStatus = 'SUBMIT_TO_CLIENT')";
              }else if(ss.equalsIgnoreCase("INTERVIEWED")){
-                 submissionStages = "and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW')";
+                 submissionStages = "and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW' OR reqSub.submissionStatus = 'INTERVIEW_ACCEPT')";
              }else if(ss.equalsIgnoreCase("REJECTED")){
                  submissionStages = "and (reqSub.submissionStatus = 'REJECTED')";
              }else if(ss.equalsIgnoreCase("REQUESTSENT")){
@@ -908,19 +908,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			String statusSubQuery3 = "";
 			String statusSubQuery4 = "";
 
-		   statusSubQuery = " reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id) and reqSub.submissionStatus <> 'REJECTED'";
+		   statusSubQuery = " reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.email<>'') and reqSub.submissionStatus <> 'REJECTED'";
 		  if(candidateVerificationConfig != null) {
 		  if(candidateVerificationConfig.getAadharNumber() == true){
-			 	statusSubQuery1 = " OR reqSub.candidate.aadharNumber IN(select tempReqSub.candidate.aadharNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+			 	statusSubQuery1 = " OR reqSub.candidate.aadharNumber IN(select tempReqSub.candidate.aadharNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.aadharNumber<>'')";
 			}
 		   if(candidateVerificationConfig.getPanNumber() == true){
-					statusSubQuery2 = " OR reqSub.candidate.panNumber IN(select tempReqSub.candidate.panNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+					statusSubQuery2 = " OR reqSub.candidate.panNumber IN(select tempReqSub.candidate.panNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.panNumber<>'')";
 			}
 			if(candidateVerificationConfig.getMobilePhone()== true){
-			 statusSubQuery3 = " OR reqSub.candidate.mobilePhone IN(select tempReqSub.candidate.mobilePhone from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+			 statusSubQuery3 = " OR reqSub.candidate.mobilePhone IN(select tempReqSub.candidate.mobilePhone from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.mobilePhone<>'')";
 			}
 			if(candidateVerificationConfig.getSsnNumber()== true){
-				 statusSubQuery4 = " OR reqSub.candidate.ssnNumber IN(select tempReqSub.candidate.ssnNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+				 statusSubQuery4 = " OR reqSub.candidate.ssnNumber IN(select tempReqSub.candidate.ssnNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.ssnNumber<>'')";
 			}
 		  }
 			statusSubQuery = "and reqSub.submissionStatus <> 'REJECTED' and ("+statusSubQuery+statusSubQuery1+statusSubQuery2+statusSubQuery3+statusSubQuery4+")";
@@ -3391,7 +3391,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 								}
 							 //left join fetch reqSub.requirement req   left join fetch reqSub.candidate left join fetch reqSub.sourceSubmission left join fetch reqSub.candidateResumes
 								String sourceSubmissionIdQuery = "from RequirementSubmission reqSub  where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)  "; 
-								List<RequirementSubmission> finalSourceList = session.createQuery(sourceSubmissionIdQuery.toString())
+								List<RequirementSubmission> finalSourceList = session.createQuery(sourceSubmissionIdQuery.toString()+" "+searchQuery)
 																					.setFirstResult(requirementSubmissionsDTO.getStart())
 																					.setMaxResults(requirementSubmissionsDTO.getLength())
 																					.setParameterList("sourceSubmissionIds", sourceSubmissionIds)
@@ -3494,24 +3494,24 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					String statusSubQuery3 = "";
 					String statusSubQuery4 = "";
 					if(requirementSubmissionsDTO.getSubmissionType() != null && "INTERVIEW".equalsIgnoreCase(requirementSubmissionsDTO.getSubmissionType())){
-						statusSubQuery = " and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW') "; 
+						statusSubQuery = " and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW' OR reqSub.submissionStatus = 'INTERVIEW_ACCEPT') "; 
 					}else if(requirementSubmissionsDTO.getSubmissionType() != null && "OFFERMADE".equalsIgnoreCase(requirementSubmissionsDTO.getSubmissionType())){
 						statusSubQuery = " and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' "
 								+ " OR reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED') "; 
 					}else if(Constants.DUPLICATE_APPLICANTS.equalsIgnoreCase(requirementSubmissionsDTO.getSubmissionType())){
-						emailSubQuery = "reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+						emailSubQuery = "reqSub.candidate.email IN(select tempReqSub.candidate.email from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.email<>'')";
 						if(candidateVerificationConfig !=null) {
 						if(candidateVerificationConfig.getAadharNumber() == true){
-							statusSubQuery1 = " or reqSub.candidate.aadharNumber IN(select tempReqSub.candidate.aadharNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+							statusSubQuery1 = " or reqSub.candidate.aadharNumber IN(select tempReqSub.candidate.aadharNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.aadharNumber<>'')";
 						}
 						if(candidateVerificationConfig.getPanNumber() == true){
-							statusSubQuery2 = " or reqSub.candidate.panNumber IN(select tempReqSub.candidate.panNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+							statusSubQuery2 = " or reqSub.candidate.panNumber IN(select tempReqSub.candidate.panNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.panNumber<>'')";
 						}
 						 if(candidateVerificationConfig.getMobilePhone()== true){
-							statusSubQuery3 = " or reqSub.candidate.mobilePhone IN(select tempReqSub.candidate.mobilePhone from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+							statusSubQuery3 = " or reqSub.candidate.mobilePhone IN(select tempReqSub.candidate.mobilePhone from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.mobilePhone<>'')";
 						}
 						if(candidateVerificationConfig.getSsnNumber()== true){
-							statusSubQuery4 = " or reqSub.candidate.ssnNumber IN(select tempReqSub.candidate.ssnNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id)";
+							statusSubQuery4 = " or reqSub.candidate.ssnNumber IN(select tempReqSub.candidate.ssnNumber from RequirementSubmission tempReqSub where tempReqSub.requirement.id =:requirementId  and tempReqSub.id <> reqSub.id and tempReqSub.candidate.ssnNumber<>'')";
 						}
 						}
 						
@@ -3546,7 +3546,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							
 				            String whereCondition = subQueryForVendors;
 							
-							Query queryForVendors = session.createQuery(from+" "+whereCondition+"  GROUP BY reqSub.id  ORDER BY reqSub.id DESC");
+							Query queryForVendors = session.createQuery(from+" "+whereCondition+" "+searchQuery+"  GROUP BY reqSub.id  ORDER BY reqSub.id DESC");
 							queryForVendors.setFirstResult(requirementSubmissionsDTO.getStart());
 							queryForVendors.setMaxResults(requirementSubmissionsDTO.getLength());
 							for (String str : queryForVendors.getNamedParameters())

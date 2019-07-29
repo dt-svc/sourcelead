@@ -2740,7 +2740,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			//DateOfJoin
 			if(!dataMigrationDTOJsonCopy.getString("dateofJoin").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("dateofJoin"))) {
 				try {
-					DateFormat formatter = new SimpleDateFormat("DD-MM-yyyy"); 
+					DateFormat formatter = new SimpleDateFormat("dd-mm-yyyy"); 
 					Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.getString("dateofJoin"));
 					String dateofjoin = formatter.format(date);
 					dataMigrationDTOJsonCopy.put("dateofJoin", dateofjoin);
@@ -2789,11 +2789,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 
 			//Designation
 			if(dataMigrationDTOJsonCopy.getString("designation").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designation"))) {
-				errorSet.put("designation", "Designation Type field is missing");
+				errorSet.put("designation", "Designation field is missing");
 			}else {
-				Boolean isValidated = isFnameLnameValid(dataMigrationDTOJsonCopy.getString("designation"));
+				Boolean isValidated = isDesignationValid(dataMigrationDTOJsonCopy.getString("designation"));
 				if(isValidated == false){
-					errorSet.put("designation", "should contain above 2 char and should not allowed special charecters");
+					errorSet.put("designation", "should contain 2 char and should not allowed special charecters");
 				}
 			}
 			
@@ -2919,6 +2919,20 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				flag = false;
 			}else{
 				if(name.length() > 2 && name.length() <= 200){
+					flag = true;
+				}
+		}
+			
+			return flag;
+		}
+		
+		private boolean isDesignationValid(String name){
+			boolean flag = false;
+			boolean istabSpace = name.matches("^[A-Za-z][A-Z a-z 0-9]*$");
+			if(istabSpace==false){
+				flag = false;
+			}else{
+				if(name.length() >= 2 && name.length() <= 200){
 					flag = true;
 				}
 		}

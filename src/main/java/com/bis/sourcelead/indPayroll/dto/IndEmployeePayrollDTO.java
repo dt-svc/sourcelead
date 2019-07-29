@@ -131,6 +131,8 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	private String firstName;
 	
 	private String lastName;
+	
+	private String middleName;
 
 	private String payHeadName;
 	
@@ -849,6 +851,14 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 
 	public void setEffectiveDate(Date effectiveDate) {
 		this.effectiveDate = effectiveDate;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
 	}
 	
 }

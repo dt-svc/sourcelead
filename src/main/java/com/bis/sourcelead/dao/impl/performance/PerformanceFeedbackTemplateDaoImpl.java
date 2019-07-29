@@ -102,4 +102,40 @@ public class PerformanceFeedbackTemplateDaoImpl implements PerformanceFeedbackTe
 		templateDTOList = queryObj.list();
 		return templateDTOList;
 	}
+
+	@Override
+	public PerformanceFeedbackTemplate getPerformanceFeedbackTemplateByUUID(String uuid) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<PerformanceFeedbackTemplate> performanceFeedbackTemplate = new ArrayList<PerformanceFeedbackTemplate>();
+		logger.debug("getPerformanceFeedbackTemplateByUUID  start");
+		performanceFeedbackTemplate = session.createQuery("from PerformanceFeedbackTemplate template where template.uuid = :uuid " ).setString( "uuid", uuid).list();
+		logger.debug("getPerformanceFeedbackTemplateByUUID  end");
+		if (performanceFeedbackTemplate.size() > 0) {
+			return performanceFeedbackTemplate.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public boolean isTemplateNameExisted(Long orgLocationId, String templateName) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		boolean flag = false;
+		query =  "SELECT "
+				+" LOWER(TEMPLATE.NAME) AS name "
+				+" FROM PERFORMANCE_FEEDBACK_TEMPLATE TEMPLATE "
+				+" WHERE "
+				+" TEMPLATE.ORG_LOCATION_ID = :orgLocationId AND TEMPLATE.STATUS = '1' ";
+		
+		List<String> templateNamesList = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
+		    if(templateNamesList != null &&  !templateNamesList.isEmpty() ) {
+			  if(templateNamesList.contains(templateName.toLowerCase()) == true) {
+				  flag = true;
+			  }
+		  }
+		
+		return flag;
+	}
 }

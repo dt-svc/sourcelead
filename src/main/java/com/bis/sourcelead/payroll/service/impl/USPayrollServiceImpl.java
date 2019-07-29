@@ -401,7 +401,7 @@ public class USPayrollServiceImpl  implements USPayrollService{
 				AssociateTax associateTax= associateTaxDao.taxDetailsByOrglocationIdAndCandidateId(payroll.getCandidate().getId(),orgLocation.getId());
 				File file = payrollPdfUtil.generateEmployeePayrollPayslipPdf(payroll,orgLocation,associateTax);
 				payroll.setPaySlipFileName(file.getName());
-				payroll.setPaySlipFileURL(FileUploadUtil.moveFile(staticPath, orgLocation.getOrg().getId(), orgLocation.getId(), "US_PAYROLL", file));
+				payroll.setPaySlipFileURL(FileUploadUtil.moveFile(staticPath, orgLocation.getOrgId(), orgLocation.getId(), "US_PAYROLL", file));
 				EmployeePayroll updatedPayroll = payrollAdjustmentService.updateEmployeePayroll(payroll);
 				if(updatedPayroll != null) {
 					logger.info("Pay Slip generated for an employee "+payroll.getCandidate().getFirstName());
