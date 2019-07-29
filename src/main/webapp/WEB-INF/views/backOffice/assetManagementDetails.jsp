@@ -460,6 +460,13 @@ function uploadFile(){
 }
 </script>
 <script>
+function uploadFileAttachment(){
+	fileUpload("fileAttachment", "assetDocuments", "addAsset_form","attachmentUpload");
+	$('#dbUploadFileAttachment').val($('#fileAttachment').val().replace(/C:\\fakepath\\/i, ''))
+}
+
+</script>
+<script>
 function deleteDocument(assetId,url){
 	document.getElementById("normalUploadFile").style.display="inline-table";
 	document.getElementById("dbUploadFile").style.display="none";

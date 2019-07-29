@@ -180,7 +180,7 @@ public class SubmissionsRestController {
 	@Autowired
 	private RequirementSubmissionHistoryDao requirementSubmissionHistoryDao;
 
-	@RequestMapping(value = "/getCandidateResumes")
+	 @RequestMapping(value = { "/getCandidateResumes", "/rest/getCandidateResumes" }, method = RequestMethod.POST)
 	@ResponseBody ResponseList<CandidateResumes> getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			HttpServletRequest request) throws Exception {
 		ResponseList<CandidateResumes> response = new ResponseList<>();
