@@ -38,6 +38,10 @@ public class OpenJobsController {
 	private LookUpDataService lookUpDataService;
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${atsUrl}")
+	private String atsUrl;
+	
 	@Autowired
 	private CommonUtil commonUtil;
 	@Autowired
@@ -96,6 +100,7 @@ public class OpenJobsController {
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("atsUrl", atsUrl);
 		model.setViewName("openJobs/guestApplyToJob");
 		return model;
 	}
