@@ -895,7 +895,7 @@ function cancelOrgImg(){
                             </div>
                            <div class="pull-right">
 								<input type="button" value="Save" id="saveRecommendationSettings" onclick="validateTotalRecommValue();" class="btn btn-primary mr">
-								<input type="button" value="Cancel" class="btn btn-default" onClick="flushRecomSettings();">
+								<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">
 							</div>
 							</form>
             			</div>
