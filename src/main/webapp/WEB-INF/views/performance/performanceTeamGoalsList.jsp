@@ -43,7 +43,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     <div class="perfTabs">
     	<ul class="clearfix">
     		<li><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList">My Goals</a></li>
-    		<li><a href="${SourceLeadWeb_pmsUrl}/performanceTeamGoalsList"  class="Act">Team Goals</a></li>
+   		    <li><a href="${SourceLeadWeb_pmsUrl}/performanceTeamGoalsList"  class="Act">Team Goals</a></li>
+   		
+    		
     	</ul>
     </div>  
     
@@ -93,13 +95,14 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		
 <div class="positionRelative reportHead clearfix mt">
       	<span class="pull-left refreIcon"><a onclick="getGoalsList();" class="refeIcon" title="Refresh"></a></span>
+      	
       	<ul class="pull-right list-unstyled list-inline">
-						<li>
-								<a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a>
-							</li>
+				
+				<sec:authorize access="hasRole('ROLE_ADD_TEAM_GOALS')">		
 					<li>
-					<a class="newAdBtn mr5" href="${SourceLeadWeb_pmsUrl}/addNewTeamGoal" >+ Goal</a>
-	  		</li>
+							<a class="newAdBtn mr5" href="${SourceLeadWeb_pmsUrl}/addNewTeamGoal" >+ Goal</a>
+			  		</li>
+	  		</sec:authorize>
 	  		<li id="goalsListSearch"><input type="text" class="repSearchBar"  id='goalsDataTableSearch'/><span class="repSearchIcon" onClick="goalsDataTableList();"></span></li>
         </ul>
      <div class="clearfix"></div>       
@@ -554,7 +557,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	 	result = result + '<table id="goalsListTable" class="display mt10" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
-		result = result +'	<th>Gole Name</th>';
+		result = result +'	<th>Goal Name</th>';
 		result = result +'  <th>Percentage</th>';
 	  	result = result +'  <th>End Date<br>(<small class="custom-small">'+goalsListDate+'</small>)</th>';
 	  	result = result +'  <th>Actions</th>';

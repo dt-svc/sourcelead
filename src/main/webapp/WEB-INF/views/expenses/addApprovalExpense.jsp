@@ -262,7 +262,7 @@ $(document).ready(function(){
 							</div>
 							<div class="col-md-4 minHeight">
 								<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
-								<select id="paymentMode${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].paymentMode" class="form-control" field-name="Payment Mode" data-validation="required">
+								<select id="paymentMode${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].paymentMode" class="form-control sel" field-name="Payment Mode" data-validation="required">
 								         <option value="">Select Mode</option>
 								         <c:forEach var="paymentMode" items="${expEntry.paymentModes}">
 							                  <option  ${entry.paymentMode == paymentMode ? 'selected' : ''} value="${paymentMode}">${paymentMode}</option>
@@ -328,12 +328,15 @@ $(document).ready(function(){
 								             <input type='button' value='${entryDoc.fileName}'/>
 								        </a>
 								        <input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${(2*(entryCount.count))-1});deleteAttchment(${entryDoc.fileDbId})" />
+			                         <div class="clearfix mb10"></div>
 			                         </strong>
 			                         </c:if>
 			                       </c:forEach>
 			                 </div> 
-			                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps  Allowed Size : 2MB '></i>
-			                 <span> 
+			                 <div class="clearfix">
+			                 <i class='fa fa-info-circle mt5 pull-right' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps  Allowed Size : 2MB '></i>
+			                 </div>
+			                 <span class="browseFile clearfix mt5">
 			                     <table class='timesheetAttachment' id='attachmentTable${(2*(entryCount.count))-1}' cellpadding='0' cellspacing='0' width="100%">
 			                       <tr id='${(2*(entryCount.count))-1}divAttachmentTsRow0'>
 			                           <td><div id='0docFileuploadFileGroup${(2*(entryCount.count))-1}'><input type='file' name='0docFile${(2*(entryCount.count))-1}' id='0docFile${(2*(entryCount.count))-1}' field-name='Attachment' onchange='validateUploadFile(0,${(2*(entryCount.count))-1})' ><i class='fa fa-plus' onClick='addAttachment(${(2*(entryCount.count))-1},"EDIT")'></i></div></td> 

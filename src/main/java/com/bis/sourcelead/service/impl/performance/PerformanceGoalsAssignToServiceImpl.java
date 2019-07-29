@@ -1,8 +1,11 @@
 package com.bis.sourcelead.service.impl.performance;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.dao.performance.PerformanceAppraisalAssignedAssociatesDao;
 import com.bis.sourcelead.dao.performance.PerformanceGoalsAssignToDao;
 import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
 import com.bis.sourcelead.service.performance.PerformanceGoalsAssignToService;
@@ -12,6 +15,9 @@ public class PerformanceGoalsAssignToServiceImpl implements PerformanceGoalsAssi
 
 	@Autowired
 	PerformanceGoalsAssignToDao performanceGoalsAssignToDao;
+	
+	@Autowired
+	PerformanceAppraisalAssignedAssociatesDao performanceAppraisalAssignedAssociatesDao;
 	
 	@Override
 	public PerformanceGoalsAssignTo savePerformanceGoalsAssignTo(PerformanceGoalsAssignTo performanceGoalsAssignTo)
@@ -24,5 +30,11 @@ public class PerformanceGoalsAssignToServiceImpl implements PerformanceGoalsAssi
 			Long goalId) throws Exception {
 		return performanceGoalsAssignToDao.getPerformanceGoalsAssignToByAssignedUserIdAndOrgLocationId(assignedUserId, goalId);
 	}
+
+	@Override
+	public List<PerformanceGoalsAssignTo> getPerformanceGoalsAssignToListByGoalId(Long goalId) throws Exception {
+		return performanceGoalsAssignToDao.getPerformanceGoalsAssignToListByGoalId(goalId);
+	}
+
 
 }

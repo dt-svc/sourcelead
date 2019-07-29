@@ -178,12 +178,12 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
 <!-- Rejecting submitted timesheet from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->
 <script>
 function rejecteSubmissionByProjectMemberId(projectMemberId,startDate,endDate,tdSpanSize,from){ 
-    $("#rejectReasonDiv").empty();
+    $("#rejectReasonDiv"+projectMemberId).empty();
     $("#reject"+projectMemberId+"message").val(''); 
     var result = "";
     result = result +'<div class="time_appr_rejct_pop" id="reject'+projectMemberId+'panel" style="top:25%">';
 	result = result +'<textarea placeholder="Enter comment here" id="reject'+projectMemberId+'message" ></textarea>';
-	result = result +'<div id="rejectReasonDiv"/>';
+	result = result +'<div id="rejectReasonDiv'+projectMemberId+'"/>';
 	result = result +'<a href="#" onClick="removeEmptyLines($(\'#reject'+projectMemberId+'message\'));saveRejectSubmissionByProjectMemberId(\''+projectMemberId+'\',\''+startDate+'\',\''+endDate+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectSubmission(\''+projectMemberId+'\');">Cancel</a>';
 	result = result +'</div>';
 	result = result +'</div>';
@@ -254,9 +254,9 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 	    }); 
 	 }else{
 		 if(msg){
-				$("#rejectReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+				$("#rejectReasonDiv"+projectMemberId).empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
 			}else{
-				$("#rejectReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+				$("#rejectReasonDiv"+projectMemberId).empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 			}
 		}
 	}

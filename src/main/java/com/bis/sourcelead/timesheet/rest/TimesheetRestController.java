@@ -5538,9 +5538,9 @@ public class TimesheetRestController {
 						freshSaHierarchyList.add(saHierarchy);
 					}
 					if(StringUtils.isEmpty(tsDTO.getWeekComment())) {
-						String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
-						if(StringUtils.isNotEmpty(comment));
-						timesheetSubmissions.setWeekcomments(comment);
+						//String comment = timesheetSubmissionsService.getWeekCommentByCurrentFrequency(frequencyStartDate, frequencyEndDate, timesheetSubmissions.getProjects().getId(), timesheetSubmissions.getMasterCandidateId().getId());
+						//if(StringUtils.isNotEmpty(comment));
+						timesheetSubmissions.setWeekcomments(tsDTO.getWeekComment());
 					}else {
 						timesheetSubmissions.setWeekcomments(tsDTO.getWeekComment());
 					}
@@ -5791,6 +5791,9 @@ public class TimesheetRestController {
 						    timesheetEmailUtil.sendEmailToManagerAtTimesheetSubmissionsNew(projectMember, projectMember.getMasterCandidateId().getId(),
 								projectMember.getProjects().getId(), frequencyStartDate, frequencyEndDate, loginUser,
 								loginOrgLocation, loginOrgLocation.getOrgCode());
+						    timesheetEmailUtil.sendEmailToEmpAtTimesheetSubmissionsNew(projectMember, projectMember.getMasterCandidateId().getId(),
+									projectMember.getProjects().getId(), frequencyStartDate, frequencyEndDate, loginUser,
+									loginOrgLocation, loginOrgLocation.getOrgCode());
 					}
 				}
 			}
@@ -6847,10 +6850,10 @@ public class TimesheetRestController {
 			List<ProjectApproverHierarchy> approverList = projectApproverHierarchyService
 					.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMember.getProjects().getId(),
 							loginOrgLocation.getId());
-			if (approverList != null && approverList.isEmpty()) {
+			if (approverList != null && !approverList.isEmpty()) {
 				for (ProjectApproverHierarchy approver : approverList) {
 					if (!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())) {
-						timesheetEmailUtil.sendEmailNotificationToEmployeeAndApproversOfEndClient(
+						timesheetEmailUtil.sendEmailNotificationToApproversOfEndClient(
 								approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(),
 								approver.getApproverUserId().getEmail(), loginUser, loginOrgLocation, projectMember,
 								startDate, endDate, submissionStatusStr, rejectedReason);

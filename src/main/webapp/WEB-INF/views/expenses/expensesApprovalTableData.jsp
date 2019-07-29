@@ -151,16 +151,17 @@
 	<div class="sm">${expApproverHierarchy.noOfExpenses}</div>
 </td>
 	
-	<td>
-	<div style="width:75px" class="require_wrap_table">
-	 <select onchange="changeBillingStatus(${expApproverHierarchy.expId}, this);">
-	 	<option selected value="-1">Select</option>
-	 	<option value="paid" ${expApproverHierarchy.billingStatus == "paid" ? "selected" : ""}>Paid</option>
-	 	<option value="unpaid" ${expApproverHierarchy.billingStatus == "unpaid" ? "selected" : ""}>Un-paid</option>
-	 </select>
-	</div>
-	</td>
-	    	  		
+<td>
+    <div style="width:75px" class="require_wrap_table">
+      <select onchange="changeBillingStatus(${expApproverHierarchy.expId}, this);">
+       <c:if test="${expApproverHierarchy.billingStatus == null}">
+          <option value="" data-name="select">Select</option>
+       </c:if>
+          <option value="paid" ${expApproverHierarchy.billingStatus == "paid" ? "selected" : ""}>Paid</option>
+          <option value="unpaid" ${expApproverHierarchy.billingStatus == "unpaid" ? "selected" : ""}>Un-paid</option>
+     </select>
+  </div>
+</td>  		
  
 </tr>
 </c:forEach>		              
