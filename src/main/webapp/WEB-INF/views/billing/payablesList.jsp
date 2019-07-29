@@ -652,7 +652,7 @@ function payablePagination(url){
 										result = result +'           <span class="colorRed pull-left">Void</span>   ';	
 									}
 									else{
-										result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+										result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept" id="acceptInvoiceId"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
 									}
 										
 								}
@@ -673,7 +673,7 @@ function payablePagination(url){
 									if(report.invoiceStatus == "Linked"){
 										result = result +' <a class="successBtn successBtn-custom primary pull-left" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 									}else if(report.invoiceStatus == "Received"){
-										result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
+										result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept" id="acceptInvoiceId"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
 									}else if(report.invoiceStatus == "Void"){
 										result = result +'           <span class="colorRed pull-left">Void</span>   ';	
 									}
@@ -1006,6 +1006,8 @@ function sendReminder(invoiceUUID){
 
 <script>
 function acceptedInvoice(invoiceUUID){
+	$('body #acceptInvoiceId').prop('onclick', null);
+	$("#acceptInvoiceId").prop("disabled",true);
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	$.ajax({
     	 type: "POST",
