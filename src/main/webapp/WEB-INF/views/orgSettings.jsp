@@ -455,7 +455,7 @@ function cancelOrgImg(){
 						
 					    
 					    <div class="clearfix mb comp-textarea">
-							<label class="labText">Company Descrption</label>
+							<label class="labText">Company Description</label>
 							<div class="clearfix">
 							   <textarea rows="6" name="aboutCompany" field-name="Company Descrption" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgDescription}</textarea>
 							</div>
