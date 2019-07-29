@@ -1032,14 +1032,14 @@ function cancelOrgImg(){
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
               <label class="clearfix">BSR Number <span class="text-danger">&nbsp;*</span></label>
 	           <div class="clearfix">
-	                <input type="text" id="paymentBSRNumber" data-min='9' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control" data-required="required"/>
+	                <input type="text" id="paymentBSRNumber" data-min='4' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control" data-required="required validate_int"/>
 	           </div>
            </div>
            
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
               <label class="noPad">MICR Code <b class="valStar">*</b></label>
 	           <div class="clearfix">
-	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control" data-required="required"/>
+	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control" data-required="required validate_int"/>
 	           </div>
            </div>
            </c:if>
@@ -2317,7 +2317,7 @@ function getSignaturePreview(){
 	
 	   $.ajax({
 			type : "POST",
-			url : atsUrl+"/getSignaturePreview?${_csrf.parameterName}=${_csrf.token}",
+			url : sourceleadUrl+"/getSignaturePreview?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				
 				$("#campaignSignatrue").html(result);
@@ -3488,7 +3488,7 @@ var validationSettings = {
 function cancelBtn(){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-	  location.replace(sourceleadUrl+"/settings/${SourceLeadWeb_orgLocationId}");
+	  location.replace(sourceleadUrl+"/settings");
 }
 
 </script>
