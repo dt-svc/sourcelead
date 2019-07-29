@@ -34,7 +34,7 @@ s	</section>
 				<div class="col-md-6" id = "ticketDivId">
 					<label class="col-md-3">Ticket Id <b class="valStar">*</b></label>
 					<div class="col-md-9">
-						<input type="text" class="form-control" name="generatedId" value="${ticketSummary.generatedId}" id="ticketId" field-name="Ticket Id"  onblur="validateTicketId('${ticketSummary.id}');" data-validation="required validate_length length1-100">
+						<input type="text" class="form-control" name="generatedId" value="${ticketSummary.generatedId}" id="ticketId" field-name="Ticket Id"  onblur="validateTicketId('${ticketSummary.id}');" data-validation="required validate_length length1-20">
 					</div>
 					<div class="clearfix"></div>
 				</div>
@@ -178,7 +178,7 @@ s	</section>
 		<div class="form-footer clearfix mt">
 			<div class="col-lg-12">
 				<div class="pull-right">
-					<input type="button" value="Save" class="btn btn-primary" id="save" onclick="saveTicket();"/>
+					<input type="button" value="Save" class="btn btn-primary" id="addTicket" onclick="saveTicket();"/>
 					<input type="button" value="Cancel" class="btn btn-default ml" id="cancel"  onClick="javascript:window.location.href = '<c:url value='${appPath}/ticketManagementList'/>'"/>
 				</div>
 			</div>

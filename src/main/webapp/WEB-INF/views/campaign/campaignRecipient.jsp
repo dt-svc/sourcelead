@@ -2,9 +2,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="${SourceLeadWeb_sourceleadUrl}/resources/js/campaignRecipient.js"></script>
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadUrl}/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadUrl}/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/campaignRecipient.js"></script>
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
 
 <style>
 .modal-backdrop{

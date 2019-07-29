@@ -326,11 +326,11 @@ public class HrReportRestController {
 		List<ProjectMembers> projectMemberList = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		dayWiseTimesheetReoprtsDto.setLocationsId(orgLocations.getId());
 		dayWiseTimesheetReoprtsDto.setLoginUserId(loginUser.getId());
-		//if(dayWiseTimesheetReoprtsDto.getStartDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate()) && dayWiseTimesheetReoprtsDto.getEndDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
-			 projectMemberList = projectMemberService.getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
-		//}
+		dayWiseTimesheetReoprtsDto.setLoginUserRoleType(loginUserRole);
+		projectMemberList = projectMemberService.getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
 		return projectMemberList;
 	}
 
