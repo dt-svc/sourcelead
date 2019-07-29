@@ -236,6 +236,26 @@ public class EmailScenarioConfigurationRestController {
 		}
 	 
 	 @SuppressWarnings("unused")
+	@RequestMapping(value = "/getResumeParserEmailCountForOrg" , method = RequestMethod.POST)
+		public @ResponseBody int getResumeParserEmailCountForOrg(HttpServletRequest request,@RequestParam(value = "emailId", required = false) String emailId)
+				throws Exception {
+		 int count = 0;
+		 try{
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    		if (user != null) {
+	    			 count =emailScenarioconService.getResumeParserEmailCountForOrg(orgLocation.getId());
+	       }
+			 
+		 }catch (Exception e) {
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		 
+		
+		  return count;
+			
+		}
+	 @SuppressWarnings("unused")
 	@RequestMapping(value = "/getConfigFromMailList" , method = RequestMethod.POST)
 		public @ResponseBody ResponseList<EmailConfigurationFromMail> getConfigFromMailList(HttpServletRequest request,@RequestParam(value = "emailId", required = false) String emailId)
 				throws Exception {

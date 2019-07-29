@@ -117,6 +117,7 @@ function cancelTicketType() {
 	$("#ticketTypeId").val(0);
 	if(document.getElementById("addTicketTypeForm") !== null)
 		document.getElementById("addTicketTypeForm").reset();
+	$("#addTicketTypeForm").find("p[class='jquery_form_error_message']").remove();
 	$(".mask, #modalTasktype").fadeOut();
 	$(".location-alert").fadeOut();
 }
@@ -193,6 +194,7 @@ function cancelTicketCategory() {
 	$("#ticketCategoryId").val(0);
 	if(document.getElementById("addTicketCategoryForm") !== null) {
 		document.getElementById("addTicketCategoryForm").reset();
+		$("#addTicketCategoryForm").find("p[class='jquery_form_error_message']").remove();
 		$("#notifyTo").val("");
 		$("#assignedTo option").removeAttr("selected");
 		$("#assignedTo").chosen();
@@ -492,6 +494,7 @@ function cancelTicketStatus() {
 	$("#ticketStatusId").val(0);
 	if(document.getElementById("addTicketStatusForm") !== null)
 		document.getElementById("addTicketStatusForm").reset();
+	$("#addTicketStatusForm").find("p[class='jquery_form_error_message']").remove();
 	$(".mask, #modalTasktype").fadeOut();
 	$(".location-alert").fadeOut();
 }

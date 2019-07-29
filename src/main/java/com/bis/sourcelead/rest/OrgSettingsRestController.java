@@ -202,7 +202,7 @@ public class OrgSettingsRestController {
 		org = orgService.saveOrgSettings(companyRegistrationDTO, org);
 		
 		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
-			List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(orgId);
+			List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredWorkLocationsByOrgId(orgId);
 			for(OrgLocations orgLocations : orgLocationsList) {
 					userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
 			}
