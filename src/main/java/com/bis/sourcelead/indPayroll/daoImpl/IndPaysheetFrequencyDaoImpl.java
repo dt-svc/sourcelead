@@ -1,6 +1,7 @@
 package com.bis.sourcelead.indPayroll.daoImpl;
 
 import java.math.BigInteger;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -9,23 +10,30 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesHistoryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.indPayroll.dao.IndPaysheetFrequencyDao;
 import com.bis.sourcelead.indPayroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
@@ -33,6 +41,7 @@ import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.payroll.dao.impl.AssociateTaxDaoImpl;
+import com.bis.sourcelead.payroll.entity.EmployeeSessionIndPayroll;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -51,6 +60,17 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	@Autowired
 	INDPayrollCommonUtil iNDPayrollCommonUtil;
 	
+	@Value("${SourceLead.100}")
+	private String notFound;
+	@Value("${SourceLead.101}")
+	private String noRecords;
+	@Value("${SourceLead.102}")
+	private String statusUpdate;
+	@Value("${SourceLead.103}")
+	private String statusDelete;
+	@Value("${SourceLead.106}")
+	private String duplicateValue;
+	
 	@Override
 	public ResponseList<IndPaysheetFrequency> getIndPaysheetFrequencyListByOrgLocationId(OrgLocations orgLocation, IndPaysheetFrequencyDTO indPaysheetFrequencyDTO) throws Exception {
 		
@@ -59,9 +79,12 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		List<IndPaysheetFrequency> frequencyList = null;
 		ResponseList<IndPaysheetFrequency> response = new ResponseList<>();
 		StringBuilder query1 = new StringBuilder("");
+		
 		if (StringUtils.isNotBlank(indPaysheetFrequencyDTO.getSearchValue())) {
-			if (indPaysheetFrequencyDTO.getSearchValue().contains("/")
-					|| indPaysheetFrequencyDTO.getSearchValue().contains("-")) {
+			Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			   Matcher matcher = pattern.matcher(indPaysheetFrequencyDTO.getSearchValue());
+			 if(matcher.matches() == true ) {
+			if (indPaysheetFrequencyDTO.getSearchValue().contains("/")	|| indPaysheetFrequencyDTO.getSearchValue().contains("-")) {
 				String convertedDate = indPaysheetFrequencyDTO.getSearchValue();
 				if (indPaysheetFrequencyDTO.getSearchValue().contains("/")) {
 					convertedDate = indPaysheetFrequencyDTO.getSearchValue().replaceAll("/", "-");
@@ -76,20 +99,17 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 				Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocation.getId());
 				response.setData(queryObjDate.list());
 				return response;
+			 }
 			}
 			else {
 				if (indPaysheetFrequencyDTO.getSearchValue() != null && !"".equalsIgnoreCase(indPaysheetFrequencyDTO.getSearchValue())) {
-					query1.append(" and (ipf.userGroup.payFrequency like '%"
-							+ indPaysheetFrequencyDTO.getSearchValue()
-							+ "%' ").append("OR ipf.userGroup.groupName like '%"
-							+ indPaysheetFrequencyDTO.getSearchValue()
-							+ "%' ").append("OR ipf.approverStatus like '%"
-							+ indPaysheetFrequencyDTO.getSearchValue()
-							+ "%' ").append("OR ipf.paysheetFrequency.type like '%"
-							+ indPaysheetFrequencyDTO.getSearchValue()
-							+ "%' )");
+					query1.append(" and (ipf.userGroup.payFrequency like '%" + indPaysheetFrequencyDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%' ")
+					      .append("OR ipf.userGroup.groupName like '%" + indPaysheetFrequencyDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%' ")
+					      .append("OR ipf.approverStatus like '%" + indPaysheetFrequencyDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%' )");
+					     // .append("OR ipf.paysheetFrequency.type like '%" + indPaysheetFrequencyDTO.getSearchValue() + "%' )");
 				}
 			}
+		
 		}
 		
 		//List shorting order
@@ -861,5 +881,64 @@ String countQuery  =  " select count(*) FROM PAYROLL_PAYHEAD payHead, IND_PAY_SH
 		}
 		response.setData(indEmployeePayrollList);
 		return response;
+	}
+
+
+	@Override
+	public EmployeeSessionIndPayroll saveEmployeeSessionIndPayroll(EmployeeSessionIndPayroll employeeSessionIndPayroll) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (employeeSessionIndPayroll != null) {
+				session.saveOrUpdate(employeeSessionIndPayroll);
+			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return employeeSessionIndPayroll;
+
+	}
+
+	@Override
+	public List<EmployeeSessionIndPayroll> getEmployeeSessionList(String paySheetFrequencyUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<EmployeeSessionIndPayroll> employeeSession = session.createQuery("from EmployeeSessionIndPayroll where paysheetUUID=:paySheetFrequencyUUID" ).setString( "paySheetFrequencyUUID", paySheetFrequencyUUID ).list();
+		return employeeSession;
+		 
+	}
+
+
+	@Override
+	public void deleteIndPayrollCaheRecoedByPaySheetFrequencyUUID(List<EmployeeSessionIndPayroll> indPayrollCahe) {
+		Session session = this.sessionFactory.getCurrentSession();
+		try{
+			List<EmployeeSessionIndPayroll> employeeSession = session.createQuery("from EmployeeSessionIndPayroll where paysheetUUID=:paySheetFrequencyUUID" ).setString( "paySheetFrequencyUUID", indPayrollCahe.get(0).getPaysheetUUID() ).list();
+			for(EmployeeSessionIndPayroll esi :employeeSession) {
+				session.delete(esi);
+			}
+		}catch(ConstraintViolationException exception){
+			exception.printStackTrace();
+		}
+		
+		
+	}
+
+
+	@Override
+	public EmployeeSessionIndPayroll updateThePayHeadHistoryJsonObjectBYExclueUUID(String excludeUUID)throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		EmployeeSessionIndPayroll employeeSes = null;
+		try{
+			String query = "from EmployeeSessionIndPayroll es  where es.excludeUUID =:excludeUUID";
+			List<EmployeeSessionIndPayroll> employeeSession =session.createQuery(query) .setString("excludeUUID", excludeUUID).list();
+			if(employeeSession != null && !employeeSession.isEmpty())
+			{
+				employeeSes = (EmployeeSessionIndPayroll) employeeSession.iterator().next();
+			}
+		}catch(ConstraintViolationException exception){
+			exception.printStackTrace();
+		}
+		return employeeSes;
+		 
 	}
 }

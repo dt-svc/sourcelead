@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dto.performance;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.dto.DepartmentDTO;
@@ -54,6 +56,10 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	
 	private String appraisalGoals;
 	
+	private BigInteger templateId;
+	
+	private BigInteger assignedId;
+	
 	@Required(desc="goalsWeightage", dependsOn = "appraisalGoals", parentValue = "Y")
 	private String goalsWeightage;
 	
@@ -79,6 +85,42 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 	private String resourceManagerReviewStartDate;
 	
 	private String resourceManagerReviewEndDate;
+	
+	private String templateUUId;
+	
+	private BigInteger templateAssignedUserCount;
+	
+	private BigInteger templateSubmittedCount;
+	
+	private String appraisalAssignedUser;
+	
+	private String appraisalAssignedUserImgUrl;
+	
+	private int start;
+	
+	private int length;
+	
+	private String searchValue;
+	
+	private String sortColumn;
+	
+	private String sortOrder;
+	
+	private List<Map<String, String>> order;
+	
+	private BigInteger daysDifference;
+	
+	private String dayDiff;
+	
+	private char daysDiff;
+	
+	private String submissionStage;
+	
+	private String assignedUUID;
+	
+	private String userCode;
+	
+	
 	
 	
 	
@@ -336,6 +378,158 @@ public class PerformanceAppraisalTemplateDTO implements Serializable{
 
 	public void setResourceManagerReviewEndDate(String resourceManagerReviewEndDate) {
 		this.resourceManagerReviewEndDate = resourceManagerReviewEndDate;
+	}
+
+	public BigInteger getTemplateId() {
+		return templateId;
+	}
+
+	public void setTemplateId(BigInteger templateId) {
+		this.templateId = templateId;
+	}
+
+	public String getTemplateUUId() {
+		return templateUUId;
+	}
+
+	public void setTemplateUUId(String templateUUId) {
+		this.templateUUId = templateUUId;
+	}
+
+	public BigInteger getTemplateAssignedUserCount() {
+		return templateAssignedUserCount;
+	}
+
+	public void setTemplateAssignedUserCount(BigInteger templateAssignedUserCount) {
+		this.templateAssignedUserCount = templateAssignedUserCount;
+	}
+
+	public int getStart() {
+		return start;
+	}
+
+	public void setStart(int start) {
+		this.start = start;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+
+	public String getSortColumn() {
+		return sortColumn;
+	}
+
+	public void setSortColumn(String sortColumn) {
+		this.sortColumn = sortColumn;
+	}
+
+	public String getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(String sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
+	public List<Map<String, String>> getOrder() {
+		return order;
+	}
+
+	public void setOrder(List<Map<String, String>> order) {
+		this.order = order;
+	}
+
+	public BigInteger getDaysDifference() {
+		return daysDifference;
+	}
+
+	public void setDaysDifference(BigInteger daysDifference) {
+		this.daysDifference = daysDifference;
+	}
+
+	public String getDayDiff() {
+		return dayDiff;
+	}
+
+	public void setDayDiff(String dayDiff) {
+		this.dayDiff = dayDiff;
+	}
+
+	public char getDaysDiff() {
+		return daysDiff;
+	}
+
+	public void setDaysDiff(char daysDiff) {
+		this.daysDiff = daysDiff;
+	}
+
+	public String getAppraisalAssignedUser() {
+		return appraisalAssignedUser;
+	}
+
+	public void setAppraisalAssignedUser(String appraisalAssignedUser) {
+		this.appraisalAssignedUser = appraisalAssignedUser;
+	}
+
+	public String getAppraisalAssignedUserImgUrl() {
+		return appraisalAssignedUserImgUrl;
+	}
+
+	public void setAppraisalAssignedUserImgUrl(String appraisalAssignedUserImgUrl) {
+		this.appraisalAssignedUserImgUrl = appraisalAssignedUserImgUrl;
+	}
+
+	public BigInteger getAssignedId() {
+		return assignedId;
+	}
+
+	public void setAssignedId(BigInteger assignedId) {
+		this.assignedId = assignedId;
+	}
+
+	public String getSubmissionStage() {
+		return submissionStage;
+	}
+
+	public void setSubmissionStage(String submissionStage) {
+		this.submissionStage = submissionStage;
+	}
+
+	public String getAssignedUUID() {
+		return assignedUUID;
+	}
+
+	public void setAssignedUUID(String assignedUUID) {
+		this.assignedUUID = assignedUUID;
+	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
+	}
+
+	public BigInteger getTemplateSubmittedCount() {
+		return templateSubmittedCount;
+	}
+
+	public void setTemplateSubmittedCount(BigInteger templateSubmittedCount) {
+		this.templateSubmittedCount = templateSubmittedCount;
 	}
 
 	

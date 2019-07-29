@@ -112,6 +112,9 @@ public class PerformanceAppraisalTemplate implements Serializable{
 	@Column(name = "UUID")
 	private String uuid;
 	
+	@Column(name = "IS_GOALS_CONFIGURED")
+	private String isGoalsConfigured;
+	
 	@Column(name = "STATUS ")
 	private Integer status;
 	
@@ -600,6 +603,14 @@ public class PerformanceAppraisalTemplate implements Serializable{
 
 	public void setResourceManagerReviewEndDateStr(String resourceManagerReviewEndDateStr) {
 		this.resourceManagerReviewEndDateStr = resourceManagerReviewEndDateStr;
+	}
+
+	public String getIsGoalsConfigured() {
+		return isGoalsConfigured;
+	}
+
+	public void setIsGoalsConfigured(String isGoalsConfigured) {
+		this.isGoalsConfigured = isGoalsConfigured;
 	}
 	
 	
