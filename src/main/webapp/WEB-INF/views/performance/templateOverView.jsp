@@ -96,7 +96,7 @@ function getTemplateOverViewDetails(appraisalType){
  						    	  result = result + '</div>';
 				    	    }
  							
- 							 if(appraisalType == 'peer' || appraisalType == 'manager'){
+ 							 if((appraisalType == 'peer' || appraisalType == 'manager') && response.object.appraisalTemplate.peerReviewEndDate != null){
  					    		  result = result + '<div class="form-group clearfix">';
  						    	  result = result + '<label class="col-md-2 paddingRight">Peer Due Date<span class="pull-right paddingLeft">:</span></label>';
  						    	  result = result + '<div class="col-md-5">'+response.object.appraisalTemplate.peerReviewEndDate+'</div>';
