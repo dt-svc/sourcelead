@@ -1008,6 +1008,7 @@ public class ProjectPlanningRestController {
 								 clientCandidate.setIsAssociate(Constants.NO);
 								 clientCandidate.setDesignationType("Offshore C2C");
 								 clientCandidate.setGeneratedId(candidateService.getCandidateId(projectPlanningResourceRequest.getProjectPlanningRequestId().getOrgLocationId()));
+								 clientCandidate.setWorkLocation(candidate.getOrgLocationId());
 								 
 								 if(projectPlanningResourceRequest.getBillRate() != null){
 									 clientCandidate.setCurrentRate(projectPlanningResourceRequest.getBillRate().toString());
@@ -1074,6 +1075,7 @@ public class ProjectPlanningRestController {
 									 clientCandidate.setIsAssociate(Constants.NO);
 									 clientCandidate.setDesignationType("Offshore C2C");
 									 clientCandidate.setGeneratedId(candidateService.getCandidateId(clientOrgLoc));
+									 clientCandidate.setWorkLocation(candidate.getOrgLocationId());
 									 
 									 if(projectPlanningResourceRequest.getBillRate() != null){
 										 clientCandidate.setCurrentRate(projectPlanningResourceRequest.getBillRate().toString());

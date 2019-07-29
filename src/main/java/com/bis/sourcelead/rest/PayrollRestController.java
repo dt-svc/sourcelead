@@ -12,8 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +39,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AssociateLoanAndAdvancesHistoryDTO;
 import com.bis.sourcelead.dto.PayrollPaySlipIndDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.entity.AssociateLoanAndAdvanceHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Payroll;
@@ -47,6 +52,7 @@ import com.bis.sourcelead.entity.PayrollPaySlipInd;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.indPayroll.dto.INDPayrollDTO;
+import com.bis.sourcelead.indPayroll.dto.IndApprovePayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.indPayroll.entity.AssociatePayrollPayheadHistory;
@@ -56,6 +62,7 @@ import com.bis.sourcelead.indPayroll.service.IndPayrollService;
 import com.bis.sourcelead.indPayroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.indPayroll.utill.INDPayrollCommonUtil;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
+import com.bis.sourcelead.payroll.entity.EmployeeSessionIndPayroll;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesHistoryService;
 import com.bis.sourcelead.service.AssociateLoanAndAdvancesService;
@@ -65,6 +72,8 @@ import com.bis.sourcelead.service.PayrollService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.dynamicReport.IndPaySlipPdf;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * 
@@ -156,6 +165,7 @@ public class PayrollRestController {
 	    
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = { "/employeePayrollList","/rest/employeePayrollList" })
 	public ModelAndView reviewPayrollInd(IndPaysheetFrequencyDTO indPaysheetFrequencyDTO, HttpServletRequest request) throws Exception
 	{
@@ -163,11 +173,76 @@ public class PayrollRestController {
 	 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	 	try {
-	 		Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
-		    List<INDPayrollDTO> employeePayrollDTOList = null;
-		    if(sessionObj != null) {
-		    	indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
-		    	employeePayrollDTOList = indPaysheetFrequencyDTO.getIndPayrollDTO();
+	 		// insted of using seesion attribute get the information from the table IND_PAYROLL_CACHE
+	 		// getting the list of INDPayrollDTO from the table
+	 		List<EmployeeSessionIndPayroll> emp = indPayrollService.getEmployeeSessionList(indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
+	 		List<INDPayrollDTO> employeePayrollDTOList = new ArrayList<INDPayrollDTO>();
+	 		
+//	 		Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
+//			bellow are the 	INDPayrollDTO prepared using for the process 	    
+		    if(emp != null && emp.size() >0) {
+		    	  ObjectMapper mapper = new ObjectMapper();
+
+		    	  JSONObject jsonObject= new JSONObject(emp.get(0).getJsonString());
+		    	  indPaysheetFrequencyDTO.setGroupName(jsonObject.getString("groupName"));
+		    	  indPaysheetFrequencyDTO.setFrequencyStartDateStr(jsonObject.getString("frequencyStartDateStr"));
+		    	  indPaysheetFrequencyDTO.setFrequencyEndDateStr(jsonObject.getString("frequencyEndDateStr"));
+		    	  indPaysheetFrequencyDTO.setPayCheckDateStr(jsonObject.getString("payCheckDateStr"));
+		    	  indPaysheetFrequencyDTO.setApproverStatus(jsonObject.getString("approverStatus"));
+		    	  indPaysheetFrequencyDTO.setPayRunId(jsonObject.getString("payRunId"));
+		    	  indPaysheetFrequencyDTO.setGroupId(jsonObject.getString("groupId"));
+		    	  indPaysheetFrequencyDTO.setActionPerformedBy(jsonObject.getString("actionPerformedBy"));
+		    	  indPaysheetFrequencyDTO.setOrgLocationId(jsonObject.getLong("orgLocationId"));
+		    	  indPaysheetFrequencyDTO.setCreatedDate(jsonObject.getString("createDate"));
+		    	  indPaysheetFrequencyDTO.setUpdatedDate(jsonObject.getString("updatedDate"));
+		    	  indPaysheetFrequencyDTO.setCreatedBy(jsonObject.getLong("createdBy"));
+		    	  indPaysheetFrequencyDTO.setUpdatedBy(jsonObject.getLong("updatedBy"));
+				  indPaysheetFrequencyDTO.setIndPayrollDTO(Arrays.asList(mapper.readValue(emp.get(0).getJsonEmployee(), INDPayrollDTO[].class)));
+				  JSONObject jsonEmployeeObject = null;
+				  
+		    	for(EmployeeSessionIndPayroll employeeSession : emp) {
+		 			INDPayrollDTO indDTO = new INDPayrollDTO();
+		 			jsonEmployeeObject = new JSONObject(employeeSession.getJsonIndEmployeePayrollCache());
+		 			indDTO.setEmployee(jsonEmployeeObject.getLong("employee"));
+		 			indDTO.setEmpName(jsonEmployeeObject.getString("empName"));
+		 			indDTO.setOvertimeHours(jsonEmployeeObject.getString("overtimeHours"));
+		 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("grossPay")));
+		 			indDTO.setNetPay(new BigDecimal(jsonEmployeeObject.getString("netPay")));
+		 			indDTO.setRegularHrsAmt(new BigDecimal(jsonEmployeeObject.getString("regularHrsAmt")));
+		 			indDTO.setNoOfLeaves(new BigDecimal(jsonEmployeeObject.getString("noOfLeaves")));
+		 			indDTO.setNoOfDays(new BigDecimal(jsonEmployeeObject.getString("noOfDays")));
+		 			indDTO.setTotalHours(Double.valueOf(jsonEmployeeObject.getLong("totalHours")));
+		 			indDTO.setTds(new BigDecimal(jsonEmployeeObject.getString("tds")));
+		 			indDTO.setIndEmpPayrollUUID(jsonEmployeeObject.getString("indEmpPayrollUUID"));
+		 			indDTO.setPaySheetFrequencyUUID(jsonEmployeeObject.getString("paySheetFrequencyUUID"));
+		 			indDTO.setEmployeeDesignationType(jsonEmployeeObject.getString("employeeDesignationType"));
+		 			indDTO.setApproverStatus(jsonEmployeeObject.getString("approverStatus"));
+		 			indDTO.setEmpId(jsonEmployeeObject.getString("empId"));
+		 			indDTO.setRegularHours(jsonEmployeeObject.getString("regularHours"));
+		 			indDTO.setCandidateId(jsonEmployeeObject.getLong("candidateId"));
+		 			indDTO.setPayCheckDate(jsonEmployeeObject.getString("payCheckDate"));
+		 			indDTO.setPayType(jsonEmployeeObject.getString("payType"));
+		 			indDTO.setProfessionalTax(new BigDecimal(jsonEmployeeObject.getString("professionalTax")));
+		 			indDTO.setPayrollPaySlipInd(jsonEmployeeObject.getLong("payrollPaySlipInd"));
+		 			indDTO.setCreatedDate(jsonEmployeeObject.getString("createdDate"));
+		 			indDTO.setUpdatedDate(jsonEmployeeObject.getString("updatedDate"));
+		 			indDTO.setLopAmount(new BigDecimal(jsonEmployeeObject.getString("lopAmount")));
+		 			indDTO.setCreatedBy(jsonEmployeeObject.getLong("createdBy"));
+		 			indDTO.setUpdatedBy(jsonEmployeeObject.getLong("updatedBy"));
+		 			 
+		 			//we are converting jsonString to the list of AssociatePayrollPayheadHistoryDTO by using mapper .
+		 			if(StringUtils.isNotBlank(employeeSession.getJsonPayHeadHistory())) {
+		 				indDTO.setPayHeadHistoryDTOList(Arrays.asList(mapper.readValue(employeeSession.getJsonPayHeadHistory(), AssociatePayrollPayheadHistoryDTO[].class)));
+		 			} 
+		 			//we are converting jsonString to the list of AssociateLoanAndAdvancesHistoryDTO by using mapper .
+		 			if(StringUtils.isNotBlank(employeeSession.getJsonLoanAdvHistory())) {
+		 					indDTO.setLoanAdvHistoryDTOList(Arrays.asList(mapper.readValue(employeeSession.getJsonLoanAdvHistory(), AssociateLoanAndAdvancesHistoryDTO[].class)));
+		 			}
+		 			
+		 			employeePayrollDTOList.add(indDTO);
+		 		}
+//		    	indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
+//		    	employeePayrollDTOList = employeePayrollDTOList;
 		    }else {
 		    	Response<IndPaysheetFrequencyDTO> freqResponse = indPaysheetFrequencyService.getIndPaysheetFrequencyByEmpPayrollUUID(indPaysheetFrequencyDTO.getPaySheetFrequencyUUID(), orgLocation);
 		    	if(freqResponse != null && freqResponse.getObject() != null) {
@@ -215,11 +290,73 @@ public class PayrollRestController {
 	 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList = null;
 	 	System.out.println(" before SourceLeadSessionManager.getSessionAttribute   >>>>>>>>>>>>>");
-	 	Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, associatePayrollPayheadHistoryDTO.getPaySheetFrequencyUUID());
-	 	System.out.println(" after SourceLeadSessionManager.getSessionAttribute sessionObj  >>>>>>>>>>>>>"+sessionObj);
+//	 	Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, associatePayrollPayheadHistoryDTO.getPaySheetFrequencyUUID());
+	 	
+	 	List<EmployeeSessionIndPayroll> emp = indPayrollService.getEmployeeSessionList(associatePayrollPayheadHistoryDTO.getPaySheetFrequencyUUID());
+	 	
+//	 	System.out.println(" after SourceLeadSessionManager.getSessionAttribute sessionObj  >>>>>>>>>>>>>"+sessionObj);
 	 	INDPayrollDTO indPayrollDTO = null;
-	    if(sessionObj != null) {
-	    	IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
+	 	IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
+	 	List<INDPayrollDTO> employeePayrollDTOList = new ArrayList<INDPayrollDTO>();
+	    if(emp != null && emp.size() >0) {
+	    	  
+	    	  ObjectMapper mapper = new ObjectMapper();
+	    	  
+	    	  
+	    	  indPaysheetFrequencyDTO = iNDPayrollCommonUtil.indPaySheetFrequencyDTODetails(emp,indPaysheetFrequencyDTO);
+
+			  
+ 	    		/*//exclude employees logic start
+ 	    		List<INDPayrollDTO> ipDTOList = new ArrayList<>();
+	   	 	    for(INDPayrollDTO ipDTO : indPaysheetFrequencyDTO.getIndPayrollDTO()) {
+	   	 	    	if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(ipDTO.getIndEmpPayrollUUID())) {
+	   	 	    		ipDTOList.add(ipDTO);
+	   	 	    	}
+	   	 	    }*/
+				//generate the list of employes required to run the payroll 
+	    	    JSONObject jsonEmployeeObject = null;
+	    		for(EmployeeSessionIndPayroll employeeSession : emp) {
+		 			INDPayrollDTO indDTO = new INDPayrollDTO();
+		 			jsonEmployeeObject = new JSONObject(employeeSession.getJsonIndEmployeePayrollCache());
+		 			indDTO.setEmployee(jsonEmployeeObject.getLong("employee"));
+		 			indDTO.setEmpName(jsonEmployeeObject.getString("empName"));
+		 			indDTO.setOvertimeHours(jsonEmployeeObject.getString("overtimeHours"));
+		 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("grossPay")));
+		 			indDTO.setNetPay(new BigDecimal(jsonEmployeeObject.getString("netPay")));
+		 			indDTO.setRegularHrsAmt(new BigDecimal(jsonEmployeeObject.getString("regularHrsAmt")));
+		 			indDTO.setNoOfLeaves(new BigDecimal(jsonEmployeeObject.getString("noOfLeaves")));
+		 			indDTO.setNoOfDays(new BigDecimal(jsonEmployeeObject.getString("noOfDays")));
+		 			indDTO.setTotalHours(Double.valueOf(jsonEmployeeObject.getLong("totalHours")));
+		 			indDTO.setTds(new BigDecimal(jsonEmployeeObject.getString("tds")));
+		 			indDTO.setIndEmpPayrollUUID(jsonEmployeeObject.getString("indEmpPayrollUUID"));
+		 			indDTO.setPaySheetFrequencyUUID(jsonEmployeeObject.getString("paySheetFrequencyUUID"));
+		 			indDTO.setEmployeeDesignationType(jsonEmployeeObject.getString("employeeDesignationType"));
+		 			indDTO.setApproverStatus(jsonEmployeeObject.getString("approverStatus"));
+		 			indDTO.setEmpId(jsonEmployeeObject.getString("empId"));
+		 			indDTO.setRegularHours(jsonEmployeeObject.getString("regularHours"));
+		 			indDTO.setCandidateId(jsonEmployeeObject.getLong("candidateId"));
+		 			indDTO.setPayCheckDate(jsonEmployeeObject.getString("payCheckDate"));
+		 			indDTO.setPayType(jsonEmployeeObject.getString("payType"));
+		 			indDTO.setProfessionalTax(new BigDecimal(jsonEmployeeObject.getString("professionalTax")));
+		 			indDTO.setPayrollPaySlipInd(jsonEmployeeObject.getLong("payrollPaySlipInd"));
+		 			indDTO.setCreatedDate(jsonEmployeeObject.getString("createdDate"));
+		 			indDTO.setUpdatedDate(jsonEmployeeObject.getString("updatedDate"));
+		 			indDTO.setLopAmount(new BigDecimal(jsonEmployeeObject.getString("lopAmount")));
+		 			indDTO.setCreatedBy(jsonEmployeeObject.getLong("createdBy"));
+		 			indDTO.setUpdatedBy(jsonEmployeeObject.getLong("updatedBy"));
+		 			
+		 			//we are converting jsonString to the list of AssociatePayrollPayheadHistoryDTO by using mapper .
+		 			if(StringUtils.isNotBlank(employeeSession.getJsonPayHeadHistory())) {
+		 				indDTO.setPayHeadHistoryDTOList(Arrays.asList(mapper.readValue(employeeSession.getJsonPayHeadHistory(), AssociatePayrollPayheadHistoryDTO[].class)));
+		 			} 
+		 			//we are converting jsonString to the list of AssociateLoanAndAdvancesHistoryDTO by using mapper .
+		 			if(StringUtils.isNotBlank(employeeSession.getJsonLoanAdvHistory())) {
+		 					indDTO.setLoanAdvHistoryDTOList(Arrays.asList(mapper.readValue(employeeSession.getJsonLoanAdvHistory(), AssociateLoanAndAdvancesHistoryDTO[].class)));
+		 			}
+		 			
+		 			employeePayrollDTOList.add(indDTO);
+		 		}
+	    	indPaysheetFrequencyDTO.setIndPayrollDTO(employeePayrollDTOList);
 	    	List<INDPayrollDTO> payrollDTOList = indPaysheetFrequencyDTO.getIndPayrollDTO().stream().filter(employeePayrollDTO ->employeePayrollDTO.getIndEmpPayrollUUID().equalsIgnoreCase(associatePayrollPayheadHistoryDTO.getIndEmpPayrollUUID())).collect(Collectors.toList());
 	    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	    	if(payrollDTOList != null && !payrollDTOList.isEmpty()) {
@@ -284,22 +421,108 @@ public class PayrollRestController {
 		Response<String> response = new Response<>();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	List<EmployeeSessionIndPayroll> emp = indPayrollService.getEmployeeSessionList(indEmployeePayrollDTO.getPaySheetFrequencyUUID());
+	 	 ObjectMapper mapper = new ObjectMapper();
 		try {
 			if(loginUser != null){
-			 	List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList = null;
-			 	Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indEmployeePayrollDTO.getPaySheetFrequencyUUID());
-			 	INDPayrollDTO indPayrollDTO = null;
-			 	if(sessionObj != null) {
-				    	IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
-				    	List<INDPayrollDTO> payrollDTOList = indPaysheetFrequencyDTO.getIndPayrollDTO().stream().filter(employeePayrollDTO ->employeePayrollDTO.getIndEmpPayrollUUID().equalsIgnoreCase(indEmployeePayrollDTO.getIndEmpPayrollUUID())).collect(Collectors.toList());
+			 	List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList = new ArrayList<AssociatePayrollPayheadHistoryDTO>();
+			 	IndApprovePayrollDTO indApprovePayrollDTO = new IndApprovePayrollDTO(); 
+//			 	Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indEmployeePayrollDTO.getPaySheetFrequencyUUID());
+			 	INDPayrollDTO indPayrollDTO = new INDPayrollDTO();
+			 	if(emp != null && emp.size() > 0) {
+			 		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
+			 	      indPaysheetFrequencyDTO = iNDPayrollCommonUtil.indPaySheetFrequencyDTODetails(emp,indPaysheetFrequencyDTO);
+		 			//generate the list of employes required to run the payroll 
+			 	      
+			 	    List<INDPayrollDTO> employeePayrollDTOList = new ArrayList<INDPayrollDTO>();
+			 	    JSONObject jsonEmployeeObject = null;
+		    		for(EmployeeSessionIndPayroll employeeSession : emp) {
+			 			INDPayrollDTO indDTO = new INDPayrollDTO();
+			 			jsonEmployeeObject = new JSONObject(employeeSession.getJsonIndEmployeePayrollCache());
+			 			indDTO.setEmployee(jsonEmployeeObject.getLong("employee"));
+			 			indDTO.setEmpName(jsonEmployeeObject.getString("empName"));
+			 			indDTO.setOvertimeHours(jsonEmployeeObject.getString("overtimeHours"));
+			 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("grossPay")));
+			 			indDTO.setNetPay(new BigDecimal(jsonEmployeeObject.getString("netPay")));
+			 			indDTO.setRegularHrsAmt(new BigDecimal(jsonEmployeeObject.getString("regularHrsAmt")));
+			 			indDTO.setNoOfLeaves(new BigDecimal(jsonEmployeeObject.getString("noOfLeaves")));
+			 			indDTO.setNoOfDays(new BigDecimal(jsonEmployeeObject.getString("noOfDays")));
+			 			indDTO.setTotalHours(Double.valueOf(jsonEmployeeObject.getLong("totalHours")));
+			 			indDTO.setTds(new BigDecimal(jsonEmployeeObject.getString("tds")));
+			 			indDTO.setIndEmpPayrollUUID(jsonEmployeeObject.getString("indEmpPayrollUUID"));
+			 			indDTO.setPaySheetFrequencyUUID(jsonEmployeeObject.getString("paySheetFrequencyUUID"));
+			 			indDTO.setEmployeeDesignationType(jsonEmployeeObject.getString("employeeDesignationType"));
+			 			indDTO.setApproverStatus(jsonEmployeeObject.getString("approverStatus"));
+			 			indDTO.setEmpId(jsonEmployeeObject.getString("empId"));
+			 			indDTO.setRegularHours(jsonEmployeeObject.getString("regularHours"));
+			 			indDTO.setCandidateId(jsonEmployeeObject.getLong("candidateId"));
+			 			indDTO.setPayCheckDate(jsonEmployeeObject.getString("payCheckDate"));
+			 			indDTO.setPayType(jsonEmployeeObject.getString("payType"));
+			 			indDTO.setProfessionalTax(new BigDecimal(jsonEmployeeObject.getString("professionalTax")));
+			 			indDTO.setPayrollPaySlipInd(jsonEmployeeObject.getLong("payrollPaySlipInd"));
+			 			indDTO.setCreatedDate(jsonEmployeeObject.getString("createdDate"));
+			 			indDTO.setUpdatedDate(jsonEmployeeObject.getString("updatedDate"));
+			 			indDTO.setLopAmount(new BigDecimal(jsonEmployeeObject.getString("lopAmount")));
+			 			indDTO.setCreatedBy(jsonEmployeeObject.getLong("createdBy"));
+			 			indDTO.setUpdatedBy(jsonEmployeeObject.getLong("updatedBy"));
+			 			
+			 			//we are converting jsonString to the list of AssociatePayrollPayheadHistoryDTO by using mapper .
+			 			if(StringUtils.isNotBlank(employeeSession.getJsonPayHeadHistory())) {
+			 				indDTO.setPayHeadHistoryDTOList(Arrays.asList(mapper.readValue(employeeSession.getJsonPayHeadHistory(), AssociatePayrollPayheadHistoryDTO[].class)));
+			 			} 
+			 			//we are converting jsonString to the list of AssociateLoanAndAdvancesHistoryDTO by using mapper .
+			 			if(StringUtils.isNotBlank(employeeSession.getJsonLoanAdvHistory())) {
+			 					indDTO.setLoanAdvHistoryDTOList(Arrays.asList(mapper.readValue(employeeSession.getJsonLoanAdvHistory(), AssociateLoanAndAdvancesHistoryDTO[].class)));
+			 			}
+			 			
+			 			employeePayrollDTOList.add(indDTO);
+			 		}
+		    	       indPaysheetFrequencyDTO.setIndPayrollDTO(employeePayrollDTOList);
+		    	       Gson gson = new GsonBuilder().create();
+		    	       JSONObject employeeJsonObject = new JSONObject();
+				    	List<INDPayrollDTO> payrollDTOList = indPaysheetFrequencyDTO.getIndPayrollDTO()
+				    			                           .stream()
+				    			                           .filter(employeePayrollDTO ->employeePayrollDTO.getIndEmpPayrollUUID().equalsIgnoreCase(indEmployeePayrollDTO.getIndEmpPayrollUUID()))
+				    			                           .collect(Collectors.toList());
 				    	if(payrollDTOList != null && !payrollDTOList.isEmpty()) {
 				    	    indPayrollDTO = payrollDTOList.iterator().next();
 				    		associatePayrollPayheadDTOList = iNDPayrollCommonUtil.associatePayrollPayheadAdjustIndSessionList(indPayrollDTO.getPayHeadHistoryDTOList(), indPayrollDTO, indEmployeePayrollDTO, loginUser, orgLocation);
+				    		EmployeeSessionIndPayroll employeeSesseion= indPayrollService.updateThePayHeadHistoryJsonObjectBYExclueUUID(indPayrollDTO.getIndEmpPayrollUUID());
 				    		indPayrollDTO.setPayHeadHistoryDTOList(associatePayrollPayheadDTOList);
-				    		indPayrollDTO.setGrossPay(indEmployeePayrollDTO.getGrossPay());
-				    		indPayrollDTO.setNetPay(indEmployeePayrollDTO.getNetPay());
-				    		indPayrollDTO.setUpdatedBy(loginUser.getId());
-				    		indPayrollDTO.setUpdatedDate(new Date());
+				    		employeeSesseion.setJsonPayHeadHistory(gson.toJson(associatePayrollPayheadDTOList));
+				    		
+				    		if(StringUtils.isNotBlank(indPayrollDTO.getEmpId())) {
+			   	 	    		employeeJsonObject.put("empId", indPayrollDTO.getEmpId());
+			   	 	    	}else {
+			   	 	    		employeeJsonObject.put("empId", "");
+			   	 	    	}
+		   	 	           employeeJsonObject.put("employee", indPayrollDTO.getEmployee());
+		   	 	           employeeJsonObject.put("empName", indPayrollDTO.getEmpName());
+		   	 	           employeeJsonObject.put("regularHours", indPayrollDTO.getRegularHours());
+		   	 	           employeeJsonObject.put("overtimeHours", indPayrollDTO.getOvertimeHours());
+		   	 	           employeeJsonObject.put("lopAmount", indPayrollDTO.getLopAmount());
+		   	 	           employeeJsonObject.put("regularHrsAmt", indPayrollDTO.getRegularHrsAmt());
+		   	 	           employeeJsonObject.put("noOfLeaves", indPayrollDTO.getNoOfLeaves());
+		   	 	           employeeJsonObject.put("noOfDays", indPayrollDTO.getNoOfDays());
+		   	 	           employeeJsonObject.put("totalHours", indPayrollDTO.getTotalHours());
+		   	 	           employeeJsonObject.put("candidateId", indPayrollDTO.getCandidateId());
+		   	 	           employeeJsonObject.put("approverStatus", indPayrollDTO.getApproverStatus());
+		   	 	           employeeJsonObject.put("employeeDesignationType", indPayrollDTO.getEmployeeDesignationType());
+		   	 	           employeeJsonObject.put("tds", indPayrollDTO.getTds());
+		   	 	           employeeJsonObject.put("professionalTax", indPayrollDTO.getProfessionalTax());
+		   	 	           employeeJsonObject.put("payType", indPayrollDTO.getPayType());
+		   	 	           employeeJsonObject.put("indEmpPayrollUUID", indPayrollDTO.getIndEmpPayrollUUID());
+		   	 	           employeeJsonObject.put("payrollPaySlipInd", indPayrollDTO.getPayrollPaySlipInd());
+		   	 	           employeeJsonObject.put("paySheetFrequencyUUID", indPayrollDTO.getPaySheetFrequencyUUID());
+		   	 	           employeeJsonObject.put("payCheckDate", indPayrollDTO.getPayCheckDate());
+		   	 	           employeeJsonObject.put("createdDate", indPayrollDTO.getCreatedDate());
+		   	 	           employeeJsonObject.put("createdBy", indPayrollDTO.getCreatedBy());
+		   	 	           employeeJsonObject.put("netPay", indEmployeePayrollDTO.getNetPay());
+				    	   employeeJsonObject.put("grossPay", indEmployeePayrollDTO.getGrossPay());
+				    	   employeeJsonObject.put("updatedBy", loginUser.getId());
+			   	 	       employeeJsonObject.put("updatedDate", commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),  new Date()));
+			   	 	       employeeSesseion.setJsonIndEmployeePayrollCache(employeeJsonObject.toString());
+				    	   indPayrollService.saveEmployeeSessionIndPayroll(employeeSesseion);
 				    	}
 			   	}else {
 				   		IndEmployeePayroll indEmployeePayroll = indPaysheetFrequencyService.getIndEmployeePayrollByEmpPayrollUUID(indEmployeePayrollDTO.getIndEmpPayrollUUID()).getObject();
@@ -340,11 +563,60 @@ public class PayrollRestController {
 	 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			if(loginUser != null){
-			 	List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList = null;
-			 	Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indEmployeePayrollDTO.getPaySheetFrequencyUUID());
-			 	if(sessionObj != null) {
-				    	IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
+			 	List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList = new ArrayList<AssociatePayrollPayheadHistoryDTO>();
+			 	List<EmployeeSessionIndPayroll> emp = indPayrollService.getEmployeeSessionList(indEmployeePayrollDTO.getPaySheetFrequencyUUID());
+			 	 ObjectMapper mapper = new ObjectMapper();
+			 	 
+			// 	Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indEmployeePayrollDTO.getPaySheetFrequencyUUID());
+			 	if(emp != null && emp.size() > 0) {
+			 		 JSONObject employeeJsonObject = new JSONObject();
+			 		 Gson gson = new GsonBuilder().create();
+				    	IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
 				    	List<INDPayrollDTO> payrollDTOList = null ;
+			   	 	    List<INDPayrollDTO> employeePayrollDTOList = new ArrayList<INDPayrollDTO>();
+				 	    JSONObject jsonEmployeeObject = null;
+			    		for(EmployeeSessionIndPayroll employeeSession : emp) {
+				 			INDPayrollDTO indDTO = new INDPayrollDTO();
+				 			jsonEmployeeObject = new JSONObject(employeeSession.getJsonIndEmployeePayrollCache());
+				 			indDTO.setEmployee(jsonEmployeeObject.getLong("employee"));
+				 			indDTO.setEmpName(jsonEmployeeObject.getString("empName"));
+				 			indDTO.setOvertimeHours(jsonEmployeeObject.getString("overtimeHours"));
+				 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("grossPay")));
+				 			indDTO.setNetPay(new BigDecimal(jsonEmployeeObject.getString("netPay")));
+				 			indDTO.setRegularHrsAmt(new BigDecimal(jsonEmployeeObject.getString("regularHrsAmt")));
+				 			indDTO.setNoOfLeaves(new BigDecimal(jsonEmployeeObject.getString("noOfLeaves")));
+				 			indDTO.setNoOfDays(new BigDecimal(jsonEmployeeObject.getString("noOfDays")));
+				 			indDTO.setTotalHours(Double.valueOf(jsonEmployeeObject.getLong("totalHours")));
+				 			indDTO.setTds(new BigDecimal(jsonEmployeeObject.getString("tds")));
+				 			indDTO.setIndEmpPayrollUUID(jsonEmployeeObject.getString("indEmpPayrollUUID"));
+				 			indDTO.setPaySheetFrequencyUUID(jsonEmployeeObject.getString("paySheetFrequencyUUID"));
+				 			indDTO.setEmployeeDesignationType(jsonEmployeeObject.getString("employeeDesignationType"));
+				 			indDTO.setApproverStatus(jsonEmployeeObject.getString("approverStatus"));
+				 			indDTO.setEmpId(jsonEmployeeObject.getString("empId"));
+				 			indDTO.setRegularHours(jsonEmployeeObject.getString("regularHours"));
+				 			indDTO.setCandidateId(jsonEmployeeObject.getLong("candidateId"));
+				 			indDTO.setPayCheckDate(jsonEmployeeObject.getString("payCheckDate"));
+				 			indDTO.setPayType(jsonEmployeeObject.getString("payType"));
+				 			indDTO.setProfessionalTax(new BigDecimal(jsonEmployeeObject.getString("professionalTax")));
+				 			indDTO.setPayrollPaySlipInd(jsonEmployeeObject.getLong("payrollPaySlipInd"));
+				 			indDTO.setCreatedDate(jsonEmployeeObject.getString("createdDate"));
+				 			indDTO.setUpdatedDate(jsonEmployeeObject.getString("updatedDate"));
+				 			indDTO.setLopAmount(new BigDecimal(jsonEmployeeObject.getString("lopAmount")));
+				 			indDTO.setCreatedBy(jsonEmployeeObject.getLong("createdBy"));
+				 			indDTO.setUpdatedBy(jsonEmployeeObject.getLong("updatedBy"));
+				 			
+				 			//we are converting jsonString to the list of AssociatePayrollPayheadHistoryDTO by using mapper .
+				 			if(StringUtils.isNotBlank(employeeSession.getJsonPayHeadHistory())) {
+				 				indDTO.setPayHeadHistoryDTOList(Arrays.asList(mapper.readValue(employeeSession.getJsonPayHeadHistory(), AssociatePayrollPayheadHistoryDTO[].class)));
+				 			} 
+				 			//we are converting jsonString to the list of AssociateLoanAndAdvancesHistoryDTO by using mapper .
+				 			if(StringUtils.isNotBlank(employeeSession.getJsonLoanAdvHistory())) {
+				 					indDTO.setLoanAdvHistoryDTOList(Arrays.asList(mapper.readValue(employeeSession.getJsonLoanAdvHistory(), AssociateLoanAndAdvancesHistoryDTO[].class)));
+				 			}
+				 			
+				 			employeePayrollDTOList.add(indDTO);
+				 		}
+			    		indPaysheetFrequencyDTO.setIndPayrollDTO(employeePayrollDTOList);
 				    	if(StringUtils.isEmpty(indEmployeePayrollDTO.getAllEmployees())) {
 				    		payrollDTOList = indPaysheetFrequencyDTO.getIndPayrollDTO().stream().filter(employeePayrollDTO -> indEmployeePayrollDTO.getIndEmpPayrollUUIDList().contains(employeePayrollDTO.getIndEmpPayrollUUID())).collect(Collectors.toList());
 				    	}else {
@@ -379,10 +651,52 @@ public class PayrollRestController {
 					    			if(apphDTO.getPayrollPayheadType().equalsIgnoreCase("Deduction"))
 					    				dPay = dPay.add(apphDTO.getMonthly());
 					    		}
-					    		indPayrollDTO.setGrossPay(ePay);
+					    		
+					    		
+					    		
+					    		EmployeeSessionIndPayroll employeeSesseion= indPayrollService.updateThePayHeadHistoryJsonObjectBYExclueUUID(indPayrollDTO.getIndEmpPayrollUUID());
+					    		indPayrollDTO.setPayHeadHistoryDTOList(associatePayrollPayheadDTOList);
+					    		employeeSesseion.setJsonPayHeadHistory(gson.toJson(associatePayrollPayheadDTOList));
+					    		
+					    		if(StringUtils.isNotBlank(indPayrollDTO.getEmpId())) {
+				   	 	    		employeeJsonObject.put("empId", indPayrollDTO.getEmpId());
+				   	 	    	}else {
+				   	 	    		employeeJsonObject.put("empId", "");
+				   	 	    	}
+			   	 	           employeeJsonObject.put("employee", indPayrollDTO.getEmployee());
+			   	 	           employeeJsonObject.put("empName", indPayrollDTO.getEmpName());
+			   	 	           employeeJsonObject.put("regularHours", indPayrollDTO.getRegularHours());
+			   	 	           employeeJsonObject.put("overtimeHours", indPayrollDTO.getOvertimeHours());
+			   	 	           employeeJsonObject.put("lopAmount", indPayrollDTO.getLopAmount());
+			   	 	           employeeJsonObject.put("regularHrsAmt", indPayrollDTO.getRegularHrsAmt());
+			   	 	           employeeJsonObject.put("noOfLeaves", indPayrollDTO.getNoOfLeaves());
+			   	 	           employeeJsonObject.put("noOfDays", indPayrollDTO.getNoOfDays());
+			   	 	           employeeJsonObject.put("totalHours", indPayrollDTO.getTotalHours());
+			   	 	           employeeJsonObject.put("candidateId", indPayrollDTO.getCandidateId());
+			   	 	           employeeJsonObject.put("approverStatus", indPayrollDTO.getApproverStatus());
+			   	 	           employeeJsonObject.put("employeeDesignationType", indPayrollDTO.getEmployeeDesignationType());
+			   	 	           employeeJsonObject.put("tds", indPayrollDTO.getTds());
+			   	 	           employeeJsonObject.put("professionalTax", indPayrollDTO.getProfessionalTax());
+			   	 	           employeeJsonObject.put("payType", indPayrollDTO.getPayType());
+			   	 	           employeeJsonObject.put("indEmpPayrollUUID", indPayrollDTO.getIndEmpPayrollUUID());
+			   	 	           employeeJsonObject.put("payrollPaySlipInd", indPayrollDTO.getPayrollPaySlipInd());
+			   	 	           employeeJsonObject.put("paySheetFrequencyUUID", indPayrollDTO.getPaySheetFrequencyUUID());
+			   	 	           employeeJsonObject.put("payCheckDate", indPayrollDTO.getPayCheckDate());
+			   	 	           employeeJsonObject.put("createdDate", indPayrollDTO.getCreatedDate());
+			   	 	           employeeJsonObject.put("createdBy", indPayrollDTO.getCreatedBy());
+			   	 	           
+			   	 	           employeeJsonObject.put("netPay", ePay.subtract(dPay));
+					    	   employeeJsonObject.put("grossPay", ePay);
+					    	   employeeJsonObject.put("updatedBy", loginUser.getId());
+				   	 	       employeeJsonObject.put("updatedDate", commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),  new Date()));
+				   	 	       employeeSesseion.setJsonIndEmployeePayrollCache(employeeJsonObject.toString());
+				   	 	       
+				   	 	        /*indPayrollDTO.setGrossPay(ePay);
 					    		indPayrollDTO.setNetPay(ePay.subtract(dPay));
 					    		indPayrollDTO.setUpdatedBy(loginUser.getId());
-					    		indPayrollDTO.setUpdatedDate(new Date());
+					    		indPayrollDTO.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),  new Date()));*/
+				    		
+					    	   indPayrollService.saveEmployeeSessionIndPayroll(employeeSesseion);
 				    		}
 				    	}
 			   	}else {
@@ -444,17 +758,23 @@ public class PayrollRestController {
 	
 	@SuppressWarnings({ "unused", "unchecked" })
 	@RequestMapping(value = { "/bulkPayAdjustmentsForFrequencyInd","/rest/bulkPayAdjustmentsForFrequencyInd" })
-	public ModelAndView bulkPayAdjustmentsForFrequencyInd(IndPaysheetFrequencyDTO indPaysheetFrequencyDTO, HttpServletRequest request) throws Exception
+	public ModelAndView bulkPayAdjustmentsForFrequencyInd(IndPaysheetFrequencyDTO indPaysheetFrequencyDTO,IndApprovePayrollDTO  indApprovePayrollDTO,HttpServletRequest request) throws Exception
 	{
 		ModelAndView modelAndView = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	List<EmployeeSessionIndPayroll> emp = indPayrollService.getEmployeeSessionList(indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
+	 	 ObjectMapper mapper = new ObjectMapper();
 	 	try {
 	 		if(loginUser != null){
 			 	List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList = null;
-			 	Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
-			 	if(sessionObj != null) {
-				    	indPaysheetFrequencyDTO = (IndPaysheetFrequencyDTO) sessionObj;
+//			 	Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indPaysheetFrequencyDTO.getPaySheetFrequencyUUID());
+			 	if(emp != null && emp.size() > 0) {
+			 		     indPaysheetFrequencyDTO = iNDPayrollCommonUtil.indPaySheetFrequencyDTODetails(emp,indPaysheetFrequencyDTO);
+			 			//generate the list of employes required to run the payroll 
+							List<INDPayrollDTO> ipDTOList = iNDPayrollCommonUtil.genarateTheListOfEmployeforIntitatePayroll(emp,indApprovePayrollDTO,mapper);
+				   	 	    indPaysheetFrequencyDTO.setIndPayrollDTO(ipDTOList);
+				   	 	    
 				    	modelAndView.addObject("payFrequencyEmployeeList", indPaysheetFrequencyDTO.getIndPayrollDTO());
 			   	}else {
 			   			List<INDPayrollDTO> indPayrollDTOList = new ArrayList<>();
@@ -487,11 +807,11 @@ public class PayrollRestController {
 	
 	@RequestMapping(value = { "/getPaySheetFrequencyDataInd", "/rest/getPaySheetFrequencyDataInd" })
 	@ResponseBody
-	public ResponseList<IndPaysheetFrequencyDTO> getPaySheetFrequencyList(IndPaysheetFrequencyDTO indpaysheetFrequencyDTO, @RequestParam(value = "paySheetFrequencyUUID", required = false) String searchValue, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ResponseList<IndPaysheetFrequencyDTO> getPaySheetFrequencyList(IndPaysheetFrequencyDTO indpaysheetFrequencyDTO, @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		String[] tableColumns = {"payRunId", "groupName", "frequencyStartDate", "payCheckDate", "type", "total", "approverStatus"};
+    	String[] tableColumns = {"payRunId", "groupName", "frequencyStartDate", "payCheckDate", "type", "total", "approverStatus"};
 	    int sortColumnIndex = 3; //by default sorting using Pay date
 		String sortColumnOrder = "desc"; //by default descending order
 		if(indpaysheetFrequencyDTO.getOrder() != null && !indpaysheetFrequencyDTO.getOrder().isEmpty()) {
@@ -500,7 +820,7 @@ public class PayrollRestController {
 		}
 		indpaysheetFrequencyDTO.setSortColumn(tableColumns[sortColumnIndex]);
 		indpaysheetFrequencyDTO.setSortOrder(sortColumnOrder);
-		
+		indpaysheetFrequencyDTO.setSearchValue(searchValue);
 		return indPayrollService.getPayPeriodListByOrgLocationId(orgLocation, indpaysheetFrequencyDTO);
 	}
 	

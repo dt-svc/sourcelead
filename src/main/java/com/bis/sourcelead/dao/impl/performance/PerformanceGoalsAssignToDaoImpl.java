@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.performance.PerformanceGoalsAssignToDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -87,6 +88,18 @@ public class PerformanceGoalsAssignToDaoImpl implements PerformanceGoalsAssignTo
 		return performanceGoalsAssignTo;
 		
 		
+	}
+
+
+	@Override
+	public List<PerformanceGoalsAssignTo> getPerformanceGoalsAssignToListByGoalId(Long goalId) throws Exception {
+	
+		logger.debug("In getPerformanceGoalsAssignToListByGoalId method");
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "from PerformanceGoalsAssignTo assignTo where assignTo.goalId.id = :goalId and assignTo.status = '1' ";
+		List<PerformanceGoalsAssignTo> performanceGoalsAssignToList = session.createQuery(query).setLong("goalId", goalId).list();
+		return performanceGoalsAssignToList;
 	}
 
 }

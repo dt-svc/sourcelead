@@ -41,7 +41,7 @@ window.onload = function () {
 		</div>
 		<div class="pull-right brud-crum">
 			<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}"> Home</a>
-			&raquo;<a href="${SourceLeadWeb_pmsUrl}/performanceTeamGoalsList"> Goals List</a>
+			&raquo;<a href="${SourceLeadWeb_pmsUrl}/performanceTeamGoalsList">Team Goals List</a>
 			&raquo; Add Team Goal
 		</div>
 	</section>
@@ -86,7 +86,7 @@ window.onload = function () {
 							<label class="col-md-3">Team<span class="text-danger paddingLeft">&nbsp;*</span></label>
 							<div class="col-md-9">
 								<select class="selectpicker form-control" id="performanceTeams"
-									name="teamId" field-name="Team" data-validation-optional="true">
+									name="teamId" field-name="Team" data-validation="required">
 									<option value="">--Select Team--</option>
 								</select>
 							</div>
@@ -147,7 +147,7 @@ window.onload = function () {
 		 <div class="clearfix"></div>       
 	        <div class="popupFoot text-right">
 	           <button type="button" class="slBtn md colorBtn" id="savePerformanceGoals" onclick="performanceGoals.savePerformanceGoals();" >Save</button>
-	           <button type="button" class="slBtn md popClose"  onclick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/performanceGoalsList'" >Cancel</button>
+	           <button type="button" class="slBtn md popClose"  onclick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/performanceTeamGoalsList'" >Cancel</button>
 	        </div>
 		    	 </form:form>
 		    </div>
