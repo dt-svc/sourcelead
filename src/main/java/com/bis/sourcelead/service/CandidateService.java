@@ -382,5 +382,7 @@ public interface CandidateService {
 	public void saveSourceleadDeletedCandidate(SourceleadDeletedCandidates sourceleadDeletedCandidates) throws Exception;
 
 	public List<CandidateSource> getCandidateSourceListByOrgLocationIdAndStatus(Long orgLocationId, int status) throws Exception;
+	
+	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId)throws Exception;
 
 }

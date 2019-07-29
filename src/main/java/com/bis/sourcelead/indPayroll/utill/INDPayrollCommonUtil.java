@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +21,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +57,7 @@ import com.bis.sourcelead.entity.Tds;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.indPayroll.dto.INDPayrollDTO;
+import com.bis.sourcelead.indPayroll.dto.IndApprovePayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndEmployeePayrollDTO;
 import com.bis.sourcelead.indPayroll.dto.IndPaysheetFrequencyDTO;
 import com.bis.sourcelead.indPayroll.dto.PreCheckINDPayrollDTO;
@@ -65,6 +69,7 @@ import com.bis.sourcelead.indPayroll.entity.IndPaysheetFrequency;
 import com.bis.sourcelead.indPayroll.service.AssociatePayrollPayheadHistoryService;
 import com.bis.sourcelead.payroll.dto.AssociatePayrollPayheadHistoryDTO;
 import com.bis.sourcelead.payroll.dto.PayrollConstant;
+import com.bis.sourcelead.payroll.entity.EmployeeSessionIndPayroll;
 import com.bis.sourcelead.payroll.entity.PayrollApprover;
 import com.bis.sourcelead.payroll.entity.PayrollLopHis;
 import com.bis.sourcelead.payroll.util.PayrollUtil;
@@ -327,7 +332,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				indPaysheetFrequency.setPayCheckDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),paysheetFrequencyDTO.getPayCheckDateStr()));
 			}
 			
-			indPaysheetFrequency.setApproverStatus(paysheetFrequencyDTO.getApproverStatus());
+			//indPaysheetFrequency.setApproverStatus(paysheetFrequencyDTO.getApproverStatus());
 			indPaysheetFrequency.setStatus(paysheetFrequencyDTO.getStatus());
 		    
 			List<IndEmployeePayroll> payrollList = getIndEmployeePayrollFromINDPayrollDTO(indPaysheetFrequency,paysheetFrequencyDTO.getIndPayrollDTO(),orgLocation);
@@ -360,7 +365,13 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		    indPaysheetFrequencyDTO.setApproverStatus(paysheetFrequency.getApproverStatus());
 		    indPaysheetFrequencyDTO.setStatus(paysheetFrequency.getStatus());
 		    
-		    indPaysheetFrequencyDTO.setIndPayrollDTO(getINDPayrollDTOFromIndEmployeePayroll(paysheetFrequency.getIndEmployeepayroll(),paysheetFrequency.getOrgLocation()));
+		    List<INDPayrollDTO> iNDPayrollDTOList =new ArrayList<>();
+		    List<INDPayrollDTO> dtoList =    getINDPayrollDTOFromIndEmployeePayroll(paysheetFrequency.getIndEmployeepayroll(),paysheetFrequency.getOrgLocation());
+		   for(  INDPayrollDTO obj : dtoList) {
+			   if(paysheetFrequency.getApproverStatus().equalsIgnoreCase(obj.getApproverStatus()))
+				   iNDPayrollDTOList.add(obj);
+		   }
+		    indPaysheetFrequencyDTO.setIndPayrollDTO(iNDPayrollDTOList);
 		    
 		    indPaysheetFrequencyDTO.setCreatedBy(paysheetFrequency.getCreatedBy());
 		    indPaysheetFrequencyDTO.setUpdatedBy(paysheetFrequency.getUpdatedBy());
@@ -373,12 +384,12 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	
 	public List<INDPayrollDTO> getINDPayrollDTOFromIndEmployeePayroll(Set<IndEmployeePayroll> payrollList,OrgLocations orgLocations) throws Exception {
 		List<INDPayrollDTO> payrollDTOList = new ArrayList<>();
-		if(payrollList != null && !payrollList.isEmpty()) {
+		System.out.println(" inside getINDPayrollDTOFromIndEmployeePayroll   >>>>>>>>>>>>>");
+		if(payrollList != null && !payrollList.isEmpty()) {		
 			for(IndEmployeePayroll employeePayroll :payrollList) {
 				if(employeePayroll != null && employeePayroll.getStatus() == 0)
 					continue;
 					
-				
 				INDPayrollDTO payrollDTO = new INDPayrollDTO();
 				if(employeePayroll.getId() != null) {
 					payrollDTO.setId(employeePayroll.getId());
@@ -439,17 +450,18 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				payrollDTO.setLopAmount(employeePayroll.getLopAmount());
 				payrollDTO.setTds(employeePayroll.getTds());
 				payrollDTO.setProfessionalTax(employeePayroll.getProfessionalTax());
-				payrollDTO.setApproverStatus(employeePayroll.getIndPaysheetFrequency().getApproverStatus());
+				payrollDTO.setApproverStatus(employeePayroll.getSubmitForAproverStatus());
 				payrollDTO.setPayType(employeePayroll.getPayType());
 				payrollDTO.setPaySheetFrequencyUUID(employeePayroll.getIndPaysheetFrequency().getPaySheetFrequencyUUID());
-				payrollDTO.setPayCheckDate(employeePayroll.getPayCheckDate());
+				payrollDTO.setPayCheckDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), employeePayroll.getPayCheckDate()));
 				payrollDTO.setCreatedBy(employeePayroll.getCreatedBy());
-				payrollDTO.setCreatedDate(employeePayroll.getCreatedDate());
+				payrollDTO.setCreatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), employeePayroll.getCreatedDate()));
 				payrollDTO.setUpdatedBy(employeePayroll.getUpdatedBy());
-				payrollDTO.setUpdatedDate(employeePayroll.getUpdatedDate());
+				payrollDTO.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),employeePayroll.getUpdatedDate()));
 				payrollDTOList.add(payrollDTO);
 			}
 		}
+		System.out.println(" completed getINDPayrollDTOFromIndEmployeePayroll   >>>>>>>>>>>>>");
 		 return payrollDTOList;
 	}
 	
@@ -490,12 +502,12 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				employeePayroll.setNetPay(payrollDTO.getNetPay());
 				employeePayroll.setTds(payrollDTO.getTds());
 				employeePayroll.setProfessionalTax(payrollDTO.getProfessionalTax());
-				employeePayroll.setPayCheckDate(payrollDTO.getPayCheckDate());
+				employeePayroll.setPayCheckDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), payrollDTO.getPayCheckDate()));
 				employeePayroll.setCreatedBy(payrollDTO.getCreatedBy());
-				employeePayroll.setCreatedDate(payrollDTO.getCreatedDate());
+				employeePayroll.setCreatedDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), payrollDTO.getCreatedDate()));
 				employeePayroll.setUpdatedBy(payrollDTO.getUpdatedBy());
-				employeePayroll.setUpdatedDate(payrollDTO.getUpdatedDate());
-				employeePayroll.setSubmitForAproverStatus(payrollDTO.getApproverStatus());
+				employeePayroll.setUpdatedDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), payrollDTO.getUpdatedDate()));
+//				employeePayroll.setSubmitForAproverStatus(payrollDTO.getApproverStatus());
 				employeePayroll.setStatus(indPaysheetFrequency.getStatus());
 				List<AssociatePayrollPayheadHistory> payHeadHistoryList = null;
 				if(employeePayroll != null && employeePayroll.getId() != null) {
@@ -746,21 +758,23 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	
 	@SuppressWarnings("null")
 	public List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadAdjustIndSessionList(List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOList, INDPayrollDTO indPayrollDTO, IndEmployeePayrollDTO indEmployeePayrollDTO, User loginUser, OrgLocations orgLocation) throws Exception{
+		List<AssociatePayrollPayheadHistoryDTO> associatePayrollPayheadDTOLists = new ArrayList<AssociatePayrollPayheadHistoryDTO>();
 		if(indEmployeePayrollDTO != null && indEmployeePayrollDTO.getAssociateSalaryPayheadIndEarningList() != null) {
 			for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndEarningList()) {
 				if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
-					associatePayrollPayheadDTOList.add(associatePayrollPayheadAdjustIndSession(indPayrollDTO, payHeadHistoryDTO, loginUser, orgLocation));
+					associatePayrollPayheadDTOLists.add(associatePayrollPayheadAdjustIndSession(indPayrollDTO, payHeadHistoryDTO, loginUser, orgLocation));
 				}
 			}
 		}
 		if(indEmployeePayrollDTO != null && indEmployeePayrollDTO.getAssociateSalaryPayheadIndDeductionList() != null) {
 			for(AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO : indEmployeePayrollDTO.getAssociateSalaryPayheadIndDeductionList()) {
 				if(payHeadHistoryDTO.getMonthlyOld() != payHeadHistoryDTO.getMonthly()) {
-					associatePayrollPayheadDTOList.add(associatePayrollPayheadAdjustIndSession(indPayrollDTO, payHeadHistoryDTO, loginUser, orgLocation));
+					associatePayrollPayheadDTOLists.add(associatePayrollPayheadAdjustIndSession(indPayrollDTO, payHeadHistoryDTO, loginUser, orgLocation));
 				}
 			}
 		}
-		return associatePayrollPayheadDTOList;
+		associatePayrollPayheadDTOLists.addAll(associatePayrollPayheadDTOList);
+		return associatePayrollPayheadDTOLists;
 	}
 	
 	public AssociatePayrollPayheadHistoryDTO associatePayrollPayheadAdjustIndSession(INDPayrollDTO indPayrollDTO, AssociatePayrollPayheadHistoryDTO payHeadHistoryDTO, User loginUser, OrgLocations orgLocation) throws Exception {
@@ -1558,6 +1572,91 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 	}
 	
 	return ph;
+	}
+
+
+
+	/**
+	 * @author Laxman
+	 * @param emp
+	 * @param indApprovePayrollDTO
+	 * @param mapper
+	 * @return
+	 * @throws Exception
+	 */
+	public List<INDPayrollDTO> genarateTheListOfEmployeforIntitatePayroll(List<EmployeeSessionIndPayroll> emp,IndApprovePayrollDTO indApprovePayrollDTO, ObjectMapper mapper) throws Exception {
+		List<INDPayrollDTO> ipDTOList = new ArrayList<>();
+		   JSONObject jsonEmployeeObject = null;
+		    for(EmployeeSessionIndPayroll employeeSession : emp) {
+		    	if(!Arrays.asList(indApprovePayrollDTO.getExcludeEmpPayrollUUID()).contains(employeeSession.getExcludeUUID())) {
+		    		INDPayrollDTO indDTO = new INDPayrollDTO();
+		    		
+		    		jsonEmployeeObject = new JSONObject(employeeSession.getJsonIndEmployeePayrollCache());
+		 			indDTO.setEmployee(jsonEmployeeObject.getLong("employee"));
+		 			indDTO.setEmpName(jsonEmployeeObject.getString("empName"));
+		 			indDTO.setOvertimeHours(jsonEmployeeObject.getString("overtimeHours"));
+		 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("grossPay")));
+		 			indDTO.setNetPay(new BigDecimal(jsonEmployeeObject.getString("netPay")));
+		 			indDTO.setRegularHrsAmt(new BigDecimal(jsonEmployeeObject.getString("regularHrsAmt")));
+		 			indDTO.setNoOfLeaves(new BigDecimal(jsonEmployeeObject.getString("noOfLeaves")));
+		 			indDTO.setNoOfDays(new BigDecimal(jsonEmployeeObject.getString("noOfDays")));
+		 			indDTO.setTotalHours(Double.valueOf(jsonEmployeeObject.getLong("totalHours")));
+		 			indDTO.setTds(new BigDecimal(jsonEmployeeObject.getString("tds")));
+		 			indDTO.setIndEmpPayrollUUID(jsonEmployeeObject.getString("indEmpPayrollUUID"));
+		 			indDTO.setPaySheetFrequencyUUID(jsonEmployeeObject.getString("paySheetFrequencyUUID"));
+		 			indDTO.setEmployeeDesignationType(jsonEmployeeObject.getString("employeeDesignationType"));
+		 			indDTO.setApproverStatus(jsonEmployeeObject.getString("approverStatus"));
+		 			indDTO.setEmpId(jsonEmployeeObject.getString("empId"));
+		 			indDTO.setRegularHours(jsonEmployeeObject.getString("regularHours"));
+		 			indDTO.setCandidateId(jsonEmployeeObject.getLong("candidateId"));
+		 			indDTO.setPayCheckDate(jsonEmployeeObject.getString("payCheckDate"));
+		 			indDTO.setPayType(jsonEmployeeObject.getString("payType"));
+		 			indDTO.setProfessionalTax(new BigDecimal(jsonEmployeeObject.getString("professionalTax")));
+		 			indDTO.setPayrollPaySlipInd(jsonEmployeeObject.getLong("payrollPaySlipInd"));
+		 			indDTO.setCreatedDate(jsonEmployeeObject.getString("createdDate"));
+		 			indDTO.setUpdatedDate(jsonEmployeeObject.getString("updatedDate"));
+		 			indDTO.setLopAmount(new BigDecimal(jsonEmployeeObject.getString("lopAmount")));
+		 			indDTO.setCreatedBy(jsonEmployeeObject.getLong("createdBy"));
+		 			indDTO.setUpdatedBy(jsonEmployeeObject.getLong("updatedBy"));
+		 			
+		 			//we are converting jsonString to the list of AssociatePayrollPayheadHistoryDTO by using mapper .
+		 			if(StringUtils.isNotBlank(employeeSession.getJsonPayHeadHistory())) {
+		 				indDTO.setPayHeadHistoryDTOList(Arrays.asList(mapper.readValue(employeeSession.getJsonPayHeadHistory(), AssociatePayrollPayheadHistoryDTO[].class)));
+		 			} else {
+		 				indDTO.setPayHeadHistoryDTOList(Collections.EMPTY_LIST);
+		 			}
+		 			//we are converting jsonString to the list of AssociateLoanAndAdvancesHistoryDTO by using mapper .
+		 			if(StringUtils.isNotBlank(employeeSession.getJsonLoanAdvHistory())) {
+		 					indDTO.setLoanAdvHistoryDTOList(Arrays.asList(mapper.readValue(employeeSession.getJsonLoanAdvHistory(), AssociateLoanAndAdvancesHistoryDTO[].class)));
+		 			}else {
+		 				indDTO.setLoanAdvHistoryDTOList(Collections.EMPTY_LIST);
+		 			}
+		 			ipDTOList.add(indDTO);
+		    	}
+		    }
+		    return ipDTOList;
+	}
+
+
+
+	public IndPaysheetFrequencyDTO indPaySheetFrequencyDTODetails(List<EmployeeSessionIndPayroll> emp, IndPaysheetFrequencyDTO indPaysheetFrequencyDTO) throws Exception {
+		  JSONObject jsonObject= new JSONObject(emp.get(0).getJsonString());
+		  indPaysheetFrequencyDTO.setGroupName(jsonObject.getString("groupName"));
+	   	  indPaysheetFrequencyDTO.setFrequencyStartDateStr(jsonObject.getString("frequencyStartDateStr"));
+	   	  indPaysheetFrequencyDTO.setFrequencyEndDateStr(jsonObject.getString("frequencyEndDateStr"));
+	   	  indPaysheetFrequencyDTO.setPayCheckDateStr(jsonObject.getString("payCheckDateStr"));
+	   	  indPaysheetFrequencyDTO.setApproverStatus(jsonObject.getString("approverStatus"));
+	   	  indPaysheetFrequencyDTO.setPayRunId(jsonObject.getString("payRunId"));
+	   	  indPaysheetFrequencyDTO.setGroupId(jsonObject.getString("groupId"));
+	   	  indPaysheetFrequencyDTO.setActionPerformedBy(jsonObject.getString("actionPerformedBy"));
+	   	  indPaysheetFrequencyDTO.setOrgLocationId(jsonObject.getLong("orgLocationId"));
+	   	  indPaysheetFrequencyDTO.setCreatedDate(jsonObject.getString("createDate"));
+	   	  indPaysheetFrequencyDTO.setUpdatedDate(jsonObject.getString("updatedDate"));
+	   	  indPaysheetFrequencyDTO.setCreatedBy(jsonObject.getLong("createdBy"));
+	   	  indPaysheetFrequencyDTO.setUpdatedBy(jsonObject.getLong("updatedBy"));
+	   	  indPaysheetFrequencyDTO.setPaySheetFrequencyUUID(emp.get(0).getPaysheetUUID());
+	   	  indPaysheetFrequencyDTO.setStatus(Constants.RECORD_ACTIVE);
+		return indPaysheetFrequencyDTO;
 	}
 }
 
