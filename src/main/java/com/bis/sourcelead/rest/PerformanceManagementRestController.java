@@ -591,7 +591,7 @@ public class PerformanceManagementRestController {
 		
 		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		
-		String[] tableColumns = { "associateId", "associateName", "associateEmail", "associateRole", "reportingManager" };
+		String[] tableColumns = { "associateName", "associateId", "associateEmail", "associateRole", "reportingManager" };
 		int sortColumnIndex = 1; // by default sorting using updated date
 		String sortColumnOrder = "desc"; // by default descending order
 		if (performanceAppraisalAssignToListDTO.getOrder() != null && !performanceAppraisalAssignToListDTO.getOrder().isEmpty()) {

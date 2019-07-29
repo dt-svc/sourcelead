@@ -197,6 +197,7 @@ function saveTicket() {
 			}
 		}
 		var formData = getFormData1("addTicketManagementForm");
+		document.getElementById("addTicket").disabled = true;
 		$.ajax({
 			 type : "POST",
 			 data: formData,
