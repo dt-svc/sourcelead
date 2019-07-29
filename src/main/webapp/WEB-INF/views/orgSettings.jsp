@@ -219,10 +219,8 @@ function cancelOrgImg(){
 				   <img id="orgImage" data-id="orgLogoImage" onerror="predefineOrgImage(this);" src="${SourceLeadWeb_fileUrl}" alt="Org Image" class="comp-image img-responsive">
 				  
 				  <div class="btn-group uploadfile">
-					  <button type="button" class="btn btn-sm btn-primary">
-					  <i class="fa fa-upload"></i></button>
 					   <label class="btn btn-sm btn-primary">
-	                    Upload / Change<input type="file" name="file" id="uploadedImage" data-id='orgLogo'  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+	                    <i class="fa fa-upload"></i> Upload / Change<input type="file" name="file" id="uploadedImage" data-id='orgLogo'  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
 	 				  <c:if test="${!empty SourceLeadWeb_fileUrl}">
 		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
@@ -1034,14 +1032,14 @@ function cancelOrgImg(){
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
               <label class="clearfix">BSR Number <span class="text-danger">&nbsp;*</span></label>
 	           <div class="clearfix">
-	                <input type="text" id="paymentBSRNumber" data-min='9' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control" data-required="required"/>
+	                <input type="text" id="paymentBSRNumber" data-min='4' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control" data-required="required validate_int"/>
 	           </div>
            </div>
            
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
               <label class="noPad">MICR Code <b class="valStar">*</b></label>
 	           <div class="clearfix">
-	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control" data-required="required"/>
+	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control" data-required="required validate_int"/>
 	           </div>
            </div>
            </c:if>
@@ -2319,7 +2317,7 @@ function getSignaturePreview(){
 	
 	   $.ajax({
 			type : "POST",
-			url : atsUrl+"/getSignaturePreview?${_csrf.parameterName}=${_csrf.token}",
+			url : sourceleadUrl+"/getSignaturePreview?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				
 				$("#campaignSignatrue").html(result);
@@ -3490,7 +3488,7 @@ var validationSettings = {
 function cancelBtn(){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-	  location.replace(sourceleadUrl+"/settings/${SourceLeadWeb_orgLocationId}");
+	  location.replace(sourceleadUrl+"/settings");
 }
 
 </script>

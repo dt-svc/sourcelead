@@ -256,7 +256,7 @@
 		 <div class="clearfix mb">
             <div class="col-md-12">
               <div class="checkbox-new pull-left mt10">
-                <input id="feedbackCategory" class="checkbox-custom" name="feedbackCategory" type="checkbox" onclick="performanceManagement.checkFeedbackCategories();">
+                <input id="feedbackCategory" class="checkbox-custom" disabled  name="feedbackCategory" type="checkbox" onclick="performanceManagement.checkFeedbackCategories();">
                 <label for="feedbackCategory" class="checkbox-custom-label"></label>
                 <span class="ml10 text-muted">Feed back Categories</span>
               </div>
