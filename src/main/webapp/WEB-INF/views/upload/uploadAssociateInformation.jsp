@@ -175,12 +175,11 @@ function importAssociateBankDetail(){
  		    success : function(json) {
  		    	  
 	 		    	   $("#loading").removeAttr("style");
-			    	    if(json.insertedCount != 0){
-			 			    $("#msgDiv").html(json.insertedCount+ " Associates updated");
+			    	    if(json.count == 0){
+			    	    	$("#msgDiv").html("Should fill the atleast mandatory Fields").css({"background":"#d9534f"})
 			 			}else{
-			 				$("#msgDiv").html("Should fill the atleast mandatory Fields").css({"background":"#d9534f"})
+			 				 $("#msgDiv").html(json.insertedCount+ " Associates updated");
 			 			}
-		 			
 			    	    msgFadein();
 			 			if(json.pfErrorData != null && json.pfErrorData.length >0){
 			 				showFailedExcelData(json);

@@ -188,7 +188,7 @@ public class CrowdSourcingRequirementsRestController {
 	}
 	
 	
-	@RequestMapping(value = "/getCrowdSourcingRequirements")
+	@RequestMapping(value = "/getCrowdSourcingRequirements",method = RequestMethod.POST)
 	public @ResponseBody String getCrowdSourcingRequirements(@RequestParam(value = "requirementType", required = false) String requirementType,
 			@RequestParam(value = "offset", required = false) Integer offset,
 			@RequestParam(value = "postedOn", required = false) String postedOn,
