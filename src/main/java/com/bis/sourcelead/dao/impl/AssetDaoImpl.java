@@ -296,6 +296,7 @@ public class AssetDaoImpl implements AssetDao{
 		 query1.append("and (asset.slno like '%" + assetDTO.getSearchValue() + "%' ")
 		       .append("OR asset.assetCategory.categoryName like '%" + assetDTO.getSearchValue() + "%' ")
 		       .append("OR asset.model like '%" + assetDTO.getSearchValue() + "%' ")
+		       .append("OR asset.name like '%" + assetDTO.getSearchValue() + "%' ")
 		       .append("OR asset.macAddress like '%" + assetDTO.getSearchValue() + "%' ")
 			   .append("OR asset.workingStatus like '%" + assetDTO.getSearchValue() + "%' )");
 		    if(sqlDate != null) {
