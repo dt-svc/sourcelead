@@ -133,7 +133,7 @@ function getInvoiceTemplateList() {
 	           "render": function ( data, type, opt, meta ) {
 	        	   $("#requirementEmptyListMessage").val(2);
 	           		var result = "";
-	       		    result = result +"<td><a href='" + sourceleadUrl + "/customInvoice/editTemplate?uuid="+ opt.uuid +"&orgLocationId="+ opt.orgLocationId + "&orgRelationId="+ opt.orgRelationId +"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	       		    result = result +"<td><a href='" + vmsUrl + "/customInvoice/editTemplate?uuid="+ opt.uuid +"&orgLocationId="+ opt.orgLocationId + "&orgRelationId="+ opt.orgRelationId +"'><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		            return result;
 	            }
             },
@@ -174,7 +174,7 @@ function getInvoiceTemplateList() {
 	            	result +='		</a>';
 	            	result +='	</div>'; */
 	            	result +='	<div class="text-center">';
-	            	result +='		<a href="' + sourceleadUrl + '/customInvoice/editTemplate?uuid=' + opt.uuid + '&orgLocationId=' + opt.orgLocationId + '&orgRelationId=' + opt.orgRelationId + '" title="Edit Template" onclick="" class="add-applicant">';
+	            	result +='		<a href="' + vmsUrl + '/customInvoice/editTemplate?uuid=' + opt.uuid + '&orgLocationId=' + opt.orgLocationId + '&orgRelationId=' + opt.orgRelationId + '" title="Edit Template" onclick="" class="add-applicant">';
 	            	result +='			<i class="fa fa-edit"></i>';
 	            	result +='		</a>';
 	            	result +='	</div>';

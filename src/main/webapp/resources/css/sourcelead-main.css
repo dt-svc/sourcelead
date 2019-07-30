@@ -8369,17 +8369,17 @@ ul.horizentalTabStyles li a {
 	margin-bottom: 0;
 }
 .tabsMenu li {
-	background-color: #6C7686; border-radius: 0; color: #fff; min-height: 60px;
+	background-color: #6C7686; border-radius: 0; color: #fff; min-height: 40px;
 	border: none; margin-right: 3px; min-width: 125px; text-align: center; float: left;
 }
 .tabsMenu li a {
-	color: #fff; padding: 5px 30px; line-height: 50px; display: block;
+	color: #fff; padding: 5px 30px; line-height: 35px; display: block;
 }
 .tabsMenu li.current {
 	border: none;
 	-webkit-box-shadow: inset 0 -15px 0px -6px #0084bf;
 	-moz-box-shadow: inset 0 -15px 0px -6px #0084bf;
-	box-shadow: inset 0 -15px 0px -6px #0084bf;
+	box-shadow: inset 0 -10px 0px -4px #0084bf;
 }
 .tablelist-wrap {
 	width: 100%; border: 1px solid rgba(151,151,151, 0.2);
@@ -8448,6 +8448,9 @@ ul.horizentalTabStyles li a {
 }
 .minHeightcol5 .col-md-5 {
 	min-height: 75px;	
+}
+.minHeightcol6 .col-md-6 {
+	min-height: 65px;	
 }
 .contentWraper .selectUser .btn-default, .contentWraper .er .btn-default, .contentWraper .bg-blue {
 	background-color: #0084bf !important; border-color: transparent !important; border-radius: 3px;
@@ -8547,7 +8550,7 @@ table.tableNetpay thead > tr >  th {
 .radioStyles [type="radio"]:checked + label:before,
 .radioStyles [type="radio"]:not(:checked) + label:before {
     content: ''; position: absolute; left: 0; top: 0; width: 18px; height: 18px;
-    border: 1px solid #848484; border-radius: 100%; background: #fff;
+    border: 1px solid #ddd; border-radius: 100%; background: #fff;
 }
 .radioStyles [type="radio"]:checked + label:after,
 .radioStyles [type="radio"]:not(:checked) + label:after {
@@ -9453,6 +9456,9 @@ background: url("../images/head-icons.svg"); background-repeat: no-repeat; backg
 .guestactionroleSVG {
 background: url("../images/candidates.svg"); background-repeat: no-repeat; background-size: 90px; background-position: 0 -17px; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
 }
+.ticketManagementSVG {
+	background: url("../images/ticketManagement.svg"); background-repeat: no-repeat; background-size: 42px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+	}
 .settingConfigure .btn {
 	padding: 1px 8px; background: #fbfbfb;
 }
@@ -9589,13 +9595,6 @@ input[type=range]::-moz-range-track {
 /* Slider range class ends */
 .descriptionTxtarea .note-editable {
   min-height: 150px; max-height: 250px;
-}
-
-.media-object {
-    width: 55px; height: 65px; margin: 5px 0px 0px 0px;
-}
-.mediaObject {
-    width: 45px; height: 45px; margin: 5px 0px 0px 0px; position: absolute; right: 10%; top: 0px;
 }
 .tdVmiddle tr td {
 	vertical-align: middle !important;
@@ -9735,6 +9734,232 @@ min-height: 260px;
 }
 .tableNoborder table tfoot {
 	background-color: #f5f5f5;
+}
+.qcProgress {
+	width: 100%; background-color: #f0f0f0;
+}
+.qcProgress_inner {
+	height: 15px;
+}
+.ticketMgIC {
+    width: 28px; height: 28px; display: inline-block; background-image: url(../images/ticketManagement.svg);
+    background-position: center center; background-repeat: no-repeat; background-size: 28px;
+}
+ul.actTicketUL {
+	margin:50px 0 0 0; position: relative;
+}
+ul.actTicketUL li a {
+	color: #b0b0b0;
+}
+ul.actTicketUL li {
+	padding:10px 25px 10px 15px; position: relative;
+}
+.project_tabs.projectTabsborder {
+	border: 1px solid #dedede;
+}
+ul.actTicketUL li.actTicketList:before {
+	left: 100%; top: 50%; border: solid transparent; content: " "; height: 0; width: 0;
+	position: absolute; pointer-events: none; border-color: rgba(194, 225, 245, 0);
+	border-left-color: #368ee0; border-width: 20px; margin-top: -20px; z-index: 9;
+}
+ul.actTicketUL li.actTicketList{
+	color: #404040; background: #f0f0f0;
+}
+ul.actTicketUL li.actTicketList a{
+	color: #303030; text-transform: uppercase;
+}
+.projectTabsBorder {
+	border: 1px solid #dedede;
+}
+.priorityImage {
+	width: 25px; height: 25px; display: block; margin: 0 auto;
+}
+.priorityImage img {
+	width: 100%; height: 100%; border-radius: 50%;
+}
+.col2Custom .col-md-2 {
+	width: 12%;
+}
+.assigNeeImg {
+   padding: 0; width: 35px; height: 35px; float: left; position: relative;
+}
+.assigNeeImg img {
+	max-height: 100%; border-radius: 50%; position: relative; top: -5px;
+}
+.clientInterviews .ui-datepicker {
+	width: 100%;
+}
+.clientInterviews .ui-widget-header {
+	color: #a21d24 !important; background: transparent !important; font-weight: normal;
+}
+.clientInterviews .ui-state-default, .clientInterviews .ui-widget-content .ui-state-default, .clientInterviews .ui-widget-header .ui-state-default {
+	border: 1px solid #e6e6e6; color: #666; font-weight: normal; background: transparent;
+}
+.clientInterviews .ui-datepicker .ui-datepicker-header {
+	z-index: 100 !important;
+}
+input.visaCalendarInput {
+border:none; width: 20px; height: 20px; float: left; margin-right: 10px; cursor: pointer; color: transparent;
+}
+.visaCalendarInput.calendar {
+background-size: 15px !important;
+}
+.ind_bankacountSVG {
+	background: url("../images/ind_bankSVG.svg"); background-repeat: no-repeat; background-size: 50px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+	}
+	.ind_payrollSVG {
+	background: url("../images/ind_payroll.svg"); background-repeat: no-repeat; background-size: 50px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+	}
+.newRepGrid .perfDashCta h3 {
+	padding-top: 10px;
+}
+.newRepGrid .perfDashCta:hover {
+	background: #fff;
+}
+.fontSize14 {
+	font-size: 14px;
+}
+.goalsDash .col-md-2 {
+	width: 20%;
+}
+/*
+.tableCardmodel table {
+	width: 100%; border-collapse: separate; border-spacing: 0 10px;
+}
+.tableCardmodel table thead {
+	background-color: #fff; padding: 15px 15px; border: none; min-height: 40px; line-height: 40px;
+}
+.tableCardmodel table tr th, .tableCardmodel table tr td  {
+ 	text-align: left; width: 200px; padding:0px 15px; 
+}
+.tableCardmodel table tr th:nth-child(1), .tableCardmodel table tr td:nth-child(1)  {
+	width: 475px;
+}
+.tableCardmodel table tr th:nth-last-child(1), .tableCardmodel table tr td:nth-last-child(1)  {
+	width: 125px;
+}
+.tableCardmodel table tbody tr {
+	background-color: #fff; margin:0; border-radius: 3px; webkit-box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+    box-shadow: 0 1px 4px rgba(57,73,76,0.35);
+}
+.tableCardmodel table tbody tr h4.media-heading{
+	font-size: 16px;
+}
+*/
+.tableCardmodel table {
+	width: 100%; border-collapse: collapse; border: 1px solid #e0e0e0; border-radius: 10px;
+	box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+}
+.tableCardmodel table thead {
+	background-color:rgba(0, 0, 0, 0.1); padding: 15px 15px; min-height: 40px; line-height: 40px;
+}
+.tableCardmodel table tr th  {
+	text-align: left; padding:2px 15px; color: #606060;
+}
+.tableCardmodel table tr td  {
+ 	text-align: left; padding:15px;
+}
+.tableCardmodel table tr {
+	border-bottom:1px solid #ededed;
+}
+.tableCardmodel table tr:last-child {
+	border-bottom:1px solid #e0e0e0;
+}
+.tableCardmodel table tbody tr {
+	background-color: #fff;
+}
+.tableCardmodel table tbody tr h4.media-heading{
+	font-size: 16px;
+}
+.progress.progressGoals {
+	border-radius:0px; height: 5px;
+}
+.goalssummar_widget {
+	background: #fff; border-radius: 5px; padding: 25px 15px; position: relative;
+	webkit-box-shadow: 0 1px 1px rgba(57,73,76,0.2); box-shadow: 0 1px 1px rgba(57,73,76,0.2);
+}
+.editBtn-position {
+	position: absolute; right: 15px; top: 10px; padding: 5px 10px; z-index: 1;
+	transition: all 0.3s linear;
+}
+.editBtn-position:hover a {
+	color: #e17700;
+}
+.goalsImg {
+	width: 40px; height: 40px; float: left;
+}
+.goalsImg img {
+	max-height: 100%; border-radius: 50%;
+}
+.goalscomments-list > li {
+	border-bottom: 1px solid #ededed;
+}
+ul.goalsList-list li {
+	padding: 15px 0; border-bottom: 1px solid #ededed;
+}
+.blank-div {
+    width:25px; height:25px; float:left;
+}
+.customlist-area {
+	background-color: #f9f9f9; position: absolute; width: 600px; top:45px; left: 0;
+	z-index: 1000; box-shadow: 2px 6px 12px rgba(0,0,0,.175); display: none;
+}
+.customlist-area:before {
+	content:""; width: 0; height: 0; position: absolute; bottom: 100%; left: 0%;
+	border: solid transparent; border-bottom-color: #ddd; border-width: 10px;
+	margin-left: 115px;
+}
+.customlist-area h4 {
+	font-size: 15px; margin-top: 0;
+}
+.customlist-area .col-md-4 {
+	
+}
+.customlist-area .customlistarea-parent {
+	border: 1px solid #ddd; padding: 15px 15px 7px 15px; max-height: 350px;
+}
+.customlist-area .customlistarea-parent .customlistarea-body {
+	height: 235px; overflow: auto; border: 1px solid #ededed; padding-top: 15px;
+}
+.subTable {
+	width: 100%; border:1px solid #a21d24; padding: 5px; border-radius: 5px;
+}
+.subTable table thead tr th {
+	background-color:#fafafa !important; color:#333; border: 1px solid #ededed !important;
+}
+.subTable table tbody tr td {
+	background-color:#fff !important; color:#333; border: 1px solid #ededed !important;
+}
+.selectedTd:before {
+	content:""; width: 0; height: 0; position: absolute; bottom:0%; left: 45%;
+	border: solid transparent; border-bottom-color: #a21d24; border-width: 8px;
+}
+.dropdownTableDesig table tr td {
+	position: relative;
+}
+.dropdownTableDesig table tr:nth-child(2n+2) {
+	display: none; transition: all 0.3s linear;
+}
+.workflowSVG {
+	background: url("../images/workflowSVG.svg"); background-repeat: no-repeat; background-size: 42px; background-position: center; width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity:0.9;
+	}
+.positionRelativeTop10 {
+position: relative; top: 10px;
+}
+.answerQuestionaire {
+	padding-left: 35px;
+}
+.answerQuestionaire ul li {
+	list-style-position: inside;
+}
+ul.goalscomments-list li:hover {
+	background-color: #fafafa;
+}
+.goals-list .goalsEditDelete {
+	display: none;
+}
+.goals-list:hover .goalsEditDelete {
+	display: block;
 }
 @media (max-width: 320px) {
 .uasrch-selectpicker {
@@ -9915,9 +10140,7 @@ margin-left: 1%;
 .content-wraper {
   margin-left: 0;
 }
-.searchArea_mrgn{
-margin-left: 0%;
-}
+.searchArea_mrgn { margin-left: 0%; }
 .side-bar .user-panel.user-panel-active .media .media-body .text-logo .tbldata-dotdot {
 font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 180px; display: block;
 }
@@ -10178,3 +10401,6 @@ display: block;
  .progressCount {
  font-size: 12px; font-weight: 500; color: #368ee0; display: block; padding: 2px 0px 0px 0px;
  }
+.chartDashboard .amcharts-main-div a {
+	display: block !important;
+}

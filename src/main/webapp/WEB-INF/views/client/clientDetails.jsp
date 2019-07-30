@@ -366,12 +366,12 @@ margin-bottom: 15px;
 						if(json.orgType == 'Company'){
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Client Name<span class="text-danger">&nbsp; *</span> </label>';
-								result = result + '<input type="text"  id="clientName" name="orgName" value="'+json.orgName+'" readonly="readonly" field-name="client name" placeholder="client name">';
+								result = result + '<input type="text"  id="clientName" name="orgName" value="'+json.orgName+'" readOnly="readOnly" field-name="client name" placeholder="client name" >';
 								result = result + '</div>';
 								
 								result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 								result = result + '<label>Website</label>';
-								result = result + '<input type="text"  id="companyWebsite" name="webSite" field-name="Website"  value="'+website+'" placeholder="client website" ></div>';
+								result = result + '<input type="text"  id="companyWebsite" name="webSite" field-name="Website"  value="'+website+'" readOnly="readOnly" placeholder="client website" ></div>';
 								result = result + '</div>';
 								
 								result = result + '<div class="user_summary_edit_cta">';
@@ -382,7 +382,7 @@ margin-bottom: 15px;
 								if((json.country != null &&  json.country!='' && json.country !='undefined')&&((json.city != null &&  json.city!='' && json.city !='undefined')||(json.state != null &&  json.state!='' && json.state !='undefined'))){
 									appendComa2=' , ';
 								}
-								result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" readonly="readonly" value="'+city+appendComa1+state+appendComa2+country+'" readonly="readonly" field-name="Address" placeholder="Address" data-validation="required">';
+								result = result + ' <input type="text" class="form-control" name="location" id="existingLocation" readOnly="readOnly" value="'+city+appendComa1+state+appendComa2+country+'" readonly="readonly" field-name="Address" placeholder="Address" data-validation="required">';
 // 								result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'existingLocation\',\'existingCountry\',\'existingState\',\'existingCity\',\'existingZipCode\',\'addressId\');"></i>';
 								result = result + '</div>';
 								

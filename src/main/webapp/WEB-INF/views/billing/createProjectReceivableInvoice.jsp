@@ -8,14 +8,6 @@
 <script src="/resources/js/jquery.mask.min.js"></script>
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
-<style type="text/css">
-.inline_field, .inline_field:focus {
-	width:100px !important; text-align:center;
-}
-.form-control.formControl {
-border:none; background: none; font-size:14px; font-weight:600; box-shadow: none;}
-</style>
-
 <script>
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 </script>
@@ -41,7 +33,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Client<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 chooRadius">
+              <div class="col-md-9 chooRadius errorInptgroup">
                <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();getProjectsList();getPaymentTerms();flushValues();getInvoiceTemplateList();" data-validation="required" field-name="Client">
                </select>
@@ -57,7 +49,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
             <div class="form-group">
               <label class="col-md-3">Client Contact<span class="text-danger">*</span></label>
               <div class="col-md-9 chooRadius">		
-              <div class="col-md-9 padding_left padding_right">
+              <div class="col-md-9 padding_left padding_right errorInptgroup chosenmbNone">
                 <select class="chosen-select form-control" multiple="multiple" id="clientContact" name="clientContact" data-validation="required" field-name="Client Contact">
                 </select>
               </div>
@@ -100,7 +92,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
             </div>
             <div class="form-group">
               <label class="col-md-3">Due Date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The deadline for the invoice payment'></i></label>
-              <div class="col-md-9" id="errDuedate">
+              <div class="col-md-9 errorInptgroup" id="errDuedate">
                <div class="input-group">
                 <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
                 <span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
@@ -144,18 +136,12 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
               </div>
             </div> -->
               
-            <div class="form-group">
-              <label class="col-md-3">Invoice Address<span class="text-danger">&nbsp;</span></label>
-              <div class="col-md-9">
-                <textarea class="form-control" rows="2" placeholder="Invoice Address" id="billingAddress"
-                    name="billingAddress" data-validation-optional="true" data-validation="validate_length length1-100" field-name="Invoice Address"></textarea>
-              </div>
-            </div>
+            
             
             <div class="form-group">
               <label class="col-md-3">Payment Account</label>
-              <div class="col-md-9 select-field">
-                <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
+              <div class="col-md-9">
+                <select class="sel width100percnt" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
                    <option value="">--Select Account--</option>
                     <c:forEach items="${paymentAccountList}" var="p">
                         <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
@@ -166,12 +152,30 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
             
         	<div class="form-group">
              <label class="col-md-3">Invoice Template</label>
-             <div class="col-md-9 select-field" id="invoiceTemplateIdDiv">
-               <select class="form-control" id="invoiceTemplateId" field-name="invoiceTemplateId Name" name="invoiceTemplateId">
+             <div class="col-md-9" id="invoiceTemplateIdDiv">
+               <select class="sel width100percnt" id="invoiceTemplateId" field-name="invoiceTemplateId Name" name="invoiceTemplateId">
                   <option value="0">--Select Invoice Template--</option>
                </select>
              </div>
            </div>
+           
+           <div class="clearfix"></div>
+           
+           <div class="form-group">
+              <label class="col-md-3">Invoice Address<span class="text-danger">&nbsp;</span></label>
+              <div class="col-md-9">
+                <textarea class="form-control" rows="4" placeholder="Invoice Address" id="billingAddress"
+                    name="billingAddress" data-validation-optional="true" data-validation="validate_length length1-100" field-name="Invoice Address"></textarea>
+              </div>
+            </div>
+           
+           <div class="form-group">
+							<label class="col-md-3">Notify To Others</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="4" id="notifyToOthers" name="notifyToOthers" field-name="NotifyTo" placeholder="Enter multiple Email Id's separated by commas(,)"></textarea>
+							</div>
+							<div class="clearfix"></div>
+						</div>
           </div>
         </div>
         <div class="clearfix"></div>
@@ -984,11 +988,11 @@ function calculateSum(){
 	    		
 	    	 } 
 	 }  
-	  $("#inoviceTotal").val(sum.toFixed(2));
-	  $("#subTotal").val(sum.toFixed(2));
-	  $("#grandTotal").val(sum.toFixed(2));
-	  $("#conversionFrom").val(sum.toFixed(2));
-	  $("#afterDiscountTotal").val(sum.toFixed(2));
+	  $("#inoviceTotal").val(sum.toFixed(3));
+	  $("#subTotal").val(sum.toFixed(3));
+	  $("#grandTotal").val(sum.toFixed(3));
+	  $("#conversionFrom").val(sum.toFixed(3));
+	  $("#afterDiscountTotal").val(sum.toFixed(3));
 	  calculateDisCount();
 	  calculateTaxDiscount();
 	  /* =====================  After adding the rows calculate the tax start  ===================== */
@@ -1010,9 +1014,9 @@ function calculateDisCount(){
 			$("#discountTotal").val(discountValue);
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -1023,12 +1027,12 @@ function calculateDisCount(){
 		if(discountValue && subTotal > 0){
 			var perCentValue = (subTotal * discountValue)/100;
 			total = subTotal - perCentValue;
-			$("#discountTotal").val(perCentValue.toFixed(2));
+			$("#discountTotal").val(perCentValue.toFixed(3));
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
 		}
@@ -1199,8 +1203,8 @@ function calculateTaxDiscount(){
 	}
 	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
-	 $("#grandTotal").val(grandTotal.toFixed(2));
-	$("#conversionFrom").val(grandTotal.toFixed(2));
+	 $("#grandTotal").val(grandTotal.toFixed(3));
+	$("#conversionFrom").val(grandTotal.toFixed(3));
 	conversion();
 }
 </script>
@@ -1294,6 +1298,16 @@ function saveInvoiceTest(saveType){
       		
  	 	    var vmsUrl ='${SourceLeadWeb_vmsUrl}';
  	 	    var formData = getFormData1("project_invoice_form");
+ 	 	    
+ 	 	  if ($("#notifyToOthers").val() !== "") {
+				for (var e in $("#notifyToOthers").val().split(",")) {
+					if (!jQueryFormUtils.validateEmail($("#notifyToOthers").val().split(",")[e].replace(/\s+/g, ''))) {
+						flag = false;
+						$("#notifyToOthers").parent().append("<p class='jquery_form_error_message'>Enter valid email id</p>");
+						return;
+					}
+				}
+			}
 		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        		   $.ajax({
 		        		  url: vmsUrl+"/saveInvoice?"+tokenParamName+"="+tokenValue+"&saveType="+saveType+"&invoiceType=Receivable",
@@ -1438,6 +1452,11 @@ function toDate(selector) {
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
+		           	
+		           	if(json['notifyToOthers'] != null && json['notifyToOthers'] != '' && json['notifyToOthers'] != 'undefined'){
+		           		$("#notifyToOthers").text(json['notifyToOthers']);
+		           	}
+		           	
 		           	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
 		           		$("#accountDetails").val(json['accountDetails']);
 		           	}
@@ -1697,10 +1716,12 @@ function maskme(){
 	
     $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
     	
-    	var charCode = (evt.which) ? evt.which : event.keyCode
-   	         if (charCode > 31 && (charCode < 48 || charCode > 57))
-   	            return false;
-   	         return true;
+    	var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+           return false;
+
+        return true;
+    	
     });
 }
 </script>
@@ -1874,9 +1895,19 @@ function validateDiscount() {
 				return false; 
 		 	 }
 	  }if(selectedTextInvoice =='flat'){
-			  $("#saveInvoice").removeAttr("disabled", "disabled");
-			  $("#sendInvoice").removeAttr("disabled", "disabled");
-		  }		  
+		  var numaricNum = /^[0-9]*$/
+			  if(enteredValue.match(numaricNum)){
+				  $("#saveInvoice").removeAttr("disabled", "disabled");
+				  $("#saveInvoice").removeAttr("disabled", "disabled");
+				  return true;
+			  }else{
+				  $("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Discount</span>");
+					$("#saveInvoice").attr("disabled", "disabled");
+					$("#saveInvoice").attr("disabled", "disabled");
+					return false;  
+			  }
+				  
+			  }		  		  
 }
 </script>
 

@@ -3,27 +3,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<style type="text/css">
-vendor_wrap {
-overflow-x: auto;
-}
-.dropdown-select.paddingNone select {
-border:none; background-color: none !important; padding:0 5px !important;
-}
-
-.NewStyleFullWidth {
-	width: 100%; padding: 0px 0px; margin: 0px auto;
-}
-.NewStyleFullWidth .col-md-9 {
-	width: 100%; padding: 0px 0px;
-}
-.NewStyleFullWidth .form-group {
-	width: 50%; margin-bottom: 15px; float: left; padding: 0px 2%;
-}
-.dynamic_search .fa-search {
-position: absolute !important;
-}
-</style>
 
 <script>
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
@@ -283,7 +262,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 
 <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon" id="advanceSearchDiv">
-      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetVendorFilter();"></a>
+      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetAdvSearchFilter();"></a>
       		<a href="javascript:void(0)" class="refeIcon" id="resetVendorContact" style="display: none;" title="Refresh" onclick="resetVendorContactFilter();"></a>
       		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
       </span>
@@ -1789,9 +1768,15 @@ function vendorFileterPopUp(){
 }
 function resetVendorFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
-	getVendorList();
-// 	$(".mask").fadeOut();
+}
+
+
+function resetAdvSearchFilter(){
 	
+    $("#dataTableSearch").val('');
+    clearSearch();
+    getVendorList();
+ 
 }
 
 
@@ -1807,6 +1792,8 @@ function vendorContactFilterPopUp(){
 function resetVendorContactFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
+	 $("#dataTableSearch").val('');
+	clearSearch();
 	getVendorContactList();
 }
 </script>

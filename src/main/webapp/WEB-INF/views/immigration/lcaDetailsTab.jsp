@@ -1,8 +1,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-
+ <c:set var ="lcaListCount" value ="${fn:length(lcaList)}"/>
  <div class="immigraTabsHead">
-	<a href="javascript:void(0)" id="assignLca"><i class="glyphicon glyphicon-plus"></i> Assign LCA</a>
+	<c:if test="${myImmigrationPage == 'N'}">
+		<a href="javascript:void(0)" id="assignLca"><i class="glyphicon glyphicon-plus"></i> Assign LCA</a>
+	</c:if>
 </div>
 		
 	  	<div class="immigraTable overflow_Auto">
@@ -39,7 +41,7 @@
 				<td><div class="tbldata-dotdot-sm" title = "0"></div>0</td>
 				</c:if> --%>
 				
-				<td><div class="tbldata-dotdot-sm"></div><c:out value="${lcadetails.availablePositions-1}" /></td>
+				<td><div class="tbldata-dotdot-sm"></div><c:out value="${lcadetails.availablePositions}" /></td>
 				
 				<c:if test="${lcadetails.status == '1'}">
 				 <td><div class="tbldata-dotdot-sm" title = "${lcadetails.status}"></div>Active</td>
@@ -84,7 +86,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">LCA No<span class="text-danger paddingLeft">*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name="lcaNo"  id="lcaNumberAuto" class="form-control"  placeholder="LCA Number" field-name="LCA NO" data-validation="required" >
+              		<input type="text" name="lcaNo"  id="lcaNumberAuto" class="form-control"  placeholder="Autofill Enabled For 2 Chars" field-name="LCA NO" data-validation="required" >
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -355,3 +357,13 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	}
  
 </script> 
+<script>
+  var lcaCount = '<c:out value ="${lcaListCount}"/>';
+  var initCount  = '<c:out value ="${requestScope.lcaOnLoadCount}"/>';
+  if(lcaCount>0 || initCount!= ""){
+        $('#lcafilled').show() // show and hides circle icon.
+    }
+	else {
+        $('#lcafilled').hide()
+	}
+</script>

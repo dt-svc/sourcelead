@@ -10,14 +10,6 @@
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 </script>
 <script type="text/javascript" src="${SourceLeadWeb_vmsUrl}/resources/js/contractCommonScripts.js"></script>
-
-<style type="text/css">
-.chosen-container {
-    width: 100% !important;
-}
-.fullWid {width: 100% !important;}
-</style>
-
 <script>
 		$(document).ready(function() {
 			var vmsUrl ='${SourceLeadWeb_vmsUrl}';
@@ -76,7 +68,10 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 
 	 if(type != null && type != 'undefined' && type !=''){
 // 	 	 getContractTemplates();
-	 	 contractTypeLabels()
+
+// june-14-2019 -> commented contractTypeLabels() function call as the input field values are disappearing in edit draft contract.
+// june-14-2019 -> contractTypeLabels() function is called when we change contract type.
+//	 	 contractTypeLabels()
 	 }
 	 if(relationId != null && relationId != '' && spocUserCode != null && spocUserCode != ''){
 		 getVendorContacts(spocUserCode);
@@ -546,7 +541,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
              <div  class="clearfix"></div>
           <div class="form-group row" id="parallelAppDiv" style="display:block">
               <label class="col-md-4">Signing Authority<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
+              <div class="col-md-8 chosenmbNone">
                   <select multiple class="chosen-select form-control" id="parallelOwner" name="parallelOwner" data-placeholder="Select signing authority" data-validation="required" field-name="Owner">
                   <%-- <c:forEach var="user" items="${userList}">
 	                  <c:if test = "${!empty contract.parallelOwnerId}">
@@ -762,7 +757,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                         </div>
                       </div>
                       <div class="col-md-7 paddingLeft" id="taxPercentageReward">
-                        <div class="form-group positionRelative iconHolder percentage fullWid" > 
+                        <div class="form-group positionRelative iconHolder percentage width100percnt" > 
                           <input type="text" class="form-control input-sm" field-name="Percentage" value="${contract.tax}" id="taxPercentageRewardValue" name="taxPercentageReward" onblur="getTaxPercentageValue()" placeholder="Percentage">
                           <i class="fa fa-percent"></i> 
                         </div>
@@ -2423,8 +2418,11 @@ function flush(){
 	document.getElementById("submissionOffersList").value="";
 	
 	
+	// june-14-2019 -> resetForm() function is not defined.
+	//$("newcontract_form").validate().resetForm();
 	
-	$("newcontract_form").validate().resetForm();
+	// june-14-2019 -> added form error message remove function. 
+	$("#newcontract_form").find('p.jquery_form_error_message').remove();
 }
 </script>
 

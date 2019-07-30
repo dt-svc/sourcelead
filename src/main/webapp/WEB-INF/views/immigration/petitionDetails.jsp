@@ -208,7 +208,7 @@
 								 	<span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 							 	</div>
 							 	<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="${SourceLeadWeb_vmsUrl}/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span> 
 								</c:if>
 								</c:if>
@@ -221,7 +221,7 @@
 								<span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 							</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="${SourceLeadWeb_vmsUrl}/addVendor" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>
 								</c:if>
 								
@@ -300,11 +300,11 @@
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup uiwidgetCustom">
 									<input type="text" class="form-control" name="candidateNameEmail" field-name="Associate" data-validation="required"
-										id="candidateNameEmail" placeholder="Select Beneficiary" value="${immigrationDTO.candidateNameEmail}"/>
+										id="candidateNameEmail" placeholder="Beneficiary Autofill Enabled For 2 Chars" value="${immigrationDTO.candidateNameEmail}"/>
 									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
 								</div>
 							<span class="col-md-2 noPad clearfix">
-							<a href="<c:url value="${SourceLeadWeb_atsUrl}/userCreation" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							<a href="${SourceLeadWeb_atsUrl}/userCreation" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>	
 							</div>
 							</div>
@@ -1111,7 +1111,7 @@ function resetBeneficiaryDetails(){
 	$("#experienceYears").val("");
 	$("#experienceMonths").val("");
 	$("#birthDate").val("");
-	
+	$("#ssnNumber").val("");
 }
 	 $("#candidateNameEmail").autocomplete({ 
 			minLength: 2, 
@@ -1143,6 +1143,7 @@ function resetBeneficiaryDetails(){
 				    		$("#email").val(candidateObj.email);
 				    		$("#mobile").val(candidateObj.mobilePhone);
 				    		$("#alternateMobile").val(candidateObj.alternateMobilePhone);
+				    		$("#ssnNumber").val(candidateObj.ssnNumber);
 				    		
 				    		// gender radio button  
 				    		$('input[name="gender"]').prop('checked', false); // reset the value 

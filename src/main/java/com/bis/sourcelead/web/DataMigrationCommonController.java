@@ -49,7 +49,6 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-@RequestMapping("/app")
 public class DataMigrationCommonController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DataMigrationCommonController.class);

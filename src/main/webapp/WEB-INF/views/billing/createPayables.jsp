@@ -9,19 +9,6 @@
 <script src="/resources/js/jquery.mask.min.js"></script>
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
-
-<style type="text/css">
-.inline_field, .inline_field:focus {
-	width:100px !important; text-align:center;
-}
-.timesheet_week_comm .form-group {
-margin-bottom: 0;
-}
-.timesheet_week_comm.invoiceDocs_add span .fa-times {
-    margin: 6px;
-}
-</style>
-
 <script>
 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 </script>
@@ -77,7 +64,7 @@ function errRemoveVendorContact(){
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<div class="form-group">
 							<label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9 chooRadius" id="errVendor">
+							<div class="col-md-9 chooRadius errorInptgroup" id="errVendor">
 							<div class="input-group col-md-10 pull-left">
 								<select class="chosen-select form-control"
 									id="vendorOrgRelationId" name="vendorOrgRelationId" data-Bill
@@ -95,7 +82,7 @@ function errRemoveVendorContact(){
 						<div class="form-group">
 							<label class="col-md-3">Vendor Contact<span
 								class="text-danger">*</span></label>
-							<div class="col-md-9 chooRadius" id="errVendorContact">
+							<div class="col-md-9 chooRadius errorInptgroup chosenmbNone" id="errVendorContact">
 								<div class="col-md-9 padding_left padding_right">
 								<select class="chosen-select form-control" id="vendorContact"
 									multiple="multiple" name="vendorContact" data-validation="required"
@@ -152,22 +139,32 @@ function errRemoveVendorContact(){
 									readonly data-validation="required" field-name="Due Date">							
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="col-md-3">Billing Address</label>
-							<div class="col-md-9">
-								<textarea class="form-control" rows="2" id="billingAddress"
-									name="billingAddress" placeholder="Billing Address"></textarea>
-							</div>
-						</div>
+						
 						
 						 <div class="form-group">
 			              <label class="col-md-3">Payment Account</label>
-			              <div class="col-md-9 select-field" id="projectMemberIdDiv">
-			                <select class="form-control" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
+			              <div class="col-md-9" id="projectMemberIdDiv">
+			                <select class="sel width100percnt" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
 			                   <option value="">--Select Account--</option>
 			                </select>
 			              </div>
 			            </div>
+			            <div class="clearfix"></div>
+			            
+			            <div class="form-group">
+							<label class="col-md-3">Billing Address</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="4" id="billingAddress"
+									name="billingAddress" placeholder="Billing Address"></textarea>
+							</div>
+						</div>
+			            <div class="form-group">
+							<label class="col-md-3">Notify To Others</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="4" id="notifyToOthers" name="notifyToOthers" field-name="NotifyTo" placeholder="Enter multiple Email Id's separated by commas(,)"></textarea>
+							</div>
+							<div class="clearfix"></div>
+						</div>
 						
 					</div>
 				</div>
@@ -463,6 +460,11 @@ function remove(){
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
+		           	
+		           	if(json['notifyToOthers'] != null && json['notifyToOthers'] != '' && json['notifyToOthers'] != 'undefined'){
+		           		$("#notifyToOthers").text(json['notifyToOthers']);
+		           	}
+		           	
 		        	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
 		           		$("#accountDetails").val(json['accountDetails']);
 		           	}
@@ -682,8 +684,8 @@ function remove(){
 				var text = "";
 				var cell0 = row.insertCell(0);
 				text = text+"<div  class='inputCustom'>";
-				text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" placeholder="Start Date">';
-				text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" placeholder="End Date">';
+				text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" readonly ="readonly" placeholder="Start Date">';
+				text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" readonly ="readonly" placeholder="End Date">';
 				text = text+'</div>';
 				cell0.innerHTML = text;
 				
@@ -873,8 +875,8 @@ function cancelDelDoc(){
 			var text = "";
 			var cell0 = row.insertCell(0);
 			text = text+"<div  class='inputCustom'>";
-			text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" placeholder="Start Date">';
-			text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" placeholder="End Date">';
+			text = text+'<input type="text" class="calendar paddingRight" id="'+maxRowNum+'sdate-input" name="lineItems['+maxRowNum+'].invoiceStartDate" readonly ="readonly" placeholder="Start Date">';
+			text = text+'<input type="text" class="calendar paddingLeft" id="'+maxRowNum+'edate-input" name="lineItems['+maxRowNum+'].invoiceEndDate" readonly ="readonly" placeholder="End Date">';
 			text = text+'</div>';
 			cell0.innerHTML = text;
 			
@@ -1440,7 +1442,7 @@ function setHours(finalmin,rowId){
   function  calTotalamount(rowId,totlalAmount){
 	  var hiddenTotal = +document.getElementById("hiddenTotal").value;
 	    var grandTotal = parseFloat(hiddenTotal) + parseFloat(totlalAmount);
-	    var arroundGrand = grandTotal.toFixed(2)
+	    var arroundGrand = grandTotal.toFixed(3)
 	    
 	    
 	    //--------------------------------
@@ -1458,11 +1460,11 @@ function setHours(finalmin,rowId){
 	 	    }
 	    //-------------------------------------
 	    
-	    $("#inoviceTotal").val(sum.toFixed(2));
-	    $("#hiddenTotal").val(sum.toFixed(2));
-	    $("#grandTotal").val(sum.toFixed(2));
-	    $("#conversionFrom").val(sum.toFixed(2));
-	    $("#afterDiscountTotal").val(sum.toFixed(2));
+	    $("#inoviceTotal").val(sum.toFixed(3));
+	    $("#hiddenTotal").val(sum.toFixed(3));
+	    $("#grandTotal").val(sum.toFixed(3));
+	    $("#conversionFrom").val(sum.toFixed(3));
+	    $("#afterDiscountTotal").val(sum.toFixed(3));
 	    
 /*  After adding the rows calculate the discount start*/
     calculateDiscount();
@@ -1488,7 +1490,7 @@ function calculateDiscount(){
 			$("#conversionFrom").val(total);
 			$("#afterDiscountTotal").val(total);
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -1503,9 +1505,9 @@ function calculateDiscount(){
 			$("#discountTotal").val(perCentValue);
 			$("#grandTotal").val(total);
 			$("#conversionFrom").val(total);
-			$("#afterDiscountTotal").val(total.toFixed(2));
+			$("#afterDiscountTotal").val(total.toFixed(3));
 		}else{
-			$("#discountTotal").val("00.00");
+			$("#discountTotal").val("00.000");
 			$("#grandTotal").val(subTotal);
 			$("#conversionFrom").val(subTotal);
 			$("#afterDiscountTotal").val(subTotal);
@@ -1714,8 +1716,8 @@ function calculateTaxDiscount(){
 	}
 	
 	var grandTotal = parseFloat(afterDiscountTotal) + parseFloat(taxGrandTotal)
-	 $("#grandTotal").val(grandTotal.toFixed(2));
-	$("#conversionFrom").val(grandTotal.toFixed(2));
+	 $("#grandTotal").val(grandTotal.toFixed(3));
+	$("#conversionFrom").val(grandTotal.toFixed(3));
 	conversion();
 }
 </script>
@@ -2042,7 +2044,16 @@ function saveInvoice(saveType){
          
          if ($('#invoice_form').validate(false, validationSettings)){  
  	 	  var formData = getFormData1("invoice_form");
-         
+ 	 	  
+ 	 	if ($("#notifyToOthers").val() !== "") {
+				for (var e in $("#notifyToOthers").val().split(",")) {
+					if (!jQueryFormUtils.validateEmail($("#notifyToOthers").val().split(",")[e].replace(/\s+/g, ''))) {
+						flag = false;
+						$("#notifyToOthers").parent().append("<p class='jquery_form_error_message'>Enter valid email id</p>");
+						return;
+					}
+				}
+			}
  	 	    if(selectedAssociates == null || selectedAssociates == '' || selectedAssociates == 'undefined'){
 	        	var result = "";
 	     		result = result +"	<div class='project_inn_mask'></div>";
@@ -2133,10 +2144,11 @@ function maskme(){
     $(".allownumericwithdecimal").on("keypress keyup blur",function (evt) {
     	
     	
-    	var charCode = (evt.which) ? evt.which : event.keyCode
-   	         if (charCode > 31 && (charCode < 48 || charCode > 57))
-   	            return false;
-   	         return true;
+    	var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+           return false;
+
+        return true;
    	         
     });
 }
@@ -2310,9 +2322,19 @@ function validateDiscount() {
 				return false; 
 		 	 }
 	  }if(selectedTextInvoice =='flat'){
-			  $("#saveInvoiceId").removeAttr("disabled", "disabled");
-			  $("#sendInvoiceId").removeAttr("disabled", "disabled");
-		  }		  
+		  var numaricNum = /^[0-9]*$/
+			  if(enteredValue.match(numaricNum)){
+				  $("#saveButtonId").removeAttr("disabled", "disabled");
+				  $("#sendButtonId").removeAttr("disabled", "disabled");
+				  return true;
+			  }else{
+				  $("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Discount</span>");
+					$("#saveButtonId").attr("disabled", "disabled");
+					$("#sendButtonId").attr("disabled", "disabled");
+					return false;  
+			  }
+				  
+			  }		    
 }
 </script>
 

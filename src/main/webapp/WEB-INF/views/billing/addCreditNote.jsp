@@ -62,7 +62,7 @@
 		</div>
 		<div class="col-xs-12 col-sm-6 col-md-6">
 		<div class="form-group row">
-		<label class="col-md-3">Billing Address</label>
+		<label class="col-md-3">Invoice Address</label>
 		<div class="col-md-9">
 		<input type="text" class="form-control" value="${creditDebitNote.billingAddress}" id="billingAddress" name="billingAddress" field-name="Billing Address" placeholder="Billing Address" data-validation="validate_length length2-100" data-validation-optional="true">
 		</div>
@@ -113,7 +113,7 @@
 		<div class="form-group row">
         <label class="col-md-3 paddingRight">Payment Account</label>
         <div class="col-md-9">
-          <select class="form-control" id="account"  field-name="paymentAccountId Name" name="account">
+          <select class="form-control sel" id="account"  field-name="paymentAccountId Name" name="account">
              <option value="">--Select Account--</option>
               <c:forEach items="${paymentAccountList}" var="paymentAccount">
                   <option value="${paymentAccount.id}" ${paymentAccount.id == creditDebitNote.account ? 'selected' : ""}>${paymentAccount.accountType == "WEPAY" ? paymentAccount.email.concat(" (WePay)") : paymentAccount.accountNumber.concat(" (").concat(paymentAccount.bankName).concat(")")}</option>
@@ -164,7 +164,7 @@
                 </td>
                 <td>
                   <div class="width150px">
-                  	<select class="chosen-select" id="associates0" name="creditDebitNoteLineItems[0].associates">
+                  	<select class="sel" id="associates0" name="creditDebitNoteLineItems[0].associates">
                   	<option selected value="">Select Associate</option>
                   		<c:forEach var="approvers" items="${approversList}">
 					<option value="${approvers.id}">${approvers.firstName}</option>	</c:forEach>
@@ -230,7 +230,7 @@
                 </td>
                 <td>
                   <div class="width150px">
-                  	<select class="chosen-select" id="associates${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].associates">
+                  	<select class="sel" id="associates${rows.count-1}" name="creditDebitNoteLineItems[${rows.count-1}].associates">
                   	<option selected value="">Select Associate</option>
                   		<c:forEach var="approvers" items="${approversList}">
                   		<option ${items.associates == approvers.id ? 'selected': ''} value="${approvers.id}">${approvers.firstName}</option>
@@ -407,7 +407,6 @@ $('body').on('blur', '#creditNote_form', function() {
 
 var rowId ='<c:out value ="${rowIndex}"/>'// set the value for dyamic row when clicked on add button in UI.;
 function cloneRows(){
-   console.log("rowId value is --->"+rowId);
    $("#tableId").append(prepareDynamicRoweDiv(rowId++)); 
 }
 
@@ -427,7 +426,7 @@ function prepareDynamicRoweDiv(rowId){
    rowDiv =rowDiv+ '</td>';
    rowDiv =rowDiv+ '<td>';
    rowDiv =rowDiv+ '  <div class="width150px">';
-   rowDiv =rowDiv+ '  	<select class="chosen-select" id="associates'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].associates">';
+   rowDiv =rowDiv+ '  	<select class="sel" id="associates'+rowId+'" name="creditDebitNoteLineItems['+rowId+'].associates">';
    rowDiv =rowDiv+ '  	<option selected value="">Select Associate</option>';
    rowDiv =rowDiv+ '  		<c:forEach var="approvers" items="${approversList}">';
    rowDiv =rowDiv+ '	<option value="${approvers.id}">${approvers.firstName}</option>	</c:forEach>';

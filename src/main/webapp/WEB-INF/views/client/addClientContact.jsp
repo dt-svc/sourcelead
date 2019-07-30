@@ -193,7 +193,7 @@ function getOrgDetails()
                 <!-- <i data-target="#selectVendor" data-toggle="modal" class="fa fa-plus btn btn-default formic1-new" onclick="flusAddClint();" style="display: none"></i> -->
             </div>
             <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-			 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+			 <span class="col-md-2 noPad clearfix"><a href="${SourceLeadWeb_vmsUrl}/client" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
 			</sec:authorize>
 			</div>            
             	</div>  

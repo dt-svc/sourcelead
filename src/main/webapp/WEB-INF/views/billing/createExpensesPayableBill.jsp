@@ -8,14 +8,6 @@
 <script src="/resources/js/jquery.mask.min.js"></script>
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
-<style type="text/css">
-.inline_field, .inline_field:focus {
-	width:100px !important; text-align:center;
-}
-.form-control.formControl {
-border:none; background: none; font-size:14px; font-weight:600; box-shadow: none;}
-</style>
-
 <script>
 $(document).ready(function(){
 	populateInlineItemsGrid();
@@ -74,7 +66,7 @@ function checkBox(){
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 chooRadius">
+              <div class="col-md-9 chooRadius errorInptgroup">
               <div class="input-group col-md-10 pull-left">
 			<select class="chosen-select form-control" data-Bill id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();getPaymentAccountList();"
 		         	data-validation="required" field-name="Vendor">
@@ -90,7 +82,7 @@ function checkBox(){
                    </div>
             <div class="form-group">
               <label class="col-md-3">Vendor Contact<span class="text-danger">*</span></label>
-              <div class="col-md-9 chooRadius">
+              <div class="col-md-9 chooRadius errorInptgroup chosenmbNone">
               <div class="col-md-9 padding_left padding_right">
                 <select class="chosen-select form-control" multiple="multiple"  id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
                 </select>
@@ -134,7 +126,7 @@ function checkBox(){
             </div>
             <div class="form-group">
               <label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9" id="errDuedate">
+              <div class="col-md-9 errorInptgroup" id="errDuedate">
               <div class="input-group">
                 <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
                 <span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
@@ -142,21 +134,31 @@ function checkBox(){
               </div>
             </div>
               
-              
-            <div class="form-group">
-              <label class="col-md-3">Billing Address</label>
-              <div class="col-md-9">
-                <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" name="billingAddress"></textarea>
-              </div>
-            </div>
+            
              <div class="form-group">
 	              <label class="col-md-3">Payment Account</label>
-	              <div class="col-md-9 select-field" id="projectMemberIdDiv">
-	                <select class="form-control" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
+	              <div class="col-md-9" id="projectMemberIdDiv">
+	                <select class="sel width100percnt" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
 	                   <option value="">--Select Account--</option>
 	                </select>
 	              </div>
 	            </div>
+	            
+	            <div class="clearfix"></div>
+	        <div class="form-group">
+              <label class="col-md-3">Billing Address</label>
+              <div class="col-md-9">
+                <textarea class="form-control" rows="4" placeholder="Billing Address" id="billingAddress" name="billingAddress"></textarea>
+              </div>
+            </div>
+	            
+	            <div class="form-group">
+							<label class="col-md-3">Notify To Others</label>
+							<div class="col-md-9">
+								<textarea class="form-control" rows="4" id="notifyToOthers" name="notifyToOthers" field-name="NotifyTo" placeholder="Enter multiple Email Id's separated by commas(,)"></textarea>
+							</div>
+							<div class="clearfix"></div>
+						</div>
 	            
 			
 			<div class="clearfix mb"></div>
@@ -499,11 +501,11 @@ function calculateSum(){
 	    		
 	    	 } 
 	 }  
-	  $("#inoviceTotal").val(sum.toFixed(2));
-	  $("#subTotal").val(sum.toFixed(2));
-	  $("#grandTotal").val(sum.toFixed(2));
-	  $("#conversionFrom").val(sum.toFixed(2));
-	  $("#afterDiscountTotal").val(sum.toFixed(2));
+	  $("#inoviceTotal").val(sum.toFixed(3));
+	  $("#subTotal").val(sum.toFixed(3));
+	  $("#grandTotal").val(sum.toFixed(3));
+	  $("#conversionFrom").val(sum.toFixed(3));
+	  $("#afterDiscountTotal").val(sum.toFixed(3));
 	  calculateDisCount();
 	  calculateTaxDiscount();
 }
@@ -807,6 +809,16 @@ function saveInvoice(saveType){
 	var maxTsRowNum = parseInt($("input[name = 'invoiceExpMaxRowNumber']").val());
          if ($('#project_payable_invoice_form').validate(false, validationSettings)){  
  	 	    var formData = getFormData1("project_payable_invoice_form");
+ 	 	    
+ 	 	  if ($("#notifyToOthers").val() !== "") {
+				for (var e in $("#notifyToOthers").val().split(",")) {
+					if (!jQueryFormUtils.validateEmail($("#notifyToOthers").val().split(",")[e].replace(/\s+/g, ''))) {
+						flag = false;
+						$("#notifyToOthers").parent().append("<p class='jquery_form_error_message'>Enter valid email id</p>");
+						return;
+					}
+				}
+			}
  	 	  if(maxTsRowNum==0){
 	        	var result = "";
 	     		result = result +"	<div class='project_inn_mask'></div>";
@@ -964,6 +976,11 @@ function toDate(selector) {
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
+		           	
+		           	if(json['notifyToOthers'] != null && json['notifyToOthers'] != '' && json['notifyToOthers'] != 'undefined'){
+		           		$("#notifyToOthers").text(json['notifyToOthers']);
+		           	}
+		           	
 		        	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
 		           		$("#accountDetails").val(json['accountDetails']);
 		           	}	
@@ -1962,9 +1979,19 @@ function validateDiscount() {
 				return false; 
 		 	 }
 	  }if(selectedTextInvoice =='flat'){
-			  $("#saveButtonId").removeAttr("disabled", "disabled");
-			  $("#sendButtonId").removeAttr("disabled", "disabled");
-		  }		  
+		  var numaricNum = /^[0-9]*$/
+			  if(enteredValue.match(numaricNum)){
+				  $("#saveButtonId").removeAttr("disabled", "disabled");
+				  $("#sendButtonId").removeAttr("disabled", "disabled");
+				  return true;
+			  }else{
+				  $("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Discount</span>");
+					$("#saveButtonId").attr("disabled", "disabled");
+					$("#sendButtonId").attr("disabled", "disabled");
+					return false;  
+			  }
+				  
+			  }	  
 }
 </script>
 

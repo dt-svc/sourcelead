@@ -96,8 +96,7 @@ public class EmploymentVerificationTemplateRestController {
 		
 			String header = "<div style='text-align: center;'>"+empTemplate.getTemplateName()+"<br></br></div><br></br><br></br><br></br>";
 			String totalBody =header+ empTemplate.getTemplateContent();
-			if(empTemplate.getLetterHead() != null)
-			reportsUtil.viewCompleteletterheadData(totalBody, empTemplate.getLetterHead(), response);
+			reportsUtil.viewEmployeeCompleteletterheadData(totalBody, empTemplate, response);
     	
 	}
 	

@@ -551,8 +551,9 @@ function removeDynamicUploaRow(id){
 }
 $("#immigraDocTabSerach").keyup(function (e) {
     if (e.which === 13) {
-    	var searchVal = $("#immigraDocTabSerach").val();
-    	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,searchVal);
+    	var searchDocVal = $("#immigraDocTabSerach").val();
+    	if(searchDocVal) searchDocVal = searchDocVal.trim();
+    	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,searchDocVal,'${curUscisMyImmi}');
     }
 });
 function downlaodZipfileByDocId(docId){
@@ -560,7 +561,7 @@ function downlaodZipfileByDocId(docId){
 		return;
 	$.post("downloadImmigrationDocsZip",{immigrationId: immigrationId, docId: docId}, function(data) { //  passing empty value for immigrationId to do doc level zip download
 		if(data !== "" && data.indexOf("Documents Found") === -1)
-			location.href = '${SourceLeadWeb_vmsUrl}/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
+			location.href = '${SourceLeadWeb_sourceleadUrl}/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
 		else
 			alert("Unable to locate Documents.");
 	});

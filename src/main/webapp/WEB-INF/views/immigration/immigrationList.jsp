@@ -12,7 +12,7 @@
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
-<c:set var ="myImmigrationPage" value = "N" scope="session"/>
+<%-- <c:set var ="myImmigrationPage" value = "N" scope="session"/> --%>
 <title>Insert title here</title>
     <section class="content-wraper">
    
@@ -1003,7 +1003,8 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	    }
 	}
 	function clearFilters(){
-		location.reload();
+		$("#immiListSerach").val('');
+		getDynamicImmigrationsList();
 	}
 </script>
 
