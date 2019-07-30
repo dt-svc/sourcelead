@@ -451,6 +451,17 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			    	
 			    	for (ClockInOutUserTimeEntryDTO data : uniqueData.getValue()) {
 			    		
+			    		if(data.getGeoLocationData() != null) {
+			    			JSONObject jsonObj = new JSONObject(data.getGeoLocationData());
+			    			if(jsonObj.has("city") && jsonObj.getString("city") != ""){
+			    			main.setGeoLocationData(jsonObj.getString("city")+", "+jsonObj.getString("countryName"));
+			    			}else {
+			    			main.setGeoLocationData(jsonObj.getString("countryName"));
+
+			    			}
+			    			}else {
+			    			main.setGeoLocationData("--");
+			    			}
 			    		
 			    		int indBrksec = 0;
 				    	int indBrkmin = 0;
@@ -462,7 +473,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			    		
 			    		List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
 						for (Breaks breaks : breakList) {
-							
+							if(breaks.getTotalTime() != null) {
 							String[] str = breaks.getTotalTime().split(":");
 							brksec += Integer.parseInt(str[2]);
 							indBrksec += Integer.parseInt(str[2]);
@@ -488,8 +499,8 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 							indBrkhr += Integer.parseInt(str[0]);
 				    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
 				    		indBrksum = df.format(indBrkhr)+":"+df.format(indBrkmin)+":"+df.format(indBrksec);
+					     	}
 						}
-			    		
 						subDto.setIndividualTotBreakTime(indBrksum);
 			    		subDto.setClockInTime(data.getClockInTime());
 			    		subDto.setClockOutTime(data.getClockOutTime());
@@ -595,7 +606,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		    		
 					List<Breaks> breakList = clockInOutConfigDao.getBreakListByClockInId(data.getId().longValue());
 					for (Breaks breaks : breakList) {
-						
+						if(breaks.getTotalTime() != null) {
 						String[] str = breaks.getTotalTime().split(":");
 						brksec += Integer.parseInt(str[2]);
 						indBrksec += Integer.parseInt(str[2]);
@@ -621,6 +632,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 						indBrkhr += Integer.parseInt(str[0]);
 			    		brksum = df.format(brkhr)+":"+df.format(brkmin)+":"+df.format(brksec);
 			    		indBrksum = df.format(indBrkhr)+":"+df.format(indBrkmin)+":"+df.format(indBrksec);
+					  }
 					}
 
 					subDto.setIndividualTotBreakTime(indBrksum);
