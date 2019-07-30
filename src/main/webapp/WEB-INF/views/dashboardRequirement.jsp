@@ -23,7 +23,7 @@ $(document).ready(function(){
             
         	<div class="dashNewWrapHead clearfix">
         		<a class="pull-left" id="jobsLink" href="/ats/jobsList"/>Jobs
-        			<a class="moreLink" href="${sourceleadUrl}/requirementApplicantsList?&tab=previous&orgLocationId=${SourceLeadWeb_orgLocationId}" title="View more"  id="viewmoresDiv"> View More..</a>
+        			<a class="moreLink" href="${sourceleadUrl}/requirementApplicantsList?&tab=previous&orgLocationId=${SourceLeadWeb_orgLocationId}" title="View more"> View More..</a>
         		</a>
 	            <ul class="nav nav-tabs pull-right">
 	              	<li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');">Today</a></li>
