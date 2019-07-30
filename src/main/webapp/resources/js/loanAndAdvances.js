@@ -1,6 +1,8 @@
 var loanAdv = new LoanAndAdvances();
 
-var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+// 30th july, 2019 - error in loading loan & advances page in add associates. 
+// pmsUrl value cannot be loaded in js file.
+// var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 
 function LoanAndAdvances(){
 this.saveLoanAndAdvanceDetails  = function (){
