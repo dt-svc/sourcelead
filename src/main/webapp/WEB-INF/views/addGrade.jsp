@@ -47,7 +47,7 @@ $(document).ready(function(){
 	      		<div class="form-group clearfix mb" id="gradeDiv">
 		           <label class="">Grade <b class="valStar">*</b></label>
 		           <div class="">
-		                 <input type="text" id="gradeName" name="gradeName" class="form-control" onblur="validateGrade();" data-validation="required validate_Space validate_AlphaNumber validate_length length1-20" field-name="Grade"/>
+		                 <input type="text" id="gradeName" name="gradeName" class="form-control" onkeyup="validateGrade();" data-validation="required validate_Space validate_AlphaNumber validate_length length1-20" field-name="Grade"/>
 		           </div>
 	           </div>
 	           
