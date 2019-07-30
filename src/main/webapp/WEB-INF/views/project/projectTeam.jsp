@@ -1621,7 +1621,10 @@ function resetPorjectTeamFilter(){
 	$("ul#StatusFilter > li input:checkbox").prop("checked",false);
 	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
 	$("ul#myTeamUL > li input:checkbox").prop("checked",false);
-	
+	$("#myRolesInput").val('');
+	myRolesFunction();
+	$("#myTeamInput").val('');
+	myTeamFunction();
 	getFilterEmployeeDetails();
 }
 function myRolesFunction() {

@@ -17,7 +17,7 @@
 				<div class="pull-right mr10">
 					<ul class="list-unstyled list-inline">
 						<li>
-							<div class="dynamic_search">
+							<div class="dynamic_search hide">
 								<input placeholder="Search" type="text"> <i
 									class="fa fa-search"></i>
 							</div>

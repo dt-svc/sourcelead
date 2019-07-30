@@ -26,6 +26,12 @@
    
    <div class="clearfix"></div>
    <div class='data_loading' id="loadTime"></div>
+   	    <div class="reportHead" id="historySearchIndDiv">
+			<ul class="pull-right">
+			<li><input type="text" placeholder="Search" class="repSearchBar" id="historyDataTableSearchInd"/><span class="repSearchIcon" onClick="preparePaySheetFrequencyInd()"></span></li>
+			</ul>
+		</div>
+		
    <div id="runPayRollTabsContent" class="require_wrap_table datatable_filter"></div>
    </div>
 </section>
@@ -78,7 +84,8 @@ function employeePayrollList(uuid){
 	        		    	  $("#loadTime").removeAttr('style');
 	        		    	  prepareChosenScripts();
 	        		      }
-	        	    }); 
+	        	    });
+	        	   $("#historySearchIndDiv").hide();
 	}
 </script>
 
@@ -88,18 +95,17 @@ function payrollDiv(){
 	    $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	    $("#runPayRollTabsContent").empty();
 	    $("#loadTime").removeAttr('style');
+		$("#historyDataTableSearchInd").val('');
 		preparePaySheetFrequencyInd();
 		highlight('payrollLi');
+		$("#historySearchIndDiv").show();
+
   }
   
   function preparePaySheetFrequencyInd() {
+	  
 	  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		var result = "";
-		result = result + '<div class="reportHead" id="historySearchIndDiv">';
-		result = result + '	<ul class="pull-right">';
-		result = result + '	<li><input type="text" placeholder="Search" class="repSearchBar" id="historyDataTableSearchInd"/><span class="repSearchIcon" onClick=""></span></li>';
-		result = result + '	</ul>';
-		result = result + '</div>';
 		result = result + '<table id="payFrequency" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
@@ -118,7 +124,6 @@ function payrollDiv(){
 		var searchValue = $("#historyDataTableSearchInd").val();
 		searchValue = searchValue ? searchValue : "";
 		var url = pmsUrl+ "/getPaySheetFrequencyDataInd?searchValue="+searchValue;
-		
 		payFrequencyPagination(url);
 	}
   
@@ -265,12 +270,13 @@ function payrollDiv(){
 						});
 		$("#payFrequency").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 		$("input[type=search]").hide();
-		$("#historyDataTableSearchInd").keyup(function(e) {
-			if (e.which === 13) {
-				payrollDiv();
-			}
-		});
 	}
+  
+  $("#historyDataTableSearchInd").keyup(function(e) {
+		if (e.which === 13) {
+			preparePaySheetFrequencyInd();
+		}
+	});
 </script>
 
 
@@ -289,6 +295,7 @@ function payrollDiv(){
 	         				$("#runPayRollTabsContent").append(data);
 	         		      }
 	         		});
+	               $("#historySearchIndDiv").hide();
 	         	}
 </script>
  <script>

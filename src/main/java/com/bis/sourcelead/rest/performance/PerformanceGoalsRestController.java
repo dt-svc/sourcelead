@@ -36,6 +36,7 @@ import com.bis.sourcelead.entity.performance.PerformanceGoalsAssignTo;
 import com.bis.sourcelead.entity.performance.PerformanceGoalsAttachments;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.performance.PerformanceGoalsAssignToService;
 import com.bis.sourcelead.service.performance.PerformanceGoalsAttachmentsService;
 import com.bis.sourcelead.service.performance.PerformanceGoalsCommentsService;
 import com.bis.sourcelead.service.performance.PerformanceGoalsService;
@@ -59,6 +60,9 @@ public class PerformanceGoalsRestController {
 	@Autowired
 	PerformanceGoalsCommentsService performanceGoalsCommentsService;
 	
+	@Autowired
+	PerformanceGoalsAssignToService performanceGoalsAssignToService;
+	
 	  @RequestMapping(value = { "/getReportingManagersUsersForGoalsAssignment", "/rest/getReportingManagersUsersForGoalsAssignment" }, method = RequestMethod.GET)
 	   public ResponseList<PerformanceGoalsAssignToDTO> getReportingManagersUsersForGoalsAssignment(HttpServletRequest request) throws Exception {
 		   Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
@@ -70,7 +74,7 @@ public class PerformanceGoalsRestController {
 			  userRolesList = performanceGoalsService.getReportingManagersUsersForAssigningGoals(userId,orgLocationId);
 			  UserRole userRole = userRoleService.getUserRoleById(userRoleId);
 			  PerformanceGoalsAssignToDTO managerDTO = new PerformanceGoalsAssignToDTO();
-			  managerDTO.setAssignedUserId(BigInteger.valueOf(userRole.getId()));
+			  managerDTO.setAssignedUserId(BigInteger.valueOf(userRole.getUser().getId()));
 			  managerDTO.setAssignedUser(userRole.getUser().getFullName());
 			  userRolesList.add(managerDTO);
 			  resObj.setData(userRolesList);
@@ -577,6 +581,14 @@ public class PerformanceGoalsRestController {
 					 goals.setStatus(Constants.RECORD_INACTIVE);
 					 performanceGoalsService.savePerformanceGoals(goals);
 					 
+					 List<PerformanceGoalsAssignTo> goalsAssignedList = performanceGoalsAssignToService.getPerformanceGoalsAssignToListByGoalId(goals.getId());
+					 if(goalsAssignedList != null && !goalsAssignedList.isEmpty()) {
+						 for(PerformanceGoalsAssignTo assignTo : goalsAssignedList) {
+							 assignTo.setStatus(Constants.RECORD_INACTIVE);
+							 performanceGoalsAssignToService.savePerformanceGoalsAssignTo(assignTo);
+						 }
+					 }
+					 
 					 String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
 					 List<PerformanceGoalsDTO> subGoalsList = performanceGoalsService.getPerformanceSubGoalsList(goals.getId(), dateFormat);
 					 if(subGoalsList != null && !subGoalsList.isEmpty()) {
@@ -584,6 +596,14 @@ public class PerformanceGoalsRestController {
 							 PerformanceGoals subGoal = performanceGoalsService.getPerformanceGoalsById(goalsDTO.getId().longValue());
 							 subGoal.setStatus(Constants.RECORD_INACTIVE);
 							 performanceGoalsService.savePerformanceGoals(subGoal);
+							 
+							 List<PerformanceGoalsAssignTo> subGoalsAssignedList = performanceGoalsAssignToService.getPerformanceGoalsAssignToListByGoalId(subGoal.getId());
+							 if(subGoalsAssignedList != null && !subGoalsAssignedList.isEmpty()) {
+								 for(PerformanceGoalsAssignTo assignTo : subGoalsAssignedList) {
+									 assignTo.setStatus(Constants.RECORD_INACTIVE);
+									 performanceGoalsAssignToService.savePerformanceGoalsAssignTo(assignTo);
+								 }
+							 }
 						 }
 					 }
 					 
