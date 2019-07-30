@@ -70,6 +70,51 @@ function prepareAllCounts(requirementId){
 	
 }
 </script>
+<script>
+function getWorkflowStageColumnAndCountIds(){
+	var stageColumnsMap = new Map();
+	$('#stageColumns li').each(function(){
+		stageColumnsMap.set($(this).text().slice(2, $(this).text().length).replace(/-|\s/g,"").toLowerCase(), $(this).find('b').attr('id'));
+	});
+	return stageColumnsMap;
+}
+</script>
+<script>
+function prepareAllWorkflowCounts(requirementId){
+	var stageColumnsMap = getWorkflowStageColumnAndCountIds();
+	var stagesCountMap = new Map();
+	var stages = new Array(); 
+	<c:forEach var="stage" items="${stagesList}">
+		stages.push('${stage.stageShortCode}');
+	 </c:forEach>
+	 
+	$.ajax({
+	       type : "POST",
+	        url: atsUrl+"/getWorkflowSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=ALL"+"&workflowStages="+stages,        
+	        success :function(data) {
+	        	if(data != null){
+	   		 var obj = JSON.stringify(data);
+			 var stageCountList = obj.replace(/[{}]/g, "").split(',');
+			 for(var j=0;j< stageCountList.length; j++){
+				
+				 var n = stageCountList[j].indexOf(':');
+					var stageName = stageCountList[j].slice(1, n-1);
+					var count = stageCountList[j].slice(n+1, stageCountList[j].length);
+					stagesCountMap.set(stageName.replace(/_|\s/g,"").toLowerCase(), count);
+					
+			 }
+			 for (var [key, value] of stageColumnsMap) {
+				 $("#"+value).html(stagesCountMap.get(key));
+				}
+	        }
+	        },
+		  });
+	
+	$('#duplicataplctli').load(duplicateCount(requirementId));
+    
+	
+}
+</script>
 
 <script>
 function duplicateCount(requirementId){
@@ -809,6 +854,7 @@ function updateReuqirementStatusReject(status){
 function requirementWorkflowPipeline(requirementId,workflowShortCode){
 	//var url = atsUrl+"/loadWorkflowSubmissionsListByRequirementId?searchValue="+searchValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&orgLocationId="+orgLocationId+"&userId="+userId+"&loginUserRole="+loginUserRole+"&userCode="+userCode+"&clientSubmissions="+clientSubmissions;
 	getColumnsMapbyWorkflowStage(requirementId, workflowShortCode);
+	prepareAllWorkflowCounts(requirementId);
 	}
 </script>
 <script>
@@ -2070,7 +2116,7 @@ function requirementWorkflowStatusBar(requirementId){
         var isSpocActive = '${isSpocActive}';
 	       
         result = result + '<div class="reportsCount reportsCountNew reportsCountNewBig reportsCountCustom" id="customLi">';
-		result = result + '<ul>';
+		result = result + '<ul id = "stageColumns">';
 		result = result + '<li title="Applicants" id="applicantli" onclick="requirementPipeline('+requirementId+',\''+all+'\');tabEnable(this);" class="reqAct">';
 		result = result + '	<span><i class="fa fa-users"></i></span><b id="applicantsCount">0</b>';
 		result = result + '<div class="clearfix small mt10"><label class="mb0 fontSmall tooltip-pipeline">Applicants</label></div>';
@@ -2087,8 +2133,8 @@ function requirementWorkflowStatusBar(requirementId){
 		 <c:forEach var="stage" items="${stagesList}">
 			<c:choose>
 				 <c:when test = "${stage.stageShortCode =='SUBMISSION'}">
-					result = result + '<li title="${stage.stageName}" id="Submission" onclick="requirementPipeline('+requirementId+',\''+submission+'\');tabEnable(this);">';
-					result = result + '	<span><i class="fa fa-check-square-o"></i></span><b id="submission">0</b>';
+					result = result + '<li title="${stage.stageName}" id="Submission" onclick="requirementWorkflowPipeline('+requirementId+',\''+submission+'\');tabEnable(this);">';
+					result = result + '	<span><i class="fa fa-check-square-o"></i></span><b id="submissionsCount">0</b>';
 					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">${stage.stageName}</label></div>';
 					result = result + '</li>';
 				</c:when>
