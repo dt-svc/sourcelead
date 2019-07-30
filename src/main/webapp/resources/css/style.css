@@ -501,7 +501,7 @@
 .appraQueInn .glyphicon {    position: absolute; right: 23%; top: 24px;}
 
 
-.subScoreWrap { float: right; text-align: right; width: 240px;}
+.subScoreWrap { float: right; text-align: right; width: 245px;}
 .subScoreWrap label { float: left;padding: 10px 15px 0px 0px;}
 .subScoreWrap select, .subScoreWrap input {float: right !important; width: 120px; padding: 6px 5px;}
 .subScoreWrap p { position: relative; top: 5px; float: right;}
