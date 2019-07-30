@@ -368,21 +368,8 @@
 				  </a>
 					  
 			        <ul class="collapses" style="display: none">
-                               <sec:authorize access="hasAnyRole('ROLE_ADD_MY_GOALS','ROLE_ADD_TEAM_GOALS')"> 
                                 
-                                <sec:authorize access="hasRole('ROLE_ADD_MY_GOALS') && hasRole('ROLE_ADD_TEAM_GOALS')"> 
-                               	 <li class="${sessionData.nav == 'Goals' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" title="Goals"><i class="fa fa-chevron-right"></i> Goals</a></li>
-                                </sec:authorize>
-                                
-                                <sec:authorize access="hasRole('ROLE_ADD_MY_GOALS') && !hasRole('ROLE_ADD_TEAM_GOALS')"> 
-                               	 <li class="${sessionData.nav == 'Goals' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" title="Goals"><i class="fa fa-chevron-right"></i> Goals</a></li>
-                                </sec:authorize>
-                                
-                                <sec:authorize access="!hasRole('ROLE_ADD_MY_GOALS') && hasRole('ROLE_ADD_TEAM_GOALS')"> 
-                               	 <li class="${sessionData.nav == 'Goals' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceTeamGoalsList" title="Goals"><i class="fa fa-chevron-right"></i> Goals</a></li>
-                                </sec:authorize>
-                                	
-                               </sec:authorize>
+                               <li class="${sessionData.nav == 'Goals' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" title="Goals"><i class="fa fa-chevron-right"></i> Goals</a></li>
                                
                                <sec:authorize access="hasRole('ROLE_ADD_MY_APPRAISAL')"> 
                                		<li class="${sessionData.nav == 'My Appraisal' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceAppraisalList" title="My Appraisal"><i class="fa fa-chevron-right"></i> My Appraisal</a></li>

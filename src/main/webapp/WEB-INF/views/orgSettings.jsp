@@ -219,10 +219,8 @@ function cancelOrgImg(){
 				   <img id="orgImage" data-id="orgLogoImage" onerror="predefineOrgImage(this);" src="${SourceLeadWeb_fileUrl}" alt="Org Image" class="comp-image img-responsive">
 				  
 				  <div class="btn-group uploadfile">
-					  <button type="button" class="btn btn-sm btn-primary">
-					  <i class="fa fa-upload"></i></button>
 					   <label class="btn btn-sm btn-primary">
-	                    Upload / Change<input type="file" name="file" id="uploadedImage" data-id='orgLogo'  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+	                    <i class="fa fa-upload"></i> Upload / Change<input type="file" name="file" id="uploadedImage" data-id='orgLogo'  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
 	 				  <c:if test="${!empty SourceLeadWeb_fileUrl}">
 		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
@@ -347,10 +345,10 @@ function cancelOrgImg(){
 						<div class="clearfix mb">
 							<label class="labText">DBA </label>
 							<div class="clearfix">
-								 <div class="col-md-10 noPad">
+								 <div class="col-md-11 noPad">
 				                    <input id="dba" name="dba" class="form-control" type="text" value="${SourceLeadWeb_dba}" field-name="DBA" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
 				                </div>
-				                <div class="col-md-2 dbaCheck dbaCheck-cs">
+				                <div class="col-md-1 dbaCheck dbaCheck-cs">
 				                     
 				                   <div class="ml10">
                                                 <input id="dbaCheckbox" name="dbaCheckbox" ${empty SourceLeadWeb_dba ? 'checked' : SourceLeadWeb_dba == SourceLeadWeb_orgLocationName ? 'checked' : ''} class="checkbox-custom" onclick="getDBAName();" type="checkbox">
@@ -2688,10 +2686,10 @@ function createOrg(){
 	result = result +'<div class="form-group">';
 	result = result +'<label class="col-md-3">DBA<span class="text-danger">&nbsp;*</span></label>';
 	result = result +'<div class="col-md-9">';
-	result = result +'<div class="col-md-10 noPad">';
+	result = result +'<div class="col-md-11 noPad">';
 	result = result +'<input id="dbaLoc" name="dba" class="form-control" type="text" field-name="DBA" data-validation="required validate_Space validate_length length2-250">';
 	result = result +'</div>';
-	result = result +'<div class="col-md-2 dbaCheck dbaCheck-cs">';
+	result = result +'<div class="col-md-1 dbaCheck dbaCheck-cs">';
              
 	result = result +'<div class="ml10">';
 	result = result +'<input id="dbaLocCheckbox" name="dbaLocCheckbox"  class="checkbox-custom" onclick="getLocDBAName();"  type="checkbox">';
