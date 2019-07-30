@@ -1036,9 +1036,9 @@ public class RequirementListRestController {
 									
 									
 									if(requirementSubmission.getSubmissionStatus() != null) {
-										ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
-										if(status != null)
-						  				requirementSubmission.setSubmissionDisplayStatus(status.getValue());
+										/*ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
+										if(status != null)*/
+						  				requirementSubmission.setSubmissionDisplayStatus(requirementSubmission.getSubmissionStatus().toString());
 									}
 									if (requirementSubmission.getVendorLocationId() != null) {
 										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
@@ -1822,6 +1822,32 @@ public class RequirementListRestController {
 			response.setObject(rsCount);
 		}
 		return response;
+	}
+	
+	/**
+	 * @author update:shivayogi
+	 * 
+	 * @param requirementId
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@Async
+	@RequestMapping(value = "/getWorkflowSubmissionsCountBySubmissionStatus", method = RequestMethod.POST)
+	@ResponseBody
+	Map<String, Integer> getWorkflowSubmissionsCountBySubmissionStatus(@RequestParam(value = "requirementId", required = false) String requirementId, @RequestParam(value = "submissionType", required = false) String submissionType, 
+			 @RequestParam(value = "workflowStages", required = false) String[] workflowStages,
+			HttpServletRequest request) throws Exception
+	{
+		Map<String, Integer> stagesCountMap = new HashMap<String, Integer>();
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String resultJson = null;
+		if (requirementId != null && !requirementId.isEmpty() && !requirementId.equalsIgnoreCase("undefined")) {
+			stagesCountMap = requirementSubmissionService.getAllPipeLineWorlflowCountsByRequirementIdAndSubmissionStage(Long.valueOf(requirementId), user, loginOrgLocation, submissionType, workflowStages);
+			//resultJson = commonUtil.toJSON(applicantsCount);
+		}
+		return stagesCountMap;
 	}
 	
 	/**
