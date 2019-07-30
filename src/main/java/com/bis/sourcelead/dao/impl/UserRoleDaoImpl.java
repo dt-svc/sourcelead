@@ -1679,4 +1679,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			userDTOList = queryObj.list();
 			return userDTOList;
 	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getAllUserRolesByOrgLocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.orgId left join fetch userRole.user "
+				+ " left join fetch userRole.roles left join fetch userRole.reportingManager left join fetch userRole.resourceManager "
+				+ " where userRole.orgLocations.id = :orgLocationId and (userRole.userState = 'ACTIVE' OR userRole.userState = 'NOT_LOGGEDIN') ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+		return userRoleList;
+
+	}
 }
