@@ -178,7 +178,7 @@ s	</section>
 		<div class="form-footer clearfix mt">
 			<div class="col-lg-12">
 				<div class="pull-right">
-					<input type="button" value="Save" class="btn btn-primary" id="save" onclick="saveTicket();"/>
+					<input type="button" value="Save" class="btn btn-primary" id="addTicket" onclick="saveTicket();"/>
 					<input type="button" value="Cancel" class="btn btn-default ml" id="cancel"  onClick="javascript:window.location.href = '<c:url value='${appPath}/ticketManagementList'/>'"/>
 				</div>
 			</div>
