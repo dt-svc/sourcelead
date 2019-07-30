@@ -200,11 +200,12 @@ $(document).ready(function(){
 	$(".add-ticketcomment").attr('style', "right:30px !important; top:45px");
 });
 $("#addComment").click(function(){
-	$("#ticketComment").empty();
+	$("#ticketComment").val("");
 	$("#ticketCommentPopup, .mask").show();
 });
 function closeTicketComment(){
 	var ticketIdEdit = $("#ticketCommentId").val();
+	$('#ticketComment_form').find('p.jquery_form_error_message').remove();
 	if(ticketIdEdit ==null || ticketIdEdit =="" || ticketIdEdit =="undefined"){
 	$("#ticketComment").val("");
 	}
