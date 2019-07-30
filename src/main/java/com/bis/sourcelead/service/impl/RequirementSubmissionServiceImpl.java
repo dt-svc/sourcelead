@@ -1637,6 +1637,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 	
 	@Override
+	public Map<String, Integer> getAllPipeLineWorlflowCountsByRequirementIdAndSubmissionStage(Long requirementId, User user,
+			OrgLocations loginOrgLocation, String submissionStatus, String[] workflowStages) throws Exception{
+		return requirementSubmissionDao.getAllPipeLineWorlflowCountsByRequirementIdAndSubmissionStage(requirementId,user,loginOrgLocation,submissionStatus, workflowStages);
+	}
+	
+	@Override
 	public Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,OrgLocations loginOrgLocation) throws Exception{
 		CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(loginOrgLocation.getId());
 		return requirementSubmissionDao.duplicateCandidateCountsByRequirementId(requirementId,user,loginOrgLocation,candidateVerificationConfig);
