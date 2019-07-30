@@ -1039,7 +1039,7 @@ function getEmployeementType(designationType){
  
 <script type="text/javascript">
  function validateUserEmail() {
-	 var EmailId = document.getElementById("EmailId").value; 
+	 var EmailId = document.getElementById("EmailId").value.trim();
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 	 if(EmailId != null && EmailId != ""){
 		 $("#create_user").attr("disabled", "disabled");
