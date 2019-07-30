@@ -173,8 +173,8 @@ var validationSettings = {
         };
 function saveTicketComment(ticketId) {
 	 if ($('#ticketComment_form').validate(false, validationSettings)) {
-		var formData = getFormData("ticketComment_form");
-		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId,formData, function(response) {
+//		var formData = getFormData("ticketComment_form");
+		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, {id: $("#ticketCommentId").val(), comment : $("#ticketComment").html(), mentionedUserIds : selectedUsers.toString()}, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
@@ -273,6 +273,8 @@ function showDeleteCommentPopup(commentId, ticketId) {
 }
 
 function closeDeleteCommentPopup() {
+	$("#ticketCommentId").val(0);
+	$("#ticketComment").html("");
 	$("#deleteCommentPopup").slideUp(200);
 	$(".mask").fadeOut(200);
 }
