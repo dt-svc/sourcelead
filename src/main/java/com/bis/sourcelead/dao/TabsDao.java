@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.Collection;
 import java.util.List;
 
+import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.entity.Tabs;
 
 public interface TabsDao {
@@ -32,6 +33,8 @@ public interface TabsDao {
 	List<Tabs> getClildTabsListByTabId(Long tabId) throws Exception;
 	
 	List<Tabs> getTabListByActionsIds(List<Long> actionIdsList) throws Exception;
+
+	List<Tabs> getTabsByRoleIdAndOrgLocationId(long roleId, Long locationId);
 
 	
 }
