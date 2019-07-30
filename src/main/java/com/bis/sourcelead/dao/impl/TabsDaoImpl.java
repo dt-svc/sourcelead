@@ -3,7 +3,11 @@ package com.bis.sourcelead.dao.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.SourceleadActionsDao;
 import com.bis.sourcelead.dao.TabsDao;
-import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
@@ -25,6 +29,9 @@ public class TabsDaoImpl implements TabsDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	SourceleadActionsDao sourceleadActionsDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserRoleDaoImpl.class);
 
@@ -248,6 +255,52 @@ public class TabsDaoImpl implements TabsDao{
 	    List<Tabs> tabsList = session.createQuery(query.toString()).setParameterList("actionIdsList", actionIdsList).list();
 	    return tabsList;
 	
+	}
+
+	@Override
+	@Transactional
+	public List<Tabs> getTabsByRoleIdAndOrgLocationId(long roleId, Long locationId)
+	{
+		  Session session = this.sessionFactory.getCurrentSession();
+		  List<Tabs> tabsList = new CopyOnWriteArrayList<>();
+		  
+	         List<Roles> rolesList = new ArrayList<Roles>();
+			 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", locationId).list();
+			 List<Long> roleActionsList = new ArrayList<Long>();
+			 for(Roles roles : rolesList){
+				 
+				 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
+	        	 }
+			 }
+			 
+		    String query = "from SourceleadActions sa left join fetch sa.tabs where sa.id IN (:actionIdList)";
+		    List<SourceleadActions> actionsList = session.createQuery(query.toString()).setParameterList("actionIdList", roleActionsList).list();
+		    HashMap<Long,Tabs> tabsMap = new HashMap<>();
+			 if(actionsList != null && !actionsList.isEmpty()) {
+				 for(SourceleadActions action : actionsList) {
+					 Tabs tabs = getTabListByTabId(action.getTabs().getId());
+					 Tabs tempTabs = null;
+					 if(tabs.getTabs() != null){
+						 tempTabs = tabsMap.get(tabs.getTabs().getId());
+					 }else {
+						 tempTabs = tabsMap.get(tabs.getId()); 
+					 }
+			    		if(tempTabs == null) {
+			    			if(tabs.getTabs() != null){
+								 tabsMap.put(tabs.getTabs().getId(),tabs.getTabs());
+				    			 tabsList.add(tabs.getTabs());
+							 }else {
+								 tabsMap.put(tabs.getId(),tabs);
+				    			 tabsList.add(tabs);
+							 }
+			    			
+			    		}
+					 
+				 }
+			 }
+			 
+	        return tabsList;
 	}
 	
 	 
