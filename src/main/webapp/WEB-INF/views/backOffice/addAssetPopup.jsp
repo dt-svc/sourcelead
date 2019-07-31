@@ -56,7 +56,7 @@
 		                  <div class="col-md-5" id="snoDiv">
 		                  <label class="clearfix" >Serial Number<span class="text-danger paddingLeft">*</span></label>
 			                  <div class="clearfix">
-			                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Serial Number" field-name="Serial Number" onblur="validateAssetSno('${assetAssignData.id}');" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200" >
+			                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Serial Number" field-name="Serial Number" onkeyup="validateAssetSno('${assetAssignData.id}');" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200" >
 			                  </div>
 		                  </div>
 		                  
