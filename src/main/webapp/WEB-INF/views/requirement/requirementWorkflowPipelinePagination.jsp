@@ -76,7 +76,7 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
     result = result + '     </table>';
     result = result + '   </div>';
     result = result + '   </div>';
-    prepareAllCounts(requirementId);
+    prepareAllWorkflowCounts(requirementId);
 }
 
 	function requirementWorkflowPipelinePagination(url, requirementId, submissionType, columnsMap) {
