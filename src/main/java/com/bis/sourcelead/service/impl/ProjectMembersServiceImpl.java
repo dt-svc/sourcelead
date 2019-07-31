@@ -1677,6 +1677,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 			orgRelations.setInitiatorType("Vendor");
 			orgRelations.setResponderType("Client");
 			orgRelations.setGenerateInvoice("Bulk");
+			orgRelations.setGenerateBill("Bulk");
 			orgRelations.setInitiatorLevel("Tier-5");
 			orgRelations.setResponderLevel("Tier-5");
 			orgRelations.setStatus("ACTIVE");
