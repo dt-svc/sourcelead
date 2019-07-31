@@ -1829,7 +1829,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					  +groupByCandidateId;
 		}
 		try {
-			System.out.println(query);
 			Query queryObj = session.createQuery(query);
 			if(StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate())&&StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
 				queryObj.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
