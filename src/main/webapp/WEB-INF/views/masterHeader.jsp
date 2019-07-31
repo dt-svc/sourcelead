@@ -38,13 +38,13 @@ $(document).ready(function(){
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
 <title>Welcome to Source Lead</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="/resources/reports/dashboard_3118.css?staticTime=${staticTime}" type="text/css" media="all" />
-<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
-<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/dashboard_3118.css?staticTime=${staticTime}" type="text/css" media="all" />
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
  
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
  <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
@@ -53,73 +53,73 @@ $(document).ready(function(){
 
 <!-- This requirement.css for only requirement.jsp  -->
 <c:if test='${viewPage == "requirement/requirement"}'>
-	<link href="/resources/css/requirement.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+	<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/requirement.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 </c:if>
 
 </head>
 
 
-<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
-<script src="/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
-<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
  
 <!--  Amcharts -->
 <c:if test='${viewPage == "reports/reportsDashboard"}'>
-	<script src="/resources/amcharts/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="/resources/amcharts/serial.js?staticTime=${staticTime}"></script>
-	<script src="/resources/amcharts/plugins/export/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css?staticTime=${staticTime}" type="text/css" media="all" />
-	<script src="/resources/amcharts/themes/light.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/serial.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/plugins/export/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/plugins/export/export.css?staticTime=${staticTime}" type="text/css" media="all" />
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/themes/light.js?staticTime=${staticTime}"></script>
  
  </c:if>
  
  <c:if test='${viewPage == "reports/applicantsReport"}'>
-	 <script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="/resources/reports/pie.js?staticTime=${staticTime}"></script>
-	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="/resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
-	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
+	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/pie.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/light.js?staticTime=${staticTime}"></script>
 </c:if>
 
 <c:if test='${viewPage == "reports/applicantsReceivedReport"}'>
-	<script src="/resources/reports/highcharts.js"></script>
-	<script src="/resources/reports/exporting.js"></script> 
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/highcharts.js"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/exporting.js"></script> 
 </c:if>
 
 <c:if test='${viewPage == "reports/requirementStageReports" || viewPage == "reports/usersUsageReportList"}'>
-	<script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="/resources/reports/piechart.js?staticTime=${staticTime}"></script>
-	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
-	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/piechart.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/light.js?staticTime=${staticTime}"></script>
 	
 </c:if>
 
 <c:if test='${viewPage == "reports/requirementAssignToReports" || viewPage == "reports/requirementAssignToReports" || viewPage == "reports/vendorsReport" || viewPage == "reports/paidBillReportGraph" || viewPage == "reports/receivedInvoiceReportGraph"}'>
-	 <script src="/resources/js/pie.js?staticTime=${staticTime}"></script> 
-	 <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
-	 <script src="/resources/js/serial.js?staticTime=${staticTime}"></script> 
-	 <script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script> 
-	 <script src="/resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script> 
+	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
+	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/serial.js?staticTime=${staticTime}"></script> 
+	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.min.js?staticTime=${staticTime}"></script> 
+	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/themes/light.js?staticTime=${staticTime}"></script> 
  </c:if>
 
 
 <c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" || viewPage == "reports/perfomanceClientReports"}'>
-	<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
-	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/light.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
  <c:if test='${viewPage == "leavemanagement/applyLeave"}'>
-    <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
+    <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
  
@@ -537,6 +537,10 @@ function preventTabkey(e){
 	            </div>
 	          </li>
          </c:if>
+         
+         <sec:authorize access="hasAnyRole('ROLE_ADD_TICKET','ROLE_VIEW_TICKET')">
+			<li><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>" title="Ticket Management" ><i class="ticketMgIC"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+		</sec:authorize>
 		
         <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
         	 <li><a title="Reports" href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"><i class="headNavIcon reporIcon"></i></a></li>
@@ -554,10 +558,12 @@ function preventTabkey(e){
          	<li><a href="${SourceLeadWeb_atsUrl}/mailBox/mails" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
          </sec:authorize>		
 		
+          <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
           <li> 
           <a id="notiPopId" href="#" title="Alerts" onclick="getNotificationsByuserId()"><i class="headNavIcon notiIcon"></i> <c:if test="${SourceLeadWeb_notificationCount > 0}"><span class="label-warning">${SourceLeadWeb_notificationCount}</span></c:if></a>
           <div class="headPop headPopnoti" id="notificationPopup"></div>
           </li>	
+          </c:if>
           
          <!--  Setting page 	 -->
          
@@ -568,7 +574,7 @@ function preventTabkey(e){
 
 
 <ul class="responIcons clearfix">
-	<li><a><img src="/resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
+	<li><a><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
 	<li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>
 </ul>
     
@@ -842,7 +848,7 @@ function preventTabkey(e){
   <div class="theme-color">
       <span class="icon-theme theme-styels" title="click here">
           <figure class="rotate">
-            <img src="/resources/images/theme-icon.png" class="img-responsive" title="Themes">
+            <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/theme-icon.png" class="img-responsive" title="Themes">
           </figure>
       </span>
     <ul class="list-unstyled">
@@ -979,6 +985,31 @@ $(document).ready(function() {
 $(".collpase-div").click(function(){
 	$(this).next().slideToggle();
 });
+
+$('.headProfileIcon').click(function(){
+	$("#profilePop").slideToggle(0);
+	 $('#settingPopup, #notificationPopup, #orgPopView').hide();
+});
+$('#settingPopId').click(function(){
+	$("#settingPopup").slideToggle(0);
+	 $('#profilePop, #notificationPopup, #orgPopView').hide();
+});	
+$('#notiPopId').click(function(){
+	$("#notificationPopup").slideToggle(0);
+	 $('#profilePop, #settingPopup, #orgPopView').hide();
+});	
+
+$('#orgPopId').click(function(){
+	$("#orgPopView").slideToggle(0);
+	 $('#profilePop, #settingPopup, #notificationPopup').hide();
+});			
+$('html').click(function(){
+	  $('#profilePop, #settingPopup, #notificationPopup, #orgPopView').hide();
+    });
+$('.headProfile, #settingPopId, #settingPopup, #notiPopId, #notificationPopup, #orgPopId, #orgPopView').click(function(e){
+	e.stopPropagation();
+});		
+
 });
 
 //Add Task Div
@@ -1750,7 +1781,7 @@ function zipcodeMask(country,zipCodeId){
 
 
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
-<%-- <script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script> --%>
+<%-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script> --%>
 
 
 <script type="text/javascript">
