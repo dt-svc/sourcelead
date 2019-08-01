@@ -418,12 +418,12 @@ function cancelTermination(){
 	 $(".project_inn_mask").fadeOut(200);
 }
 function changeTaskStatus(projectTaskId){
-	var sourceleadUrl = '${sourceleadUrl}';
+//	var sourceleadUrl = '${sourceleadUrl}';
 	var projectClientUUID = '${projectClientUUID}';
 	var taskStatusId = $("#taskStatusId"+projectTaskId+"").val();
 	  $.ajax({
 		type : "POST",
-		url : sourceleadUrl	+ "/ProjectTasks/changeTaskStatusByList?${_csrf.parameterName}=${_csrf.token}&taskId="+projectTaskId+"&taskStatusId="+taskStatusId+"&projectClientUUID="+projectClientUUID,
+		url : pmsUrl+ "/ProjectTasks/changeTaskStatusByList?${_csrf.parameterName}=${_csrf.token}&taskId="+projectTaskId+"&taskStatusId="+taskStatusId+"&projectClientUUID="+projectClientUUID,
 		success : function(json) {
 			projectTaskList();
 		}
