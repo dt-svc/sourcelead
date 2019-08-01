@@ -59,7 +59,7 @@
 						</c:if>
 						
 						<c:if test="${empty bankChequeDoc.fileUrl}">
-							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup1"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getBankCheque();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBankChequeBtn" class="upload"> </span>
@@ -90,7 +90,7 @@
 							</c:if>
 							
 							<c:if test="${empty registrationDoc.fileUrl}">
-							     <div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+							     <div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup2"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getRegistrationDoc();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadRegistrationBtn" class="upload"> </span>
@@ -125,7 +125,7 @@
 							</c:if>
 							
 							<c:if test="${empty annulReportBusinessDoc.fileUrl}">
-							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup3"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getAnnulBusinessLincense();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadAnnualBusinessLicenseBtn" class="upload"> </span>
@@ -156,7 +156,7 @@
 							</c:if>
 							
 							<c:if test="${empty w9Doc.fileUrl}">
-							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup4"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getW9Doc();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadW9Btn" class="upload"> </span>
@@ -176,7 +176,7 @@
 			      
 			      <div class="clearfix">
 			      		<div class="pull-right">
-						<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/app/dashboard/${SourceLeadWeb_orgLocationId}'">
+						<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/app/settings'">
 						</div>
 						<div class="pull-right">
 						<input  type="button" onclick="saveDocuments();"  value="Save" id="save_documents_button" class="btn btn-primary mr">
@@ -266,9 +266,9 @@ if(document.getElementById("uploadBusinessLicenseBtn") != null){
 						type : "POST",
 						 data: formData,
 						 url: sourceleadUrl+"/saveOrgLocationDocuments",
-								success : function(result) {
-									if(result == 'success'){
-										 location.replace(sourceleadUrl+"/orgSettings?&tabType=documents");
+								success : function(response) {
+									if(response.response == 'SUCCESS'){
+										location.replace(sourceleadUrl+"/orgSettings?&tabType=documents");
 						        	}else{
 						        		$("#loading").removeAttr("style"); 
 						        	}
@@ -326,6 +326,14 @@ function cancelPopUp(){
 	$("#docPopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
+function resetInformation(){
+	$('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+	$('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
+	$('#uploadFileGroup2').find('p.jquery_form_error_message').remove();
+	$('#uploadFileGroup3').find('p.jquery_form_error_message').remove();
+	$('#uploadFileGroup4').find('p.jquery_form_error_message').remove();
+}
+
 </script>
 
 	

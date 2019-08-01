@@ -429,6 +429,12 @@ function resetFilter(){
 	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
 	$("#daywiseReportDataTableSearch").val('');
+	$("#myRolesInput").val('');
+	$("#myDepartmentInput").val('');
+	$("#leaveTypeInput").val('');
+	leaveTypeFunction();
+	myRolesFunction();
+	myDepartmentFunction();
 	getDaywiseLeaveReportList();}
 </script>
 

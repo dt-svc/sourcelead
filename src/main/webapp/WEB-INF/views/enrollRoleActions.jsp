@@ -51,7 +51,7 @@
 		        	<c:set value="1" var="tabIndex"></c:set>
 		        	<c:forEach items="${tabsMap}" var="tab">
 		        		<li data-name="${tab.key}">
-		                    <a href="javascript:void(0)" ${tabIndex == 1 ? "class='active'" : ""}>${tab.key}<b class="pull-right">10/25</b></a>
+		                    <a href="javascript:void(0)" ${tabIndex == 1 ? "class='active'" : ""}>${tab.key}<b class="pull-right">0/0</b></a>
 		                    <span>
 		                        <input id="tab${tabIndex}" value="" class="checkbox-custom" name="tabName" type="checkbox">
 		                        <label for="tab${tabIndex}" class="checkbox-custom-label paddingright"></label>                         

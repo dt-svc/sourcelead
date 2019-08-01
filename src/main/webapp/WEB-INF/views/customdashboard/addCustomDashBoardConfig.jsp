@@ -25,35 +25,34 @@
           <label class="col-md-4">Description</label>
           <div class="col-md-8"><textarea placeholder="Description" class="form-control" cols="3" id="description" name="description">${customDashBoardConf.description }</textarea></div>
         </div>   
+        
+        <div class="clearfix mb" id="RolesShow">
+        <div id ="rolesErrorDIV">
+        <label class="col-md-4">Roles</label>
+         <div class="col-md-8">
+        <select class="chosen-select form-control" id="roles" name="roles" field-name="Roles" onchange="getAssociateListBasedOnRole();">
+        <option value="">Select Roles</option>
+        <c:if test="${not empty customDashBoardConf.roleId}">
+                     <c:forEach var="role" items="${roles}">
+	                     		<option value="${role.id}" ${customDashBoardConf.roleId  == role.id ? 'selected' : ''} >${role.displayName}</option>
+                      </c:forEach>
+        </c:if>
+        <c:if test="${empty customDashBoardConf.roleId}">
+                  <c:forEach var="role" items="${roles}">
+                      <option value="${role.id}">${role.displayName}</option>
+                   </c:forEach>
+        </c:if>
+		</select>
+		</div>
+		 </div>
+      </div> 
 
         <div class="clearfix mb" id="applicableForErrorDIV">
           <label class="col-md-4">Applicable for <span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-2"><input type="radio" id="applicableForAll" name="applicableFor" oncick="fireFunction();" value="All" ${customDashBoardConf.applicableFor=='All'?'checked':''}><label for="a" class="paddingLeft" data-validation="required"> All</label> </div>
-          <div class="col-md-2"><input type="radio" id="applicableForRoles" name="applicableFor" value="Roles" ${customDashBoardConf.applicableFor=='Roles'?'checked':''}><label for="b" class="paddingLeft" data-validation="required"> Roles</label></div> 
           <div class="col-md-3"><input type="radio" id="applicableForAssociates" name="applicableFor" value="Associates" ${customDashBoardConf.applicableFor=='Associates'?'checked':''}><label for="c" class="paddingLeft" data-validation="required"> Associates</label></div> 
         </div>   
 
-        <div class="clearfix mb" id="RolesShow" style="display: none;">
-        <div id ="rolesErrorDIV">
-        <label class="col-md-4">Roles</label>
-        <div class="col-md-8">
-              <select multiple class="chosen-select form-control" id="roles" name="roles" field-name="Roles">
-                <c:if test="${not empty selectedRoles}">
-                     <c:forEach var="role" items="${roles}">
-                             <c:forEach var="selectedRoles" items="${selectedRoles}">
-	                     		<option value="${role.id}" ${selectedRoles.roleId  == role.id ? 'selected' : ''} >${role.displayName}</option>
-                       		</c:forEach>
-                      </c:forEach>
-                </c:if>
-              <c:if test="${empty selectedRoles}">
-                  <c:forEach var="role" items="${roles}">
-                      <option value="${role.id}">${role.displayName}</option>
-                   </c:forEach>
-              </c:if>
-              </select>          	
-        </div>
-        </div>
-      </div>  
       
       <div class="clearfix mb" id="AssociatesShow" style="display: none;">
           <label class="col-md-4">Associates</label>
@@ -137,7 +136,7 @@ $("input[type='radio']").click(function(){
 
 <script>
  
-if ($("#applicableForAssociates").prop("checked") || $("#applicableForAll").prop("checked") || $("#applicableForRoles").prop("checked")) {
+if ($("#applicableForAssociates").prop("checked") || $("#applicableForAll").prop("checked")) {
 	calRadioButton();
 	}
 	
@@ -145,7 +144,7 @@ function calRadioButton(){
 	 var checkedValue = $("input[name='applicableFor']:checked").val();
 	 if (checkedValue == "Roles") {
          $("#AssociatesShow").hide();
-         $("#RolesShow").show();
+//          $("#RolesShow").show();
          $('#roles').removeAttr('data-validation-optional');
  		$('#roles').attr('data-validation', "required");
  		
@@ -156,7 +155,7 @@ function calRadioButton(){
      }
      if (checkedValue == "Associates") {
          $("#AssociatesShow").show();
-         $("#RolesShow").hide();
+//          $("#RolesShow").hide();
          $('#associates').removeAttr('data-validation-optional');
  		$('#associates').attr('data-validation', "required");
  		
@@ -164,15 +163,17 @@ function calRadioButton(){
  		$('#roles').removeAttr('data-validation');
  		$('#roles').attr('data-validation-optional', "true");
  		$('#roles').find('p.jquery_form_error_message').remove();
+ 		getAssociateListBasedOnRole();
      }
      if (checkedValue == "All") {
-         $("#AssociatesShow, #RolesShow").hide();
+         $("#AssociatesShow").hide();
          $('#associates').removeAttr('data-validation');
  		$('#associates').attr('data-validation-optional', "true");
  		$('#associates').find('p.jquery_form_error_message').remove();
  		$('#roles').removeAttr('data-validation');
  		$('#roles').attr('data-validation-optional', "true");
  		$('#roles').find('p.jquery_form_error_message').remove();
+ 		getAssociateListBasedOnRole();
      } 
 }
 	
@@ -217,6 +218,42 @@ function calRadioButton(){
 		$("#dashboard_conf_form").showHelpOnFocus();
 		$("#dashboard_conf_form").validateOnBlur(false, validationSettings);
 	}); 
+</script>
+
+
+<script>
+function getAssociateListBasedOnRole(){
+	
+	 var roleId = $("#roles").val();
+	 var checkedValue = $("input[name='applicableFor']:checked").val();
+	 var url = "";
+	 if(checkedValue == "Associates" && roleId != ""){
+		 url = sourceleadUrl+"/getAssociateListBasedOnRole?"+tokenParamName+"="+tokenValue+"&roleId="+roleId;
+	 }else{
+		 url = sourceleadUrl+"/getAllAssociateList?"+tokenParamName+"="+tokenValue;
+	 }
+		 $.ajax({
+		    	type: "GET",
+		        url:url,  
+		        success: function(data) {
+		        	
+		        	var output = "";
+		        	if(data != null){
+		        		for (var i=0; i<data.length; i++)
+		        		{
+		        		var opt = data[i];
+		        		if(opt != null && opt != '' && opt != 'undefined'){
+		        		output = output + "<option value='" +opt.user.id+ "'>"+opt.user.firstName+" "+opt.user.lastName+"</option>";
+		        		}
+		        		}
+		        	
+		        }
+		        	$("#associates").empty();
+		        	$("#associates").append(output);
+		        	$('#associates').trigger("chosen:updated"); 
+		        }
+		 });
+}
 </script>
 
 
