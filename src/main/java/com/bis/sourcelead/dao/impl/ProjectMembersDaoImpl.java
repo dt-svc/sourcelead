@@ -166,7 +166,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
 		String query = " from ProjectMembers pm left join fetch pm.projects project left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId left join fetch pm.masterCandidateId mc "
-				+ " left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc "
+				+ " left join fetch pm.projectMemberCandidteId.parentCandidateId left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc "
 				+ "where pm.id = :id" ;
 		List<ProjectMembers> pmList =session.createQuery(query).setLong("id", id).list(); 
 		ProjectMembers pm = null;
@@ -1020,10 +1020,10 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status, Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId))" ;
-		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setString("status",status).list(); 
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId and emp.orgLocations.id = :orgLocationId ))" ;
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("status",status).list(); 
 		return allProjectsList;
 	}
 
@@ -1792,8 +1792,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			if(StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
 					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES)) {
 				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"'  "+memberStatusQuery+")) ";
-			}else {
-				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"'  "+memberStatusQuery+")) ";
 			}
 		}
 		
@@ -2185,6 +2183,16 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			pm  = pmList.iterator().next();
 		}
 		return pm;  
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectsAssigendToCandidateIdAndStatus(Long candidateId,String status) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and pm.projectMemberCandidteId.id = :candidateId)" ;
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("candidateId", candidateId).setString("status",status).list(); 
+		return allProjectsList;
 	}
 
 
