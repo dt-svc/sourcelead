@@ -794,12 +794,17 @@ public class UserStatsCacheHelper {
 		       	    	actionIdsList.add(actions.getId());
 		       	    	actionRolesList.add(actions.getActionRole());
 		       	    }
-		   		  
-		   		 tabNamesList = tabsService.getTabsNamesListByActionsIds(actionIdsList);
+		   		if(StringUtils.isNotBlank(userRole.getOrgLocations().getOrg().getOrgType()) && 
+		   				!userRole.getOrgLocations().getOrg().getOrgType().equalsIgnoreCase("Guest")) {
+		   			tabNamesList = tabsService.getTabsNamesListByActionsIds(actionIdsList);
+		   		}else {
+		   			tabNamesList = new ArrayList<String>();
+		   		}
+		   		 
 		   		 tabNamesList.add("Dashboard");
 		    	    
-		    	     userRoleDTO.setMenuList(tabNamesList);
-		    	     userRoleDTO.setRolesList(actionRolesList);
+    	        userRoleDTO.setMenuList(tabNamesList);
+    	        userRoleDTO.setRolesList(actionRolesList);
 		   	 	}
 		   	 
 		     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  

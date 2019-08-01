@@ -655,7 +655,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	    	 globalUserQuery = " and (pm.projectMemberCandidteId.orgLocationId.id = :locationsId)";
 	     }
 	    String projectForQuery = " (pm.projects.isProjectForTimeSheets = 'Y' OR pm.id IN(select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.status != '0' and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))";
-		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient left join fetch pclient.orgRelationId pcOrgRelation "
+		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch candidate.consultantUser left join fetch pm.projectClientsId pclient left join fetch pclient.orgRelationId pcOrgRelation "
 				+ " where "
 				    +projectForQuery
 				    +globalUserQuery
@@ -1773,15 +1773,28 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String memberStatusQuery = "";
 		if(dayWiseTimesheetReoprtsDto.getAssociateStatus() != null && !dayWiseTimesheetReoprtsDto.getAssociateStatus().equalsIgnoreCase("ALL")) {
 			if(dayWiseTimesheetReoprtsDto.getAssociateStatus().equalsIgnoreCase("ACTIVE")) {
-				memberStatusQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and urole.userState = 'ACTIVE')) ";
+				memberStatusQuery += " and urole.userState = 'ACTIVE' ";
 			} else {
-				memberStatusQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and urole.userState = 'INACTIVE')) ";
+				memberStatusQuery += " and urole.userState = 'INACTIVE' ";
 			}
 		}
 		
 		String loginUserRoleQuery = "";
 		if(dayWiseTimesheetReoprtsDto.getLoginUserRoleType() != null && !dayWiseTimesheetReoprtsDto.getLoginUserRoleType().equalsIgnoreCase("ROLE_ADMIN")) {
-			loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and urole.userState = 'ACTIVE' and urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"')) ";
+			if(StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
+					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES)) {
+				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"' and  urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"' "+memberStatusQuery+")) ";
+			}else {
+				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and  urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"' "+memberStatusQuery+")) ";
+			}
+			
+		}else{
+			if(StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
+					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES)) {
+				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"'  "+memberStatusQuery+")) ";
+			}else {
+				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"'  "+memberStatusQuery+")) ";
+			}
 		}
 		
 		String employmentTypeQuery = "";
@@ -1807,7 +1820,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					  +dateQuery
 					  +employmentTypeQuery
 					  +loginUserRoleQuery
-					  +memberStatusQuery
 					  +groupByCandidateId;
 		}else if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("client")){
 			 query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects "
@@ -1816,7 +1828,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					  +dateQuery
 					  +employmentTypeQuery
 					  +loginUserRoleQuery
-					  +memberStatusQuery
 					  +groupByCandidateId;
 		}else {
 			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects "
@@ -1825,11 +1836,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					  +dateQuery
 					  +employmentTypeQuery
 					  +loginUserRoleQuery
-					  +memberStatusQuery
 					  +groupByCandidateId;
 		}
 		try {
-			System.out.println(query);
 			Query queryObj = session.createQuery(query);
 			if(StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate())&&StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
 				queryObj.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
