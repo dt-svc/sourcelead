@@ -934,6 +934,8 @@ function removeEmployer(candidateemployerId, candidateId){
 			document.getElementById("endDateDiv").style.display = 'none';
 			$('#endYear').removeAttr('data-validation');
 			$('#endMonth').removeAttr('data-validation');
+			$('#endYear').val('');
+			$('#err').parent().find('p.jquery_form_error_message').remove();
 		} else if (document.getElementById("endDateDiv").style.display == 'none') {
 			
 			document.getElementById("endDateDiv").style.display = 'block';
