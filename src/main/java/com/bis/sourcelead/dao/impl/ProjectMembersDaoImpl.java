@@ -1015,10 +1015,10 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status) {
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status,Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId))" ;
-		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setString("status",status).list(); 
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and (pm.employee.id IN(select emp.id from Employees emp where emp.user.id = :userId and emp.orgLocations.id = :orgLocationId ))" ;
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("status",status).list(); 
 		return allProjectsList;
 	}
 
@@ -1781,8 +1781,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			if(StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
 					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES)) {
 				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"'  "+memberStatusQuery+")) ";
-			}else {
-				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"'  "+memberStatusQuery+")) ";
 			}
 		}
 		
@@ -2145,6 +2143,16 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	List<Object[]> list = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
 	return list;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectsAssigendToCandidateIdAndStatus(Long candidateId,String status) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.projects left join fetch pm.employee emp  where pm.status =:status and pm.projectMemberCandidteId.id = :candidateId)" ;
+		List<ProjectMembers> allProjectsList =session.createQuery(query).setLong("candidateId", candidateId).setString("status",status).list(); 
+		return allProjectsList;
+	}
+
 	
 }
 

@@ -1958,9 +1958,14 @@ $("#editRoleDetailsList").empty();
 			    var disabled = '';
 			    var readonly = '';
 			    var isMulitplieOrgAccounts = '${isMulitplieOrgAccounts}';
+			    var emailReadOnly = '';
 			    
 			    if(isMulitplieOrgAccounts == 'true'){
 			    	readonly = 'readonly';
+			    }
+			    
+			    if(json.userState != 'NOT_LOGGEDIN'){
+			    	emailReadOnly = 'readonly';
 			    }
 			    
 			    if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
@@ -2070,7 +2075,7 @@ $("#editRoleDetailsList").empty();
 
 					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 					result = result + ' <label>Email Id<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
+					result = result + ' <input type="text" value="'+json.user.email+'" '+emailReadOnly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
 					
 					if("${SourceLeadWeb_orgLocations.country}" == 'India'){
