@@ -1781,7 +1781,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		
 		String loginUserRoleQuery = "";
 		if(dayWiseTimesheetReoprtsDto.getLoginUserRoleType() != null && !dayWiseTimesheetReoprtsDto.getLoginUserRoleType().equalsIgnoreCase("ROLE_ADMIN")) {
-			loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and urole.userState = 'ACTIVE' and urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"')) ";
+			loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and  urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"')) ";
 		}
 		
 		String employmentTypeQuery = "";
@@ -1829,7 +1829,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					  +groupByCandidateId;
 		}
 		try {
-			System.out.println(query);
 			Query queryObj = session.createQuery(query);
 			if(StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate())&&StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
 				queryObj.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
