@@ -655,7 +655,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	    	 globalUserQuery = " and (pm.projectMemberCandidteId.orgLocationId.id = :locationsId)";
 	     }
 	    String projectForQuery = " (pm.projects.isProjectForTimeSheets = 'Y' OR pm.id IN(select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.status != '0' and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))";
-		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient left join fetch pclient.orgRelationId pcOrgRelation "
+		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch candidate.consultantUser left join fetch pm.projectClientsId pclient left join fetch pclient.orgRelationId pcOrgRelation "
 				+ " where "
 				    +projectForQuery
 				    +globalUserQuery
@@ -1781,7 +1781,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		
 		String loginUserRoleQuery = "";
 		if(dayWiseTimesheetReoprtsDto.getLoginUserRoleType() != null && !dayWiseTimesheetReoprtsDto.getLoginUserRoleType().equalsIgnoreCase("ROLE_ADMIN")) {
-			loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and urole.userState = 'ACTIVE' and urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"')) ";
+			loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and  urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"')) ";
 		}
 		
 		String employmentTypeQuery = "";
@@ -1829,7 +1829,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					  +groupByCandidateId;
 		}
 		try {
-			System.out.println(query);
 			Query queryObj = session.createQuery(query);
 			if(StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate())&&StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
 				queryObj.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
