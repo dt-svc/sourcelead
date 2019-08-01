@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -31,7 +32,6 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.EmailDomains;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
-import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
@@ -158,6 +158,13 @@ public class RegistrationController {
 	 
 	 @Value("${GoogleMaps_Location_API_KEY}")
 	 private String googleMapsLocationApiKey;
+
+
+	 @Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+		
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
 	
 
 	 
@@ -283,6 +290,7 @@ public class RegistrationController {
 		    	Long moduleId = null;
 		    	Long tsModuleId = (long) Constants.MODULE_TIMESHEET;
 		    	if(null != org){
+		    		String currentOrgType = org.getOrgType();
 			    	org.setOrgType("Company");
 			    	
 			    	List<Integer> moduleIds = new ArrayList<Integer>();
@@ -307,8 +315,6 @@ public class RegistrationController {
 			    	
 					 saveUserRoleActions(orgLocations);
 					 
-			    	org.setStatus(Status.ACTIVE);
-					orgService.updateOrg(org);
 					
 					//orgLocations.setModulesId(modules);
 					if(!isNullOrEmpty(spocUUID)){
@@ -319,10 +325,11 @@ public class RegistrationController {
 						}
 					}
 					
-					
-					orgService.addOrganization(org);
+					org.setStatus(Status.ACTIVE);
+					orgService.updateOrg(org);
 					orgLocations.setStatus(Status.ACTIVE);
 					orgLocationService.updateOrgLocations(orgLocations);
+					
 					
 					if(orgLocations != null) {
 						EmployeeVerificationTemplate empTemp = employeeVerificationTemplateService.getEmploymentVerificationtemplateByLocationId(orgLocations.getId());
@@ -331,6 +338,21 @@ public class RegistrationController {
 							employeeVerificationTemplateService.updateEmployMentTemplate(empTemp);
 						}
 					}
+					
+					if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+						userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
+						
+						if(StringUtils.isNotBlank(currentOrgType) && currentOrgType.equalsIgnoreCase("Guest")) {
+							List<UserRole> userRolesList = userRoleService.getAllUserRolesByOrgLocationId(orgLocations.getId());
+							if(userRolesList != null && !userRolesList.isEmpty()) {
+								
+								for(UserRole userRole : userRolesList) {
+									userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+								}
+							}
+						}
+					}
+					
 		    	}
 				 
 				

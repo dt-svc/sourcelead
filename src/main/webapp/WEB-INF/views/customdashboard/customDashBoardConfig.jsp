@@ -44,9 +44,10 @@ $(document).ready(function(){
   
   <div class="popupWrap popupWrapFixed" id="addComponets">
       <div class="popupHead"><span>Add Components</span><i class="closePop pull-right popClose"></i></div>
+      <input type="hidden" id= "customDashBoardConfUUID" name="customDashBoardConfUUID"/>
       <div class="popupContent adddashComp">
           <a href="${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoardReport"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-report.svg">Reports</a>
-          <a href="${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoardModule"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-module.svg">Modules</a>
+          <a onclick="returnCustomModulePage();"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-module.svg">Modules</a>
       </div>
   </div>
 
@@ -87,7 +88,7 @@ $(document).ready(function(){
 					result = result + '<td>';
 					result = result + '<div class="width150px">';
 					result = result + ' <ul class="list-unstyled list-inline">';
-					result = result + '  <li class="mr5"><i class="fa fa-plus cursorPointer text-primary" title="Add Components" id="addCustomComponents'+opt.customDashBoardConfId+'" onclick="showPopup('+opt.customDashBoardConfId+');"></i></li>';
+					result = result + '  <li class="mr5"><i class="fa fa-plus cursorPointer text-primary" title="Add Components" id="addCustomComponents'+opt.customDashBoardConfId+'" onclick="showPopup(\''+opt.customDashBoardConfUUID+'\');"></i></li>';
 					result = result + '  <li class="mr5"><a href="'+sourceleadUrl+'/editCustomDashBoardConf?customDashBoardUUID='+opt.customDashBoardConfUUID+'"><i class="fa fa-pencil cursorPointer" title="Edit"></a></i></li>';
 					result = result + '  <li class="mr5"><i class="fa fa-trash cursorPointer" title="Delete"></i></li>';
 					result = result + '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardView"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
@@ -166,13 +167,21 @@ $(".popClose").click(function(){
 </script>
 
 <script>
-function showPopup(id){
+function showPopup(customDashBoardConfUUID){
 	  $("#addComponets").show();
+	 $("#customDashBoardConfUUID").val(customDashBoardConfUUID);
 	  $(".mask").fadeIn(100);
 }
 </script>
 
 
+<script>
+function returnCustomModulePage(){
+	var customDashBoardConfUUID = $("#customDashBoardConfUUID").val();
+	var sourceleadUrl = "${SourceLeadWeb_sourceleadUrl}";
+	window.location.href = sourceleadUrl+"/configureCustomDashBoardModule?"+tokenParamName+"="+tokenValue+"&customDashBoardConfUUID="+customDashBoardConfUUID;
+}
+</script>
 
 
 
