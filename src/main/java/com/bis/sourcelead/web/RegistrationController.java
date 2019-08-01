@@ -315,8 +315,6 @@ public class RegistrationController {
 			    	
 					 saveUserRoleActions(orgLocations);
 					 
-			    	org.setStatus(Status.ACTIVE);
-					orgService.updateOrg(org);
 					
 					//orgLocations.setModulesId(modules);
 					if(!isNullOrEmpty(spocUUID)){
@@ -327,8 +325,8 @@ public class RegistrationController {
 						}
 					}
 					
-					
-					orgService.addOrganization(org);
+					org.setStatus(Status.ACTIVE);
+					orgService.updateOrg(org);
 					orgLocations.setStatus(Status.ACTIVE);
 					orgLocationService.updateOrgLocations(orgLocations);
 					
