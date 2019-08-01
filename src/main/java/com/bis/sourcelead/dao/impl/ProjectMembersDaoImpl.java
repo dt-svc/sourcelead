@@ -1762,15 +1762,28 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String memberStatusQuery = "";
 		if(dayWiseTimesheetReoprtsDto.getAssociateStatus() != null && !dayWiseTimesheetReoprtsDto.getAssociateStatus().equalsIgnoreCase("ALL")) {
 			if(dayWiseTimesheetReoprtsDto.getAssociateStatus().equalsIgnoreCase("ACTIVE")) {
-				memberStatusQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and urole.userState = 'ACTIVE')) ";
+				memberStatusQuery += " and urole.userState = 'ACTIVE' ";
 			} else {
-				memberStatusQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and urole.userState = 'INACTIVE')) ";
+				memberStatusQuery += " and urole.userState = 'INACTIVE' ";
 			}
 		}
 		
 		String loginUserRoleQuery = "";
 		if(dayWiseTimesheetReoprtsDto.getLoginUserRoleType() != null && !dayWiseTimesheetReoprtsDto.getLoginUserRoleType().equalsIgnoreCase("ROLE_ADMIN")) {
-			loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and urole.userState = 'ACTIVE' and urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"')) ";
+			if(StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
+					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES)) {
+				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"' and  urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"' "+memberStatusQuery+")) ";
+			}else {
+				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' and  urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"' "+memberStatusQuery+")) ";
+			}
+			
+		}else{
+			if(StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
+					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES)) {
+				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"'  "+memberStatusQuery+")) ";
+			}else {
+				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"'  "+memberStatusQuery+")) ";
+			}
 		}
 		
 		
@@ -1798,7 +1811,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					  +dateQuery
 					  +employmentTypeQuery
 					  +loginUserRoleQuery
-					  +memberStatusQuery
 					  +groupByCandidateId;
 		}else if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("client")){
 			 query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects "
@@ -1807,7 +1819,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					  +dateQuery
 					  +employmentTypeQuery
 					  +loginUserRoleQuery
-					  +memberStatusQuery
 					  +groupByCandidateId;
 		}else {
 			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects "
@@ -1816,7 +1827,6 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					  +dateQuery
 					  +employmentTypeQuery
 					  +loginUserRoleQuery
-					  +memberStatusQuery
 					  +groupByCandidateId;
 		}
 		try {
