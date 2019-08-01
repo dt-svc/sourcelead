@@ -944,7 +944,7 @@ public class UsersListRestController {
 				 }
 			 }
 			 if(formFieldId != null && !formFieldId.isEmpty() && userId != null) {
-			 Map<Long, String[]> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(orgLocations.getOrg().getId(),formFieldId,userId);
+			 Map<Long, String[]> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(org.getId(),formFieldId,userId);
 			 Map<Long,String> dataMap = new HashMap<>();
 			 if(userData!= null && !userData.isEmpty()) {
 				 for(Entry<Long, String[]> userCustomData:userData.entrySet()) {
