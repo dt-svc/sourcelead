@@ -852,9 +852,10 @@ public class RequirementListRestController {
 									}
 									
 									if(requirementSubmission.getSubmissionStatus() != null) {
-										ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
+										//ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
+										String status =	requirementSubmission.getSubmissionStatus().toString();
 										if(status != null)
-						  				requirementSubmission.setSubmissionDisplayStatus(status.getValue());
+						  				requirementSubmission.setSubmissionDisplayStatus(status);
 									}
 									if (requirementSubmission.getVendorLocationId() != null) {
 										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());

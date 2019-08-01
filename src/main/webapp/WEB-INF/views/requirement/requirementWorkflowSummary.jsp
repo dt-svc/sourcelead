@@ -81,7 +81,6 @@ function getWorkflowStageColumnAndCountIds(){
 </script>
 <script>
 function prepareAllWorkflowCounts(requirementId){
-	var stageColumnsMap = getWorkflowStageColumnAndCountIds();
 	var stagesCountMap = new Map();
 	var stages = new Array(); 
 	<c:forEach var="stage" items="${stagesList}">
@@ -92,6 +91,7 @@ function prepareAllWorkflowCounts(requirementId){
 	       type : "POST",
 	        url: atsUrl+"/getWorkflowSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=ALL"+"&workflowStages="+stages,        
 	        success :function(data) {
+	        var stageColumnsMap = getWorkflowStageColumnAndCountIds();
 	        	if(data != null){
 	   		 var obj = JSON.stringify(data);
 			 var stageCountList = obj.replace(/[{}]/g, "").split(',');
@@ -1019,7 +1019,7 @@ function requirementPipelineList(url, requirementId, submissionType){
     result = result + '     </table>';
     result = result + '   </div>';
     result = result + '   </div>';
-    prepareAllCounts(requirementId);
+    prepareAllWorkflowCounts(requirementId);
 }
 
 </script>
