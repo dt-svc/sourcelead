@@ -676,7 +676,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 				   " DATE_FORMAT(proj.END_DATE,"+appraisalDateFormat+") AS toDate, " +
 				   " can.ID as candidateId, " + 
 			       " lData.NAME as taskStatus " + 
-			       " FROM sourcelead.PROJECT_ASSIGN_TASK assignTask,PROJECT_TASKS ptasks,PROJECTS proj,LOOKUP_DATA lData,PROJECT_MEMBERS projMem,CANDIDATE can, PROJECT_CLIENTS pc, User user " + 
+			       " FROM PROJECT_ASSIGN_TASK assignTask,PROJECT_TASKS ptasks,PROJECTS proj,LOOKUP_DATA lData,PROJECT_MEMBERS projMem,CANDIDATE can, PROJECT_CLIENTS pc, USER user " + 
 			       " where assignTask.PROJECT_TASK_ID = ptasks.ID AND ptasks.PROJECT_ID = proj.ID  " + 
 			       " AND lData.ID = ptasks.TASK_STATUS " + 
 			       " AND projMem.ID = assignTask.PROJECT_MEMBER_ID " + 
