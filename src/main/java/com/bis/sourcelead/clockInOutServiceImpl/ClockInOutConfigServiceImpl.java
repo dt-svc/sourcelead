@@ -511,6 +511,8 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			    		subDto.setClockOutDate(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
 			    		subListDto.add(subDto);
 			    		
+			    		main.setComments(data.getComments());
+			    		main.setProjectTaskName(data.getProjectTaskName());
 			    		main.setClockInDateStr(uniqueData.getKey());
 			    		main.setGraphForamatDate(uniqueData.getKey());
 			    		main.setClockOutDateStr(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockOutDate()));
@@ -644,6 +646,8 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		    		subDto.setClockOutDate(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
 		    		subListDto.add(subDto);
 		    		
+		    		main.setComments(data.getComments());
+		    		main.setProjectTaskName(data.getProjectTaskName());
 		    		main.setClockInDate(data.getClockInDate());
 		    		main.setClockInDateStr(commonUtil.dateStrFromOrgDateFormatter(location.getDateFormat(), data.getClockInDate()));
 		    		main.setGraphForamatDate(commonUtil.dateStrFromOrgDateFormatter("yyyy-MM-dd", data.getClockInDate()));
