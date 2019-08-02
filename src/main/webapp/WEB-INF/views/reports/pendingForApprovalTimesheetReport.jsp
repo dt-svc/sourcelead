@@ -12,7 +12,7 @@ $(document).ready(function() {
  <script>
 function getJobsReportCustomDates(){
 	 var dateSelection = $("#dateSelection").val(); 
-	 if(dateSelection == 'custom'){
+	 if(dateSelection === 'custom'){
 		 document.getElementById("customSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
 		 
@@ -59,7 +59,7 @@ function reloadFunction(){
             <option value="custom">Custom</option>
           </select>
     <!-- Top Leave Takers Custom Date -->
-          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
+          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="width: 346px;">
             <div class="pull-left">
               <div class="pull-left mr5" style="width: 140px" id="errMsgFrm">
                 <input type="text" class="form-control calendar" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
@@ -253,6 +253,7 @@ function getPendingForApprovalTimesheetReports(){
 		        	$("#exportDiv").hide();
 		        }
 				dynamicMissingTimesheetReportPagination();
+				document.getElementById("customSearch").style.display="none";
 		    }
 		 });
 	  }	  
