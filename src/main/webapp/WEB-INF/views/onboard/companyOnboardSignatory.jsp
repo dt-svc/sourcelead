@@ -192,6 +192,7 @@ $(function(){
 				        	$("#firstName").attr("readonly", "readonly");
 				        	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
 		        		}else{
+		        			$("#firstName").val('');
 		        			 $("#firstName").removeAttr("readonly", "readonly");
 		        		}
 		        		
@@ -199,6 +200,7 @@ $(function(){
 		        			$("#lastName").attr("readonly", "readonly");
 		        			$("#lastName").val(json.lastName);
 		        		}else{
+		        			$("#lastName").val('');
 		        			 $("#lastName").removeAttr("readonly", "readonly");
 		        		}
 		        		
@@ -206,6 +208,7 @@ $(function(){
 		        			$("#phone").val(json.mobilePhone);
 				        	$("#phone").attr("readonly", "readonly");
 		        		}else{
+		        			$("#phone").val('');
 		        			 $("#phone").removeAttr("readonly", "readonly");
 		        		}
 		        		
@@ -273,10 +276,9 @@ $(function(){
 <script>
 function loadLeagelSignerForm(){
 	$("#legalUserFormDiv").empty();
-	
+	var country  = '${SourceLeadWeb_orgLocations.country}';
 	var result = "";
 	result = result +"<div class='row clearfix'>";
-	
 	
 	result = result +"<div class='col-md-6'>";
 	result = result +"<div class='form-group clearfix' id='firstNameDiv'>";
@@ -295,7 +297,7 @@ function loadLeagelSignerForm(){
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
-	
+
 	result = result +"<div class='col-md-6' id='EmailIdDiv'>";
 	result = result +"<div class='form-group clearfix'>";
 	result = result +"<label class='col-md-4 noPad'>Email<span class='text-danger'>&nbsp;*</span></label>";
@@ -304,7 +306,6 @@ function loadLeagelSignerForm(){
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
-	
 	
 	result = result +"<div class='col-md-6'>";
 	result = result +"<div class='form-group clearfix'>";
@@ -315,7 +316,7 @@ function loadLeagelSignerForm(){
 	result = result +"</div>";
 	result = result +"</div>";
 	
-	
+	if(country == "United States"){
 	result = result +"<div class='col-md-6'>";
 	result = result +"<div class='form-group clearfix'>";
 	result = result +"<label class='col-md-4 noPad'>SSN<span class='text-danger'>&nbsp;*</span></label>";
@@ -324,7 +325,7 @@ function loadLeagelSignerForm(){
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
-	
+	}
 	
 	result = result +"<div class='col-md-6'>";
 	result = result +"<div class='form-group clearfix'>";
@@ -349,6 +350,29 @@ function loadLeagelSignerForm(){
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
+	
+	
+	result = result +"<div class='col-md-6'>";
+	result = result +"<div class='form-group clearfix'>";
+	result = result +"<label class='col-md-4 noPad'>Aadhar Number<span class='text-danger'>&nbsp;*</span></label>";
+	result = result +"<div class='col-md-8 padding_right'>";
+	result = result +"<input class='form-control' type='text' name='aadharNumber' id='aadharNumber' field-name='Aadhar Number'   data-validation='required validate_Space validate_aadharNumber'>";
+	result = result +"</div>";
+	result = result +"</div>";
+	result = result +"</div>";
+	
+	
+	
+	result = result +"<div class='col-md-6'>";
+	result = result +"<div class='form-group clearfix'>";
+	result = result +"<label class='col-md-4 noPad'>PAN Number<span class='text-danger'>&nbsp;*</span></label>";
+	result = result +"<div class='col-md-8 padding_right'>";
+	result = result +"<input class='form-control' type='text' name='panNumber' id='panNumber' field-name='PAN Number'  data-validation='required validate_Space validate_panNumber'>";
+	result = result +"</div>";
+	result = result +"</div>";
+	result = result +"</div>";
+	
+	
 	
 	/* result = result +"<div class='col-md-6'>";
 	result = result +"<div class='form-group clearfix'>";
