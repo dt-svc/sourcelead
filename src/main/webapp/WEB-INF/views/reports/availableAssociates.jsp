@@ -56,20 +56,20 @@
 					<div class="clearfix"></div>
 					<div class="col-md-2">
 						<div class="row" id="fromDateDiv">
-							<label class="col-md-12 paddingRight">From</label>
+							<label class="col-md-12 paddingRight">From <span class="text-danger">*</span></label>
 							<div class="col-md-12">
 								<input type="text" class="form-control calendar" name="fromDate"
-									id="fromDate" field-name="From Date" data-validation="required"
+									id="fromDate" field-name="From Date"  data-validation="required"
 									readonly>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-2">
 						<div class="row" id="toDateDiv">
-							<label class="col-md-12 paddingRight">To</label>
+							<label class="col-md-12 paddingRight">To <span class="text-danger">*</span></label>
 							<div class="col-md-12">
 								<input type="text" class="form-control calendar" name="toDate"
-									id="toDate" field-name="To Date" data-validation="required"
+									id="toDate" field-name="To Date"  data-validation="required"
 									readonly>
 							</div>
 						</div>
@@ -263,14 +263,14 @@ $("#toDate").datepicker();
 										text += " <td><div class='width180px text-center'>"
 												+ (report.projectStartDate !== null ? report.projectStartDate
 														: "--")
-												+ " to "
+												+ " To "
 												+ (report.projectEndDate !== null ? report.projectEndDate
 														: "--")
 												+ " </div></td>";
 										text += " <td><div class='width180px text-center'>"
 												+ (report.empStartDate !== null ? report.empStartDate
 														: "--")
-												+ " to "
+												+ " To "
 												+ (report.empEndDate !== null ? report.empEndDate
 														: "--")
 												+ " </div></td>";
@@ -320,6 +320,7 @@ $("#toDate").datepicker();
 								$("#availableAssociatesReporttableList")
 										.append(text);
 							} else {
+								$("#exportOptions").hide();
 								$("#availableAssociatesReporttableList").empty();
 								$("#availableAssociatesReporttableList")
 										.append(

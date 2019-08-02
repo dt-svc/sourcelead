@@ -308,9 +308,23 @@ public class SourceleadResumeParserNew {
 			//Email
 			String email = getEmailFromTextFile(resumeData);
 			jsonUtil.setEmail(email);
+
+			//PhoneNumber(s)
+			Set<String> phoneNumberSet = new LinkedHashSet<>();
+			String primaryMobile = getMobileNumber(resumeData);
+			if(!primaryMobile.isEmpty()) {
+				phoneNumberSet.add(primaryMobile.replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim());
+				
+				String resumeData1 = resumeData.substring(resumeData.indexOf(primaryMobile) + primaryMobile.length(), resumeData.length());
+				String alternativeMobile = getMobileNumber(resumeData1).replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim();
+				if(!alternativeMobile.isEmpty()) {
+					phoneNumberSet.add(alternativeMobile);
+				}
+			}
+			jsonUtil.setPhoneNumbers(phoneNumberSet);
 			
 			//Name
-			String name = getNameFromTextFile(resumeData, email, fileName);
+			String name = getNameFromTextFile(resumeData, email, phoneNumberSet, fileName);
 			name = name.replaceAll("\\s+", " ");
 			if (name.split(" ").length > 2) {
 				jsonUtil.setFirstName(name.split(" ")[0]);
@@ -323,14 +337,7 @@ public class SourceleadResumeParserNew {
 				jsonUtil.setFirstName(name);
 			}
 			
-			Set<String> phoneNumberSet = new LinkedHashSet<>();
-			String primaryMobile = getMobileNumber(resumeData);
-			phoneNumberSet.add(primaryMobile.replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim());
-			if(!primaryMobile.isEmpty()) {
-				String resumeData1 = resumeData.substring(resumeData.indexOf(primaryMobile) + primaryMobile.length(), resumeData.length());
-				phoneNumberSet.add(getMobileNumber(resumeData1).replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim());
-			}
-			jsonUtil.setPhoneNumbers(phoneNumberSet);
+			
 			jsonUtil.setSkills(getSkillsFromTextFile(resumeData));
 			
 			//Designation
@@ -460,7 +467,7 @@ public class SourceleadResumeParserNew {
 	 * Name finder from parsed text file Here we used java regular expression
 	 * logic for resolving name from text file
 	 */
-	private String getNameFromTextFile(String parsedString, String email, String fileName) {
+	private String getNameFromTextFile(String parsedString, String email, Set<String> phoneNumberSet, String fileName) {
 //		System.out.println(parsedString);
 		String name = "";
 		try {
@@ -468,17 +475,28 @@ public class SourceleadResumeParserNew {
 			String[] str = parsedString.replaceAll(SourceleadResumeParserRegEx.ELIMINATE_KEYWORDS.toString(), "").trim().split("\n");
 			
 			//Getting name based on filename
-			if(!fileName.isEmpty()) {
-				String subStr = fileName.substring(0, 4);
-				for(int i = 0; i < str.length; i++) {
-					if(str[i].toLowerCase().contains(subStr.toLowerCase())) {
-						String tempName = str[i].trim();
-						if(email.isEmpty() || !tempName.toLowerCase().contains(email.toLowerCase())) {
-							nameString = tempName.replaceAll("[^a-zA-Z\\s\\.]+", "");
-							for(String eleString : Constants.ELIMINATE_NAME_KEYWORDS) {
-								nameString = nameString.replaceAll("(?i)" + eleString, "").trim();
+			fileName = fileName.replaceAll(SourceleadResumeParserRegEx.ELIMINATE_RESUME_NAME_KEYWORDS.toString(), "");
+			nameSearch: {
+				if(!fileName.isEmpty()) {
+					String[] fileNameArray = fileName.split("[^a-zA-Z\\s\\.]+");
+					for(String subFileName : fileNameArray) {
+						Pattern pattern = Pattern.compile(SourceleadResumeParserRegEx.ELIMINATE_RESUME_NAME_KEYWORDS.toString(), Pattern.CASE_INSENSITIVE);
+						Matcher matcher = pattern.matcher(subFileName);
+						if(!subFileName.startsWith(".") && !matcher.find()) {
+							String subStr = subFileName.substring(0, subFileName.length() > 5 ? 5 : subFileName.length()).toLowerCase();
+							for(int i = 0; i < str.length; i++) {
+								if(str[i].toLowerCase().contains(subStr)) {
+									String tempName = str[i].toLowerCase().trim();
+									tempName = tempName.substring(tempName.indexOf(subStr), tempName.length());
+									if(email.isEmpty() || !tempName.toLowerCase().contains(email.toLowerCase())) {
+										nameString = tempName.replaceAll("[^a-zA-Z\\s\\.]+", "");
+										for(String eleString : Constants.ELIMINATE_NAME_KEYWORDS) {
+											nameString = nameString.replaceAll("(?i)" + eleString, "").trim();
+										}
+										break nameSearch;
+									}
+								}
 							}
-							break;
 						}
 					}
 				}
@@ -514,10 +532,27 @@ public class SourceleadResumeParserNew {
 				 *  If emailID found with in 10 lines, then fetch name from 1st line
 				 *	Else fetch name from 4 lines prior to EmailID
 				 **/ 
-				int index = emailRowIndex - empty < 10 ? 0 : emailRowIndex - 4;
+				
+				/*int index = emailRowIndex - empty < 10 ? 0 : emailRowIndex - 4;
 				for(int i = index; i <= index + 4; i++) {
 					if(!str[i].isEmpty()) {
 						nameString += (nameString.isEmpty() ? "" : "\n") + str[i].replaceAll("[^a-zA-Z\\s\\.]+", "").trim();
+					}
+				}*/
+				
+				/**
+				 * finding name (starting from line above email found line to 1st line)
+				 * **/
+				for(int i = emailRowIndex - 1; i > 0; i--) {
+					if(!str[i].isEmpty()) {
+						/**
+						 * If str[i] contains phone number string, eliminate that line
+						 **/
+						for(String phoneNumber : phoneNumberSet) {
+							if(!str[i].contains(phoneNumber)) {
+								nameString += (nameString.isEmpty() ? "" : "\n") + str[i].replaceAll("[^a-zA-Z\\s\\.]+", "").trim();
+							}
+						}
 					}
 				}
 			}
@@ -532,7 +567,7 @@ public class SourceleadResumeParserNew {
 				name = matcher.group(0).replaceAll("\\.", " ");
 			}
 			if (name.isEmpty()) {
-				String[] totalLines = nameString.split("\n");
+				String[] totalLines = parsedString.split("\n");
 				String firstTenLines = "";
 				String lineSeparator = "";
 				String ecludeNameRegex = "((?i)Name|name|NAME|\\.)";
@@ -644,12 +679,22 @@ public class SourceleadResumeParserNew {
 					}
 					name = name.replaceAll(ecludeNameRegex, " ").trim();
 				}
-			}			
+			}
+			if(!name.isEmpty()) {
+				String eliminateWord = "";
+				pattern = Pattern.compile(SourceleadResumeParserRegEx.ELIMINATE_RESUME_NAME_KEYWORDS.toString(), Pattern.CASE_INSENSITIVE);
+				matcher = pattern.matcher(name);
+				if(matcher.find()) {
+					eliminateWord = matcher.group(0); 
+				}
+				name = name.replaceAll(eliminateWord, "");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return name;
-	}	
+		
+		return CommonUtil.getCaptilizedText(name.trim());
+	}
 	
 	public String getEmailFromTextFile(String parsedString) {
 		String email = "";

@@ -84,7 +84,7 @@
 	<div class="repDashCta">
 		<span><i class="fa fa-square-o"></i></span>
 		<div class="repDashCtaWrap">
-		<h2>Pending for Approval</h2><b>View</b>
+		<h2>Pending for Approval Timesheet(s)</h2><b>View</b>
 		</div>
 	</div>	
 	</a>
