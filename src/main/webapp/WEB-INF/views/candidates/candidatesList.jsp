@@ -2699,10 +2699,22 @@ function cancelShareCandidate(){
 	$(".project_inn_mask").fadeOut(); 
 }
 function closejobpop() {
+	shareCandidates = {};
 	$("#sharejob-pop").fadeOut();
 	$(".sideMask").fadeOut();
 	}
 function sharejobpopup(candidateCount) {
+	
+	 $("#sharejob-pop").empty();
+		var buttonDisabled = '';
+		var buttonDisplay = '';
+		if(candidateCount > 50){
+			buttonDisabled = 'disabled';
+			buttonDisplay = 'style="display:block"';
+		}else{
+			buttonDisplay = 'style="display:none"';
+		}
+		
 	var result = "";
 	result = result+ '<form method="post">';
 	 result = result+ '<div  id="shareJob-form" name="shareJob-form" class="modal-dialog">';
@@ -2762,13 +2774,13 @@ function sharejobpopup(candidateCount) {
 	 result = result+ '  </div>';
 	 result = result+ '  </div>';
 	 result = result+ '  <div class="modal-footer">';
-	 result = result+ '    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="selectedJobSharing();">Share Job</button>';
+	 result = result+ '    <span class="fa fa-exclamation-triangle text-danger pull-left mt10" '+buttonDisplay+'><strong>&nbsp;Selected Candidates are not more than 50</strong></span>';
+	 result = result+ '    <button type="button" class="btn btn-primary" data-dismiss="modal" '+buttonDisabled+' onclick="selectedJobSharing();">Share Job</button>';
 	 result = result+ '    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closejobpop();">Cancel</button>';
 	 result = result+ '  </div>';
 	 result = result+ '</div>';
 	 result = result+ '</div>';
 	 result = result+ '</form>';
-	 $("#sharejob-pop").empty();
 	 $("#sharejob-pop").append(result);
 	 
 	 $("#shareRequirementsList").selectpicker('refresh');
