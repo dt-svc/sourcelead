@@ -326,14 +326,6 @@ function cancelPopUp(){
 	$("#docPopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
-function resetInformation(){
-	$('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-	$('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
-	$('#uploadFileGroup2').find('p.jquery_form_error_message').remove();
-	$('#uploadFileGroup3').find('p.jquery_form_error_message').remove();
-	$('#uploadFileGroup4').find('p.jquery_form_error_message').remove();
-}
-
 </script>
 
 	
