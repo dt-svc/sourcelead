@@ -300,7 +300,6 @@ function getUserTimeEntriesPagination(url){
    				{
    		    		var report = json.data[i];
    		    		result = result +'<tbody>';
-   		    		
    		    		result = result +'<tr class="parent" id="2479'+i+'">';
    		    		if(dayWisetype == 'Current_Year'){
    		    	  	    result = result + '    <td><span class="click">'+report.clockInDateStr+'</span></td>                            '; 
@@ -310,19 +309,25 @@ function getUserTimeEntriesPagination(url){
 
 	            	  result = result + '    <td>'+report.totalTime+'</td>         ';
 	            	  
-	            	  result = result + '    <td>&nbsp;</td>   ';
+	            	  if(report.projectTaskName != null && report.projectTaskName != "" && report.projectTaskName != "undefined"){
+			            	  result = result + '    <td>'+report.projectTaskName+'</td>   ';
+	            	  }else{
+			            	  result = result + '    <td>--</td>   ';
+	            	  }
 	            	  
   					   if(report.geoLocationData != null && report.geoLocationData != "undefined" && report.geoLocationData != ""){
   		            	  result = result + '    <td>'+report.geoLocationData+'</td>  ';
   					   }else{
   		            	  result = result + '    <td></td>  ';
   					   }
-	            	  
-                	  result = result + '    <td>&nbsp;</td>              ';
+  					   if(report.comments != null && report.comments !=""  && report.comments != "undefined"){
+	                	  result = result + '    <td>'+report.comments+'</td>              ';
+  					   }else{
+	                	  result = result + '    <td>--</td>              ';
+  					   }
                 	  
                      result = result + '    <td>'+report.clockOutDateStr+'</td>  ';
 
-   		    		
                      if("Current_Year" != type){
                     		for(var j=0; j<report.subList.length; j++){
            		    			var opt = report.subList[j];
@@ -337,7 +342,11 @@ function getUserTimeEntriesPagination(url){
 
            					   }
            					   
-           					 result = result +'	        <td>--</td>    ';
+           					 if(report.geoLocationData != null && report.geoLocationData != "undefined" && report.geoLocationData != ""){
+         		            	  result = result + '    <td>'+report.geoLocationData+'</td>  ';
+         					   }else{
+         		            	  result = result + '    <td>--</td>  ';
+         					   }
            					   
            					  if(opt.comments != null && opt.comments != "undefined" && opt.comments != ""){
           	   					   result = result +'	        <td>'+opt.comments+'</td>                                 '; 

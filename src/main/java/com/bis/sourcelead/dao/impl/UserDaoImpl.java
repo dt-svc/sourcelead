@@ -1945,7 +1945,11 @@ public class UserDaoImpl implements UserDao {
 				searchQuery = " AND (CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) like '%" + userDTO.getSearchValue() + "%')";
 			}
 			if(teamsList.size()>0 && !teamsList.isEmpty()){
-			subQueryTeam = " AND UR.USER_ID IN (SELECT TM.MEMBER_USER_ID FROM TEAM_MEMBERS TM WHERE TM.TEAM_ID IN (:teamsList) and TM.STATUS = '1' )";
+			subQueryTeam = " AND ("
+					+ "UR.USER_ID IN (SELECT TM.MEMBER_USER_ID FROM TEAM_MEMBERS TM WHERE TM.TEAM_ID IN (:teamsList) and TM.STATUS = '1' )"
+					+ " OR "
+					+ "UR.USER_ID IN(SELECT T.OWNER_USER_ID FROM TEAM T WHERE T.ID IN (:teamsList) and T.STATUS='1')"
+					+ ")";
 			}
 			if(rolesList.size()>0 && !rolesList.isEmpty()){
 				subQueryRole = " AND UR.ROLE_ID IN (SELECT UR.ROLE_ID FROM USER_ROLE UR WHERE UR.ROLE_ID IN (:rolesList))";
@@ -2581,7 +2585,7 @@ public class UserDaoImpl implements UserDao {
 		                + applicantsJoinedReportDTO.getSearchValue()
 		                + "%' )");
 		}
-String groupSubQuery = "";
+String groupSubQuery = "group by u.ID";
 
 String sortingQry ="";
 		
@@ -2620,8 +2624,7 @@ String sortingQry ="";
 				+ "(SELECT  CONCAT(FIRST_NAME,LAST_NAME) AS EMPLOYEE_NAME) AS name "
 				+ "FROM USER u, USER_ROLE ur, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where ur.ORG_LOCATIONS_ID = req.ORG_LOCATION_ID and ur.USER_ID = u.ID and u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
 				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
-				+ query1+" group by u.ID "
-				+groupSubQuery;
+				+ query1;
 		/*
 		 * if (applicantsJoinedReportDTO.getOrgTeams() != null &&
 		 * !applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { teamSubQuery =
@@ -2637,8 +2640,12 @@ String sortingQry ="";
 		
 		if (applicantsJoinedReportDTO.getOrgTeams() != null &&
 				 !applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
-			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList) group by u.ID,req.ID)"; 
-				 }
+				teamSubQuery = " AND ("
+					+ "U.ID IN (SELECT TM.MEMBER_USER_ID FROM TEAM_MEMBERS TM WHERE TM.TEAM_ID IN (:teamsList) and TM.STATUS = '1' )"
+					+ " OR "
+					+ "U.ID IN (SELECT T.OWNER_USER_ID FROM TEAM T WHERE T.ID IN (:teamsList) and T.STATUS='1')"
+					+ ")";				 
+					}
 		
        
 		if (applicantsJoinedReportDTO.getClients() != null &&
@@ -2647,7 +2654,7 @@ String sortingQry ="";
 				  
 				  }
 		
-		queryString = session.createSQLQuery(query + clientSubQuery + teamSubQuery + sortingQry);
+		queryString = session.createSQLQuery(query + clientSubQuery + teamSubQuery + sortingQry + groupSubQuery);
 		/*
 		 * queryString.setLong("orgLocationId", orgLocationId);
 		 * queryString.setParameter("fromDate", fromDate);

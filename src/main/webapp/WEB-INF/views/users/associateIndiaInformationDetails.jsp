@@ -346,6 +346,7 @@ function validateMinor(){
  <script>
 	  function getIndAssociateInformationDetails(){
 		  var userId = $("#associateId").val();
+		  var pfel = document.getElementById("pfEligible");
 		  if(userId != null && userId != 'undefined' && userId != ''){    
 			  $("#pfassociateUserId").val(userId);
 		      $.ajax({
