@@ -59,9 +59,12 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		Session session = sessionFactory.getCurrentSession();
 		
 		UserRole userRole = userRoleDao.getUserRoleByUserIdAndLocationId(loginUser.getId(), orgloc.getId());
+		
+		String projectIds = "'" + StringUtils.join(projectId, "','") + "'";
+		
 		String userRoleQuery = "";
 		if(userRole.getRoles() != null && !userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN")) {
-			userRoleQuery = " AND UR.REPORTING_MANAGER_ID = '"+loginUser.getId()+"'";
+			userRoleQuery = " AND ((UR.REPORTING_MANAGER_ID = '"+loginUser.getId()+"') OR (PM.PROJECT_ID IN (SELECT PA.PROJECT_ID FROM PROJECT_APPROVER_HIERARCHY PA WHERE PA.APPROVER_USER_ID = '"+loginUser.getId()+"' AND PA.PROJECT_ID IN (" + projectIds + ") ) ) ) ";
 		}
 		
 		List<Long> userHierarchyIds =  userDao.getUserHierarchyIdList(loginUser.getId());
