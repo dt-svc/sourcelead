@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			orgDateFormat = "\"%Y-%d-%m\"";
 		}
 
-		
+		String projectIds = "'" + StringUtils.join(projectId, "','") + "'";
 		List<BigInteger> countlist = null;  
 		
 		Integer filterCount = 0;
@@ -62,7 +63,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		
 		String userRoleQuery = "";
 		if(userRole.getRoles() != null && !userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN")) {
-			userRoleQuery = " AND UR.REPORTING_MANAGER_ID = '"+loginUser.getId()+"'";
+			userRoleQuery = " AND ((UR.REPORTING_MANAGER_ID = '"+loginUser.getId()+"') OR (PM.PROJECT_ID IN (SELECT PA.PROJECT_ID FROM PROJECT_APPROVER_HIERARCHY PA WHERE PA.APPROVER_USER_ID = '"+loginUser.getId()+"' AND PA.PROJECT_ID IN (" + projectIds + ") ) ) ) ";
 		}
 			
 		
