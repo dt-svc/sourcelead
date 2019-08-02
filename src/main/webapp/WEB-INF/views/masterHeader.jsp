@@ -2159,10 +2159,9 @@ function getAssignedProjects(obj){
 	$("#projectDropDownDiv").empty();
 	$("#projectDropDownDiv").append(output);
 	$('#projectDropDownDiv').trigger("chosen:updated"); 
-	
+	getProjectTasksByProject(obj);
 	}
 	});
-	getProjectTasksByProject(obj);
 	
 }
 </script>
@@ -2204,7 +2203,7 @@ function getProjectTasksByProject(obj){
 </script>
 
 <script>
-function getGeneralTasks(data){
+function getGeneralTasks(obj){
 
 	$.ajax({
 	url: sourceleadUrl + "/getGeneralTasks",
