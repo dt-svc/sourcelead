@@ -65,7 +65,7 @@ function associateSalSummary(userId){
             	result = result + '    <label>Standard Hours</label>';
             	result = result + '   <div>';
             	if(json.standardHours != null && json.standardHours != '' && json.standardHours != 'undefined'){
-            	result = result + '     <p class="form-control-static text-muted">$ '+json.standardHours+'</p>';
+            	result = result + '     <p class="form-control-static text-muted"> '+json.standardHours+'</p>';
             	}else{
             		result = result + '     <p class="form-control-static text-muted">--</p>';
             	}

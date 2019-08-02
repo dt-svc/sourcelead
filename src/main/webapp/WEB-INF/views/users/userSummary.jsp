@@ -379,7 +379,7 @@ window.onload = function () {
 			    var vendorDocumentsOwnerUsers = "";
 			    var roles = "";
 			    var isGlobalUser = "";
-			    
+			    var country = '${SourceLeadWeb_country}';
 			    
 			    if(json.isGlobal == 'Y'){
 			    	isGlobalUser = 'Yes';
@@ -586,7 +586,7 @@ window.onload = function () {
 					result = result + '<div class="clearfix"></div>';
 				}
 				
-				if(json.user.ssn != null && json.user.ssn != "" && json.user.ssn != 'undefined'){
+				if(json.user.ssn != null && json.user.ssn != "" && json.user.ssn != 'undefined' && country == 'United States'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>SSN:</strong><span class="fix" title="'+json.user.ssn+'">'+json.user.ssn+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
