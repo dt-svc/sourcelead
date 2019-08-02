@@ -287,4 +287,6 @@ public interface CandidateDao {
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
 	
 	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
+	
+	Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 }
