@@ -351,7 +351,7 @@ function loadLeagelSignerForm(){
 	result = result +"</div>";
 	result = result +"</div>";
 	
-	
+	if(country == "India"){
 	result = result +"<div class='col-md-6'>";
 	result = result +"<div class='form-group clearfix'>";
 	result = result +"<label class='col-md-4 noPad'>Aadhar Number<span class='text-danger'>&nbsp;*</span></label>";
@@ -371,7 +371,7 @@ function loadLeagelSignerForm(){
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
-	
+	}
 	
 	
 	/* result = result +"<div class='col-md-6'>";
