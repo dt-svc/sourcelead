@@ -172,37 +172,43 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
         };
 function saveTicketComment(ticketId) {
-	 if ($('#ticketComment_form').validate(false, validationSettings)) {
-//		var formData = getFormData("ticketComment_form");
-		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, {id: $("#ticketCommentId").val(), comment : $("#ticketComment").html(), mentionedUserIds : selectedUsers.toString()}, function(response) {
-			if (response && response.response === "INVALID_DATA") {
-				showError(response.responseMessage);
-			} else if (response.response === "AWKWARD") {
-				location.href = "/errorPage";
-			} else if (response.response === "SUCCESS") {
-				if(response.object === true) {
-					$(".success_pop span").html("Ticket Comment Saved successfully...");
-					$(".success_pop").show();
-					setTimeout(function() {
-						$(".success_pop").hide();
-			 		}, 1000);
-					getTicketCommetList(ticketId);
-					closeTicketComment();
+	if ($('#ticketComment_form').validate(false, validationSettings)) {
+		// var formData = getFormData("ticketComment_form");
+		var commentVal = $("#ticketComment").html();
+		if(commentVal !=null && commentVal !='' && commentVal !='undefined'){
+			$("#ticketCommentvalidation").hide();
+			$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, {id: $("#ticketCommentId").val(), comment : commentVal, mentionedUserIds : selectedUsers.toString()}, function(response) {
+				if (response && response.response === "INVALID_DATA") {
+					showError(response.responseMessage);
+				} else if (response.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (response.response === "SUCCESS") {
+					if(response.object === true) {
+						$(".success_pop span").html("Ticket Comment Saved successfully...");
+						$(".success_pop").show();
+						setTimeout(function() {
+							$(".success_pop").hide();
+						}, 1000);
+						getTicketCommetList(ticketId);
+						closeTicketComment();
+					}
+				} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
 				}
-			} else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
-			} else {
-				showError("Operation failed, please try again");
-			}
-		});
+			});
+		}else{
+			$("#ticketCommentvalidation").show();
+		}
 		return true;
 	}else{
-			return false;
-		  } 
+		return false;
+	} 
 }
 $('body').on('blur', '#ticketComment_form', function() {
 	$("#ticketComment_form").showHelpOnFocus();
-	$("#ticketComment_form").validateOnBlur(false, validationSettings);  
+	$("#ticketComment_form").validateOnBlur(false, validationSettings); 
 });
 
 function closeTicketComment(){
@@ -212,6 +218,7 @@ function closeTicketComment(){
 	}
 	$('.fr-element.fr-view').html("");
 	$("#ticketCommentPopup, .mask").hide();
+	$("#ticketCommentvalidation").hide();
 }
 
 function editTicketComment(ticketId) {
