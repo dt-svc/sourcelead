@@ -363,6 +363,14 @@ public class OrgSettingsRestController {
 		org.setFileUrl(null);
 		org.setFileContentType(null);
 		orgService.updateOrg(org);
+		if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+			List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredWorkLocationsByOrgId(orgId);
+			for(OrgLocations orgLocations : orgLocationsList) {
+					userStatsCacheHelper.saveOrgLocationDetailsToCouchbase(orgLocations);
+			}
+		}
+		
+		
 		return "success";
 	}
 	

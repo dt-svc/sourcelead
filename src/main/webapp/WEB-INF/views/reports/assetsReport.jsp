@@ -33,7 +33,7 @@
              <div class="row">
             	  <div class="col-md-6">
               <label class="clearfix">From Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="clearfix input-group errorInptgroup">
+              <div class="clearfix input-group errorInptgroup" id="fromDateErr">
                 <input type="text" readonly class="form-control calendar" name="fromDate" value="" field-name="From Date" id="fromDate"  data-validation="required">
                  <span class="input-group-addon">
                  	<i class="colorRed fa fa-times cursorPointer" onclick="clearDate('from');"></i>
@@ -42,7 +42,7 @@
               </div>
             	  <div class="col-md-6">
               <label class="clearfix">To Date<span class="text-danger">&nbsp;*</span></label>
-              <div class="clearfix input-group errorInptgroup">
+              <div class="clearfix input-group errorInptgroup" id="toDateErr">
                 <input type="text" readonly class="form-control calendar" name="toDate" value="" field-name="To Date" id="toDate"  data-validation="required">
                  <span class="input-group-addon">
                  	<i class="colorRed fa fa-times cursorPointer" onclick="clearDate('to');"></i>
@@ -195,6 +195,9 @@ function resetAssetReportDataTableList(){
 	$('#categoryId').trigger("chosen:updated");
 	$('#shiftId').trigger("chosen:updated");
 	$('#assetId').trigger("chosen:updated");
+	
+	$('#fromDateErr').find('p.jquery_form_error_message').remove();
+	$('#toDateErr').find('p.jquery_form_error_message').remove();
 }
 	
 	function prepareAssetReportData(result){

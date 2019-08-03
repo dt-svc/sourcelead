@@ -2477,7 +2477,7 @@ padding:5px; border:1px solid #ccc; font-size:12px; -webkit-border-radius: 3px; 
 	border-radius: 3px; float:left; position:relative;
 }
 .comments-div .commentsimg .fa-comments {
-	color: #5cb85c; font-size: 20px; left: 35px; position: absolute; top: -4px; z-index: 9999;
+	color: #5cb85c; font-size: 20px; left: 35px; position: absolute; top: -4px; z-index: 1000;
 }
 /*srinivas nov29*/
 .comments-content {
@@ -10529,6 +10529,7 @@ border-radius: 3px 3px 0px 0px; }
 #showorgData.col-md-5 { position: absolute; right: 0; z-index:9; transition: 0.5s; }
 #orgArrow-left-right { position: absolute; top: 35%; left: 15px; z-index:9;}
 .orgwidth { width:95%;}
+.head_height{height:55px;width:100%;}  // added by veda//
 
 @media (max-width: 320px) {
 .uasrch-selectpicker {

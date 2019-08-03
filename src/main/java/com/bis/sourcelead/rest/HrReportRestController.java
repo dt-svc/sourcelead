@@ -325,11 +325,15 @@ public class HrReportRestController {
 	public List<ProjectMembers> getProjectMembersBasedOnProjectId(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws Exception {
 		List<ProjectMembers> projectMemberList = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		dayWiseTimesheetReoprtsDto.setLocationsId(orgLocations.getId());
 		dayWiseTimesheetReoprtsDto.setLoginUserId(loginUser.getId());
 		dayWiseTimesheetReoprtsDto.setLoginUserRoleType(loginUserRole);
+		dayWiseTimesheetReoprtsDto.setIsGlobalUser(isGlobalUser);
+		dayWiseTimesheetReoprtsDto.setOrgId(org.getId());
 		projectMemberList = projectMemberService.getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
 		return projectMemberList;
 	}
