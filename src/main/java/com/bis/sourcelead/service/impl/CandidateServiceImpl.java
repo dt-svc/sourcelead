@@ -3995,6 +3995,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return null;
 	}
 
+	@Override
+	public Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		return candidateDao.getCandiateByConsultantUserIdAndOrgLocationId(userId, orgLocationId);
+	}
+
 
 	}
 
