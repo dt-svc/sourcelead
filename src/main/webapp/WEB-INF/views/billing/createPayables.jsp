@@ -1963,7 +1963,7 @@ function getPaymentTerms(){
 	var orgRelationId = $("#vendorOrgRelationId").val();
 	$.ajax({
 		type : "GET",
-		url: vmsdUrl+"/getPaymentTermsAndBillindAddress?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		url: vmsUrl+"/getPaymentTermsAndBillindAddress?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 		success :function(data) {
 			 var json = JSON.parse(data);
 			 for (var i=0; i<json.length; i++)
