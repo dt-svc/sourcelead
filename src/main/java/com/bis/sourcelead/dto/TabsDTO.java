@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class TabsDTO implements Serializable{
 
@@ -14,7 +15,9 @@ private static final long serialVersionUID = 1L;
 	
 	private String isTabSubscribed;
 	
-
+    private List<SubTabsDTO> subTabsDTO;
+    
+    
 	public long getId() {
 		return id;
 	}
@@ -46,4 +49,17 @@ private static final long serialVersionUID = 1L;
 	public void setIsTabSubscribed(String isTabSubscribed) {
 		this.isTabSubscribed = isTabSubscribed;
 	}
+
+
+	public List<SubTabsDTO> getSubTabsDTO()
+	{
+		return subTabsDTO;
+	}
+
+	public void setSubTabsDTO(List<SubTabsDTO> subTabsDTO)
+	{
+		this.subTabsDTO = subTabsDTO;
+	}
+	
+	
 }
