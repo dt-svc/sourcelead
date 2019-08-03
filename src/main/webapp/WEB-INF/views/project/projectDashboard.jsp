@@ -257,12 +257,14 @@ function resetProjectFilter(){
 	$("ul#myManagersUL > li input:checkbox").prop("checked",false);
 	$("ul#frequencyFilter > li input:checkbox").prop("checked",false);
 	$("ul#myTagsUL > li input:checkbox").prop("checked",false);
-	
+	$("#myClientsInput").val('');
+	$("#myManagersInput").val('');
 	$("#projectsDataTableSearch").val('');
 	document.getElementById("c6").checked = true;
 	document.getElementById("c7").checked = true;
 	filter();
-	
+	myClientsFunction()
+	myManagersFunction()
 }
 
 function myClientsFunction() {
