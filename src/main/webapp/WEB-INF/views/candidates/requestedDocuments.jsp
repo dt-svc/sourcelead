@@ -45,7 +45,7 @@ var atsUrl = '${SourceLeadWeb_atsUrl}';
     <nav class="header-nav navbar">
     </nav>
    </header>
-   
+   <div class="head_height"></div>
    <c:if test="${isDocsUploaded == 'N'}">
 	   <form:form class="login-form clearfix reqDocuments container"  id="requestForDocs_form"  name="requestForDocs_form">
 	   <div id="loading"></div>
