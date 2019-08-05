@@ -1892,7 +1892,6 @@ public class ImmigrationController {
 		
 		ModelAndView model = new ModelAndView();
 		model.addObject("myImmigrationPage", myImmigrationPage);
-		System.out.println("myImmigrationPage value is "+myImmigrationPage);
 		logger.debug(" inisde getLcaDetails controller test -->");
 		if(immigrationId != null) {
 			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(Long.parseLong(immigrationId));
