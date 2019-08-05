@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.ReferContactsDao;
@@ -186,6 +187,10 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	@Autowired
 	ClassFieldService classFieldService;
 	
+	@Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
+	
+	
 
 	@Autowired
 	EmailScenarioConfigurationService emailScenarioconService;
@@ -293,7 +298,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			}
 		
 		
-		if(StringUtils.isNotBlank(onboardTasksDTO.getIsMailSent())){
+		if(StringUtils.isNotBlank(onboardTasksDTO.getIsMailSent()) && onboardTasksDTO.getIsMailSent().equalsIgnoreCase(Constants.YES)){
 			sendActivationEmail(onboardingSpocUser);
 			OrgSpoc orgSpoc = orgSpocService.getSpocByOrgRelationIdAndAssignedUserId(vendorOnboarding.getOrgRelationId().getId(), onboardingSpocUser.getId());
 			setEmialAndNotificationToVendor(onboardingSpocUser, user, orgLocations, vendorOnboarding, vendorOrgLocations,"Vendor Invitation",orgSpoc);
@@ -772,7 +777,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			boolean flag;
 			String modules = vendorOrgLocations.getModulesId();
 			Long tsModuleId = (long) Constants.MODULE_TIMESHEET;
-			
+			String currentOrgType = vendorOrg.getOrgType();
 			vendorOrg.setOrgType("Company");
 			
 			List<Integer> moduleIds = new ArrayList<Integer>();
@@ -799,6 +804,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	    		vendorOrgLocations.setModulesId(modules);
 			
 	    		vendorOrg.setStatus(Status.ACTIVE);
+	    		vendorOrg.setUser(user);
 				orgService.updateOrg(vendorOrg);
 				vendorOrgLocations.setUser(user);
 				orgLocationService.updateOrgLocations(vendorOrgLocations);
@@ -875,7 +881,15 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 				 }
 				 
 				 vendorOnboardDao.saveVendorOnboarding(onboard);
-				 
+					if(StringUtils.isNotBlank(currentOrgType) && currentOrgType.equalsIgnoreCase("Guest")) {
+						List<UserRole> userRolesList = userRoleService.getAllUserRolesByOrgLocationId(vendorOrgLocations.getId());
+						if(userRolesList != null && !userRolesList.isEmpty()) {
+							
+							for(UserRole userRole : userRolesList) {
+								userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+							}
+						}
+					}
 		}
 		
 	}
