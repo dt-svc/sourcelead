@@ -415,7 +415,14 @@ function PerformanceGoals(){
 								         
 								         
 								         var goalEdit = "";
-								         goalEdit = goalEdit+'<a class="text-primary textBold" href='+pmsUrl+'/addNewGoal?goalUUID='+goalUUID+'><i class="fa fa-pencil paddingRight"></i></a>&nbsp;';
+								         if(response.object.teamId != null 
+						        				 && response.object.teamId != ''
+						        					 && response.object.teamId != 'undefined'){
+								        	 goalEdit = goalEdit+'<a class="text-primary textBold" href='+pmsUrl+'/addNewTeamGoal?goalUUID='+goalUUID+'><i class="fa fa-pencil paddingRight"></i></a>&nbsp;';
+								         }else{
+								        	 goalEdit = goalEdit+'<a class="text-primary textBold" href='+pmsUrl+'/addNewGoal?goalUUID='+goalUUID+'><i class="fa fa-pencil paddingRight"></i></a>&nbsp;';
+								         }
+								         
 						        		
 								         $("#goaledit").empty();
 								         $("#goaledit").html(goalEdit);
@@ -629,7 +636,7 @@ function PerformanceGoals(){
 							result  = result + ' <div class="row clearfix">';
 							result  = result + '	<div class="ticketCommentCont">';
 							result  = result + '	<div class="clearfix">';
-							result  = result + '		<div contenteditable="true" id="goalsComment" class="tkt_comment_div tkt_comment_custom"></div>';
+							result  = result + '		<div contenteditable="true" id="goalsComment" data-validation="required" field-name="Comments" class="tkt_comment_div tkt_comment_custom"></div>';
 							result  = result + '	</div>';
 							result  = result + '</div>';
 							result  = result + '</div>';
@@ -722,6 +729,7 @@ function PerformanceGoals(){
 								        success: function(response) {
 								        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 						     	    		    showError(response.responseMessage);
+						     	    		   $("#goalsDetailsLoading").removeAttr('style');
 						     	    		}
 								        	else if (response.response === "AWKWARD") {
 								        	    location.href = "/errorPage";
