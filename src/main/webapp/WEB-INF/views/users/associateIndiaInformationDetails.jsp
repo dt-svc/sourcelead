@@ -498,7 +498,7 @@ $("#nomineeShow").click(function() {
  function saveNomineeDetails(){
 	 illnessFunction();
 	 minorFunction();
-	 var userId = '${userId}';
+	 var userId = $("#associateId").val();
 	 var id = $('#id').val();
 	 if ($('#nomineeDetails_form').validate(false, validationSettings)){ 
 	        var formData = getFormData("nomineeDetails_form");
@@ -627,7 +627,7 @@ function minorFunction(){
 		$('#minorGuardianPhoneNumber').attr('data-validation-optional', "true");
 		$('#minorGuardianPhoneNumber').attr('data-validation', "validate_space validate_length length7-10");
 		
-	    } else {
+	    }else{
 		 $("#minor").hide();
 		 $('#minorGuardianName').removeAttr('data-validation', "required validate_length length1-250");
 	     $('#minorGuardianRelationName').removeAttr('data-validation', "required");

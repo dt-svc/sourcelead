@@ -533,8 +533,13 @@ function resetAssetFilter(){
 	$("ul#myShiftUL > li input:checkbox").prop("checked",false);
 	$("ul#myTagsUL > li input:checkbox").prop("checked",false);
 	$("#assetDataTableSearch").val('');
+	$("#myCategoryInput").val("");
+	$("#myShiftInput").val("");
+	$("#myTagsInput").val("");
 	getDynamicAssetList();
-	
+	myCategoryFunction();
+	myShiftFunction();
+	myTagsFunction();
 }
 function resetAssignAssetFilter(){
 	$("ul#workStatusFilter > li input:checkbox").prop("checked",false);
@@ -542,7 +547,13 @@ function resetAssignAssetFilter(){
 	$("ul#myShiftUL > li input:checkbox").prop("checked",false);
 	$("ul#myTagsUL > li input:checkbox").prop("checked",false);
 	$("#assignAssetDataTableSearch").val('');
+	$("#myCategoryInput").val("");
+	$("#myShiftInput").val("");
+	$("#myTagsInput").val("");
 	getDynamicAssignedList();
+	myCategoryFunction();
+	myShiftFunction();
+	myTagsFunction();
 }
 function myCategoryFunction() {
     var input, filter, ul, li, a, i;
