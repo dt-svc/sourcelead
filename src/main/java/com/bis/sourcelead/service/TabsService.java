@@ -32,4 +32,6 @@ public interface TabsService {
 	List<Tabs> getClildTabsListByTabId(Long tabId) throws Exception;
 	
 	List<Tabs> getTabListByActionsIds(List<Long> actionIdsList) throws Exception;
+
+	List<Tabs> getTabsByRoleIdAndOrgLocationId(long roleId, Long locationId);
 }
