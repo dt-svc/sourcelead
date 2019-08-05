@@ -581,7 +581,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			}
 			query += " where t.orgLocations.id=" + orgLocationId;
 			if(!Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) && !Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
-				query += " and t.createdBy.id=" + userId + " or assignTo.user.id=" + userId;
+				query += " and (t.createdBy.id=" + userId + " or assignTo.user.id=" + userId + ")";
 			}
 			if(status >= 0) {
 				query += " and t.status=" + status;
