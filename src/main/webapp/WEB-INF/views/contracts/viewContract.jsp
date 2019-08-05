@@ -157,10 +157,10 @@ $("#contractTagName_chosen").find('ul.chosen-choices > li input').attr("placehol
 <script>
 function getContractTagsList(){
 	var contractUUID ='${contractUUID}';
-	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	$.ajax({  
         type : "POST",
-        url: vmsUrl+"/getContractTags?"+tokenParamName+"="+tokenValue+"&contractUUID="+contractUUID,        
+        url: sourceleadUrl+"/getContractTags?"+tokenParamName+"="+tokenValue+"&contractUUID="+contractUUID,        
         success :function(json) {
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {
@@ -194,11 +194,11 @@ function saveContractTags(type){
 	 var jsonData = encodeURIComponent(tagName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
+	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
-		 Urlcheck = vmsUrl+"/saveOrUpdateTagsByContractUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&contractUUID="+contractUUID+"&tagName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByContractUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&contractUUID="+contractUUID+"&tagName="+jsonData
 	 } else {
-		 Urlcheck = vmsUrl+"/saveOrUpdateTagsByContractUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&contractUUID="+contractUUID+"&tagName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByContractUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&contractUUID="+contractUUID+"&tagName="+""
 	 }
 	
 	 $.ajax({  
