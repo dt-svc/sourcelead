@@ -104,11 +104,14 @@ function getTemplateOverViewDetails(assignedUUID){
  						    	  result = result + '</div>';
  						    	  result = result + '</div>';
 				    	    }
- 							
-						  result = result + '<div class="form-group clearfix">';
-				    	  result = result + '<label class="col-md-2 paddingRight">Peer Due Date<span class="pull-right paddingLeft">:</span></label>';
-				    	  result = result + '<div class="col-md-5">'+response.object.appraisalTemplate.peerReviewEndDate+'</div>';
-				    	  result = result + '</div>';	
+ 						
+ 							 if(response.object.appraisalTemplate.peerReviewEndDate != null){
+ 								  result = result + '<div class="form-group clearfix">';
+ 						    	  result = result + '<label class="col-md-2 paddingRight">Peer Due Date<span class="pull-right paddingLeft">:</span></label>';
+ 						    	  result = result + '<div class="col-md-5">'+response.object.appraisalTemplate.peerReviewEndDate+'</div>';
+ 						    	  result = result + '</div>';	
+ 							 }
+						 
  
 				    	  if(response.object.appraisalTemplate.reportingManager != null){
 				    		  
