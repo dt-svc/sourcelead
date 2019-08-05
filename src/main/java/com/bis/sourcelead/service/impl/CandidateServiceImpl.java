@@ -2097,6 +2097,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			orgRelations.setResponderType("Vendor");
 			orgRelations.setInitiatorLevel("Tier-5");
 			orgRelations.setGenerateBill("Bulk");
+			orgRelations.setGenerateInvoice("Bulk");
 			orgRelations.setResponderLevel("Tier-5");
 			orgRelations.setVendorRelationStatus("Sent");
 			orgRelations.setStatus("ACTIVE");
@@ -3992,6 +3993,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		return candidateDao.getCandiateByConsultantUserIdAndOrgLocationId(userId, orgLocationId);
 	}
 
 

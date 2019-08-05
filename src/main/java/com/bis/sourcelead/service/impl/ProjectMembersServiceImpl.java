@@ -272,10 +272,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			 allProjectsList = projectMembersDao.getAllProjectsByUserId(userId,orgLocationId,null);
 		}
 		if(filterValue.equals("Active")){
-			 allProjectsList = projectMembersDao.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_ACTIVE);
+			 allProjectsList = projectMembersDao.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_ACTIVE,orgLocationId);
 		}
 		if(filterValue.equals("In-Active")){
-			allProjectsList = projectMembersDao.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_IN_ACTIVE);
+			allProjectsList = projectMembersDao.getAllProjectsByUserIdAndStatus(userId,Constants.MEMBER_IN_ACTIVE,orgLocationId);
 		}
 		for (ProjectMembers projectMembers : allProjectsList) {
 			projectMembers.setProjectName(projectMembers.getProjects().getProjectName());
@@ -617,8 +617,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getAllProjectsAssigendToUserByIdAndStatus(Long userId, String status) throws Exception {
-		return projectMembersDao.getAllProjectsByUserIdAndStatus(userId, status);
+	public List<ProjectMembers> getAllProjectsAssigendToUserByIdAndStatus(Long userId, String status, Long orgLocationId) throws Exception {
+		return projectMembersDao.getAllProjectsByUserIdAndStatus(userId, status,orgLocationId);
 	}
 
 	@Override
@@ -1677,6 +1677,7 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 			orgRelations.setInitiatorType("Vendor");
 			orgRelations.setResponderType("Client");
 			orgRelations.setGenerateInvoice("Bulk");
+			orgRelations.setGenerateBill("Bulk");
 			orgRelations.setInitiatorLevel("Tier-5");
 			orgRelations.setResponderLevel("Tier-5");
 			orgRelations.setStatus("ACTIVE");
@@ -2365,6 +2366,11 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectClientId(Long masterCandidateId,
 			Long projectClientsId) throws Exception {
 		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectClientId(masterCandidateId, projectClientsId);
+	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectsAssigendToCandidateIdAndStatus(Long candidateId,String status) throws Exception {
+		return projectMembersDao.getAllProjectsAssigendToCandidateIdAndStatus(candidateId,status);
 	}
 
 
