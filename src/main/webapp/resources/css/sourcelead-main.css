@@ -10529,7 +10529,9 @@ border-radius: 3px 3px 0px 0px; }
 #showorgData.col-md-5 { position: absolute; right: 0; z-index:9; transition: 0.5s; }
 #orgArrow-left-right { position: absolute; top: 35%; left: 15px; z-index:9;}
 .orgwidth { width:95%;}
-
+.chosen-select-anchor a.chosen-single {
+	margin-left: 0px;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
