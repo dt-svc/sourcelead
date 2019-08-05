@@ -3768,12 +3768,29 @@ public class CandidateDaoImpl implements CandidateDao {
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate can where can.parentCandidateId.id=:candidateId and can.designationType = '"+Constants.OFFSHORE_C2C+"'";
 		List<Candidate> list = session.createQuery(query).setLong("candidateId", candidateId).list();
 		return list;
 	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and "
+				+ "candidate.consultantUser.id = :userId  ";
+		List<Candidate> candidateList =  session.createQuery(query) .setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+		Candidate canidate = null;
+		if(candidateList != null && !candidateList.isEmpty())
+		{
+			canidate = (Candidate) candidateList.iterator().next();
+		}
+		return canidate;
 	}
 
 
