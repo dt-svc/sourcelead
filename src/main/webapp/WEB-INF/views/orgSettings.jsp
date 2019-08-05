@@ -455,7 +455,7 @@ function cancelOrgImg(){
 						
 					    
 					    <div class="clearfix mb comp-textarea">
-							<label class="labText">Company Descrption</label>
+							<label class="labText">Company Description</label>
 							<div class="clearfix">
 							   <textarea rows="6" name="aboutCompany" field-name="Company Descrption" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgDescription}</textarea>
 							</div>
@@ -895,7 +895,7 @@ function cancelOrgImg(){
                             </div>
                            <div class="pull-right">
 								<input type="button" value="Save" id="saveRecommendationSettings" onclick="validateTotalRecommValue();" class="btn btn-primary mr">
-								<input type="button" value="Cancel" class="btn btn-default" onClick="flushRecomSettings();">
+								<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">
 							</div>
 							</form>
             			</div>
@@ -2166,7 +2166,11 @@ function loadSignature(){
 
 <script>
 function resetDocument(){
-	//$("documents_form").validate().resetForm();
+	$('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+	$('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
+	$('#uploadFileGroup2').find('p.jquery_form_error_message').remove();
+	$('#uploadFileGroup3').find('p.jquery_form_error_message').remove();
+	$('#uploadFileGroup4').find('p.jquery_form_error_message').remove();
 }
 
 function resetEmailConfguration(){
