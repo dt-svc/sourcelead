@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
@@ -768,5 +769,39 @@ public class RequirementWorkflowController {
 			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
 			return requirementWorkFlowService.getColumnsMapbyWorkflowStage(shortCode, workflowId, orgLocationId);
 			
+		}
+		
+		/**
+		 *  below request mapping used to test send email to candidate for work flow questionnaire
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/sendEmailToCandidateQuestionnaire")
+		@ResponseBody
+		public String sendEmailToCandidateWithQuestionnaireTemplate(HttpServletRequest request)throws Exception {
+			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
+			User loginUser  =    (User) SourceLeadSessionManager.getSessionAttribute(request,	"user");
+			System.out.println("inside sending questionnaire link to candidate Started >>>>>>>>>>>>>>>>>");
+			HashMap<String , Object> paramsMap = new HashMap<String , Object>();
+		   // here creating a dummy candidate for testing email functionality.
+		    User candidate = new User();
+		    candidate.setId(Long.valueOf("4193"));
+		    candidate.setFirstName("Srinivas");
+		    candidate.setLastName("Sabbu");
+		    candidate.setEmail("srinivas.sabbu@businessintelli.com");
+		    
+			paramsMap.put("candidate" , candidate); 
+			paramsMap.put("orgLocations" , orgLocations);
+			paramsMap.put("loginUser" , loginUser);
+			paramsMap.put("templateId" , "2");
+			paramsMap.put("templateUuid" , "LbDT9TBn");
+			paramsMap.put("stageName" , "Screening");
+			paramsMap.put("jobTitle" , "SAP ABAP Developer");
+			
+			String status= requirementWorkFlowService.sendEmailToCandidateWithQuestionnaireTemplate(paramsMap);
+			
+			System.out.println("Email sent successfully  "+status);
+			return status;
 		}
 }
