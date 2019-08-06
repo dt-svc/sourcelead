@@ -322,10 +322,12 @@ public class LeaveManagementReportsRestController {
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		    dayWiseLeaveReportDTO.setLoginUserId(loginUser.getId());
 	        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	        Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
+	        
 	         User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	         Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	         Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("dailyWiseLeaveReport ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
-	            ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgLocations.getOrg().getId(),orgLocations.getId(),loginUserRole);
+	            ResponseList<LeaveReportView> leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromToDate(dayWiseLeaveReportDTO,orgId,orgLocations.getId(),loginUserRole);
 
 	        leaveReportsList.getData().stream().forEach(u -> {
 	                   u.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), u.getFromDate()));

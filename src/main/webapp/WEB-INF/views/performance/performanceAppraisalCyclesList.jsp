@@ -49,7 +49,7 @@
 		                  <td><div class="tblminwidth-75">${appraisal.name}</div></td>
 		                  <td>
 							  <div>
-							  <span class="tblminwidth-75 mr">${appraisal.selfAppraisalStartDate}</span>
+							  <span class="tblminwidth-75 mr">${appraisal.selfAppraisalStartDate} &nbsp;&nbsp;&nbsp;to </span>
 							  <span class="tblminwidth-75">${appraisal.selfAppraisalEndDate}</span>
 							  </div>
 						  </td>
@@ -62,9 +62,7 @@
 							  	      <li><a onclick="performanceManagement.addNewAppraisalCycle('${appraisal.templateUUId}');" title="Edit"><i class="fa fa-pencil"></i></a></li>
 							  	      <li><a onclick="deleteAppraisalMessage('${appraisal.templateUUId}');" title="Delete"><i class="fa fa-trash"></i></a></li>
 								      </c:if>
-								      <c:if test="${appraisal.templateSubmittedCount > 0}">
 								      <li><a href="javascript:vois(0)" title="Assigned Associates Count" onclick="performanceManagement.templateAssignedAssociates('${appraisal.templateUUId}');">${appraisal.templateAssignedUserCount}</a>
-								      </c:if>
 								  </ul>
 							  </div>
 						  </td>
