@@ -899,6 +899,190 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
     }
 	
 	@Override
+    @Transactional(rollbackFor = { Exception.class })
+    public Map<String, Integer> getAllPipeLineWorlflowCountsByRequirementIdAndSubmissionStage(Long requirementId, User user, OrgLocations loginOrgLocation, String submissionStatus, String[] workflowStages) throws Exception{
+		Session session = this.sessionFactory.getCurrentSession();
+		 Map<String, Integer> stagesCountMap = new HashMap<String, Integer>();
+         Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
+         String[] releasedBy =null;
+         
+         if(requirement != null && !"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
+             releasedBy = requirement.getReleasedBy().split(",");
+         }
+          boolean requirementReleased = false;
+          List<Long> releasedByUserIds = new ArrayList<Long>();
+          if(requirement != null && !"".equalsIgnoreCase(requirement.getReleasedBy()) && requirement.getReleasedBy()!= null ){
+          for (String s : requirement.getReleasedBy().split(",")){
+              releasedByUserIds.add(Long.parseLong(s));
+          }
+          if(releasedByUserIds != null ){
+              requirementReleased = releasedByUserIds.contains(user.getId());
+          }
+          }
+         Boolean isadmin = userRoleDao.isUserAdminByOrgLocationId(user.getId(),loginOrgLocation.getId());
+         Map<String, Object> params = new HashMap<String,Object>();
+        
+         
+         List<String> statusList = new ArrayList<>();
+         if(submissionStatus.equalsIgnoreCase("ALL")){
+        	 statusList.add("APPLICANTS");
+        	 statusList.add("REQUESTSENT");
+        	 statusList.addAll(Arrays.asList(workflowStages));
+        	
+        	 stagesCountMap.put("APPLICANTS", 0);
+        	 stagesCountMap.put("REQUESTSENT", 0);
+             for(String stage: workflowStages) {
+            	 stagesCountMap.put(stage, 0);
+             }
+         }else {
+        	 statusList.add(submissionStatus);
+         }
+         
+         RequirementSubmissionsCountDTO rsc = new RequirementSubmissionsCountDTO();
+         for(String ss : statusList) {
+        	String submissionStages = "";
+             if(ss.equalsIgnoreCase("APPLICANTS")){
+                 submissionStages = "";
+             }else if(ss.equalsIgnoreCase("SUBMISSION")){
+            	 submissionStages = "and (reqSub.submissionStatus = 'SUBMISSION')";
+             }else if(ss.equalsIgnoreCase("SHORTLISTED")){
+                 submissionStages = "and (reqSub.submissionStatus = 'SHORTLIST')";
+             }else if(ss.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
+                 submissionStages = "and (reqSub.submissionStatus = 'SUBMIT_TO_CLIENT')";
+             }else if(ss.equalsIgnoreCase("INTERVIEWED")){
+                 submissionStages = "and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW' OR reqSub.submissionStatus = 'INTERVIEW_ACCEPT')";
+             }else if(ss.equalsIgnoreCase("REJECTED")){
+                 submissionStages = "and (reqSub.submissionStatus = 'REJECTED')";
+             }else if(ss.equalsIgnoreCase("REQUESTSENT")){
+                 submissionStages = "and (reqSub.submissionStatus = 'REQUEST_SENT')";
+             }else if(ss.equalsIgnoreCase("BACKOUT")){
+                 submissionStages = "and (reqSub.submissionStatus = 'BACKOUT')";
+             }else if(ss.equalsIgnoreCase("OFFERED")){
+                 submissionStages = "and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' OR reqSub.submissionStatus = 'OFFERHIRED' OR "
+                         + " reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED' OR reqSub.submissionStatus = 'CLIENT_OFFERHIRED' )";
+             }else if(ss.equalsIgnoreCase("JOINED")){
+                 submissionStages = "and (reqSub.submissionStatus = 'JOINED')";
+             }
+             else if(ss.equalsIgnoreCase("ON_HOLD")){
+                 submissionStages = "and (reqSub.submissionStatus = 'ONHOLD')";
+             }
+             else if(ss.equalsIgnoreCase("NO_RESPONSE")){
+                 submissionStages = "and (reqSub.submissionStatus = 'NORESPONSE')";
+             }
+             else {
+            	 submissionStages = "and (reqSub.submissionStatus = '"+ss+"')";
+             }
+             
+             ArrayList<RequirementSubmission> finalList  = new ArrayList<RequirementSubmission>();
+             List<RequirementSubmission> listDistinct = null;
+             String from = "from RequirementSubmission reqSub";
+             String subQuery = "";
+            
+                // These conditions are to check  for vendors  Submitted Applicants  and Requirement who Released
+                    if(null != releasedBy && releasedBy.length > 0){
+                        
+                        String subQueryForVendors = "where reqSub.requirement.id IN ( select rq.id from Requirement rq where     rq.parentRequirement.id =:requirementId and  rq.spocId.id IN ( select orgSpock.id from OrgSpoc orgSpock  where  orgSpock.clientUser.id =:userId and orgSpock.clientLocationId.id =:loginOrgLocation )   and reqSub.id IN( select sourceSub.sourceSubmission.id from   RequirementSubmission sourceSub    ) ) ";
+                                                        params.put("userId",user.getId());
+                                                        params.put("loginOrgLocation",loginOrgLocation.getId());
+                                                        params.put("requirementId",requirementId);
+                        
+                        String whereCondition = subQueryForVendors;
+                        
+                        Query queryForVendors = session.createQuery(from+" "+whereCondition+"  GROUP BY reqSub.id  ORDER BY reqSub.id DESC");
+                        for (String str : queryForVendors.getNamedParameters())
+                        {
+                            if(str.equalsIgnoreCase("requirementId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("loginOrgLocation") ){
+                                queryForVendors.setLong(str, (long) params.get( str ));
+                            }else{
+                                queryForVendors.setParameter( str, params.get( str ) );
+                            }
+                        }
+                        
+                        List<RequirementSubmission> vendorSubmittedApplicants = queryForVendors.list() ;
+                         List<Long> sourceSubmissionIds = new ArrayList<Long>();
+                         if(null != vendorSubmittedApplicants && vendorSubmittedApplicants.size() >0 ){
+                             for(RequirementSubmission rs :vendorSubmittedApplicants){
+                                    sourceSubmissionIds.add(rs.getId());
+                                }
+                                String sourceSubmissionIdQuery = "from RequirementSubmission reqSub  where  reqSub.sourceSubmission.id  IN (:sourceSubmissionIds)   " +submissionStages;
+                                List<RequirementSubmission> finalSourceList = session.createQuery(sourceSubmissionIdQuery.toString())
+                                                                                    .setParameterList("sourceSubmissionIds", sourceSubmissionIds)
+                                                                                    .list();
+                                finalList.addAll(finalSourceList);
+                                
+                           }
+                        
+                    }
+                    
+                    /// These Conditions are for  own Organization  Submitted Applicants
+                    if(isadmin){
+                        subQuery = " where reqSub.orgLocations.id =:loginOrgLocation and reqSub.requirement.id =:requirementId "+submissionStages;
+                        params.put("loginOrgLocation",loginOrgLocation.getId());
+                        params.put("requirementId",requirementId);
+                        
+                        // This Condition is if The Requirement is Released by the login User
+                    }else{
+                        //This is for Requirement Manger
+                        String subQuery1 = "(reqSub.requirement.managerUserId.id  =:userId or reqSub.requirement.primaryRecruiterUserId.id = :userId)  ";
+                        params.put("userId",user.getId());
+                        
+                        // This is if the user is  created by
+                        String subQuery2 = "((reqSub.createdBy =:usercode) OR (reqSub.candidate.candidateType = 'Professional') OR (reqSub.recruiterUserId IS NOT NULL))";
+                        params.put("usercode",user.getUserCode());
+                        
+                        //  this is if the  user is   Assign Team  Owner
+                       String subQuery3 = "reqSub.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.requirementId.id=:requirementId and rah.teamId.id IN ( select team.id from Team team where team.ownerUserId.id =:userId))";
+                        params.put("userId",user.getId());
+                        
+                       //  this is if the  user is   Assign Team  Member
+                        String subQuery4 = "reqSub.requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId) and reqSub.createdBy =:usercode";
+                        params.put("userId",user.getId());
+                        params.put("usercode",user.getUserCode());
+                        
+                        
+                        //  this is if the  user is   ApproverHirachy   Member  from Requirement i,e login user is approver for given Requirement
+        				String subQuery5 = "reqSub.requirement.id IN ( select reqApproverHirachy.requirementId from RequirementApproverHierarchy reqApproverHirachy where reqApproverHirachy.approverUserId.id =:userId)";
+        				params.put("userId",user.getId());
+        				
+        				
+                        
+                        if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != ""  || subQuery5 != ""  ){
+                            subQuery = "where reqSub.orgLocations.id =:loginOrgLocation  "+submissionStages+" and reqSub.requirement.id =:requirementId  and  ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+")  OR ("+subQuery4+") OR ("+subQuery5+")  )";
+                            params.put("loginOrgLocation",loginOrgLocation.getId());
+                            params.put("requirementId",requirementId);
+                        }
+                    }
+                    
+                    String whereCondition = subQuery;
+                    
+                    Query query = session.createQuery(from+" "+whereCondition+" ORDER BY reqSub.id DESC");
+                    for (String str : query.getNamedParameters())
+                    {
+                        if(str.equalsIgnoreCase("requirementId") || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("loginOrgLocation") ){
+                            query.setLong(str, (long) params.get( str ));
+                        }else{
+                            query.setParameter( str, params.get( str ) );
+                        }
+                    }
+                    
+                    List<RequirementSubmission> ownApplicantsList = query.list() ;
+                    finalList.addAll(ownApplicantsList);
+                    listDistinct = finalList.stream().distinct().collect(Collectors.toList());
+                    
+                    
+                    	for (String key : stagesCountMap.keySet()) {
+                    		if(ss.equalsIgnoreCase(key)) {
+                            	stagesCountMap.put(ss, listDistinct.size());
+                            	System.out.println(ss+" x "+listDistinct.size());
+                            	rsc.setStagesCountMap(stagesCountMap);
+                            }
+                    	}
+                    
+         }
+         return stagesCountMap;
+    }
+	
+	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,
 			OrgLocations loginOrgLocation,CandidateVerificationConfig candidateVerificationConfig) throws Exception {

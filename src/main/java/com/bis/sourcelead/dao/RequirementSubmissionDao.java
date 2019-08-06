@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.AssociateJoineReportDTO;
@@ -90,6 +91,7 @@ public interface RequirementSubmissionDao {
 	 */
 	RequirementSubmissionsCountDTO getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user, OrgLocations loginOrgLocation, String subQuery) throws Exception;
 	
+	Map<String, Integer> getAllPipeLineWorlflowCountsByRequirementIdAndSubmissionStage(Long requirementId, User user, OrgLocations loginOrgLocation, String submissionStatus, String[] workflowStages)  throws Exception;
 	/**
 	 * @author Prasad Salina
 	 * @param requirementId

@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.CandidateCertificationsDao;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateEducationDao;
@@ -299,6 +300,12 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
   	ReportsUtil reportsUtil;
+    
+    @Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
     
        
     protected boolean isNullOrEmpty(String str) {
@@ -1938,6 +1945,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    					employee.setCreatedDate(new Date());
 	    					employee.setUpdatedDate(new Date());
 	    					employeeDao.addEmployee(employee);
+	    					
+	    					if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+	    						userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+	    					}
 						}
 					}
 				}
@@ -2086,6 +2097,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			orgRelations.setResponderType("Vendor");
 			orgRelations.setInitiatorLevel("Tier-5");
 			orgRelations.setGenerateBill("Bulk");
+			orgRelations.setGenerateInvoice("Bulk");
 			orgRelations.setResponderLevel("Tier-5");
 			orgRelations.setVendorRelationStatus("Sent");
 			orgRelations.setStatus("ACTIVE");
@@ -3981,6 +3993,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		return candidateDao.getCandiateByConsultantUserIdAndOrgLocationId(userId, orgLocationId);
 	}
 
 

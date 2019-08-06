@@ -3114,6 +3114,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
  				orgRelations.setResponderLevel("Tier-5");
  				orgRelations.setStatus("ACTIVE");
  				orgRelations.setGenerateInvoice("Bulk");
+ 				orgRelations.setGenerateBill("Bulk");
  				orgRelations.setCreatedBy(user.getUserCode());
  				orgRelations.setCreatedDate(new Date());
  				orgRelations.setUpdatedBy(user.getUserCode());
