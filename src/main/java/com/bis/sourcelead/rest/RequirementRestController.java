@@ -1216,7 +1216,7 @@ public class RequirementRestController {
 					reqSubmission.setRequirementName(reqSubmission.getRequirement().getJobTitle());	
 				}
 				reqSubmission.setRequirementJobId(reqSubmission.getRequirement().getJobId());
-				reqSubmission.setRequirementStage(reqSubmission.getSubmissionStatus());
+				reqSubmission.setRequirementStage(reqSubmission.getSubmissionStatus().toString());
 				if(null != reqSubmission.getRequirement().getSpocId()){
 					StringBuilder clientName = new StringBuilder();
 					 if(!"".equalsIgnoreCase(reqSubmission.getRequirement().getSpocId().getClientUser().getLastName()) && null != reqSubmission.getRequirement().getSpocId().getClientUser().getLastName() ){
