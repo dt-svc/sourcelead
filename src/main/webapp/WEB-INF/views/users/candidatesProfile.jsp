@@ -424,8 +424,8 @@ function editCandidate(candidateId){
 							
 			                result = result + '<input type="text" class="form-control input-sm" name="currentRate" id="currentRate" value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
-							result = result + '<div class="input-group-btn tblminwidth-75 ratetype-right select-field">';
-							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Per">';
+							result = result + '<div class="input-group-btn tblminwidth-100 ratetype-right select-field">';
+							result = result + '<select class="selct-picker tblminwidth-100" id="currentRateType" name="currentRateType" field-name="Rate Per">';
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(json.currentRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.currentRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
@@ -444,9 +444,9 @@ function editCandidate(candidateId){
 							result = result + '<div class="col-md-6">';
 							
 							result = result + '<div class="input-group er ratetype">';
-							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
+							result = result + '<div class="input-group-btn tblminwidth-100 select-field">';
 			                  
-							result = result + ' <select class="selct-picker" id="expectedRateCurrencey" name="expectedRateCurrencey">';
+							result = result + ' <select class="selct-picker tblminwidth-100" id="expectedRateCurrencey" name="expectedRateCurrencey">';
 							result = result + ' <option '+(json.expectedRateCurrencey == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
 							result = result + '<option   '+(json.expectedRateCurrencey == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
 							result = result + ' <option  '+(json.expectedRateCurrencey == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
@@ -459,8 +459,8 @@ function editCandidate(candidateId){
 							
 							result = result + '<input type="text" class="form-control input-sm" name="expectedRate" id="expectedRate" value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
-							result = result + '<div class="input-group-btn tblminwidth-75 ratetype-right select-field">';
-							result = result + '<select class="selct-picker" id="expectedRateType" name="rateType" field-name="Rate Per">';
+							result = result + '<div class="input-group-btn tblminwidth-100 ratetype-right select-field">';
+							result = result + '<select class="selct-picker tblminwidth-100" id="expectedRateType" name="rateType" field-name="Rate Per">';
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.rateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
@@ -562,14 +562,14 @@ function editCandidate(candidateId){
 							
 							
 						    result = result + '<span class="" id="hideVendor" style="display:none">'; 
-							result = result + '<div class="col-md-6 custom-fields select-arrow" id="errorvendor">';
+							result = result + '<div class="col-md-6 custom-fields select-arrow chosen-select-anchor" id="errorvendor">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="vendors"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">';
 							result = result + '</select>';
 							result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
 							result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'" />';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-6 custom-fields select-arrow mt" id="errorvendorContact">';
+							result = result + '<div class="col-md-6 custom-fields select-arrow mt chosen-select-anchor" id="errorvendorContact">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="vendorcontact"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">';
 							result = result + '</select>';
 							result = result + '<input type="hidden" name="updateVendorContactName" id="updateVendorContactName" value="'+json.vendorContactName+'" />';
@@ -1924,9 +1924,10 @@ function  removeValiationVendorContact() {
 		 if(orgRelationID != null && orgRelationID != '' && orgRelationID != 'undefined'){
 			 var vendorContactName = $("#updateVendorContactName").val();
 			 var vendorSpocId = $("#updateSpocId").val();
+			 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			 $.ajax({
 				    type: "POST",
-			        url: atsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+			        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
 			        success: function(json) {
 			        	//var json = JSON.parse(data);
 			        	$('#vendorcontactName').empty();

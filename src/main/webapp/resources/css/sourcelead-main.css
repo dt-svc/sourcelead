@@ -9961,6 +9961,10 @@ ul.goalscomments-list li:hover {
 .goals-list:hover .goalsEditDelete {
 	display: block;
 }
+
+.chosen-select-anchor a.chosen-single {
+margin-left: 0px;
+}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;
