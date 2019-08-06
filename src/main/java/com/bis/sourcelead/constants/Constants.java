@@ -1526,4 +1526,6 @@ public class Constants {
 			                                                "Note-", "Date","Place","SIGNATURE OF THE EMPLOYEE"};
 	
 	public static final String[] ELIMINATE_NAME_KEYWORDS = { "CANDIDATE", "FIRST NAME", "NAME" };
+	
+	public static final String CANDIDATE_QUESTIONNARIE_TEMPLATE = "MailToCandidateWorkflowSatgeQuestionnaire";
 }

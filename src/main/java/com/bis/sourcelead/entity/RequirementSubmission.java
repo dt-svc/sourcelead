@@ -316,7 +316,7 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
     @JsonProperty
-   	private ApplicantSubmissionStatus requirementStage;
+   	private String requirementStage;
     
 	@Transient
 	@JsonProperty
@@ -986,11 +986,11 @@ public class RequirementSubmission implements Serializable{
 		this.requirementName = requirementName;
 	}
 
-	public ApplicantSubmissionStatus getRequirementStage() {
+	public String getRequirementStage() {
 		return requirementStage;
 	}
 
-	public void setRequirementStage(ApplicantSubmissionStatus requirementStage) {
+	public void setRequirementStage(String requirementStage) {
 		this.requirementStage = requirementStage;
 	}
 
