@@ -2,6 +2,7 @@ package com.bis.sourcelead.workflow.service;
 
 
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
@@ -100,4 +101,7 @@ public interface RequirementWorkFlowService {
 	
 	RequirementWorkFlowStages getRequirementWorkFlowStagesDetails(String shortCode, Long workflowId, Long orgLocationId);
 	
+	List<String> getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(Long workflowId, OrgLocations orgLocation, String submissionType)throws Exception;
+	
+	String  sendEmailToCandidateWithQuestionnaireTemplate(HashMap<String , Object> paramList) throws Exception;	
 }

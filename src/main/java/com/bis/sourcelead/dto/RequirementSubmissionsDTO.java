@@ -78,7 +78,15 @@ public class RequirementSubmissionsDTO extends SearchDTO implements Serializable
 	
 	private String workflowSatgeColumns; // contains comma separated string.
 	
+	private Long workFlowId;
 	
+	
+	public Long getWorkFlowId() {
+		return workFlowId;
+	}
+	public void setWorkFlowId(Long workFlowId) {
+		this.workFlowId = workFlowId;
+	}
 	public String getWorkflowSatgeColumns() {
 		return workflowSatgeColumns;
 	}

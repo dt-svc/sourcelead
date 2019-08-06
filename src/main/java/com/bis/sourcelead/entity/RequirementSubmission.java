@@ -92,9 +92,12 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "SUBMISSION_TEMPLATE_JSON_STRING_VALUES", columnDefinition = "TEXT default NULL")
     private String submissionTemplateJsonStringValue;
 	
-	@Column(name = "SUBMISSION_STATUS")
+/*	@Column(name = "SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
-	private ApplicantSubmissionStatus submissionStatus;
+	private ApplicantSubmissionStatus submissionStatus;*/
+	
+	@Column(name = "SUBMISSION_STATUS")
+	private String submissionStatus;
 	
 	@Column(name = "NEED_APPLICANT_PERMIT")
     private String needApplicantPermit;
@@ -132,9 +135,12 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "SUBMISSION_REQUEST_FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String submissionRequestFileName;
 	
-	@Column(name = "PREVIOUS_SUBMISSION_STATUS")
+	/*@Column(name = "PREVIOUS_SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
     private ApplicantSubmissionStatus previousSubmissionStatus;
+	*/
+	@Column(name = "PREVIOUS_SUBMISSION_STATUS")
+    private String previousSubmissionStatus;
 	
 	@Column(name = "REJECTED_REASON", columnDefinition = "TEXT default NULL")
     private String rejectedReason;
@@ -242,6 +248,11 @@ public class RequirementSubmission implements Serializable{
     @JsonProperty
 	private String noticePeriod;
 	
+    @Transient
+    @JsonProperty
+	private List<String> workflowStages;
+	
+    
     // END  WORKFLOW related columns added by SRINIVAS 
     
     @Transient
@@ -305,7 +316,7 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
     @JsonProperty
-   	private ApplicantSubmissionStatus requirementStage;
+   	private String requirementStage;
     
 	@Transient
 	@JsonProperty
@@ -624,6 +635,7 @@ public class RequirementSubmission implements Serializable{
 	private String invoiceGenerateDate;
 
     
+    
 	public int getProfilePercentage()
 	{
 		return profilePercentage;
@@ -789,11 +801,11 @@ public class RequirementSubmission implements Serializable{
 		this.submissionTemplateJsonStringValue = submissionTemplateJsonStringValue;
 	}
 
-	public ApplicantSubmissionStatus getSubmissionStatus() {
+	public String getSubmissionStatus() {
 		return submissionStatus;
 	}
 
-	public void setSubmissionStatus(ApplicantSubmissionStatus submissionStatus) {
+	public void setSubmissionStatus(String submissionStatus) {
 		this.submissionStatus = submissionStatus;
 	}
 
@@ -974,11 +986,11 @@ public class RequirementSubmission implements Serializable{
 		this.requirementName = requirementName;
 	}
 
-	public ApplicantSubmissionStatus getRequirementStage() {
+	public String getRequirementStage() {
 		return requirementStage;
 	}
 
-	public void setRequirementStage(ApplicantSubmissionStatus requirementStage) {
+	public void setRequirementStage(String requirementStage) {
 		this.requirementStage = requirementStage;
 	}
 
@@ -1190,11 +1202,11 @@ public class RequirementSubmission implements Serializable{
 		this.rejectedReason = rejectedReason;
 	}
 
-	public ApplicantSubmissionStatus getPreviousSubmissionStatus() {
+	public String getPreviousSubmissionStatus() {
 		return previousSubmissionStatus;
 	}
 
-	public void setPreviousSubmissionStatus(ApplicantSubmissionStatus previousSubmissionStatus) {
+	public void setPreviousSubmissionStatus(String previousSubmissionStatus) {
 		this.previousSubmissionStatus = previousSubmissionStatus;
 	}
 
@@ -1831,6 +1843,14 @@ public class RequirementSubmission implements Serializable{
 	public void setNoticePeriod(String noticePeriod) {
 		this.noticePeriod = noticePeriod;
 	}
-	
+
+	public List<String> getWorkflowStages() {
+		return workflowStages;
+	}
+
+	public void setWorkflowStages(List<String> workflowStages) {
+		this.workflowStages = workflowStages;
+	}
+
 	
 }

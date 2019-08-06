@@ -25,7 +25,7 @@ public class Constants {
 			"Impace" };
 	public static final String[] AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS = { "Project Name", "Project Duration","Associate Duration", "Availability %","No.of Hours",};
 	
-	public static final String[] EXPENSE_PENDING_APPROVAL_REPORT_EXPORT_HEADDERS = { "Emp_ID", "Emp_Name","Emp_Type", "Project","Duration","Approval Mechanism","Manager1","Manager2","Submitted Amount","Submitted on","Approved By"};
+	public static final String[] EXPENSE_PENDING_APPROVAL_REPORT_EXPORT_HEADDERS = { "Emp_ID", "Emp_Name","Emp_Type", "Project","Approval Mechanism","Manager1","Manager2","Submitted Amount","Submitted on","Approved By"};
 	
 	public static final String[] FONT_SIZE = { "8px", "9px", "10px", "11px", "12px", "13px", "14px",
 			"15px", "16px", "17px", "18px", "19px", "20px", "21px", "221px", "23px", "24px" };
@@ -1017,7 +1017,7 @@ public class Constants {
 	public static final String[] MY_EXPENSES_HEADERS_APPROVER ={"Expense Category","Date","Receipt Issued by","Payment Mode","Currency","Amount","Description","Status","Billable"};
 
 	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = {"Expense ID","Employee Name", "Employee Emailid", "Phone Number",
-			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Items",
+			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Number of Items",
 			"Amount" , "Status"  , "Approved by","Blling Status"};
 	
 	public static final String[] PROJECT_REPORT_EXPORT_HEADDERS = { "ProjectId", "Project Name", "Project Status",
@@ -1526,4 +1526,6 @@ public class Constants {
 			                                                "Note-", "Date","Place","SIGNATURE OF THE EMPLOYEE"};
 	
 	public static final String[] ELIMINATE_NAME_KEYWORDS = { "CANDIDATE", "FIRST NAME", "NAME" };
+	
+	public static final String CANDIDATE_QUESTIONNARIE_TEMPLATE = "MailToCandidateWorkflowSatgeQuestionnaire";
 }
