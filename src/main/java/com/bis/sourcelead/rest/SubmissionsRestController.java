@@ -732,9 +732,9 @@ public class SubmissionsRestController {
 				for (int i = 0; i < submissionId.length; i++) {
 					RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 					RequirementSubmission submission = requirementSubmissionService .getRequirementSubmissionById(Long.parseLong(submissionId[i]));
-					requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+					requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus());
 					submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
-					submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
+					submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST.toString());
 					submission.setUpdatedBy(user.getUserCode());
 					submission.setUpdatedUser(user.getFullName());
 					if(null != submission.getSourceSubmission()){
@@ -877,7 +877,7 @@ public class SubmissionsRestController {
 				if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getRejectedCategoryOther())) {
 					requirementSubmission.setRejectedCategoryOther(applicantRejectBackOutDTO.getRejectedCategoryOther());
 				}
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED.toString());
 				requirementSubmission.setUpdatedBy(user.getUserCode());
 				StringBuilder sb = new StringBuilder();
 				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
@@ -1210,9 +1210,9 @@ public class SubmissionsRestController {
 		
 		if ("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit())
 				&& requirementSubmission.getPreviousSubmissionStatus() != null
-				&& ApplicantSubmissionStatus.REQUEST_SENT.getValue().equalsIgnoreCase(requirementSubmission.getPreviousSubmissionStatus().getValue())
+				&& ApplicantSubmissionStatus.REQUEST_SENT.getValue().equalsIgnoreCase(requirementSubmission.getPreviousSubmissionStatus())
 				&& requirementSubmission.getSubmissionStatus() != null
-				&& ApplicantSubmissionStatus.REJECTED.getValue().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().getValue())) {
+				&& ApplicantSubmissionStatus.REJECTED.getValue().equalsIgnoreCase(requirementSubmission.getSubmissionStatus())) {
 			requirementSubmissionServiceImpl.applicantReceiveMailAboutRequirement(requirementSubmission.getId(), requirementSubmission.getRequirement(), requirementSubmission.getCandidate(), user, orgLocations);
 		}
 
@@ -1264,7 +1264,7 @@ public class SubmissionsRestController {
 			requirementSubmission.setBackOutCategoryOther(applicantRejectBackOutDTO.getBackOutCategoryOther());
 		}
 		
-		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.BACKOUT);
+		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.BACKOUT.toString());
 		requirementSubmission.setUpdatedBy(user.getUserCode());
 		StringBuilder sb = new StringBuilder();
 		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
@@ -1317,7 +1317,7 @@ public class SubmissionsRestController {
 
 				// to update Submission status
 				requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW);
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW.toString());
 				requirementSubmission.setUpdatedBy(user.getUserCode());
 				StringBuilder sb = new StringBuilder();
 				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
@@ -1356,7 +1356,7 @@ public class SubmissionsRestController {
 
 				// to update Submission status
 				requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST.toString());
 				requirementSubmission.setUpdatedBy(user.getUserCode());
 				StringBuilder sb = new StringBuilder();
 				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
@@ -1544,22 +1544,22 @@ public class SubmissionsRestController {
 				// to update Submission status
 				requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 				if(status.equalsIgnoreCase("Status")){
-					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 				}
 				else if(status.equalsIgnoreCase("On Hold")){
-					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.ONHOLD);
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.ONHOLD.toString());
 				}
 				else if(status.equalsIgnoreCase("Interview")){
-					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW.toString());
 				}
 				else if(status.equalsIgnoreCase("Selected on Interview")){
-					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW);
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW.toString());
 				}
 				else if(status.equalsIgnoreCase("Offer Made")){
-					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE.toString());
 				}
 				else if(status.equalsIgnoreCase("NoResponse")){
-					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.NORESPONSE);
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.NORESPONSE.toString());
 				}
 				requirementSubmission.setUpdatedBy(user.getUserCode());
 				StringBuilder sb = new StringBuilder();

@@ -110,7 +110,7 @@ public class SubmissionsRateController {
 		String type = "Candidate";
 		ModelAndView model = new ModelAndView();
 		String permission = "YES";
-		if((requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.SUBMISSION || requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REJECTED) && (pastRequirementRateSubmissionNegotiation != null && pastRequirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE)){
+		if((requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.SUBMISSION.toString() || requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REJECTED.toString()) && (pastRequirementRateSubmissionNegotiation != null && pastRequirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE)){
 			permission = "NO";
 			/*if(pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate() != null && pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getConsultantUser() != null && pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getConsultantUser().getUserCode().equals(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
 				permission = "YES";
@@ -150,8 +150,8 @@ public class SubmissionsRateController {
 				requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);
 				requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
 			}
-			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT.toString()){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 			}
 			requirementSubmission.setFinalizedRate(requirementRateSubmissionNegotiation.getCurrentRate());
 			requirementSubmission.setFinalizedRateType(requirementRateSubmissionNegotiation.getCurrentRateType());
@@ -168,7 +168,7 @@ public class SubmissionsRateController {
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 			//requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 			requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.REQUEST_SENT.toString());
-			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 			
 			Requirement requirement = requirementSubmission.getRequirement();
@@ -237,8 +237,8 @@ public class SubmissionsRateController {
 				requirementRateSubmissionNegotiation.setStatus(Constants.RECORD_ACTIVE);
 				requirementRateSubmissionNegotiationService.saveRateNegotiation(requirementRateSubmissionNegotiation);
 			}
-			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT.toString()){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 			}
 			requirementSubmission.setFinalizedRate(pastRequirementRateSubmissionNegotiation.getExpectedRate());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
@@ -271,7 +271,7 @@ public class SubmissionsRateController {
 		
 		ModelAndView model = new ModelAndView();
 		String permission = "YES";
-		if(requirementSubmission.getSubmissionStatus() != ApplicantSubmissionStatus.REQUEST_SENT){
+		if(requirementSubmission.getSubmissionStatus() != ApplicantSubmissionStatus.REQUEST_SENT.toString()){
 			permission = "NO";
 		}
 		
@@ -287,8 +287,8 @@ public class SubmissionsRateController {
 		
 		if("Accepted".equalsIgnoreCase(rateStatus) && "YES".equalsIgnoreCase(permission)){
 			
-			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT.toString()){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 			}
 			

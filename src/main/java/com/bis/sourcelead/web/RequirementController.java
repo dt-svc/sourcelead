@@ -1277,9 +1277,9 @@ public class RequirementController {
 		List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
 		
 		String permission = "NO";
-		if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.OFFERMADE){
+		if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.OFFERMADE.toString()){
 			permission = "YES";
-		}else if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.CLIENT_OFFERMADE){
+		}else if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString()){
 			permission = "YES";
 		}
 		
@@ -1299,22 +1299,22 @@ public class RequirementController {
 			    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
 			    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
 				    		if(null != requirementOfferHistory.getOfferSourceType() && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
-				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED.toString());
 				    		}else{
-				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED.toString());
 				    		}
 							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 							 
 							//Strote RequirementSubmissionHistory
 						    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-							requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+							requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus());
 							if(null != requirementOfferHistory.getOfferSourceType() && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
 							requirementSubmissionHistory.setFromStage("OFFERMADE");
-							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED.toString());
 							}else{
 								requirementSubmissionHistory.setFromStage("CLIENT_OFFERMADE");
-								requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);	
+								requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED.toString());	
 							}
 							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 					  }
@@ -1322,7 +1322,7 @@ public class RequirementController {
 					
 			    	  //Changing the status of offerTable 
 				      if(null != requirementOffers){
-				    	  if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.OFFERMADE){
+				    	  if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.OFFERMADE.toString()){
 						    requirementOffers.setOfferStatus("OFFERACCEPTED");
 				    	  }else{
 				    		  requirementOffers.setOfferStatus("CLIENT_OFFERACCEPTED");  
