@@ -2,14 +2,18 @@ package com.bis.sourcelead.workflow.service.Impl;
 
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
@@ -21,14 +25,24 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementInterviewer;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
@@ -52,7 +66,19 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	
 	@Autowired
 	RequirementWorkFlowDao requirementWorkFlowDao;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
 
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
+	@Value("${sourceleadUrl}")
+    private String sourceleadUrl;
+	
 	@Override
 	public RequirementWorkFlow saveRequirementWorkFlowDetails(RequirementWorkFlowDTO requirementWorkFlowDTO, User user,
 			OrgLocations orgLocations) {
@@ -1123,4 +1149,89 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 	}
 
+
+	@Override
+	public String sendEmailToCandidateWithQuestionnaireTemplate(HashMap<String , Object> paramList) throws Exception {
+		User candidate = (User) paramList.get("candidate");
+		User loginUser = (User) paramList.get("loginUser");
+		OrgLocations orgLocations = (OrgLocations) paramList.get("orgLocations");
+		String templateUuid = (String) paramList.get("templateUuid");
+		String templateId = (String) paramList.get("templateId");
+		String stageName = (String) paramList.get("stageName");
+		String jobTitle = (String) paramList.get("jobTitle");
+		
+		EmailMessage emailMessage = new EmailMessage();
+		if(candidate.getFirstName()!=null){
+			 emailMessage.setFirstName(candidate.getFirstName());
+		}
+		else{
+			 emailMessage.setFirstName("");
+		}
+		if(candidate.getLastName()!=null){
+			 emailMessage.setLastName(candidate.getLastName());
+		}
+		else{
+			 emailMessage.setLastName("");
+		}
+		 StringBuilder fullNameStringBuilder=new StringBuilder();
+		 emailMessage.setToEmail(candidate.getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 if(StringUtils.isNotBlank(loginUser.getLastName())){
+			 emailMessage.setFromName(fullNameStringBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 }else{
+			 emailMessage.setFromName(fullNameStringBuilder.append(loginUser.getFirstName()).toString());
+		 }
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 
+	
+		 StringBuilder  questionnaireLink  = buildCandidateQuestionnaireTable(templateId, templateUuid);
+		 StringBuilder linkBuild = new StringBuilder();
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+			 globalVarsMap.put("assignedUser", emailMessage.getFirstName());
+			 globalVarsMap.put("jobTitle",jobTitle);
+			 globalVarsMap.put("LoginUser", emailMessage.getFromName());
+			 globalVarsMap.put("stageName", stageName);
+			 globalVarsMap.put("questionnaireLink", questionnaireLink.toString());
+			 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 globalVarsMap.put("loginOrg",orgLocations.getOrgLocationName());
+
+		    System.out.println("===loginLink===");
+		    
+		    System.out.println(globalVarsMap.get("loginLink"));
+			
+		 //calling the sendEmail method of emailScenerioUtil
+		 
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.CANDIDATE_QUESTIONNARIE_TEMPLATE,new ArrayList<EmailAttachment>());
+
+		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.CANDIDATE_QUESTIONNARIE_TEMPLATE,Constants.ENTITY_TYPE_NOTIFICATION); 
+		 StringBuilder actionLinkBuilder = new StringBuilder();
+		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("viewQuestionnaire?templateUuid="+templateUuid).toString();	 
+		 if(candidate.getFirstName()!=null){
+			 String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(),globalVarsMap,noificationEmailScenario);
+			 noificationEmailScenario.setBody(notificationbody);
+			 emailScenerioUtil.sendNotification(actionLink, loginUser, candidate, orgLocations, noificationEmailScenario,new HashMap<String,String>());
+		 }
+		return "success";
+	}
+
+	public StringBuilder buildCandidateQuestionnaireTable(String templateId, String templateUuid) throws Exception {
+		StringBuilder tempHTML = new StringBuilder();
+		tempHTML.append(
+				"<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+
+		tempHTML.append("<tr>");
+
+		int i = 0;
+		if (null != templateUuid && !"".equalsIgnoreCase(templateUuid)) {
+			tempHTML.append("<td>").append("<a href='").append(sourceleadUrl)
+					.append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid)
+					.append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Click Here</div></a>")
+					.append("</td>");
+		}
+		tempHTML.append("</tr>");
+		tempHTML.append("</table> ");
+		return tempHTML;
+	}
 }
