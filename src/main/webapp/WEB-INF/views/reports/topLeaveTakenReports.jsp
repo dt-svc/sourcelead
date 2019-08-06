@@ -597,12 +597,17 @@ function resetFilter(){
 	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
 	$("ul#leaveTypeUL > li input:checkbox").prop("checked",false);
 	$("#dynamicUserDataTableSearch").val('');
-	
+	$("#myRolesInput").val('');
+	$("#leaveTypeInput").val('');
+	$("#myDepartmentInput").val('');
+	myRolesFunction();
+	myDepartmentFunction();
+	leaveTypeFunction();
 	document.getElementById("activeStatus").checked = true;
 	document.getElementById("notloggedInStatus").checked = true;
-	
+
 	gettopleavetakenReportList();
-}
+	}
 </script>
 <script>
 function getActions(){
@@ -687,6 +692,24 @@ function myRolesFunction() {
         }
     }
 }
+
+function leaveTypeFunction() {
+	var input, filter, ul, li, a, i;
+	input = document.getElementById("leaveTypeInput");
+	filter = input.value.toUpperCase();
+	ul = document.getElementById("leaveTypeUL");
+	li = ul.getElementsByTagName("li");
+	for (i = 0; i < li.length; i++) {
+	a = li[i].getElementsByTagName("label")[0];
+	if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+	li[i].style.display = "";
+	} else {
+	li[i].style.display = "none";
+
+	}
+	}
+	}
+
 
 function myDepartmentFunction() {
     var input, filter, ul, li, a, i;

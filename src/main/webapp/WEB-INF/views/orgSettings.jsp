@@ -455,7 +455,7 @@ function cancelOrgImg(){
 						
 					    
 					    <div class="clearfix mb comp-textarea">
-							<label class="labText">Company Descrption</label>
+							<label class="labText">Company Description</label>
 							<div class="clearfix">
 							   <textarea rows="6" name="aboutCompany" field-name="Company Descrption" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgDescription}</textarea>
 							</div>
@@ -2166,7 +2166,11 @@ function loadSignature(){
 
 <script>
 function resetDocument(){
-	//$("documents_form").validate().resetForm();
+	$('#uploadFileGroup').find('p.jquery_form_error_message').remove();
+	$('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
+	$('#uploadFileGroup2').find('p.jquery_form_error_message').remove();
+	$('#uploadFileGroup3').find('p.jquery_form_error_message').remove();
+	$('#uploadFileGroup4').find('p.jquery_form_error_message').remove();
 }
 
 function resetEmailConfguration(){
@@ -2279,10 +2283,11 @@ var validationSettings = {
 		scrollToTopOnError : true,
 		dateFormat : 'yyyy/mm/dd' 
    };  
+   
          $('body').on('submit', '#signature_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
+        		  var sourceleadUrl = '${sourceleadUrl}';
         		    e.preventDefault(); 
-        		    var atsUrl = '${SourceLeadWeb_atsUrl}';
         			var frm = $('#signature_form').serializeFormJSON();
         			var con = JSON.stringify(frm);
         			con = con.replace(/[{}]/g, ""); 
@@ -2291,7 +2296,7 @@ var validationSettings = {
 	           		
         		     $.ajax({
         				type : "POST",
-        				url : atsUrl+"/saveOrgSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+        				url : sourceleadUrl+"/saveOrgSignature?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
         				success : function(result) {
         					loadSignature();
         				},
