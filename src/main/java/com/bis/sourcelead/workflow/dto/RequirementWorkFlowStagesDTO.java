@@ -48,7 +48,7 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 
 	private String stageShortCode;
 	
-	private String[] deletedStageUuids;
+	private String deletedStageUuids;
 	
 	private String configureType;
 	
@@ -220,14 +220,6 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 		this.stageShortCode = stageShortCode;
 	}
 
-	public String[] getDeletedStageUuids() {
-		return deletedStageUuids;
-	}
-
-	public void setDeletedStageUuids(String[] deletedStageUuids) {
-		this.deletedStageUuids = deletedStageUuids;
-	}
-
 	public String getConfigureType() {
 		return configureType;
 	}
@@ -236,6 +228,13 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 		this.configureType = configureType;
 	}
 
-	
+	public String getDeletedStageUuids() {
+		return deletedStageUuids;
+	}
+
+	public void setDeletedStageUuids(String deletedStageUuids) {
+		this.deletedStageUuids = deletedStageUuids;
+	}
+
 	
 }
