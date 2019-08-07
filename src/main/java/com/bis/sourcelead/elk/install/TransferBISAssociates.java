@@ -1,6 +1,6 @@
 package com.bis.sourcelead.elk.install;
 
-import java.beans.PropertyVetoException;
+/*import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.InetAddress;
@@ -43,10 +43,10 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
+import com.thoughtworks.xstream.io.json.JsonWriter;*/
 
 public class TransferBISAssociates {
-	private static final Logger logger = LoggerFactory.getLogger(AddClientVendorELK.class);
+	/*private static final Logger logger = LoggerFactory.getLogger(AddClientVendorELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
 	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
@@ -56,12 +56,12 @@ public class TransferBISAssociates {
 			return (str == null || "".equals(str.trim()));
 		}
 	
-/**
+*//**
  * @author Venkat I
  * this method is for to add US location BIS Associates to IND Location
  * @throws IOException
  * @throws SQLException
- */
+ *//*
 public void transferAssociates() throws IOException, SQLException {
 	Connection conn = null ;
 	Statement stmt1 = null;
@@ -137,12 +137,12 @@ public void transferAssociates() throws IOException, SQLException {
 			 }
 			 
 			 
-			/* String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orgLocations where orgLocations.ID = '"+USOrgLocation+"' ";
+			 String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orgLocations where orgLocations.ID = '"+USOrgLocation+"' ";
 			 Statement stmt4 = conn.createStatement();
 			 ResultSet rs3 = stmt4.executeQuery(sql3);
 			 if(rs3.next()) {
 				 clientUserId = rs3.getLong("PRIMARY_CONTACT_USER_ID");
-			 }*/
+			 }
 			 
 			
 			String query2 = " insert into "+dbconfig.getSchema()+".ORG_RELATIONS (RESPONDER_LOCATION_ID, LOCATION_ID, INITIATOR_TYPE, RESPONDER_TYPE, INITIATOR_LEVEL,  "
@@ -1003,8 +1003,8 @@ public String toJSON(Object obj){
 
 private long getNumberOfContactsPerClient(long orgRelationId, Connection conn11) {
 	String numberOfContacts = "0";
-	 /*DataSource dataSource1 = comboPooledDataSource();
-	 Connection conn11 = null;*/
+	 DataSource dataSource1 = comboPooledDataSource();
+	 Connection conn11 = null;
 	 Statement stmt11 = null;
 	 try {
 		  //conn11 = dataSource1.getConnection();
@@ -1028,10 +1028,10 @@ private long getNumberOfContactsPerClient(long orgRelationId, Connection conn11)
 	return Long.parseLong(numberOfContacts);
 }
 
-/**
+*//**
  * getting connection
  * @return DataSource
- */ 
+ *//* 
 @Bean
 public DataSource comboPooledDataSource() {
 	this.comboPooledDataSource = new ComboPooledDataSource();
@@ -1067,6 +1067,6 @@ public DataSource comboPooledDataSource() {
 public static void main(String[] args) throws IOException, SQLException {
 	TransferBISAssociates dump = new TransferBISAssociates();
 	dump.transferAssociates();
-}
+}*/
 
 }
