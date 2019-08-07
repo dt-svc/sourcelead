@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.mockito.internal.stubbing.answers.ThrowsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +47,8 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-public class TaxSubmissionController {
-	private static final Logger logger = LoggerFactory.getLogger(TaxSubmissionController.class);
+public class TaxSubmissionControllerPMS {
+	private static final Logger logger = LoggerFactory.getLogger(TaxSubmissionControllerPMS.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -149,7 +148,7 @@ public class TaxSubmissionController {
 		return "";
 	}
 
-	@RequestMapping(value = { "/forms/getForm", "/forms/editForm", "/forms/viewForm" })
+	@RequestMapping(value = { "/myPayroll/forms/getForm", "/myPayroll/forms/editForm", "/myPayroll/forms/viewForm" })
 	public ModelAndView getDynamicTaxForm(HttpServletRequest request, @RequestParam String uuid,
 			@RequestParam(defaultValue = "") String formUUID) {
 		ModelAndView modelAndView = new ModelAndView();
@@ -378,7 +377,6 @@ public class TaxSubmissionController {
 			response.getOutputStream().flush();
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 	}

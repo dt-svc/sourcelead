@@ -739,6 +739,7 @@ function onbehalf() {
 	    $("#user").removeAttr('data-validation');
 	    $("#fromDate").val('');
 	    $("#toDate").val('');
+	    getPieChartBasedOnUser();
 	    var isSuperUser = '${SourceLeadWeb_isSuperUser}';
 	    if(isSuperUser){
 	 	   $("#approvalDiv").hide();

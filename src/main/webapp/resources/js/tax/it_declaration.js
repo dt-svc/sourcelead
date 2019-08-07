@@ -1,5 +1,6 @@
 /**
  * @author Mahaveer Manoj
+ * @source pms
  */
 
 var uploadCount = 1;
@@ -288,7 +289,7 @@ function getItDeclarationSubmissionList(uuid, financialYear, pageNo) {
 					text += "			<li><a href='javascript:void()' class='text-danger' title='ExportToPDF' onclick='exportFormToPDF(" + formList[e].id + ")'><i class='fa fa-file-pdf-o'></i></a></li>";
 					text += "			<li><a href='javascript:void()' class='text-danger' title='ExportToEXCEL' onclick='exportFormToExcel(" + formList[e].id + ")'><i class='fa fa-file-excel-o'></i></a></li>";
 					if(formList[e].status === 0) {
-						text += "				<li><a href='editForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
+						text += "				<li><a href='" + pmsUrl + "/myPayroll/forms/editForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "' title='Edit pms form' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
 						text += "				<li><a href='javascript:void()' title='Approve' onclick='approveOrRejectForm(" + formList[e].id + ", 1)'><i class='fa fa-check'></i></a></li>";
 						text += "				<li><a href='javascript:void()' title='Reject' onclick='approveOrRejectForm(" + formList[e].id + ", -1)' class='text-danger'><i class='fa fa-close'></i></a></li>";
 					}
