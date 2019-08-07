@@ -466,11 +466,11 @@ function RequirementWorkflow(){
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
-		           },complete: function (result) {
+		           }/*,complete: function (result) {
 		        	    if(deletedStageUuids.length > 0){
 		        	   requirementWorkflow.deleteRequirementWorkflowStages(deletedStageUuids, workflowUuid, stageName, workflowName);
 		        	   }
-		            }
+		            }*/
 		       });
 		     } 
 		}
@@ -489,7 +489,7 @@ function RequirementWorkflow(){
 			result = result +" <div class='project_inn_mask'></div>"; 
 			result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +" <p>Do you want to delete "+stageName+"?</p>";
-			result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteDynamicStages(\''+stageUuid+'\', \''+workflowUuid+'\', \''+stageName+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
+			result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteRequirementWorkflowStages(\''+stageUuid+'\', \''+workflowUuid+'\', \''+stageName+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
 			result = result +" </div>";
 			$("#popUp").append(result);
 			$("#remove_user_pop").slideDown(200);
@@ -513,13 +513,16 @@ function RequirementWorkflow(){
 				}
 			});
 			
-			this.deleteRequirementWorkflowStages = function(deletedStageUuids, workflowUuid, stageName, workflowName){
+			this.deleteRequirementWorkflowStages = function(deletedStageUuids, workflowUuid, stageName){
 				$.ajax({
 					type : "GET",
 					url : sourceleadUrl + "/deleteRequirementWorkflowStage?deletedStageUuids="+deletedStageUuids+"&requirementWorkFlowUuid="+workflowUuid,
 					success : function(dataList){
 						if(dataList == "Success"){
-							location.replace(sourceleadUrl+"/workflowList?workflowName="+workflowName);	
+							$("#popUp").empty();
+						     $(".project_inn_mask").fadeOut(200);
+							$("ul#stageList li:contains('"+stageName+"')").remove();
+							requirementWorkflow.showSuccessMsg("Successfully Deleted "+stageName);
 						}else{
 							 showError("Operation failed, please try again");
 						}
