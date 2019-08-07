@@ -377,7 +377,7 @@ function saveInterviewTemplate(){
 	      	           if (result === "AWKWARD") {
 			        	    location.href = "/errorPage";
 			        	} else if (result === "SUCCESS") {
-			        		performanceManagement.getFeedbackList();
+			        		console.log("success");
 			        		$(".mask, #modalTasktype").fadeOut();
 			        	} else {
 			        	    showError("Operation failed, please try again");
