@@ -393,7 +393,8 @@ function validateReferenceEmail(candidateId,referId){
 	}else{
 		referId = "";
 	}
-	var email = $("#email").val();
+	//var email = $("#email").val();
+	var email = document.getElementById("email").value.trim();
 	 $('#emailDivId').find('p.jquery_form_error_message').remove();
 	 if (email != null && email != "") {
 	$.ajax({
