@@ -100,11 +100,12 @@
   <script>
     function getNomineeDetailsList(){
     	var userId = '${userId}';
+    	 var atsUrl ='${SourceLeadWeb_atsUrl}';
     	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     		  var sourceleadUrl ='${sourceleadUrl}';
     				  $.ajax({
     				    	type: "GET",
-    				        url: sourceleadUrl+"/getNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
+    				        url: atsUrl+"/getNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId,
     				        success: function(json) {
     				        	$("#nomineeDeta").show();
     				        	var result = "";			
@@ -327,6 +328,7 @@ $("#nomineeShow").click(function() {
 	 minorFunction();
 	 var userId = '${userId}';
 	 var id = $('#id').val();
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 if ($('#nomineeDetails_form').validate(false, validationSettings)){ 
 	        var formData = getFormData("nomineeDetails_form");
 	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -334,7 +336,7 @@ $("#nomineeShow").click(function() {
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: sourceleadUrl+"/saveNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&id="+id,
+		    	 url: atsUrl+"/saveNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&id="+id,
 		        success: function(response) {
                         //$("#nomineeDetails").hide();
                         $("#nomineeDeta").empty();
@@ -402,10 +404,11 @@ function closeNomineePopUp() {
  </script>
  
  <script> 
-function deleteNominee(nomineeId,candidateId){ 
+function deleteNominee(nomineeId,candidateId){
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
     $.ajax({
   	  type: "POST",
-      url: sourceleadUrl+"/deleteNominee?&id="+nomineeId+"&candidateId="+candidateId, 	  
+      url: atsUrl+"/deleteNominee?&id="+nomineeId+"&candidateId="+candidateId, 	  
  	  success: function(data) { 
  		 getNomineeDetailsList();
  		 $("#nomineeShow").prop('checked', false);

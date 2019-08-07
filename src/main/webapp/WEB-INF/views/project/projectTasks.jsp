@@ -1246,6 +1246,19 @@ function resetTaskFilter(){
 	document.getElementById("myTasks").checked = true;
 	document.getElementById("taskStatusId1069").checked = true;
 	document.getElementById("taskStatusId1070").checked = true;
+
+	$("#myAssignedInput").val("");
+	$("#myTaskTeamInput").val("");
+	$("#myPriorityInput").val("");
+	$("#myTagsInput").val("");
+	$("#myCreatedByInput").val("");
+	$("#mySeverityInput").val("");
+	myAssignedFunction();
+	myTaskTeamFunction();
+	myPriorityFunction();
+	myTagsFunction();
+	myCreatedByFunction();
+	mySeverityFunction();
 	projectTaskList();
 }
 function myAssignedFunction() {
