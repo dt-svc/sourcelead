@@ -343,7 +343,8 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 			for(int i=0;i<status.length;i++){
 				statusList.add(status[i]);
 			}
-			statusList.add(contractsDTO.getContractSubmissionType());
+			// This is commited by manju because in sign status filter nor working properly.
+//			statusList.add(contractsDTO.getContractSubmissionType());
 		}
 		
 		String subquery1 = "";
