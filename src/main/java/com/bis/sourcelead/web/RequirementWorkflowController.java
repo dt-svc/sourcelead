@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +28,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementInterviewer;
+import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
@@ -41,6 +46,10 @@ import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 @RequestMapping("/app")
@@ -51,6 +60,9 @@ public class RequirementWorkflowController {
 	
 	@Autowired
 	private UserRoleService userRoleService;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementWorkflowController.class);
 	
@@ -787,15 +799,15 @@ public class RequirementWorkflowController {
 		   // here creating a dummy candidate for testing email functionality.
 		    User candidate = new User();
 		    candidate.setId(Long.valueOf("4193"));
-		    candidate.setFirstName("Srinivas");
-		    candidate.setLastName("Sabbu");
-		    candidate.setEmail("srinivas.sabbu@businessintelli.com");
+		    candidate.setFirstName("Reagan");
+		    candidate.setLastName("Shann");
+		    candidate.setEmail("sivakrishna@businessintelli.com");
 		    
 			paramsMap.put("candidate" , candidate); 
 			paramsMap.put("orgLocations" , orgLocations);
 			paramsMap.put("loginUser" , loginUser);
-			paramsMap.put("templateId" , "2");
-			paramsMap.put("templateUuid" , "LbDT9TBn");
+			paramsMap.put("templateId" , "1");
+			paramsMap.put("templateUuid" , "q5PbSYhx");
 			paramsMap.put("stageName" , "Screening");
 			paramsMap.put("jobTitle" , "SAP ABAP Developer");
 			
@@ -804,4 +816,25 @@ public class RequirementWorkflowController {
 			System.out.println("Email sent successfully  "+status);
 			return status;
 		}
+		
+		
+		 @RequestMapping(value = {"/ws/publicQuestionnaireTemplate", "/viewQuestionnaireTemplate"})
+			public ModelAndView publicQuestionnaireTemplate(@RequestParam(value = "templateUuid", required = true) String templateUuid) throws Exception {
+				ModelAndView model = new ModelAndView();
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				//RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
+				model.setViewName("workflow/publicQuestionnaireTemplate");
+				model.addObject("templateUuid", templateUuid);
+				return model;
+
+			}
+		 
+		 @RequestMapping(value = "/getQuestionnaireTemplateList" , method = RequestMethod.GET)
+		 @ResponseBody
+		   public String getQuestionnaireTemplateList(@RequestParam(value="templateUuid", required=false) String templateUuid) throws Exception {
+			    RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
+				 return questionnaireTemplate.getJsonString();
+		   }
+		 
+		 
 }
