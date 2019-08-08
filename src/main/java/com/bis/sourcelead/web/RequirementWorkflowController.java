@@ -30,8 +30,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RequirementInterviewer;
-import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
@@ -835,6 +834,25 @@ public class RequirementWorkflowController {
 			    RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
 				 return questionnaireTemplate.getJsonString();
 		   }
-		 
-		 
+/**
+ *  Below method is used to disable work flow name for requirement if any candidate submitted for the requirement
+ * @param requirementId
+ * @param request
+ * @return
+ * @throws Exception
+ */
+	// if any requirement id present in submission table disable the work flow name for edit.
+	@RequestMapping(value = "/validateWorkflowEditable", method = RequestMethod.GET)
+	@ResponseBody
+	public boolean validateWorkflowEditable(@RequestParam(value = "requirementId", required = true) Long requirementId,
+			HttpServletRequest request) throws Exception {
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		
+		boolean isEditable = false;
+		RequirementSubmission requirementSub = requirementWorkFlowService.validateWorkflowEditable(requirementId,	orgLocationId);
+		if (requirementSub == null) isEditable = true;
+		
+		return isEditable;
+
+	}
 }
