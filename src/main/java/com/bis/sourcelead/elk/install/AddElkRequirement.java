@@ -59,7 +59,7 @@ public class AddElkRequirement {
 		Statement stmt = null;
 		try {
 
-			String sql = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID;";
+			String sql = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID";
 
 			DataSource dataSource = comboPooledDataSource();
 			 conn = dataSource.getConnection();
