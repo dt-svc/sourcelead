@@ -22,7 +22,7 @@
 									${businessLicenseDoc.fileName}
 									</div>
 									<div class="pull-left mt5">
-										<a target="_blank" href="${businessLicenseDoc.fileUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${businessLicenseUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${businessLicenseDoc.fileUrl}','${businessLicenseDoc.fileName}','${businessLicenseDoc.fileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${businessLicenseDoc.uuid}','Business License')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -51,7 +51,7 @@
 									${bankChequeDoc.fileName}
 									</div>
 									<div class="pull-left mt5">
-										<a target="_blank" href="${bankChequeDoc.fileUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${bankChequeUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${bankChequeDoc.fileUrl}','${bankChequeDoc.fileName}','${bankChequeDoc.fileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${bankChequeDoc.uuid}','Bank Cheque')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -59,7 +59,7 @@
 						</c:if>
 						
 						<c:if test="${empty bankChequeDoc.fileUrl}">
-							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup1"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getBankCheque();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBankChequeBtn" class="upload"> </span>
@@ -82,7 +82,7 @@
 									${registrationDoc.fileName}
 									</div>
 									<div class="pull-left mt5">
-										<a target="_blank" href="${registrationDoc.fileUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${registrationUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${registrationDoc.fileUrl}','${registrationDoc.fileName}','${registrationDoc.fileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${registrationDoc.uuid}','Registration')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -90,7 +90,7 @@
 							</c:if>
 							
 							<c:if test="${empty registrationDoc.fileUrl}">
-							     <div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+							     <div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup2"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getRegistrationDoc();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadRegistrationBtn" class="upload"> </span>
@@ -117,7 +117,7 @@
 									${annulReportBusinessDoc.fileName}
 									</div>
 									<div class="pull-left mt5">
-										<a target="_blank" href="${annulReportBusinessDoc.fileUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${annulReportBusinessnUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${annulReportBusinessDoc.fileUrl}','${annulReportBusinessDoc.fileName}','${annulReportBusinessDoc.fileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${annulReportBusinessDoc.uuid}','Annual Report Business License')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -125,7 +125,7 @@
 							</c:if>
 							
 							<c:if test="${empty annulReportBusinessDoc.fileUrl}">
-							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup3"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getAnnulBusinessLincense();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadAnnualBusinessLicenseBtn" class="upload"> </span>
@@ -148,7 +148,7 @@
 									${w9Doc.fileName}
 									</div>
 									<div class="pull-left mt5">
-										<a target="_blank" href="${w9Doc.fileUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${w9DocUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${w9Doc.fileUrl}','${w9Doc.fileName}','${w9Doc.fileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${w9Doc.uuid}','W-9,W-8 Ben-E')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -156,7 +156,7 @@
 							</c:if>
 							
 							<c:if test="${empty w9Doc.fileUrl}">
-							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup"
+							<div class="input-group col-md-12 errorInptgroup" id="uploadFileGroup4"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary" onchange="getW9Doc();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadW9Btn" class="upload"> </span>
@@ -266,9 +266,9 @@ if(document.getElementById("uploadBusinessLicenseBtn") != null){
 						type : "POST",
 						 data: formData,
 						 url: sourceleadUrl+"/saveOrgLocationDocuments",
-								success : function(result) {
-									if(result == 'success'){
-										 location.replace(sourceleadUrl+"/orgSettings?&tabType=documents");
+								success : function(response) {
+									if(response.response == 'SUCCESS'){
+										location.replace(sourceleadUrl+"/orgSettings?&tabType=documents");
 						        	}else{
 						        		$("#loading").removeAttr("style"); 
 						        	}
