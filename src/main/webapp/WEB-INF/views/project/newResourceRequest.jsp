@@ -92,7 +92,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
               
                 </select>
                 </div>
-                <div class="pull-left input_minmax">
+                <div class="input_minmax">
                 <input type="text" class="form-control" name='planningResources[REPLACEROWID].billRate' id='billRateREPLACEROWID' field-name="Bill Rate" placeholder="Bill Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
                 <input type="text" class="form-control" name='planningResources[REPLACEROWID].payRate' id='payRateREPLACEROWID'   field-name="Pay Rate" placeholder="Pay Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">
                 </div>
@@ -1294,7 +1294,7 @@ var actionType = "ROLE_RESOURCE_REQUEST_APPROVER";
 			divRowTd2_0Str = divRowTd2_0Str +'            </select> ';
 			divRowTd2_0Str = divRowTd2_0Str +'            </div>    ';
 			
-			divRowTd2_0Str = divRowTd2_0Str +'            <div class="pull-left input_minmax">';
+			divRowTd2_0Str = divRowTd2_0Str +'            <div class="input_minmax">';
 			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control"  value="'+billRate+'" name="planningResources['+maxRowNum+'].billRate" id="billRate'+maxRowNum+'" field-name="Bill Rate" placeholder="Bill Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">';
 			divRowTd2_0Str = divRowTd2_0Str +'            <input type="text" class="form-control" value="'+payRate+'" name="planningResources['+maxRowNum+'].payRate" id="payRate'+maxRowNum+'"   field-name="Pay Rate" placeholder="Pay Rate"  data-validation="validate_Space validate_length length1-8 validate_int" data-validation-optional="true"  value="" onblur="minMaxRate();">';
 			divRowTd2_0Str = divRowTd2_0Str +'            </div>';
