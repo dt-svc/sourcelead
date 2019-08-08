@@ -1,4 +1,4 @@
-package com.bis.sourcelead.rest;
+package com.bis.sourcelead.rest.elastic;
 
 import java.beans.PropertyVetoException;
 import java.sql.Connection;
