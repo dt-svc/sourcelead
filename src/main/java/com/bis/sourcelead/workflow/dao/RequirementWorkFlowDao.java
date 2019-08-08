@@ -7,6 +7,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
@@ -99,4 +100,6 @@ public interface RequirementWorkFlowDao {
 	LinkedHashMap<String, String> getColumnsMapbyWorkflowStage(String shortCode, Long workflowId, Long orgLocationId);
 
 	RequirementWorkFlowStages getRequirementWorkFlowStagesDetails(String shortCode, Long workflowId, Long orgLocationId);
+
+	RequirementSubmission validateWorkflowEditable(Long requirementId, Long orgLocationId);
 }
