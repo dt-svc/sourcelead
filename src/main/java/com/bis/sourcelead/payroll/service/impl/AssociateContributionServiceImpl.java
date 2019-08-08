@@ -242,7 +242,9 @@ public class AssociateContributionServiceImpl implements AssociateContributionSe
 									assContribution.setContributionAmount(new BigDecimal(getCellValueAsString(row.getCell(4), fileName)));
 									assContribution.setStatus(Constants.RECORD_ACTIVE);
 									assContribution.setContributionMethod(pc.getPayrollContributionMethod());
-									assContribution.setAssociateContributionUuid(RandomStringUtils.random(8));
+									assContribution.setAssociateContributionUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+									assContribution.setOrgLocationId(orgLocations);
+									assContribution.setCreatedBy(pc.getCreatedBy());
 									assContribution.setCreatedDate(new Date());
 									assContribution.setUpdatedDate(new Date());
 									associateContributionDao.saveAssociateContribution(assContribution);
@@ -260,7 +262,9 @@ public class AssociateContributionServiceImpl implements AssociateContributionSe
 									assDeduction.setDeductionAmount(new BigDecimal(getCellValueAsString(row.getCell(3), fileName)));
 									assDeduction.setStatus(Constants.RECORD_ACTIVE);
 									assDeduction.setDeductionMethod(pd.getPayrollDeductionMethod());
-									assDeduction.setAssociateDeductionUuid(RandomStringUtils.random(8));
+									assDeduction.setAssociateDeductionUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+									assDeduction.setOrgLocationId(orgLocations);
+									assDeduction.setCreatedBy(pd.getCreatedBy());
 									assDeduction.setCreatedDate(new Date());
 									assDeduction.setUpdatedDate(new Date());
 									associateDeductionDao.saveAssociateDeduction(assDeduction);
