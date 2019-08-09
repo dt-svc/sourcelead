@@ -42,8 +42,9 @@ public class ClientVendorContactsElkRestController {
 			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 			client = new SourceleadELKRestClient<>();
+			int count = 0;
 		 try {
-				
+				System.out.println("------------ storeClientAndVendorContactsInElastic starts ----------");
 				String sql = "SELECT * FROM "+dbconfig.getSchema()+".ORG_SPOC orgSpock";
 				Connection conn = dataSource.getConnection();
 				Statement stmt = conn.createStatement();
@@ -187,9 +188,10 @@ public class ClientVendorContactsElkRestController {
 							 
 							 
 							 client.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,clientVendorContactsIndex.getId().toString());
-						     }
-
-			   
+							 System.out.println("Saved Count : " + (++count));
+			    }
+			    conn.close();
+			    System.out.println("------------ storeClientAndVendorContactsInElastic ends ----------");
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}

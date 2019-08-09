@@ -47,8 +47,9 @@ public class RequirementElkRestController {
 			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 			client = new SourceleadELKRestClient<>();
+			int count = 0;
 		 try {
-
+			 System.out.println("------------ storeRequirementsInElastic starts ----------");
 				String sql = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID";
 
 				Connection conn = dataSource.getConnection();
@@ -318,9 +319,10 @@ public class RequirementElkRestController {
 					}
 					
 					client.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirementIndex.getRequirementId().toString());
-					
+					System.out.println("Saved Count : " + (++count));
 				}
-				
+				conn.close();
+				System.out.println("------------ storeRequirementsInElastic ends ----------");
 			}catch (SQLException e) {
 			e.printStackTrace();
 		}
