@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -192,26 +193,31 @@ public class OrgSettingsController {
 		
 		OrglocationOnboardDocuments businessLicense = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.ONBOARD_DOCUMENT_BUSNIESS_LICENSE, orgLocations.getId());
 		if(businessLicense != null) {
+			model.addObject("businessLicenseUrl", URLEncoder.encode(businessLicense.getFileUrl(), "UTF-8" ).replace("%2F", "/"));
 			model.addObject("businessLicenseDoc", businessLicense);
 		}
 		
 		OrglocationOnboardDocuments bankCheque = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.BANK_CHEQUE, orgLocations.getId());
 		if(bankCheque != null) {
+			model.addObject("bankChequeUrl", URLEncoder.encode(bankCheque.getFileUrl(), "UTF-8" ).replace("%2F", "/"));
 			model.addObject("bankChequeDoc", bankCheque);
 		}
 		
 		OrglocationOnboardDocuments registrationDoc  = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.REGISTRATION_OR_INCORPORATION_OF_RECORDING, orgLocations.getId());
 		if(registrationDoc != null) {
+			model.addObject("registrationUrl", URLEncoder.encode(registrationDoc.getFileUrl(), "UTF-8" ).replace("%2F", "/"));
 			model.addObject("registrationDoc", registrationDoc);
 		}
 		
 		OrglocationOnboardDocuments annulReportBusiness  = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.ANNUAL_REPORT_BUSINESS_LICENSE, orgLocations.getId());
 		if(annulReportBusiness != null) {
+			model.addObject("annulReportBusinessnUrl", URLEncoder.encode(annulReportBusiness.getFileUrl(), "UTF-8" ).replace("%2F", "/"));
 			model.addObject("annulReportBusinessDoc", annulReportBusiness);
 		}
 		
 		OrglocationOnboardDocuments w9Doc  = orglocationOnboardDocumentsService.getOrglocationOnboardDocumentByDocumentName(Constants.W9_W8_BEN_E, orgLocations.getId());
 		if(w9Doc != null) {
+			model.addObject("w9DocUrl", URLEncoder.encode(w9Doc.getFileUrl(), "UTF-8" ).replace("%2F", "/"));
 			model.addObject("w9Doc", w9Doc);
 		}
 		
