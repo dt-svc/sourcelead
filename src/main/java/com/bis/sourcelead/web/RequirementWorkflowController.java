@@ -62,6 +62,9 @@ public class RequirementWorkflowController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementWorkflowController.class);
 	
@@ -855,4 +858,32 @@ public class RequirementWorkflowController {
 		return isEditable;
 
 	}
+	
+	@RequestMapping(value = "/saveQuestionnaireFeedbackTemplate", method = RequestMethod.POST)
+	 @ResponseBody
+		public String saveQuestionnaireFeedbackTemplate(RequirementQuestionnaireFeedbackTemplateDTO qemplateDTO,
+				HttpServletRequest request)
+				throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String result = null;
+			RequirementQuestionnaireFeedbackTemplate qemplate = null;
+			try {
+				qemplateDTO.setStaticPath(staticPath);
+				qemplate = requirementWorkFlowService.saveQuestionnaireFeedbackTemplate(qemplateDTO, orgLocations, user);
+				result = qemplate.getUuid();
+				return result;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+
+		}
+	 
+	 @RequestMapping(value = "/getQuestionnaireTemplateFeedbackList" , method = RequestMethod.GET)
+	 @ResponseBody
+	   public RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(@RequestParam(value="templateUuid", required=false) String templateUuid) throws Exception {
+		 RequirementQuestionnaireFeedbackTemplateDTO templateDTO  = requirementWorkFlowService.getQuestionnaireTemplateFeedbackList(templateUuid);
+		 return templateDTO;
+	   }
 }
