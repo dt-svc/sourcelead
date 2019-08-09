@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,8 +40,8 @@ public class CandidateELKRestController {
 	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
-	 @RequestMapping(value = "/ws/storeCandidatesInElastic", method = RequestMethod.GET)
-	 public void storeCandidatesInELK() throws Exception {
+	 @RequestMapping(value = "/ws/storeCandidatesInElastic/{minLimitSize}/{maxLimitSize}", method = RequestMethod.GET)
+	 public void storeCandidatesInELK(@PathVariable Long minLimitSize,@PathVariable Long maxLimitSize) throws Exception {
 		 
 		    DataSource dataSource = comboPooledDataSource();
 			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
@@ -49,7 +50,7 @@ public class CandidateELKRestController {
 			int count = 0;
 		 try {
 			 System.out.println("------------ storeCandidatesInElastic starts ----------");
-				String sql = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE candidate ";
+				String sql = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE candidate  where (candidate.ID >= '"+ minLimitSize+"' and candidate.ID <= '"+ maxLimitSize+"') ";
 				Connection conn = dataSource.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);
