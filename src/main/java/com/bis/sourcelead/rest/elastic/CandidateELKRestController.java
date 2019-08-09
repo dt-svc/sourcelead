@@ -46,7 +46,9 @@ public class CandidateELKRestController {
 			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 			client = new SourceleadELKRestClient<>();
+			int count = 0;
 		 try {
+			 System.out.println("------------ storeCandidatesInElastic starts ----------");
 				String sql = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE candidate ";
 				Connection conn = dataSource.getConnection();
 				Statement stmt = conn.createStatement();
@@ -299,10 +301,12 @@ public class CandidateELKRestController {
 								 
 		    	           }
 							client.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getCandidateId().toString());
+							System.out.println("Saved Count : " + (++count));
 		    	    }
 		    	    
 			    }
 			   conn.close();
+			   System.out.println("------------ storeCandidatesInElastic ends ----------");
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
