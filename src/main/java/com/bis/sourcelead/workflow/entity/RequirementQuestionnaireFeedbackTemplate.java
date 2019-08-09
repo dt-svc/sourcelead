@@ -46,6 +46,12 @@ public class RequirementQuestionnaireFeedbackTemplate implements Serializable{
 	@Column(name = "JSON_STRING", columnDefinition = "LONGTEXT default NULL")
 	private String jsonString ;
 	
+	@Column(name = "JSON_STRING_VALUES", columnDefinition = "LONGTEXT default NULL")
+	private String jsonStringValues ;
+	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -99,6 +105,22 @@ public class RequirementQuestionnaireFeedbackTemplate implements Serializable{
 
 	public void setJsonString(String jsonString) {
 		this.jsonString = jsonString;
+	}
+	
+	public String getJsonStringValues() {
+		return jsonStringValues;
+	}
+
+	public void setJsonStringValues(String jsonStringValues) {
+		this.jsonStringValues = jsonStringValues;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public Date getCreatedDate() {
