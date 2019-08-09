@@ -1300,7 +1300,9 @@ public class DynamicReport {
 			
 			List<String> interviewerList = new ArrayList<String>();
 			for(RequirementInterviewer requirementInterviewer  : interview.getInterviewId().getRequirementInterviewers()) {
+				if(requirementInterviewer.getInterviewerUser() !=null) {
 				interviewerList.add(requirementInterviewer.getInterviewerUser().getFullName());
+				}
 				
 			}
 			

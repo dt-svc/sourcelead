@@ -370,18 +370,7 @@ public class DataMigrationCommonUtil {
 					}
 				}
 				
-				if(!dataMigrationDTOJsonCopy.getString("clientRate").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("clientRate"))) {
-					String clientRate = dataMigrationDTOJsonCopy.getString("clientRate");
-					if(NumberUtils.isNumber(clientRate)){
-						if(Long.valueOf(clientRate) <= 99999999){
-							dataMigrationDTOJsonCopy.put("clientRate", clientRate);
-						}else{
-							errorSet.put("clientRate", dataMigrationDTOJsonCopy.getString("clientRate")+" is invalid Client Rate, should between 1 to 8 digits");
-						}
-					}else{
-						errorSet.put("clientRate", dataMigrationDTOJsonCopy.getString("clientRate")+" is invalid Client Rate");
-					}
-				}
+				
 				
 				if(!dataMigrationDTOJsonCopy.getString("coolingOff").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("coolingOff"))) {
 					String coolingOff = dataMigrationDTOJsonCopy.getString("coolingOff").toLowerCase();
@@ -482,7 +471,23 @@ public class DataMigrationCommonUtil {
 						errorSet.put("selectClient", dataMigrationDTOJsonCopy.getString("selectClient")+" is invalid Client");
 					}else{
 						dataMigrationDTOJsonCopy.put("selectClient", orgRelations.getId().toString());
+						
+						// when client is not null then client rate will execute
+						if(!dataMigrationDTOJsonCopy.getString("clientRate").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("clientRate"))) {
+							String clientRate = dataMigrationDTOJsonCopy.getString("clientRate");
+							if(NumberUtils.isNumber(clientRate)){
+								if(Long.valueOf(clientRate) <= 99999999){
+									dataMigrationDTOJsonCopy.put("clientRate", clientRate);
+								}else{
+									errorSet.put("clientRate", dataMigrationDTOJsonCopy.getString("clientRate")+" is invalid Client Rate, should between 1 to 8 digits");
+								}
+							}else{
+								errorSet.put("clientRate", dataMigrationDTOJsonCopy.getString("clientRate")+" is invalid Client Rate");
+							}
+						}
 					}
+					
+					
 				}
 				
 				if(!dataMigrationDTOJsonCopy.getString("assignedTo").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("assignedTo"))) {

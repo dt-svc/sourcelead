@@ -27,6 +27,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
@@ -880,6 +881,21 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 			
 		}
 		return workflowSatge;
+	}
+
+	@Override
+	public RequirementSubmission validateWorkflowEditable(Long requirementId, Long orgLocationId) {
+		RequirementSubmission RrequirementSubmission = null;
+				try {
+					Session session = this.sessionFactory.getCurrentSession();
+					String queryString = "from RequirementSubmission req where req.requirement.id=:requirementId and  req.orgLocations.id = :orgLocationId";
+					RrequirementSubmission =  (RequirementSubmission) session.createQuery(queryString).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setMaxResults(1).uniqueResult();
+				} catch (Exception e) {
+					logger.error(e +" in validateWorkflowEditabele DAO");
+					e.printStackTrace();
+					
+				}
+				return RrequirementSubmission;
 	}
 
 }

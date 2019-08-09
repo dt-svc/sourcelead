@@ -1234,4 +1234,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		tempHTML.append("</table> ");
 		return tempHTML;
 	}
+
+
+	@Override
+	public RequirementSubmission validateWorkflowEditable(Long requirementId, Long orgLocationId) {
+		// TODO Auto-generated method stub
+		return requirementWorkFlowDao.validateWorkflowEditable(requirementId, orgLocationId);
+	}
 }
