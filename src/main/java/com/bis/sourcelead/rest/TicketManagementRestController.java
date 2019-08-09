@@ -65,9 +65,6 @@ public class TicketManagementRestController {
 
 	@Autowired
 	CommonUtil commonUtil;
-	
-	@Autowired
-	private OrgLocationService orgLocationService;
 
 	@RequestMapping(value = "/dumpTicketManagementData")
 	@ResponseBody
