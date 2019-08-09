@@ -31,10 +31,29 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		});
     </script>
 <script>
+
+</script>
+<script>
+function validateWorkflowEditable(requirementId){
+	$.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/validateWorkflowEditable?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
+        success: function(response) {
+           //if false disable  the workflow name for editing.
+           if(response == false){
+        	   $("#workflowId").attr("disabled", "disabled");
+        	   $("#workflowId").trigger("chosen:updated");
+           }
+        }
+    });
+}
+</script>
+<script>
 $(document).ready(function() {
 	initLocationAuto('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode','','','');
 	//addLocationAuto('addlocation','0');
 	zipcodeMask('${requirement.country}','ReqZipCode');
+    validateWorkflowEditable('${requirement.id}');
 });
 </script>
 <script>
