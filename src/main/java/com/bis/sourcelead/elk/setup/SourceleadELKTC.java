@@ -60,7 +60,7 @@ public class SourceleadELKTC<T> {
 			IndexRequest indexRequest = new IndexRequest(index).type(type).id(id).source(value, XContentType.JSON);
 			IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
 			
-		    System.out.println(type+" has been updated.");
+		    System.out.println("ID : "+ id + " ---- " + type+" has been updated.");
 		} catch (Exception e) {
 			System.out.println("In Exception ---------");
 			e.printStackTrace();

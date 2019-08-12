@@ -560,10 +560,7 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	referContactsDao.addReferContacts(referContacts);
 		
-		// resume details update in elk
-		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
-		candidateResumesService.saveOrUpdateCandidateElkDocumentWithResumeDetails(savedCandidate);
-		}
+	
 		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
 			FileInfo fileInfo = candidateDto.getFileInfo().get(0);
 			if(fileInfo != null){
