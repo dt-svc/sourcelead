@@ -29,7 +29,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -43,13 +45,16 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
 import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
+import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
@@ -1233,5 +1238,64 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		tempHTML.append("</tr>");
 		tempHTML.append("</table> ");
 		return tempHTML;
+	}
+
+
+	@Override
+	public RequirementSubmission validateWorkflowEditable(Long requirementId, Long orgLocationId) {
+		// TODO Auto-generated method stub
+		return requirementWorkFlowDao.validateWorkflowEditable(requirementId, orgLocationId);
+	}
+	
+	@Override
+	public RequirementQuestionnaireFeedbackTemplate saveQuestionnaireFeedbackTemplate(
+			RequirementQuestionnaireFeedbackTemplateDTO qemplateDTO, OrgLocations orgLocations, User user)  {
+		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = null;
+		Candidate candi = new Candidate();
+		candi.setId(1l);
+		RequirementWorkFlow work = new RequirementWorkFlow();
+		work.setId(2l);
+		try {
+		RequirementQuestionnaireFeedbackTemplate qtemplate =  new RequirementQuestionnaireFeedbackTemplate();
+		qtemplate.setOrgLocationId(orgLocations);
+		qtemplate.setCandidateId(candi);
+		qtemplate.setWorkflowId(work);
+		qtemplate.setJsonStringValues(qemplateDTO.getJsonStringData());
+		qtemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		qtemplate.setCreatedBy(user);
+		qtemplate.setCreatedDate(new Date());
+		qtemplate.setUpdatedBy(user);
+		qtemplate.setUpdatedDate(new Date());
+
+		if(qemplateDTO.getUploadedFileInfo() != null && !qemplateDTO.getUploadedFileInfo().isEmpty()) {
+			qemplateDTO.setStaticPath(qemplateDTO.getStaticPath());
+			 for(FileInfo fileInfo : qemplateDTO.getUploadedFileInfo()){
+				 if(fileInfo.getFileURL() != null && fileInfo.getStatus() == 0) {
+					 FileUploadUtil.moveFile(qemplateDTO.getStaticPath(), fileInfo, "QuestionnaireFeedbackAttachments");
+				 }
+					
+				}
+		}
+		
+		if(qemplateDTO.getQuestionnaireTemplateUuid() != null && StringUtils.isNotBlank(qemplateDTO.getQuestionnaireTemplateUuid())){
+			requirementQuestionnaireTemplate = requirementWorkFlowDao.getQuestionnaireTemplateById(qemplateDTO.getQuestionnaireTemplateUuid());
+		}
+		
+		if(requirementQuestionnaireTemplate!= null && requirementQuestionnaireTemplate.getJsonString() != null) {
+			qtemplate.setJsonString(requirementQuestionnaireTemplate.getJsonString());
+		}
+		
+		return requirementWorkFlowDao.saveQuestionnaireFeedbackTemplate(qtemplate);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+
+	@Override
+	public RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)
+			throws Exception {
+		return requirementWorkFlowDao.getQuestionnaireTemplateFeedbackList(uuid);
 	}
 }
