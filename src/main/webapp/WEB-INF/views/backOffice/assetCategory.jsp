@@ -127,16 +127,19 @@ $(document).ready(function(){
 </script>
 
 <script>
-function pagination(){  
+function pagination(){ 
     $('#assetCategoryList').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+        
     	"oLanguage": {
      		"sSearch": "",
+     		"sSearchPlaceholder": "Search",
      		 "sZeroRecords": "", "sEmptyTable": ""
+     		
      	}
     } );
 }
