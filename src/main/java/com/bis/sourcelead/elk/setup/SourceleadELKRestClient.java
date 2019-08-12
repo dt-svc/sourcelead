@@ -41,7 +41,6 @@ public class SourceleadELKRestClient<T> {
 	}
 
 	public String toJSON(Object obj) {
-		System.out.println("inside SourceleadELKRestClient --> toJSON()");
 		XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 			public HierarchicalStreamWriter createWriter(Writer writer) {
 				return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
@@ -52,13 +51,12 @@ public class SourceleadELKRestClient<T> {
 
 	@SuppressWarnings("unchecked")
 	public void saveOrUpdateElkDocument(T userIndex, String index, String type, String id) {
-		System.out.println("enterd saveOrUpdateElkDocument() in SourceleadELKRestClient.java");
 		String value = "";
 		try {
 			value = toJSON(userIndex);
 			IndexRequest indexRequest = new IndexRequest(index).type(type).id(id).source(value, XContentType.JSON);
 			IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
-			System.out.println(type + " has been " + indexResponse.getResult().toString().toLowerCase());
+			System.out.println("ID : "+ id + " ---- " + type + " has been " + indexResponse.getResult().toString().toLowerCase());
 		} catch (ElasticsearchException e) {
 			System.out.println(e.status().toString());
 			e.printStackTrace();
@@ -66,7 +64,6 @@ public class SourceleadELKRestClient<T> {
 			System.out.println("In Exception ---------");
 			e.printStackTrace();
 		}
-		System.out.println("exited from saveOrUpdateElkDocument() in SourceleadELKRestClient.java");
 	}
 
 	public RestHighLevelClient getClient() {
