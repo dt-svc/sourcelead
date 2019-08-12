@@ -1004,11 +1004,16 @@ function deleteAssociateImage(userId){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure you want to delete this image ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteAssociateProfileImage("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteAssociateProfileImage("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='associateImageCancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
+}
+
+function associateImageCancel(){ 
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 
@@ -4466,7 +4471,7 @@ function deleteProfileImage(candidateId){
 		        	 $("#popUp").empty();
 		        	 $(".project_inn_mask").fadeOut(200);
 		        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
-		        	 //refreshImageBlock(candidateId);
+		        	  refreshImageBlock(candidateId);
 		        	 //candidateQuickViewProfile(candidateId);
 	        	} else if (response.indexOf('Sign In') !== -1) {
 	        		location.replace(atsUrl);
@@ -4619,6 +4624,7 @@ function loadFile(event,candidateId){
 	    	var msg = "Do you want to save the picture.";
 	    	saveOrCancel(msg,candidateId);
 	   } 
+	    
 }
 </script>
 
@@ -4674,7 +4680,8 @@ function saveOrCancel(message,candidateId){
 function cancel(candidateId){ 
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
-	refreshImageBlock(candidateId);
+	profileDetails(candidateId)
+	//refreshImageBlock(candidateId);
 }
 </script>
 
