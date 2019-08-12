@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,16 +41,17 @@ public class RequirementElkRestController {
 	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
-	 @RequestMapping(value = "/ws/storeRequirementsInElastic", method = RequestMethod.GET)
-	 public void storeCandidatesInELK() throws Exception {
+	 @RequestMapping(value = "/ws/storeRequirementsInElastic/{minLimitSize}/{maxLimitSize}", method = RequestMethod.GET)
+	 public void storeCandidatesInELK(@PathVariable Long minLimitSize,@PathVariable Long maxLimitSize) throws Exception {
 		 
 		    DataSource dataSource = comboPooledDataSource();
 			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 			client = new SourceleadELKRestClient<>();
+			int count = 0;
 		 try {
-
-				String sql = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID";
+			 System.out.println("------------ storeRequirementsInElastic starts ----------");
+				String sql = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID  where (req.ID >= '"+ minLimitSize+"' and req.ID <= '"+ maxLimitSize+"')";
 
 				Connection conn = dataSource.getConnection();
 				Statement stmt = conn.createStatement();
@@ -318,9 +320,10 @@ public class RequirementElkRestController {
 					}
 					
 					client.saveOrUpdateElkDocument(requirementIndex, Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_TYPE,requirementIndex.getRequirementId().toString());
-					
+					System.out.println("Saved Count : " + (++count));
 				}
-				
+				conn.close();
+				System.out.println("------------ storeRequirementsInElastic ends ----------");
 			}catch (SQLException e) {
 			e.printStackTrace();
 		}
