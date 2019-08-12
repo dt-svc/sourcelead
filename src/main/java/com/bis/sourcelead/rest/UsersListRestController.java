@@ -1428,7 +1428,7 @@ public class UsersListRestController {
 					for(OrgLocations orgLoc : orgLocationsList) {
 						Candidate candidate = candidateService.getCandiateByConsultantUserIdAndOrgLocationId(userId, orgLoc.getId());
 						
-						if(StringUtils.isNotBlank(candidate.getDesignationType()) && candidate.getDesignationType().equalsIgnoreCase("Offshore C2C") 
+						if(candidate != null && StringUtils.isNotBlank(candidate.getDesignationType()) && candidate.getDesignationType().equalsIgnoreCase("Offshore C2C") 
 								&& StringUtils.isNotBlank(candidate.getIsAssociate()) && candidate.getIsAssociate().equalsIgnoreCase(Constants.NO)) {
 							List<ProjectMembers> pmList = projectMembersService
 									.getAllProjectsAssigendToCandidateIdAndStatus(candidate.getId(), Constants.MEMBER_ACTIVE);
