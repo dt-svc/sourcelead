@@ -524,11 +524,8 @@ public class RequirementWorkflowController {
 			user.setId(userId);
 			Boolean flag = false;
 			logger.debug("before deleteRequirementWorkflowStage>>> orgLocationid "+orgLocations.getId());
-			String[] deletedStageUuids = requirementWorkFlowStagesDTO.getDeletedStageUuids();
-			for(int i=0; i< deletedStageUuids.length; i++) {
-				requirementWorkFlowStagesDTO.setUuid(deletedStageUuids[i]);
+				requirementWorkFlowStagesDTO.setUuid(requirementWorkFlowStagesDTO.getDeletedStageUuids());
 				flag = requirementWorkFlowService.saveRequirementWorkFlowStagesBySeqOrder(requirementWorkFlowStagesDTO, orgLocations, user);
-			}
 			if(flag == true) {
 				return Constants.SUCCESS;
 			}
