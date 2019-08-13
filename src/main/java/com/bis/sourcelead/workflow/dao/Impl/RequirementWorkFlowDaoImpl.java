@@ -16,6 +16,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +29,16 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
 import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
+import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
@@ -880,6 +885,57 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 			
 		}
 		return workflowSatge;
+	}
+
+	@Override
+	public RequirementSubmission validateWorkflowEditable(Long requirementId, Long orgLocationId) {
+		RequirementSubmission RrequirementSubmission = null;
+				try {
+					Session session = this.sessionFactory.getCurrentSession();
+					String queryString = "from RequirementSubmission req where req.requirement.id=:requirementId and  req.orgLocations.id = :orgLocationId";
+					RrequirementSubmission =  (RequirementSubmission) session.createQuery(queryString).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setMaxResults(1).uniqueResult();
+				} catch (Exception e) {
+					logger.error(e +" in validateWorkflowEditabele DAO");
+					e.printStackTrace();
+					
+				}
+				return RrequirementSubmission;
+	}
+	@Override
+	public RequirementQuestionnaireFeedbackTemplate saveQuestionnaireFeedbackTemplate(
+			RequirementQuestionnaireFeedbackTemplate qemplate) throws Exception {
+		logger.debug("Running saveQuestionnaireFeedbackTemplate DAO");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (qemplate != null) {
+				session.saveOrUpdate(qemplate);
+			}
+		} catch (Exception e) {
+			logger.error(e +" in saveQuestionnaireFeedbackTemplate DAO");
+		}
+		return qemplate;
+	}
+
+	@Override
+	public RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)
+			throws Exception {
+		RequirementQuestionnaireFeedbackTemplateDTO qemplateDTO = null;
+		List<RequirementQuestionnaireFeedbackTemplateDTO> qTemplateDTOList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select JSON_STRING as jsonString, JSON_STRING_VALUES as jsonStringValues from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate where qtemplate.uuid =:uuid";
+			Query obj = session.createSQLQuery(query)
+					.addScalar("jsonString", StandardBasicTypes.STRING)
+					.addScalar("jsonStringValues", StandardBasicTypes.STRING);
+			obj.setResultTransformer(Transformers.aliasToBean(RequirementQuestionnaireFeedbackTemplateDTO.class));
+			qTemplateDTOList = obj.setString("uuid", uuid).list();
+			qemplateDTO = qTemplateDTOList.get(0);
+			return qemplateDTO;
+		} catch (Exception e) {
+			logger.error(e +" in getColumnsMapbyWorkflowStage DAO");
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }

@@ -10,11 +10,14 @@ import java.util.TreeMap;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
+import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
@@ -103,5 +106,11 @@ public interface RequirementWorkFlowService {
 	
 	List<String> getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(Long workflowId, OrgLocations orgLocation, String submissionType)throws Exception;
 	
-	String  sendEmailToCandidateWithQuestionnaireTemplate(HashMap<String , Object> paramList) throws Exception;	
+	String  sendEmailToCandidateWithQuestionnaireTemplate(HashMap<String , Object> paramList) throws Exception;
+
+	RequirementSubmission validateWorkflowEditable(Long requirementId, Long orgLocationId);	
+	
+	RequirementQuestionnaireFeedbackTemplate saveQuestionnaireFeedbackTemplate(RequirementQuestionnaireFeedbackTemplateDTO qemplateDTO, OrgLocations orgLocations, User user)throws Exception;
+
+	RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)throws Exception;
 }

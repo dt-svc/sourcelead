@@ -1360,7 +1360,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 					pendingForExpenseApprovalReportDTO.setApprovedBy(expenses.getActionPerformedby());
 					pendingForExpenseApprovalReportDTO.setManagerOne(expenses.getLevel1Name());
 					pendingForExpenseApprovalReportDTO.setManagerTwo(expenses.getLevel2Name());
-					pendingForExpenseApprovalReportDTO.setReportingManager(expenses.getReportingManager());
+					/*pendingForExpenseApprovalReportDTO.setReportingManager(expenses.getReportingManager());*/
 					pendingForExpenseApprovalReportDTO.setFrequency(expenses.getDuration());
 					pendingForExpenseApprovalReportDTO.setSubmittedAmount(expenses.getSubmittedAmount().toString());
 					pendingForExpenseApprovalReportDTO.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(locationDateFormat, expenses.getSubmittedDate()));		
