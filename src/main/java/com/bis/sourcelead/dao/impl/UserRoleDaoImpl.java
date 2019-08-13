@@ -102,7 +102,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId,Long userId) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<ProjectMembers> projectMemberList = null;
-		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc left join fetch can.masterCandidateId mc left join fetch pm.employee emp  where  proj.id = :projectId and loc.id = :locationId "
+		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectMemberCandidteId can left join fetch can.parentCandidateId left join fetch can.orgLocationId loc left join fetch can.masterCandidateId mc left join fetch pm.employee emp  where  proj.id = :projectId and loc.id = :locationId "
 					     + " and ( "
 						 + "  (proj.id IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId)) "
 						 + "   OR "
@@ -1678,5 +1678,17 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			queryObj.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
 			userDTOList = queryObj.list();
 			return userDTOList;
+	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getAllUserRolesByOrgLocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.orgId left join fetch userRole.user "
+				+ " left join fetch userRole.roles left join fetch userRole.reportingManager left join fetch userRole.resourceManager "
+				+ " where userRole.orgLocations.id = :orgLocationId and (userRole.userState = 'ACTIVE' OR userRole.userState = 'NOT_LOGGEDIN') ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+		return userRoleList;
+
 	}
 }

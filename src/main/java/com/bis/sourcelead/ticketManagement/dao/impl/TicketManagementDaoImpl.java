@@ -66,6 +66,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			User adminUser = userDao.getUserByEmail("info@sourcelead.com");
 			if(orgLocationId > 0) {
 				OrgLocations orgLocations = orgLocationsDao.getOrgLocations(orgLocationId);
+				System.out.println("Applying TicketManagement Predefined data to OrgLocation ID : " + orgLocations.getId());
 				if (adminUser != null && orgLocations != null) {
 					applyTicketManagementPreDefinedData(session, orgLocations, adminUser);
 					return 1;
@@ -74,7 +75,9 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 				String query = "select distinct o from OrgLocations o order by o.id";
 				List<OrgLocations> orgLocationsList = session.createQuery(query).list();
 				if (adminUser != null && orgLocationsList != null && !orgLocationsList.isEmpty()) {
+					System.out.println("Found " + orgLocationsList.size() + " OrgLocations");
 					for (OrgLocations orgLocations : orgLocationsList) {
+						System.out.println("Applying TicketManagement Predefined data to OrgLocation ID : " + orgLocations.getId());
 						applyTicketManagementPreDefinedData(session, orgLocations, adminUser);
 					}
 					return orgLocationsList.size();
@@ -93,6 +96,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			List<Long> ticketTypeCount = session.createQuery("select count(*) from TicketType t where t.orgLocations.id="+orgLocations.getId()).list();
 			if(ticketTypeCount == null || (!ticketTypeCount.isEmpty() && ticketTypeCount.get(0) == 0)) {
 				for (Ticket_Type t : Ticket_Type.values()) {
+					System.out.println("Adding TicketType '" + t.name() + "' for OrgLocation : " + orgLocations.getId());
 					TicketType ticketType = new TicketType();
 					ticketType.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
 					ticketType.setName(t.name());
@@ -110,6 +114,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			if(TicketPriorityCount == null || (!TicketPriorityCount.isEmpty() && TicketPriorityCount.get(0) == 0)) {
 				// code for adding TicketPriority records to OrgLocations
 				for (Ticket_Priority p : Ticket_Priority.values()) {
+					System.out.println("Adding TicketPriority '" + p.name() + "' for OrgLocation : " + orgLocations.getId());
 					TicketPriority ticketPriority = new TicketPriority();
 					ticketPriority.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
 					ticketPriority.setName(p.name());
@@ -127,6 +132,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			if(TicketStatusCount == null || (!TicketStatusCount.isEmpty() && TicketStatusCount.get(0) == 0)) {
 				// code for adding TicketStatus records to OrgLocations
 				for (Ticket_Status s : Ticket_Status.values()) {
+					System.out.println("Adding TicketStatus '" + s.name() + "' for OrgLocation : " + orgLocations.getId());
 					TicketStatus ticketStatus = new TicketStatus();
 					ticketStatus.setUuid(SourceLeadRandomCodeHelper.generateRandomUserCode());
 					ticketStatus.setName(s.name());
@@ -581,7 +587,7 @@ public class TicketManagementDaoImpl implements TicketManagementDao {
 			}
 			query += " where t.orgLocations.id=" + orgLocationId;
 			if(!Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) && !Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
-				query += " and t.createdBy.id=" + userId + " or assignTo.user.id=" + userId;
+				query += " and (t.createdBy.id=" + userId + " or assignTo.user.id=" + userId + ")";
 			}
 			if(status >= 0) {
 				query += " and t.status=" + status;
