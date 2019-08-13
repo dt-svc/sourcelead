@@ -2,6 +2,7 @@ package com.bis.sourcelead.web.performance;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +15,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.performance.PerformanceGoals;
 import com.bis.sourcelead.service.performance.PerformanceGoalsService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 public class PerformanceGoalsController {
@@ -49,6 +51,7 @@ public class PerformanceGoalsController {
 			 @RequestParam(value="goalUUID", required=false) String goalUUID) throws Exception {
 		    
 				ModelAndView model = new ModelAndView();
+				Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 				
 				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 					if(sessionData == null)
@@ -59,8 +62,21 @@ public class PerformanceGoalsController {
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 					
+					/*if(StringUtils.isNotBlank(goalUUID)) {
+						PerformanceGoals performanceGoals = performanceGoalsService.getPerformanceGoalsByUUID(goalUUID);
+						if(performanceGoals.getCreatedBy().getId().equals(userId)) {
+							model.setViewName("performance/addNewGoal");	
+						}else {
+							model.setViewName("performance/editPerformanceGoal");
+						}
+						model.addObject("goalUUID", goalUUID);
+					}else {
+						model.setViewName("performance/addNewGoal");
+					}*/
+					
 					model.addObject("goalUUID", goalUUID);
 					model.setViewName("performance/addNewGoal");
+					
 					return model;
 	}
 	 
@@ -84,6 +100,29 @@ public class PerformanceGoalsController {
 			model.setViewName("performance/addSubGoal");
 			return model;
 	 }
+	 
+	 
+	 
+	 
+	 @RequestMapping(value = "/editPerformanceGoal")
+	 public ModelAndView editPerformanceGoal(HttpServletRequest request,
+			 @RequestParam(value="goalUUID", required=false) String goalUUID) throws Exception {
+		    
+				ModelAndView model = new ModelAndView();
+				
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					sessionData.setNav(Constants.PERFORMANCE_GOALS);
+					
+					request.getSession().setAttribute("sessionData",sessionData);
+					
+					model.addObject("goalUUID", goalUUID);
+					model.setViewName("performance/editPerformanceGoal");
+					return model;
+	}
 	 
 	 @RequestMapping(value = "/goalSummary")
 	 public ModelAndView goalSummary(HttpServletRequest request,

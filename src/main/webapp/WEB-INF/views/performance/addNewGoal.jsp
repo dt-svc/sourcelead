@@ -45,9 +45,9 @@ window.onload = function () {
 	<div class="project_wrap">
 	<div id="choicepopUp"></div>
 	 <div id="goalsLoading"></div>
+	  <form:form id="addGoal_form"  name="addGoal_form" method="post">
 	 	<div class="clearfix newAddWidth">
 		    <div class="form-horizontal mt myForm">
-		    	 <form:form id="addGoal_form"  name="addGoal_form" method="post">
 		    	 	 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt"> 
 		    	 	 <input type="hidden" name="goalId" id="goalId" />
 		    	 	 <input type="hidden" name="goalType" id="goalType" />
@@ -139,8 +139,8 @@ window.onload = function () {
 	           <button type="button" class="slBtn md colorBtn" id="savePerformanceGoals" onclick="performanceGoals.savePerformanceGoals();" >Save</button>
 	           <button type="button" class="slBtn md popClose"  onclick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/performanceGoalsList'" >Cancel</button>
 	        </div>
-		    	 </form:form>
 		    </div>
+		     </form:form>
 	    </div>
     </div>
 	
