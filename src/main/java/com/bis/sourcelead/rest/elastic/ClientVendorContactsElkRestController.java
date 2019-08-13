@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,16 +36,17 @@ public class ClientVendorContactsElkRestController {
 	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
-	 @RequestMapping(value = "/ws/storeClientAndVendorContactsInElastic", method = RequestMethod.GET)
-	 public void storeCandidatesInELK() throws Exception {
+	 @RequestMapping(value = "/ws/storeClientAndVendorContactsInElastic/{minLimitSize}/{maxLimitSize}", method = RequestMethod.GET)
+	 public void storeCandidatesInELK(@PathVariable Long minLimitSize,@PathVariable Long maxLimitSize) throws Exception {
 		 
 		    DataSource dataSource = comboPooledDataSource();
 			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 			client = new SourceleadELKRestClient<>();
+			int count = 0;
 		 try {
-				
-				String sql = "SELECT * FROM "+dbconfig.getSchema()+".ORG_SPOC orgSpock";
+				System.out.println("------------ storeClientAndVendorContactsInElastic starts ----------");
+				String sql = "SELECT * FROM "+dbconfig.getSchema()+".ORG_SPOC orgSpock where (orgSpock.ID >= '"+ minLimitSize+"' and orgSpock.ID <= '"+ maxLimitSize+"') ";
 				Connection conn = dataSource.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);
@@ -187,9 +189,10 @@ public class ClientVendorContactsElkRestController {
 							 
 							 
 							 client.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,clientVendorContactsIndex.getId().toString());
-						     }
-
-			   
+							 System.out.println("Saved Count : " + (++count));
+			    }
+			    conn.close();
+			    System.out.println("------------ storeClientAndVendorContactsInElastic ends ----------");
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
