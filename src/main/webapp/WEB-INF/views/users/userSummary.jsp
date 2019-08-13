@@ -2541,9 +2541,10 @@ $("#editRoleDetailsList").empty();
 
 <script>
 function preapareCustomFieldDetails(userId,sectionId){
+	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	$.ajax({
         type : "POST",
-         url: atsUrl+"/getAllASectionCustomFields?&userId="+userId+"&requestFrom=user"+"&sectionId="+sectionId,        
+         url: sourceleadUrl+"/getAllASectionCustomFields?&userId="+userId+"&requestFrom=user"+"&sectionId="+sectionId,        
          success :function(data) {
         	 $('#customFieldDataId').empty();
         	 $('#customFieldDataId').append(data);
