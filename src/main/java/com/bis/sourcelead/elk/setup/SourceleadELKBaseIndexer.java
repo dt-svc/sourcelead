@@ -51,7 +51,7 @@ public class SourceleadELKBaseIndexer<T> {
 			value = toJSON(entityClass); //new ObjectMapper().writeValueAsString(entityClass);
 			IndexRequest indexRequest = new IndexRequest(index).type(type).id(id).source(value, XContentType.JSON);
 			IndexResponse indexResponse = sourceleadELKTransportClient.getClient().index(indexRequest, RequestOptions.DEFAULT);
-			System.out.println(type + " has been " + indexResponse.getResult().toString().toLowerCase());
+			System.out.println("ID : "+ id + " ---- " + type + " has been " + indexResponse.getResult().toString().toLowerCase());
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(type + " could not be serialized. " + e.getLocalizedMessage());
