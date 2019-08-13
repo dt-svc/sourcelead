@@ -592,6 +592,7 @@ function preparePayableList(url,orgLocationDate){
 
 <script>
 function payablePagination(url){
+	$("#emptyPayableInvoiceId").val(0);
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
 	var colIndex = 0;
     $('#payableListTable').DataTable( { 

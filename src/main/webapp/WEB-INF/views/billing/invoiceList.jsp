@@ -465,6 +465,7 @@ function prepareInvoiceList(url,locationdateForList){
 
 <script>
 function invoicePagination(url){
+	$("#emptyInvoiceId").val(0);
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var colIndex = 0;
     $('#invoiceListTable').DataTable( { 
