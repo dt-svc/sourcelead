@@ -247,8 +247,7 @@ function getVendorOnboardTasksList(){
 		        	
 		        	result = result +'<div class="form-footer clearfix mt">';
 		        	result = result +'<span class="pull-left">';
-		        	//changed to hidden by Pavan Jampana.
-		        	result = result +'&nbsp;&nbsp;<input type="hidden"  name="isMailSent" id="isMailSent" value="Y" checked>&nbsp;&nbsp;';
+		        	result = result +'&nbsp;&nbsp;<input type="checkbox" name="isMailSent" id="isMailSent" value="Y" checked>&nbsp;&nbsp;Send Invitation';
 		        	result = result +' </span>';
 		    		result = result +'<div class="pull-right mr">';
 		    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishVendorOnbord();" class="btn btn-sm btn-primary">';
