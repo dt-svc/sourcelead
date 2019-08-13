@@ -315,6 +315,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStagesDTO.setUuid(workFlowStages.getUuid());
 			requirementWorkFlowStagesDTO.setConfigureType(workFlowStages.getConfigureType());
 			requirementWorkFlowStagesDTO.setStageCount(requirementWorkFlow.getNoOfStages());
+			requirementWorkFlowStagesDTO.setRequirementWorkFlowId(requirementWorkFlow.getId());
 			workFlowStagesDTO.add(requirementWorkFlowStagesDTO);
 		}	
 		}
@@ -1297,5 +1298,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	public RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)
 			throws Exception {
 		return requirementWorkFlowDao.getQuestionnaireTemplateFeedbackList(uuid);
+	}
+
+
+	@Override
+	public List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId) {
+		return  requirementWorkFlowDao.validateWorkflowUpdate(workflowId, orgLocationId);
 	}
 }
