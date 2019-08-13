@@ -71,6 +71,71 @@ function PerformanceGoals(){
 		  
 		  
 		  
+		  this.getGoalsDetails = function(goalUUID){
+			  $("#goalsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			  $.ajax({
+			    	type: "GET",
+			        url: pmsUrl+"/getPerformanceGoalsDetails?goalUUID="+goalUUID, 
+			        success: function(response) {
+			        	if (response.response === "AWKWARD") {
+			        		location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		
+			        		$("#goalId").val(response.object.goalId);
+			        		$("#goalName").html(response.object.goalName);
+			        		
+			        		if(response.object.goalStartDate != null 
+			        				 && response.object.goalStartDate != ''
+			        					 && response.object.goalStartDate != 'undefined'){
+			        			 $("#goalStartDate").html(response.object.goalStartDate);
+			        		 }
+			        		
+			        		 if(response.object.goalEndDate != null 
+			        				 && response.object.goalEndDate != ''
+			        					 && response.object.goalEndDate != 'undefined'){
+			        			 $("#goalEndDate").html(response.object.goalEndDate);
+			        		 }
+			        		 
+			        		 if(response.object.teamName != null 
+			        				 && response.object.teamName != ''
+			        					 && response.object.teamName != 'undefined'){
+			        			 $("#performanceTeamName").html(response.object.teamName);
+			        		 }
+			        		 
+			        		 if(response.object.description != null 
+			        				 && response.object.description != ''
+			        					 && response.object.description != 'undefined'){
+					        	 $("#goalsDescription").html(response.object.description);
+			        		 }
+			        		 
+			        		 document.getElementById("percentageDoneDiv").style.display="";
+			        		 $("#goalPercentage").attr("data-validation", "validate_Space validate_float");
+			        		 $("#goalPercentage").val(response.object.percentageDone.toFixed(2));
+			        		 
+			        		 if(response.object.attachmentsList != null && response.object.attachmentsList.length > 0){
+				        		   var result = '';
+				        		   for(var i=0; i<response.object.attachmentsList.length; i++){
+				        			   var opt = response.object.attachmentsList[i];
+				        			  
+				        			     result = result +"<strong id='goalDocument"+opt.id+"'>";
+				      	    		     result = result +"<i class=''><a class='glyphicon glyphicon-save' target='_blank' href=\""+opt.fileUrl+"\"></a></i>";
+				      					 result = result +"<input type='button' value='"+opt.fileName+"'>";
+				      					 result = result +"</a>";
+				      					 result = result +"</strong>";
+				        		   }
+				        		   
+				        		   $("#savedGoalsDocuments").empty();
+				      			   $("#savedGoalsDocuments").append(result);
+			        		 }
+			        		 
+			        		
+			        		$("#goalsLoading").removeAttr('style');
+			        	}
+			        },
+			    });
+		  }
+		  
+		  
 		  this.getPerformanceGoalsDetails = function(goalUUID){
 			  $("#goalsLoading").attr('style','position:absolute; width:100%; height:150%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			  $.ajax({
