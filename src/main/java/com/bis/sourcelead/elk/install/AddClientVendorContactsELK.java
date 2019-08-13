@@ -16,6 +16,10 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -236,15 +240,13 @@ public class AddClientVendorContactsELK {
 		    	String key = it.next();
 		    		d.put(key, json.isNull(key) ? null : json.get(key));
 		    }
-		    client.getClient().prepareUpdate(index, type,id).setDoc(d).get();
+//		    client.getClient().prepareUpdate(index, type,id).setDoc(d).get();
+		    
+		    IndexRequest indexRequest = new IndexRequest(index).type(type).id(id).source(d, XContentType.JSON);
+			IndexResponse indexResponse = client.getClient().index(indexRequest, RequestOptions.DEFAULT);
+		    
 		    logger.info(type+" has been updated.");
-		} 
-       catch(DocumentMissingException e){
-       		client.getClient().prepareIndex(index, type,id)
-		    .setSource(d).execute().actionGet();
-		    logger.info(type+" has been indexed.");
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
 		}
      }

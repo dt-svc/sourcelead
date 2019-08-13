@@ -44,6 +44,8 @@ function resetFilter(){
                 <span class="repSearchIcon" onclick="getTicketManagementList();"></span></li>
             </ul>
           </div>
+          <div id="popUp"></div>
+          <input type="hidden" id="ticketManagementPdfFile" />
           <div class="require_wrap_table datatable_filter" id="ticketListParentList">
             <!-- <div class="candidate_wrap_table datatable_filter require_wrap_table">            
             <table style="width: 100%;" id="ticketManagementListTable">
@@ -176,6 +178,7 @@ function resetFilter(){
 		            "visible": false,
 		            "render": function ( data, type, opt, meta ) {
 		            		var result = "";
+		            		$("#ticketManagementPdfFile").val(1);
 	           		   if(opt.id != null && opt.id != '' && opt.id != 'undefined') {
 		     	        	result = result + '<td><div  class="tbldata-dotdot-sm">'+opt.id+'</div></td>';
 	           		   } else {
@@ -323,7 +326,20 @@ function resetFilter(){
 	}
 	
 	function exportTicketManagementSheet(exportType){
-		window.location.href = sourceleadUrl+"/getTicketManagementExportListByOrgLocationId?"+tokenParamName+"="+tokenValue+"&exportType="+exportType;
+		var size = $("#ticketManagementPdfFile").val();
+		if(size > 0 ){
+			window.location.href = sourceleadUrl+"/getTicketManagementExportListByOrgLocationId?"+tokenParamName+"="+tokenValue+"&exportType="+exportType;
+		}else{
+			   $('.mask').show();
+			    var result = "";
+				result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+				result = result +"		<p>List is Empty</p>";
+				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+				result = result +"	</div>";
+				$("#popUp").append(result);
+				$("#pipeline_user_pop").slideDown(200);
+		 }
 	}
 	
 	function newActions(){
@@ -338,5 +354,12 @@ function resetFilter(){
 	$(".overIcon, .newActPop").click(function(e){
 	 	e.stopPropagation();
 	});
+</script>
+<script type="text/javascript">
+function cancel(){
+	$('.mask').hide();
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
 </script>
 <jsp:include page="../masterFooter.jsp" />	 
