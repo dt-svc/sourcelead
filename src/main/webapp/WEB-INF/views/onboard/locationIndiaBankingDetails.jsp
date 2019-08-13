@@ -8,10 +8,14 @@
 		<thead>
 			<tr>
 			  <th>Type</th>           
-			  <th>Email</th>           
 			  <th>Bank Name</th>         
-			  <th>Account Number</th>     
-			  <th>Routing Number</th>     
+			  <th>Account Number</th>   
+			  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+     			  <th>IFSC Code</th>     
+			  </c:if>  
+			  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+     			  <th>Routing Number</th>     
+			  </c:if>
 			  <th>First Name</th>        
 			  <th>Last Name</th>         
 			  <th>Location</th>           
@@ -25,7 +29,6 @@
 			<c:forEach var="payment" items="${paymentList}">
 				<tr>
 				<td><div class="tblminwidth-50">${!empty payment.accountType ? payment.accountType : "--"}</div></td>
-			    <td><div class="tbldata-dotdot-100">${!empty payment.email ? payment.email : "--"}</div></td>
 			    <td><div class="tbldata-dotdot-100">${!empty payment.bankName ? payment.bankName : "--"}</div></td>
 			    <td><div class="tblminwidth-30">${!empty payment.accountNumber ? payment.accountNumber : "--"}</div></td>
 			    <td><div class="tblminwidth-30">${!empty payment.routingNumber ? payment.routingNumber : "--"}</div></td>
