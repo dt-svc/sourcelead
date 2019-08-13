@@ -923,10 +923,11 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 		List<RequirementQuestionnaireFeedbackTemplateDTO> qTemplateDTOList = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "select JSON_STRING as jsonString, JSON_STRING_VALUES as jsonStringValues from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate where qtemplate.uuid =:uuid";
+			String query = "select JSON_STRING as jsonString, JSON_STRING_VALUES as jsonStringValues, uuid as uuid from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate where qtemplate.uuid =:uuid";
 			Query obj = session.createSQLQuery(query)
 					.addScalar("jsonString", StandardBasicTypes.STRING)
-					.addScalar("jsonStringValues", StandardBasicTypes.STRING);
+					.addScalar("jsonStringValues", StandardBasicTypes.STRING)
+					.addScalar("uuid", StandardBasicTypes.STRING);
 			obj.setResultTransformer(Transformers.aliasToBean(RequirementQuestionnaireFeedbackTemplateDTO.class));
 			qTemplateDTOList = obj.setString("uuid", uuid).list();
 			qemplateDTO = qTemplateDTOList.get(0);
@@ -936,6 +937,22 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public RequirementQuestionnaireFeedbackTemplate getQuestionnaireTemplateFeedbackByUuid(String uuid)
+			throws Exception {
+		RequirementQuestionnaireFeedbackTemplate requirementQuestionnaireFeedbackTemplate = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String queryString = "from RequirementQuestionnaireFeedbackTemplate temp where temp.uuid = :uuid";
+			requirementQuestionnaireFeedbackTemplate = (RequirementQuestionnaireFeedbackTemplate) session.createQuery(queryString).setString("uuid", uuid).uniqueResult();
+		} catch (Exception e) {
+			logger.error(e +" in getQuestionnaireTemplateFeedbackByUuid DAO");
+			e.printStackTrace();
+			
+		}
+		return requirementQuestionnaireFeedbackTemplate;
 	}
 
 }

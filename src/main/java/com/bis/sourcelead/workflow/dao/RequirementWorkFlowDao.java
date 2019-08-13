@@ -108,4 +108,6 @@ public interface RequirementWorkFlowDao {
 	RequirementQuestionnaireFeedbackTemplate saveQuestionnaireFeedbackTemplate(RequirementQuestionnaireFeedbackTemplate qemplate)throws Exception;
 	
 	RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)throws Exception;
+	
+	RequirementQuestionnaireFeedbackTemplate getQuestionnaireTemplateFeedbackByUuid(String uuid) throws Exception;
 }

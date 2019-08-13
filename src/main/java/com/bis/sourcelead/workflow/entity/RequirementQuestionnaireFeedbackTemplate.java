@@ -49,6 +49,18 @@ public class RequirementQuestionnaireFeedbackTemplate implements Serializable{
 	@Column(name = "JSON_STRING_VALUES", columnDefinition = "LONGTEXT default NULL")
 	private String jsonStringValues ;
 	
+	@Column(name = "TIME_LIMIT_MINUTES")
+	private Integer timeLimitMinutes;
+	
+	@Column(name = "TIME_LIMIT_SECONDS")
+	private Integer timeLimitSeconds;
+	
+	@Column(name = "NUMBER_OF_SUBMISSIONS")
+	private Integer submissionsCount;
+	
+	@Column(name = "TOTAL_POINTS")
+	private Integer totalPoints;
+	
 	@Column(name = "UUID")
 	private String uuid;
 	
@@ -113,6 +125,38 @@ public class RequirementQuestionnaireFeedbackTemplate implements Serializable{
 
 	public void setJsonStringValues(String jsonStringValues) {
 		this.jsonStringValues = jsonStringValues;
+	}
+
+	public Integer getTimeLimitMinutes() {
+		return timeLimitMinutes;
+	}
+
+	public void setTimeLimitMinutes(Integer timeLimitMinutes) {
+		this.timeLimitMinutes = timeLimitMinutes;
+	}
+
+	public Integer getTimeLimitSeconds() {
+		return timeLimitSeconds;
+	}
+
+	public void setTimeLimitSeconds(Integer timeLimitSeconds) {
+		this.timeLimitSeconds = timeLimitSeconds;
+	}
+
+	public Integer getSubmissionsCount() {
+		return submissionsCount;
+	}
+
+	public void setSubmissionsCount(Integer submissionsCount) {
+		this.submissionsCount = submissionsCount;
+	}
+
+	public Integer getTotalPoints() {
+		return totalPoints;
+	}
+
+	public void setTotalPoints(Integer totalPoints) {
+		this.totalPoints = totalPoints;
 	}
 
 	public String getUuid() {
