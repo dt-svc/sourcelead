@@ -890,4 +890,21 @@ public class RequirementWorkflowController {
 		 RequirementQuestionnaireFeedbackTemplateDTO templateDTO  = requirementWorkFlowService.getQuestionnaireTemplateFeedbackList(templateUuid);
 		 return templateDTO;
 	   }
+	 
+	 @RequestMapping(value = "/getQuestionnaireTimeLimit" , method = RequestMethod.GET)
+	 @ResponseBody
+	   public String getQuestionnaireTimeLimit(@RequestParam(value="templateUuid", required=false) String templateUuid) throws Exception {
+		 StringBuilder timeLimit = new StringBuilder("");
+		 Integer time = 0;
+		 RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
+		 if(questionnaireTemplate != null) {
+			 if(questionnaireTemplate.getTimeLimitMinutes() == null) {
+				 questionnaireTemplate.setTimeLimitMinutes(time);
+			 }if(questionnaireTemplate.getTimeLimitSeconds() == null) {
+				 questionnaireTemplate.setTimeLimitSeconds(time);
+			 }
+			 timeLimit.append(questionnaireTemplate.getTimeLimitMinutes() +":"+questionnaireTemplate.getTimeLimitSeconds());
+		 }
+		 return timeLimit.toString();
+	   }
 }
