@@ -110,4 +110,6 @@ public interface RequirementWorkFlowDao {
 	RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)throws Exception;
 
 	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId);
+	
+	RequirementQuestionnaireFeedbackTemplate getQuestionnaireTemplateFeedbackByUuid(String uuid) throws Exception;
 }

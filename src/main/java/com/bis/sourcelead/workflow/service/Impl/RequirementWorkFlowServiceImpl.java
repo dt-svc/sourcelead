@@ -1256,8 +1256,33 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		candi.setId(1l);
 		RequirementWorkFlow work = new RequirementWorkFlow();
 		work.setId(2l);
+		RequirementQuestionnaireFeedbackTemplate qtemplate = null;
 		try {
-		RequirementQuestionnaireFeedbackTemplate qtemplate =  new RequirementQuestionnaireFeedbackTemplate();
+			if(qemplateDTO.getUuid() != null && StringUtils.isNotBlank(qemplateDTO.getUuid())) {
+				qtemplate = requirementWorkFlowDao.getQuestionnaireTemplateFeedbackByUuid(qemplateDTO.getUuid());
+				qtemplate.setJsonStringValues(qemplateDTO.getJsonStringData());
+				
+				if(qemplateDTO.getUploadedFileInfo() != null && !qemplateDTO.getUploadedFileInfo().isEmpty()) {
+					qemplateDTO.setStaticPath(qemplateDTO.getStaticPath());
+					 for(FileInfo fileInfo : qemplateDTO.getUploadedFileInfo()){
+						 if(fileInfo.getFileURL() != null && fileInfo.getStatus() == 0) {
+							 FileUploadUtil.moveFile(qemplateDTO.getStaticPath(), fileInfo, "QuestionnaireFeedbackAttachments");
+						 }
+							
+						}
+				}
+				
+				if(qemplateDTO.getTotalPoints() != null) {
+					qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
+				}
+				if(qemplateDTO.getSubmissionsCount() != null) {
+					qtemplate.setSubmissionsCount(qemplateDTO.getSubmissionsCount());
+				}
+				qtemplate.setUpdatedBy(user);
+				qtemplate.setUpdatedDate(new Date());
+			}else {
+			
+		qtemplate =  new RequirementQuestionnaireFeedbackTemplate();
 		qtemplate.setOrgLocationId(orgLocations);
 		qtemplate.setCandidateId(candi);
 		qtemplate.setWorkflowId(work);
@@ -1268,6 +1293,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		qtemplate.setUpdatedBy(user);
 		qtemplate.setUpdatedDate(new Date());
 
+			
 		if(qemplateDTO.getUploadedFileInfo() != null && !qemplateDTO.getUploadedFileInfo().isEmpty()) {
 			qemplateDTO.setStaticPath(qemplateDTO.getStaticPath());
 			 for(FileInfo fileInfo : qemplateDTO.getUploadedFileInfo()){
@@ -1282,10 +1308,26 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementQuestionnaireTemplate = requirementWorkFlowDao.getQuestionnaireTemplateById(qemplateDTO.getQuestionnaireTemplateUuid());
 		}
 		
-		if(requirementQuestionnaireTemplate!= null && requirementQuestionnaireTemplate.getJsonString() != null) {
-			qtemplate.setJsonString(requirementQuestionnaireTemplate.getJsonString());
+		if(requirementQuestionnaireTemplate!= null) {
+			if(requirementQuestionnaireTemplate.getJsonString() != null) {
+				qtemplate.setJsonString(requirementQuestionnaireTemplate.getJsonString());
+			}
+			if(requirementQuestionnaireTemplate.getTimeLimitMinutes() != null) {
+				qtemplate.setTimeLimitMinutes(requirementQuestionnaireTemplate.getTimeLimitMinutes());
+			}
+			if(requirementQuestionnaireTemplate.getTimeLimitSeconds() != null) {
+				qtemplate.setTimeLimitSeconds(requirementQuestionnaireTemplate.getTimeLimitSeconds());
+			}
 		}
 		
+		if(qemplateDTO.getTotalPoints() != null) {
+			qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
+		}
+		if(qemplateDTO.getSubmissionsCount() != null) {
+			qtemplate.setSubmissionsCount(qemplateDTO.getSubmissionsCount());
+		}
+		
+			}
 		return requirementWorkFlowDao.saveQuestionnaireFeedbackTemplate(qtemplate);
 		}catch(Exception e) {
 			e.printStackTrace();

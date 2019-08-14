@@ -30,6 +30,14 @@ public class RequirementQuestionnaireFeedbackTemplateDTO {
 	private String jsonString ;
 	
 	private String jsonStringValues ;
+	
+	private Integer timeLimitMinutes;
+	
+	private Integer timeLimitSeconds;
+	
+	private Integer submissionsCount;
+	
+	private Integer totalPoints;
 
 	public Long getId() {
 		return id;
@@ -117,6 +125,38 @@ public class RequirementQuestionnaireFeedbackTemplateDTO {
 
 	public void setJsonStringValues(String jsonStringValues) {
 		this.jsonStringValues = jsonStringValues;
+	}
+
+	public Integer getTimeLimitMinutes() {
+		return timeLimitMinutes;
+	}
+
+	public void setTimeLimitMinutes(Integer timeLimitMinutes) {
+		this.timeLimitMinutes = timeLimitMinutes;
+	}
+
+	public Integer getTimeLimitSeconds() {
+		return timeLimitSeconds;
+	}
+
+	public void setTimeLimitSeconds(Integer timeLimitSeconds) {
+		this.timeLimitSeconds = timeLimitSeconds;
+	}
+
+	public Integer getSubmissionsCount() {
+		return submissionsCount;
+	}
+
+	public void setSubmissionsCount(Integer submissionsCount) {
+		this.submissionsCount = submissionsCount;
+	}
+
+	public Integer getTotalPoints() {
+		return totalPoints;
+	}
+
+	public void setTotalPoints(Integer totalPoints) {
+		this.totalPoints = totalPoints;
 	}
 
 	
