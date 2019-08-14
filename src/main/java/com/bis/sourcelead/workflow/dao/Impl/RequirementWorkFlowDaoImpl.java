@@ -940,6 +940,20 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 	}
 
 	@Override
+	public List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId) {
+		List<RequirementSubmission> subList = null;
+	try {
+		Session session = this.sessionFactory.getCurrentSession();
+		String queryString = "select distinct reqSub from RequirementSubmission reqSub where reqSub.requirement.id in (select req.id from  Requirement req where req.workflowId.id = :workflowId and  req.orgLocationId.id = :orgLocationId)";
+		System.out.println(queryString);
+		subList =  session.createQuery(queryString).setLong("workflowId", workflowId).setLong("orgLocationId", orgLocationId).setMaxResults(1).list();
+	} catch (Exception e) {
+		logger.error(e +" in validateWorkflowEditabele DAO");
+		e.printStackTrace();
+		
+	}
+	return subList;
+	}
 	public RequirementQuestionnaireFeedbackTemplate getQuestionnaireTemplateFeedbackByUuid(String uuid)
 			throws Exception {
 		RequirementQuestionnaireFeedbackTemplate requirementQuestionnaireFeedbackTemplate = null;
