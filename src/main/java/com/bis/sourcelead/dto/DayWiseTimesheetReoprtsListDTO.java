@@ -27,6 +27,8 @@ public class DayWiseTimesheetReoprtsListDTO {
 	private String candidateLocation;
 	private BigInteger projectId;
 	private BigInteger masterCandidateId;
+	private BigInteger parentCandidteId;
+	private BigInteger candidateId;
 	private Date submittedDate;
 	private Date approvedDate;
 	private Date sahFrequenchStartDate;
@@ -194,6 +196,18 @@ public class DayWiseTimesheetReoprtsListDTO {
 	}
 	public void setApprovedDate(Date approvedDate) {
 		this.approvedDate = approvedDate;
+	}
+	public BigInteger getParentCandidteId() {
+		return parentCandidteId;
+	}
+	public void setParentCandidteId(BigInteger parentCandidteId) {
+		this.parentCandidteId = parentCandidteId;
+	}
+	public BigInteger getCandidateId() {
+		return candidateId;
+	}
+	public void setCandidateId(BigInteger candidateId) {
+		this.candidateId = candidateId;
 	}
 	
 }
