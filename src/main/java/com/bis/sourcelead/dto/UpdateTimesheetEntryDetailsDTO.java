@@ -42,7 +42,11 @@ public class UpdateTimesheetEntryDetailsDTO implements Serializable{
 	
 	private String timeSubFrequency;
 	
-	 private String timeFrequency;
+	private String timeFrequency;
+	 
+	private String currentTimeFrequency;
+	 
+	private String currentTimeSubFrequency;
 
 	public Long getSubmissionId() {
 		return submissionId;
@@ -182,6 +186,22 @@ public class UpdateTimesheetEntryDetailsDTO implements Serializable{
 
 	public void setTimeFrequency(String timeFrequency) {
 		this.timeFrequency = timeFrequency;
+	}
+
+	public String getCurrentTimeFrequency() {
+		return currentTimeFrequency;
+	}
+
+	public void setCurrentTimeFrequency(String currentTimeFrequency) {
+		this.currentTimeFrequency = currentTimeFrequency;
+	}
+
+	public String getCurrentTimeSubFrequency() {
+		return currentTimeSubFrequency;
+	}
+
+	public void setCurrentTimeSubFrequency(String currentTimeSubFrequency) {
+		this.currentTimeSubFrequency = currentTimeSubFrequency;
 	}
 	 
 	

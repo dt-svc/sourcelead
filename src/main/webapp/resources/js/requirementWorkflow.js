@@ -3,6 +3,7 @@ var requirementWorkflow = new RequirementWorkflow();
 var iconSpan = "";
 var editAndDeleteAnchor = "";
 var lastStage = "";
+var commentReq = "";
 
 function RequirementWorkflow(){
 	
@@ -562,7 +563,6 @@ function RequirementWorkflow(){
 						stageUuid = $("#previousStageUuid").val();
 					}
 					var currentStageUuid = $("#currentStageUuid").val();
-
 					
 					 if ($('#addStageForm').validate(false, validationSettings)) {
 						  var formData = getFormData("addStageForm");
@@ -572,7 +572,8 @@ function RequirementWorkflow(){
 						type : "GET",
 						 data : formData,
 						url : sourceleadUrl + "/saveRequirementWorkflowStage?description="+description+"&uuid="+stageUuid+
-								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+"&lastStage="+lastStage,
+								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+
+								"&lastStage="+lastStage+"&commentRequired="+commentReq,
 						success : function(dataList) {
 							if (dataList.response === "AWKWARD") {
 				      	    location.href = "/errorPage";
@@ -903,5 +904,6 @@ function RequirementWorkflow(){
 				 $("#previousStageUuid option[value='"+stageUuid[stageIndex]+"']").remove();
 				 }
 				 }
+				 
 				 
 }

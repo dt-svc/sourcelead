@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -15,10 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.DayEntryReportsDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsListDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.util.CalendarUtil;
 
@@ -30,6 +33,9 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	UserRoleDao userRoleDao;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -47,13 +53,19 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			orgDateFormat = "\"%Y-%d-%m\"";
 		}
 
-		
+		String projectIds = "'" + StringUtils.join(projectId, "','") + "'";
 		List<BigInteger> countlist = null;  
 		
 		Integer filterCount = 0;
 		ResponseList<DayWiseTimesheetReoprtsListDTO> response = new ResponseList<DayWiseTimesheetReoprtsListDTO>();
 		Session session = sessionFactory.getCurrentSession();
+		UserRole userRole = userRoleDao.getUserRoleByUserIdAndLocationId(loginUser.getId(), orgloc.getId());
 		
+		String userRoleQuery = "";
+		if(userRole.getRoles() != null && !userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN")) {
+			userRoleQuery = " AND ((UR.REPORTING_MANAGER_ID = '"+loginUser.getId()+"') OR (PM.PROJECT_ID IN (SELECT PA.PROJECT_ID FROM PROJECT_APPROVER_HIERARCHY PA WHERE PA.APPROVER_USER_ID = '"+loginUser.getId()+"' AND PA.PROJECT_ID IN (" + projectIds + ") ) ) ) ";
+		}
+			
 		
 		List<Long> userHierarchyIds =  userDao.getUserHierarchyIdList(loginUser.getId());
 		String userHierarchyIdString = "0";
@@ -124,6 +136,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ " TDE.BILLABLE_HOURS as billableHrs,"
 				+ " TDE.TICKET_NUMBER as ticketNo,"
 				+ " TDE.NONBILLABLE_HOURS as nonBillableHrs,"
+				+ " EMP.EMPLOYEE_ID as employeeId,"
 				+ " CONCAT(IF(CAN.FIRST_NAME IS NOT NULL, CONCAT(CAN.FIRST_NAME,' '),'') ,IF(CAN.LAST_NAME IS NOT NULL, CONCAT(CAN.LAST_NAME),'')) as employeeName,"
 				+ " CAN.EMAIL as employeeEmail,"
 				+ " PROJ.PROJECT_NAME as projectName,"
@@ -156,7 +169,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
 			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
 			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
-			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND ACANLOC.IS_ASSOCIATE = 'Y' AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
+			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID  AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
 			    			       
 			    //To get Employee and department details
 				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
@@ -172,7 +185,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    			
 			    }
                 query = query+ " LEFT JOIN ORG_LOCATIONS ORGLOC ON ORGLOC.ID =  PC.ORG_LOCATIONS_ID "
-                + " WHERE "+subQuery+" AND SAH.SUBMISSION_ID =  TS.ID  " 
+                + " WHERE "+subQuery+" "+userRoleQuery+" AND SAH.SUBMISSION_ID =  TS.ID  " 
 				+ " AND SAH.ID IN (SELECT SUBSAH.ID FROM SUBMISSION_APPROVER_HIERARCHY SUBSAH WHERE "
 				+ "                  SUBSAH.SUBMISSION_ID = TS.ID "
 				+ "                  AND  "
@@ -208,6 +221,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
                 + "        ELSE ''"
 				+ "      END "
 				+ "     ) AS  nonBillableHrs, "
+				+ "	  EMP.EMPLOYEE_ID as employeeId,"
 				+ "   CONCAT(IF(CAN.FIRST_NAME IS NOT NULL, CONCAT(CAN.FIRST_NAME,' '),'') ,IF(CAN.LAST_NAME IS NOT NULL, CONCAT(CAN.LAST_NAME),'')) as employeeName,"
 				+ "   CAN.EMAIL AS employeeEmail, "
 				+ "   NULL AS projectName,"
@@ -237,7 +251,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
 			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
 			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
-			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND ACANLOC.IS_ASSOCIATE = 'Y' AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
+			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID  AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
 			    			       
 			    //To get Employee and department details
 				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
@@ -253,7 +267,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    + "   LEFT JOIN ORG_LOCATIONS LOC ON LOC.ID = UR.ORG_LOCATIONS_ID "
 			   
 			    
-				+ "   WHERE "+subQuery
+				+ "   WHERE "+subQuery+userRoleQuery 
 				+ "   AND LT.TIMESHEET_AUTOFILL = 'Y' AND (LV.STATUS = 'APPROVED' OR LV.STATUS = 'PENDING')AND AL.APPLY_LEAVE_DATE IS NOT NULL AND AL.APPLY_LEAVE_DATE BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' group by CONCAT(U.ID,AL.APPLY_LEAVE_DATE)"
 				+ ") "
 				+ "  UNION ALL "
@@ -274,6 +288,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
                 + "        ELSE ''"
 				+ "      END "
 				+ "     ) AS  nonBillableHrs, "
+				+ "	  EMP.EMPLOYEE_ID as employeeId,"
 				+ "   CONCAT(IF(CAN.FIRST_NAME IS NOT NULL, CONCAT(CAN.FIRST_NAME,' '),'') ,IF(CAN.LAST_NAME IS NOT NULL, CONCAT(CAN.LAST_NAME),'')) as employeeName,"
 				+ "   CAN.EMAIL AS employeeEmail, "
 				+ "   NULL AS projectName,"
@@ -304,7 +319,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
 			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
 			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
-			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID AND ACANLOC.IS_ASSOCIATE = 'Y' AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
+			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID  AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
 			    			       
 			    //To get Employee and department details
 				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
@@ -314,7 +329,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    
 			    + "   LEFT JOIN HOLIDAY_RESTRICT_DAYS HRD ON HRD.ORGLOCATION_ID = CAN.WORK_LOCATION "
 			    + "   LEFT JOIN HOLIDAY HD ON HD.ID = HRD.HOLIDAY_ID "
-				+ "   WHERE "+subQuery
+				+ "   WHERE "+subQuery+userRoleQuery
 				+ "    AND HRD.DAY IS NOT NULL AND HRD.DAY BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' AND HD.ID NOT IN(SELECT UDH.HOLIDAY_ID FROM USER_DROPPED_HOLIDAYS UDH WHERE UDH.USER_ID = U.ID AND UDH.STATUS = '1') group by CONCAT(U.ID,HRD.DAY)"
 				+ ") "
 				+ " )Q1 ORDER BY Q1.timesheetDate ASC  "; 

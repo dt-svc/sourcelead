@@ -238,6 +238,9 @@ public class DashboardRestController {
 		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+		if(loginOrgLocations != null && (loginOrgLocations.getOrg() == null || loginOrgLocations.getOrg() != null && loginOrgLocations.getOrg().getId() == null)) {
+			loginOrgLocations = orgLocationService.getOrgLocations(loginOrgLocations.getId());
+		}
 		if(StringUtils.isEmpty(timesheetCountType)) {
 			timesheetCountType = "All";
 		}
@@ -245,7 +248,7 @@ public class DashboardRestController {
 			 Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isAdmin");
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),timesheetCountType,isGlobalAccess,isAdmin);
 		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
-			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), loginOrgLocations.getId(),timesheetCountType);
+			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),timesheetCountType);
 		}
 		
 		return timeSheetSubmissionCount;
@@ -265,6 +268,8 @@ public class DashboardRestController {
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		if(orgLoc == null && StringUtils.isNotEmpty(tedDTO.getLocationCode())){
 			orgLoc = orgLocationService.getOrgLocationsByLocationCode(tedDTO.getLocationCode());
+		}else if(orgLoc != null && (orgLoc.getOrg() == null || orgLoc.getOrg() != null && orgLoc.getOrg().getId() == null)) {
+			orgLoc = orgLocationService.getOrgLocations(orgLoc.getId());
 		}
 		
 		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
@@ -286,7 +291,7 @@ public class DashboardRestController {
 				 Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(loginUser.getId(),orgLoc.getId());
 			     timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId(),orgLoc.getOrg().getId(),"All",isGlobalAccess,isAdmin);
 			}else if("myTimesheets".equalsIgnoreCase(timesheetFor)){
-				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLoc.getId(),"All");
+				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(),orgLoc.getId(),orgLoc.getOrg().getId(),"All");
 			}
 			
 			ExpensesCount expensesCount = new ExpensesCount();

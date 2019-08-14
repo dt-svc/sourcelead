@@ -1958,9 +1958,14 @@ $("#editRoleDetailsList").empty();
 			    var disabled = '';
 			    var readonly = '';
 			    var isMulitplieOrgAccounts = '${isMulitplieOrgAccounts}';
+			    var emailReadOnly = '';
 			    
 			    if(isMulitplieOrgAccounts == 'true'){
 			    	readonly = 'readonly';
+			    }
+			    
+			    if(json.userState != 'NOT_LOGGEDIN'){
+			    	emailReadOnly = 'readonly';
 			    }
 			    
 			    if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
@@ -2038,7 +2043,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Role:</label>';
 					result = result + '<div class="clearfix"><span></span>';
-					result = result + '<input type="text" value="'+json.roles.displayName+'" name="roleType"  id="role" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" >';
+					result = result + '<input type="text" value="'+json.roles.displayName+'" name="roleType"  id="role" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" disabled>';
 					result = result + '<input type = "hidden" id = "role" name = "roleType" value = "'+json.roles.id+'">';
 					result = result + ' </div>'; 
 
@@ -2070,7 +2075,7 @@ $("#editRoleDetailsList").empty();
 
 					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 					result = result + ' <label>Email Id<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
+					result = result + ' <input type="text" value="'+json.user.email+'" '+emailReadOnly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
 					
 					if("${SourceLeadWeb_orgLocations.country}" == 'India'){
@@ -4087,15 +4092,17 @@ function profileDetails(candidateId){
                 		   		 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
               		       }
 			             
-			              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
-			                    	 
-			             result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
-			             
-             		       }else{
-             		                                                	  
-                   		   result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
-             		     
-             		       }
+			              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined' && json.noticePeriod != 'Other'){
+		                    	 
+				               result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
+				             
+	             		       }else if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined' && json.noticePeriod == 'Other'){
+	             		                                                	  
+	                   		     result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+"---"+json.otherNoticePeriod+'</span></li>';  
+	             		     
+	             		       }else{
+	             		    	  result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';    
+	             		       }
 			             result = result+'</ul>';
 			             result = result+'</ul>';
 			             
@@ -4302,9 +4309,10 @@ function profileDetails(candidateId){
 <script>
 function assocSalarySummary(candidateId){
 	var locationCode = '${SourceLeadWeb_locationCode}';
+	var userCode = '${userCode}';
 	$.ajax({
 		  type: "GET",
-		    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&locationCode="+locationCode,
+		    url: sourceleadUrl+"/getAssociateSalaryDataByOrgLocation?candidateId="+candidateId+"&locationCode="+locationCode+"&userCode="+userCode,
 		     success :function(response) {
 		    	 	$("#tab-18").empty();  
 		    	    $("#tab-19").empty();

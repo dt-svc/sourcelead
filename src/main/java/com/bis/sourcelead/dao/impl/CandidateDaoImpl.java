@@ -2022,7 +2022,8 @@ public class CandidateDaoImpl implements CandidateDao {
 				+ " CAND.COUNTRY AS country, " + " CAND.STATE AS state, " + " CAND.CITY AS city, "
 				+ " CAND.NOTICE_PERIOD AS noticePeriod, " + " CAND.PROFILE_PERCENTAGE AS profilePercentage, "
 				+ " CAND.CURRENT_RATE AS currentRate, " + " CAND.CURRENT_RATE_TYPE AS currentRateType, "  + " CAND.CURRENT_RATE_CURRENCY AS currentRateCurrency, "
-				+ " CAND.EXPECTED_RATE AS expectedRate, " + " CAND.RATE_TYPE AS rateType, "  + " CAND.EXPECTED_RATE_CURRENCY AS expectedRateCurrencey "
+				+ " CAND.EXPECTED_RATE AS expectedRate, " + " CAND.RATE_TYPE AS rateType, "  + " CAND.EXPECTED_RATE_CURRENCY AS expectedRateCurrencey, "
+				+ " CAND.EXPERIENCE_YEARS AS experienceYears, " + " CAND.EXPERIENCE_MONTHS AS experienceMonths "
 				+ " FROM CANDIDATE CAND " + " WHERE " + " CAND.ID = :candidateId ";
 
 		Query queryObj = session.createSQLQuery(query);
@@ -3280,8 +3281,8 @@ public class CandidateDaoImpl implements CandidateDao {
 			if(marketplaceWalletDTO != null){
 				if (StringUtils.isNotBlank(marketplaceWalletDTO.getSortColumn())) {
 					String sortColumnName = marketplaceWalletDTO.getSortColumn();
-					if(sortColumnName.equalsIgnoreCase("totalResumePrice")){
-						queryBuilder1.append(" order by cmwallet.totalResumePrice "+marketplaceWalletDTO.getSortOrder());
+					if(sortColumnName.equalsIgnoreCase("amount")){
+						queryBuilder1.append(" order by cmwallet.amount "+marketplaceWalletDTO.getSortOrder());
 					}else{
 						queryBuilder1.append(" order by cmwallet." + sortColumnName + " "+marketplaceWalletDTO.getSortOrder());
 					}
@@ -3563,6 +3564,22 @@ public class CandidateDaoImpl implements CandidateDao {
 		}
 		return flag;
 	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getCandidatesForUpdateWorkLocation(Long masterCandidateId, Long orgId) throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from Candidate candidate left join fetch candidate.masterCandidateId left join fetch candidate.orgLocationId orgLoc left join fetch orgLoc.org where "
+					+ " candidate.masterCandidateId.id = :masterCandidateId and orgLoc.org.id = :orgId ";
+			List<Candidate> candidatesList = session.createQuery(query).setLong("masterCandidateId", masterCandidateId).setLong("orgId", orgId).list();
+			return candidatesList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	@Override
 	@Transactional
@@ -3599,7 +3616,22 @@ public class CandidateDaoImpl implements CandidateDao {
 		return user;
 	}
 	
-	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and "
+				+ "candidate.consultantUser.id = :userId  ";
+		List<Candidate> candidateList =  session.createQuery(query) .setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+		Candidate canidate = null;
+		if(candidateList != null && !candidateList.isEmpty())
+		{
+			canidate = (Candidate) candidateList.iterator().next();
+		}
+		return canidate;
+	}
+
 	
 	
 }

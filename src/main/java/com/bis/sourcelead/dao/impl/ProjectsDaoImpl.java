@@ -1676,119 +1676,109 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	}
 
 
+	@SuppressWarnings("unchecked")
+    @Override
+    @Transactional
+    public List<Object[]> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
+    try {
+        Session session = this.sessionFactory.getCurrentSession();       
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String fromDate = dateFormat.format(availableAssociatesDTO.getFromDate());
+        String toDate = dateFormat.format(availableAssociatesDTO.getToDate());
+        int noOfHours =((orgLocations.getAverageWorkingHours())*(orgLocations.getWorkingDaysPerWeek()));
+        String query = "select pm.id as id,"
+                + " pm.employee.id as empId,"
+                + " concat(pm.projectMemberCandidteId.firstName,' ',(case when pm.projectMemberCandidteId.lastName is null then '' else pm.projectMemberCandidteId.lastName end)) as empName,"
+                + " pm.projects.projectName as projectName,"
+                + " pm.projects.startDate as projectStartDate,"
+                + " pm.projects.endDate as projectEndDate ,"
+                + " pmHistory.projectAssignedDate as empStartDate,"
+                + " pmHistory.projectTerminationDate as empEndDate,"
+                + "  pm.percentageOfWork as availableHours,"
+                + "  (( pm.percentageOfWork)/100) * " + noOfHours + " as hoursperWeek,"
+                + "  pm.masterCandidateId.id as masterCandidateId"
+                + " from ProjectMembers pm "
+                + " join pm.memberHistoryList pmHistory "
+                + " where pmHistory.status='OPEN' and pm.projectClientsId.orgLocationsId =:orgLocations and pm.projectAssignedDate <= '"+toDate+"'"
+                + "";
+        
 
+        
+        
+       /* 		
+            query += " and '" + fromDate + "' <= (case when pm.projectEndDate is null and pm.projects.endDate is null"
+                    + "        then pm.projectAssignedDate"
+                            + " else (case when pm.projectEndDate is null "
+                            + "            then pm.projectAssignedDate "
+                            + "            else pm.projectAssignedDate end) "
+                    + "end)";
+            
+            query += " and '" + toDate + "' >= (case when pm.projectEndDate is null and pm.projects.endDate is null"
+                    + "        then pm.projectAssignedDate"
+                            + " else (case when pm.projectEndDate is null "
+                            + "            then pm.projectAssignedDate "
+                            + "            else pm.projectAssignedDate end) "
+                    + "end)";*/
+            
+          /*  query += " and pm.projectAssignedDate <= "+toDate+"";*/
+            
+            
+            
+            
+//            query += " and '" + toDate + "' <= (case when pm.projectEndDate is null and pm.projects.endDate is null"
+//                    + "        then '" + toDate + "' "
+//                            + " else (case when pm.projectEndDate is null "
+//                            + "            then (case when pm.projects.endDate is null"
+//                            + "                    then '" + toDate + "'"
+//                            + "                    else pm.projectEndDate end)"
+//                            + "            else pm.projectEndDate end) "
+//                    + "end)";
+
+        if (availableAssociatesDTO.getProjectsIds() != null && !availableAssociatesDTO.getProjectsIds().isEmpty()) {
+            String projectIds = "";
+            for (long id : availableAssociatesDTO.getProjectsIds()) {
+                projectIds += (projectIds.isEmpty() ? "" : ", ") + id;
+            }
+             query += " and pm.projects.id in (" + projectIds + ")";
+             
+        }
+        if(availableAssociatesDTO.getUserIds() != null && !availableAssociatesDTO.getUserIds().isEmpty()) {
+            String userIds = "";
+            for (long id : availableAssociatesDTO.getUserIds()) {
+                userIds += (userIds.isEmpty() ? "" : ", ") + id;
+            }
+            query += " and pm.projectMemberCandidteId.id in (" + userIds + ")";
+            
+        }
+        query += " and pm.projects.projectStatus = '" +  Project_Status.INPROGRESS.name()+ "'";
+        Query queryObj = session.createQuery(query);
+        queryObj.setLong("orgLocations",orgLocations.getId());
+        List<Object[]> queryObjList = queryObj.list();
+        
+        
+        
+        
+        
+     return queryObjList;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return null;
+    }
 	@Override
 	@Transactional
 	public List<Projects> getProjectsListByCanddateIdAndOrgId(String associatesId, Long orglocationId) {
-	try {
-	Long candidateId = Long.valueOf(associatesId);
-	Session session = this.sessionFactory.getCurrentSession();
-	String query = "select pm.projects from ProjectMembers pm where pm.projectMemberCandidteId.id In(:candidateId) ";
-	List<Projects> projectsList = session.createQuery(query.toString()).setParameter("candidateId", candidateId).list();
-	return projectsList;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select pm.projects from ProjectMembers pm where pm.status = '1' and pm.projectMemberCandidteId.id in("
+					+ associatesId + ") ";
+			List<Projects> projectsList = session.createQuery(query).list();
+			return projectsList;
 
-	} catch (Exception e) {
-	e.printStackTrace();
-	}
-	return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	@Transactional
-	public List<Object[]> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
-	try {
-		
-		Session session = this.sessionFactory.getCurrentSession();       
-		 
-//		SimpleDateFormat dateFormat = new SimpleDateFormat(orgLocations.getDateFormat());
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		String fromDate = dateFormat.format(availableAssociatesDTO.getFromDate());
-		String toDate = dateFormat.format(availableAssociatesDTO.getToDate());
-		/*fromDate = "2018-06-01";
-		toDate = "2019-01-31";*/
-		
-		int noOfHours =((orgLocations.getAverageWorkingHours())*(orgLocations.getWorkingDaysPerWeek()));
-		 
-		String query = "select pm.id as id,"
-				/*+ " pm.employee.employeeId as empId,"
-				+ " pm.employee.user.firstName as empName,"*/
-				+ " pm.id as empId,"
-				+ " pm.id as empName,"
-				+ " pm.projects.projectName as projectName,"
-				+ " pm.projects.startDate as projectStartDate,"
-				+ " pm.projects.endDate as projectEndDate ,"
-				+ " pm.projectAssignedDate as empStartDate,"
-				+ " pm.projectEndDate as empEndDate,"
-				+ "  pm.percentageOfWork as availableHours,"
-				+ "  (( pm.percentageOfWork)/100) * " + noOfHours + " as hoursperWeek"
-				+ " from ProjectMembers pm"
-//				+ " where pm.projects.orgLocationsId=:orgLocations"
-				+ "";
-			
-			
-		/*	query += " and (case when pm.projectEndDate is null and pm.projects.endDate is null"
-					+ "		then pm.projectAssignedDate like '%" + fromDate + "%' "
-							+ " else (case when pm.projectEndDate is null "
-							+ "			then (case when pm.projects.endDate is null"
-							+ "					then pm.projectAssignedDate like '%" + fromDate + "%' "
-							+ "					else pm.projectAssignedDate like '%" + fromDate + "%' and pm.projectEndDate like '%" + toDate + "%' end)"
-							+ "			else pm.projectAssignedDate like '%" + fromDate + "%' and pm.projectEndDate like '%" + toDate + "%' end) "
-					+ "end)";*/
-			
-		
-			query += " where '" + fromDate + "' >= (case when pm.projectEndDate is null and pm.projects.endDate is null"
-					+ "		then pm.projectAssignedDate"
-							+ " else (case when pm.projectEndDate is null "
-							+ "			then pm.projectAssignedDate "
-							+ "			else pm.projectAssignedDate end) "
-					+ "end)";
-			
-			query += " and '" + toDate + "' <= (case when pm.projectEndDate is null and pm.projects.endDate is null"
-					+ "		then '" + toDate + "' "
-							+ " else (case when pm.projectEndDate is null "
-							+ "			then (case when pm.projects.endDate is null"
-							+ "					then '" + toDate + "'"
-							+ "					else pm.projectEndDate end)"
-							+ "			else pm.projectEndDate end) "
-					+ "end)";
-
-			
-			
-			
-		if (availableAssociatesDTO.getProjectsIds() != null && !availableAssociatesDTO.getProjectsIds().isEmpty()) {
-			String projectIds = "";
-			for (long id : availableAssociatesDTO.getProjectsIds()) {
-				projectIds += (projectIds.isEmpty() ? "" : ", ") + id;
-			}
- 			query += " and pm.projects.id in (" + projectIds + ")";
- 			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		if(availableAssociatesDTO.getUserIds() != null && !availableAssociatesDTO.getUserIds().isEmpty()) {
-			String userIds = "";
-			for (long id : availableAssociatesDTO.getUserIds()) {
-				userIds += (userIds.isEmpty() ? "" : ", ") + id;
-			}
-			query += " and pm.projectMemberCandidteId.id in (" + userIds + ")";
-			
-		}
-		
-		
-		/*java.sql.Date fromDate = new java.sql.Date(availableAssociatesDTO.getFromDate().getTime());
-		java.sql.Date toDate = new java.sql.Date(availableAssociatesDTO.getToDate().getTime());*/
-		
-		Query queryObj = session.createQuery(query);
-//		queryObj.setLong("orgLocations", orgLocations.getId());
-		/*queryObj.setString("fromDate", fromDate);
-		queryObj.setString("toDate", toDate);*/
-		
-		
-		return queryObj.list();
-	} catch (Exception e) {
-		e.printStackTrace();
+		return null;
 	}
-	return null;
-	}
-			
+
 }
-

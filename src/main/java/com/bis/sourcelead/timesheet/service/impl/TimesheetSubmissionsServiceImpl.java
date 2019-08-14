@@ -193,7 +193,7 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	 * @throws NullPointer
 	 */
 	@Override
-	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(Long masterCandidateId, Long orgLocationId, String countType)
+	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(Long masterCandidateId, Long orgLocationId,Long orgId, String countType)
 			throws Exception {
 		
 	    TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
@@ -207,11 +207,11 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 		timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(new Float(rejectedindividualEmployeeCount));
 	    }
 		 if(countType.equalsIgnoreCase("SUBMITTED")) {
-		 Integer submittedForApprovalindividualCount = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(masterCandidateId, "SUBMITTED",orgLocationId);
+		 Integer submittedForApprovalindividualCount = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(masterCandidateId, "SUBMITTED",orgLocationId,orgId);
 		timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(new Float(submittedForApprovalindividualCount));
 		 }
 		 if(countType.equalsIgnoreCase("DRAFT")) {
-		Integer draftindividualEmployeeCount = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(masterCandidateId, "DRAFT",orgLocationId);
+		Integer draftindividualEmployeeCount = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(masterCandidateId, "DRAFT",orgLocationId,orgId);
 		Integer savedTimesheetSubmissionCount = draftindividualEmployeeCount;
 		timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(new Float(savedTimesheetSubmissionCount));
 		 }
@@ -220,9 +220,9 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 				timeSheetSubmissionCount.setApprovedTimesheetSubmissionCount(new Float(approvedindividualEmployeeCount));
 			 Integer rejectedindividualEmployeeCount = submissionApproverHierarchyDao.getTotalApprovedOrRejectedListByMasterCandidateIdForEmployeeLoginCount(masterCandidateId, "REJECTED",orgLocationId);
 				timeSheetSubmissionCount.setRejectedTimesheetSubmissionCount(new Float(rejectedindividualEmployeeCount));	
-		     Integer submittedForApprovalindividualCount = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(masterCandidateId, "SUBMITTED",orgLocationId);
+		     Integer submittedForApprovalindividualCount = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(masterCandidateId, "SUBMITTED",orgLocationId,orgId);
 				timeSheetSubmissionCount.setWaitingForApprovalTimesheetSubmissionCount(new Float(submittedForApprovalindividualCount));
-			 Integer draftindividualEmployeeCount = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(masterCandidateId, "DRAFT",orgLocationId);
+			 Integer draftindividualEmployeeCount = submissionApproverHierarchyDao.getTotalDraftAndSubmittedListByMasterCandidateIdForEmployeeLoginCount(masterCandidateId, "DRAFT",orgLocationId,orgId);
 				Integer savedTimesheetSubmissionCount = draftindividualEmployeeCount;
 				timeSheetSubmissionCount.setSavedTimesheetSubmissionCount(new Float(savedTimesheetSubmissionCount));
 				 }
@@ -1173,6 +1173,21 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 	@Override
 	public TimesheetSubmissions getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(Long projectId,Long masterCanidateId, Date frequencyStartDate, Date frequencyEndDate) {
 		return timesheetSubmissionsDao.getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(projectId,masterCanidateId,frequencyStartDate,frequencyEndDate);
+	}
+
+
+	@Override
+	public String getWeekCommentByCurrentFrequency(Date startDate, Date endDate, Long projectId, Long masterCandidateId)
+			throws Exception {
+		return timesheetSubmissionsDao.getWeekCommentByCurrentFrequency(startDate, endDate, projectId, masterCandidateId);
+	}
+
+
+	@Override
+	public void updateWeekCommentForAllSubmissions(String weekComment,Date startDate, Date endDate, Long projectId, Long masterCandidateId)
+			throws Exception {
+		timesheetSubmissionsDao.updateWeekCommentForAllSubmissions(weekComment,startDate, endDate, projectId, masterCandidateId);
+		
 	}
 	
 	

@@ -108,8 +108,8 @@ function datatableBody(){
 		  
 		  if(totalRows !=null && totalRows != '' && totalRows != 'undefined'){
 		  $('#paginationDiv').show();
-		  $('#dataTableSearchExpenses').val('') ;
-		  $('#dataTableSearchExpenses').val(searchData); 
+		  $('#dataTableSearchTimesheetReports').val('') ;
+		  $('#dataTableSearchTimesheetReports').val(searchData); 
 		  searchHighlight(searchData);
 		  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
 		  var endingRecord = parseInt(pageNo*pageSize);
@@ -130,8 +130,8 @@ function datatableBody(){
 	  }else{
 		  $("#fixTable").empty();
     	  $("#fixTable").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
-		  $('#dataTableSearchExpenses').val('') ;
-		  $('#dataTableSearchExpenses').val(searchData);
+		  $('#dataTableSearchTimesheetReports').val('') ;
+		  $('#dataTableSearchTimesheetReports').val(searchData);
 		  $('#paginationDiv').hide();
 	  }
 	      $('#pageMsg').html('');

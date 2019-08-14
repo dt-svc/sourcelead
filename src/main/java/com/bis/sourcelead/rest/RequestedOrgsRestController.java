@@ -27,7 +27,7 @@ public class RequestedOrgsRestController {
 	 @ResponseBody  ResponseList<EmployerRegistrationDTO> getDemoOrgsList(EmployerRegistrationDTO employerRegistrationDTO,HttpServletRequest request) throws Exception {
 		 
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				    String[] tableColumns = {"companyName", "requestedBy", "country", "email", "phoneno", "modules", "demodate"};
+				    String[] tableColumns = {"companyName", "requestedBy", "country", "email", "phoneno", "modules", "demodate", "action"};
 				    int sortColumnIndex = 1; //by default sorting using updated date
 					String sortColumnOrder = "desc"; //by default descending order
 					if(employerRegistrationDTO.getOrder() != null && !employerRegistrationDTO.getOrder().isEmpty()) {

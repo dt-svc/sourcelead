@@ -2265,26 +2265,31 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		if(exportView.getEmployerLocation() !=null){
 			 writeRow.createCell(31).setCellValue(exportView.getEmployerLocation()); 
 		}
+		
+		if(exportView.getLcaTitle() !=null){
+			 writeRow.createCell(32).setCellValue(exportView.getLcaTitle()); 
+		}
+		
 		if(exportView.getJobName() !=null){
-			 writeRow.createCell(32).setCellValue(exportView.getJobName()); 
+			 writeRow.createCell(33).setCellValue(exportView.getJobName()); 
 		}
 		if(exportView.getJobId() !=null){
-			 writeRow.createCell(33).setCellValue(exportView.getJobId()); 
+			 writeRow.createCell(34).setCellValue(exportView.getJobId()); 
 		}
 		// dont remove
 		if(exportView.getPreviousLcaStartDate() !=null){
-			 writeRow.createCell(34).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(35).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getPreviousLcaStartDate())); 
 		}
 		if(exportView.getPreviousLcaEndDate() !=null){
-			 writeRow.createCell(35).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(36).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getPreviousLcaEndDate())); 
 		}
 		if(exportView.getPreviousLcaNumber() !=null){
-			 writeRow.createCell(36).setCellValue(exportView.getPreviousLcaNumber()); 
+			 writeRow.createCell(37).setCellValue(exportView.getPreviousLcaNumber()); 
 		}
 		if(exportView.getPreviousLcaRate() !=null){
-			 writeRow.createCell(37).setCellValue(exportView.getPreviousLcaRate()); 
+			 writeRow.createCell(38).setCellValue(exportView.getPreviousLcaRate()); 
 		}
 		/*if(exportView.getPreviousEmployerLocation() !=null){
 			 writeRow.createCell(38).setCellValue(exportView.getPreviousEmployerLocation()); 

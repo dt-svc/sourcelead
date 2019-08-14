@@ -279,10 +279,14 @@ public interface CandidateDao {
 	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception;
 	
     public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception;
+    
+    public List<Candidate> getCandidatesForUpdateWorkLocation(Long masterCandidateId,Long orgId) throws Exception;
 	
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
 	
 	public String getCandidateDateOfBirthByUserId(long userId, OrgLocations orgLocation);
 	
 	public User getConsultantUserByCandidateIdOrMasterCandidateId(Long candidateId,Long masterCandidateId) throws Exception;
+	
+	Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
 }

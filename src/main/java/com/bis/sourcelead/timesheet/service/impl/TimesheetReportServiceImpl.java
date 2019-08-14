@@ -216,7 +216,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	            table.addCell(cell);
 	        }
             table.completeRow();
-            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports",globalUser);
+            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),null, 0,0,"reports",globalUser);
             
             java.util.List<String[]> reportList = new ArrayList<>();
             for(ProjectMembers promembers:projectMembers.getData()){
@@ -510,7 +510,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		
 		
 		int column = 0;
-		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports",globalUser);
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),null, 0,0,"reports",globalUser);
 		 for(ProjectMembers promembers:projectMembers.getData()){
 			 writeRow = createExcelsheet.createRow(column + 1);
 			 createExcelsheet = prepareTimesheetReportDataExcel(promembers,displayWeeksList,loginUser,createExcelsheet,writeRow,startDate,endDate,orgLocations);
@@ -563,10 +563,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		if(projectMember.getProjectMemberCandidteId()!= null) {
 			 consultantUser = consultantProjectMembers.getProjectMemberCandidteId().getConsultantUser(); 
 			 Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(consultantUser.getId(),orgLocations.getId());
-	     if(employee != null) {
-	    	 writeRow.createCell(0).setCellValue(sbid.append(employee.getEmployeeId()).toString());
-			 createExcelsheet.autoSizeColumn(0);
-	     }
+		  if(employee != null && StringUtils.isNotEmpty(employee.getEmployeeId())) {
+		    	 writeRow.createCell(0).setCellValue(sbid.append(employee.getEmployeeId()).toString());
+				 createExcelsheet.autoSizeColumn(0);
+		 }
 		if(null != projectMember.getProjectMemberCandidteId()){
 			 writeRow.createCell(1).setCellValue(projectMember.getProjectMemberCandidteId().getFullName()); 
 			 createExcelsheet.autoSizeColumn(1);

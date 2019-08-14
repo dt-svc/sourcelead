@@ -273,9 +273,9 @@ public class RequirementWorkflowController {
 
 		try {
 			RequirementQuestionnaireTemplate template = null;
-			templateId = ""; // as of now marked as empty value for testing.
 			if (StringUtils.isNotBlank(templateId)) {
 			//   template = performanceFeedbackTemplateService.getPerformanceFeedbackTemplateById(Long.parseLong(templateId));
+				template=requirementWorkFlowService.getQuestionnaireByTemplateId(Long.parseLong(templateId));
 			} else {
 				template = new RequirementQuestionnaireTemplate();
 				template.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -620,6 +620,7 @@ public class RequirementWorkflowController {
 			modelandview.setViewName("workflow/addStage");
 			modelandview.addObject("stageName", stages.getStageName());
 			modelandview.addObject("description", stages.getDescription());
+			modelandview.addObject("commentRequired", stages.getCommentRequired());
 			modelandview.addObject("currentStageUuid", requirementWorkFlowStagesDTO.getUuid().trim());
 			modelandview.addObject("workflowUuid", requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid());
 			modelandview.addObject("requirementWorkFlowStagesDTO", stagesDTO);

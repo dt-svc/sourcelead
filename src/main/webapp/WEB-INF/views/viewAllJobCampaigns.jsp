@@ -30,6 +30,7 @@
  <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
  <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
  <script src="/resources/js/slead-common.js"></script> 
+ 
 <script>
 		$(document).ready(function() { 
 			getAllCampaignJobs();
@@ -38,30 +39,7 @@
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
 </script>
-<style>
-body {
-background-color:#e1e6fa;
-}
-.project_wrap_table table {
-	border: 1px solid #fff;
-	border-bottom: 1px solid #909090;
-	margin-bottom: 10px;
-}
-.project_wrap_table table tr td:last-child {
-width: auto;
-}
-
-.project_wrap_table table tr th:first-child{
-text-align: left;
-}
-.container {
-padding-bottom: 55px;
-}
-#campaigncandidatesList .dataTables_info {
-padding: 0 !important; padding-left: 165px !important; margin-top: 15px;
-}
-</style>
-<body>
+<body style="background-color:#e1e6fa;">
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
@@ -76,21 +54,21 @@ padding: 0 !important; padding-left: 165px !important; margin-top: 15px;
   <!-- Header Area --> 
 
   <!-- Content Area -->
-  <section class="container">
+  <section class="container" style="padding-bottom: 55px;">
 		  		<div id="loading"></div>
-				          <div class="col-md-8  project_wrap_table publicpageTop">
+				          <div class="col-md-8  project_wrap_table publicpageTop project_wrap_table_publicpage_styles">
 				          
 							  <div class="clearfix">
 							  <h4>Jobs List</h4>
 							  </div>
-							  <div id="campaigncandidatesList" class="datatable_filter positionRelative"></div>
+							  <div id="campaigncandidatesList" class="datatable_filter positionRelative campaigncandidatesList_info"></div>
 							  
 							  
 						 </div>
   </section>
   <!-- Footer Area -->
   <footer class="footer-publicpages clearfix">
-  <div class="container">
+  <div class="container" style="padding-bottom: 55px;">
     <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
     <div class="powered-by"> Powered by: businessintelli.com </div></div>
   </footer>

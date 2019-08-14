@@ -1,8 +1,6 @@
 package com.bis.sourcelead.clockInOutDaoImpl;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -24,6 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateReportSummaryDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
+import com.bis.sourcelead.clockInOutDTO.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
 import com.bis.sourcelead.clockInOutEntity.Breaks;
@@ -41,8 +42,8 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
-import com.bis.sourcelead.payroll.dto.IntiateUSPayrollDTO;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @SuppressWarnings("unchecked")
 @Repository
@@ -61,6 +62,9 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 	
 	@Autowired
 	private ClockInOutUtil clockInOutUtil;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	@Transactional
@@ -623,6 +627,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			  .append("clk.CLOCK_IN_DATE as clockInDate, ")
 			  .append("clk.CLOCK_OUT_DATE as clockOutDate, ")
 			  .append("clk.TOTAL_TIME as totalTime, ")
+			  .append("clk.GEO_LOCATION_DATA as geoLocationData, ")
 			  .append("task.TASK_NAME as projectTaskName, ")
 			  .append("DATE_FORMAT(clk.CLOCK_IN_DATE, '%Y-%m') as yearMonth, ")
 			  .append("clk.COMMENTS as comments ")
@@ -688,11 +693,11 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		
 		try {
 			
-		    long millis=System.currentTimeMillis();  
-	        java.sql.Date date = new java.sql.Date(millis);
+//		    long millis=System.currentTimeMillis();  
+//	        java.sql.Date date = new java.sql.Date(millis);
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from ClockInOut clk where clk.orgLocations.id =:orgLocationId and clk.userId.id =:user and clk.clockInDate =:currentDate and clk.clockOutDate is NULL";
-			clkList = session.createQuery(query).setLong("orgLocationId", loc.getId()).setLong("user", user.getId()).setDate("currentDate", date).list();
+			String query = "from ClockInOut clk where clk.orgLocations.id =:orgLocationId and clk.userId.id =:user and clk.clockOutDate is NULL";
+			clkList = session.createQuery(query).setLong("orgLocationId", loc.getId()).setLong("user", user.getId()).list();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -708,13 +713,177 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		try {
 			
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Breaks brk where brk.clockInOutId =:clockInId";
+			String query = "from Breaks brk where brk.clockInOutId =:clockInId and brk.breakEndTime is NOT NULL";
 			breakList = session.createQuery(query).setLong("clockInId", clockInId).list();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return breakList;
+	}
+	
+	@Override
+	@Transactional
+	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, OrgLocations orgLocation, Date sendDate) {
+		
+		List<ClockInOutAssociateReportSummaryDTO> associateReportSummaryList = new ArrayList<ClockInOutAssociateReportSummaryDTO>();
+
+		List<Long> deptList = new ArrayList<>();
+		List<Long> userRolesList = new ArrayList<>();
+		List<Long> jobsList = new ArrayList<>();
+		List<Long> projectList = new ArrayList<>();
+		List<Long> taskList = new ArrayList<>();
+		List<Long> generalTaskList = new ArrayList<>();
+		List<Long> associateList = new ArrayList<>();
+		List<Long> teamsList = new ArrayList<>();
+		java.sql.Date dateRangeList[] = new java.sql.Date[2];
+		java.sql.Date sqlCurrDate = null;
+		
+		String subQuery = "";
+		
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT clk.ID as id,")
+			.append("clk.CLOCK_IN_TIME as clockInTime,")
+			.append("clk.CLOCK_OUT_TIME as clockOutTime,")
+			.append("clk.CLOCK_IN_DATE as clockInDate,")
+			.append("DATE_FORMAT(clk.CLOCK_IN_DATE, \"%Y-%m\") as yearDate,")
+			.append("clk.USER_ID as userId,")
+			.append("usr.FIRST_NAME as firstName,")
+			.append("usr.LAST_NAME as lastName,")
+			.append("uRole.USER_TYPE as roleType,")
+			.append("uRole.ROLE_ID as roleId,")
+			.append("emp.DEPARTMENT_ID as depId,")
+			.append("clk.CLOCK_OUT_DATE as clockOutDate,")
+			.append("clk.TOTAL_TIME as totalTime,")
+			//.append("task.TASK_NAME as projectTaskName,")
+			.append("clk.COMMENTS as comments ")
+			.append("FROM CLOCK_INOUT clk LEFT JOIN USER usr ON clk.USER_ID = usr.ID ")
+			.append("LEFT JOIN USER_ROLE uRole ON clk.USER_ID = uRole.USER_ID ")
+			.append("LEFT JOIN EMPLOYEE emp ON clk.USER_ID = emp.USER_ID ")
+			.append("LEFT JOIN TEAM_MEMBERS tm ON clk.USER_ID = tm.MEMBER_USER_ID ")
+			.append("where clk.ORG_LOCATION_ID = :clkOrgLocationID ")
+			.append("AND uRole.ORG_LOCATIONS_ID = :uRoleOrgLocationID ")
+			.append("AND emp.ORG_LOCATIONS_ID = :empOrgLocationID");
+			
+			if(clockInOutFiltersDTO.getOrgDepartments() != null && !clockInOutFiltersDTO.getOrgDepartments().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getOrgDepartments())) {
+				String[] depts = clockInOutFiltersDTO.getOrgDepartments().split(",");
+				for(int i=0; i < depts.length; i++) {
+					deptList.add(Long.parseLong(depts[i]));
+				}
+				subQuery = subQuery + " AND emp.DEPARTMENT_ID IN (:deptList)";
+			}
+			
+			if(clockInOutFiltersDTO.getUserRole() != null && !clockInOutFiltersDTO.getUserRole().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getUserRole())) {
+				String[] userRoles = clockInOutFiltersDTO.getUserRole().split(",");
+				for(int i=0; i < userRoles.length; i++) {
+					userRolesList.add(Long.parseLong(userRoles[i]));
+				}
+				subQuery = subQuery + " AND uRole.ROLE_ID IN (:userRolesList)";
+			}
+			
+			if(clockInOutFiltersDTO.getJobsList() != null && !clockInOutFiltersDTO.getJobsList().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getJobsList())) {
+				String[] jobs = clockInOutFiltersDTO.getJobsList().split(",");
+				for(int i=0; i < jobs.length; i++) {
+					jobsList.add(Long.parseLong(jobs[i]));
+				}
+				subQuery = subQuery + " AND clk.JOBS_TASK_ID IN (:jobsList)";
+			}
+			if(clockInOutFiltersDTO.getProjectList() != null && !clockInOutFiltersDTO.getProjectList().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getProjectList())) {
+				String[] projects = clockInOutFiltersDTO.getProjectList().split(",");
+				for(int i=0; i < projects.length; i++) {
+					projectList.add(Long.parseLong(projects[i]));
+				}
+				subQuery = subQuery + " AND clk.PROJECT_ID IN (:projectList)";
+			}
+			if(clockInOutFiltersDTO.getTasksList() != null && !clockInOutFiltersDTO.getTasksList().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getTasksList())) {
+				String[] tasks = clockInOutFiltersDTO.getTasksList().split(",");
+				for(int i=0; i < tasks.length; i++) {
+					taskList.add(Long.parseLong(tasks[i]));
+				}
+				subQuery = subQuery + " AND clk.PROJECTS_TASK_ID IN (:taskList)";
+			}
+			if(clockInOutFiltersDTO.getGeneralTasksList() != null && !clockInOutFiltersDTO.getGeneralTasksList().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getGeneralTasksList())) {
+				String[] generalTask = clockInOutFiltersDTO.getGeneralTasksList().split(",");
+				for(int i=0; i < generalTask.length; i++) {
+					generalTaskList.add(Long.parseLong(generalTask[i]));
+				}
+				subQuery = subQuery + " AND clk.GENERAL_TASK_ID IN (:generalTaskList)";
+			}
+			if(clockInOutFiltersDTO.getAssociateList() != null && !clockInOutFiltersDTO.getAssociateList().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getAssociateList())) {
+				String[] associates = clockInOutFiltersDTO.getAssociateList().split(",");
+				for(int i=0; i < associates.length; i++) {
+					associateList.add(Long.parseLong(associates[i]));
+				}
+				subQuery = subQuery + " AND clk.USER_ID IN (:associateList)";
+			}
+			if(clockInOutFiltersDTO.getTeamsList() != null && !clockInOutFiltersDTO.getTeamsList().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getTeamsList())) {
+				String[] teams = clockInOutFiltersDTO.getTeamsList().split(",");
+				for(int i=0; i < teams.length; i++) {
+					teamsList.add(Long.parseLong(teams[i]));
+				}
+ 				subQuery = subQuery + " AND tm.TEAM_ID IN (:teamsList)";
+			}
+			
+			if(clockInOutFiltersDTO.getCurrentDate() != null && !clockInOutFiltersDTO.getCurrentDate().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getCurrentDate())) {
+				String[] currDates = clockInOutFiltersDTO.getCurrentDate().split("To");
+				for(int i=0; i < currDates.length; i++) {
+			        SimpleDateFormat sdf1 = new SimpleDateFormat(orgLocation.getDateFormat());
+			        java.util.Date date = sdf1.parse(currDates[i]);
+			        java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
+					dateRangeList[i] = sqlStartDate;
+				}
+ 				subQuery = subQuery + " AND clk.CLOCK_IN_DATE BETWEEN (:dateRangeStart) AND (:dateRangeEnd)";
+			}
+			
+//			if(sendDate != null ) {
+//			        sqlCurrDate = new java.sql.Date(sendDate.getTime());
+//			        subQuery = subQuery + " AND clk.CLOCK_IN_DATE =:dateCurrent";
+//			}
+ 				
+			Query queryObj = session.createSQLQuery(sb.toString()+subQuery);
+			queryObj.setLong("clkOrgLocationID", orgLocation.getId());
+			queryObj.setLong("uRoleOrgLocationID", orgLocation.getId());
+			queryObj.setLong("empOrgLocationID", orgLocation.getId());
+			
+			if(clockInOutFiltersDTO.getOrgDepartments() != null && !clockInOutFiltersDTO.getOrgDepartments().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getOrgDepartments()))
+				queryObj.setParameterList("deptList", deptList);
+			if(clockInOutFiltersDTO.getUserRole() != null && !clockInOutFiltersDTO.getUserRole().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getUserRole()))
+				queryObj.setParameterList("userRolesList", userRolesList);
+			if(clockInOutFiltersDTO.getJobsList() != null && !clockInOutFiltersDTO.getJobsList().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getJobsList()))
+				queryObj.setParameterList("jobsList", jobsList);
+			if(clockInOutFiltersDTO.getProjectList() != null && !clockInOutFiltersDTO.getProjectList().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getProjectList()))
+				queryObj.setParameterList("projectList", projectList);
+			if(clockInOutFiltersDTO.getTasksList() != null && !clockInOutFiltersDTO.getTasksList().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getTasksList()))
+				queryObj.setParameterList("taskList", taskList);
+			if(clockInOutFiltersDTO.getGeneralTasksList() != null && !clockInOutFiltersDTO.getGeneralTasksList().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getGeneralTasksList()))
+				queryObj.setParameterList("generalTaskList", generalTaskList);
+			if(clockInOutFiltersDTO.getAssociateList() != null && !clockInOutFiltersDTO.getAssociateList().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getAssociateList()))
+				queryObj.setParameterList("associateList", associateList);
+			if(clockInOutFiltersDTO.getTeamsList() != null && !clockInOutFiltersDTO.getTeamsList().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getTeamsList()))
+				queryObj.setParameterList("teamsList", teamsList);
+			if(clockInOutFiltersDTO.getCurrentDate() != null && !clockInOutFiltersDTO.getCurrentDate().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getCurrentDate())) {
+				queryObj.setParameter("dateRangeStart", dateRangeList[0]);
+				if(dateRangeList[1] !=null)
+					queryObj.setParameter("dateRangeEnd", dateRangeList[1]);
+				else
+					queryObj.setParameter("dateRangeEnd", dateRangeList[0]);
+			}
+			
+//			if(sendDate != null ) {
+//		        queryObj.setParameter("dateCurrent", sqlCurrDate);
+//			}
+				
+			queryObj.setResultTransformer(Transformers.aliasToBean(ClockInOutAssociateReportSummaryDTO.class));
+			associateReportSummaryList = queryObj.list();
+					
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return associateReportSummaryList;
 	}
 
 	@Override
@@ -735,6 +904,38 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 		}else {
 			return null;
 		}
+	}
+
+	@Override
+	@Transactional
+	public List<ClockInOut> getListOfClockDataBasedOnDate(String selectedDate, OrgLocations loginOrgLocation, Long userId) {
+		List<ClockInOut> clockList = null;
+		try {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			Date date = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), selectedDate);
+			java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append("SELECT clk.CLOCK_IN_TIME as clockInTime,")
+			.append("clk.CLOCK_IN_DATE as clockInDate,")
+			.append("task.TASK_NAME as projectTaskName,")
+			.append("clk.TOTAL_TIME as totalTime,")
+			.append("clk.COMMENTS as comments,")
+			.append("clk.CLOCK_OUT_TIME as clockOutTime, ")
+			.append("clk.CLOCK_OUT_DATE as clockOutDate ")
+			.append("FROM CLOCK_INOUT clk INNER JOIN PROJECT_TASKS task ")
+			.append("ON clk.PROJECTS_TASK_ID = task.ID and clk.USER_ID =:userId and clk.ORG_LOCATION_ID =:orgLocationId and clk.CLOCK_IN_DATE =:sqlDate and clk.CLOCK_OUT_DATE is NOT NULL");
+			
+			clockList = session.createSQLQuery(sb.toString())
+			.setLong("userId", userId)
+			.setLong("orgLocationId", loginOrgLocation.getId())
+			.setDate("sqlDate", sqlDate)
+			.setResultTransformer(Transformers.aliasToBean(ClockInOutUserTimeEntryDTO.class)).list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return clockList;
 	}
 
 }

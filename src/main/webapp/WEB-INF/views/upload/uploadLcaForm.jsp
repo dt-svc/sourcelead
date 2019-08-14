@@ -6,19 +6,6 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<style type="text/css">
-.center-div {
-	width: 300px;
-	height: 30px;
-	margin: 10px 220px 0;
-}
-
-.center-div input {
-	border: none;
-	background: transparent
-}
-</style>
-
 <script type="text/javascript">
 var uploadflag= true;
 		window.onload = function () {
@@ -160,6 +147,7 @@ function fetchFieldsWithMatchedColumn(){
 	var uploadType = "lcaUpload";
 	var headerPosition = $("#headerPosition").val();
         if (($('#upload_lca_form').validate(false, validationSettings))){
+        	$('#upload_button').prop('disabled', true);
       	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
           	$.ajax({
     			type: "POST",

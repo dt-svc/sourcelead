@@ -223,7 +223,21 @@ public RequirementWorkFlow getRequirementWorkFlowById(Long id) {
 		return requirementQuestionnaireTemplate;
 		
 	}
+	
 
+	@Override
+	public RequirementQuestionnaireTemplate getQuestionnaireByTemplateId(long templateId) throws Exception {
+		RequirementQuestionnaireTemplate template = null;
+		logger.info("inside getting template by id " + templateId);
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			template = (RequirementQuestionnaireTemplate) session.get(RequirementQuestionnaireTemplate.class,templateId);
+		} catch (Exception e) {
+			logger.error("Exception caught while getting template by id " + templateId);
+			e.printStackTrace();
+		}
+		return template;
+	}
 	@Override
 	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesListByUuid(String uuid, Long orgLocationId) throws Exception {
 		try {

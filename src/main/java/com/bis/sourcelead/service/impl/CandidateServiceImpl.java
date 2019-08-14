@@ -1105,6 +1105,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}else{
 				candidate.setNoticePeriod(null);
 			}
+			
+			if(candidate.getOtherNoticePeriod() != null) {
+				candidateDTO.setOtherNoticePeriod(candidate.getOtherNoticePeriod());
+			  }
+			
 			if(StringUtils.isNotBlank(candidateDTO.getAddress())){
 				candidate.setAddress(candidateDTO.getAddress());
 			}else{
@@ -1518,6 +1523,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}else{
 			candidate.setPanNumber(null);
 		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
+			candidate.setSsnNumber(addUserDTO.getSsn());
+	    }
+		
 		if(StringUtils.isNotBlank(candidateDTO.getAadharNumber())){
 			candidate.setAadharNumber(candidateDTO.getAadharNumber());
 		}else{
@@ -2503,9 +2513,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		
 		 String noticePeriod = null;
+		 candidate.setOtherNoticePeriod(null);
 		if(candidateDto.getNoticePeriod() != null)
 			noticePeriod = candidateDto.getNoticePeriod().replaceAll("\\s+", " ");
-		
+		    
 	    if(noticePeriod != null) {
 		if(candidate.getNoticePeriod() != null  && candidate.getNoticePeriod() != "" && !noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())){
 			 activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(noticePeriod).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -2515,6 +2526,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			activitySummary.append("Notice Period").append(" : ").append("---").append(" ");
 			candidate.setNoticePeriod(noticePeriod);	
 	     }
+	    
+	    if(candidate.getNoticePeriod() != null && "Other".equalsIgnoreCase(candidate.getNoticePeriod())) {
+
+	    		   candidate.setOtherNoticePeriod(candidateDto.getOtherNoticePeriod());
+	    	    }
 		
 		if(candidateDto.getAddress() !=null){
 			if(candidate.getAddress() != null   && candidate.getAddress() != "" && !candidateDto.getAddress().equalsIgnoreCase(candidate.getAddress())){
@@ -3433,10 +3449,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				 writeRow.createCell(0).setCellValue(candidate.getOrderNo());}
 			else {
 				writeRow.createCell(0).setCellValue("--");
+			}			
+			if(candidate.getOrderDate() !=null) {
+				writeRow.createCell(1).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getOrderDate()));
 			}
-			if(candidate.getOrderDate() !=null && !"".equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), candidate.getOrderDate()))) {
-				
-				writeRow.createCell(1).setCellValue(candidate.getOrderDate());}
 			else {
 				writeRow.createCell(1).setCellValue("--");
 			}
@@ -3538,6 +3554,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
 		return candidateDao.getCandidateDetailsBySsnNoAndId(ssnNumber, orgLocationId);
 	}
+	
+	@Override
+	public List<Candidate> getCandidatesForUpdateWorkLocation(Long masterCandidateId, Long orgId) throws Exception {
+		return candidateDao.getCandidatesForUpdateWorkLocation(masterCandidateId, orgId);
+	}
 
 	@Override
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception {
@@ -3554,6 +3575,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			throws Exception {
 		return candidateDao.getConsultantUserByCandidateIdOrMasterCandidateId(candidateId, masterCandidateId);
 	}
+
+	@Override
+	public Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		return candidateDao.getCandiateByConsultantUserIdAndOrgLocationId(userId, orgLocationId);
+	}
+
 	
 	
 }

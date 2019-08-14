@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.dao.ExpensesDao;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ExpensePendingApproveReportView;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -40,6 +42,7 @@ import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.reportsDTO.PendingForExpenseApprovalReportDTO;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
@@ -1014,7 +1017,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	        cell1.setColspan(18);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{5,5,5,7,6,6,4,5,5});
+            table.setWidths(new int[]{5,5,5,7,6,6,4,5,5,6});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -1121,6 +1124,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 							}else{
 								expenseArray[8] = "--";
 							}
+							if(null != expenseId.getBillingStatus()){
+								expenseArray[9] = expenseId.getBillingStatus();
+							}else{
+								expenseArray[9] = "--";
+							}
 							
 			}
 			arrayList.add(expenseArray);
@@ -1220,6 +1228,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 						if(null != expenseId.getExpenseStatus()){
 							writeRow.createCell(8).setCellValue(expenseId.getExpenseStatus().getValue());
 							createExcelsheet.autoSizeColumn(8);
+						}
+						if(null != expenseId.getBillingStatus()){
+							writeRow.createCell(9).setCellValue(expenseId.getBillingStatus());
+							createExcelsheet.autoSizeColumn(9);
 						}
 		}
 	return createExcelsheet;
@@ -1328,5 +1340,39 @@ public class ExpensesServiceImpl implements ExpensesService{
 		// TODO Auto-generated method stub
 		return  expensesDao.getAllExpenses();
 	}
-	
+
+	@Override
+	public List<PendingForExpenseApprovalReportDTO> getPendingForApprovalExpenseReportByProjectIds(String projectIds,
+			Date frequencyStartDate, Date frequencyEndDate, String locationDateFormat) {
+		List<PendingForExpenseApprovalReportDTO> pendingForExpenseApprovalReportDTOList = new LinkedList<>();
+		try {
+			List<ExpensePendingApproveReportView> expenseList = expensesDao
+					.getPendingForApprovalExpenseReportByProjectIds(projectIds, frequencyStartDate, frequencyEndDate);
+			if (expenseList != null && !expenseList.isEmpty()) {
+				for (ExpensePendingApproveReportView expenses : expenseList) {
+					PendingForExpenseApprovalReportDTO pendingForExpenseApprovalReportDTO = new PendingForExpenseApprovalReportDTO();
+					pendingForExpenseApprovalReportDTO.setEmployeId(expenses.getEmpId().toString());
+					pendingForExpenseApprovalReportDTO.setEmployeName(expenses.getEmpName());
+					pendingForExpenseApprovalReportDTO.setEmployeType(expenses.getEmploymentType());
+					pendingForExpenseApprovalReportDTO.setApprovalMechanism(expenses.getApprovalMechanism());
+					pendingForExpenseApprovalReportDTO.setApprovedBy(expenses.getActionPerformedby());
+					pendingForExpenseApprovalReportDTO.setManagerOne(expenses.getLevel1Name());
+					pendingForExpenseApprovalReportDTO.setManagerTwo(expenses.getLevel2Name());
+					// pendingForExpenseApprovalReportDTO.setNoofDaysPending(expenses);
+					pendingForExpenseApprovalReportDTO.setFrequency(expenses.getDuration());
+					pendingForExpenseApprovalReportDTO.setSubmittedAmount(expenses.getSubmittedAmount().toString());
+					pendingForExpenseApprovalReportDTO.setSubmittedOn(
+							commonUtil.dateStrFromOrgDateFormatter(locationDateFormat, expenses.getSubmittedDate()));
+					pendingForExpenseApprovalReportDTO.setProjectName(expenses.getProjectName());
+					// set all DTO values
+
+					pendingForExpenseApprovalReportDTOList.add(pendingForExpenseApprovalReportDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return pendingForExpenseApprovalReportDTOList;
+	}
+
 }

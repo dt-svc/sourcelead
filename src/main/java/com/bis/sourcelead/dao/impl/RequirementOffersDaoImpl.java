@@ -109,7 +109,7 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementOffers requirementOffer left join fetch requirementOffer.submissionId submission left join fetch submission.orgLocations left join fetch submission.candidateResumes left join fetch submission.requirement "
 				+ " left join fetch submission.candidate candidate left join fetch candidate.consultantUser consultantUser where requirementOffer.submissionId.orgLocations.id = :orgLocationId "
-				+ " and requirementOffer.submissionId.submissionStatus = 'OFFERACCEPTED' and requirementOffer.offerStatus = 'OFFERACCEPTED' and consultantUser.id IS NULL ";
+				+ " and (requirementOffer.submissionId.submissionStatus = 'OFFERACCEPTED' or submission.submissionStatus ='joined' )and requirementOffer.offerStatus = 'OFFERACCEPTED' and consultantUser.id IS NULL ";
 		List<RequirementOffers> requirementOffersList =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		
 		return requirementOffersList;

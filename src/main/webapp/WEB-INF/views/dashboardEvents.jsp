@@ -2,24 +2,14 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<style type="text/css">
-.chosen-container {
-    width: 100% !important;
-}
-.add_inter  .customchosen-select .chosen-container {
-width: 100% !important;
-}
-.validationError p.jquery_form_error_message {
-width: 75px; padding: 0 !important;
-}
-</style>
+
  <!-- Applicant Authorization -->
       <div class="mb eventAlert clearfix col-md-12 noPad">
         <div class="dashNewWrap clearfix mb10">
         <div class="dashNewWrapHead event_calendar">
             <h4 class="pull-left">Events</h4>
             <sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">
-            <button class="btn btn-primary pull-left btn-sm ml mt7" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
+            <button id="scheduleInterview" class="btn btn-primary pull-left btn-sm ml mt7" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
             </sec:authorize>
 
 <div class="dashboardoverIcon pull-right">
@@ -174,6 +164,7 @@ width: 75px; padding: 0 !important;
 
 <script type="text/javascript">
 function getJobFairs() {
+	$("#scheduleInterview").hide();
 	$("#interviewsTab").removeClass("active");
 	$("#dashboardEventsDiv").hide();
 	$(".dashboardoverIcon").hide();
@@ -185,6 +176,7 @@ function getJobFairs() {
 }
 
 function getInterviewsandTasks() {
+	$("#scheduleInterview").show();
 	$("#interviewsTab").addClass("active");
 	$("#dashboardEventsDiv").show();
 	$(".dashboardoverIcon").show();
@@ -448,7 +440,7 @@ function dashboardAddInterview(){
 	  }  
 	
 	var result = "";
-	result = result + '<div class="add_inter addinterview_dashboard">';
+	result = result + '<div class="add_inter addinterview_dashboard add_inter_chosen">';
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
 	result = result + '<div class="add_inter_head"> <span>Schedule Interview</span>';
 	result = result + '<div class="clearfix"></div>';   
@@ -530,7 +522,7 @@ function dashboardAddInterview(){
 		result = result + '		</td>';
 
 		result = result + '		<td>';
-		result = result + '			<div class="pull-left timeZone validationError" id="timeDiv"> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="Start Time" name="1startTime" id="1startTime" onBlur="validateEndTime();" type="text" data-validation="required" field-name="Start Time"/></span> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="End Time" name="1endTime" id="1endTime" onBlur="validateEndTime();" type="text" field-name="End Time"/></span></div>';
+		result = result + '			<div class="pull-left timeZone validationError_paragraph" id="timeDiv"> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="Start Time" name="1startTime" id="1startTime" onBlur="validateEndTime();" type="text" data-validation="required" field-name="Start Time"/></span> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="End Time" name="1endTime" id="1endTime" onBlur="validateEndTime();" type="text" field-name="End Time"/></span></div>';
 		result = result + '		</td>';
 
 		result = result + '		<td>';
@@ -647,6 +639,7 @@ function interviewTemplate(){
 			 	        $("#interviewSubmissionTemplate").chosen();
 			 			$("#interviewSubmissionTemplate").trigger('chosen:update');
 			 			$('.chosen-container').css({'width': '100% !important'});
+			 			$(".chosen-container").attr('style', 'width:100% !important');
 			 			
 			        }else{
 			        	$("#emptyTemplate").empty();
@@ -1143,20 +1136,6 @@ $(function(){
 	$('#example').timepicker(); 
 });
 </script>  
- 
-<style>
-.Highlighted a {
-	background-color : #9ACD32 !important;
-	font-weight:bold !important;
-	font-size: 12pt;
-}
-.HighlightedFair a {
-	background-color : #32A7CD !important;
-	font-weight:bold !important;
-	font-size: 12pt;
-}
-</style>
-  	
  <!-- <script>
  function personalInfo(){
      $(".userdetails").toggle();
