@@ -37,12 +37,11 @@ window.onload = function () {
 	<div class="project_wrap">
 	<div id="choicepopUp"></div>
 	 <div id="goalsLoading"></div>
-	  <form:form id="addGoal_form"  name="addGoal_form" method="post">
+	  <form:form id="addGoalPercentage_form"  name="addGoalPercentage_form" method="post">
 	 	<div class="clearfix newAddWidth">
 		    <div class="form-horizontal mt myForm">
 		    	 	 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt"> 
-		    	 	 <input type="hidden" name="goalId" id="goalId" />
-		    	 	 <input type="hidden" name="goalType" id="goalType" />
+		    	 	 <input type="hidden" name="goalUUID" id="goalUUID" />
 		    	 	 <input type="hidden" name="performanceGoalType" id="performanceGoalType" value="Self_Goal" />
 		    	 	 
 		    	 	 	<div class="form-group">
@@ -101,11 +100,11 @@ window.onload = function () {
 					</div>
 		 <div class="clearfix"></div>       
 	        <div class="popupFoot text-right">
-	           <button type="button" class="slBtn md colorBtn" id="savePerformanceGoals" onclick="performanceGoals.savePerformanceGoals();" >Save</button>
+	           <button type="button" class="slBtn md colorBtn" id="savePerformanceGoals" onclick="performanceGoals.savePerformanceGoalPercentage();" >Save</button>
 	           <button type="button" class="slBtn md popClose"  onclick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/performanceGoalsList'" >Cancel</button>
 	        </div>
-		    </div>
 		     </form:form>
+		      </div>
 	    </div>
     </div>
 	
