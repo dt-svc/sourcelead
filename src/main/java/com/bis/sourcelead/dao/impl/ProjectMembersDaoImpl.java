@@ -1795,11 +1795,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			}
 			
 		}else{
-			if(dayWiseTimesheetReoprtsDto.getLoginUserRoleType().equalsIgnoreCase("ROLE_ADMIN") && StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
-					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES)) {
-				loginUserRoleQuery += " and pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"'  "+memberStatusQuery+") ";
-			}else {
-				loginUserRoleQuery += " and pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"'  "+memberStatusQuery+") ";
+			if( dayWiseTimesheetReoprtsDto.getLoginUserRoleType().equalsIgnoreCase("ROLE_ADMIN") || (StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
+					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES))) {
+				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"'  "+memberStatusQuery+")) ";
 			}
 		}
 		
