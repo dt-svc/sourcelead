@@ -6,14 +6,18 @@
 
 <link href="/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
 
- <script>
-$(window).load(function() {
+<script>
+	$(window).load(function() {
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
+	// written common method in slead-common.js for date formats start
+	var finalDateFormat = getJSDateFormat(locationDate);
 	$('#publishedDate').datepicker({
-		changeMonth: true,
-		changeYear: true, 
-		minDate: 0
+	dateFormat: finalDateFormat,
+	changeMonth: true,
+	changeYear: true, 
+	minDate: 0
 	});
-})
+	})
 </script>
 <div class="wraper">
 <!-- Content Area -->
