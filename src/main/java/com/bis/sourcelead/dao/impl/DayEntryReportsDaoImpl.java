@@ -80,6 +80,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		}
 			
 		List<DayWiseTimesheetReoprtsListDTO> daywiseReportList = new CopyOnWriteArrayList<DayWiseTimesheetReoprtsListDTO>();
+		List<DayWiseTimesheetReoprtsListDTO> reportList = new CopyOnWriteArrayList<DayWiseTimesheetReoprtsListDTO>();
 		List<Long> userHierarchyIds =  userDao.getUserHierarchyIdList(loginUser.getId());
 		String userHierarchyIdString = "0";
 		if(userHierarchyIds != null && !userHierarchyIds.isEmpty()) {
@@ -354,7 +355,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ " )Q1 ORDER BY Q1.timesheetDate ASC  "; 
 		
 		Query result = session.createSQLQuery(query).setFirstResult(start).setMaxResults(length);
-		List<DayWiseTimesheetReoprtsListDTO> reportList  = result.setResultTransformer(Transformers.aliasToBean(DayWiseTimesheetReoprtsListDTO.class)).list();
+		reportList  = result.setResultTransformer(Transformers.aliasToBean(DayWiseTimesheetReoprtsListDTO.class)).list();
 		if(reportList != null && !reportList.isEmpty()) {
 			for(DayWiseTimesheetReoprtsListDTO daywiseDTO : reportList) {
 				if(daywiseDTO.getParentCandidteId() != null) {
