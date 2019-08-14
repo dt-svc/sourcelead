@@ -696,7 +696,7 @@ function createTemplateDocs(saveType){
     }; 
 	
 	var atsUrl ='${SourceLeadWeb_atsUrl}';
-	  
+	  alert("docs"+atsUrl)
 	if ($('#templateDocuments_form').validate(false, validationSettings)) {
 		$("#save_doc_button").attr("disabled", "disabled");
 		$("#save_continue_doc_button").attr("disabled", "disabled");
@@ -1033,7 +1033,7 @@ function validateTemplateName(){
 
 <script>
 function getOffboardingTasksList(){
-	
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var offboardTaskDiv = document.getElementById("offboardTaskDiv").value;
 	if(offboardTaskDiv == 'Y'){
 	
@@ -1044,7 +1044,7 @@ function getOffboardingTasksList(){
 		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getOffboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+		    url: atsUrl+"/getOffboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 		    success: function(response) {
 		    	if (response.response === "AWKWARD") {
 		    	    location.href = "/errorPage";
@@ -1117,7 +1117,7 @@ function getOffboardingTasksList(){
 	}
 }
 function redirect(){
-	window.location.href = sourceleadUrl +  "/offboardingTemplatesList";
+	window.location.href = atsUrl +  "/offboardingTemplatesList";
 }
 </script>
 
@@ -1153,11 +1153,13 @@ function deleteTask(taskId){
 
 <script>
 function saveAndFinishOffboardTemplate(templateId){
-	$("#finish_task").attr("disabled", "disabled");
+	
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
+   $("#finish_task").attr("disabled", "disabled");
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/saveAndFinishOffboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+	    url: atsUrl+"/saveAndFinishOffboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(response) {
 	    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
     		    showError(response.responseMessage);
@@ -1166,7 +1168,7 @@ function saveAndFinishOffboardTemplate(templateId){
 	    	} else if (response.response === "SUCCESS") {
 	    		$("#finish_task").removeAttr("disabled");
 		    	$("#loading").removeAttr("style");
-		    	location.replace(sourceleadUrl+"/offboardingTemplatesList"); 
+		    	location.replace(atsUrl+"/offboardingTemplatesList"); 
 	    	} else if (response.indexOf('Sign In') !== -1) {
 	    		location.replace(sourceleadUrl);
 	    	} else {
@@ -1179,8 +1181,7 @@ function saveAndFinishOffboardTemplate(templateId){
 
 <script>
 function getOffboardingCheckList(){
-	
-	
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var result = "";
 	var templateId = document.getElementById("templateId").value;
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1239,8 +1240,8 @@ function getOffboardingCheckList(){
 	           $("#offboardingCheckList").append(result); 
 	           $("#offboardTasksList").empty();
 	           if(templateId){
-	           		customizeFields(templateId,sourceleadUrl,"template");
-				}     
+	           		customizeFields(templateId,atsUrl,"template");
+				}    
 	
 }
 </script>
@@ -1374,7 +1375,7 @@ function createTemplateCheckList(saveType){
 	        var con2 = JSON.stringify(fields);
 	        var jsonStringData = encodeURIComponent(con2);
 	        var formData = getFormData("offboardTemplate_form");
-	        
+	        var atsUrl ='${SourceLeadWeb_atsUrl}';
 	        if(submitTemplate){
 	        	var checkListTemplateId = $("#checkListTemplateId").val();
 	    	    $("#save_checkList_button").attr("disabled", "disabled");
@@ -1384,7 +1385,7 @@ function createTemplateCheckList(saveType){
 	        	  $.ajax({
 	      	    	type: "POST",
 	      	    	data: formData,
-	      	        url: sourceleadUrl+"/saveOffboardTemplateCheckList?${_csrf.parameterName}=${_csrf.token}&checkListTemplateId="+checkListTemplateId+"&jsonStringData="+jsonStringData, 
+	      	        url: atsUrl+"/saveOffboardTemplateCheckList?${_csrf.parameterName}=${_csrf.token}&checkListTemplateId="+checkListTemplateId+"&jsonStringData="+jsonStringData, 
 	      	        success: function(response) {
 	      	        	if (response.response === "AWKWARD") {
 	      	        	    location.href = "/errorPage";
