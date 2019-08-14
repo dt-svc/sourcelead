@@ -3,6 +3,7 @@ package com.bis.sourcelead.timesheet.dao.impl;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -13,10 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsListDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -34,7 +39,14 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 	
 	@Autowired
 	UserRoleDao userRoleDao;
-
+	
+	@Autowired
+	CandidateDao candidateDao;
+	
+	@Autowired
+	EmployeesDao employeesDao;
+	
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
@@ -66,6 +78,9 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		if(userRole.getRoles() != null && !userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN")) {
 			userRoleQuery = " AND ((UR.REPORTING_MANAGER_ID = '"+loginUser.getId()+"') OR (PM.PROJECT_ID IN (SELECT PA.PROJECT_ID FROM PROJECT_APPROVER_HIERARCHY PA WHERE PA.APPROVER_USER_ID = '"+loginUser.getId()+"' AND PA.PROJECT_ID IN (" + projectIds + ") ) ) ) ";
 		}
+		
+		
+		List<DayWiseTimesheetReoprtsListDTO> daywiseReportList = new CopyOnWriteArrayList<DayWiseTimesheetReoprtsListDTO>();
 		
 		List<Long> userHierarchyIds =  userDao.getUserHierarchyIdList(loginUser.getId());
 		String userHierarchyIdString = "0";
@@ -336,6 +351,26 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		
 		Query result = session.createSQLQuery(query).setFirstResult(start).setMaxResults(length);
 		List<DayWiseTimesheetReoprtsListDTO> reportList  = result.setResultTransformer(Transformers.aliasToBean(DayWiseTimesheetReoprtsListDTO.class)).list();
+		
+		if(reportList != null && !reportList.isEmpty()) {
+			for(DayWiseTimesheetReoprtsListDTO daywiseDTO : reportList) {
+				if(daywiseDTO.getParentCandidteId() != null) {
+					Candidate candiate = candidateDao.getCandidateByCandidateId(daywiseDTO.getParentCandidteId().longValue());
+					if(candiate != null && candiate.getConsultantUser() != null) {
+						daywiseDTO.setCandidateLocation(candiate.getOrgLocationId().getOrgLocationAddress());
+						Employees employees = employeesDao.getEmployeeByUserIdAndOrgLocationsId(candiate.getConsultantUser().getId(), candiate.getOrgLocationId().getId());
+						if(employees != null) {
+							daywiseDTO.setEmployeeId(String.valueOf(employees.getId()));
+							if(employees.getDepartmentId() != null) {
+								daywiseDTO.setDepartmentName(employees.getDepartmentId().getDepartmentName());
+							}
+						}
+					}
+				}
+				daywiseReportList.add(daywiseDTO);
+			}
+		}
+		
 		String  countQuery = "SELECT COUNT(*) AS TOTAL FROM (" + query +")Q2;" ;
 		countlist = session.createSQLQuery(countQuery).list();
 		
