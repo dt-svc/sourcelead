@@ -175,6 +175,7 @@ function departmentPagination(){
     	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
+     		"sSearchPlaceholder": "Search",
      		"sZeroRecords": "", "sEmptyTable": ""
      	}
     } );

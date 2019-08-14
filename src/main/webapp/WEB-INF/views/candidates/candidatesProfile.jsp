@@ -152,12 +152,14 @@ function editCandidate(candidateId){
             			 	}
             			 	
             			 	var otherNoticePeriod = '';
- 	          			 	if(json.otherNoticePeriod != null && json.otherNoticePeriod != '' && json.otherNoticePeriod != 'undefined'){
- 	          			 		otherNoticePeriod = json.otherNoticePeriod;            			 		
+
+            			 	if(json.otherNoticePeriod != null && json.otherNoticePeriod != '' && json.otherNoticePeriod != 'undefined'){
+            			 		otherNoticePeriod = json.otherNoticePeriod;            			 		
             			 	}else{
             			 		otherNoticePeriod = '';  
- 	          			 	 }
+            			 	 }
             			 	
+        			 	
             			 	
 							var result ='';
 							result  = result + '<div class="success_pop" id="selector11" style="display: none;">';
@@ -391,7 +393,9 @@ function editCandidate(candidateId){
 							result = result + ' </div>';
 							
 							result = result + '<div class="col-md-6 noticePeriodUpdateDiv" id="noticePeriodUpdateDiv" style="display:none">';
-	                        result = result + '<input type="text" class="form-control input-sm" name="otherNoticePeriod"  id="otherNoticePeriodEdit" value="'+otherNoticePeriod+'" placeholder=" Notice Period Other" field-name="Other Notice Period" data-validation="validate_Space validate_length length1-150" data-validation-optional="true">';
+
+							result = result + '<input type="text" class="form-control input-sm" name="otherNoticePeriod"  id="otherNoticePeriodEdit" value="'+otherNoticePeriod+'" placeholder=" Notice Period Other" field-name="Other Notice Period" data-validation="validate_Space validate_length length1-150" data-validation-optional="true">';
+
 							result = result + '</div>';
 							
 							result = result + '</div>';
@@ -552,14 +556,14 @@ function editCandidate(candidateId){
 							
 							
 						    result = result + '<span class="" id="hideVendor" style="display:none">'; 
-							result = result + '<div class="col-md-6 custom-fields select-arrow" id="errorvendor">';
+							result = result + '<div class="col-md-6 custom-fields select-arrow chosen-select-anchor" id="errorvendor">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="vendors" data-validation-optional="true"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">';
 							result = result + '</select>';
 							result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
 							result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'" />';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-6 custom-fields select-arrow mt" id="errorvendorContact">';
+							result = result + '<div class="col-md-6 custom-fields select-arrow mt chosen-select-anchor" id="errorvendorContact">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="vendorcontact" data-validation-optional="true"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">';
 							result = result + '</select>';
 							result = result + '<input type="hidden" name="updateVendorContactName" id="updateVendorContactName" value="'+json.vendorContactName+'" />';
@@ -600,9 +604,13 @@ function editCandidate(candidateId){
 							if(json.designationType == "Other"){
 								$("#designationTypeDiv").show();
 						      }
+
+							
 							if(json.noticePeriod == "Other"){
 								$("#noticePeriodUpdateDiv").show();
-								}
+						      }
+							
+
 							employementType();
 							getVendorsByOrgLocation();
 							$(".candidate-editdetails").addClass("candidate-editdetails-active");
@@ -1841,6 +1849,24 @@ function updateDesignationOtherType(){
 		   document.getElementById("designationTypeDiv").style.display="none";
 		  $("#designationOtherType").attr("data-validation-optional", "true");
 		  $("#designationTypeDiv").find('p.jquery_form_error_message').remove();
+	} 
+}
+</script>
+
+<!-- Notice Period Type Other Script written By Prasad K-->
+
+<script>
+function updateOtherNoticePeriod(){
+	 var noticePeriod = $('#noticePeriodEdit').val(); 
+	 var editVal = $('#otherNoticePeriodEdit').val();
+	if(noticePeriod == 'Other' &&  noticePeriod != '' && noticePeriod !='undefined'){
+		  document.getElementById("noticePeriodUpdateDiv").style.display="block";
+		  $('#otherNoticePeriodEdit').removeAttr('data-validation-optional');
+          $("#otherNoticePeriodEdit").attr("data-validation", "validate_Space required validate_length length1-150");
+	}else{
+		   document.getElementById("noticePeriodUpdateDiv").style.display="none";
+		  $("#otherNoticePeriodEdit").attr("data-validation-optional", "true");
+		  $("#noticePeriodUpdateDiv").find('p.jquery_form_error_message').remove();
 	} 
 }
 </script>

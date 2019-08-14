@@ -130,7 +130,10 @@ public class PaymentAccountController {
         response.setResponseMessage(Result.INVALID_DATA.getValue());
         if (orgLocation != null && org != null) {
             if (Validator.validate(account)) {
-                account.setOrgId(org.getId());
+            	account.setOrgId(org.getId());
+            	if(account.getEmail().isEmpty()) {
+            		account.setEmail(null);
+            	}
                 long id = orgService.savePaymentAccount(account);
                 if (id > 0) {
                     if (PaymentAccountType.valueOf(account.getAccountType()) == PaymentAccountType.WEPAY) {
@@ -353,7 +356,8 @@ public class PaymentAccountController {
         return response;
     }
     
-    @RequestMapping(value = "/app/change-associate-default-payment-account", method = RequestMethod.POST)
+    @SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/app/change-associate-default-payment-account", method = RequestMethod.POST)
     @ResponseBody
     public com.bis.sourcelead.dto.Response changeassociateDefaultAccount(HttpServletRequest request, 
             long id,long candidateId, boolean defaultAccount) {

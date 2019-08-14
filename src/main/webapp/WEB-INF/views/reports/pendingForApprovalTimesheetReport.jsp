@@ -12,7 +12,7 @@ $(document).ready(function() {
  <script>
 function getJobsReportCustomDates(){
 	 var dateSelection = $("#dateSelection").val(); 
-	 if(dateSelection == 'custom'){
+	 if(dateSelection === 'custom'){
 		 document.getElementById("customSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
 		 
@@ -59,7 +59,7 @@ function reloadFunction(){
             <option value="custom">Custom</option>
           </select>
     <!-- Top Leave Takers Custom Date -->
-          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
+          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="width: 346px;">
             <div class="pull-left">
               <div class="pull-left mr5" style="width: 140px" id="errMsgFrm">
                 <input type="text" class="form-control calendar" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
@@ -87,9 +87,9 @@ function reloadFunction(){
    <div class="vendor_wrap mt">
 	<div class="tableStyles overflow_inherint">
       <div class="clearfix datatable_filter positionRelative mt10 exportButton_custom">
-      	<div class="positionRelative timesheet_head clearfix">
+      	<div class="positionRelative timesheet_head clearfix minHeight50">
       	<ul class="pull-right list-unstyled list-inline">
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" id ="exportDiv" onclick="newActions();"></a>
 					<div class="newActPop" style="display: none;">
 						<span>
 		           	   		<a href="javascript:void(0)" onclick="timesheetsPendingExport('Pdf');" title="PDF">Export PDF</a>
@@ -243,9 +243,17 @@ function getPendingForApprovalTimesheetReports(){
 		        result = result +'</tbody>';
 		        result = result + '</table>';
 		        
-		        $("#pendingForApprovalTimesheetDiv").empty();
-				$("#pendingForApprovalTimesheetDiv").append(result);
+		        if(report != "" && report != null && report != 'undefined'){
+		        	$("#pendingForApprovalTimesheetDiv").empty();
+					$("#pendingForApprovalTimesheetDiv").append(result);
+					$("#exportDiv").show();
+		        }else{
+		        	$("#pendingForApprovalTimesheetDiv").empty();
+					$("#pendingForApprovalTimesheetDiv").append(result);
+		        	$("#exportDiv").hide();
+		        }
 				dynamicMissingTimesheetReportPagination();
+				document.getElementById("customSearch").style.display="none";
 		    }
 		 });
 	  }	  
