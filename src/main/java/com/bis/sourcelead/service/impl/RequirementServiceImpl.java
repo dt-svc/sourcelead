@@ -3254,7 +3254,7 @@ public class RequirementServiceImpl implements RequirementService {
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 		Cell cell11 = writeRow.createCell(0);
-		cell11.setCellValue("Closed : ");
+		cell11.setCellValue("Cancel : ");
 		cell11.setCellStyle(style);
 		Cell cell12 = writeRow.createCell(1);
 		cell12.setCellValue(requirementSubCount.getCancelRequirementCount());
