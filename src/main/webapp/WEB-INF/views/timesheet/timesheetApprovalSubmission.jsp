@@ -390,7 +390,7 @@
 									          </c:if>
 									          <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
 									          <div>
-									        	<input type="text"   id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id" value="${ticketNumber}" field-name="" onblur="setTicketNumber('${entryIndex}','${leaveIndex+entryCount.index+1}ticketNumber1Id');" class="timeTick" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-10" >
+									        	<input type="text"   id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id" value="${ticketNumber}" field-name="Ref/Ticket No" onblur="setTicketNumber('${entryIndex}','${leaveIndex+entryCount.index+1}ticketNumber1Id');" class="timeTick" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-10" >
 									          </div>
 									         </c:if>
 									      </td>	

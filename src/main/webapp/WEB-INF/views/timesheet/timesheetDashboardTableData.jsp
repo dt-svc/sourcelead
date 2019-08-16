@@ -39,7 +39,7 @@
 	    	 <!--   <span id="" name="" ></span>	 -->
    		</div>
    		 <div id="divadttTd10" style="display:none;">
-		    	  <div><input type="text" id="REPLACEROWIDticketNumber1Id" name="REPLACEROWIDticketNumber1Id" onblur="setTicketNumber('ENTRYINDEX','REPLACEROWIDticketNumber1Id');" class="timeTick" field-name=" "></div>	
+		    	  <div><input type="text" id="REPLACEROWIDticketNumber1Id" name="REPLACEROWIDticketNumber1Id" onblur="setTicketNumber('ENTRYINDEX','REPLACEROWIDticketNumber1Id');" class="timeTick" field-name="Ref/Ticket No"></div>	
 	   </div>
 	    <div id="divadttTd12" style="display:none;">
 	             <div>
