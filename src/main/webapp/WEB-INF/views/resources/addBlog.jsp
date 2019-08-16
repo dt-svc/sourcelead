@@ -6,14 +6,18 @@
 
 <link href="/resources/css/summernote-new.css" rel="stylesheet" type="text/css">
 
- <script>
-$(window).load(function() {
+<script>
+	$(window).load(function() {
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
+	// written common method in slead-common.js for date formats start
+	var finalDateFormat = getJSDateFormat(locationDate);
 	$('#publishedDate').datepicker({
-		changeMonth: true,
-		changeYear: true, 
-		minDate: 0
+	dateFormat: finalDateFormat,
+	changeMonth: true,
+	changeYear: true, 
+	minDate: 0
 	});
-})
+	})
 </script>
 <div class="wraper">
 <!-- Content Area -->
@@ -146,7 +150,7 @@ $(window).load(function() {
           <input type="button" value="Publish" class="btn btn-primary" id="publish" onclick="saveBlog('published');">
            <input type="hidden" value="${sourceleadBlog.blogUUID}" id="blogUUID">
           <input type="button" value="Save" class="btn btn-info ml mr" id="save" onclick="saveBlog('Publish');">
-          <input type="button" value="Cancel" id="cancel" onClick="javascript:window.location.href ="${SourceLeadWeb_sourceleadUrl}/blogs" class="btn btn-default">
+          <input type="button" value="Cancel" id="cancel" onclick="javascript:window.location.href ='${SourceLeadWeb_sourceleadUrl}/blogs'"  class="btn btn-default">
         </div>
       </div>
     </div>
