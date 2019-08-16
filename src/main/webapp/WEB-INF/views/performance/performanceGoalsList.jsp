@@ -650,12 +650,16 @@ function goalsPagination(url){
 	              "data": "actions",
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
+	            	    var loginUserId = '${SourceLeadWeb_userId}';
 	            	    var result = "";
 	            	    result = result +'<td>';
 	            	    result = result +'<div class="width150px clearfix">';
 	            	    result = result +'<ul class="list-unstyled list-inline ml clearfix">';
+	            	    
 	            	    result = result +'<li><a href="'+pmsUrl+'/addNewGoal?goalUUID='+opt.uuid+'"><i class="fa fa-pencil cursorPointer" title="Edit"></i></a></li>';
-	            	    result = result +"<li><a onclick='deletePerformanceGoal(\""+opt.uuid+"\")'><i class='fa fa-trash cursorPointer' title='Delete'></i></a></li>";
+	            	    if(opt.createdUserId == loginUserId){
+	 	            	     result = result +"<li><a onclick='deletePerformanceGoal(\""+opt.uuid+"\")'><i class='fa fa-trash cursorPointer' title='Delete'></i></a></li>";
+	            	    }
 	            	    result = result +'<li><a href="'+pmsUrl+'/goalSummary?goalUUID='+opt.uuid+'"><i class="fa fa-comments cursorPointer text-primary" title="Comment"></i></a></li>';
 		            	   if(opt.goalType == "New_Goal"){
 		            		   result = result +'<li><a href="'+pmsUrl+'/addNewSubGoal?goalUUID='+opt.uuid+'"><i class="fa fa-level-down cursorPointer textSuccess" title="Sub Goals"></i></a></li>';
