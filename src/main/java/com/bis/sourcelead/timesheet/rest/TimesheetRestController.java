@@ -3644,8 +3644,14 @@ public class TimesheetRestController {
 					fileUrl = pm.getProjectMemberCandidteId().getConsultantUser().getFileUrl();
 
 				timesheetEntryDetailsDTO.setProfileImageFileUrl(fileUrl);
-				timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getFullName());
-				timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
+				
+				if(pm.getProjectMemberCandidteId().getConsultantUser() != null) {
+					timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getConsultantUser().getFullName());
+					timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getConsultantUser().getEmail());
+				}else {
+					timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getFullName());
+					timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
+				}
 				
 				if(StringUtils.isNotEmpty(pm.getProjectMemberCandidteId().getMobilePhone())) {
 					timesheetEntryDetailsDTO.setEmployeePhoneNo(pm.getProjectMemberCandidteId().getMobilePhone());
