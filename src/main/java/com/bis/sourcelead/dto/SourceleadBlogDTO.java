@@ -25,7 +25,7 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 	
 	private List<String> keywords;
 	
-	private Date publishOn;
+	private String publishOn;
 	
 	private String fileContentType;
 
@@ -101,11 +101,13 @@ public class SourceleadBlogDTO extends SearchDTO implements Serializable{
 		this.keywords = keywords;
 	}
 
-	public Date getPublishOn() {
+	
+
+	public String getPublishOn() {
 		return publishOn;
 	}
 
-	public void setPublishOn(Date publishOn) {
+	public void setPublishOn(String publishOn) {
 		this.publishOn = publishOn;
 	}
 
