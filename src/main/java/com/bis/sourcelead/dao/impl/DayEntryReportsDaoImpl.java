@@ -356,7 +356,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 						daywiseDTO.setCandidateLocation(candiate.getOrgLocationId().getOrgLocationAddress());
 						Employees employees = employeesDao.getEmployeeByUserIdAndOrgLocationsId(candiate.getConsultantUser().getId(), candiate.getOrgLocationId().getId());
 						if(employees != null) {
-							daywiseDTO.setEmployeeId(String.valueOf(employees.getId()));
+							daywiseDTO.setEmployeeId(String.valueOf(employees.getEmployeeId()));
 							if(employees.getDepartmentId() != null) {
 								daywiseDTO.setDepartmentName(employees.getDepartmentId().getDepartmentName());
 							}
