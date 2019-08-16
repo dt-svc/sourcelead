@@ -947,9 +947,15 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
             	 
             	 if(fieldType == "star"){
             		 var StarHtml = '';
-            		 for(var i=1; i<=dropdown; i++){
-            			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
-  					}
+            		 if(labelAndAttemptsMap.get(label) == 0){
+            			 for(var i=1; i<=dropdown; i++){
+                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"   id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
+      					}
+                	 }else{
+                		 for(var i=1; i<=dropdown; i++){
+                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
+      					}}
+            		 
             	 }
             	 
             	 if(fieldType == "file"){
@@ -1088,11 +1094,16 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                              '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
                          
                      case 'star':
+                    	 if(labelAndAttemptsMap.get(label) == 0){
+                    		 input = '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'disabled></span>' ;
+                    	 }else{
+                    		 input =  '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' ;
+                    	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text starclass">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' +
+                             input +
                              '<ul class="list-unstyled list-inline text-muted" id="starRating-' + uniqueID + '">' +
                              '<div class="clearfix mt"></div>'+
                              StarHtml+
@@ -1102,13 +1113,19 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                              '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
                          
                      case 'file':
+                    	 if(labelAndAttemptsMap.get(label) == 0){
+                    		 input = '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload" disabled>' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'" disabled>';
+                            }else{
+                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >';
+                            }
                     	 return '' +
                          '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                          '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                          '<label for="text-' + uniqueID + '"></label>' +
                          '<div class="clearfix mt"></div>'+
-                         '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
-                         '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >'+
+                         input +
                          '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/\s+/g, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/\s+/g, '')+'\'></span></a>'+
                          '</div>'+
                          '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
