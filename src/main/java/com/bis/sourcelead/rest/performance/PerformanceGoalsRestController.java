@@ -7,7 +7,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +27,7 @@ import com.bis.sourcelead.dto.performance.PerformanceGoalsAttachmentsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsCommentsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDTO;
 import com.bis.sourcelead.dto.performance.PerformanceGoalsDoNutChartCountsDTO;
+import com.bis.sourcelead.dto.performance.PerformanceGoalsPercentageDTO;
 import com.bis.sourcelead.dto.performance.PerformanceTeamMembersDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -90,6 +91,7 @@ public class PerformanceGoalsRestController {
 	   }
 	  
 	  
+	  
 	  @RequestMapping(value = { "/savePerformanceGoals", "/rest/savePerformanceGoals" }, method = RequestMethod.POST)
 		public @ResponseBody Response<PerformanceGoalsDTO> savePerformanceGoals(PerformanceGoalsDTO performanceGoalsDTO,HttpServletRequest request) throws Exception {
 			  Response<PerformanceGoalsDTO> response = new  Response<>();
@@ -106,6 +108,46 @@ public class PerformanceGoalsRestController {
 	    		 response.setResponse(Result.INVALID_DATA.name());
 				 response.setResponseMessage(Result.INVALID_DATA.getValue());
 	    	 }
+			}catch (Exception e) {
+				e.printStackTrace();
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return response;
+		}
+	  
+	  
+	  @RequestMapping(value = { "/savePerformanceGoalPercentage", "/rest/savePerformanceGoalPercentage" }, method = RequestMethod.POST)
+		public @ResponseBody Response<PerformanceGoalsDTO> savePerformanceGoalPercentage(PerformanceGoalsPercentageDTO performanceGoalsPercentageDTO,HttpServletRequest request) throws Exception {
+			  Response<PerformanceGoalsDTO> response = new  Response<>();
+			
+			  try {
+			 
+				if(StringUtils.isNotBlank(performanceGoalsPercentageDTO.getGoalUUID())) {
+					PerformanceGoals goals = performanceGoalsService.getPerformanceGoalsByUUID(performanceGoalsPercentageDTO.getGoalUUID());
+					
+					if(goals != null) {
+						if(StringUtils.isNotBlank(performanceGoalsPercentageDTO.getGoalPercentage())) {
+							String percentageDone =  String.format("%.2f", Double.valueOf(performanceGoalsPercentageDTO.getGoalPercentage()));
+							goals.setPercentageDone(Double.valueOf(percentageDone));
+						}else {
+							goals.setPercentageDone(0d);
+						}
+						performanceGoalsService.savePerformanceGoals(goals);
+						
+						if(goals.getGoalId() != null) {
+							double percentage = performanceGoalsService.getPerformanceParentGoalsPercentageDoneCountBySubGoalsPercentageDoneCount(goals.getGoalId().getId());
+							String parentGoalPercentageDone =  String.format("%.2f", percentage);
+							PerformanceGoals parentGoal = performanceGoalsService.getPerformanceGoalsById(goals.getGoalId().getId());
+							parentGoal.setPercentageDone(Double.valueOf(parentGoalPercentageDone));
+							performanceGoalsService.savePerformanceGoals(parentGoal);
+						}
+						
+						 response.setResponse(Result.SUCCESS.name());
+						 response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				}
+				
 			}catch (Exception e) {
 				e.printStackTrace();
 				response.setResponse(Result.AWKWARD.name());
@@ -473,7 +515,7 @@ public class PerformanceGoalsRestController {
 		public @ResponseBody Response<PerformanceGoalsDTO> makeGoalAsCompleted(@RequestParam(value="goalUUID", required=true) String goalUUID,HttpServletRequest request) throws Exception {
 			  Response<PerformanceGoalsDTO> response = new  Response<>();
 			try {
-			 if(StringUtils.isNoneBlank(goalUUID)) {
+			 if(StringUtils.isNotBlank(goalUUID)) {
 				 PerformanceGoals goals =  performanceGoalsService.getPerformanceGoalsByUUID(goalUUID);
 				 goals.setPercentageDone(100d);
 				 performanceGoalsService.savePerformanceGoals(goals);
@@ -527,7 +569,7 @@ public class PerformanceGoalsRestController {
 	 		ResponseList<PerformanceTeamMembersDTO> resObj = new ResponseList<>();
 	 		
 			 try {
-				 if(StringUtils.isNoneBlank(goalUUID)) {
+				 if(StringUtils.isNotBlank(goalUUID)) {
 					 PerformanceGoals goals =  performanceGoalsService.getPerformanceGoalsByUUID(goalUUID);
 					 if(goals.getTeamId() != null) {
 						 List<PerformanceTeamMembersDTO> teamMembersList = performanceGoalsService.getPerformanceTeamMembersByTeamId(goals.getTeamId().getId());
@@ -576,7 +618,7 @@ public class PerformanceGoalsRestController {
 			public @ResponseBody Response<PerformanceGoalsDTO> deletePerformanceGoalByGoalUUID(@RequestParam(value="goalUUID", required=true) String goalUUID,HttpServletRequest request) throws Exception {
 				  Response<PerformanceGoalsDTO> response = new  Response<>();
 				try {
-				 if(StringUtils.isNoneBlank(goalUUID)) {
+				 if(StringUtils.isNotBlank(goalUUID)) {
 					 PerformanceGoals goals =  performanceGoalsService.getPerformanceGoalsByUUID(goalUUID);
 					 goals.setStatus(Constants.RECORD_INACTIVE);
 					 performanceGoalsService.savePerformanceGoals(goals);
