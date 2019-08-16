@@ -696,7 +696,6 @@ function createTemplateDocs(saveType){
     }; 
 	
 	var atsUrl ='${SourceLeadWeb_atsUrl}';
-	  alert("docs"+atsUrl)
 	if ($('#templateDocuments_form').validate(false, validationSettings)) {
 		$("#save_doc_button").attr("disabled", "disabled");
 		$("#save_continue_doc_button").attr("disabled", "disabled");
