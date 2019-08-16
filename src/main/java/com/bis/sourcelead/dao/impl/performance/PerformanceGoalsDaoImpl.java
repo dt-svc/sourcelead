@@ -493,6 +493,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 			 		 "FROM (" + 
 					 "SELECT " + 
 					"GOALS.ID AS id, " +
+					"GOALS.CREATED_BY AS createdUserId, " +
 					"GOALS.GOAL_NAME AS goalName," + 
 					"DATE_FORMAT(GOALS.START_DATE ,"+goalDateFormat+") AS goalStartDate, " + 
 					"DATE_FORMAT(GOALS.END_DATE ,"+goalDateFormat+") AS goalEndDate, " + 
@@ -554,7 +555,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<PerformanceGoals> performanceGoals = new ArrayList<PerformanceGoals>();
 		logger.debug("getPerformanceGoalsByUUID  start");
-		performanceGoals = session.createQuery("from PerformanceGoals goals left join fetch goals.goalId left join fetch goals.teamId where goals.uuid = :goalUUID " ).setString( "goalUUID", goalUUID).list();
+		performanceGoals = session.createQuery("from PerformanceGoals goals left join fetch goals.goalId left join fetch goals.teamId left join fetch goals.createdBy where goals.uuid = :goalUUID " ).setString( "goalUUID", goalUUID).list();
 		logger.debug("getPerformanceGoalsByUUID  end");
 		if (performanceGoals.size() > 0) {
 			return performanceGoals.get(0);
