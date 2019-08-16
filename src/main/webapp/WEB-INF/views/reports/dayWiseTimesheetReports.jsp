@@ -298,6 +298,7 @@ function getProjectMemberFromProjectId(){
 		designationType = '';
 	}
 	var projectType = $('#projectType').val();
+	  $("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
         url: sourceleadUrl + "/getProjectMembersBasedOnProjectId?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&employmentType="+designationType+"&typeOfProject="+projectType+"&associateStatus="+associateStatus,
         type: "POST",
@@ -313,6 +314,7 @@ function getProjectMemberFromProjectId(){
         	$("#projectMemberList").empty();
             $("#projectMemberList").append(output);
             $('#projectMemberList').trigger("chosen:updated");
+            $("#loadingId").removeAttr('style');
         }
     });
 }
