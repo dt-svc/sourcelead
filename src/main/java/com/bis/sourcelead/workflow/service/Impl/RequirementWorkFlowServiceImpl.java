@@ -693,33 +693,38 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	}
 	}
 	
-
+   /** comments added by SRINIVAS SABBU.
+    *  Below method is used reset the sequence order which are greater than the deleted stage.
+    */
 	@Override
 	public Boolean saveRequirementWorkFlowStagesBySeqOrder(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
 			OrgLocations orgLocations, User user) {
 		logger.debug("Started saveRequirementWorkFlowStagesBySeqOrder Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
 		try {
 		List<RequirementWorkFlowStages> workFlowStages = null;
+		// load the deleted stage here.
 		RequirementWorkFlowStages requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkFlowStageByUuidAndWorkflowUuid(requirementWorkFlowStagesDTO.getUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), orgLocations.getId());
+		// load the associated work flow to be deleted.
 		RequirementWorkFlow workflow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), orgLocations.getId());
-		if(requirementWorkFlowStages != null && !requirementWorkFlowStagesDTO.getUuid().equalsIgnoreCase("Select")) {
+		
+		if(requirementWorkFlowStages != null) {
 			
 			requirementWorkFlowStagesDTO.setSeqOrder(requirementWorkFlowStages.getSeqOrder());
-			
+			// load the all the stage which are greater than current deleted work flow id.
 			List<RequirementWorkFlowStages> workFlowStagesbySeqOrder = requirementWorkFlowDao.getRequirementWorkflowStagesBySeqOrderAndWorkflowUuid(requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), requirementWorkFlowStagesDTO.getSeqOrder(), orgLocations.getId());
-			
+			// if  there are stages greater than sequence order of the deleted stage then decrement the sequence order of the all the stages.
 			if(workFlowStagesbySeqOrder.size() > 1) {
 			for(RequirementWorkFlowStages stages : workFlowStagesbySeqOrder) {
 				int stageSeqorder = stages.getSeqOrder();
 				stageSeqorder--;
 				stages.setSeqOrder(stageSeqorder);
-				requirementWorkFlowDao.saveRequirementWorkFlowStages(stages);
+				requirementWorkFlowDao.saveRequirementWorkFlowStages(stages); // update and save the stage with updated sequnece order.
 			}
-			}
+			}// finally deleted the current stage once all stage are saved with updated sequence order.
 			deleteRequirementWorkFlowStagesByuuid(requirementWorkFlowStagesDTO.getUuid(), orgLocations);
 	}
 		 workFlowStages = requirementWorkFlowDao.getRequirementWorkflowStagesListByUuid(requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), orgLocations.getId());
-		 workflow.setNoOfStages(workFlowStages.size());
+		 workflow.setNoOfStages(workFlowStages.size()); // updated the no of stages count for the work flow and saves the work flow.
 		 requirementWorkFlowDao.saveRequirementWorkFlowDetails(workflow, orgLocations);
 		 logger.debug("Finished saveRequirementWorkFlowStagesBySeqOrder Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
 		 return true;

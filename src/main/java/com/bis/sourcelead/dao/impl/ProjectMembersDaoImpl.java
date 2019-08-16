@@ -1788,15 +1788,15 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 								+ " (pm.projects.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"' and pah.projectId.id IN (:projectIds))) ) ";
 			}else {
 				
-				loginUserRoleQuery += " and ((pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"' "
+				loginUserRoleQuery += " and ((pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' "
 						+ "and  urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"' "+memberStatusQuery+")) OR "
 								+ " (pm.projects.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"' and pah.projectId.id IN (:projectIds))) ) ";
 				
 			}
 			
 		}else{
-			if(StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
-					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES)) {
+			if( dayWiseTimesheetReoprtsDto.getLoginUserRoleType().equalsIgnoreCase("ROLE_ADMIN") || (StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
+					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES))) {
 				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"'  "+memberStatusQuery+")) ";
 			}
 		}
