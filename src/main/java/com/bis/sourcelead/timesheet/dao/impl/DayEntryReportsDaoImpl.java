@@ -167,7 +167,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ " SAH.FREQUENCY_START_DATE AS sahFrequenchStartDate,"
 				+ " SAH.FREQUENCY_END_DATE AS sahFrequenchEndDate,"
 				+ "   (CASE " 
-				+ "        WHEN CAN.WORK_LOCATION IS NOT NULL THEN ( "
+				+ "        WHEN CAN.ORG_LOCATION_ID IS NOT NULL THEN ( "
 				+ "        CONCAT( "
 				+ "        IF(CANLOC.COUNTRY IS NOT NULL, CONCAT(CANLOC.COUNTRY,','),'') ,"
 				+ "        IF(CANLOC.STATE IS NOT NULL, CONCAT(CANLOC.STATE,','),''),"
@@ -183,7 +183,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
                 
 				//To get candidate work location
 				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
-			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
+			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.ORG_LOCATION_ID "
 			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
 			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID  AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
 			    			       
@@ -252,7 +252,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   NULL AS sahFrequenchStartDate,"
 				+ "   NULL AS sahFrequenchEndDate,"
 				+ "   (CASE " 
-				+ "        WHEN CAN.WORK_LOCATION IS NOT NULL THEN ( "
+				+ "        WHEN CAN.ORG_LOCATION_ID IS NOT NULL THEN ( "
 				+ "        CONCAT( "
 				+ "        IF(CANLOC.COUNTRY IS NOT NULL, CONCAT(CANLOC.COUNTRY,','),'') ,"
 				+ "        IF(CANLOC.STATE IS NOT NULL, CONCAT(CANLOC.STATE,','),''),"
@@ -265,7 +265,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 								
 				 //To get candidate work location
 				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
-			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
+			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.ORG_LOCATION_ID "
 			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
 			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID  AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
 			    			       
@@ -320,7 +320,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   NULL AS sahFrequenchStartDate,"
 				+ "   NULL AS sahFrequenchEndDate,"
 				+ "   (CASE" 
-				+ "        WHEN CAN.WORK_LOCATION IS NOT NULL THEN ( "
+				+ "        WHEN CAN.ORG_LOCATION_ID IS NOT NULL THEN ( "
 				+ "        CONCAT( "
 				+ "        IF(CANLOC.COUNTRY IS NOT NULL, CONCAT(CANLOC.COUNTRY,','),'') ,"
 				+ "        IF(CANLOC.STATE IS NOT NULL, CONCAT(CANLOC.STATE,','),''),"
@@ -333,7 +333,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			   
 			    //To get candidate work location
 				+ "   LEFT JOIN CANDIDATE CAN ON CAN.ID =  PM.CANDIDATE_ID "
-			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.WORK_LOCATION "
+			    + "   LEFT JOIN ORG_LOCATIONS CANLOC ON CANLOC.ID =  CAN.ORG_LOCATION_ID "
 			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
 			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID  AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrg().getId()+"' )"
 			    			       
