@@ -82,6 +82,8 @@ public class PerformanceGoalsDTO implements Serializable{
 	
 	private Integer goalsScore;
 	
+	private BigInteger createdUserId;
+	
 	
 
 	public Long getGoalId() {
@@ -346,6 +348,14 @@ public class PerformanceGoalsDTO implements Serializable{
 
 	public void setGoalsScore(Integer goalsScore) {
 		this.goalsScore = goalsScore;
+	}
+
+	public BigInteger getCreatedUserId() {
+		return createdUserId;
+	}
+
+	public void setCreatedUserId(BigInteger createdUserId) {
+		this.createdUserId = createdUserId;
 	}
 
 	
