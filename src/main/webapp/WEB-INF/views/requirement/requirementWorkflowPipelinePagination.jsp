@@ -622,7 +622,7 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 										+ '<option value="backout">BackOut</option>';
 							}
 							if(opt.workflowStages != null){
-								result = result+"<option value=''>xxxxx</option>";
+								//result = result+"<option value=''>xxxxx</option>";
 								for(var i=0; i< opt.workflowStages.length; i++){
 									result = result+"<option value='"+opt.workflowStages[i]+"'>"+opt.workflowStages[i]+"</option>";
 								}	

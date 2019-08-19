@@ -1540,7 +1540,9 @@ public class SubmissionsRestController {
 		else if(status.equalsIgnoreCase("NoResponse")){
 			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.NORESPONSE.toString());
 		}
-
+		else if(StringUtils.isNotBlank(status)){ // Added for custom work flow changes
+			requirementSubmissionHistory.setToStage(status);
+		}
 				// to update Submission status
 				requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 				if(status.equalsIgnoreCase("Status")){
@@ -1560,6 +1562,9 @@ public class SubmissionsRestController {
 				}
 				else if(status.equalsIgnoreCase("NoResponse")){
 					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.NORESPONSE.toString());
+				}
+				else if(StringUtils.isNotBlank(status)){ // Added for custom work flow changes
+					requirementSubmission.setSubmissionStatus(status);
 				}
 				requirementSubmission.setUpdatedBy(user.getUserCode());
 				StringBuilder sb = new StringBuilder();

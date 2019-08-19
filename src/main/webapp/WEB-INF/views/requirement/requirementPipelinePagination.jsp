@@ -6,7 +6,11 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <div id="popupSaveId" class="popupWrap popupWrap2" style="display: none;"></div>
-
+<script>
+   var workflowConfigured = '${workflowConfigured}';
+//   alert(workflowConfigured);
+ //  workflowConfigured = 'false';
+</script>
 <script>
 	function requirementPipelinePagination(url, requirementId, submissionType) {
 		var atsUrl ='${SourceLeadWeb_atsUrl}';
@@ -432,6 +436,8 @@
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
+											if(workflowConfigured == 'false'){
+												 console.log("inside false "+workflowConfigured);
 											if (opt.requirementCurrentStatus != 'SUBMITTED'
 													&& opt.requirementCurrentStatus != 'CLOSED'
 													&& opt.requirementCurrentStatus != 'REJECTED'
@@ -655,9 +661,39 @@
 														+ opt.submissionDisplayStatus
 														+ '</span>';
 											}
+											}else{
+												
+											/// if workflow is configured preparing the status drop down values.
+											/*  var workflowStagesMap = opt.workflowStagesMap;  SRINIVA SABBU.
+											console.log(workflowStagesMap); */
+												result = result
+												+ '<td><div class="tblwidth-150">';
+										    result = result
+												+ '<select id="rejectApplicantSelectspocState'
+												+ opt.id
+												+ '" onChange="rejectApplicant('
+												+ opt.id + ','
+												+ requirementId
+												+ ',\''
+												+ submissionType
+												+ '\')";>';
+										     result = result
+												+ "<option value='Status'>"
+												+ opt.submissionDisplayStatus
+												+ "</option>";
+										     $.each( opt.workflowStagesMap, function(val, name ) {
+											     if(opt.submissionDisplayStatus != name ){
+										    	    result = result+"<option value='"+val+"'>"+name+"</option>";
+											     }
+										    	});
+											 result = result
+															+ '</select>';
+													result = result
+															+ '</div></td>';
+											}
 											return result;
 										}
-									} ],
+									}],
 							"scrollCollapse" : false,
 							"initComplete" : function(settings, json) {
 								$('#tab-1').hide();
