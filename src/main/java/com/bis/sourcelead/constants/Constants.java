@@ -641,9 +641,14 @@ public class Constants {
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
+	public static final int MIN_PROFILE_PERCENETAGE = 30;
+	
+	//workflow
 	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	public static final String CUSTOMIZE = "Customize";
-	public static final int MIN_PROFILE_PERCENETAGE = 30;
+	public static final String[] DEFAULT_WORKFLOW_STAGES = {"Submission", "Short List", "Submit to Client", "Interview", "Offer", "Reject", "Joined", "Backout", "On-hold", "No Response"};
+	public static final String[] WORKFLOW_STAGE_SHORTCODES = {"SUBMISSION", "SHORTLIST", "SUBMIT_TO_CLIENT", "INTERVIEW", "OFFERMADE", "REJECTED", "JOINED", "BACKOUT", "ONHOLD", "NORESPONSE"};
+	
 	
 	// "Workflow" removed from the below list as it planned for next build SRINIVA SABBU 07- JUNE-2019.
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title*",
