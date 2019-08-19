@@ -779,7 +779,7 @@ public class TaxServiceImpl implements TaxService {
 			User loggedInUser, OrgLocations orgLocations) {
 		Response<Long> response = new Response<>();
 		try {
-			SourceleadTaxITDeclarationSubmission existedItDeclarationSubmission = taxDao.getITDeclarationSubmission(itDeclarationSubmissionDTO.getUserId(), itDeclarationSubmissionDTO.getFinancialYear());
+			SourceleadTaxITDeclarationSubmission existedItDeclarationSubmission = taxDao.getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(itDeclarationSubmissionDTO.getUserId(), orgLocations.getId(), itDeclarationSubmissionDTO.getFinancialYear());
 			if(existedItDeclarationSubmission!=null && existedItDeclarationSubmission.getId() != itDeclarationSubmissionDTO.getId()) {
 				response.setResponse(Result.DUPLICATE_TAX_RECORD.name());
 				response.setResponseMessage(Result.DUPLICATE_TAX_RECORD.getValue());
