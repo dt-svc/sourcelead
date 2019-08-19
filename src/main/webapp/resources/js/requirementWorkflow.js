@@ -1184,7 +1184,7 @@ function RequirementWorkflow(){
 									if(jobsArray.length == 1){
 										result = result + "&nbsp"+jobsArray[i]+".";
 									}else{
-										result = result + "&nbsp"+jobsArray[i]+", ";
+										result = result + "&nbsp"+jobsArray[i]+" ";
 									}
 								}
 								if(allJobsArray.length > 1){
