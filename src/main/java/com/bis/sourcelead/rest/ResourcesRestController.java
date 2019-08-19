@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dao.SourceleadBlogDao;
 import com.bis.sourcelead.dto.BlogCategoryDTO;
-import com.bis.sourcelead.dto.ReleaseNoteDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadBlogDTO;
@@ -27,6 +26,7 @@ import com.bis.sourcelead.entity.SourceleadBlogs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.BlogCategoryService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.SourceleadBlogService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -50,6 +50,9 @@ public class ResourcesRestController {
 
 	@Autowired
 	SourceleadBlogDao sourceleadBlogDao;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 
 	/**
 	 * PrasadK this method for Add Blog
@@ -66,12 +69,14 @@ public class ResourcesRestController {
 
 		Response<Boolean> response = new Response<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 		try {
 			if (loginUser != null) {
 
 				if (Validator.validate(sourceleadBlogDTO)) {
 					sourceleadBlogDTO.setStaticPath(staticPath);
-					SourceleadBlogs sourceleadBlogs = sourceleadBlogService.addBlog(sourceleadBlogDTO, loginUser);
+					SourceleadBlogs sourceleadBlogs = sourceleadBlogService.addBlog(sourceleadBlogDTO, loginUser,orgLocation.getDateFormat());
 					response.setObject(true);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
