@@ -16,8 +16,8 @@ import javax.persistence.Table;
 import com.bis.sourcelead.entity.User;
 
 	
-	@Entity
-	@Table(name = "REQUIREMENT_DEFAULT_WORKFLOW_STAGES")
+	//@Entity
+	//@Table(name = "REQUIREMENT_DEFAULT_WORKFLOW_STAGES")
 	public class RequirementDefaultWorkFlowStages implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
