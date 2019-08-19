@@ -117,6 +117,11 @@ public class RequirementWorkflowController {
 		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
 		logger.debug("before calling deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId >>> "+orgLocations.getId());
 		requirementWorkFlowService.deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(requirementWorkFlowDTO.getUuid(), orgLocations.getId());
+		List<RequirementSubmission> requirementSubLst = requirementWorkFlowService.validateWorkflowUpdate(requirementWorkFlowStagesDTO.get(0).getRequirementWorkFlowId(),	orgLocations.getId());
+		modelandview.addObject("isWorkflowEditable", true);
+		if(requirementSubLst != null && requirementSubLst.size()>0) {
+			modelandview.addObject("isWorkflowEditable", false);
+		}
 		modelandview.setViewName("workflow/viewWorkflow");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
 		modelandview.addObject("workflowDescription", requirementWorkFlowStagesDTO.get(0).getWorkflowDescription());
