@@ -604,9 +604,10 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 
 <script>
 function getCustomDependentField(sectionId){
+	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	 $.ajax({
 			type : "POST" , 
-				 url: atsUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);
