@@ -22,7 +22,7 @@
 									${businessLicenseDoc.fileName}
 									</div>
 									<div class="pull-left mt5">
-										<a target="_blank" href="${businessLicenseDoc.fileUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${businessLicenseUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${businessLicenseDoc.fileUrl}','${businessLicenseDoc.fileName}','${businessLicenseDoc.fileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${businessLicenseDoc.uuid}','Business License')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -51,7 +51,7 @@
 									${bankChequeDoc.fileName}
 									</div>
 									<div class="pull-left mt5">
-										<a target="_blank" href="${bankChequeDoc.fileUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${bankChequeUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${bankChequeDoc.fileUrl}','${bankChequeDoc.fileName}','${bankChequeDoc.fileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${bankChequeDoc.uuid}','Bank Cheque')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -82,7 +82,7 @@
 									${registrationDoc.fileName}
 									</div>
 									<div class="pull-left mt5">
-										<a target="_blank" href="${registrationDoc.fileUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${registrationUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${registrationDoc.fileUrl}','${registrationDoc.fileName}','${registrationDoc.fileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${registrationDoc.uuid}','Registration')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -117,7 +117,7 @@
 									${annulReportBusinessDoc.fileName}
 									</div>
 									<div class="pull-left mt5">
-										<a target="_blank" href="${annulReportBusinessDoc.fileUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${annulReportBusinessnUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${annulReportBusinessDoc.fileUrl}','${annulReportBusinessDoc.fileName}','${annulReportBusinessDoc.fileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${annulReportBusinessDoc.uuid}','Annual Report Business License')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -148,7 +148,7 @@
 									${w9Doc.fileName}
 									</div>
 									<div class="pull-left mt5">
-										<a target="_blank" href="${w9Doc.fileUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
+										<a target="_blank" href="${w9DocUrl}" class="anchor-black"><i class="fa fa-download" title="Download"></i></a>
 										<a href="javascript:void(0)" onclick="viewFile('${w9Doc.fileUrl}','${w9Doc.fileName}','${w9Doc.fileContentType}')"; class="paddingLeft PaddingRight anchor-black"><i class="fa fa-eye" title="View"></i></a>
 										<a href="javascript:void(0)" onclick="deleteDocument('${w9Doc.uuid}','W-9,W-8 Ben-E')" class="anchor-black"><i class="fa fa-trash" title="Delete"></i></a>
 									</div>
@@ -326,14 +326,6 @@ function cancelPopUp(){
 	$("#docPopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
-function resetInformation(){
-	$('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-	$('#uploadFileGroup1').find('p.jquery_form_error_message').remove();
-	$('#uploadFileGroup2').find('p.jquery_form_error_message').remove();
-	$('#uploadFileGroup3').find('p.jquery_form_error_message').remove();
-	$('#uploadFileGroup4').find('p.jquery_form_error_message').remove();
-}
-
 </script>
 
 	
