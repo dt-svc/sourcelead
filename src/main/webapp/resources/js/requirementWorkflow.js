@@ -15,7 +15,7 @@ function RequirementWorkflow(){
 		this.getDefaultWorkflowStages = function() {
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/createRequirementDefaultWorkFlowStages",
+				url : sourceleadUrl + "/getDefaultWorkFlowStages",
 				success : function(dataList) {
 					var result = "";
 					if(dataList != null && dataList.length > 0){
