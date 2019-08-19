@@ -880,6 +880,7 @@ function requirementWorkflowPipelinePipelineList(url, requirementId, submissionT
 function requirementPipeline(requirementId,submissionType){
 	$("#actionsDiv" ).show();
 	$("#emptyPipelinelist").val('');
+	 var workflowId ='${workflowId}';
 	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var userId = '${SourceLeadWeb_userId}';
@@ -888,7 +889,7 @@ function requirementPipeline(requirementId,submissionType){
 	var searchValue = $("#submissionDataTableSearch").val();
 	var clientSubmissions = '${clientSubmissions}';
 	searchValue = searchValue ? searchValue : "";
-	var url = atsUrl+"/loadSubmissionsListByRequirementId?searchValue="+searchValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&orgLocationId="+orgLocationId+"&userId="+userId+"&loginUserRole="+loginUserRole+"&userCode="+userCode+"&clientSubmissions="+clientSubmissions;
+	var url = atsUrl+"/loadSubmissionsListByRequirementId?searchValue="+searchValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&orgLocationId="+orgLocationId+"&userId="+userId+"&loginUserRole="+loginUserRole+"&userCode="+userCode+"&workFlowId="+workflowId+"&clientSubmissions="+clientSubmissions;
 	requirementPipelineList(url, requirementId, submissionType);
 	}
 </script>

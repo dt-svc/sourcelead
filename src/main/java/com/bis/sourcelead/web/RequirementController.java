@@ -896,9 +896,11 @@ public class RequirementController {
 					List<RequirementWorkFlowStages> stagesList = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(requirement.getWorkflowId().getId(), orgLocations);
 					model.addObject("stagesList", stagesList);
 					model.addObject("workflowId", requirement.getWorkflowId().getId());
+					model.addObject("workflowConfigured", true);
 					model.setViewName("requirement/requirementWorkflowSummary");
 				}else {
 					System.out.println("DEFAULT WORKFLOW IS FOUND >>>>>>>>>>>>>");
+					model.addObject("workflowConfigured", false);
 					model.setViewName("requirement/requirementSummary");
 				}
 				

@@ -678,6 +678,7 @@ public class RequirementListRestController {
 	@RequestMapping(value = {"/loadSubmissionsListByRequirementId", "/rest/loadSubmissionsListByRequirementId"}, method = RequestMethod.POST)
 	public @ResponseBody  ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, HttpServletRequest request) throws Exception
 	{
+    System.out.println("requirementSubmissionsDTO.getWorkFlowId( )"+requirementSubmissionsDTO.getWorkFlowId());
 		OrgLocations orgLocation = orgLocationService.getOrgLocations(requirementSubmissionsDTO.getOrgLocationId());
 		Timezone timezone = (Timezone) SourceLeadSessionManager.getSessionAttribute(request, "timezone");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -801,6 +802,7 @@ public class RequirementListRestController {
 										}
 									}
 									String candidateName = "";
+									HashMap<String , String> stagesMap = null;
 									if (requirementSubmissionTemplateFields != null) {
 										if (!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())) {
 											StringBuilder candidateNameSB = new StringBuilder();
@@ -815,6 +817,13 @@ public class RequirementListRestController {
 										requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 										requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 									}
+									if(requirementSubmissionsDTO.getWorkFlowId() != null && StringUtils.isNotBlank(requirementSubmissionsDTO.getWorkFlowId().toString())){
+									 stagesMap = requirementWorkFlowService.getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(requirementSubmissionsDTO.getWorkFlowId(), orgLocation, requirementSubmission.getSubmissionStatus());
+									   if(stagesMap!= null && stagesMap.size() >0) {
+									 	requirementSubmission.setWorkflowStagesMap(stagesMap);
+									   }
+									}
+									
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 									
 									/**
@@ -853,9 +862,12 @@ public class RequirementListRestController {
 									
 									if(requirementSubmission.getSubmissionStatus() != null) {
 										//ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
-										String status =	requirementSubmission.getSubmissionStatus().toString();
-										if(status != null)
-						  				requirementSubmission.setSubmissionDisplayStatus(status);
+										String status =	requirementSubmission.getSubmissionStatus();
+										if(status != null && stagesMap != null) {
+						  				requirementSubmission.setSubmissionDisplayStatus(stagesMap.get(status));
+										}else {
+											requirementSubmission.setSubmissionDisplayStatus(status);
+										}
 									}
 									if (requirementSubmission.getVendorLocationId() != null) {
 										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
@@ -1006,6 +1018,7 @@ public class RequirementListRestController {
 									}
 									
 									String candidateName = "";
+									HashMap<String , String> stagesMap = null;
 									if (requirementSubmissionTemplateFields != null) {
 										if (!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())) {
 											StringBuilder candidateNameSB = new StringBuilder();
@@ -1027,11 +1040,12 @@ public class RequirementListRestController {
 										//requirementSubmission.setEducation(requirementSubmissionTemplateFields.getEducation());
 										requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), requirementSubmission.getCreatedDate()));
 										requirementSubmission.setNoticePeriod(requirementSubmissionTemplateFields.getNoticePeriod());
-										
-										List<String> stages = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(requirementSubmissionsDTO.getWorkFlowId(), orgLocation, requirementSubmissionsDTO.getSubmissionType());
-										if(stages!= null && stages.size() >0) {
-											requirementSubmission.setWorkflowStages(stages);
+										if(requirementSubmissionsDTO.getWorkFlowId() != null && StringUtils.isNotBlank(requirementSubmissionsDTO.getWorkFlowId().toString())){
+										stagesMap = requirementWorkFlowService.getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(requirementSubmissionsDTO.getWorkFlowId(), orgLocation, requirementSubmissionsDTO.getSubmissionType());
+										if(stagesMap!= null && stagesMap.size() >0) {
+											requirementSubmission.setWorkflowStagesMap(stagesMap);
 										}
+									}
 									}
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 									
@@ -1039,7 +1053,14 @@ public class RequirementListRestController {
 									if(requirementSubmission.getSubmissionStatus() != null) {
 										/*ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
 										if(status != null)*/
-						  				requirementSubmission.setSubmissionDisplayStatus(requirementSubmission.getSubmissionStatus().toString());
+										if(stagesMap != null) {
+											System.out.println("stagesMap stage name is "+stagesMap.get(requirementSubmission.getSubmissionStatus()));
+						  				requirementSubmission.setSubmissionDisplayStatus(stagesMap.get(requirementSubmission.getSubmissionStatus()));
+										}else {
+											System.out.println("stagesMap else stage name is "+requirementSubmission.getSubmissionStatus());
+											requirementSubmission.setSubmissionDisplayStatus(requirementSubmission.getSubmissionStatus());
+										}
+										
 									}
 									if (requirementSubmission.getVendorLocationId() != null) {
 										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
