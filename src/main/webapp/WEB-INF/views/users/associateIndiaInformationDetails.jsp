@@ -510,7 +510,7 @@ $("#nomineeShow").click(function() {
  function saveNomineeDetails(){
 	 illnessFunction();
 	 minorFunction();
-	 var userId = '${userId}';
+	 var userId = $("#associateId").val();
 	 var id = $('#id').val();
 	 if ($('#nomineeDetails_form').validate(false, validationSettings)){ 
 	        var formData = getFormData("nomineeDetails_form");
