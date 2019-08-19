@@ -289,6 +289,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 <!-- Bulk Approving submitted timesheets from timesheet approver side (it can be invoke either from TimesheetApproval list or Dashboardcount list)  -->  
 <script>
 function acceptTimeSheetSubmissionBySubmissionId(tableFor){
+	 $("#loadingCotentDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var submissionIDs = [];
 	for(var e in selectedRecords) {
@@ -315,7 +316,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		 }else{
 			 actionPerfomedBy = userName+'('+locationName+')';
 		 }
-		 $("#loadingCotentDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+		
 		     $.ajax({
 		    type: "POST",
 		    url: pmsUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
@@ -328,6 +329,7 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		    				 var currentPageNumber =  $("#currentPageNumber").val();
 		    				 getStatusListData(""+currentPageNumber+"",0,"");
 		    				 $('#hedderAcceptRejectButton').attr('style','display:none');
+		    				 alert("hi");
 		    			 }else{
 		    				 var currentPageNumberApprover =  $("#timesheetApproverCurrentPageNumber").val();
 		    				 getTableData(currentPageNumberApprover,0);
@@ -371,6 +373,7 @@ function rejectTimeSheetSubmissionBySubmissionId(tableFor){
 }
 
 function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
+	$("#loadingCotentDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	var submissionIDs = [];
 	for(var e in selectedRecords) {
@@ -404,7 +407,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 		 }else{
 			 actionPerfomedBy = userName+'('+locationName+')';
 		 }
-		$("#loadingCotentDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;'); 
+		 
 	    $.ajax({
 	    type: "POST",
 	    url: pmsUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&rejectedReason="+(encodeMsg.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&approvalStatus=REJECTED",       
@@ -418,6 +421,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 		      		   	 $(".mask_time").fadeOut(200);
 		      		     $("#rejectpanel").hide();
 		      		  	 $('#hedderAcceptRejectButton').attr('style','display:none');
+		      		     $("#loadingCotentDiv").removeAttr('style');
 		      		   	 
 				   }else{
 						  var currentPageNumberApproverReject =  $("#timesheetApproverCurrentPageNumber").val();

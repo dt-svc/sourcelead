@@ -20,6 +20,7 @@
 var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 var dateFormat ='${SourceLeadWeb_dateFormat}';	
 var goalId = '${goalId}';
+var loginUserId ='${SourceLeadWeb_userId}';	
 window.onload = function () {
 	var goalUUID = '${goalUUID}';
 	performanceGoals.getPerformanceGoalsSummaryDetails(goalUUID);
