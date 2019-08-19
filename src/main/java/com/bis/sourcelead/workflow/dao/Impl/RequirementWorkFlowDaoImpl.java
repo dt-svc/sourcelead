@@ -409,6 +409,7 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 		// TODO Auto-generated method stub
 		logger.debug("Running getQuestionnaireTemplateById DAO");
 		RequirementQuestionnaireTemplate template= null;
+		if(StringUtils.isNotBlank(templateUuid)) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = " from RequirementQuestionnaireTemplate rq where rq.uuid =:templateUuid";
@@ -417,6 +418,7 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 		} catch (HibernateException e) {
 			logger.error(e+" in getQuestionnaireTemplateById DAO");
 			e.printStackTrace();
+		}
 		}
 		return template;
 	}

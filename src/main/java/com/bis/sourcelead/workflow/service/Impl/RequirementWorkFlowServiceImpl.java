@@ -192,7 +192,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		RequirementWorkFlow workFlow = null;
 		try {
 		List<RequirementWorkFlow> requirementWorkFlow= requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
-		if (requirementWorkFlow.size() == 0) {
+		/*if (requirementWorkFlow.size() == 0) {
 			RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO(); 
 			
 			StringBuilder jobWorkflow = new StringBuilder(Constants.DEFAULT_JOB_WORKFLOW);
@@ -203,7 +203,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			workFlow.setConfigureType(Constants.DEFAULT);
 			workFlow = requirementWorkFlowDao.saveRequirementWorkFlowDetails(workFlow, orgLocations);
 			
-		}
+		}*/
 		}catch(Exception e) {
 			logger.error(e+" in saveRequirementDefaultWorkFlowAndStagesByOrgLocationId Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
 			e.printStackTrace();
@@ -1388,6 +1388,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	@Override
 	public void saveDefaultRequirementWorkflowAndStages(){
 		try {
+			List<RequirementWorkFlow> wf= requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(null);
+			if(wf != null && wf.size() == 0) {
 			Integer count = 0;
 			RequirementWorkFlow requirementWorkFlow = new RequirementWorkFlow();
 			requirementWorkFlow.setWorkFlowName(Constants.DEFAULT_JOB_WORKFLOW);
@@ -1421,6 +1423,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				}
 			requirementWorkFlow.setWorkflowStages(requirementWorkFlowSet);
 			requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, null);
+			}
 		} catch (Exception e) {		
 			e.printStackTrace();
 		}
