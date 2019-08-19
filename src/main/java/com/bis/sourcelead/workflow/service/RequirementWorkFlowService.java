@@ -104,7 +104,7 @@ public interface RequirementWorkFlowService {
 	
 	RequirementWorkFlowStages getRequirementWorkFlowStagesDetails(String shortCode, Long workflowId, Long orgLocationId);
 	
-	List<String> getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(Long workflowId, OrgLocations orgLocation, String submissionType)throws Exception;
+	LinkedHashMap<String , String> getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(Long workflowId, OrgLocations orgLocation, String submissionType)throws Exception;
 	
 	String  sendEmailToCandidateWithQuestionnaireTemplate(HashMap<String , Object> paramList) throws Exception;
 
