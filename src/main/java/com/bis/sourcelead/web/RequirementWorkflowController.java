@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -85,7 +87,7 @@ public class RequirementWorkflowController {
 		User user = new User();
 		user.setId(userId);
 		logger.debug("creating defalut workflow for the  orglocation id "+orgLocations.getId());
-		requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
+		//requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		modelandview.setViewName("workflow/defaultWorkflow");
 		return modelandview;
 	}
@@ -103,7 +105,7 @@ public class RequirementWorkflowController {
 		User user = new User();
 		user.setId(userId);
 		logger.debug("before saving default workflow for the orglocation id: >>> "+orgLocations.getId());
-		requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
+		//requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		return modelandview;
 	}
 	
@@ -114,7 +116,7 @@ public class RequirementWorkflowController {
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
 		logger.debug("before calling deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId >>> "+orgLocations.getId());
-		requirementWorkFlowService.deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(requirementWorkFlowDTO.getUuid(), orgLocations.getId());
+		//requirementWorkFlowService.deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(requirementWorkFlowDTO.getUuid(), orgLocations.getId());
 		modelandview.setViewName("workflow/viewWorkflow");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
 		modelandview.addObject("workflowDescription", requirementWorkFlowStagesDTO.get(0).getWorkflowDescription());
@@ -248,8 +250,24 @@ public class RequirementWorkflowController {
 		return workFlowDTO;
 	}
 
-	@RequestMapping(value = "/createRequirementDefaultWorkFlowStages", method = RequestMethod.GET)
+/*	@RequestMapping(value = "/createRequirementDefaultWorkFlowStages", method = RequestMethod.GET)
 	public @ResponseBody List<RequirementWorkFlowStagesDTO> createRequirementDefaultWorkFlowStages(
+			RequirementWorkFlowDTO requirementWorkFlowDTO, HttpServletRequest request) {
+		List<RequirementWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
+		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
+		try {
+			 logger.debug("inside createRequirementDefaultWorkFlowStages>>> orgLocationid "+orgLocations.getId());
+			requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages(orgLocations);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return requirementDefaultWorkFlowStagesDTO;
+
+	}*/
+	
+	@RequestMapping(value = "/getDefaultWorkFlowStages", method = RequestMethod.GET)
+	public @ResponseBody List<RequirementWorkFlowStagesDTO> getDefaultWorkFlowStages(
 			RequirementWorkFlowDTO requirementWorkFlowDTO, HttpServletRequest request) {
 		List<RequirementWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
@@ -902,4 +920,15 @@ public class RequirementWorkflowController {
 		 }
 		 return timeLimit.toString();
 	   }
+	 
+	 @RequestMapping(value = "/ws/saveDefaultRequirementWorkflowAndStages", method = RequestMethod.GET)
+		public void saveDefaultRequirementWorkflowAndStages() {
+			System.out.println("Started Saving Workflow..");
+		try {
+			requirementWorkFlowService.saveDefaultRequirementWorkflowAndStages();
+			System.out.println("Finished Saving Workflow..");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
