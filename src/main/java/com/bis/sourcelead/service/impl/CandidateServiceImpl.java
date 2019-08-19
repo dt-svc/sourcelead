@@ -560,10 +560,7 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	referContactsDao.addReferContacts(referContacts);
 		
-		// resume details update in elk
-		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
-		candidateResumesService.saveOrUpdateCandidateElkDocumentWithResumeDetails(savedCandidate);
-		}
+	
 		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
 			FileInfo fileInfo = candidateDto.getFileInfo().get(0);
 			if(fileInfo != null){
@@ -2097,6 +2094,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			orgRelations.setResponderType("Vendor");
 			orgRelations.setInitiatorLevel("Tier-5");
 			orgRelations.setGenerateBill("Bulk");
+			orgRelations.setGenerateInvoice("Bulk");
 			orgRelations.setResponderLevel("Tier-5");
 			orgRelations.setVendorRelationStatus("Sent");
 			orgRelations.setStatus("ACTIVE");
@@ -3992,6 +3990,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		return candidateDao.getCandiateByConsultantUserIdAndOrgLocationId(userId, orgLocationId);
 	}
 
 

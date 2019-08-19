@@ -113,6 +113,7 @@ import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.ticketManagement.service.TicketManagementService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -251,6 +252,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
 	
+	@Autowired
+	TicketManagementService ticketManagementService;
+	
 	@Value("${isCouchbaseEnabled}")
 	private String isCouchbaseEnabled;
 	
@@ -283,6 +287,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setTimezone(timeZone);
 		try {
 			orgLocationService.updateOrgLocations(orgLocations);
+			ticketManagementService.dumpTicketManagementPreDefinedValuesToAllOrgLocations(orgLocations.getId());
 			orgLocationDTO.setId(orgLocations.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -361,10 +366,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		orgLocations.setTimezone(timeZone);
 		try {
 			orgLocationService.addOrgLocations(orgLocations);
+			ticketManagementService.dumpTicketManagementPreDefinedValuesToAllOrgLocations(orgLocations.getId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		List<LookUpData> lookUpExpCatList = lookUpDataService.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
 	    for(LookUpData lookUpData:lookUpExpCatList){
 		    ExpensesCategory expensesCategory = new ExpensesCategory();
