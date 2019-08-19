@@ -85,7 +85,7 @@ public interface ProjectMembersService {
 	/*by sarath*/
     public Set<ProjectMembers> prepareProjectMembersListByJson(JSONObject jsonObj,HttpServletRequest request,Projects projects) throws Exception;
     
-    public List<ProjectMembers> getAllProjectsAssigendToUserByIdAndStatus(Long userId, String status) throws Exception;
+    public List<ProjectMembers> getAllProjectsAssigendToUserByIdAndStatus(Long userId, String status, Long orgLocationId) throws Exception;
     
     public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndEmpUserId(Long locationsId, Long empUserId);
     
@@ -177,6 +177,8 @@ public interface ProjectMembersService {
 	public List<Candidate> getAllAvailableAssociates( Long orgLocation);
 	
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectClientId(Long masterCandidateId, Long projectClientsId) throws Exception;
+	
+	public List<ProjectMembers> getAllProjectsAssigendToCandidateIdAndStatus(Long candidateId,String status) throws Exception;
 			 
 	
 }

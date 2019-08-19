@@ -22,8 +22,6 @@ import com.bis.sourcelead.payroll.dto.PayrollReportDTO;
 import com.bis.sourcelead.payroll.entity.DeductionHistory;
 import com.bis.sourcelead.util.CommonUtil;
 
-import io.netty.util.Constant;
-
 @Repository
 public class DeductionHistoryDaoImpl implements DeductionHistoryDao{
 

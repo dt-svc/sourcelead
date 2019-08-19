@@ -144,7 +144,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Override
 	public void saveRequirementInterview(JSONObject jsonObj, User user, OrgLocations orgLocations, Org loginOrg) throws Exception  {
 		
-		String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
+		String maxAdminTimeTypeRowNum = jsonObj.getString("changeMaxTsRowNum");
 		int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 		RequirementInterview requirementInterview  = null;
 		RequirementInterviewer savedInterviewer = null;
