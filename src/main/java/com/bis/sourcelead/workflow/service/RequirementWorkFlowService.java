@@ -115,4 +115,6 @@ public interface RequirementWorkFlowService {
 	RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)throws Exception;
 
 	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId);
+	
+	void saveDefaultRequirementWorkflowAndStages()throws Exception;
 }
