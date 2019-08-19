@@ -1073,7 +1073,6 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                     	for (String key : stagesCountMap.keySet()) {
                     		if(ss.equalsIgnoreCase(key)) {
                             	stagesCountMap.put(ss, listDistinct.size());
-                            	System.out.println(ss+" x "+listDistinct.size());
                             	rsc.setStagesCountMap(stagesCountMap);
                             }
                     	}

@@ -718,7 +718,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				int stageSeqorder = stages.getSeqOrder();
 				stageSeqorder--;
 				stages.setSeqOrder(stageSeqorder);
-				requirementWorkFlowDao.saveRequirementWorkFlowStages(stages); // update and save the stage with updated sequnece order.
+				requirementWorkFlowDao.saveRequirementWorkFlowStages(stages); // update and save the stage with updated sequence order.
 			}
 			}// finally deleted the current stage once all stage are saved with updated sequence order.
 			deleteRequirementWorkFlowStagesByuuid(requirementWorkFlowStagesDTO.getUuid(), orgLocations);
@@ -1120,38 +1120,24 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public List<String> getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(Long workflowId,
+	public LinkedHashMap<String , String> getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(Long workflowId,
 			OrgLocations orgLocation, String submissionType) throws Exception {
 		logger.debug("Started getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service for "
 				+ orgLocation.getId() + " orgLocation");
 		try {
 			List<RequirementWorkFlowStages> requirementWorkFlowStages = requirementWorkFlowDao
-					.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(workflowId, orgLocation);
-			List<String> stageShortCodeList = new ArrayList<String>();
-			List<String> stageShortCodes = new ArrayList<String>();
-			List<String> stages = new ArrayList<String>();
-			LinkedHashMap<String, String> linkedMap = new LinkedHashMap<String, String>();
+					.getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(workflowId, submissionType, orgLocation);
+			
+			LinkedHashMap<String , String> stagesMap = new LinkedHashMap<String , String>();
+			
 			if (requirementWorkFlowStages != null && requirementWorkFlowStages.size() > 0) {
 				for (RequirementWorkFlowStages stage : requirementWorkFlowStages) {
-					stageShortCodeList.add(stage.getStageShortCode());
-					linkedMap.put(stage.getStageShortCode(), stage.getStageName());
-				}
-				for (int i = 0; i < requirementWorkFlowStages.size();) {
-					while (stageShortCodeList.indexOf(submissionType) < i) {
-						if (!stageShortCodeList.get(i).equals(submissionType)) {
-							stageShortCodes.add(stageShortCodeList.get(i));
-						}
-						break;
-					}
-					i++;
-				}
-				for (String shortCode : stageShortCodes) {
-					stages.add(linkedMap.get(shortCode));
+					stagesMap.put(stage.getStageShortCode(), stage.getStageName());
 				}
 			}
 			logger.debug("Finished getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service for "
 					+ orgLocation.getId() + " orgLocation");
-			return stages;
+			return stagesMap;
 		} catch (Exception e) {
 			logger.error(e + " in getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service for "
 					+ orgLocation.getId() + " orgLocation");

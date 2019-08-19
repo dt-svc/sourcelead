@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -250,7 +251,7 @@ public class RequirementSubmission implements Serializable{
 	
     @Transient
     @JsonProperty
-	private List<String> workflowStages;
+	private HashMap<String, String> workflowStagesMap;
 	
     
     // END  WORKFLOW related columns added by SRINIVAS 
@@ -1844,13 +1845,12 @@ public class RequirementSubmission implements Serializable{
 		this.noticePeriod = noticePeriod;
 	}
 
-	public List<String> getWorkflowStages() {
-		return workflowStages;
+	public HashMap<String, String> getWorkflowStagesMap() {
+		return workflowStagesMap;
 	}
 
-	public void setWorkflowStages(List<String> workflowStages) {
-		this.workflowStages = workflowStages;
+	public void setWorkflowStagesMap(HashMap<String, String> workflowStagesMap) {
+		this.workflowStagesMap = workflowStagesMap;
 	}
 
-	
 }

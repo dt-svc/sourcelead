@@ -969,5 +969,21 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 		return requirementQuestionnaireFeedbackTemplate;
 	}
 
+	@Override
+	public List<RequirementWorkFlowStages> getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(Long workflowId,
+			String stageShortCode, OrgLocations orgLocations) {
+		logger.debug("Running getRequirementWorkflowStagesByWorkflowIdAndOrglocations DAO");
+		List<RequirementWorkFlowStages> workflowStagesList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from RequirementWorkFlowStages worflowstages where worflowstages.requirementWorkFlowId.id =:workflowId and worflowstages.seqOrder >= (select ws.seqOrder from RequirementWorkFlowStages ws where ws.stageShortCode =:stageShortCode and ws.requirementWorkFlowId.id =:workflowId and ws.orgLocationId.id=:orgLocationId) and worflowstages.orgLocationId.id=:orgLocationId order by worflowstages.seqOrder";
+			workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", stageShortCode).setLong("orgLocationId", orgLocations.getId()).list();
+		} catch (Exception e) {
+			logger.error(e + " in getRequirementWorkflowStagesByWorkflowIdAndOrglocations DAO");
+			e.printStackTrace();
+		}
+		return workflowStagesList;
+	}
+	
 }
 	
