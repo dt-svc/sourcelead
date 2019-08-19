@@ -165,7 +165,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	public ProjectMembers getProjectMemberById(Long id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date  currentDate = new java.sql.Date(new Date().getTime());
-		String query = " from ProjectMembers pm left join fetch pm.projects project left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId left join fetch pm.masterCandidateId mc "
+		String query = " from ProjectMembers pm left join fetch pm.projects project left join fetch pm.projectMemberCandidteId can left join fetch can.consultantUser left join fetch can.orgLocationId left join fetch pm.masterCandidateId mc "
 				+ " left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc "
 				+ "where pm.id = :id" ;
 		List<ProjectMembers> pmList =session.createQuery(query).setLong("id", id).list(); 
@@ -1784,11 +1784,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			}
 			
 		}else{
-			if(dayWiseTimesheetReoprtsDto.getLoginUserRoleType().equalsIgnoreCase("ROLE_ADMIN") && StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
-					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES)) {
-				loginUserRoleQuery += " and pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"'  "+memberStatusQuery+") ";
-			}else {
-				loginUserRoleQuery += " and pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"'  "+memberStatusQuery+") ";
+			if( dayWiseTimesheetReoprtsDto.getLoginUserRoleType().equalsIgnoreCase("ROLE_ADMIN") || (StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
+					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES))) {
+				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"'  "+memberStatusQuery+")) ";
 			}
 		}
 		
