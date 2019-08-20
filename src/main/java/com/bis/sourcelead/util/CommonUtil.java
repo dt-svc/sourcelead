@@ -1780,6 +1780,12 @@ public class CommonUtil {
 					&& !"".equalsIgnoreCase(requirement.getGeneratedId())) {
 				requirementDTO.setGeneratedId(requirement.getGeneratedId());
 			}
+			if(requirement.getLevel2ApproverUserId() != null) {
+				requirementDTO.setSequentialApprover1(requirement.getLevel1ApproverUserId()[0]);
+				requirementDTO.setSequentialApprover2(requirement.getLevel2ApproverUserId()[0]);
+			} else if(requirement.getLevel1ApproverUserId()!=null){
+				requirementDTO.setParallelApprover(Arrays.asList(requirement.getLevel1ApproverUserId()));
+			}
 			return requirementDTO;
 		}
 		
