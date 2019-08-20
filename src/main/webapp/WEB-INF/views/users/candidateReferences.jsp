@@ -307,7 +307,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 		result = result + '<div class="col-md-12" id="emailDivId">';
 		
 		result = result + '<div class="input-group errorInptgroup">';
-		result = result+ '<input type="text" name="email" field-name="Email" id="email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+');">';
+		result = result+ '<input type="text" name="email" field-name="Email" id="email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onkeyup="validateReferenceEmail('+candidateId+');">';
 		result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
 		result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
 		result = result + '</i>';
@@ -393,7 +393,8 @@ function validateReferenceEmail(candidateId,referId){
 	}else{
 		referId = "";
 	}
-	var email = $("#email").val();
+	//var email = $("#email").val();
+	var email = document.getElementById("email").value.trim();
 	 $('#emailDivId').find('p.jquery_form_error_message').remove();
 	 if (email != null && email != "") {
 	$.ajax({
