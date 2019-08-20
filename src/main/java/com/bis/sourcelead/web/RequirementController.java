@@ -127,6 +127,9 @@ public class RequirementController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${atsUrl}")
+	private String atsUrl;
+	
 	@Autowired
 	CountriesService countriesService;
 	
@@ -1272,6 +1275,7 @@ public class RequirementController {
 		model.addObject("offerStatus",offerStatus);
 		model.addObject("offerId",offerId);
 		model.addObject("requirementOffers",requirementOffers);
+		model.addObject("SourceLeadWeb_atsUrl", atsUrl);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("permission",permission);
 		
@@ -1601,11 +1605,15 @@ public void downloadRequirenetSubmissionTemplateByRequirementId(HttpServletReque
 		}
 		 JSONArray jsonarray = new JSONArray(jsonString);
 		 HSSFWorkbook createExcelworkbook = new HSSFWorkbook();
+		 String jobName = requirement.getJobTitle();
+		// replace special characters 
+		 jobName = jobName.replaceAll("[^a-zA-Z0-9]", "_"); 
+		
 		 DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-		 HSSFSheet createExcelsheet = createExcelworkbook.createSheet(requirement.getJobTitle() + "_" + dateFormat.format(new Date()));
+		 HSSFSheet createExcelsheet = createExcelworkbook.createSheet(jobName + "_" + dateFormat.format(new Date()));
 		 HSSFRow writeRow = null;
 			createExcelsheet = (HSSFSheet) createXlsSheet(createExcelworkbook,createExcelsheet, writeRow,jsonarray);
-			File file = File.createTempFile(requirement.getJobTitle() + "_Submissions_" + dateFormat.format(new Date()), ".xls");
+			File file = File.createTempFile(jobName + "_Submissions_" + dateFormat.format(new Date()), ".xls");
 			file.setReadable(true);
 			FileOutputStream fos = new FileOutputStream(file);
 			try {

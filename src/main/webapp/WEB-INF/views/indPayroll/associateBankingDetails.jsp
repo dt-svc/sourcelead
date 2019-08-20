@@ -16,7 +16,7 @@
 		<thead>
 			<tr>
 			  <th>Type</th>           
-			  <th>Bank Namzcvzx cve</th>         
+			  <th>Bank Name</th>         
 			  <th>Account Number</th>     
 			  <th>Routing Number</th>     
 			  <th>First Name</th>        
@@ -106,14 +106,14 @@
 		          <div class="col-md-5" id="bsrNumberDiv">
 		                  <label>BSR Number</label>
 		                  <div>
-		                   <input type="text" id="bsrNumber"  field-name="BSR Number"  name="bsrNumber" class="form-control" data-validation="validate_Space validate_length length9-15" data-validation-optional="true"/>
+		                   <input type="text" id="bsrNumber"  field-name="BSR Number"  name="bsrNumber" class="form-control" data-validation="validate_Space validate_int validate_length length4-15" data-validation-optional="true"/>
 		                  </div>
 		          </div>
 		          
 		          <div class="col-md-5" id="micrCodeDiv">
 		                  <label>MICR Code</label>
 		                  <div>
-		                  <input type="text" id="micrCode"  field-name="MICR Code" name="micrCode" class="form-control" data-validation="validate_Space validate_length length9-15" data-validation-optional="true"/>
+		                  <input type="text" id="micrCode"  field-name="MICR Code" name="micrCode" class="form-control" data-validation="validate_Space validate_int validate_length length9-15" data-validation-optional="true"/>
 		                  </div>
 		          </div>
 		          
@@ -153,7 +153,7 @@
   </div>
 
 <script type="text/javascript">
-var atsUrl ='${SourceLeadWeb_atsUrl}';
+var pmsUrl ='${SourceLeadWeb_pmsUrl}';
  function savePaymentAccount(){
 	 var userId = '${userId}';
 	 var candidateId = '${candidateId}';
@@ -163,7 +163,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 			$.ajax({
 				 type : "POST",
 				 data: formData,
-			     url : atsUrl+"/save-ind-associate-payment-account?userId="+userId,
+			     url : pmsUrl+"/save-ind-associate-payment-account?userId="+userId,
 				 success : function(result) {
 					 if (result && result.response === "INVALID_DATA") {
 							$("#accountDetailsLoading").removeAttr("style");

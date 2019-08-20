@@ -49,7 +49,7 @@
  <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  <jsp:include page="candidatesTimelineActivity.jsp"></jsp:include>
  <jsp:include page="requirementListForSubmission.jsp"></jsp:include>
- 
+ <%-- <jsp:include page="candidatesAssessment.jsp"></jsp:include> --%>
  <div class="new_side_wrap">
 	<div class="new_side_wrap_inn">
 		<div class="new_side_wrap_cta">
@@ -369,14 +369,16 @@ function candidateSideBar(candidateId){
               		       }
 			            
 			             
-			              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
+			              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined' && json.noticePeriod != 'Other'){
 			                    	 
-			             result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
+			               result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
 			             
-             		       }else{
+             		       }else if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined' && json.noticePeriod == 'Other'){
              		                                                	  
-                   		     result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
+                   		     result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+"---"+json.otherNoticePeriod+'</span></li>';  
              		     
+             		       }else{
+             		    	  result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';    
              		       }
 			             result = result+'</ul>';
 			             
@@ -554,6 +556,8 @@ function candidateSideBar(candidateId){
 			              '<sec:authorize access="hasAnyRole(\'ROLE_CANDIDATE_REQUIREMENT_HISTORY\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateId+');">Job History</a></li>';
 			              '</sec:authorize>';
+			              
+			             /*  result = result+'<li id="candidateAssessmentTab"><a href="#tab-10" onclick="candidateAssessment('+candidateId+');">Assessment</a></li>'; */
 			              
 			             /* result = result+'       <li><a href="#tab-6" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; */
 			             result = result+'       <div class="clearfix"></div>';
@@ -2695,10 +2699,22 @@ function cancelShareCandidate(){
 	$(".project_inn_mask").fadeOut(); 
 }
 function closejobpop() {
+	shareCandidates = {};
 	$("#sharejob-pop").fadeOut();
 	$(".sideMask").fadeOut();
 	}
 function sharejobpopup(candidateCount) {
+	
+	 $("#sharejob-pop").empty();
+		var buttonDisabled = '';
+		var buttonDisplay = '';
+		if(candidateCount > 50){
+			buttonDisabled = 'disabled';
+			buttonDisplay = 'style="display:block"';
+		}else{
+			buttonDisplay = 'style="display:none"';
+		}
+		
 	var result = "";
 	result = result+ '<form method="post">';
 	 result = result+ '<div  id="shareJob-form" name="shareJob-form" class="modal-dialog">';
@@ -2758,13 +2774,13 @@ function sharejobpopup(candidateCount) {
 	 result = result+ '  </div>';
 	 result = result+ '  </div>';
 	 result = result+ '  <div class="modal-footer">';
-	 result = result+ '    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="selectedJobSharing();">Share Job</button>';
+	 result = result+ '    <span class="fa fa-exclamation-triangle text-danger pull-left mt10" '+buttonDisplay+'><strong>&nbsp;Selected Candidates are not more than 50</strong></span>';
+	 result = result+ '    <button type="button" class="btn btn-primary" data-dismiss="modal" '+buttonDisabled+' onclick="selectedJobSharing();">Share Job</button>';
 	 result = result+ '    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closejobpop();">Cancel</button>';
 	 result = result+ '  </div>';
 	 result = result+ '</div>';
 	 result = result+ '</div>';
 	 result = result+ '</form>';
-	 $("#sharejob-pop").empty();
 	 $("#sharejob-pop").append(result);
 	 
 	 $("#shareRequirementsList").selectpicker('refresh');

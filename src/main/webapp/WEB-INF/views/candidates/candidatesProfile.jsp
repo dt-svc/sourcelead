@@ -92,6 +92,14 @@ function editCandidate(candidateId){
             			 		designationOtherType = '';  
             			 	 }
             			 	
+            			 	
+            			 	var otherNoticePeriod = '';
+            			 	if(json.otherNoticePeriod != null && json.otherNoticePeriod != '' && json.otherNoticePeriod != 'undefined'){
+            			 		otherNoticePeriod = json.otherNoticePeriod;            			 		
+            			 	}else{
+            			 		otherNoticePeriod = '';  
+            			 	 }
+            			 	
             			 	var summary = '';
             			 	if(json.summary != null && json.summary != '' && json.summary != 'undefined'){
             			 		summary = json.summary;            			 		
@@ -376,18 +384,24 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							
 							result = result + '<div class="col-md-6 custom-fields select-arrow select-field">';
-							result = result + '<select class="form-control" id="noticePeriod" name="noticePeriod" field-name="Notice Period">';
+							result = result + '<select class="form-control" id="noticePeriodEdit" name="noticePeriod" field-name="Notice Period" onchange="updateOtherNoticePeriod();">';
 							result = result + '<option value="">--Select Notice Period--</option>';
 							result = result + ' <option '+(json.noticePeriod == "Immediately available" ? "selected" : '') +'>Immediately available</option>';
 							result = result + '<option  '+ (json.noticePeriod == "15 Days" ? "selected" : '') +'>15 Days</option>';
 							result = result + '<option  '+(json.noticePeriod == "1 Month" ? "selected" : '') +'>1 Month</option>';
 							result = result + '<option  '+(json.noticePeriod == "2 Months" ? "selected" : '') +'>2 Months</option>';
 							result = result + '<option  '+(json.noticePeriod == "3 Months" ? "selected" : '') +'>3 Months</option>';
+							result = result + '<option  '+(json.noticePeriod == "Other" ? "selected" : '') +'>Other</option>';
 							result = result + ' </select>';
 							result = result + ' </div>';
 							
+							
+                             
+							
+							result = result + '<div class="col-md-6 noticePeriodUpdateDiv" id="noticePeriodUpdateDiv" style="display:none">';
+							result = result + '<input type="text" class="form-control input-sm" name="otherNoticePeriod"  id="otherNoticePeriodEdit" value="'+otherNoticePeriod+'" placeholder=" Notice Period Other" field-name="Other Notice Period" data-validation="validate_Space validate_length length1-150" data-validation-optional="true">';
 							result = result + '</div>';
-
+							result = result + '</div>';
 							
 							result = result + '<div class="clearfix mb">';
 							result = result + '<div class="col-md-6">';
@@ -406,8 +420,8 @@ function editCandidate(candidateId){
 							
 			                result = result + '<input type="text" class="form-control input-sm" name="currentRate" id="currentRate" value="'+currentRate+'" placeholder="Current Rate" field-name="Current Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
-							result = result + '<div class="input-group-btn tblminwidth-75 ratetype-right select-field">';
-							result = result + '<select class="selct-picker" id="currentRateType" name="currentRateType" field-name="Rate Per">';
+							result = result + '<div class="input-group-btn tblminwidth-100 ratetype-right select-field">';
+							result = result + '<select class="selct-picker tblminwidth-100" id="currentRateType" name="currentRateType" field-name="Rate Per">';
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(json.currentRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.currentRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
@@ -426,9 +440,9 @@ function editCandidate(candidateId){
 							result = result + '<div class="col-md-6">';
 							
 							result = result + '<div class="input-group er ratetype">';
-							result = result + '<div class="input-group-btn tblminwidth-75 select-field">';
+							result = result + '<div class="input-group-btn tblminwidth-100 select-field">';
 			                  
-							result = result + ' <select class="selct-picker" id="expectedRateCurrencey" name="expectedRateCurrencey">';
+							result = result + ' <select class="selct-picker tblminwidth-100" id="expectedRateCurrencey" name="expectedRateCurrencey">';
 							result = result + ' <option '+(json.expectedRateCurrencey == "INR" ? "selected" : '') +'><a href="#">INR</a></option>';
 							result = result + '<option   '+(json.expectedRateCurrencey == "AUD" ? "selected" : '') +'><a href="#">AUD</a></option>';
 							result = result + ' <option  '+(json.expectedRateCurrencey == "USD" ? "selected" : '') +'><a href="#">USD</a></option>';
@@ -441,8 +455,8 @@ function editCandidate(candidateId){
 							
 							result = result + '<input type="text" class="form-control input-sm" name="expectedRate" id="expectedRate" value="'+expectedRate+'" placeholder="Expected Rate" field-name="Expected Rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true">';
 							
-							result = result + '<div class="input-group-btn tblminwidth-75 ratetype-right select-field">';
-							result = result + '<select class="selct-picker" id="expectedRateType" name="rateType" field-name="Rate Per">';
+							result = result + '<div class="input-group-btn tblminwidth-100 ratetype-right select-field">';
+							result = result + '<select class="selct-picker tblminwidth-100" id="expectedRateType" name="rateType" field-name="Rate Per">';
 							result = result + '<option value="">Rate Per</option>';
 							result = result + ' <option '+(json.rateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
 							result = result + '<option  '+ (json.rateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
@@ -544,14 +558,14 @@ function editCandidate(candidateId){
 							
 							
 						    result = result + '<span class="" id="hideVendor" style="display:none">'; 
-							result = result + '<div class="col-md-6 custom-fields select-arrow" id="errorvendor">';
+							result = result + '<div class="col-md-6 custom-fields select-arrow chosen-select-anchor" id="errorvendor">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="vendors" data-validation-optional="true"  id="vendorName" value="'+vendorName+'" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">';
 							result = result + '</select>';
 							result = result + '<input type="hidden" name="updateVendorName" id="updateVendorName" value="'+vendorName+'" />';
 							result = result + '<input type="hidden" name="updateVendorOrgRelationId" id="updateVendorOrgRelationId" value="'+json.vendorOrgRelationId+'" />';
 							result = result + '</div>';
 							
-							result = result + '<div class="col-md-6 custom-fields select-arrow mt" id="errorvendorContact">';
+							result = result + '<div class="col-md-6 custom-fields select-arrow mt chosen-select-anchor" id="errorvendorContact">';
 							result = result + '<select  class="chosen-select form-control select-bg" name="vendorcontact" data-validation-optional="true"  value="'+json.vendorContactName+'" id="vendorcontactName" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">';
 							result = result + '</select>';
 							result = result + '<input type="hidden" name="updateVendorContactName" id="updateVendorContactName" value="'+json.vendorContactName+'" />';
@@ -572,8 +586,10 @@ function editCandidate(candidateId){
 							result = result + '<label class="text-muted fontSmall">Source</label>';
 							result = result + '<select class="form-control valid width100percnt" name="candidateSource" field-name="Source" id="candidateSource" data-validation="validate_Space" data-validation-optional="true">';
 							var candidateSourceList = json.candidateSourceList;
+							result = result + '<option value="select source" >--Select Source--</option>';
 							for(var e in candidateSourceList) {
-								result = result + '<option value="'+candidateSourceList[e].id+'" '+(candidateSourceList[e].id == json.candidateSource ? "selected" : "")+'>'+ candidateSourceList[e].name +'</option>';
+								
+								result = result + '<option value="'+candidateSourceList[e].id+'" '+(candidateSourceList[e].id == json.candidateSource ? "selected" : " ")+'>'+ candidateSourceList[e].name +'</option>';
 							}
 							result = result + '</select>';
 							
@@ -604,6 +620,10 @@ function editCandidate(candidateId){
 							
 							if(json.designationType == "Other"){
 								$("#designationTypeDiv").show();
+						      }
+							
+							if(json.noticePeriod == "Other"){
+								$("#noticePeriodUpdateDiv").show();
 						      }
 							employementType();
 							getVendorsByOrgLocation();
@@ -926,7 +946,7 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 									   if(isAssociate != "Y"){
 										   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>';
-										   result = result + ' <a href="javascript:void(0)" onClick="deleteCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Delete</a>';
+										   //result = result + ' <a href="javascript:void(0)" onClick="deleteCandidateAlertMessage('+candidateId+');"><i class="glyphicon glyphicon-trash"></i>Delete</a>';
 									   }
 									   '</sec:authorize>';
 								   } else {
@@ -1792,6 +1812,30 @@ function updateDesignationOtherType(){
 	} 
 }
 </script>
+
+<!-- Notice Period Type Other Script written By Prasad K-->
+
+<script>
+function updateOtherNoticePeriod(){
+	 var noticePeriod = $('#noticePeriodEdit').val(); 
+	 var editVal = $('#otherNoticePeriodEdit').val();
+	/* if(editVal != null && editVal != '' && editVal != 'undefined'){
+		 document.getElementById("noticePeriodUpdateDiv").style.display="block";
+		  $("#otherNoticePeriodEdit").attr("data-validation-optional", "true");
+		  $("#otherNoticePeriodEdit").attr("data-validation", "validate_Space validate_length length1-150");
+	} */
+	if(noticePeriod == 'Other' &&  noticePeriod != '' && noticePeriod !='undefined'){
+		  document.getElementById("noticePeriodUpdateDiv").style.display="block";
+		  $('#otherNoticePeriodEdit').removeAttr('data-validation-optional');
+          $("#otherNoticePeriodEdit").attr("data-validation", "validate_Space required validate_length length1-150");
+	}else{
+		   document.getElementById("noticePeriodUpdateDiv").style.display="none";
+		  $("#otherNoticePeriodEdit").attr("data-validation-optional", "true");
+		  $("#noticePeriodUpdateDiv").find('p.jquery_form_error_message').remove();
+	} 
+}
+</script>
+
 
 
 <!-- Candidate Email validation script starts here -->
