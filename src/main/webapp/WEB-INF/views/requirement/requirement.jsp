@@ -2232,12 +2232,16 @@ $(document).ready(function () {
 											data-validation="required" field-name="Workflow"
 											name="workflow" id="workflowId">
 											<c:forEach var="workflow" items="${workflowList}">
-											       <c:if test="${empty requirement.workflowId.id}"><!-- for new requirement below optios are generated. -->
+												<c:choose>
+											       <c:when test="${empty requirement.workflowId.id}"><!-- for new requirement below optios are generated. -->
 													<option value="${workflow.id}"
 														${workflow.configureType=='Default'? 'selected' : ''}>${workflow.workFlowName}</option>
-												   </c:if>
-													<option value="${workflow.id}"
+												   </c:when>
+												   <c:otherwise>
+												   		<option value="${workflow.id}"
 														${workflow.id==requirement.workflowId.id ? 'selected' : ''}>${workflow.workFlowName}</option>
+												   </c:otherwise>
+													</c:choose>
 											</c:forEach>
 										</select>
 									</div>
