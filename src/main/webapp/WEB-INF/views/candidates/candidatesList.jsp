@@ -2523,7 +2523,7 @@ function minMaxExperience(){
 	    $("#noticePeriod1").val('').trigger("chosen:updated");
 	    $("#minExpYears").val('').trigger("chosen:updated");
 	    $("#maxExpYears").val('').trigger("chosen:updated");
-	 /*    $("#country").val('').trigger("chosen:updated"); */
+	    $("#country").val('').trigger("chosen:updated");
 	    $("#state").val('').trigger("chosen:updated");
 	    $("#citySearch").val('').trigger("chosen:updated");
 	    $("#education").val('').trigger("chosen:updated");
@@ -2954,9 +2954,11 @@ function resetCandidateFilter(){
 	$("ul#skillsUL > li input:checkbox").prop("checked",false);
 	$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
 	$("ul#createdByTypeFilter > li input:radio").prop("checked",false);
+	$("#mySkillsInput").val('');
 	
 	
 	$("#dataTableSearch").val('');
+	mySkillsFunction();
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
 	document.getElementById("candidateCheck").checked = true;
