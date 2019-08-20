@@ -50,6 +50,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
 import com.bis.sourcelead.dto.ClientVendorDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.MspVendorDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -58,8 +59,8 @@ import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.ClientCustomFieldData;
 import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.MspVendor;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -75,13 +76,13 @@ import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.ClientCustomFieldDataService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.MspVendorService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -209,6 +210,9 @@ public class ClientRestController {
 	
 	@Autowired
 	ReferContactsDao referContactsDao;
+	
+	@Autowired
+	MspVendorService mspVendorService;
 	
 	/**
 	 * Handles to get Orgs
@@ -1027,7 +1031,7 @@ public class ClientRestController {
 			User user = userService.getUserByUserCode(orgRelation.getCreatedBy());
 			clientVendorDTO.setVendorCreateduserName(user.getFullName());
 		}
-		
+		clientVendorDTO.setIsMspVendor(orgRelation.getIsMSPVendor());
 		if(StringUtils.isNotBlank(orgRelation.getIsVendorOnboardSubmitted()) && orgRelation.getIsVendorOnboardSubmitted().equalsIgnoreCase(Constants.YES)) {
 			clientVendorDTO.setIsVendorOnboardSubmitted(orgRelation.getIsVendorOnboardSubmitted());
 			if(StringUtils.isNotBlank(orgRelation.getIndustryName())) {
@@ -2650,4 +2654,65 @@ public class ClientRestController {
 		}
 	    
 
+	 
+	 @RequestMapping(value = "/getMspVendorList", method = RequestMethod.POST)
+	 public @ResponseBody List<OrgRelations> getMspVendorList(HttpServletRequest request,
+			 @RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 List<OrgRelations> mspVendorList =orgRelationsService.getMSPVendorListByOrgLocationId(orgLocationId,orgRelationId);
+		 MspVendor mspVendor =  mspVendorService.getMspVendorListByOrgLocationIdAndMspRelationId(orgLocationId, orgRelationId);
+		 for(OrgRelations or:mspVendorList) {
+			 if (or.getLocationId().getId().equals(orgLocationId)) {
+				 or.setOrgName(or.getResponderLocationId().getOrgLocationName());
+			 }
+			 if(or.getResponderLocationId().getId().equals(orgLocationId)) {
+				 or.setOrgName(or.getLocationId().getOrgLocationName());
+			 }
+		 }
+		 if(mspVendor != null) {
+			 mspVendorList.get(0).setMspVendorIds(mspVendor.getOrgRelationIds());
+		 }
+		return mspVendorList;
+	}
+	 
+	 
+	 @RequestMapping(value = "/saveMSPVendor", method = RequestMethod.POST)
+	 public @ResponseBody String saveMSPVendor(MspVendorDTO mspVendorDTO, HttpServletRequest request)throws Exception {
+			Long orgLocatoinId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			mspVendorDTO.setLoginOrgLocationId(orgLocatoinId);
+			mspVendorDTO.setLoginUser(user);
+			mspVendorService.saveMspVendorDTO(mspVendorDTO);
+			return "success";
+		}
+	 
+	 
+	 @RequestMapping(value = "/selectedMspVendorList", method = RequestMethod.POST)
+	 public @ResponseBody List<OrgRelations> selectedMspVendorList(MspVendorDTO mspVendorDTO,
+			 @RequestParam(value = "orgRelationId", required = false) Long orgRelationId, HttpServletRequest request)throws Exception {
+		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 MspVendor mspVendor =  mspVendorService.getMspVendorListByOrgLocationIdAndMspRelationId(orgLocationId, orgRelationId);
+		 List<OrgRelations> selectedMspVendorList = null;
+		 if(mspVendor != null) {
+		 selectedMspVendorList =orgRelationsService.selectedMSPVendorListByOrgRelationIds(mspVendor.getOrgRelationIds());
+		 for(OrgRelations or:selectedMspVendorList) {
+			 if (or.getLocationId().getId().equals(orgLocationId)) {
+				 or.setOrgName(or.getResponderLocationId().getOrgLocationName());
+				 or.setCountry(or.getResponderLocationId().getCountry());
+				 or.setState(or.getResponderLocationId().getState());
+				 or.setCity(or.getResponderLocationId().getCity());
+			 }
+			 if(or.getResponderLocationId().getId().equals(orgLocationId)) {
+				 or.setOrgName(or.getLocationId().getOrgLocationName());
+				 or.setCountry(or.getLocationId().getCountry());
+				 or.setState(or.getLocationId().getState());
+				 or.setCity(or.getLocationId().getCity());
+			 }
+			 List<OrgSpoc> selectMspVendorContactList = orgRelationsService.getMSPVendorContactListByOrgRelationId(or.getId());
+			 or.setNoOfContatcs(selectMspVendorContactList.size());
+		   }
+		 }
+		 return selectedMspVendorList;
+		}
+	 
 }

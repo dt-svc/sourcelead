@@ -91,7 +91,7 @@
 					 	 var location = '';
 					 	 var isLawFirm;
 					 	 var isAccountingFirm;
-					 	 
+					 	 var isMspVendor;
 					 	 
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
@@ -115,6 +115,7 @@
 						}
 						isLawFirm = (json.isLawFirm =='Y' ? true : false);
 						isAccountingFirm = (json.isAccountingFirm =='Y' ? true :false);
+						isMspVendor = (json.isMspVendor == 'Y' ? true :false)
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						if(json.orgType == 'Company'){
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
@@ -259,6 +260,15 @@
                         result = result + ' </select>';
                         result = result + ' </div>';
 						
+                        
+                        result = result +' <div class="col-md-9">';
+			            result = result +' <div class="checkbox checkBox">';
+			            result = result +' <label>';
+			            result = result +' <input id="isMSPVendor" title="MSP Vendor" name="isMSPVendor"  type="checkbox" value="" onclick = "isMSPVendorFunction();">';
+			            result = result +' MSP Vendor</label>';
+			            result = result +' </div>';
+			            result = result +' </div>';
+			            
 	                    result = result +' <div class="col-md-9">';
 			            result = result +' <div class="checkbox checkBox">';
 			            result = result +' <label>';
@@ -293,6 +303,9 @@
 				        $("#isAccountingFirm").attr('checked', isAccountingFirm);
 				        $("#isLawFirm").val(isLawFirm?'Y':'N' );
 				        $("#isAccountingFirm").val(isAccountingFirm?'Y':'N');
+				        $("#isMSPVendor").attr('checked', isMspVendor);
+				        $("#isMSPVendor").val(isMspVendor ? 'Y':'N');
+				        
 				        if(json.orgType == 'Company'){
 // 				        	initLocationAuto('existingLocation','existingCountry','existingState','existingCity','existingZipCode','','','invite','addressId');
 // 				        	zipcodeMask(country,'existingZipCode');
@@ -327,7 +340,14 @@
 function changeCountry(){
 	 $("#errCountryMsg").find("p.jquery_form_error_message").remove();
 }
-
+function isMSPVendorFunction(){
+	var checked = document.getElementById("isMSPVendor").checked
+	if(checked == true){
+		$("#isMSPVendor").val("Y");
+	}else{
+		$("#isMSPVendor").val("N");
+	}
+}
 </script>
 
 
