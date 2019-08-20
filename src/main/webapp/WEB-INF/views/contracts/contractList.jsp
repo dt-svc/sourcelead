@@ -141,30 +141,7 @@ $(document).ready(function(){
   </div>
    <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Contracts</div>
 </section>
-<%-- <section class="contrHead">  --%>
-<!-- <ul>  -->
-<%-- <li title="Draft"><a href="#" id="draft" class="draft" onClick="mainTabEnable(this);getTemplateList('main');">Draft (${contractsCount.totalDraftCount})</a></li> --%>
-<%-- <li title="Waiting for Approval"><a href="#" id="approve"  onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Waiting (${contractsCount.totalWTACount})</a></li>  --%>
-<%-- <li title="Waiting to be sign"><a href="#" id="sign" onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Sign (${contractsCount.totalWTSCount})</a></li> --%>
-<%-- <li title="Waiting for Verify"><a href="#" id="verify" onClick="mainTabEnable(this);getTemplateList('main');"><i class="fa fa-clock-o fa-2"></i>Counter sign (${contractsCount.totalWTVCount})</a></li> --%>
-<%-- <li title="Finalized"><a href="#" id="finalised"  onClick="mainTabEnable(this); getTemplateList('main');">Completed (${contractsCount.totalFinalizedCount})</a></li> --%>
-<%-- <li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getTemplateList('main');">Expired (${contractsCount.totalExpiredCount})</a></li> --%>
-<%-- <li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getTemplateList('main');">Rejected (${contractsCount.totalRejectedCount})</a></li> --%>
-<!-- <input type="hidden" name="contractStage" id="contractStage" > -->
-<!-- <div class="conBtn"> -->
-<!--   <span onclick="addContracts();">Add<i class="fa fa-caret-down"></i></span> -->
-<%-- <%--   <ul>   --%>
-<%-- 	  <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')"> --%>
-<%-- 	  <li><a href="<c:url value="/addNewContract" />"><i class="fa fa-caret-right"></i>New Contract</a></li> --%>
-<%-- 	  </sec:authorize> --%>
-<%-- 	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')"> --%>
-<%-- 	  <li><a href="<c:url value="/addExistingContract" />"><i class="fa fa-caret-right"></i>Existing Contract</a></li> --%>
-<%--   	  </sec:authorize> --%>
-<%--   </ul> --%> 
-<!-- </div> -->
 
-<!-- </ul> -->
-<%-- </section> --%>
 
 <!-- Add candidate Popup -->
   <div class="addcandidate-popup">
@@ -225,16 +202,10 @@ $(document).ready(function(){
 <li title="Expired"><a href="#" id="expired" onClick="mainTabEnable(this);getIndividualCounts('EXPIRED');filterContractsList();">Expired (${contractsCount.totalExpiredCount})</a></li>
 <li title="Rejected"><a href="#" id="rejected"  onClick="mainTabEnable(this);getIndividualCounts('REJECTED');filterContractsList();">Rejected (${contractsCount.totalRejectedCount})</a></li>
 <input type="hidden" name="contractStage" id="contractStage" >
+<input type="hidden" name="contractAnotherStage" id="contractAnotherStage" >
 <div class="conBtn">
   <span onclick="addContracts();">+ Contracts</span>
-<%--   <ul>  
-	  <sec:authorize access="hasAnyRole('ROLE_ADD_NEW_CONTRACT')">
-	  <li><a href="<c:url value="/addNewContract" />"><i class="fa fa-caret-right"></i>New Contract</a></li>
-	  </sec:authorize>
-	  <sec:authorize access="hasAnyRole('ROLE_ADD_EXISTING_CONTRACT')">
-	  <li><a href="<c:url value="/addExistingContract" />"><i class="fa fa-caret-right"></i>Existing Contract</a></li>
-  	  </sec:authorize>
-  </ul> --%>
+
 </div>
 <div class="clearfix"></div>
 </ul>
@@ -249,19 +220,11 @@ $(document).ready(function(){
 			<button type="button" value="Vendor" id="Vendor1" class="tabActivation btn btn-primary btn-sm" onclick="tabEnable(this);Check('Vendors');getTemplateList('Vendor');"> Vendors(${contractsCount.totalDraftVendorCount})</button>
 			<button type="button" value="Client" id="Client1" class="tabActivation btn btn-default btn-sm" onclick="tabEnable(this);Check('Clients');getTemplateList('Client');">Clients (${contractsCount.totalDraftClientCount})</button>
 			<button type="button" value = "Full time offer" id="Applicants1" class="tabActivation btn btn-default btn-sm" onclick="tabEnable(this);Check('Applicants');getTemplateList('Full time offer');">Applicants (${contractsCount.totalDraftApplicantCount})</button>
-		    <input type="hidden" id="errorDiv" value=""/>
+		    <input type="hidden" id="contractTabType" value=""/>
 		</div>
 		<ul>
 		
-		<%--  <li id="filterContractTagPop"><i class="fa fa-filter"></i><span>Tags</span><i class="glyphicon glyphicon-play"></i>
-	           	<div class="statusFiler-4 approved_pop">
-					<ul class="list-unstyled">
-					<c:forEach var="tag" items="${contractTagsList}">
-						<li><input type="checkbox" name="contractType" value="${tag}" onclick="getTemplateList();"><label for="c1">${tag}</label></li>
-					</c:forEach>
-					</ul>
-				</div>	                	
-			</li> --%>
+	
 			
 			
 			<li id="filterContractTypePop"><i class="fa fa-filter"></i><span>Type</span><i class="glyphicon glyphicon-play"></i>
@@ -483,14 +446,13 @@ function previewTemplatePDF(uuid, templateName){
 
 <script>
 function filterContractsList(){
-	var listType = $("#errorDiv").val(); 
+	var listType = $("#contractTabType").val(); 
 	getTemplateList(listType);
 }
 </script>
 
 <script type="text/javascript">
 function getTemplateList(listType){
-	
 	var contractSubmissionType = $("#contractStage").val();
 	if(contractSubmissionType == 'WAITING_TO_BE_SIGNED'){
 		$("#filterContractTypePop-2").css("display", "block");
@@ -502,7 +464,7 @@ function getTemplateList(listType){
 			$("#status1").prop("checked", true);
 			$("#status3").prop("checked", true);
 			$("#status5").removeAttr("checked");
-			$("#status2").removeAttr("checked");
+			$("#status2").removeAttr("checked"); 
 			$("#status4").removeAttr("checked");
 		}
 	}else if(contractSubmissionType == 'WAITING_TO_BE_VERIFY'){
@@ -546,7 +508,7 @@ function getTemplateList(listType){
 	
 	var contractsType = [];
 	$('input:checkbox[name=contractType]:checked').each(function() 
-    {
+    {   
 		contractsType.push($(this).val());
     });
 
@@ -561,7 +523,7 @@ function getTemplateList(listType){
 	}else{
 		tabType = listType;
 	}
-// 	var tabType = $("#tabType").val();
+//	var tabType = $("#tabType").val();
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	var searchValue = "";
 	if(tabType == "Vendor"){
@@ -571,7 +533,6 @@ function getTemplateList(listType){
 	 }else if(tabType == "Full time offer"){
 		 searchValue = $("#applicantDataTableSearch").val();
 	} 
-	
 	var selectedContractType = "";
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 // 	 $.ajax({
@@ -629,7 +590,7 @@ function preparedContractListVendorDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -862,7 +823,7 @@ function preparedContractListClientDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1091,7 +1052,7 @@ function preparedContractListApplicantDraft(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1236,7 +1197,7 @@ function preparedContractApplicantListDraftPagination(url,tabType){
 		    	    	    	    			     			result = result + '| <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+res.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    			     		}
 		    	    	    	    			     		'</sec:authorize>';
-		    	    	    	    	    	      }else if(res.templateSubmissionStatus == "Finalized"){
+		    	    	    	    	    	      }else if(res.templateSubmissionStatus == "FINALIZED"){
 		    	    	    	    	    	    	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		    	    	    	    	 		         if(res.typeOfContract == "New"){
 		    	    	    	    	 		        	result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye mr10" onclick="previewNewContractPDF(\''+res.contractUUID+'\', \''+res.contractTitle+'\')"></i></a></div>';
@@ -1315,7 +1276,7 @@ function preparedContractListVendorWFA(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1472,10 +1433,10 @@ function preparedVendorContractListWFAPagination(url,tabType){
 			    	    	    	    	    	    	result = result + '<div class="tbldata-dotdot-vsm">';
 			    	    	    	    	 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 			    	    	    	    	 	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.approverUserId){
-			    	    	    	    	 		      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+report.id+',\'REJECTED\');"></i></div></div>';
+			    	    	    	    	 		      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\',\'Vendor\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+report.id+',\'REJECTED\',\'Vendor\');"></i></div></div>';
 			    	    	    	    	 		      	         }
 			    	    	    	    	 	        	  }else if(report.templateSubmissionStatus == "WAITING_TO_SEND" && (report.isOwner == "Y" || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN")){
-			    	    	    	    	 	        		  result = result + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+report.contractUUID+'\');"></i></a>';
+			    	    	    	    	 	        		  result = result + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+report.contractUUID+'\',\'Vendor\');"></i></a>';
 			    	    	    	    	 	        	  }
 			    	    	    	    		        		  
 			    	    	    	    	 	      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
@@ -1536,7 +1497,7 @@ function preparedContractListClientWFA(url,tabType){
 		$("#vendorContractsList").empty();
 	    $("#clientContractsList").empty();
 	    $("#applicantsContractsList").empty();
-	    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	    var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  locationDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -1691,18 +1652,19 @@ function preparedClientContractListWFAPagination(url,tabType){
 		    	    	    	    	    	      var opt = "";
 		    	    	    	    	    	      opt = opt + '<div class="tbldata-dotdot-vsm">';
 		    	    	    	    	        	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-		    	    	    	    	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
-		    	    	    	    	      	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+output.id+',\'REJECTED\');"></i></div></div>';
+		    	    	    	    	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_userId}' == output.approverUserId){
+		    	    	    	    	      	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\',\'Client\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+output.id+',\'REJECTED\',\'Client\');"></i></div></div>';
 		    	    	    	    	      	         }
 		    	    	    	    	        	  }else if(output.templateSubmissionStatus == "WAITING_TO_SEND" && (output.isOwner == "Y" || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN")){
-		    	    	    	    	        		  opt = opt + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+output.contractUUID+'\');"></i></a>';
+		    	    	    	    	        		  opt = opt + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+output.contractUUID+'\',\'Client\');"></i></a>';
 		    	    	    	    	        	  }
-		    	    	    	    	        		  
+		    	    	    	    	        		 
+
 		    	    	    	    	     	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-		    	    	    	    	     	     		if(output.typeOfContract == "New"){
+		    	    	    	    	     	     		if(output.typeOfContract == "New" && output.templateSubmissionStatus != "WAITING_TO_SEND"){
 		    	    	    	    	     	     			opt = opt + '| <a href="${SourceLeadWeb_vmsUrl}/addNewContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    	     	     		}
-		    	    	    	    	     	     		if(output.typeOfContract == "Custom"){
+		    	    	    	    	     	     		if(output.typeOfContract == "Custom" && output.templateSubmissionStatus != "WAITING_TO_SEND"){
 		    	    	    	    	     	     			opt = opt + '| <a href="${SourceLeadWeb_vmsUrl}/addCustomContract?contractUUID='+output.contractUUID+'" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    	     	     		}
 		    	    	    	    	       			'</sec:authorize>';
@@ -1751,7 +1713,7 @@ function preparedContractListApplicantWFA(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -1890,9 +1852,12 @@ function preparedApplicantContractListWFAPagination(url,tabType){
 		    	    	    	    	    	      var result = "";
 		    	    	    	    	    	      result = result + '<div class="tbldata-dotdot_80">';
 		    	    	    	    			     	if(res.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-		    	    	    	    						if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == res.approverUserId){
-		    	    	    	    							result = result +' <div><div class="CurDiv" id="removeStatus'+res.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+res.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+res.id+',\'REJECTED\');"></i></div></div>';
+		    	    	    	    						if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_userId}' == res.approverUserId){
+		    	    	    	    							result = result +' <div><div class="CurDiv" id="removeStatus'+res.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+res.id+',\'WAITING_FOR_APPROVER\',\'Full time offer\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+res.id+',\'REJECTED\',\'Full time offer\');"></i></div></div>';
 		    	    	    	    						}
+		    	    	    	    			     	 }else if(res.templateSubmissionStatus == "WAITING_TO_SEND" && (res.isOwner == "Y" || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_userId}' == res.approverUserId)){
+		    	    	    	    	 	        		  result = result + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+res.contractUUID+'\',\'Full time offer\');"></i></a>';
+		    	    	    	    	 	        	  }
 		    	    	    	    			     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		    	    	    	    			     		if(res.typeOfContract == "New"){
 		    	    	    	    			     			result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+res.contractUUID+'\', \''+res.contractTitle+'\')"></i></a>';
@@ -1909,7 +1874,6 @@ function preparedApplicantContractListWFAPagination(url,tabType){
 		    	    	    	    			     		}
 		    	    	    	    			     		'</sec:authorize>';
 		    	    	    	    			     		//res = res + '</div>';
-		    	    	    	    		     	  }
 		    	    	    	    			     	result = result + '</div></td>';
 		    	    	    	    	    	     return result; 
 		    	    	    	    	    	    }
@@ -1950,7 +1914,7 @@ function preparedContractListVendorWTS(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2164,7 +2128,7 @@ function preparedContractListClientWTS(url,tabType){
 		$("#vendorContractsList").empty();
 	    $("#clientContractsList").empty();
 	    $("#applicantsContractsList").empty();
-	    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	    var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
 			  locationDate = 'YYYY-MM-DD';
 		  }if(locationList.match("dd-MM-yyyy")){
@@ -2376,7 +2340,7 @@ function preparedContractListApplicantWTS(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2560,7 +2524,7 @@ function preparedContractListVendorWTV(url,tabType){
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
     
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2728,7 +2692,7 @@ function preparedVendorContractListWTVPagination(url,tabType){
 			    	    	    	    	    	    	result = result + '<div class="tbldata-dotdot_80">';
 			    	    	    	    	 		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.ownerUser){
 			    	    	    	    			        	 if(report.contractStatus != "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
-			    	    	    	    				     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+			    	    	    	    				     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\',\'Vendor\');"></a> | ';
 			    	    	    	    		            	 }
 			    	    	    	    			         }
 			    	    	    	    			         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -2777,7 +2741,7 @@ function preparedContractListClientWTV(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -2942,9 +2906,9 @@ function preparedClientContractListWTVPagination(url,tabType){
 		    	    	    	    	    	    "render": function(data, type, output, meta) {
 		    	    	    	    	    	      var opt = "";
 		    	    	    	    	    	      opt = opt + '<div class="tbldata-dotdot_80">';
-		    	    	    	    	  	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_loginUserRole}' == "ROLE_MANAGER" ||'${SourceLeadWeb_user.id}' == output.ownerUser){
+		    	    	    	    	  	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_loginUserRole}' == "ROLE_MANAGER" || output.isOwner == "Y"){
 		    	    	    	    	 	        	 if(output.contractStatus != "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
-		    	    	    	    	 		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+		    	    	    	    	 		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\',\'Client\');"></a> | ';
 		    	    	    	    	 		     		}
 		    	    	    	    	  	         }
 		    	    	    	    	 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -2989,7 +2953,7 @@ function preparedContractListApplicantWTV(url,tabType){
 	$("#vendorContractsList").empty();
     $("#clientContractsList").empty();
     $("#applicantsContractsList").empty();
-    var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+    var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  locationDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -3105,11 +3069,11 @@ function preparedContractApplicantListWTVPagination(url,tabType){
 	    	    	    	    	    	    "data": "reqDocCount",
 	    	    	    	    	    	    "render": function(data, type, res, meta) {
 	    	    	    	    	    	      var result = "";
-	    	    	    	    	    	      if(appReport.reqDocCount!="0"){
-	    	    	    	    	    	    	  result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+appReport.contractUUID+'\',\''+appReport.parentId+'\');">'+appReport.reqDocCount+'</div>'; 
+	    	    	    	    	    	      if(res.reqDocCount!="0"){
+	    	    	    	    	    	    	  result = result + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+res.contractUUID+'\',\''+res.parentId+'\');">'+res.reqDocCount+'</div>'; 
 	    	    	    	    			         }
 	    	    	    	    			         else{
-	    	    	    	    			        	 result = result + '<div class="tblminwidth-75 ">'+appReport.reqDocCount+'</div>';
+	    	    	    	    			        	 result = result + '<div class="tblminwidth-75 ">'+res.reqDocCount+'</div>';
 	    	    	    	    			         }		 
 	    	    	    	    	    	     return result; 
 	    	    	    	    	    	    }
@@ -3125,21 +3089,21 @@ function preparedContractApplicantListWTVPagination(url,tabType){
 	    	    	    	    	    	    	"targets": colIndex++,
 		    	    	    	    	    	    "data": "action",
 		    	    	    	    	    	    "render": function(data, type, res, meta) {
-		    	    	    	    	    	      var result = "";
-		    	    	    	    	    	      res = res + '<div class="tbldata-dotdot_80">';
-		    	    	    	    	 		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == appReport.ownerUser){
-		    	    	    	    			        	 if(appReport.contractStatus != "completed" && appReport.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && appReport.templateSubmissionStatus != "FINALIZED"){
-		    	    	    	    				        	 res = res +  '<a id="removeStatus'+appReport.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+appReport.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+		    	    	    	    	    	    	var result = "";
+		    	    	    	    	    	    	result = result + '<div class="tbldata-dotdot_80">';
+		    	    	    	    	 		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || res.IsOwner == 'Y'){
+		    	    	    	    	 		        	 if(res.contractStatus != "completed" && res.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && res.templateSubmissionStatus != "FINALIZED"){
+		    	    	    	    			        		 result = result +  '<a id="removeStatus'+res.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+res.id+',\'WAITING_TO_BE_VERIFY\',\'Full time offer\');"></a> | ';
 		    	    	    	    				     		}
 		    	    	    	    			         }
 		    	    	    	    			         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
-		    	    	    	    			         if(appReport.typeOfContract == "New"){
-		    	    	    	    			        	 res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+appReport.contractUUID+'\', \''+appReport.contractTitle+'\')"></i></a>';
+		    	    	    	    			         if(res.typeOfContract == "New"){
+		    	    	    	    			        	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+res.contractUUID+'\', \''+res.contractTitle+'\')"></i></a>';
 		    	    	    	    			         }else{
-		    	    	    	    			         res = res + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+appReport.fileURL+'\', \''+appReport.fileName+'\', \''+appReport.fileType+'\')"></i></a>';
+		    	    	    	    			        	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+res.fileURL+'\', \''+res.fileName+'\', \''+res.fileType+'\')"></i></a>';
 		    	    	    	    			         }
 		    	    	    	    			         '</sec:authorize>';
-		    	    	    	    			         res = res + '</div></td>';
+		    	    	    	    			         result = result + '</div></td>';
 		    	    	    	    	    	     return result; 
 		    	    	    	    	    	    }
 		    	    	    	   }],
@@ -3205,7 +3169,7 @@ function removeRecord(recordId,status){
 }
 
 
-function finalizeContract(recordId,status){
+function finalizeContract(recordId,status,tabType){
 	 var rowHtmlContent =  $("#row"+recordId).html();
 	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
@@ -3215,7 +3179,7 @@ function finalizeContract(recordId,status){
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
 	        $("#removeStatus"+recordId).html("<span>Finalized</span>").addClass('text-success');
-	        getTemplateList();
+	        getTemplateList(tabType);
        },
    });  
 }
@@ -3227,21 +3191,21 @@ function finalizeContract(recordId,status){
 		}
    </script>
 <script>
-function sendContractFromOwner(contractUUID){
+function sendContractFromOwner(contractUUID,tabType){
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 $.ajax({
       type : "POST",
        url: vmsUrl+"/sendContractFromOwnertoReceiver?contractUUID="+contractUUID,       
        success :function(data) {
     	   if(data)
-	        getTemplateList();
+	        getTemplateList(tabType);
       },
   }); 
 }
 </script>
 
 <script>
-function approveContract(recordId,status){
+function approveContract(recordId,status,tabType){
 	var rejectReason =  $("#rejectContractId").val();
 	var rowHtmlContent =  $("#row"+recordId).html();
 	var vmsUrl ='${SourceLeadWeb_vmsUrl}';
@@ -3261,35 +3225,36 @@ function approveContract(recordId,status){
     	    	$("#row"+recordId).html(rowHtmlContent);
     	    	 $("#removeReject"+recordId).html("");
     	        $("#removeStatus"+recordId).html("<span>Approved</span>").addClass('text-success');
+    	        $("#contractAnotherStage").val("WAITING_TO_SEND");
         	}
         	$("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-        	getTemplateList();
+        	getTemplateList(tabType);
        },
    });  
 }
 </script>
 
 <script>
-function rejectedContractReason(recordId,status){
+function rejectedContractReason(recordId,status,tabType){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Do you want to reject this contract?</p>";
 	result = result +"		<textarea  id='rejectContractId' name='rejectContractId'  placeholder='Reason here'></textarea>";
 	result = result + ' <div id="rejectContractIdDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='validateReason("+recordId+",\""+status+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='validateReason("+recordId+",\""+status+"\",\""+tabType+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
 
-function validateReason(recordId,status){
+function validateReason(recordId,status,tabType){
 	
 	var rejectReason =  $("#rejectContractId").val();
 	if(rejectReason != null && rejectReason !='undefined' && rejectReason !=''){
 		$("#rejectContractIdDiv").find('p.jquery_form_error_message').remove();
-		approveContract(recordId,status);
+		approveContract(recordId,status,tabType);
 		cancelTermination();
 	}else{
 		$("#rejectContractIdDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");
@@ -3312,7 +3277,7 @@ function tabEnable(local){
     });
 	var tabId = local.id;
 	var aa = $("#"+tabId).val();
-	$("#errorDiv").val(aa);
+	$("#contractTabType").val(aa);
 	$("#tabType").val(tabId);
 	$("#"+tabId).removeClass("btn-default").addClass("btn-primary");
 }

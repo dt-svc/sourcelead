@@ -544,7 +544,8 @@ function getVendorDetails(){
 						<div class="form-group">
 							<label class="col-md-3">Status</label>
 							<div class="col-md-9">
-								<select class="form-control sel" id="spocStatus"
+								<select class="form-control valid sel" id="spocStatus"
+
 									name="spocStatus">
 									<option value="Active">Active</option>
 									<option value="In-Active">In-Active</option>
@@ -623,14 +624,14 @@ function getVendorDetails(){
 					</div>
 					<div class="clearfix mb"></div>
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9 checkBox">
 								<label> <input type="checkbox" value="Y"
 									name="isMailSent"> Send Invitation
 								</label>
 							</div>
-						</div> 
+						</div>  -->
 
 						
 

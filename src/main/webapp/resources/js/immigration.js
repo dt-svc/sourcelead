@@ -853,6 +853,7 @@ function Immigration() {
 			if ($('#candidate_Immigration_document_form').validate(false, validationSettings)) {
 		 
 				var formData = getFormData("candidate_Immigration_document_form");
+				$("#canDocSave_Button1").attr("disabled",true);
 				var candidateId = $('#candidateID').val();
 				var templateId = $('#templateID').val();
 				var immigrationId = $('#immigrationID').val();
@@ -871,7 +872,7 @@ function Immigration() {
 	                	}else{
 	                		showSuccessMsg("Successfully New Document Details Added.");
 	                	}
-	                	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'','');
+	                	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'','',curUscisMyImmi);
 	                }
 	                $("#canDocSave_Button1").removeAttr("disabled");
 	            }
@@ -1058,6 +1059,7 @@ function Immigration() {
 	
 	
 	this.displayImmigrationCandidateDocs = function(candidateId,templateid,immigrationId,searchVal,myImmigrationStatus,curUscisMyImmi){
+		
 		$.ajax({
 	        url: vmsUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId+"&searchVal="+searchVal+
 	        "&myImmigration="+myImmigrationStatus+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
@@ -1468,7 +1470,7 @@ function Immigration() {
 		var immigrationId = $('#immigrationID').val();
 		var id = $("#uploadIdSave").val();
 		var templateId = $('#templateID').val();
-		var curUscisMyImmi =
+	
 		$.ajax({
 	        url: vmsUrl + immiModulePath + "/uploadRequstedDoc?id="+id+"&candidateId="+candidateId+"&immigrationId="+immigrationId,
 	        type: "POST",
@@ -1477,6 +1479,7 @@ function Immigration() {
 	        	if(result=='success'){
 	        		$('#uploadCanDocPop').hide();
 	            	$('.popMask').fadeOut();
+	        		$(".comMask").fadeOut();
 	            	showSuccessMsg("Successfully Uploaded File.");
 	            	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'',curUscisMyImmi);
 	        	     
