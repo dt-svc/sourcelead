@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -1018,7 +1019,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	        cell1.setColspan(18);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{5,5,5,7,6,6,4,5,5});
+            table.setWidths(new int[]{5,5,5,7,6,6,4,5,5,6});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -1125,6 +1126,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 							}else{
 								expenseArray[8] = "--";
 							}
+							if(null != expenseId.getBillingStatus()){
+								expenseArray[9] = expenseId.getBillingStatus();
+								}else{
+								expenseArray[9] = "--";
+								}
 							
 			}
 			arrayList.add(expenseArray);
@@ -1224,6 +1230,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 						if(null != expenseId.getExpenseStatus()){
 							writeRow.createCell(8).setCellValue(expenseId.getExpenseStatus().getValue());
 							createExcelsheet.autoSizeColumn(8);
+						}
+						if(null != expenseId.getBillingStatus()){
+							writeRow.createCell(9).setCellValue(expenseId.getBillingStatus());
+							createExcelsheet.autoSizeColumn(9);
 						}
 		}
 	return createExcelsheet;
@@ -1350,13 +1360,36 @@ public class ExpensesServiceImpl implements ExpensesService{
 					pendingForExpenseApprovalReportDTO.setApprovedBy(expenses.getActionPerformedby());
 					pendingForExpenseApprovalReportDTO.setManagerOne(expenses.getLevel1Name());
 					pendingForExpenseApprovalReportDTO.setManagerTwo(expenses.getLevel2Name());
-					//pendingForExpenseApprovalReportDTO.setNoofDaysPending(expenses);
+					/*pendingForExpenseApprovalReportDTO.setReportingManager(expenses.getReportingManager());*/
 					pendingForExpenseApprovalReportDTO.setFrequency(expenses.getDuration());
 					pendingForExpenseApprovalReportDTO.setSubmittedAmount(expenses.getSubmittedAmount().toString());
 					pendingForExpenseApprovalReportDTO.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(locationDateFormat, expenses.getSubmittedDate()));		
 					pendingForExpenseApprovalReportDTO.setProjectName(expenses.getProjectName());
 					//set all DTO values
+
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+					Date date = expenses.getSubmittedDate();
+					String output =dateFormat.format(date); 
 					
+					
+					Date d = new Date(output);
+			        Calendar compareDate = Calendar.getInstance();
+			        compareDate.setTime(d);
+			        Calendar currentDate = Calendar.getInstance();
+			        int noOfDays = Double.valueOf(Math.ceil((currentDate.getTimeInMillis() - compareDate.getTimeInMillis()) / 1000 / 60 / 60 / 24.0)).intValue();
+			        int years = 0, months = 0, weeks = 0, days = 0;
+			        years = noOfDays / 365;
+			        noOfDays = noOfDays % 365;
+			        weeks = noOfDays / 7;
+			        while(weeks >= 4) {
+			            weeks = weeks - 4;
+			            months++;
+			            noOfDays = noOfDays - 4;
+			        }
+			        noOfDays = noOfDays % 7;
+			        days = noOfDays;
+			        String str =(years + " Years " + months + " months " + weeks + " weeks " + days + " days");
+			        pendingForExpenseApprovalReportDTO.setNoofDaysPending(str);
 					pendingForExpenseApprovalReportDTOList.add(pendingForExpenseApprovalReportDTO);
 				}
 			}

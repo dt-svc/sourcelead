@@ -296,6 +296,7 @@ public class AssetDaoImpl implements AssetDao{
 		 query1.append("and (asset.slno like '%" + assetDTO.getSearchValue() + "%' ")
 		       .append("OR asset.assetCategory.categoryName like '%" + assetDTO.getSearchValue() + "%' ")
 		       .append("OR asset.model like '%" + assetDTO.getSearchValue() + "%' ")
+		       .append("OR asset.name like '%" + assetDTO.getSearchValue() + "%' ")
 		       .append("OR asset.macAddress like '%" + assetDTO.getSearchValue() + "%' ")
 			   .append("OR asset.workingStatus like '%" + assetDTO.getSearchValue() + "%' )");
 		    if(sqlDate != null) {
@@ -583,13 +584,13 @@ public class AssetDaoImpl implements AssetDao{
 	    }
 		StringBuilder query1 = new StringBuilder("");
 		if(assetDTO.getSearchValue() !=null && !"".equalsIgnoreCase(assetDTO.getSearchValue())) {
-			 query1.append("and  assetAssign.userRole.user.firstName like '%" + assetDTO.getSearchValue() + "%' ")
+			 query1.append("and ( assetAssign.userRole.user.firstName like '%" + assetDTO.getSearchValue() + "%' ")
 				   .append("OR assetAssign.userRole.user.lastName like '%" + assetDTO.getSearchValue() + "%' ")
 				   .append("OR concat( assetAssign.userRole.user.firstName, assetAssign.userRole.user.lastName) like '%" + assetDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%' ")
 				   .append("OR assetAssign.asset.slno like '%" + assetDTO.getSearchValue() + "%' ")
 		           .append("OR assetAssign.asset.assetCategory.categoryName like '%" + assetDTO.getSearchValue() + "%' ")
 		           .append("OR assetAssign.asset.name like '%" + assetDTO.getSearchValue() + "%' ")
-		           .append("OR assetAssign.shift.shiftName like '%" + assetDTO.getSearchValue() + "%' ");
+		           .append("OR assetAssign.shift.shiftName like '%" + assetDTO.getSearchValue() + "%' )");
 		    if(sqlDate != null) {
 		    	query1.append("OR assetAssign.assignedOn like '%" + sqlDate + "%' OR assetAssign.returnedOn like '%" + sqlDate + "%'");
 			 }
@@ -613,7 +614,7 @@ public class AssetDaoImpl implements AssetDao{
 		if(StringUtils.isNotEmpty(assetDTO.getShiftIds())) {
 			subQuery = " and  assetAssign.shift.id IN("+assetDTO.getShiftIds()+")";
 		}
-		String query = "from AssetAssign assetAssign  where assetAssign.asset.orgLocations.id = :orgLocationId and assetAssign.status = '1' "+subQuery+subquery1+" "+subquery2+" "+query1+" "+tagsQuery+" "+sortingQry+""; 
+		String query = "from AssetAssign assetAssign  left join fetch assetAssign.asset asset where asset.orgLocations.id = :orgLocationId and assetAssign.status = '1' "+subQuery+subquery1+" "+subquery2+" "+query1+" "+tagsQuery+" "+sortingQry+""; 
 		List<AssetAssign> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setFirstResult(assetDTO.getStart()).setMaxResults(assetDTO.getLength()).setString("varString", "").setParameterList("tagsList", tagsList).list();
 		
 		String queryStrForCount = "Select count (*) from AssetAssign assetAssign   where assetAssign.asset.orgLocations.id = :orgLocationId and assetAssign.status = '1' "+subQuery+subquery1+" "+subquery2+" "+tagsQuery+" "+query1+"" ;

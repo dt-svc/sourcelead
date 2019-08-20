@@ -102,7 +102,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId,Long userId) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<ProjectMembers> projectMemberList = null;
-		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc left join fetch can.masterCandidateId mc left join fetch pm.employee emp  where  proj.id = :projectId and loc.id = :locationId "
+		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectMemberCandidteId can left join fetch can.parentCandidateId left join fetch can.orgLocationId loc left join fetch can.masterCandidateId mc left join fetch pm.employee emp  where  proj.id = :projectId and loc.id = :locationId "
 					     + " and ( "
 						 + "  (proj.id IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId)) "
 						 + "   OR "
@@ -1159,12 +1159,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Map<String, Object> params = new HashMap<String,Object>();
 		StringBuilder query1 = new StringBuilder("");
 		if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
-		 query1.append("and( (userRole.user.firstName like '" + userDTO.getSearchValue().replace("'", "") + "%' OR userRole.user.lastName like '%" + userDTO.getSearchValue().replace("'", "") + "' )")
-			   .append("OR (concat(userRole.user.firstName,userRole.user.lastName) like '%" + userDTO.getSearchValue().replace("'", "").replaceAll("[\\s]+", "").trim() + "%')" )
-		       .append("OR userRole.user.email like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
-			   .append("OR userRole.user.mobilePhone like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
-			   .append("OR userRole.roles.displayName like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
-			   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue().replace("'", "") + "%' and emp.orgLocations.id = :locationId)) ");
+			 query1.append("and(userRole.user.firstName like '" + userDTO.getSearchValue().replace("'", "") + "%' ")
+			       .append("OR (userRole.user.lastName like '%" + userDTO.getSearchValue().replace("'", "") + "' )")
+			       .append("OR (userRole.user.middelName like '%" + userDTO.getSearchValue().replace("'", "") + "' )")
+				   .append("OR (concat(userRole.user.firstName,' ',userRole.user.middelName,' ',userRole.user.lastName) like '%" + userDTO.getSearchValue().replace("'", "") + "%')" )
+			       .append("OR userRole.user.email like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
+				   .append("OR userRole.user.mobilePhone like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
+				   .append("OR userRole.roles.displayName like '%" + userDTO.getSearchValue().replace("'", "") + "%' ")
+				   .append("OR userRole.user.id IN(Select emp.user.id from Employees emp where emp.userEmploymentType like '%" + userDTO.getSearchValue().replace("'", "") + "%' and emp.orgLocations.id = :locationId)) ");
+						
+			
 					
 		}
 		//usertList shorting order
@@ -1674,5 +1678,17 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			queryObj.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
 			userDTOList = queryObj.list();
 			return userDTOList;
+	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getAllUserRolesByOrgLocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.orgId left join fetch userRole.user "
+				+ " left join fetch userRole.roles left join fetch userRole.reportingManager left join fetch userRole.resourceManager "
+				+ " where userRole.orgLocations.id = :orgLocationId and (userRole.userState = 'ACTIVE' OR userRole.userState = 'NOT_LOGGEDIN') ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+		return userRoleList;
+
 	}
 }

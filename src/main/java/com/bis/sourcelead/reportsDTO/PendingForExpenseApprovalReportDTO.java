@@ -26,6 +26,17 @@ public class PendingForExpenseApprovalReportDTO {
 	private String approvedBy;
 	
 	private String noofDaysPending;
+	
+	private String reportingManager;
+	
+
+	public String getReportingManager() {
+		return reportingManager;
+	}
+
+	public void setReportingManager(String reportingManager) {
+		this.reportingManager = reportingManager;
+	}
 
 	public String getEmployeId() {
 		return employeId;

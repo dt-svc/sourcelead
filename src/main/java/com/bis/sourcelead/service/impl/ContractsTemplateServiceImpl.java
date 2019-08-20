@@ -609,11 +609,16 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			sendMailToContractApprover(user, approverUser, savedContracts, orgLocation,redirectURL,redirectOrgLocationId);
 		}
 		
+		if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(contractsDTO.getContractType())) {
+            sendContractForSignature(savedContracts,orgLocation,user);
+        }
+		
 		if (!Constants.WAITING_FOR_APPROVER.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())
 				&& !Constants.WAITING_TO_SEND.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())
 				&& !Constants.DRAFT.equalsIgnoreCase(savedContracts.getTemplateSubmissionStatus())
 				&& !Constants.VENDOR_NDA.equalsIgnoreCase(savedContracts.getContractType())
-				&& !Constants.VENDOR_NSA.equalsIgnoreCase(savedContracts.getContractType())) {
+				&& !Constants.VENDOR_NSA.equalsIgnoreCase(savedContracts.getContractType())
+				&& !Constants.FULL_TIME_OFFER.equalsIgnoreCase(savedContracts.getContractType())) {
 			saveClientOrVendorContract(savedContracts,vendorContracts,user,orgLocation);
 		}
 		
@@ -1206,6 +1211,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 			List<ClientContractsDTO> clientContractsList = new ArrayList<>();
 			for(Contracts contracts :clientcontractsList ){
+				Set<ContractOwnerHierarchy> signingAuthlist = contracts.getOwnerHierarchyList();
 				ClientContractsDTO clientConDto = new ClientContractsDTO();
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
@@ -1381,7 +1387,22 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	    			countOfDoc  = contractRequestDocumentsService.getCountOfDocByContractedId(contracts.getId());
 	    			clientConDto.setReqDocCount(countOfDoc);
 	    		}
-	    		clientContractsList.add(clientConDto);
+	    		if(userRoleName.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+	    			clientContractsList.add(clientConDto);	
+	    		}else if(ownerUserIds.contains(user.getId()) && (Constants.WAITING_TO_SEND.equalsIgnoreCase(contracts.getTemplateSubmissionStatus()) || Constants.WAITING_TO_BE_VERIFY.equalsIgnoreCase(contracts.getTemplateSubmissionStatus()) || Constants.FINALIZED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus()))) {
+	    			if(!Constants.WAITING_TO_BE_SIGNED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())) {
+		    			clientContractsList.add(clientConDto);
+		    		}
+		    	}else if(user.getUserCode().equalsIgnoreCase(contracts.getCreatedBy())) {
+		    		if(!Constants.WAITING_TO_SEND.equalsIgnoreCase(contracts.getTemplateSubmissionStatus()) && !Constants.WAITING_TO_BE_SIGNED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())) {
+		    			clientContractsList.add(clientConDto);
+		    		}
+		    	}else if(contracts.getApproverUser() != null && user.getId().longValue() == contracts.getApproverUser().getId().longValue()) {
+		    		if(!Constants.WAITING_TO_SEND.equalsIgnoreCase(contracts.getTemplateSubmissionStatus()) && !Constants.WAITING_TO_BE_SIGNED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())) {
+		    			clientContractsList.add(clientConDto);
+		    		}
+		    	}
+	    		
 			}
 			responseList.setRecordsFiltered(clientContractsList.size());
 			responseList.setRecordsTotal(clientContractsList.size());
@@ -1841,14 +1862,17 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		}
 		globalVarsMap.put("OwnerName", ownerSb.toString().replaceAll("\\s*,\\s*$", ""));
 		
-		if (contracts.getContactUser().getLastName() != null
-				&& !"".equalsIgnoreCase(contracts.getContactUser().getLastName())) {
-			StringBuilder builder = new StringBuilder();
-			globalVarsMap.put("clientContact", builder.append(contracts.getContactUser().getFirstName()).append(" ").append(contracts.getContactUser().getLastName()).toString());
+		if(contracts.getContactUser() != null) {
+			if (contracts.getContactUser().getLastName() != null
+					&& !"".equalsIgnoreCase(contracts.getContactUser().getLastName())) {
+				StringBuilder builder = new StringBuilder();
+				globalVarsMap.put("clientContact", builder.append(contracts.getContactUser().getFirstName()).append(" ").append(contracts.getContactUser().getLastName()).toString());
+			}
+			else {
+				globalVarsMap.put("clientContact", contracts.getContactUser().getFirstName());
+			}
 		}
-		else {
-			globalVarsMap.put("clientContact", contracts.getContactUser().getFirstName());
-		}
+	
 		StringBuilder linkBuild = new StringBuilder();
 
 		globalVarsMap.put("loginLink", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +vmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Approved Contract</div></a>").toString());		
@@ -2894,14 +2918,18 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		String redirectURL = "/viewContract-params-"+"contractUUID="+contracts.getContractUUID();
 		Long redirectOrgLocationId = contracts.getOrgLocationId().getId();
 		
-		if(null != orgLocation.getTimezone()){
-	    	 timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		if(null != orgLocation.getTimeZoneId()){
+	    	 timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
 		 }
 //		User createdUser = userService.getUserByUserCode(contracts.getCreatedBy());
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(loginUser.getFirstName());
 		 emailMessage.setLastName(loginUser.getLastName());
-		 emailMessage.setToEmail(contracts.getContactUser().getEmail());
+		 if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(contracts.getContractType())) {
+			 emailMessage.setToEmail(contracts.getCandidate().getConsultantUser().getEmail());
+		 }else {
+			 emailMessage.setToEmail(contracts.getContactUser().getEmail());
+		 }
 		 emailMessage.setFromEmail(loginUser.getEmail());
 		 emailMessage.setCreatedBy(loginUser.getUserCode());
 		// SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
@@ -2922,6 +2950,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 				 globalVarsMap.put("contractTitle","--");
 			 }
 		 
+		 if(contracts.getContactUser() != null) {
 			 if(contracts.getContactUser().getLastName() !=null && !"".equalsIgnoreCase(contracts.getContactUser().getLastName())){
 				 StringBuilder builder=new StringBuilder();
 				 globalVarsMap.put("receiverParty",builder.append(contracts.getContactUser().getFirstName()).append(" ").append(contracts.getContactUser().getLastName()).toString()); 
@@ -2929,6 +2958,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			 else{
 				 globalVarsMap.put("receiverParty",contracts.getContactUser().getFirstName());
 			 }
+		 }
 			
 			 StringBuilder durationSb = new StringBuilder();
 			 
@@ -3347,7 +3377,12 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	private void sendContractForSignature(Contracts contracts, OrgLocations orgLocation, User user) throws Exception {
 		
 		User owner = user;
-		User receiver = userService.getUserByUserCode(contracts.getContactUser().getUserCode());
+		User receiver = null;
+		if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(contracts.getContractType())){
+			 receiver = userService.getUserByUserCode(contracts.getCandidate().getConsultantUser().getUserCode());
+		}else {
+			 receiver = userService.getUserByUserCode(contracts.getContactUser().getUserCode());
+		}
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(owner.getFirstName());
 		 if(owner.getLastName()!= null && !"".equalsIgnoreCase(owner.getLastName())){
@@ -3409,12 +3444,14 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 				 globalVarsMap.put("loginOrg","--");
 			 }
 		 
-		 if(contracts.getEndDate() != null){
-			 StringBuilder contractDur = new StringBuilder();
-			 globalVarsMap.put("contractDuration", contractDur.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), contracts.getStartDate())).append(" - ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),contracts.getEndDate())).toString());
-			 }else{
-				 globalVarsMap.put("contractDuration",commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), contracts.getStartDate()).toString());
-			 }
+		 if(contracts.getStartDate() != null) {
+			 if(contracts.getEndDate() != null){
+				 StringBuilder contractDur = new StringBuilder();
+				 globalVarsMap.put("contractDuration", contractDur.append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), contracts.getStartDate())).append(" - ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),contracts.getEndDate())).toString());
+				 }else{
+					 globalVarsMap.put("contractDuration",commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), contracts.getStartDate()).toString());
+				 }
+		 }
 		 
 		 if(user.getLastName() != null){
 			 StringBuilder logUser = new StringBuilder();
@@ -3427,7 +3464,12 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		 globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px; float:left;'>Login</div></a>").toString());
 		 
 		 StringBuilder signatureBuild = new StringBuilder();
-		 Contracts childContract = contractsTemplateDao.getChildContractById(contracts.getId());
+		 Contracts childContract = null;
+		 if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(contracts.getContractType())){
+			 childContract = contracts;
+		 }else {
+			 childContract = contractsTemplateDao.getChildContractById(contracts.getId());
+		 }
 		 globalVarsMap.put("signatureLink",signatureBuild.append("<a href='").append(vmsUrl).append("/").append("ws/docusign?contractUUID=").append(childContract.getContractUUID()).append("&type=public").append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px; float:left;'>Sign Here</div></a>").toString());
 		 
 		 EmailScenario  emailScenario = null;
@@ -3464,7 +3506,11 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 
 //		 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 
-	 emailScenerioUtil.sendNotification(actionLink,owner,receiver, contracts.getContractOrgLocationId(), notificationScenario,new HashMap<String,String>());
+	     if(Constants.FULL_TIME_OFFER.equalsIgnoreCase(contracts.getContractType())) {
+	    	 emailScenerioUtil.sendNotification(actionLink,owner,receiver, contracts.getOrgLocationId(), notificationScenario,new HashMap<String,String>());
+	     }else {
+	    	 emailScenerioUtil.sendNotification(actionLink,owner,receiver, contracts.getContractOrgLocationId(), notificationScenario,new HashMap<String,String>());
+	     }
 		
 	}
 
@@ -3503,8 +3549,8 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 				if (loginUser.getId().longValue() == coh.getOwnerUserId().getId().longValue() || "Admin".equalsIgnoreCase(roleName)) {
 					Set<ContractOwnerHierarchy> ownersList = new HashSet<>();
 					vendorContracts = new Contracts();
-					contract.setTemplateSubmissionStatus(Constants.PENDING);
-					coh.setTemplateSubmissionStatus(Constants.PENDING);
+					contract.setTemplateSubmissionStatus(Constants.WAITING_TO_BE_SIGNED);
+					coh.setTemplateSubmissionStatus(Constants.WAITING_TO_BE_SIGNED);
 					coh.setStatus(Constants.APPROVED);
 					ownersList.add(coh);
 					contract.setOwnerHierarchyList(ownersList);
@@ -3567,7 +3613,11 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 				}
 			}
 		}
-		saveClientOrVendorContract(contract, vendorContracts, loginUser, loginOrgLocation);
+		if(!Constants.FULL_TIME_OFFER.equalsIgnoreCase(contract.getContractType())){
+			saveClientOrVendorContract(contract, vendorContracts, loginUser, loginOrgLocation);
+		}else {
+			sendContractForSignature(contract,loginOrgLocation,loginUser);
+		}
 		return flag;
 	}
 

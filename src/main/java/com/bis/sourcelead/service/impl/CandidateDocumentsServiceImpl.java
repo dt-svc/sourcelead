@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,15 +17,15 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDocumentsDao;
 import com.bis.sourcelead.dto.CandidateDocumentsDTO;
 import com.bis.sourcelead.dto.FileInfo;
-import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateDocumentsService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -37,13 +36,21 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateDocumentsServiceImpl.class);
 	@Autowired
 	private CandidateDocumentsDao candidateDocumentsDao;
+	
+	@Autowired
+	CandidateService candidateService;
+	
 	@Autowired
 	private CommonUtil commonUtil;
+	
 	@Autowired
 	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 
 	@Autowired
 	CandidateActivityCommonUtil candidateActivityCommonUtil;
+	
+	@Autowired
+	CandidateIndexHelper candidateIndexHelper;
 
 	@Override
 	public CandidateDocuments storeCandidateDocuments(CandidateDocumentsDTO candidateDocumentsDTO, Long candidateId, String documentUUID,
@@ -283,8 +290,8 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 	@Async
 	public void saveOrUpdateCandidateElkDocumentWithDocumentDetails(Long candidateId, Long orgLocationId) throws Exception {
 		if (null != candidateId) {
-			CandidateIndex candidateIndex = new CandidateIndex();
-			candidateIndex.setCandidateId(candidateId);
+			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,

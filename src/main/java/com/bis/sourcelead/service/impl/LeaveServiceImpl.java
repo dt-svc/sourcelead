@@ -1053,7 +1053,7 @@ public class LeaveServiceImpl implements LeaveService{
 			globalVarsMap.put("LeaveTypeName", leaveManagementHistory.getLeaveid().getLeaveType().getName());
 			
 			StringBuilder loginBuilder = new StringBuilder();
-			globalVarsMap.put("loginLink",loginBuilder.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>View Leave</div></a>").toString());
+			globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>View Leave</div></a>").toString());
 		
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		EmailScenario notificationScenario = null;
@@ -2768,13 +2768,13 @@ public class LeaveServiceImpl implements LeaveService{
 				   writeRow.createCell(11).setCellValue(leaveReportDTO.getApprover());
 			   }
 			 else{
-				   writeRow.createCell(12).setCellValue("--");   
+				   writeRow.createCell(11).setCellValue("--");   
 			   }
 			 if(leaveReportDTO.getApprovedOnDateStr() != null){
-				   writeRow.createCell(13).setCellValue(leaveReportDTO.getApprovedOnDateStr() );
+				   writeRow.createCell(12).setCellValue(leaveReportDTO.getApprovedOnDateStr() );
 			   }
 			 else{
-				   writeRow.createCell(14).setCellValue("--");   
+				   writeRow.createCell(12).setCellValue("--");   
 			   }
 			
 			
@@ -2833,7 +2833,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
  		headers.add("Employee Name");
  		headers.add("Employee Type");
  		headers.add("Department");
- 		if (topleave != null) 
+ 		//if (topleave != null) 
  		headers.add("Role");
  		for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
  		{
@@ -2841,10 +2841,10 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
  		}
  		headers.add("TotalBalanceLeaves");
 		 writeRow = createExcelsheet.createRow(0);
-		 createExcelsheet.setColumnWidth(0, 10000);
-		 createExcelsheet.setColumnWidth(1, 10000);
-		 createExcelsheet.setColumnWidth(2, 10000);
-		 createExcelsheet.setColumnWidth(3, 10000);
+		 createExcelsheet.setColumnWidth(0, 7000);
+		 createExcelsheet.setColumnWidth(1, 7000);
+		 createExcelsheet.setColumnWidth(2, 7000);
+		 createExcelsheet.setColumnWidth(3, 7000);
 		 for(String str:LeaveBalanceReport.getObject().getLeaveTypeNames())
 		 {
 			 int i=4;
@@ -2859,19 +2859,16 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 private Sheet createXlsBalanceSheet(Sheet createExcelsheet, Row writeRow, int column,LeaveBalanceReportDTO leaveBalanceReportDTO,Response<LeaveBalanceReportDTO> LeaveBalanceReport,String topleave) throws Exception {
 	
-	if(leaveBalanceReportDTO.getEmpName() !=null){
-		 writeRow.createCell(0).setCellValue(leaveBalanceReportDTO.getEmpName()); 
-	 }
-	else{
+	    if(leaveBalanceReportDTO.getEmpName() !=null){
+		  writeRow.createCell(0).setCellValue(leaveBalanceReportDTO.getEmpName()); 
+	    }else{
 		   writeRow.createCell(0).setCellValue("--");   
-	   }
-	   if(leaveBalanceReportDTO.getEmpType() !=null){
+	    }
+	    if(leaveBalanceReportDTO.getEmpType() !=null){
 		   writeRow.createCell(1).setCellValue(leaveBalanceReportDTO.getEmpType());
-	   }
-	   else{
+	    } else{
 		   writeRow.createCell(1).setCellValue("--");   
 	   }
-	   
 	   if(LeaveBalanceReport.getObject().getDepart().entrySet() != null) {
 		   for(Map.Entry<Long, String> k: LeaveBalanceReport.getObject().getDepart().entrySet()){
 				Long ltv =   k.getKey();

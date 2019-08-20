@@ -10,6 +10,7 @@ import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Phone;
 import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.OrgLocations;
 public class CandidateDTO extends SearchDTO{
 
@@ -87,6 +88,8 @@ public class CandidateDTO extends SearchDTO{
 	private String experienceMonths;
 
 	private String noticePeriod;
+	
+	private String otherNoticePeriod;
 	
 	private String vendor;
 
@@ -276,13 +279,15 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String candidateSource;
 	
-	private List<CandidateSourceDTO> candidateSourceList;
+	private List<CandidateSource> candidateSourceList;
 	
-	public List<CandidateSourceDTO> getCandidateSourceList() {
+	
+
+	public List<CandidateSource> getCandidateSourceList() {
 		return candidateSourceList;
 	}
 
-	public void setCandidateSourceList(List<CandidateSourceDTO> candidateSourceList) {
+	public void setCandidateSourceList(List<CandidateSource> candidateSourceList) {
 		this.candidateSourceList = candidateSourceList;
 	}
 
@@ -502,6 +507,15 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setNoticePeriod(String noticePeriod) {
 		this.noticePeriod = noticePeriod;
+	}
+	
+	
+	public String getOtherNoticePeriod() {
+		return otherNoticePeriod;
+	}
+
+	public void setOtherNoticePeriod(String otherNoticePeriod) {
+		this.otherNoticePeriod = otherNoticePeriod;
 	}
 
 	public String getDesignation() {

@@ -370,18 +370,7 @@ public class DataMigrationCommonUtil {
 					}
 				}
 				
-				if(!dataMigrationDTOJsonCopy.getString("clientRate").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("clientRate"))) {
-					String clientRate = dataMigrationDTOJsonCopy.getString("clientRate");
-					if(NumberUtils.isNumber(clientRate)){
-						if(Long.valueOf(clientRate) <= 99999999){
-							dataMigrationDTOJsonCopy.put("clientRate", clientRate);
-						}else{
-							errorSet.put("clientRate", dataMigrationDTOJsonCopy.getString("clientRate")+" is invalid Client Rate, should between 1 to 8 digits");
-						}
-					}else{
-						errorSet.put("clientRate", dataMigrationDTOJsonCopy.getString("clientRate")+" is invalid Client Rate");
-					}
-				}
+				
 				
 				if(!dataMigrationDTOJsonCopy.getString("coolingOff").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("coolingOff"))) {
 					String coolingOff = dataMigrationDTOJsonCopy.getString("coolingOff").toLowerCase();
@@ -482,7 +471,23 @@ public class DataMigrationCommonUtil {
 						errorSet.put("selectClient", dataMigrationDTOJsonCopy.getString("selectClient")+" is invalid Client");
 					}else{
 						dataMigrationDTOJsonCopy.put("selectClient", orgRelations.getId().toString());
+						
+						// when client is not null then client rate will execute
+						if(!dataMigrationDTOJsonCopy.getString("clientRate").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("clientRate"))) {
+							String clientRate = dataMigrationDTOJsonCopy.getString("clientRate");
+							if(NumberUtils.isNumber(clientRate)){
+								if(Long.valueOf(clientRate) <= 99999999){
+									dataMigrationDTOJsonCopy.put("clientRate", clientRate);
+								}else{
+									errorSet.put("clientRate", dataMigrationDTOJsonCopy.getString("clientRate")+" is invalid Client Rate, should between 1 to 8 digits");
+								}
+							}else{
+								errorSet.put("clientRate", dataMigrationDTOJsonCopy.getString("clientRate")+" is invalid Client Rate");
+							}
+						}
 					}
+					
+					
 				}
 				
 				if(!dataMigrationDTOJsonCopy.getString("assignedTo").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("assignedTo"))) {
@@ -2740,7 +2745,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			//DateOfJoin
 			if(!dataMigrationDTOJsonCopy.getString("dateofJoin").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("dateofJoin"))) {
 				try {
-					DateFormat formatter = new SimpleDateFormat("DD-MM-yyyy"); 
+					DateFormat formatter = new SimpleDateFormat("dd-mm-yyyy"); 
 					Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.getString("dateofJoin"));
 					String dateofjoin = formatter.format(date);
 					dataMigrationDTOJsonCopy.put("dateofJoin", dateofjoin);
@@ -2789,11 +2794,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 
 			//Designation
 			if(dataMigrationDTOJsonCopy.getString("designation").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designation"))) {
-				errorSet.put("designation", "Designation Type field is missing");
+				errorSet.put("designation", "Designation field is missing");
 			}else {
-				Boolean isValidated = isFnameLnameValid(dataMigrationDTOJsonCopy.getString("designation"));
+				Boolean isValidated = isDesignationValid(dataMigrationDTOJsonCopy.getString("designation"));
 				if(isValidated == false){
-					errorSet.put("designation", "should contain above 2 char and should not allowed special charecters");
+					errorSet.put("designation", "should contain 2 char and should not allowed special charecters");
 				}
 			}
 			
@@ -2919,6 +2924,20 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				flag = false;
 			}else{
 				if(name.length() > 2 && name.length() <= 200){
+					flag = true;
+				}
+		}
+			
+			return flag;
+		}
+		
+		private boolean isDesignationValid(String name){
+			boolean flag = false;
+			boolean istabSpace = name.matches("^[A-Za-z][A-Z a-z 0-9]*$");
+			if(istabSpace==false){
+				flag = false;
+			}else{
+				if(name.length() >= 2 && name.length() <= 200){
 					flag = true;
 				}
 		}

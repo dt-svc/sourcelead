@@ -25,7 +25,7 @@ public class Constants {
 			"Impace" };
 	public static final String[] AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS = { "Project Name", "Project Duration","Associate Duration", "Availability %","No.of Hours",};
 	
-	public static final String[] EXPENSE_PENDING_APPROVAL_REPORT_EXPORT_HEADDERS = { "Emp_ID", "Emp_Name","Emp_Type", "Project","Duration","Approval Mechanism","Manager1","Manager2","Submitted Amount","Submitted on","Approved By"};
+	public static final String[] EXPENSE_PENDING_APPROVAL_REPORT_EXPORT_HEADDERS = { "Emp_ID", "Emp_Name","Emp_Type", "Project","Approval Mechanism","Manager1","Manager2","Submitted Amount","Submitted on","Approved By"};
 	
 	public static final String[] FONT_SIZE = { "8px", "9px", "10px", "11px", "12px", "13px", "14px",
 			"15px", "16px", "17px", "18px", "19px", "20px", "21px", "221px", "23px", "24px" };
@@ -125,6 +125,15 @@ public class Constants {
 	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_REJECT_THE_EXPENSE = "MailToManager1WhenManager2orAdminRejectTheExpense";
 
 	public static final String MAILTOMANAGER1WHENMANAGER2ORADMIN_APPROVESTHE_EXPENSE = "MailToManager1WhenManager2orAdminApprovesTheExpense";
+	
+	public static final String MAIL_TO_EMPLOYEE_WHEN_MANAGER_SUBMIT_THE_TIMESHEET = "MailToEmployeeWhenManagerSubmitTheTimesheet";
+
+
+	public static final String MAIL_TO_MANAGER1_WHENMANAGER2_OR_ADMINREJECT_THETIMESHEET = "MailToManager1WhenManager2orAdminRejectTheTimesheet";
+
+	public static final String MAIL_TO_MANAGER1_WHENMANAGER2_OR_ADMINAPPROVES_THETIMESHEET = "MailToManager1WhenManager2orAdminApprovesTheTimesheet";
+	
+	public static final String MAIL_TO_THE_MANAGER_TIMESHEET_SUBMISSION = "Mail To Manager when the Timesheet Submission";
 
 
 	
@@ -145,6 +154,7 @@ public class Constants {
 	public static final String INVITE_USER = "Invite User";
 	public static final String BLOG_SUBSCRIPTION = "blogSubscription";
 	public static final String EXPENSES_EMAIL_TO_MANAGER = "ExpensesEmailToManager";
+	public static final String MAILTO_LEVEL2_WHENLEVEL1_SUBMITSEXPENSE = "MailToLevel2WhenLevel1SubmitsExpense";
 	public static final String INVITE_CLIENT = "Invite Client";
 	public static final String INVITE_VENDOR = "Invite Vendor";
 	public static final String MODIFY_CONTRACT_ENDDATE = "ModifyContractEndDate";
@@ -192,6 +202,7 @@ public class Constants {
 	public static final String MAIL_TEAM_MANAGER_APPROVED_EXPENSE = "ExpensesApprovalManagerEmailToEmployee";
 	public static final String MAIL_TEAM_MANAGER_REJECTED_EXPENSE = "ExpensesApprovalRejectedEmailToEmployee";
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
+	public static final String MAILTO_MANAGER1ANDEMPLOYEE_WHEN_MANAGER2REOPENS = "MailToManager1andEmployeeWhenManager2ReopensExpense";
 	
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
@@ -298,6 +309,7 @@ public class Constants {
 	public static final String PROJECT_MEMBER_HISTORY_OPEN = "OPEN";
 	public static final String PROJECT_MEMBER_HISTORY_CLOSED = "CLOSED";
 	public static final String REQUIREMENT_EMAIL_NOTIFICATION = "Approval Mechanism";
+	public static final String APPLICANT_SOURCE_CHANGE_EMAIL_NOTIFICATION = "ApplicantSourceChange";
 	public static final String SHARE_RECOMENDED_APPLICANT = "Share Recomended Applicant";
 	public static final String SHARE_RECOMENDED_APPLICANT_NOTIFICATION = "Share Recommended Applicant Notification";
 	public static final String APPROVER_UPDATED_CONTRACT = "approverUpdatedContract";
@@ -543,6 +555,9 @@ public class Constants {
 	public static final String MYPAYROLL = "MyPayroll";
 	public static final String RUNPAYROLL = "RunPayroll";
 	public static final String PERFORMANCE = "Performance";
+	public static final String PERFORMANCE_GOALS = "Goals";
+	public static final String PERFORMANCE_MY_APPRAISAL = "My Appraisal";
+	public static final String PERFORMANCE_EMPLOYEE_APPRAISAL = "Employee Appraisal";
 	public static final String SOURCELEAD_ORGCODE = "sourcelead.com";
 	public static final String SOURCELEAD_LOCATIONCODE_IN = "in.sourcelead.com";
 	/** Constants values for unique emails and notification **/
@@ -701,7 +716,7 @@ public class Constants {
 			"Sat", "Sun", "Total" };
 	public static final String[] TIMESHEET_EXCEL_HEADERS3 = { "Status" };
 	public static final String[] TIMESHEET_APPROVAL_MECHANISM_HEADER = { "Employee Name", "Email id",
-			"Phone Number", "Client", "projectName", "Total", "Stage", "approved By" };
+			"Phone Number", "Client", "projectName", "Total", "Stage", "Action By" };
 	public static final String[] CLIENT_EXCEL_HEADERS = { "Client Name", "Website", "Location", "Tiers",
 			"Number of Contacts" };
 	public static final String[] CLIENT_CONTACTS_EXCEL_HEADERS = { "Client Name", "Name", "Emailid",
@@ -1001,7 +1016,7 @@ public class Constants {
 	public static final String[] MY_EXPENSES_HEADERS_APPROVER ={"Expense Category","Date","Receipt Issued by","Payment Mode","Currency","Amount","Description","Status","Billable"};
 
 	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = {"Expense ID","Employee Name", "Employee Emailid", "Phone Number",
-			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Items",
+			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Number of Items",
 			"Amount" , "Status"  , "Approved by","Blling Status"};
 	
 	public static final String[] PROJECT_REPORT_EXPORT_HEADDERS = { "ProjectId", "Project Name", "Project Status",
@@ -1013,7 +1028,7 @@ public class Constants {
 	
 	public static final String[] JOBFAIR_EXPORT_HEADERS = {"Generated ID", "Title", "Start Date", "End Date", "No.of Jobs", "Applicants", "Offered", "Venue", "Status"};
 	
-	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense ID","purpose","Project","Client","Start Date","End Date","No of Items","Amount","Status"};
+	public static final String[] ALL_MY_EXPENSES_HEADERS ={"Expense ID","purpose","Project","Client","Start Date","End Date","No of Items","Amount","Status","Billing Status"};
 
 	public static final String[] RECRUITER_REPORTS_HEADERS = { "Associate Name", "Jobs","Candidates","Applicants", "Shortlisted","Submitted","Interviewed", "Offered", "Rejected","Joined","Back-Out","OnHold", "No-Response"};
 

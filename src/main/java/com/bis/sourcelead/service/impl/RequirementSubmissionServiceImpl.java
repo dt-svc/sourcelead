@@ -638,7 +638,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 CandidateResumes resume = new CandidateResumes();
 				 resume.setId(resumeDTO.getResumeId().longValue());
 				 requirementSubmission.setCandidateResumes(resume);
-				 insertResumeIdInELK(candidate);
 			 }
 			
 		 }
@@ -648,8 +647,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			 candidateResumes = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(jsonObj.getString("candidateResume")));
 			 candidateResumes.setId(Long.parseLong(jsonObj.getString("candidateResume")));
 			 requirementSubmission.setCandidateResumes(candidateResumes);
-			 //insert the currentResumeId in ELK 
-			 insertResumeIdInELK(candidate);
 			 
 		 }else{
 			 
@@ -698,8 +695,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResumes, null);
 				 }
 				 requirementSubmission.setCandidateResumes(candidateResumes);
-				 //insert the currentResumeId in ELK				 
-				 insertResumeIdInELK(candidate);
 			 }
 		 }
 			if(orgLocations == null){
@@ -1223,24 +1218,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 	}
 
-	private void insertResumeIdInELK(Candidate candidate) throws Exception {
-		 if(null != candidate && null != candidate.getId()){
-				CandidateIndex candidateIndex = new CandidateIndex();
-				candidateIndex.setCandidateId(candidate.getId());
-				CandidateResumes  candidateResumes =candidateResumesDao.getCandidateLatesResumes(candidate.getId(),Constants.CANDIDATE_SKILL_ACTIVE);
-				if(null != candidateResumes){
-					candidateIndex.setCurrentResumeId(candidateResumes.getId());
-					candidateIndex.setResumeContent("");
-					candidateIndex.setCurrentResumeName(candidateResumes.getFileName());
-					candidateIndex.setFileUrl(candidateResumes.getFileURL());
-					candidateIndex.setFileContentType(candidateResumes.getFileContentType());
-					candidateIndex.setResumeName(candidateResumes.getFileName());
-					
-				}
-				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
-			}
-		
-	}
+	
 
 	@Override
 	public List<RequirementSubmission> getSubmissionsByRequirementId(Long requirementId,User user, OrgLocations loginOrgLocation,String loginUserRole) throws Exception {
@@ -4032,10 +4010,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 candidateResumes.setOrgLocationId(orgLocations);
 				 FileUploadUtil.moveFile(staticPath, fileInfo, "addApplicants");
 				 candidateResumesDao.storeCandidateResumes(candidateResumes);
-//				 candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResumes, user);
 				 requirementSubmission.setCandidateResumes(candidateResumes);
-				 //insert the currentResumeId in ELK				 
-//				 insertResumeIdInELK(candidate);
 			 }
 		 
 	 }
@@ -4330,9 +4305,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setFromName("Sourcelead Admin");
 		 emailMessage.setCreatedBy("sladmin");
 		 if (environment.equalsIgnoreCase("prod")) {
-			 emailMessage.setFromName("info@sourcelead.com");
+			 emailMessage.setFromEmail("info@sourcelead.com");
 		 }else{
-			 emailMessage.setFromName("qa@sourcelead.com");	 
+			 emailMessage.setFromEmail("qa@sourcelead.com");	 
 		 }
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -5107,8 +5082,6 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					 candidateResumesDao.storeCandidateResumes(candidateResumes);
 					 candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResumes, null);
 					 requirementSubmission.setCandidateResumes(candidateResumes);
-					 //insert the currentResumeId in ELK				 
-					 insertResumeIdInELK(requirementSubmission.getCandidate());
 				 }else {
 					 if(jsonObj.has("candidateResume") && !isNullOrEmpty(jsonObj.getString("candidateResume"))){
 						 candidateResumes.setId(Long.parseLong(jsonObj.getString("candidateResume")));

@@ -375,7 +375,7 @@ private void storeExpenseApprovers(String status, Expenses expenses, ArrayList<U
      }
          if(loginUserType.equalsIgnoreCase("Manager")||loginUserType.equalsIgnoreCase("Admin")){
          expensesEmailsUtil.sendExpenseMailToEmployee(loginUser,expenses,orgLoc,currencyCode);
-         expensesEmailsUtil.sendExpensesEmailToManager(loginUser,expenses,orgLoc,currencyCode);
+         expensesEmailsUtil.sendExpensesEmailToManagerWhenManagerSubmitsExpenseBehalfofEmployee(loginUser,expenses,orgLoc,currencyCode);
          }
          }
 }

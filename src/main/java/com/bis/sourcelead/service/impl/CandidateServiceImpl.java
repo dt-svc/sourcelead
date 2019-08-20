@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.CandidateCertificationsDao;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateEducationDao;
@@ -300,6 +301,12 @@ public class CandidateServiceImpl implements CandidateService {
     @Autowired
   	ReportsUtil reportsUtil;
     
+    @Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+    
        
     protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -466,6 +473,15 @@ public class CandidateServiceImpl implements CandidateService {
 			}
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		
+		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, activitySummary.toString(), "CANDIDATE");
+		}else {
+			if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.MANUAL_CANDIDATE)){
+				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");
+			}else if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.IMPORT_CANDIDATE)){
+				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, "", "CANDIDATE");
+			}
+		}
 		if(candidateDto.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:candidateDto.getCustomFormData()) {
 				if(customFields != null && customFields.getCustomFormFieldId() > 0 ) {
@@ -544,10 +560,7 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	referContactsDao.addReferContacts(referContacts);
 		
-		// resume details update in elk
-		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
-		candidateResumesService.saveOrUpdateCandidateElkDocumentWithResumeDetails(savedCandidate);
-		}
+	
 		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
 			FileInfo fileInfo = candidateDto.getFileInfo().get(0);
 			if(fileInfo != null){
@@ -1929,6 +1942,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    					employee.setCreatedDate(new Date());
 	    					employee.setUpdatedDate(new Date());
 	    					employeeDao.addEmployee(employee);
+	    					
+	    					if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+	    						userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+	    					}
 						}
 					}
 				}
@@ -2077,6 +2094,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			orgRelations.setResponderType("Vendor");
 			orgRelations.setInitiatorLevel("Tier-5");
 			orgRelations.setGenerateBill("Bulk");
+			orgRelations.setGenerateInvoice("Bulk");
 			orgRelations.setResponderLevel("Tier-5");
 			orgRelations.setVendorRelationStatus("Sent");
 			orgRelations.setStatus("ACTIVE");
@@ -2726,6 +2744,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				activitySummary.append("Employment Type").append(" : ").append("---").append(" ");
 		candidate.setDesignationType(candidateDto.getDesignationType());
 		
+		  if(candidate.getDesignationType() != null && "Other".equalsIgnoreCase(candidate.getDesignationType())) {
+		    	candidate.setDesignationOtherType(candidateDto.getDesignationOtherType());
+		    }
+		
 			if(candidate.getExperienceYears() != null  && candidate.getExperienceYears() != "" && !candidateDto.getExperienceYears().equalsIgnoreCase(candidate.getExperienceYears())){
 				activitySummary.append("Experience Years").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getExperienceYears()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getExperienceYears()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}else if((candidate.getExperienceYears() != null || candidate.getExperienceYears() != "" ||  candidateDto.getExperienceYears().equalsIgnoreCase(candidate.getExperienceYears())) && candidateDto.getExperienceYears() !="" ){
@@ -2748,10 +2770,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		
 		 String noticePeriod = null;
+		 candidate.setOtherNoticePeriod(null);
 		if(candidateDto.getNoticePeriod() != null)
 			noticePeriod = candidateDto.getNoticePeriod().replaceAll("\\s+", " ");
 		
+		
 	    if(noticePeriod != null) {
+	    	
 		if(candidate.getNoticePeriod() != null  && candidate.getNoticePeriod() != "" && !noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())){
 			 activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(noticePeriod).append(Constants.NEW_VALUE_TAG_END).append(" ");
 		}else if((candidate.getNoticePeriod() != null || candidate.getNoticePeriod() != "" ||  noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())) && noticePeriod !="" ){
@@ -2760,6 +2785,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			activitySummary.append("Notice Period").append(" : ").append("---").append(" ");
 			candidate.setNoticePeriod(noticePeriod);	
 	     }
+	    
+	    if(candidate.getNoticePeriod() != null && candidate.getNoticePeriod().equalsIgnoreCase("Other")) {
+	    	candidate.setOtherNoticePeriod(candidateDto.getOtherNoticePeriod());
+	    }
 		
 		if(candidateDto.getAddress() !=null){
 			if(candidate.getAddress() != null   && candidate.getAddress() != "" && !candidateDto.getAddress().equalsIgnoreCase(candidate.getAddress())){
@@ -2828,15 +2857,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidate.setCandidateHistory(candiateHistoryList);
 		
 		HashSet<CandidateTimelineActivity> candiateTimeLineActivityList = null;
-		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
-			candiateTimeLineActivityList = candidateTimelineActivityService.getCandidateTimelineActivityDetails(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, activitySummary.toString(), "CANDIDATE");
-		}else{
-			if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.MANUAL_CANDIDATE)){
-				candiateTimeLineActivityList = candidateTimelineActivityService.getCandidateTimelineActivityDetails(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");
-			}else if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.IMPORT_CANDIDATE)){
-				candiateTimeLineActivityList = candidateTimelineActivityService.getCandidateTimelineActivityDetails(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, "", "CANDIDATE");
-			}
-		}
+		
 		candidate.setCandidateTimeLineActivity(candiateTimeLineActivityList);
 		
 		
@@ -3963,6 +3984,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			
 		return candidateDao.getCandidateSourceListByOrgLocationIdAndStatus(orgLocationId, status);
 		
+	}
+
+	@Override
+	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		return candidateDao.getCandiateByConsultantUserIdAndOrgLocationId(userId, orgLocationId);
 	}
 
 

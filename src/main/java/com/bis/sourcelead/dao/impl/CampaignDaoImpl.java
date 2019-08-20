@@ -82,7 +82,7 @@ public class CampaignDaoImpl implements CampaignDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		CreateSender createSender = null;
 		List<CreateSender> senderList = new ArrayList<>();
-		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.id = :senderId").setLong("senderId", senderId).list();
+		List<CreateSender> createSenderList = session.createQuery("from CreateSender cSender left join fetch cSender.orgLocations where cSender.id = :senderId and cSender.status = '1' ").setLong("senderId", senderId).list();
 		if (createSenderList != null && createSenderList.size() > 0) {
 			createSender = createSenderList.get(0);
 		}

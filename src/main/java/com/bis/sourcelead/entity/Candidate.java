@@ -157,7 +157,10 @@ public class Candidate implements Serializable {
 
 	@Column(name = "NOTICE_PERIOD")
 	private String noticePeriod;
-
+	
+	@Column(name = "OTHER_NOTICE_PERIOD")
+	private String otherNoticePeriod;
+	
 	@Column(name = "DESIGNATION")
 	private String designation;
 
@@ -1113,6 +1116,14 @@ public class Candidate implements Serializable {
 
 	public void setNoticePeriod(String noticePeriod) {
 		this.noticePeriod = noticePeriod;
+	}
+	
+	public String getOtherNoticePeriod() {
+		return otherNoticePeriod;
+	}
+
+	public void setOtherNoticePeriod(String otherNoticePeriod) {
+		this.otherNoticePeriod = otherNoticePeriod;
 	}
 
 	public String getSkills() {
