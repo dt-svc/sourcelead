@@ -3,6 +3,7 @@ package com.bis.sourcelead.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +32,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import ooo.connector.BootstrapSocketConnector;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 @Component
 public class PdfConversionUtil {
@@ -101,6 +103,11 @@ public class PdfConversionUtil {
 			}
 	    }
 
+	 /**
+	  * Convert Doc File to Pdf Bytes
+	  * @param docFile
+	  * @return byte[]
+	  */
 	public byte[] convertDocFileToPdf(File docFile)
 	{
 		
@@ -139,5 +146,26 @@ public class PdfConversionUtil {
 		
 		return null;
 	}
+
+	/**
+	 * convert Docx file to Pdf byte
+	 * @param file
+	 * @return byte[]
+	 */
+	/*public byte[] convertDocxFileToPdf(File file)
+	{
+		try {
+			InputStream doc = new FileInputStream(file);
+			XWPFDocument document = new XWPFDocument(doc);
+			PdfOptions options = PdfOptions.create();
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			PdfConverter.getInstance().convert(document, out, options);
+			document.close();
+			return out.toByteArray();
+		} catch (IOException ex) {
+			System.out.println(ex.getMessage());
+		}
+		return null;
+	}*/
 	
 }
