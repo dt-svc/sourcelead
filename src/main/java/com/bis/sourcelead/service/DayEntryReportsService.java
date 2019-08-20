@@ -16,5 +16,12 @@ public interface DayEntryReportsService {
 	File exportDayEntryReportsWithProjectPdf(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgLocations, User loginUser,String isGlobalUser) throws IOException, Exception;
 
 	ResponseList<DayWiseTimesheetReoprtsListDTO> getDayEntriesList(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgLocations, User loginUser, String isGlobalUser) throws Exception;
+	
+	ResponseList<DayWiseTimesheetReoprtsListDTO> getProjectTimeEntriesList(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgLocations, User loginUser, String isGlobalUser) throws Exception;
+	
+    File exportProjectTimeEntryReportsWithoutProjectExcel(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgLocations, User loginUser, String isGlobalUser) throws Exception;
+	
+	File exportProjectTimeEntryReportsWithProjectPdf(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgLocations, User loginUser,String isGlobalUser) throws IOException, Exception;
+
 
 }

@@ -43,5 +43,16 @@ public class TimesheetReportsController {
 		return model;
 
 	}
+	
+	@RequestMapping(value = "/projectTimeEntriesReport")
+	public ModelAndView projectTimeEntriesReport(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 model.setViewName("timesheet/projectTimeEntryReportList");
+		 model.addObject("SourceLeadWeb_orgLocationId",orgLocations.getId());
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+
+	}
 
 }

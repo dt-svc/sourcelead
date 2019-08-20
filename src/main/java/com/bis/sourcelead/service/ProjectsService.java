@@ -164,4 +164,6 @@ public interface ProjectsService {
 
 //		public String getProjectId(OrgLocations orgLocations);
 		
+		List<ProjectsDTO> getProjectListForProjectTimeEntriesReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
+		
 }
