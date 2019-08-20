@@ -2118,7 +2118,7 @@ function requirementWorkflowStatusBar(requirementId){
 		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Duplicate Applicants</label></div>';
 		result = result + '</li>';
 		result = result + '<li title="Request Sent" id="requestSentli" onclick="requirementPipeline('+requirementId+',\''+requestSent+'\');tabEnable(this);">';
-		result = result + '	<span><i class="fa fa-check"></i></span><b id="requestSent"shortCode="REQUESTSENT">0</b>';
+		result = result + '	<span><i class="fa fa-check"></i></span><b id="requestSent" shortCode="REQUEST_SENT">0</b>';
 		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Request Sent</label></div>';
 		result = result + '</li>';
 		// Start here getting dynamically configured stages for the workflow. 
