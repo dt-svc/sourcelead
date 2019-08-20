@@ -1,5 +1,6 @@
 /**
  * @author Mahaveer Manoj
+ * @source admin
  */
 
 var uploadCount = 1;
@@ -46,7 +47,7 @@ $(document).ready(function() {
 			        			$(".success_pop").css("display","block");
 				        		$(".success_pop span").html("ITDeclaration added successfully....");
 				        		setTimeout(function() {
-				        			location.href = pmsUrl + "/runIndianPayRoll";
+				        			location.href = pmsUrl + "/runIndianPayRoll?stab=forms";
 						 		}, 100);
 			        		}
 			        	} else if (response.response === "INVALID_DATA" || response.response === "DUPLICATE_TAX_RECORD") {
@@ -260,8 +261,9 @@ function closeChangeStatusPopup() {
 
 function getItDeclarationSubmissionList(uuid, financialYear, pageNo) {
 	var pageSize = $("#pageSize").val();
+	var searchValue = $("#formSearch").val();  
 	$("#formList").empty();
-	$.post(sourceleadUrl + "/itDeclaration/list", {uuid:uuid, financialYear:financialYear, pageNo:pageNo, pageSize:pageSize}, function(response) {
+	$.post(sourceleadUrl + "/itDeclaration/list", {uuid:uuid, financialYear:financialYear,pageNo:pageNo, pageSize:pageSize,searchValue:searchValue}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
 		} else if (response.response === "AWKWARD") {
@@ -274,7 +276,7 @@ function getItDeclarationSubmissionList(uuid, financialYear, pageNo) {
 					text += "	<td>" + formList[e].employeeId + "</td>";
 					text += "	<td>";
 					text += "		<div class='tblminwidth proj_show'>";
-					text += "			<span>" + formList[e].userName + "</span> <a href='viewForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "'><i class='fa fa-binoculars'></i></a>";
+					text += "			<a href='viewForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "'><span>" + formList[e].userName + "</span> <i class='fa fa-binoculars'></i></a>";
 					text += "		</div>";
 					text += "	</td>";
 					text += "	<td><div class='tbldata-dotdot-verybig'>" + formList[e].financialYear + "</div></td>";
@@ -286,7 +288,7 @@ function getItDeclarationSubmissionList(uuid, financialYear, pageNo) {
 					text += "			<li><a href='javascript:void()' class='text-danger' title='ExportToPDF' onclick='exportFormToPDF(" + formList[e].id + ")'><i class='fa fa-file-pdf-o'></i></a></li>";
 					text += "			<li><a href='javascript:void()' class='text-danger' title='ExportToEXCEL' onclick='exportFormToExcel(" + formList[e].id + ")'><i class='fa fa-file-excel-o'></i></a></li>";
 					if(formList[e].status === 0) {
-						text += "				<li><a href='editForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
+						text += "				<li><a href='" + sourceleadUrl + "/forms/editForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
 						text += "				<li><a href='javascript:void()' title='Approve' onclick='approveOrRejectForm(" + formList[e].id + ", 1)'><i class='fa fa-check'></i></a></li>";
 						text += "				<li><a href='javascript:void()' title='Reject' onclick='approveOrRejectForm(" + formList[e].id + ", -1)' class='text-danger'><i class='fa fa-close'></i></a></li>";
 					}

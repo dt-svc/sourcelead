@@ -1,1 +1,690 @@
-.bgImg,.signWrap{background-position:center}.backBtn u,.orgBack u,.otpTime,.sign_btn,a{cursor:pointer}.marQ p,.orgCta,.orgCta span,.orgWrap,.signin_fild{box-sizing:border-box}body{font-family:Roboto,Arial,Helvetica,sans-serif;font-weight:400;font-size:14px;margin:0;padding:0;background-color:#FFF;overflow-x:hidden;line-height:normal}.signin_wrap h1,.signin_wrap i{text-align:center;font-size:18px}:focus,a:focus{outline:0}.bgImg{width:100%;height:100%;position:fixed;background-size:cover}.signWrap,.signWrapOtp{width:380px;border-radius:4px;background-color:#fff}.signWrap{box-shadow:5px 5px 1px rgba(0,0,0,.2);float:right;margin:5% 10% 2% 0;position:relative;min-height:400px;background-image:url(/resources/images/loading.gif);background-repeat:no-repeat;background-size:75px}.signWrapOtp{position:fixed;height:70%;right:0;top:15%;box-shadow:8px 8px 1px rgba(0,0,0,.3);overflow:hidden;left:0;transition:.2s all;-webkit-transition:.2s all;-moz-transition:.2s all;margin:0 auto}.forPassOut{min-height:50%;margin-top:12%}.signin_wrap{width:auto;text-align:center;padding:35px 40px 30px;position:relative;background-color:#fff;border-radius:4px;box-shadow:5px 5px 1px rgba(0,0,0,.1)}.ForPasSlide{display:none;background-color:#fff}.Slogo{width:280px;display:block;margin:0 auto 25px}.signin_wrap h1{margin:0;padding:20px 0;font-weight:400;color:#404a63}.sign_btn,.signin_fild{font-weight:500;width:100%}.signin_wrap span{display:block;position:relative;padding:0 0 8px}.signin_wrap b,.signin_wrap i{position:absolute;display:block}.signin_wrap b{width:1px;height:2px;background-color:#2d3447;top:43px;left:0;right:0;z-index:1000;margin:0 auto;opacity:0;transition:.2s all ease-in-out;-webkit-transition:.2s all ease-in-out;-moz-transition:.2s all ease-in-out}.signin_wrap i{width:38px;height:42px;color:#666;padding:14px 0 0}.signin_wrap i.si-pass{font-size:19px}.signin_fild{appearance:none;background-color:#FFF!important;height:45px;font-size:15px;color:#333;padding:4px 5px 0 40px;border:none;border-bottom:2px solid #bdbdbd}input.signin_fild:-webkit-autofill{-webkit-box-shadow:inset 0 0 0 9999px #fff;box-shadow:inset 0 0 0 9999px #fff}.signin_fild:focus+b{width:100%;opacity:1}.sign_btn{margin:0 0 2px;font-size:14px;color:#FFF;text-transform:uppercase;padding:0;height:42px;border:none;border-radius:3px;background-color:#a31e23}.sign_btn:hover{background-color:#92191e}.signin_wrap p{padding:3px 0 0 5px;margin:0;font-size:12px;color:#f12929;font-weight:400;text-align:left}.for-pas-text{text-align:right;color:#333}.for-pas-text strong{display:inline-block;cursor:pointer;color:#333;font-weight:500;font-size:14px;padding:2px 0 0 25px;margin:5px 0 15px}.for-pas-text i{position:static!important;width:inherit!important;height:inherit!important;display:inline-block;padding:0 0 0 5px}.orgWrap,.orgtext{position:relative}.for-pas-text a{display:inline-block;margin:2px 0 10px;font-weight:500;color:#277cb3;padding:0 0 0 2px}.siUpText{text-align:left;color:#333;font-weight:500;font-size:14px;padding:15px 0}.siUpText a{color:#277cb3;padding:0 0 0 2px}.backBtn{width:100%;padding:0 0 10px}.backBtn u{width:40px;height:40px;background-color:#fff;text-align:center;text-decoration:none;color:#277cb3;line-height:38px;font-size:18px;border-radius:50%}.backBtn u:hover{background-color:#f1f1f1}.orgWrap{padding:0 20px 20px;display:none;background-color:#fff;border-radius:4px;box-shadow:5px 5px 1px rgba(0,0,0,.1)}.orgInn{background-color:#ededed;width:100%;padding:2px;overflow-y:auto;min-height:320px;max-height:420px}.orgCta{width:auto;background-color:#fff;margin:2px 2px 4px;padding:0}.orgCta span{width:52px;height:52px;border:2px solid #e0e0e0;display:block;float:left;text-align:center;vertical-align:middle;margin:10px 10px 0;border-radius:50%;white-space:nowrap}.orgCta span:before{content:"";display:inline-block;height:100%;vertical-align:middle}.orgCta span img{width:100%;max-width:48px;max-height:48px;border-radius:50%;vertical-align:middle}.orgtext{width:65%;float:left;margin:0 0 0 5px;padding:0 0 6px}.orgtext b,.orgtext p{margin:0;width:100%;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.orgtext b{padding:6px 0 0;font-size:15px;font-weight:500;color:#2d3447}.orgtext p{padding:3px 0 0;font-size:14px;font-weight:400;color:#666;float:left}.orgtext p i{display:inline-block;width:14px;color:#666;text-align:left}.raBtn{float:left;width:25px;height:73px;background-color:#ccc;line-height:72px}.raBtn.raBtnActive{background-color:#157aae}.raBtn input[type=radio].with-font{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.raBtn input[type=radio].with-font~label:before{font-family:FontAwesome;display:inline-block;content:"\f1db";letter-spacing:10px;font-size:18px;color:#fff;width:22px;padding:0 0 0 4px}.orgBack,.orgCon{width:100%;text-align:center}.raBtn input[type=radio].with-font:checked~label:before{content:"\f00c";font-size:17px;color:#fff;letter-spacing:10px}.orgCon{position:absolute;height:10%;left:0;top:90%}.orgCon a{border-radius:3px;background-color:#a31e23;padding:6px 25px;display:inline-block;color:#fff;margin:2% 0 0;font-size:14px;font-weight:500;text-decoration:none!important}.orgCon a:hover{text-decoration:none;background-color:#8d1318}.orgBack{padding:14px 0}.orgBack u{width:35px;height:35px;background-color:#fff;text-align:center;text-decoration:none;color:#277cb3;line-height:33px;font-size:20px;border-radius:50%}.orgBack u:hover{background-color:#f1f1f1}.otp_wrap{width:100%;display:none;z-index:100;position:relative;text-align:center;padding:25px 30px 30px;background-color:#fff;border-radius:4px}.otp_wrap img{width:300px;margin:0 auto;display:block}.otp_wrap h2{font-size:18px;font-weight:500;color:#2d3447;margin:0;padding:0 0 5px}.otp_wrap p{font-size:13px;font-weight:400;color:#898989;margin:0;padding:5px 0 8px}.otp_wrap button,.otpfeild{padding:7px 15px;font-size:14px;font-weight:500}.otpfeild{width:200px;border-radius:3px;border:1px solid #ccc;color:#333}.otpfeild:focus{box-shadow:0 0 4px rgba(0,0,0,.2)}.otp_wrap button{width:100px;border-radius:3px;border:1px solid #20874d;color:#fff;background-color:#309e60}.otpTime,.resendBtn{color:#309e60!important}.otp_wrap button:hover{background-color:#20874d}.otpMail{width:100%;margin:5px auto 15px;border:1px solid #f1f1f1;border-radius:2px;padding:10px 15px}.otpMail input{margin:0;padding:0;float:left;position:relative;top:3px;background-color:#f60}.otpMail span{display:block;text-align:left;padding:5px 0}.otpMail span label{width:270px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0;padding:0 0 0 10px;float:left;font-size:14px;font-weight:500}.otpTime{width:40px!important;padding:0!important;border-radius:3px;border:none!important;position:static!important;font-weight:400!important;text-align:center;float:none!important;background-color:transparent!important}.resendBtn{width:inherit!important;background-color:#fff!important;padding:2px 10px!important;border:none!important;float:right}.otp_wrap .text-danger{color:#e32f2f!important}.flag-image{position:absolute;top:0;right:2px}.flag-image a img{max-height:18px;width:auto}.orgErrorMes p{padding:4px 10px;margin:0;font-size:13px;color:#e72929}.otpBackNew{text-align:center;color:#333;font-weight:500;font-size:14px;padding:15px 0 0;position:relative}.otpBackNew a{color:#666;position:absolute;right:-15px;top:-15px;padding:5px;display:inline-block}.otpBackNew a:hover{color:#cb6060}.modalApplyjob .signin_wrap{padding:30px;border:1px solid #ededed;box-shadow:none}.modalApplyjob .signin_wrap img{max-height:75px}@media screen and (max-width:590px){.signWrap{width:90%;margin:12% 5% 5%;box-sizing:border-box}.signin_wrap{padding:25px 25px 20px;width:auto}.orgWrap{padding:0 10px 20px}.orgtext{width:62%}.otp_wrap{padding:25px 15px 30px}.otpMail{padding:10px}.otpMail span label{width:210px}.otp_wrap img{width:90%}.otpfeild{width:160px}.otp_wrap button{width:80px}.logLogo{display:block;text-align:center}.logLogo img{width:280px;display:inline-block}}@media screen and (max-width:355px){.orgtext{width:55%}}.marQ{background-color:#f1f1f1;position:fixed;left:0;top:0;z-index:1000;width:100%;height:24px;display:none}.marQ p{margin:0;font-size:14px;font-weight:400;color:#333;height:24px;padding:2px 12px}
+.bgImg, .signWrap {
+	background-position: center
+}
+
+.backBtn u, .orgBack u, .otpTime, .sign_btn, a {
+	cursor: pointer
+}
+
+.marQ p, .orgCta, .orgCta span, .orgWrap, .signin_fild {
+	box-sizing: border-box
+}
+
+body {
+	font-family: Roboto, Arial, Helvetica, sans-serif;
+	font-weight: 400;
+	font-size: 14px;
+	margin: 0;
+	padding: 0;
+	background-color: #FFF;
+	overflow-x: hidden;
+	line-height: normal
+}
+
+.signin_wrap h1, .signin_wrap i {
+	text-align: center;
+	font-size: 18px
+}
+
+:focus, a:focus {
+	outline: 0
+}
+
+.bgImg {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	background-size: cover
+}
+
+.signWrap, .signWrapOtp {
+	width: 380px;
+	border-radius: 4px;
+	background-color: #fff
+}
+
+.signWrap {
+	box-shadow: 5px 5px 1px rgba(0, 0, 0, .2);
+	float: right;
+	margin: 5% 10% 2% 0;
+	position: relative;
+	min-height: 400px;
+	background-image: url(/resources/images/loading.gif);
+	background-repeat: no-repeat;
+	background-size: 75px
+}
+
+.signWrapOtp {
+	position: fixed;
+	height: 70%;
+	right: 0;
+	top: 15%;
+	box-shadow: 8px 8px 1px rgba(0, 0, 0, .3);
+	overflow: hidden;
+	left: 0;
+	transition: .2s all;
+	-webkit-transition: .2s all;
+	-moz-transition: .2s all;
+	margin: 0 auto
+}
+
+.forPassOut {
+	min-height: 50%;
+	margin-top: 12%
+}
+
+.signin_wrap {
+	width: auto;
+	text-align: center;
+	padding: 35px 40px 30px;
+	position: relative;
+	background-color: #fff;
+	border-radius: 4px;
+	box-shadow: 5px 5px 1px rgba(0, 0, 0, .1)
+}
+
+.ForPasSlide {
+	display: none;
+	background-color: #fff
+}
+
+.Slogo {
+	width: 280px;
+	display: block;
+	margin: 0 auto 25px
+}
+
+.signin_wrap h1 {
+	margin: 0;
+	padding: 20px 0;
+	font-weight: 400;
+	color: #404a63
+}
+
+.sign_btn, .signin_fild {
+	font-weight: 500;
+	width: 100%
+}
+
+.signin_wrap span {
+	display: block;
+	position: relative;
+	padding: 0 0 8px
+}
+
+.signin_wrap b, .signin_wrap i {
+	position: absolute;
+	display: block;
+	z-index: 1;
+}
+
+.signin_wrap b {
+	width: 1px;
+	height: 2px;
+	background-color: #2d3447;
+	top: 43px;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+	margin: 0 auto;
+	opacity: 0;
+	transition: .2s all ease-in-out;
+	-webkit-transition: .2s all ease-in-out;
+	-moz-transition: .2s all ease-in-out
+}
+
+.signin_wrap i {
+	width: 38px;
+	height: 42px;
+	color: #666;
+	padding: 14px 0 0
+}
+
+.signin_wrap i.si-pass {
+	font-size: 19px
+}
+
+.signin_fild {
+	appearance: none;
+	background-color: #FFF !important;
+	height: 45px;
+	font-size: 15px;
+	color: #333;
+	padding: 4px 5px 0 40px;
+	border: none;
+	border-bottom: 2px solid #bdbdbd
+}
+
+input.signin_fild:-webkit-autofill {
+	-webkit-box-shadow: inset 0 0 0 9999px #fff;
+	box-shadow: inset 0 0 0 9999px #fff
+}
+
+.signin_fild:focus+b {
+	width: 100%;
+	opacity: 1
+}
+
+.sign_btn {
+	margin: 0 0 2px;
+	font-size: 14px;
+	color: #FFF;
+	text-transform: uppercase;
+	padding: 0;
+	height: 42px;
+	border: none;
+	border-radius: 3px;
+	background-color: #a31e23
+}
+
+.sign_btn:hover {
+	background-color: #92191e
+}
+
+.signin_wrap p {
+	padding: 3px 0 0 5px;
+	margin: 0;
+	font-size: 12px;
+	color: #f12929;
+	font-weight: 400;
+	text-align: left
+}
+
+.for-pas-text {
+	text-align: right;
+	color: #333
+}
+
+.for-pas-text strong {
+	display: inline-block;
+	cursor: pointer;
+	color: #333;
+	font-weight: 500;
+	font-size: 14px;
+	padding: 2px 0 0 25px;
+	margin: 5px 0 15px
+}
+
+.for-pas-text i {
+	position: static !important;
+	width: inherit !important;
+	height: inherit !important;
+	display: inline-block;
+	padding: 0 0 0 5px
+}
+
+.orgWrap, .orgtext {
+	position: relative
+}
+
+.for-pas-text a {
+	display: inline-block;
+	margin: 2px 0 10px;
+	font-weight: 500;
+	color: #277cb3;
+	padding: 0 0 0 2px
+}
+
+.siUpText {
+	text-align: left;
+	color: #333;
+	font-weight: 500;
+	font-size: 14px;
+	padding: 15px 0
+}
+
+.siUpText a {
+	color: #277cb3;
+	padding: 0 0 0 2px
+}
+
+.backBtn {
+	width: 100%;
+	padding: 0 0 10px
+}
+
+.backBtn u {
+	width: 40px;
+	height: 40px;
+	background-color: #fff;
+	text-align: center;
+	text-decoration: none;
+	color: #277cb3;
+	line-height: 38px;
+	font-size: 18px;
+	border-radius: 50%
+}
+
+.backBtn u:hover {
+	background-color: #f1f1f1
+}
+
+.orgWrap {
+	padding: 0 20px 20px;
+	display: none;
+	background-color: #fff;
+	border-radius: 4px;
+	box-shadow: 5px 5px 1px rgba(0, 0, 0, .1)
+}
+
+.orgInn {
+	background-color: #ededed;
+	width: 100%;
+	padding: 2px;
+	overflow-y: auto;
+	min-height: 320px;
+	max-height: 420px
+}
+
+.orgCta {
+	width: auto;
+	background-color: #fff;
+	margin: 2px 2px 4px;
+	padding: 0
+}
+
+.orgCta span {
+	width: 52px;
+	height: 52px;
+	border: 2px solid #e0e0e0;
+	display: block;
+	float: left;
+	text-align: center;
+	vertical-align: middle;
+	margin: 10px 10px 0;
+	border-radius: 50%;
+	white-space: nowrap
+}
+
+.orgCta span:before {
+	content: "";
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle
+}
+
+.orgCta span img {
+	width: 100%;
+	max-width: 48px;
+	max-height: 48px;
+	border-radius: 50%;
+	vertical-align: middle
+}
+
+.orgtext {
+	width: 65%;
+	float: left;
+	margin: 0 0 0 5px;
+	padding: 0 0 6px
+}
+
+.orgtext b, .orgtext p {
+	margin: 0;
+	width: 100%;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap
+}
+
+.orgtext b {
+	padding: 6px 0 0;
+	font-size: 15px;
+	font-weight: 500;
+	color: #2d3447
+}
+
+.orgtext p {
+	padding: 3px 0 0;
+	font-size: 14px;
+	font-weight: 400;
+	color: #666;
+	float: left
+}
+
+.orgtext p i {
+	display: inline-block;
+	width: 14px;
+	color: #666;
+	text-align: left
+}
+
+.raBtn {
+	float: left;
+	width: 25px;
+	height: 73px;
+	background-color: #ccc;
+	line-height: 72px
+}
+
+.raBtn.raBtnActive {
+	background-color: #157aae
+}
+
+.raBtn input[type=radio].with-font {
+	border: 0;
+	clip: rect(0, 0, 0, 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px
+}
+
+.raBtn input[type=radio].with-font ~label:before {
+	font-family: FontAwesome;
+	display: inline-block;
+	content: "\f1db";
+	letter-spacing: 10px;
+	font-size: 18px;
+	color: #fff;
+	width: 22px;
+	padding: 0 0 0 4px
+}
+
+.orgBack, .orgCon {
+	width: 100%;
+	text-align: center
+}
+
+.raBtn input[type=radio].with-font:checked ~label:before {
+	content: "\f00c";
+	font-size: 17px;
+	color: #fff;
+	letter-spacing: 10px
+}
+
+.orgCon {
+	position: absolute;
+	height: 10%;
+	left: 0;
+	top: 90%
+}
+
+.orgCon a {
+	border-radius: 3px;
+	background-color: #a31e23;
+	padding: 6px 25px;
+	display: inline-block;
+	color: #fff;
+	margin: 2% 0 0;
+	font-size: 14px;
+	font-weight: 500;
+	text-decoration: none !important
+}
+
+.orgCon a:hover {
+	text-decoration: none;
+	background-color: #8d1318
+}
+
+.orgBack {
+	padding: 14px 0
+}
+
+.orgBack u {
+	width: 35px;
+	height: 35px;
+	background-color: #fff;
+	text-align: center;
+	text-decoration: none;
+	color: #277cb3;
+	line-height: 33px;
+	font-size: 20px;
+	border-radius: 50%
+}
+
+.orgBack u:hover {
+	background-color: #f1f1f1
+}
+
+.otp_wrap {
+	width: 100%;
+	display: none;
+	z-index: 100;
+	position: relative;
+	text-align: center;
+	padding: 25px 30px 30px;
+	background-color: #fff;
+	border-radius: 4px
+}
+
+.otp_wrap img {
+	width: 300px;
+	margin: 0 auto;
+	display: block
+}
+
+.otp_wrap h2 {
+	font-size: 18px;
+	font-weight: 500;
+	color: #2d3447;
+	margin: 0;
+	padding: 0 0 5px
+}
+
+.otp_wrap p {
+	font-size: 13px;
+	font-weight: 400;
+	color: #898989;
+	margin: 0;
+	padding: 5px 0 8px
+}
+
+.otp_wrap button, .otpfeild {
+	padding: 7px 15px;
+	font-size: 14px;
+	font-weight: 500
+}
+
+.otpfeild {
+	width: 200px;
+	border-radius: 3px;
+	border: 1px solid #ccc;
+	color: #333
+}
+
+.otpfeild:focus {
+	box-shadow: 0 0 4px rgba(0, 0, 0, .2)
+}
+
+.otp_wrap button {
+	width: 100px;
+	border-radius: 3px;
+	border: 1px solid #20874d;
+	color: #fff;
+	background-color: #309e60
+}
+
+.otpTime, .resendBtn {
+	color: #309e60 !important
+}
+
+.otp_wrap button:hover {
+	background-color: #20874d
+}
+
+.otpMail {
+	width: 100%;
+	margin: 5px auto 15px;
+	border: 1px solid #f1f1f1;
+	border-radius: 2px;
+	padding: 10px 15px
+}
+
+.otpMail input {
+	margin: 0;
+	padding: 0;
+	float: left;
+	position: relative;
+	top: 3px;
+	background-color: #f60
+}
+
+.otpMail span {
+	display: block;
+	text-align: left;
+	padding: 5px 0
+}
+
+.otpMail span label {
+	width: 270px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	margin: 0;
+	padding: 0 0 0 10px;
+	float: left;
+	font-size: 14px;
+	font-weight: 500
+}
+
+.otpTime {
+	width: 40px !important;
+	padding: 0 !important;
+	border-radius: 3px;
+	border: none !important;
+	position: static !important;
+	font-weight: 400 !important;
+	text-align: center;
+	float: none !important;
+	background-color: transparent !important
+}
+
+.resendBtn {
+	width: inherit !important;
+	background-color: #fff !important;
+	padding: 2px 10px !important;
+	border: none !important;
+	float: right
+}
+
+.otp_wrap .text-danger {
+	color: #e32f2f !important
+}
+
+.flag-image {
+	position: absolute;
+	top: 0;
+	right: 2px
+}
+
+.flag-image a img {
+	max-height: 18px;
+	width: auto
+}
+
+.orgErrorMes p {
+	padding: 4px 10px;
+	margin: 0;
+	font-size: 13px;
+	color: #e72929
+}
+
+.otpBackNew {
+	text-align: center;
+	color: #333;
+	font-weight: 500;
+	font-size: 14px;
+	padding: 15px 0 0;
+	position: relative
+}
+
+.otpBackNew a {
+	color: #666;
+	position: absolute;
+	right: -15px;
+	top: -15px;
+	padding: 5px;
+	display: inline-block
+}
+
+.otpBackNew a:hover {
+	color: #cb6060
+}
+
+.modalApplyjob .signin_wrap {
+	padding: 30px;
+	border: 1px solid #ededed;
+	box-shadow: none
+}
+
+.modalApplyjob .signin_wrap img {
+	max-height: 75px
+}
+
+@media screen and (max-width:590px) {
+	.signWrap {
+		width: 90%;
+		margin: 12% 5% 5%;
+		box-sizing: border-box
+	}
+	.signin_wrap {
+		padding: 25px 25px 20px;
+		width: auto
+	}
+	.orgWrap {
+		padding: 0 10px 20px
+	}
+	.orgtext {
+		width: 62%
+	}
+	.otp_wrap {
+		padding: 25px 15px 30px
+	}
+	.otpMail {
+		padding: 10px
+	}
+	.otpMail span label {
+		width: 210px
+	}
+	.otp_wrap img {
+		width: 90%
+	}
+	.otpfeild {
+		width: 160px
+	}
+	.otp_wrap button {
+		width: 80px
+	}
+	.logLogo {
+		display: block;
+		text-align: center
+	}
+	.logLogo img {
+		width: 280px;
+		display: inline-block
+	}
+}
+
+@media screen and (max-width:355px) {
+	.orgtext {
+		width: 55%
+	}
+}
+
+.marQ {
+	background-color: #f1f1f1;
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 1000;
+	width: 100%;
+	height: 24px;
+	display: none
+}
+
+.marQ p {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 400;
+	color: #333;
+	height: 24px;
+	padding: 2px 12px
+}
+
+input:-webkit-autofill {
+	-webkit-box-shadow: 0 0 0px 1000px white inset;
+	-webkit-box-shadow: none;
+}

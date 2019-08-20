@@ -178,8 +178,8 @@
 								</span>
 								
 									<ul class="dropdown-menu minHeight50 maxHeight250" role="menu" aria-labelledby="menu12">
-									<li><a href="${SourceLeadWeb_atsUrl}/campaignSendersList">Senders</a></li>
-									<li><a href="${SourceLeadWeb_atsUrl}/recipientsList">Recipients</a></li>
+									<li><a href="${SourceLeadWeb_sourceleadUrl}/campaignSendersList">Senders</a></li>
+									<li><a href="${SourceLeadWeb_sourceleadUrl}/recipientsList">Recipients</a></li>
 									</ul>
 								</div>
 								<!-- Dropdown -->
@@ -248,14 +248,18 @@
 						<h4>Reminder Configuration</h4>
 					</div>
 				</div>	
-				
-				<div class="col-md-2 reportNewCta">			
+		
+		 <sec:authorize access="hasRole('ROLE_ADD_PERFORMANCE_APPRAISAL_CONFIGURATION')">
+		 <div class="col-md-2 reportNewCta">			
 					<a href="${SourceLeadWeb_sourceleadUrl}/performanceManagementConfiguration">
 							<div class="clearfix text-center mb10"><i class="roleconfigSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Performance Management</h4>
 					</div>
-				</div>		
+					</a>
+				</div>	
+		 </sec:authorize>		
+					
 				
 				<sec:authorize access="hasRole('ROLE_TICKET_CONFIGURATION')">
 					<div class="col-md-2 reportNewCta">
@@ -288,7 +292,7 @@
 	            <div class="dropdown pull-right report-dropdown"> <span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown"> <span class="caret cursorPointer"></span> </span>
 	              <ul class="dropdown-menu minHeight50 maxHeight250">
 	                <li><a href="${SourceLeadWeb_atsUrl}/candidateSourceList">Source</a></li>
-	                <li><a href="${SourceLeadWeb_atsUrl}/candidateDuplicateVerification">Candidate Duplicate Verification</a></li>
+	                <li><a href="${SourceLeadWeb_atsUrl}/candidateDuplicateVerification">Duplicate Verification</a></li>
 	              </ul>
 	            </div>
 	            <!-- Dropdown -->
@@ -300,11 +304,19 @@
 				
 				<div class="col-md-2 reportNewCta">
 					<a href="${SourceLeadWeb_sourceleadUrl}/clockInOutConfig">
-							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+							<div class="clearfix text-center mb10"><i class="clockAni clockIcon"></i></div>
 					<div class="clearfix text-center">
 						<h4>Clock In - Clock Out</h4>
 					</div>
 				</div>
+				
+				<%-- <div class="col-md-2 reportNewCta">
+					<a href="${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoard">
+							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+					<div class="clearfix text-center">
+						<h4>Custom DashBoard</h4>
+					</div>
+				</div> --%>
 				
 				 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 					<div class="col-md-2 reportNewCta">

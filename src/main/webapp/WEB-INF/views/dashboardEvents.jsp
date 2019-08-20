@@ -1,6 +1,24 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
+
+<style type="text/css">
+#eventCalendar .ui-widget.ui-widget-content { width:100% !important; background: #ededed !important; }
+</style>
+
+<script>
+$(document).on('click', '.ui-datepicker-next', function () {
+	  $(".ui-datepicker-year, .ui-datepicker-month").addClass("sel");
+});
+$(document).on('click', '.ui-datepicker-prev', function () {
+	  $(".ui-datepicker-year, .ui-datepicker-month").addClass("sel");
+});
+$(document).on('click', '#interviewsTab', function () {
+	  $(".ui-datepicker-year, .ui-datepicker-month").addClass("sel");
+});
+
+
+</script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  <!-- Applicant Authorization -->
       <div class="mb eventAlert clearfix col-md-12 noPad">
@@ -8,7 +26,7 @@
         <div class="dashNewWrapHead event_calendar">
             <h4 class="pull-left">Events</h4>
             <sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">
-            <button class="btn btn-primary pull-left btn-sm ml mt7" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
+            <button id="scheduleInterview" class="btn btn-primary pull-left btn-sm ml mt7" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
             </sec:authorize>
             
             
@@ -31,7 +49,7 @@
         
       <!-- show Calendar -->
         <div class="col-xs-12 col-md-5 mb mt">
-            <div id="eventCalendar"></div>
+            <div id="eventCalendar" class="eventCalendarDashboad"></div>
             <div id="jobFairCalendar" style="display: none;"></div>
         </div>
 
@@ -162,6 +180,7 @@
 
 <script type="text/javascript">
 function getJobFairs() {
+	$("#scheduleInterview").hide();
 	$("#interviewsTab").removeClass("active");
 	$("#dashboardEventsDiv").hide();
 	$(".dashboardoverIcon").hide();
@@ -173,6 +192,8 @@ function getJobFairs() {
 }
 
 function getInterviewsandTasks() {
+	$("#eventCalendar").find("select.ui-datepicker-month, select.ui-datepicker-year").addClass("sel");
+	$("#scheduleInterview").show();
 	$("#interviewsTab").addClass("active");
 	$("#dashboardEventsDiv").show();
 	$(".dashboardoverIcon").show();
@@ -1120,6 +1141,7 @@ function cancelAddInterviewDiv(){
 	function getJobFairCalendar(dates) {
 		$("#eventCalendar").hide();
 		$("#jobFairCalendar").show();
+		$("#jobFairCalendar").find("select.ui-datepicker-month, select.ui-datepicker-year").addClass("sel");
 		$("#jobFairCalendar").datepicker({
 		  changeMonth: true,
 	      changeYear: true,
@@ -1140,15 +1162,11 @@ $(function(){
 </script>  
  
 <style>
-.Highlighted a {
-	background-color : #9ACD32 !important;
-	font-weight:bold !important;
-	font-size: 12pt;
-}
-.HighlightedFair a {
-	background-color : #32A7CD !important;
-	font-weight:bold !important;
-	font-size: 12pt;
+#jobFairCalendar .ui-widget-content a, #scheduleCalendar .ui-widget-content a,
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight,
+#eventCalendar .ui-widget-content a, #scheduleCalendar .ui-widget-content a
+{
+	border-radius:8px; border: 1px solid #ededed; height: 32px;
 }
 </style>
   	
@@ -1257,5 +1275,4 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });
-</script>
-      
+</script>    

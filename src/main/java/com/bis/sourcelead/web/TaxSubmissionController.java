@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.mockito.internal.stubbing.answers.ThrowsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -298,8 +297,8 @@ public class TaxSubmissionController {
 	@RequestMapping(value = "/itDeclaration/list", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(HttpServletRequest request,
-			@RequestParam(defaultValue = "") String uuid, @RequestParam(defaultValue = "") String financialYear, String searchValue,
-			Paginator paginator) {
+			@RequestParam(defaultValue = "") String uuid, @RequestParam(defaultValue = "") String financialYear,
+			Paginator paginator, @RequestParam(defaultValue = "") String searchValue) {
 		ResponseList<SourceleadTaxITDeclarationSubmissionDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -379,7 +378,6 @@ public class TaxSubmissionController {
 			response.getOutputStream().flush();
 
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 	}

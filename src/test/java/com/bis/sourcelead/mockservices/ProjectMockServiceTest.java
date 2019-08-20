@@ -117,8 +117,8 @@ public class ProjectMockServiceTest {
 		projectsListForInActive.add(projectMembers1);
 		
 		//when(projectMembersDao.getAllProjectsByUserId(1l)).thenReturn(projectsListForAll);
-		when(projectMembersDao.getAllProjectsByUserIdAndStatus(1l,"ACTIVE")).thenReturn(projectsListForActive);	
-		when(projectMembersDao.getAllProjectsByUserIdAndStatus(1l,"IN-ACTIVE")).thenReturn(projectsListForInActive);
+		when(projectMembersDao.getAllProjectsByUserIdAndStatus(1l,"ACTIVE",1l)).thenReturn(projectsListForActive);	
+		when(projectMembersDao.getAllProjectsByUserIdAndStatus(1l,"IN-ACTIVE",1l)).thenReturn(projectsListForInActive);
 		
 		
 		when(submissionApproverHierarchyService.getTotalDraftAndSubmittedHoursByMasterCandidateIdAndProjectIdForEmployee(anyLong(), anyLong(), anyString())).thenReturn(40.1f);

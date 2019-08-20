@@ -32,7 +32,7 @@ function reloadFunction(){
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Pending for Approval</h2>
+        <h2>Pending for Approval Timesheets</h2>
       </div>
       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"> Reports Dashboard </a>&raquo; <a href="${SourceLeadWeb_sourceleadUrl}/hrReportsList">HR Reports</a> &raquo; Pending for Approval</div>
     </section>
@@ -87,9 +87,9 @@ function reloadFunction(){
    <div class="vendor_wrap mt">
 	<div class="tableStyles overflow_inherint">
       <div class="clearfix datatable_filter positionRelative mt10  project_tabs_inn_table">
-      	<div class="positionRelative timesheet_head clearfix">
+      	<div class="positionRelative timesheet_head clearfix minHeight50">
       	<ul class="pull-right list-unstyled list-inline">
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" id ="exportDiv" onclick="newActions();"></a>
 					<div class="newActPop" style="display: none;">
 						<span>
 		           	   		<a href="javascript:void(0)" onclick="timesheetsPendingExport('Pdf');" title="PDF">Export PDF</a>
@@ -123,7 +123,6 @@ function getPendingForApprovalTimesheetReports(){
 	  if(dateSelection == 'custom'){
 		   fromDate = $("#fromDate").val();
 		   toDate = $("#toDate").val();
-		  
 		  if(fromDate == '' || toDate == ''){
 			  flag = false;
 			  if(fromDate == ''){
@@ -245,9 +244,17 @@ function getPendingForApprovalTimesheetReports(){
 		        result = result +'</tbody>';
 		        result = result + '</table>';
 		        
-		        $("#pendingForApprovalTimesheetDiv").empty();
-				$("#pendingForApprovalTimesheetDiv").append(result);
+		        if(report != "" && report != null && report != 'undefined'){
+		        	$("#pendingForApprovalTimesheetDiv").empty();
+					$("#pendingForApprovalTimesheetDiv").append(result);
+					$("#exportDiv").show();
+		        }else{
+		        	$("#pendingForApprovalTimesheetDiv").empty();
+					$("#pendingForApprovalTimesheetDiv").append(result);
+		        	$("#exportDiv").hide();
+		        }
 				dynamicMissingTimesheetReportPagination();
+				document.getElementById("customSearch").style.display="none";
 		    }
 		 });
 	  }	  

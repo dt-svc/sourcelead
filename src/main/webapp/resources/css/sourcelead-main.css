@@ -10074,10 +10074,10 @@ width: 50px; height: 50px;
 .temp_Draft { color:#447fb5; }
 .disabledLink { color: #333; text-decoration : none; pointer-events: none; }
 .selfAppraisalWidget ul {
-	padding: 0 10px; margin: 0;
+	padding: 0 0px; margin: 0;
 }
 .selfAppraisalWidget ul li { min-width: 100px; text-align: center; cursor: pointer; margin: 0 auto; padding: 10px 0;
-	margin-right: 10px; }
+	margin-right: 0px; }
 .selfAppraisalWidget ul li a { color: #909090; }
 .selfAppraisalWidget ul li.activeApprisalwidget {
 	border-bottom: 3px solid #3b5998; background-color: #ededed; border-radius:0px;
@@ -10226,41 +10226,32 @@ h4.questionary-heading {
 	display: block;
 }
 .selfAppraisalpeersLi li {
-	margin-bottom: 15px; position: relative;
-	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-	-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-	-ms-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-	-o-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); border-radius: 5px; background-color: #fafafa;
-	padding: 10px 15px; margin-right: 15px; cursor: pointer; width: 375px;
+margin-bottom: 15px; position: relative;
+-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+-ms-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+-o-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); border-radius: 5px; background-color: #fafafa;
+padding: 10px 15px !important; margin-right: 15px !important; cursor: pointer; width: 250px; text-align: left !important;
 }
-.selfAppraisalpeersLi li span {
-	min-width: 150px; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block;
-	margin-bottom: 10px; position: relative; color: #4d74c4;
-}
+.selfAppraisalpeersLi li span { min-width: 150px; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block;
+	margin-bottom: 10px; position: relative; color: #4d74c4; }
 .userconfigSVG {
     background: url("../images/userconfigSVG.svg"); background-position-x: 0%; background-position-y: 0%; background-repeat: repeat;
     background-size: auto; background-repeat: no-repeat; background-size: 40px; background-position: center;
     width: 80px; text-align: center; display: block; height: 40px; margin: 8px auto 2px; opacity: 0.9;
 }
 .padding15 { padding: 15px; }
-.form-control-custom {
-	height: 34px; width: 100%; line-height: 34px; border-radius: 4px; padding: 6px 12px; border: 1px solid #e5e5e5;
-	background-color: rgba(255, 255, 255, 0.5);
-}
-#selfAppraisalpeersDiv {
-	width:95%; overflow:auto; padding: 0 15px;
-}
+.form-control-custom { height: 34px; width: 100%; line-height: 34px; border-radius: 4px; padding: 6px 12px; border: 1px solid #e5e5e5;
+	background-color: rgba(255, 255, 255, 0.5); }
+#selfAppraisalpeersDiv { width:95%; overflow:auto; padding: 0 15px; }
 .selfAppraisalpeers-inner { height: 75px; padding: 10px 0; }
-.peercontentArea {
-	min-height: 250px; max-height: 550px; overflow: auto;
-}
+.peercontentArea { min-height: 250px; max-height: 550px; overflow: auto; }
 .onboard_Label p { margin-bottom: 0; margin-top: 7px; }
 .onboard_Label label.control-label:after{ content:":"; padding-left: 25px; }
 .timesheet_week_comm.timesheetWeek_comm strong input.dele { width : 6% !important; }
 .settPop.sett_pop .form-control { height: auto !important; }
-.edit_member_pop {
-top:12% !important; left: 35%; margin: 0px auto; z-index: 15500; width: 520px;
+.edit_member_pop { top:12% !important; left: 35%; margin: 0px auto; z-index: 15500; width: 520px;
 position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px;
 }
 .edit_member_pop .footerBtns input { width: 50%; border: none; height: 30px; font-size: 14px; font-weight: 500; color: #FFF; background-color: #ff4b4b;
@@ -10276,24 +10267,13 @@ position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px r
 .profile-show ul li:last { border-right:none; }
 .Highlighted a { background-color : #9ACD32 !important; font-weight:bold !important; font-size: 12pt; }
 .Highlighted_area {
-background-color : #DCDCDC !important; font-weight:bold !important; font-size: 12pt; border: 1px solid #fff !important;
-}
-.CheckDateHighlighted {
-background-color : #F0E68C !important; font-weight:bold !important; font-size: 12pt; border: 1px solid #fff !important;
-}
-.PayRunDateHighlighted {
-background-color : #80ff00 !important; font-weight:bold !important; font-size: 12pt; border: 1px solid #fff !important;
-}
-.RunDateHighlighted {
-background-color : #0000FF !important; font-weight:bold !important; font-size: 12pt; border: 1px solid #fff !important;
-}
-.Highlighted_area a.ui-state-default {
-color: #fff !important;
-}
-#eventCalendar .ui-widget.ui-widget-content, #scheduleCalendar .ui-widget.ui-widget-content {
-border: 1px solid #ededed !important; box-shadow: none; width: 60% !important; border-radius: 0; background: #fff !important;
-padding: 10px;
-}
+background-color : #DCDCDC !important; font-weight:bold !important; font-size: 12pt; border: 1px solid #fff !important; }
+.CheckDateHighlighted { background-color : #F0E68C !important; font-weight:bold !important; font-size: 12pt; border: 1px solid #fff !important; }
+.PayRunDateHighlighted { background-color : #80ff00 !important; font-weight:bold !important; font-size: 12pt; border: 1px solid #fff !important; }
+.RunDateHighlighted { background-color : #0000FF !important; font-weight:bold !important; font-size: 12pt; border: 1px solid #fff !important; }
+.Highlighted_area a.ui-state-default { color: #fff !important; }
+#eventCalendar .ui-widget.ui-widget-content, #scheduleCalendar .ui-widget.ui-widget-content { border: 1px solid #ededed !important; box-shadow: none; width: 60% !important; border-radius: 0; background: #fff !important;
+padding: 10px; }
 .require_wrap_table.tableHDRBgColor th { background-color: #d0d4dc !important; color: #333; border-right: 1px solid #bec2ca !important;
 }
 .btnBgColor { background-color: #d0d4dc !important; border: 1px solid #bec2ca !important; }
@@ -10326,8 +10306,7 @@ ul.can-perdt.canPerdt li { clear:both; }
 .bgReed { background: #D84315 !important; }
 .ref-top { top: 22px;height: 32px; line-height: 18px; }
 .repoPositi.repo_positi .dataTables_filter { top: 0px !important; }
-.associateBageParent {
-	text-align: center; padding: 15px 10px; border: 1px solid #e5e5e5; border-radius: 10px; cursor: pointer; position: relative;
+.associateBageParent { text-align: center; padding: 15px 10px; border: 1px solid #e5e5e5; border-radius: 10px; cursor: pointer; position: relative;
 }
 .associateBageParent:hover{ background-color: #fcfcfc; }
 .associateBageParent .associateBageImg  { width: 75px; height: 75px; display: block; margin:  0 auto; }
@@ -10524,14 +10503,13 @@ vertical-align: middle; padding: 20px 15px; clear: both; display: inline-block; 
 /* ul.mspportlet-list { border-bottom:1px solid #eaeaea; } */
 .mspportlet-list li { margin-bottom: 5px; font-size: 13px; }
 .mspportlet-header { background-color: #f6f6f6;}
-.mspportlet-header h4 { padding: 8px 5px 8px 15px; }
+.mspportlet-header h4 { padding: 8px 15px}
 .mspportlet-header .btn { padding: 6px 6px; border-radius: 0 !important; }
-.mspportlet-table .table th { padding: 2.5px 8px; vertical-align: middle; font-size: 13px;}
-.mspportlet-table .table td { padding: 2.5px 8px; vertical-align: middle; font-size: 13px; border: 1px solid #e0e0e0;}
+.mspportlet-table .table th, .mspportlet-table .table td { padding: 2.5px 8px; vertical-align: middle; font-size: 13px;}
 .mspportlet-table .table-bordered > thead > tr > th { border-bottom-width: 0; }
-.mspportlet-table .table .tbldata-dotdot-200 { margin: 0; }
+.mspportlet-table .table .tbldata-dotdot { display: table-cell; }
 .active-mspportlet-table { border: 1px solid #337ab7; padding: 5px;}
-.mspportlet-table { min-height: 50px; max-height: 250px; overflow: auto;}
+.mspportlet-table { min-height: 50px; max-height: 350px; overflow: auto;}
 .morejoblist-popdiv { position: fixed; top: 10%; width: 80%; left: 10%; display: none; background-color: #fff; z-index:99999; border-radius: 3px; 
 	-webkit-box-shadow: 0px 0px 2px #999; -moz-box-shadow: 0px 0px 2px #999; box-shadow: 0px 0px 2px #999;
 }
@@ -10544,18 +10522,16 @@ border-radius: 3px 3px 0px 0px; }
 	border-radius: 3px 3px 0px 0px; }
 .mspportlet-widget-leftborder { border-left: 1px solid #ededed;}
 .mspportlet-list-customcheckbox .checkbox-custom + .checkbox-custom-label::before { width: 16px; height:16px; }
-.jobsearch-search input[type="search"] { border:none; height:30px; padding: 0 10px; width: 165px; background: transparent; display:block !important; }
-.jobsearch-search .searchhere::placeholder {color:#909090;}
+.jobsearch-search input[type="search"] { border:none; border-bottom:1px solid #cdcdcd; height:30px; padding: 0 5px; width: 210px; background: transparent; }
+.jobsearch-search .searchhere::placeholder {color:red;}
 .jobsearch-search .searchSVGIC img { width:30px; height:30px; display: inline-block; cursor:pointer;}
-.jobsearch-search { border: 1px solid #e0e0e0; border-radius: 3px; }
-.mspdashboard-tasli ul li a { padding:8px 25px; color: #303030; border: 1px solid #e0e0e0; border-radius:10px 10px 0 0; list-style-type: none; float: left; }
-.mspdashboard-tasli ul li a.active-mspli { background-color: #458ac9; color: #fff; cursor: pointer; }
-.overrightTooltip .tooltip {
-	position: absolute !important;
-}
-.customLeaves-shadow { box-shadow: 0px 1px 2px #a7a7a7; background-color: #fff; padding: 5px; }
-.customLeaves-shadow .small {font-size: 80%;}
-.customLeaves-shadow .calendar { background-size: 14px; }
+.innershowData { padding-left: 25px; background-color: #fff;}
+#showorgData.col-md-5 { position: absolute; right: 0; z-index:9; transition: 0.5s; }
+#orgArrow-left-right { position: absolute; top: 35%; left: 15px; z-index:9;}
+.orgwidth { width:95%;}
+.head_height{height:55px;width:100%;}
+.chosen-select-anchor a.chosen-single { margin-left: 0px; }
+
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

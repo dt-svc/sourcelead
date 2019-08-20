@@ -165,40 +165,65 @@ function getTicketCommetList(ticketId) {
 		}
 	});
 }
-
+var validationSettings = {
+        errorMessagePosition : 'element',
+        borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+        };
 function saveTicketComment(ticketId) {
-	if ($("#ticketComment").html() !== ""){
-		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, {id: $("#ticketCommentId").val(), comment : $("#ticketComment").html(), mentionedUserIds : selectedUsers.toString()}, function(response) {
-			if (response && response.response === "INVALID_DATA") {
-				showError(response.responseMessage);
-			} else if (response.response === "AWKWARD") {
-				location.href = "/errorPage";
-			} else if (response.response === "SUCCESS") {
-				if(response.object === true) {
-					getTicketCommetList(ticketId);
-					closeTicketComment();
+	if ($('#ticketComment_form').validate(false, validationSettings)) {
+		// var formData = getFormData("ticketComment_form");
+		var commentVal = $("#ticketComment").html();
+		if(commentVal !=null && commentVal !='' && commentVal !='undefined'){
+			$("#ticketCommentvalidation").hide();
+			$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, {id: $("#ticketCommentId").val(), comment : commentVal, mentionedUserIds : selectedUsers.toString()}, function(response) {
+				if (response && response.response === "INVALID_DATA") {
+					showError(response.responseMessage);
+				} else if (response.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (response.response === "SUCCESS") {
+					if(response.object === true) {
+						$(".success_pop span").html("Ticket Comment Saved successfully...");
+						$(".success_pop").show();
+						setTimeout(function() {
+							$(".success_pop").hide();
+						}, 1000);
+						getTicketCommetList(ticketId);
+						closeTicketComment();
+					}
+				} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
 				}
-			} else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
-			} else {
-				showError("Operation failed, please try again");
-			}
-		});
-		$("#ticketComment").html
-	} else {
-		alert("Add Comment text");
-	}
+			});
+		}else{
+			$("#ticketCommentvalidation").show();
+		}
+		return true;
+	}else{
+		return false;
+	} 
 }
-function closeTicketComment() {
-	$("#add-comment").fadeOut();
-	$("#addComment").empty();
-	document.getElementById("ticketComment_form").reset();
-	$("ticketComment_form").validate().resetForm();
-	selectedUsers = [];
+$('body').on('blur', '#ticketComment_form', function() {
+	$("#ticketComment_form").showHelpOnFocus();
+	$("#ticketComment_form").validateOnBlur(false, validationSettings); 
+});
+
+function closeTicketComment(){
+	var ticketIdEdit = $("#ticketCommentId").val();
+	if(ticketIdEdit ==null || ticketIdEdit =="" || ticketIdEdit =="undefined"){
+	$("#ticketComment").val("");
+	}
+	$('.fr-element.fr-view').html("");
+	$("#ticketCommentPopup, .mask").hide();
+	$("#ticketCommentvalidation").hide();
 }
 
-function editTicketComment(id) {
-	$.post(sourceleadUrl + "/getTicketComment?ticketCommentId="+id, {}, function(response) {
+function editTicketComment(ticketId) {
+	selectedUsers = [];
+	$.post(sourceleadUrl + "/getTicketComment?ticketCommentId="+ticketId, {}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
 		} else if (response.response === "AWKWARD") {
@@ -232,6 +257,11 @@ function deleteTicketComment() {
 		} else if (response.response === "AWKWARD") {
 			location.href = "/errorPage";
 		} else if (response.response === "SUCCESS") {
+			$(".success_pop span").html("Ticket comment deleted successfully...");
+			$(".success_pop").show();
+			setTimeout(function() {
+				$(".success_pop").hide();
+	 		}, 1000);
 			getTicketCommetList(ticketId);
 			closeDeleteCommentPopup();
 		} else if (response.indexOf('Sign In') !== -1) {
@@ -250,6 +280,8 @@ function showDeleteCommentPopup(commentId, ticketId) {
 }
 
 function closeDeleteCommentPopup() {
+	$("#ticketCommentId").val(0);
+	$("#ticketComment").html("");
 	$("#deleteCommentPopup").slideUp(200);
 	$(".mask").fadeOut(200);
 }
