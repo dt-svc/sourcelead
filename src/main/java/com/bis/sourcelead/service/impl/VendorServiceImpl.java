@@ -102,6 +102,7 @@ public class VendorServiceImpl implements VendorService{
 		 if(StringUtils.isNotBlank(clientDTO.getPaymentTerms())){
 			 orgRelations.setPaymentTerm(clientDTO.getPaymentTerms());
 		 }
+		 orgRelations.setIsMSPVendor(clientDTO.getIsMSPVendor());
 		 
 		 if (StringUtils.isNotBlank(clientDTO.getIsLawFirm()) && clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
 					orgRelations.setIsLawFirm(Constants.YES);

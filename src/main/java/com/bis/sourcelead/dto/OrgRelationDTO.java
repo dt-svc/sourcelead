@@ -107,6 +107,8 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 	
 	private String vendorName;
 
+	private String isMspVendor;
+
 	public Long getId() {
 		return id;
 	}
@@ -496,6 +498,14 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 
 	public void setVendorLocationId(BigInteger vendorLocationId) {
 		this.vendorLocationId = vendorLocationId;
+	}
+
+	public String getIsMspVendor() {
+		return isMspVendor;
+	}
+
+	public void setIsMspVendor(String isMspVendor) {
+		this.isMspVendor = isMspVendor;
 	}
 
 }

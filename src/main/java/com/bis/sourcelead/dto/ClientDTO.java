@@ -117,6 +117,8 @@ public class ClientDTO {
 	private String generateBill;
 	
 	private String generateInvoice;
+
+	private String isMSPVendor;
 	
 	public String getClientSaveFromType()
 	{
@@ -463,6 +465,10 @@ public class ClientDTO {
 	public void setGenerateInvoice(String generateInvoice) {
 		this.generateInvoice = generateInvoice;
 	}
-	
-	
+	public String getIsMSPVendor() {
+		return isMSPVendor;
+	}
+	public void setIsMSPVendor(String isMSPVendor) {
+		this.isMSPVendor = isMSPVendor;
+	}
 }

@@ -82,5 +82,10 @@ public interface OrgRelationsDao {
 	
 	int updatePaymentTermsInOrgrelations();
 
+	public List<OrgRelations> getMSPVendorListByOrgLocationId(Long orgLocationId,Long orgRelationId) throws Exception;
+
+	public List<OrgRelations> selectedMSPVendorListByOrgRelationIds(String orgRelationIds) throws Exception;
+
+	public List<OrgSpoc> getMSPVendorContactListByOrgRelationId(Long orgRelationId) throws Exception;
 
 }

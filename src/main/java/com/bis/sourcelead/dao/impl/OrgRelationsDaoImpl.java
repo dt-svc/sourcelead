@@ -19,15 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
-import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.RequirementSubmission;
-import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -38,6 +34,7 @@ import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
  *
  */
 @Repository
+@SuppressWarnings("unchecked")
 public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	private static final Logger logger = LoggerFactory.getLogger(OrgRelationsDaoImpl.class);
 	@Autowired
@@ -587,7 +584,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	public List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(Long loginUserId, List<Long> ids, Long orgLocationId, String relationType, String status, String vendorIds, String invitationStatus, Long tabId, List<Long> vendorOrgLocationsIds) {
 		logger.debug("In OrgRelations getAllVendorsContactFilterListByOrgLocationIdAndTabAccess method");
 		Session session = this.sessionFactory.getCurrentSession();
-		
+		System.out.println("hello");
 		String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
 	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
 	     
@@ -614,7 +611,19 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	    	 
 	     }
 		
-		
+	     String mspquery = "SELECT "
+					+" GROUP_CONCAT(MSP.ORG_RELATION_IDS) " 
+					+" FROM MSP_VENDOR MSP "
+					+" WHERE MSP.ORG_LOCATION_ID =:orgLocationId ";
+			
+					Query queryObj = session.createSQLQuery(mspquery);
+					queryObj.setLong("orgLocationId", orgLocationId);
+					String orgRelationIds = "";
+					List<String> orgRelationIdList = queryObj.list();
+					if(orgRelationIdList != null && !orgRelationIdList.isEmpty()) {
+						orgRelationIds = orgRelationIdList.get(0);
+					}
+					
 		
 		String[] tokens = status.split(",");
 		String[] invitations = invitationStatus.split(",");
@@ -687,8 +696,10 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 					}
 					
 					if (isadmin) {
-			            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and ((:varZero  IN (:ownerRolesList)) OR (:varZero NOT IN (:ownerRolesList) and userRole.roles.id IN (:ownerRolesList)))) "+subquery1+" "+spocStatus+" "+spocInvitationStatus+" and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
-			            spocsList = query.setLong("orgLocationId", orgLocationId).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setString("relationType", relationType).setParameterList("ownerRolesList", ownerRolesList).setString("varZero", "0").list();
+			            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where spoc.clientUser IS NOT NULL and spoc.vendorUser IS NOT NULL and spoc.vendorUser.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' ) "+subquery1+" "+spocStatus+" "+spocInvitationStatus+" "
+			            		+ "and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) "+(orgRelationIds != null ? " and orgrelation.id NOT IN("+orgRelationIds+") " : "")+" "
+			            		+ "and (spoc.vendorLocationId.id IN (:vendorOrgLocationsIds)) and spoc.status <> '0' ");
+			            spocsList = query.setLong("orgLocationId", orgLocationId).setParameterList( "vendorOrgLocationsIds", vendorOrgLocationsIds).setString("relationType", relationType).list();
 			            finalList.addAll(spocsList);
 			            
 			            
@@ -905,7 +916,6 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	}
 
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public ResponseList<OrgRelations> getAllVendorsFilterByOrgLocationIdAndOrgRelationDTO(OrgRelationDTO orgRelationDTO,Long orgLocationId, String status, String vendorsRelationId) throws Exception {
@@ -1042,7 +1052,6 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		return response;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
 	public ResponseList<OrgSpoc> getAllVendorsContactFilterListByOrgLocationIdAndTabAccessDTO(OrgSpocDTO orgSpocDTO,Long loginUserId, List<Long> ids, Long orgLocationId, String relationType,String status, Long tabId, List<Long> vendorOrgLocationsIds) {
@@ -1285,6 +1294,53 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		}
 		return count;
 	}
+
+	@Override
+	@Transactional
+	public List<OrgRelations> getMSPVendorListByOrgLocationId(Long orgLocationId, Long orgRelationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+				//Dont delete the comment the code written by Laxman
+		       //this comment the code is one mspvendor select the vendors dont showing the other mspvendor functionality
+		        /*String mspquery = "SELECT "
+				+" GROUP_CONCAT(MSP.ORG_RELATION_IDS) " 
+				+" FROM MSP_VENDOR MSP "
+				+" WHERE MSP.ORG_LOCATION_ID =:orgLocationId and MSP.MSP_RELATION_ID NOT IN("+orgRelationId+") ";
+		
+				Query queryObj = session.createSQLQuery(mspquery);
+				queryObj.setLong("orgLocationId", orgLocationId);
+				String orgRelationIds = "";
+				List<String> orgRelationIdList = queryObj.list();
+				if(orgRelationIdList != null && !orgRelationIdList.isEmpty()) {
+					orgRelationIds = orgRelationIdList.get(0);
+				}*/
+				//String citiesCommaSeparated = String.join(",", categoriesList);
+               // +(orgRelationIds != null ? " and orgrelation.id NOT IN("+orgRelationIds+") " : "")
+		String query = "";
+		List<OrgRelations> mspVendorList =null;
+		query = "from OrgRelations orgrelation where ((locationId =:orgLocationId and responderType = 'Vendor') OR "
+				+ "(responderLocationId =:orgLocationId and initiatorType = 'Vendor')) and (isMSPVendor IS NULL OR isMSPVendor = 'N') ";
+		mspVendorList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+
+		
+		return mspVendorList;
+	}
+
+	@Override
+	@Transactional
+	public List<OrgSpoc> getMSPVendorContactListByOrgRelationId(Long orgRelationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="from OrgSpoc spoc where spoc.orgRelations =:orgRelationId and spoc.status ='1'";
+		List<OrgSpoc> mspVendorContractList = session.createQuery(query).setLong("orgRelationId", orgRelationId).list();
+		return mspVendorContractList;
+	}
 	
-	
+	@Override
+	@Transactional
+	public List<OrgRelations> selectedMSPVendorListByOrgRelationIds(String orgRelationIds) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from OrgRelations orgrelation where orgrelation.id IN("+orgRelationIds+") and (isMSPVendor IS NULL OR isMSPVendor = 'N')";
+		List<OrgRelations> mspVendorList = session.createQuery(query.toString()).list();
+		return mspVendorList;
+	}
 }

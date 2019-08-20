@@ -54,6 +54,7 @@ import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.JobFairRequirementsDTO;
+import com.bis.sourcelead.dto.MspVendorDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementIncentiveDTO;
@@ -4814,22 +4815,10 @@ public class RequirementServiceImpl implements RequirementService {
 	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId, String status) {
 		return requirementDao.getVendorSubmittedCandidates(requirementId, orgRelationId, spocId, status);
 	}
-	
+
+	@Override
+	public List<MspVendorDTO> getMSPVendorJobsList(MspVendorDTO mspVendorDTO) throws Exception {
+		return requirementDao.getMSPVendorJobsList(mspVendorDTO);
+	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

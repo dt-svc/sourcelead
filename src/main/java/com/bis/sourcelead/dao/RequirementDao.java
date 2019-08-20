@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.bis.sourcelead.dto.JobFairDTO;
+import com.bis.sourcelead.dto.MspVendorDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -254,5 +255,14 @@ public interface RequirementDao {
 	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId,String status);
 
 	public List<RequirementSubmission> getApplicantDeclineCountsForVendor(List<Long> requirementIdList, long orgRelationId, long spocId, String submissionStatus);
+	
+	/**
+	 * @author Laxman
+	 * @param mspVendorDTO
+	 * @return ResponseList
+	 * @throws Exception
+	 */
+	public List<MspVendorDTO> getMSPVendorJobsList(MspVendorDTO mspVendorDTO)throws Exception;
+
 
 }

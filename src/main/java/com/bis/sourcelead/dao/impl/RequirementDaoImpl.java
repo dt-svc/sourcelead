@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.io.StringReader;
 import java.math.BigInteger;
+import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import com.beust.jcommander.Parameter;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.JobBoardConfigurationDAO;
 import com.bis.sourcelead.dao.OrgLocationsDao;
@@ -47,6 +49,7 @@ import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.JobFairDTO;
+import com.bis.sourcelead.dto.MspVendorDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
@@ -70,12 +73,14 @@ import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementLocationsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PasswordSecurity;
@@ -128,6 +133,9 @@ public class RequirementDaoImpl implements RequirementDao {
     
     @Autowired
     private OrgRelationsDao orgRelationsDao;
+    
+    @Autowired
+	TimeZoneService timeZoneService;
         
     @Value("${static.path}")
 	private String staticPath;
@@ -3995,6 +4003,110 @@ public class RequirementDaoImpl implements RequirementDao {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+
+	/**
+	 * @author Laxman
+	 * @return List<MspVendorDTO>
+	 * @param mspVendorDTO
+	 * @category list
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public List<MspVendorDTO> getMSPVendorJobsList(MspVendorDTO mspVendorDTO) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		OrgLocations orgLocation = orgLocationsDao.getOrgLocations(mspVendorDTO.getOrgLocationId().longValue());
+		
+		//Select the Posted on functionality code
+		Date[] searchDates = null;
+		if(!mspVendorDTO.getDateSelection().equalsIgnoreCase("custom")) {
+			searchDates = reportsUtil.getJobFilterDate(mspVendorDTO.getDateSelection(),orgLocation);
+		}else {
+			Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), mspVendorDTO.getFromDate());
+    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), mspVendorDTO.getToDate());
+    	   
+    	    Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+    	    DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	    DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+    	    DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+    	    String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+    	    String customEndTimeStr = TZ_DF_CED.format(toDate);
+    	    String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+    	    String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+    	    fromDate = TZ_DF_TS.parse(startDateString);
+    	    toDate = TZ_DF_TS.parse(endDateString);
+    	    
+    	    searchDates = new Date[2];
+    	    searchDates[0] = fromDate;
+    	    searchDates[1] = toDate;
+		}
+		
+		
+		String jobFilter = "";
+		String serachQuery = "";
+		String vendorQuery = "";
+		String alphabetSerch = "";
+		//Select the each check box jobs list filter code
+		if(mspVendorDTO.getRequirementIds() != null && !mspVendorDTO.getRequirementIds().isEmpty()) {
+			jobFilter = "and requirement.id IN("+String.join(",", mspVendorDTO.getRequirementIds())+")";
+		}
+		
+		//serach the element after execute the code
+		if(mspVendorDTO.getSearchData() !=null && StringUtils.isNotBlank(mspVendorDTO.getSearchData())){
+			serachQuery = " and (requirement.jobTitle like '" + mspVendorDTO.getSearchData() + "%')";
+		}
+		
+		//select vendor related jobs list query
+		if(mspVendorDTO.getMspOrgRelationId() != null) {
+			vendorQuery = " requirement.clientId IN("+mspVendorDTO.getOrgRelationId()+","+mspVendorDTO.getMspOrgRelationId()+")";
+		}else {
+			vendorQuery = " requirement.clientId IN("+mspVendorDTO.getOrgRelationId()+")";
+		}
+		
+		
+		//alphabet 
+		if(!mspVendorDTO.getAlphabet().equalsIgnoreCase("empty")) {
+			if(mspVendorDTO.getAlphabet() !=null && mspVendorDTO.getAlphabet() != "" && !mspVendorDTO.getAlphabet().equalsIgnoreCase("none")){
+				alphabetSerch = " and (requirement.jobTitle like '" + mspVendorDTO.getAlphabet() + "%')";
+			}
+		}
+		
+		
+		// Main Qury 
+		String from = "from Requirement requirement left join fetch requirement.parentRequirement "
+				+ " where "+vendorQuery+" and (requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN')"
+						+ " and requirement.createdDate BETWEEN :startDateUTC and :endDateUTC "+jobFilter+" "+serachQuery+" "+alphabetSerch+"";
+		from += " order by requirement.id desc";
+		
+		Query query = session.createQuery(from);
+		
+		//Top 10 and Top 100 related code
+		query.setMaxResults(Integer.parseInt(mspVendorDTO.getJobLength()));
+		List<Requirement> reqList = query.setDate("startDateUTC", searchDates[0]).setDate("endDateUTC", searchDates[1]).list();
+		
+		//Iterating the jobs List and append the MsoVendorDTO 
+		List<MspVendorDTO> mspReqList = new ArrayList<MspVendorDTO>();
+		for(Requirement requirement : reqList){
+			MspVendorDTO mspDTO = new MspVendorDTO();
+			mspDTO.setRequirementId(requirement.getId());
+			if(requirement.getGeneratedId() != null) {
+				mspDTO.setRequirementName(requirement.getGeneratedId()+ " - "+requirement.getJobTitle());
+			}else {
+				mspDTO.setRequirementName(requirement.getJobTitle());
+			}
+    		RequirementSubmissionsCountDTO requirementSubmissionsCountDTO= requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirement.getId(),mspVendorDTO.getLoginUser(),orgLocation,"All");
+    		mspDTO.setApplicantCount(requirementSubmissionsCountDTO.getApplicantsCount());
+    		mspDTO.setShortlistCount(requirementSubmissionsCountDTO.getShortlistCount());
+    		mspDTO.setOffersCount(requirementSubmissionsCountDTO.getOffersCount());
+    		mspDTO.setSubmitToClientCount(requirementSubmissionsCountDTO.getSubmitToClientCount());
+    		mspDTO.setJoinedCount(requirementSubmissionsCountDTO.getJoinedCount());
+    		mspDTO.setBackoutCount(requirementSubmissionsCountDTO.getBackoutCount());
+    		mspDTO.setInterviewCount(requirementSubmissionsCountDTO.getInterviewCount());
+    		mspDTO.setRejectedCount(requirementSubmissionsCountDTO.getRejectedCount());
+    		mspReqList.add(mspDTO);
+		}
+		return mspReqList;
 	}
 
 }

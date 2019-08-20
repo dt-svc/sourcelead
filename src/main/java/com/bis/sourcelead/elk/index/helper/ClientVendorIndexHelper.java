@@ -154,7 +154,7 @@ public class ClientVendorIndexHelper {
 			clientVendorIndex.setInitiatorLevel(orgRelations.getInitiatorLevel());
 			clientVendorIndex.setResponderLevel(orgRelations.getResponderLevel());
 			clientVendorIndex.setOrgRelationUUID(orgRelations.getUUID());
-			
+			clientVendorIndex.setIsMSPVendor(orgRelations.getIsMSPVendor());
 			if(orgRelations.getVendorOnboardTemplateId() != null){
 				clientVendorIndex.setVendorOnboardTemplateId(orgRelations.getVendorOnboardTemplateId());
 			}
