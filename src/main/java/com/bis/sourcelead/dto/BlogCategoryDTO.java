@@ -39,6 +39,8 @@ public class BlogCategoryDTO extends SearchDTO implements Serializable{
 	private int blogCount;
 	
 	private String href;
+	
+	private String orgLocationDateFormate;
 
 	public Long getId() {
 		return Id;
@@ -144,4 +146,13 @@ public class BlogCategoryDTO extends SearchDTO implements Serializable{
 		this.href = href;
 	}
 
+	public String getOrgLocationDateFormate() {
+		return orgLocationDateFormate;
+	}
+
+	public void setOrgLocationDateFormate(String orgLocationDateFormate) {
+		this.orgLocationDateFormate = orgLocationDateFormate;
+	}
+
+	
 }
