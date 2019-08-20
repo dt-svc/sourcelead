@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,6 +51,8 @@ import com.bis.sourcelead.dto.EventsDTO;
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.MspVendorDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.ProjectPlanningResourceRequestDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
@@ -64,7 +67,9 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.DashboardCounts;
 import com.bis.sourcelead.entity.ExpensesCount;
+import com.bis.sourcelead.entity.MspVendor;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
@@ -87,6 +92,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.MspVendorService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectPlanningResourceRequestService;
@@ -228,6 +234,8 @@ public class DashboardRestController {
 	 @Autowired
 	 DynamicReport dynamicReport;
 	 
+	 @Autowired
+	 MspVendorService mspVendorService;
 	 
 	 @Autowired
 	 private SubmissionTemplateService submissionTemplateService;
@@ -2202,5 +2210,87 @@ public class DashboardRestController {
 	  
     }
     
-      
+ 	 @RequestMapping(value = "/getMSPClientList", method = RequestMethod.POST)
+	 public List<MspVendorDTO> getClientList(HttpServletRequest request, DashboardItemsDTO dashboardItemsDTO) throws Exception {
+		Long mspOrgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		List<MspVendorDTO> mspOrgClientList = mspVendorService.getMspClientlistByOrgLocationId(mspOrgLocationId);
+		return mspOrgClientList; 
+	 }
+ 	 
+ 	 
+ 	 @RequestMapping(value = "/mspVendorJobsDashbordList", method = RequestMethod.POST)
+	 public MspVendorDTO mspVendorJobsDashbordList(MspVendorDTO mspVendorDTO,HttpServletRequest request) throws Exception {
+		  Long mspOrgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  mspVendorDTO.setLoginUser(user);
+		  mspVendorDTO.setOrgLocationId(BigInteger.valueOf(mspOrgLocationId));
+		  List<MspVendorDTO> mspVendorJobsDashbordList = requirementService.getMSPVendorJobsList(mspVendorDTO);
+		  
+		  MspVendorDTO mspDTO = new  MspVendorDTO();
+		  mspDTO.setMspReqList(mspVendorJobsDashbordList);
+		  
+			int applicantsSum = 0;
+			int shortlistedSum = 0;
+			int submitToClientSum = 0;
+			int interviewsSum = 0;
+			int offeredSum = 0;
+			int joindSum = 0;
+			
+		  for(MspVendorDTO mspVendDTO:mspVendorJobsDashbordList) {
+			    int applicantsCount = 0;
+				int shortlistedCount = 0;
+		 		int submitToClientCount = 0;
+				int interviewsCount = 0;
+				int offeredCount = 0;
+				int joindCount = 0;
+				  if(mspVendDTO.getApplicantCount() != null && mspVendDTO.getApplicantCount() > 0) {
+					  applicantsCount = +mspVendDTO.getApplicantCount();
+				  }
+				  if(mspVendDTO.getShortlistCount() != null && mspVendDTO.getShortlistCount() > 0) {
+					  shortlistedCount = + mspVendDTO.getShortlistCount();
+				  }
+				  if(mspVendDTO.getSubmitToClientCount() != null && mspVendDTO.getSubmitToClientCount() > 0) {
+					  submitToClientCount = + mspVendDTO.getSubmitToClientCount();
+				  }
+				  if(mspVendDTO.getInterviewCount() != null && mspVendDTO.getInterviewCount() > 0) {
+					  interviewsCount = + mspVendDTO.getInterviewCount();
+				  }
+				  if(mspVendDTO.getOffersCount() != null && mspVendDTO.getOffersCount() > 0) {
+					  offeredCount = + mspVendDTO.getOffersCount();
+				  }
+				  if(mspVendDTO.getJoinedCount() != null && mspVendDTO.getJoinedCount() > 0) {
+					  joindCount = + mspVendDTO.getJoinedCount();
+				  }
+			 
+				  applicantsSum = applicantsSum+applicantsCount;
+				  shortlistedSum = shortlistedSum+shortlistedCount;
+				  submitToClientSum = submitToClientSum+submitToClientCount;
+				  interviewsSum = interviewsSum+interviewsCount;
+				  offeredSum = offeredSum+offeredCount;
+				  joindSum = joindSum + joindCount;
+					  
+		  }
+		  mspDTO.setApplicantCount(applicantsSum);
+		  mspDTO.setShortlistCount(shortlistedSum);
+		  mspDTO.setSubmitToClientCount(submitToClientSum);
+		  mspDTO.setInterviewCount(interviewsSum);
+		  mspDTO.setOffersCount(offeredSum);
+		  mspDTO.setJoinedCount(joindSum);
+		return  mspDTO; 
+	 }
+ 	 
+ 	 
+ 	 @RequestMapping(value = "/mspVendorList", method = RequestMethod.POST)
+	 public @ResponseBody List<OrgRelations> mspVendorList(MspVendorDTO mspVendorDTO,HttpServletRequest request) throws Exception {
+		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 MspVendor mspVendor =  mspVendorService.getMspVendorListByOrgLocationIdAndMspRelationId(orgLocationId, mspVendorDTO.getMspOrgRelationId());
+		 mspVendorDTO.setOrgRelationIds(mspVendor.getOrgRelationIds());
+		 List<OrgRelations> mspVendorList = mspVendorService.selectedMSPVendorListByOrgLocationId(mspVendorDTO);
+		 for(OrgRelations or:mspVendorList) {
+				 or.setOrgName(or.getResponderLocationId().getOrgLocationName());
+				 or.setId(or.getId());
+			 
+		 }
+		return mspVendorList;
+	}
 }
