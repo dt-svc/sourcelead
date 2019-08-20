@@ -73,9 +73,9 @@ function prepareAllCounts(requirementId){
 <script>
 function getWorkflowStageColumnAndCountIds(){
 	var stageColumnsMap = new Map();
-	$('#stageColumns li').each(function(){
-		stageColumnsMap.set($(this).text().slice(2, $(this).text().length).replace(/-|\s/g,"").toLowerCase(), $(this).find('b').attr('id'));
-	});
+	$('b[shortCode]').each(function(){
+		  stageColumnsMap.set(this.id, $(this).attr("shortCode"));
+		});
 	return stageColumnsMap;
 }
 </script>
@@ -92,23 +92,13 @@ function prepareAllWorkflowCounts(requirementId){
 	        url: atsUrl+"/getWorkflowSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=ALL"+"&workflowStages="+stages,        
 	        success :function(data) {
 	        var stageColumnsMap = getWorkflowStageColumnAndCountIds();
-	        	if(data != null){
-	   		 var obj = JSON.stringify(data);
-			 var stageCountList = obj.replace(/[{}]/g, "").split(',');
-			 for(var j=0;j< stageCountList.length; j++){
-				
-				 var n = stageCountList[j].indexOf(':');
-					var stageName = stageCountList[j].slice(1, n-1);
-					var count = stageCountList[j].slice(n+1, stageCountList[j].length);
-					stagesCountMap.set(stageName.replace(/_|\s/g,"").toLowerCase(), count);
-					
-			 }
-			 for (var [key, value] of stageColumnsMap) {
-				 $("#"+value).html(stagesCountMap.get(key));
-				}
-	        }
-	        },
-		  });
+		      if(data != null){
+				 for (var [key, value] of stageColumnsMap) {
+					 $("#"+key).html(data[value]);
+					}
+		       }
+	       },
+	 });
 	
 	$('#duplicataplctli').load(duplicateCount(requirementId));
     
@@ -2119,15 +2109,15 @@ function requirementWorkflowStatusBar(requirementId){
         result = result + '<div class="reportsCount reportsCountNew reportsCountNewBig reportsCountCustom" id="customLi">';
 		result = result + '<ul id = "stageColumns">';
 		result = result + '<li title="Applicants" id="applicantli" onclick="requirementPipeline('+requirementId+',\''+all+'\');tabEnable(this);" class="reqAct">';
-		result = result + '	<span><i class="fa fa-users"></i></span><b id="applicantsCount">0</b>';
-		result = result + '<div class="clearfix small mt10"><label class="mb0 fontSmall tooltip-pipeline">Applicants</label></div>';
+		result = result + '	<span><i class="fa fa-users"></i></span><b id="applicantsCount" shortCode="APPLICANTS">0</b>';
+		result = result + '<div class="clearfix small mt10"><label shortCode="applicants" class="mb0 fontSmall tooltip-pipeline">Applicants</label></div>';
 		result = result + '</li>';
 		result = result + '<li title="Duplicate Applicants" class="" id="duplicataplctli" onclick="requirementPipeline('+requirementId+',\''+duplicateApplicantCount+'\');tabEnable(this);">';
-		result = result + '	<span><i class="fa fa-files-o"></i></span><b id="duplicateApplicantsCount">0</b>';
+		result = result + '	<span><i class="fa fa-files-o"></i></span><b id="duplicateApplicantsCount" >0</b>';
 		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Duplicate Applicants</label></div>';
 		result = result + '</li>';
 		result = result + '<li title="Request Sent" id="requestSentli" onclick="requirementPipeline('+requirementId+',\''+requestSent+'\');tabEnable(this);">';
-		result = result + '	<span><i class="fa fa-check"></i></span><b id="requestSent">0</b>';
+		result = result + '	<span><i class="fa fa-check"></i></span><b id="requestSent"shortCode="REQUESTSENT">0</b>';
 		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Request Sent</label></div>';
 		result = result + '</li>';
 		// Start here getting dynamically configured stages for the workflow. 
@@ -2135,63 +2125,63 @@ function requirementWorkflowStatusBar(requirementId){
 			<c:choose>
 				 <c:when test = "${stage.stageShortCode =='SUBMISSION'}">
 					result = result + '<li title="${stage.stageName}" id="Submission" onclick="requirementWorkflowPipeline('+requirementId+',\''+submission+'\');tabEnable(this);">';
-					result = result + '	<span><i class="fa fa-check-square-o"></i></span><b id="submissionsCount">0</b>';
-					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">${stage.stageName}</label></div>';
+					result = result + '	<span><i class="fa fa-check-square-o"></i></span><b id="submissionsCount" shortCode="${stage.stageShortCode}">0</b>';
+					result = result + '<div class="clearfix fontSmall mt10"><label  class="mb0 small">${stage.stageName}</label></div>';
 					result = result + '</li>';
 				</c:when>
 				<c:when test = "${stage.stageShortCode =='SHORTLIST'}">
 				    result = result + '<li title="Shortlisted" class="" id="shortListli" onclick="requirementPipeline('+requirementId+',\''+shortList+'\');tabEnable(this);">';
-				    result = result + '	<span><i class="fa fa-list-ul"></i></span><b id="shortlistCount">0</b>';
+				    result = result + '	<span><i class="fa fa-list-ul"></i></span><b id="shortlistCount" shortCode="${stage.stageShortCode}" >0</b>';
 				    result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Shortlisted</label></div>';
 				    result = result + '</li>';
 				 </c:when>
 				  <c:when test = "${stage.stageShortCode =='INTERVIEW'}">
 				    result = result + '<li title="Interviews" class="" id="interviewli" onclick="requirementPipeline('+requirementId+',\''+interview+'\');tabEnable(this);">';
-					result = result + '	<span><i class="fa fa-handshake-o"></i></span><b id="interviewCount">0</b>';
+					result = result + '	<span><i class="fa fa-handshake-o"></i></span><b id="interviewCount" shortCode="${stage.stageShortCode}">0</b>';
 					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Interviews</label></div>';
 					result = result + '</li>';
 				 </c:when>
 			   <c:when test = "${stage.stageShortCode =='OFFERMADE'}">
 				    result = result + '<li title="Offers" id="offerMadeli" onclick="requirementPipeline('+requirementId+',\''+offerMade+'\');tabEnable(this);">';
-					result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount">0</b>';
+					result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount" shortCode="${stage.stageShortCode}" >0</b>';
 					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Offers</label></div>';
 					result = result + '</li>';
 				</c:when>
 			   <c:when test = "${stage.stageShortCode =='JOINED'}">
 					result = result + '<li title="Joined" id="joinedli" onclick="requirementPipeline('+requirementId+',\''+joined+'\');tabEnable(this);">';
-					result = result + '	<span><i class="fa fa-id-badge"></i></span><b id="joinedCount">0</b>';
+					result = result + '	<span><i class="fa fa-id-badge"></i></span><b id="joinedCount" shortCode="${stage.stageShortCode}">0</b>';
 					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Joined</label></div>';
 					result = result + '</li>';
 			  </c:when>
 			  <c:when test = "${stage.stageShortCode =='REJECTED'}">
 			 	result = result + '<li title="Rejected" class="" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
-				result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>';
+				result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount" shortCode="${stage.stageShortCode}">0</b>';
 				result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Rejected</label></div>';
 				result = result + '</li>';
 		     </c:when>
 		     <c:when test = "${stage.stageShortCode =='BACKOUT'}">
 		        result = result + '<li title="Back-Out" id="backoutli" onclick="requirementPipeline('+requirementId+',\''+backout+'\');tabEnable(this);">';
-				result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="backoutCount">0</b>';
+				result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="backoutCount" shortCode="${stage.stageShortCode}">0</b>';
 				result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Back-Out</label></div>';
 				result = result + '</li>';
 		     </c:when>
 		     <c:when test = "${stage.stageShortCode =='ON_HOLD'}">
 		        result = result + '<li title="On-hold" id="fa fa-pause-circle-o" onclick="requirementPipeline('+requirementId+',\''+onhold+'\');tabEnable(this);">';
-				result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="OnholdCount">0</b>';
+				result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="OnholdCount" shortCode="${stage.stageShortCode}">0</b>';
 				result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">On-hold</label></div>';
 				result = result + '</li>';
 		     </c:when>
 		     <c:when test = "${stage.stageShortCode =='SUBMIT_TO_CLIENT'}"> 
 			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
 					result = result + '<li title="Submit to Client" id="submitToClientli" onclick="requirementPipeline('+requirementId+',\''+submitToClient+'\');tabEnable(this);">';
-					result = result + '	<span class="cliColor"><i class="fa fa-send"></i></span><b id="submitToClientCount">0</b>';
+					result = result + '	<span class="cliColor"><i class="fa fa-send"></i></span><b id="submitToClientCount" shortCode="${stage.stageShortCode}">0</b>';
 					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Submit to Client</label></div>';
 					result = result + '</li>';
 			}
 		  </c:when>
 			  <c:otherwise>
 				result = result + '<li title="${stage.stageName}" id="${stage.stageShortCode}" onclick=requirementWorkflowPipeline('+requirementId+',\'${stage.stageShortCode}\');tabEnable(this);>';
-				result = result + '	<span><i class="fa fa-sitemap"></i></span><b id="${stage.stageShortCode}Count">0</b>';
+				result = result + '	<span><i class="fa fa-sitemap"></i></span><b id="${stage.stageShortCode}Count" shortCode="${stage.stageShortCode}">0</b>';
 				result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">${stage.stageName}</label></div>';
 				result = result + '</li>';
 			  </c:otherwise>
