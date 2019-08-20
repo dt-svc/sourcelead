@@ -74,14 +74,13 @@ function prepareAllCounts(requirementId){
 function getWorkflowStageColumnAndCountIds(){
 	var stageColumnsMap = new Map();
 	$('b[shortCode]').each(function(){
-		  stageColumnsMap.set(this.id, $(this).attr("shortCode"));
+		  stageColumnsMap.set(this.id, $(this).attr("shortCode")); // preparing map with id and shortcode.
 		});
 	return stageColumnsMap;
 }
 </script>
 <script>
 function prepareAllWorkflowCounts(requirementId){
-	var stagesCountMap = new Map();
 	var stages = new Array(); 
 	<c:forEach var="stage" items="${stagesList}">
 		stages.push('${stage.stageShortCode}');
@@ -93,7 +92,8 @@ function prepareAllWorkflowCounts(requirementId){
 	        success :function(data) {
 	        var stageColumnsMap = getWorkflowStageColumnAndCountIds();
 		      if(data != null){
-				 for (var [key, value] of stageColumnsMap) {
+		       // key means id of the element to updated and value is the count, returned from the service by stage wise.
+				 for (var [key, value] of stageColumnsMap) { 
 					 $("#"+key).html(data[value]);
 					}
 		       }
@@ -1207,8 +1207,9 @@ function rejectApplicant(submissionId,requirementId,submissionType){
   		  });
     }
    
-    
-    else if(selectBox == "On Hold" || selectBox == "Status" || selectBox == "Interview" || selectBox == "Selected on Interview" || selectBox == "Offer Made" || selectBox == "NoResponse"){
+    // below line commented for saving any stage for dynamic workflow name. updated by SRINIVAS SABBU.
+   // else if(selectBox == "On Hold" || selectBox == "Status" || selectBox == "Interview" || selectBox == "Selected on Interview" || selectBox == "Offer Made" || selectBox == "NoResponse"){
+	 else if(selectBox){ // skip stage name check for dynamic workflow stages.
     	$.ajax({
     	      type : "POST",
     	      url: atsUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
