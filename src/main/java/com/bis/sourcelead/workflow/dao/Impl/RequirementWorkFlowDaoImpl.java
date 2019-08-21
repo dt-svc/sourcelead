@@ -978,10 +978,26 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 			String stageShortCode, OrgLocations orgLocations) {
 		logger.debug("Running getRequirementWorkflowStagesByWorkflowIdAndOrglocations DAO");
 		List<RequirementWorkFlowStages> workflowStagesList = null;
+		
 		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementWorkFlowStages worflowstages where worflowstages.requirementWorkFlowId.id =:workflowId and worflowstages.seqOrder >= (select ws.seqOrder from RequirementWorkFlowStages ws where ws.stageShortCode =:stageShortCode and ws.requirementWorkFlowId.id =:workflowId and ws.orgLocationId.id=:orgLocationId) and worflowstages.orgLocationId.id=:orgLocationId order by worflowstages.seqOrder";
-			workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", stageShortCode).setLong("orgLocationId", orgLocations.getId()).list();
+			if(!stageShortCode.equalsIgnoreCase("REQUEST_SENT")) {
+			  Session session = this.sessionFactory.getCurrentSession();
+			 String query = "from RequirementWorkFlowStages worflowstages where worflowstages.requirementWorkFlowId.id =:workflowId and worflowstages.seqOrder >= (select ws.seqOrder from RequirementWorkFlowStages ws where ws.stageShortCode =:stageShortCode and ws.requirementWorkFlowId.id =:workflowId and ws.orgLocationId.id=:orgLocationId) and worflowstages.orgLocationId.id=:orgLocationId order by worflowstages.seqOrder";
+			 workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", stageShortCode).setLong("orgLocationId", orgLocations.getId()).list();
+			}else {
+				//we are adding manually two stage for REQUEST_SENT because we don't have default stage workflow stages.
+				workflowStagesList = new ArrayList<RequirementWorkFlowStages>();
+				RequirementWorkFlowStages requestSent = new RequirementWorkFlowStages();
+				requestSent.setStageShortCode("REQUEST_SENT");
+				requestSent.setStageName("Request Sent");
+				
+				RequirementWorkFlowStages reject = new RequirementWorkFlowStages();
+				reject.setStageShortCode("REJECTED");
+				reject.setStageName("Reject");
+				
+				workflowStagesList.add(requestSent);
+				workflowStagesList.add(reject);
+			}
 		} catch (Exception e) {
 			logger.error(e + " in getRequirementWorkflowStagesByWorkflowIdAndOrglocations DAO");
 			e.printStackTrace();
