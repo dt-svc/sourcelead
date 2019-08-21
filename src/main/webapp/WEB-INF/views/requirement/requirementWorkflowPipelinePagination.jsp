@@ -8,6 +8,7 @@
 <div id="popupSaveId" class="popupWrap popupWrap2" style="display: none;"></div>
 
 <script>
+var workflowConfigured = '${workflowConfigured}';
 var columnPropArr=[];
 var columnDefs =[];
 var searchVal = "";
@@ -409,6 +410,7 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 				"render" : function(data, type, opt,
 						meta) {
 					var result = "";
+					if(workflowConfigured == 'false'){
 					if (opt.requirementCurrentStatus != 'SUBMITTED'
 							&& opt.requirementCurrentStatus != 'CLOSED'
 							&& opt.requirementCurrentStatus != 'REJECTED'
@@ -638,6 +640,119 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 								+ '<td><div class="tblwidth-150"><span>'
 								+ opt.submissionDisplayStatus
 								+ '</span>';
+					}
+					}else{
+						
+
+						
+						/// if workflow is configured preparing the status drop down values.
+						/*  var workflowStagesMap = opt.workflowStagesMap;  SRINIVA SABBU.
+						console.log(workflowStagesMap); */
+						//Below blcok excuted when current is REJECTED and BACKOUT stages.
+						if (opt.submissionStatus == 'REJECTED') {
+							result = result
+									+ '<td><div class="tblwidth-150"><span>'
+									+ opt.submissionDisplayStatus
+									+ '</span>';
+							if (opt.rejectedReason != null
+									&& opt.rejectedReason != ''
+									&& opt.rejectedReason != 'undefined'
+									&& opt.rejectedCategoryType != null
+									&& opt.rejectedCategoryType != 'Other') {
+								result = result
+										+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+										+ "<font color='red'>Category</font>: "
+										+ opt.rejectedCategoryType
+										+ '<br>'
+										+ "Reason: "
+										+ opt.rejectedReason
+										+ '</p></div></i></div></td>';
+							}
+							if (opt.rejectedReason != null
+									&& opt.rejectedReason != ''
+									&& opt.rejectedReason != 'undefined'
+									&& opt.rejectedCategoryType != null
+									&& opt.rejectedCategoryType == 'Other') {
+								result = result
+										+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+										+ "<font color='red'>Category</font>:"
+										+ opt.rejectedCategoryType
+										+ '<br>'
+										+ "Other: "
+										+ opt.rejectedCategoryOther
+										+ '<br>'
+										+ "Reason: "
+										+ opt.rejectedReason
+										+ '</p></div></i></div></td>';
+							}
+						} else if (opt.submissionStatus == 'BACKOUT') {
+							result = result
+									+ '<td><div class="tblwidth-150"><span>'
+									+ opt.submissionDisplayStatus
+									+ '</span>';
+							if (opt.backOutReason != null
+									&& opt.backOutReason != ''
+									&& opt.backOutReason != 'undefined'
+									&& opt.backOutCategoryType != null
+									&& opt.backOutCategoryType != 'Other') {
+								result = result
+										+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+										+ "<font color='red'>Category</font>: "
+										+ opt.backOutCategoryType
+										+ '<br>'
+										+ "Reason: "
+										+ opt.backOutReason
+										+ '</p></div></i></div></td>';
+							}
+							if (opt.backOutReason != null
+									&& opt.backOutReason != ''
+									&& opt.backOutReason != 'undefined'
+									&& opt.backOutCategoryType != null
+									&& opt.backOutCategoryType == 'Other') {
+								result = result
+										+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+										+ "<font color='red'>Category</font>:"
+										+ opt.backOutCategoryType
+										+ '<br>'
+										+ "Other: "
+										+ opt.backOutCategoryOther
+										+ '<br>'
+										+ "Reason: "
+										+ opt.backOutReason
+										+ '</p></div></i></div></td>';
+							}
+						} 
+						
+				else{// else blcok excuted other than REJECTED and BACKOUT stages.
+					
+					  result = result
+						+ '<td><div class="tblwidth-150">';
+				    result = result
+						+ '<select id="rejectApplicantSelectspocState'
+						+ opt.id
+						+ '" onChange="rejectApplicant('
+						+ opt.id + ','
+						+ requirementId
+						+ ',\''
+						+ submissionType
+						+ '\')";>';
+				     result = result
+						+ "<option value='Status'>"
+						+ opt.submissionDisplayStatus
+						+ "</option>";
+				     $.each( opt.workflowStagesMap, function(val, name ) {
+					     if(opt.submissionDisplayStatus != name ){
+				    	    result = result+"<option value='"+val+"'>"+name+"</option>";
+					     }
+				    	});
+					 result = result
+									+ '</select>';
+							result = result
+									+ '</div></td>';
+					}
+						
+					
+						
 					}
 					return result;
 				}
