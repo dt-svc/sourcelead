@@ -809,6 +809,78 @@ function validateEmail(emailId) {
     }
     return true;
 }
+function validatepaymentAccountNumber(paymentAccountNumber) {
+    var accountNumber = $("#" + paymentAccountNumber).val().trim();
+    if (accountNumber === "") {
+        showError("Please enter  Accountnumber");
+        return false;
+    }else if(!/^(\b\d{15}\b)/i.test(accountNumber)){
+        showError("Please enter valid Accountnumber");
+        return false;
+    }
+    return true;
+}
+
+function validateBISRNumber(paymentBSRNumber) {
+    var BISRnum = $("#" + paymentBSRNumber).val().trim();
+    if (BISRnum === "") {
+        showError("Please enter  BSR Number");
+        return false;
+    }else if(!/^(\b\d{9}\b)/i.test(BISRnum)){
+        showError("Please enter valid BSR Number");
+        return false;
+    }
+    return true;
+}
+function validatepaymentMICRcode(paymentMICRCode) {
+    var MICRcode = $("#" + paymentMICRCode).val().trim();
+    if (MICRcode === "") {
+        showError("Please enter  MICR code");
+        return false;
+    }else if(!/^(\b\d{9}\b)/i.test(MICRcode)){
+        showError("Please enter valid MICR code");
+        return false;
+    }
+    return true;
+}
+
+function validateFirstName(paymentAccountFirstName) {
+    var FirstName = $("#" + paymentAccountFirstName).val().trim();
+    if (FirstName === "") {
+        showError("Please enter First Name");
+        return false;
+    }else if(!/^(\b[a-zA-Z]{1,25}\b)/i.test(FirstName)){
+        showError("Please enter valid First Name");
+        return false;
+    }
+    return true;
+}
+
+function validateLastName(paymentAccountLastName) {
+    var LastName = $("#" + paymentAccountLastName).val().trim();
+    if (LastName === "") {
+        showError("Please enter Last Name");
+        return false;
+    }else if(!/^(\b[a-zA-Z]{1,25}\b)/i.test(LastName)){
+        showError("Please enter valid Last Name");
+        return false;
+    }
+    return true;
+}
+
+
+function validatepaymentMICRcode(paymentMICRCode) {
+    var MICRcode = $("#" + paymentMICRCode).val().trim();
+    if (MICRcode === "") {
+        showError("Please enter  MICR code");
+        return false;
+    }else if(!/^(\b\d{9}\b)/i.test(MICRcode)){
+        showError("Please enter valid MICR code");
+        return false;
+    }
+    return true;
+}
+
 
 function validateEmailForExistenceUniversally(email, divId, spanId) {
 	var flag = null;
