@@ -40,7 +40,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.rest.RequirementRestController;
+import com.bis.sourcelead.rest.RequirementRestControllerAdmin;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RequirementService;
@@ -70,7 +70,7 @@ public class FileController {
 	private CandidateResumesService candidateResumeService;
 	
 	@Autowired
-	private RequirementRestController requirementRestController;
+	private RequirementRestControllerAdmin requirementRestController;
 	
 	@Autowired
 	private RequirementService requirementService;
