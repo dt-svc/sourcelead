@@ -436,8 +436,7 @@
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
-											if(workflowConfigured == 'false'){
-												 console.log("inside false "+workflowConfigured);
+											if(workflowConfigured == 'false'){// Default Workflow Starts here if workflowConfigured is false.
 											if (opt.requirementCurrentStatus != 'SUBMITTED'
 													&& opt.requirementCurrentStatus != 'CLOSED'
 													&& opt.requirementCurrentStatus != 'REJECTED'
@@ -661,11 +660,9 @@
 														+ opt.submissionDisplayStatus
 														+ '</span>';
 											}
-											}else{
-												
+											}// Default Workflow Ends here.
+											else{// Custom Workflow Starts here.  SRINIVA SABBU.
 											/// if workflow is configured preparing the status drop down values.
-											/*  var workflowStagesMap = opt.workflowStagesMap;  SRINIVA SABBU.
-											console.log(workflowStagesMap); */
 											//Below blcok excuted when current is REJECTED and BACKOUT stages.
 											if (opt.submissionStatus == 'REJECTED') {
 												result = result
@@ -769,7 +766,7 @@
 														+ '</div></td>';
 										}
 											
-										} // else close of REJECTED and BACKOUT stages.
+										} // else close of REJECTED and BACKOUT stages. // Custom Workflow Ends here.s
 									  return result;
 									}}],
 							"scrollCollapse" : false,
