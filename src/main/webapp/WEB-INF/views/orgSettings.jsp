@@ -1409,7 +1409,6 @@ function saveWhiteListIps(){
 function changefunction(){
 	var paymentAccountType = $("#paymentAccountType").val();
 	if(paymentAccountType == "SAVINGS" || paymentAccountType == "CHECKING"){
-		alert("abcd")
 	$('#emailErr').find('p.jquery_form_error_message').remove(); 
 	$("#paymentAccountEmail").val('');
 	$('#paymentAccountEmail').removeAttr('data-validation');
