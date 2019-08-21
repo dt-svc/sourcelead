@@ -37,7 +37,6 @@ import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateD
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
-import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
@@ -107,20 +106,6 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 		}
 	}
 
-	@Override
-	public List<RequirementDefaultWorkFlowStages> getRequirementDefaultWorkFlowStages() {
-		logger.debug("Running getRequirementDefaultWorkFlowStages DAO");
-		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementDefaultWorkFlowStages requirementDefaultWorkFlowStages";
-			List<RequirementDefaultWorkFlowStages> requirementDefaultWorkFlowStages = session.createQuery(query).list();
-			return requirementDefaultWorkFlowStages;
-		} catch (Exception e) {
-			logger.error(e+" in getRequirementDefaultWorkFlowStages DAO");
-			e.printStackTrace();
-			return null;
-		}
-	}
 
 	@Override
 	public RequirementWorkFlowStages saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages){
