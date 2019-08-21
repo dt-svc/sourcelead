@@ -926,11 +926,11 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
          List<String> statusList = new ArrayList<>();
          if(submissionStatus.equalsIgnoreCase("ALL")){
         	 statusList.add("APPLICANTS");
-        	 statusList.add("REQUESTSENT");
+        	 statusList.add("REQUEST_SENT");
         	 statusList.addAll(Arrays.asList(workflowStages));
         	
         	 stagesCountMap.put("APPLICANTS", 0);
-        	 stagesCountMap.put("REQUESTSENT", 0);
+        	 stagesCountMap.put("REQUEST_SENT", 0);
              for(String stage: workflowStages) {
             	 stagesCountMap.put(stage, 0);
              }
